@@ -75,8 +75,8 @@ QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextS
   std::unique_ptr< QgsExpressionContextScope > scope = qgis::make_unique< QgsExpressionContextScope >( QStringLiteral( "temporal" ) );
   scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
   scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
-  scope->setVariable( QStringLiteral( "frame_timestep" ), mFrameTimeStep, true );
-  scope->setVariable( QStringLiteral( "frame_timestep_unit" ), mFrameTimeStepUnit, true );
+  scope->setVariable( QStringLiteral( "frame_timestep" ), mFrameDuration.originalDuration(), true );
+  scope->setVariable( QStringLiteral( "frame_timestep_unit" ), mFrameDuration.originalUnit(), true );
   scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
   scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
   scope->setVariable( QStringLiteral( "animation_interval" ), mTemporalExtents.end() - mTemporalExtents.begin(), true );
@@ -92,8 +92,8 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
 
   const long long nextFrame = frame + 1;
 
-  QDateTime begin = QgsTemporalUtils::calculateFrameTime( start, frame, mFrameTimeStep, mFrameTimeStepUnit );
-  QDateTime end = QgsTemporalUtils::calculateFrameTime( start, nextFrame, mFrameTimeStep, mFrameTimeStepUnit );
+  QDateTime begin = QgsTemporalUtils::calculateFrameTime( start, frame, mFrameDuration );
+  QDateTime end = QgsTemporalUtils::calculateFrameTime( start, nextFrame, mFrameDuration );
 
   QDateTime frameStart = begin;
 
@@ -194,10 +194,6 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
   QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
   mFrameDuration = frameDuration;
 
-  // sync frame duration with time step and time step unit.
-  mFrameTimeStep = mFrameDuration.originalDuration();
-  mFrameTimeStepUnit = mFrameDuration.originalUnit();
-
   mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalFrameDurationChanged( mFrameDuration );
 
@@ -213,30 +209,6 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
 QgsInterval QgsTemporalNavigationObject::frameDuration() const
 {
   return mFrameDuration;
-}
-
-void QgsTemporalNavigationObject::setFrameTimeStep( double timeStep )
-{
-  mFrameTimeStep = timeStep;
-  setFrameDuration( QgsInterval( mFrameTimeStep, mFrameTimeStepUnit ) );
-  setCurrentFrameNumber( 0 );
-}
-
-void QgsTemporalNavigationObject::setFrameTimeStepUnit( QgsUnitTypes::TemporalUnit timeStepUnit )
-{
-  mFrameTimeStepUnit = timeStepUnit;
-  setFrameDuration( QgsInterval( mFrameTimeStep, mFrameTimeStepUnit ) );
-  setCurrentFrameNumber( 0 );
-}
-
-double QgsTemporalNavigationObject::frameTimeStep() const
-{
-  return mFrameTimeStep;
-}
-
-QgsUnitTypes::TemporalUnit QgsTemporalNavigationObject::frameTimeStepUnit() const
-{
-  return mFrameTimeStepUnit;
 }
 
 void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )

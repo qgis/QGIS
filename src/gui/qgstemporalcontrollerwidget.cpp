@@ -297,8 +297,9 @@ void QgsTemporalControllerWidget::updateFrameDuration()
 
   if ( !mBlockFrameDurationUpdates )
   {
-    mNavigationObject->setFrameTimeStep( QgsProject::instance()->timeSettings()->timeStep() );
-    mNavigationObject->setFrameTimeStepUnit( QgsProject::instance()->timeSettings()->timeStepUnit() );
+    mNavigationObject->setFrameDuration(
+      QgsInterval( QgsProject::instance()->timeSettings()->timeStep(),
+                   QgsProject::instance()->timeSettings()->timeStepUnit() ) );
     mSlider->setValue( mNavigationObject->currentFrameNumber() );
   }
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );

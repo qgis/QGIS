@@ -86,8 +86,7 @@ void TestQgsTemporalNavigationObject::animationState()
                            );
   navigationObject->setTemporalExtents( range );
 
-  navigationObject->setFrameTimeStep( 1 );
-  navigationObject->setFrameTimeStepUnit( QgsUnitTypes::TemporalMonths );
+  navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalMonths ) );
 
   qRegisterMetaType<QgsTemporalNavigationObject::AnimationState>( "AnimationState" );
   QSignalSpy stateSignal( navigationObject, &QgsTemporalNavigationObject::stateChanged );
@@ -196,10 +195,9 @@ void TestQgsTemporalNavigationObject::frameSettings()
   navigationObject->setTemporalExtents( range );
   QCOMPARE( temporalRangeSignal.count(), 1 );
 
-  navigationObject->setFrameTimeStep( 1 );
-  navigationObject->setFrameTimeStepUnit( QgsUnitTypes::TemporalHours );
-  QCOMPARE( navigationObject->frameTimeStep(), 1.0 );
-  QCOMPARE( navigationObject->frameTimeStepUnit(), QgsUnitTypes::TemporalHours );
+  navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
+  QCOMPARE( navigationObject->frameDuration().originalDuration(), 1.0 );
+  QCOMPARE( navigationObject->frameDuration().originalUnit(), QgsUnitTypes::TemporalHours );
 
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
   QCOMPARE( navigationObject->totalFrameCount(), 5 );
@@ -244,8 +242,7 @@ void TestQgsTemporalNavigationObject::expressionContext()
                              QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) )
                            );
   object.setTemporalExtents( range );
-  object.setFrameTimeStep( 1 );
-  object.setFrameTimeStepUnit( QgsUnitTypes::TemporalHours );
+  object.setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   object.setCurrentFrameNumber( 1 );
   object.setFramesPerSecond( 30 );
 
