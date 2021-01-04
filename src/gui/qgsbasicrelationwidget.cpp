@@ -157,7 +157,7 @@ QgsBasicRelationWidget::QgsBasicRelationWidget( const QVariantMap &config, QWidg
 
   mRelationLayout->addWidget( mDualView );
 
-//  connect( this, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsRelationEditorWidget2::onCollapsedStateChanged );
+  connect( mRootCollapsibleGroupBox, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsBasicRelationWidget::onCollapsedStateChanged );
   connect( mViewModeButtonGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ),
            this, static_cast<void ( QgsBasicRelationWidget::* )( int )>( &QgsBasicRelationWidget::setViewMode ) );
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsBasicRelationWidget::toggleEditing );
