@@ -31,6 +31,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
+#include "qgsvectorlayertemporalproperties.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -250,6 +251,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     r->startRender( context, vlayer->fields() );
   }
 
+  QString temporalFilter;
+  if ( canvas->mapSettings().isTemporal() )
+  {
+    if ( !vlayer->temporalProperties()->isVisibleInTemporalRange( canvas->temporalRange() ) )
+      return newSelectedFeatures;
+
+    QgsVectorLayerTemporalContext temporalContext;
+    temporalContext.setLayer( vlayer );
+    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( vlayer->temporalProperties() )->createFilterString( temporalContext, canvas->temporalRange() );
+  }
+
   QgsFeatureRequest request;
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
@@ -257,6 +269,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
   else
     request.setNoAttributes();
+
+  if ( !temporalFilter.isEmpty() )
+    request.setFilterExpression( temporalFilter );
+  if ( r )
+  {
+    const QString filterExpression = r->filter( vlayer->fields() );
+    if ( !filterExpression.isEmpty() )
+    {
+      request.combineFilterExpression( filterExpression );
+    }
+  }
 
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 
