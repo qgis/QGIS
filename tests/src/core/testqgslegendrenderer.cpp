@@ -1323,7 +1323,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
     vlDataDefinedSize->updateFields();
   }
 
-  QgsStringMap props;
+  QVariantMap props;
   props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
   props[QStringLiteral( "color" )] = QStringLiteral( "200,200,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,0,0" );

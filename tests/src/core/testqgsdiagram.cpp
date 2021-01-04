@@ -90,7 +90,7 @@ class TestQgsDiagram : public QObject
                                          myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
       //we don't want to render the points themselves, just the diagrams
-      QgsStringMap symbolProps;
+      QVariantMap symbolProps;
       symbolProps.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,0" ) );
       symbolProps.insert( QStringLiteral( "outline_style" ), QStringLiteral( "no" ) );
       QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( symbolProps );
@@ -307,7 +307,7 @@ class TestQgsDiagram : public QObject
       ds.rotationOffset = 0;
       ds.setShowAxis( true );
 
-      QgsStringMap props;
+      QVariantMap props;
       props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
       props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
       ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ) );
@@ -507,7 +507,7 @@ class TestQgsDiagram : public QObject
       ds.setSpacing( 3 );
       ds.setShowAxis( true );
 
-      QgsStringMap props;
+      QVariantMap props;
       props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
       props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
       ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ) );
@@ -563,7 +563,7 @@ class TestQgsDiagram : public QObject
       ds.setSpacing( 3 );
       ds.setShowAxis( true );
 
-      QgsStringMap props;
+      QVariantMap props;
       props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
       props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
       ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ) );
@@ -1011,7 +1011,7 @@ class TestQgsDiagram : public QObject
       const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
       std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
 
-      QgsStringMap props;
+      QVariantMap props;
       props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );
       props.insert( QStringLiteral( "outline_width" ), QStringLiteral( "1" ) );
       std::unique_ptr< QgsLineSymbol > symbol( QgsLineSymbol::createSimple( props ) );

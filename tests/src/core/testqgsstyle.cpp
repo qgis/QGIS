@@ -173,10 +173,10 @@ void TestStyle::testCreateSymbols()
   QgsStyle s;
   s.createMemoryDatabase();
 
-  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym4( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym4( QgsMarkerSymbol::createSimple( QVariantMap() ) );
   s.addSymbol( QStringLiteral( "symbolA" ), sym1.release(), true );
   s.addSymbol( QStringLiteral( "symbolB" ), sym2.release(), true );
   s.addSymbol( QStringLiteral( "symbolC" ), sym3.release(), true );
@@ -589,9 +589,9 @@ void TestStyle::testFavorites()
   QVERIFY( !mStyle->isFavorite( QgsStyle::Symbol3DEntity, QStringLiteral( "AaaaaaaaaA" ) ) );
 
   // add some symbols to favorites
-  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QVariantMap() ) );
   mStyle->saveSymbol( QStringLiteral( "symbolA" ), sym1.get(), true, QStringList() );
   mStyle->saveSymbol( QStringLiteral( "symbolB" ), sym2.get(), false, QStringList() );
   mStyle->saveSymbol( QStringLiteral( "symbolC" ), sym3.get(), true, QStringList() );
@@ -814,10 +814,10 @@ void TestStyle::testTags()
   QVERIFY( !tags.contains( "purple" ) );
 
   //add some symbols
-  std::unique_ptr< QgsMarkerSymbol> sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol> sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol> sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol> sym4( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym1( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym2( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym3( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym4( QgsMarkerSymbol::createSimple( QVariantMap() ) );
   QVERIFY( mStyle->saveSymbol( "symbol1", sym1.get(), false, QStringList() << "red" << "starry" ) );
   mStyle->addSymbol( QStringLiteral( "blue starry" ), sym2.release(), true );
   mStyle->addSymbol( QStringLiteral( "red circle" ), sym3.release(), true );
@@ -1276,9 +1276,9 @@ void TestStyle::testSmartGroup()
 
   QSignalSpy groupModifiedSpy( &style, &QgsStyle::groupsModified );
 
-  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QVariantMap() ) );
   style.addSymbol( QStringLiteral( "symbolA" ), sym1->clone(), true );
   style.addSymbol( QStringLiteral( "symbolB" ), sym2->clone(), true );
   style.addSymbol( QStringLiteral( "symbolC" ), sym3->clone(), true );
