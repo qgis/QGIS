@@ -75,8 +75,8 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     ~QgsPointCloudDataProvider() override;
 
     /**
-     * Returns the list of points of the point cloud according to a  zoom level
-     * defined by \a maxErrorInMapCoords, an extent \a geometry in the 2D plane
+     * Returns the list of points of the point cloud according to a zoom level
+     * defined by \a maxError (in layer coordinates), an extent \a geometry in the 2D plane
      * and a range \a extentZRange for z values. The function will try to limit
      * the number of points returned to \a pointsLimit points
      *
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \note this function does not handle elevation properties and you need to
      * change elevation coordinates yourself after returning from the function
      */
-    QVector<QVariantMap> identify( double maxErrorInMapCoords, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
+    QVector<QVariantMap> identify( double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
 
     /**
      * Returns flags containing the supported capabilities for the data provider.

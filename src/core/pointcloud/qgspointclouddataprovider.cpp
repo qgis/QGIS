@@ -318,7 +318,7 @@ struct MapIndexedPointCloudNode
 };
 
 QVector<QVariantMap> QgsPointCloudDataProvider::identify(
-  double maxErrorInMapCoords,
+  double maxError,
   const QgsGeometry &extentGeometry,
   const QgsDoubleRange &extentZRange, int pointsLimit )
 {
@@ -327,10 +327,10 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   QgsPointCloudIndex *index = this->index();
   const IndexedPointCloudNode root = index->root();
 
-  QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
-  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
+  QgsRectangle rootNodeExtent = index->nodeMapExtent( root );
+  const double rootError = rootNodeExtent.width() / index->span();
 
-  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxErrorInMapCoords, rootErrorInMapCoordinates, extentGeometry, extentZRange );
+  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxError, rootError, extentGeometry, extentZRange );
 
   QgsPointCloudAttributeCollection attributeCollection = index->attributes();
   QgsPointCloudRequest request;
