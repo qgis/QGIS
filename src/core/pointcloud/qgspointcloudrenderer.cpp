@@ -195,9 +195,9 @@ void QgsPointCloudRenderer::setPointSymbol( PointSymbol symbol )
   mPointSymbol = symbol;
 }
 
-QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, QgsRenderContext renderContext, const QgsGeometry &geometry )
+QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, const QgsRenderContext &renderContext, const QgsGeometry &geometry )
 {
-  QVector<QMap<QString, QVariant>> selectedPoints;
+  QVector<QVariantMap> selectedPoints;
 
   QgsPointCloudIndex *index = layer->dataProvider()->index();
   const IndexedPointCloudNode root = index->root();
