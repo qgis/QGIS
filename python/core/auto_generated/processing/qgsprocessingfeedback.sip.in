@@ -65,7 +65,7 @@ queues associated to this type of message.
 
 .. seealso:: :py:func:`pushConsoleInfo`
 
-.. versionadded:: 3.16.2
+.. versionadded:: 3.16.4
 %End
 
     virtual void pushInfo( const QString &info );

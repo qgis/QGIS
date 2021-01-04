@@ -71,7 +71,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushCommandInfo()
      * \see pushDebugInfo()
      * \see pushConsoleInfo()
-     * \since QGIS 3.16.2
+     * \since QGIS 3.16.4
      */
     virtual void pushWarning( const QString &warning );
 
