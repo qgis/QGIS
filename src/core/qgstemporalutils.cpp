@@ -187,6 +187,8 @@ QDateTime QgsTemporalUtils::calculateFrameTime( const QDateTime &start, const lo
       case QgsUnitTypes::TemporalUnit::TemporalCenturies:
         return start.addYears( 100 * frame * interval.originalDuration() );
         break;
+      default:
+        return start;
     }
   }
 }
