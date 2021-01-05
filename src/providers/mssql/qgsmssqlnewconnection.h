@@ -51,7 +51,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     void updateOkButtonState();
     void onCurrentDataBaseChange();
   private:
-    //! Class that reprents a model to display available schemas on a database and choose which will be diplayed in QGIS
+    //! Class that reprents a model to display available schemas on a database and choose which will be displayed in QGIS
     class SchemaModel: public QAbstractListModel
     {
       public:
@@ -62,10 +62,10 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
         bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
         Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
-        //! Sets the schema settings (keyd : schema names, value : bool that represnts wheter the schema is checked)
+        //! Sets the schema settings (keyd : schema names, value : bool that represents whether the schema is checked)
         void setSchemasSetting( const QVariantMap &schemas );
 
-        //! Returns the schema settings (keyd : schema names, value : bool that represnts wheter the schema is checked)
+        //! Returns the schema settings (keyd : schema names, value : bool that represents whether the schema is checked)
         QVariantMap schemasSettings() const;
 
         //! Returns the database nale represented by the model
