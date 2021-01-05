@@ -73,7 +73,7 @@ class CORE_EXPORT QgsCoordinateUtils
      * \returns Double decimal value
      * \since QGIS 3.16
      */
-    Q_INVOKABLE static double dmsToDecimal( const QString &string, bool *ok );
+    Q_INVOKABLE static double dmsToDecimal( const QString &string, bool *ok = nullptr, bool *isEasting = nullptr );
 
 };
 
