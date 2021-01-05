@@ -1349,19 +1349,16 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   zoomToFeatureExtent( rect );
 }
 
-void QgsMapCanvas::zoomToAllSelected( const QList<QgsMapLayer *> *layers )
+void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
 {
-  QgsVectorLayer *layer;
-
   QgsRectangle rect;
   rect.setMinimal();
   QgsRectangle selectionExtent;
   selectionExtent.setMinimal();
 
-  for ( int i = 0; i < layers->size(); ++i )
+  for ( QgsMapLayer *mapLayer : layers )
   {
-    if ( layers->at( i )->type() == QgsMapLayerType( 0 ) )
-      layer = qobject_cast<QgsVectorLayer *>( layers->at( i ) );
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
     if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
       continue;
@@ -1539,19 +1536,16 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
   refresh();
 }
 
-void QgsMapCanvas::panToAllSelected( const QList<QgsMapLayer *> *layers )
+void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
 {
-  QgsVectorLayer *layer;
-
   QgsRectangle rect;
   rect.setMinimal();
   QgsRectangle selectionExtent;
   selectionExtent.setMinimal();
 
-  for ( int i = 0; i < layers->size(); ++i )
+  for ( QgsMapLayer *mapLayer : layers )
   {
-    if ( layers->at( i )->type() == QgsMapLayerType( 0 ) )
-      layer = qobject_cast<QgsVectorLayer *>( layers->at( i ) );
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
     if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
       continue;

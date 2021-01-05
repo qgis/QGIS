@@ -156,23 +156,19 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( zoomToLayers );
         if ( vlayer )
         {
-          QList<QgsMapLayer *> selectedLayers = mView->selectedLayers();
-          bool hasSelectedFeature;
-          for ( int i = 0; i < selectedLayers.size(); ++i )
+          const QList<QgsMapLayer *> selectedLayers = mView->selectedLayers();
+          bool hasSelectedFeature = false;
+          for ( const QgsMapLayer *layer : selectedLayers )
           {
-            QgsMapLayer *layer = selectedLayers.at( i );
 
-            if ( layer->type() == QgsMapLayerType( 0 ) )
+            if ( const QgsVectorLayer *vLayer = qobject_cast<const QgsVectorLayer *>( layer ) )
             {
-              QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
 
-              if ( !vLayer->selectedFeatureIds().isEmpty() )
+              if ( vLayer->selectedFeatureCount() > 0 )
               {
                 hasSelectedFeature = true;
                 break;
               }
-              else
-                hasSelectedFeature = false;
             }
 
           }

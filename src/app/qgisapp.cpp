@@ -8191,10 +8191,10 @@ void QgisApp::zoomOut()
 
 void QgisApp::zoomToSelected()
 {
-  QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+  const QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
 
-  if ( layers.size() > 1 && !layers.isEmpty() )
-    mMapCanvas->zoomToAllSelected( &layers );
+  if ( layers.size() > 1 )
+    mMapCanvas->zoomToSelected( layers );
 
   else
     mMapCanvas->zoomToSelected();
@@ -8203,11 +8203,10 @@ void QgisApp::zoomToSelected()
 
 void QgisApp::panToSelected()
 {
-  QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+  const QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
 
-  if ( layers.size() > 1 && !layers.isEmpty() )
-    mMapCanvas->panToAllSelected( &layers );
-
+  if ( layers.size() > 1 )
+    mMapCanvas->panToSelected( layers );
   else
     mMapCanvas->panToSelected();
 }

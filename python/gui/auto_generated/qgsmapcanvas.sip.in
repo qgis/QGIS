@@ -288,11 +288,13 @@ Centers canvas extent to feature ids
 Pan to the selected features of current (vector) layer keeping same extent.
 %End
 
-    void panToAllSelected( const QList<QgsMapLayer *> *layers );
+    void panToSelected( const QList<QgsMapLayer *> &layers );
 %Docstring
 Pan to the combined extent of the selected features of all provided (vector) layers.
 
 :param layers: A list of layers
+
+.. versionadded:: 3.18
 %End
 
     void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
@@ -962,11 +964,13 @@ Zoom to the extent of the selected features of provided (vector) layer.
 :param layer: optionally specify different than current layer
 %End
 
-    void zoomToAllSelected( const QList<QgsMapLayer *> *layers );
+    void zoomToSelected( const QList<QgsMapLayer *> &layers );
 %Docstring
 Zoom to the combined extent of the selected features of all provided (vector) layers.
 
 :param layers: A list of layers
+
+.. versionadded:: 3.18
 %End
 
     void setZoomResolutions( const QList<double> &resolutions );
