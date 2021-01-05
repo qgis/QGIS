@@ -51,11 +51,8 @@ class CORE_EXPORT QgsTemporalUtils
       //! Dictates the overall temporal range of the animation.
       QgsDateTimeRange animationRange;
 
-      //! Time step of individual export frames
-      double frameTimeStep;
-
-      //! Time step unit of individual export frames
-      QgsUnitTypes::TemporalUnit frameTimeStepUnit;
+      //! Duration of individual export frames
+      QgsInterval frameDuration;
 
       //! Destination directory for created image files.
       QString outputDirectory;

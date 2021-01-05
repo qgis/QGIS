@@ -75,6 +75,7 @@ QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextS
   std::unique_ptr< QgsExpressionContextScope > scope = qgis::make_unique< QgsExpressionContextScope >( QStringLiteral( "temporal" ) );
   scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
   scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
+  scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
   scope->setVariable( QStringLiteral( "frame_timestep" ), mFrameDuration.originalDuration(), true );
   scope->setVariable( QStringLiteral( "frame_timestep_unit" ), mFrameDuration.originalUnit(), true );
   scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
@@ -92,8 +93,8 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
 
   const long long nextFrame = frame + 1;
 
-  QDateTime begin = QgsTemporalUtils::calculateFrameTime( start, frame, mFrameDuration );
-  QDateTime end = QgsTemporalUtils::calculateFrameTime( start, nextFrame, mFrameDuration );
+  const QDateTime begin = QgsTemporalUtils::calculateFrameTime( start, frame, mFrameDuration );
+  const QDateTime end = QgsTemporalUtils::calculateFrameTime( start, nextFrame, mFrameDuration );
 
   QDateTime frameStart = begin;
 
