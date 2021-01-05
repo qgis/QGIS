@@ -2705,7 +2705,6 @@ void QgisApp::createActions()
   // View Menu Items
   connect( mActionPan, &QAction::triggered, this, &QgisApp::pan );
   connect( mActionPanToSelected, &QAction::triggered, this, &QgisApp::panToSelected );
-  connect( mActionPanToAllSelected, &QAction::triggered, this, &QgisApp::panToAllSelected );
   connect( mActionZoomIn, &QAction::triggered, this, &QgisApp::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, this, &QgisApp::zoomOut );
   connect( mActionSelectFeatures, &QAction::triggered, this, &QgisApp::selectFeatures );
@@ -2741,7 +2740,6 @@ void QgisApp::createActions()
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
   connect( mActionZoomToLayers, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
   connect( mActionZoomToSelected, &QAction::triggered, this, &QgisApp::zoomToSelected );
-  connect( mActionZoomToAllSelected, &QAction::triggered, this, &QgisApp::zoomToAllSelected );
   connect( mActionZoomLast, &QAction::triggered, this, &QgisApp::zoomToPrevious );
   connect( mActionZoomNext, &QAction::triggered, this, &QgisApp::zoomToNext );
   connect( mActionZoomActualSize, &QAction::triggered, this, &QgisApp::zoomActualSize );
@@ -4097,12 +4095,10 @@ void QgisApp::setTheme( const QString &themeName )
   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ) );
   mActionZoomFullExtent->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomFullExtent.svg" ) ) );
   mActionZoomToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
-  mActionZoomToAllSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
   mActionShowRasterCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowRasterCalculator.png" ) ) );
   mActionShowMeshCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowMeshCalculator.png" ) ) );
   mActionPan->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
   mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanToSelected.svg" ) ) );
-  mActionPanToAllSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanToSelected.svg" ) ) );
   mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
   mActionZoomNext->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomNext.svg" ) ) );
   mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
@@ -8205,12 +8201,6 @@ void QgisApp::zoomToSelected()
 
 }
 
-void QgisApp::zoomToAllSelected()
-{
-  const QList<QgsMapLayer *> layers = mMapCanvas->layers();
-  mMapCanvas->zoomToAllSelected( &layers );
-}
-
 void QgisApp::panToSelected()
 {
   QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
@@ -8220,12 +8210,6 @@ void QgisApp::panToSelected()
 
   else
     mMapCanvas->panToSelected();
-}
-
-void QgisApp::panToAllSelected()
-{
-  const QList<QgsMapLayer *> layers = mMapCanvas->layers();
-  mMapCanvas->panToAllSelected( &layers );
 }
 
 void QgisApp::pan()
@@ -14743,7 +14727,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomToLayer->setEnabled( isSpatial );
       mActionZoomToLayers->setEnabled( isSpatial );
       mActionZoomToSelected->setEnabled( isSpatial );
-      mActionZoomToAllSelected->setEnabled( true );
       mActionLabeling->setEnabled( isSpatial );
       mActionDiagramProperties->setEnabled( isSpatial );
       mActionReverseLine->setEnabled( false );
@@ -14999,7 +14982,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomToLayer->setEnabled( true );
       mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
-      mActionZoomToAllSelected->setEnabled( true );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
@@ -15114,7 +15096,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomToLayer->setEnabled( true );
       mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
-      mActionZoomToAllSelected->setEnabled( true );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
@@ -15181,7 +15162,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomToLayer->setEnabled( true );
       mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
-      mActionZoomToAllSelected->setEnabled( true );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
@@ -15248,7 +15228,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomToLayer->setEnabled( true );
       mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
-      mActionZoomToAllSelected->setEnabled( true );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
