@@ -314,8 +314,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Pan to the combined extent of the selected features of all provided (vector) layers.
      * \param layers A list of layers
+     * \since QGIS 3.18
      */
-    void panToAllSelected( const QList<QgsMapLayer *> *layers );
+    void panToSelected( const QList<QgsMapLayer *> &layers );
 
     /**
      * Causes a set of features with matching \a ids from a vector \a layer to flash
@@ -875,8 +876,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Zoom to the combined extent of the selected features of all provided (vector) layers.
      * \param layers A list of layers
+     * \since QGIS 3.18
      */
-    void zoomToAllSelected( const QList<QgsMapLayer *> *layers );
+    void zoomToSelected( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
