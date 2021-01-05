@@ -221,39 +221,44 @@ void QgsApplication::init( QString profileFolder )
 
   *sProfilePath() = profileFolder;
 
-  qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
-  qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
-  qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
-  qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
-  qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
-  qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
-  qRegisterMetaType<QgsProperty>( "QgsProperty" );
-  qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
-  qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
-  qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
-  qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
-  qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
-  qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
-  qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
-  qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
-  qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
-  qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
-  qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
-  qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
-  qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
-  qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
-  qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
-  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
-  qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
-  qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-  qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-  qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
-  qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
-  qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
-  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
-  QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
-  QMetaType::registerEqualsComparator<QgsProperty>();
-  qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
+  static std::once_flag sMetaTypesRegistered;
+  std::call_once( sMetaTypesRegistered, []
+  {
+    qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+    qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
+    qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
+    qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
+    qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
+    qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
+    qRegisterMetaType<QgsProperty>( "QgsProperty" );
+    qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
+    qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
+    qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
+    qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
+    qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
+    qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
+    qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
+    qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
+    qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
+    qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
+    qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
+    qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+    qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
+    qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
+    qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
+    qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
+    qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
+    qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+    qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+    qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
+    qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+    qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
+    QMetaType::registerComparators<QgsProcessingModelChildDependency>();
+    QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
+    QMetaType::registerEqualsComparator<QgsProperty>();
+    qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
+    qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+  } );
 
   ( void ) resolvePkgPath();
 
