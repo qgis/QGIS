@@ -177,7 +177,8 @@ void TestQgsTemporalNavigationObject::navigationMode()
 
 void TestQgsTemporalNavigationObject::frameSettings()
 {
-  qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+  navigationObject->setFrameDuration( QgsInterval( 2, QgsUnitTypes::TemporalHours ) );
+
   QSignalSpy temporalRangeSignal( navigationObject, &QgsTemporalNavigationObject::updateTemporalRange );
 
   QgsDateTimeRange range = QgsDateTimeRange(
