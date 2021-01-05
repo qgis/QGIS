@@ -171,6 +171,7 @@ void QgsMssqlDataItemGuiProvider::editConnection( QgsDataItem *item )
   {
     // the parent should be updated
     item->parent()->refreshConnections();
+    item->refresh();
   }
 }
 

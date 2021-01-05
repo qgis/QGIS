@@ -19,7 +19,7 @@
 #include "ui_qgsmssqlnewconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-
+#include <QAbstractListModel>
 
 /**
  * \class QgsMssqlNewConnection
@@ -49,9 +49,42 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
   private slots:
     //! Updates state of the OK button depending of the filled fields
     void updateOkButtonState();
+    void onCurrentDataBaseChange();
   private:
+    //! Class that reprents a model to display available schemas on a database and choose which will be diplayed in QGIS
+    class SchemaModel: public QAbstractListModel
+    {
+      public:
+        SchemaModel( QObject *parent = nullptr );
+
+        int rowCount( const QModelIndex &parent ) const override;
+        QVariant data( const QModelIndex &index, int role ) const override;
+        bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+        Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+        //! Sets the schema settings (keyd : schema names, value : bool that represnts wheter the schema is checked)
+        void setSchemasSetting( const QVariantMap &schemas );
+
+        //! Returns the schema settings (keyd : schema names, value : bool that represnts wheter the schema is checked)
+        QVariantMap schemasSettings() const;
+
+        //! Returns the database nale represented by the model
+        QString dataBaseName() const;
+
+        //! Sets the database nale represented by the model
+        void setDataBaseName( const QString &dataBaseName );
+
+      private:
+        QVariantMap mSchemas;
+        QString mDataBaseName;
+
+    };
+
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
+
+    QVariantMap mSchemaSettings; //store the schema settings edited during this QDialog life time
+    SchemaModel mSchemaModel;
 
 };
 

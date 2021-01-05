@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>772</width>
-    <height>575</height>
+    <height>691</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -205,8 +205,35 @@ Untick save if you don't wish to be the case.</string>
       <string>Database Details</string>
      </property>
      <layout class="QFormLayout" name="formLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="TextLabel2">
+        <property name="text">
+         <string>Database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="btnListDatabase">
+        <property name="text">
+         <string>List Databases</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QListWidget" name="listDatabase"/>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_geometryColumns">
+        <property name="toolTip">
+         <string>If checked, only tables which are present in the &quot;geometry_columns&quot; metadata table will be available. This speeds up table scanning, but requires users to manually manage the geometry_columns table and ensure that layers are correctly represented in the table.</string>
+        </property>
+        <property name="text">
+         <string>Only look in the geometry_columns metadata table</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="3" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_allowGeometrylessTables">
@@ -231,40 +258,6 @@ Untick save if you don't wish to be the case.</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="cb_geometryColumns">
-        <property name="toolTip">
-         <string>If checked, only tables which are present in the &quot;geometry_columns&quot; metadata table will be available. This speeds up table scanning, but requires users to manually manage the geometry_columns table and ensure that layers are correctly represented in the table.</string>
-        </property>
-        <property name="text">
-         <string>Only look in the geometry_columns metadata table</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0" colspan="2">
-       <widget class="QPushButton" name="btnConnect">
-        <property name="text">
-         <string>Test Connection</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btnListDatabase">
-        <property name="text">
-         <string>List Databases</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="TextLabel2">
-        <property name="text">
-         <string>Database</string>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="0" colspan="2">
        <widget class="QCheckBox" name="mCheckNoInvalidGeometryHandling">
         <property name="toolTip">
@@ -275,6 +268,59 @@ Untick save if you don't wish to be the case.</string>
         </property>
         <property name="checked">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="2">
+       <widget class="Line" name="line">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="2">
+       <widget class="QgsCollapsibleGroupBoxBasic" name="groupBoxSchemasFilter">
+        <property name="title">
+         <string>Use Only a Subset of Schemas</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QListView" name="schemaView"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="2">
+       <widget class="QPushButton" name="btnConnect">
+        <property name="text">
+         <string>Test Connection</string>
         </property>
        </widget>
       </item>
@@ -302,6 +348,12 @@ Untick save if you don't wish to be the case.</string>
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgspasswordlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
