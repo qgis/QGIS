@@ -19,8 +19,10 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
     QgsDataSourceUri,
+    QgsAbstractDatabaseProviderConnection
 )
 from qgis.testing import unittest
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 
 
 class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConnectionBase):
@@ -47,6 +49,14 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
 
         cls.uri = cls.dbconn
 
+        cls.conn = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
+        cls.conn.setDatabaseName('localhost/XEPDB1')
+        if 'QGIS_ORACLETEST_DBNAME' in os.environ:
+            cls.conn.setDatabaseName(os.environ['QGIS_ORACLETEST_DBNAME'])
+        cls.conn.setUserName('QGIS')
+        cls.conn.setPassword('qgis')
+        assert cls.conn.open()
+
         # try:
         #     md = QgsProviderRegistry.instance().providerMetadata(cls.providerKey)
         #     conn = md.createConnection(cls.uri, {})
@@ -54,7 +64,62 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
         # except:
         #     pass
 
-    # def test_configuration(self):
+    def execSQLCommand(self, sql, ignore_errors=False):
+        self.assertTrue(self.conn)
+        query = QSqlQuery(self.conn)
+        res = query.exec_(sql)
+        if not ignore_errors:
+            self.assertTrue(res, sql + ': ' + query.lastError().text())
+        query.finish()
+
+    def test_tables_with_options(self):
+
+        md = QgsProviderRegistry.instance().providerMetadata('oracle')
+
+        def get_tables(schema, configuration, flags=QgsAbstractDatabaseProviderConnection.TableFlags()):
+            conn = md.createConnection(self.uri, configuration)
+            tables = conn.tables(schema, flags)
+            return sorted([table.tableName() for table in tables if table.tableName() in [
+                'DATE_TIMES', 'GENERATED_COLUMNS', 'LINE_DATA', 'OTHER_TABLE', 'POINT_DATA', 'POINT_DATA_IDENTITY', 'POLY_DATA', 'SOME_DATA', 'SOME_POLY_DATA']])
+
+        # all tables
+        self.assertEqual(get_tables('QGIS', {}),
+                         ['DATE_TIMES', 'GENERATED_COLUMNS', 'LINE_DATA', 'POINT_DATA', 'POINT_DATA_IDENTITY', 'POLY_DATA', 'SOME_DATA', 'SOME_POLY_DATA'])
+
+        # only non-spatial tables
+        self.assertEqual(get_tables('QGIS', {}, QgsAbstractDatabaseProviderConnection.Aspatial),
+                         ['DATE_TIMES', 'GENERATED_COLUMNS'])
+
+        # only vector tables
+        self.assertEqual(get_tables('QGIS', {}, QgsAbstractDatabaseProviderConnection.Vector),
+                         ['LINE_DATA', 'POINT_DATA', 'POINT_DATA_IDENTITY', 'POLY_DATA', 'SOME_DATA', 'SOME_POLY_DATA'])
+
+        # only table existing in sdo_geom_metadata table
+        self.assertEqual(get_tables('QGIS', {"geometryColumnsOnly": True}, QgsAbstractDatabaseProviderConnection.Vector),
+                         ['SOME_DATA', 'SOME_POLY_DATA'])
+
+        self.execSQLCommand('DROP TABLE OTHER_USER.OTHER_TABLE', ignore_errors=True)
+        self.execSQLCommand('DROP USER OTHER_USER CASCADE', ignore_errors=True)
+        self.execSQLCommand('CREATE USER OTHER_USER')
+        self.execSQLCommand('GRANT ALL PRIVILEGES TO OTHER_USER')
+        self.execSQLCommand('CREATE TABLE OTHER_USER.OTHER_TABLE ( "pk" INTEGER PRIMARY KEY, GEOM SDO_GEOMETRY)')
+
+        # if a schema is specified, schema (i.e. user) tables are returned, whatever userTablesOnly value
+        self.assertEqual(get_tables('OTHER_USER', {"userTablesOnly": True}),
+                         ['OTHER_TABLE'])
+
+        self.assertEqual(get_tables('OTHER_USER', {"userTablesOnly": False}),
+                         ['OTHER_TABLE'])
+
+        # no schema is specified, all user tables (vector ones in this case) are returned
+        self.assertEqual(get_tables('', {"userTablesOnly": True}, QgsAbstractDatabaseProviderConnection.Vector),
+                         ['LINE_DATA', 'POINT_DATA', 'POINT_DATA_IDENTITY', 'POLY_DATA', 'SOME_DATA', 'SOME_POLY_DATA'])
+
+        # no schema is specified, all tables (vector ones in this case) tables are returned
+        self.assertEqual(get_tables('', {"userTablesOnly": False}, QgsAbstractDatabaseProviderConnection.Vector),
+                         ['LINE_DATA', 'OTHER_TABLE', 'POINT_DATA', 'POINT_DATA_IDENTITY', 'POLY_DATA', 'SOME_DATA', 'SOME_POLY_DATA'])
+
+        # def test_configuration(self):
     #     """Test storage and retrieval for configuration parameters"""
 
     #     uri = 'dbname=\'qgis_test\' service=\'driver={SQL Server};server=localhost;port=1433;database=qgis_test\' user=\'sa\' password=\'<YourStrong!Passw0rd>\' srid=4326 type=Point estimatedMetadata=\'true\' disableInvalidGeometryHandling=\'1\' table="qgis_test"."someData" (geom)'

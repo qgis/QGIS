@@ -296,17 +296,15 @@ bool QgsOracleConn::tableInfo( const QString &schema, bool geometryColumnsOnly, 
 
   if ( allowGeometrylessTables )
   {
-
     // also here!
     sql += QStringLiteral( " UNION SELECT %1,object_name,NULL AS column_name,NULL AS srid,object_type AS type"
-                           " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM') %3" )
+                           " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM') "
+                           // get only geometry table without geometry column
+                           " AND NOT EXISTS( SELECT 1 FROM %2_tab_columns cols WHERE cols.table_name=c.object_name AND cols.data_type='SDO_GEOMETRY') %3" )
            .arg( owner,
                  prefix,
                  userTablesOnly || schema.isEmpty() ? QString() : QStringLiteral( " AND c.owner=%1" ).arg( quotedValue( schema ) ) );
   }
-
-  // sql = "SELECT * FROM (" + sql + ")";
-  // sql += " ORDER BY owner,isview,table_name,column_name";
 
   QSqlQuery qry( mDatabase );
   if ( !exec( qry, sql, QVariantList() ) )
