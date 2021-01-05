@@ -80,7 +80,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
   QgsTemporalNavigationObject navigator;
   navigator.setTemporalExtents( settings.animationRange );
-  navigator.setFrameDuration( QgsInterval( settings.frameTimeStep, settings.frameTimeStepUnit ) );
+  navigator.setFrameDuration( settings.frameDuration );
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
 

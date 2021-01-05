@@ -196,6 +196,9 @@ void TestQgsTemporalNavigationObject::frameSettings()
   QCOMPARE( temporalRangeSignal.count(), 1 );
 
   navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
+  QCOMPARE( navigationObject->frameDuration(), QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
+  QCOMPARE( temporalRangeSignal.count(), 2 );
+
   QCOMPARE( navigationObject->frameDuration().originalDuration(), 1.0 );
   QCOMPARE( navigationObject->frameDuration().originalUnit(), QgsUnitTypes::TemporalHours );
 
@@ -248,6 +251,7 @@ void TestQgsTemporalNavigationObject::expressionContext()
 
   std::unique_ptr< QgsExpressionContextScope > scope( object.createExpressionContextScope() );
   QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value< QgsInterval >().seconds(), 3600.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_timestep" ) ).value< double >(), 1.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_unit" ) ).value< QgsUnitTypes::TemporalUnit >(), QgsUnitTypes::TemporalUnit::TemporalHours );
   QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
