@@ -176,7 +176,13 @@ class QgsMssqlConnection
     static QList<QgsVectorDataProvider::NativeType> nativeTypes();
 
     /**
-     * Builds and returns a sql query string to obtain schemas list depending on settings
+     * Builds and returns a sql query string to obtain schemas list depending on settings and \a allowTablesWithNoGeometry
+     * \since QGIS 3.18
+     */
+    static QString buildQueryForSchemas( const QString &connName, bool allowTablesWithNoGeometry );
+
+    /**
+     * Builds and returns a sql query string to obtain schemas list depending only on settings
      * \since QGIS 3.18
      */
     static QString buildQueryForSchemas( const QString &connName );

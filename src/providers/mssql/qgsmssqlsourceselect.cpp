@@ -540,7 +540,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   // Read supported layers from database
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QString query = QgsMssqlConnection::buildQueryForSchemas( cmbConnections->currentText() );
+  QString query = QgsMssqlConnection::buildQueryForSchemas( cmbConnections->currentText(), allowGeometrylessTables );
 
   // issue the sql query
   q = QSqlQuery( db );

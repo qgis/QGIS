@@ -302,7 +302,7 @@ void QgsMssqlNewConnection::updateOkButtonState()
 
 void QgsMssqlNewConnection::onCurrentDataBaseChange()
 {
-  //Fisrt store the schema settings for the previous dataBase
+  //First store the schema settings for the previous dataBase
   QVariantMap vm = mSchemaModel.schemasSettings();
   if ( !mSchemaModel.dataBaseName().isEmpty() )
     mSchemaSettings.insert( mSchemaModel.dataBaseName(), mSchemaModel.schemasSettings() );

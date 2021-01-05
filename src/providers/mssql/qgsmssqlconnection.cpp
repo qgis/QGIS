@@ -469,7 +469,7 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
          ;
 }
 
-QString QgsMssqlConnection::buildQueryForSchemas( const QString &connName )
+QString QgsMssqlConnection::buildQueryForSchemas( const QString &connName, bool allowTablesWithNoGeometry )
 {
   QgsSettings settings;
 
@@ -524,7 +524,7 @@ QString QgsMssqlConnection::buildQueryForSchemas( const QString &connName )
       query += QStringLiteral( " AND (sys.schemas.name IN %1)" ).arg( selectedSchemas );
   }
 
-  if ( allowGeometrylessTables( connName ) )
+  if ( allowTablesWithNoGeometry )
   {
     query += QStringLiteral( "UNION ALL \n"
                              "SELECT sys.schemas.name, sys.objects.name, null, null, 'NONE', case when sys.objects.type = 'V' THEN 1 ELSE 0 END \n"
@@ -535,6 +535,11 @@ QString QgsMssqlConnection::buildQueryForSchemas( const QString &connName )
   }
 
   return query;
+}
+
+QString QgsMssqlConnection::buildQueryForSchemas( const QString &connName )
+{
+  return buildQueryForSchemas( connName, allowGeometrylessTables( connName ) );
 }
 
 QString QgsMssqlConnection::dbConnectionName( const QString &name )
