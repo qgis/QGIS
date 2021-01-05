@@ -150,6 +150,11 @@ class QgsMssqlConnection
     static QStringList schemas( const QString &uri, QString *errorMessage );
 
     /**
+     * Returns a list of all schemas on the \a dataBase.
+     */
+    static QStringList schemas( QSqlDatabase &dataBase, QString *errorMessage );
+
+    /**
      * Returns true if the given \a schema is a system schema.
      */
     static bool isSystemSchema( const QString &schema );
@@ -170,6 +175,11 @@ class QgsMssqlConnection
      */
     static QList<QgsVectorDataProvider::NativeType> nativeTypes();
 
+    /**
+     * Builds and returns a sql query string to obtain schemas list depending on settings
+     * \since QGIS 3.18
+     */
+    static QString buildQueryForSchemas( const QString &connName );
 
   private:
 

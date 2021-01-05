@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmssqlconnection.h"
+#include "qgsmssqlprovider.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsdatasourceuri.h"
@@ -324,16 +325,21 @@ QStringList QgsMssqlConnection::schemas( const QString &uri, QString *errorMessa
 // connect to database
   QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
 
-  if ( !openDatabase( db ) )
+  return schemas( db, errorMessage );
+}
+
+QStringList QgsMssqlConnection::schemas( QSqlDatabase &dataBase, QString *errorMessage )
+{
+  if ( !openDatabase( dataBase ) )
   {
     if ( errorMessage )
-      *errorMessage = db.lastError().text();
+      *errorMessage = dataBase.lastError().text();
     return QStringList();
   }
 
   const QString sql = QStringLiteral( "select s.name as schema_name from sys.schemas s" );
 
-  QSqlQuery q = QSqlQuery( db );
+  QSqlQuery q = QSqlQuery( dataBase );
   q.setForwardOnly( true );
   if ( !q.exec( sql ) )
   {
@@ -461,6 +467,74 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
          << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String )
          << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QVariant::String )
          ;
+}
+
+QString QgsMssqlConnection::buildQueryForSchemas( const QString &connName )
+{
+  QgsSettings settings;
+
+  QString selectedSchemas;
+
+  QString databaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + "/database" ).toString();
+
+  bool schemaFilteringEnabled = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + "/schemasFiltering" ).toBool();
+
+  if ( schemaFilteringEnabled )
+  {
+    QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + "/schemasFiltered" );
+
+    if ( schemaSettingsVariant.type() == QVariant::Map )
+    {
+      QVariantMap schemaSettings = schemaSettingsVariant.toMap();
+      QVariantMap schemaSettingsForDatabase = schemaSettings.value( databaseName ).toMap();
+      //schema filter
+
+
+      QStringList schemaNames;
+      for ( const QString &schemaName : schemaSettingsForDatabase.keys() )
+      {
+        if ( schemaSettingsForDatabase.value( schemaName ).toBool() )
+        {
+          schemaNames.append( QgsMssqlProvider::quotedValue( schemaName ) );
+        }
+      }
+      if ( !schemaNames.empty() )
+        selectedSchemas = schemaNames.join( ',' );
+
+      selectedSchemas.prepend( QStringLiteral( "( " ) );
+      selectedSchemas.append( QStringLiteral( " )" ) );
+
+    }
+  }
+
+  // build sql statement
+  QString query( QStringLiteral( "SELECT " ) );
+  if ( geometryColumnsOnly( connName ) )
+  {
+    query += QStringLiteral( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 FROM geometry_columns" );
+    if ( !selectedSchemas.isEmpty() )
+      query += QStringLiteral( " WHERE f_table_schema IN %1" ).arg( selectedSchemas );
+  }
+  else
+  {
+    query += QStringLiteral( "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY', CASE when sys.objects.type = 'V' THEN 1 ELSE 0 END \n"
+                             "FROM sys.columns JOIN sys.types ON sys.columns.system_type_id = sys.types.system_type_id AND sys.columns.user_type_id = sys.types.user_type_id JOIN sys.objects ON sys.objects.object_id = sys.columns.object_id JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id \n"
+                             "WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND (sys.objects.type = 'U' OR sys.objects.type = 'V')" );
+    if ( !selectedSchemas.isEmpty() )
+      query += QStringLiteral( " AND (sys.schemas.name IN %1)" ).arg( selectedSchemas );
+  }
+
+  if ( allowGeometrylessTables( connName ) )
+  {
+    query += QStringLiteral( "UNION ALL \n"
+                             "SELECT sys.schemas.name, sys.objects.name, null, null, 'NONE', case when sys.objects.type = 'V' THEN 1 ELSE 0 END \n"
+                             "FROM  sys.objects JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id "
+                             "WHERE NOT EXISTS (SELECT * FROM sys.columns sc1 JOIN sys.types ON sc1.system_type_id = sys.types.system_type_id WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND sys.objects.object_id = sc1.object_id) AND (sys.objects.type = 'U' or sys.objects.type = 'V')" );
+    if ( !selectedSchemas.isEmpty() )
+      query += QStringLiteral( " AND sys.schemas.name IN %1" ).arg( selectedSchemas );
+  }
+
+  return query;
 }
 
 QString QgsMssqlConnection::dbConnectionName( const QString &name )

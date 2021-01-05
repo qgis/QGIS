@@ -44,6 +44,9 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   connect( txtService, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
   connect( txtHost, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
   connect( listDatabase, &QListWidget::currentItemChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
+  connect( listDatabase, &QListWidget::currentItemChanged, this, &QgsMssqlNewConnection::onCurrentDataBaseChange );
+  connect( cb_geometryColumns,  &QCheckBox::clicked, this, &QgsMssqlNewConnection::onCurrentDataBaseChange );
+  connect( cb_allowGeometrylessTables,  &QCheckBox::clicked, this, &QgsMssqlNewConnection::onCurrentDataBaseChange );
 
   lblWarning->hide();
 
@@ -57,6 +60,11 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     txtService->setText( settings.value( key + "/service" ).toString() );
     txtHost->setText( settings.value( key + "/host" ).toString() );
     listDatabase->addItem( settings.value( key + "/database" ).toString() );
+    groupBoxSchemasFilter->setChecked( settings.value( key + "/schemasFiltering" ).toBool() );
+    QVariant schemasVariant = settings.value( key + "/schemasFiltered" );
+    if ( schemasVariant.isValid() && schemasVariant.type() == QVariant::Map )
+      mSchemaSettings = schemasVariant.toMap();
+
     listDatabase->setCurrentRow( 0 );
     cb_geometryColumns->setChecked( QgsMssqlConnection::geometryColumnsOnly( connName ) );
     cb_allowGeometrylessTables->setChecked( QgsMssqlConnection::allowGeometrylessTables( connName ) );
@@ -80,7 +88,19 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   }
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   cb_trustedConnection_clicked();
+
+  schemaView->setModel( &mSchemaModel );
+  if ( listDatabase->currentItem() )
+  {
+    QString dataBaseName = listDatabase->currentItem()->text();
+    mSchemaModel.setDataBaseName( dataBaseName );
+    mSchemaModel.setSchemasSetting( mSchemaSettings.value( dataBaseName ).toMap() );
+  }
+
+  onCurrentDataBaseChange();
+  groupBoxSchemasFilter->setCollapsed( !groupBoxSchemasFilter->isChecked() );
 }
+
 //! Autoconnected SLOTS
 void QgsMssqlNewConnection::accept()
 {
@@ -123,6 +143,16 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QString() );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
+
+  if ( groupBoxSchemasFilter->isChecked() )
+  {
+    if ( !mSchemaModel.dataBaseName().isEmpty() )
+      mSchemaSettings.insert( mSchemaModel.dataBaseName(), mSchemaModel.schemasSettings() );
+    settings.setValue( baseKey + "/schemasFiltered", mSchemaSettings );
+  }
+
+  settings.setValue( baseKey + "/schemasFiltering", groupBoxSchemasFilter->isChecked() );
+
   QgsMssqlConnection::setGeometryColumnsOnly( connName, cb_geometryColumns->isChecked() );
   QgsMssqlConnection::setAllowGeometrylessTables( connName, cb_allowGeometrylessTables->isChecked() );
   QgsMssqlConnection::setUseEstimatedMetadata( connName, cb_useEstimatedMetadata->isChecked() );
@@ -213,6 +243,9 @@ bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 void QgsMssqlNewConnection::listDatabases()
 {
   testConnection( QStringLiteral( "master" ) );
+  QString currentDataBase;
+  if ( listDatabase->currentItem() )
+    currentDataBase = listDatabase->currentItem()->text();
   listDatabase->clear();
   QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
 
@@ -243,6 +276,16 @@ void QgsMssqlNewConnection::listDatabases()
     }
     db.close();
   }
+
+  for ( int i = 0; i < listDatabase->count(); ++i )
+  {
+    if ( listDatabase->item( i )->text() == currentDataBase )
+    {
+      listDatabase->setCurrentRow( i );
+      break;
+    }
+  }
+  onCurrentDataBaseChange();
 }
 
 void QgsMssqlNewConnection::showHelp()
@@ -255,4 +298,121 @@ void QgsMssqlNewConnection::updateOkButtonState()
   QListWidgetItem *item = listDatabase->currentItem();
   bool disabled = txtName->text().isEmpty() || ( txtService->text().isEmpty() && txtHost->text().isEmpty() ) || !item;
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( disabled );
+}
+
+void QgsMssqlNewConnection::onCurrentDataBaseChange()
+{
+  //Fisrt store the schema settings for the previous dataBase
+  QVariantMap vm = mSchemaModel.schemasSettings();
+  if ( !mSchemaModel.dataBaseName().isEmpty() )
+    mSchemaSettings.insert( mSchemaModel.dataBaseName(), mSchemaModel.schemasSettings() );
+
+  QString databaseName;
+  if ( listDatabase->currentItem() )
+    databaseName = listDatabase->currentItem()->text();
+
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( txtService->text().trimmed(),
+                    txtHost->text().trimmed(),
+                    databaseName,
+                    txtUsername->text().trimmed(),
+                    txtPassword->text().trimmed() );
+
+  QStringList schemasList = QgsMssqlConnection::schemas( db, nullptr );
+
+  QVariantMap newSchemaSettings = mSchemaSettings.value( databaseName ).toMap();
+
+  for ( const QString &sch : newSchemaSettings.keys() )
+  {
+    if ( !schemasList.contains( sch ) )
+      newSchemaSettings.remove( sch );
+  }
+
+  for ( const QString &sch : schemasList )
+  {
+    if ( !newSchemaSettings.contains( sch ) && !QgsMssqlConnection::isSystemSchema( sch ) )
+      newSchemaSettings.insert( sch, true );
+  }
+
+  mSchemaModel.setDataBaseName( databaseName );
+  mSchemaModel.setSchemasSetting( newSchemaSettings );
+}
+
+QgsMssqlNewConnection::SchemaModel::SchemaModel( QObject *parent ): QAbstractListModel( parent )
+{}
+
+int QgsMssqlNewConnection::SchemaModel::rowCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent )
+  return mSchemas.count();
+}
+
+QVariant QgsMssqlNewConnection::SchemaModel::data( const QModelIndex &index, int role ) const
+{
+  if ( !index.isValid() || index.row() >= mSchemas.count() )
+    return QVariant();
+
+  QList<QString> schemasName = mSchemas.keys();
+
+  switch ( role )
+  {
+    case Qt::CheckStateRole:
+      if ( mSchemas.value( schemasName.at( index.row() ) ).toBool() )
+        return Qt::CheckState::Checked;
+      else
+        return Qt::CheckState::Unchecked;
+      break;
+    case Qt::DisplayRole:
+      return schemasName.at( index.row() );
+      break;
+    default:
+      return QVariant();
+  }
+
+  return QVariant();
+}
+
+bool QgsMssqlNewConnection::SchemaModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() || index.row() >= mSchemas.count() )
+    return false;
+
+  QList<QString> schemasName = mSchemas.keys();
+  switch ( role )
+  {
+    case Qt::CheckStateRole:
+      mSchemas[schemasName.at( index.row() )] = value;
+      return true;
+      break;
+    default:
+      return false;
+  }
+
+  return false;
+}
+
+Qt::ItemFlags QgsMssqlNewConnection::SchemaModel::flags( const QModelIndex &index ) const
+{
+  return QAbstractListModel::flags( index ) | Qt::ItemFlag::ItemIsUserCheckable;
+}
+
+void QgsMssqlNewConnection::SchemaModel::setSchemasSetting( const QVariantMap &schemas )
+{
+  beginResetModel();
+  mSchemas = schemas;
+  endResetModel();
+}
+
+QVariantMap QgsMssqlNewConnection::SchemaModel::schemasSettings() const
+{
+  return mSchemas;
+}
+
+QString QgsMssqlNewConnection::SchemaModel::dataBaseName() const
+{
+  return mDataBaseName;
+}
+
+void QgsMssqlNewConnection::SchemaModel::setDataBaseName( const QString &dataBaseName )
+{
+  mDataBaseName = dataBaseName;
 }
