@@ -138,7 +138,6 @@
     <addaction name="mActionNew3DMapCanvas"/>
     <addaction name="mActionPan"/>
     <addaction name="mActionPanToSelected"/>
-    <addaction name="mActionPanToAllSelected"/>
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="separator"/>
@@ -148,7 +147,6 @@
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
-    <addaction name="mActionZoomToAllSelected"/>
     <addaction name="mActionZoomToLayers"/>
     <addaction name="mActionZoomActualSize"/>
     <addaction name="mActionZoomLast"/>
@@ -1394,15 +1392,6 @@
     <string>Ctrl+J</string>
    </property>
   </action>
-  <action name="mActionZoomToAllSelected">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom to Selection from All Layers</string>
-   </property>
-  </action>
   <action name="mActionZoomLast">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2201,15 +2190,6 @@ Acts on all layers.</string>
    </property>
    <property name="toolTip">
     <string>Pan Map to Selection</string>
-   </property>
-  </action>
-  <action name="mActionPanToAllSelected">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionPanToSelected.svg</normaloff>:/images/themes/default/mActionPanToSelected.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Pan Map to Selection from All Layers</string>
    </property>
   </action>
   <action name="mActionOffsetCurve">
