@@ -88,7 +88,7 @@ the number of points returned to ``pointsLimit`` points
       }
     }
 %End
-    QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, double cameraFov, int screenSizePx, const QVector3D &rayOrigin, const QVector3D &rayDirection );
+
 
     virtual QgsPointCloudDataProvider::Capabilities capabilities() const;
 %Docstring

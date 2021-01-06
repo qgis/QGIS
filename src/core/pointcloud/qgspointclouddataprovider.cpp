@@ -409,9 +409,9 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
   return nodes;
 }
 
-QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle )
+QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle )
 {
-  QVector<QMap<QString, QVariant>> points;
+  QVector<QVariantMap> points;
   QgsPointCloudIndex *index = this->index();
   IndexedPointCloudNode root = index->root();
   QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );

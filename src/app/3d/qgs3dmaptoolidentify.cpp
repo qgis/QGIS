@@ -85,6 +85,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   if ( event->button() != Qt::MouseButton::LeftButton )
     return;
 
+  // point cloud identification
   QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> layerPoints;
   canvas()->identifyPointCloudOnMouseEvent( layerPoints, event );
 
