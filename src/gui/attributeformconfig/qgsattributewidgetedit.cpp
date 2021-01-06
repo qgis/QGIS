@@ -130,6 +130,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   {
     const QString widgetId = mWidgetTypeComboBox->currentData().toString();
 
+    mWidgetTypePlaceholderLayout->removeWidget( mConfigWidget );
     mConfigWidget->deleteLater();
     mConfigWidget = QgsGui::relationWidgetRegistry()->createConfigWidget( widgetId, relation, this );
     mConfigWidget->setConfig( config.mRelationWidgetConfig );
