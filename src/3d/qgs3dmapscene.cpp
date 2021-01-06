@@ -77,6 +77,8 @@
 #include "qgsskyboxsettings.h"
 
 #include "qgswindow3dengine.h"
+#include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudlayer.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -1099,16 +1101,12 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   }
 }
 
-void Qgs3DMapScene::onRayCasted( const QVector3D &rayOrigin, const QVector3D &rayDirection )
+void Qgs3DMapScene::identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QVector3D &rayOrigin, const QVector3D &rayDirection )
 {
-  qDebug() << __PRETTY_FUNCTION__ << " "  << rayOrigin << " " << rayDirection;
-//  QVector3D point2 = rayOrigin + rayOrigin.length() * rayDirection.normalized();
-  qDebug() << "Origin: " << mMap.origin().x() << " " << mMap.origin().y() << " " << mMap.origin().z();
   QgsVector3D originMapCoords = mMap.worldToMapCoordinates( rayOrigin );
   QgsVector3D pointMapCoords = mMap.worldToMapCoordinates( rayOrigin + rayOrigin.length() * rayDirection.normalized() );
   QgsVector3D directionMapCoords = pointMapCoords - originMapCoords;
   directionMapCoords.normalize();
-
 
   QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
   QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
@@ -1124,7 +1122,18 @@ void Qgs3DMapScene::onRayCasted( const QVector3D &rayOrigin, const QVector3D &ra
     {
       QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( pc->renderer3D() );
       double maxScreenError = renderer->maximumScreenError();
-      pc->getPointsOnRay( rayOriginMapCoords, rayDirectionMapCoords, maxScreenError, fov, screenSizePx );
+      const QgsPointCloud3DSymbol *symbol = renderer->symbol();
+      float pointSize = symbol->pointSize();
+      double angle = pointSize / screenSizePx * mCameraController->camera()->fieldOfView();
+
+      // adjust ray to elevation properties
+      QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast<QgsPointCloudLayerElevationProperties *>( pc->elevationProperties() );
+      QVector3D adjutedRayOrigin = QVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() -  elevationProps->zOffset() ) / elevationProps->zScale() );
+      QVector3D adjutedRayDirection = QVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / elevationProps->zScale() );
+      adjutedRayDirection.normalize();
+
+      QVector<QVariantMap> points = pc->dataProvider()->getPointsOnRay( adjutedRayOrigin, adjutedRayDirection, maxScreenError, fov, screenSizePx, angle );
+      selectedPoints.append( qMakePair( layer, points ) );
     }
   }
 }

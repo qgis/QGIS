@@ -86,6 +86,9 @@ class Qgs3DMapCanvas : public QWidget
      */
     void setTemporalController( QgsTemporalController *temporalController );
 
+    //
+    bool identifyPointCloudOnMouseEvent( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &result, QMouseEvent *event );
+
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
     void savedAsImage( QString fileName );
@@ -98,7 +101,6 @@ class Qgs3DMapCanvas : public QWidget
     //! Emitted when the FPS counter is enabled or disabeld
     void fpsCounterEnabledChanged( bool enabled );
   public slots:
-    void mouseReleased( QMouseEvent *event );
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
 

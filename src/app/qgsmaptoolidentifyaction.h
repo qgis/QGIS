@@ -69,6 +69,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     //! Looks up feature by its ID and outputs the result in GUI
     void showResultsForFeature( QgsVectorLayer *vlayer, QgsFeatureId fid, const QgsPoint &pt );
 
+    void showPointCloudIdentifyResults( const QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &layersAndPoints );
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );

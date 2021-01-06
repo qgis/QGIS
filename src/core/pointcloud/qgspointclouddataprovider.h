@@ -121,7 +121,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     }
     % End
 #endif
-    QVector<QMap<QString, QVariant>> getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx ) SIP_SKIP;
+    QVector<QMap<QString, QVariant>> getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle ) SIP_SKIP;
     QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, double cameraFov, int screenSizePx, const QVector3D &rayOrigin, const QVector3D &rayDirection );
 
     /**

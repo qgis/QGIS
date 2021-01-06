@@ -38,11 +38,7 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
     ~Qgs3DMapToolIdentify() override;
 
     void mousePressEvent( QMouseEvent *event ) override;
-    void mouseReleaseEvent( QMouseEvent *event ) override
-    {
-      Q_UNUSED( event )
-      emit mouseReleased( event );
-    }
+    void mouseReleaseEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override {Q_UNUSED( event )}
 
     void activate() override;

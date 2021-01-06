@@ -254,26 +254,30 @@ void Qgs3DMapCanvas::updateTemporalRange( const QgsDateTimeRange &temporalrange 
   mScene->updateTemporal();
 }
 
-
-void Qgs3DMapCanvas::mouseReleased( QMouseEvent *event )
+bool Qgs3DMapCanvas::identifyPointCloudOnMouseEvent( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &result, QMouseEvent *event )
 {
-//  qDebug() << __PRETTY_FUNCTION__ << " " << event->x() << " " << event->y();
   QVector3D deviceCoords( event->x(), event->y(), 0.0 );
   QSize windowSize = mEngine->size();
+  // normalized device coordinates
   QVector3D normDeviceCoords( 2.0 * deviceCoords.x() / windowSize.width() - 1.0f, 1.0f - 2.0 * deviceCoords.y() / windowSize.height(), mEngine->camera()->nearPlane() );
-//  qDebug() << "NDC " << normDeviceCoords.x() << " " << normDeviceCoords.y() << " " << normDeviceCoords.z();
-  QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0f, 0.0f );
+  // clip coordinates
+  QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0, 0.0 );
+
   QMatrix4x4 projMatrix = mEngine->camera()->projectionMatrix();
   QMatrix4x4 viewMatrix = mEngine->camera()->viewMatrix();
 
-  QVector4D rayEye = projMatrix.inverted() * rayClip;
-  rayEye.setZ( -1.0f );
-  rayEye.setW( 0.0f );
-  QVector4D rayWorld4D = viewMatrix.inverted() * rayEye;
-  QVector3D rayWorld( rayWorld4D.x(), rayWorld4D.y(), rayWorld4D.z() );
-  rayWorld = rayWorld.normalized();
-//  qDebug() << "rayEye: " << rayEye;
-//  qDebug() << "rayWorld: " << rayWorld;
-  QVector4D rayOrigin = viewMatrix.inverted() * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
-  mScene->onRayCasted( QVector3D( rayOrigin ), rayWorld );
+  // ray direction in view coordinates
+  QVector4D rayDirView = projMatrix.inverted() * rayClip;
+  // ray origin in world coordinates
+  QVector4D rayOriginWorld = viewMatrix.inverted() * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
+
+  // ray direction in world coordinates
+  rayDirView.setZ( -1.0f );
+  rayDirView.setW( 0.0f );
+  QVector4D rayDirWorld4D = viewMatrix.inverted() * rayDirView;
+  QVector3D rayDirWorld( rayDirWorld4D.x(), rayDirWorld4D.y(), rayDirWorld4D.z() );
+  rayDirWorld = rayDirWorld.normalized();
+
+  mScene->identifyPointCloudOnRay( result, QVector3D( rayOriginWorld ), rayDirWorld );
+  return true;
 }
