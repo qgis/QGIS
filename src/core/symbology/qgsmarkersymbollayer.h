@@ -627,6 +627,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
+    void prepareExpressions( const QgsSymbolRenderContext &context ) override;
+
   protected:
 
     /**

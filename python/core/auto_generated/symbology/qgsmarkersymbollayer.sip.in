@@ -705,6 +705,9 @@ Returns the units for the stroke width.
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 
 
+    virtual void prepareExpressions( const QgsSymbolRenderContext &context );
+
+
   protected:
 
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
