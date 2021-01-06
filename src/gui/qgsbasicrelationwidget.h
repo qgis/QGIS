@@ -24,8 +24,12 @@
 #include <QGridLayout>
 #include "qobjectuniqueptr.h"
 
-#include "qgsrelationeditorwidget.h"
+#include "ui_qgsrelationeditorconfigwidgetbase.h"
+
 #include "qgsrelationwidget.h"
+#include "qgsrelationconfigwidget.h"
+#include "qgsrelationwidgetfactory.h"
+#include "qgsrelationeditorwidget.h"
 #include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgscollapsiblegroupbox.h"
@@ -39,6 +43,7 @@ class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsMapTool;
 class QgsMapToolDigitizeFeature;
+
 
 /**
  * The default relation widget in QGIS. Successor of the now deprecated {\see QgsRelationEditorWidget}.
@@ -168,5 +173,64 @@ class GUI_EXPORT QgsBasicRelationWidget : public QgsRelationWidget
     void afterSetRelations() override;
 };
 
+
+#ifndef SIP_RUN
+
+/**
+ * Factory class for creating a basic relation widget and the respective config widget.
+ * \ingroup gui
+ * \class QgsBasicRelationWidgetFactory
+ * \note not available in Python bindings
+ * \since QGIS 3.18
+ */
+class GUI_EXPORT QgsBasicRelationWidgetFactory : public QgsRelationWidgetFactory
+{
+  public:
+    QgsBasicRelationWidgetFactory();
+
+    QString type() const override;
+
+    QString name() const override;
+
+    QgsRelationWidget *create( const QVariantMap &config, QWidget *parent = nullptr ) const override;
+
+    QgsRelationConfigWidget *configWidget( const QgsRelation &relation, QWidget *parent ) const override;
+
+};
+
+/**
+ * \ingroup gui
+ * \class QgsBasicRelationConfigWidget
+ * Creates a new configuration widget for the basic relation widget
+ * \since QGIS 3.18
+ */
+class QgsBasicRelationConfigWidget : public QgsRelationConfigWidget, private Ui::QgsRelationEditorConfigWidgetBase
+{
+  public:
+
+    /**
+     * Create a new configuration widget
+     *
+     * \param relation    The relation for which the configuration dialog will be created
+     * \param parent      A parent widget
+     */
+    explicit QgsBasicRelationConfigWidget( const QgsRelation &relation, QWidget *parent SIP_TRANSFERTHIS );
+
+    /**
+     * \brief Create a configuration from the current GUI state
+     *
+     * \returns A widget configuration
+     */
+    QVariantMap config();
+
+    /**
+     * \brief Update the configuration widget to represent the given configuration.
+     *
+     * \param config The configuration which should be represented by this widget
+     */
+    void setConfig( const QVariantMap &config );
+
+};
+#endif
 
 #endif // QGSBASICRELATIONWIDGET_H

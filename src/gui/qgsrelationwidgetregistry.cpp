@@ -18,7 +18,7 @@
 #include "qgsrelationwidgetregistry.h"
 #include "qgsrelationwidget.h"
 #include "qgsrelationconfigwidget.h"
-#include "qgsbasicrelationwidgetfactory.h"
+#include "qgsbasicrelationwidget.h"
 
 QgsRelationWidgetRegistry::QgsRelationWidgetRegistry()
 {

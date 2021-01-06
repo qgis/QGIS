@@ -556,3 +556,77 @@ void QgsBasicRelationWidget::afterSetRelations()
 
   updateButtons();
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef SIP_RUN
+QgsBasicRelationWidgetFactory::QgsBasicRelationWidgetFactory()
+{
+
+}
+
+QString QgsBasicRelationWidgetFactory::type() const
+{
+  return QStringLiteral( "relation_editor" );
+}
+
+QString QgsBasicRelationWidgetFactory::name() const
+{
+  return QStringLiteral( "Relation Editor" );
+}
+
+QgsRelationWidget *QgsBasicRelationWidgetFactory::create( const QVariantMap &config, QWidget *parent ) const
+{
+  return new QgsBasicRelationWidget( config, parent );
+}
+
+
+QgsRelationConfigWidget *QgsBasicRelationWidgetFactory::configWidget( const QgsRelation &relation, QWidget *parent ) const
+{
+  return static_cast<QgsRelationConfigWidget *>( new QgsBasicRelationConfigWidget( relation, parent ) );
+}
+#endif
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef SIP_RUN
+QgsBasicRelationConfigWidget::QgsBasicRelationConfigWidget( const QgsRelation &relation, QWidget *parent )
+  : QgsRelationConfigWidget( relation, parent )
+{
+  setupUi( this );
+}
+
+QVariantMap QgsBasicRelationConfigWidget::config()
+{
+  QgsBasicRelationWidget::Buttons buttons;
+  buttons.setFlag( QgsBasicRelationWidget::Button::Link, mRelationShowLinkCheckBox->isChecked() );
+  buttons.setFlag( QgsBasicRelationWidget::Button::Unlink, mRelationShowUnlinkCheckBox->isChecked() );
+  buttons.setFlag( QgsBasicRelationWidget::Button::AddChildFeature, mRelationShowAddChildCheckBox->isChecked() );
+  buttons.setFlag( QgsBasicRelationWidget::Button::DuplicateChildFeature, mRelationShowDuplicateChildFeatureCheckBox->isChecked() );
+  buttons.setFlag( QgsBasicRelationWidget::Button::ZoomToChildFeature, mRelationShowZoomToFeatureCheckBox->isChecked() );
+  buttons.setFlag( QgsBasicRelationWidget::Button::DeleteChildFeature, mRelationDeleteChildFeatureCheckBox->isChecked() );
+  buttons.setFlag( QgsBasicRelationWidget::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
+
+  return QVariantMap(
+  {
+    {"buttons", qgsFlagValueToKeys( buttons )},
+  } );
+}
+
+void QgsBasicRelationConfigWidget::setConfig( const QVariantMap &config )
+{
+  const QgsBasicRelationWidget::Buttons buttons = qgsFlagKeysToValue( config.value( QStringLiteral( "buttons" ) ).toString(), QgsBasicRelationWidget::Button::AllButtons );
+
+  mRelationShowLinkCheckBox->setChecked( buttons.testFlag( QgsBasicRelationWidget::Button::Link ) );
+  mRelationShowUnlinkCheckBox->setChecked( buttons.testFlag( QgsBasicRelationWidget::Button::Unlink ) );
+  mRelationShowAddChildCheckBox->setChecked( buttons.testFlag( QgsBasicRelationWidget::Button::AddChildFeature ) );
+  mRelationShowDuplicateChildFeatureCheckBox->setChecked( buttons.testFlag( QgsBasicRelationWidget::Button::DuplicateChildFeature ) );
+  mRelationShowZoomToFeatureCheckBox->setChecked( buttons.testFlag( QgsBasicRelationWidget::Button::ZoomToChildFeature ) );
+  mRelationDeleteChildFeatureCheckBox->setChecked( buttons.testFlag( QgsBasicRelationWidget::Button::DeleteChildFeature ) );
+  mRelationShowSaveChildEditsCheckBox->setChecked( buttons.testFlag( QgsBasicRelationWidget::Button::SaveChildEdits ) );
+}
+#endif

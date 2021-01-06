@@ -568,8 +568,6 @@ set(QGIS_GUI_SRCS
   qgsrelationeditorwidget.cpp
   qgsrelationconfigwidget.cpp
   qgsbasicrelationwidget.cpp
-  qgsbasicrelationconfigwidget.cpp
-  qgsbasicrelationwidgetfactory.cpp
   qgsrelationwidget.cpp
   qgsrelationwidgetfactory.cpp
   qgsrelationwidgetregistry.cpp
@@ -821,8 +819,6 @@ set(QGIS_GUI_HDRS
   qgsrelationeditorwidget.h
   qgsrelationconfigwidget.h
   qgsbasicrelationwidget.h
-  qgsbasicrelationconfigwidget.h
-  qgsbasicrelationwidgetfactory.h
   qgsrelationwidget.h
   qgsrelationwidgetfactory.h
   qgsrelationwidgetregistry.h
