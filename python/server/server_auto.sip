@@ -18,6 +18,7 @@
 %Include auto_generated/qgsserver.sip
 %Include auto_generated/qgsserverapiutils.sip
 %Include auto_generated/qgsserverexception.sip
+%Include auto_generated/qgsserverfilter.sip
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
 %Include auto_generated/qgsserverinterface.sip
 %End
@@ -29,9 +30,6 @@
 %Include auto_generated/qgsfeaturefilterprovidergroup.sip
 %Include auto_generated/qgsfeaturefilter.sip
 %Include auto_generated/qgsstorebadlayerinfo.sip
-%If ( HAVE_SERVER_PYTHON_PLUGINS )
-%Include auto_generated/qgsserverfilter.sip
-%End
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
 %Include auto_generated/qgsaccesscontrolfilter.sip
 %End
