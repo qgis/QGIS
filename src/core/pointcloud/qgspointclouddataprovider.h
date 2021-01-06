@@ -121,8 +121,21 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     }
     % End
 #endif
-    QVector<QMap<QString, QVariant>> getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle ) SIP_SKIP;
-    QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, double cameraFov, int screenSizePx, const QVector3D &rayOrigin, const QVector3D &rayDirection );
+
+    /**
+     * Returns the Points that are on a ray
+     *
+     * \param rayOrigin : The origin of the ray in layer coordinates
+     * \param rayDirection : The direction of the ray in layer coordinates
+     * \param maxScreenError : Maximum screen error (as taken from the 3D point cloud layer renderer)
+     * \param cameraFov : The field of view of the camera in degrees
+     * \param screenSizePx : The size of the screen's viewport in pixels
+     * \param pointAngle : the maximum accepted angle between the point and it's projected point on the ray in degrees
+     * \return a vector of the identified points
+     *
+     * \since QGIS 3.18
+     */
+    QVector<QVariantMap> getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle ) SIP_SKIP;
 
     /**
      * Returns flags containing the supported capabilities for the data provider.
@@ -346,6 +359,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
+    QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, double cameraFov, int screenSizePx, const QVector3D &rayOrigin, const QVector3D &rayDirection );
 };
 
 #endif // QGSMESHDATAPROVIDER_H

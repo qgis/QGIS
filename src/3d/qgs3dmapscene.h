@@ -122,6 +122,12 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Exports the scene according to the scene export settings
     void exportScene( const Qgs3DMapExportSettings &exportSettings );
 
+    /**
+     * Identifies the points that are positioned on the ray specified in world coordinates as a point \a rayOrigin and direction \a rayDirection
+     * for every point cloud layer and returns the identified points in \a selectedPoints vector
+     *
+     * \since QGIS 3.18
+     */
     void identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QVector3D &rayOrigin, const QVector3D &rayDirection );
 
   signals:
