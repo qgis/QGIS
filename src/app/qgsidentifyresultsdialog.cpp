@@ -57,6 +57,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
+#include "qgsguiutils.h"
 #include "qgshighlight.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgsidentifyresultsdialog.h"
@@ -87,6 +88,8 @@
 #include "qgsidentifymenu.h"
 #include "qgsjsonutils.h"
 #include <nlohmann/json.hpp>
+
+#include "qgspointcloudlayer.h"
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -367,6 +370,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1, Qt::AscendingOrder );
+  lstResults->setIndentation( QgsGuiUtils::scaleIconSize( 12 ) );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
@@ -510,10 +514,12 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
     case QgsMapLayerType::VectorTileLayer:
       addFeature( qobject_cast<QgsVectorTileLayer *>( result.mLayer ), result.mLabel, result.mFields, result.mFeature, result.mDerivedAttributes );
       break;
-
+    case QgsMapLayerType::PointCloudLayer:
+      addFeature( qobject_cast<QgsPointCloudLayer *>( result.mLayer ), result.mLabel, result.mAttributes );
+      break;
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
+
       break;
   }
 }
@@ -1261,6 +1267,45 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer,
 
   highlightFeature( featItem );
 }
+
+void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
+    const QString &label,
+    const QMap< QString, QString > &attributes )
+{
+  QTreeWidgetItem *layItem = layerItem( layer );
+
+  if ( !layItem )
+  {
+    layItem = new QTreeWidgetItem( QStringList() << layer->name() );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+    lstResults->addTopLevelItem( layItem );
+    QFont boldFont;
+    boldFont.setBold( true );
+    layItem->setFont( 0, boldFont );
+
+    connect( layer, &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
+    connect( layer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
+  }
+
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( QgsFields(),
+      QgsFeature(),
+      layer->crs(),
+      QStringList() << label << QString() );
+  layItem->addChild( featItem );
+
+  layItem->setFirstColumnSpanned( true );
+  QString countSuffix = layItem->childCount() > 1
+                        ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
+                        : QString();
+  layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( layer->name(), countSuffix ) );
+
+  // attributes
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  {
+    featItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+  }
+}
+
 
 void QgsIdentifyResultsDialog::editingToggled()
 {

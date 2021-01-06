@@ -81,7 +81,8 @@ from qgis.core import (
     QgsProcessing,
     QgsExpression,
     QgsRasterLayer,
-    QgsProcessingUtils
+    QgsProcessingUtils,
+    QgsFileFilterGenerator
 )
 from qgis.gui import (
     QgsProcessingParameterWidgetContext,
@@ -152,13 +153,7 @@ class BatchPanelFillWidget(QToolButton):
         add_by_expression.setToolTip(self.tr('Adds new parameter values by evaluating an expression'))
         self.menu.addAction(add_by_expression)
 
-        if isinstance(self.parameterDefinition, (QgsProcessingParameterFile,
-                                                 QgsProcessingParameterMapLayer,
-                                                 QgsProcessingParameterRasterLayer,
-                                                 QgsProcessingParameterMeshLayer,
-                                                 QgsProcessingParameterVectorLayer,
-                                                 QgsProcessingParameterFeatureSource,
-                                                 QgsProcessingParameterMultipleLayers)):
+        if not self.parameterDefinition.isDestination() and isinstance(self.parameterDefinition, QgsFileFilterGenerator):
             self.menu.addSeparator()
             find_by_pattern_action = QAction(QCoreApplication.translate('BatchPanel', 'Add Files by Pattern…'),
                                              self.menu)

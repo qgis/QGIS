@@ -10,7 +10,7 @@
  *                                                                           *
  ****************************************************************************/
 
-
+#include <vector>
 #include <pdal/util/FileUtils.hpp>
 
 #include "Reprocessor.hpp"

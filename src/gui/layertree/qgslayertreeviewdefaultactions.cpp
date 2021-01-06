@@ -51,7 +51,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject *parent )
   if ( !node )
     return nullptr;
 
-  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ), tr( "&Show in Overview" ), parent );
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ), tr( "Show in &Overview" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::showInOverview );
   a->setCheckable( true );
   a->setChecked( node->customProperty( QStringLiteral( "overview" ), 0 ).toInt() );
@@ -81,7 +81,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowFeatureCount( QObject *parent
   if ( !node )
     return nullptr;
 
-  QAction *a = new QAction( tr( "Show Feature Count" ), parent );
+  QAction *a = new QAction( tr( "Show Feature &Count" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::showFeatureCount );
   a->setCheckable( true );
   a->setChecked( node->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
@@ -93,14 +93,25 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
                             tr( "&Zoom to Layer" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
+  Q_NOWARN_DEPRECATED_PUSH
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayer ) );
+  Q_NOWARN_DEPRECATED_POP
+  return a;
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayers( QgsMapCanvas *canvas, QObject *parent )
+{
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
+                            tr( "&Zoom to Layer(s)" ), parent );
+  a->setData( QVariant::fromValue( canvas ) );
+  connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayers ) );
   return a;
 }
 
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent )
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ),
-                            tr( "&Zoom to Selection" ), parent );
+                            tr( "Zoom to &Selection" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToSelection ) );
   return a;
@@ -126,7 +137,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionMakeTopLevel( QObject *parent )
 
 QAction *QgsLayerTreeViewDefaultActions::actionMoveOutOfGroup( QObject *parent )
 {
-  QAction *a = new QAction( tr( "Move Out of &Group" ), parent );
+  QAction *a = new QAction( tr( "Move O&ut of Group" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::moveOutOfGroup );
   return a;
 }
@@ -158,7 +169,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionMutuallyExclusiveGroup( QObject *
   if ( !node || !QgsLayerTree::isGroup( node ) )
     return nullptr;
 
-  QAction *a = new QAction( tr( "Mutually Exclusive Group" ), parent );
+  QAction *a = new QAction( tr( "&Mutually Exclusive Group" ), parent );
   a->setCheckable( true );
   a->setChecked( QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup );
@@ -198,7 +209,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionCheckAndAllParents( QObject *pare
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isLayer( node ) || node->isVisible() )
     return nullptr;
-  QAction *a = new QAction( tr( "Check and All its Parents" ), parent );
+  QAction *a = new QAction( tr( "Chec&k and All its Parents" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllParents );
   return a;
 }
@@ -280,25 +291,36 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
     l->setCustomProperty( QStringLiteral( "showFeatureCount" ), newValue ? 0 : 1 );
 }
 
-
 void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
 {
   QgsMapLayer *layer = mView->currentLayer();
   if ( !layer )
     return;
 
-  QList<QgsMapLayer *> layers;
-  layers << layer;
+  const QList<QgsMapLayer *> layers { layer };
+  zoomToLayers( canvas, layers );
+}
+
+void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas )
+{
+  const QList<QgsMapLayer *> layers = mView->selectedLayers();
+  if ( layers.isEmpty() )
+    return;
+
   zoomToLayers( canvas, layers );
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
-  if ( !layer )
-    return;
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mView->currentLayer() );
 
-  canvas->zoomToSelected( layer );
+  const QList<QgsMapLayer *> layers = mView->selectedLayers();
+
+  if ( layers.size() > 1 )
+    canvas->zoomToSelected( layers );
+  else if ( layers.size() <= 1 && layer )
+    canvas->zoomToSelected( layer );
+
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
@@ -308,8 +330,8 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
     return;
 
   QList<QgsMapLayer *> layers;
-  const auto constFindLayerIds = groupNode->findLayerIds();
-  for ( const QString &layerId : constFindLayerIds )
+  const QStringList findLayerIds = groupNode->findLayerIds();
+  for ( const QString &layerId : findLayerIds )
     layers << QgsProject::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
@@ -317,18 +339,25 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
 
 void QgsLayerTreeViewDefaultActions::zoomToLayer()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   zoomToLayer( canvas );
-  QApplication::restoreOverrideCursor();
+  Q_NOWARN_DEPRECATED_POP
+}
+
+void QgsLayerTreeViewDefaultActions::zoomToLayers()
+{
+  QAction *s = qobject_cast<QAction *>( sender() );
+  QgsMapCanvas *canvas = s->data().value<QgsMapCanvas *>();
+  zoomToLayers( canvas );
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToSelection()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
-  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
   zoomToSelection( canvas );
 }
 
@@ -336,14 +365,13 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
-  QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToGroup( canvas );
-  QApplication::restoreOverrideCursor();
 }
-
 
 void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const QList<QgsMapLayer *> &layers )
 {
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+
   QgsRectangle extent;
   extent.setMinimal();
 

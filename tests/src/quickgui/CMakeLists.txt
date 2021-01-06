@@ -11,6 +11,8 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/core/annotations
     ${CMAKE_SOURCE_DIR}/src/core/auth
     ${CMAKE_SOURCE_DIR}/src/core/composer
+    ${CMAKE_SOURCE_DIR}/src/core/effects
+    ${CMAKE_SOURCE_DIR}/src/core/expression
     ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
     ${CMAKE_SOURCE_DIR}/src/core/geometry
     ${CMAKE_SOURCE_DIR}/src/core/labeling
@@ -18,13 +20,13 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/core/layout
     ${CMAKE_SOURCE_DIR}/src/core/locator
     ${CMAKE_SOURCE_DIR}/src/core/metadata
+    ${CMAKE_SOURCE_DIR}/src/core/project
     ${CMAKE_SOURCE_DIR}/src/core/providers/memory
     ${CMAKE_SOURCE_DIR}/src/core/raster
     ${CMAKE_SOURCE_DIR}/src/core/scalebar
     ${CMAKE_SOURCE_DIR}/src/core/symbology
-    ${CMAKE_SOURCE_DIR}/src/core/effects
     ${CMAKE_SOURCE_DIR}/src/core/metadata
-    ${CMAKE_SOURCE_DIR}/src/core/expression
+    ${CMAKE_SOURCE_DIR}/src/core/vector
     ${CMAKE_SOURCE_DIR}/src/native
     ${CMAKE_SOURCE_DIR}/src/quickgui
     ${CMAKE_SOURCE_DIR}/src/test

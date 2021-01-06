@@ -73,6 +73,7 @@ void Epf::run(const Options& options, ProgressWriter& progress)
 {
     using namespace pdal;
 
+    double millionPoints = 0;
     BOX3D totalBounds;
 
     if (pdal::FileUtils::fileExists(options.tempDir + "/" + MetadataFilename))

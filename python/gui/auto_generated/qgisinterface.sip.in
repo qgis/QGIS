@@ -513,10 +513,22 @@ Returns the native measure area action. Call :py:func:`~QgisInterface.trigger` o
 %Docstring
 Returns the native zoom full extent action. Call :py:func:`~QgisInterface.trigger` on it to zoom to the full extent.
 %End
-    virtual QAction *actionZoomToLayer() = 0;
+
+ virtual QAction *actionZoomToLayer() = 0 /Deprecated/;
 %Docstring
 Returns the native zoom to layer action. Call :py:func:`~QgisInterface.trigger` on it to zoom to the active layer.
+
+.. deprecated::
+   Use actionZoomToLayers() instead.
 %End
+
+    virtual QAction *actionZoomToLayers() = 0;
+%Docstring
+Returns the native zoom to layers action. Call :py:func:`~QgisInterface.trigger` on it to zoom to the selected layers.
+
+.. versionadded:: 3.18
+%End
+
     virtual QAction *actionZoomToSelected() = 0;
 %Docstring
 Returns the native zoom to selected action. Call :py:func:`~QgisInterface.trigger` on it to zoom to the current selection.

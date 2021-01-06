@@ -394,7 +394,7 @@ Update the color ramp used and all symbols colors.
 %Docstring
 creates a QgsCategorizedSymbolRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End

@@ -128,6 +128,7 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
     QString type() const override;
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
+    bool willRenderPoint( const QVariantMap &pointAttributes ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;

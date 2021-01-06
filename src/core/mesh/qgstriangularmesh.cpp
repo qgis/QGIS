@@ -58,19 +58,27 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
 
   double signedArea = 0.0;
 
+  const QPointF &pt0 = pX.first();
+  QPolygonF localPolygon( pX.count() );
+  for ( int i = 0; i < pX.count(); ++i )
+    localPolygon[i] = pX.at( i ) - pt0;
+
   // For all vertices except last
   int i = 0;
-  for ( ; i < pX.size() - 1; ++i )
+  for ( ; i < localPolygon.size() - 1; ++i )
   {
-    ENP_centroid_step( pX, cx, cy, signedArea, i, i + 1 );
+    ENP_centroid_step( localPolygon, cx, cy, signedArea, i, i + 1 );
   }
   // Do last vertex separately to avoid performing an expensive
   // modulus operation in each iteration.
-  ENP_centroid_step( pX, cx, cy, signedArea, i, 0 );
+  ENP_centroid_step( localPolygon, cx, cy, signedArea, i, 0 );
 
   signedArea *= 0.5;
   cx /= ( 6.0 * signedArea );
   cy /= ( 6.0 * signedArea );
+
+  cx = cx + pt0.x();
+  cy = cy + pt0.y();
 }
 
 void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )

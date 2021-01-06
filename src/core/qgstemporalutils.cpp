@@ -141,3 +141,55 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
   return true;
 }
+
+
+QDateTime QgsTemporalUtils::calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval interval )
+{
+
+  double unused;
+  const bool isFractional = !qgsDoubleNear( fabs( modf( interval.originalDuration(), &unused ) ), 0.0 );
+
+  if ( isFractional || interval.originalUnit() == QgsUnitTypes::TemporalUnit::TemporalUnknownUnit )
+  {
+    return start + interval;
+  }
+  else
+  {
+    switch ( interval.originalUnit() )
+    {
+      case QgsUnitTypes::TemporalUnit::TemporalMilliseconds:
+        return start.addMSecs( frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalSeconds:
+        return start.addSecs( frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalMinutes:
+        return start.addSecs( 60 * frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalHours:
+        return start.addSecs( 3600 * frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalDays:
+        return start.addDays( frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalWeeks:
+        return start.addDays( 7 * frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalMonths:
+        return start.addMonths( frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalYears:
+        return start.addYears( frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalDecades:
+        return start.addYears( 10 * frame * interval.originalDuration() );
+        break;
+      case QgsUnitTypes::TemporalUnit::TemporalCenturies:
+        return start.addYears( 100 * frame * interval.originalDuration() );
+        break;
+      default:
+        return start;
+    }
+  }
+}
+

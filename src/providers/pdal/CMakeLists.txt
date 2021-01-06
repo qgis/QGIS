@@ -35,6 +35,7 @@ set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuPyramid.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/Processor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PyramidManager.cpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/Stats.cpp
 
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/BufferCache.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Cell.cpp
@@ -58,6 +59,7 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PointAccessor.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/Processor.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PyramidManager.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/Stats.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/VoxelInfo.hpp
 
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/BufferCache.hpp
@@ -101,7 +103,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/pointcloud
+  ${CMAKE_SOURCE_DIR}/src/core/project
   ${CMAKE_SOURCE_DIR}/src/core/providers/ept
+  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/codeeditors

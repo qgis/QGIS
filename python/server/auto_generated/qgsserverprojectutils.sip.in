@@ -36,7 +36,7 @@ Returns the owsService title defined in project.
 
 :param project: the QGIS project
 
-:return: the owsService title if defined in project.
+:return: the owsService title if defined in project with project title as fallback, "Untitled" otherwise.
 %End
 
   QString owsServiceAbstract( const QgsProject &project );

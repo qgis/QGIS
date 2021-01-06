@@ -66,49 +66,48 @@ void QgsEptPointCloudIndex::load( const QString &fileName )
 
 bool QgsEptPointCloudIndex::loadSchema( QFile &f )
 {
-  QByteArray dataJson = f.readAll();
+  const QByteArray dataJson = f.readAll();
   QJsonParseError err;
-  QJsonDocument doc = QJsonDocument::fromJson( dataJson, &err );
+  const QJsonDocument doc = QJsonDocument::fromJson( dataJson, &err );
   if ( err.error != QJsonParseError::NoError )
     return false;
-  QJsonObject result = doc.object();
+  const QJsonObject result = doc.object();
   mDataType = result.value( QLatin1String( "dataType" ) ).toString();  // "binary" or "laszip"
-  if ( mDataType != "laszip" && mDataType != "binary" && mDataType != "zstandard" )
+  if ( mDataType != QLatin1String( "laszip" ) && mDataType != QLatin1String( "binary" ) && mDataType != QLatin1String( "zstandard" ) )
     return false;
 
-  QString hierarchyType = result.value( QLatin1String( "hierarchyType" ) ).toString();  // "json" or "gzip"
-  if ( hierarchyType != "json" )
+  const QString hierarchyType = result.value( QLatin1String( "hierarchyType" ) ).toString();  // "json" or "gzip"
+  if ( hierarchyType != QLatin1String( "json" ) )
     return false;
 
   mSpan = result.value( QLatin1String( "span" ) ).toInt();
   mPointCount = result.value( QLatin1String( "points" ) ).toInt();
 
   // WKT
-  QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
+  const QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
   mWkt = srs.value( QLatin1String( "wkt" ) ).toString();
 
   // rectangular
-  QJsonArray bounds = result.value( QLatin1String( "bounds" ) ).toArray();
+  const QJsonArray bounds = result.value( QLatin1String( "bounds" ) ).toArray();
   if ( bounds.size() != 6 )
     return false;
 
-  QJsonArray bounds_conforming = result.value( QLatin1String( "boundsConforming" ) ).toArray();
-  if ( bounds.size() != 6 )
+  const QJsonArray boundsConforming = result.value( QLatin1String( "boundsConforming" ) ).toArray();
+  if ( boundsConforming.size() != 6 )
     return false;
-  mExtent.set( bounds_conforming[0].toDouble(), bounds_conforming[1].toDouble(),
-               bounds_conforming[3].toDouble(), bounds_conforming[4].toDouble() );
-  mZMin = bounds_conforming[2].toDouble();
-  mZMax = bounds_conforming[5].toDouble();
+  mExtent.set( boundsConforming[0].toDouble(), boundsConforming[1].toDouble(),
+               boundsConforming[3].toDouble(), boundsConforming[4].toDouble() );
+  mZMin = boundsConforming[2].toDouble();
+  mZMax = boundsConforming[5].toDouble();
 
-  QJsonArray schemaArray = result.value( QLatin1String( "schema" ) ).toArray();
+  const QJsonArray schemaArray = result.value( QLatin1String( "schema" ) ).toArray();
   QgsPointCloudAttributeCollection attributes;
 
-
-  for ( QJsonValue schemaItem : schemaArray )
+  for ( const QJsonValue &schemaItem : schemaArray )
   {
     const QJsonObject schemaObj = schemaItem.toObject();
-    QString name = schemaObj.value( QLatin1String( "name" ) ).toString();
-    QString type = schemaObj.value( QLatin1String( "type" ) ).toString();
+    const QString name = schemaObj.value( QLatin1String( "name" ) ).toString();
+    const QString type = schemaObj.value( QLatin1String( "type" ) ).toString();
 
     int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
 
@@ -266,19 +265,19 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   if ( !mHierarchy.contains( n ) )
     return nullptr;
 
-  if ( mDataType == "binary" )
+  if ( mDataType == QLatin1String( "binary" ) )
   {
-    QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
+    QString filename = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mDirectory, n.toString() );
     return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes() );
   }
-  else if ( mDataType == "zstandard" )
+  else if ( mDataType == QLatin1String( "zstandard" ) )
   {
-    QString filename = QString( "%1/ept-data/%2.zst" ).arg( mDirectory ).arg( n.toString() );
+    QString filename = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mDirectory, n.toString() );
     return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes() );
   }
-  else if ( mDataType == "laszip" )
+  else if ( mDataType == QLatin1String( "laszip" ) )
   {
-    QString filename = QString( "%1/ept-data/%2.laz" ).arg( mDirectory ).arg( n.toString() );
+    QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
     return QgsEptDecoder::decompressLaz( filename, attributes(), request.attributes() );
   }
   else
@@ -369,7 +368,7 @@ bool QgsEptPointCloudIndex::loadHierarchy()
   queue.enqueue( QStringLiteral( "0-0-0-0" ) );
   while ( !queue.isEmpty() )
   {
-    const QString filename = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mDirectory ).arg( queue.dequeue() );
+    const QString filename = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mDirectory, queue.dequeue() );
     QFile fH( filename );
     if ( !fH.open( QIODevice::ReadOnly ) )
     {
@@ -379,14 +378,14 @@ bool QgsEptPointCloudIndex::loadHierarchy()
 
     QByteArray dataJsonH = fH.readAll();
     QJsonParseError errH;
-    QJsonDocument docH = QJsonDocument::fromJson( dataJsonH, &errH );
+    const QJsonDocument docH = QJsonDocument::fromJson( dataJsonH, &errH );
     if ( errH.error != QJsonParseError::NoError )
     {
       QgsDebugMsgLevel( QStringLiteral( "QJsonParseError when reading hierarchy from file %1" ).arg( filename ), 2 );
       return false;
     }
 
-    QJsonObject rootHObj = docH.object();
+    const QJsonObject rootHObj = docH.object();
     for ( auto it = rootHObj.constBegin(); it != rootHObj.constEnd(); ++it )
     {
       QString nodeIdStr = it.key();

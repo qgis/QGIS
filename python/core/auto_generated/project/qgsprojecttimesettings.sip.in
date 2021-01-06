@@ -1,0 +1,174 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojecttimesettings.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProjectTimeSettings : QObject
+{
+%Docstring
+Contains temporal settings and properties for the project,
+this may be used when animating maps or showing temporal layers.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprojecttimesettings.h"
+%End
+  public:
+
+    QgsProjectTimeSettings( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectTimeSettings with the specified ``parent`` object.
+%End
+
+    void reset();
+%Docstring
+Resets the settings to a default state.
+%End
+
+    QgsDateTimeRange temporalRange() const;
+%Docstring
+Returns the project's temporal range, which indicates the earliest
+and latest datetime ranges associated with the project.
+
+.. note::
+
+   This is a manual, use-set property, and does not necessarily
+   coincide with the earliest and latest temporal ranges set for
+   individual layers in the project.
+
+.. seealso:: :py:func:`setTemporalRange`
+
+.. seealso:: :py:func:`temporalRangeChanged`
+%End
+
+    void setTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Sets the project's temporal ``range``, which indicates the earliest
+and latest datetime ranges associated with the project.
+
+.. note::
+
+   This is a manual, use-set property, and does not necessarily
+   coincide with the earliest and latest temporal ranges set for
+   individual layers in the project.
+
+.. seealso:: :py:func:`temporalRange`
+
+.. seealso:: :py:func:`temporalRangeChanged`
+%End
+
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the settings's state from a DOM ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns a DOM element representing the settings.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    QgsUnitTypes::TemporalUnit timeStepUnit() const;
+%Docstring
+Returns the project's time step (length of one animation frame) unit, which is used as the default value when
+animating the project.
+
+.. seealso:: :py:func:`setTimeStepUnit`
+
+.. seealso:: :py:func:`timeStep`
+%End
+
+    void setTimeStepUnit( QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Sets the project's time step (length of one animation frame) ``unit``, which is used as the default value when
+animating the project.
+
+.. seealso:: :py:func:`timeStepUnit`
+
+.. seealso:: :py:func:`setTimeStep`
+%End
+
+    double timeStep() const;
+%Docstring
+Returns the project's time step (length of one animation frame), which is used as the default value when
+animating the project.
+
+Units are specified via :py:func:`~QgsProjectTimeSettings.timeStepUnit`
+
+.. seealso:: :py:func:`setTimeStep`
+
+.. seealso:: :py:func:`timeStepUnit`
+%End
+
+    void setTimeStep( double step );
+%Docstring
+Sets the project's time ``step`` (length of one animation frame), which is used as the default value when
+animating the project.
+
+Units are specified via :py:func:`~QgsProjectTimeSettings.setTimeStepUnit`
+
+.. seealso:: :py:func:`timeStep`
+
+.. seealso:: :py:func:`setTimeStepUnit`
+%End
+
+    void setFramesPerSecond( double rate );
+%Docstring
+Sets the project's default animation frame ``rate``, in frames per second.
+
+.. seealso:: :py:func:`framesPerSecond`
+%End
+
+    double framesPerSecond() const;
+%Docstring
+Returns the project's default animation frame rate, in frames per second.
+
+.. seealso:: :py:func:`setFramesPerSecond`
+%End
+
+    void setIsTemporalRangeCumulative( bool state );
+%Docstring
+Sets the project's temporal range as cumulative in animation settings.
+
+.. seealso:: :py:func:`isTemporalRangeCumulative`
+%End
+
+    bool isTemporalRangeCumulative() const;
+%Docstring
+Returns the value of cumulative temporal range in animation settings.
+
+.. seealso:: :py:func:`setIsTemporalRangeCumulative`
+%End
+
+  signals:
+
+    void temporalRangeChanged();
+%Docstring
+Emitted when the temporal range changes.
+
+.. seealso:: :py:func:`temporalRange`
+
+.. seealso:: :py:func:`setTemporalRange`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojecttimesettings.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

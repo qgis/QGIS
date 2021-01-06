@@ -134,6 +134,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
   private slots:
 
     void applyColorRamp();
+    void updateColorRamp();
     void mAddEntryButton_clicked();
     void mDeleteEntryButton_clicked();
     void mLoadFromBandButton_clicked();

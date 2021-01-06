@@ -89,6 +89,29 @@ class CORE_EXPORT QgsTemporalUtils
      * \returns TRUE if the export was successful.
      */
     static bool exportAnimation( const QgsMapSettings &mapSettings, const AnimationExportSettings &settings, QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Calculates the frame time for an animation.
+     *
+     * If the interval original duration is fractional or interval original unit is
+     * unknown (QgsUnitTypes::TemporalUnit::TemporalUnknownUnit), then QgsInterval is used
+     * to determine the duration of the frame. This uses average durations for months and years.
+     *
+     * Otherwise, we use QDateTime to advance by the exact duration of the current
+     * month or year.
+     * So a time step of 1.5 months will result in a duration of 45
+     * days, but a time step of 1 month will result in a duration that depends upon
+     * the number of days in the current month.
+     *
+     * \param start time of the animation
+     * \param frame number
+     * \param interval duration of the animation
+     *
+     * \returns The calculated datetime for the frame.
+     *
+     * \since QGIS 3.18
+     */
+    static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval interval );
 };
 
 

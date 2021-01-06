@@ -42,6 +42,7 @@ after selecting a point, performs the identification:
       RasterLayer,
       MeshLayer,
       VectorTileLayer,
+      PointCloudLayer,
       AllLayers
     };
     typedef QFlags<QgsMapToolIdentify::Type> LayerType;
