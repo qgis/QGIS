@@ -4761,32 +4761,3 @@ QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, Qgs
   return properties;
 }
 
-QMap<QString, QString> QgsSymbolLayerUtils::serializeProperties( const QMap<QString, QgsProperty> &propertiesMap )
-{
-  QMap<QString, QString> serialized;
-  QMap<QString, QgsProperty>::const_iterator paramIt = propertiesMap.constBegin();
-  int i = 0;
-  for ( ; paramIt != propertiesMap.constEnd(); ++paramIt )
-  {
-    serialized[QString( QStringLiteral( "properties_%1_name" ) ).arg( i )] = paramIt.key();
-    serialized[QString( QStringLiteral( "properties_%1_value" ) ).arg( i )] = paramIt.value().expressionString();
-    i++;
-  }
-  return serialized;
-}
-
-QMap<QString, QgsProperty> QgsSymbolLayerUtils::readSerializedProperties( const QMap<QString, QString> &serializedProperties )
-{
-  QMap<QString, QgsProperty> properties;
-  int i = 0;
-  while ( true )
-  {
-    if ( !serializedProperties.contains( QString( QStringLiteral( "properties_%1_name" ) ).arg( i ) ) )
-      break;
-
-    properties.insert( serializedProperties.value( QString( QStringLiteral( "properties_%1_name" ) ).arg( i ) ),
-                       QgsProperty::fromExpression( serializedProperties.value( QString( QStringLiteral( "properties_%1_value" ) ).arg( i ) ) ) );
-    i++;
-  }
-  return properties;
-}
