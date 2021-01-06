@@ -115,9 +115,13 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
       const ::vector_tile::Tile_Feature &feature = layer.features( featureNum );
 
       QgsFeatureId fid;
+#if 0
+      // even if a feature has an internal ID, it's not guaranteed to be unique across different
+      // tiles. This may violate the specifications, but it's been seen on mbtiles files in the wild...
       if ( feature.has_id() )
         fid = static_cast<QgsFeatureId>( feature.id() );
       else
+#endif
       {
         // There is no assigned ID, but some parts of QGIS do not work correctly if all IDs are zero
         // (e.g. labeling will not register two features with the same FID within a single layer),
