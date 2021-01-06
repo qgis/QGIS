@@ -262,7 +262,7 @@ Content-Type: application/json
         "owsServiceFees": "conditions unknown",
         "owsServiceKeywords": [],
         "owsServiceOnlineResource": "",
-        "owsServiceTitle": "",
+        "owsServiceTitle": "QGIS Server - Grouped Nested Layer",
         "wcsLayerIds": [],
         "wcsServiceUrl": "",
         "wfsLayerIds": [

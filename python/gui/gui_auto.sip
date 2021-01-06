@@ -393,6 +393,7 @@
 %Include auto_generated/symbology/qgsheatmaprendererwidget.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrendererwidget.sip
 %Include auto_generated/symbology/qgslayerpropertieswidget.sip
+%Include auto_generated/symbology/qgsmergedfeaturerendererwidget.sip
 %Include auto_generated/symbology/qgsnullsymbolrendererwidget.sip
 %Include auto_generated/symbology/qgsmasksymbollayerwidget.sip
 %Include auto_generated/symbology/qgspenstylecombobox.sip

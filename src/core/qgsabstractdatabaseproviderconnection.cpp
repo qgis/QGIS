@@ -445,7 +445,7 @@ QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows
   // mRowCount might be -1 (unknown)
   while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) )
   {
-    const QVariantList row { mResultIterator->nextRow() };
+    const QVariantList row( mResultIterator->nextRow() );
     if ( row.isEmpty() )
     {
       break;
@@ -462,7 +462,7 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
     return QList<QVariant>();
   }
 
-  const QList<QVariant> row { mResultIterator->nextRow() };
+  const QList<QVariant> row( mResultIterator->nextRow() );
 
   if ( ! row.isEmpty() )
   {

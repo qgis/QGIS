@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsinterval.h"
-#include "qgis.h"
 #include <QString>
 #include <QStringList>
 #include <QMap>
@@ -205,18 +204,6 @@ void QgsInterval::setSeconds( double seconds )
   mValid = true;
   mOriginalDuration = seconds;
   mOriginalUnit = QgsUnitTypes::TemporalSeconds;
-}
-
-bool QgsInterval::operator==( QgsInterval other ) const
-{
-  if ( !mValid && !other.mValid )
-    return true;
-  else if ( mValid && other.mValid && ( mOriginalUnit != QgsUnitTypes::TemporalUnknownUnit || other.mOriginalUnit != QgsUnitTypes::TemporalUnknownUnit ) )
-    return mOriginalUnit == other.mOriginalUnit && mOriginalDuration == other.mOriginalDuration;
-  else if ( mValid && other.mValid )
-    return qgsDoubleNear( mSeconds, other.mSeconds );
-  else
-    return false;
 }
 
 QgsInterval QgsInterval::fromString( const QString &string )

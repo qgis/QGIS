@@ -15,6 +15,7 @@ import qgis  # NOQA
 import tempfile
 import glob
 import shutil
+import sip
 
 from qgis.core import (QgsReadWriteContext,
                        QgsVectorLayer,
@@ -184,6 +185,20 @@ class TestQgsMapLayer(unittest.TestCase):
         rl = QgsRasterLayer(temp_source, 'test')
         self.assertTrue(rl.isValid())
         self.assertTrue(rl.isTemporary())
+
+    def testQgsMapLayerProject(self):
+        layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'points.shp'), "layer", "ogr")
+        self.assertIsNone(layer.project())
+        project = QgsProject()
+        project.addMapLayer(layer)
+        self.assertEqual(layer.project(), project)
+        project2 = QgsProject()
+        project2.addMapLayer(layer)
+        self.assertEqual(layer.project(), project2)
+        project.removeMapLayer(layer)
+        self.assertFalse(sip.isdeleted(layer))
+        project2.removeMapLayer(layer)
+        self.assertTrue(sip.isdeleted(layer))
 
 
 if __name__ == '__main__':

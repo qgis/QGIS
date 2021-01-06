@@ -45,7 +45,10 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterEnum)
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterField,
+                       QgsProviderRegistry)
 
 from processing.core.parameters import getParameterFromString
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
@@ -213,8 +216,14 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             param = self.parameterDefinition(k)
             if param.isDestination():
                 continue
-            if isinstance(param, QgsProcessingParameterEnum):
+            if isinstance(param, QgsProcessingParameterEnum) and param.name() == "outputpixeltype":
                 value = self.parameterAsEnum(parameters, param.name(), context)
+            elif isinstance(param, QgsProcessingParameterEnum):
+                value = " ".join([param.options()[i]
+                                  for i in self.parameterAsEnums(parameters, param.name(), context)
+                                  if i >= 0 and i < len(param.options())])
+            elif isinstance(param, QgsProcessingParameterField):
+                value = " ".join(self.parameterAsFields(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterBoolean):
                 value = self.parameterAsBoolean(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterCrs):
@@ -243,6 +252,9 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 value = '"{}"'.format(self.getLayerSource(param.name(), self.parameterAsLayer(parameters, param.name(), context)))
             elif isinstance(param, QgsProcessingParameterString):
                 value = '"{}"'.format(self.parameterAsString(parameters, param.name(), context))
+            elif isinstance(param, QgsProcessingParameterBand):
+                value = ' '.join(['"Channel{}"'.format(index) for index in
+                                  self.parameterAsInts(parameters, param.name(), context)])
             else:
                 # Use whatever is given
                 value = '"{}"'.format(parameters[param.name()])
@@ -272,9 +284,20 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
     def getLayerSource(self, name, layer):
         providerName = layer.dataProvider().name()
+
         # TODO: add other provider support in OTB, eg: memory
-        if providerName in ['ogr', 'gdal']:
+        if providerName == 'gdal':
             return layer.source()
+        elif providerName == 'ogr':
+            # when a file contains several layer we pass only the file path to OTB
+            # TODO make OTB able to take a layer index in this case
+            uriElements = QgsProviderRegistry.instance().decodeUri("ogr", layer.source())
+
+            if 'path' not in uriElements:
+                raise QgsProcessingException(
+                    self.tr("Invalid layer source '{}'. Missing valid 'path' element".format(layer.source())))
+
+            return uriElements['path']
         else:
             raise QgsProcessingException(
                 self.tr("OTB currently support only gdal and ogr provider. Parameter '{}' uses '{}' provider".format(name, providerName)))

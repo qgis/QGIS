@@ -972,13 +972,16 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   if ( !match.hasMatch() )
   {
     // Check if the string is a pair of degree minute second
-    separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.]*[-+nsew]?)\\s+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.]*[-+nsew]?)$" ) );
+    separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)[,\\s]+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)$" ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
     {
       posIsDms = true;
-      posX = QgsCoordinateUtils::dmsToDecimal( match.captured( 1 ), &okX );
+      bool isEasting = false;
+      posX = QgsCoordinateUtils::dmsToDecimal( match.captured( 1 ), &okX, &isEasting );
       posY = QgsCoordinateUtils::dmsToDecimal( match.captured( 3 ), &okY );
+      if ( !isEasting )
+        std::swap( posX, posY );
     }
   }
 

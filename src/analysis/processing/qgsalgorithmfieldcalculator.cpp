@@ -101,7 +101,7 @@ QgsFieldCalculatorAlgorithm *QgsFieldCalculatorAlgorithm::createInstance() const
 }
 
 
-bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
 
@@ -131,10 +131,16 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   mFields = source->fields();
 
-  int fieldIdx = mFields.lookupField( field.name() );
+  int fieldIdx = mFields.indexFromName( field.name() );
 
   if ( fieldIdx < 0 )
+  {
     mFields.append( field );
+  }
+  else
+  {
+    feedback->pushWarning( QObject::tr( "Field name %1 already exists and will be replaced" ).arg( field.name() ) );
+  }
 
   QString dest;
 
@@ -205,4 +211,3 @@ bool QgsFieldCalculatorAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer )
 }
 
 ///@endcond
-

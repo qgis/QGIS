@@ -29,6 +29,7 @@ void BuPyramid::run(const Options& options, ProgressWriter& progress)
 {
     m_b.inputDir = options.tempDir;
     m_b.outputDir = options.outputDir;
+    m_b.stats = options.stats;
 
     readBaseInfo();
     getInputFiles();
@@ -164,7 +165,31 @@ void BuPyramid::writeInfo()
             out << "\"type\": \"" << typeString(pdal::Dimension::base(fdi.type)) << "\", ";
             if (fdi.name == "X" || fdi.name == "Y" || fdi.name == "Z")
                 out << "\"scale\": 0.01, \"offset\": 0, ";
-            out << "\"size\": " << pdal::Dimension::size(fdi.type) << " ";
+            out << "\"size\": " << pdal::Dimension::size(fdi.type);
+            const Stats *stats = m_manager.stats(fdi.name);
+            if (stats)
+            {
+                const Stats::EnumMap& v = stats->values();
+                out << ", ";
+                if (v.size())
+                {
+                    out << "\"counts\": [ ";
+                    for (auto ci = v.begin(); ci != v.end(); ++ci)
+                    {
+                        auto c = *ci;
+                        if (ci != v.begin())
+                            out << ", ";
+                        out << "{\"value\": " << c.first << ", \"count\": " << c.second << "}";
+                    }
+                    out << "], ";
+                }
+                out << "\"count\": " << m_manager.totalPoints() << ", ";
+                out << "\"maximum\": " << stats->maximum() << ", ";
+                out << "\"minimum\": " << stats->minimum() << ", ";
+                out << "\"mean\": " << stats->average() << ", ";
+                out << "\"stddev\": " << stats->stddev() << ", ";
+                out << "\"variance\": " << stats->variance();
+            }
         out << "}";
         if (di + 1 != m_b.dimInfo.end())
             out << ",";

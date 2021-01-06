@@ -465,7 +465,7 @@ set the method used for graduation (either size or color)
 %Docstring
 creates a QgsGraduatedSymbolRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.6
 %End

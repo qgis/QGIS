@@ -125,6 +125,8 @@ Constructor for QgsPointCloudClassifiedRenderer.
 
     virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context );
 
+    virtual bool willRenderPoint( const QVariantMap &pointAttributes );
+
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;

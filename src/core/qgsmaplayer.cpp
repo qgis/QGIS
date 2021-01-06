@@ -1981,6 +1981,15 @@ void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
   mIsRefreshOnNofifyEnabled = enabled;
 }
 
+QgsProject *QgsMapLayer::project() const
+{
+  if ( QgsMapLayerStore *store = qobject_cast<QgsMapLayerStore *>( parent() ) )
+  {
+    return qobject_cast<QgsProject *>( store->parent() );
+  }
+  return nullptr;
+}
+
 void QgsMapLayer::onNotifiedTriggerRepaint( const QString &message )
 {
   if ( refreshOnNotifyMessage().isEmpty() || refreshOnNotifyMessage() == message )

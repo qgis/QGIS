@@ -44,6 +44,7 @@ set(QGIS_GUI_SRCS
   symbology/qgsinvertedpolygonrendererwidget.cpp
   symbology/qgslayerpropertieswidget.cpp
   symbology/qgsmasksymbollayerwidget.cpp
+  symbology/qgsmergedfeaturerendererwidget.cpp
   symbology/qgsnullsymbolrendererwidget.cpp
   symbology/qgspenstylecombobox.cpp
   symbology/qgspointclusterrendererwidget.cpp
@@ -163,6 +164,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
   editorwidgets/qgslistwidgetfactory.cpp
   editorwidgets/qgslistwidgetwrapper.cpp
+  editorwidgets/qgslistconfigdlg.cpp
   editorwidgets/qgsmultiedittoolbutton.cpp
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp
@@ -1192,6 +1194,7 @@ set(QGIS_GUI_HDRS
   symbology/qgsheatmaprendererwidget.h
   symbology/qgsinvertedpolygonrendererwidget.h
   symbology/qgslayerpropertieswidget.h
+  symbology/qgsmergedfeaturerendererwidget.h
   symbology/qgsnullsymbolrendererwidget.h
   symbology/qgsmasksymbollayerwidget.h
   symbology/qgspenstylecombobox.h
@@ -1369,7 +1372,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
+  ${CMAKE_SOURCE_DIR}/src/core/project
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/network
   ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
@@ -1384,6 +1389,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/validity
+  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_SOURCE_DIR}/external

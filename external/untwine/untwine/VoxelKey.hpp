@@ -102,15 +102,15 @@ namespace std
 {
     template<> struct hash<untwine::VoxelKey>
     {
-        std::size_t operator()(const untwine::VoxelKey& k) const noexcept
+        long long operator()(const untwine::VoxelKey& k) const noexcept
         {
-            static_assert(sizeof(size_t) > sizeof(int), "wrong assumption that size_t is 64 bits");
+            static_assert(sizeof(long long) >= 8, "wrong assumption that long long is 64 bits");
 
             // For this to work well we just assume that the values are no more than than 16 bits.
-            size_t t = size_t(k.x()) << 48;
-            t |= size_t(k.y()) << 32;
-            t |= size_t(k.z()) << 16;
-            t |= size_t(k.level());
+            long long t = static_cast<long long>(k.x()) << 48;
+            t |= static_cast<long long>(k.y()) << 32;
+            t |= static_cast<long long>(k.z()) << 16;
+            t |= static_cast<long long>(k.level());
             return t;
         }
     };
