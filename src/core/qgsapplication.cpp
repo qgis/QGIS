@@ -114,6 +114,7 @@
 #include <ogr_api.h>
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
+#include <mutex>
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
