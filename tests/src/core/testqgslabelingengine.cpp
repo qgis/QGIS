@@ -2759,7 +2759,7 @@ void TestQgsLabelingEngine::testClipping()
   const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
 
-  QgsStringMap props;
+  QVariantMap props;
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );
   props.insert( QStringLiteral( "outline_width" ), QStringLiteral( "1" ) );
   std::unique_ptr< QgsLineSymbol > symbol( QgsLineSymbol::createSimple( props ) );

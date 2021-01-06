@@ -384,7 +384,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
      */
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
     bool requiresAdvancedEffects() const override;
-    void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
+    void toSld( QDomNode &parent, const QVariantMap &props ) const override;
 
   protected:
     std::unique_ptr<Rule> mRootRule;

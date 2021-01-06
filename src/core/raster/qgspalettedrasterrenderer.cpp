@@ -253,7 +253,7 @@ void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parent
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );

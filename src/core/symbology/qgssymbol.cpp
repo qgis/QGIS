@@ -736,7 +736,7 @@ QString QgsSymbol::dump() const
   return s;
 }
 
-void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const
 {
   props[ QStringLiteral( "alpha" )] = QString::number( opacity() );
   double scaleFactor = 1.0;
@@ -1510,7 +1510,7 @@ void QgsSymbolRenderContext::setPatchShape( const QgsLegendPatchShape &patchShap
 
 ///////////////////
 
-QgsMarkerSymbol *QgsMarkerSymbol::createSimple( const QgsStringMap &properties )
+QgsMarkerSymbol *QgsMarkerSymbol::createSimple( const QVariantMap &properties )
 {
   QgsSymbolLayer *sl = QgsSimpleMarkerSymbolLayer::create( properties );
   if ( !sl )
@@ -1521,7 +1521,7 @@ QgsMarkerSymbol *QgsMarkerSymbol::createSimple( const QgsStringMap &properties )
   return new QgsMarkerSymbol( layers );
 }
 
-QgsLineSymbol *QgsLineSymbol::createSimple( const QgsStringMap &properties )
+QgsLineSymbol *QgsLineSymbol::createSimple( const QVariantMap &properties )
 {
   QgsSymbolLayer *sl = QgsSimpleLineSymbolLayer::create( properties );
   if ( !sl )
@@ -1532,7 +1532,7 @@ QgsLineSymbol *QgsLineSymbol::createSimple( const QgsStringMap &properties )
   return new QgsLineSymbol( layers );
 }
 
-QgsFillSymbol *QgsFillSymbol::createSimple( const QgsStringMap &properties )
+QgsFillSymbol *QgsFillSymbol::createSimple( const QVariantMap &properties )
 {
   QgsSymbolLayer *sl = QgsSimpleFillSymbolLayer::create( properties );
   if ( !sl )

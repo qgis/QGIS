@@ -943,7 +943,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
   if ( mDataDefinedSizeLegend && mDiagram )
   {
     // add size legend
-    QgsMarkerSymbol *legendSymbol = mDataDefinedSizeLegend->symbol() ? mDataDefinedSizeLegend->symbol()->clone() : QgsMarkerSymbol::createSimple( QgsStringMap() );
+    QgsMarkerSymbol *legendSymbol = mDataDefinedSizeLegend->symbol() ? mDataDefinedSizeLegend->symbol()->clone() : QgsMarkerSymbol::createSimple( QVariantMap() );
     legendSymbol->setSizeUnit( mSettings.sizeType );
     legendSymbol->setSizeMapUnitScale( mSettings.sizeScale );
 

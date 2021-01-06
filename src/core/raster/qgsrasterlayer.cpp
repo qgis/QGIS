@@ -1463,11 +1463,11 @@ bool QgsRasterLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 }
 
 
-bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props ) const
+bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props ) const
 {
   Q_UNUSED( errorMessage )
 
-  QgsStringMap localProps = QgsStringMap( props );
+  QVariantMap localProps = QVariantMap( props );
   if ( hasScaleBasedVisibility() )
   {
     // TODO: QgsSymbolLayerUtils::mergeScaleDependencies generate SE only and not SLD1.0

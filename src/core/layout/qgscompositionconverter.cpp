@@ -566,7 +566,7 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
   else
   {
     //upgrade project file from 2.0 to use symbol styling
-    QgsStringMap properties;
+    QVariantMap properties;
     properties.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( layoutItem->brush().color() ) );
     if ( layoutItem->hasBackground() )
     {
@@ -954,7 +954,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
     if ( gridSymbolElem.isNull() )
     {
       //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
-      lineSymbol = QgsLineSymbol::createSimple( QgsStringMap() );
+      lineSymbol = QgsLineSymbol::createSimple( QVariantMap() );
       lineSymbol->setWidth( gridElem.attribute( QStringLiteral( "penWidth" ), QStringLiteral( "0" ) ).toDouble() );
       lineSymbol->setColor( QColor( gridElem.attribute( QStringLiteral( "penColorRed" ), QStringLiteral( "0" ) ).toInt(),
                                     gridElem.attribute( QStringLiteral( "penColorGreen" ), QStringLiteral( "0" ) ).toInt(),

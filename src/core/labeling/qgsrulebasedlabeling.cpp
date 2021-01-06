@@ -525,7 +525,7 @@ void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QSt
   }
 }
 
-void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QgsStringMap &props ) const
+void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &props ) const
 {
   if ( !mRootRule )
   {
@@ -551,7 +551,7 @@ void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QgsStringMap &props ) 
 
       // scale dependencies, the actual behavior is that the PAL settings min/max and
       // the rule min/max get intersected
-      QgsStringMap localProps = QgsStringMap( props );
+      QVariantMap localProps = QVariantMap( props );
       QgsSymbolLayerUtils::mergeScaleDependencies( rule->maximumScale(), rule->minimumScale(), localProps );
       if ( settings->scaleVisibility )
       {

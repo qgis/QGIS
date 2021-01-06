@@ -116,7 +116,7 @@ QgsSymbolLayer *QgsSymbolLayerRegistry::defaultSymbolLayer( QgsSymbol::SymbolTyp
 }
 
 
-QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayer( const QString &name, const QgsStringMap &properties ) const
+QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayer( const QString &name, const QVariantMap &properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
@@ -132,7 +132,7 @@ QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString 
   return mMetadata[name]->createSymbolLayerFromSld( element );
 }
 
-void QgsSymbolLayerRegistry::resolvePaths( const QString &name, QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) const
+void QgsSymbolLayerRegistry::resolvePaths( const QString &name, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const
 {
   if ( !mMetadata.contains( name ) )
     return;

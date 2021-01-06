@@ -116,12 +116,12 @@ QString QgsRendererCategory::dump() const
   return QStringLiteral( "%1::%2::%3:%4\n" ).arg( mValue.toString(), mLabel, mSymbol->dump() ).arg( mRender );
 }
 
-void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const
 {
-  if ( !mSymbol.get() || props.value( QStringLiteral( "attribute" ), QString() ).isEmpty() )
+  if ( !mSymbol.get() || props.value( QStringLiteral( "attribute" ), QString() ).toString().isEmpty() )
     return;
 
-  QString attrName = props[ QStringLiteral( "attribute" )];
+  QString attrName = props[ QStringLiteral( "attribute" )].toString();
 
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
   element.appendChild( ruleElem );
@@ -508,9 +508,9 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::clone() const
   return r;
 }
 
-void QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QgsStringMap newProps = props;
+  QVariantMap newProps = props;
   newProps[ QStringLiteral( "attribute" )] = mAttrName;
 
   // create a Rule for each range

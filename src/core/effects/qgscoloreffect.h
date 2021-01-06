@@ -42,13 +42,13 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \param map encoded properties string map
      * \returns new QgsColorEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
+    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
     QgsColorEffect();
 
     QString type() const override { return QStringLiteral( "color" ); }
-    QgsStringMap properties() const override;
-    void readProperties( const QgsStringMap &props ) override;
+    QVariantMap properties() const override;
+    void readProperties( const QVariantMap &props ) override;
     QgsColorEffect *clone() const override SIP_FACTORY;
 
     /**

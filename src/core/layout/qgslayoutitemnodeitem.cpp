@@ -169,7 +169,7 @@ void QgsLayoutNodesItem::drawNodes( QgsLayoutItemRenderContext &context ) const
 
   double rectSize = 9.0 / context.viewScaleFactor();
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "cross" ) );
   properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "red" ) );
 
@@ -191,7 +191,7 @@ void QgsLayoutNodesItem::drawSelectedNode( QgsLayoutItemRenderContext &context )
 {
   double rectSize = 9.0 / context.viewScaleFactor();
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "square" ) );
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0, 0, 0, 0" ) );
   properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "blue" ) );

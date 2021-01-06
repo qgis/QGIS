@@ -316,7 +316,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
     // draw map boundary
     QgsFeature f;
     f.setGeometry( mapBoundaryGeom );
-    QgsStringMap properties;
+    QVariantMap properties;
     properties.insert( QStringLiteral( "style" ), QStringLiteral( "no" ) );
     properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
     properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "#0000ff" ) );

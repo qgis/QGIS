@@ -38,8 +38,8 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QgsShadowEffect();
 
-    QgsStringMap properties() const override;
-    void readProperties( const QgsStringMap &props ) override;
+    QVariantMap properties() const override;
+    void readProperties( const QVariantMap &props ) override;
 
     /**
      * Sets blur level (radius) for the shadow.
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTOR
      * \param map encoded properties string map
      * \returns new QgsDropShadowEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
+    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
     QgsDropShadowEffect();
 
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTO
      * \param map encoded properties string map
      * \returns new QgsInnerShadowEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
+    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
     QgsInnerShadowEffect();
 

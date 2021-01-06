@@ -256,7 +256,7 @@ QList<int> QgsSingleBandGrayRenderer::usesBands() const
   return bandList;
 }
 
-void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );

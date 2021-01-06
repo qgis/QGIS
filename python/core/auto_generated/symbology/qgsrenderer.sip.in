@@ -252,7 +252,7 @@ create a renderer from XML element
 store renderer info to XML element
 %End
 
-    virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 create the SLD UserStyle element following the SLD v1.1 specs with the given name
 
@@ -274,7 +274,7 @@ the UserStyle element of a SLD style document
 :return: the renderer
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 used from subclasses to create SLD Rule elements following SLD v1.1 specs
 %End
