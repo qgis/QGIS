@@ -42,7 +42,6 @@ int Grid::calcLevel()
 {
     int level = 0;
     double mp = (double)m_millionPoints;
-    double limit = (MaxPointsPerNode / 1000000.0);
 
     double xside = m_bounds.maxx - m_bounds.minx;
     double yside = m_bounds.maxy - m_bounds.miny;
