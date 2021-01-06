@@ -355,9 +355,11 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
 
   if ( !mFilterExp.isEmpty() )
   {
-    if ( !props.value( QStringLiteral( "filter" ), QString() ).toString().isEmpty() )
-      props[ QStringLiteral( "filter" )].toString() += QLatin1String( " AND " );
-    props[ QStringLiteral( "filter" )].toString() += mFilterExp;
+    QString filter = props.value( QStringLiteral( "filter" ), QString() ).toString();
+    if ( !filter.isEmpty() )
+      filter += QLatin1String( " AND " );
+    filter += mFilterExp;
+    props[ QStringLiteral( "filter" )] = filter;
   }
 
   QgsSymbolLayerUtils::mergeScaleDependencies( mMaximumScale, mMinimumScale, props );
