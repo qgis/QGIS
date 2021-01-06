@@ -24,7 +24,7 @@
 #include <QWidget>
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
-  : QgsRelationWidgetWrapper( QStringLiteral( "basic" ), vl, relation, editor, parent )
+  : QgsRelationWidgetWrapper( QStringLiteral( "relation_editor" ), vl, relation, editor, parent )
 {
 }
 
@@ -46,7 +46,7 @@ QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
   if ( !widget )
   {
     QgsLogger::warning( QStringLiteral( "Failed to create relation widget \"%1\", fallback to \"basic\" relation widget" ).arg( mRelationEditorId ) );
-    widget = QgsGui::instance()->relationWidgetRegistry()->create( QStringLiteral( "basic" ), widgetConfig(), parent );
+    widget = QgsGui::instance()->relationWidgetRegistry()->create( QStringLiteral( "relation_editor" ), widgetConfig(), parent );
   }
 
   return widget;

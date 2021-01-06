@@ -25,7 +25,7 @@ QgsBasicRelationWidgetFactory::QgsBasicRelationWidgetFactory()
 
 QString QgsBasicRelationWidgetFactory::type() const
 {
-  return QStringLiteral( "basic" );
+  return QStringLiteral( "relation_editor" );
 }
 
 QString QgsBasicRelationWidgetFactory::name() const
