@@ -26,6 +26,7 @@
 #include "qgslogger.h"
 #include "qgssvgcache.h"
 #include "qgsunittypes.h"
+#include "qgsxmlutils.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -1881,7 +1882,20 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QVariantMap &props )
 
   m->updateDefaultAspectRatio();
 
-  m->setParameters( QgsSymbolLayerUtils::readSerializedProperties( props ) );
+  if ( props.contains( QStringLiteral( "parameters" ) ) )
+  {
+    const QVariantMap parameters = props[QStringLiteral( "parameters" )].toMap();
+    QMap<QString, QgsProperty> parametersProperties;
+    QVariantMap::const_iterator it = parameters.constBegin();
+    for ( ; it != parameters.constEnd(); ++it )
+    {
+      QgsProperty property;
+      if ( property.loadVariant( it.value() ) )
+        parametersProperties.insert( it.key(), property );
+    }
+
+    m->setParameters( parametersProperties );
+  }
 
   return m;
 }
@@ -2260,15 +2274,12 @@ QVariantMap QgsSvgMarkerSymbolLayer::properties() const
   map[QStringLiteral( "outline_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
   map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
-  const QgsStringMap serializedParameters = QgsSymbolLayerUtils::serializeProperties( mParameters );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  for ( QgsStringMap::const_iterator parameterIt = serializedParameters.constBegin(); parameterIt != serializedParameters.constEnd(); ++parameterIt )
-  {
-    map.insert( parameterIt.key(), parameterIt.value() );
-  }
-#else
-  map.insert( serializedParameters );
-#endif
+
+  QVariantMap parameters;
+  QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
+  for ( ; it != mParameters.constEnd(); ++it )
+    parameters.insert( it.key(), it.value().toVariant() );
+  map[QStringLiteral( "vertical_anchor_point" )] = parameters;
 
   return map;
 }
