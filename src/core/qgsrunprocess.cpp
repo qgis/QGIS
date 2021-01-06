@@ -22,9 +22,13 @@
 
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
+#include "qgsfeedback.h"
+#include "qgsapplication.h"
+#include "qgis.h"
 #include <QProcess>
 #include <QTextCodec>
 #include <QMessageBox>
+#include <QApplication>
 
 #if QT_CONFIG(process)
 QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
@@ -247,3 +251,85 @@ QStringList QgsRunProcess::splitCommand( const QString & )
   return QStringList();
 }
 #endif
+
+
+//
+// QgsBlockingProcess
+//
+
+QgsBlockingProcess::QgsBlockingProcess( const QString &process, const QStringList &arguments )
+  : QObject()
+  , mProcess( process )
+  , mArguments( arguments )
+{
+
+}
+
+int QgsBlockingProcess::run( QgsFeedback *feedback )
+{
+  const bool requestMadeFromMainThread = QThread::currentThread() == QCoreApplication::instance()->thread();
+
+  int result = 0;
+  QProcess::ExitStatus status = QProcess::NormalExit;
+
+  std::function<void()> runFunction = [ this, &result, &status, feedback]()
+  {
+    // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
+    // or the blocking call has been made from the main thread and we've fired up a new thread for this function
+    Q_ASSERT( QThread::currentThread() != QgsApplication::instance()->thread() );
+
+    QProcess p;
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    p.setProcessEnvironment( env );
+
+    QEventLoop loop;
+    // connecting to aboutToQuit avoids an on-going process to remain stalled
+    // when QThreadPool::globalInstance()->waitForDone()
+    // is called at process termination
+    connect( qApp, &QCoreApplication::aboutToQuit, &loop, &QEventLoop::quit, Qt::DirectConnection );
+
+    if ( feedback )
+      QObject::connect( feedback, &QgsFeedback::canceled, &p, [ &p]
+    {
+      p.terminate();
+    } );
+    connect( &p, qgis::overload< int, QProcess::ExitStatus >::of( &QProcess::finished ), this, [&loop, &result, &status]( int res, QProcess::ExitStatus st )
+    {
+      result = res;
+      status = st;
+      loop.quit();
+    }, Qt::DirectConnection );
+
+    connect( &p, &QProcess::readyReadStandardOutput, this, [&p, this]
+    {
+      QByteArray ba = p.readAllStandardOutput();
+      mStdoutHandler( ba );
+    } );
+    connect( &p, &QProcess::readyReadStandardError, this, [&p, this]
+    {
+      QByteArray ba = p.readAllStandardError();
+      mStderrHandler( ba );
+    } );
+    p.start( mProcess, mArguments, QProcess::Unbuffered | QProcess::ReadWrite );
+
+    loop.exec();
+
+    mStdoutHandler( p.readAllStandardOutput() );
+    mStderrHandler( p.readAllStandardError() );
+  };
+
+  if ( requestMadeFromMainThread )
+  {
+    std::unique_ptr<ProcessThread> processThread = qgis::make_unique<ProcessThread>( runFunction );
+    processThread->start();
+    // wait for thread to gracefully exit
+    processThread->wait();
+  }
+  else
+  {
+    runFunction();
+  }
+
+  return result;
+};
+
