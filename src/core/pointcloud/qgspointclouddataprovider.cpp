@@ -507,7 +507,7 @@ bool __boxIntesects( const QgsBox3d &box, const QVector3D &rayOrigin, const QVec
     tminZ = std::numeric_limits<double>::lowest();
     tmaxZ = std::numeric_limits<double>::max();
   }
-  QgsDoubleRange tRange( qMax( qMax( tminX, tminY ), tminZ ), qMin( qMin( tmaxX, tmaxY ), tmaxZ ) );
+  QgsDoubleRange tRange( std::max( std::max( tminX, tminY ), tminZ ), std::min( std::min( tmaxX, tmaxY ), tmaxZ ) );
   return !tRange.isEmpty();
 }
 
