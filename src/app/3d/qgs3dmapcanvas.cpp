@@ -279,5 +279,4 @@ void Qgs3DMapCanvas::identifyPointCloudOnMouseEvent( QVector<QPair<QgsMapLayer *
   rayDirWorld = rayDirWorld.normalized();
 
   mScene->identifyPointCloudOnRay( result, QVector3D( rayOriginWorld ), rayDirWorld );
-  return true;
 }

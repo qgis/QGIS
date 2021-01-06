@@ -409,7 +409,7 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
   return nodes;
 }
 
-QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle )
+QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit )
 {
   QVector<QVariantMap> points;
   QgsPointCloudIndex *index = this->index();
@@ -425,10 +425,13 @@ QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D 
 
   for ( IndexedPointCloudNode n : nodes )
   {
-    std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );
+    if ( points.size() >= pointsLimit )
+      break;
 
+    std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );
     if ( !block )
       continue;
+
     const char *ptr = block->data();
     QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
@@ -436,7 +439,7 @@ QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D 
     blockAttributes.find( QStringLiteral( "X" ), xOffset );
     blockAttributes.find( QStringLiteral( "Y" ), yOffset );
     blockAttributes.find( QStringLiteral( "Z" ), zOffset );
-    for ( int i = 0; i < block->pointCount(); ++i )
+    for ( int i = 0; i < block->pointCount() && points.size() < pointsLimit; ++i )
     {
       double x, y, z;
       _pointXY( ptr, i, recordSize, xOffset, yOffset, index->scale(), index->offset(), x, y );

@@ -220,6 +220,9 @@ will be performed on the x/y extent of the box only.
 %End
 
     float distanceFromPoint( double x, double y, double z );
+%Docstring
+Returns shortest distance from the box to a point
+%End
 
     QgsRectangle toRectangle() const;
 %Docstring
