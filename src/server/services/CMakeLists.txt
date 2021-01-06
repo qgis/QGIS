@@ -12,5 +12,6 @@ add_subdirectory(wfs)
 add_subdirectory(wfs3)
 add_subdirectory(wcs)
 add_subdirectory(wmts)
-add_subdirectory(landingpage)
-
+if (WITH_SERVER_PLUGINS)
+  add_subdirectory(landingpage)
+endif()
