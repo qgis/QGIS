@@ -53,6 +53,17 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
     static QgsRunProcess *create( const QString &action, bool capture ) SIP_FACTORY
     { return new QgsRunProcess( action, capture ); }
 
+    /**
+     * Splits the string \a command into a list of tokens, and returns
+     * the list.
+     *
+     * Tokens with spaces can be surrounded by double quotes; three
+     * consecutive double quotes represent the quote character itself.
+     *
+     * \since QGIS 3.18
+     */
+    static QStringList splitCommand( const QString &command );
+
   private:
     QgsRunProcess( const QString &action, bool capture ) SIP_FORCE;
     ~QgsRunProcess() override SIP_FORCE;

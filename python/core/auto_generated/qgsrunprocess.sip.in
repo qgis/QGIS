@@ -29,6 +29,17 @@ https://lists.qt-project.org/pipermail/development/2015-July/022205.html
 
     static QgsRunProcess *create( const QString &action, bool capture ) /Factory/;
 
+    static QStringList splitCommand( const QString &command );
+%Docstring
+Splits the string ``command`` into a list of tokens, and returns
+the list.
+
+Tokens with spaces can be surrounded by double quotes; three
+consecutive double quotes represent the quote character itself.
+
+.. versionadded:: 3.18
+%End
+
   private:
     QgsRunProcess( const QString &action, bool capture );
     ~QgsRunProcess();
