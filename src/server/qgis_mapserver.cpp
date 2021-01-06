@@ -372,7 +372,7 @@ int main( int argc, char *argv[] )
             // Take Host header if defined
             if ( headers.contains( QStringLiteral( "Host" ) ) )
             {
-              url = QStringLiteral( "http://%1%2" ).arg( headers.value( QStringLiteral( "Host" ) ) ).arg( path );
+              url = QStringLiteral( "http://%1%2" ).arg( headers.value( QStringLiteral( "Host" ) ), path );
             }
             else
             {

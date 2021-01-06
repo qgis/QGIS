@@ -84,8 +84,7 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
 void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
 {
   executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( schema ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
 void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
@@ -151,9 +150,9 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
 void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
-                     .arg( QgsPostgresConn::quotedIdentifier( schema ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( name ),
+                           QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
 void QgsPostgresProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
@@ -180,16 +179,16 @@ void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force
 {
   checkCapability( Capability::DropSchema );
   executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1 %2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) )
-                     .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( name ),
+                           force ? QStringLiteral( "CASCADE" ) : QString() ) );
 }
 
 void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameSchema );
   executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( name ),
+                           QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -606,8 +605,8 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
                 ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1)
               SELECT attname FROM pg_index,pg_attribute, pkrelid
               WHERE indexrelid=pkrelid.idxri AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey);
-             )" ).arg( QgsPostgresConn::quotedIdentifier( pr.schemaName ) )
-                                           .arg( QgsPostgresConn::quotedIdentifier( pr.tableName ) ) );
+             )" ).arg( QgsPostgresConn::quotedIdentifier( pr.schemaName ),
+                                               QgsPostgresConn::quotedIdentifier( pr.tableName ) ) );
               QStringList pkNames;
               for ( const auto &pk : qgis::as_const( pks ) )
               {
@@ -761,14 +760,16 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
       QgsDataSourceUri tUri { tableUri( schema, tableName ) };
       if ( tableInfo.geometryColumnTypes().count( ) > 1 )
       {
-        TableProperty::GeometryColumnType geomCol { tableInfo.geometryColumnTypes().first() };
+        const auto geomColTypes( tableInfo.geometryColumnTypes() );
+        TableProperty::GeometryColumnType geomCol { geomColTypes.first() };
         tUri.setGeometryColumn( tableInfo.geometryColumn() );
         tUri.setWkbType( geomCol.wkbType );
         tUri.setSrid( QString::number( geomCol.crs.postgisSrid() ) );
       }
       if ( tableInfo.primaryKeyColumns().count() > 0 )
       {
-        tUri.setKeyColumn( tableInfo.primaryKeyColumns().first() );
+        const auto constPkCols( tableInfo.primaryKeyColumns() );
+        tUri.setKeyColumn( constPkCols.first() );
       }
       tUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QLatin1String( "0" ) );
       QgsVectorLayer::LayerOptions options { false, true };
