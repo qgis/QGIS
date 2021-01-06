@@ -629,6 +629,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     void prepareExpressions( const QgsSymbolRenderContext &context ) override;
 
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+
   protected:
 
     /**

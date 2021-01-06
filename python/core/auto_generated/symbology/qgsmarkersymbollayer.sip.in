@@ -708,6 +708,9 @@ Returns the units for the stroke width.
     virtual void prepareExpressions( const QgsSymbolRenderContext &context );
 
 
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+
   protected:
 
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;

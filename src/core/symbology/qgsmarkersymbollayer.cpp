@@ -3548,3 +3548,15 @@ void QgsSvgMarkerSymbolLayer::prepareExpressions( const QgsSymbolRenderContext &
 
   QgsMarkerSymbolLayer::prepareExpressions( context );
 }
+
+
+QSet<QString> QgsSvgMarkerSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
+{
+  QSet<QString> attrs = QgsMarkerSymbolLayer::usedAttributes( context );
+
+  QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
+  for ( ; it != mParameters.constEnd(); ++it )
+    attrs.unite( it.value().referencedFields( context.expressionContext() ) );
+
+  return attrs;
+}
