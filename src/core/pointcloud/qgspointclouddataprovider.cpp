@@ -23,6 +23,7 @@
 #include "qgsgeometryengine.h"
 #include <mutex>
 #include <QDebug>
+#include <QtMath>
 
 #include <QtConcurrent/QtConcurrentMap>
 
@@ -407,17 +408,64 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
   return nodes;
 }
-QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx )
+
+QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle )
 {
   QVector<QMap<QString, QVariant>> points;
-  qDebug() << "Ray: " << rayOrigin << " " << rayDirection;
   QgsPointCloudIndex *index = this->index();
   IndexedPointCloudNode root = index->root();
   QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
   const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
 
   QVector<IndexedPointCloudNode> nodes = getNodesIntersectingWithRay( index, root, maxScreenError, rootErrorInMapCoordinates, cameraFov, screenSizePx, rayOrigin, rayDirection );
-  qDebug() << "Intersected nodes: " << nodes.size();
+
+  QgsPointCloudAttributeCollection attributeCollection = index->attributes();
+  QgsPointCloudRequest request;
+  request.setAttributes( attributeCollection );
+
+  for ( IndexedPointCloudNode n : nodes )
+  {
+    std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );
+
+    if ( !block )
+      continue;
+    const char *ptr = block->data();
+    QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+    const std::size_t recordSize = blockAttributes.pointRecordSize();
+    int xOffset, yOffset, zOffset;
+    blockAttributes.find( QStringLiteral( "X" ), xOffset );
+    blockAttributes.find( QStringLiteral( "Y" ), yOffset );
+    blockAttributes.find( QStringLiteral( "Z" ), zOffset );
+    for ( int i = 0; i < block->pointCount(); ++i )
+    {
+      double x, y, z;
+      _pointXY( ptr, i, recordSize, xOffset, yOffset, index->scale(), index->offset(), x, y );
+      z = _pointZ( ptr, i, recordSize, zOffset, index->scale(), index->offset() );
+      QVector3D point( x, y, z );
+      // project point on ray
+      QVector3D projectedPoint = rayOrigin + QgsVector3D::dotProduct( point - rayOrigin, rayDirection ) * rayDirection;
+      // check whether point is in front of the ray
+      bool isInFront = QgsVector3D::dotProduct( point - rayOrigin, rayDirection ) > 0.0;
+
+      if ( !isInFront )
+        continue;
+
+      // calculate the angle between the point and the projected point
+      QVector3D v1 = ( projectedPoint - rayOrigin ).normalized();
+      QVector3D v2 = ( point - rayOrigin ).normalized();
+      double angle = qRadiansToDegrees( std::acos( std::abs( QVector3D::dotProduct( v1, v2 ) ) ) );
+
+      if ( angle > pointAngle )
+        continue;
+
+      QVariantMap pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
+      pointAttr[ QStringLiteral( "X" ) ] = x;
+      pointAttr[ QStringLiteral( "Y" ) ] = y;
+      pointAttr[ QStringLiteral( "Z" ) ] = z;
+      points.push_back( pointAttr );
+    }
+  }
+
   return points;
 }
 
@@ -476,7 +524,6 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::getNodesIntersectingWi
 
   // calculate screen space error:
   float distance = box.distanceFromPoint( rayOrigin.x(), rayOrigin.y(), rayOrigin.z() );
-  qDebug() << "Node error: " << nodeError;
   float phi = nodeError * screenSizePx / ( 2 * distance * tan( cameraFov * M_PI / ( 2 * 180 ) ) );
 
   if ( !__boxIntesects( box, rayOrigin, rayDirection ) )
@@ -489,8 +536,6 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::getNodesIntersectingWi
   float childrenError = nodeError / 2.0f;
   if ( phi < maxError )
     return nodes;
-
-  qDebug() << "Passed";
 
   const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
   for ( const IndexedPointCloudNode &nn : children )

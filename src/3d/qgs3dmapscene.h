@@ -121,6 +121,9 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 
     //! Exports the scene according to the scene export settings
     void exportScene( const Qgs3DMapExportSettings &exportSettings );
+
+    void identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QVector3D &rayOrigin, const QVector3D &rayDirection );
+
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
@@ -143,7 +146,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
   public slots:
     //! Updates the temporale entities
     void updateTemporal();
-    void onRayCasted( const QVector3D &rayOrigin, const QVector3D &rayDirection );
 
   private slots:
     void onCameraChanged();

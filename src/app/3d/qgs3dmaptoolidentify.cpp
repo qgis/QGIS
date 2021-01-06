@@ -30,6 +30,7 @@
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 
+#include "qgspointcloudlayer.h"
 
 #include "qgs3dmapscenepickhandler.h"
 
@@ -66,7 +67,6 @@ Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
 {
   mPickHandler.reset( new Qgs3DMapToolIdentifyPickHandler( this ) );
   connect( canvas, &Qgs3DMapCanvas::mapSettingsChanged, this, &Qgs3DMapToolIdentify::onMapSettingsChanged );
-  connect( this, &Qgs3DMapToolIdentify::mouseReleased, canvas, &Qgs3DMapCanvas::mouseReleased );
 }
 
 Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify() = default;
@@ -80,11 +80,35 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
   identifyTool2D->clearResults();
 }
 
+void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
+{
+  if ( event->button() != Qt::MouseButton::LeftButton )
+    return;
+
+  QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> layerPoints;
+  canvas()->identifyPointCloudOnMouseEvent( layerPoints, event );
+
+  QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
+  identifyTool2D->showPointCloudIdentifyResults( layerPoints );
+}
+
 void Qgs3DMapToolIdentify::activate()
 {
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
   {
-    connect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+    bool disableTerrainPicker = false;
+    const Qgs3DMapSettings &map = terrainEntity->map3D();
+    // if the terrain contains point cloud data disable the terrain picker signals
+    for ( QgsMapLayer *layer : map.layers() )
+    {
+      if ( layer->type() == QgsMapLayerType::PointCloudLayer )
+      {
+        disableTerrainPicker = true;
+        break;
+      }
+    }
+    if ( !disableTerrainPicker )
+      connect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
   }
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );

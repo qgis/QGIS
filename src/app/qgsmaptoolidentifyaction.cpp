@@ -41,6 +41,7 @@
 #include "qgsactionscoperegistry.h"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
+#include "qgspointcloudlayer.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -269,4 +270,24 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
     return;
 
   QgsMapTool::keyReleaseEvent( e );
+}
+
+void QgsMapToolIdentifyAction::showPointCloudIdentifyResults( const QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &layersAndPoints )
+{
+  for ( int i = 0; i < layersAndPoints.size(); ++i )
+  {
+    QgsMapLayer *layer = layersAndPoints[i].first;
+    int id = 0;
+    for ( const QVariantMap &pt : layersAndPoints[i].second )
+    {
+      QMap<QString, QString> strMap;
+      for ( QString key : pt.keys() )
+        strMap[ key ] = pt[ key ].toString();
+      resultsDialog()->addFeature( IdentifyResult( layer, QString( "%1_%2" ).arg( layer->name() ).arg( id ), strMap, strMap ) );
+      ++id;
+    }
+  }
+  resultsDialog()->show();
+  // update possible view modes
+  resultsDialog()->updateViewModes();
 }
