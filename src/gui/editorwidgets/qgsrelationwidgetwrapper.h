@@ -218,7 +218,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void aboutToSave() override;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
-    QString mRelationEditorName;
+    QString mRelationEditorId;
     QgsRelationWidget *mWidget = nullptr;
 };
 

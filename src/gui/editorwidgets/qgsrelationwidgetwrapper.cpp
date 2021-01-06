@@ -31,7 +31,7 @@ QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const Qg
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( const QString &relationEditorName, QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
   , mRelation( relation )
-  , mRelationEditorName( relationEditorName )
+  , mRelationEditorId( relationEditorName )
 {
 }
 
@@ -41,11 +41,11 @@ QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
   if ( form )
     connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsRelationWidgetWrapper::widgetValueChanged );
 
-  QWidget *widget = QgsGui::instance()->relationWidgetRegistry()->create( mRelationEditorName, widgetConfig(), parent );
+  QWidget *widget = QgsGui::instance()->relationWidgetRegistry()->create( mRelationEditorId, widgetConfig(), parent );
 
   if ( !widget )
   {
-    QgsLogger::warning( QStringLiteral( "Failed to create relation widget \"%1\", fallback to \"basic\" relation widget" ).arg( mRelationEditorName ) );
+    QgsLogger::warning( QStringLiteral( "Failed to create relation widget \"%1\", fallback to \"basic\" relation widget" ).arg( mRelationEditorId ) );
     widget = QgsGui::instance()->relationWidgetRegistry()->create( QStringLiteral( "basic" ), widgetConfig(), parent );
   }
 
@@ -151,7 +151,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   // if the editor cannot be cast to relation editor, insert a new one
   if ( !w )
   {
-    w = QgsGui::instance()->relationWidgetRegistry()->create( mRelationEditorName, widgetConfig(), editor );
+    w = QgsGui::instance()->relationWidgetRegistry()->create( mRelationEditorId, widgetConfig(), editor );
     editor->layout()->addWidget( w );
   }
 
