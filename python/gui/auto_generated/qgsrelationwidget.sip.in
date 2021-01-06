@@ -10,6 +10,11 @@
 
 
 
+// this is needed for the "convert to subclass" code below to compile
+%ModuleHeaderCode
+#include "qgsbasicrelationwidget.h"
+%End
+
 
 
 class QgsRelationWidget : QWidget
@@ -22,6 +27,12 @@ Base class to build new relation widgets.
 
 %TypeHeaderCode
 #include "qgsrelationwidget.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsBasicRelationWidget *>( sipCpp ) )
+      sipType = sipType_QgsBasicRelationWidget;
+    else
+      sipType = 0;
 %End
   public:
 

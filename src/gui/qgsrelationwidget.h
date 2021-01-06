@@ -32,11 +32,19 @@
 #include "qgsvectorlayerselectionmanager.h"
 #include "qgis_gui.h"
 
+#ifdef SIP_RUN
+// this is needed for the "convert to subclass" code below to compile
+% ModuleHeaderCode
+#include "qgsbasicrelationwidget.h"
+% End
+#endif
+
 class QgsFeature;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsMapTool;
 class QgsMapToolDigitizeFeature;
+class QgsBaseRelationWidget;
 
 
 /**
@@ -47,6 +55,16 @@ class QgsMapToolDigitizeFeature;
  */
 class GUI_EXPORT QgsRelationWidget : public QWidget
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsBasicRelationWidget *>( sipCpp ) )
+      sipType = sipType_QgsBasicRelationWidget;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:
