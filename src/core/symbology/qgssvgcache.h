@@ -143,10 +143,10 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param fitsInCache
      * \param fixedAspectRatio fixed aspect ratio (optional)
      * \param blocking forces to wait for loading before returning image (optional).
+     * \param parameters is a map of parameters to dynamically replace content in SVG.
      *
      * \warning The \a blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
      * application) or crashes will result. Only for use in external scripts or QGIS server.
-     * \param parameters is a map of parameters to dynamically replace content in SVG.
      */
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false,
@@ -164,6 +164,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param forceVectorOutput
      * \param fixedAspectRatio fixed aspect ratio (optional)
      * \param blocking forces to wait for loading before returning image (optional)
+     * \param parameters is a map of parameters to dynamically replace content in SVG.
      *
      * \note The returned QPicture contains the SVG file centered over the picture origin. I.e. if it is rendered
      * using QPainter::drawPicture( QPointF( 5, 10 ), picture ) it will be drawn centered over the point (5, 10).
@@ -172,7 +173,6 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      *
      * \warning The \a blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
      * application) or crashes will result. Only for use in external scripts or QGIS server.
-     * \param parameters is a map of parameters to dynamically replace content in SVG.
      */
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool blocking = false,
@@ -188,11 +188,11 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param widthScaleFactor width scale factor
      * \param fixedAspectRatio fixed aspect ratio (optional)
      * \param blocking forces to wait for loading before returning image (optional).
+     * \param parameters is a map of parameters to dynamically replace content in SVG.
      * \returns viewbox size set in SVG file
      *
      * \warning The blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
      * application) or crashes will result. Only for use in external scripts or QGIS server.
-     * \param parameters is a map of parameters to dynamically replace content in SVG.
      *
      * \since QGIS 2.14
      */
