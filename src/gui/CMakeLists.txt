@@ -567,7 +567,6 @@ set(QGIS_GUI_SRCS
   qgsrasterpyramidsoptionswidget.cpp
   qgsrelationeditorwidget.cpp
   qgsrelationconfigwidget.cpp
-  qgsbasicrelationwidget.cpp
   qgsrelationwidget.cpp
   qgsrelationwidgetfactory.cpp
   qgsrelationwidgetregistry.cpp
@@ -818,7 +817,6 @@ set(QGIS_GUI_HDRS
   qgsratiolockbutton.h
   qgsrelationeditorwidget.h
   qgsrelationconfigwidget.h
-  qgsbasicrelationwidget.h
   qgsrelationwidget.h
   qgsrelationwidgetfactory.h
   qgsrelationwidgetregistry.h

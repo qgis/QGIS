@@ -28,7 +28,7 @@ class QgsRelationConfigWidget;
 
 /**
  * Keeps track of the registered relations widgets. New widgets can be registered, old ones deleted.
- * The default {\see QgsBasicRelationWidget} is protected from removing.
+ * The default {\see QgsRelationEditorWidget} is protected from removing.
  * \ingroup gui
  * \class QgsRelationWidgetRegistry
  * \since QGIS 3.18

@@ -18,11 +18,11 @@
 #include "qgsrelationwidgetregistry.h"
 #include "qgsrelationwidget.h"
 #include "qgsrelationconfigwidget.h"
-#include "qgsbasicrelationwidget.h"
+#include "qgsrelationeditorwidget.h"
 
 QgsRelationWidgetRegistry::QgsRelationWidgetRegistry()
 {
-  addRelationWidget( new QgsBasicRelationWidgetFactory() );
+  addRelationWidget( new QgsRelationEditorWidgetFactory() );
 }
 
 QgsRelationWidgetRegistry::~QgsRelationWidgetRegistry()
@@ -44,8 +44,8 @@ void QgsRelationWidgetRegistry::addRelationWidget( QgsRelationWidgetFactory *wid
 
 void QgsRelationWidgetRegistry::removeRelationWidget( const QString &widgetType )
 {
-  // protect the basic widget from removing, so the user has at least one relation widget type
-  if ( dynamic_cast<QgsBasicRelationWidgetFactory *>( mRelationWidgetFactories.value( widgetType ) ) )
+  // protect the relation editor widget from removing, so the user has at least one relation widget type
+  if ( dynamic_cast<QgsRelationEditorWidgetFactory *>( mRelationWidgetFactories.value( widgetType ) ) )
     return;
 
   mRelationWidgetFactories.remove( widgetType );

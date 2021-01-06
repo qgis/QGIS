@@ -35,7 +35,7 @@
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
 % ModuleHeaderCode
-#include "qgsbasicrelationwidget.h"
+#include "qgsrelationeditorwidget.h"
 % End
 #endif
 
@@ -58,8 +58,8 @@ class GUI_EXPORT QgsRelationWidget : public QWidget
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( qobject_cast<QgsBasicRelationWidget *>( sipCpp ) )
-      sipType = sipType_QgsBasicRelationWidget;
+    if ( qobject_cast<QgsRelationEditorWidget *>( sipCpp ) )
+      sipType = sipType_QgsRelationEditorWidget;
     else
       sipType = 0;
     SIP_END

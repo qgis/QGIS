@@ -15,7 +15,7 @@ class QgsRelationWidgetRegistry
 {
 %Docstring
 Keeps track of the registered relations widgets. New widgets can be registered, old ones deleted.
-The default {:py:class:`QgsBasicRelationWidget`} is protected from removing.
+The default {:py:class:`QgsRelationEditorWidget`} is protected from removing.
 
 .. versionadded:: 3.18
 %End
