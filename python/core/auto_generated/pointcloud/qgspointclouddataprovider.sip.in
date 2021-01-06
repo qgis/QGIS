@@ -92,7 +92,7 @@ the number of points returned to ``pointsLimit`` points
 
     SIP_PYLIST getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit = 1000 );
 %Docstring
-Returns the Points that are on a ray
+Returns the points that are on a ray
 
 :param rayOrigin: : The origin of the ray in layer coordinates
 :param rayDirection: : The direction of the ray in layer coordinates
@@ -102,13 +102,13 @@ Returns the Points that are on a ray
 :param pointAngle: : the maximum accepted angle between the point and it's projected point on the ray in degrees
 :param pointsLimit: : the maximum number of points returned
 
-:return: a vector of the identified points
+:return: a list of the identified points
 
 .. versionadded:: 3.18
 %End
 %MethodCode
     {
-      QVector<QMap<QString, QVariant>> res = sipCpp->identify( *a0, *a1, a2, a3, a4, a5, a6 );
+      QVector<QMap<QString, QVariant>> res = sipCpp->getPointsOnRay( *a0, *a1, a2, a3, a4, a5, a6 );
       sipRes = PyList_New( res.size() );
       for ( int i = 0; i < res.size(); ++i )
       {
