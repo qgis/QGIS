@@ -141,7 +141,7 @@ class QgsServerTestBase(unittest.TestCase):
         os.environ["QGIS_SERVER_DISABLED_APIS"] = "Landing Page"
 
     def tearDown(self):
-        """"Cleanup env"""
+        """Cleanup env"""
 
         super().tearDown()
         try:

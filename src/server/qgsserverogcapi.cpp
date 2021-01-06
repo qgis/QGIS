@@ -150,8 +150,9 @@ QString QgsServerOgcApi::contentTypeToExtension( const ContentType &ct )
 QgsServerOgcApi::ContentType QgsServerOgcApi::contenTypeFromExtension( const std::string &extension )
 {
   const QString exts = QString::fromStdString( extension );
-  for ( auto it = QgsServerOgcApi::contentTypeMimes().constBegin();
-        it != QgsServerOgcApi::contentTypeMimes().constEnd();
+  const auto constMimeTypes( QgsServerOgcApi::contentTypeMimes() );
+  for ( auto it = constMimeTypes.constBegin();
+        it != constMimeTypes.constEnd();
         ++it )
   {
     const auto constValues = it.value();
