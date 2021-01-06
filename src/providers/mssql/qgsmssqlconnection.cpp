@@ -526,7 +526,7 @@ QString QgsMssqlConnection::buildQueryForSchemas( const QString &connName, bool 
 
   if ( allowTablesWithNoGeometry )
   {
-    query += QStringLiteral( "UNION ALL \n"
+    query += QStringLiteral( " UNION ALL \n"
                              "SELECT sys.schemas.name, sys.objects.name, null, null, 'NONE', case when sys.objects.type = 'V' THEN 1 ELSE 0 END \n"
                              "FROM  sys.objects JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id "
                              "WHERE NOT EXISTS (SELECT * FROM sys.columns sc1 JOIN sys.types ON sc1.system_type_id = sys.types.system_type_id WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND sys.objects.object_id = sc1.object_id) AND (sys.objects.type = 'U' or sys.objects.type = 'V')" );
