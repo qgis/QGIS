@@ -198,7 +198,9 @@ class CORE_EXPORT QgsBox3d
      */
     bool contains( const QgsPoint &point ) const;
 
-    //! Returns shortest distance from the box to a point
+    /**
+     * Returns shortest distance from the box to a point
+     */
     float distanceFromPoint( double x, double y, double z );
 
     /**
