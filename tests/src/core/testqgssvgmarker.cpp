@@ -66,6 +66,7 @@ class TestQgsSvgMarkerSymbol : public QObject
     void resetDefaultAspectRatio();
     void opacityWithDataDefinedColor();
     void dataDefinedOpacity();
+    void dynamicParameters();
 
   private:
     bool mTestHasError =  false ;
@@ -339,6 +340,22 @@ void TestQgsSvgMarkerSymbol::dataDefinedOpacity()
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
   mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty() );
+  QVERIFY( result );
+}
+
+void TestQgsSvgMarkerSymbol::dynamicParameters()
+{
+  const QString svgPath = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
+
+  QMap<QString, QgsProperty> parameters {{QStringLiteral( "text1" ), QgsProperty::fromExpression( QStringLiteral( "1+1" ) )},
+    {QStringLiteral( "text2" ), QgsProperty::fromExpression( QStringLiteral( "\"Class\"" ) )},
+    {QStringLiteral( "align" ), QgsProperty::fromExpression( QStringLiteral( "'middle'" ) ) }};
+
+  mSvgMarkerLayer->setPath( svgPath );
+  mSvgMarkerLayer->setSize( 20 );
+  mSvgMarkerLayer->setParameters( parameters );
+  bool result = imageCheck( QStringLiteral( "svgmarker_dynamic_parameters" ) );
+  mSvgMarkerLayer->setParameters( QMap<QString, QgsProperty>() );
   QVERIFY( result );
 }
 
