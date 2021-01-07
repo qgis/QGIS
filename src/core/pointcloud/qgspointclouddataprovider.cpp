@@ -326,7 +326,7 @@ struct MapIndexedPointCloudNode
       _pointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, mIndexScale, mIndexOffset, x, y, z );
       QgsPoint point( x, y );
 
-      if ( mZRange.contains( point.z() ) && extentEngine->contains( &point ) )
+      if ( mZRange.contains( z ) && extentEngine->contains( &point ) )
       {
         QVariantMap pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;
