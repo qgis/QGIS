@@ -1100,9 +1100,9 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
           if ( okX && okY )
           {
-            if ( match.captured( 2 ) == QChar( 'z' ) && scales.contains( params.at( 2 ).toInt() ) )
+            if ( match.captured( 2 ) == QChar( 'z' ) && scales.contains( static_cast<int>( params.at( 2 ).toDouble() ) ) )
             {
-              scale = scales.value( params.at( 2 ).toInt() );
+              scale = scales.value( static_cast<int>( params.at( 2 ).toDouble() ) );
             }
             else if ( match.captured( 2 ) == QChar( 'm' ) )
             {
