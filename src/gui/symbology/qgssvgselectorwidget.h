@@ -394,6 +394,11 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
 
   signals:
     void svgSelected( const QString &path );
+
+    /**
+     * Emitted when the parameters have changed
+     * \since QGIS 3.18
+     */
     void svgParametersChanged( const QMap<QString, QgsProperty> &parameters );
 
   protected:

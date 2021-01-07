@@ -129,7 +129,13 @@ Sets the dynamic parameters
 
   signals:
     void svgSelected( const QString &path );
+
     void svgParametersChanged( const QMap<QString, QgsProperty> &parameters );
+%Docstring
+Emitted when the parameters have changed
+
+.. versionadded:: 3.18
+%End
 
   protected:
     void populateList();
