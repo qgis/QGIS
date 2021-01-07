@@ -24,10 +24,7 @@
 
 #include "ui_qgsrelationeditorconfigwidgetbase.h"
 
-#include "qgsrelationwidget.h"
-#include "qgsrelationconfigwidget.h"
-#include "qgsrelationwidgetfactory.h"
-#include "qgsrelationeditorwidget.h"
+#include "qgsabstractrelationeditorwidget.h"
 #include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgscollapsiblegroupbox.h"
@@ -88,7 +85,7 @@ class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
  * \class QgsRelationEditorWidget
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsRelationEditorWidget : public QgsRelationWidget
+class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidget
 {
 
     Q_OBJECT
@@ -211,37 +208,13 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsRelationWidget
 };
 
 
-#ifndef SIP_RUN
-
-/**
- * Factory class for creating a relation editor widget and the respective config widget.
- * \ingroup gui
- * \class QgsRelationEditorWidgetFactory
- * \note not available in Python bindings
- * \since QGIS 3.18
- */
-class GUI_EXPORT QgsRelationEditorWidgetFactory : public QgsRelationWidgetFactory
-{
-  public:
-    QgsRelationEditorWidgetFactory();
-
-    QString type() const override;
-
-    QString name() const override;
-
-    QgsRelationWidget *create( const QVariantMap &config, QWidget *parent = nullptr ) const override;
-
-    QgsRelationConfigWidget *configWidget( const QgsRelation &relation, QWidget *parent ) const override;
-
-};
-
 /**
  * \ingroup gui
  * \class QgsRelationEditorConfigWidget
  * Creates a new configuration widget for the relation editor widget
  * \since QGIS 3.18
  */
-class QgsRelationEditorConfigWidget : public QgsRelationConfigWidget, private Ui::QgsRelationEditorConfigWidgetBase
+class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEditorConfigWidget, private Ui::QgsRelationEditorConfigWidgetBase
 {
   public:
 
@@ -268,6 +241,32 @@ class QgsRelationEditorConfigWidget : public QgsRelationConfigWidget, private Ui
     void setConfig( const QVariantMap &config );
 
 };
+
+
+#ifndef SIP_RUN
+
+/**
+ * Factory class for creating a relation editor widget and the respective config widget.
+ * \ingroup gui
+ * \class QgsRelationEditorWidgetFactory
+ * \note not available in Python bindings
+ * \since QGIS 3.18
+ */
+class GUI_EXPORT QgsRelationEditorWidgetFactory : public QgsAbstractRelationEditorWidgetFactory
+{
+  public:
+    QgsRelationEditorWidgetFactory();
+
+    QString type() const override;
+
+    QString name() const override;
+
+    QgsAbstractRelationEditorWidget *create( const QVariantMap &config, QWidget *parent = nullptr ) const override;
+
+    QgsAbstractRelationEditorConfigWidget *configWidget( const QgsRelation &relation, QWidget *parent ) const override;
+
+};
 #endif
+
 
 #endif // QGSRELATIONEDITORWIDGET_H

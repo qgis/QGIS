@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsrelationwidget.h
+                         qgsabstractrelationeditorwidget.h
                          ----------------------
     begin                : October 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRELATIONWIDGET_H
-#define QGSRELATIONWIDGET_H
+#ifndef QGSABSTRACTRELATIONEDITORWIDGET_H
+#define QGSABSTRACTRELATIONEDITORWIDGET_H
 
 #include <QWidget>
 #include <QToolButton>
@@ -30,6 +30,7 @@
 #include "qgsdualview.h"
 #include "qgsrelation.h"
 #include "qgsvectorlayerselectionmanager.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 #ifdef SIP_RUN
@@ -45,15 +46,15 @@ class QgsVectorLayerTools;
 class QgsMapTool;
 class QgsMapToolDigitizeFeature;
 class QgsBaseRelationWidget;
-
+class QgsPropertyOverrideButton;
 
 /**
  * Base class to build new relation widgets.
  * \ingroup gui
- * \class QgsRelationWidget
+ * \class QgsAbstractRelationEditorWidget
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsRelationWidget : public QWidget
+class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 {
 
 #ifdef SIP_RUN
@@ -73,7 +74,7 @@ class GUI_EXPORT QgsRelationWidget : public QWidget
     /**
      * Constructor
      */
-    QgsRelationWidget( const QVariantMap &config, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the \a relation and the \a feature
@@ -275,4 +276,116 @@ class GUI_EXPORT QgsRelationWidget : public QWidget
     virtual void afterSetRelations() {};
 };
 
-#endif // QGSRELATIONWIDGET_H
+
+/**
+ * \ingroup gui
+ * This class should be subclassed for every configurable relation widget type.
+ *
+ * It implements the GUI configuration widget and transforms this to/from a configuration.
+ *
+ * It will only be instantiated by {\see QgsAbstractRelationEditorWidgetFactory}
+ * \since QGIS 3.18
+ */
+class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Create a new configuration widget
+     *
+     * \param relation    The relation for which the configuration dialog will be created
+     * \param parent      A parent widget
+     */
+    explicit QgsAbstractRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent SIP_TRANSFERTHIS );
+
+    /**
+     * \brief Create a configuration from the current GUI state
+     *
+     * \returns A widget configuration
+     */
+    virtual QVariantMap config() = 0;
+
+    /**
+     * \brief Update the configuration widget to represent the given configuration.
+     *
+     * \param config The configuration which should be represented by this widget
+     */
+    virtual void setConfig( const QVariantMap &config ) = 0;
+
+    /**
+     * Returns the layer for which this configuration widget applies
+     *
+     * \returns The layer
+     */
+    QgsVectorLayer *layer();
+
+    /**
+     * Returns the relation for which this configuration widget applies
+     *
+     * \returns The relation
+     */
+    QgsRelation relation() const;
+
+
+  private:
+    QgsVectorLayer *mLayer = nullptr;
+    QgsRelation mRelation;
+};
+
+
+///////////////////////////////
+
+
+/**
+ * Factory class for creating relation widgets and their corresponding config widgets
+ * \ingroup gui
+ * \class QgsAbstractRelationEditorWidgetFactory
+ * \since QGIS 3.18
+ */
+class GUI_EXPORT QgsAbstractRelationEditorWidgetFactory
+{
+  public:
+
+    /**
+     * Creates a new relation widget factory with given \a name
+     */
+    QgsAbstractRelationEditorWidgetFactory();
+
+    virtual ~QgsAbstractRelationEditorWidgetFactory() = default;
+
+    /**
+     * Returns the machine readable identifier name of this widget type
+     */
+    virtual QString type() const = 0;
+
+    /**
+     * Returns the human readable identifier name of this widget type
+     */
+    virtual QString name() const = 0;
+
+    /**
+     * Override this in your implementation.
+     * Create a new relation widget. Call QgsEditorWidgetRegistry::create()
+     * instead of calling this method directly.
+     *
+     * \param config   The widget configuration to build the widget with
+     * \param parent   The parent for the wrapper class and any created widget.
+     *
+     * \returns         A new widget wrapper
+     */
+    virtual QgsAbstractRelationEditorWidget *create( const QVariantMap &config, QWidget *parent = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Override this in your implementation.
+     * Create a new configuration widget for this widget type.
+     *
+     * \param relation The relation for which the widget will be created
+     * \param parent   The parent widget of the created config widget
+     *
+     * \returns         A configuration widget
+     */
+    virtual QgsAbstractRelationEditorConfigWidget *configWidget( const QgsRelation &relation, QWidget *parent ) const = 0 SIP_FACTORY;
+};
+
+#endif // QGSABSTRACTRELATIONEDITORWIDGET_H

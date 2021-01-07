@@ -16,7 +16,6 @@
 #include "qgsattributewidgetedit.h"
 #include "qgsattributesformproperties.h"
 #include "qgsrelationwidgetregistry.h"
-#include "qgsrelationconfigwidget.h"
 
 
 QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *parent )
@@ -94,7 +93,7 @@ QgsAttributeWidgetRelationEditWidget::QgsAttributeWidgetRelationEditWidget( QWid
 {
   setupUi( this );
 
-  QMapIterator<QString, QgsRelationWidgetFactory *> it( QgsGui::relationWidgetRegistry()->factories() );
+  QMapIterator<QString, QgsAbstractRelationEditorWidgetFactory *> it( QgsGui::relationWidgetRegistry()->factories() );
 
   while ( it.hasNext() )
   {

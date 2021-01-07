@@ -19,6 +19,7 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+#include "qgsabstractrelationeditorwidget.h"
 #include "qgsrelationwidgetregistry.h"
 #include "qgsgui.h"
 #include <QWidget>
@@ -146,7 +147,7 @@ void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
 
 void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 {
-  QgsRelationWidget *w = qobject_cast<QgsRelationWidget *>( editor );
+  QgsAbstractRelationEditorWidget *w = qobject_cast<QgsAbstractRelationEditorWidget *>( editor );
 
   // if the editor cannot be cast to relation editor, insert a new one
   if ( !w )

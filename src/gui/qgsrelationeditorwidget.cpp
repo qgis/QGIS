@@ -94,7 +94,7 @@ void QgsFilteredSelectionManager::onSelectionChanged( const QgsFeatureIds &selec
 /// @endcond
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWidget *parent )
-  : QgsRelationWidget( config, parent )
+  : QgsAbstractRelationEditorWidget( config, parent )
   , mButtonsVisibility( qgsFlagKeysToValue( config.value( QStringLiteral( "buttons" ) ).toString(), QgsRelationEditorWidget::Button::AllButtons ) )
 {
   QVBoxLayout *rootLayout = new QVBoxLayout( this );
@@ -360,7 +360,7 @@ void QgsRelationEditorWidget::onDigitizingCompleted( const QgsFeature &feature )
 
 void QgsRelationEditorWidget::toggleEditing( bool state )
 {
-  QgsRelationWidget::toggleEditing( state );
+  QgsAbstractRelationEditorWidget::toggleEditing( state );
 
   updateButtons();
 }
@@ -610,41 +610,8 @@ void QgsRelationEditorWidget::afterSetRelations()
 ///////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef SIP_RUN
-QgsRelationEditorWidgetFactory::QgsRelationEditorWidgetFactory()
-{
-
-}
-
-QString QgsRelationEditorWidgetFactory::type() const
-{
-  return QStringLiteral( "relation_editor" );
-}
-
-QString QgsRelationEditorWidgetFactory::name() const
-{
-  return QStringLiteral( "Relation Editor" );
-}
-
-QgsRelationWidget *QgsRelationEditorWidgetFactory::create( const QVariantMap &config, QWidget *parent ) const
-{
-  return new QgsRelationEditorWidget( config, parent );
-}
-
-
-QgsRelationConfigWidget *QgsRelationEditorWidgetFactory::configWidget( const QgsRelation &relation, QWidget *parent ) const
-{
-  return static_cast<QgsRelationConfigWidget *>( new QgsRelationEditorConfigWidget( relation, parent ) );
-}
-#endif
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-#ifndef SIP_RUN
 QgsRelationEditorConfigWidget::QgsRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent )
-  : QgsRelationConfigWidget( relation, parent )
+  : QgsAbstractRelationEditorConfigWidget( relation, parent )
 {
   setupUi( this );
 }
@@ -677,5 +644,35 @@ void QgsRelationEditorConfigWidget::setConfig( const QVariantMap &config )
   mRelationShowZoomToFeatureCheckBox->setChecked( buttons.testFlag( QgsRelationEditorWidget::Button::ZoomToChildFeature ) );
   mRelationDeleteChildFeatureCheckBox->setChecked( buttons.testFlag( QgsRelationEditorWidget::Button::DeleteChildFeature ) );
   mRelationShowSaveChildEditsCheckBox->setChecked( buttons.testFlag( QgsRelationEditorWidget::Button::SaveChildEdits ) );
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef SIP_RUN
+QgsRelationEditorWidgetFactory::QgsRelationEditorWidgetFactory()
+{
+
+}
+
+QString QgsRelationEditorWidgetFactory::type() const
+{
+  return QStringLiteral( "relation_editor" );
+}
+
+QString QgsRelationEditorWidgetFactory::name() const
+{
+  return QStringLiteral( "Relation Editor" );
+}
+
+QgsAbstractRelationEditorWidget *QgsRelationEditorWidgetFactory::create( const QVariantMap &config, QWidget *parent ) const
+{
+  return new QgsRelationEditorWidget( config, parent );
+}
+
+QgsAbstractRelationEditorConfigWidget *QgsRelationEditorWidgetFactory::configWidget( const QgsRelation &relation, QWidget *parent ) const
+{
+  return static_cast<QgsAbstractRelationEditorConfigWidget *>( new QgsRelationEditorConfigWidget( relation, parent ) );
 }
 #endif

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsrelationwidget.h
+                         qgsabstractrelationeditorwidget.cpp
                          ----------------------
     begin                : October 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrelationwidget.h"
+#include "qgsabstractrelationeditorwidget.h"
 
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
@@ -44,13 +44,13 @@
 #include <QPushButton>
 
 
-QgsRelationWidget::QgsRelationWidget( const QVariantMap &config, QWidget *parent )
+QgsAbstractRelationEditorWidget::QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent )
   : QWidget( parent )
 {
   Q_UNUSED( config );
 }
 
-void QgsRelationWidget::setRelationFeature( const QgsRelation &relation, const QgsFeature &feature )
+void QgsAbstractRelationEditorWidget::setRelationFeature( const QgsRelation &relation, const QgsFeature &feature )
 {
   beforeSetRelationFeature( relation, feature );
 
@@ -64,7 +64,7 @@ void QgsRelationWidget::setRelationFeature( const QgsRelation &relation, const Q
   updateUi();
 }
 
-void QgsRelationWidget::setRelations( const QgsRelation &relation, const QgsRelation &nmrelation )
+void QgsAbstractRelationEditorWidget::setRelations( const QgsRelation &relation, const QgsRelation &nmrelation )
 {
 
   beforeSetRelations( relation, nmrelation );
@@ -106,22 +106,22 @@ void QgsRelationWidget::setRelations( const QgsRelation &relation, const QgsRela
   updateUi();
 }
 
-void QgsRelationWidget::setEditorContext( const QgsAttributeEditorContext &context )
+void QgsAbstractRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext &context )
 {
   mEditorContext = context;
 }
 
-QgsAttributeEditorContext QgsRelationWidget::editorContext() const
+QgsAttributeEditorContext QgsAbstractRelationEditorWidget::editorContext() const
 {
   return mEditorContext;
 }
 
-QgsIFeatureSelectionManager *QgsRelationWidget::featureSelectionManager()
+QgsIFeatureSelectionManager *QgsAbstractRelationEditorWidget::featureSelectionManager()
 {
   return mFeatureSelectionMgr;
 }
 
-void QgsRelationWidget::setFeature( const QgsFeature &feature, bool update )
+void QgsAbstractRelationEditorWidget::setFeature( const QgsFeature &feature, bool update )
 {
   mFeature = feature;
 
@@ -131,51 +131,51 @@ void QgsRelationWidget::setFeature( const QgsFeature &feature, bool update )
     updateUi();
 }
 
-void QgsRelationWidget::setNmRelationId( const QVariant &nmRelationId )
+void QgsAbstractRelationEditorWidget::setNmRelationId( const QVariant &nmRelationId )
 {
   mNmRelationId = nmRelationId;
 }
 
-QVariant QgsRelationWidget::nmRelationId() const
+QVariant QgsAbstractRelationEditorWidget::nmRelationId() const
 {
   return mNmRelationId;
 }
 
-QString QgsRelationWidget::label() const
+QString QgsAbstractRelationEditorWidget::label() const
 {
   return mLabel;
 }
 
-void QgsRelationWidget::setLabel( const QString &label )
+void QgsAbstractRelationEditorWidget::setLabel( const QString &label )
 {
   mLabel = label;
 
   updateTitle();
 }
 
-bool QgsRelationWidget::showLabel() const
+bool QgsAbstractRelationEditorWidget::showLabel() const
 {
   return mShowLabel;
 }
 
-void QgsRelationWidget::setShowLabel( bool showLabel )
+void QgsAbstractRelationEditorWidget::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
 
   updateTitle();
 }
 
-void QgsRelationWidget::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+void QgsAbstractRelationEditorWidget::setForceSuppressFormPopup( bool forceSuppressFormPopup )
 {
   mForceSuppressFormPopup = forceSuppressFormPopup;
 }
 
-bool QgsRelationWidget::forceSuppressFormPopup() const
+bool QgsAbstractRelationEditorWidget::forceSuppressFormPopup() const
 {
   return mForceSuppressFormPopup;
 }
 
-void QgsRelationWidget::updateTitle()
+void QgsAbstractRelationEditorWidget::updateTitle()
 {
   if ( mShowLabel && !mLabel.isEmpty() )
   {
@@ -191,12 +191,12 @@ void QgsRelationWidget::updateTitle()
   }
 }
 
-QgsFeature QgsRelationWidget::feature() const
+QgsFeature QgsAbstractRelationEditorWidget::feature() const
 {
   return mFeature;
 }
 
-void QgsRelationWidget::toggleEditing( bool state )
+void QgsAbstractRelationEditorWidget::toggleEditing( bool state )
 {
   if ( state )
   {
@@ -212,14 +212,14 @@ void QgsRelationWidget::toggleEditing( bool state )
   }
 }
 
-void QgsRelationWidget::saveEdits()
+void QgsAbstractRelationEditorWidget::saveEdits()
 {
   mEditorContext.vectorLayerTools()->saveEdits( mRelation.referencingLayer() );
   if ( mNmRelation.isValid() )
     mEditorContext.vectorLayerTools()->saveEdits( mNmRelation.referencedLayer() );
 }
 
-void QgsRelationWidget::addFeature( const QgsGeometry &geometry )
+void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 {
   QgsAttributeMap keyAttrs;
 
@@ -272,18 +272,18 @@ void QgsRelationWidget::addFeature( const QgsGeometry &geometry )
   }
 }
 
-void QgsRelationWidget::deleteFeature( const QgsFeatureId fid )
+void QgsAbstractRelationEditorWidget::deleteFeature( const QgsFeatureId fid )
 {
   deleteFeatures( QgsFeatureIds() << fid );
 }
 
-void QgsRelationWidget::deleteSelectedFeatures()
+void QgsAbstractRelationEditorWidget::deleteSelectedFeatures()
 {
   QgsFeatureIds selectedFids = mFeatureSelectionMgr->selectedFeatureIds();
   deleteFeatures( selectedFids );
 }
 
-void QgsRelationWidget::deleteFeatures( const QgsFeatureIds &fids )
+void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids )
 {
   bool deleteFeatures = true;
 
@@ -397,7 +397,7 @@ void QgsRelationWidget::deleteFeatures( const QgsFeatureIds &fids )
   }
 }
 
-void QgsRelationWidget::linkFeature()
+void QgsAbstractRelationEditorWidget::linkFeature()
 {
   QgsVectorLayer *layer = nullptr;
 
@@ -412,11 +412,11 @@ void QgsRelationWidget::linkFeature()
   const QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), mFeature );
   selectionDlg->setWindowTitle( tr( "Link existing child features for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString ) );
 
-  connect( selectionDlg, &QDialog::accepted, this, &QgsRelationWidget::onLinkFeatureDlgAccepted );
+  connect( selectionDlg, &QDialog::accepted, this, &QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted );
   selectionDlg->show();
 }
 
-void QgsRelationWidget::onLinkFeatureDlgAccepted()
+void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
 {
   QgsFeatureSelectionDlg *selectionDlg = qobject_cast<QgsFeatureSelectionDlg *>( sender() );
   if ( mNmRelation.isValid() )
@@ -490,17 +490,17 @@ void QgsRelationWidget::onLinkFeatureDlgAccepted()
   updateUi();
 }
 
-void QgsRelationWidget::unlinkFeature( const QgsFeatureId fid )
+void QgsAbstractRelationEditorWidget::unlinkFeature( const QgsFeatureId fid )
 {
   unlinkFeatures( QgsFeatureIds() << fid );
 }
 
-void QgsRelationWidget::unlinkSelectedFeatures()
+void QgsAbstractRelationEditorWidget::unlinkSelectedFeatures()
 {
   unlinkFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
 }
 
-void QgsRelationWidget::unlinkFeatures( const QgsFeatureIds &fids )
+void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids )
 {
   if ( mNmRelation.isValid() )
   {
@@ -567,7 +567,7 @@ void QgsRelationWidget::unlinkFeatures( const QgsFeatureIds &fids )
   }
 }
 
-void QgsRelationWidget::duplicateFeature()
+void QgsAbstractRelationEditorWidget::duplicateFeature()
 {
   QgsVectorLayer *layer = mRelation.referencingLayer();
 
@@ -580,7 +580,7 @@ void QgsRelationWidget::duplicateFeature()
   }
 }
 
-void QgsRelationWidget::zoomToSelectedFeatures()
+void QgsAbstractRelationEditorWidget::zoomToSelectedFeatures()
 {
   QgsMapCanvas *c = mEditorContext.mapCanvas();
   if ( !c )
@@ -590,4 +590,32 @@ void QgsRelationWidget::zoomToSelectedFeatures()
     mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer(),
     mFeatureSelectionMgr->selectedFeatureIds()
   );
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+QgsAbstractRelationEditorConfigWidget::QgsAbstractRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent )
+  : QWidget( parent )
+  , mRelation( relation )
+{
+}
+
+QgsVectorLayer *QgsAbstractRelationEditorConfigWidget::layer()
+{
+  return mLayer;
+}
+
+QgsRelation QgsAbstractRelationEditorConfigWidget::relation() const
+{
+  return mRelation;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+QgsAbstractRelationEditorWidgetFactory::QgsAbstractRelationEditorWidgetFactory()
+{
 }

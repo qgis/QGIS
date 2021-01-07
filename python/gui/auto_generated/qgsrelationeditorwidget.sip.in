@@ -21,7 +21,7 @@
 
 
 
-class QgsRelationEditorWidget : QgsRelationWidget
+class QgsRelationEditorWidget : QgsAbstractRelationEditorWidget
 {
 %Docstring
 The default relation widget in QGIS. Successor of the now deprecated {:py:class:`QgsRelationEditorWidget`}.
@@ -109,6 +109,45 @@ Sets the title of the root groupbox
 
 
 };
+
+
+class QgsRelationEditorConfigWidget : QgsAbstractRelationEditorConfigWidget
+{
+%Docstring
+Creates a new configuration widget for the relation editor widget
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrelationeditorwidget.h"
+%End
+  public:
+
+    explicit QgsRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
+%Docstring
+Create a new configuration widget
+
+:param relation: The relation for which the configuration dialog will be created
+:param parent: A parent widget
+%End
+
+    QVariantMap config();
+%Docstring
+Create a configuration from the current GUI state
+
+:return: A widget configuration
+%End
+
+    void setConfig( const QVariantMap &config );
+%Docstring
+Update the configuration widget to represent the given configuration.
+
+:param config: The configuration which should be represented by this widget
+%End
+
+};
+
 
 
 

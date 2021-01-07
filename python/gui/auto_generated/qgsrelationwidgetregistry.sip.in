@@ -32,7 +32,7 @@ Constructor
 
     ~QgsRelationWidgetRegistry();
 
-    void addRelationWidget( QgsRelationWidgetFactory *widgetFactory /Transfer/ );
+    void addRelationWidget( QgsAbstractRelationEditorWidgetFactory *widgetFactory /Transfer/ );
 %Docstring
 Adds a new registered relation ``widgetFactory``
 %End
@@ -47,12 +47,12 @@ Removes a registered relation widget with given ``widgetType``
 Returns a list of names of registered relation widgets
 %End
 
-    QMap<QString, QgsRelationWidgetFactory *> factories() const;
+    QMap<QString, QgsAbstractRelationEditorWidgetFactory *> factories() const;
 %Docstring
 Gets access to all registered factories
 %End
 
-    QgsRelationWidget *create( const QString &widgetType, const QVariantMap &config, QWidget *parent = 0 ) const /TransferBack/;
+    QgsAbstractRelationEditorWidget *create( const QString &widgetType, const QVariantMap &config, QWidget *parent = 0 ) const /TransferBack/;
 %Docstring
 Create a relation widget of a given type for a given field.
 
@@ -61,7 +61,7 @@ Create a relation widget of a given type for a given field.
 :param parent:
 %End
 
-    QgsRelationConfigWidget *createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent = 0 ) const /TransferBack/;
+    QgsAbstractRelationEditorConfigWidget *createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent = 0 ) const /TransferBack/;
 %Docstring
 Creates a configuration widget
 

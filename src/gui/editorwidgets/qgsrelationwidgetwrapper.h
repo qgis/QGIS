@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
-class QgsRelationWidget;
+class QgsAbstractRelationEditorWidget;
 
 /**
  * \ingroup gui
@@ -219,7 +219,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     QgsRelation mRelation;
     QgsRelation mNmRelation;
     QString mRelationEditorId;
-    QgsRelationWidget *mWidget = nullptr;
+    QgsAbstractRelationEditorWidget *mWidget = nullptr;
 };
 
 #endif // QGSRELATIONWIDGETWRAPPER_H

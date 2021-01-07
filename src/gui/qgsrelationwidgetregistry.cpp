@@ -16,8 +16,6 @@
  ***************************************************************************/
 
 #include "qgsrelationwidgetregistry.h"
-#include "qgsrelationwidget.h"
-#include "qgsrelationconfigwidget.h"
 #include "qgsrelationeditorwidget.h"
 
 QgsRelationWidgetRegistry::QgsRelationWidgetRegistry()
@@ -31,7 +29,7 @@ QgsRelationWidgetRegistry::~QgsRelationWidgetRegistry()
   mRelationWidgetFactories.clear();
 }
 
-void QgsRelationWidgetRegistry::addRelationWidget( QgsRelationWidgetFactory *widgetFactory )
+void QgsRelationWidgetRegistry::addRelationWidget( QgsAbstractRelationEditorWidgetFactory *widgetFactory )
 {
   if ( !widgetFactory )
     return;
@@ -56,12 +54,12 @@ QStringList QgsRelationWidgetRegistry::relationWidgetNames()
   return mRelationWidgetFactories.keys();
 }
 
-QMap<QString, QgsRelationWidgetFactory *> QgsRelationWidgetRegistry::factories() const
+QMap<QString, QgsAbstractRelationEditorWidgetFactory *> QgsRelationWidgetRegistry::factories() const
 {
   return mRelationWidgetFactories;
 }
 
-QgsRelationWidget *QgsRelationWidgetRegistry::create( const QString &widgetType, const QVariantMap &config, QWidget *parent ) const
+QgsAbstractRelationEditorWidget *QgsRelationWidgetRegistry::create( const QString &widgetType, const QVariantMap &config, QWidget *parent ) const
 {
   if ( ! mRelationWidgetFactories.contains( widgetType ) )
     return nullptr;
@@ -69,7 +67,7 @@ QgsRelationWidget *QgsRelationWidgetRegistry::create( const QString &widgetType,
   return mRelationWidgetFactories.value( widgetType )->create( config, parent );
 }
 
-QgsRelationConfigWidget *QgsRelationWidgetRegistry::createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent ) const
+QgsAbstractRelationEditorConfigWidget *QgsRelationWidgetRegistry::createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent ) const
 {
   if ( ! mRelationWidgetFactories.contains( widgetType ) )
     return nullptr;

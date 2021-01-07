@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsrelationwidget.h                                          *
+ * src/gui/qgsabstractrelationeditorwidget.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -16,8 +16,7 @@
 %End
 
 
-
-class QgsRelationWidget : QWidget
+class QgsAbstractRelationEditorWidget : QWidget
 {
 %Docstring
 Base class to build new relation widgets.
@@ -26,7 +25,7 @@ Base class to build new relation widgets.
 %End
 
 %TypeHeaderCode
-#include "qgsrelationwidget.h"
+#include "qgsabstractrelationeditorwidget.h"
 %End
 %ConvertToSubClassCode
     if ( qobject_cast<QgsRelationEditorWidget *>( sipCpp ) )
@@ -37,7 +36,7 @@ Base class to build new relation widgets.
   public:
 
 
-    QgsRelationWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
+    QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
 %End
@@ -228,10 +227,124 @@ Unlinks the features with ``fids``
 
 };
 
+
+class QgsAbstractRelationEditorConfigWidget : QWidget
+{
+%Docstring
+This class should be subclassed for every configurable relation widget type.
+
+It implements the GUI configuration widget and transforms this to/from a configuration.
+
+It will only be instantiated by {:py:class:`QgsAbstractRelationEditorWidgetFactory`}
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsabstractrelationeditorwidget.h"
+%End
+  public:
+
+    explicit QgsAbstractRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
+%Docstring
+Create a new configuration widget
+
+:param relation: The relation for which the configuration dialog will be created
+:param parent: A parent widget
+%End
+
+    virtual QVariantMap config() = 0;
+%Docstring
+Create a configuration from the current GUI state
+
+:return: A widget configuration
+%End
+
+    virtual void setConfig( const QVariantMap &config ) = 0;
+%Docstring
+Update the configuration widget to represent the given configuration.
+
+:param config: The configuration which should be represented by this widget
+%End
+
+    QgsVectorLayer *layer();
+%Docstring
+Returns the layer for which this configuration widget applies
+
+:return: The layer
+%End
+
+    QgsRelation relation() const;
+%Docstring
+Returns the relation for which this configuration widget applies
+
+:return: The relation
+%End
+
+
+};
+
+
+
+
+class QgsAbstractRelationEditorWidgetFactory
+{
+%Docstring
+Factory class for creating relation widgets and their corresponding config widgets
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsabstractrelationeditorwidget.h"
+%End
+  public:
+
+    QgsAbstractRelationEditorWidgetFactory();
+%Docstring
+Creates a new relation widget factory with given ``name``
+%End
+
+    virtual ~QgsAbstractRelationEditorWidgetFactory();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the machine readable identifier name of this widget type
+%End
+
+    virtual QString name() const = 0;
+%Docstring
+Returns the human readable identifier name of this widget type
+%End
+
+    virtual QgsAbstractRelationEditorWidget *create( const QVariantMap &config, QWidget *parent = 0 ) const = 0 /Factory/;
+%Docstring
+Override this in your implementation.
+Create a new relation widget. Call :py:func:`QgsEditorWidgetRegistry.create()`
+instead of calling this method directly.
+
+:param config: The widget configuration to build the widget with
+:param parent: The parent for the wrapper class and any created widget.
+
+:return: A new widget wrapper
+%End
+
+    virtual QgsAbstractRelationEditorConfigWidget *configWidget( const QgsRelation &relation, QWidget *parent ) const = 0 /Factory/;
+%Docstring
+Override this in your implementation.
+Create a new configuration widget for this widget type.
+
+:param relation: The relation for which the widget will be created
+:param parent: The parent widget of the created config widget
+
+:return: A configuration widget
+%End
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsrelationwidget.h                                          *
+ * src/gui/qgsabstractrelationeditorwidget.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

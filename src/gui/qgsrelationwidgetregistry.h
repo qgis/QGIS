@@ -15,16 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseditorconfigwidget.h"
-#include "qgsrelationwidget.h"
-#include "qgsrelationwidgetfactory.h"
+#include "qgsabstractrelationeditorwidget.h"
 #include "qgis_gui.h"
 
 
 #ifndef QGSRELATIONWIDGETREGISTRY_H
 #define QGSRELATIONWIDGETREGISTRY_H
 
-class QgsRelationConfigWidget;
 
 /**
  * Keeps track of the registered relations widgets. New widgets can be registered, old ones deleted.
@@ -47,7 +44,7 @@ class GUI_EXPORT QgsRelationWidgetRegistry
     /**
      * Adds a new registered relation \a widgetFactory
      */
-    void addRelationWidget( QgsRelationWidgetFactory *widgetFactory SIP_TRANSFER );
+    void addRelationWidget( QgsAbstractRelationEditorWidgetFactory *widgetFactory SIP_TRANSFER );
 
     /**
      * Removes a registered relation widget with given \a widgetType
@@ -62,7 +59,7 @@ class GUI_EXPORT QgsRelationWidgetRegistry
     /**
      * Gets access to all registered factories
      */
-    QMap<QString, QgsRelationWidgetFactory *> factories() const;
+    QMap<QString, QgsAbstractRelationEditorWidgetFactory *> factories() const;
 
     /**
      * Create a relation widget of a given type for a given field.
@@ -71,7 +68,7 @@ class GUI_EXPORT QgsRelationWidgetRegistry
      * \param config  The configuration of the widget
      * \param parent
      */
-    QgsRelationWidget *create( const QString &widgetType, const QVariantMap &config, QWidget *parent = nullptr ) const SIP_TRANSFERBACK;
+    QgsAbstractRelationEditorWidget *create( const QString &widgetType, const QVariantMap &config, QWidget *parent = nullptr ) const SIP_TRANSFERBACK;
 
     /**
      * Creates a configuration widget
@@ -80,11 +77,11 @@ class GUI_EXPORT QgsRelationWidgetRegistry
      * \param relation  The relation for which this widget will be created
      * \param parent    The parent widget for the created widget
      */
-    QgsRelationConfigWidget *createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent = nullptr ) const SIP_TRANSFERBACK;
+    QgsAbstractRelationEditorConfigWidget *createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent = nullptr ) const SIP_TRANSFERBACK;
 
   private:
 
-    QMap<QString, QgsRelationWidgetFactory *> mRelationWidgetFactories;
+    QMap<QString, QgsAbstractRelationEditorWidgetFactory *> mRelationWidgetFactories;
 };
 
 #endif // QGSRELATIONWIDGETREGISTRY_H
