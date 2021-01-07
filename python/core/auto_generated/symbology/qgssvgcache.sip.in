@@ -48,7 +48,8 @@ Constructor for QgsSvgCache.
 %End
 
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false );
+                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false,
+                       const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 %Docstring
 Returns an SVG drawing as a QImage.
 
@@ -61,6 +62,7 @@ Returns an SVG drawing as a QImage.
 :param fitsInCache:
 :param fixedAspectRatio: fixed aspect ratio (optional)
 :param blocking: forces to wait for loading before returning image (optional).
+:param parameters: is a map of parameters to dynamically replace content in SVG.
 
 .. warning::
 
@@ -69,7 +71,8 @@ Returns an SVG drawing as a QImage.
 %End
 
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool blocking = false );
+                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool blocking = false,
+                           const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 %Docstring
 Returns an SVG drawing as a QPicture.
 
@@ -82,6 +85,7 @@ Returns an SVG drawing as a QPicture.
 :param forceVectorOutput:
 :param fixedAspectRatio: fixed aspect ratio (optional)
 :param blocking: forces to wait for loading before returning image (optional)
+:param parameters: is a map of parameters to dynamically replace content in SVG.
 
 .. note::
 
@@ -98,7 +102,7 @@ Returns an SVG drawing as a QPicture.
 %End
 
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 %Docstring
 Calculates the viewbox size of a (possibly cached) SVG file.
 
@@ -110,6 +114,7 @@ Calculates the viewbox size of a (possibly cached) SVG file.
 :param widthScaleFactor: width scale factor
 :param fixedAspectRatio: fixed aspect ratio (optional)
 :param blocking: forces to wait for loading before returning image (optional).
+:param parameters: is a map of parameters to dynamically replace content in SVG.
 
 :return: viewbox size set in SVG file
 
@@ -190,7 +195,7 @@ in the same thread to ensure provided the remote content.
 %End
 
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 %Docstring
 Gets the SVG content corresponding to the given ``path``.
 

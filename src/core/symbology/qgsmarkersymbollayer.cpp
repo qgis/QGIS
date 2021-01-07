@@ -26,6 +26,7 @@
 #include "qgslogger.h"
 #include "qgssvgcache.h"
 #include "qgsunittypes.h"
+#include "qgsxmlutils.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -1881,6 +1882,21 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QVariantMap &props )
 
   m->updateDefaultAspectRatio();
 
+  if ( props.contains( QStringLiteral( "parameters" ) ) )
+  {
+    const QVariantMap parameters = props[QStringLiteral( "parameters" )].toMap();
+    QMap<QString, QgsProperty> parametersProperties;
+    QVariantMap::const_iterator it = parameters.constBegin();
+    for ( ; it != parameters.constEnd(); ++it )
+    {
+      QgsProperty property;
+      if ( property.loadVariant( it.value() ) )
+        parametersProperties.insert( it.key(), property );
+    }
+
+    m->setParameters( parametersProperties );
+  }
+
   return m;
 }
 
@@ -1977,6 +1993,11 @@ bool QgsSvgMarkerSymbolLayer::setPreservedAspectRatio( bool par )
   return preservedAspectRatio();
 }
 
+void QgsSvgMarkerSymbolLayer::setParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  mParameters = parameters;
+}
+
 
 QString QgsSvgMarkerSymbolLayer::layerType() const
 {
@@ -2016,6 +2037,8 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   double aspectRatio = calculateAspectRatio( context, scaledWidth, hasDataDefinedAspectRatio );
   double scaledHeight = scaledWidth * ( !qgsDoubleNear( aspectRatio, 0.0 ) ? aspectRatio : mDefaultAspectRatio );
 
+  QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( mParameters, context.renderContext().expressionContext() );
+
   double strokeWidth = mStrokeWidth;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
@@ -2053,7 +2076,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
       // adjust height of data defined path
       QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledWidth, fillColor, strokeColor, strokeWidth,
                           context.renderContext().scaleFactor(), aspectRatio,
-                          ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+                          ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
       scaledHeight = svgViewbox.isValid() ? scaledWidth * svgViewbox.height() / svgViewbox.width() : scaledWidth;
     }
   }
@@ -2075,7 +2098,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     QImage img = QgsApplication::svgCache()->svgAsImage( path, width, fillColor, strokeColor, strokeWidth,
                  context.renderContext().scaleFactor(), fitsInCache, aspectRatio,
-                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
     if ( fitsInCache && img.width() > 1 )
     {
       usePict = false;
@@ -2102,7 +2125,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
     p->setOpacity( context.opacity() );
     QPicture pct = QgsApplication::svgCache()->svgAsPicture( path, width, fillColor, strokeColor, strokeWidth,
                    context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio,
-                   ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+                   ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
     if ( pct.width() > 1 )
     {
       QgsScopedQPainterState painterPictureState( p );
@@ -2251,6 +2274,13 @@ QVariantMap QgsSvgMarkerSymbolLayer::properties() const
   map[QStringLiteral( "outline_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
   map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
+
+  QVariantMap parameters;
+  QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
+  for ( ; it != mParameters.constEnd(); ++it )
+    parameters.insert( it.key(), it.value().toVariant() );
+  map[QStringLiteral( "parameters" )] = parameters;
+
   return map;
 }
 
@@ -2277,6 +2307,8 @@ QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  m->setParameters( mParameters );
+
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
   return m;
@@ -2477,9 +2509,11 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     strokeColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor );
   }
 
+  QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( mParameters, context.renderContext().expressionContext() );
+
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, strokeColor, strokeWidth,
                                  context.renderContext().scaleFactor(), mFixedAspectRatio,
-                                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+                                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
 
   QSvgRenderer r( svgContent );
   if ( !r.isValid() )
@@ -2560,10 +2594,12 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
         fillColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor );
       }
 
+      QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( mParameters, context.renderContext().expressionContext() );
+
       // adjust height of data defined path
       QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledWidth, fillColor, strokeColor, strokeWidth,
                           context.renderContext().scaleFactor(), aspectRatio,
-                          ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+                          ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
       scaledHeight = svgViewbox.isValid() ? scaledWidth * svgViewbox.height() / svgViewbox.width() : scaledWidth;
     }
   }
@@ -3496,3 +3532,27 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
   return m;
 }
 
+
+void QgsSvgMarkerSymbolLayer::prepareExpressions( const QgsSymbolRenderContext &context )
+{
+  QMap<QString, QgsProperty>::iterator it = mParameters.begin();
+  for ( ; it != mParameters.end(); ++it )
+    it.value().prepare( context.renderContext().expressionContext() );
+
+  QgsMarkerSymbolLayer::prepareExpressions( context );
+}
+
+
+QSet<QString> QgsSvgMarkerSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
+{
+  QSet<QString> attrs = QgsMarkerSymbolLayer::usedAttributes( context );
+
+  QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
+  for ( ; it != mParameters.constEnd(); ++it )
+  {
+    it.value().prepare( context.expressionContext() );
+    attrs.unite( it.value().referencedFields( context.expressionContext() ) );
+  }
+
+  return attrs;
+}

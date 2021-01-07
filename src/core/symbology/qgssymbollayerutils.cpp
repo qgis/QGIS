@@ -4749,3 +4749,15 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   return 0;
 }
+
+QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context )
+{
+  QgsStringMap properties;
+  QMap<QString, QgsProperty>::const_iterator paramIt = propertiesMap.constBegin();
+  for ( ; paramIt != propertiesMap.constEnd(); ++paramIt )
+  {
+    properties.insert( paramIt.key(), paramIt.value().valueAsString( context ) );
+  }
+  return properties;
+}
+

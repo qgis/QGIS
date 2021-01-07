@@ -590,6 +590,18 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidth( double w ) { mStrokeWidth = w; }
 
     /**
+     * Returns the dynamic SVG parameters
+     * \since QGIS 3.18
+     */
+    QMap<QString, QgsProperty> parameters() const { return mParameters; }
+
+    /**
+     * Sets the dynamic SVG parameters
+     * \since QGIS 3.18
+     */
+    void setParameters( const QMap<QString, QgsProperty> &parameters );
+
+    /**
      * Sets the units for the stroke width.
      * \param unit width units
      * \see strokeWidthUnit()
@@ -615,6 +627,10 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
+    void prepareExpressions( const QgsSymbolRenderContext &context ) override;
+
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+
   protected:
 
     /**
@@ -636,6 +652,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     bool mHasFillParam = false;
     QColor mStrokeColor;
     double mStrokeWidth;
+    QMap<QString, QgsProperty> mParameters;
 
     QgsUnitTypes::RenderUnit mStrokeWidthUnit;
     QgsMapUnitScale mStrokeWidthMapUnitScale;

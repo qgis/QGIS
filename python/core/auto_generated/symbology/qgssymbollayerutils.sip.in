@@ -870,6 +870,13 @@ Creates a new symbol with size restricted to min/max size if original size is ou
 
 :return: 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
 %End
+
+    static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
+%Docstring
+Evaluates a map of properties using the given ``context`` and returns a variant map with evaluated expressions from the properties.
+
+.. versionadded:: 3.18
+%End
 };
 
 
