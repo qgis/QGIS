@@ -263,7 +263,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
   }
 
   const bool geometryColumnsOnly { configuration().value( "geometryColumnsOnly", false ).toBool() };
-  const bool userTablesOnly { configuration().value( "userTablesOnly", false ).toBool() };
+  const bool userTablesOnly { configuration().value( "userTablesOnly", false ).toBool() && schema.isEmpty() };
   const bool onlyExistingTypes { configuration().value( "onlyExistingTypes", false ).toBool() };
   const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
 
