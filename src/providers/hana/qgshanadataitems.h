@@ -51,6 +51,7 @@ class QgsHanaConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
+    using QgsDataCollectionItem::handleDrop;
     bool handleDrop( const QMimeData *data, const QString &toSchema );
 
   private:
