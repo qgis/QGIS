@@ -291,7 +291,14 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
     if ( feedback )
       QObject::connect( feedback, &QgsFeedback::canceled, &p, [ &p]
     {
+#ifdef Q_OS_WIN
+      // From the qt docs:
+      // "Console applications on Windows that do not run an event loop, or whose
+      // event loop does not handle the WM_CLOSE message, can only be terminated by calling kill()."
+      p.kill();
+#else
       p.terminate();
+#endif
     } );
     connect( &p, qgis::overload< int, QProcess::ExitStatus >::of( &QProcess::finished ), this, [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st )
     {
