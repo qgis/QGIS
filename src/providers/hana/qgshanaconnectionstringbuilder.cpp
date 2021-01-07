@@ -23,14 +23,13 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSou
   , mDatabase( uri.database() )
   , mUserName( uri.username() )
   , mPassword( uri.password() )
-  , mSslEnabled( false )
 {
   if ( !uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
     return;
 
-  mSslEnabled = ( uri.param( QStringLiteral( "sslEnabled" ) ) == QLatin1String( "true" ) ) ? true : false;
+  mSslEnabled = ( uri.param( QStringLiteral( "sslEnabled" ) ) == QLatin1String( "true" ) );
   mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
-  mSslValidateCertificate = uri.param( QStringLiteral( "sslValidateCertificate" ) ) == QLatin1String( "true" ) ? true : false;
+  mSslValidateCertificate = uri.param( QStringLiteral( "sslValidateCertificate" ) ) == QLatin1String( "true" );
   if ( mSslValidateCertificate )
     mSslHostNameInCertificate = uri.param( QStringLiteral( "sslHostNameInCertificate" ) );
   mSslKeyStore = uri.param( QStringLiteral( "sslKeyStore" ) );
