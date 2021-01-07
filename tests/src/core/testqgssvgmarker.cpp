@@ -354,7 +354,7 @@ void TestQgsSvgMarkerSymbol::dynamicParameters()
   mSvgMarkerLayer->setPath( svgPath );
   mSvgMarkerLayer->setSize( 20 );
   mSvgMarkerLayer->setParameters( parameters );
-  bool result = imageCheck( QStringLiteral( "svgmarker_dynamic_paramaters" ) );
+  bool result = imageCheck( QStringLiteral( "svgmarker_dynamic_parameters" ) );
   mSvgMarkerLayer->setParameters( QMap<QString, QgsProperty>() );
   QVERIFY( result );
 }
