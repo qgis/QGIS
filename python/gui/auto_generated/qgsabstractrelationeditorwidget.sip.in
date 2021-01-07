@@ -243,6 +243,12 @@ It will only be instantiated by {:py:class:`QgsAbstractRelationEditorWidgetFacto
 %TypeHeaderCode
 #include "qgsabstractrelationeditorwidget.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsRelationEditorConfigWidget *>( sipCpp ) )
+      sipType = sipType_QgsRelationEditorConfigWidget;
+    else
+      sipType = 0;
+%End
   public:
 
     explicit QgsAbstractRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );

@@ -288,6 +288,16 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
  */
 class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsRelationEditorConfigWidget *>( sipCpp ) )
+      sipType = sipType_QgsRelationEditorConfigWidget;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
 
