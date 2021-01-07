@@ -464,6 +464,7 @@ QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D 
       pointAttr[ QStringLiteral( "X" ) ] = x;
       pointAttr[ QStringLiteral( "Y" ) ] = y;
       pointAttr[ QStringLiteral( "Z" ) ] = z;
+      pointAttr[ QStringLiteral( "Distance to camera" ) ] = ( point - rayOrigin ).length();
       points.push_back( pointAttr );
     }
   }
