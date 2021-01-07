@@ -2951,7 +2951,7 @@ QgsStringMap QgsSymbolLayerUtils::getVendorOptionList( QDomElement &element )
 
 QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 {
-  QVariant newSymbols = QgsXmlUtils::readVariant( element );
+  QVariant newSymbols = QgsXmlUtils::readVariant( element.firstChildElement( QStringLiteral( "Option" ) ) );
   if ( newSymbols.type() == QVariant::Map )
   {
     return newSymbols.toMap();
