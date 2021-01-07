@@ -202,7 +202,8 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( !mAnchorPoint )
     {
-      return;
+      mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+      mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     }
     mAnchorPoint->setCenter( toMapCoordinates( e->pos() ) );
     mStartPointMapCoords = toMapCoordinates( e->pos() );
@@ -233,10 +234,12 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                              layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
+    bool autoCalculateAnchorPoint = false;
     if ( !mAnchorPoint )
     {
       mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
+      autoCalculateAnchorPoint = true;
     }
 
     if ( vlayer->selectedFeatureCount() == 0 )
@@ -274,8 +277,15 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
 
       QgsRectangle bound = cf.geometry().boundingBox();
-      mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
-      mAnchorPoint->setCenter( mStartPointMapCoords );
+      if ( autoCalculateAnchorPoint )
+      {
+        mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
+        mAnchorPoint->setCenter( mStartPointMapCoords );
+      }
+      else
+      {
+        mStartPointMapCoords = mAnchorPoint->center();
+      }
 
       mStPoint = toCanvasCoordinates( mStartPointMapCoords );
 
@@ -407,13 +417,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
       i = i + 1;
       vertex = geom.vertexAt( i );
     }
-
   }
-
-  double anchorX = a * anchorPoint.x() + b * anchorPoint.y() + c;
-  double anchorY = d * anchorPoint.x() + ee * anchorPoint.y() + f;
-
-  mAnchorPoint->setCenter( QgsPointXY( anchorX, anchorY ) );
 
   deleteRotationWidget();
   deleteRubberband();
