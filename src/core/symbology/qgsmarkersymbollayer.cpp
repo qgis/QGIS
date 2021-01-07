@@ -2279,7 +2279,7 @@ QVariantMap QgsSvgMarkerSymbolLayer::properties() const
   QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
   for ( ; it != mParameters.constEnd(); ++it )
     parameters.insert( it.key(), it.value().toVariant() );
-  map[QStringLiteral( "vertical_anchor_point" )] = parameters;
+  map[QStringLiteral( "parameters" )] = parameters;
 
   return map;
 }
@@ -2307,14 +2307,7 @@ QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
-
-  QMap<QString, QgsProperty> parameters;
-  QMap<QString, QgsProperty>::const_iterator paramIt = mParameters.constBegin();
-  for ( ; paramIt != mParameters.constEnd(); ++paramIt )
-  {
-    parameters.insert( paramIt.key(), QgsProperty::fromExpression( paramIt.value().expressionString() ) );
-  }
-  m->setParameters( parameters );
+  m->setParameters( mParameters );
 
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
