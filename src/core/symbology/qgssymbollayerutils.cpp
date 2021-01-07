@@ -1156,7 +1156,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
   int pass = element.attribute( QStringLiteral( "pass" ) ).toInt();
 
   // parse properties
-  QVariantMap props = parseProperties( element );
+  QVariantMap props = parseProperties( element.firstChildElement( QStringLiteral( "Option" ) ) );
 
   // if there are any paths stored in properties, convert them from relative to absolute
   QgsApplication::symbolLayerRegistry()->resolvePaths( layerClass, props, context.pathResolver(), false );
