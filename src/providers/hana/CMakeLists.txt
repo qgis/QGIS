@@ -32,17 +32,35 @@ IF (WITH_GUI)
 ENDIF ()
 
 SET(HANA_HDRS
+  qgshanacolumntypethread.h
+  qgshanaconnection.h
+  qgshanaconnectionpool.h
+  qgshanaconnectionstringbuilder.h
   qgshanadriver.h
   qgshanaexception.h
   qgshanaexpressioncompiler.h
+  qgshanafeatureiterator.h
+  qgshanaprimarykeys.h
+  qgshanaprovider.h
   qgshanaproviderconnection.h
   qgshanaresultset.h
+  qgshanasettings.h
+  qgshanatablemodel.h
+  qgshanacrsutils.h
+  qgshanautils.h
 )
+
+IF (WITH_GUI)
+  SET(HANA_HDRS ${HANA_HDRS}
+    qgshanadataitems.h
+    qgshanadataitemguiprovider.h
+    qgshananewconnection.h
+    qgshanasourceselect.h
+  )
+ENDIF ()
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(HANA_MOC_SRCS ${HANA_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -73,8 +91,8 @@ INCLUDE_DIRECTORIES (SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(hanaprovider MODULE ${HANA_SRCS} ${HANA_HDRS} ${HANA_MOC_SRCS})
-ADD_LIBRARY(hanaprovider_a STATIC ${HANA_SRCS} ${HANA_HDRS} ${HANA_MOC_SRCS})
+ADD_LIBRARY(hanaprovider MODULE ${HANA_SRCS} ${HANA_HDRS})
+ADD_LIBRARY(hanaprovider_a STATIC ${HANA_SRCS} ${HANA_HDRS})
 
 TARGET_COMPILE_DEFINITIONS(hanaprovider PUBLIC ODBC_STATIC)
 TARGET_COMPILE_DEFINITIONS(hanaprovider_a PUBLIC ODBC_STATIC)
