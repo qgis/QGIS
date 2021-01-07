@@ -549,6 +549,8 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
 }
 
 
+///@cond PRIVATE
+
 
 QgsSvgParametersModel::QgsSvgParametersModel( QObject *parent )
   : QAbstractTableModel( parent )
@@ -734,3 +736,5 @@ void QgsSvgParameterValueDelegate::updateEditorGeometry( QWidget *editor, const 
   Q_UNUSED( index )
   editor->setGeometry( option.rect );
 }
+
+///@endcond
