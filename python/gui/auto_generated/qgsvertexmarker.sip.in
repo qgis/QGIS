@@ -46,6 +46,20 @@ A class for marking vertices of features using e.g. circles or 'x'.
     QgsVertexMarker( QgsMapCanvas *mapCanvas /TransferThis/ );
 
     void setCenter( const QgsPointXY &point );
+%Docstring
+Sets the center ``point`` of the marker, in map coordinates.
+
+.. seealso:: :py:func:`center`
+%End
+
+    QgsPointXY center() const;
+%Docstring
+Returns the center point of the marker, in map coordinates.
+
+.. seealso:: :py:func:`setCenter`
+
+.. versionadded:: 3.18
+%End
 
     void setIconType( int iconType );
 
