@@ -314,7 +314,7 @@ struct MapIndexedPointCloudNode
     const char *ptr = block->data();
     QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
-    int xOffset, yOffset, zOffset;
+    int xOffset = 0, yOffset = 0, zOffset = 0;
     const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
     const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
     const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
@@ -324,9 +324,9 @@ struct MapIndexedPointCloudNode
     {
       double x, y, z;
       _pointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, mIndexScale, mIndexOffset, x, y, z );
-      QgsPoint pointXY( x, y );
+      QgsPoint point( x, y );
 
-      if ( mZRange.contains( z ) && extentEngine->contains( &pointXY ) )
+      if ( mZRange.contains( point.z() ) && extentEngine->contains( &point ) )
       {
         QVariantMap pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;
@@ -435,15 +435,14 @@ QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D 
     const char *ptr = block->data();
     QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
-    int xOffset, yOffset, zOffset;
-    blockAttributes.find( QStringLiteral( "X" ), xOffset );
-    blockAttributes.find( QStringLiteral( "Y" ), yOffset );
-    blockAttributes.find( QStringLiteral( "Z" ), zOffset );
+    int xOffset = 0, yOffset = 0, zOffset = 0;
+    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
     for ( int i = 0; i < block->pointCount() && points.size() < pointsLimit; ++i )
     {
       double x, y, z;
-      _pointXY( ptr, i, recordSize, xOffset, yOffset, index->scale(), index->offset(), x, y );
-      z = _pointZ( ptr, i, recordSize, zOffset, index->scale(), index->offset() );
+      _pointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, index->scale(), index->offset(), x, y, z );
       QVector3D point( x, y, z );
       // project point on ray
       QVector3D projectedPoint = rayOrigin + QgsVector3D::dotProduct( point - rayOrigin, rayDirection ) * rayDirection;

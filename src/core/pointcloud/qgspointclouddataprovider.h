@@ -23,6 +23,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgspointcloudindex.h"
+#include "qgspoint.h"
 #include <memory>
 
 class IndexedPointCloudNode;
