@@ -31,6 +31,7 @@
 #include <Qt3DRender/QPickEvent>
 
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerelevationproperties.h"
 
 #include "qgs3dmapscenepickhandler.h"
 
@@ -89,8 +90,43 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> layerPoints;
   canvas()->identifyPointCloudOnMouseEvent( layerPoints, event );
 
+  QVector<QgsMapToolIdentify::IdentifyResult> identifyResults;
+  for ( int i = 0; i < layerPoints.size(); ++i )
+  {
+    QgsPointCloudLayer *pcLayer = dynamic_cast< QgsPointCloudLayer * >( layerPoints[i].first );
+    int id = 1;
+    const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties *>( pcLayer->elevationProperties() );
+    for ( const QVariantMap &pt : layerPoints[i].second )
+    {
+      QMap<QString, QString> ptStr;
+      QString classification;
+      for ( auto attrIt = pt.constBegin(); attrIt != pt.constEnd(); ++attrIt )
+      {
+        if ( attrIt.key().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0
+             && ( !qgsDoubleNear( elevationProps->zScale(), 1 ) || !qgsDoubleNear( elevationProps->zOffset(), 0 ) ) )
+        {
+          // Apply elevation properties
+          ptStr[ tr( "Z (original)" ) ] = attrIt.value().toString();
+          ptStr[ tr( "Z (adjusted)" ) ] = QString::number( attrIt.value().toDouble() * elevationProps->zScale() + elevationProps->zOffset() );
+        }
+        else if ( attrIt.key().compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
+        {
+          classification = QgsPointCloudDataProvider::translatedLasClassificationCodes().value( attrIt.value().toInt() );
+          ptStr[ attrIt.key() ] = QStringLiteral( "%1_%2 (%3)" ).arg( pcLayer->name() ).arg( attrIt.value().toString(), classification );
+        }
+        else
+        {
+          ptStr[attrIt.key()] = attrIt.value().toString();
+        }
+      }
+      QgsMapToolIdentify::IdentifyResult res( pcLayer, classification.isEmpty() ? QString::number( id ) : QStringLiteral( "%1 (%2)" ).arg( id ).arg( classification ), ptStr, QMap<QString, QString>() );
+      identifyResults.append( res );
+      ++id;
+    }
+  }
+
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
-  identifyTool2D->showPointCloudIdentifyResults( layerPoints );
+  identifyTool2D->showIdentifyResults( identifyResults );
 }
 
 void Qgs3DMapToolIdentify::activate()

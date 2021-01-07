@@ -272,20 +272,12 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
   QgsMapTool::keyReleaseEvent( e );
 }
 
-void QgsMapToolIdentifyAction::showPointCloudIdentifyResults( const QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &layersAndPoints )
+
+void QgsMapToolIdentifyAction::showIdentifyResults( const QVector<IdentifyResult> &identifyResults )
 {
-  for ( int i = 0; i < layersAndPoints.size(); ++i )
+  for ( const IdentifyResult &res : identifyResults )
   {
-    QgsMapLayer *layer = layersAndPoints[i].first;
-    int id = 0;
-    for ( const QVariantMap &pt : layersAndPoints[i].second )
-    {
-      QMap<QString, QString> strMap;
-      for ( QString key : pt.keys() )
-        strMap[ key ] = pt[ key ].toString();
-      resultsDialog()->addFeature( IdentifyResult( layer, QString( "%1_%2" ).arg( layer->name() ).arg( id ), strMap, strMap ) );
-      ++id;
-    }
+    resultsDialog()->addFeature( res );
   }
   resultsDialog()->show();
   // update possible view modes
