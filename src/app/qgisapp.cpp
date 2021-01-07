@@ -8205,12 +8205,24 @@ void QgisApp::zoomOut()
 
 void QgisApp::zoomToSelected()
 {
-  mMapCanvas->zoomToSelected();
+  const QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+
+  if ( layers.size() > 1 )
+    mMapCanvas->zoomToSelected( layers );
+
+  else
+    mMapCanvas->zoomToSelected();
+
 }
 
 void QgisApp::panToSelected()
 {
-  mMapCanvas->panToSelected();
+  const QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+
+  if ( layers.size() > 1 )
+    mMapCanvas->panToSelected( layers );
+  else
+    mMapCanvas->panToSelected();
 }
 
 void QgisApp::pan()

@@ -1276,7 +1276,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
 
   if ( !layItem )
   {
-    layItem = new QTreeWidgetItem( QStringList() << layer->name() << QString::number( lstResults->topLevelItemCount() ) );
+    layItem = new QTreeWidgetItem( QStringList() << layer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
     lstResults->addTopLevelItem( layItem );
     QFont boldFont;
@@ -1291,9 +1291,13 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
       QgsFeature(),
       layer->crs(),
       QStringList() << label << QString() );
-
   layItem->addChild( featItem );
-  featItem->setExpanded( true );
+
+  layItem->setFirstColumnSpanned( true );
+  QString countSuffix = layItem->childCount() > 1
+                        ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
+                        : QString();
+  layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( layer->name(), countSuffix ) );
 
   // attributes
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )

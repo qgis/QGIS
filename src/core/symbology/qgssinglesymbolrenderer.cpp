@@ -118,9 +118,9 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
   return r;
 }
 
-void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QgsStringMap newProps = props;
+  QVariantMap newProps = props;
 
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
   element.appendChild( ruleElem );

@@ -266,24 +266,9 @@ namespace QgsWms
     nameElem.appendChild( nameText );
     serviceElem.appendChild( nameElem );
 
-    QDomText titleText;
-    QString title = QgsServerProjectUtils::owsServiceTitle( *project );
+    // Service title
     QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
-    if ( !title.isEmpty() )
-    {
-      titleText = doc.createTextNode( title );
-    }
-    else
-    {
-      if ( !project->title().isEmpty() )
-      {
-        titleText = doc.createTextNode( project->title() );
-      }
-      else
-      {
-        titleText = doc.createTextNode( QStringLiteral( "untitled" ) );
-      }
-    }
+    QDomText titleText = doc.createTextNode( QgsServerProjectUtils::owsServiceTitle( *project ) );
     titleElem.appendChild( titleText );
     serviceElem.appendChild( titleElem );
 
@@ -846,17 +831,18 @@ namespace QgsWms
       layerParentElem.appendChild( layerParentNameElem );
     }
 
-    if ( !project->title().isEmpty() )
-    {
-      // Root Layer title
-      QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-      QDomText layerParentTitleText = doc.createTextNode( project->title() );
-      layerParentTitleElem.appendChild( layerParentTitleText );
-      layerParentElem.appendChild( layerParentTitleElem );
+    // Root Layer title
+    QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
+    QDomText layerParentTitleText = doc.createTextNode( QgsServerProjectUtils::owsServiceTitle( *project ) );
+    layerParentTitleElem.appendChild( layerParentTitleText );
+    layerParentElem.appendChild( layerParentTitleElem );
 
-      // Root Layer abstract
+    // Root Layer abstract
+    const QString rootLayerAbstract = QgsServerProjectUtils::owsServiceAbstract( *project );
+    if ( !rootLayerAbstract.isEmpty() )
+    {
       QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
-      QDomText layerParentAbstText = doc.createTextNode( project->title() );
+      QDomText layerParentAbstText = doc.createCDATASection( rootLayerAbstract );
       layerParentAbstElem.appendChild( layerParentAbstText );
       layerParentElem.appendChild( layerParentAbstElem );
     }
@@ -2049,6 +2035,3 @@ namespace QgsWms
 
 
 } // namespace QgsWms
-
-
-

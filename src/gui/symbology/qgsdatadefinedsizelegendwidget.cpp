@@ -68,7 +68,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 
   if ( !symbol )
   {
-    symbol = QgsMarkerSymbol::createSimple( QgsStringMap() );
+    symbol = QgsMarkerSymbol::createSimple( QVariantMap() );
   }
   mSourceSymbol.reset( symbol );
 

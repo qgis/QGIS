@@ -975,7 +975,7 @@ static QgsColorRamp *_createDefaultColorRamp()
     return ramp;
 
   // definition of "Plasma" color ramp (in case it is not available in the style for some reason)
-  QgsStringMap props;
+  QVariantMap props;
   props["color1"] = "13,8,135,255";
   props["color2"] = "240,249,33,255";
   props["stops"] =

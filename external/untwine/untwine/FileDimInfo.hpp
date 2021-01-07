@@ -40,7 +40,9 @@ inline std::ostream& operator<<(std::ostream& out, const FileDimInfo& fdi)
 
 inline std::istream& operator>>(std::istream& in, FileDimInfo& fdi)
 {
-    in >> fdi.name >> (int&)fdi.type >> fdi.offset;
+    int type;
+    in >> fdi.name >> type >> fdi.offset;
+    fdi.type = (pdal::Dimension::Type)type;
     return in;
 }
 

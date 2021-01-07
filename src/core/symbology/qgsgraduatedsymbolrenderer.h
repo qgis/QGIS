@@ -48,7 +48,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     bool filterNeedsGeometry() const override;
     QString dump() const override;
     QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;

@@ -30,9 +30,9 @@ class DummyPaintEffect : public QgsPaintEffect
     DummyPaintEffect() = default;
     QString type() const override { return QStringLiteral( "Dummy" ); }
     QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
-    static QgsPaintEffect *create( const QgsStringMap & ) { return new DummyPaintEffect(); }
-    QgsStringMap properties() const override { return QgsStringMap(); }
-    void readProperties( const QgsStringMap &props ) override { Q_UNUSED( props ); }
+    static QgsPaintEffect *create( const QVariantMap & ) { return new DummyPaintEffect(); }
+    QVariantMap properties() const override { return QVariantMap(); }
+    void readProperties( const QVariantMap &props ) override { Q_UNUSED( props ); }
   protected:
     void draw( QgsRenderContext &context ) override { Q_UNUSED( context ); }
 };
@@ -86,7 +86,7 @@ void TestQgsPaintEffectRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating effect from metadata
-  QgsStringMap map;
+  QVariantMap map;
   QgsPaintEffect *effect = metadata.createPaintEffect( map );
   QVERIFY( effect );
   DummyPaintEffect *dummyEffect = dynamic_cast<DummyPaintEffect *>( effect );

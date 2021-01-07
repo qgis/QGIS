@@ -43,7 +43,7 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
      *
      * \returns A new QgsMaskMarkerSymbolLayer
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     QgsMaskMarkerSymbolLayer *clone() const override SIP_FACTORY;
     QgsSymbol *subSymbol() override { return mSymbol.get(); }
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
 
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;

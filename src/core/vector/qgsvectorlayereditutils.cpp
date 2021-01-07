@@ -356,6 +356,8 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
     features = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
+  QgsVectorLayerUtils::QgsFeaturesDataList featuresDataToAdd;
+
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
   {
@@ -377,8 +379,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
       QgsAttributeMap attributeMap = feat.attributes().toMap();
       for ( const QgsGeometry &geom : qgis::as_const( newGeometries ) )
       {
-        QgsFeature f = QgsVectorLayerUtils::createFeature( mLayer, geom, attributeMap );
-        mLayer->addFeature( f );
+        featuresDataToAdd << QgsVectorLayerUtils::QgsFeatureData( geom, attributeMap );
       }
 
       if ( topologicalEditing )
@@ -395,6 +396,14 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
     {
       returnCode = splitFunctionReturn;
     }
+  }
+
+  if ( !featuresDataToAdd.isEmpty() )
+  {
+    // finally create and add all bits of geometries cut off the original geometries
+    // (this is much faster than creating features one by one)
+    QgsFeatureList featuresListToAdd = QgsVectorLayerUtils::createFeatures( mLayer, featuresDataToAdd );
+    mLayer->addFeatures( featuresListToAdd );
   }
 
   if ( numberOfSplitFeatures == 0 )

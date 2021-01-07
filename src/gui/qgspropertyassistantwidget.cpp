@@ -401,11 +401,11 @@ QList< QgsSymbolLegendNode * > QgsPropertySizeAssistantWidget::generatePreviews(
   {
     if ( mDefinition.standardTemplate() == QgsPropertyDefinition::Size )
     {
-      tempSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+      tempSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
     }
     else if ( mDefinition.standardTemplate() == QgsPropertyDefinition::StrokeWidth )
     {
-      tempSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+      tempSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
     }
     legendSymbol = tempSymbol.get();
   }
@@ -498,7 +498,7 @@ QList<QgsSymbolLegendNode *> QgsPropertyColorAssistantWidget::generatePreviews( 
 
   if ( !legendSymbol )
   {
-    tempSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+    tempSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
     legendSymbol = tempSymbol.get();
   }
   if ( !legendSymbol )

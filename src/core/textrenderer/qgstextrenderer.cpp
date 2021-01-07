@@ -840,7 +840,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       std::unique_ptr< QgsMarkerSymbol > renderedSymbol;
       if ( background.type() == QgsTextBackgroundSettings::ShapeSVG )
       {
-        QgsStringMap map; // for SVG symbology marker
+        QVariantMap map; // for SVG symbology marker
         map[QStringLiteral( "name" )] = background.svgFile().trimmed();
         map[QStringLiteral( "size" )] = QString::number( sizeOut );
         map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( QgsUnitTypes::RenderPixels );
@@ -861,7 +861,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         {
           QgsTextShadowSettings shadow = format.shadow();
           // configure SVG shadow specs
-          QgsStringMap shdwmap( map );
+          QVariantMap shdwmap( map );
           shdwmap[QStringLiteral( "fill" )] = shadow.color().name();
           shdwmap[QStringLiteral( "outline" )] = shadow.color().name();
           shdwmap[QStringLiteral( "size" )] = QString::number( sizeOut );

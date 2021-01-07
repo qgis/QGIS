@@ -90,9 +90,9 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   }
 }
 
-QgsStringMap QgsShadowEffect::properties() const
+QVariantMap QgsShadowEffect::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
@@ -108,7 +108,7 @@ QgsStringMap QgsShadowEffect::properties() const
   return props;
 }
 
-void QgsShadowEffect::readProperties( const QgsStringMap &props )
+void QgsShadowEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
   QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
@@ -144,8 +144,8 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
       mBlurLevel *= 0.2645;
     }
   }
-  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ) );
-  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ) );
+  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ).toString() );
+  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ).toString() );
   int angle = props.value( QStringLiteral( "offset_angle" ) ).toInt( &ok );
   if ( ok )
   {
@@ -156,11 +156,11 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
   {
     mOffsetDist = distance;
   }
-  mOffsetUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offset_unit" ) ) );
-  mOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offset_unit_scale" ) ) );
+  mOffsetUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offset_unit" ) ).toString() );
+  mOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offset_unit_scale" ) ).toString() );
   if ( props.contains( QStringLiteral( "color" ) ) )
   {
-    mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "color" ) ) );
+    mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "color" ) ).toString() );
   }
 }
 
@@ -179,7 +179,7 @@ QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext
 // QgsDropShadowEffect
 //
 
-QgsPaintEffect *QgsDropShadowEffect::create( const QgsStringMap &map )
+QgsPaintEffect *QgsDropShadowEffect::create( const QVariantMap &map )
 {
   QgsDropShadowEffect *effect = new QgsDropShadowEffect();
   effect->readProperties( map );
@@ -212,7 +212,7 @@ bool QgsDropShadowEffect::exteriorShadow() const
 // QgsInnerShadowEffect
 //
 
-QgsPaintEffect *QgsInnerShadowEffect::create( const QgsStringMap &map )
+QgsPaintEffect *QgsInnerShadowEffect::create( const QVariantMap &map )
 {
   QgsInnerShadowEffect *effect = new QgsInnerShadowEffect();
   effect->readProperties( map );

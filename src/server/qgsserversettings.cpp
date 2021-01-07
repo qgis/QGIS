@@ -356,7 +356,8 @@ void QgsServerSettings::loadQSettings( const QString &envOptPath ) const
 
 void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env )
 {
-  for ( QgsServerSettingsEnv::EnvVar e : env.keys() )
+  const auto constKeys( env.keys() );
+  for ( const QgsServerSettingsEnv::EnvVar &e : constKeys )
   {
     Setting s = mSettings[ e ];
 
@@ -405,7 +406,7 @@ void QgsServerSettings::logSummary() const
   const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
 
   QgsMessageLog::logMessage( "QGIS Server Settings: ", "Server", Qgis::Info );
-  for ( Setting s : mSettings )
+  for ( const Setting &s : qgis::as_const( mSettings ) )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );
     const QString var = name( s.envVar );

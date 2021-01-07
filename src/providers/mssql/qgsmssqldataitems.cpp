@@ -136,6 +136,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
   if ( !QgsMssqlConnection::openDatabase( db ) )
   {
     children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
+    setAsPopulated();
     return children;
   }
 

@@ -525,9 +525,9 @@ void QgsMapCanvasDockWidget::showLabels( bool show )
 void QgsMapCanvasDockWidget::autoZoomToSelection( bool autoZoom )
 {
   if ( autoZoom )
-    connect( mMapCanvas, &QgsMapCanvas::selectionChanged, mMapCanvas, &QgsMapCanvas::zoomToSelected );
+    connect( mMapCanvas, &QgsMapCanvas::selectionChanged, mMapCanvas, qgis::overload<QgsVectorLayer *>::of( &QgsMapCanvas::zoomToSelected ) );
   else
-    disconnect( mMapCanvas, &QgsMapCanvas::selectionChanged, mMapCanvas, &QgsMapCanvas::zoomToSelected );
+    disconnect( mMapCanvas, &QgsMapCanvas::selectionChanged, mMapCanvas, qgis::overload<QgsVectorLayer *>::of( &QgsMapCanvas::zoomToSelected ) );
 }
 
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )

@@ -516,11 +516,12 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
   const double searchRadiusMapUnits = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
 
   const QVector<QVariantMap> points = renderer->identify( layer, context, geometry, searchRadiusMapUnits );
-  int id = 0;
+  int id = 1;
   const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
   for ( const QVariantMap &pt : points )
   {
     QMap<QString, QString> ptStr;
+    QString classification;
     for ( auto attrIt = pt.constBegin(); attrIt != pt.constEnd(); ++attrIt )
     {
       if ( attrIt.key().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0
@@ -532,14 +533,15 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
       }
       else if ( attrIt.key().compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
       {
-        ptStr[ attrIt.key() ] = QStringLiteral( "%1 (%2)" ).arg( attrIt.value().toString(), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( attrIt.value().toInt() ) );
+        classification = QgsPointCloudDataProvider::translatedLasClassificationCodes().value( attrIt.value().toInt() );
+        ptStr[ attrIt.key() ] = QStringLiteral( "%1 (%2)" ).arg( attrIt.value().toString(), classification );
       }
       else
       {
         ptStr[attrIt.key()] = attrIt.value().toString();
       }
     }
-    QgsMapToolIdentify::IdentifyResult res( layer, QString::number( id ), ptStr, ptStr );
+    QgsMapToolIdentify::IdentifyResult res( layer, classification.isEmpty() ? QString::number( id ) : QStringLiteral( "%1 (%2)" ).arg( id ).arg( classification ), ptStr, QMap<QString, QString>() );
     results->append( res );
     ++id;
   }

@@ -288,6 +288,8 @@ QgsInterval instance or interval was set with a mix of units.
 
     bool operator==( QgsInterval other ) const;
 
+    bool operator!=( QgsInterval other ) const;
+
     static QgsInterval fromString( const QString &string );
 %Docstring
 Converts a string to an interval

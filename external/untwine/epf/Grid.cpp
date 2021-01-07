@@ -42,6 +42,7 @@ int Grid::calcLevel()
 {
     int level = 0;
     double mp = (double)m_millionPoints;
+
     double xside = m_bounds.maxx - m_bounds.minx;
     double yside = m_bounds.maxy - m_bounds.miny;
     double zside = m_bounds.maxz - m_bounds.minz;

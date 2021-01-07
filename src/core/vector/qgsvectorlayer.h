@@ -1095,7 +1095,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param props a open ended set of properties that can drive/inform the SLD encoding
      * \returns TRUE in case of success
      */
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 
     bool readSld( const QDomNode &node, QString &errorMessage ) FINAL;
 

@@ -1687,7 +1687,7 @@
      <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
    </property>
    <property name="text">
-    <string>Toggle Editing</string>
+    <string>Toggle &amp;Editing</string>
    </property>
    <property name="statusTip">
     <string>Toggles the editing state of the current layer</string>

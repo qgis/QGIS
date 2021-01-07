@@ -1349,6 +1349,42 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   zoomToFeatureExtent( rect );
 }
 
+void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
+{
+  QgsRectangle rect;
+  rect.setMinimal();
+  QgsRectangle selectionExtent;
+  selectionExtent.setMinimal();
+
+  for ( QgsMapLayer *mapLayer : layers )
+  {
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+
+    if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
+      continue;
+
+    rect = layer->boundingBoxOfSelected();
+
+    if ( rect.isNull() )
+      continue;
+
+    rect = mapSettings().layerExtentToOutputExtent( layer, rect );
+
+    if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+      rect = optimalExtentForPointLayer( layer, rect.center() );
+
+    selectionExtent.combineExtentWith( rect );
+  }
+
+  if ( selectionExtent.isNull() )
+  {
+    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
+    return;
+  }
+
+  zoomToFeatureExtent( selectionExtent );
+}
+
 QgsDoubleRange QgsMapCanvas::zRange() const
 {
   return mSettings.zRange();
@@ -1497,6 +1533,43 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
 
   rect = mapSettings().layerExtentToOutputExtent( layer, rect );
   setCenter( rect.center() );
+  refresh();
+}
+
+void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
+{
+  QgsRectangle rect;
+  rect.setMinimal();
+  QgsRectangle selectionExtent;
+  selectionExtent.setMinimal();
+
+  for ( QgsMapLayer *mapLayer : layers )
+  {
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+
+    if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
+      continue;
+
+    rect = layer->boundingBoxOfSelected();
+
+    if ( rect.isNull() )
+      continue;
+
+    rect = mapSettings().layerExtentToOutputExtent( layer, rect );
+
+    if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+      rect = optimalExtentForPointLayer( layer, rect.center() );
+
+    selectionExtent.combineExtentWith( rect );
+  }
+
+  if ( selectionExtent.isNull() )
+  {
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
+    return;
+  }
+
+  setCenter( selectionExtent.center() );
   refresh();
 }
 

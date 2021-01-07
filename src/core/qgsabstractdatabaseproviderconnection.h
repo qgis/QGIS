@@ -63,7 +63,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       Foreign = 1 << 6,           //!< Foreign data wrapper
     };
 
-    Q_ENUMS( TableFlag )
+    Q_ENUM( TableFlag )
     Q_DECLARE_FLAGS( TableFlags, TableFlag )
     Q_FLAG( TableFlags )
 

@@ -22,7 +22,7 @@
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
-  mSymbol.reset( static_cast<QgsMarkerSymbol *>( QgsMarkerSymbol::createSimple( QgsStringMap() ) ) );
+  mSymbol.reset( static_cast<QgsMarkerSymbol *>( QgsMarkerSymbol::createSimple( QVariantMap() ) ) );
 }
 
 bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
@@ -36,7 +36,7 @@ bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   return false;
 }
 
-QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QgsStringMap &props )
+QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QVariantMap &props )
 {
   QgsMaskMarkerSymbolLayer *l = new QgsMaskMarkerSymbolLayer();
 
@@ -44,7 +44,7 @@ QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QgsStringMap &props )
 
   if ( props.contains( QStringLiteral( "mask_symbollayers" ) ) )
   {
-    l->setMasks( stringToSymbolLayerReferenceList( props[QStringLiteral( "mask_symbollayers" )] ) );
+    l->setMasks( stringToSymbolLayerReferenceList( props[QStringLiteral( "mask_symbollayers" )].toString() ) );
   }
   return l;
 }
@@ -64,9 +64,9 @@ QString QgsMaskMarkerSymbolLayer::layerType() const
   return QStringLiteral( "MaskMarker" );
 }
 
-QgsStringMap QgsMaskMarkerSymbolLayer::properties() const
+QVariantMap QgsMaskMarkerSymbolLayer::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   props[QStringLiteral( "mask_symbollayers" )] = symbolLayerReferenceListToString( masks() );
   return props;
 }

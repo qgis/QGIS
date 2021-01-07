@@ -59,6 +59,7 @@ class QgsHighlight;
 class QgsVectorLayer;
 
 class QgsLabelingResults;
+
 class QgsMapRendererCache;
 class QgsMapRendererQImageJob;
 class QgsMapSettings;
@@ -309,6 +310,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer *layer = nullptr );
+
+    /**
+     * Pan to the combined extent of the selected features of all provided (vector) layers.
+     * \param layers A list of layers
+     * \since QGIS 3.18
+     */
+    void panToSelected( const QList<QgsMapLayer *> &layers );
 
     /**
      * Causes a set of features with matching \a ids from a vector \a layer to flash
@@ -864,6 +872,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \param layer optionally specify different than current layer
      */
     void zoomToSelected( QgsVectorLayer *layer = nullptr );
+
+    /**
+     * Zoom to the combined extent of the selected features of all provided (vector) layers.
+     * \param layers A list of layers
+     * \since QGIS 3.18
+     */
+    void zoomToSelected( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map

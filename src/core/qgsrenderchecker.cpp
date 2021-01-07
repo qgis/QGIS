@@ -28,11 +28,19 @@
 #include <QBuffer>
 
 
+QgsRenderChecker::QgsRenderChecker()
+  : mBasePath( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/control_images/" ) ) //defined in CmakeLists.txt
+{
+}
+
 QString QgsRenderChecker::controlImagePath() const
 {
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myControlImageDir = myDataDir + "/control_images/" + mControlPathPrefix;
-  return myControlImageDir;
+  return mBasePath + ( mBasePath.endsWith( '/' ) ? QString() : QStringLiteral( "/" ) ) + mControlPathPrefix;
+}
+
+void QgsRenderChecker::setControlImagePath( const QString &path )
+{
+  mBasePath = path;
 }
 
 void QgsRenderChecker::setControlName( const QString &name )

@@ -124,8 +124,8 @@ Content-Type: text/xml; charset=utf-8
   </inspire_vs:ExtendedCapabilities>
   <Layer queryable="1">
    <Name>QGIS Test Project</Name>
-   <Title>QGIS Test Project</Title>
-   <Abstract>QGIS Test Project</Abstract>
+   <Title>QGIS TestProject</Title>
+   <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
