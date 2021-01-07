@@ -142,6 +142,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapScene::onDebugShadowMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
+  connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
 
   connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -230,6 +231,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   // force initial update of debugging setting of preview quads
   onDebugShadowMapSettingsChanged();
   onDebugDepthMapSettingsChanged();
+
+  onCameraNavigationModeChanged();
 }
 
 void Qgs3DMapScene::viewZoomFull()
@@ -1053,6 +1056,11 @@ void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
   double edlStrength = mMap.eyeDomeLightingStrength();
   double edlDistance = mMap.eyeDomeLightingDistance();
   shadowRenderingFrameGraph->setupEyeDomeLighting( edlEnabled, edlStrength, edlDistance );
+}
+
+void Qgs3DMapScene::onCameraNavigationModeChanged()
+{
+  mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
 }
 
 void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )

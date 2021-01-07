@@ -161,6 +161,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onEyeDomeShadingSettingsChanged();
     void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
+    void onCameraNavigationModeChanged();
 
   private:
     void addLayerEntity( QgsMapLayer *layer );

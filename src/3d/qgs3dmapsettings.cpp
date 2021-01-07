@@ -100,6 +100,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   {
     mFieldOfView = elemCamera.attribute( QStringLiteral( "field-of-view" ), QStringLiteral( "45" ) ).toFloat();
     mProjectionType = static_cast< Qt3DRender::QCameraLens::ProjectionType >( elemCamera.attribute( QStringLiteral( "projection-type" ), QStringLiteral( "1" ) ).toInt() );
+    QString cameraNavigationMode = elemCamera.attribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "basic-navigation" ) );
+    if ( cameraNavigationMode == QStringLiteral( "basic-navigation" ) )
+      mCameraNavigationMode = QgsCameraController::NavigationMode::BasicNavigation;
+    else if ( cameraNavigationMode == QStringLiteral( "fps-navigation" ) )
+      mCameraNavigationMode = QgsCameraController::NavigationMode::FPSNavigation;
   }
 
   QDomElement elemColor = elem.firstChildElement( QStringLiteral( "color" ) );
@@ -293,6 +298,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
   elemCamera.setAttribute( QStringLiteral( "field-of-view" ), mFieldOfView );
   elemCamera.setAttribute( QStringLiteral( "projection-type" ), static_cast< int >( mProjectionType ) );
+  if ( mCameraNavigationMode == QgsCameraController::BasicNavigation )
+    elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "basic-navigation" ) );
+  else if ( mCameraNavigationMode == QgsCameraController::FPSNavigation )
+    elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "fps-navigation" ) );
   elem.appendChild( elemCamera );
 
   QDomElement elemColor = doc.createElement( QStringLiteral( "color" ) );
@@ -755,6 +764,15 @@ void Qgs3DMapSettings::setProjectionType( const Qt3DRender::QCameraLens::Project
 
   mProjectionType = projectionType;
   emit projectionTypeChanged();
+}
+
+void Qgs3DMapSettings::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
+{
+  if ( mCameraNavigationMode == navigationMode )
+    return;
+
+  mCameraNavigationMode = navigationMode;
+  emit cameraNavigationModeChanged();
 }
 
 void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
