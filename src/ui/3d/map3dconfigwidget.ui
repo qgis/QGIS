@@ -179,7 +179,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -205,7 +205,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
+                <width>704</width>
                 <height>604</height>
                </rect>
               </property>
@@ -410,7 +410,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
+                <width>704</width>
                 <height>604</height>
                </rect>
               </property>
@@ -584,8 +584,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>201</width>
-                <height>161</height>
+                <width>704</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -607,20 +607,20 @@
                   <string>Camera</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="labelCameraProjectionType">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="labelFieldofView">
                     <property name="text">
-                     <string>Projection type</string>
+                     <string>Field of View</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="1" colspan="2">
                    <widget class="QComboBox" name="cboCameraProjectionType"/>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_3">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="labelCameraProjectionType">
                     <property name="text">
-                     <string>Field of View</string>
+                     <string>Projection type</string>
                     </property>
                    </widget>
                   </item>
@@ -631,6 +631,27 @@
                     </property>
                     <property name="maximum">
                      <number>180</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1" colspan="2">
+                   <widget class="QComboBox" name="mCameraNavigationMode">
+                    <item>
+                     <property name="text">
+                      <string>Basic navigation</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Fly navigation</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="labelCameraNavigationMode">
+                    <property name="text">
+                     <string>Navigation mode</string>
                     </property>
                    </widget>
                   </item>
@@ -694,7 +715,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>690</width>
+                <width>277</width>
                 <height>681</height>
                </rect>
               </property>

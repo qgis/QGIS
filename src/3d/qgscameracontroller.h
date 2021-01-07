@@ -62,6 +62,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Q_PROPERTY( Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged )
     Q_PROPERTY( QRect viewport READ viewport WRITE setViewport NOTIFY viewportChanged )
   public:
+    enum NavigationMode
+    {
+      BasicNavigation,
+      FPSNavigation
+    };
+
+  public:
     //! Constructs the camera controller with optional parent node that will take ownership
     QgsCameraController( Qt3DCore::QNode *parent = nullptr );
 
@@ -69,6 +76,18 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Qt3DRender::QCamera *camera() const { return mCamera; }
     //! Returns viewport rectangle
     QRect viewport() const { return mViewport; }
+
+    /**
+     * Returns the nvigtion mode used by the camera controller
+     * \since QGIS 3.18
+     */
+    QgsCameraController::NavigationMode cameraNavigationMode() { return mCameraNavigationMode; }
+
+    /**
+     * Sets the nvigtion mode used by the camera controller
+     * \since QGIS 3.18
+     */
+    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
 
     /**
      * Connects to object picker attached to terrain entity. Called internally from 3D scene.
@@ -152,6 +171,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
   private:
     void rotateCamera( float diffPitch, float diffYaw );
     void updateCameraFromPose( bool centerPointChanged = false );
+    void moveCameraPositionBy( const QVector3D &posDiff );
 
   signals:
     //! Emitted when camera has been updated
@@ -169,6 +189,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void onPickerMousePressed( Qt3DRender::QPickEvent *pick );
 
   private:
+    void onKeyPressedFPSNavigation( Qt3DInput::QKeyEvent *mouse );
+    void onPositionChangedFPSNavigation( Qt3DInput::QMouseEvent *mouse );
+
+  private:
     //! Camera that is being controlled
     Qt3DRender::QCamera *mCamera = nullptr;
     //! used for computation of translation when dragging mouse
@@ -183,6 +207,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     //! Last mouse position recorded
     QPoint mMousePos;
+    bool mMousePressed = false;
 
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
@@ -190,7 +215,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
-
+    NavigationMode mCameraNavigationMode = NavigationMode::BasicNavigation;
+    double mDeltaTime = 0.0f;
+    QVector<double> mPastDeltaTime;
+    double mDeltaTimeAverage = 0.0f;
 };
 
 #endif // QGSCAMERACONTROLLER_H

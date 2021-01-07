@@ -33,6 +33,7 @@
 #include "qgsvector3d.h"
 #include "qgsskyboxsettings.h"
 #include "qgsshadowsettings.h"
+#include "qgscameracontroller.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -477,6 +478,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setProjectionType( const Qt3DRender::QCameraLens::ProjectionType projectionType ) SIP_SKIP;
 
     /**
+     * Returns the navigation mode used by the camera
+     * \since QGIS 3.18
+     */
+    QgsCameraController::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
+
+    /**
+     * Sets the navigation mode for the camera
+     * \since QGIS 3.18
+     */
+    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+
+    /**
      * Sets DPI used for conversion between real world units (e.g. mm) and pixels
      * \param dpi the number of dot per inch
      * \since QGIS 3.10
@@ -679,6 +692,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void projectionTypeChanged();
 
     /**
+     * Emitted when the camera navigation mode was changed
+     * \since QGIS 3.18
+     */
+    void cameraNavigationModeChanged();
+
+    /**
      * Emitted when skybox settings are changed
      * \since QGIS 3.16
      */
@@ -726,6 +745,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
+    QgsCameraController::NavigationMode mCameraNavigationMode = QgsCameraController::NavigationMode::BasicNavigation;
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
