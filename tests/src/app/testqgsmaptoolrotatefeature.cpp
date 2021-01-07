@@ -44,6 +44,9 @@ class TestQgsMapToolRotateFeature: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testRotateFeature();
+    void testRotateFeatureManualAnchor();
+    void testCancelManualAnchor();
+    void testRotateFeatureManualAnchorAfterStartRotate();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -135,6 +138,68 @@ void TestQgsMapToolRotateFeature::testRotateFeature()
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((0.72 -0.17, 0.28 1.17, 1.17 0.72, 0.72 -0.17))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0))" ) );
+
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchor()
+{
+  // test rotating around a fixed anchor point
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  // set anchor point
+  utils.mouseClick( 0, 5, Qt::LeftButton, Qt::ControlModifier, true );
+
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((2.06 0.34, 0.87 1.1, 1.84 1.31, 2.06 0.34))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0))" ) );
+
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolRotateFeature::testCancelManualAnchor()
+{
+  // test canceling rotation around a fixed anchor point
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  // set anchor point
+  utils.mouseClick( 0, 5, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // right click = remove anchor point
+  utils.mouseClick( 10, 15, Qt::RightButton, Qt::KeyboardModifiers(), true );
+
+  // now rotate -- should be around feature center, not anchor point
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((0.72 -0.17, 0.28 1.17, 1.17 0.72, 0.72 -0.17))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0))" ) );
+
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorAfterStartRotate()
+{
+  // test rotating around a fixed anchor point, where the fixed anchor point is placed after rotation begins
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  // start rotation
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  // set anchor point
+  utils.mouseMove( 0, 5 );
+  utils.mouseClick( 0, 5, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // complete rotation
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-5.06 5.63, -3.79 6.26, -4.11 5.32, -5.06 5.63))" ) );
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0))" ) );
 
   mLayerBase->undoStack()->undo();
