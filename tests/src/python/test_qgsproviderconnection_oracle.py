@@ -36,6 +36,12 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
     # to keep them when storing/loading connections in parent class _test_save_load method
     configuration = {"saveUsername": True, "savePassword": True, "geometryColumnsOnly": True}
 
+    defaultSchema = 'QGIS'
+
+    # need to override this because tables with geometries need to be uppercase
+    myNewTable = 'MYNEWTABLE'
+    myUtf8Table = 'MYUTF8\U0001F604TABLE'
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
