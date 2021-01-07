@@ -37,12 +37,9 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
 
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
-    void createSchema( const QString &name ) const override;
-    void dropSchema( const QString &name, bool force = false ) const override;
 
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = TableFlags() ) const override;
-    QStringList schemas( ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
