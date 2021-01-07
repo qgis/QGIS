@@ -61,7 +61,20 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
+    /**
+     * Sets the center \a point of the marker, in map coordinates.
+     *
+     * \see center()
+     */
     void setCenter( const QgsPointXY &point );
+
+    /**
+     * Returns the center point of the marker, in map coordinates.
+     *
+     * \see setCenter()
+     * \since QGIS 3.18
+     */
+    QgsPointXY center() const { return mCenter; }
 
     void setIconType( int iconType );
 
