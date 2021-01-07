@@ -216,7 +216,7 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema,
   // Set geometry column and if it's not aspatial
   if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
   {
-    newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
+    newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "GEOM" ) ).toString() );
     // set wkbType (There is no way to guess geometry type from database is there is no data)
     newUri.setWkbType( wkbType );
   }
