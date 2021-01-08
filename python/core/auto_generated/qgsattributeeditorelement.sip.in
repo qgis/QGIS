@@ -115,6 +115,20 @@ Controls if this element should be labeled with a title (field, relation or grou
 .. versionadded:: 2.18
 %End
 
+    QVariantMap config() const;
+%Docstring
+Returns the editor configuration
+
+.. versionadded:: 3.18
+%End
+
+    void setConfig( const QVariantMap &config );
+%Docstring
+Sets the editor configuration
+
+.. versionadded:: 3.18
+%End
+
   protected:
 
 };
@@ -351,80 +365,6 @@ Initializes the relation from the id
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
 
 
- bool showLinkButton() const /Deprecated/;
-%Docstring
-Determines if the "link feature" button should be shown
-
-.. versionadded:: 2.18
-
-.. deprecated:: QGIS 3.16
-   use visibleButtons() instead
-%End
-
- void setShowLinkButton( bool showLinkButton ) /Deprecated/;
-%Docstring
-Determines if the "link feature" button should be shown
-
-.. versionadded:: 2.18
-
-.. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
-%End
-
- bool showUnlinkButton() const /Deprecated/;
-%Docstring
-Determines if the "unlink feature" button should be shown
-
-.. versionadded:: 2.18
-
-.. deprecated:: QGIS 3.16
-   use visibleButtons() instead
-%End
-
- void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
-%Docstring
-Determines if the "unlink feature" button should be shown
-
-.. versionadded:: 2.18
-
-.. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
-%End
-
- void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
-%Docstring
-Determines if the "Save child layer edits" button should be shown
-
-.. versionadded:: 3.14
-
-.. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
-%End
-
- bool showSaveChildEditsButton() const /Deprecated/;
-%Docstring
-Determines if the "Save child layer edits" button should be shown
-
-.. versionadded:: 3.14
-
-.. deprecated:: QGIS 3.16
-   use visibleButtons() instead
-%End
-
-    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
-%Docstring
-Defines the buttons which are shown
-
-.. versionadded:: 3.16
-%End
-
-    QgsAttributeEditorRelation::Buttons visibleButtons() const;
-%Docstring
-Returns the buttons which are shown
-
-.. versionadded:: 3.16
-%End
-
     bool forceSuppressFormPopup() const;
 %Docstring
 Determines the force suppress form popup status.
@@ -469,6 +409,20 @@ Sets ``label`` for this element
 If it's empty it takes the relation id as label
 
 .. versionadded:: 3.16
+%End
+
+    QString relationWidgetTypeId() const;
+%Docstring
+Returns the current relation widget type id
+
+.. versionadded:: 3.18
+%End
+
+    void setRelationWidgetTypeId( const QString &relationWidgetTypeId );
+%Docstring
+Sets the relation widget type
+
+.. versionadded:: 3.18
 %End
 
 };

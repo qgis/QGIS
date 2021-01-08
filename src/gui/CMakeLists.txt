@@ -567,6 +567,8 @@ set(QGIS_GUI_SRCS
   qgsrasterlayersaveasdialog.cpp
   qgsrasterpyramidsoptionswidget.cpp
   qgsrelationeditorwidget.cpp
+  qgsabstractrelationeditorwidget.cpp
+  qgsrelationwidgetregistry.cpp
   qgsrubberband.cpp
   qgsscalecombobox.cpp
   qgsscalerangewidget.cpp
@@ -813,6 +815,8 @@ set(QGIS_GUI_HDRS
   qgsrasterpyramidsoptionswidget.h
   qgsratiolockbutton.h
   qgsrelationeditorwidget.h
+  qgsabstractrelationeditorwidget.h
+  qgsrelationwidgetregistry.h
   qgsrubberband.h
   qgsscalecombobox.h
   qgsscalerangewidget.h

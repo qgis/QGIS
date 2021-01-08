@@ -181,6 +181,8 @@
 %Include auto_generated/qgsrasterpyramidsoptionswidget.sip
 %Include auto_generated/qgsratiolockbutton.sip
 %Include auto_generated/qgsrelationeditorwidget.sip
+%Include auto_generated/qgsabstractrelationeditorwidget.sip
+%Include auto_generated/qgsrelationwidgetregistry.sip
 %Include auto_generated/qgsrubberband.sip
 %Include auto_generated/qgsscalecombobox.sip
 %Include auto_generated/qgsscalerangewidget.sip
