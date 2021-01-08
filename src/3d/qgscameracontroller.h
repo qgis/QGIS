@@ -21,6 +21,7 @@
 #include <QPointer>
 #include <QRect>
 #include <Qt3DCore/QEntity>
+#include <Qt3DInput/QMouseEvent>
 
 namespace Qt3DInput
 {
@@ -221,6 +222,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Last mouse position recorded
     QPoint mMousePos;
     bool mMousePressed = false;
+    Qt3DInput::QMouseEvent::Buttons mPressedButton = Qt3DInput::QMouseEvent::Buttons::NoButton;
 
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
