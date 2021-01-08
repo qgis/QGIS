@@ -568,6 +568,20 @@ Sets the navigation mode for the camera
 .. versionadded:: 3.18
 %End
 
+    double cameraMovementSpeed() const;
+%Docstring
+Returns the camera movement speed
+
+.. versionadded:: 3.18
+%End
+
+    void setCameraMovementSpeed( double movementSpeed );
+%Docstring
+Sets the camera movement speed
+
+.. versionadded:: 3.18
+%End
+
     void setOutputDpi( const double dpi );
 %Docstring
 Sets DPI used for conversion between real world units (e.g. mm) and pixels
@@ -803,6 +817,13 @@ Emitted when the camera lens projection type changes
     void cameraNavigationModeChanged();
 %Docstring
 Emitted when the camera navigation mode was changed
+
+.. versionadded:: 3.18
+%End
+
+    void cameraMovementSpeedChanged();
+%Docstring
+Emitted when the camera movement speed was changed
 
 .. versionadded:: 3.18
 %End

@@ -65,6 +65,11 @@ void QgsCameraController::setCameraNavigationMode( QgsCameraController::Navigati
   mCameraNavigationMode = navigationMode;
 }
 
+void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
+{
+  mCameraMovementSpeed = movementSpeed;
+}
+
 void QgsCameraController::setTerrainEntity( QgsTerrainEntity *te )
 {
   mTerrainEntity = te;
@@ -492,35 +497,34 @@ void QgsCameraController::onKeyPressedFPSNavigation( Qt3DInput::QKeyEvent *event
   QVector3D cameraLeft = QVector3D::crossProduct( cameraUp, cameraFront );
 
   QVector3D cameraPosDiff( 0.0f, 0.0f, 0.0f );
-  float movementSpeed = 5.0f;
 
   switch ( event->key() )
   {
     case Qt::Key_Left:
     case Qt::Key_A:
-      cameraPosDiff = movementSpeed * cameraLeft;
+      cameraPosDiff = mCameraMovementSpeed * cameraLeft;
       break;
     case Qt::Key_Right:
     case Qt::Key_D:
-      cameraPosDiff = - movementSpeed * cameraLeft;
+      cameraPosDiff = - mCameraMovementSpeed * cameraLeft;
       break;
 
     case Qt::Key_Up:
     case Qt::Key_W:
-      cameraPosDiff = movementSpeed * cameraFront;
+      cameraPosDiff = mCameraMovementSpeed * cameraFront;
       break;
     case Qt::Key_Down:
     case Qt::Key_S:
-      cameraPosDiff = - movementSpeed * cameraFront;
+      cameraPosDiff = - mCameraMovementSpeed * cameraFront;
       break;
 
     case Qt::Key_PageUp:
     case Qt::Key_Q:
-      cameraPosDiff = movementSpeed * cameraUp;
+      cameraPosDiff = mCameraMovementSpeed * cameraUp;
       break;
     case Qt::Key_PageDown:
     case Qt::Key_E:
-      cameraPosDiff = - movementSpeed * cameraUp;
+      cameraPosDiff = - mCameraMovementSpeed * cameraUp;
       break;
   }
 

@@ -490,6 +490,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
 
     /**
+     * Returns the camera movement speed
+     * \since QGIS 3.18
+     */
+    double cameraMovementSpeed() const { return mCameraMovementSpeed; }
+
+    /**
+     * Sets the camera movement speed
+     * \since QGIS 3.18
+     */
+    void setCameraMovementSpeed( double movementSpeed );
+
+    /**
      * Sets DPI used for conversion between real world units (e.g. mm) and pixels
      * \param dpi the number of dot per inch
      * \since QGIS 3.10
@@ -698,6 +710,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void cameraNavigationModeChanged();
 
     /**
+     * Emitted when the camera movement speed was changed
+     * \since QGIS 3.18
+     */
+    void cameraMovementSpeedChanged();
+
+    /**
      * Emitted when skybox settings are changed
      * \since QGIS 3.16
      */
@@ -746,6 +764,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
     QgsCameraController::NavigationMode mCameraNavigationMode = QgsCameraController::NavigationMode::BasicNavigation;
+    double mCameraMovementSpeed = 5.0;
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object

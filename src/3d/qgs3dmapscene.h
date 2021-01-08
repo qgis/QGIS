@@ -162,6 +162,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
     void onCameraNavigationModeChanged();
+    void onCameraMovementSpeedChanged();
 
   private:
     void addLayerEntity( QgsMapLayer *layer );
