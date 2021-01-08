@@ -668,14 +668,12 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
       config = relElement->config();
 
     // pre QGIS 3.18 compatibility
-    Q_NOWARN_DEPRECATED_PUSH
     if ( ! config.contains( QStringLiteral( "buttons" ) ) )
     {
       if ( elem.hasAttribute( "buttons" ) )
       {
         QString buttonString = elem.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
-        relElement->setVisibleButtons( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) );
-        config.insert( "buttons", qgsFlagValueToKeys( relElement->visibleButtons() ) );
+        config.insert( "buttons", qgsFlagValueToKeys( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) ) );
       }
       else
       {
@@ -684,10 +682,9 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
         buttons.setFlag( QgsAttributeEditorRelation::Button::Link, elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
         buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
         buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
-        config.insert( "buttons", qgsFlagValueToKeys( relElement->visibleButtons() ) );
+        config.insert( "buttons", qgsFlagValueToKeys( buttons ) );
       }
     }
-    Q_NOWARN_DEPRECATED_POP
 
     relElement->setConfig( config );
 
