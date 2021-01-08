@@ -704,8 +704,8 @@ bool QgsAttributeForm::saveMultiEdits()
 
   bool success = true;
 
-  const auto constMMultiEditFeatureIds = mMultiEditFeatureIds;
-  for ( QgsFeatureId fid : constMMultiEditFeatureIds )
+  const auto constMultiEditFeatureIds = mMultiEditFeatureIds;
+  for ( QgsFeatureId fid : constMultiEditFeatureIds )
   {
     QgsAttributeMap::const_iterator aIt = newAttributeValues.constBegin();
     for ( ; aIt != newAttributeValues.constEnd(); ++aIt )
@@ -914,6 +914,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
         mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, Qgis::Warning );
         if ( !mButtonBox->isVisible() )
           mMessageBar->pushItem( mMultiEditUnsavedMessageBarItem );
+
+        emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
       }
       break;
     }
@@ -1008,30 +1010,35 @@ void QgsAttributeForm::updateContainersVisibility()
 
 void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww )
 {
-  QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet : QgsFieldConstraints::ConstraintOriginLayer;
 
-  if ( eww->layer()->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
+  if ( mContext.attributeFormMode() != QgsAttributeEditorContext::Mode::MultiEditMode )
   {
-    int srcFieldIdx;
-    const QgsVectorLayerJoinInfo *info = eww->layer()->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), eww->layer()->fields(), srcFieldIdx );
 
-    if ( info && info->joinLayer() && info->isDynamicFormEnabled() )
+    QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet : QgsFieldConstraints::ConstraintOriginLayer;
+
+    if ( eww->layer()->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
     {
-      if ( mJoinedFeatures.contains( info ) )
+      int srcFieldIdx;
+      const QgsVectorLayerJoinInfo *info = eww->layer()->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), eww->layer()->fields(), srcFieldIdx );
+
+      if ( info && info->joinLayer() && info->isDynamicFormEnabled() )
       {
-        eww->updateConstraint( info->joinLayer(), srcFieldIdx, mJoinedFeatures[info], constraintOrigin );
-        return;
-      }
-      else // if we are here, it means there's not joined field for this feature
-      {
-        eww->updateConstraint( QgsFeature() );
-        return;
+        if ( mJoinedFeatures.contains( info ) )
+        {
+          eww->updateConstraint( info->joinLayer(), srcFieldIdx, mJoinedFeatures[info], constraintOrigin );
+          return;
+        }
+        else // if we are here, it means there's not joined field for this feature
+        {
+          eww->updateConstraint( QgsFeature() );
+          return;
+        }
       }
     }
+    // default constraint update
+    eww->updateConstraint( ft, constraintOrigin );
   }
 
-  // default constraint update
-  eww->updateConstraint( ft, constraintOrigin );
 }
 
 void QgsAttributeForm::updateLabels()

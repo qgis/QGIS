@@ -10078,12 +10078,13 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
   }
 
   //dummy feature
-  QgsFeature f;
+  QgsFeature f( vl->fields() );
   QgsAttributeEditorContext context( createAttributeEditorContext() );
   context.setAllowCustomUi( false );
   context.setVectorLayerTools( mVectorLayerTools );
   context.setCadDockWidget( mAdvancedDigitizingDockWidget );
   context.setMapCanvas( mMapCanvas );
+  context.setAttributeFormMode( QgsAttributeEditorContext::Mode::MultiEditMode );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
   dialog->setMode( QgsAttributeEditorContext::MultiEditMode );
