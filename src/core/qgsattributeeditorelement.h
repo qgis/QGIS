@@ -429,62 +429,6 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
     /**
-     * Determines if the "link feature" button should be shown
-     * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use visibleButtons() instead
-     */
-    Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
-
-    /**
-     * Determines if the "link feature" button should be shown
-     * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
-     */
-    Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
-
-    /**
-     * Determines if the "unlink feature" button should be shown
-     * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use visibleButtons() instead
-     */
-    Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
-
-    /**
-     * Determines if the "unlink feature" button should be shown
-     * \since QGIS 2.18
-     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
-     */
-    Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
-
-    /**
-     * Determines if the "Save child layer edits" button should be shown
-     * \since QGIS 3.14
-     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
-     */
-    Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
-
-    /**
-     * Determines if the "Save child layer edits" button should be shown
-     * \since QGIS 3.14
-     * \deprecated since QGIS 3.16 use visibleButtons() instead
-     */
-    Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
-
-    /**
-     * Defines the buttons which are shown
-     * \since QGIS 3.16
-     * \deprecated since QGIS 3.18 use setConfig() instead
-     */
-    Q_DECL_DEPRECATED void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) SIP_DEPRECATED;
-
-    /**
-     * Returns the buttons which are shown
-     * \since QGIS 3.16
-     * \deprecated since QGIS 3.18 use config() instead
-     */
-    Q_DECL_DEPRECATED QgsAttributeEditorRelation::Buttons visibleButtons() const SIP_DEPRECATED {return mButtons;}
-
-    /**
      * Determines the force suppress form popup status.
      * \since QGIS 3.16
      */

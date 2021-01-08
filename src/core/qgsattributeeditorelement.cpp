@@ -163,41 +163,6 @@ QString QgsAttributeEditorRelation::typeIdentifier() const
   return QStringLiteral( "attributeEditorRelation" );
 }
 
-bool QgsAttributeEditorRelation::showLinkButton() const
-{
-  return mButtons.testFlag( Button::Link );
-}
-
-void QgsAttributeEditorRelation::setShowLinkButton( bool showLinkButton )
-{
-  mButtons.setFlag( Button::Link, showLinkButton );
-}
-
-bool QgsAttributeEditorRelation::showUnlinkButton() const
-{
-  return mButtons.testFlag( Button::Unlink );
-}
-
-void QgsAttributeEditorRelation::setShowUnlinkButton( bool showUnlinkButton )
-{
-  mButtons.setFlag( Button::Unlink, showUnlinkButton );
-}
-
-void QgsAttributeEditorRelation::setShowSaveChildEditsButton( bool showSaveChildEdits )
-{
-  mButtons.setFlag( Button::SaveChildEdits, showSaveChildEdits );
-}
-
-bool QgsAttributeEditorRelation::showSaveChildEditsButton() const
-{
-  return mButtons.testFlag( Button::SaveChildEdits );
-}
-
-void QgsAttributeEditorRelation::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
-{
-  mButtons = buttons;
-}
-
 void QgsAttributeEditorRelation::setForceSuppressFormPopup( bool forceSuppressFormPopup )
 {
   mForceSuppressFormPopup = forceSuppressFormPopup;
