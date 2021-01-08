@@ -62,10 +62,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Q_PROPERTY( Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged )
     Q_PROPERTY( QRect viewport READ viewport WRITE setViewport NOTIFY viewportChanged )
   public:
+    //! The navigation mode used by the camera
     enum NavigationMode
     {
-      BasicNavigation,
-      FPSNavigation
+      TerrainBasedNavigation, //! The default navigation based on the terrain
+      FlyNavigation //! uses WASD keys or arrows to navigate in flying manner
     };
 
   public:
@@ -201,8 +202,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void onPickerMousePressed( Qt3DRender::QPickEvent *pick );
 
   private:
-    void onKeyPressedFPSNavigation( Qt3DInput::QKeyEvent *mouse );
-    void onPositionChangedFPSNavigation( Qt3DInput::QMouseEvent *mouse );
+    void onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *mouse );
+    void onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse );
 
   private:
     //! Camera that is being controlled
@@ -227,7 +228,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
-    NavigationMode mCameraNavigationMode = NavigationMode::BasicNavigation;
+    NavigationMode mCameraNavigationMode = NavigationMode::TerrainBasedNavigation;
     double mCameraMovementSpeed = 5.0;
 };
 
