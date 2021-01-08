@@ -80,6 +80,55 @@ void QgsAttributeEditorContainer::clear()
   mChildren.clear();
 }
 
+int QgsAttributeEditorContainer::columnCount() const
+{
+  return mColumnCount;
+}
+
+void QgsAttributeEditorContainer::setColumnCount( int columnCount )
+{
+  mColumnCount = columnCount;
+}
+
+QgsAttributeEditorElement *QgsAttributeEditorContainer::clone( QgsAttributeEditorElement *parent ) const
+{
+  QgsAttributeEditorContainer *element = new QgsAttributeEditorContainer( name(), parent );
+
+  const auto childElements = children();
+
+  for ( QgsAttributeEditorElement *child : childElements )
+  {
+    element->addChildElement( child->clone( element ) );
+  }
+  element->mIsGroupBox = mIsGroupBox;
+  element->mColumnCount = mColumnCount;
+  element->mVisibilityExpression = mVisibilityExpression;
+
+  return element;
+}
+
+void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem ) const
+{
+  elem.setAttribute( QStringLiteral( "columnCount" ), mColumnCount );
+  elem.setAttribute( QStringLiteral( "groupBox" ), mIsGroupBox ? 1 : 0 );
+  elem.setAttribute( QStringLiteral( "visibilityExpressionEnabled" ), mVisibilityExpression.enabled() ? 1 : 0 );
+  elem.setAttribute( QStringLiteral( "visibilityExpression" ), mVisibilityExpression->expression() );
+  if ( mBackgroundColor.isValid() )
+    elem.setAttribute( QStringLiteral( "backgroundColor" ), mBackgroundColor.name( ) );
+  const auto constMChildren = mChildren;
+  for ( QgsAttributeEditorElement *child : constMChildren )
+  {
+    QDomDocument doc = elem.ownerDocument();
+    elem.appendChild( child->toDomElement( doc ) );
+  }
+}
+
+QString QgsAttributeEditorContainer::typeIdentifier() const
+{
+  return QStringLiteral( "attributeEditorContainer" );
+}
+
+
 QgsAttributeEditorElement *QgsAttributeEditorField::clone( QgsAttributeEditorElement *parent ) const
 {
   QgsAttributeEditorField *element = new QgsAttributeEditorField( name(), mIdx, parent );
