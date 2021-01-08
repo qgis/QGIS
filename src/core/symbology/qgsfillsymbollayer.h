@@ -1264,9 +1264,9 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * Sets the dynamic SVG parameters
      * \since QGIS 3.18
      */
-    void setParameters(const QMap<QString, QgsProperty> &parameters);
+    void setParameters( const QMap<QString, QgsProperty> &parameters );
 
-protected:
+  protected:
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 

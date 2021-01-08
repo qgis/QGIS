@@ -1414,6 +1414,20 @@ Returns the map unit scale for the pattern's stroke.
     virtual QgsMapUnitScale mapUnitScale() const;
 
 
+    QMap<QString, QgsProperty> parameters() const;
+%Docstring
+Returns the dynamic SVG parameters
+
+.. versionadded:: 3.18
+%End
+
+    void setParameters( const QMap<QString, QgsProperty> &parameters );
+%Docstring
+Sets the dynamic SVG parameters
+
+.. versionadded:: 3.18
+%End
+
   protected:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );

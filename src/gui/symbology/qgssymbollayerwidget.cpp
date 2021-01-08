@@ -2854,7 +2854,7 @@ void QgsSVGFillSymbolLayerWidget::setFile( const QString &name )
 
 void QgsSVGFillSymbolLayerWidget::setSvgParameters( const QMap<QString, QgsProperty> &parameters )
 {
-  mLayer->setParameters(parameters);
+  mLayer->setParameters( parameters );
   whileBlocking( mSvgSelectorWidget )->setSvgParameters( parameters );
 
   updateParamGui();
