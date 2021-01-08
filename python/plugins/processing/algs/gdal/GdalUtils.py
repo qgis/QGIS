@@ -97,8 +97,7 @@ class GdalUtils:
         success = False
         retry_count = 0
         while not success:
-            loglines = []
-            loglines.append(GdalUtils.tr('GDAL execution console output'))
+            loglines = [GdalUtils.tr('GDAL execution console output')]
             try:
                 with subprocess.Popen(
                     fused_command,
@@ -121,11 +120,7 @@ class GdalUtils:
                             len(loglines), u'\n'.join(loglines[-10:])))
 
             QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)
-            GdalUtils.consoleOutput = loglines
-
-    @staticmethod
-    def getConsoleOutput():
-        return GdalUtils.consoleOutput
+        return loglines
 
     @staticmethod
     def getSupportedRasters():
