@@ -21,13 +21,15 @@ __author__ = 'Nyall Dawson'
 __date__ = 'January 2021'
 __copyright__ = '(C) 2021, Nyall Dawson'
 
-import qgis  # NOQA
+import os
+import tempfile
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QProcess
 from qgis.core import (
     QgsBlockingProcess,
     QgsFeedback
 )
-
 from qgis.testing import unittest, start_app
 
 from utilities import unitTestDataPath
@@ -40,7 +42,6 @@ app = start_app()
 class TestQgsBlockingProcess(unittest.TestCase):
 
     def test_process_ok(self):
-
         def std_out(ba):
             std_out.val += ba.data().decode('UTF-8')
 
@@ -57,11 +58,11 @@ class TestQgsBlockingProcess(unittest.TestCase):
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
+        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
         self.assertIn('GDAL', std_out.val)
         self.assertEqual(std_err.val, '')
 
     def test_process_err(self):
-
         def std_out(ba):
             std_out.val += ba.data().decode('UTF-8')
 
@@ -78,8 +79,39 @@ class TestQgsBlockingProcess(unittest.TestCase):
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 1)
+        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
         self.assertIn('Usage', std_out.val)
         self.assertIn('FAILURE', std_err.val)
+
+    def test_process_crash(self):
+        """
+        Test a script which simulates a crash
+        """
+        temp_folder = tempfile.mkdtemp()
+
+        script_file = os.path.join(temp_folder, 'crash_process.sh')
+        with open(script_file, 'wt') as f:
+            f.write('kill $$')
+
+        os.chmod(script_file, 0o775)
+
+        def std_out(ba):
+            std_out.val += ba.data().decode('UTF-8')
+
+        std_out.val = ''
+
+        def std_err(ba):
+            std_err.val += ba.data().decode('UTF-8')
+
+        std_err.val = ''
+
+        p = QgsBlockingProcess('sh', [script_file])
+        p.setStdOutHandler(std_out)
+        p.setStdErrHandler(std_err)
+
+        f = QgsFeedback()
+        self.assertNotEqual(p.run(f), 0)
+        self.assertEqual(p.exitStatus(), QProcess.CrashExit)
 
 
 if __name__ == '__main__':
