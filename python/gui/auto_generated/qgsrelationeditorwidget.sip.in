@@ -72,7 +72,8 @@ The feature selection manager is responsible for the selected features
 which are currently being edited.
 %End
 
-    void setEditorContext( const QgsAttributeEditorContext &context );
+    virtual void setEditorContext( const QgsAttributeEditorContext &context );
+
 %Docstring
 Sets the editor ``context``
 

@@ -62,7 +62,7 @@ inserting and deleting entries on the intermediate table as required.
 Sets the ``feature`` being edited and updates the UI unless ``update`` is set to ``False``
 %End
 
-    void setEditorContext( const QgsAttributeEditorContext &context );
+    virtual void setEditorContext( const QgsAttributeEditorContext &context );
 %Docstring
 Sets the editor ``context``
 

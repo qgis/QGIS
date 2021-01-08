@@ -136,7 +136,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
      * \note if context cadDockWidget is null, it won't be possible to digitize
      * the geometry of a referencing feature from this widget
      */
-    void setEditorContext( const QgsAttributeEditorContext &context );
+    void setEditorContext( const QgsAttributeEditorContext &context ) override;
 
     /**
      * Defines the buttons which are shown

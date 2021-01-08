@@ -190,9 +190,8 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   while ( ctx );
 
-  w->setRelations( mRelation, mNmRelation );
-
   w->setEditorContext( myContext );
+  w->setRelations( mRelation, mNmRelation );
 
   mWidget = w;
 }
