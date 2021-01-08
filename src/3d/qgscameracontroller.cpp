@@ -520,11 +520,11 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
 
     case Qt::Key_PageUp:
     case Qt::Key_Q:
-      cameraPosDiff = mCameraMovementSpeed * cameraUp;
+      cameraPosDiff = mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
       break;
     case Qt::Key_PageDown:
     case Qt::Key_E:
-      cameraPosDiff = - mCameraMovementSpeed * cameraUp;
+      cameraPosDiff = - mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
       break;
   }
 
