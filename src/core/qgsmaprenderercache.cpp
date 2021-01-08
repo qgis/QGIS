@@ -17,6 +17,11 @@
 
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsapplication.h"
+
+#include <QImage>
+#include <QPainter>
+#include <algorithm>
 
 QgsMapRendererCache::QgsMapRendererCache()
 {
@@ -95,6 +100,25 @@ bool QgsMapRendererCache::init( const QgsRectangle &extent, double scale )
   // set new params
   mExtent = extent;
   mScale = scale;
+  mMtp = QgsMapToPixel::fromScale( scale, QgsUnitTypes::DistanceUnit::DistanceUnknownUnit );
+
+  return false;
+}
+
+bool QgsMapRendererCache::updateParameters( const QgsRectangle &extent, const QgsMapToPixel &mtp )
+{
+  QMutexLocker lock( &mMutex );
+
+  // check whether the params are the same
+  if ( extent == mExtent &&
+       mtp.transform() == mMtp.transform() )
+    return true;
+
+  // set new params
+
+  mExtent = extent;
+  mScale = 1.0;
+  mMtp = mtp;
 
   return false;
 }
@@ -105,6 +129,8 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
 
   CacheParameters params;
   params.cachedImage = image;
+  params.cachedExtent = mExtent;
+  params.cachedMtp = mMtp;
 
   // connect to the layer to listen to layer's repaintRequested() signals
   const auto constDependentLayers = dependentLayers;
@@ -127,6 +153,21 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
 
 bool QgsMapRendererCache::hasCacheImage( const QString &cacheKey ) const
 {
+  QMutexLocker lock( &mMutex );
+  if ( mCachedImages.contains( cacheKey ) )
+  {
+    const CacheParameters params = mCachedImages[cacheKey];
+    return ( params.cachedExtent == mExtent &&
+             params.cachedMtp.transform() == mMtp.transform() );
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool QgsMapRendererCache::hasAnyCacheImage( const QString &cacheKey ) const
+{
   return mCachedImages.contains( cacheKey );
 }
 
@@ -134,6 +175,53 @@ QImage QgsMapRendererCache::cacheImage( const QString &cacheKey ) const
 {
   QMutexLocker lock( &mMutex );
   return mCachedImages.value( cacheKey ).cachedImage;
+}
+
+static QPointF _transform( const QgsMapToPixel &mtp, const QgsPointXY &point, double scale )
+{
+  qreal x = point.x(), y = point.y();
+  mtp.transformInPlace( x, y );
+  return QPointF( x, y ) * scale;
+}
+
+QImage QgsMapRendererCache::transformedCacheImage( const QString &cacheKey, const QgsMapToPixel &mtp ) const
+{
+  QMutexLocker lock( &mMutex );
+  const CacheParameters params = mCachedImages.value( cacheKey );
+
+  if ( params.cachedExtent == mExtent &&
+       mtp.transform() == mMtp.transform() )
+  {
+    return params.cachedImage;
+  }
+  else
+  {
+    QgsRectangle intersection = mExtent.intersect( params.cachedExtent );
+    if ( intersection.isNull() )
+      return QImage();
+
+    // Calculate target rect
+    const QPointF ulT = _transform( mtp, QgsPointXY( intersection.xMinimum(), intersection.yMaximum() ), 1.0 );
+    const QPointF lrT = _transform( mtp, QgsPointXY( intersection.xMaximum(), intersection.yMinimum() ), 1.0 );
+    const QRectF targetRect( ulT.x(), ulT.y(), lrT.x() - ulT.x(), lrT.y() - ulT.y() );
+
+    // Calculate source rect
+    const QPointF ulS = _transform( params.cachedMtp, QgsPointXY( intersection.xMinimum(), intersection.yMaximum() ),  params.cachedImage.devicePixelRatio() );
+    const QPointF lrS = _transform( params.cachedMtp, QgsPointXY( intersection.xMaximum(), intersection.yMinimum() ),  params.cachedImage.devicePixelRatio() );
+    const QRectF sourceRect( ulS.x(), ulS.y(), lrS.x() - ulS.x(), lrS.y() - ulS.y() );
+
+    // Draw image
+    QImage ret( params.cachedImage.size(), params.cachedImage.format() );
+    ret.setDevicePixelRatio( params.cachedImage.devicePixelRatio() );
+    ret.setDotsPerMeterX( params.cachedImage.dotsPerMeterX() );
+    ret.setDotsPerMeterY( params.cachedImage.dotsPerMeterY() );
+    ret.fill( Qt::transparent );
+    QPainter painter;
+    painter.begin( &ret );
+    painter.drawImage( targetRect, params.cachedImage, sourceRect );
+    painter.end();
+    return ret;
+  }
 }
 
 QList< QgsMapLayer * > QgsMapRendererCache::dependentLayers( const QString &cacheKey ) const

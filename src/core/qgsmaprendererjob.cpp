@@ -48,6 +48,25 @@
 
 const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
 
+bool LayerRenderJob::imageCanBeComposed() const
+{
+  if ( imageInitialized )
+  {
+    if ( renderer )
+    {
+      return renderer->isReadyToCompose();
+    }
+    else
+    {
+      return true;
+    }
+  }
+  else
+  {
+    return false;
+  }
+}
+
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
 
@@ -300,7 +319,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
   if ( mCache )
   {
-    bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
+    bool cacheValid = mCache->updateParameters( mSettings.visibleExtent(), mSettings.mapToPixel() );
     Q_UNUSED( cacheValid )
     QgsDebugMsgLevel( QStringLiteral( "CACHE VALID: %1" ).arg( cacheValid ), 4 );
   }
@@ -740,7 +759,12 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
 
 #define DEBUG_RENDERING 0
 
-QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob )
+QImage QgsMapRendererJob::composeImage(
+  const QgsMapSettings &settings,
+  const LayerRenderJobs &jobs,
+  const LabelRenderJob &labelJob,
+  const QgsMapRendererCache *cache
+)
 {
   QImage image( settings.deviceOutputSize(), settings.outputImageFormat() );
   image.setDevicePixelRatio( settings.devicePixelRatio() );
@@ -760,19 +784,19 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
     if ( job.layer && job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue; // skip layer for now, it will be rendered after labels
 
-    if ( !job.imageInitialized )
-      continue; // img not safe to compose
+    QImage img = layerImageToBeComposed( settings, job, cache );
+    if ( img.isNull() )
+      continue; // image is not prepared and not even in cache
 
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );
 
 #if DEBUG_RENDERING
-    job.img->save( QString( "/tmp/final_%1.png" ).arg( i ) );
+    img->save( QString( "/tmp/final_%1.png" ).arg( i ) );
     i++;
 #endif
-    Q_ASSERT( job.img );
 
-    painter.drawImage( 0, 0, *job.img );
+    painter.drawImage( 0, 0, img );
   }
 
   // IMPORTANT - don't draw labelJob img before the label job is complete,
@@ -793,15 +817,14 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
     if ( !job.layer || !job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue;
 
-    if ( !job.imageInitialized )
-      continue; // img not safe to compose
+    QImage img = layerImageToBeComposed( settings, job, cache );
+    if ( img.isNull() )
+      continue; // image is not prepared and not even in cache
 
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );
 
-    Q_ASSERT( job.img );
-
-    painter.drawImage( 0, 0, *job.img );
+    painter.drawImage( 0, 0, img );
   }
 
   painter.end();
@@ -809,6 +832,28 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
   image.save( "/tmp/final.png" );
 #endif
   return image;
+}
+
+QImage QgsMapRendererJob::layerImageToBeComposed(
+  const QgsMapSettings &settings,
+  const LayerRenderJob &job,
+  const QgsMapRendererCache *cache
+)
+{
+  if ( job.imageCanBeComposed() )
+  {
+    Q_ASSERT( job.img );
+    return *job.img;
+  }
+  else
+  {
+    if ( cache && cache->hasAnyCacheImage( job.layer->id() ) )
+    {
+      return cache->transformedCacheImage( job.layer->id(), settings.mapToPixel() );
+    }
+    else
+      return QImage();
+  }
 }
 
 void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob )

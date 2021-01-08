@@ -136,6 +136,7 @@ set(TESTS
  testqgsmaplayerstylemanager.cpp
  testqgsmaplayer.cpp
  testqgsmaprendererjob.cpp
+ testqgsmaprenderercache.cpp
  testqgsmaprotation.cpp
  testqgsmapsettings.cpp
  testqgsmapsettingsutils.cpp

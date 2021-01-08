@@ -53,8 +53,11 @@ struct LayerRenderJob
    * May be NULLPTR if it is not necessary to draw to separate image (e.g. sequential rendering).
    */
   QImage *img;
-  //! TRUE when img has been initialized (filled with transparent pixels) and is safe to compose
+  //! TRUE when img has been initialized (filled with transparent pixels)
   bool imageInitialized = false;
+
+  bool imageCanBeComposed() const;
+
   QgsMapLayerRenderer *renderer; // must be deleted
   QPainter::CompositionMode blendMode;
   double opacity;
@@ -366,7 +369,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     LayerRenderJobs prepareSecondPassJobs( LayerRenderJobs &firstPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    static QImage composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob ) SIP_SKIP;
+    static QImage composeImage( const QgsMapSettings &settings,
+                                const LayerRenderJobs &jobs,
+                                const LabelRenderJob &labelJob,
+                                const QgsMapRendererCache *cache = nullptr ) SIP_SKIP;
+
+    //! \note not available in Python bindings
+    static QImage layerImageToBeComposed( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache ) SIP_SKIP;
 
     /**
      * Compose second pass images into first pass images.

@@ -35,6 +35,10 @@
  * If triggered, the cache removes the rendered image (and disconnects from the
  * layers).
  *
+ * When user pans/zooms the canvas, the cache is also used in rendering period
+ * for particular layer after first render update and moment layer actually
+ * partially rendered something in the resulting image
+ *
  * The class is thread-safe (multiple classes can access the same instance safely).
  *
  * \since QGIS 2.4
@@ -53,11 +57,23 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     void clear();
 
     /**
-     * Initialize cache: set new parameters and clears the cache if any
+     * Initialize cache: sets extent and scale parameters and clears the cache if any
      * parameters have changed since last initialization.
+     *
+     * Deprecated, use updateParameters() and clear()
+     *
      * \returns flag whether the parameters are the same as last time
      */
-    bool init( const QgsRectangle &extent, double scale );
+    bool Q_DECL_DEPRECATED init( const QgsRectangle &extent, double scale ) SIP_DEPRECATED;
+
+    /**
+     * Sets extent and scale parameters
+     *
+     * \returns flag whether the parameters are the same as last time
+     *
+     * \since QGIS 3.18
+     */
+    bool updateParameters( const QgsRectangle &extent, const QgsMapToPixel &mtp );
 
     /**
      * Set the cached \a image for a particular \a cacheKey. The \a cacheKey usually
@@ -67,14 +83,28 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * repaint then the cache image will be cleared.
      * \see cacheImage()
      */
-    void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+    void setCacheImage( const QString &cacheKey,
+                        const QImage &image,
+                        const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
     /**
-     * Returns TRUE if the cache contains an image with the specified \a cacheKey.
+     * Returns TRUE if the cache contains an image with the specified \a cacheKey
+     * that has the same extent and scale as the cache's global extent and scale
+     *
      * \see cacheImage()
      * \since QGIS 3.0
      */
     bool hasCacheImage( const QString &cacheKey ) const;
+
+    /**
+     * Returns TRUE if the cache contains an image with the specified \a cacheKey
+     * with any cache's parameters (extent and scale)
+     *
+     * \see transformedCacheImage()
+     *
+     * \since QGIS 3.18
+     */
+    bool hasAnyCacheImage( const QString &cacheKey ) const;
 
     /**
      * Returns the cached image for the specified \a cacheKey. The \a cacheKey usually
@@ -84,6 +114,20 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * \see hasCacheImage()
      */
     QImage cacheImage( const QString &cacheKey ) const;
+
+    /**
+     * Returns the cached image for the specified \a cacheKey transformed
+     * to the particular extent and scale.
+     *
+     * The \a cacheKey usually matches the QgsMapLayer::id() which
+     * the image is a render of.
+     * Returns a null image if it is not cached.
+     * \see setCacheImage()
+     * \see hasCacheImageWithAnyParameters()
+     *
+     * \since QGIS 3.18
+     */
+    QImage transformedCacheImage( const QString &cacheKey, const QgsMapToPixel &mtp ) const;
 
     /**
      * Returns a list of map layers on which an image in the cache depends.
@@ -114,6 +158,8 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     {
       QImage cachedImage;
       QgsWeakMapLayerPointerList dependentLayers;
+      QgsRectangle cachedExtent;
+      QgsMapToPixel cachedMtp;
     };
 
     //! Invalidate cache contents (without locking)
@@ -126,7 +172,9 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 
     mutable QMutex mMutex;
     QgsRectangle mExtent;
-    double mScale = 0;
+    QgsMapToPixel mMtp;
+
+    double mScale = -1.0; //DEPRECATED
 
     //! Map of cache key to cache parameters
     QMap<QString, CacheParameters> mCachedImages;
