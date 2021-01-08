@@ -107,13 +107,13 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 
     //! Id of moved feature
     QgsFeatureIds mRotatedFeatures;
-    double mRotation;
-    double mRotationOffset;
+    double mRotation = 0;
+    double mRotationOffset = 0;
 
     QPoint mStPoint;
     std::unique_ptr<QgsVertexMarker> mAnchorPoint = nullptr;
 
-    bool mRotationActive;
+    bool mRotationActive = false;
 
     //! Shows current angle value and allows numerical editing
     QgsAngleMagnetWidget *mRotationWidget = nullptr;
