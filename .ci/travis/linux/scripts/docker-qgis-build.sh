@@ -34,7 +34,7 @@ export CC=/usr/lib/ccache/clang
 export CXX=/usr/lib/ccache/clang++
 
 HANA_TESTS_ENABLED=OFF
-if [ ${HANA_TESTS} == "true" ] && [ ${TRAVIS_PULL_REQUEST} == "false" ]; then
+if [ ${HANA_TESTS} == "true" ] ; then
   HANA_TESTS_ENABLED=ON
 fi
 
