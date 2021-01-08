@@ -26,7 +26,6 @@
 #include "qgslogger.h"
 #include "qgssvgcache.h"
 #include "qgsunittypes.h"
-#include "qgsxmlutils.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
