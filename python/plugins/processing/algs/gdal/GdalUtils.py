@@ -44,6 +44,9 @@ from qgis.core import (Qgis,
                        QgsDataSourceUri,
                        QgsProjUtils,
                        QgsCoordinateReferenceSystem)
+
+from qgis.PyQt.QtCore import QCoreApplication
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
@@ -88,14 +91,14 @@ class GdalUtils:
 
         fused_command = ' '.join([str(c) for c in commands])
         QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.Info)
-        feedback.pushInfo('GDAL command:')
+        feedback.pushInfo(GdalUtils.tr('GDAL command:'))
         feedback.pushCommandInfo(fused_command)
-        feedback.pushInfo('GDAL command output:')
+        feedback.pushInfo(GdalUtils.tr('GDAL command output:'))
         success = False
         retry_count = 0
         while not success:
             loglines = []
-            loglines.append('GDAL execution console output')
+            loglines.append(GdalUtils.tr('GDAL execution console output'))
             try:
                 with subprocess.Popen(
                     fused_command,
@@ -444,3 +447,9 @@ class GdalUtils:
 
         # fallback to proj4 string, stripping out newline characters
         return crs.toProj().replace('\n', ' ').replace('\r', ' ')
+
+    @classmethod
+    def tr(cls, string, context=''):
+        if context == '':
+            context = cls.__name__
+        return QCoreApplication.translate(context, string)
