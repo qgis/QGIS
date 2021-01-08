@@ -279,6 +279,11 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     */
     Q_INVOKABLE static QString dateTimeFieldFormat( const QString &fieldFormat );
 
+    /**
+     * \brief invalidIndex returns invalid index
+     */
+    Q_INVOKABLE static QModelIndex invalidIndex();
+
   private:
     static void formatToMetricDistance( double srcDistance,
                                         QgsUnitTypes::DistanceUnit srcUnits,

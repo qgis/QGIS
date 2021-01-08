@@ -23,6 +23,8 @@ QgsQuickFeaturesListModel::QgsQuickFeaturesListModel( QObject *parent )
 {
 }
 
+QgsQuickFeaturesListModel::~QgsQuickFeaturesListModel() = default;
+
 int QgsQuickFeaturesListModel::rowCount( const QModelIndex &parent ) const
 {
   // For list models only the root node (an invalid parent) should return the list's size. For all
@@ -82,44 +84,95 @@ QVariant QgsQuickFeaturesListModel::data( const QModelIndex &index, int role ) c
 
 QString QgsQuickFeaturesListModel::foundPair( const QgsQuickFeatureLayerPair &pair ) const
 {
-  if ( mFilterExpression.isEmpty() )
+  if ( mSearchExpression.isEmpty() )
     return QString();
 
   QgsFields fields = pair.feature().fields();
+  QStringList words = mSearchExpression.split( ' ', QString::SplitBehavior::SkipEmptyParts );
+  QStringList foundPairs;
 
-  for ( const QgsField &field : fields )
+  for ( const QString &word : words )
   {
-    QString attrValue = pair.feature().attribute( field.name() ).toString();
+    for ( const QgsField &field : fields )
+    {
+      QString attrValue = pair.feature().attribute( field.name() ).toString();
 
-    if ( attrValue.toLower().indexOf( mFilterExpression.toLower() ) != -1 )
-      return field.name() + ": " + attrValue;
+      if ( attrValue.toLower().indexOf( word.toLower() ) != -1 )
+      {
+        foundPairs << field.name() + ": " + attrValue;
+
+        // remove found field from list of fields to not select it more than once
+        fields.remove( fields.lookupField( field.name() ) );
+      }
+    }
   }
-  return QString();
+
+  return foundPairs.join( ", " );
 }
 
-QString QgsQuickFeaturesListModel::buildFilterExpression()
+QString QgsQuickFeaturesListModel::buildSearchExpression()
 {
-  if ( mFilterExpression.isEmpty() || !mCurrentLayer )
+  if ( mSearchExpression.isEmpty() || !mCurrentLayer )
     return QString();
 
   const QgsFields fields = mCurrentLayer->fields();
   QStringList expressionParts;
+  QStringList wordExpressions;
 
-  bool filterExpressionIsNumeric;
-  int filterInt = mFilterExpression.toInt( &filterExpressionIsNumeric );
-  Q_UNUSED( filterInt ); // we only need to know if expression is numeric, int value is not used
+  QStringList words = mSearchExpression.split( ' ', QString::SplitBehavior::SkipEmptyParts );
 
-  for ( const QgsField &field : fields )
+  for ( const QString &word : words )
   {
-    if ( field.isNumeric() && filterExpressionIsNumeric )
-      expressionParts << QStringLiteral( "%1 ~ '%2.*'" ).arg( QgsExpression::quotedColumnRef( field.name() ), mFilterExpression );
-    else if ( field.type() == QVariant::String )
-      expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ), mFilterExpression );
+    bool searchExpressionIsNumeric;
+    int filterInt = word.toInt( &searchExpressionIsNumeric );
+    Q_UNUSED( filterInt ); // we only need to know if expression is numeric, int value is not used
+
+
+    for ( const QgsField &field : fields )
+    {
+      if ( field.isNumeric() && searchExpressionIsNumeric )
+        expressionParts << QStringLiteral( "%1 ~ '%2.*'" ).arg( QgsExpression::quotedColumnRef( field.name() ), word );
+      else if ( field.type() == QVariant::String )
+        expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ), word );
+    }
+    wordExpressions << QStringLiteral( "(%1)" ).arg( expressionParts.join( QLatin1String( " ) OR ( " ) ) );
+    expressionParts.clear();
   }
 
-  QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QLatin1String( " ) OR ( " ) ) );
+  QString expression = QStringLiteral( "(%1)" ).arg( wordExpressions.join( QLatin1String( " ) AND ( " ) ) );
 
   return expression;
+}
+
+void QgsQuickFeaturesListModel::setupFeatureRequest( QgsFeatureRequest &request )
+{
+  if ( !mFilterExpression.isEmpty() && !mSearchExpression.isEmpty() )
+  {
+    request.setFilterExpression( buildSearchExpression() );
+    request.combineFilterExpression( mFilterExpression );
+  }
+  else if ( !mSearchExpression.isEmpty() )
+  {
+    request.setFilterExpression( buildSearchExpression() );
+  }
+  else if ( !mFilterExpression.isEmpty() )
+  {
+    request.setFilterExpression( mFilterExpression );
+  }
+
+  request.setLimit( FEATURES_LIMIT );
+
+  // create context for filter expression
+  if ( !mFilterExpression.isEmpty() && QgsValueRelationFieldFormatter::expressionIsUsable( mFilterExpression, mCurrentFeature ) )
+  {
+    QgsExpression exp( mFilterExpression );
+    QgsExpressionContext filterContext = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( mCurrentLayer ) );
+
+    if ( mCurrentFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( mFilterExpression ) )
+      filterContext.appendScope( QgsExpressionContextUtils::formScope( mCurrentFeature ) );
+
+    request.setExpressionContext( filterContext );
+  }
 }
 
 void QgsQuickFeaturesListModel::loadFeaturesFromLayer( QgsVectorLayer *layer )
@@ -130,12 +183,10 @@ void QgsQuickFeaturesListModel::loadFeaturesFromLayer( QgsVectorLayer *layer )
   if ( mCurrentLayer )
   {
     beginResetModel();
-
     mFeatures.clear();
+
     QgsFeatureRequest req;
-    if ( !mFilterExpression.isEmpty() )
-      req.setFilterExpression( buildFilterExpression() );
-    req.setLimit( FEATURES_LIMIT );
+    setupFeatureRequest( req );
 
     QgsFeatureIterator it = mCurrentLayer->getFeatures( req );
     QgsFeature f;
@@ -144,6 +195,7 @@ void QgsQuickFeaturesListModel::loadFeaturesFromLayer( QgsVectorLayer *layer )
     {
       mFeatures << QgsQuickFeatureLayerPair( f, mCurrentLayer );
     }
+
     emit featuresCountChanged( featuresCount() );
     endResetModel();
   }
@@ -163,6 +215,9 @@ void QgsQuickFeaturesListModel::setupValueRelation( const QVariantMap &config )
 
     setKeyField( fields.field( config.value( QStringLiteral( "Key" ) ).toString() ).name() );
     setFeatureTitleField( fields.field( config.value( QStringLiteral( "Value" ) ).toString() ).name() );
+
+    // store value relation filter expression
+    setFilterExpression( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
 
     loadFeaturesFromLayer( layer );
   }
@@ -191,6 +246,8 @@ void QgsQuickFeaturesListModel::emptyData()
   mKeyField.clear();
   mFeatureTitleField.clear();
   mFilterExpression.clear();
+  mSearchExpression.clear();
+  mCurrentFeature = QgsFeature();
 }
 
 QHash<int, QByteArray> QgsQuickFeaturesListModel::roleNames() const
@@ -212,15 +269,15 @@ int QgsQuickFeaturesListModel::featuresCount() const
   return 0;
 }
 
-QString QgsQuickFeaturesListModel::filterExpression() const
+QString QgsQuickFeaturesListModel::searchExpression() const
 {
-  return mFilterExpression;
+  return mSearchExpression;
 }
 
-void QgsQuickFeaturesListModel::setFilterExpression( const QString &filterExpression )
+void QgsQuickFeaturesListModel::setSearchExpression( const QString &searchExpression )
 {
-  mFilterExpression = filterExpression;
-  emit filterExpressionChanged( mFilterExpression );
+  mSearchExpression = searchExpression;
+  emit searchExpressionChanged( mSearchExpression );
 
   loadFeaturesFromLayer();
 }
@@ -233,6 +290,26 @@ void QgsQuickFeaturesListModel::setFeatureTitleField( const QString &attribute )
 void QgsQuickFeaturesListModel::setKeyField( const QString &attribute )
 {
   mKeyField = attribute;
+}
+
+void QgsQuickFeaturesListModel::setFilterExpression( const QString &filterExpression )
+{
+  mFilterExpression = filterExpression;
+}
+
+void QgsQuickFeaturesListModel::setCurrentFeature( QgsFeature feature )
+{
+  if ( mCurrentFeature == feature )
+    return;
+
+  mCurrentFeature = feature;
+  reloadFeatures();
+  emit currentFeatureChanged( mCurrentFeature );
+}
+
+QgsFeature QgsQuickFeaturesListModel::currentFeature() const
+{
+  return mCurrentFeature;
 }
 
 int QgsQuickFeaturesListModel::featuresLimit() const
@@ -253,18 +330,33 @@ int QgsQuickFeaturesListModel::rowFromAttribute( const int role, const QVariant 
   return -1;
 }
 
-QVariant QgsQuickFeaturesListModel::keyFromAttribute( const int role, const QVariant &value ) const
+QVariant QgsQuickFeaturesListModel::attributeFromValue( const int role, const QVariant &value, const int requestedRole ) const
 {
   for ( int i = 0; i < mFeatures.count(); ++i )
   {
     QVariant d = data( index( i, 0 ), role );
     if ( d == value )
     {
-      QVariant key = data( index( i, 0 ), KeyColumn );
+      QVariant key = data( index( i, 0 ), requestedRole );
       return key;
     }
   }
   return QVariant();
+}
+
+QVariant QgsQuickFeaturesListModel::convertMultivalueFormat( const QVariant &multivalue, const int role )
+{
+  QStringList list = QgsValueRelationFieldFormatter::valueToStringList( multivalue );
+  QList<QVariant> retList;
+
+  for ( const QVariant &i : list )
+  {
+    QVariant var = attributeFromValue( KeyColumn, i, role );
+    if ( !var.isNull() )
+      retList.append( var );
+  }
+
+  return retList;
 }
 
 QgsQuickFeatureLayerPair QgsQuickFeaturesListModel::featureLayerPair( const int &featureId )

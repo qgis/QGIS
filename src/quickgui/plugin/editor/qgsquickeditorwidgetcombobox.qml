@@ -50,7 +50,7 @@ ComboBox {
     font.pixelSize: comboStyle.fontPixelSize
     highlighted: comboBox.highlightedIndex === index
     leftPadding: 5 * QgsQuick.Utils.dp
-    onClicked: comboBox.itemClicked( model.EmitableIndex ? model.EmitableIndex : index )
+    onClicked: comboBox.itemClicked( model.FeatureId ? model.FeatureId : index )
   }
 
   contentItem: Text {
