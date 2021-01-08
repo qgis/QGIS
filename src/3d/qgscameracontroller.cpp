@@ -26,6 +26,7 @@
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DInput>
 
+#include "qgslogger.h"
 
 QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
@@ -393,11 +394,19 @@ void QgsCameraController::zoom( float factor )
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 {
-  float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
-  float dist = mCameraPose.distanceFromCenterPoint();
-  dist -= dist * scaling * wheel->angleDelta().y();
-  mCameraPose.setDistanceFromCenterPoint( dist );
-  updateCameraFromPose();
+  if ( mCameraNavigationMode == QgsCameraController::FlyNavigation )
+  {
+    float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
+    mCameraMovementSpeed += mCameraMovementSpeed * scaling * wheel->angleDelta().y();
+  }
+  else
+  {
+    float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
+    float dist = mCameraPose.distanceFromCenterPoint();
+    dist -= dist * scaling * wheel->angleDelta().y();
+    mCameraPose.setDistanceFromCenterPoint( dist );
+    updateCameraFromPose();
+  }
 }
 
 void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
