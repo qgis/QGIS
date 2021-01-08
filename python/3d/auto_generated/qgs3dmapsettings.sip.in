@@ -554,19 +554,6 @@ Sets the camera lens' field of view
 
 
 
-    QgsCameraController::NavigationMode cameraNavigationMode() const;
-%Docstring
-Returns the navigation mode used by the camera
-
-.. versionadded:: 3.18
-%End
-
-    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
-%Docstring
-Sets the navigation mode for the camera
-
-.. versionadded:: 3.18
-%End
 
     double cameraMovementSpeed() const;
 %Docstring
