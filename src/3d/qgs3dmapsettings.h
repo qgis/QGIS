@@ -477,6 +477,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setProjectionType( const Qt3DRender::QCameraLens::ProjectionType projectionType ) SIP_SKIP;
 
+#ifndef SIP_RUN
+
     /**
      * Returns the navigation mode used by the camera
      * \since QGIS 3.18
@@ -488,6 +490,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.18
      */
     void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+#endif
 
     /**
      * Returns the camera movement speed
