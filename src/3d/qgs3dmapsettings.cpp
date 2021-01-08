@@ -55,6 +55,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mDirectionalLights( other.mDirectionalLights )
   , mFieldOfView( other.mFieldOfView )
   , mProjectionType( other.mProjectionType )
+  , mCameraNavigationMode( other.mCameraNavigationMode )
+  , mCameraMovementSpeed( other.mCameraMovementSpeed )
   , mLayers( other.mLayers )
   , mTerrainLayers( other.mTerrainLayers )
   , mRenderers() // initialized in body
@@ -105,6 +107,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
       mCameraNavigationMode = QgsCameraController::NavigationMode::BasicNavigation;
     else if ( cameraNavigationMode == QStringLiteral( "fps-navigation" ) )
       mCameraNavigationMode = QgsCameraController::NavigationMode::FPSNavigation;
+    mCameraMovementSpeed = elemCamera.attribute( QStringLiteral( "camera-movement-speed" ), QStringLiteral( "5.0" ) ).toDouble();
   }
 
   QDomElement elemColor = elem.firstChildElement( QStringLiteral( "color" ) );
@@ -298,10 +301,16 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
   elemCamera.setAttribute( QStringLiteral( "field-of-view" ), mFieldOfView );
   elemCamera.setAttribute( QStringLiteral( "projection-type" ), static_cast< int >( mProjectionType ) );
-  if ( mCameraNavigationMode == QgsCameraController::BasicNavigation )
-    elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "basic-navigation" ) );
-  else if ( mCameraNavigationMode == QgsCameraController::FPSNavigation )
-    elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "fps-navigation" ) );
+  switch ( mCameraNavigationMode )
+  {
+    case QgsCameraController::BasicNavigation:
+      elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "basic-navigation" ) );
+      break;
+    case QgsCameraController::FPSNavigation:
+      elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "fps-navigation" ) );
+      break;
+  }
+  elemCamera.setAttribute( QStringLiteral( "camera-movement-speed" ), mCameraMovementSpeed );
   elem.appendChild( elemCamera );
 
   QDomElement elemColor = doc.createElement( QStringLiteral( "color" ) );
@@ -773,6 +782,15 @@ void Qgs3DMapSettings::setCameraNavigationMode( QgsCameraController::NavigationM
 
   mCameraNavigationMode = navigationMode;
   emit cameraNavigationModeChanged();
+}
+
+void Qgs3DMapSettings::setCameraMovementSpeed( double movementSpeed )
+{
+  if ( mCameraMovementSpeed == movementSpeed )
+    return;
+
+  mCameraMovementSpeed = movementSpeed;
+  emit cameraMovementSpeedChanged();
 }
 
 void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )

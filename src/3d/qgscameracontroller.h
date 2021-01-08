@@ -81,13 +81,25 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      * Returns the nvigtion mode used by the camera controller
      * \since QGIS 3.18
      */
-    QgsCameraController::NavigationMode cameraNavigationMode() { return mCameraNavigationMode; }
+    QgsCameraController::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
 
     /**
      * Sets the nvigtion mode used by the camera controller
      * \since QGIS 3.18
      */
     void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+
+    /**
+     * Returns the camera movement speed
+     * \since QGIS 3.18
+     */
+    double cameraMovementSpeed() const { return mCameraMovementSpeed; }
+
+    /**
+     * Sets the camera movement speed
+     * \since QGIS 3.18
+     */
+    void setCameraMovementSpeed( double movementSpeed );
 
     /**
      * Connects to object picker attached to terrain entity. Called internally from 3D scene.
@@ -216,9 +228,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
     NavigationMode mCameraNavigationMode = NavigationMode::BasicNavigation;
-    double mDeltaTime = 0.0f;
-    QVector<double> mPastDeltaTime;
-    double mDeltaTimeAverage = 0.0f;
+    double mCameraMovementSpeed = 5.0;
 };
 
 #endif // QGSCAMERACONTROLLER_H
