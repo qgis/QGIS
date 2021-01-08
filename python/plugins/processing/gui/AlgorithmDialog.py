@@ -106,7 +106,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
     def setParameters(self, parameters):
         self.mainWidget().setParameters(parameters)
 
-    def createProcessingParameters(self):
+    def createProcessingParameters(self, **kwargs):
         if self.mainWidget() is None:
             return {}
         else:
