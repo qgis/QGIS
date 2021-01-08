@@ -203,7 +203,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void onPickerMousePressed( Qt3DRender::QPickEvent *pick );
 
   private:
-    void onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *mouse );
+    void onKeyPressedFlyNavigation();
     void onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse );
 
   private:
@@ -232,6 +232,9 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
     NavigationMode mCameraNavigationMode = NavigationMode::TerrainBasedNavigation;
     double mCameraMovementSpeed = 5.0;
+
+    QSet< int > mDepressedKeys;
+    QTimer *mFpsNavTimer = nullptr;
 };
 
 #endif // QGSCAMERACONTROLLER_H

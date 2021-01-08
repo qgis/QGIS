@@ -58,6 +58,11 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
            mMouseHandler, &Qt3DInput::QMouseHandler::setEnabled );
   connect( this, &Qt3DCore::QEntity::enabledChanged,
            mKeyboardHandler, &Qt3DInput::QMouseHandler::setEnabled );
+
+  mFpsNavTimer = new QTimer( this );
+  mFpsNavTimer->setInterval( 10 );
+  connect( mFpsNavTimer, &QTimer::timeout, this, &QgsCameraController::onKeyPressedFlyNavigation );
+  mFpsNavTimer->start();
 }
 
 void QgsCameraController::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
@@ -418,7 +423,11 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
 {
   if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
   {
-    onKeyPressedFlyNavigation( event );
+    if ( event->isAutoRepeat() )
+      return;
+
+    mDepressedKeys.insert( event->key() );
+    onKeyPressedFlyNavigation();
     return;
   }
 
@@ -481,7 +490,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
   }
 }
 
-void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event )
+void QgsCameraController::onKeyPressedFlyNavigation()
 {
   QVector3D cameraUp = mCamera->upVector().normalized();
   QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
@@ -489,37 +498,45 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
 
   QVector3D cameraPosDiff( 0.0f, 0.0f, 0.0f );
 
-  switch ( event->key() )
+  bool changed = false;
+  if ( mDepressedKeys.contains( Qt::Key_Left ) || mDepressedKeys.contains( Qt::Key_A ) )
   {
-    case Qt::Key_Left:
-    case Qt::Key_A:
-      cameraPosDiff = mCameraMovementSpeed * cameraLeft;
-      break;
-    case Qt::Key_Right:
-    case Qt::Key_D:
-      cameraPosDiff = - mCameraMovementSpeed * cameraLeft;
-      break;
-
-    case Qt::Key_Up:
-    case Qt::Key_W:
-      cameraPosDiff = mCameraMovementSpeed * cameraFront;
-      break;
-    case Qt::Key_Down:
-    case Qt::Key_S:
-      cameraPosDiff = - mCameraMovementSpeed * cameraFront;
-      break;
-
-    case Qt::Key_PageUp:
-    case Qt::Key_Q:
-      cameraPosDiff = mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
-      break;
-    case Qt::Key_PageDown:
-    case Qt::Key_E:
-      cameraPosDiff = - mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
-      break;
+    changed = true;
+    cameraPosDiff += mCameraMovementSpeed * cameraLeft;
   }
 
-  moveCameraPositionBy( cameraPosDiff );
+  if ( mDepressedKeys.contains( Qt::Key_Right ) || mDepressedKeys.contains( Qt::Key_D ) )
+  {
+    changed = true;
+    cameraPosDiff += - mCameraMovementSpeed * cameraLeft;
+  }
+
+  if ( mDepressedKeys.contains( Qt::Key_Up ) || mDepressedKeys.contains( Qt::Key_W ) )
+  {
+    changed = true;
+    cameraPosDiff += mCameraMovementSpeed * cameraFront;
+  }
+
+  if ( mDepressedKeys.contains( Qt::Key_Down ) || mDepressedKeys.contains( Qt::Key_S ) )
+  {
+    changed = true;
+    cameraPosDiff += - mCameraMovementSpeed * cameraFront;
+  }
+
+  if ( mDepressedKeys.contains( Qt::Key_PageUp ) || mDepressedKeys.contains( Qt::Key_Q ) )
+  {
+    changed = true;
+    cameraPosDiff += mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+  }
+
+  if ( mDepressedKeys.contains( Qt::Key_PageDown ) || mDepressedKeys.contains( Qt::Key_E ) )
+  {
+    changed = true;
+    cameraPosDiff += - mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+  }
+
+  if ( changed )
+    moveCameraPositionBy( cameraPosDiff );
 }
 
 void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse )
@@ -549,7 +566,10 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
 
 void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
 {
-  Q_UNUSED( event )
+  if ( event->isAutoRepeat() )
+    return;
+
+  mDepressedKeys.remove( event->key() );
 }
 
 void QgsCameraController::onPickerMousePressed( Qt3DRender::QPickEvent *pick )
