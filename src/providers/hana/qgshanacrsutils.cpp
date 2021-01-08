@@ -78,24 +78,11 @@ bool QgsHanaCrsUtils::identifyCrs( const QgsCoordinateReferenceSystem &crs, QStr
   QString authName;
   QString authCode;
 
-#if PROJ_VERSION_MAJOR>=6
-  PJ *pjCrs = crs.projObject();
-  if ( !pjCrs )
-    return false;
-  authName = proj_get_id_auth_name( pjCrs, 0 );
-  authCode = proj_get_id_code( pjCrs, 0 );
-  if ( authName.isEmpty() || authCode.isEmpty() )
-  {
-    if ( !QgsProjUtils::identifyCrs( pjCrs, authName, authCode, QgsProjUtils::FlagMatchBoundCrsToUnderlyingSourceCrs ) )
-      return false;
-  }
-#else
   QStringList sl = crs.authid().split( ':' );
   if ( sl.length() != 2 )
     return false;
   authName = sl[0];
   authCode = sl[1];
-#endif
 
   if ( authName.isEmpty() )
     return false;
