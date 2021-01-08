@@ -357,38 +357,27 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   //calculations for affine transformation
 
-  mLayer->beginEditCommand( tr( "Features Scaled" ) );
+  vlayer->beginEditCommand( tr( "Features Scaled" ) );
 
-  int start = ( mLayer->geometryType() == 2 ) ? 1 : 0;
+  QTransform t;
+  t.translate( mFeatureCenterMapCoords.x(), mFeatureCenterMapCoords.y() );
+  t.scale( mScaling, mScaling );
+  t.translate( -mFeatureCenterMapCoords.x(), -mFeatureCenterMapCoords.y() );
 
   for ( QgsFeatureId id : qgis::as_const( mScaledFeatures ) )
   {
     QgsFeature feat;
-    mLayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
+    vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
     QgsGeometry geom = feat.geometry();
-    int i = start;
-    QgsPointXY vertex = geom.vertexAt( i );
-    while ( !vertex.isEmpty() )
-    {
-      // for to maintain feature position use the center of the feature bbox and not the whole selection
-      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * ( scale - 1 ) );
-      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * ( scale - 1 ) );
-
-      mLayer->moveVertex( newX, newY, id, i );
-      i = i + 1;
-      vertex = geom.vertexAt( i );
-    }
-    //double offsetx = ( 1 - mScaling ) * mRubberScale.x();
-    //double offsety = ( 1 - mScaling ) *  mRubberScale.y();
-    //QgsGeometry::OperationResult res = geom.transform( QTransform( mScaling, 0, 0, mScaling, offsetx, offsety ) );
-    //QString::number( res );
+    geom.transform( t );
+    vlayer->changeGeometry( id, geom );
   }
 
   deleteScalingWidget();
   deleteRubberband();
 
-  mLayer->endEditCommand();
-  mLayer->triggerRepaint();
+  vlayer->endEditCommand();
+  vlayer->triggerRepaint();
 }
 
 void QgsMapToolScaleFeature::keyReleaseEvent( QKeyEvent *e )
