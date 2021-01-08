@@ -105,6 +105,17 @@ class GdalUtils:
 
         def on_stdout(ba):
             val = ba.data().decode('UTF-8')
+            # catch progress reports
+            if val == '100 - done.':
+                on_stdout.progress = 100
+                feedback.setProgress(on_stdout.progress)
+            elif val in ('0', '10', '20', '30', '40', '50', '60', '70', '80', '90'):
+                on_stdout.progress = int(val)
+                feedback.setProgress(on_stdout.progress)
+            elif val == '.':
+                on_stdout.progress += 2.5
+                feedback.setProgress(on_stdout.progress)
+
             on_stdout.buffer += val
             if on_stdout.buffer.endswith('\n') or on_stdout.buffer.endswith('\r'):
                 # flush buffer
@@ -112,6 +123,7 @@ class GdalUtils:
                 loglines.append(on_stdout.buffer.rstrip())
                 on_stdout.buffer = ''
 
+        on_stdout.progress = 0
         on_stdout.buffer = ''
 
         def on_stderr(ba):
