@@ -407,7 +407,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   mParametersTreeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
   mParametersTreeView->header()->setStretchLastSection( true );
   mParametersTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mParametersTreeView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mParametersTreeView->setSelectionMode( QAbstractItemView::MultiSelection );
   mParametersTreeView->setEditTriggers( QAbstractItemView::DoubleClicked );
 
   connect( mParametersModel, &QgsSvgParametersModel::parametersChanged, this, &QgsSvgSelectorWidget::svgParametersChanged );
@@ -418,7 +418,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   {
     const QModelIndexList selectedRows = mParametersTreeView->selectionModel()->selectedRows();
     if ( selectedRows.count() > 0 )
-      mParametersModel->removeParameter( selectedRows.at( 0 ) );
+      mParametersModel->removeParameters( selectedRows );
   } );
 }
 
@@ -583,13 +583,16 @@ QMap<QString, QgsProperty> QgsSvgParametersModel::parameters() const
   return params;
 }
 
-void QgsSvgParametersModel::removeParameter( const QModelIndex &index )
+void QgsSvgParametersModel::removeParameters( const QModelIndexList &indexList )
 {
-  if ( !index.isValid() )
+  if ( !indexList.count() )
     return;
 
-  beginRemoveRows( QModelIndex(), index.row(), index.row() );
-  mParameters.removeAt( index.row() );
+  auto mm = std::minmax_element( indexList.constBegin(), indexList.constEnd(), []( const QModelIndex & i1, const QModelIndex & i2 ) {return i1.row() < i2.row();} );
+
+  beginRemoveRows( QModelIndex(), ( *mm.first ).row(), ( *mm.second ).row() );
+  for ( const QModelIndex &index : indexList )
+    mParameters.removeAt( index.row() );
   endRemoveRows();
 }
 

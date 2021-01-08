@@ -73,7 +73,7 @@ class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
     QMap<QString, QgsProperty> parameters() const;
 
     //! Remove the parameter at given index
-    void removeParameter( const QModelIndex &index );
+    void removeParameters( const QModelIndexList &indexList );
 
     //! Sets the vector layer
     void setLayer( QgsVectorLayer *layer );
