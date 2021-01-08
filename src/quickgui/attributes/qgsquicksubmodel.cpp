@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsquicksubmodel.h"
+#include <QDebug>
 
 QgsQuickSubModel::QgsQuickSubModel( QObject *parent )
   : QAbstractItemModel( parent )
@@ -62,7 +63,14 @@ QVariant QgsQuickSubModel::data( const QModelIndex &index, int role ) const
   if ( !mModel )
     return QVariant();
 
-  return mModel->data( mapToSource( index ), role );
+  QModelIndex sourceIndex = mapToSource( index );
+  if ( sourceIndex.isValid() )
+    return mModel->data( sourceIndex, role );
+  else
+  {
+    qDebug() << "Warning: QgsQuickSubModel::data invalid index" << index << "role: " << role << "root: " << mRootIndex;
+    return QVariant();
+  }
 }
 
 bool QgsQuickSubModel::setData( const QModelIndex &index, const QVariant &value, int role )
@@ -70,7 +78,14 @@ bool QgsQuickSubModel::setData( const QModelIndex &index, const QVariant &value,
   if ( !mModel )
     return false;
 
-  return mModel->setData( mapToSource( index ), value, role );
+  QModelIndex sourceIndex = mapToSource( index );
+  if ( sourceIndex.isValid() )
+    return mModel->setData( sourceIndex, value, role );
+  else
+  {
+    qDebug() << "Warning: QgsQuickSubModel::setData invalid index" << index << "value: " << value << "role: " << role << "root: " << mRootIndex;
+    return false;
+  }
 }
 
 QHash<int, QByteArray> QgsQuickSubModel::roleNames() const

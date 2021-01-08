@@ -414,6 +414,18 @@ void QgsQuickAttributeFormModelBase::setConstraintsSoftValid( bool constraintsSo
   emit constraintsSoftValidChanged();
 }
 
+void QgsQuickAttributeFormModelBase::forceClean()
+{
+  mLayer = nullptr;
+  mTemporaryContainer = nullptr;
+  mHasTabs = false;
+  mVisibilityExpressions.clear();
+  mConstraints.clear();
+  mExpressionContext = QgsExpressionContext();
+  mConstraintsHardValid = false;
+  mConstraintsSoftValid = false;
+}
+
 bool QgsQuickAttributeFormModelBase::hasTabs() const
 {
   return mHasTabs;
