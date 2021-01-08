@@ -454,6 +454,10 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
 %Docstring
 Sets the SVG path
 %End
+    void setSvgParameters( const QMap<QString, QgsProperty> &parameters );
+%Docstring
+Sets the dynamic SVG parameters
+%End
 
 
   protected:
