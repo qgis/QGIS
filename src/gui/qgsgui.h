@@ -17,7 +17,7 @@
 
 #ifndef QGSGUI_H
 #define QGSGUI_H
-
+#include <glew/GL/glew.h>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QWidget>

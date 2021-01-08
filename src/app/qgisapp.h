@@ -18,7 +18,7 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 
-//#define disableauth true
+#define disableauth true
 
 #include <glew/GL/glew.h>
 
@@ -2430,6 +2430,7 @@ class APP_EXPORT QgisApp : public QMainWindow, public PointCloudWindow, private 
     QgsDockWidget* shaderEditorDock;
     QgsDockWidget* shaderParamsDock;
     QgsProfileWindowDockWidget* ProfileViewerDock;
+    QgsClassSettingWindowDockWidget* ClasssettingDock;
     QgsUserInputWidget* classformdock;
     public:
     void createLasViewer();
@@ -2457,6 +2458,7 @@ class APP_EXPORT QgisApp : public QMainWindow, public PointCloudWindow, private 
     void setLockAxesZ();
     void FromGeometriesToLayerMap(std::shared_ptr<Geometry> geom);
     void FromGeometriesToLayerMap();
+    void zoomtolayer(std::shared_ptr<Geometry> geom);
     void setViewTop(View3D* viewer );
     void setViewTop();
     void setViewFront(View3D* viewer);

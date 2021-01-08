@@ -17266,11 +17266,11 @@ void QgisApp::createLasViewer()
 
 	// View menu
 	QMenu* viewMenu = mViewMenu;
-	QAction* trackballMode = viewMenu->addAction(tr("Use &Trackball camera"));
+	QAction* trackballMode = viewMenu->addAction(tr("使用轨迹球")); //addAction(tr("Use Trackball camera"));
 	trackballMode->setCheckable(true);
 	trackballMode->setChecked(false);
 	// Background sub-menu
-	QMenu* backMenu = viewMenu->addMenu(tr("Set &Background"));
+	QMenu* backMenu = viewMenu->addMenu(tr("3D背景色")); //addMenu(tr("Set Background"));
 	QSignalMapper* mapper = new QSignalMapper(this);
 	// Selectable backgrounds (svg_names from SVG standard - see QColor docs)
 	const char* backgroundNames[] = {/* "Display Name", "svg_name", */
@@ -17294,35 +17294,35 @@ void QgisApp::createLasViewer()
 	connect(mapper, SIGNAL(mapped(QString)),
 		this, SLOT(setBackground(QString)));
 	backMenu->addSeparator();
-	QAction* backgroundCustom = backMenu->addAction(tr("&Custom"));
+	QAction* backgroundCustom = backMenu->addAction(tr("自定义")); //addAction(tr("Custom"));
 	connect(backgroundCustom, SIGNAL(triggered()),
 		this, SLOT(chooseBackground()));
 	// Check boxes for drawing various scene elements by category
 	viewMenu->addSeparator();
-	QAction* drawBoundingBoxes = viewMenu->addAction(tr("Draw Bounding bo&xes"));
+	QAction* drawBoundingBoxes = viewMenu->addAction(tr("绘制轮廓线")); //viewMenu->addAction(tr("Draw Bounding boxes"));
 	drawBoundingBoxes->setCheckable(true);
 	drawBoundingBoxes->setChecked(false);
-	QAction* drawCursor = viewMenu->addAction(tr("Draw 3D &Cursor"));
+	QAction* drawCursor = viewMenu->addAction(tr("绘制三维标志")); //addAction(tr("Draw 3D Cursor"));
 	drawCursor->setCheckable(true);
 	drawCursor->setChecked(true);
-	QAction* drawAxes = viewMenu->addAction(tr("Draw &Axes"));
+	QAction* drawAxes = viewMenu->addAction(tr("绘制坐标轴")); //addAction(tr("Draw Axes"));
 	drawAxes->setCheckable(true);
 	drawAxes->setChecked(true);
-	QAction* drawGrid = viewMenu->addAction(tr("Draw &Grid"));
+	QAction* drawGrid = viewMenu->addAction(tr("绘制网格")); //addAction(tr("Draw Grid"));
 	drawGrid->setCheckable(true);
 	drawGrid->setChecked(false);
-	QAction* drawAnnotations = viewMenu->addAction(tr("Draw A&nnotations"));
+	QAction* drawAnnotations = viewMenu->addAction(tr("绘制注记")); ///addAction(tr("Draw Annotations"));
 	drawAnnotations->setCheckable(true);
 	drawAnnotations->setChecked(true);
 
 	// Shader menu
 	QMenu* shaderMenu = mViewMenu;
-	QAction* openShaderAct = shaderMenu->addAction(tr("&Open"));
+	QAction* openShaderAct = shaderMenu->addAction(tr("打开着色器"));
 	openShaderAct->setToolTip(tr("Open a shader file"));
 	connect(openShaderAct, SIGNAL(triggered()), this, SLOT(openShaderFile()));
-	QAction* editShaderAct = shaderMenu->addAction(tr("&Edit"));
+	QAction* editShaderAct = shaderMenu->addAction(tr("编辑着色器"));
 	editShaderAct->setToolTip(tr("Open shader editor window"));
-	QAction* saveShaderAct = shaderMenu->addAction(tr("&Save"));
+	QAction* saveShaderAct = shaderMenu->addAction(tr("保存着色器"));
 	saveShaderAct->setToolTip(tr("Save current shader file"));
 	connect(saveShaderAct, SIGNAL(triggered()), this, SLOT(saveShaderFile()));
 	shaderMenu->addSeparator();
@@ -17346,14 +17346,14 @@ void QgisApp::createLasViewer()
 	//--------------------------------------------------
 	// Docked widgets-----------------
 	// Shader parameters UI
-	shaderParamsDock = new QgsDockWidget(tr("Shader Parameters"), this);
+	shaderParamsDock = new QgsDockWidget(tr("着色器"), this);
 	shaderParamsDock->setAllowedAreas(Qt::AllDockWidgetAreas);
 	QWidget* shaderParamsUI = new QWidget(shaderParamsDock);
 	shaderParamsDock->setWidget(shaderParamsUI);
 	m_pointView->setShaderParamsUIWidget(shaderParamsUI);
 
 	// Shader editor UI
-	shaderEditorDock = new QgsDockWidget(tr("Shader Editor"), this);
+	shaderEditorDock = new QgsDockWidget(tr("着色器编辑"), this);
 	shaderEditorDock->setAllowedAreas(Qt::AllDockWidgetAreas);
 	QWidget* shaderEditorUI = new QWidget(shaderEditorDock);
 	m_shaderEditor = new ShaderEditor(shaderEditorUI);
@@ -17368,7 +17368,7 @@ void QgisApp::createLasViewer()
 		this, SLOT(compileShaderFile()));
 
 	// Log viewer UI
-	logDock = new QgsDockWidget(tr("Log"), this);
+	logDock = new QgsDockWidget(tr("日志"), this);
 	logDock->setAllowedAreas(Qt::AllDockWidgetAreas);
 	QWidget* logUI = new QWidget(logDock);
 	m_logTextView = new LogViewer(logUI);
@@ -17407,6 +17407,10 @@ void QgisApp::createLasViewer()
 	//logDock->raise();
 	shaderEditorDock->setVisible(false);
 
+  ClasssettingDock = new QgsClassSettingWindowDockWidget(tr("类型"),this);
+  connect(settargetclass, SIGNAL(triggered()), ClasssettingDock, SLOT(myShowDock()));
+  connect(setbeforclass, SIGNAL(triggered()), ClasssettingDock, SLOT(myHideDock()));
+  ClasssettingDock->hide();
 	// Add dock widget toggles to view menu
 	viewMenu->addSeparator();
 	viewMenu->addAction(shaderParamsDock->toggleViewAction());
@@ -17416,6 +17420,7 @@ void QgisApp::createLasViewer()
 	// Create custom hook events from CLI at runtime
 	m_hookManager = new HookManager(this);
 	openShaderFile("shaders:las_points.glsl");
+
 
 	connect(actionmAction_X, SIGNAL(triggered()), this, SLOT(setLockAxesX()));
 	connect(actionmAction_Y, SIGNAL(triggered()), this, SLOT(setLockAxesY()));
@@ -17663,6 +17668,7 @@ void QgisApp::StartCloseProfileMode()
 			//ProfileViewerDock->setWidget(m_pointProfileView);
 			ProfileViewerDock->setProfileWindow(m_pointProfileView);
 			ProfileViewerDock->setMain3DWindow(m_pointView);
+      ProfileViewerDock->setclassdock(ClasssettingDock);
 			addDockWidget(Qt::BottomDockWidgetArea, ProfileViewerDock);
 
 			endProfile();
@@ -17691,6 +17697,17 @@ void QgisApp::FromGeometriesToLayerMap()
 	// Default style is loaded later in this method
 	options.loadDefaultStyle = false;
 
+}
+void QgisApp:: zoomtolayer(std::shared_ptr<Geometry> geom)
+{
+  QString filename = geom->fileName();
+  QList<QgsMapLayer *> maplayers= QgsProject::instance()->mapLayersByName(filename);
+  for (size_t i = 0; i < maplayers.size(); i++)
+  {
+    setActiveLayer(maplayers[i]);
+    mMapCanvas->refresh();
+  }
+  zoomToLayerExtent();
 }
 void QgisApp::FromGeometriesToLayerMap(std::shared_ptr<Geometry> geom)
 {

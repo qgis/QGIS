@@ -32,7 +32,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -187,6 +187,13 @@
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QwtPlot" name="mPlot"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="stackedWidgetPage4">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QwtPlot" name="mPlot2"/>
        </item>
       </layout>
      </widget>
