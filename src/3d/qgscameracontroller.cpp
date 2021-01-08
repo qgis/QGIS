@@ -430,6 +430,19 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 
 void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
 {
+  if ( event->key() == Qt::Key_QuoteLeft )
+  {
+    if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
+    {
+      mCaptureFpsMouseMovements = !mCaptureFpsMouseMovements;
+      if ( mCaptureFpsMouseMovements )
+        qApp->setOverrideCursor( QCursor( Qt::BlankCursor ) );
+      else
+        qApp->restoreOverrideCursor();
+      return;
+    }
+  }
+
   if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
   {
     if ( event->isAutoRepeat() )
@@ -550,11 +563,12 @@ void QgsCameraController::onKeyPressedFlyNavigation()
 
 void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse )
 {
-  if ( !mMousePressed )
+  if ( !mMousePressed && !mCaptureFpsMouseMovements )
     return;
+
   double dx = mouse->x() - mMousePos.x();
   double dy = mouse->y() - mMousePos.y();
-  if ( mPressedButton ==  Qt3DInput::QMouseEvent::LeftButton || mPressedButton ==  Qt3DInput::QMouseEvent::MiddleButton )
+  if ( mPressedButton ==  Qt3DInput::QMouseEvent::LeftButton || mPressedButton ==  Qt3DInput::QMouseEvent::MiddleButton || ( mCaptureFpsMouseMovements && mPressedButton != Qt3DInput::QMouseEvent::RightButton ) )
   {
     float diffPitch = 0.2f * dy;
     float diffYaw = - 0.2f * dx;
@@ -570,7 +584,14 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     moveCameraPositionBy( 5.0 * mCameraMovementSpeed * cameraPosDiff );
   }
 
-  mMousePos = QPoint( mouse->x(), mouse->y() );
+  if ( mCaptureFpsMouseMovements )
+  {
+    QCursor::setPos( QCursor::pos().x() - dx, QCursor::pos().y() - dy );
+  }
+  else
+  {
+    mMousePos = QPoint( mouse->x(), mouse->y() );
+  }
 }
 
 void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
