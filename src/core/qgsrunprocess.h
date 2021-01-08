@@ -172,12 +172,19 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
      */
     int run( QgsFeedback *feedback = nullptr );
 
+    /**
+     * After a call to run(), returns the process' exit status.
+     */
+    QProcess::ExitStatus exitStatus() const;
+
   private:
 
     QString mProcess;
     QStringList mArguments;
     std::function< void( const QByteArray & ) > mStdoutHandler;
     std::function< void( const QByteArray & ) > mStderrHandler;
+
+    QProcess::ExitStatus mExitStatus = QProcess::NormalExit;
 
 };
 

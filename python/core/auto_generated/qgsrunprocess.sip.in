@@ -121,6 +121,11 @@ The optional ``feedback`` argument can be used to specify a feedback object for 
 After execution completes, the process' result code will be returned.
 %End
 
+    QProcess::ExitStatus exitStatus() const;
+%Docstring
+After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' exit status.
+%End
+
 };
 
 

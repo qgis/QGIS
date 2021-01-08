@@ -270,9 +270,9 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
   const bool requestMadeFromMainThread = QThread::currentThread() == QCoreApplication::instance()->thread();
 
   int result = 0;
-  QProcess::ExitStatus status = QProcess::NormalExit;
+  QProcess::ExitStatus exitStatus = QProcess::NormalExit;
 
-  std::function<void()> runFunction = [ this, &result, &status, feedback]()
+  std::function<void()> runFunction = [ this, &result, &exitStatus, feedback]()
   {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
@@ -293,10 +293,10 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
     {
       p.terminate();
     } );
-    connect( &p, qgis::overload< int, QProcess::ExitStatus >::of( &QProcess::finished ), this, [&loop, &result, &status]( int res, QProcess::ExitStatus st )
+    connect( &p, qgis::overload< int, QProcess::ExitStatus >::of( &QProcess::finished ), this, [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st )
     {
       result = res;
-      status = st;
+      exitStatus = st;
       loop.quit();
     }, Qt::DirectConnection );
 
@@ -330,6 +330,12 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
     runFunction();
   }
 
+  mExitStatus = exitStatus;
   return result;
+}
+
+QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
+{
+  return mExitStatus;
 };
 
