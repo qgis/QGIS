@@ -254,7 +254,7 @@ class GdalUtils:
             if not isinstance(s, str):
                 s = str(s)
             if s and s[0] != '-' and any(c in s for c in escChars):
-                escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
+                escaped = '"' + s.replace('\\', '\\\\').replace('"', '"""') \
                           + '"'
             else:
                 escaped = s
