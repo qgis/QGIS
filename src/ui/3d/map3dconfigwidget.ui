@@ -645,12 +645,12 @@
                    <widget class="QComboBox" name="mCameraNavigationMode">
                     <item>
                      <property name="text">
-                      <string>Basic navigation</string>
+                      <string>Terrain Based Navigation</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>Fly navigation</string>
+                      <string>Fly Navigation</string>
                      </property>
                     </item>
                    </widget>

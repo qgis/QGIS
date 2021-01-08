@@ -319,9 +319,9 @@ void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
-  if ( mCameraNavigationMode == FPSNavigation )
+  if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
   {
-    onPositionChangedFPSNavigation( mouse );
+    onPositionChangedFlyNavigation( mouse );
     return;
   }
   int dx = mouse->x() - mMousePos.x();
@@ -375,7 +375,7 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
   mMousePos = QPoint( mouse->x(), mouse->y() );
 }
 
-void QgsCameraController::onPositionChangedFPSNavigation( Qt3DInput::QMouseEvent *mouse )
+void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse )
 {
   if ( !mMousePressed )
     return;
@@ -425,9 +425,9 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 
 void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
 {
-  if ( mCameraNavigationMode == NavigationMode::FPSNavigation )
+  if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
   {
-    onKeyPressedFPSNavigation( event );
+    onKeyPressedFlyNavigation( event );
     return;
   }
 
@@ -490,7 +490,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
   }
 }
 
-void QgsCameraController::onKeyPressedFPSNavigation( Qt3DInput::QKeyEvent *event )
+void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event )
 {
   QVector3D cameraUp = mCamera->upVector().normalized();
   QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
