@@ -2005,6 +2005,21 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::create( const QVariantMap &properties )
     symbolLayer->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )].toString() ) );
   }
 
+  if ( properties.contains( QStringLiteral( "parameters" ) ) )
+    {
+      const QVariantMap parameters = properties[QStringLiteral( "parameters" )].toMap();
+      QMap<QString, QgsProperty> parametersProperties;
+      QVariantMap::const_iterator it = parameters.constBegin();
+      for ( ; it != parameters.constEnd(); ++it )
+      {
+        QgsProperty property;
+        if ( property.loadVariant( it.value() ) )
+          parametersProperties.insert( it.key(), property );
+      }
+
+      symbolLayer->setParameters( parametersProperties );
+    }
+
   symbolLayer->restoreOldDataDefinedProperties( properties );
 
   return symbolLayer.release();
@@ -2027,10 +2042,10 @@ QString QgsSVGFillSymbolLayer::layerType() const
   return QStringLiteral( "SVGFill" );
 }
 
-void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit,
+void QgsSVGFillSymbolLayer::applyPattern(QBrush &brush, const QString &svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit,
     const QColor &svgFillColor, const QColor &svgStrokeColor, double svgStrokeWidth,
     QgsUnitTypes::RenderUnit svgStrokeWidthUnit, const QgsSymbolRenderContext &context,
-    const QgsMapUnitScale &patternWidthMapUnitScale, const QgsMapUnitScale &svgStrokeWidthMapUnitScale )
+    const QgsMapUnitScale &patternWidthMapUnitScale, const QgsMapUnitScale &svgStrokeWidthMapUnitScale , const QgsStringMap svgParameters)
 {
   if ( mSvgViewBox.isNull() )
   {
@@ -2048,7 +2063,7 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
     bool fitsInCache = true;
     double strokeWidth = context.renderContext().convertToPainterUnits( svgStrokeWidth, svgStrokeWidthUnit, svgStrokeWidthMapUnitScale );
     QImage patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                          context.renderContext().scaleFactor(), fitsInCache, 0, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+                          context.renderContext().scaleFactor(), fitsInCache, 0, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), svgParameters );
     if ( !fitsInCache )
     {
       QPicture patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
@@ -2082,8 +2097,9 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
 
 void QgsSVGFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
+  QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( mParameters, context.renderContext().expressionContext() );
 
-  applyPattern( mBrush, mSvgFilePath, mPatternWidth, mPatternWidthUnit, mColor, mSvgStrokeColor, mSvgStrokeWidth, mSvgStrokeWidthUnit, context, mPatternWidthMapUnitScale, mSvgStrokeWidthMapUnitScale );
+  applyPattern( mBrush, mSvgFilePath, mPatternWidth, mPatternWidthUnit, mColor, mSvgStrokeColor, mSvgStrokeWidth, mSvgStrokeWidthUnit, context, mPatternWidthMapUnitScale, mSvgStrokeWidthMapUnitScale, evaluatedParameters );
 
   if ( mStroke )
   {
@@ -2126,6 +2142,13 @@ QVariantMap QgsSVGFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "svg_outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSvgStrokeWidthMapUnitScale ) );
   map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
   map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
+
+  QVariantMap parameters;
+   QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
+   for ( ; it != mParameters.constEnd(); ++it )
+     parameters.insert( it.key(), it.value().toVariant() );
+   map[QStringLiteral( "parameters" )] = parameters;
+
   return map;
 }
 
@@ -2150,6 +2173,8 @@ QgsSVGFillSymbolLayer *QgsSVGFillSymbolLayer::clone() const
   clonedLayer->setSvgStrokeWidthMapUnitScale( mSvgStrokeWidthMapUnitScale );
   clonedLayer->setStrokeWidthUnit( mStrokeWidthUnit );
   clonedLayer->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
+
+  clonedLayer->setParameters( mParameters );
 
   if ( mStroke )
   {
@@ -2330,8 +2355,10 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &co
     context.setOriginalValueVariable( mSvgStrokeWidth );
     strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mSvgStrokeWidth );
   }
+  QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( mParameters, context.renderContext().expressionContext() );
+
   applyPattern( mBrush, svgFile, width, mPatternWidthUnit, svgFillColor, svgStrokeColor, strokeWidth,
-                mSvgStrokeWidthUnit, context, mPatternWidthMapUnitScale, mSvgStrokeWidthMapUnitScale );
+                mSvgStrokeWidthUnit, context, mPatternWidthMapUnitScale, mSvgStrokeWidthMapUnitScale, evaluatedParameters );
 
 }
 
@@ -2392,6 +2419,11 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
   {
     mSvgStrokeWidth = defaultStrokeWidth;
   }
+}
+
+void QgsSVGFillSymbolLayer::setParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  mParameters = parameters;
 }
 
 

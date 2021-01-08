@@ -2729,6 +2729,7 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
   mLayer = nullptr;
   setupUi( this );
 
+  mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
 
   connect( mTextureWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSVGFillSymbolLayerWidget::mTextureWidthSpinBox_valueChanged );
@@ -2853,7 +2854,7 @@ void QgsSVGFillSymbolLayerWidget::setFile( const QString &name )
 
 void QgsSVGFillSymbolLayerWidget::setSvgParameters( const QMap<QString, QgsProperty> &parameters )
 {
-  // TODO mLayer->setParameters(parameters);
+  mLayer->setParameters(parameters);
   whileBlocking( mSvgSelectorWidget )->setSvgParameters( parameters );
 
   updateParamGui();
