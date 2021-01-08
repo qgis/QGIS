@@ -113,6 +113,75 @@ class TestQgsBlockingProcess(unittest.TestCase):
         self.assertNotEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.CrashExit)
 
+    def test_process_env(self):
+        """
+        Test that process inherits system environment correctly
+        """
+        temp_folder = tempfile.mkdtemp()
+
+        script_file = os.path.join(temp_folder, 'process_env.sh')
+        with open(script_file, 'wt') as f:
+            f.write('echo $my_var')
+
+        os.chmod(script_file, 0o775)
+
+        def std_out(ba):
+            std_out.val += ba.data().decode('UTF-8')
+
+        std_out.val = ''
+
+        def std_err(ba):
+            std_err.val += ba.data().decode('UTF-8')
+
+        std_err.val = ''
+
+        # environment variable not set:
+        p = QgsBlockingProcess('sh', [script_file])
+        p.setStdOutHandler(std_out)
+        p.setStdErrHandler(std_err)
+
+        f = QgsFeedback()
+        self.assertEqual(p.run(f), 0)
+        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertFalse(std_out.val.strip())
+        self.assertFalse(std_err.val.strip())
+
+        # set environment variable
+        os.environ['my_var'] = 'my test variable'
+        std_out.val = ''
+        std_err.val = ''
+        p = QgsBlockingProcess('sh', [script_file])
+        p.setStdOutHandler(std_out)
+        p.setStdErrHandler(std_err)
+
+        f = QgsFeedback()
+        self.assertEqual(p.run(f), 0)
+        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertEqual(std_out.val.strip(), 'my test variable')
+        self.assertFalse(std_err.val.strip())
+
+        # test python changing path
+
+        script_file = os.path.join(temp_folder, 'process_env_path.sh')
+        with open(script_file, 'wt') as f:
+            f.write('echo $PATH')
+
+        prev_path_val = os.getenv('PATH')
+        new_path = "{}{}{}".format('/my_test/folder', os.pathsep, prev_path_val)
+        os.environ['PATH'] = new_path
+
+        std_out.val = ''
+        std_err.val = ''
+        p = QgsBlockingProcess('sh', [script_file])
+        p.setStdOutHandler(std_out)
+        p.setStdErrHandler(std_err)
+
+        f = QgsFeedback()
+        self.assertEqual(p.run(f), 0)
+        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertEqual(std_out.val.strip(), new_path)
+        self.assertFalse(std_err.val.strip())
+
 
 if __name__ == '__main__':
     unittest.main()
