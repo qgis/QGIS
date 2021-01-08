@@ -116,11 +116,6 @@ QgsAttributeEditorContext QgsAbstractRelationEditorWidget::editorContext() const
   return mEditorContext;
 }
 
-QgsIFeatureSelectionManager *QgsAbstractRelationEditorWidget::featureSelectionManager()
-{
-  return mFeatureSelectionMgr;
-}
-
 void QgsAbstractRelationEditorWidget::setFeature( const QgsFeature &feature, bool update )
 {
   mFeature = feature;
@@ -275,12 +270,6 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 void QgsAbstractRelationEditorWidget::deleteFeature( const QgsFeatureId fid )
 {
   deleteFeatures( QgsFeatureIds() << fid );
-}
-
-void QgsAbstractRelationEditorWidget::deleteSelectedFeatures()
-{
-  QgsFeatureIds selectedFids = mFeatureSelectionMgr->selectedFeatureIds();
-  deleteFeatures( selectedFids );
 }
 
 void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids )
@@ -495,11 +484,6 @@ void QgsAbstractRelationEditorWidget::unlinkFeature( const QgsFeatureId fid )
   unlinkFeatures( QgsFeatureIds() << fid );
 }
 
-void QgsAbstractRelationEditorWidget::unlinkSelectedFeatures()
-{
-  unlinkFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
-}
-
 void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids )
 {
   if ( mNmRelation.isValid() )
@@ -567,29 +551,22 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
   }
 }
 
-void QgsAbstractRelationEditorWidget::duplicateFeature()
+void QgsAbstractRelationEditorWidget::duplicateFeature( const QgsFeatureId &fid )
+{
+  duplicateFeatures( QgsFeatureIds() << fid );
+}
+
+void QgsAbstractRelationEditorWidget::duplicateFeatures( const QgsFeatureIds &fids )
 {
   QgsVectorLayer *layer = mRelation.referencingLayer();
 
-  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterFids( mFeatureSelectionMgr->selectedFeatureIds() ) );
+  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterFids( fids ) );
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicatedFeatureContext;
     QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), duplicatedFeatureContext );
   }
-}
-
-void QgsAbstractRelationEditorWidget::zoomToSelectedFeatures()
-{
-  QgsMapCanvas *c = mEditorContext.mapCanvas();
-  if ( !c )
-    return;
-
-  c->zoomToFeatureIds(
-    mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer(),
-    mFeatureSelectionMgr->selectedFeatureIds()
-  );
 }
 
 

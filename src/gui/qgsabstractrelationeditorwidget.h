@@ -29,7 +29,6 @@
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
-#include "qgsvectorlayerselectionmanager.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
@@ -108,12 +107,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * Returns the attribute editor context.
      */
     QgsAttributeEditorContext editorContext( ) const;
-
-    /**
-     * The feature selection manager is responsible for the selected features
-     * which are currently being edited.
-     */
-    QgsIFeatureSelectionManager *featureSelectionManager();
 
     /**
      * Defines if a title label should be shown for this widget.
@@ -203,11 +196,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void deleteFeature( QgsFeatureId fid = QgsFeatureId() );
 
     /**
-     * Deletes the currently selected features
-     */
-    void deleteSelectedFeatures();
-
-    /**
      * Links a new feature to the relation
      */
     void linkFeature();
@@ -223,23 +211,17 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void unlinkFeature( QgsFeatureId fid = QgsFeatureId() );
 
     /**
-     * Unlinks the selected features from the relation
-     */
-    void unlinkSelectedFeatures();
-
-    /**
      * Duplicates a feature
      */
-    void duplicateFeature();
+    void duplicateFeature( const QgsFeatureId &fid );
 
     /**
-     * Zooms to the selected features
+     * Duplicates features
      */
-    void zoomToSelectedFeatures();
+    void duplicateFeatures( const QgsFeatureIds &fids );
 
   protected:
 
-    QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;

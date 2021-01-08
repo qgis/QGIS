@@ -66,6 +66,12 @@ Define the view mode for the dual view
 Gets the view mode for the dual view
 %End
 
+    QgsIFeatureSelectionManager *featureSelectionManager();
+%Docstring
+The feature selection manager is responsible for the selected features
+which are currently being edited.
+%End
+
     void setEditorContext( const QgsAttributeEditorContext &context );
 %Docstring
 Sets the editor ``context``
@@ -84,6 +90,36 @@ Defines the buttons which are shown
     Buttons visibleButtons() const;
 %Docstring
 Returns the buttons which are shown
+%End
+
+ void duplicateFeature() /Deprecated/;
+%Docstring
+Duplicates a feature
+
+.. deprecated:: QGIS 3.18
+  use duplicateSelectedFeatures() instead
+%End
+
+    void duplicateSelectedFeatures();
+%Docstring
+Duplicates the selected features
+
+.. versionadded:: 3.18
+%End
+
+    void unlinkSelectedFeatures();
+%Docstring
+Unlinks the selected features from the relation
+%End
+
+    void deleteSelectedFeatures();
+%Docstring
+Deletes the currently selected features
+%End
+
+    void zoomToSelectedFeatures();
+%Docstring
+Zooms to the selected features
 %End
 
     virtual QVariantMap config() const;

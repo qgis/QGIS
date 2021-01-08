@@ -77,12 +77,6 @@ Sets the editor ``context``
 Returns the attribute editor context.
 %End
 
-    QgsIFeatureSelectionManager *featureSelectionManager();
-%Docstring
-The feature selection manager is responsible for the selected features
-which are currently being edited.
-%End
-
     bool showLabel() const;
 %Docstring
 Defines if a title label should be shown for this widget.
@@ -170,11 +164,6 @@ Adds a new feature with given ``geometry``
 Delete a feature with given ``fid``
 %End
 
-    void deleteSelectedFeatures();
-%Docstring
-Deletes the currently selected features
-%End
-
     void linkFeature();
 %Docstring
 Links a new feature to the relation
@@ -190,19 +179,14 @@ Called when the link feature dialog is confirmed by the user
 Unlinks a feature with given ``fid``
 %End
 
-    void unlinkSelectedFeatures();
-%Docstring
-Unlinks the selected features from the relation
-%End
-
-    void duplicateFeature();
+    void duplicateFeature( const QgsFeatureId &fid );
 %Docstring
 Duplicates a feature
 %End
 
-    void zoomToSelectedFeatures();
+    void duplicateFeatures( const QgsFeatureIds &fids );
 %Docstring
-Zooms to the selected features
+Duplicates features
 %End
 
   protected:

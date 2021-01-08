@@ -126,6 +126,12 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
     /**
+     * The feature selection manager is responsible for the selected features
+     * which are currently being edited.
+     */
+    QgsIFeatureSelectionManager *featureSelectionManager();
+
+    /**
      * Sets the editor \a context
      * \note if context cadDockWidget is null, it won't be possible to digitize
      * the geometry of a referencing feature from this widget
@@ -141,6 +147,33 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
      * Returns the buttons which are shown
      */
     Buttons visibleButtons() const;
+
+    /**
+     * Duplicates a feature
+     * \deprecated since QGIS 3.18, use duplicateSelectedFeatures() instead
+     */
+    Q_DECL_DEPRECATED void duplicateFeature() SIP_DEPRECATED;
+
+    /**
+     * Duplicates the selected features
+     * \since QGIS 3.18
+     */
+    void duplicateSelectedFeatures();
+
+    /**
+     * Unlinks the selected features from the relation
+     */
+    void unlinkSelectedFeatures();
+
+    /**
+     * Deletes the currently selected features
+     */
+    void deleteSelectedFeatures();
+
+    /**
+     * Zooms to the selected features
+     */
+    void zoomToSelectedFeatures();
 
     /**
      * Returns the current configuration
@@ -197,6 +230,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QGridLayout *mRelationLayout = nullptr;
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
+    QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
 
     Buttons mButtonsVisibility = Button::AllButtons;
     bool mVisible = true;

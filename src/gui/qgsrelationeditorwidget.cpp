@@ -213,7 +213,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   connect( mSaveEditsButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::saveEdits );
   connect( mAddFeatureButton, &QAbstractButton::clicked, this, [this]() { addFeature(); } );
   connect( mAddFeatureGeometryButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::addFeatureGeometry );
-  connect( mDuplicateFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::duplicateFeature );
+  connect( mDuplicateFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::duplicateSelectedFeatures );
   connect( mDeleteFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::deleteSelectedFeatures );
   connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
   connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
@@ -606,6 +606,43 @@ void QgsRelationEditorWidget::afterSetRelations()
   updateButtons();
 }
 
+QgsIFeatureSelectionManager *QgsRelationEditorWidget::featureSelectionManager()
+{
+  return mFeatureSelectionMgr;
+}
+
+void QgsRelationEditorWidget::unlinkSelectedFeatures()
+{
+  unlinkFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+}
+
+void QgsRelationEditorWidget::duplicateFeature()
+{
+  duplicateFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+}
+
+void QgsRelationEditorWidget::duplicateSelectedFeatures()
+{
+  duplicateFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+}
+
+void QgsRelationEditorWidget::deleteSelectedFeatures()
+{
+  QgsFeatureIds selectedFids = mFeatureSelectionMgr->selectedFeatureIds();
+  deleteFeatures( selectedFids );
+}
+
+void QgsRelationEditorWidget::zoomToSelectedFeatures()
+{
+  QgsMapCanvas *c = mEditorContext.mapCanvas();
+  if ( !c )
+    return;
+
+  c->zoomToFeatureIds(
+    mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer(),
+    mFeatureSelectionMgr->selectedFeatureIds()
+  );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
