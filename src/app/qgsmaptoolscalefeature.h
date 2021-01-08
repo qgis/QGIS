@@ -96,24 +96,23 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
     void deleteScalingWidget();
 
     //! Start point of the move in map coordinates
-    QgsPointXY mFeatureCenter;
+    QgsPointXY mFeatureCenterMapCoords;
     QPointF mRubberScale;
     QPointF mInitialCanvasPos;
 
-    QgsVectorLayer *mLayer = nullptr;
     //! Rubberband that shows the feature being moved
     QgsRubberBand *mRubberBand = nullptr;
 
     //! Id of moved feature
     QgsFeatureIds mScaledFeatures;
-    double mScaling;
+    double mScaling = 0;
     double mBaseDistance = 1;
     QgsRectangle mExtent;
 
     QgsPointXY mCenterPoint;
     std::unique_ptr<QgsVertexMarker> mAnchorPoint = nullptr;
 
-    bool mScalingActive;
+    bool mScalingActive = false;
 
     //! Shows current scale value and allows numerical editing
     QgsScaleMagnetWidget *mScalingWidget = nullptr;

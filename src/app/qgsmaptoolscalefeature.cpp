@@ -102,10 +102,12 @@ void QgsScaleMagnetWidget::scaleSpinBoxValueChanged( double scale )
   emit scaleChanged( scale );
 }
 
+//
+// QgsMapToolScaleFeature
+//
+
 QgsMapToolScaleFeature::QgsMapToolScaleFeature( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mScaling( 0 )
-  , mScalingActive( false )
 {
 }
 
@@ -124,8 +126,8 @@ void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
   }
   if ( mScalingActive )
   {
-    const double distance = mFeatureCenter.distance( toLayerCoordinates( mLayer, e->mapPoint() ) );
-    double scale =  distance / mBaseDistance; // min 0 or no limit?
+    const double distance = mFeatureCenterMapCoords.distance( e->mapPoint() );
+    double scale = distance / mBaseDistance; // min 0 or no limit?
 
     if ( mScalingWidget )
     {
@@ -146,8 +148,8 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  //QgsVectorLayer *mLayer = currentVectorLayer();
-  if ( !mLayer )
+  QgsVectorLayer *vlayer = currentVectorLayer();
+  if ( !vlayer )
   {
     deleteScalingWidget();
     deleteRubberband();
@@ -166,10 +168,11 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( !mAnchorPoint )
     {
-      return;
+      mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+      mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     }
-    mFeatureCenter = toLayerCoordinates( mLayer, e->mapPoint() );
-    mAnchorPoint->setCenter( mFeatureCenter );
+    mAnchorPoint->setCenter( e->mapPoint() );
+    mFeatureCenterMapCoords = e->mapPoint();
     return;
   }
 
@@ -184,29 +187,31 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     mInitialCanvasPos = e->pos();
 
-    if ( !mLayer->isEditable() )
+    if ( !vlayer->isEditable() )
     {
       notifyNotEditableLayer();
       return;
     }
 
-    QgsPointXY layerInitCoords = toLayerCoordinates( mLayer, e->mapPoint() );
+    QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
     double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
-    QgsRectangle selectRect( layerInitCoords.x() - searchRadius, layerInitCoords.y() - searchRadius,
-                             layerInitCoords.x() + searchRadius, layerInitCoords.y() + searchRadius );
+    QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
+                             layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
+    bool autoCalculateAnchorPoint = false;
     if ( !mAnchorPoint )
     {
       mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
+      autoCalculateAnchorPoint = true;
     }
 
-    if ( mLayer->selectedFeatureCount() == 0 )
+    if ( vlayer->selectedFeatureCount() == 0 )
     {
-      QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setNoAttributes().setFilterRect( selectRect ) );
+      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setNoAttributes().setFilterRect( selectRect ) );
 
       //find the closest feature
-      QgsGeometry pointGeometry = QgsGeometry().fromPointXY( layerInitCoords );// layerInitCoords )
+      QgsGeometry pointGeometry = QgsGeometry().fromPointXY( layerCoords );
       if ( pointGeometry.isNull() )
       {
         return;
@@ -221,7 +226,6 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         if ( f.hasGeometry() )
         {
           double currentDistance = pointGeometry.distance( f.geometry() );
-
           if ( currentDistance < minDistance )
           {
             minDistance = currentDistance;
@@ -237,34 +241,43 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
 
       mExtent = cf.geometry().boundingBox();
-      mFeatureCenter = mExtent.center();
+      if ( autoCalculateAnchorPoint )
+      {
+        mFeatureCenterMapCoords = toMapCoordinates( vlayer, mExtent.center() );
+        mAnchorPoint->setCenter( mFeatureCenterMapCoords );
+      }
+      else
+      {
+        mFeatureCenterMapCoords =  mAnchorPoint->center();
+      }
 
       mScaledFeatures.clear();
       mScaledFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
-      mRubberBand = createRubberBand( mLayer->geometryType() );
-      mRubberBand->setToGeometry( cf.geometry(), mLayer );
+      mRubberBand = createRubberBand( vlayer->geometryType() );
+      mRubberBand->setToGeometry( cf.geometry(), vlayer );
     }
     else
     {
-      mScaledFeatures = mLayer->selectedFeatureIds();
+      mScaledFeatures = vlayer->selectedFeatureIds();
 
-      mRubberBand = createRubberBand( mLayer->geometryType() );
+      mRubberBand = createRubberBand( vlayer->geometryType() );
 
       QgsFeature feat;
-      QgsFeatureIterator it = mLayer->getSelectedFeatures();
+      QgsFeatureIterator it = vlayer->getSelectedFeatures();
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), mLayer );
+        mRubberBand->addGeometry( feat.geometry(), vlayer );
       }
     }
-    QgsPointXY mapAnchor = toMapCoordinates( mLayer, mFeatureCenter );
+
+    QgsPointXY mapAnchor = toMapCoordinates( vlayer, mFeatureCenterMapCoords );
     QPoint rubberAnchor = toCanvasCoordinates( mapAnchor );
-    mAnchorPoint->setCenter( mapAnchor );
+
     mRubberScale = QPointF( rubberAnchor.x() - mRubberBand->x(), rubberAnchor.y() - mRubberBand->y() );
     mRubberBand->setTransformOriginPoint( rubberAnchor );
     mRubberBand->show();
-    mBaseDistance = toLayerCoordinates( mLayer, e->mapPoint() ).distance( mFeatureCenter );
+    mBaseDistance = e->mapPoint().distance( mFeatureCenterMapCoords );
     mScaling = 1.0;
 
     createScalingWidget();
@@ -281,8 +294,8 @@ void QgsMapToolScaleFeature::cancel()
 {
   deleteScalingWidget();
   deleteRubberband();
-  QgsVectorLayer *mLayer = currentVectorLayer();
-  if ( mLayer->selectedFeatureCount() == 0 )
+  QgsVectorLayer *vlayer = currentVectorLayer();
+  if ( vlayer->selectedFeatureCount() == 0 )
   {
     mAnchorPoint.reset();
   }
@@ -306,13 +319,13 @@ void QgsMapToolScaleFeature::updateRubberband( double scale )
   }
 }
 
-
 void QgsMapToolScaleFeature::applyScaling( double scale )
 {
   mScaling = scale;
   mScalingActive = false;
 
-  if ( !mLayer )
+  QgsVectorLayer *vlayer = currentVectorLayer();
+  if ( !vlayer )
   {
     deleteRubberband();
     notifyNotVectorLayer();
@@ -356,25 +369,25 @@ void QgsMapToolScaleFeature::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolScaleFeature::activate()
 {
-  mLayer = currentVectorLayer();
-  if ( !mLayer )
+  QgsVectorLayer *vlayer = currentVectorLayer();
+  if ( !vlayer )
   {
     return;
   }
 
-  if ( !mLayer->isEditable() )
+  if ( !vlayer->isEditable() )
   {
     return;
   }
 
-  if ( mLayer->selectedFeatureCount() > 0 )
+  if ( vlayer->selectedFeatureCount() > 0 )
   {
-    mExtent = mLayer->boundingBoxOfSelected();
-    mFeatureCenter = mExtent.center();
+    mExtent = vlayer->boundingBoxOfSelected();
+    mFeatureCenterMapCoords = mExtent.center();
 
     mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
-    mAnchorPoint->setCenter( mFeatureCenter );
+    mAnchorPoint->setCenter( mFeatureCenterMapCoords );
   }
   QgsMapTool::activate();
 }
