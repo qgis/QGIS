@@ -38,8 +38,6 @@ class APP_EXPORT QgsScaleMagnetWidget : public QWidget
 
     void setScale( double scale );
     double scale() const;
-    void setMagnet( int magnet );
-    int magnet() const;
 
     QgsDoubleSpinBox *editor() const {return mScaleSpinBox;}
 
@@ -60,7 +58,6 @@ class APP_EXPORT QgsScaleMagnetWidget : public QWidget
   private:
     QHBoxLayout *mLayout = nullptr;
     QgsDoubleSpinBox *mScaleSpinBox = nullptr;
-    QgsSpinBox *mMagnetSpinBox = nullptr;
 };
 
 

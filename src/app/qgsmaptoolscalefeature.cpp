@@ -59,18 +59,6 @@ QgsScaleMagnetWidget::QgsScaleMagnetWidget( const QString &label, QWidget *paren
   mScaleSpinBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   mLayout->addWidget( mScaleSpinBox );
 
-  mMagnetSpinBox = new QgsSpinBox( this );
-  mMagnetSpinBox->setMinimum( 0 );
-  mMagnetSpinBox->setMaximum( 180 );
-  mMagnetSpinBox->setPrefix( tr( "Snap to " ) );
-  mMagnetSpinBox->setSuffix( tr( "x" ) );
-  mMagnetSpinBox->setSingleStep( 5 );
-  mMagnetSpinBox->setValue( 0 );
-  mMagnetSpinBox->setClearValue( 0, tr( "No snapping" ) );
-  //mMagnetSpinBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
-  mMagnetSpinBox->setMinimumWidth( 120 );
-  mLayout->addWidget( mMagnetSpinBox );
-
   // connect signals
   mScaleSpinBox->installEventFilter( this );
   connect( mScaleSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsScaleMagnetWidget::scaleSpinBoxValueChanged );
@@ -81,32 +69,13 @@ QgsScaleMagnetWidget::QgsScaleMagnetWidget( const QString &label, QWidget *paren
 
 void QgsScaleMagnetWidget::setScale( double scale )
 {
-  const int m = magnet();
-  if ( m )
-  {
-    mScaleSpinBox->setValue( std::round( scale / m ) * m );
-  }
-  else
-  {
-    mScaleSpinBox->setValue( scale );
-  }
+  mScaleSpinBox->setValue( scale );
 }
 
 double QgsScaleMagnetWidget::scale() const
 {
   return mScaleSpinBox->value();
 }
-
-void QgsScaleMagnetWidget::setMagnet( int magnet )
-{
-  mMagnetSpinBox->setValue( magnet );
-}
-
-int QgsScaleMagnetWidget::magnet() const
-{
-  return mMagnetSpinBox->value();
-}
-
 
 bool QgsScaleMagnetWidget::eventFilter( QObject *obj, QEvent *ev )
 {
@@ -165,15 +134,10 @@ void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
       mScalingWidget->setFocus( Qt::TabFocusReason );
       mScalingWidget->editor()->selectAll();
       connect( mScalingWidget, &QgsScaleMagnetWidget::scaleChanged, this, &QgsMapToolScaleFeature::updateRubberband );
-      if ( mScalingWidget->magnet() )
-      {
-        scale = mScalingWidget->scale();
-      }
     }
     updateRubberband( scale );
   }
 }
-
 
 void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
