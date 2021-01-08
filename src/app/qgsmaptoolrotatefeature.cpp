@@ -109,7 +109,6 @@ int QgsAngleMagnetWidget::magnet() const
   return mMagnetSpinBox->value();
 }
 
-
 bool QgsAngleMagnetWidget::eventFilter( QObject *obj, QEvent *ev )
 {
   if ( obj == mAngleSpinBox && ev->type() == QEvent::KeyPress )
@@ -135,11 +134,12 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
   emit angleChanged( angle );
 }
 
+//
+// QgsMapToolRotateFeature
+//
+
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mRotation( 0 )
-  , mRotationOffset( 0 )
-  , mRotationActive( false )
 {
 }
 
@@ -173,7 +173,6 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent *e )
     updateRubberband( rotation );
   }
 }
-
 
 void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
@@ -361,7 +360,6 @@ void QgsMapToolRotateFeature::updateRubberband( double rotation )
     }
   }
 }
-
 
 void QgsMapToolRotateFeature::applyRotation( double rotation )
 {
