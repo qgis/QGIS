@@ -148,6 +148,10 @@ QString QgsHanaUtils::toConstant( const QVariant &value, QVariant::Type type )
 
 QString QgsHanaUtils::toString( QgsUnitTypes::DistanceUnit unit )
 {
+  // We need to translate the distance unit to the name used in HANA's
+  // SYS.ST_UNITS_OF_MEASURE view. These names are different from the names
+  // returned by QgsUnitTypes::encodeUnit(). Hence, we need our own translation
+  // method.
   switch ( unit )
   {
     case QgsUnitTypes::DistanceMeters:
