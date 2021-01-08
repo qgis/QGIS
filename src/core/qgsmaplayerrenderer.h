@@ -110,9 +110,35 @@ class CORE_EXPORT QgsMapLayerRenderer
      */
     const QgsRenderContext *renderContext() const SIP_SKIP { return mContext; }
 
+    /**
+     * Returns whether the renderer already drawn (at
+     * least partially) some data to resulting image
+     *
+     * \since QGIS 3.18
+     */
+    bool isReadyToCompose() const { return mReadyToCompose; }
+
   protected:
     QStringList mErrors;
     QString mLayerID;
+
+    // TODO QGIS 4.0 - make false as default
+
+    /**
+     * The flag must be set to false in renderer's constructor
+     * if wants to use the smarter map redraws functionality
+     * https://github.com/qgis/QGIS-Enhancement-Proposals/issues/181
+     *
+     * The flag must be set to true by renderer when
+     * the data is fetched and the renderer actually
+     * started to update the destination image.
+     *
+     * When the flag is set to false, the image from
+     * QgsMapRendererCache is used instead to avoid flickering.
+     *
+     * \since QGIS 3.18
+     */
+    bool mReadyToCompose = true;
 
   private:
 

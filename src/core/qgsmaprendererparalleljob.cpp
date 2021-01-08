@@ -210,7 +210,7 @@ QgsLabelingResults *QgsMapRendererParallelJob::takeLabelingResults()
 QImage QgsMapRendererParallelJob::renderedImage()
 {
   if ( mStatus == RenderingLayers )
-    return composeImage( mSettings, mLayerJobs, mLabelJob );
+    return composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   else
     return mFinalImage; // when rendering labels or idle
 }
@@ -331,6 +331,12 @@ void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
   emit finished();
 }
 
+/*
+ * See section "Smarter Map Redraws"
+ * in https://github.com/qgis/QGIS-Enhancement-Proposals/issues/181
+ */
+// #define SIMULATE_SLOW_RENDERER
+
 void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 {
   if ( job.context.renderingStopped() )
@@ -350,6 +356,9 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
   QgsDebugMsgLevel( QStringLiteral( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layerId ), 2 );
   try
   {
+#ifdef SIMULATE_SLOW_RENDERER
+    QThread::sleep( 1 );
+#endif
     job.renderer->render();
   }
   catch ( QgsException &e )

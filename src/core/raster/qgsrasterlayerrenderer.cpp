@@ -231,7 +231,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   if ( rasterRenderer
        && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob )
        && !( rendererContext.flags() & QgsRenderContext::Render3DMap ) )
+  {
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
+  }
 
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( layer->temporalProperties() );
   if ( temporalProperties->isActive() && renderContext()->isTemporal() )
@@ -330,6 +332,7 @@ bool QgsRasterLayerRenderer::render()
   }
 
   QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
+  mReadyToCompose = true;
 
   return true;
 }
