@@ -30,6 +30,7 @@
 #include "qgslayoutatlas.h"
 #include "qgslayoutmultiframe.h"
 #include "qgsfeatureid.h"
+#include "qgslayoutitemmap.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
@@ -102,6 +103,69 @@ class GetLayoutItemVariables : public QgsScopedExpressionFunction
     QgsScopedExpressionFunction *clone() const override
     {
       return new GetLayoutItemVariables( mLayout );
+    }
+
+  private:
+
+    const QgsLayout *mLayout = nullptr;
+
+};
+
+
+class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
+{
+  public:
+    GetLayoutMapLayerCredits( const QgsLayout *c )
+      : QgsScopedExpressionFunction( QStringLiteral( "map_credits" ),
+                                     QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) )
+                                     << QgsExpressionFunction::Parameter( QStringLiteral( "include_layer_names" ), true, false )
+                                     << QgsExpressionFunction::Parameter( QStringLiteral( "layer_name_separator" ), true, QStringLiteral( ": " ) ), QStringLiteral( "Layout" ) )
+      , mLayout( c )
+    {}
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !mLayout )
+        return QVariant();
+
+      QString id = values.value( 0 ).toString();
+
+      if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mLayout->itemById( id ) ) )
+      {
+        QgsExpressionContext c = map->createExpressionContext();
+        const QVariantList mapLayers = c.variable( QStringLiteral( "map_layers" ) ).toList();
+
+        const bool includeLayerNames = values.value( 1 ).toBool();
+        const QString layerNameSeparator = values.value( 2 ).toString();
+
+        QVariantList res;
+        for ( const QVariant &value : mapLayers )
+        {
+          if ( const QgsMapLayer *layer = qobject_cast< const QgsMapLayer * >( value.value< QObject * >() ) )
+          {
+            const QStringList credits = !layer->metadata().rights().isEmpty() ? layer->metadata().rights() : QStringList() << layer->attribution();
+            for ( const QString &credit : credits )
+            {
+              if ( credit.trimmed().isEmpty() )
+                continue;
+
+              const QString creditString = includeLayerNames ? layer->name() + layerNameSeparator + credit
+                                           : credit;
+
+              if ( !res.contains( creditString ) )
+                res << creditString;
+            }
+          }
+        }
+
+        return res;
+      }
+      return QVariant();
+    }
+
+    QgsScopedExpressionFunction *clone() const override
+    {
+      return new GetLayoutMapLayerCredits( mLayout );
     }
 
   private:
@@ -523,6 +587,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_dpi" ), layout->renderContext().dpi(), true ) );
 
   scope->addFunction( QStringLiteral( "item_variables" ), new GetLayoutItemVariables( layout ) );
+  scope->addFunction( QStringLiteral( "map_credits" ), new GetLayoutMapLayerCredits( layout ) );
 
   if ( layout->reportContext().layer() )
   {
@@ -827,6 +892,7 @@ void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
   QgsExpression::registerFunction( new GetLayoutItemVariables( nullptr ) );
+  QgsExpression::registerFunction( new GetLayoutMapLayerCredits( nullptr ) );
   QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer *>(), 0.0 ) );
   QgsExpression::registerFunction( new GetProcessingParameterValue( QVariantMap() ) );
   QgsExpression::registerFunction( new GetCurrentFormFieldValue( ) );
