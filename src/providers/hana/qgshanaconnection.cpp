@@ -597,7 +597,7 @@ QStringList QgsHanaConnection::getLayerPrimaryeKey( const QString &schemaName, c
     {
       QString clmName = QgsHanaUtils::toQString( rsPrimaryKeys->getNString( 4 /*COLUMN_NAME*/ ) );
       int pos = *rsPrimaryKeys->getInt( 5 /*KEY_SEQ*/ );
-      pos2Name.insert(pos, clmName );
+      pos2Name.insert( pos, clmName );
     }
     rsPrimaryKeys->close();
     return pos2Name.values();

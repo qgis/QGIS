@@ -331,7 +331,7 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
         property.setGeometryColumnCount( layerInfo.geometryColName.isEmpty() ? 0 : 1 );
         property.setComment( layerInfo.tableComment );
 
-        if (layerInfo.isView)
+        if ( layerInfo.isView )
         {
           // Set the candidates
           property.setPrimaryKeyColumns( layerInfo.pkCols );
