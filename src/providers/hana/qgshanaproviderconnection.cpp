@@ -27,6 +27,23 @@
 
 #include "odbc/PreparedStatement.h"
 
+QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRef&& resultSet )
+  : mResultSet( std::move( resultSet ) )
+  , mNumColumns( mResultSet->getMetadata().getColumnCount() )
+  , mNextRow( mResultSet->next() )
+{}
+
+QVariantList QgsHanaProviderResultIterator::nextRow()
+{
+  QVariantList ret;
+  if ( !mNextRow )
+    return ret;
+  for ( unsigned short i = 1; i <= mNumColumns; ++i )
+    ret.push_back( mResultSet->getValue( i ) );
+  mNextRow = mResultSet->next();
+  return ret;
+}
+
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
@@ -203,13 +220,13 @@ void QgsHanaProviderConnection::renameSchema( const QString &name, const QString
                        .arg( QgsHanaUtils::quotedIdentifier( name ), QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
-QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
 
   // Check feedback first!
   if ( feedback && feedback->isCanceled() )
-    return QList<QVariantList>();
+    return QueryResult( std::make_shared<QgsHanaEmptyProviderResultIterator>() );
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
@@ -217,7 +234,7 @@ QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql, Q
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
   if ( feedback && feedback->isCanceled() )
-    return QList<QVariantList>();
+    return QueryResult( std::make_shared<QgsHanaEmptyProviderResultIterator>() );
 
   bool isQuery = false;
 
@@ -225,60 +242,29 @@ QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql, Q
   {
     odbc::PreparedStatementRef stmt = conn->prepareStatement( sql );
     isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
-  }
-  catch ( const QgsHanaException &ex )
-  {
-    throw QgsProviderConnectionException( ex.what() );
-  }
-
-  if ( isQuery )
-    return executeSqlQuery( *conn, sql, feedback );
-  else
-  {
-    executeSqlStatement( *conn, sql );
-    return QList<QVariantList>();
-  }
-}
-
-QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( QgsHanaConnection &conn, const QString &sql, QgsFeedback *feedback ) const
-{
-  QList<QVariantList> results;
-
-  try
-  {
-    QgsHanaResultSetRef resultSet = conn.executeQuery( sql );
-    const unsigned short nColumns = resultSet->getMetadata().getColumnCount();
-    while ( resultSet->next() )
+    if ( isQuery )
     {
-      if ( feedback && feedback->isCanceled() )
-        break;
-
-      QVariantList row;
-      for ( unsigned short i = 1; i <= nColumns; ++i )
-        row.push_back( resultSet->getValue( i ) );
-      results.push_back( row );
+      QgsHanaResultSetRef rs = conn->executeQuery( sql );
+      odbc::ResultSetMetaDataUnicode &md = rs->getMetadata();
+      QueryResult ret( std::make_shared<QgsHanaProviderResultIterator>( std::move( rs ) ) );
+      unsigned short numColumns = md.getColumnCount();
+      for ( unsigned short i = 1; i <= numColumns; ++i )
+        ret.appendColumn( QgsHanaUtils::toQString( md.getColumnName( i ) ) );
+      ret.setRowCount( -1 );
+      return ret;
     }
-    resultSet->close();
+    else
+    {
+      conn->execute( sql );
+      conn->commit();
+      return QueryResult( std::make_shared<QgsHanaEmptyProviderResultIterator>() );
+    }
   }
   catch ( const QgsHanaException &ex )
   {
     throw QgsProviderConnectionException( ex.what() );
   }
 
-  return results;
-}
-
-void QgsHanaProviderConnection::executeSqlStatement( QgsHanaConnection &conn, const QString &sql ) const
-{
-  try
-  {
-    conn.execute( sql );
-    conn.commit();
-  }
-  catch ( const QgsHanaException &ex )
-  {
-    throw QgsProviderConnectionException( ex.what() );
-  }
 }
 
 void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
@@ -287,8 +273,15 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
   QgsHanaConnectionRef conn( dsUri );
   if ( conn.isNull() )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
-
-  executeSqlStatement( *conn, sql );
+  try
+  {
+    conn->execute( sql );
+    conn->commit();
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    throw QgsProviderConnectionException( ex.what() );
+  }
 }
 
 QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::tables( const QString &schema, const TableFlags &flags ) const

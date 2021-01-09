@@ -19,6 +19,25 @@
 
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgshanaconnection.h"
+#include "qgshanaresultset.h"
+
+struct QgsHanaEmptyProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+    QVariantList nextRow() override { return QVariantList(); }
+    bool hasNextRow() const override { return false; }
+};
+
+struct QgsHanaProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+    QgsHanaProviderResultIterator( QgsHanaResultSetRef&& resultSet );
+    QVariantList nextRow() override;
+    bool hasNextRow() const override { return mNextRow; }
+
+  private:
+    QgsHanaResultSetRef mResultSet;
+    unsigned short mNumColumns = 0;
+    bool mNextRow = false;
+};
 
 class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
@@ -40,7 +59,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
     void renameSchema( const QString &name, const QString &newName ) const override;
-    QList<QVariantList> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
+    QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = TableFlags() ) const override;
     QStringList schemas( ) const override;
@@ -50,8 +69,6 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
-    QList<QVariantList> executeSqlQuery( QgsHanaConnection &conn, const QString &sql, QgsFeedback *feedback = nullptr ) const;
-    void executeSqlStatement( QgsHanaConnection &conn, const QString &sql ) const;
     void executeSqlStatement( const QString &sql ) const;
     void setCapabilities();
     void dropTable( const QString &schema, const QString &name ) const;
