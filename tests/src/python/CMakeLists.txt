@@ -388,7 +388,7 @@ if (ENABLE_ORACLETEST)
 endif()
 
 if (ENABLE_HANATEST)
-  ADD_PYTHON_TEST(PyQgsHanaProvider test_provider_hana.py TEST_TIMEOUT=350)
+  ADD_PYTHON_TEST(PyQgsHanaProvider test_provider_hana.py TEST_TIMEOUT=600)
   ADD_PYTHON_TEST(PyQgsProviderConnectionHana test_qgsproviderconnection_hana.py TEST_TIMEOUT=120)
 endif (ENABLE_HANATEST)
 
