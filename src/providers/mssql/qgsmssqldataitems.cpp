@@ -74,9 +74,10 @@ void QgsMssqlConnectionItem::readConnectionSettings()
 
   mSchemaSettings.clear();
   mSchemasFilteringEnabled = settings.value( key + "/schemasFiltering" ).toBool();
+
   if ( mSchemasFilteringEnabled )
   {
-    QVariant schemasSettingsVariant = settings.value( key + "/schemasFiltered" );
+    QVariant schemasSettingsVariant = settings.value( key + "/excludedSchemas" );
     if ( schemasSettingsVariant.isValid() && schemasSettingsVariant.type() == QVariant::Map )
       mSchemaSettings = schemasSettingsVariant.toMap();
   }
@@ -144,7 +145,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
   }
 
   // build sql statement
-  QString query = QgsMssqlConnection::buildQueryForSchemas( mName );
+  QString query = QgsMssqlConnection::buildQueryForTables( mName );
 
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( mName );
 
@@ -252,14 +253,13 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       }
     }
 
-
     // add missing schemas (i.e., empty schemas)
     const QString uri = connInfo();
     const QStringList allSchemas = QgsMssqlConnection::schemas( uri, nullptr );
-    QVariantMap schemaSettings = mSchemaSettings.value( mDatabase ).toMap();
+    QStringList excludedSchema = QgsMssqlConnection::excludedSchemasList( mName );
     for ( const QString &schema : allSchemas )
     {
-      if ( mSchemasFilteringEnabled && !schemaSettings.value( schema ).toBool() )
+      if ( mSchemasFilteringEnabled && excludedSchema.contains( schema ) )
         continue;  // user does not want it to be shown
 
       if ( addedSchemas.contains( schema ) )
@@ -273,8 +273,6 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       addedSchemas.insert( schema );
       children.append( schemaItem );
     }
-
-
 
     // spawn threads (new layers will be added later on)
     if ( mColumnTypeThread )

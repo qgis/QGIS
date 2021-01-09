@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>772</width>
-    <height>691</height>
+    <height>687</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -272,19 +272,6 @@ Untick save if you don't wish to be the case.</string>
        </widget>
       </item>
       <item row="7" column="0" colspan="2">
-       <widget class="Line" name="line">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0" colspan="2">
        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBoxSchemasFilter">
         <property name="title">
          <string>Use Only a Subset of Schemas</string>
@@ -317,7 +304,7 @@ Untick save if you don't wish to be the case.</string>
         </layout>
        </widget>
       </item>
-      <item row="9" column="0" colspan="2">
+      <item row="8" column="0" colspan="2">
        <widget class="QPushButton" name="btnConnect">
         <property name="text">
          <string>Test Connection</string>
