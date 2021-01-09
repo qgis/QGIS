@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsexception.h"
 #include "qgscoordinateformatter.h"
+#include "qgsrectangle.h"
 ///@cond NOT_STABLE_API
 
 int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project )
@@ -129,6 +130,14 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
     // coordinates in map units
     return QgsCoordinateFormatter::asPair( point.x(), point.y(), precision );
   }
+}
+
+QString QgsCoordinateUtils::formatExtentForProject( QgsProject *project, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &destCrs, int precision )
+{
+  const QgsPointXY p1( extent.xMinimum(), extent.yMinimum() );
+  const QgsPointXY p2( extent.xMaximum(), extent.yMaximum() );
+  return QStringLiteral( "%1 : %2" ).arg( QgsCoordinateUtils::formatCoordinateForProject( project, p1, destCrs, precision ),
+                                          QgsCoordinateUtils::formatCoordinateForProject( project, p2, destCrs, precision ) );
 }
 
 double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *isEasting )
