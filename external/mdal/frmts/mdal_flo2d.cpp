@@ -144,8 +144,8 @@ void MDAL::DriverFlo2D::parseCHANBANKFile( const std::string &datFileName,
     {
       throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading CHANBANK file, wrong lineparts count (2)" );
     }
-    int leftBank = MDAL::toSizeT( lineParts[0] ) - 1;  //numbered from 1
-    int rightBank = MDAL::toSizeT( lineParts[1] ) - 1;
+    int leftBank = MDAL::toInt( MDAL::toSizeT( lineParts[0] ) ) - 1;  //numbered from 1
+    int rightBank = MDAL::toInt( MDAL::toSizeT( lineParts[1] ) ) - 1;
 
     std::map<size_t, size_t>::const_iterator it = cellIdToVertices.find( rightBank );
     if ( it != cellIdToVertices.end() )
@@ -197,7 +197,7 @@ void MDAL::DriverFlo2D::parseCHANFile( const std::string &datFileName, const std
       {
         throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading CHAN file, wrong chanel element line" );
       }
-      int currentCellId = MDAL::toSizeT( lineParts[1] ) - 1;
+      int currentCellId = MDAL::toInt( MDAL::toSizeT( lineParts[1] ) ) - 1;
       if ( previousCellId >= 0 )
       {
         std::map<size_t, size_t>::const_iterator it1 = cellIdToVertices.find( previousCellId );
@@ -818,8 +818,8 @@ void MDAL::DriverFlo2D::createMesh2d( const std::vector<CellCenter> &cells, cons
                      cellCenterExtent.minY - half_cell_size,
                      cellCenterExtent.maxY + half_cell_size );
 
-  size_t width = ( vertexExtent.maxX - vertexExtent.minX ) / cell_size + 1;
-  size_t heigh = ( vertexExtent.maxY - vertexExtent.minY ) / cell_size + 1;
+  size_t width = MDAL::toSizeT( ( vertexExtent.maxX - vertexExtent.minX ) / cell_size + 1 );
+  size_t heigh = MDAL::toSizeT( ( vertexExtent.maxY - vertexExtent.minY ) / cell_size + 1 );
   std::vector<std::vector<size_t>> vertexGrid( width, std::vector<size_t>( heigh, INVALID_INDEX ) );
 
   Vertices vertices;
@@ -828,13 +828,13 @@ void MDAL::DriverFlo2D::createMesh2d( const std::vector<CellCenter> &cells, cons
   {
     Face &e = faces[i];
 
-    size_t xVertexIdx = ( cells[i].x - vertexExtent.minX ) / cell_size;
-    size_t yVertexIdx = ( cells[i].y - vertexExtent.minY ) / cell_size;
+    size_t xVertexIdx = MDAL::toSizeT( ( cells[i].x - vertexExtent.minX ) / cell_size );
+    size_t yVertexIdx = MDAL::toSizeT( ( cells[i].y - vertexExtent.minY ) / cell_size );
 
     for ( size_t position = 0; position < 4; ++position )
     {
-      size_t xPos;
-      size_t yPos;
+      size_t xPos = 0;
+      size_t yPos = 0;
 
       switch ( position )
       {

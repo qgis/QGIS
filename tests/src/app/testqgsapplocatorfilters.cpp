@@ -365,10 +365,23 @@ void TestQgsAppLocatorFilters::testGoto()
   QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 1234.56, 789.012 ) );
 
   // degree/minuste/second coordinates goto
+  // easting northing
   results = gatherResults( &filter, QStringLiteral( "40deg 1' 0\" E 11deg  55' 0\" S" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
   QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 40.01666667° -11.91666667° (EPSG:4326 - WGS 84)" ) );
   QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 40.0166666667, -11.9166666667 ) );
+
+  // northing easting
+  results = gatherResults( &filter, QStringLiteral( "14°49′48″N 01°48′45″E" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 1.8125° 14.83° (EPSG:4326 - WGS 84)" ) );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 1.8125, 14.83 ) );
+
+  // northing, esting (comma separated)
+  results = gatherResults( &filter, QStringLiteral( "14°49′48″N, 01°48′45″E" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 1.8125° 14.83° (EPSG:4326 - WGS 84)" ) );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 1.8125, 14.83 ) );
 
   // OSM/Leaflet/OpenLayers
   results = gatherResults( &filter, QStringLiteral( "https://www.openstreetmap.org/#map=15/44.5546/6.4936" ), QgsLocatorContext() );
@@ -378,11 +391,21 @@ void TestQgsAppLocatorFilters::testGoto()
   QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "scale" )].toDouble(), 22569.0 );
 
   // Google Maps
-  results = gatherResults( &filter, QStringLiteral( "https://www.google.com/maps/@44.5546,6.4936,15z" ), QgsLocatorContext() );
+  results = gatherResults( &filter, QStringLiteral( "https://www.google.com/maps/@44.5546,6.4936,15.25z" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
   QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 6.4936° 44.5546° at scale 1:22569 (EPSG:4326 - WGS 84)" ) );
   QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 6.4936, 44.5546 ) );
   QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "scale" )].toDouble(), 22569.0 );
+
+  results = gatherResults( &filter, QStringLiteral( "https://www.google.com/maps/@7.8750,81.0149,574195m/data=!3m1!1e3" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 81.0149, 7.8750 ) );
+
+  results = gatherResults( &filter, QStringLiteral( "https://www.google.com/maps/@27.7132,85.3288,3a,75y,278.89h,90t/data=!3m8!1e1!3m6!1sAF1QipMrXuXozGc9x9bxx5uPl_3ys4H-rNVqMLr6EYLA!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMrXuXozGc9x9bxx5uPl_3ys4H-rNVqMLr6EYLA%3Dw203-h100-k-no-pi2.869903-ya293.58762-ro-1.9255565-fo100!7i3840!8i1920" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 85.3288° 27.7132° at scale 1:282 (EPSG:4326 - WGS 84)" ) );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 85.3288, 27.7132 ) );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "scale" )].toDouble(), 282.0 );
 }
 
 QGSTEST_MAIN( TestQgsAppLocatorFilters )

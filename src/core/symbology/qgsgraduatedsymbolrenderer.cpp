@@ -133,13 +133,13 @@ QVariant QgsGraduatedSymbolRenderer::valueForFeature( const QgsFeature &feature,
 {
   QgsAttributes attrs = feature.attributes();
   QVariant value;
-  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
+  if ( mExpression )
   {
     value = mExpression->evaluate( &context.expressionContext() );
   }
   else
   {
-    value = attrs.at( mAttrNum );
+    value = attrs.value( mAttrNum );
   }
 
   return value;
@@ -323,9 +323,9 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
   return r;
 }
 
-void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QgsStringMap newProps = props;
+  QVariantMap newProps = props;
   newProps[ QStringLiteral( "attribute" )] = mAttrName;
   newProps[ QStringLiteral( "method" )] = graduatedMethodStr( mGraduatedMethod );
 
@@ -1250,7 +1250,8 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
     if ( categorizedSymbolRenderer )
     {
       r = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
-      r->setSourceSymbol( categorizedSymbolRenderer->sourceSymbol()->clone() );
+      if ( categorizedSymbolRenderer->sourceSymbol() )
+        r->setSourceSymbol( categorizedSymbolRenderer->sourceSymbol()->clone() );
       if ( categorizedSymbolRenderer->sourceColorRamp() )
       {
         bool isRandom = dynamic_cast<const QgsRandomColorRamp *>( categorizedSymbolRenderer->sourceColorRamp() ) ||

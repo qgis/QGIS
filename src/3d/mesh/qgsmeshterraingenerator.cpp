@@ -19,9 +19,6 @@
 
 #include <Qt3DRender/QMaterial>
 
-#include <Qt3DExtras/QDiffuseMapMaterial>
-#include <Qt3DExtras/QTextureMaterial>
-
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
@@ -90,6 +87,7 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
 {
   mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
+  updateTriangularMesh();
 }
 
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )

@@ -21,6 +21,7 @@
 
 
 
+
 class QgsMapCanvas : QGraphicsView
 {
 %Docstring
@@ -285,6 +286,15 @@ Centers canvas extent to feature ids
     void panToSelected( QgsVectorLayer *layer = 0 );
 %Docstring
 Pan to the selected features of current (vector) layer keeping same extent.
+%End
+
+    void panToSelected( const QList<QgsMapLayer *> &layers );
+%Docstring
+Pan to the combined extent of the selected features of all provided (vector) layers.
+
+:param layers: A list of layers
+
+.. versionadded:: 3.18
 %End
 
     void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
@@ -954,6 +964,15 @@ Zoom to the extent of the selected features of provided (vector) layer.
 :param layer: optionally specify different than current layer
 %End
 
+    void zoomToSelected( const QList<QgsMapLayer *> &layers );
+%Docstring
+Zoom to the combined extent of the selected features of all provided (vector) layers.
+
+:param layers: A list of layers
+
+.. versionadded:: 3.18
+%End
+
     void setZoomResolutions( const QList<double> &resolutions );
 %Docstring
 Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
@@ -961,6 +980,16 @@ Set a list of resolutions (map units per pixel) to which to "snap to" when zoomi
 :param resolutions: A list of resolutions
 
 .. versionadded:: 3.12
+%End
+
+    double zoomInFactor() const;
+%Docstring
+Returns the zoom in factor.
+%End
+
+    double zoomOutFactor() const;
+%Docstring
+Returns the zoom in factor.
 %End
 
     const QList<double> &zoomResolutions() const;

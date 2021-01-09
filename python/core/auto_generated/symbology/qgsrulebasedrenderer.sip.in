@@ -278,7 +278,10 @@ Sets if this rule is active
 clone this rule, return new instance
 %End
 
-        void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+        void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+%Docstring
+Saves the symbol layer as SLD
+%End
 
         static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
@@ -488,7 +491,7 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual QgsRuleBasedRenderer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
@@ -544,7 +547,7 @@ take a rule and create a list of new rules with intervals of scales given by the
 %Docstring
 creates a QgsRuleBasedRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End

@@ -38,6 +38,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgssettings.h"
+#include "qgsunittypes.h"
 #include "qgslocatorwidget.h"
 
 
@@ -971,13 +972,16 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   if ( !match.hasMatch() )
   {
     // Check if the string is a pair of degree minute second
-    separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.]*[-+nsew]?)\\s+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.]*[-+nsew]?)$" ) );
+    separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)[,\\s]+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)$" ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
     {
       posIsDms = true;
-      posX = QgsCoordinateUtils::dmsToDecimal( match.captured( 1 ), &okX );
+      bool isEasting = false;
+      posX = QgsCoordinateUtils::dmsToDecimal( match.captured( 1 ), &okX, &isEasting );
       posY = QgsCoordinateUtils::dmsToDecimal( match.captured( 3 ), &okY );
+      if ( !isEasting )
+        std::swap( posX, posY );
     }
   }
 
@@ -1048,11 +1052,13 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   scales[18] = 2821;
   scales[19] = 1500;
   scales[20] = 1000;
+  scales[21] = 282;
 
   QUrl url( string );
   if ( url.isValid() )
   {
     double scale = 0.0;
+    int meters = 0;
     okX = false;
     okY = false;
     posX = 0.0;
@@ -1082,19 +1088,33 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
     if ( !okX && !okY )
     {
-      QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)z" ) );
+      QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)(z|m|a)" ) );
       match = locationRx.match( string );
       if ( match.hasMatch() )
       {
         QStringList params = match.captured( 1 ).split( ',' );
         if ( params.size() == 3 )
         {
-          if ( scales.contains( params.at( 2 ).toInt() ) )
-          {
-            scale = scales.value( params.at( 2 ).toInt() );
-          }
           posX = params.at( 1 ).toDouble( &okX );
           posY = params.at( 0 ).toDouble( &okY );
+
+          if ( okX && okY )
+          {
+            if ( match.captured( 2 ) == QChar( 'z' ) && scales.contains( static_cast<int>( params.at( 2 ).toDouble() ) ) )
+            {
+              scale = scales.value( static_cast<int>( params.at( 2 ).toDouble() ) );
+            }
+            else if ( match.captured( 2 ) == QChar( 'm' ) )
+            {
+              // satellite view URL, scale to be derived from canvas height
+              meters = params.at( 2 ).toInt();
+            }
+            else if ( match.captured( 2 ) == QChar( 'a' ) )
+            {
+              // street view URL, use most zoomed in scale value
+              scale = scales.value( 21 );
+            }
+          }
         }
       }
     }
@@ -1102,22 +1122,40 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     if ( okX && okY )
     {
       QVariantMap data;
-      if ( scale > 0.0 )
-      {
-        data.insert( QStringLiteral( "scale" ), scale );
-      }
-
       QgsPointXY point( posX, posY );
+      QgsPointXY dataPoint = point;
       bool withinWgs84 = wgs84Crs.bounds().contains( point );
       if ( withinWgs84 && currentCrs != wgs84Crs )
       {
         QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
-        QgsPointXY transformedPoint = transform.transform( point );
-        data.insert( QStringLiteral( "point" ), transformedPoint );
+        dataPoint = transform.transform( point );
       }
-      else
+      data.insert( QStringLiteral( "point" ), dataPoint );
+
+      if ( meters > 0 )
       {
-        data.insert( QStringLiteral( "point" ), point );
+        QSize outputSize = QgisApp::instance()->mapCanvas()->mapSettings().outputSize();
+        QgsDistanceArea da;
+        da.setSourceCrs( currentCrs, QgsProject::instance()->transformContext() );
+        da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+        double height = da.measureLineProjected( dataPoint, meters );
+        double width = outputSize.width() * ( height / outputSize.height() );
+
+        QgsRectangle extent;
+        extent.setYMinimum( dataPoint.y() -  height / 2.0 );
+        extent.setYMaximum( dataPoint.y() +  height / 2.0 );
+        extent.setXMinimum( dataPoint.x() -  width / 2.0 );
+        extent.setXMaximum( dataPoint.x() +  width / 2.0 );
+
+        QgsScaleCalculator calculator;
+        calculator.setMapUnits( currentCrs.mapUnits() );
+        calculator.setDpi( QgisApp::instance()->mapCanvas()->mapSettings().outputDpi() );
+        scale = calculator.calculate( extent, outputSize.width() );
+      }
+
+      if ( scale > 0.0 )
+      {
+        data.insert( QStringLiteral( "scale" ), scale );
       }
 
       QgsLocatorResult result;

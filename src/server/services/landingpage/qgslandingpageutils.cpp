@@ -97,13 +97,13 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
               const QString fullPath { path + '/' + f };
               const auto projectHash { QCryptographicHash::hash( fullPath.toUtf8(), QCryptographicHash::Md5 ).toHex() };
               AVAILABLE_PROJECTS[ projectHash ] = fullPath;
-              QgsMessageLog::logMessage( QStringLiteral( "Adding filesystem project '%1' with id '%2'" ).arg( QFileInfo( f ).fileName(), QString::fromUtf8( projectHash ) ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+              QgsMessageLog::logMessage( QStringLiteral( "Adding filesystem project '%1' with id '%2'" ).arg( QFileInfo( f ).fileName(), QString::fromUtf8( projectHash ) ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
             }
           }
         }
         else
         {
-          QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found: skipping." ).arg( envDirName ).arg( path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+          QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found: skipping." ).arg( envDirName, path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
         }
       }
       else
@@ -135,7 +135,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found or has not projects: skipping." ).arg( envPgName ).arg( connectionString ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found or has not projects: skipping." ).arg( envPgName, connectionString ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
       }
     }
     else
@@ -531,9 +531,10 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         // Keywords
         json jKeywords = json::object();
         const auto &cKw { md.keywords().keys() };
+        const auto &cVals { md.keywords() };
         for ( const auto &k : cKw )
         {
-          jKeywords[ k.toStdString() ] = jList( md.keywords()[ k ] );
+          jKeywords[ k.toStdString() ] = jList( cVals[ k ] );
         }
         layerMetadata[ "keywords" ] = jKeywords;
         layerMetadata[ "language" ] = md.language( ).toStdString();

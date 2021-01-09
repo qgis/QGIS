@@ -27,6 +27,7 @@ class QgsMessageBar;
 class QgsProcessingModelAlgorithm;
 class QgsModelUndoCommand;
 class QUndoView;
+class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 
 ///@cond NOT_STABLE
@@ -150,6 +151,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void populateZoomToMenu();
     void validate();
     void reorderInputs();
+    void setPanelVisibility( bool hidden );
 
   private:
 
@@ -163,6 +165,10 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
+
+    QActionGroup *mToolsActionGroup = nullptr;
+
+    QgsModelViewToolPan *mPanTool = nullptr;
     QgsModelViewToolSelect *mSelectTool = nullptr;
     QgsModelGraphicsScene *mScene = nullptr;
 
@@ -194,6 +200,17 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     void fillInputsTree();
     void updateVariablesGui();
+
+    struct PanelStatus
+    {
+      PanelStatus( bool visible = true, bool active = false )
+        : isVisible( visible )
+        , isActive( active )
+      {}
+      bool isVisible;
+      bool isActive;
+    };
+    QMap< QString, PanelStatus > mPanelStatus;
 };
 
 

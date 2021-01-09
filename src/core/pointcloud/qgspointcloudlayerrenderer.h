@@ -25,6 +25,12 @@
 #include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
 
+#include "qgserror.h"
+#include "qgspointcloudindex.h"
+#include "qgsidentifycontext.h"
+#include "qgspointcloudrenderer.h"
+#include "qgsmapclippingregion.h"
+
 #include <QDomElement>
 #include <QString>
 #include <QPainter>
@@ -58,9 +64,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     bool forceRasterRender() const override;
 
   private:
-
-    //! Traverses tree and returns all nodes in specified depth
-    QList<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels );
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels );
 
     QgsPointCloudLayer *mLayer = nullptr;
 
@@ -68,9 +72,13 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     QgsVector3D mScale;
     QgsVector3D mOffset;
+    double mZOffset = 0;
+    double mZScale = 1.0;
 
+    QgsPointCloudAttributeCollection mLayerAttributes;
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
+    QList< QgsMapClippingRegion > mClippingRegions;
 
 };
 

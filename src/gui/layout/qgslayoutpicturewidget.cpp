@@ -98,6 +98,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 4 ) ) );
 #endif
   viewImages->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
+  viewImages->setUniformItemSizes( false );
   populateList();
 
   connect( viewImages->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayoutPictureWidget::setSvgName );

@@ -554,7 +554,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         expected_area = 43069568296.34387
 
         assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
-        self.assertEqual(f2['poly_area'], expected_area)
+        self.assertAlmostEqual(f2['poly_area'], expected_area, places=4)
         self.assertEqual(f2['name'], 'QGIS-3')
 
         # Checking if we can correctly change values of an existing feature.
@@ -582,7 +582,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # reading back
         vl2 = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
         f2 = next(vl2.getFeatures(QgsFeatureRequest()))
-        self.assertEqual(f2['poly_area'], expected_area)
+        self.assertAlmostEqual(f2['poly_area'], expected_area, places=4)
 
         # now, getting a brand new QgsVectorLayer to check if changes (UPDATE) in the geometry are reflected in the generated fields
         vl = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
@@ -603,7 +603,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         expected_area = 67718478405.28429
 
         assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
-        self.assertEqual(f2['poly_area'], expected_area)
+        self.assertAlmostEqual(f2['poly_area'], expected_area, places=4)
         self.assertEqual(f2['name'], 'New')
 
         # Geography columns
@@ -862,13 +862,13 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         fields = vl.fields()
 
-        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.14159274')))
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk3 = '3.14159274'")))
         # first of all: we must be able to fetch a valid feature
         self.assertTrue(f.isValid())
         self.assertEqual(f['pk1'], 1)
         self.assertEqual(f['pk2'], 2)
 
-        self.assertEqual(round(f['pk3'], 6), round(3.14159274, 6))
+        self.assertAlmostEqual(f['pk3'], 3.14159274)
         self.assertEqual(f['value'], 'test 2')
 
         # can we edit a field?
@@ -879,12 +879,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # Did we get it right? Let's create a new QgsVectorLayer and try to read back our changes:
         vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)'.format(self.dbconn), "test_composite_float2", "postgres")
         self.assertTrue(vl2.isValid())
-        f2 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.14159274')))
+        f2 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk3 = '3.14159274'")))
         self.assertTrue(f2.isValid())
 
         # just making sure we have the correct feature
-        # Only 6 decimals for PostgreSQL 11.
-        self.assertEqual(round(f2['pk3'], 6), round(3.14159274, 6))
+        self.assertAlmostEqual(f2['pk3'], 3.14159274)
 
         # Then, making sure we really did change our value.
         self.assertEqual(f2['value'], 'Edited Test 2')
@@ -901,21 +900,24 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.commitChanges())
 
         # can we catch it on another layer?
-        f4 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk2 = -9223372036854775800')))
+        f4 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk2 = '-9223372036854775800'")))
 
         self.assertTrue(f4.isValid())
         expected_attrs = [4, -9223372036854775800, 7.29154, 'other test']
-        gotten_attrs = [f4['pk1'], f4['pk2'], round(f4['pk3'], 5), f4['value']]
-        self.assertEqual(gotten_attrs, expected_attrs)
+        gotten_attrs = [f4['pk1'], f4['pk2'], f4['pk3'], f4['value']]
+        self.assertEqual(gotten_attrs[0], expected_attrs[0])
+        self.assertEqual(gotten_attrs[1], expected_attrs[1])
+        self.assertAlmostEqual(gotten_attrs[2], expected_attrs[2], places=4)
+        self.assertEqual(gotten_attrs[3], expected_attrs[3])
 
         # Finally, let's delete one of the features.
-        f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154')))
+        f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk3 = '7.29154'")))
         vl2.startEditing()
         vl2.deleteFeatures([f5.id()])
         self.assertTrue(vl2.commitChanges())
 
         # did we really delete?
-        f_iterator = vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154'))
+        f_iterator = vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk3 = '7.29154'"))
         got_feature = True
 
         try:
@@ -935,7 +937,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         # 1.1. Retrieving
-        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592653589793238462643383279502884197169')))
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '3.141592653589793238462643383279502884197169'")))
         self.assertTrue(f.isValid())
         self.assertEqual(f['value'], 'first teste')
         # 1.2. Editing
@@ -945,16 +947,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # 1.2.1. Checking edit from another vector layer
         vl2 = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk1" table="qgis_test"."tb_test_float_pk" (geom)', "test_float_pk2", "postgres")
         self.assertTrue(vl2.isValid())
-        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592653589793238462643383279502884197169')))
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '3.141592653589793238462643383279502884197169'")))
         self.assertTrue(f2.isValid())
         self.assertEqual(f2['value'], 'Changed first')
         # 1.3. Deleting
-        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.718281828459045235360287471352662497757247')))
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '2.718281828459045235360287471352662497757247'")))
         vl.startEditing()
         vl.deleteFeatures([f.id()])
         self.assertTrue(vl.commitChanges())
         # 1.3.1. Checking deletion
-        f_iterator = vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.718281828459045235360287471352662497757247'))
+        f_iterator = vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '2.718281828459045235360287471352662497757247'"))
         got_feature = True
 
         try:
@@ -974,14 +976,14 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(res)
         self.assertTrue(vl.commitChanges())
         # 1.4.1. Checking insertion
-        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 0.22222222222222222222222')))
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '0.22222222222222222222222'")))
         self.assertTrue(f2.isValid())
-        self.assertEqual(round(f2['pk'], 6), round(0.2222222222222222, 6))
+        self.assertAlmostEqual(f2['pk'], 0.2222222222222222)
         self.assertEqual(f2['value'], 'newly inserted')
         assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
         # One more check: can we retrieve the same row with the value that we got from this layer?
         floatpk = f2['pk']
-        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = {}'.format(floatpk))))
+        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '{}'".format(floatpk))))
         self.assertTrue(f3.isValid())
         self.assertEqual(f3['value'], 'newly inserted')
         self.assertEqual(f3['pk'], floatpk)
@@ -991,7 +993,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         # 2.1. Retrieving
-        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592653589793238462643383279502884197169')))
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '3.141592653589793238462643383279502884197169'")))
         self.assertTrue(f.isValid())
         self.assertEqual(f['value'], 'first teste')
         # 2.2. Editing
@@ -1001,16 +1003,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # 2.2.1. Checking edit from another vector layer
         vl2 = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_double_pk" (geom)', "test_double_pk2", "postgres")
         self.assertTrue(vl2.isValid())
-        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 3.141592653589793238462643383279502884197169')))
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '3.141592653589793238462643383279502884197169'")))
         self.assertTrue(f2.isValid())
         self.assertEqual(f2['value'], 'Changed first')
         # 2.3. Deleting
-        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.718281828459045235360287471352662497757247')))
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '2.718281828459045235360287471352662497757247'")))
         vl.startEditing()
         vl.deleteFeatures([f.id()])
         self.assertTrue(vl.commitChanges())
         # 2.3.1. Checking deletion
-        f_iterator = vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 2.718281828459045235360287471352662497757247'))
+        f_iterator = vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '2.718281828459045235360287471352662497757247'"))
         got_feature = True
 
         try:
@@ -1030,14 +1032,14 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(res)
         self.assertTrue(vl.commitChanges())
         # 2.4.1. Checking insertion
-        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 0.22222222222222222222222')))
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '0.22222222222222222222222'")))
         self.assertTrue(f2.isValid())
-        self.assertEqual(round(f2['pk'], 15), round(0.2222222222222222, 15))
+        self.assertAlmostEqual(f2['pk'], 0.2222222222222222, places=15)
         self.assertEqual(f2['value'], 'newly inserted')
         assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
         # One more check: can we retrieve the same row with the value that we got from this layer?
         doublepk = f2['pk']
-        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk = {}'.format(doublepk))))
+        f3 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = '{}'".format(doublepk))))
         self.assertTrue(f3.isValid())
         self.assertEqual(f3['value'], 'newly inserted')
         self.assertEqual(f3['pk'], doublepk)

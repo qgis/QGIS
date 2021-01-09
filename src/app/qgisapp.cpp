@@ -399,6 +399,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
+#include "pointcloud/qgspointcloudelevationpropertieswidget.h"
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
 
 #ifdef ENABLE_MODELTEST
@@ -1343,6 +1344,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
 #endif
+  registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -2738,6 +2740,7 @@ void QgisApp::createActions()
   connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
   connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
+  connect( mActionZoomToLayers, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
   connect( mActionZoomToSelected, &QAction::triggered, this, &QgisApp::zoomToSelected );
   connect( mActionZoomLast, &QAction::triggered, this, &QgisApp::zoomToPrevious );
   connect( mActionZoomNext, &QAction::triggered, this, &QgisApp::zoomToNext );
@@ -4104,6 +4107,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
   mActionZoomNext->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomNext.svg" ) ) );
   mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
+  mActionZoomToLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ) );
   mActionIdentify->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ) );
   mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
@@ -5825,6 +5829,16 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
   bool ok = false;
   layer->loadDefaultStyle( ok );
   layer->loadDefaultMetadata( ok );
+
+#ifdef HAVE_3D
+  if ( !layer->renderer3D() )
+  {
+    // for point clouds we default to a 3d renderer. it just makes sense :)
+    std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( layer->renderer() );
+    if ( renderer3D )
+      layer->setRenderer3D( renderer3D.release() );
+  }
+#endif
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
@@ -8184,12 +8198,24 @@ void QgisApp::zoomOut()
 
 void QgisApp::zoomToSelected()
 {
-  mMapCanvas->zoomToSelected();
+  const QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+
+  if ( layers.size() > 1 )
+    mMapCanvas->zoomToSelected( layers );
+
+  else
+    mMapCanvas->zoomToSelected();
+
 }
 
 void QgisApp::panToSelected()
 {
-  mMapCanvas->panToSelected();
+  const QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+
+  if ( layers.size() > 1 )
+    mMapCanvas->panToSelected( layers );
+  else
+    mMapCanvas->panToSelected();
 }
 
 void QgisApp::pan()
@@ -8308,7 +8334,7 @@ void QgisApp::refreshFeatureActions()
   }
 
   //add actions registered in QgsMapLayerActionRegistry
-  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::SingleFeature );
   if ( !actions.isEmpty() && !registeredActions.empty() )
   {
     //add a separator between user defined and standard actions
@@ -11082,7 +11108,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   if ( !vlayer->isEditable() && !vlayer->readOnly() )
   {
-    if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
+    if ( !vlayer->supportsEditing() )
     {
       mActionToggleEditing->setChecked( false );
       mActionToggleEditing->setEnabled( false );
@@ -12175,7 +12201,7 @@ void QgisApp::legendGroupSetWmsData()
 
 void QgisApp::zoomToLayerExtent()
 {
-  mLayerTreeView->defaultActions()->zoomToLayer( mMapCanvas );
+  mLayerTreeView->defaultActions()->zoomToLayers( mMapCanvas );
 }
 
 void QgisApp::showPluginManager()
@@ -14564,7 +14590,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
   if ( !layer )
   {
-    menuSelect->setEnabled( false );
+    mMenuSelect->setEnabled( false );
     mActionSelectFeatures->setEnabled( false );
     mActionSelectPolygon->setEnabled( false );
     mActionSelectFreehand->setEnabled( false );
@@ -14666,6 +14692,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionIncreaseGamma->setEnabled( false );
     mActionDecreaseGamma->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
+    mActionZoomToLayers->setEnabled( false );
     mActionZoomToLayer->setEnabled( false );
 
     enableDigitizeWithCurveAction( false );
@@ -14673,10 +14700,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     return;
   }
 
-  menuSelect->setEnabled( true );
+  mMenuSelect->setEnabled( true );
 
   mActionLayerProperties->setEnabled( QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() );
   mActionAddToOverview->setEnabled( true );
+  mActionZoomToLayers->setEnabled( true );
   mActionZoomToLayer->setEnabled( true );
 
   mActionCopyStyle->setEnabled( true );
@@ -14709,6 +14737,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseGamma->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( isSpatial );
+      mActionZoomToLayers->setEnabled( isSpatial );
       mActionZoomToSelected->setEnabled( isSpatial );
       mActionLabeling->setEnabled( isSpatial );
       mActionDiagramProperties->setEnabled( isSpatial );
@@ -14742,12 +14771,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
         bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
         bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
-        bool canSupportEditing = dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities;
         bool canChangeGeometry = isSpatial && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
+        bool canSupportEditing = vlayer->supportsEditing();
 
         mActionLayerSubsetString->setEnabled( !isEditable && dprovider->supportsSubsetString() );
 
-        mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->readOnly() );
+        mActionToggleEditing->setEnabled( canSupportEditing );
         mActionToggleEditing->setChecked( canSupportEditing && isEditable );
         mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && vlayer->isModified() );
         mUndoDock->widget()->setEnabled( canSupportEditing && isEditable );
@@ -14964,6 +14993,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( true );
       mActionZoomToLayer->setEnabled( true );
+      mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
@@ -15078,6 +15108,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
+      mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
@@ -15144,6 +15175,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
+      mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
@@ -15210,6 +15242,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
+      mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );

@@ -40,6 +40,7 @@ class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 class QgsRasterLayerTemporalPropertiesWidget;
 class QgsWebView;
+class QgsProviderSourceWidget;
 
 
 /**
@@ -294,6 +295,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void sync();
 
     QgsResamplingUtils mResamplingUtils;
+
+    QgsProviderSourceWidget *mSourceWidget = nullptr;
 
     friend class QgsAppScreenShots;
 };

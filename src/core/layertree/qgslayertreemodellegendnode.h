@@ -22,11 +22,9 @@
 #include <QIcon>
 #include <QObject>
 
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
 
@@ -49,15 +47,33 @@ class QgsRenderContext;
  */
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
-    Q_OBJECT
+#ifdef SIP_RUN
+#include "qgscolorramplegendnode.h"
+#endif
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsSymbolLegendNode *> ( sipCpp ) )
       sipType = sipType_QgsSymbolLegendNode;
+    else if ( qobject_cast<QgsDataDefinedSizeLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsDataDefinedSizeLegendNode;
+    else if ( qobject_cast<QgsImageLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsImageLegendNode;
+    else if ( qobject_cast<QgsRasterSymbolLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsRasterSymbolLegendNode;
+    else if ( qobject_cast<QgsSimpleLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsSimpleLegendNode;
+    else if ( qobject_cast<QgsWmsLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsWmsLegendNode;
+    else if ( qobject_cast<QgsColorRampLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsColorRampLegendNode;
     else
       sipType = 0;
     SIP_END
 #endif
+
+    Q_OBJECT
+
   public:
 
     //! Legend node data roles
@@ -78,6 +94,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
       WmsLegend, //!< WMS legend node type
       DataDefinedSizeLegend, //!< Marker symbol legend node type
       EmbeddedWidget, //!< Embedded widget placeholder node type
+      ColorRampLegend, //!< Color ramp legend (since QGIS 3.18)
     };
 
     //! Returns pointer to the parent layer node
@@ -341,8 +358,10 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
-
   public:
+
+    static double MINIMUM_SIZE;
+    static double MAXIMUM_SIZE;
 
     /**
      * Constructor for QgsSymbolLegendNode.
@@ -497,8 +516,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     bool mSymbolUsesMapUnits;
 
     QSize mIconSize;
-    double mSymbolMinimumSize = 0.5;
-    double mSymbolMaximumSize = 20.0;
 
     QString mTextOnSymbolLabel;
     QgsTextFormat mTextOnSymbolTextFormat;
@@ -649,6 +666,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
      * \param parent attach a parent QObject to the legend node.
      */
     QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    ~QgsWmsLegendNode() override;
 
     QVariant data( int role ) const override;
 

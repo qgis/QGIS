@@ -418,7 +418,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double inclination( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
-     * Returns a new point which correspond to this point projected by a specified distance
+     * Returns a new point which corresponds to this point projected by a specified distance
      * with specified angles (azimuth and inclination), using Cartesian mathematics.
      * M value is preserved.
      * \param distance distance to project

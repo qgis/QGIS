@@ -20,7 +20,7 @@
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 
-QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
+QgsPaintEffect *QgsBlurEffect::create( const QVariantMap &map )
 {
   QgsBlurEffect *newEffect = new QgsBlurEffect();
   newEffect->readProperties( map );
@@ -70,9 +70,9 @@ void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )
   painter->drawImage( imageOffset( context ), image );
 }
 
-QgsStringMap QgsBlurEffect::properties() const
+QVariantMap QgsBlurEffect::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( static_cast< int >( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( static_cast< int >( mBlendMode ) ) );
@@ -84,7 +84,7 @@ QgsStringMap QgsBlurEffect::properties() const
   return props;
 }
 
-void QgsBlurEffect::readProperties( const QgsStringMap &props )
+void QgsBlurEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
   QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
@@ -121,8 +121,8 @@ void QgsBlurEffect::readProperties( const QgsStringMap &props )
       mBlurLevel *= 0.2645;
     }
   }
-  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ) );
-  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ) );
+  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ).toString() );
+  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ).toString() );
   QgsBlurEffect::BlurMethod method = static_cast< QgsBlurEffect::BlurMethod >( props.value( QStringLiteral( "blur_method" ) ).toInt( &ok ) );
   if ( ok )
   {

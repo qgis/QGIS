@@ -35,6 +35,11 @@ const QgsMapCanvas *QgsAbstractDataSourceWidget::mapCanvas() const
   return mMapCanvas;
 }
 
+QgsBrowserModel *QgsAbstractDataSourceWidget::browserModel()
+{
+  return mBrowserModel;
+}
+
 void QgsAbstractDataSourceWidget::setupButtons( QDialogButtonBox *buttonBox )
 {
   buttonBox->setStandardButtons( QDialogButtonBox::Apply | QDialogButtonBox::Close | QDialogButtonBox::Help );
@@ -56,6 +61,11 @@ void QgsAbstractDataSourceWidget::setupButtons( QDialogButtonBox *buttonBox )
 void QgsAbstractDataSourceWidget::setMapCanvas( const QgsMapCanvas *mapCanvas )
 {
   mMapCanvas = mapCanvas;
+}
+
+void QgsAbstractDataSourceWidget::setBrowserModel( QgsBrowserModel *model )
+{
+  mBrowserModel = model;
 }
 
 void QgsAbstractDataSourceWidget::addButtonClicked()

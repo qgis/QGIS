@@ -22,6 +22,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgscolorramplegendnode.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -337,7 +338,7 @@ QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const
   return bandList;
 }
 
-void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
@@ -421,4 +422,49 @@ bool QgsSingleBandPseudoColorRenderer::accept( QgsStyleEntityVisitorInterface *v
   }
 
   return true;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  if ( !mShader )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
+  const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
+  if ( !rampShader )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
+  QList<QgsLayerTreeModelLegendNode *> res;
+
+  const QString name = displayBandName( mBand );
+  if ( !name.isEmpty() )
+  {
+    res << new QgsSimpleLegendNode( nodeLayer, name );
+  }
+
+  switch ( rampShader->colorRampType() )
+  {
+    case QgsColorRampShader::Interpolated:
+      // for interpolated shaders we use a ramp legend node
+      if ( !rampShader->colorRampItemList().isEmpty() )
+      {
+        res << new QgsColorRampLegendNode( nodeLayer, rampShader->createColorRamp(),
+                                           rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(),
+                                           rampShader->minimumValue(), rampShader->maximumValue() );
+      }
+      break;
+
+    case QgsColorRampShader::Discrete:
+    case QgsColorRampShader::Exact:
+    {
+      // for all others we use itemised lists
+      const QList< QPair< QString, QColor > > items = legendSymbologyItems();
+      res.reserve( items.size() );
+      for ( const QPair< QString, QColor > &item : items )
+      {
+        res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      }
+      break;
+    }
+  }
+  return res;
 }

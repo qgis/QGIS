@@ -197,10 +197,10 @@ QgsProperty objects are implicitly shared and can be inexpensively copied.
 
     QgsProperty();
 %Docstring
-Constructor for a :py:class:`QgsAbstractProperty`. The property will be set to an InvalidProperty type.
+Constructor for a QgsProperty. The property will be set to an InvalidProperty type.
 %End
 
-    virtual ~QgsProperty();
+    ~QgsProperty();
 
     static QgsProperty fromExpression( const QString &expression, bool isActive = true );
 %Docstring

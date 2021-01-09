@@ -191,30 +191,22 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsDebugMsg( QStringLiteral( "compileExpressions: %1" ).arg( QgsSettings().value( "qgis/compileExpressions", true ).toString() ) );
-    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+    QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
+    QgsDebugMsg( "expression dump: " + request.filterExpression()->dump() );
+    QgsDebugMsg( "expression expression: " + request.filterExpression()->expression() );
+    QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+    QgsDebugMsg( QStringLiteral( "compiler result: %1" ).arg( result ) + "; query: " + compiler.result() );
+    if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
-      QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
-      QgsDebugMsg( "expression dump: " + request.filterExpression()->dump() );
-      QgsDebugMsg( "expression expression: " + request.filterExpression()->expression() );
-      QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
-      QgsDebugMsg( QStringLiteral( "compiler result: %1" ).arg( result ) + "; query: " + compiler.result() );
-      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
-      {
-        if ( !filterAdded )
-          mStatement += " WHERE (" + compiler.result() + ')';
-        else
-          mStatement += " AND (" + compiler.result() + ')';
-
-        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
-        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
-        mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
-        limitAtProvider = mExpressionCompiled;
-      }
+      if ( !filterAdded )
+        mStatement += " WHERE (" + compiler.result() + ')';
       else
-      {
-        limitAtProvider = false;
-      }
+        mStatement += " AND (" + compiler.result() + ')';
+
+      //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+      mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+      mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
+      limitAtProvider = mExpressionCompiled;
     }
     else
     {
@@ -224,8 +216,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   QStringList orderByParts;
   mOrderByCompiled = true;
-  QgsDebugMsg( QStringLiteral( "compileExpressions: %1" ).arg( QgsSettings().value( "qgis/compileExpressions", true ).toString() ) );
-  if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() && limitAtProvider )
+  if ( limitAtProvider )
   {
     const auto constOrderBy = request.orderBy();
     for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )

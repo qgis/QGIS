@@ -23,10 +23,14 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
+#include "qgspdaleptgenerationtask.h"
+#include "qgseptpointcloudindex.h"
+#include "qgstaskmanager.h"
 
 #include <pdal/io/LasReader.hpp>
 #include <pdal/io/LasHeader.hpp>
 #include <pdal/Options.hpp>
+
 
 #define PROVIDER_KEY QStringLiteral( "pdal" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "PDAL point cloud data provider" )
@@ -36,12 +40,14 @@ QgsPdalProvider::QgsPdalProvider(
   const QgsDataProvider::ProviderOptions &options,
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
+  , mIndex( new QgsEptPointCloudIndex )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   mIsValid = load( uri );
+  loadIndex( );
 }
 
 QgsPdalProvider::~QgsPdalProvider() = default;
@@ -58,8 +64,121 @@ QgsRectangle QgsPdalProvider::extent() const
 
 QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
 {
-  // TODO
-  return QgsPointCloudAttributeCollection();
+  return mIndex->attributes();
+}
+
+QVariantList QgsPdalProvider::metadataClasses( const QString &attribute ) const
+{
+  return mIndex->metadataClasses( attribute );
+}
+
+QVariant QgsPdalProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+{
+  return mIndex->metadataClassStatistic( attribute, value, statistic );
+}
+
+static QString _outdir( const QString &filename )
+{
+  const QFileInfo fi( filename );
+  const QDir directory = fi.absoluteDir();
+  const QString outputDir = QStringLiteral( "%1/ept_%2" ).arg( directory.absolutePath() ).arg( fi.baseName() );
+  return outputDir;
+}
+
+void QgsPdalProvider::generateIndex()
+{
+  if ( mRunningIndexingTask || mIndex->isValid() )
+    return;
+
+  if ( anyIndexingTaskExists() )
+  {
+    QgsMessageLog::logMessage( tr( "EPT generation task is already running" ), QObject::tr( "Point clouds" ), Qgis::Info );
+    return;
+  }
+
+  const QString outputDir = _outdir( dataSourceUri() );
+
+  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri(), outputDir );
+
+  connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
+  connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
+
+  mRunningIndexingTask = generationTask;
+  QgsDebugMsgLevel( "Ept Generation Task Created", 2 );
+  emit indexGenerationStateChanged( PointCloudIndexGenerationState::Indexing );
+  QgsApplication::taskManager()->addTask( generationTask );
+}
+
+QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::indexingState()
+{
+  if ( mIndex->isValid() )
+    return PointCloudIndexGenerationState::Indexed;
+  else if ( mRunningIndexingTask )
+    return PointCloudIndexGenerationState::Indexing;
+  else
+    return PointCloudIndexGenerationState::NotIndexed;
+}
+
+void QgsPdalProvider::loadIndex( )
+{
+  if ( mIndex->isValid() )
+    return;
+
+  const QString outputDir = _outdir( dataSourceUri() );
+  QString outEptJson = QStringLiteral( "%1/ept.json" ).arg( outputDir );
+  QFileInfo fi( outEptJson );
+  if ( fi.isFile() )
+  {
+    mIndex->load( outEptJson );
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "pdalprovider: ept index %1 is not correctly loaded" ).arg( outEptJson ), 2 );
+  }
+}
+
+void QgsPdalProvider::onGenerateIndexFinished()
+{
+  QgsPdalEptGenerationTask *task = qobject_cast<QgsPdalEptGenerationTask *>( QObject::sender() );
+  // this may be already canceled task that we don't care anymore...
+  if ( task == mRunningIndexingTask )
+  {
+    mRunningIndexingTask = nullptr;
+    emit indexGenerationStateChanged( PointCloudIndexGenerationState::Indexed );
+  }
+}
+
+void QgsPdalProvider::onGenerateIndexFailed()
+{
+  QgsPdalEptGenerationTask *task = qobject_cast<QgsPdalEptGenerationTask *>( QObject::sender() );
+  // this may be already canceled task that we don't care anymore...
+  if ( task == mRunningIndexingTask )
+  {
+    mRunningIndexingTask = nullptr;
+    emit indexGenerationStateChanged( PointCloudIndexGenerationState::NotIndexed );
+  }
+}
+
+bool QgsPdalProvider::anyIndexingTaskExists()
+{
+  const QList< QgsTask * > tasks = QgsApplication::taskManager()->activeTasks();
+  for ( const QgsTask *task : tasks )
+  {
+    const QgsPdalEptGenerationTask *eptTask = qobject_cast<const QgsPdalEptGenerationTask *>( task );
+    if ( eptTask )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+QVariant QgsPdalProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  if ( mIndex )
+    return mIndex->metadataStatistic( attribute, statistic );
+  else
+    return QVariant();
 }
 
 int QgsPdalProvider::pointCount() const
@@ -89,8 +208,7 @@ QString QgsPdalProvider::description() const
 
 QgsPointCloudIndex *QgsPdalProvider::index() const
 {
-  // TODO automatically generate EPT index
-  return nullptr;
+  return mIndex.get();
 }
 
 bool QgsPdalProvider::load( const QString &uri )

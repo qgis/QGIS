@@ -3055,17 +3055,10 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     QStringList parts = srs.authid().split( ":" );
     if ( parts.size() == 2 )
     {
-      // apparently some EPSG codes don't have the auth_name setup in cs_srs
-      if ( !exec( qry, QString( "SELECT srid FROM mdsys.cs_srs WHERE coalesce(auth_name,'EPSG')=? AND auth_srid=?" ),
-                  QVariantList() << parts[0] << parts[1] ) )
-      {
-        throw OracleException( tr( "Could not lookup authid %1:%2" ).arg( parts[0] ).arg( parts[1] ), qry );
-      }
-
-      if ( qry.next() )
-      {
-        srid = qry.value( 0 ).toInt();
-      }
+      const int id = parts[1].toInt();
+      QgsCoordinateReferenceSystem crs = lookupCrs( conn, id );
+      if ( crs == srs )
+        srid = id;
     }
 
     if ( srid == 0 )
@@ -3260,17 +3253,13 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   return QgsVectorLayerExporter::NoError;
 }
 
-QgsCoordinateReferenceSystem QgsOracleProvider::crs() const
+QgsCoordinateReferenceSystem QgsOracleProvider::lookupCrs( QgsOracleConn *conn, int srsid )
 {
   QgsCoordinateReferenceSystem srs;
-  QgsOracleConn *conn = connectionRO();
-  if ( !conn )
-    return srs;
-
   QSqlQuery qry( *conn );
 
   // apparently some EPSG codes don't have the auth_name setup in cs_srs
-  if ( exec( qry, QString( "SELECT coalesce(auth_name,'EPSG'),auth_srid,wktext FROM mdsys.cs_srs WHERE srid=?" ), QVariantList() << mSrid ) )
+  if ( exec( qry, QString( "SELECT coalesce(auth_name,'EPSG'),auth_srid,wktext FROM mdsys.cs_srs WHERE srid=?" ), QVariantList() << srsid ) )
   {
     if ( qry.next() )
     {
@@ -3285,19 +3274,28 @@ QgsCoordinateReferenceSystem QgsOracleProvider::crs() const
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Oracle SRID %1 not found." ).arg( mSrid ), tr( "Oracle" ) );
+      QgsMessageLog::logMessage( tr( "Oracle SRID %1 not found." ).arg( srsid ), tr( "Oracle" ) );
     }
   }
   else
   {
     QgsMessageLog::logMessage( tr( "Lookup of Oracle SRID %1 failed.\nSQL: %2\nError: %3" )
-                               .arg( mSrid )
+                               .arg( srsid )
                                .arg( qry.lastQuery() )
                                .arg( qry.lastError().text() ),
                                tr( "Oracle" ) );
   }
 
   return srs;
+}
+
+QgsCoordinateReferenceSystem QgsOracleProvider::crs() const
+{
+  QgsOracleConn *conn = connectionRO();
+  if ( !conn )
+    return QgsCoordinateReferenceSystem();
+
+  return lookupCrs( conn, mSrid );
 }
 
 QString QgsOracleProvider::subsetString() const
@@ -3480,7 +3478,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
          qry.addBindValue( dsUri.table() ),
          qry.addBindValue( dsUri.geometryColumn() ),
          qry.addBindValue( styleName.isEmpty() ? dsUri.table() : styleName ),
-         qry.exec( sql )
+         qry.exec()
        ) )
   {
     errCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );

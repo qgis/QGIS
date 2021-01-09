@@ -40,8 +40,6 @@ class QgsPGRootItem : public QgsConnectionsRootItem
 
     QVariant sortKey() const override { return 3; }
 
-    static QMainWindow *sMainWindow;
-
   public slots:
     void onConnectionsChanged();
 };

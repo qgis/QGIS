@@ -167,6 +167,17 @@ class TestQgsWmsProvider: public QObject
 
     }
 
+    void providerUriLocalFile()
+    {
+      QString uriString = QStringLiteral( "url=file:///my/local/tiles.mbtiles&type=mbtiles" );
+      QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "wms" ), uriString );
+      QVariantMap expectedParts { { QString( "type" ), QVariant( "mbtiles" ) },
+        { QString( "path" ), QVariant( "/my/local/tiles.mbtiles" ) } };
+      QCOMPARE( parts, expectedParts );
+
+      QString encodedUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
+      QCOMPARE( encodedUri, uriString );
+    }
 
     bool imageCheck( const QString &testType, QgsMapLayer *layer, const QgsRectangle &extent )
     {

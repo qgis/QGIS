@@ -36,7 +36,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
     virtual QgsGraduatedSymbolRenderer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
@@ -465,7 +465,7 @@ set the method used for graduation (either size or color)
 %Docstring
 creates a QgsGraduatedSymbolRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.6
 %End

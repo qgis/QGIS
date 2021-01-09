@@ -312,7 +312,7 @@ Set pal settings for a specific provider (takes ownership).
 %End
     virtual bool requiresAdvancedEffects() const;
 
-    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 
 
   protected:

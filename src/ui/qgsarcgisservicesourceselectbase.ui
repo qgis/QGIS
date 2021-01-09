@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>592</width>
-    <height>440</height>
+    <width>790</width>
+    <height>730</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -24,14 +24,11 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="btnConnect">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
           <property name="toolTip">
-           <string>Connect to selected database</string>
+           <string>Create a new database connection</string>
           </property>
           <property name="text">
-           <string>C&amp;onnect</string>
+           <string>Connect</string>
           </property>
          </widget>
         </item>
@@ -68,6 +65,19 @@
           </property>
           <property name="text">
            <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnRefresh">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="toolTip">
+           <string>Remove connection to selected database</string>
+          </property>
+          <property name="text">
+           <string>Refresh</string>
           </property>
          </widget>
         </item>
@@ -128,7 +138,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineFilter">
+      <widget class="QgsFilterLineEdit" name="lineFilter">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -143,7 +153,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTreeView" name="treeView">
+    <widget class="QgsBrowserTreeView" name="mBrowserView">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
@@ -159,13 +169,6 @@
      <attribute name="headerVisible">
       <bool>true</bool>
      </attribute>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="cbxUseTitleLayerName">
-     <property name="text">
-      <string>Use title for layer name</string>
-     </property>
     </widget>
    </item>
    <item>
@@ -211,32 +214,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>441</width>
-          <height>23</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnChangeSpatialRefSys">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Change…</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -252,19 +229,28 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsBrowserTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgsbrowsertreeview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cmbConnections</tabstop>
-  <tabstop>btnConnect</tabstop>
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
   <tabstop>btnLoad</tabstop>
   <tabstop>btnSave</tabstop>
   <tabstop>lineFilter</tabstop>
-  <tabstop>treeView</tabstop>
-  <tabstop>cbxUseTitleLayerName</tabstop>
+  <tabstop>mBrowserView</tabstop>
   <tabstop>cbxFeatureCurrentViewExtent</tabstop>
-  <tabstop>btnChangeSpatialRefSys</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -104,16 +104,29 @@ class CursorAdapter():
             return
         self._debug("execute called with sql " + self.sql)
         try:
-            self.result = self._toStrResultSet(self.connection.executeSql(self.sql, feedback=self.feedback))
+            result = self.connection.execSql(self.sql, feedback=self.feedback)
+            self._description = []  # reset description
+            self.result = self._toStrResultSet(result.rows())
+            for c in result.columns():
+                self._description.append([
+                    c,  # name
+                    '',  # type_code
+                    -1,  # display_size
+                    -1,  # internal_size
+                    -1,  # precision
+                    None,  # scale
+                    True  # null_ok
+                ])
+
         except QgsProviderConnectionException as e:
+            self._description = None
             raise DbError(e, self.sql)
         self._debug("execute returned " + str(len(self.result)) + " rows")
         self.cursor = 0
 
-        self._description = None  # reset description
-
     @property
     def description(self):
+        """Returns columns description, it should be already set by _execute"""
 
         if self._description is None:
 

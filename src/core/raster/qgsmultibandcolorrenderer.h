@@ -118,8 +118,9 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     QList<int> usesBands() const override;
+    QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
 
   private:
 #ifdef SIP_RUN

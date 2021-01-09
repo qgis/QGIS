@@ -124,7 +124,7 @@ QString QgsRasterizeAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm rasterizes map canvas content.\n\n"
                       "A map theme can be selected to render a predetermined set of layers with a defined style for each layer. "
                       "Alternatively, a set of layers can be selected if no map theme is set. "
-                      "If neither map theme nor layer is set, all the visible layers in the set extent will be rendered.\n\n "
+                      "If neither map theme nor layer is set, all the visible layers in the set extent will be rendered.\n\n"
                       "The minimum extent entered will internally be extended to a multiple of the tile size." );
 }
 

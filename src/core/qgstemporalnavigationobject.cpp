@@ -17,6 +17,7 @@
 
 #include "qgstemporalnavigationobject.h"
 #include "qgis.h"
+#include "qgstemporalutils.h"
 
 QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
   : QgsTemporalController( parent )
@@ -75,6 +76,8 @@ QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextS
   scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
   scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
   scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
+  scope->setVariable( QStringLiteral( "frame_timestep" ), mFrameDuration.originalDuration(), true );
+  scope->setVariable( QStringLiteral( "frame_timestep_unit" ), mFrameDuration.originalUnit(), true );
   scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
   scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
   scope->setVariable( QStringLiteral( "animation_interval" ), mTemporalExtents.end() - mTemporalExtents.begin(), true );
@@ -90,8 +93,8 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
 
   const long long nextFrame = frame + 1;
 
-  const QDateTime begin = start.addSecs( frame * mFrameDuration.seconds() );
-  const QDateTime end = start.addSecs( nextFrame * mFrameDuration.seconds() );
+  const QDateTime begin = QgsTemporalUtils::calculateFrameTime( start, frame, mFrameDuration );
+  const QDateTime end = QgsTemporalUtils::calculateFrameTime( start, nextFrame, mFrameDuration );
 
   QDateTime frameStart = begin;
 
@@ -191,6 +194,7 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
   }
   QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
   mFrameDuration = frameDuration;
+
   mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalFrameDurationChanged( mFrameDuration );
 

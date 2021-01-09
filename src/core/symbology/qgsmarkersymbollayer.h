@@ -224,7 +224,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \param properties a property map containing symbol properties (see properties())
      * \returns new QgsSimpleMarkerSymbolLayer
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
      * Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
@@ -238,15 +238,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
     QgsSimpleMarkerSymbolLayer *clone() const override SIP_FACTORY;
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
+    bool usesMapUnits() const override;
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
     QColor fillColor() const override { return mColor; }
     void setFillColor( const QColor &color ) override { mColor = color; }
@@ -413,7 +414,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     static const int MAXIMUM_CACHE_WIDTH = 3000;
 
   private:
-
+    // cppcheck-suppress unusedPrivateFunction
     void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 
     double mCachedOpacity = 1.0;
@@ -448,12 +449,12 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \param properties a property map containing symbol properties (see properties())
      * \returns new QgsFilledMarkerSymbolLayer
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
     QgsFilledMarkerSymbolLayer *clone() const override SIP_FACTORY;
     QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
@@ -462,12 +463,14 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     bool hasDataDefinedProperties() const override;
     void setColor( const QColor &c ) override;
     QColor color() const override;
+    bool usesMapUnits() const override;
 
   private:
 #ifdef SIP_RUN
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
 #endif
 
+    // cppcheck-suppress unusedPrivateFunction
     void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 
     //! Fill subsymbol
@@ -494,7 +497,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    //! Creates the symbol
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     /**
@@ -502,7 +506,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Used internally when reading/writing symbols.
      * \since QGIS 3.0
      */
-    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
     // implemented from base classes
 
@@ -514,11 +518,12 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
 
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
+    bool usesMapUnits() const override;
 
     QgsSvgMarkerSymbolLayer *clone() const override SIP_FACTORY;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
 
     /**
      * Returns the marker SVG path.
@@ -585,6 +590,18 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidth( double w ) { mStrokeWidth = w; }
 
     /**
+     * Returns the dynamic SVG parameters
+     * \since QGIS 3.18
+     */
+    QMap<QString, QgsProperty> parameters() const { return mParameters; }
+
+    /**
+     * Sets the dynamic SVG parameters
+     * \since QGIS 3.18
+     */
+    void setParameters( const QMap<QString, QgsProperty> &parameters );
+
+    /**
      * Sets the units for the stroke width.
      * \param unit width units
      * \see strokeWidthUnit()
@@ -610,6 +627,10 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
+    void prepareExpressions( const QgsSymbolRenderContext &context ) override;
+
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+
   protected:
 
     /**
@@ -631,6 +652,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     bool mHasFillParam = false;
     QColor mStrokeColor;
     double mStrokeWidth;
+    QMap<QString, QgsProperty> mParameters;
 
     QgsUnitTypes::RenderUnit mStrokeWidthUnit;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
@@ -666,16 +688,16 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     /**
      * Creates a raster marker symbol layer from a string map of properties.
-     * \param properties QgsStringMap properties object
+     * \param properties QVariantMap properties object
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
      * Used internally when reading/writing symbols.
      * \since QGIS 3.0
      */
-    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
     // implemented from base classes
 
@@ -683,9 +705,10 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
 
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
     QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
+    bool usesMapUnits() const override;
 
     /**
      * Calculates the marker aspect ratio between width and height.
@@ -819,7 +842,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Creates a new QgsFontMarkerSymbolLayer from a property map (see properties())
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
      * Creates a new QgsFontMarkerSymbolLayer from an SLD XML \a element.
@@ -836,11 +859,12 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
 
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
     QgsFontMarkerSymbolLayer *clone() const override SIP_FACTORY;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    bool usesMapUnits() const override;
 
     // new methods
 

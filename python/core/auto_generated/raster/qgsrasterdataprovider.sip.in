@@ -76,7 +76,8 @@ Base class for raster data providers.
       ReadLayerMetadata,
       WriteLayerMetadata,
       ProviderHintBenefitsFromResampling,
-      ProviderHintCanPerformProviderResampling
+      ProviderHintCanPerformProviderResampling,
+      ReloadData
     };
 
     typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;
@@ -146,6 +147,7 @@ Reload data (data could change)
 %End
 
     virtual QString colorInterpretationName( int bandNo ) const;
+
 
     virtual double bandScale( int bandNo ) const;
 %Docstring

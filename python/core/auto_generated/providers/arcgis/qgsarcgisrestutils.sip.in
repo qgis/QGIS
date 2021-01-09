@@ -1,0 +1,112 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsarcgisrestutils.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsArcGisRestUtils
+{
+%Docstring
+Utility functions for working with ArcGIS REST services.
+
+.. seealso:: :py:class:`QgsArcGisPortalUtils`
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsarcgisrestutils.h"
+%End
+  public:
+
+    static QVariant::Type convertFieldType( const QString &type );
+%Docstring
+Converts an ESRI REST field ``type`` to a QVariant type.
+%End
+
+    static QgsWkbTypes::Type convertGeometryType( const QString &type );
+%Docstring
+Converts an ESRI REST geometry ``type`` to a WKB type.
+%End
+
+    static QgsAbstractGeometry *convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, QgsCoordinateReferenceSystem *crs /Out/ = 0 ) /Factory/;
+%Docstring
+Converts an ESRI REST ``geometry`` JSON definition to a :py:class:`QgsAbstractGeometry`.
+
+Caller takes ownership of the returned object.
+
+:param geometry: JSON geometry definition
+:param esriGeometryType: ESRI geometry type string
+:param hasM: set to ``True`` to if geometry includes M values
+:param hasZ: set to ``True`` to if geometry includes Z values
+
+:return: - converted geometry
+         - crs: will be set to the parsed geometry CRS
+%End
+
+    static QgsCoordinateReferenceSystem convertSpatialReference( const QVariantMap &spatialReferenceMap );
+%Docstring
+Converts a spatial reference JSON definition to a QgsCoordinateReferenceSystem value.
+%End
+
+    static QgsSymbol *convertSymbol( const QVariantMap &definition ) /Factory/;
+%Docstring
+Converts a symbol JSON ``definition`` to a :py:class:`QgsSymbol`.
+
+Caller takes ownership of the returned symbol.
+%End
+
+    static QgsFeatureRenderer *convertRenderer( const QVariantMap &rendererData ) /Factory/;
+%Docstring
+Converts renderer JSON ``data`` to an equivalent :py:class:`QgsFeatureRenderer`.
+
+Caller takes ownership of the returned renderer.
+%End
+
+    static QgsAbstractVectorLayerLabeling *convertLabeling( const QVariantList &data ) /Factory/;
+%Docstring
+Converts labeling JSON ``data`` to an equivalent QGIS vector labeling.
+
+Caller takes ownership of the returned object.
+%End
+
+    static QString convertLabelingExpression( const QString &string );
+%Docstring
+Converts an ESRI labeling expression to a QGIS expression string.
+%End
+
+    static QColor convertColor( const QVariant &data );
+%Docstring
+Converts ESRI JSON color data to a QColor object.
+%End
+
+    static Qt::PenStyle convertLineStyle( const QString &style );
+%Docstring
+Converts an ESRI line ``style`` to a Qt pen style.
+%End
+
+    static Qt::BrushStyle convertFillStyle( const QString &style );
+%Docstring
+Converts an ESRI fill ``style`` to a Qt brush style.
+%End
+
+    static QDateTime convertDateTime( const QVariant &value );
+%Docstring
+Converts a date time ``value`` to a QDateTime.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsarcgisrestutils.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

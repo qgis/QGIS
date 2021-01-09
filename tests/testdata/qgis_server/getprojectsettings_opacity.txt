@@ -124,8 +124,8 @@ Content-Type: text/xml; charset=utf-8
   </WFSLayers>
   <Layer>
    <Name>QGIS Test Project</Name>
-   <Title>QGIS Test Project</Title>
-   <Abstract>QGIS Test Project</Abstract>
+   <Title>QGIS TestProject</Title>
+   <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>

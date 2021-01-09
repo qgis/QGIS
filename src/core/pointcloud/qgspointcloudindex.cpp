@@ -39,11 +39,6 @@ IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z ):
   mZ( _z )
 {}
 
-bool IndexedPointCloudNode::operator==( const IndexedPointCloudNode &other ) const
-{
-  return mD == other.d() && mX == other.x() && mY == other.y() && mZ == other.z();
-}
-
 IndexedPointCloudNode IndexedPointCloudNode::fromString( const QString &str )
 {
   QStringList lst = str.split( '-' );
@@ -54,7 +49,7 @@ IndexedPointCloudNode IndexedPointCloudNode::fromString( const QString &str )
 
 QString IndexedPointCloudNode::toString() const
 {
-  return QString( "%1-%2-%3-%4" ).arg( mD ).arg( mX ).arg( mY ).arg( mZ );
+  return QStringLiteral( "%1-%2-%3-%4" ).arg( mD ).arg( mX ).arg( mY ).arg( mZ );
 }
 
 int IndexedPointCloudNode::d() const
@@ -77,7 +72,7 @@ int IndexedPointCloudNode::z() const
   return mZ;
 }
 
-uint qHash( const IndexedPointCloudNode &id )
+uint qHash( IndexedPointCloudNode id )
 {
   return id.d() + id.x() + id.y() + id.z();
 }

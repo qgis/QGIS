@@ -93,6 +93,11 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
   for ( int i = 0; i < count; ++i )
   {
+    if ( context.renderContext().renderingStopped() )
+    {
+      break;
+    }
+
     if ( considerZ )
     {
       // z value filtering is cheapest, if we're doing it...
@@ -129,6 +134,21 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
   context.incrementPointsRendered( rendered );
 }
 
+bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointAttributes )
+{
+  if ( !pointAttributes.contains( mAttribute ) )
+    return false;
+  bool parsedCorrectly;
+  int attributeInt = pointAttributes[ mAttribute ].toInt( &parsedCorrectly );
+  if ( !parsedCorrectly )
+    return false;
+  for ( const QgsPointCloudCategory &category : qgis::as_const( mCategories ) )
+  {
+    if ( category.value() == attributeInt )
+      return category.renderState();
+  }
+  return false;
+}
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {

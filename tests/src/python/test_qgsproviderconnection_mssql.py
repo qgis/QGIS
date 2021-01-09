@@ -94,16 +94,13 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
         vl = QgsVectorLayer(conn.tableUri('qgis_test', 'someData'), 'my', 'mssql')
         self.assertTrue(vl.isValid())
 
-    def test_gpkg_fields(self):
+    def test_mssql_fields(self):
         """Test fields"""
 
         md = QgsProviderRegistry.instance().providerMetadata('mssql')
         conn = md.createConnection(self.uri, {})
         fields = conn.fields('qgis_test', 'someData')
         self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time'])
-
-    def treat_date_as_string(self):
-        return True
 
 
 if __name__ == '__main__':

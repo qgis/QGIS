@@ -177,7 +177,8 @@ void TestQgsTemporalNavigationObject::navigationMode()
 
 void TestQgsTemporalNavigationObject::frameSettings()
 {
-  qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+  navigationObject->setFrameDuration( QgsInterval( 2, QgsUnitTypes::TemporalHours ) );
+
   QSignalSpy temporalRangeSignal( navigationObject, &QgsTemporalNavigationObject::updateTemporalRange );
 
   QgsDateTimeRange range = QgsDateTimeRange(
@@ -198,6 +199,9 @@ void TestQgsTemporalNavigationObject::frameSettings()
   navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   QCOMPARE( navigationObject->frameDuration(), QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   QCOMPARE( temporalRangeSignal.count(), 2 );
+
+  QCOMPARE( navigationObject->frameDuration().originalDuration(), 1.0 );
+  QCOMPARE( navigationObject->frameDuration().originalUnit(), QgsUnitTypes::TemporalHours );
 
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
   QCOMPARE( navigationObject->totalFrameCount(), 5 );
@@ -249,6 +253,8 @@ void TestQgsTemporalNavigationObject::expressionContext()
   std::unique_ptr< QgsExpressionContextScope > scope( object.createExpressionContextScope() );
   QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value< QgsInterval >().seconds(), 3600.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep" ) ).value< double >(), 1.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_unit" ) ).value< QgsUnitTypes::TemporalUnit >(), QgsUnitTypes::TemporalUnit::TemporalHours );
   QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
   QCOMPARE( scope->variable( QStringLiteral( "animation_start_time" ) ).toDateTime(), range.begin() );
   QCOMPARE( scope->variable( QStringLiteral( "animation_end_time" ) ).toDateTime(), range.end() );

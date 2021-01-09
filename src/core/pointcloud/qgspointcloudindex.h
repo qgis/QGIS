@@ -58,7 +58,10 @@ class CORE_EXPORT IndexedPointCloudNode
     bool isValid() const { return mD >= 0; }
 
     //! Compares nodes
-    bool operator==( const IndexedPointCloudNode &other ) const;
+    bool operator==( IndexedPointCloudNode other ) const
+    {
+      return mD == other.d() && mX == other.x() && mY == other.y() && mZ == other.z();
+    }
 
     //! Creates node from string
     static IndexedPointCloudNode fromString( const QString &str );
@@ -82,8 +85,10 @@ class CORE_EXPORT IndexedPointCloudNode
     int mD = -1, mX = -1, mY = -1, mZ = -1;
 };
 
+Q_DECLARE_TYPEINFO( IndexedPointCloudNode, Q_PRIMITIVE_TYPE );
+
 //! Hash function for indexed nodes
-CORE_EXPORT uint qHash( const IndexedPointCloudNode &id );
+CORE_EXPORT uint qHash( IndexedPointCloudNode id );
 
 /**
  * \ingroup core
@@ -149,7 +154,10 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     ~QgsPointCloudIndex();
 
     //! Loads the index from the file
-    virtual bool load( const QString &fileName ) = 0;
+    virtual void load( const QString &fileName ) = 0;
+
+    //! Returns whether index is loaded and valid
+    virtual bool isValid() const = 0;
 
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }

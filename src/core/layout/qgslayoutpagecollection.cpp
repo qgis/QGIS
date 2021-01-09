@@ -721,7 +721,7 @@ QgsLayoutItemPage *QgsLayoutPageCollection::takePage( QgsLayoutItemPage *page )
 
 void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
 {
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );

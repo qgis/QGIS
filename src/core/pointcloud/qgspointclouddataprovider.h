@@ -24,6 +24,7 @@
 #include "qgsstatisticalsummary.h"
 #include <memory>
 
+class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
@@ -56,12 +57,69 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
+    /**
+     * Point cloud index state
+     */
+    enum PointCloudIndexGenerationState
+    {
+      NotIndexed = 0, //!< Provider has no index available
+      Indexing = 1 << 0, //!< Provider try to index the source data
+      Indexed = 1 << 1 //!< The index is ready to be used
+    };
+
     //! Ctor
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the list of points of the point cloud according to a zoom level
+     * defined by \a maxError (in layer coordinates), an extent \a geometry in the 2D plane
+     * and a range \a extentZRange for z values. The function will try to limit
+     * the number of points returned to \a pointsLimit points
+     *
+     * \a maxErrorPixels : maximum accepted error factor in pixels
+     *
+     * \note this function does not handle elevation properties and you need to
+     * change elevation coordinates yourself after returning from the function
+     */
+    QVector<QVariantMap> identify( double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
+#else
+
+    /**
+     * Returns the list of points of the point cloud according to a zoom level
+     * defined by \a maxError (in layer coordinates), an extent \a geometry in the 2D plane
+     * and a range \a extentZRange for z values. The function will try to limit
+     * the number of points returned to \a pointsLimit points
+     *
+     * \a maxErrorPixels : maximum accepted error factor in pixels
+     *
+     * \note this function does not handle elevation properties and you need to
+     * change elevation coordinates yourself after returning from the function
+     */
+    SIP_PYLIST identify( float maxErrorInMapCoords, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
+    % MethodCode
+    {
+      QVector<QMap<QString, QVariant>> res = sipCpp->identify( a0, *a1, *a2, a3 );
+      sipRes = PyList_New( res.size() );
+      for ( int i = 0; i < res.size(); ++i )
+      {
+        PyObject *dict = PyDict_New();
+        for ( QString key : res[i].keys() )
+        {
+          PyObject *keyObj = sipConvertFromNewType( new QString( key ), sipType_QString, Py_None );
+          PyObject *valObj = sipConvertFromNewType( new QVariant( res[i][key] ), sipType_QVariant, Py_None );
+          PyDict_SetItem( dict, keyObj, valObj );
+        }
+        PyList_SET_ITEM( sipRes, i, dict );
+      }
+    }
+    % End
+#endif
 
     /**
      * Returns flags containing the supported capabilities for the data provider.
@@ -70,8 +128,31 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
     /**
      * Returns the attributes available from this data provider.
+     * May return empty collection until pointCloudIndexLoaded() is emitted
      */
     virtual QgsPointCloudAttributeCollection attributes() const = 0;
+
+    /**
+     * Triggers loading of the point cloud index
+     *
+     * \sa index()
+     */
+    virtual void loadIndex( ) = 0;
+
+    /**
+     * Triggers generation of the point cloud index
+     *
+     * emits indexGenerationStateChanged()
+     *
+     * \sa index()
+     */
+    virtual void generateIndex( ) = 0;
+
+
+    /**
+     * Gets the current index generation state
+     */
+    virtual PointCloudIndexGenerationState indexingState( ) = 0;
 
     /**
      * Returns the point cloud index associated with the provider.
@@ -81,6 +162,11 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \note Not available in Python bindings
      */
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
+
+    /**
+     * Returns whether provider has index which is valid
+     */
+    bool hasValidIndex() const;
 
     /**
      * Returns the total number of points available in the dataset.
@@ -235,7 +321,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     static QMap< int, QString > translatedLasClassificationCodes();
 
-
     /**
      * Returns the map of LAS data format ID to untranslated string value.
      *
@@ -250,6 +335,15 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     static QMap< int, QString > translatedDataFormatIds();
 
+  signals:
+
+    /**
+     * Emitted when point cloud generation state is changed
+     */
+    void indexGenerationStateChanged( PointCloudIndexGenerationState state );
+
+  private:
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 };
 
 #endif // QGSMESHDATAPROVIDER_H

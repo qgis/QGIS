@@ -28,7 +28,8 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
   public:
     ~QgsGeometryGeneratorSymbolLayer() override;
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties ) SIP_FACTORY;
+    //! Creates the symbol layer
+    static QgsSymbolLayer *create( const QVariantMap &properties ) SIP_FACTORY;
 
     QString layerType() const override;
 
@@ -52,10 +53,11 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     void stopRender( QgsSymbolRenderContext &context ) override;
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    bool usesMapUnits() const override;
 
     QgsSymbolLayer *clone() const override SIP_FACTORY;
 
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 

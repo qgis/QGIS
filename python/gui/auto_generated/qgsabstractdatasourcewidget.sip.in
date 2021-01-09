@@ -34,6 +34,14 @@ Store a pointer to the map canvas to retrieve extent and CRS
 Used to select an appropriate CRS and possibly to retrieve data only in the current extent
 %End
 
+    void setBrowserModel( QgsBrowserModel *model );
+%Docstring
+Sets a browser ``model`` to use with the widget.
+
+.. seealso:: :py:func:`browserModel`
+
+.. versionadded:: 3.18
+%End
 
   public slots:
 
@@ -168,6 +176,13 @@ Returns the widget mode
     const QgsMapCanvas *mapCanvas() const;
 %Docstring
 Returns the map canvas (can be ``None``)
+%End
+
+    QgsBrowserModel *browserModel();
+%Docstring
+Returns the associated browser model (may be ``None``).
+
+.. versionadded:: 3.18
 %End
 
     void setupButtons( QDialogButtonBox *buttonBox );

@@ -333,7 +333,8 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsSymbolLayer *clone() const = 0 SIP_FACTORY;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+    //! Saves the symbol layer as SLD
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
     { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ) Q_UNUSED( mapUnitScaleFactor ); return QString(); }
@@ -343,7 +344,7 @@ class CORE_EXPORT QgsSymbolLayer
      * contains the configuration information for the symbol layer. This
      * is used to serialize a symbol layer perstistently.
      */
-    virtual QgsStringMap properties() const = 0;
+    virtual QVariantMap properties() const = 0;
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
 
@@ -391,6 +392,13 @@ class CORE_EXPORT QgsSymbolLayer
      * \see setOutputUnit()
      */
     virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
+
+    /**
+     * Returns TRUE if the symbol layer has any components which use map unit based sizes.
+     *
+     * \since QGIS 3.18
+     */
+    virtual bool usesMapUnits() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale ) { Q_UNUSED( scale ) }
     virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }
@@ -544,7 +552,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Restores older data defined properties from string map.
      * \since QGIS 3.0
      */
-    void restoreOldDataDefinedProperties( const QgsStringMap &stringMap );
+    void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 
     /**
      * Copies all data defined properties of this layer to another symbol layer.
@@ -794,7 +802,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
 
     /**
      * Writes the symbol layer definition as a SLD XML element.
@@ -802,7 +810,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \param element parent XML element
      * \param props symbol layer definition (see properties())
      */
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
     { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;

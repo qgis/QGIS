@@ -583,7 +583,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl.featureCount(), 1)
 
-        self.assertEqual(vl.dataProvider().capabilities(), QgsVectorDataProvider.SelectAtId)
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -915,7 +915,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                          | QgsVectorDataProvider.ChangeAttributeValues
                          | QgsVectorDataProvider.ChangeGeometries
                          | QgsVectorDataProvider.DeleteFeatures
-                         | QgsVectorDataProvider.SelectAtId)
+                         | QgsVectorDataProvider.SelectAtId
+                         | QgsVectorDataProvider.ReloadData)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -3429,7 +3430,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl.featureCount(), 1)
 
-        self.assertEqual(vl.dataProvider().capabilities(), QgsVectorDataProvider.SelectAtId)
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -4725,7 +4726,8 @@ Can't recognize service requested.
                          | QgsVectorDataProvider.ChangeAttributeValues
                          | QgsVectorDataProvider.ChangeGeometries
                          | QgsVectorDataProvider.DeleteFeatures
-                         | QgsVectorDataProvider.SelectAtId)
+                         | QgsVectorDataProvider.SelectAtId
+                         | QgsVectorDataProvider.ReloadData)
 
         # Transaction response failure (no modifications)
         shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_empty.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http:__www.opengis.net_wfs" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Insert xmlns="http:__www.opengis.net_wfs"><polygons xmlns="ws1"_><_Insert><_Transaction>'))

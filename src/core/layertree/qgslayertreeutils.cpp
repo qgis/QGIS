@@ -330,14 +330,10 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
           const QString id( layerElement.firstChildElement( QStringLiteral( "id" ) ).firstChild().nodeValue() );
           if ( id == l->id() )
           {
-            QDomImplementation DomImplementation;
-            QDomDocumentType documentType = DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
-            QDomDocument document( documentType );
-            document.appendChild( layerElement );
             QString str;
             QTextStream stream( &str );
-            document.save( stream, 4 /*indent*/ );
-            l->setOriginalXmlProperties( str );
+            layerElement.save( stream, 4 /*indent*/ );
+            l->setOriginalXmlProperties( QStringLiteral( "<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>\n%1" ).arg( str ) );
             break;
           }
           layerElement = layerElement.nextSiblingElement( );

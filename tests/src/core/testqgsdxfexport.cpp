@@ -110,7 +110,7 @@ void TestQgsDxfExport::init()
   mPointLayerGeometryGenerator = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( mPointLayerGeometryGenerator );
 
-  QgsStringMap ggProps;
+  QVariantMap ggProps;
   ggProps.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Fill" ) );
   ggProps.insert( QStringLiteral( "geometryModifier" ), QStringLiteral( "buffer( $geometry, 0.1 )" ) );
   QgsSymbolLayer *ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );

@@ -31,7 +31,7 @@ namespace MDAL
     double maxY = -std::numeric_limits<double>::max();
   };
 
-  typedef struct
+  typedef struct StatisticsType
   {
     double minimum = std::numeric_limits<double>::quiet_NaN();
     double maximum = std::numeric_limits<double>::quiet_NaN();

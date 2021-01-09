@@ -346,7 +346,7 @@ QDomElement QgsRuleBasedRenderer::Rule::save( QDomDocument &doc, QgsSymbolMap &s
   return ruleElem;
 }
 
-void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const
 {
   // do not convert this rule if there are no symbols
   QgsRenderContext context;
@@ -355,9 +355,11 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
 
   if ( !mFilterExp.isEmpty() )
   {
-    if ( !props.value( QStringLiteral( "filter" ), QString() ).isEmpty() )
-      props[ QStringLiteral( "filter" )] += QLatin1String( " AND " );
-    props[ QStringLiteral( "filter" )] += mFilterExp;
+    QString filter = props.value( QStringLiteral( "filter" ), QString() ).toString();
+    if ( !filter.isEmpty() )
+      filter += QLatin1String( " AND " );
+    filter += mFilterExp;
+    props[ QStringLiteral( "filter" )] = filter;
   }
 
   QgsSymbolLayerUtils::mergeScaleDependencies( mMaximumScale, mMinimumScale, props );
@@ -391,9 +393,9 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
       ruleElem.appendChild( descrElem );
     }
 
-    if ( !props.value( QStringLiteral( "filter" ), QString() ).isEmpty() )
+    if ( !props.value( QStringLiteral( "filter" ), QString() ).toString().isEmpty() )
     {
-      QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, props.value( QStringLiteral( "filter" ), QString() ) );
+      QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, props.value( QStringLiteral( "filter" ), QString() ).toString() );
     }
 
     QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
@@ -1052,7 +1054,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::clone() const
   return r;
 }
 
-void QgsRuleBasedRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsRuleBasedRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
   mRootRule->toSld( doc, element, props );
 }
@@ -1460,15 +1462,18 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) || renderer->type() == QLatin1String( "pointCluster" ) )
   {
-    const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
-    if ( pointDistanceRenderer )
+    if ( const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer ) )
       return convertFromRenderer( pointDistanceRenderer->embeddedRenderer() );
   }
   else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
-    const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
-    if ( invertedPolygonRenderer )
+    if ( const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer ) )
       r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
+  }
+  else if ( renderer->type() == QLatin1String( "mergedFeatureRenderer" ) )
+  {
+    if ( const QgsMergedFeatureRenderer *mergedRenderer = dynamic_cast<const QgsMergedFeatureRenderer *>( renderer ) )
+      r.reset( convertFromRenderer( mergedRenderer->embeddedRenderer() ) );
   }
 
   if ( r )

@@ -127,7 +127,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFil
     if ( chunks.size() != 3 )
     {
       // should have 3 indexes
-      MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " does not contain valid triangle defintion" );
+      MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " does not contain valid triangle definition" );
       return nullptr;
     }
 

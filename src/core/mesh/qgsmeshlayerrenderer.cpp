@@ -40,6 +40,7 @@
 #include "qgsstyle.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsmapclippingutils.h"
+#include "qgscolorrampshader.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,

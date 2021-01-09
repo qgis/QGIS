@@ -303,7 +303,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! clone this rule, return new instance
         QgsRuleBasedRenderer::Rule *clone() const SIP_FACTORY;
 
-        void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+        //! Saves the symbol layer as SLD
+        void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 
         /**
          * Create a rule from the SLD provided in element and for the specified geometry type.
@@ -506,7 +507,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     QgsRuleBasedRenderer *clone() const override SIP_FACTORY;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
@@ -542,7 +543,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /**
      * creates a QgsRuleBasedRenderer from an existing renderer.
-     * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      * \since QGIS 2.5
      */
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;

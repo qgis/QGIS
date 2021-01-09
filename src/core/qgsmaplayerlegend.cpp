@@ -28,6 +28,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterrenderer.h"
+#include "qgscolorramplegendnode.h"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -224,6 +225,40 @@ QgsSymbol *QgsMapLayerLegendUtils::legendNodeCustomSymbol( QgsLayerTreeLayer *no
   return QgsSymbolLayerUtils::loadSymbol( elem, rwContext );
 }
 
+void QgsMapLayerLegendUtils::setLegendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsColorRampLegendNodeSettings *settings )
+{
+  if ( settings )
+  {
+    QDomDocument doc;
+    QgsReadWriteContext rwContext;
+    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    QDomElement elem = doc.createElement( QStringLiteral( "rampSettings" ) );
+    settings->writeXml( doc, elem, rwContext );
+    doc.appendChild( elem );
+    nodeLayer->setCustomProperty( "legend/custom-ramp-settings-" + QString::number( originalIndex ), doc.toString() );
+  }
+  else
+    nodeLayer->removeCustomProperty( "legend/custom-ramp-settings-" + QString::number( originalIndex ) );
+}
+
+QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  const QString settingsDef = nodeLayer->customProperty( "legend/custom-ramp-settings-" + QString::number( originalIndex ) ).toString();
+  if ( settingsDef.isEmpty() )
+    return nullptr;
+
+  QDomDocument doc;
+  doc.setContent( settingsDef );
+  const QDomElement elem = doc.documentElement();
+
+  QgsReadWriteContext rwContext;
+  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+
+  QgsColorRampLegendNodeSettings settings;
+  settings.readXml( elem, rwContext );
+  return new QgsColorRampLegendNodeSettings( settings );
+}
+
 void QgsMapLayerLegendUtils::setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode )
 {
   if ( columnBreakBeforeNode )
@@ -254,6 +289,14 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
       symbolNode->setPatchShape( shape );
 
       symbolNode->setCustomSymbol( QgsMapLayerLegendUtils::legendNodeCustomSymbol( nodeLayer, i ) );
+    }
+    else if ( QgsColorRampLegendNode *colorRampNode = dynamic_cast< QgsColorRampLegendNode * >( legendNode ) )
+    {
+      std::unique_ptr< QgsColorRampLegendNodeSettings > settings( QgsMapLayerLegendUtils::legendNodeColorRampSettings( nodeLayer, i ) );
+      if ( settings )
+      {
+        colorRampNode->setSettings( *settings );
+      }
     }
 
     const QSizeF userSize = QgsMapLayerLegendUtils::legendNodeSymbolSize( nodeLayer, i );
@@ -471,11 +514,29 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
   if ( indexScalar > -1 )
   {
     QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar );
-    QgsLegendColorList items;
-    settings.colorRampShader().legendSymbologyItems( items );
-    for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+    const QgsColorRampShader shader = settings.colorRampShader();
+    switch ( shader.colorRampType() )
     {
-      nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      case QgsColorRampShader::Interpolated:
+        // for interpolated shaders we use a ramp legend node
+        nodes << new QgsColorRampLegendNode( nodeLayer, shader.sourceColorRamp()->clone(),
+                                             shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
+                                             shader.minimumValue(),
+                                             shader.maximumValue() );
+        break;
+
+      case QgsColorRampShader::Discrete:
+      case QgsColorRampShader::Exact:
+      {
+        // for all others we use itemised lists
+        QgsLegendColorList items;
+        settings.colorRampShader().legendSymbologyItems( items );
+        for ( const QPair< QString, QColor > &item : items )
+        {
+          nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+        }
+        break;
+      }
     }
   }
 

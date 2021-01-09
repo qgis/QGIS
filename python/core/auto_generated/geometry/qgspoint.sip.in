@@ -305,7 +305,7 @@ Returns 90.0 if the distance between this point and other one is equal to 0 (sam
 
     QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const /HoldGIL/;
 %Docstring
-Returns a new point which correspond to this point projected by a specified distance
+Returns a new point which corresponds to this point projected by a specified distance
 with specified angles (azimuth and inclination), using Cartesian mathematics.
 M value is preserved.
 

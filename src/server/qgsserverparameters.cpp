@@ -94,7 +94,8 @@ QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const cha
   ok = true;
   QList<QgsGeometry> geoms;
 
-  for ( const auto &wkt : toStringList( delimiter ) )
+  const auto constStringList( toStringList( delimiter ) );
+  for ( const auto &wkt : constStringList )
   {
     const QgsGeometry g( QgsGeometry::fromWkt( wkt ) );
 
@@ -117,7 +118,8 @@ QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char de
   ok = true;
   QList<QColor> colors;
 
-  for ( const auto &part : toStringList( delimiter ) )
+  const auto constStringList( toStringList( delimiter ) );
+  for ( const auto &part : constStringList )
   {
     QString cStr( part );
     if ( !cStr.isEmpty() )
@@ -148,7 +150,8 @@ QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimit
   ok = true;
   QList<int> ints;
 
-  for ( const auto &part : toStringList( delimiter ) )
+  const auto constStringList( toStringList( delimiter ) );
+  for ( const auto &part : constStringList )
   {
     const int val = part.toInt( &ok );
 
@@ -168,7 +171,8 @@ QList<double> QgsServerParameterDefinition::toDoubleList( bool &ok, const char d
   ok = true;
   QList<double> vals;
 
-  for ( const auto &part : toStringList( delimiter ) )
+  const auto constStringList( toStringList( delimiter ) );
+  for ( const auto &part : constStringList )
   {
     const double val = part.toDouble( &ok );
 
@@ -439,7 +443,8 @@ QUrlQuery QgsServerParameters::urlQuery() const
   {
     query.clear();
 
-    for ( auto param : toMap().toStdMap() )
+    const auto constMap( toMap().toStdMap() );
+    for ( const auto &param : constMap )
     {
       query.addQueryItem( param.first, param.second );
     }
@@ -553,7 +558,8 @@ void QgsServerParameters::load( const QUrlQuery &query )
   cleanQuery.setQuery( query.query().replace( '+', QLatin1String( "%20" ) ) );
 
   // load parameters
-  for ( const auto &item : cleanQuery.queryItems( QUrl::FullyDecoded ) )
+  const auto constQueryItems( cleanQuery.queryItems( QUrl::FullyDecoded ) );
+  for ( const auto &item : constQueryItems )
   {
     const QgsServerParameter::Name name = QgsServerParameter::name( item.first );
     if ( name >= 0 )

@@ -194,6 +194,13 @@ Returns the feature's attributes.
 .. versionadded:: 2.9
 %End
 
+    int attributeCount() const;
+%Docstring
+Returns the number of attributes attached to the feature.
+
+.. versionadded:: 3.18
+%End
+
     void setAttributes( const QgsAttributes &attrs );
 %Docstring
 Sets the feature's attributes.
@@ -252,6 +259,34 @@ The feature will be valid if it was successful.
 Initialize this feature with the given number of fields. Discard any previously set attribute data.
 
 :param fieldCount: Number of fields to initialize
+
+.. seealso:: :py:func:`resizeAttributes`
+%End
+
+    void resizeAttributes( int fieldCount );
+%Docstring
+Resizes the attributes attached to this feature to the given number of fields.
+
+If the new ``fieldCount`` is greater than the original number of fields then the additional attributes will
+be filled with NULL values. All existing attributes will remain unchanged.
+
+If the new ``fieldCount`` is less than the original number of fields then the unwanted values will be discarded from the
+end of the existing attributes.
+
+.. seealso:: :py:func:`initAttributes`
+
+.. seealso:: :py:func:`padAttributes`
+
+.. versionadded:: 3.18
+%End
+
+    void padAttributes( int count );
+%Docstring
+Resizes the attributes attached to this feature by appending the specified ``count`` of NULL values to the end of the existing attributes.
+
+.. seealso:: :py:func:`resizeAttributes`
+
+.. versionadded:: 3.18
 %End
 
     void deleteAttribute( int field );

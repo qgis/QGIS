@@ -3015,6 +3015,7 @@ void QgsOgrProvider::computeCapabilities()
   }
 
   ability |= ReadLayerMetadata;
+  ability |= ReloadData;
 
   if ( updateModeActivated )
     leaveUpdateMode();
@@ -4438,8 +4439,8 @@ static bool IsLocalFile( const QString &path )
     // Codes from http://man7.org/linux/man-pages/man2/statfs.2.html
     if ( sStatFS.f_type == 0x6969 /* NFS */ ||
          sStatFS.f_type == 0x517b /* SMB */ ||
-         sStatFS.f_type == 0xff534d42 /* CIFS */ ||
-         sStatFS.f_type == 0xfe534d42 /* CIFS */ )
+         sStatFS.f_type == 0xff534d42ul /* CIFS */ ||
+         sStatFS.f_type == 0xfe534d42ul /* CIFS */ )
     {
       return false;
     }

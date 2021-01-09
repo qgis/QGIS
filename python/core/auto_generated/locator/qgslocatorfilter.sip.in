@@ -315,6 +315,27 @@ Logs a ``message`` to the log panel
 .. versionadded:: 3.2
 %End
 
+    int fetchResultsDelay() const;
+%Docstring
+Returns the delay (in milliseconds) for the filter to wait prior to fetching results.
+
+.. seealso:: :py:func:`setFetchResultsDelay`
+
+.. versionadded:: 3.18
+%End
+
+    void setFetchResultsDelay( int delay );
+%Docstring
+Sets a ``delay`` (in milliseconds) for the filter to wait prior to fetching results.
+
+.. seealso:: :py:func:`fetchResultsDelay`
+
+.. note::
+
+   If the locator filter has a FastFlag, this value is ignored.
+
+.. versionadded:: 3.18
+%End
 
   signals:
 

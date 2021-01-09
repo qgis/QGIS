@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationwidgetregistry.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRelationWidgetRegistry
+{
+%Docstring
+Keeps track of the registered relations widgets. New widgets can be registered, old ones deleted.
+The default {:py:class:`QgsRelationEditorWidget`} is protected from removing.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrelationwidgetregistry.h"
+%End
+  public:
+
+    QgsRelationWidgetRegistry();
+%Docstring
+Constructor
+%End
+
+    ~QgsRelationWidgetRegistry();
+
+    void addRelationWidget( QgsAbstractRelationEditorWidgetFactory *widgetFactory /Transfer/ );
+%Docstring
+Adds a new registered relation ``widgetFactory``
+%End
+
+    void removeRelationWidget( const QString &widgetType );
+%Docstring
+Removes a registered relation widget with given ``widgetType``
+%End
+
+    QStringList relationWidgetNames();
+%Docstring
+Returns a list of names of registered relation widgets
+%End
+
+    QMap<QString, QgsAbstractRelationEditorWidgetFactory *> factories() const;
+%Docstring
+Gets access to all registered factories
+%End
+
+    QgsAbstractRelationEditorWidget *create( const QString &widgetType, const QVariantMap &config, QWidget *parent = 0 ) const /TransferBack/;
+%Docstring
+Create a relation widget of a given type for a given field.
+
+:param widgetType: The widget type to create a relation editor for
+:param config: The configuration of the widget
+:param parent:
+%End
+
+    QgsAbstractRelationEditorConfigWidget *createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent = 0 ) const /TransferBack/;
+%Docstring
+Creates a configuration widget
+
+:param widgetType: The widget type to create a configuration widget for
+:param relation: The relation for which this widget will be created
+:param parent: The parent widget for the created widget
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationwidgetregistry.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -31,7 +31,7 @@ QgsAnnotation::QgsAnnotation( QObject *parent )
   : QObject( parent )
   , mMarkerSymbol( new QgsMarkerSymbol() )
 {
-  QgsStringMap props;
+  QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
   props.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   props.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
@@ -529,7 +529,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
     double frameBorderWidth = annotationElem.attribute( QStringLiteral( "frameBorderWidth" ), QStringLiteral( "0.5" ) ).toDouble();
     // need to roughly convert border width from pixels to mm - just assume 96 dpi
     frameBorderWidth = frameBorderWidth * 25.4 / 96.0;
-    QgsStringMap props;
+    QVariantMap props;
     props.insert( QStringLiteral( "color" ), frameBackgroundColor.name() );
     props.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
     props.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );

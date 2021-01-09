@@ -315,8 +315,8 @@ void MDAL::DriverUgrid::populateEdges( MDAL::Edges &edges )
   for ( size_t i = 0; i < edgesCount; ++i )
   {
 
-    int startEdgeIx = i * 2;
-    int endEdgeIx = i * 2 + 1;
+    int startEdgeIx = MDAL::toInt( i ) * 2;
+    int endEdgeIx = MDAL::toInt( i ) * 2 + 1;
 
     edges[i].startVertex = edgeNodesIdxs[startEdgeIx] - startIndex;
     edges[i].endVertex = edgeNodesIdxs[endEdgeIx] - startIndex;

@@ -409,8 +409,11 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
       itemData.setShowLabel( widgetDef->showLabel() );
+
       RelationEditorConfiguration relEdConfig;
-      relEdConfig.buttons = relationEditor->visibleButtons();
+//      relEdConfig.buttons = relationEditor->visibleButtons();
+      relEdConfig.mRelationWidgetType = relationEditor->relationWidgetTypeId();
+      relEdConfig.mRelationWidgetConfig = relationEditor->config();
       relEdConfig.nmRelationId = relationEditor->nmRelationId();
       relEdConfig.forceSuppressFormPopup = relationEditor->forceSuppressFormPopup();
       relEdConfig.label = relationEditor->label();
@@ -657,10 +660,12 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
-      relDef->setVisibleButtons( itemData.relationEditorConfiguration().buttons );
-      relDef->setNmRelationId( itemData.relationEditorConfiguration().nmRelationId );
-      relDef->setForceSuppressFormPopup( itemData.relationEditorConfiguration().forceSuppressFormPopup );
-      relDef->setLabel( itemData.relationEditorConfiguration().label );
+      QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfig = itemData.relationEditorConfiguration();
+      relDef->setRelationWidgetTypeId( relationEditorConfig.mRelationWidgetType );
+      relDef->setConfig( relationEditorConfig.mRelationWidgetConfig );
+      relDef->setNmRelationId( relationEditorConfig.nmRelationId );
+      relDef->setForceSuppressFormPopup( relationEditorConfig.forceSuppressFormPopup );
+      relDef->setLabel( relationEditorConfig.label );
       widgetDef = relDef;
       break;
     }
@@ -892,7 +897,6 @@ void QgsAttributesFormProperties::apply()
 /*
  * FieldConfig implementation
  */
-
 QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {
   mAlias = layer->fields().at( idx ).alias();
@@ -911,6 +915,15 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
 QgsAttributesFormProperties::FieldConfig::operator QVariant()
 {
   return QVariant::fromValue<QgsAttributesFormProperties::FieldConfig>( *this );
+}
+
+/*
+ * RelationEditorConfiguration implementation
+ */
+
+QgsAttributesFormProperties::RelationEditorConfiguration::operator QVariant()
+{
+  return QVariant::fromValue<QgsAttributesFormProperties::RelationEditorConfiguration>( *this );
 }
 
 /*

@@ -22,6 +22,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsmessagelog.h"
 #include "qgsrasteriterator.h"
+#include "qgslayertreemodellegendnode.h"
 
 #include <QColor>
 #include <QDomDocument>
@@ -252,7 +253,7 @@ void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parent
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
@@ -327,6 +328,28 @@ QList< QPair< QString, QColor > > QgsPalettedRasterRenderer::legendSymbologyItem
   }
   return symbolItems;
 }
+
+
+QList<QgsLayerTreeModelLegendNode *> QgsPalettedRasterRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> res;
+
+  const QString name = displayBandName( mBand );
+  if ( !name.isEmpty() )
+  {
+    res << new QgsSimpleLegendNode( nodeLayer, name );
+  }
+
+  const QList< QPair< QString, QColor > > items = legendSymbologyItems();
+  res.reserve( res.size() + items.size() );
+  for ( const QPair< QString, QColor > &item : items )
+  {
+    res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+  }
+
+  return res;
+}
+
 
 QList<int> QgsPalettedRasterRenderer::usesBands() const
 {

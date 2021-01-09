@@ -366,7 +366,7 @@ Returns a deep copy of this symbol.
 Ownership is transferred to the caller.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 %Docstring
 Converts the symbol to a SLD representation.
 %End
@@ -381,6 +381,13 @@ may use it to specify the units for the line width.
 :return: output unit, or QgsUnitTypes.RenderUnknownUnit if the symbol contains mixed units
 
 .. seealso:: :py:func:`setOutputUnit`
+%End
+
+    bool usesMapUnits() const;
+%Docstring
+Returns ``True`` if the symbol has any components which use map unit based sizes.
+
+.. versionadded:: 3.18
 %End
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -899,7 +906,7 @@ A marker symbol type, for rendering Point and MultiPoint geometries.
 %End
   public:
 
-    static QgsMarkerSymbol *createSimple( const QgsStringMap &properties ) /Factory/;
+    static QgsMarkerSymbol *createSimple( const QVariantMap &properties ) /Factory/;
 %Docstring
 Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
 This is a convenience method for easier creation of marker symbols.
@@ -1146,7 +1153,7 @@ A line symbol type, for rendering LineString and MultiLineString geometries.
 %End
   public:
 
-    static QgsLineSymbol *createSimple( const QgsStringMap &properties ) /Factory/;
+    static QgsLineSymbol *createSimple( const QVariantMap &properties ) /Factory/;
 %Docstring
 Create a line symbol with one symbol layer: SimpleLine with specified properties.
 This is a convenience method for easier creation of line symbols.
@@ -1257,7 +1264,7 @@ A fill symbol type, for rendering Polygon and MultiPolygon geometries.
 %End
   public:
 
-    static QgsFillSymbol *createSimple( const QgsStringMap &properties ) /Factory/;
+    static QgsFillSymbol *createSimple( const QVariantMap &properties ) /Factory/;
 %Docstring
 Create a fill symbol with one symbol layer: SimpleFill with specified properties.
 This is a convenience method for easier creation of fill symbols.

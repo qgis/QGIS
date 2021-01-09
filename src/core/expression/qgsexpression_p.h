@@ -47,12 +47,15 @@ class QgsExpressionPrivate
       , mParserErrors( other.mParserErrors )
       , mExp( other.mExp )
       , mDaEllipsoid( other.mDaEllipsoid )
-      , mDaCrs( other.mDaCrs )
-      , mDaTransformContext( other.mDaTransformContext )
       , mCalc( other.mCalc )
       , mDistanceUnit( other.mDistanceUnit )
       , mAreaUnit( other.mAreaUnit )
-    {}
+    {
+      if ( other.mDaCrs )
+        mDaCrs = qgis::make_unique<QgsCoordinateReferenceSystem>( *other.mDaCrs.get() );
+      if ( other.mDaTransformContext )
+        mDaTransformContext = qgis::make_unique<QgsCoordinateTransformContext>( *other.mDaTransformContext.get() );
+    }
 
     ~QgsExpressionPrivate()
     {
@@ -71,8 +74,8 @@ class QgsExpressionPrivate
     QString mExp;
 
     QString mDaEllipsoid;
-    QgsCoordinateReferenceSystem mDaCrs;
-    QgsCoordinateTransformContext mDaTransformContext;
+    std::unique_ptr<QgsCoordinateReferenceSystem> mDaCrs;
+    std::unique_ptr<QgsCoordinateTransformContext> mDaTransformContext;
 
     std::shared_ptr<QgsDistanceArea> mCalc;
     QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;

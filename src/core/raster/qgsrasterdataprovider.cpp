@@ -247,17 +247,16 @@ QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapab
   return QgsRasterDataProvider::NoProviderCapabilities;
 }
 
+int QgsRasterDataProvider::colorInterpretation( int bandNo ) const
+{
+  Q_UNUSED( bandNo )
+  return QgsRaster::UndefinedColorInterpretation;
+}
+
 //
 //Random Static convenience function
 //
 /////////////////////////////////////////////////////////
-// convenience function for building metadata() HTML table cells
-
-QString QgsRasterDataProvider::htmlMetadata()
-{
-  QString s;
-  return s;
-}
 
 // TODO
 // (WMS) IdentifyFormatFeature is not consistent with QgsRaster::IdentifyFormatValue.
@@ -624,5 +623,7 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
                                   QString::number( mMaxOversampling ) );
 }
 
-
-// ENDS
+QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
+{
+  return colorName( colorInterpretation( bandNo ) );
+}

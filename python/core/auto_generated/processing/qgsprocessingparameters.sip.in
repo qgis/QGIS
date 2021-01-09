@@ -1743,7 +1743,7 @@ Creates a new parameter using the definition from a script code.
 
 };
 
-class QgsProcessingParameterFile : QgsProcessingParameterDefinition
+class QgsProcessingParameterFile : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
 %Docstring
 An input file or folder parameter for processing algorithms.
@@ -1784,6 +1784,8 @@ Returns the type name for the parameter class.
     virtual QString asScriptCode() const;
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QString createFileFilter() const;
 
 
     Behavior behavior() const;

@@ -28,6 +28,8 @@
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgspointcloudattributemodel.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgspointcloudlayerelevationproperties.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -44,6 +46,9 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   connect( this, &QDialog::rejected, this, &QgsPointCloudLayerProperties::onCancel );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsPointCloudLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudLayerProperties::showHelp );
+
+  connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsPointCloudLayerProperties::originalNameEdited );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerProperties::crsChanged );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -140,16 +145,7 @@ void QgsPointCloudLayerProperties::apply()
 {
   mMetadataWidget->acceptMetadata();
 
-  // TODO -- move to proper widget classes!
-
-#if 0
-  std::unique_ptr< QgsDummyPointCloudRenderer > renderer = qgis::make_unique< QgsDummyPointCloudRenderer >();
-  renderer->setAttribute( mAttributeComboBox->currentAttribute() );
-  renderer->setZMin( mMinZSpin->value() );
-  renderer->setZMax( mMaxZSpin->value() );
-  renderer->setColorRamp( mBtnColorRamp->colorRamp() );
-  mLayer->setRenderer( renderer.release() );
-#endif
+  mLayer->setName( mLayerOrigNameLineEdit->text() );
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->apply();
@@ -173,6 +169,10 @@ void QgsPointCloudLayerProperties::onCancel()
 
 void QgsPointCloudLayerProperties::syncToLayer()
 {
+  // populate the general information
+  mLayerOrigNameLineEdit->setText( mLayer->name() );
+  txtDisplayName->setText( mLayer->name() );
+
   /*
    * Information Tab
    */
@@ -183,6 +183,8 @@ void QgsPointCloudLayerProperties::syncToLayer()
   mInformationTextBrowser->setHtml( mLayer->htmlMetadata() );
   mInformationTextBrowser->setOpenLinks( false );
   connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::urlClicked );
+
+  mCrsSelector->setCrs( mLayer->crs() );
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );
@@ -410,6 +412,18 @@ void QgsPointCloudLayerProperties::urlClicked( const QUrl &url )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
+}
+
+void QgsPointCloudLayerProperties::originalNameEdited( const QString &text )
+{
+  txtDisplayName->setText( mLayer->formatLayerName( text ) );
+}
+
+void QgsPointCloudLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
+{
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select transformation for the layer" ) );
+  mLayer->setCrs( crs );
+  mMetadataWidget->crsChanged();
 }
 
 void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int index )

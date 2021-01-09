@@ -1317,6 +1317,8 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 {
   QgsDebugMsgLevel( QStringLiteral( "Checking for permissions on the relation" ), 2 );
 
+  mEnabledCapabilities = QgsVectorDataProvider::Capability::ReloadData;
+
   QgsPostgresResult testAccess;
   if ( !mIsQuery )
   {
@@ -1348,7 +1350,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     // the latter flag is here just for compatibility
     if ( !mSelectAtIdDisabled )
     {
-      mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
+      mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
     }
 
     if ( !inRecovery )
@@ -2529,7 +2531,25 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else
         {
-          v = paramValue( value.toString(), defaultValues[ i ] );
+          // the conversion functions expects the list as a string, so convert it
+          if ( value.type() == QVariant::StringList )
+          {
+            QStringList list_vals = value.toStringList();
+            // all strings need to be double quoted to allow special postgres
+            // array characters such as {, or whitespace in the string
+            // but we need to escape all double quotes and backslashes
+            list_vals.replaceInStrings( "\\", "\\\\" );
+            list_vals.replaceInStrings( "\"", "\\\"" );
+            v = QStringLiteral( "{\"" ) + value.toStringList().join( QStringLiteral( "\",\"" ) ) + QStringLiteral( "\"}" );
+          }
+          else if ( value.type() == QVariant::List )
+          {
+            v = "{" + value.toStringList().join( "," ) + "}";
+          }
+          else
+          {
+            v = paramValue( value.toString(), defaultValues[ i ] );
+          }
 
           if ( v != value.toString() )
           {

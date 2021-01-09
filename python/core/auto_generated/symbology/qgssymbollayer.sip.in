@@ -305,11 +305,14 @@ The default implementation does nothing.
 Shall be reimplemented by subclasses to create a deep copy of the instance.
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+%Docstring
+Saves the symbol layer as SLD
+%End
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
-    virtual QgsStringMap properties() const = 0;
+    virtual QVariantMap properties() const = 0;
 %Docstring
 Should be reimplemented by subclasses to return a string map that
 contains the configuration information for the symbol layer. This
@@ -369,6 +372,13 @@ layer may use it to specify the units for the line width.
 :return: output unit, or QgsUnitTypes.RenderUnknownUnit if the symbol layer contains mixed units
 
 .. seealso:: :py:func:`setOutputUnit`
+%End
+
+    virtual bool usesMapUnits() const;
+%Docstring
+Returns ``True`` if the symbol layer has any components which use map unit based sizes.
+
+.. versionadded:: 3.18
 %End
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -533,7 +543,7 @@ This is a list of symbol layers of other layers that should be occluded.
 
 
 
-    void restoreOldDataDefinedProperties( const QgsStringMap &stringMap );
+    void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
 
@@ -848,10 +858,10 @@ the vertical anchor point is aligned with the marker's desired location.
 .. seealso:: :py:func:`horizontalAnchorPoint`
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 %Docstring
 Writes the symbol layer definition as a SLD XML element.
 

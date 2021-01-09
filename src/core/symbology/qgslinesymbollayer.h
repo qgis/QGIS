@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      * serialized in the \a properties map (corresponding to the output from
      * QgsSimpleLineSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
      * Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM \a element.
@@ -69,12 +69,13 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     //overridden so that clip path can be set when using draw inside polygon option
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
     QgsSimpleLineSymbolLayer *clone() const override SIP_FACTORY;
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
@@ -597,7 +598,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     QgsUnitTypes::RenderUnit outputUnit() const FINAL;
     void setMapUnitScale( const QgsMapUnitScale &scale ) FINAL;
     QgsMapUnitScale mapUnitScale() const FINAL;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
   protected:
 
@@ -642,7 +643,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * Sets all common symbol properties in the \a destLayer, using the settings
      * serialized in the \a properties map.
      */
-    static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QgsStringMap &properties );
+    static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties );
 
   private:
 
@@ -711,7 +712,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * serialized in the \a properties map (corresponding to the output from
      * QgsMarkerLineSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
      * Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM \a element.
@@ -724,7 +725,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsMarkerLineSymbolLayer *clone() const override SIP_FACTORY;
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
     void setColor( const QColor &color ) override;
     QColor color() const override;
     QgsSymbol *subSymbol() override;
@@ -734,6 +735,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     double width( const QgsRenderContext &context ) const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    bool usesMapUnits() const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
     void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property ) override;
@@ -800,12 +802,12 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * serialized in the \a properties map (corresponding to the output from
      * QgsHashedLineSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
     QgsHashedLineSymbolLayer *clone() const override SIP_FACTORY;
     void setColor( const QColor &color ) override;
     QColor color() const override;
@@ -819,6 +821,7 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
     void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property ) override;
+    bool usesMapUnits() const override;
 
     /**
      * Returns the angle to use when drawing the hashed lines sections, in degrees clockwise.

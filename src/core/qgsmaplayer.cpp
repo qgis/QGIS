@@ -1453,7 +1453,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
     root.appendChild( layerNode );
   }
 
-  QgsStringMap props;
+  QVariantMap props;
   if ( hasScaleBasedVisibility() )
   {
     props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );
@@ -1851,6 +1851,7 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   delete m3DRenderer;
   m3DRenderer = renderer;
   emit renderer3DChanged();
+  trigger3DUpdate();
 }
 
 QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
@@ -1866,6 +1867,11 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
   mRepaintRequestedFired = true;
   emit repaintRequested( deferredUpdate );
   mRepaintRequestedFired = false;
+}
+
+void QgsMapLayer::trigger3DUpdate()
+{
+  emit request3DUpdate();
 }
 
 void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
@@ -1973,6 +1979,15 @@ void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
     disconnect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
   }
   mIsRefreshOnNofifyEnabled = enabled;
+}
+
+QgsProject *QgsMapLayer::project() const
+{
+  if ( QgsMapLayerStore *store = qobject_cast<QgsMapLayerStore *>( parent() ) )
+  {
+    return qobject_cast<QgsProject *>( store->parent() );
+  }
+  return nullptr;
 }
 
 void QgsMapLayer::onNotifiedTriggerRepaint( const QString &message )

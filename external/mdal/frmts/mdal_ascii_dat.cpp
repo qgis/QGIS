@@ -485,7 +485,7 @@ bool MDAL::DriverAsciiDat::persist( MDAL::DatasetGroup *group )
   if ( !MDAL::contains( uri, "_els" ) && group->dataLocation() != MDAL_DataLocation::DataOnVertices )
   {
     // Should contain _els in name for edges/faces dataset but it does not
-    int pos = uri.size() - 4;
+    int pos = MDAL::toInt( uri.size() ) - 4;
     uri.insert( std::max( 0, pos ), "_els" );
     group->replaceUri( uri );
   }

@@ -131,7 +131,7 @@ class CORE_EXPORT QgsRendererCategory
     /**
      * Converts the category to a matching SLD rule, within the specified DOM document and \a element.
      */
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 
   protected:
     QVariant mValue;
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     bool filterNeedsGeometry() const override;
     QString dump() const override;
     QgsCategorizedSymbolRenderer *clone() const override SIP_FACTORY;
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
     QString filter( const QgsFields &fields = QgsFields() ) override;
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * creates a QgsCategorizedSymbolRenderer from an existing renderer.
-     * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      * \since QGIS 2.5
      */
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;

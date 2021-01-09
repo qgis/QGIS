@@ -30,6 +30,7 @@ set(QGIS_CORE_SRCS
   geocoding/qgsgeocoder.cpp
   geocoding/qgsgeocodercontext.cpp
   geocoding/qgsgeocoderresult.cpp
+  geocoding/qgsnominatimgeocoder.cpp
   geocoding/qgsgooglemapsgeocoder.cpp
 
   gps/qgsgpsconnection.cpp
@@ -44,6 +45,7 @@ set(QGIS_CORE_SRCS
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscptcityarchive.cpp
   symbology/qgsellipsesymbollayer.cpp
+  symbology/qgsfeaturerenderergenerator.cpp
   symbology/qgsfillsymbollayer.cpp
   symbology/qgsgeometrygeneratorsymbollayer.cpp
   symbology/qgsgraduatedsymbolrenderer.cpp
@@ -54,6 +56,7 @@ set(QGIS_CORE_SRCS
   symbology/qgslinesymbollayer.cpp
   symbology/qgsmarkersymbollayer.cpp
   symbology/qgsmasksymbollayer.cpp
+  symbology/qgsmergedfeaturerenderer.cpp
   symbology/qgspainterswapper.cpp
   symbology/qgsnullsymbolrenderer.cpp
   symbology/qgspointclusterrenderer.cpp
@@ -91,6 +94,8 @@ set(QGIS_CORE_SRCS
   effects/qgsshadoweffect.cpp
   effects/qgstransformeffect.cpp
 
+  layertree/qgscolorramplegendnode.cpp
+  layertree/qgscolorramplegendnodesettings.cpp
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
   layertree/qgslayertreemodel.cpp
@@ -150,6 +155,18 @@ set(QGIS_CORE_SRCS
   locator/qgslocatormodel.cpp
   locator/qgslocatormodelbridge.cpp
 
+  network/qgsblockingnetworkrequest.cpp
+  network/qgsfiledownloader.cpp
+  network/qgsnetworkaccessmanager.cpp
+  network/qgsnetworkdiskcache.cpp
+  network/qgsnetworkcontentfetcher.cpp
+  network/qgsnetworkcontentfetcherregistry.cpp
+  network/qgsnetworkcontentfetchertask.cpp
+  network/qgsnetworkreply.cpp
+  network/qgsnetworkreplyparser.cpp
+  network/qgsnewsfeedmodel.cpp
+  network/qgsnewsfeedparser.cpp
+
   processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
@@ -175,6 +192,10 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelgroupbox.cpp
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
+
+  providers/arcgis/qgsarcgisportalutils.cpp
+  providers/arcgis/qgsarcgisrestquery.cpp
+  providers/arcgis/qgsarcgisrestutils.cpp
 
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
@@ -239,7 +260,6 @@ set(QGIS_CORE_SRCS
   qgsattributeeditorelement.cpp
   qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
-  qgsblockingnetworkrequest.cpp
   qgsbookmarkmanager.cpp
   qgsbookmarkmodel.cpp
   qgsbrowsermodel.cpp
@@ -301,7 +321,6 @@ set(QGIS_CORE_SRCS
   qgsfieldmodel.cpp
   qgsfieldproxymodel.cpp
   qgsfields.cpp
-  qgsfiledownloader.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
   qgsgdalutils.cpp
@@ -357,15 +376,6 @@ set(QGIS_CORE_SRCS
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmultirenderchecker.cpp
-  qgsnetworkaccessmanager.cpp
-  qgsnetworkdiskcache.cpp
-  qgsnetworkcontentfetcher.cpp
-  qgsnetworkcontentfetcherregistry.cpp
-  qgsnetworkcontentfetchertask.cpp
-  qgsnetworkreply.cpp
-  qgsnetworkreplyparser.cpp
-  qgsnewsfeedmodel.cpp
-  qgsnewsfeedparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
@@ -381,18 +391,7 @@ set(QGIS_CORE_SRCS
   qgspointxy.cpp
   qgspointlocator.cpp
   qgspointlocatorinittask.cpp
-  qgsproject.cpp
-  qgsprojectbadlayerhandler.cpp
-  qgsprojectfiletransform.cpp
   qgssnappingconfig.cpp
-  qgsprojectdisplaysettings.cpp
-  qgsprojectproperty.cpp
-  qgsprojectservervalidator.cpp
-  qgsprojectstorage.cpp
-  qgsprojectstorageregistry.cpp
-  qgsprojecttimesettings.cpp
-  qgsprojectversion.cpp
-  qgsprojectviewsettings.cpp
   qgsprojutils.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
@@ -450,30 +449,10 @@ set(QGIS_CORE_SRCS
   qgsunittypes.cpp
   qgsvector.cpp
   qgsvector3d.cpp
-  qgsvectordataprovider.cpp
-  qgsvectordataprovidertemporalcapabilities.cpp
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
-  qgsvectorlayer.cpp
   qgsvirtuallayertask.cpp
-  qgsvectorlayerfeaturecounter.cpp
-  qgsvectorlayercache.cpp
-  qgsvectorlayerdiagramprovider.cpp
-  qgsvectorlayereditbuffer.cpp
-  qgsvectorlayereditpassthrough.cpp
-  qgsvectorlayereditutils.cpp
-  qgsvectorlayerfeatureiterator.cpp
-  qgsvectorlayerexporter.cpp
-  qgsvectorlayerjoinbuffer.cpp
-  qgsvectorlayerjoininfo.cpp
-  qgsvectorlayerrenderer.cpp
-  qgsvectorlayertemporalproperties.cpp
-  qgsvectorlayertools.cpp
-  qgsvectorlayerundocommand.cpp
-  qgsvectorlayerundopassthroughcommand.cpp
-  qgsvectorlayerutils.cpp
   qgsvectorsimplifymethod.cpp
-  qgsvectorlayerserverproperties.cpp
   qgsvirtuallayerdefinition.cpp
   qgsvirtuallayerdefinitionutils.cpp
   qgsmapthemecollection.cpp
@@ -559,6 +538,18 @@ set(QGIS_CORE_SRCS
   pal/priorityqueue.cpp
   pal/problem.cpp
   pal/util.cpp
+
+  project/qgsproject.cpp
+  project/qgsprojectbadlayerhandler.cpp
+  project/qgsprojectfiletransform.cpp
+  project/qgsprojectdisplaysettings.cpp
+  project/qgsprojectproperty.cpp
+  project/qgsprojectservervalidator.cpp
+  project/qgsprojectstorage.cpp
+  project/qgsprojectstorageregistry.cpp
+  project/qgsprojecttimesettings.cpp
+  project/qgsprojectversion.cpp
+  project/qgsprojectviewsettings.cpp
 
   raster/qgscliptominmaxenhancement.cpp
   raster/qgscolorrampshader.cpp
@@ -713,6 +704,27 @@ set(QGIS_CORE_SRCS
   validity/qgsvaliditycheckcontext.cpp
   validity/qgsvaliditycheckregistry.cpp
 
+  vector/qgsvectordataprovider.cpp
+  vector/qgsvectordataprovidertemporalcapabilities.cpp
+  vector/qgsvectorlayer.cpp
+  vector/qgsvectorlayerfeaturecounter.cpp
+  vector/qgsvectorlayercache.cpp
+  vector/qgsvectorlayerdiagramprovider.cpp
+  vector/qgsvectorlayereditbuffer.cpp
+  vector/qgsvectorlayereditpassthrough.cpp
+  vector/qgsvectorlayereditutils.cpp
+  vector/qgsvectorlayerfeatureiterator.cpp
+  vector/qgsvectorlayerexporter.cpp
+  vector/qgsvectorlayerjoinbuffer.cpp
+  vector/qgsvectorlayerjoininfo.cpp
+  vector/qgsvectorlayerrenderer.cpp
+  vector/qgsvectorlayerserverproperties.cpp
+  vector/qgsvectorlayertemporalproperties.cpp
+  vector/qgsvectorlayertools.cpp
+  vector/qgsvectorlayerundocommand.cpp
+  vector/qgsvectorlayerundopassthroughcommand.cpp
+  vector/qgsvectorlayerutils.cpp
+
   vectortile/qgsmapboxglstyleconverter.cpp
   vectortile/qgsvectortilebasiclabeling.cpp
   vectortile/qgsvectortilebasicrenderer.cpp
@@ -829,7 +841,6 @@ set(QGIS_CORE_HDRS
   qgsattributetableconfig.h
   qgsauxiliarystorage.h
   qgsbearingutils.h
-  qgsblockingnetworkrequest.h
   qgsbookmarkmanager.h
   qgsbookmarkmodel.h
   qgsbrowsermodel.h
@@ -898,7 +909,6 @@ set(QGIS_CORE_HDRS
   qgsfieldmodel.h
   qgsfieldproxymodel.h
   qgsfields.h
-  qgsfiledownloader.h
   qgsfilefiltergenerator.h
   qgsfileutils.h
   qgsfontutils.h
@@ -961,15 +971,6 @@ set(QGIS_CORE_HDRS
   qgsmessageoutput.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
-  qgsnetworkaccessmanager.h
-  qgsnetworkcontentfetcher.h
-  qgsnetworkcontentfetcherregistry.h
-  qgsnetworkcontentfetchertask.h
-  qgsnetworkdiskcache.h
-  qgsnetworkreply.h
-  qgsnetworkreplyparser.h
-  qgsnewsfeedmodel.h
-  qgsnewsfeedparser.h
   qgsobjectcustomproperties.h
   qgsofflineediting.h
   qgsogcutils.h
@@ -987,18 +988,6 @@ set(QGIS_CORE_HDRS
   qgspointlocatorinittask.h
   qgspointxy.h
   qgspostgresstringutils.h
-  qgsproject.h
-  qgsprojectbadlayerhandler.h
-  qgsprojectdisplaysettings.h
-  qgsprojectfiletransform.h
-  qgsprojectproperty.h
-  qgsprojectservervalidator.h
-  qgsprojectstorage.h
-  qgsprojectstorageregistry.h
-  qgsprojecttimesettings.h
-  qgsprojecttranslator.h
-  qgsprojectversion.h
-  qgsprojectviewsettings.h
   qgsprojutils.h
   qgsproperty.h
   qgspropertycollection.h
@@ -1063,29 +1052,8 @@ set(QGIS_CORE_HDRS
   qgsuserprofilemanager.h
   qgsvector.h
   qgsvector3d.h
-  qgsvectordataprovider.h
-  qgsvectordataprovidertemporalcapabilities.h
   qgsvectorfilewriter.h
   qgsvectorfilewritertask.h
-  qgsvectorlayer.h
-  qgsvectorlayerref.h
-  qgsvectorlayercache.h
-  qgsvectorlayerdiagramprovider.h
-  qgsvectorlayereditbuffer.h
-  qgsvectorlayereditpassthrough.h
-  qgsvectorlayereditutils.h
-  qgsvectorlayerexporter.h
-  qgsvectorlayerfeaturecounter.h
-  qgsvectorlayerfeatureiterator.h
-  qgsvectorlayerjoinbuffer.h
-  qgsvectorlayerjoininfo.h
-  qgsvectorlayerrenderer.h
-  qgsvectorlayerserverproperties.h
-  qgsvectorlayertemporalproperties.h
-  qgsvectorlayertools.h
-  qgsvectorlayerundocommand.h
-  qgsvectorlayerundopassthroughcommand.h
-  qgsvectorlayerutils.h
   qgsvectorsimplifymethod.h
   qgsvirtuallayerdefinition.h
   qgsvirtuallayerdefinitionutils.h
@@ -1178,6 +1146,7 @@ set(QGIS_CORE_HDRS
   geocoding/qgsgeocoder.h
   geocoding/qgsgeocodercontext.h
   geocoding/qgsgeocoderresult.h
+  geocoding/qgsnominatimgeocoder.h
   geocoding/qgsgooglemapsgeocoder.h
 
   geometry/qgsabstractgeometry.h
@@ -1233,6 +1202,8 @@ set(QGIS_CORE_HDRS
   labeling/qgsvectorlayerlabeling.h
   labeling/qgsvectorlayerlabelprovider.h
 
+  layertree/qgscolorramplegendnode.h
+  layertree/qgscolorramplegendnodesettings.h
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
@@ -1356,6 +1327,18 @@ set(QGIS_CORE_HDRS
   metadata/qgslayermetadatavalidator.h
   metadata/qgsprojectmetadata.h
 
+  network/qgsblockingnetworkrequest.h
+  network/qgsfiledownloader.h
+  network/qgsnetworkaccessmanager.h
+  network/qgsnetworkcontentfetcher.h
+  network/qgsnetworkcontentfetcherregistry.h
+  network/qgsnetworkcontentfetchertask.h
+  network/qgsnetworkdiskcache.h
+  network/qgsnetworkreply.h
+  network/qgsnetworkreplyparser.h
+  network/qgsnewsfeedmodel.h
+  network/qgsnewsfeedparser.h
+
   numericformats/qgsbasicnumericformat.h
   numericformats/qgsbearingnumericformat.h
   numericformats/qgscurrencynumericformat.h
@@ -1394,12 +1377,32 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h
 
+  project/qgsproject.h
+  project/qgsprojectbadlayerhandler.h
+  project/qgsprojectdisplaysettings.h
+  project/qgsprojectfiletransform.h
+  project/qgsprojectproperty.h
+  project/qgsprojectservervalidator.h
+  project/qgsprojectstorage.h
+  project/qgsprojectstorageregistry.h
+  project/qgsprojecttimesettings.h
+  project/qgsprojecttranslator.h
+  project/qgsprojectversion.h
+  project/qgsprojectviewsettings.h
+
+  providers/arcgis/qgsarcgisportalutils.h
+  providers/arcgis/qgsarcgisrestquery.h
+  providers/arcgis/qgsarcgisrestutils.h
+
   providers/gdal/qgsgdaldataitems.h
   providers/gdal/qgsgdalprovider.h
+
   providers/memory/qgsmemoryfeatureiterator.h
   providers/memory/qgsmemoryprovider.h
   providers/memory/qgsmemoryproviderutils.h
+
   providers/meshmemory/qgsmeshmemorydataprovider.h
+
   providers/ogr/qgsgeopackagedataitems.h
   providers/ogr/qgsgeopackageprojectstorage.h
   providers/ogr/qgsgeopackageproviderconnection.h
@@ -1475,6 +1478,7 @@ set(QGIS_CORE_HDRS
   symbology/qgscolorbrewerpalette.h
   symbology/qgscptcityarchive.h
   symbology/qgsellipsesymbollayer.h
+  symbology/qgsfeaturerenderergenerator.h
   symbology/qgsfillsymbollayer.h
   symbology/qgsgeometrygeneratorsymbollayer.h
   symbology/qgsgraduatedsymbolrenderer.h
@@ -1484,6 +1488,7 @@ set(QGIS_CORE_HDRS
   symbology/qgslegendsymbolitem.h
   symbology/qgslinesymbollayer.h
   symbology/qgsmarkersymbollayer.h
+  symbology/qgsmergedfeaturerenderer.h
   symbology/qgsnullsymbolrenderer.h
   symbology/qgspointclusterrenderer.h
   symbology/qgspointdisplacementrenderer.h
@@ -1519,6 +1524,28 @@ set(QGIS_CORE_HDRS
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
+
+  vector/qgsvectordataprovider.h
+  vector/qgsvectordataprovidertemporalcapabilities.h
+  vector/qgsvectorlayer.h
+  vector/qgsvectorlayerref.h
+  vector/qgsvectorlayercache.h
+  vector/qgsvectorlayerdiagramprovider.h
+  vector/qgsvectorlayereditbuffer.h
+  vector/qgsvectorlayereditpassthrough.h
+  vector/qgsvectorlayereditutils.h
+  vector/qgsvectorlayerexporter.h
+  vector/qgsvectorlayerfeaturecounter.h
+  vector/qgsvectorlayerfeatureiterator.h
+  vector/qgsvectorlayerjoinbuffer.h
+  vector/qgsvectorlayerjoininfo.h
+  vector/qgsvectorlayerrenderer.h
+  vector/qgsvectorlayerserverproperties.h
+  vector/qgsvectorlayertemporalproperties.h
+  vector/qgsvectorlayertools.h
+  vector/qgsvectorlayerundocommand.h
+  vector/qgsvectorlayerundopassthroughcommand.h
+  vector/qgsvectorlayerutils.h
 
   vectortile/qgsmapboxglstyleconverter.h
   vectortile/qgsvectortilebasiclabeling.h
@@ -1623,11 +1650,13 @@ include_directories(
   locator
   mesh
   metadata
-  pointcloud
+  network
   numericformats
   pal
+  pointcloud
   processing
   processing/models
+  project
   providers
   providers/memory
   providers/gdal
@@ -1639,6 +1668,7 @@ include_directories(
   symbology
   textrenderer
   validity
+  vector
   vectortile
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
@@ -1702,14 +1732,14 @@ if (WITH_EPT)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptdataitems.cpp
       providers/ept/qgseptprovider.cpp
-      providers/ept/qgseptdecoder.cpp
-      providers/ept/qgseptpointcloudindex.cpp
+      pointcloud/qgseptdecoder.cpp
+      pointcloud/qgseptpointcloudindex.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptdataitems.h
       providers/ept/qgseptprovider.h
-      providers/ept/qgseptdecoder.h
-      providers/ept/qgseptpointcloudindex.h
+      pointcloud/qgseptdecoder.h
+      pointcloud/qgseptpointcloudindex.h
   )
 endif()
 

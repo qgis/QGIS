@@ -22,6 +22,7 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgspointclusterrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgsmergedfeaturerenderer.h"
 #include "qgsheatmaprenderer.h"
 #include "qgs25drenderer.h"
 #include "qgsnullsymbolrenderer.h"
@@ -65,6 +66,13 @@ QgsRendererRegistry::QgsRendererRegistry()
                                         QIcon(),
                                         nullptr,
                                         QgsRendererAbstractMetadata::PointLayer ) );
+
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "mergedFeatureRenderer" ),
+                                        QObject::tr( "Merged Features" ),
+                                        QgsMergedFeatureRenderer::create,
+                                        QIcon(),
+                                        nullptr,
+                                        QgsRendererAbstractMetadata::LineLayer | QgsRendererAbstractMetadata::PolygonLayer ) );
 
   addRenderer( new QgsRendererMetadata( QStringLiteral( "invertedPolygonRenderer" ),
                                         QObject::tr( "Inverted Polygons" ),

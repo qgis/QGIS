@@ -31,7 +31,7 @@ QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
   setBackgroundEnabled( false );
   setFrameEnabled( false );
   setReferencePoint( QgsLayoutItem::Middle );
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "4" ) );
   mShapeStyleSymbol.reset( QgsMarkerSymbol::createSimple( properties ) );
   refreshSymbol();

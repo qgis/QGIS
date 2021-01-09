@@ -1,0 +1,210 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgscolorramplegendnodesettings.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsColorRampLegendNodeSettings
+{
+%Docstring
+Settings for a color ramp legend node.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgscolorramplegendnodesettings.h"
+%End
+  public:
+
+    enum Direction
+    {
+      MinimumToMaximum,
+      MaximumToMinimum,
+    };
+
+    QgsColorRampLegendNodeSettings();
+
+    ~QgsColorRampLegendNodeSettings();
+
+    QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other );
+%Docstring
+Copy constructor
+%End
+
+
+    QgsColorRampLegendNodeSettings::Direction direction() const;
+%Docstring
+Returns the direction of the ramp.
+
+.. seealso:: :py:func:`setDirection`
+
+.. seealso:: :py:func:`orientation`
+%End
+
+    void setDirection( QgsColorRampLegendNodeSettings::Direction direction );
+%Docstring
+Sets the ``direction`` of the ramp.
+
+.. seealso:: :py:func:`direction`
+
+.. seealso:: :py:func:`setOrientation`
+%End
+
+    QString minimumLabel() const;
+%Docstring
+Returns the label for the minimum value on the ramp.
+
+If the returned string is empty than a default value will be generated based on the associated minimum value.
+
+.. seealso:: :py:func:`maximumLabel`
+
+.. seealso:: :py:func:`setMinimumLabel`
+%End
+
+    void setMinimumLabel( const QString &label );
+%Docstring
+Sets the ``label`` for the minimum value on the ramp.
+
+If the ``label`` is empty than a default value will be generated based on the associated minimum value.
+
+.. seealso:: :py:func:`setMaximumLabel`
+
+.. seealso:: :py:func:`minimumLabel`
+%End
+
+    QString maximumLabel() const;
+%Docstring
+Returns the label for the maximum value on the ramp.
+
+If the returned string is empty than a default value will be generated based on the associated maximum value.
+
+.. seealso:: :py:func:`minimumLabel`
+
+.. seealso:: :py:func:`setMaximumLabel`
+%End
+
+    void setMaximumLabel( const QString &label );
+%Docstring
+Sets the ``label`` for the maximum value on the ramp.
+
+If the ``label`` is empty than a default value will be generated based on the associated maximum value.
+
+.. seealso:: :py:func:`setMinimumLabel`
+
+.. seealso:: :py:func:`maximumLabel`
+%End
+
+    const QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for numbers in the scalebar.
+
+.. seealso:: :py:func:`setNumericFormat`
+
+.. versionadded:: 3.12
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for numbers in the scalebar.
+
+Ownership of ``format`` is transferred to the scalebar.
+
+.. seealso:: :py:func:`numericFormat`
+
+.. versionadded:: 3.12
+%End
+
+    void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes settings to an XML ``element``.
+%End
+
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads settings from an XML ``element``.
+%End
+
+    QString prefix() const;
+%Docstring
+Returns the prefix to show before legend text.
+
+.. seealso:: :py:func:`setPrefix`
+
+.. seealso:: :py:func:`suffix`
+%End
+
+    void setPrefix( const QString &prefix );
+%Docstring
+Sets the ``prefix`` to show before legend text.
+
+.. seealso:: :py:func:`prefix`
+
+.. seealso:: :py:func:`setSuffix`
+%End
+
+    QString suffix() const;
+%Docstring
+Returns the suffix to show after legend text.
+
+.. seealso:: :py:func:`setSuffix`
+
+.. seealso:: :py:func:`prefix`
+%End
+
+    void setSuffix( const QString &suffix );
+%Docstring
+Sets the ``suffix`` to show after legend text.
+
+.. seealso:: :py:func:`suffix`
+
+.. seealso:: :py:func:`setPrefix`
+%End
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used to render text in the legend item.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used to render text in the legend item.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
+    Qt::Orientation orientation() const;
+%Docstring
+Returns the ramp orientation (i.e. horizontal or vertical).
+
+.. seealso:: :py:func:`setOrientation`
+
+.. seealso:: :py:func:`direction`
+%End
+
+    void setOrientation( Qt::Orientation orientation );
+%Docstring
+Sets the ramp ``orientation`` (i.e. horizontal or vertical).
+
+.. seealso:: :py:func:`orientation`
+
+.. seealso:: :py:func:`setDirection`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgscolorramplegendnodesettings.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -70,6 +70,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsfeaturestore.h"
 #include "qgslocator.h"
+#include "qgsreadwritelocker.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -113,6 +114,7 @@
 #include <ogr_api.h>
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
+#include <mutex>
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
@@ -220,39 +222,44 @@ void QgsApplication::init( QString profileFolder )
 
   *sProfilePath() = profileFolder;
 
-  qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
-  qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
-  qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
-  qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
-  qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
-  qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
-  qRegisterMetaType<QgsProperty>( "QgsProperty" );
-  qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
-  qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
-  qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
-  qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
-  qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
-  qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
-  qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
-  qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
-  qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
-  qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
-  qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
-  qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
-  qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
-  qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
-  qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
-  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
-  qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
-  qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-  qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-  qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
-  qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
-  qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
-  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
-  QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
-  QMetaType::registerEqualsComparator<QgsProperty>();
-  qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
+  static std::once_flag sMetaTypesRegistered;
+  std::call_once( sMetaTypesRegistered, []
+  {
+    qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+    qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
+    qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
+    qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
+    qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
+    qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
+    qRegisterMetaType<QgsProperty>( "QgsProperty" );
+    qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
+    qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
+    qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
+    qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
+    qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
+    qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
+    qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
+    qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
+    qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
+    qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
+    qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
+    qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+    qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
+    qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
+    qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
+    qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
+    qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
+    qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+    qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+    qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
+    qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+    qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
+    QMetaType::registerComparators<QgsProcessingModelChildDependency>();
+    QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
+    QMetaType::registerEqualsComparator<QgsProperty>();
+    qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
+    qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+  } );
 
   ( void ) resolvePkgPath();
 
@@ -878,7 +885,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   {
     // apply OS-specific UI scale factor to stylesheet's em values
     int index = 0;
-    QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
+    const static QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
     QRegularExpressionMatch match = regex.match( styledata, index );
     while ( match.hasMatch() )
     {
@@ -1050,27 +1057,46 @@ QString QgsApplication::srsDatabaseFilePath()
   }
 }
 
+void QgsApplication::setSvgPaths( const QStringList &svgPaths )
+{
+  QgsSettings().setValue( QStringLiteral( "svg/searchPathsForSVG" ), svgPaths );
+  members()->mSvgPathCacheValid = false;
+}
+
 QStringList QgsApplication::svgPaths()
 {
-  //local directories to search when looking for an SVG with a given basename
-  //defined by user in options dialog
-  QgsSettings settings;
-  const QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
+  static QReadWriteLock lock;
 
-  // maintain user set order while stripping duplicates
-  QStringList paths;
-  for ( const QString &path : pathList )
-  {
-    if ( !paths.contains( path ) )
-      paths.append( path );
-  }
-  for ( const QString &path : qgis::as_const( *sDefaultSvgPaths() ) )
-  {
-    if ( !paths.contains( path ) )
-      paths.append( path );
-  }
+  QgsReadWriteLocker locker( lock, QgsReadWriteLocker::Read );
 
-  return paths;
+  if ( members()->mSvgPathCacheValid )
+  {
+    return members()->mSvgPathCache;
+  }
+  else
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    //local directories to search when looking for an SVG with a given basename
+    //defined by user in options dialog
+    QgsSettings settings;
+    const QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
+
+    // maintain user set order while stripping duplicates
+    QStringList paths;
+    for ( const QString &path : pathList )
+    {
+      if ( !paths.contains( path ) )
+        paths.append( path );
+    }
+    for ( const QString &path : qgis::as_const( *sDefaultSvgPaths() ) )
+    {
+      if ( !paths.contains( path ) )
+        paths.append( path );
+    }
+    members()->mSvgPathCache = paths;
+
+    return paths;
+  }
 }
 
 QStringList QgsApplication::layoutTemplatePaths()
@@ -1095,7 +1121,8 @@ QString QgsApplication::userStylePath()
 
 QRegExp QgsApplication::shortNameRegExp()
 {
-  return QRegExp( "^[A-Za-z][A-Za-z0-9\\._-]*" );
+  const thread_local QRegExp regexp( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) );
+  return regexp;
 }
 
 QString QgsApplication::userLoginName()

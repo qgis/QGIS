@@ -217,6 +217,14 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     filter->moveToThread( thread );
     connect( thread, &QThread::started, filter, [filter, searchString, context, feedback]
     {
+      int delay = filter->fetchResultsDelay();
+      while ( delay > 0 )
+      {
+        if ( feedback->isCanceled() )
+          break;
+        QThread::msleep( 50 );
+        delay -= 50;
+      }
       if ( !feedback->isCanceled() )
         filter->fetchResults( searchString, context, feedback );
       filter->emit finished();

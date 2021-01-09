@@ -33,6 +33,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
+#include "qgsvectorlayertemporalproperties.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -257,6 +258,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     r->startRender( context, vlayer->fields() );
   }
 
+  QString temporalFilter;
+  if ( canvas->mapSettings().isTemporal() )
+  {
+    if ( !vlayer->temporalProperties()->isVisibleInTemporalRange( canvas->temporalRange() ) )
+      return newSelectedFeatures;
+
+    QgsVectorLayerTemporalContext temporalContext;
+    temporalContext.setLayer( vlayer );
+    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( vlayer->temporalProperties() )->createFilterString( temporalContext, canvas->temporalRange() );
+  }
+
   QgsFeatureRequest request;
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
@@ -264,6 +276,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
   else
     request.setNoAttributes();
+
+  if ( !temporalFilter.isEmpty() )
+    request.setFilterExpression( temporalFilter );
+  if ( r )
+  {
+    const QString filterExpression = r->filter( vlayer->fields() );
+    if ( !filterExpression.isEmpty() )
+    {
+      request.combineFilterExpression( filterExpression );
+    }
+  }
 
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 
@@ -365,7 +388,8 @@ QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::QgsMapToolSelectMenuActions(
 QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::~QgsMapToolSelectMenuActions()
 {
   removeHighlight();
-  mJobData->isCanceled = true;
+  if ( mJobData )
+    mJobData->isCanceled = true;
   if ( mFutureWatcher )
     mFutureWatcher->waitForFinished();
 }
@@ -384,13 +408,26 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateMenu( QMenu *me
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
 {
+  QString temporalFilter;
+  if ( mCanvas->mapSettings().isTemporal() )
+  {
+    if ( !mVectorLayer->temporalProperties()->isVisibleInTemporalRange( mCanvas->temporalRange() ) )
+      return;
+
+    QgsVectorLayerTemporalContext temporalContext;
+    temporalContext.setLayer( mVectorLayer );
+    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( mVectorLayer->temporalProperties() )->createFilterString( temporalContext, mCanvas->temporalRange() );
+  }
+
   mJobData = std::make_shared<DataForSearchingJob>();
   mJobData->isCanceled = false;
   mJobData->source.reset( new QgsVectorLayerFeatureSource( mVectorLayer ) );
   mJobData->selectGeometry = mSelectGeometry;
   mJobData->context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+  mJobData->filterString = temporalFilter;
   mJobData->ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mVectorLayer->crs(), mJobData->context.transformContext() );
   mJobData->featureRenderer.reset( mVectorLayer->renderer()->clone() );
+
   mJobData->context.expressionContext() << QgsExpressionContextUtils::layerScope( mVectorLayer );
   mJobData->selectBehavior = mBehavior;
   if ( mBehavior != QgsVectorLayer::SetSelection )
@@ -410,7 +447,6 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
 
   if ( ! transformSelectGeometry( data->selectGeometry, selectGeomTrans, data->ct ) )
     return newSelectedFeatures;
-
 
   // make sure the selection geometry is valid, or intersection tests won't work correctly...
   if ( !selectGeomTrans.isGeosValid( ) )
@@ -434,8 +470,18 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
 
+  if ( !data->filterString.isEmpty() )
+    request.setFilterExpression( data->filterString );
+
   if ( r )
+  {
     request.setSubsetOfAttributes( r->usedAttributes( data->context ), data->source->fields() );
+    const QString filterExpression = r->filter( data->source->fields() );
+    if ( !filterExpression.isEmpty() )
+    {
+      request.combineFilterExpression( filterExpression );
+    }
+  }
 
   QgsFeatureIterator fit = data->source->getFeatures( request );
 
@@ -498,7 +544,7 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
     switch ( mBehavior )
     {
       case QgsVectorLayer::SetSelection:
-        return tr( "Select" );
+        return tr( "Select Feature" );
         break;
       case QgsVectorLayer::AddToSelection:
         return tr( "Add to Selection" );
@@ -542,16 +588,16 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseOneMenu
   switch ( mBehavior )
   {
     case QgsVectorLayer::SetSelection:
-      return tr( "Select One" );
+      return tr( "Select Feature" );
       break;
     case QgsVectorLayer::AddToSelection:
-      return tr( "Add One to Selection" );
+      return tr( "Add Feature to Selection" );
       break;
     case QgsVectorLayer::IntersectSelection:
-      return tr( "Intersect One with Selection" );
+      return tr( "Intersect Feature with Selection" );
       break;
     case QgsVectorLayer::RemoveFromSelection:
-      return tr( "Remove One from Selection" );
+      return tr( "Remove Feature from Selection" );
       break;
   }
 
@@ -574,16 +620,19 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateChooseOneMenu( 
   QgsExpression exp = mVectorLayer->displayExpression();
   exp.prepare( &context );
 
-  for ( QgsFeatureId id : qgis::as_const( displayedFeatureIds ) )
+  QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( displayedFeatureIds );
+  QgsFeature feat;
+  QgsFeatureIterator featureIt = mVectorLayer->getFeatures( request );
+  while ( featureIt.nextFeature( feat ) )
   {
-    QgsFeature feat = mVectorLayer->getFeature( id );
+    const QgsFeatureId id = feat.id();
     context.setFeature( feat );
 
     QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
-      featureTitle = FID_TO_STRING( feat.id() );
+      featureTitle = tr( "Feature %1" ).arg( FID_TO_STRING( feat.id() ) );
 
-    QAction *featureAction = new QAction( tr( "Feature %1" ).arg( featureTitle ), this ) ;
+    QAction *featureAction = new QAction( featureTitle, this ) ;
     connect( featureAction, &QAction::triggered, this, [this, id]() {chooseOneCandidateFeature( id );} );
     connect( featureAction, &QAction::hovered, this, [this, id]() {this->highlightOneFeature( id );} );
     mMenuChooseOne->addAction( featureAction );

@@ -25,6 +25,21 @@ QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent ) : QDialog( parent )
   {
     mWelcomeDevLabel->show();
   }
+  QStringList versionParts = Qgis::version().split( '.' );
+  QString major = versionParts.at( 0 );
+  QString minor = versionParts.at( 1 );
+  if ( minor.toInt() % 2 == 1 )
+  {
+    // Development version doesn't show the link to the changelog
+    mWelcomeProdLabel->hide();
+  }
+  else
+  {
+    // Production version shows link.
+    mWelcomeProdLabel->setText( mWelcomeProdLabel->text().replace( QStringLiteral( "VERSION_TOKEN" ), major.append( minor ) ) );
+    mWelcomeDevLabel->hide();
+  }
+
 }
 
 bool QgsFirstRunDialog::migrateSettings()
@@ -32,7 +47,3 @@ bool QgsFirstRunDialog::migrateSettings()
   return ( mImportSettingsYes->isChecked() );
 }
 
-void QgsFirstRunDialog::hideMigration()
-{
-  mMigrationWidget->hide();
-}

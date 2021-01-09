@@ -16,10 +16,30 @@
 #ifndef QGSPOSTGRESPROVIDERCONNECTION_H
 #define QGSPOSTGRESPROVIDERCONNECTION_H
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgspostgresconnpool.h"
 
+struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+    QgsPostgresProviderResultIterator( bool resolveTypes, std::shared_ptr<QgsPoolPostgresConn> pgConn )
+      : mResolveTypes( resolveTypes )
+      , mConn( pgConn )
+    {}
+
+    QVariantList nextRow() override;
+    bool hasNextRow() const override;
+
+    QMap<int, QVariant::Type> typeMap;
+    std::unique_ptr<QgsPostgresResult> result;
+
+  private:
+
+    bool mResolveTypes = true;
+    std::shared_ptr<QgsPoolPostgresConn> mConn;
+    qlonglong mRowIndex = 0;
+
+};
 
 class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnection
-
 {
   public:
 
@@ -46,7 +66,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
     void renameSchema( const QString &name, const QString &newName ) const override;
-    QList<QVariantList> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
+    QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     void vacuum( const QString &schema, const QString &name ) const override;
     void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
@@ -62,6 +82,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
   private:
 
     QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
+    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;

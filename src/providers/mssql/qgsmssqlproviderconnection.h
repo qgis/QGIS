@@ -13,10 +13,37 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMSSQLPROVIDERCONNECTION_H
 #define QGSMSSQLPROVIDERCONNECTION_H
+
 #include "qgsabstractdatabaseproviderconnection.h"
 
+#include <QSqlQuery>
+
+
+struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+
+    QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query )
+      : mResolveTypes( resolveTypes )
+      , mColumnCount( columnCount )
+      , mQuery( query )
+    {}
+
+    QVariantList nextRow() override;
+    bool hasNextRow() const override;
+
+  private:
+
+    bool mResolveTypes = true;
+    int mColumnCount = 0;
+    QSqlQuery mQuery;
+    QVariantList mNextRow;
+
+    QVariantList nextRowPrivate();
+
+};
 
 class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
 
@@ -41,7 +68,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
-    QList<QVariantList> executeSql( const QString &sql, QgsFeedback *feedback ) const override;
+    QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = TableFlags() ) const override;
     QStringList schemas( ) const override;
@@ -52,7 +79,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
 
   private:
 
-    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;
+    QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;

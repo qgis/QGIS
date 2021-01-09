@@ -29,6 +29,7 @@
 #include <QDialogButtonBox>
 
 class QgsMapCanvas;
+class QgsBrowserModel;
 
 
 /**
@@ -51,6 +52,13 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     void setMapCanvas( const QgsMapCanvas *mapCanvas );
 
+    /**
+     * Sets a browser \a model to use with the widget.
+     *
+     * \see browserModel()
+     * \since QGIS 3.18
+     */
+    void setBrowserModel( QgsBrowserModel *model );
 
   public slots:
 
@@ -166,6 +174,13 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Returns the map canvas (can be NULLPTR)
     const QgsMapCanvas *mapCanvas() const;
 
+    /**
+     * Returns the associated browser model (may be NULLPTR).
+     *
+     * \since QGIS 3.18
+     */
+    QgsBrowserModel *browserModel();
+
     //! Connect the ok and apply/add buttons to the slots
     void setupButtons( QDialogButtonBox *buttonBox );
 
@@ -176,6 +191,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     QPushButton *mAddButton  = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode;
     QgsMapCanvas const *mMapCanvas = nullptr;
+    QgsBrowserModel *mBrowserModel = nullptr;
 
 };
 

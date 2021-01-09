@@ -1043,31 +1043,30 @@ int main( int argc, char *argv[] )
   {
     // Note: this flag is ka version number so that we can reset it once we change the version.
     // Note2: Is this a good idea can we do it better.
-
-    QgsSettings migSettings;
-    int firstRunVersion = migSettings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
-    bool showWelcome = ( firstRunVersion == 0  || Qgis::versionInt() > firstRunVersion );
-
-    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
-    if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
+    // Note3: Updated to only show if we have a migration from QGIS 2 - see https://github.com/qgis/QGIS/pull/38616
+    QString path = QSettings( "QGIS", "QGIS2" ).fileName() ;
+    if ( QFile::exists( path ) )
     {
-      bool runMigration = true;
-      if ( !settingsMigrationForce && showWelcome )
+      QgsSettings migSettings;
+      int firstRunVersion = migSettings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
+      bool showWelcome = ( firstRunVersion == 0  || Qgis::versionInt() > firstRunVersion );
+      std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
+      if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
       {
-        QgsFirstRunDialog dlg;
-        if ( ! QFile::exists( QSettings( "QGIS", "QGIS2" ).fileName() ) )
+        bool runMigration = true;
+        if ( !settingsMigrationForce && showWelcome )
         {
-          dlg.hideMigration();
+          QgsFirstRunDialog dlg;
+          dlg.exec();
+          runMigration = dlg.migrateSettings();
+          migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::versionInt() );
         }
-        dlg.exec();
-        runMigration = dlg.migrateSettings();
-        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::versionInt() );
-      }
 
-      if ( runMigration )
-      {
-        QgsDebugMsg( QStringLiteral( "RUNNING MIGRATION" ) );
-        migration->runMigration();
+        if ( runMigration )
+        {
+          QgsDebugMsg( QStringLiteral( "RUNNING MIGRATION" ) );
+          migration->runMigration();
+        }
       }
     }
   }
