@@ -66,7 +66,7 @@ class QgsHanaConnection : public QObject
       bool userTablesOnly = true );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
-    QPair<QString, QMap<QString, short>> getLayerPrimaryeKey( const QString &schemaName, const QString &tableName );
+    QStringList getLayerPrimaryeKey( const QString &schemaName, const QString &tableName );
     QgsWkbTypes::Type getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName );
     QString getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName );
     int getColumnSrid( const QString &schemaName, const QString &tableName, const QString &columnName );

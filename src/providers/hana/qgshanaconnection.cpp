@@ -584,7 +584,7 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
   return list;
 }
 
-QPair<QString, QMap<QString, short>> QgsHanaConnection::getLayerPrimaryeKey( const QString &schemaName, const QString &tableName )
+QStringList QgsHanaConnection::getLayerPrimaryeKey( const QString &schemaName, const QString &tableName )
 {
   try
   {
@@ -592,27 +592,15 @@ QPair<QString, QMap<QString, short>> QgsHanaConnection::getLayerPrimaryeKey( con
     ResultSetRef rsPrimaryKeys = dbmd->getPrimaryKeys( nullptr,
                                  QgsHanaUtils::toUtf16( schemaName ),
                                  QgsHanaUtils::toUtf16( tableName ) );
-    QString keyName;
-    QMap<QString, short> keyColumns;
+    QMap<int, QString> pos2Name;
     while ( rsPrimaryKeys->next() )
     {
       QString clmName = QgsHanaUtils::toQString( rsPrimaryKeys->getNString( 4 /*COLUMN_NAME*/ ) );
-      if ( keyName.isEmpty() )
-        keyName = QgsHanaUtils::toQString( rsPrimaryKeys->getNString( 6 /*PK_NAME*/ ) );
-      ResultSetRef rsColumns = dbmd->getColumns( nullptr,
-                               QgsHanaUtils::toUtf16( schemaName ),
-                               QgsHanaUtils::toUtf16( tableName ),
-                               QgsHanaUtils::toUtf16( clmName ) );
-      while ( rsColumns->next() )
-      {
-        Short dataType = rsColumns->getShort( 5 /*DATA_TYPE*/ );
-        keyColumns.insert( clmName, *dataType );
-      }
-      rsColumns->close();
+      int pos = *rsPrimaryKeys->getInt( 5 /*KEY_SEQ*/ );
+      pos2Name.insert(pos, clmName );
     }
     rsPrimaryKeys->close();
-
-    return qMakePair( keyName, keyColumns );
+    return pos2Name.values();
   }
   catch ( const Exception &ex )
   {

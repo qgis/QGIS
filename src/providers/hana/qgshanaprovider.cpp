@@ -1406,9 +1406,8 @@ void QgsHanaProvider::determinePrimaryKey()
   if ( !mIsQuery )
   {
     QgsHanaConnectionRef conn( mUri );
-    auto layerPrimaryKey = conn->getLayerPrimaryeKey( mSchemaName, mTableName );
-    const QMap<QString, short> &columns = layerPrimaryKey.second;
-    auto primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromColumns( columns.keys(), mAttributeFields );
+    QStringList layerPrimaryKey = conn->getLayerPrimaryeKey( mSchemaName, mTableName );
+    auto primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromColumns( layerPrimaryKey, mAttributeFields );
     mPrimaryKeyType = primaryKey.first;
     mPrimaryKeyAttrs = primaryKey.second;
   }

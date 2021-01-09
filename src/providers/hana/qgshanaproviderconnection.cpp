@@ -328,9 +328,19 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
         property.setTableName( layerInfo.tableName );
         property.setSchema( layerInfo.schemaName );
         property.setGeometryColumn( layerInfo.geometryColName );
-        property.setPrimaryKeyColumns( layerInfo.pkCols );
         property.setGeometryColumnCount( layerInfo.geometryColName.isEmpty() ? 0 : 1 );
         property.setComment( layerInfo.tableComment );
+
+        if (layerInfo.isView)
+        {
+          // Set the candidates
+          property.setPrimaryKeyColumns( layerInfo.pkCols );
+        }
+        else  // Fetch and set the real pks
+        {
+          QStringList pks = conn->getLayerPrimaryeKey( layerInfo.schemaName, layerInfo.tableName );
+          property.setPrimaryKeyColumns( pks );
+        }
         tables.push_back( property );
       }
     }
