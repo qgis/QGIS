@@ -199,9 +199,10 @@ class CORE_EXPORT QgsBox3d
     bool contains( const QgsPoint &point ) const;
 
     /**
-     * Returns shortest distance from the box to a point
+     * Returns shortest distance from the box to a point (returns 0 if the point is inside the box)
+     * \since QGIS 3.18
      */
-    float distanceFromPoint( double x, double y, double z );
+    float distanceFromPoint( double x, double y, double z ) const;
 
     /**
      * Converts the box to a 2D rectangle.
