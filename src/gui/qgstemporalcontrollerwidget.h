@@ -93,6 +93,23 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     void firstTemporalLayerLoaded( QgsMapLayer *layer );
     void setTimeStep( const QgsInterval &timeStep );
 
+    /**
+     * Updates the widget timestep and timestep unit inputs using the passed
+     * interval \a timeStep original duration and original unit.
+     *
+     * If the passed interval \a timeStep has different values of original duration
+     * and original unit compared to the widget input values for timestep and
+     * timestep unit then the corresponding widget input values will be updated
+     * to match the \a timeStep original duration and unit.
+     *
+     * After updating the widget inputs, an update to the frame duration is executed.
+     *
+     * \note Updates will only be made if the \a timeStep is valid.
+     *
+     * \since 3.18
+     */
+    void updateTimeStepInputs( const QgsInterval &timeStep );
+
   private slots:
 
     /**
