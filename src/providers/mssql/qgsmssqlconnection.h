@@ -45,7 +45,6 @@ class QgsMssqlConnection
      */
     static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password );
 
-
     static bool openDatabase( QSqlDatabase &db );
 
     /**
@@ -151,6 +150,7 @@ class QgsMssqlConnection
 
     /**
      * Returns a list of all schemas on the \a dataBase.
+     * \since QGIS 3.18
      */
     static QStringList schemas( QSqlDatabase &dataBase, QString *errorMessage );
 
@@ -176,16 +176,47 @@ class QgsMssqlConnection
     static QList<QgsVectorDataProvider::NativeType> nativeTypes();
 
     /**
-     * Builds and returns a sql query string to obtain schemas list depending on settings and \a allowTablesWithNoGeometry
+     * Returns a list of excluded schemas for connection \a connName depending on settings, returns empty list if nothing is set for this connection
      * \since QGIS 3.18
      */
-    static QString buildQueryForSchemas( const QString &connName, bool allowTablesWithNoGeometry );
+    static QStringList excludedSchemasList( const QString &connName );
+
+    /**
+     * Returns a list of excluded schemas for connection \a connName for a specific \a database depending on settings, returns empty list if nothing is set for this connection
+     * \since QGIS 3.18
+     */
+    static QStringList excludedSchemasList( const QString &connName, const QString &database );
+
+    /**
+     * Sets a list of excluded schemas for connection \a connName depending on settings, returns empty list if nothing is set for this connection
+     * \since QGIS 3.18
+     */
+    static void setExcludedSchemasList( const QString &connName, const QStringList &excludedSchemas );
+
+    /**
+     * Sets a list of excluded schemas for connection \a connName for a specific \a database depending on settings, returns empty list if nothing is set for this connection
+     * \since QGIS 3.18
+     */
+    static void setExcludedSchemasList( const QString &connName, const QString &database, const QStringList &excludedSchemas );
+
+    /**
+     * Builds and returns a sql query string to obtain tables list depending on \a allowTablesWithNoGeometry, \a geometryColumnOnly and on \a notSelectedSchemasList
+     * \since QGIS 3.18
+     */
+    static QString buildQueryForTables( bool allowTablesWithNoGeometry, bool geometryColumnOnly, const QStringList &excludedSchemaList = QStringList() );
+
+
+    /**
+     * Builds and returns a sql query string to obtain tables list depending on settings and \a allowTablesWithNoGeometry
+     * \since QGIS 3.18
+     */
+    static QString buildQueryForTables( const QString &connName, bool allowTablesWithNoGeometry );
 
     /**
      * Builds and returns a sql query string to obtain schemas list depending only on settings
      * \since QGIS 3.18
      */
-    static QString buildQueryForSchemas( const QString &connName );
+    static QString buildQueryForTables( const QString &connName );
 
   private:
 
