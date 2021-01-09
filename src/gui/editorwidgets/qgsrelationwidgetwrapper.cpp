@@ -117,17 +117,23 @@ void QgsRelationWidgetWrapper::widgetValueChanged( const QString &attribute, con
 
 bool QgsRelationWidgetWrapper::showUnlinkButton() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return visibleButtons().testFlag( QgsAttributeEditorRelation::Button::Unlink );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsRelationWidgetWrapper::setShowUnlinkButton( bool showUnlinkButton )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   setVisibleButtons( visibleButtons().setFlag( QgsAttributeEditorRelation::Unlink, showUnlinkButton ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsRelationWidgetWrapper::setShowSaveChildEditsButton( bool showSaveChildEditsButton )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   setVisibleButtons( visibleButtons().setFlag( QgsAttributeEditorRelation::SaveChildEdits, showSaveChildEditsButton ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsRelationWidgetWrapper::showLabel() const
@@ -203,17 +209,23 @@ bool QgsRelationWidgetWrapper::valid() const
 
 bool QgsRelationWidgetWrapper::showLinkButton() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return visibleButtons().testFlag( QgsAttributeEditorRelation::Button::Link );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsRelationWidgetWrapper::setShowLinkButton( bool showLinkButton )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   setVisibleButtons( visibleButtons().setFlag( QgsAttributeEditorRelation::Link, showLinkButton ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsRelationWidgetWrapper::showSaveChildEditsButton() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return visibleButtons().testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsRelationWidgetWrapper::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
