@@ -27,7 +27,7 @@
 
 #include "odbc/PreparedStatement.h"
 
-QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRef&& resultSet )
+QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
   , mNumColumns( mResultSet->getMetadata().getColumnCount() )
   , mNextRow( mResultSet->next() )
