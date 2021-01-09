@@ -1,9 +1,9 @@
 /***************************************************************************
     qgsmaptoolscalefeature.h  -  map tool for scaling features by mouse drag
     ---------------------
-    Date                 : December 2020
-    Copyright            : (C) 2020 by roya0045
-    Contact              : ping me on github
+    begin                :
+    copyright            :
+    email                :
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -86,6 +86,7 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
 
   private slots:
     void updateRubberband( double scale );
+    void recenterRubberband( double );
 
     void applyScaling( double scale );
     void cancel();
@@ -114,6 +115,7 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
     QgsRectangle mExtent;
 
     QgsPointXY mCenterPoint;
+    QgsPointXY mMapAnchor;
     std::unique_ptr<QgsVertexMarker> mAnchorPoint = nullptr;
 
     bool mScalingActive;

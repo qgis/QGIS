@@ -1,9 +1,9 @@
-/***************************************************************************
+﻿/***************************************************************************
     qgsmaptoolscalefeature.cpp  -  map tool for scaling features by mouse drag
     ---------------------
-    Date                 : December 2020
-    Copyright            : (C) 2020 by roya0045
-    Contact              : ping me on github
+    begin                :
+    copyright            :
+    email                :
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -149,9 +149,9 @@ QgsMapToolScaleFeature::~QgsMapToolScaleFeature()
 
 void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( mBaseDistance == 0 )
+  if ( mBaseDistance == 0)
   {
-    return;
+
   }
   if ( mScalingActive )
   {
@@ -294,18 +294,15 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         mRubberBand->addGeometry( feat.geometry(), mLayer );
       }
     }
-    QgsPointXY mapAnchor = toMapCoordinates( mLayer, mFeatureCenter );
-    QPoint rubberAnchor = toCanvasCoordinates( mapAnchor );
-    mAnchorPoint->setCenter( mapAnchor );
-    mRubberScale = QPointF( rubberAnchor.x() - mRubberBand->x(), rubberAnchor.y() - mRubberBand->y() );
-    mRubberBand->setTransformOriginPoint( rubberAnchor );
-    mRubberBand->show();
+    mScalingActive = true;
+    mMapAnchor = toMapCoordinates( mLayer,mFeatureCenter );
+    recenterRubberband( 0.0 );
     mBaseDistance = toLayerCoordinates( mLayer, e->mapPoint() ).distance( mFeatureCenter );
     mScaling = 1.0;
+    connect( mCanvas, &QgsMapCanvas::scaleChanged, this, &QgsMapToolScaleFeature::recenterRubberband );
 
     createScalingWidget();
 
-    mScalingActive = true;
 
     return;
   }
@@ -359,7 +356,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   mLayer->beginEditCommand( tr( "Features Scaled" ) );
 
-  int start = ( mLayer->geometryType() == 2 ) ? 1 : 0;
+  int start = ( mLayer->geometryType() == 2 )? 1 : 0;
 
   for ( QgsFeatureId id : qgis::as_const( mScaledFeatures ) )
   {
@@ -371,8 +368,8 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
     while ( !vertex.isEmpty() )
     {
       // for to maintain feature position use the center of the feature bbox and not the whole selection
-      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * ( scale - 1 ) );
-      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * ( scale - 1 ) );
+      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * (scale - 1) );
+      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * (scale - 1) );
 
       mLayer->moveVertex( newX, newY, id, i );
       i = i + 1;
@@ -424,6 +421,18 @@ void QgsMapToolScaleFeature::activate()
     mAnchorPoint->setCenter( mFeatureCenter );
   }
   QgsMapTool::activate();
+
+}
+
+void QgsMapToolScaleFeature::recenterRubberband( double )
+{
+    if ( !mScalingActive )
+        return;
+    QPoint rubberAnchor = toCanvasCoordinates( mMapAnchor );
+    mAnchorPoint->setCenter( mMapAnchor );
+    mRubberScale = QPointF( rubberAnchor.x() - mRubberBand->x(), rubberAnchor.y() - mRubberBand->y() );
+    mRubberBand->setTransformOriginPoint( rubberAnchor );
+    mRubberBand->show();
 }
 
 void QgsMapToolScaleFeature::deleteRubberband()
@@ -438,6 +447,7 @@ void QgsMapToolScaleFeature::deactivate()
   mScalingActive = false;
   mAnchorPoint.reset();
   deleteRubberband();
+  disconnect(mCanvas, &QgsMapCanvas::scaleChanged, this, &QgsMapToolScaleFeature::recenterRubberband);
   QgsMapTool::deactivate();
 }
 
