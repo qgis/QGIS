@@ -502,7 +502,7 @@ def reloadPlugin(packageName):
 
 def showPluginHelp(packageName: str = None, filename: str = "index", section: str = ""):
     """Open help in the user's html browser. The help file should be named index-ll_CC.html or index-ll.html or index.html.
-    
+
     :param str packageName: name of package folder, if None it's using the current file package. Defaults to None. Optional.
     :param str filename: name of file to open. It can be a path like 'doc/index' for example. Defaults to 'index'.
     :param str section: URL path to open. Defaults to empty string.
