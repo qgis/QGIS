@@ -902,9 +902,6 @@ endif()
 # Python bindings
 
 if (WITH_CORE AND WITH_BINDINGS)
-
-  find_package(PythonLibrary REQUIRED)
-
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
