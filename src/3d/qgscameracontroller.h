@@ -235,6 +235,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     QSet< int > mDepressedKeys;
     bool mCaptureFpsMouseMovements = false;
+    bool mIgnoreNextMouseMove = false;
     QTimer *mFpsNavTimer = nullptr;
 };
 

@@ -436,9 +436,15 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
     {
       mCaptureFpsMouseMovements = !mCaptureFpsMouseMovements;
       if ( mCaptureFpsMouseMovements )
+      {
+        mIgnoreNextMouseMove = true;
         qApp->setOverrideCursor( QCursor( Qt::BlankCursor ) );
+      }
       else
+      {
+        mIgnoreNextMouseMove = false;
         qApp->restoreOverrideCursor();
+      }
       return;
     }
   }
@@ -565,6 +571,13 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
 {
   if ( !mMousePressed && !mCaptureFpsMouseMovements )
     return;
+
+  if ( mIgnoreNextMouseMove )
+  {
+    mMousePos = QPoint( mouse->x(), mouse->y() );
+    mIgnoreNextMouseMove = false;
+    return;
+  }
 
   double dx = mouse->x() - mMousePos.x();
   double dy = mouse->y() - mMousePos.y();
