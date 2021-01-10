@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="24"
+   width="24"
+   version="1.1"
+   id="svg3873"
+   sodipodi:docname="mActionAddHanaLayer.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata3879">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3877" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1331"
+     inkscape:window-height="866"
+     id="namedview3875"
+     showgrid="false"
+     inkscape:zoom="1.2265984"
+     inkscape:cx="263.28519"
+     inkscape:cy="-195.25954"
+     inkscape:window-x="432"
+     inkscape:window-y="227"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3873" />
+  <filter
+     id="a"
+     color-interpolation-filters="sRGB"
+     height="1.5"
+     width="1.5"
+     x="-.25"
+     y="-.25">
+    <feGaussianBlur
+       in="SourceAlpha"
+       result="blur"
+       stdDeviation="2"
+       id="feGaussianBlur3830" />
+    <feColorMatrix
+       result="bluralpha"
+       type="matrix"
+       values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.351000 0"
+       id="feColorMatrix3832" />
+    <feOffset
+       dx="7.5"
+       dy="7.5"
+       in="bluralpha"
+       result="offsetBlur"
+       id="feOffset3834" />
+    <feMerge
+       id="feMerge3840">
+      <feMergeNode
+         in="offsetBlur"
+         id="feMergeNode3836" />
+      <feMergeNode
+         in="SourceGraphic"
+         id="feMergeNode3838" />
+    </feMerge>
+  </filter>
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#6d97c4;stroke-width:3.77952743"
+     d="m 6.5490565,0.07094656 c -5.66173201,0 -6.48189001,0.81259846 -6.48189001,6.47055114 v 7.0412603 c 0,5.665512 0.820158,6.481889 6.48189001,6.481889 h 7.0374795 c 5.68063,0 6.48189,-0.816377 6.48189,-6.47811 V 6.5452772 c 0,-5.65795265 -0.80126,-6.47433064 -6.48189,-6.47433064 z"
+     id="path3903" />
+  <g
+     style="fill:none;stroke:#415a75;filter:url(#a)"
+     id="g3843"
+     transform="matrix(0.05336966,0,0,0.05336966,-25.394738,-6.8986587)" />
+  <g
+     id="g3869"
+     transform="matrix(0.69230769,0,0,0.69230769,1.8461539,1.8461539)">
+    <rect
+       style="fill:#5a8c5a"
+       id="rect3861"
+       y="19"
+       x="19"
+       width="13"
+       ry="2.6149368"
+       rx="2.6149371"
+       height="13" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3863"
+       style="overflow:visible;fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:2.5999999;stroke-linecap:round;stroke-linejoin:round"
+       d="m 21.6,25.499999 h 7.8" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3865"
+       style="overflow:visible;fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:2.5999999;stroke-linecap:round;stroke-linejoin:round"
+       d="M 25.5,29.399999 V 21.6" />
+    <path
+       style="opacity:0.3;fill:#fcffff;fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       id="path3867"
+       d="m 20.3,25.499999 h 10.4 c 0,0 0,0 0,-2.6 C 30.7,20.3 30.05,20.3 25.5,20.3 c -4.55,0 -5.2,0 -5.2,2.599999 0,2.6 0,2.6 0,2.6 z" />
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.80375957px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.4836466"
+     x="0.43264881"
+     y="12.17761"
+     id="text4784"><tspan
+       sodipodi:role="line"
+       id="tspan4782"
+       x="0.43264881"
+       y="12.17761"
+       style="stroke-width:0.4836466">HANA</tspan></text>
+</svg>

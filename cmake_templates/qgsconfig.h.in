@@ -54,6 +54,8 @@
 
 #cmakedefine HAVE_ORACLE
 
+#cmakedefine HAVE_HANA
+
 #cmakedefine SERVER_SKIP_ECW
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS

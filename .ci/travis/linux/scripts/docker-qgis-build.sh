@@ -33,6 +33,11 @@ echo "${bold}Running cmake...${endbold}"
 export CC=/usr/lib/ccache/clang
 export CXX=/usr/lib/ccache/clang++
 
+HANA_TESTS_ENABLED=OFF
+if [ ${HANA_TESTS} == "true" ] ; then
+  HANA_TESTS_ENABLED=ON
+fi
+
 cmake \
  -GNinja \
  -DUSE_CCACHE=OFF \
@@ -45,6 +50,8 @@ cmake \
  -DENABLE_PGTEST=ON \
  -DENABLE_SAGA_TESTS=ON \
  -DENABLE_MSSQLTEST=ON \
+ -DENABLE_HANATEST=$HANA_TESTS_ENABLED \
+ -DWITH_HANA=ON \
  -DWITH_QSPATIALITE=ON \
  -DWITH_QWTPOLAR=OFF \
  -DWITH_APIDOC=OFF \

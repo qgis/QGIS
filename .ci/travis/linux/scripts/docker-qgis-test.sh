@@ -7,6 +7,28 @@ set -e
 # cat /tmp/cache.debug
 # echo "travis_fold:end:ccache-debug"
 
+##################################
+# Prepare HANA database connection
+##################################
+
+if [ ${HANA_TESTS} == "true" ] ; then
+  echo "travis_fold:start:hana"
+  echo "${bold}Load HANA database...${endbold}"   
+
+  export QGIS_HANA_TEST_DB='driver='/usr/sap/hdbclient/libodbcHDB.so' host='${HANA_HOST}' port='${HANA_PORT}' user='${HANA_USER}' password='${HANA_PASSWORD}' sslEnabled=true sslValidateCertificate=False'
+
+  # wait for the DB to be available
+  echo "Wait a moment while trying to connect to a HANA database."
+  while ! echo exit | hdbsql -n '${HANA_HOST}:${HANA_PORT}' -u '${HANA_USER}' -p '${HANA_PASSWORD}' &> /dev/null
+  do
+    printf "."
+    sleep 1
+  done
+  echo " done"
+  
+  echo "travis_fold:end:hana"
+fi
+
 ############################
 # Restore postgres test data
 ############################
