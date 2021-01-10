@@ -465,6 +465,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QAction *mActionPaste = nullptr;
     QProgressBar *mStatusProgressBar = nullptr;
 
+    QMenu *mDynamicTextMenu = nullptr;
+
     struct PanelStatus
     {
       PanelStatus( bool visible = true, bool active = false )

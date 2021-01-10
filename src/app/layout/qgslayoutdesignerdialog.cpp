@@ -73,6 +73,7 @@
 #include "qgsabstractvaliditycheck.h"
 #include "qgsvaliditycheckcontext.h"
 #include "qgsprojectviewsettings.h"
+#include "qgslayoutlabelwidget.h"
 #include "ui_defaults.h"
 
 #include <QShortcut>
@@ -406,6 +407,23 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mView->setFrameShape( QFrame::NoFrame );
 
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
+
+  mDynamicTextMenu = new QMenu( tr( "Dynamic Text" ), this );
+
+  connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    mDynamicTextMenu->clear();
+    // we need to rebuild this on each show, as the content varies depending on other available items...
+    QgsLayoutLabelWidget::buildInsertDynamicTextMenu( mLayout, mDynamicTextMenu, [ = ]( const QString & expression )
+    {
+      activateNewItemCreationTool( QgsGui::layoutItemGuiRegistry()->metadataIdForItemType( QgsLayoutItemRegistry::LayoutLabel ), false );
+      QVariantMap properties;
+      properties.insert( QStringLiteral( "expression" ), expression );
+      mAddItemTool->setCustomProperties( properties );
+    } );
+  } );
+
+  mItemMenu->addMenu( mDynamicTextMenu );
 
   // populate with initial items...
   const QList< int > itemMetadataIds = QgsGui::layoutItemGuiRegistry()->itemMetadataIds();
