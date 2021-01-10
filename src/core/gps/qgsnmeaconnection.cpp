@@ -207,6 +207,8 @@ void QgsNmeaConnection::processGstSentence( const char *data, int len )
     mLastGPSInformation.hacc = sqrt( ( pow( sig_lat, 2 ) + pow( sig_lon, 2 ) ) / 2.0 );
     // Vertical RMS
     mLastGPSInformation.vacc = sig_alt;
+    // 3D RMS
+    mLastGPSInformation.hvacc = sqrt( ( pow( sig_lat, 2 ) + pow( sig_lon, 2 ) + pow( sig_alt, 2 ) ) / 3.0 );
   }
 }
 

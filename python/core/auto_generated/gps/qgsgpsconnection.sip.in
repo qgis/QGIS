@@ -82,6 +82,8 @@ Encapsulates information relating to a GPS position fix.
     //! Vertical accuracy in meters
     double vacc;
 
+    double hvacc;
+
     QDateTime utcDateTime;
 
     QChar fixMode;
