@@ -960,6 +960,16 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       mTxtVacc->setEnabled( false );
       mTxtVacc->setText( tr( "Not available" ) );
     }
+    if ( std::isfinite( info.hvacc ) )
+    {
+      mTxt3Dacc->setEnabled( true );
+      mTxt3Dacc->setText( tr( "%1 m" ).arg( QLocale().toString( info.hvacc, 'f', 3 ) ) );
+    }
+    else
+    {
+      mTxt3Dacc->setEnabled( false );
+      mTxt3Dacc->setText( tr( "Not available" ) );
+    }
     mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QString() ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.qualityDescription() );
