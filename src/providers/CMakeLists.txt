@@ -19,7 +19,6 @@ if (NOT FORCE_STATIC_PROVIDERS)
   add_subdirectory(wfs)
   add_subdirectory(spatialite)
   add_subdirectory(virtual)
-  add_subdirectory(db2)
   add_subdirectory(mdal)
 
   if (WITH_ORACLE)
