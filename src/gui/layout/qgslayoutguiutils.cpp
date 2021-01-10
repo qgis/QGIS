@@ -129,6 +129,34 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     {
       map->zoomToExtent( mapCanvas->mapSettings().visibleExtent() );
     }
+
+    // auto assign a unique id to map items
+    QList<QgsLayoutItemMap *> mapsList;
+    if ( map->layout() )
+      map->layout()->layoutItems( mapsList );
+
+    int counter = mapsList.size() + 1;
+    bool existing = false;
+    while ( true )
+    {
+      existing = false;
+      for ( QgsLayoutItemMap *otherMap : qgis::as_const( mapsList ) )
+      {
+        if ( map == otherMap )
+          continue;
+
+        if ( otherMap->id() == QObject::tr( "Map %1" ).arg( counter ) )
+        {
+          existing = true;
+          break;
+        }
+      }
+      if ( existing )
+        counter++;
+      else
+        break;
+    }
+    map->setId( QObject::tr( "Map %1" ).arg( counter ) );
   } );
   registry->addLayoutItemGuiMetadata( mapItemMetadata.release() );
 
