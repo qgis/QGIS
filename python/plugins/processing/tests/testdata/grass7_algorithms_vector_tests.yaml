@@ -365,6 +365,8 @@ tests:
       output:
         name: expected/grass7/buffer_polys_layer3.shp
         type: vector
+        compare:
+          ignore_crs_check: true
 
   - algorithm: grass7:v.buffer
     name: Buffer with layername 2
@@ -394,6 +396,8 @@ tests:
       output:
         name: expected/grass7/buffer_polys_layer2.shp
         type: vector
+        compare:
+          ignore_crs_check: true
 
   - algorithm: grass7:v.buffer
     name: Buffer using value from field
