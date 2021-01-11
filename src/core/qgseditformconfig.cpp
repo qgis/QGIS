@@ -477,7 +477,8 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
       {
         QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
-        QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr, node.namedItem( QStringLiteral( "id" ) ).toElement().text(), context );
+        const QString layerId = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
+        QgsAttributeEditorElement *attributeEditorWidget = QgsAttributeEditorElement::create( elem, layerId, d->mFields, d->mWidgetConfigs, context, nullptr );
         if ( attributeEditorWidget )
           addTab( attributeEditorWidget );
       }
@@ -601,141 +602,9 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   }
 
   node.appendChild( widgetsElem );
-
-  //// END TODO
 }
 
 QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId, const QgsReadWriteContext &context )
 {
-  QgsAttributeEditorElement *newElement = nullptr;
-
-  if ( elem.tagName() == QLatin1String( "attributeEditorContainer" ) )
-  {
-    QColor backgroundColor( elem.attribute( QStringLiteral( "backgroundColor" ), QString() ) );
-    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ),
-        elem.attribute( QStringLiteral( "name" ) ) ), parent, backgroundColor );
-    bool ok;
-    int cc = elem.attribute( QStringLiteral( "columnCount" ) ).toInt( &ok );
-    if ( !ok )
-      cc = 0;
-    container->setColumnCount( cc );
-
-    bool isGroupBox = elem.attribute( QStringLiteral( "groupBox" ) ).toInt( &ok );
-    if ( ok )
-      container->setIsGroupBox( isGroupBox );
-    else
-      container->setIsGroupBox( parent );
-
-    bool visibilityExpressionEnabled = elem.attribute( QStringLiteral( "visibilityExpressionEnabled" ) ).toInt( &ok );
-    QgsOptionalExpression visibilityExpression;
-    if ( ok )
-    {
-      visibilityExpression.setEnabled( visibilityExpressionEnabled );
-      visibilityExpression.setData( QgsExpression( elem.attribute( QStringLiteral( "visibilityExpression" ) ) ) );
-    }
-    container->setVisibilityExpression( visibilityExpression );
-
-    QDomNodeList childNodeList = elem.childNodes();
-
-    for ( int i = 0; i < childNodeList.size(); i++ )
-    {
-      QDomElement childElem = childNodeList.at( i ).toElement();
-      QgsAttributeEditorElement *myElem = attributeEditorElementFromDomElement( childElem, container, layerId, context );
-      if ( myElem )
-        container->addChildElement( myElem );
-    }
-
-    newElement = container;
-  }
-  else if ( elem.tagName() == QLatin1String( "attributeEditorField" ) )
-  {
-    QString name = elem.attribute( QStringLiteral( "name" ) );
-    int idx = d->mFields.lookupField( name );
-    newElement = new QgsAttributeEditorField( name, idx, parent );
-  }
-  else if ( elem.tagName() == QLatin1String( "attributeEditorRelation" ) )
-  {
-    // At this time, the relations are not loaded
-    // So we only grab the id and delegate the rest to onRelationsLoaded()
-    QgsAttributeEditorRelation *relElement = new QgsAttributeEditorRelation( elem.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
-    QVariantMap config = QgsXmlUtils::readVariant( elem.firstChildElement( "editor_configuration" ) ).toMap();
-
-    // load defaults
-    if ( config.isEmpty() )
-      config = relElement->relationEditorConfiguration();
-
-    // pre QGIS 3.18 compatibility
-    if ( ! config.contains( QStringLiteral( "buttons" ) ) )
-    {
-      if ( elem.hasAttribute( "buttons" ) )
-      {
-        QString buttonString = elem.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
-        config.insert( "buttons", qgsFlagValueToKeys( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) ) );
-      }
-      else
-      {
-        // pre QGIS 3.16 compatibility
-        QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
-        buttons.setFlag( QgsAttributeEditorRelation::Button::Link, elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
-        buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
-        buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
-        config.insert( "buttons", qgsFlagValueToKeys( buttons ) );
-      }
-    }
-
-    relElement->setRelationEditorConfiguration( config );
-
-    if ( elem.hasAttribute( QStringLiteral( "forceSuppressFormPopup" ) ) )
-    {
-      relElement->setForceSuppressFormPopup( elem.attribute( QStringLiteral( "forceSuppressFormPopup" ) ).toInt() );
-    }
-    else
-    {
-      // pre QGIS 3.16 compatibility - the widgets section is read before
-      relElement->setForceSuppressFormPopup( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "force-suppress-popup" ), false ).toBool() );
-    }
-
-    if ( elem.hasAttribute( QStringLiteral( "nmRelationId" ) ) )
-    {
-      relElement->setNmRelationId( elem.attribute( QStringLiteral( "nmRelationId" ) ) );
-    }
-    else
-    {
-      // pre QGIS 3.16 compatibility - the widgets section is read before
-      relElement->setNmRelationId( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ) );
-    }
-    if ( elem.hasAttribute( "label" ) )
-    {
-      QString label = elem.attribute( QStringLiteral( "label" ) );
-      relElement->setLabel( label );
-    }
-    if ( elem.hasAttribute( "relationWidgetTypeId" ) )
-    {
-      QString relationWidgetTypeId = elem.attribute( QStringLiteral( "relationWidgetTypeId" ) );
-      relElement->setRelationWidgetTypeId( relationWidgetTypeId );
-    }
-    newElement = relElement;
-  }
-  else if ( elem.tagName() == QLatin1String( "attributeEditorQmlElement" ) )
-  {
-    QgsAttributeEditorQmlElement *qmlElement = new QgsAttributeEditorQmlElement( elem.attribute( QStringLiteral( "name" ) ), parent );
-    qmlElement->setQmlCode( elem.text() );
-    newElement = qmlElement;
-  }
-  else if ( elem.tagName() == QLatin1String( "attributeEditorHtmlElement" ) )
-  {
-    QgsAttributeEditorHtmlElement *htmlElement = new QgsAttributeEditorHtmlElement( elem.attribute( QStringLiteral( "name" ) ), parent );
-    htmlElement->setHtmlCode( elem.text() );
-    newElement = htmlElement;
-  }
-
-  if ( newElement )
-  {
-    if ( elem.hasAttribute( QStringLiteral( "showLabel" ) ) )
-      newElement->setShowLabel( elem.attribute( QStringLiteral( "showLabel" ) ).toInt() );
-    else
-      newElement->setShowLabel( true );
-  }
-
-  return newElement;
+  return QgsAttributeEditorElement::create( elem, layerId, d->mFields, d->mWidgetConfigs, context, parent );
 }

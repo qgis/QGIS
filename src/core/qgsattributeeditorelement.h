@@ -86,6 +86,13 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     virtual ~QgsAttributeEditorElement() = default;
 
     /**
+     * Constructs the editor element from the given element
+     *
+     * \since QGIS 3.18
+     */
+    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QMap<QString, QVariantMap > widgetConfigs, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = nullptr ) SIP_FACTORY;
+
+    /**
      * Returns the name of this element
      *
      * \returns The name for this element
@@ -151,6 +158,12 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \since QGIS 2.18
      */
     virtual void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const = 0;
+
+    /**
+      * Should be implemented by subclasses to read specific configuration
+      * \since QGIS 3.18
+      */
+    virtual void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs ) = 0;
 
     /**
      * All subclasses need to overwrite this method and return a type specific identifier.
@@ -285,6 +298,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
+    void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs ) override;
     QString typeIdentifier() const override;
 
     bool mIsGroupBox;
@@ -323,6 +337,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
+    void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs ) override;
     QString typeIdentifier() const override;
     int mIdx;
 };
@@ -481,6 +496,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
+    void loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs ) override;
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
@@ -531,6 +547,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
 
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
+    void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs ) override;
     QString typeIdentifier() const override;
     QString mQmlCode;
 };
@@ -572,6 +589,7 @@ class CORE_EXPORT QgsAttributeEditorHtmlElement : public QgsAttributeEditorEleme
 
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
+    void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs ) override;
     QString typeIdentifier() const override;
     QString mHtmlCode;
 };

@@ -64,6 +64,13 @@ Constructor
 
     virtual ~QgsAttributeEditorElement();
 
+    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QMap<QString, QVariantMap > widgetConfigs, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = 0 ) /Factory/;
+%Docstring
+Constructs the editor element from the given element
+
+.. versionadded:: 3.18
+%End
+
     QString name() const;
 %Docstring
 Returns the name of this element
