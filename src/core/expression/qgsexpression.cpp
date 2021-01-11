@@ -1088,6 +1088,102 @@ QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, 
   return expr;
 }
 
+bool QgsExpression::isFieldEqualityExpression( const QString &expression, QString &field, QVariant &value )
+{
+  QgsExpression e( expression );
+
+  if ( !e.rootNode() )
+    return false;
+
+  if ( const QgsExpressionNodeBinaryOperator *binOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( e.rootNode() ) )
+  {
+    if ( binOp->op() == QgsExpressionNodeBinaryOperator::boEQ )
+    {
+      const QgsExpressionNodeColumnRef *columnRef = dynamic_cast<const QgsExpressionNodeColumnRef *>( binOp->opLeft() );
+      const QgsExpressionNodeLiteral *literal = dynamic_cast<const QgsExpressionNodeLiteral *>( binOp->opRight() );
+      if ( columnRef && literal )
+      {
+        field = columnRef->name();
+        value = literal->value();
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QString &result )
+{
+  if ( expressions.empty() )
+    return false;
+
+  QString inField;
+  bool first = true;
+  QStringList values;
+  for ( const QString &expression : expressions )
+  {
+    QString field;
+    QVariant value;
+    if ( QgsExpression::isFieldEqualityExpression( expression, field, value ) )
+    {
+      if ( first )
+      {
+        inField = field;
+        first = false;
+      }
+      else if ( field != inField )
+      {
+        return false;
+      }
+      values << QgsExpression::quotedValue( value );
+    }
+    else
+    {
+      // we also allow reducing similar 'field IN (...)' expressions!
+      QgsExpression e( expression );
+
+      if ( !e.rootNode() )
+        return false;
+
+      if ( const QgsExpressionNodeInOperator *inOp = dynamic_cast<const QgsExpressionNodeInOperator *>( e.rootNode() ) )
+      {
+        const QgsExpressionNodeColumnRef *columnRef = dynamic_cast<const QgsExpressionNodeColumnRef *>( inOp->node() );
+        if ( !columnRef )
+          return false;
+
+        if ( first )
+        {
+          inField = columnRef->name();
+          first = false;
+        }
+        else if ( columnRef->name() != inField )
+        {
+          return false;
+        }
+
+        if ( QgsExpressionNode::NodeList *nodeList = inOp->list() )
+        {
+          const QList<QgsExpressionNode *> nodes = nodeList->list();
+          for ( const QgsExpressionNode *node : nodes )
+          {
+            const QgsExpressionNodeLiteral *literal = dynamic_cast<const QgsExpressionNodeLiteral *>( node );
+            if ( !literal )
+              return false;
+
+            values << QgsExpression::quotedValue( literal->value() );
+          }
+        }
+      }
+      else
+      {
+        return false;
+      }
+    }
+  }
+  result = QStringLiteral( "%1 IN (%2)" ).arg( inField, values.join( ',' ) );
+  return true;
+}
+
 const QgsExpressionNode *QgsExpression::rootNode() const
 {
   return d->mRootNode;

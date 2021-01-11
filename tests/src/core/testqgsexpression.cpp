@@ -4006,6 +4006,73 @@ class TestQgsExpression: public QObject
       QCOMPARE( res.toString(), QStringLiteral( "test" ) );
     }
 
+    void testIsFieldEqualityExpression_data()
+    {
+      QTest::addColumn<QString>( "input" );
+      QTest::addColumn<bool>( "expected" );
+      QTest::addColumn<QString>( "field" );
+      QTest::addColumn<QVariant>( "value" );
+      QTest::newRow( "empty" ) << "" << false << QString() << QVariant();
+      QTest::newRow( "invalid" ) << "a=" << false << QString() << QVariant();
+      QTest::newRow( "is string" ) << "field = 'value'" << true << "field" << QVariant( QStringLiteral( "value" ) );
+      QTest::newRow( "is number" ) << "field = 5" << true << "field" << QVariant( 5 );
+      QTest::newRow( "quoted field" ) << "\"my field\" = 5" << true << "my field" << QVariant( 5 );
+      QTest::newRow( "not equal" ) << "field <> 5" << false << QString() << QVariant();
+    }
+
+    void testIsFieldEqualityExpression()
+    {
+      QFETCH( QString, input );
+      QFETCH( bool, expected );
+      QFETCH( QString, field );
+      QFETCH( QVariant, value );
+
+      QString resField;
+      QVariant resValue;
+      QCOMPARE( QgsExpression::isFieldEqualityExpression( input, resField, resValue ), expected );
+      if ( expected )
+      {
+        QCOMPARE( resField, field );
+        QCOMPARE( resValue, value );
+      }
+    }
+
+    void testAttemptReduceToInClause_data()
+    {
+      QTest::addColumn<QStringList>( "input" );
+      QTest::addColumn<bool>( "expected" );
+      QTest::addColumn<QString>( "expression" );
+      QTest::newRow( "empty" ) << QStringList() << false << QString();
+      QTest::newRow( "invalid" ) << ( QStringList() << QStringLiteral( "a=" ) ) << false << QString();
+      QTest::newRow( "not equality" ) << ( QStringList() << QStringLiteral( "field <> 'value'" ) ) << false << "field";
+      QTest::newRow( "one expression" ) << ( QStringList() << QStringLiteral( "field = 'value'" ) ) << true << "field IN ('value')";
+      QTest::newRow( "one IN expression" ) << ( QStringList() << QStringLiteral( "field IN ('value', 'value2')" ) ) << true << "field IN ('value','value2')";
+      QTest::newRow( "one IN expression non-literal" ) << ( QStringList() << QStringLiteral( "field IN ('value', 'value2', \"a field\")" ) ) << false << QString();
+      QTest::newRow( "two expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) ) << true << "field IN ('value','value2')";
+      QTest::newRow( "two expressions with IN" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field IN ('value2', 'value3')" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "two expressions with IN not literal" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field IN ('value2', 'value3', \"a field\")" ) ) << false << QString();
+      QTest::newRow( "two expressions with IN different field" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field2 IN ('value2', 'value3')" ) ) << false << QString();
+      QTest::newRow( "two expressions first not equality" ) << ( QStringList() << QStringLiteral( "field <>'value'" )  << QStringLiteral( "field == 'value2'" ) ) << false << "field";
+      QTest::newRow( "two expressions second not equality" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field <> 'value2'" ) ) << false << "field";
+      QTest::newRow( "three expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "three expressions with IN" ) << ( QStringList() << QStringLiteral( "field IN ('v1', 'v2')" ) << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "field IN ('v1','v2','value','value2','value3')";
+      QTest::newRow( "three expressions different fields" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field2 = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << false << "field";
+    }
+
+    void testAttemptReduceToInClause()
+    {
+      QFETCH( QStringList, input );
+      QFETCH( bool, expected );
+      QFETCH( QString, expression );
+
+      QString resExpression;
+      QCOMPARE( QgsExpression::attemptReduceToInClause( input, resExpression ), expected );
+      if ( expected )
+      {
+        QCOMPARE( resExpression, expression );
+      }
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsExpression )
