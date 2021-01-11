@@ -52,6 +52,7 @@ if (WITH_GUI)
     qgsarcgisrestdataitemguiprovider.cpp
     qgsarcgisrestprovidergui.cpp
     qgsarcgisrestsourceselect.cpp
+    qgsarcgisrestsourcewidget.cpp
     qgsnewarcgisrestconnection.cpp
   )
 endif()
