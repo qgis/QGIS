@@ -373,11 +373,22 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
     if ( serviceMayHaveQueryCapability && ( filter == Vector || filter == AllTypes ) )
     {
       const QString geometryType = layerInfoMap.value( QStringLiteral( "geometryType" ) ).toString();
+#if 0
+      // we have a choice here -- if geometryType is unknown and the service reflects that it supports Map capabilities,
+      // then we can't be sure whether or not the individual sublayers support Query or Map requests only. So we either:
+      // 1. Send off additional requests for each individual layer's capabilities (too expensive)
+      // 2. Err on the side of only showing services we KNOW will work for layer -- but this has the side effect that layers
+      //    which ARE available as feature services will only show as raster mapserver layers, which is VERY bad/restrictive
+      // 3. Err on the side of showing services we THINK may work, even though some of them may or may not work depending on the actual
+      //    server configuration
+      // We opt for 3, because otherwise we're making it impossible for users to load valid vector layers into QGIS
+
       if ( serviceMayRenderMaps )
       {
         if ( geometryType.isEmpty() )
           continue;
       }
+#endif
 
       const QgsWkbTypes::Type wkbType = QgsArcGisRestUtils::convertGeometryType( geometryType );
 
