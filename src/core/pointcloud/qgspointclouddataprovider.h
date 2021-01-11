@@ -24,6 +24,7 @@
 #include "qgsstatisticalsummary.h"
 #include "qgspointcloudindex.h"
 #include "qgspoint.h"
+#include "qgsray3d.h"
 #include <memory>
 
 class IndexedPointCloudNode;
@@ -139,7 +140,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \since QGIS 3.18
      */
-    QVector<QVariantMap> getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit = 1000 );
+    QVector<QVariantMap> getPointsOnRay( const QgsRay3D &ray, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit = 1000 );
 #else
 
     /**
@@ -399,7 +400,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
-    QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, double cameraFov, int screenSizePx, const QVector3D &rayOrigin, const QVector3D &rayDirection );
+    QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, double cameraFov, int screenSizePx, const QgsRay3D &ray );
 };
 
 #endif // QGSMESHDATAPROVIDER_H

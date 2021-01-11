@@ -125,7 +125,7 @@ bool QgsBox3d::operator==( const QgsBox3d &other ) const
          qgsDoubleNear( mZmax, other.mZmax );
 }
 
-float QgsBox3d::distanceFromPoint( double x, double y, double z )
+float QgsBox3d::distanceFromPoint( double x, double y, double z ) const
 {
   float dx = std::max( mBounds2d.xMinimum() - x, std::max( 0., x - mBounds2d.xMaximum() ) );
   float dy = std::max( mBounds2d.yMinimum() - y, std::max( 0., y - mBounds2d.yMaximum() ) );

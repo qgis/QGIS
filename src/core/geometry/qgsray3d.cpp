@@ -1,0 +1,88 @@
+#include "qgsray3d.h"
+
+#include "qgsrange.h"
+
+#include <QtMath>
+
+QgsRay3D::QgsRay3D( const QVector3D &origin, const QVector3D &direction )
+  : mOrigin( origin )
+  , mDirection( direction )
+{
+
+}
+
+void QgsRay3D::setOrigin( const QVector3D &origin )
+{
+  mOrigin = origin;
+}
+
+void QgsRay3D::setDirection( const QVector3D direction )
+{
+  mDirection = direction;
+}
+
+bool QgsRay3D::intersectsWith( const QgsBox3d &box ) const
+{
+  double tminX = box.xMinimum() - mOrigin.x(), tmaxX = box.xMaximum() - mOrigin.x();
+  double tminY = box.yMinimum() - mOrigin.y(), tmaxY = box.yMaximum() - mOrigin.y();
+  double tminZ = box.zMinimum() - mOrigin.z(), tmaxZ = box.zMaximum() - mOrigin.z();
+  if ( mDirection.x() < 0 ) std::swap( tminX, tmaxX );
+  if ( mDirection.y() < 0 ) std::swap( tminY, tmaxY );
+  if ( mDirection.z() < 0 ) std::swap( tminZ, tmaxZ );
+  if ( mDirection.x() != 0 )
+  {
+    tminX /= mDirection.x();
+    tmaxX /= mDirection.x();
+  }
+  else
+  {
+    tminX = std::numeric_limits<double>::lowest();
+    tmaxX = std::numeric_limits<double>::max();
+  }
+  if ( mDirection.y() != 0 )
+  {
+    tminY /= mDirection.y();
+    tmaxY /= mDirection.y();
+  }
+  else
+  {
+    tminY = std::numeric_limits<double>::lowest();
+    tmaxY = std::numeric_limits<double>::max();
+  }
+  if ( mDirection.z() != 0 )
+  {
+    tminZ /= mDirection.z();
+    tmaxZ /= mDirection.z();
+  }
+  else
+  {
+    tminZ = std::numeric_limits<double>::lowest();
+    tmaxZ = std::numeric_limits<double>::max();
+  }
+  QgsDoubleRange tRange( std::max( std::max( tminX, tminY ), tminZ ), std::min( std::min( tmaxX, tmaxY ), tmaxZ ) );
+  return !tRange.isEmpty();
+}
+
+bool QgsRay3D::isInFront( const QVector3D &point ) const
+{
+  return QVector3D::dotProduct( point - mOrigin, mDirection ) > 0.0;
+}
+
+double QgsRay3D::angleToPoint( const QVector3D &point ) const
+{
+  // project point to the ray
+  QVector3D projectedPoint = mOrigin + QVector3D::dotProduct( point - mOrigin, mDirection ) * mDirection;
+
+  // calculate the angle between the point and the projected point
+  QVector3D v1 = ( projectedPoint - mOrigin ).normalized();
+  QVector3D v2 = ( point - mOrigin ).normalized();
+  return qRadiansToDegrees( std::acos( std::abs( QVector3D::dotProduct( v1, v2 ) ) ) );
+}
+
+double QgsRay3D::distanceTo( const  QgsBox3d &box ) const
+{
+  float dx = std::max( box.xMinimum() - mOrigin.x(), std::max( 0., mOrigin.x() - box.xMaximum() ) );
+  float dy = std::max( box.yMinimum() - mOrigin.y(), std::max( 0., mOrigin.y() - box.yMaximum() ) );
+  float dz = std::max( box.zMinimum() - mOrigin.z(), std::max( 0., mOrigin.z() - box.zMaximum() ) );
+  return sqrt( dx * dx + dy * dy + dz * dz );
+}

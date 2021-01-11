@@ -1101,10 +1101,10 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   }
 }
 
-void Qgs3DMapScene::identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QVector3D &rayOrigin, const QVector3D &rayDirection )
+void Qgs3DMapScene::identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QgsRay3D &ray )
 {
-  QgsVector3D originMapCoords = mMap.worldToMapCoordinates( rayOrigin );
-  QgsVector3D pointMapCoords = mMap.worldToMapCoordinates( rayOrigin + rayOrigin.length() * rayDirection.normalized() );
+  QgsVector3D originMapCoords = mMap.worldToMapCoordinates( ray.origin() );
+  QgsVector3D pointMapCoords = mMap.worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
   QgsVector3D directionMapCoords = pointMapCoords - originMapCoords;
   directionMapCoords.normalize();
 
@@ -1132,7 +1132,9 @@ void Qgs3DMapScene::identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVecto
       QVector3D adjutedRayDirection = QVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / elevationProps->zScale() );
       adjutedRayDirection.normalize();
 
-      QVector<QVariantMap> points = pc->dataProvider()->getPointsOnRay( adjutedRayOrigin, adjutedRayDirection, maxScreenError, fov, screenSizePx, angle );
+      QgsRay3D ray( adjutedRayOrigin, adjutedRayDirection );
+
+      QVector<QVariantMap> points = pc->dataProvider()->getPointsOnRay( ray, maxScreenError, fov, screenSizePx, angle );
       selectedPoints.append( qMakePair( layer, points ) );
     }
   }
