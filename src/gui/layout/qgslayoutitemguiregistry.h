@@ -275,6 +275,18 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
 
     QgsLayoutItem *createItem( QgsLayout *layout ) override;
     void newItemAddedToLayout( QgsLayoutItem *item ) override;
+
+    /**
+     * Called when a newly created item of the associated type has been added to a layout.
+     *
+     * This is only called for additions which result from GUI operations - i.e. it is not
+     * called for items added from templates.
+     *
+     * The \a properties map will be filled with any custom properties which were specified during
+     * the item creation.
+     *
+     * \since QGIS 3.18
+     */
     void newItemAddedToLayout( QgsLayoutItem *item, const QVariantMap &properties );
 
   protected:
