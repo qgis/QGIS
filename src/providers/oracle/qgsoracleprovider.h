@@ -204,7 +204,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     /**
      * Insert \a geometryColumn column from table \a tableName in Oracle geometry metadata table with given \a srs coordinate
      * reference system, using \a conn connection
-     * Throws OracleException if an error occured.
+     * Throws OracleException if an error occurred.
      */
     static void insertGeomMetadata( QgsOracleConn *conn, const QString &tableName, const QString &geometryColumn, const QgsCoordinateReferenceSystem &srs );
 
