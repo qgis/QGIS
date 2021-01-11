@@ -792,7 +792,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCoordinateReferenceSystem: %1>" ).arg( sipCpp->authid() );
+    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) )
+                        : QStringLiteral( "<QgsCoordinateReferenceSystem: invalid>" );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
