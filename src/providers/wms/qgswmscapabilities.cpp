@@ -224,37 +224,26 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &exten
   if ( extent.isNull() )
     return dimensionExtent;
 
-  bool containResolution = false;
+  const QStringList parts = extent.split( ',' );
 
-  QStringList parts;
-
-  if ( extent.contains( ',' ) )
-    parts = extent.split( ',' );
-  else
-    parts.append( extent );
-
-  QStringListIterator iter( parts );
-
-  while ( iter.hasNext() )
+  for ( const QString &part : parts )
   {
-    QString item = iter.next();
-    QStringList itemParts;
+    const QString item = part;
 
     // If item contain '/' content separator, it is an interval
     if ( item.contains( '/' ) )
     {
-      itemParts = item.split( '/' );
-      QStringListIterator itemIter( itemParts );
-      QgsWmstExtentPair itemPair;
+      const QStringList itemParts = item.split( '/' );
 
+      QgsWmstExtentPair itemPair;
       QgsWmstResolution itemResolution = itemPair.resolution;
       QgsWmstDates itemDatesList = itemPair.dates;
 
       bool itemContainResolution = false;
 
-      while ( itemIter.hasNext() )
+      for ( const QString &itemPart : itemParts )
       {
-        QString itemContent = itemIter.next();
+        QString itemContent = itemPart;
 
         if ( itemContent.startsWith( 'P' ) )
         {
@@ -341,7 +330,7 @@ QDateTime QgsWmsSettings::findLeastClosestDateTime( const QDateTime &dateTime, b
   else
     seconds = closest.toSecsSinceEpoch();
 
-  for ( QgsWmstExtentPair pair : mTimeDimensionExtent.datesResolutionList )
+  for ( const QgsWmstExtentPair &pair : mTimeDimensionExtent.datesResolutionList )
   {
     if ( pair.dates.dateTimes.size() < 2 )
       continue;
