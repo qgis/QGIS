@@ -182,6 +182,8 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(g.__repr__(), '<QgsReferencedGeometry: Point (1 2) (EPSG:4326)>')
 
     def testQgsCoordinateReferenceSystem(self):
+        crs = QgsCoordinateReferenceSystem()
+        self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: invalid>')
         crs = QgsCoordinateReferenceSystem('EPSG:4326')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326>')
         crs = QgsCoordinateReferenceSystem('EPSG:3111')
