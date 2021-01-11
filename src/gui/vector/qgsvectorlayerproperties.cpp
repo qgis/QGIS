@@ -68,6 +68,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaskingwidget.h"
 #include "qgsvectorlayertemporalpropertieswidget.h"
+#include "qgsprovidersourcewidgetproviderregistry.h"
+#include "qgsprovidersourcewidget.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -142,6 +144,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mActionSaveStyle = menuStyle->addAction( tr( "Save Style…" ) );
   }
   connect( mActionSaveStyle, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs );
+
+  mSourceGroupBox->hide();
 
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveDefaultStyle_clicked );
@@ -490,6 +494,27 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
 // in raster props, this method is called sync()
 void QgsVectorLayerProperties::syncToLayer()
 {
+  if ( !mSourceWidget )
+  {
+    mSourceWidget = QgsGui::sourceWidgetProviderRegistry()->createWidget( mLayer );
+    if ( mSourceWidget )
+    {
+      QHBoxLayout *layout = new QHBoxLayout();
+      layout->addWidget( mSourceWidget );
+      mSourceGroupBox->setLayout( layout );
+      mSourceGroupBox->show();
+
+      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [ = ]( bool isValid )
+      {
+        buttonBox->button( QDialogButtonBox::Apply )->setEnabled( isValid );
+        buttonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
+      } );
+    }
+  }
+
+  if ( mSourceWidget )
+    mSourceWidget->setSourceUri( mLayer->source() );
+
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
   txtDisplayName->setText( mLayer->name() );
@@ -605,6 +630,15 @@ void QgsVectorLayerProperties::syncToLayer()
 
 void QgsVectorLayerProperties::apply()
 {
+  if ( mSourceWidget )
+  {
+    const QString newSource = mSourceWidget->sourceUri();
+    if ( newSource != mLayer->source() )
+    {
+      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(), QgsDataProvider::ProviderOptions() );
+    }
+  }
+
   if ( labelingDialog )
   {
     labelingDialog->writeSettingsToLayer();
