@@ -88,10 +88,10 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mTemporalExtent = uri.param( QStringLiteral( "timeDimensionExtent" ) );
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
 
-    if ( mTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+    if ( mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.size() > 0 )
     {
-      QDateTime begin = mTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.first();
-      QDateTime end = mTimeDimensionExtent.datesResolutionList.last().dates.dateTimes.last();
+      QDateTime begin = mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
+      QDateTime end = mTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
 
       mFixedRange =  QgsDateTimeRange( begin, end );
     }
@@ -104,10 +104,10 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
       mReferenceTimeDimensionExtent = parseTemporalExtent( referenceExtent );
 
-      if ( mReferenceTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+      if ( mReferenceTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.size() > 0 )
       {
-        QDateTime begin = mReferenceTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.first();
-        QDateTime end = mReferenceTimeDimensionExtent.datesResolutionList.last().dates.dateTimes.last();
+        QDateTime begin = mReferenceTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
+        QDateTime end = mReferenceTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
 
         mFixedReferenceRange =  QgsDateTimeRange( begin, end );
       }
@@ -189,7 +189,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   if ( uri.hasParam( QStringLiteral( "tileDimensions" ) ) )
   {
     mTiled = true;
-    const auto tileDimensions = uri.param( "tileDimensions" ).split( ';' );
+    const auto tileDimensions = uri.param( QStringLiteral( "tileDimensions" ) ).split( ';' );
     for ( const QString &param : tileDimensions )
     {
       QStringList kv = param.split( '=' );
@@ -218,7 +218,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   return true;
 }
 
-QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( QString extent )
+QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &extent )
 {
   QgsWmstDimensionExtent dimensionExtent;
   if ( extent.isNull() )
@@ -300,7 +300,7 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( QString extent )
   return dimensionExtent;
 }
 
-void QgsWmsSettings::setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent )
+void QgsWmsSettings::setTimeDimensionExtent( const QgsWmstDimensionExtent &timeDimensionExtent )
 {
   mTimeDimensionExtent = timeDimensionExtent;
 }
@@ -310,7 +310,7 @@ QgsWmstDimensionExtent QgsWmsSettings::timeDimensionExtent() const
   return mTimeDimensionExtent;
 }
 
-QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolution )
+QDateTime QgsWmsSettings::addTime( const QDateTime &dateTime, const QgsWmstResolution &resolution )
 {
   QDateTime resultDateTime = QDateTime( dateTime );
 
@@ -330,7 +330,7 @@ QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolut
   return resultDateTime;
 }
 
-QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime, bool dateOnly ) const
+QDateTime QgsWmsSettings::findLeastClosestDateTime( const QDateTime &dateTime, bool dateOnly ) const
 {
   QDateTime closest = dateTime;
 
@@ -368,8 +368,9 @@ QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime, bool dat
   return closest;
 }
 
-QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
+QgsWmstResolution QgsWmsSettings::parseWmstResolution( const QString &itemText )
 {
+  QString item = itemText;
   QgsWmstResolution resolution;
   bool found = false;
 
@@ -448,7 +449,7 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
   return resolution;
 }
 
-QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
+QDateTime QgsWmsSettings::parseWmstDateTimes( const QString &item )
 {
   // Standard item will have YYYY-MM-DDTHH:mm:ss.SSSZ
   //  format a Qt::ISODateWithMs
