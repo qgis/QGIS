@@ -308,8 +308,9 @@ class CORE_EXPORT QgsEditFormConfig
 
     /**
      * Deserialize drag and drop designer elements.
+     * \deprecated since QGIS 3.18 use QgsAttributeEditorElement::create instead
      */
-    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() );
+    Q_DECL_DEPRECATED QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_DEPRECATED;
 
     /**
      * Create a new edit form config. Normally invoked by QgsVectorLayer
