@@ -610,6 +610,34 @@ class CORE_EXPORT QgsExpression
      */
     static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
 
+    /**
+     * Returns TRUE if the given \a expression is a simple "field=value" type expression.
+     *
+     * \param expression expression to test
+     * \param field will be set to the field name if the expression is a field equality expression
+     * \param value will be set to the value if the expression is a field equality expression
+     * \returns TRUE if the expression is a field equality expression
+     *
+     * \since QGIS 3.18
+     */
+    static bool isFieldEqualityExpression( const QString &expression, QString &field SIP_OUT, QVariant &value SIP_OUT );
+
+    /**
+     * Attempts to reduce a list of expressions to a single "field IN (val1, val2, ... )" type expression.
+     *
+     * This will only be possible if all the input expressions form simple "field=value" OR "field IN (value1, value2)" expressions, and all
+     * reference the same field name.
+     *
+     * Returns TRUE if the given \a expressions could be converted to an IN type expression.
+     *
+     * \param expressions expressions to test
+     * \param result will be set to the calculated "field IN (...)" expression, wherever possible
+     * \returns TRUE if the expression was converted to a field IN type expression
+     *
+     * \since QGIS 3.18
+     */
+    static bool attemptReduceToInClause( const QStringList &expressions, QString &result SIP_OUT );
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
