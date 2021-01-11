@@ -408,7 +408,16 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
 
-  mDynamicTextMenu = new QMenu( tr( "Dynamic Text" ), this );
+  // populate with initial items...
+  const QList< int > itemMetadataIds = QgsGui::layoutItemGuiRegistry()->itemMetadataIds();
+  for ( int id : itemMetadataIds )
+  {
+    itemTypeAdded( id );
+  }
+  //..and listen out for new item types
+  connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
+
+  mDynamicTextMenu = new QMenu( tr( "Add Dynamic Text" ), this );
 
   connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [ = ]
   {
@@ -423,16 +432,24 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     } );
   } );
 
-  mItemMenu->addMenu( mDynamicTextMenu );
-
-  // populate with initial items...
-  const QList< int > itemMetadataIds = QgsGui::layoutItemGuiRegistry()->itemMetadataIds();
-  for ( int id : itemMetadataIds )
+  // not so nice hack to insert dynamic text menu near the label item
+  int index = 0;
+  for ( QAction *action : mItemMenu->actions() )
   {
-    itemTypeAdded( id );
+    if ( action->data().isValid() && QgsGui::layoutItemGuiRegistry()->itemMetadata( action->data().toInt() )->type() == QgsLayoutItemRegistry::LayoutLabel )
+    {
+      if ( QAction *before = mItemMenu->actions().value( index + 1 ) )
+      {
+        mItemMenu->insertMenu( before, mDynamicTextMenu );
+      }
+      else
+      {
+        mItemMenu->addMenu( mDynamicTextMenu );
+      }
+      break;
+    }
+    index++;
   }
-  //..and listen out for new item types
-  connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
 
   QToolButton *orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
@@ -1632,12 +1649,66 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int id )
   if ( itemSubmenu )
     itemSubmenu->addAction( action );
   else
-    mItemMenu->addAction( action );
+  {
+    // a not nice hack to manually place 3d layout map entry in the right place
+    if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->type() == QgsLayoutItemRegistry::Layout3DMap )
+    {
+      // find position of normal add map action
+      int index = 0;
+      for ( QAction *existingAction : mItemMenu->actions() )
+      {
+        if ( existingAction->data().isValid() && QgsGui::layoutItemGuiRegistry()->itemMetadata( existingAction->data().toInt() )->type() == QgsLayoutItemRegistry::LayoutMap )
+        {
+          if ( QAction *before = mItemMenu->actions().value( index + 1 ) )
+          {
+            mItemMenu->insertAction( before, action );
+          }
+          else
+          {
+            mItemMenu->addAction( action );
+          }
+          break;
+        }
+        index++;
+      }
+    }
+    else
+    {
+      mItemMenu->addAction( action );
+    }
+  }
 
   if ( groupButton )
     groupButton->addAction( action );
   else
-    mToolsToolbar->addAction( action );
+  {
+    // a not nice hack to manually place 3d layout map entry in the right place
+    if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->type() == QgsLayoutItemRegistry::Layout3DMap )
+    {
+      // find position of normal add map action
+      int index = 0;
+      for ( QAction *existingAction : mToolsToolbar->actions() )
+      {
+        if ( existingAction->data().isValid() && QgsGui::layoutItemGuiRegistry()->itemMetadata( existingAction->data().toInt() )->type() == QgsLayoutItemRegistry::LayoutMap )
+        {
+          if ( QAction *before = mToolsToolbar->actions().value( index + 1 ) )
+          {
+            mToolsToolbar->insertAction( before, action );
+          }
+          else
+          {
+            mToolsToolbar->addAction( action );
+          }
+          break;
+        }
+        index++;
+      }
+    }
+    else
+    {
+      mToolsToolbar->addAction( action );
+    }
+  }
 
   connect( action, &QAction::triggered, this, [this, id, nodeBased]()
   {
