@@ -115,20 +115,6 @@ Controls if this element should be labeled with a title (field, relation or grou
 .. versionadded:: 2.18
 %End
 
-    QVariantMap config() const;
-%Docstring
-Returns the editor configuration
-
-.. versionadded:: 3.18
-%End
-
-    void setConfig( const QVariantMap &config );
-%Docstring
-Sets the editor configuration
-
-.. versionadded:: 3.18
-%End
-
   protected:
 
 };
@@ -421,6 +407,20 @@ Returns the current relation widget type id
     void setRelationWidgetTypeId( const QString &relationWidgetTypeId );
 %Docstring
 Sets the relation widget type
+
+.. versionadded:: 3.18
+%End
+
+    QVariantMap relationEditorConfiguration() const;
+%Docstring
+Returns the relation editor widget configuration
+
+.. versionadded:: 3.18
+%End
+
+    void setRelationEditorConfiguration( const QVariantMap &config );
+%Docstring
+Sets the relation editor configuration
 
 .. versionadded:: 3.18
 %End

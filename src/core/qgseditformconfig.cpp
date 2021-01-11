@@ -543,15 +543,12 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   if ( !tabs().empty() && d->mConfiguredRootContainer )
   {
     QDomElement tabsElem = doc.createElement( QStringLiteral( "attributeEditorForm" ) );
-
     QDomElement rootElem = d->mInvisibleRootContainer->toDomElement( doc );
     QDomNodeList elemList = rootElem.childNodes();
-
     while ( !elemList.isEmpty() )
     {
       tabsElem.appendChild( elemList.at( 0 ) );
     }
-
     node.appendChild( tabsElem );
   }
 
@@ -661,11 +658,11 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
     QgsAttributeEditorRelation *relElement = new QgsAttributeEditorRelation( elem.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
-    QVariantMap config = QgsXmlUtils::readVariant( elem.firstChildElement( "config" ) ).toMap();
+    QVariantMap config = QgsXmlUtils::readVariant( elem.firstChildElement( "editor_configuration" ) ).toMap();
 
     // load defaults
     if ( config.isEmpty() )
-      config = relElement->config();
+      config = relElement->relationEditorConfiguration();
 
     // pre QGIS 3.18 compatibility
     if ( ! config.contains( QStringLiteral( "buttons" ) ) )
@@ -686,7 +683,7 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
       }
     }
 
-    relElement->setConfig( config );
+    relElement->setRelationEditorConfiguration( config );
 
     if ( elem.hasAttribute( QStringLiteral( "forceSuppressFormPopup" ) ) )
     {

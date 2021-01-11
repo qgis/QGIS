@@ -413,7 +413,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       RelationEditorConfiguration relEdConfig;
 //      relEdConfig.buttons = relationEditor->visibleButtons();
       relEdConfig.mRelationWidgetType = relationEditor->relationWidgetTypeId();
-      relEdConfig.mRelationWidgetConfig = relationEditor->config();
+      relEdConfig.mRelationWidgetConfig = relationEditor->relationEditorConfiguration();
       relEdConfig.nmRelationId = relationEditor->nmRelationId();
       relEdConfig.forceSuppressFormPopup = relationEditor->forceSuppressFormPopup();
       relEdConfig.label = relationEditor->label();
@@ -662,7 +662,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfig = itemData.relationEditorConfiguration();
       relDef->setRelationWidgetTypeId( relationEditorConfig.mRelationWidgetType );
-      relDef->setConfig( relationEditorConfig.mRelationWidgetConfig );
+      relDef->setRelationEditorConfiguration( relationEditorConfig.mRelationWidgetConfig );
       relDef->setNmRelationId( relationEditorConfig.nmRelationId );
       relDef->setForceSuppressFormPopup( relationEditorConfig.forceSuppressFormPopup );
       relDef->setLabel( relationEditorConfig.label );
