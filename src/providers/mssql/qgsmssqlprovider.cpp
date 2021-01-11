@@ -71,9 +71,6 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
   mValid = true;
 
-  mUseWkb = false;
-  mSkipFailures = false;
-
   mUserName = anUri.username();
   mPassword = anUri.password();
   mService = anUri.service();
@@ -89,6 +86,10 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
   mDisableInvalidGeometryHandling = anUri.hasParam( QStringLiteral( "disableInvalidGeometryHandling" ) )
                                     ? anUri.param( QStringLiteral( "disableInvalidGeometryHandling" ) ).toInt()
                                     : false;
+
+  mUseGeometryColumnsTableForExtent = anUri.hasParam( QStringLiteral( "extentInGeometryColumns" ) )
+                                      ? anUri.param( QStringLiteral( "extentInGeometryColumns" ) ).toInt()
+                                      : false;
 
   mSqlWhereClause = anUri.sql();
 
@@ -132,6 +133,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
     else
       mValid = false;
   }
+
   if ( mValid )
   {
     if ( !anUri.geometryColumn().isEmpty() )
@@ -142,16 +144,34 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
       loadMetadata();
     }
     loadFields();
-    UpdateStatistics( mUseEstimatedMetadata );
 
-    QString primaryKey = anUri.keyColumn();
-    if ( !primaryKey.isEmpty() )
+    UpdateStatistics( mUseEstimatedMetadata, mError );
+
+    //only for views, defined in layer data when loading layer for first time
+    bool primaryKeyFromGeometryColumnsTable = anUri.hasParam( QStringLiteral( "primaryKeyInGeometryColumns" ) )
+        ? anUri.param( QStringLiteral( "primaryKeyInGeometryColumns" ) ).toInt()
+        : false;
+
+    QStringList cols;
+    if ( primaryKeyFromGeometryColumnsTable )
     {
       mPrimaryKeyType = PktUnknown;
       mPrimaryKeyAttrs.clear();
+      mValid = getPrimaryKeyFromGeometryColumns( cols );
+    }
+    else
+    {
+      QString primaryKey = anUri.keyColumn();
+      if ( !primaryKey.isEmpty() )
+      {
 
-      const QStringList cols = parseUriKey( primaryKey );
+        mPrimaryKeyAttrs.clear();
+        cols = parseUriKey( primaryKey );
+      }
+    }
 
+    if ( mValid )
+    {
       for ( const QString &col : cols )
       {
         int idx = mAttributeFields.indexFromName( col );
@@ -179,18 +199,20 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
         mPrimaryKeyAttrs << idx;
       }
-    }
 
-    if ( mGeometryColName.isEmpty() )
-    {
-      // table contains no geometries
-      mWkbType = QgsWkbTypes::NoGeometry;
-      mSRId = 0;
+      if ( mGeometryColName.isEmpty() )
+      {
+        // table contains no geometries
+        mWkbType = QgsWkbTypes::NoGeometry;
+        mSRId = 0;
+      }
     }
   }
 
   //fill type names into sets
   setNativeTypes( QgsMssqlConnection::nativeTypes() );
+
+  mValid = mError.isEmpty();
 }
 
 QgsMssqlProvider::~QgsMssqlProvider()
@@ -803,11 +825,13 @@ QStringList QgsMssqlProvider::uniqueStringsMatching( int index, const QString &s
   return results;
 }
 
-// update the extent, wkb type and srid for this layer
-void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
+// update the extent, wkb type and srid for this layer, returns false if fails
+void QgsMssqlProvider::UpdateStatistics( bool estimate, QgsError &error ) const
 {
   if ( mGeometryColName.isEmpty() )
+  {
     return;
+  }
 
   // get features to calculate the statistics
   QString statement;
@@ -815,10 +839,18 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
+  QString sql;
+  if ( mUseGeometryColumnsTableForExtent )
+  {
+    if ( !getExtentFromGeometryColumns( mExtent ) )
+      error.append( tr( "Invalid extent from geometry_columns table" ), tr( "MSSQL" ) );
+    return;
+  }
+
   // Get the extents from the spatial index table to speed up load times.
   // We have to use max() and min() because you can have more then one index but the biggest area is what we want to use.
-  QString sql = "SELECT min(bounding_box_xmin), min(bounding_box_ymin), max(bounding_box_xmax), max(bounding_box_ymax)"
-                " FROM sys.spatial_index_tessellations WHERE object_id = OBJECT_ID('[%1].[%2]')";
+  sql = "SELECT min(bounding_box_xmin), min(bounding_box_ymin), max(bounding_box_xmax), max(bounding_box_ymax)"
+        " FROM sys.spatial_index_tessellations WHERE object_id = OBJECT_ID('[%1].[%2]')";
 
   statement = QString( sql ).arg( mSchemaName, mTableName );
 
@@ -967,8 +999,9 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 // Return the extent of the layer
 QgsRectangle QgsMssqlProvider::extent() const
 {
+  QgsError error;
   if ( mExtent.isEmpty() )
-    UpdateStatistics( mUseEstimatedMetadata );
+    UpdateStatistics( mUseEstimatedMetadata, error );
   return mExtent;
 }
 
@@ -1712,7 +1745,7 @@ QgsVectorDataProvider::Capabilities QgsMssqlProvider::capabilities() const
 bool QgsMssqlProvider::createSpatialIndex()
 {
   if ( mUseEstimatedMetadata )
-    UpdateStatistics( false );
+    UpdateStatistics( false, mError );
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
@@ -2707,6 +2740,8 @@ QVariantMap QgsMssqlProviderMetadata::decodeUri( const QString &uri ) const
     QStringLiteral( "savePassword" ),
     QStringLiteral( "estimatedMetadata" ),
     QStringLiteral( "disableInvalidGeometryHandling" ),
+    QStringLiteral( "extentInGeometryColumns" ),
+    QStringLiteral( "primaryKeyInGeometryColumns" )
   };
 
   for ( const auto &configParam : configurationParameters )
@@ -2773,6 +2808,10 @@ QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
     dsUri.setParam( QStringLiteral( "allowGeometrylessTables" ), parts.value( QStringLiteral( "allowGeometrylessTables" ) ).toString() );
   if ( parts.contains( QStringLiteral( "geometryColumnsOnly" ) ) )
     dsUri.setParam( QStringLiteral( "geometryColumnsOnly" ), parts.value( QStringLiteral( "geometryColumnsOnly" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "extentInGeometryColumns" ) ) )
+    dsUri.setParam( QStringLiteral( "extentInGeometryColumns" ), parts.value( QStringLiteral( "extentInGeometryColumns" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "primaryKeyInGeometryColumns" ) ) )
+    dsUri.setParam( QStringLiteral( "primaryKeyInGeometryColumns" ), parts.value( QStringLiteral( "primaryKeyInGeometryColumns" ) ).toString() );
   return dsUri.uri();
 }
 
@@ -2925,4 +2964,55 @@ QStringList QgsMssqlProvider::parseUriKey( const QString &key )
   }
 
   return cols;
+}
+
+bool QgsMssqlProvider::getExtentFromGeometryColumns( QgsRectangle &extent ) const
+{
+  QSqlQuery query = createQuery();
+  query.setForwardOnly( true );
+
+  QString sql;
+  QString statement;
+  sql = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax FROM geometry_columns WHERE f_table_name = '%1' AND NOT (qgis_xmin IS NULL OR qgis_xmax IS NULL OR qgis_ymin IS NULL OR qgis_ymax IS NULL)" );
+  statement = sql.arg( mTableName );
+  if ( query.exec( statement ) && query.isActive() )
+  {
+    query.next();
+    if ( query.isValid() )
+    {
+      extent.setXMinimum( query.value( 0 ).toDouble() );
+      extent.setXMaximum( query.value( 1 ).toDouble() );
+      extent.setYMinimum( query.value( 2 ).toDouble() );
+      extent.setYMaximum( query.value( 3 ).toDouble() );
+
+      return true;
+    }
+  }
+
+  return false;
+
+}
+
+bool QgsMssqlProvider::getPrimaryKeyFromGeometryColumns( QStringList &primaryKeys )
+{
+  QSqlQuery query = createQuery();
+  query.setForwardOnly( true );
+  primaryKeys.clear();
+
+  QString sql;
+  QString statement;
+  sql = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns WHERE f_table_name = '%1' AND NOT qgis_pkey IS NULL" );
+  statement = sql.arg( mTableName );
+  if ( query.exec( statement ) && query.isActive() )
+  {
+    query.next();
+    if ( query.isValid() )
+    {
+      primaryKeys = query.value( 0 ).toString().split( ',' );
+      if ( !primaryKeys.isEmpty() )
+        return true;
+    }
+  }
+
+  return false;
 }

@@ -90,7 +90,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     long featureCount() const override;
 
     //! Update the extent, feature count, wkb type and srid for this layer
-    void UpdateStatistics( bool estimate ) const;
+    void UpdateStatistics( bool estimate, QgsError &error ) const;
 
     QgsFields fields() const override;
 
@@ -179,11 +179,12 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     //! Layer extent
     mutable QgsRectangle mExtent;
 
-    bool mValid;
+    bool mValid = false;
 
-    bool mUseWkb;
-    bool mUseEstimatedMetadata;
-    bool mSkipFailures;
+    bool mUseWkb = false;
+    bool mUseEstimatedMetadata = false;
+    bool mSkipFailures = false;
+    bool mUseGeometryColumnsTableForExtent = false;
 
     long mNumberFeatures = 0;
 
@@ -251,6 +252,11 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     QString whereClauseFid( QgsFeatureId fid );
 
     static QStringList parseUriKey( const QString &key );
+
+    //! Extract the extent from the geometry_columns table, returns false if fails
+    bool getExtentFromGeometryColumns( QgsRectangle &extent ) const;
+    //! Extract primary key(s) from the geometry_columns table, returns false if fails
+    bool getPrimaryKeyFromGeometryColumns( QStringList &primaryKeys );
 
     std::shared_ptr<QgsMssqlSharedData> mShared;
 
