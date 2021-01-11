@@ -1257,6 +1257,28 @@ QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri ) const
 
   QVariantMap components;
   components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+
+  if ( !dsUri.param( QStringLiteral( "referer" ) ).isEmpty() )
+  {
+    components.insert( QStringLiteral( "referer" ), dsUri.param( QStringLiteral( "referer" ) ) );
+  }
+  if ( !dsUri.param( QStringLiteral( "crs" ) ).isEmpty() )
+  {
+    components.insert( QStringLiteral( "crs" ), dsUri.param( QStringLiteral( "crs" ) ) );
+  }
+  if ( !dsUri.authConfigId().isEmpty() )
+  {
+    components.insert( QStringLiteral( "authcfg" ), dsUri.authConfigId() );
+  }
+  if ( !dsUri.param( QStringLiteral( "format" ) ).isEmpty() )
+  {
+    components.insert( QStringLiteral( "format" ), dsUri.param( QStringLiteral( "format" ) ) );
+  }
+  if ( !dsUri.param( QStringLiteral( "layer" ) ).isEmpty() )
+  {
+    components.insert( QStringLiteral( "layer" ), dsUri.param( QStringLiteral( "layer" ) ) );
+  }
+
   return components;
 }
 
@@ -1264,6 +1286,28 @@ QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
+
+  if ( !parts.value( QStringLiteral( "crs" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "crs" ), parts.value( QStringLiteral( "crs" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "referer" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "referer" ), parts.value( QStringLiteral( "referer" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() )
+  {
+    dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "format" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "format" ), parts.value( QStringLiteral( "format" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "layer" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "layer" ), parts.value( QStringLiteral( "layer" ) ).toString() );
+  }
+
   return dsUri.uri( false );
 }
 
