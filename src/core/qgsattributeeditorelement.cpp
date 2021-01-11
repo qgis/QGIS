@@ -107,8 +107,9 @@ QgsAttributeEditorElement *QgsAttributeEditorContainer::clone( QgsAttributeEdito
   return element;
 }
 
-void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem ) const
+void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
+  Q_UNUSED( doc )
   elem.setAttribute( QStringLiteral( "columnCount" ), mColumnCount );
   elem.setAttribute( QStringLiteral( "groupBox" ), mIsGroupBox ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "visibilityExpressionEnabled" ), mVisibilityExpression.enabled() ? 1 : 0 );
@@ -150,11 +151,13 @@ QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditor
   element->mForceSuppressFormPopup = mForceSuppressFormPopup;
   element->mNmRelationId = mNmRelationId;
   element->mLabel = mLabel;
+  element->mRelationEditorConfig = mRelationEditorConfig;
 
   return element;
 }
-void QgsAttributeEditorField::saveConfiguration( QDomElement &elem ) const
+void QgsAttributeEditorField::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
+  Q_UNUSED( doc )
   elem.setAttribute( QStringLiteral( "index" ), mIdx );
 }
 
@@ -168,12 +171,7 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   QDomElement elem = doc.createElement( typeIdentifier() );
   elem.setAttribute( QStringLiteral( "name" ), mName );
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
-
-  QDomElement elemConfig = QgsXmlUtils::writeVariant( mConfig, doc );
-  elemConfig.setTagName( QStringLiteral( "config" ) );
-  elem.appendChild( elemConfig );
-
-  saveConfiguration( elem );
+  saveConfiguration( elem, doc );
   return elem;
 }
 
@@ -187,24 +185,17 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
   mShowLabel = showLabel;
 }
 
-QVariantMap QgsAttributeEditorElement::config() const
-{
-  return mConfig;
-}
-
-void QgsAttributeEditorElement::setConfig( const QVariantMap &config )
-{
-  mConfig = config;
-}
-
-void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
+void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
   elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );
-  elem.setAttribute( QStringLiteral( "buttons" ), mConfig.value( QStringLiteral( "buttons" ) ).toString() );
   elem.setAttribute( QStringLiteral( "forceSuppressFormPopup" ), mForceSuppressFormPopup );
   elem.setAttribute( QStringLiteral( "nmRelationId" ), mNmRelationId.toString() );
   elem.setAttribute( QStringLiteral( "label" ), mLabel );
   elem.setAttribute( QStringLiteral( "relationWidgetTypeId" ), mRelationWidgetTypeId );
+
+  QDomElement elemConfig = QgsXmlUtils::writeVariant( mRelationEditorConfig, doc );
+  elemConfig.setTagName( QStringLiteral( "editor_configuration" ) );
+  elem.appendChild( elemConfig );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
@@ -252,6 +243,16 @@ void QgsAttributeEditorRelation::setRelationWidgetTypeId( const QString &relatio
   mRelationWidgetTypeId = relationWidgetTypeId;
 }
 
+QVariantMap QgsAttributeEditorRelation::relationEditorConfiguration() const
+{
+  return mRelationEditorConfig;
+}
+
+void QgsAttributeEditorRelation::setRelationEditorConfiguration( const QVariantMap &config )
+{
+  mRelationEditorConfig = config;
+}
+
 QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEditorElement *parent ) const
 {
   QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( name(), parent );
@@ -270,9 +271,9 @@ void QgsAttributeEditorQmlElement::setQmlCode( const QString &qmlCode )
   mQmlCode = qmlCode;
 }
 
-void QgsAttributeEditorQmlElement::saveConfiguration( QDomElement &elem ) const
+void QgsAttributeEditorQmlElement::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
-  QDomText codeElem = elem.ownerDocument().createTextNode( mQmlCode );
+  QDomText codeElem = doc.createTextNode( mQmlCode );
   elem.appendChild( codeElem );
 }
 
@@ -299,9 +300,9 @@ void QgsAttributeEditorHtmlElement::setHtmlCode( const QString &htmlCode )
   mHtmlCode = htmlCode;
 }
 
-void QgsAttributeEditorHtmlElement::saveConfiguration( QDomElement &elem ) const
+void QgsAttributeEditorHtmlElement::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
-  QDomText codeElem = elem.ownerDocument().createTextNode( mHtmlCode );
+  QDomText codeElem = doc.createTextNode( mHtmlCode );
   elem.appendChild( codeElem );
 }
 

@@ -1956,7 +1956,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // This needs to be after QgsAttributeFormRelationEditorWidget creation, because the widget
       // does not exists yet until QgsAttributeFormRelationEditorWidget is created and the setters
       // below directly alter the widget and check for it.
-      rww->setWidgetConfig( relDef->config() );
+      rww->setWidgetConfig( relDef->relationEditorConfiguration() );
       rww->setShowLabel( relDef->showLabel() );
       rww->setNmRelationId( relDef->nmRelationId() );
       rww->setForceSuppressFormPopup( relDef->forceSuppressFormPopup() );
