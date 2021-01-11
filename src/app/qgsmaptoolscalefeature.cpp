@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
     qgsmaptoolscalefeature.cpp  -  map tool for scaling features by mouse drag
     ---------------------
     begin                :
@@ -149,14 +149,14 @@ QgsMapToolScaleFeature::~QgsMapToolScaleFeature()
 
 void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( mBaseDistance == 0)
+  if ( mBaseDistance == 0 )
   {
-
+    mBaseDistance = 0.00001
   }
   if ( mScalingActive )
   {
     const double distance = mFeatureCenter.distance( toLayerCoordinates( mLayer, e->mapPoint() ) );
-    double scale =  distance / mBaseDistance; // min 0 or no limit?
+    double scale = distance / mBaseDistance; // min 0 or no limit?
 
     if ( mScalingWidget )
     {
@@ -295,7 +295,7 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
     }
     mScalingActive = true;
-    mMapAnchor = toMapCoordinates( mLayer,mFeatureCenter );
+    mMapAnchor = toMapCoordinates( mLayer, mFeatureCenter );
     recenterRubberband( 0.0 );
     mBaseDistance = toLayerCoordinates( mLayer, e->mapPoint() ).distance( mFeatureCenter );
     mScaling = 1.0;
@@ -329,7 +329,7 @@ void QgsMapToolScaleFeature::updateRubberband( double scale )
     mScaling = scale;
 
     double offsetx = ( 1 - mScaling ) * mRubberScale.x();
-    double offsety = ( 1 - mScaling ) *  mRubberScale.y();
+    double offsety = ( 1 - mScaling ) * mRubberScale.y();
 
     if ( mRubberBand )
     {
@@ -356,7 +356,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   mLayer->beginEditCommand( tr( "Features Scaled" ) );
 
-  int start = ( mLayer->geometryType() == 2 )? 1 : 0;
+  int start = ( mLayer->geometryType() == 2 ) ? 1 : 0;
 
   for ( QgsFeatureId id : qgis::as_const( mScaledFeatures ) )
   {
@@ -368,15 +368,15 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
     while ( !vertex.isEmpty() )
     {
       // for to maintain feature position use the center of the feature bbox and not the whole selection
-      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * (scale - 1) );
-      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * (scale - 1) );
+      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * ( scale - 1 ) );
+      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * ( scale - 1 ) );
 
       mLayer->moveVertex( newX, newY, id, i );
       i = i + 1;
       vertex = geom.vertexAt( i );
     }
     //double offsetx = ( 1 - mScaling ) * mRubberScale.x();
-    //double offsety = ( 1 - mScaling ) *  mRubberScale.y();
+    //double offsety = ( 1 - mScaling ) * mRubberScale.y();
     //QgsGeometry::OperationResult res = geom.transform( QTransform( mScaling, 0, 0, mScaling, offsetx, offsety ) );
     //QString::number( res );
   }
@@ -426,13 +426,13 @@ void QgsMapToolScaleFeature::activate()
 
 void QgsMapToolScaleFeature::recenterRubberband( double )
 {
-    if ( !mScalingActive )
-        return;
-    QPoint rubberAnchor = toCanvasCoordinates( mMapAnchor );
-    mAnchorPoint->setCenter( mMapAnchor );
-    mRubberScale = QPointF( rubberAnchor.x() - mRubberBand->x(), rubberAnchor.y() - mRubberBand->y() );
-    mRubberBand->setTransformOriginPoint( rubberAnchor );
-    mRubberBand->show();
+  if ( !mScalingActive )
+    return;
+  QPoint rubberAnchor = toCanvasCoordinates( mMapAnchor );
+  mAnchorPoint->setCenter( mMapAnchor );
+  mRubberScale = QPointF( rubberAnchor.x() - mRubberBand->x(), rubberAnchor.y() - mRubberBand->y() );
+  mRubberBand->setTransformOriginPoint( rubberAnchor );
+  mRubberBand->show();
 }
 
 void QgsMapToolScaleFeature::deleteRubberband()
@@ -447,7 +447,7 @@ void QgsMapToolScaleFeature::deactivate()
   mScalingActive = false;
   mAnchorPoint.reset();
   deleteRubberband();
-  disconnect(mCanvas, &QgsMapCanvas::scaleChanged, this, &QgsMapToolScaleFeature::recenterRubberband);
+  disconnect( mCanvas, &QgsMapCanvas::scaleChanged, this, &QgsMapToolScaleFeature::recenterRubberband );
   QgsMapTool::deactivate();
 }
 
