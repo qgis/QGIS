@@ -451,31 +451,39 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
     {
       sf = QStringLiteral( "TRUE" );
     }
-    // If we have more than 50 rules (to stay on the safe side) make a binary tree or SQLITE will fail,
-    // see: https://github.com/qgis/QGIS/issues/27269
-    else if ( subfilters.count() > 50 )
-    {
-      std::function<QString( const QStringList & )>bt = [ &bt ]( const QStringList & subf )
-      {
-        if ( subf.count( ) == 1 )
-        {
-          return subf.at( 0 );
-        }
-        else if ( subf.count( ) == 2 )
-        {
-          return subf.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' );
-        }
-        else
-        {
-          int midpos = static_cast<int>( subf.length() / 2 );
-          return QStringLiteral( "(%1) OR (%2)" ).arg( bt( subf.mid( 0, midpos ) ) ).arg( bt( subf.mid( midpos ) ) );
-        }
-      };
-      sf = bt( subfilters );
-    }
     else
     {
-      sf = subfilters.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' );
+      // test for a common case -- all subfilters can be combined into a single "field in (...)" expression
+      if ( QgsExpression::attemptReduceToInClause( subfilters, sf ) )
+      {
+        // success! we can use a simple "field IN (...)" list!
+      }
+      // If we have more than 50 rules (to stay on the safe side) make a binary tree or SQLITE will fail,
+      // see: https://github.com/qgis/QGIS/issues/27269
+      else if ( subfilters.count() > 50 )
+      {
+        std::function<QString( const QStringList & )>bt = [ &bt ]( const QStringList & subf )
+        {
+          if ( subf.count( ) == 1 )
+          {
+            return subf.at( 0 );
+          }
+          else if ( subf.count( ) == 2 )
+          {
+            return subf.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' );
+          }
+          else
+          {
+            int midpos = static_cast<int>( subf.length() / 2 );
+            return QStringLiteral( "(%1) OR (%2)" ).arg( bt( subf.mid( 0, midpos ) ), bt( subf.mid( midpos ) ) );
+          }
+        };
+        sf = bt( subfilters );
+      }
+      else
+      {
+        sf = subfilters.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' );
+      }
     }
   }
 
