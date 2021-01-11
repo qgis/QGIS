@@ -473,6 +473,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
+  mTableModel.setConnectionName( cmbConnections->currentText() );
   // populate the table list
   QgsSettings settings;
   QString key = "/MSSQL/connections/" + cmbConnections->currentText();

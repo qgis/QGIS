@@ -18,6 +18,9 @@ from qgis.core import (QgsSettings,
                        QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsFeature,
+                       QgsField,
+                       QgsFields,
+                       QgsDataSourceUri,
                        QgsWkbTypes,
                        QgsGeometry,
                        QgsPointXY,
@@ -679,6 +682,64 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     def getSubsetStringNoMatching(self):
         return '[name]=\'AppleBearOrangePear\''
 
+    def testExtentFromGeometryTable(self):
+        """
+        Check if the behavior of the mssql provider if extent is defined in the geometry_column table
+        """
+        # Create a layer
+        layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
+                               "layer", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes([1, "test", 1])
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+        f2 = QgsFeature()
+        f2.setAttributes([2, "test2", 3])
+        f3 = QgsFeature()
+        f3.setAttributes([3, "test2", NULL])
+        f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(3, 2)))
+        f4 = QgsFeature()
+        f4.setAttributes([4, NULL, 3])
+        f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(4, 3)))
+        pr.addFeatures([f1, f2, f3, f4])
+        uri = '{} table="qgis_test"."layer_extent_in_geometry_table" sql='.format(self.dbconn)
+        QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:4326'))
+
+        layerUri = QgsDataSourceUri(uri)
+        # Load and check if the layer is valid
+        loadedLayer = QgsVectorLayer(layerUri.uri(),"valid","mssql")
+        self.assertTrue(loadedLayer.isValid())
+        extent = loadedLayer.extent()
+        self.assertEqual(extent.toString(1),
+                         QgsRectangle(1.0, 2.0, 4.0, 3.0).toString(1))
+
+
+        # Load with flag extent in geometry_columns table and check if the layer is not valid (no extent yet in geometry_columns)
+        layerUri.setParam('extentInGeometryColumns', '1')
+        loadedLayer = QgsVectorLayer(layerUri.uri(), "invalid", "mssql")
+        self.assertFalse(loadedLayer.isValid())
+
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.dbconn, {})
+        conn.addField(QgsField('qgis_xmin', QVariant.Double, 'FLOAT(24)'), 'dbo', 'geometry_columns')
+        conn.addField(QgsField('qgis_xmax', QVariant.Double, 'FLOAT(24)'), 'dbo', 'geometry_columns')
+        conn.addField(QgsField('qgis_ymin', QVariant.Double, 'FLOAT(24)'), 'dbo', 'geometry_columns')
+        conn.addField(QgsField('qgis_ymax', QVariant.Double, 'FLOAT(24)'), 'dbo', 'geometry_columns')
+
+        # try with empty attribute
+        layerUri.setParam('extentInGeometryColumns', '1')
+        loadedLayer = QgsVectorLayer(layerUri.uri(), "invalid", "mssql")
+        self.assertFalse(loadedLayer.isValid())
+
+        conn.execSql('UPDATE dbo.geometry_columns SET qgis_xmin=0, qgis_xmax=5.5, qgis_ymin=0.5, qgis_ymax=6 WHERE f_table_name=\'layer_extent_in_geometry_table\'')
+
+        # try with valid attribute
+        layerUri.setParam('extentInGeometryColumns', '1')
+        loadedLayer = QgsVectorLayer(layerUri.uri(), "valid", "mssql")
+        self.assertTrue(loadedLayer.isValid())
+        extent = loadedLayer.extent()
+        self.assertEqual(extent.toString(1),
+                         QgsRectangle(0.0, 0.5, 5.5, 6.0).toString(1))
 
 if __name__ == '__main__':
     unittest.main()

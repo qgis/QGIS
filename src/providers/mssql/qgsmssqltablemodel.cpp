@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmssqltablemodel.h"
+#include "qgsmssqlconnection.h"
 #include "qgsapplication.h"
 #include "qgsdataitem.h"
 #include "qgslogger.h"
@@ -32,19 +33,21 @@ QgsMssqlTableModel::QgsMssqlTableModel()
   headerLabels << tr( "Primary key column" );
   headerLabels << tr( "Select at id" );
   headerLabels << tr( "Sql" );
+  headerLabels << tr( "View" );
   setHorizontalHeaderLabels( headerLabels );
 }
 
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
-  QgsDebugMsg( QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
+  QgsDebugMsg( QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8" )
                .arg( layerProperty.schemaName,
                      layerProperty.tableName,
                      layerProperty.geometryColName,
                      layerProperty.type,
                      layerProperty.srid,
                      layerProperty.pkCols.join( ',' ),
-                     layerProperty.sql ) );
+                     layerProperty.sql,
+                     layerProperty.isView ? "yes" : "no" ) );
 
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem = nullptr;
@@ -117,6 +120,9 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
 
   QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
+  QStandardItem *isViewItem = new QStandardItem( layerProperty.isView ? tr( "yes" ) : tr( "no" ) );
+  isViewItem->setData( layerProperty.isView, Qt::UserRole + 1 );
+
   childItemList << schemaNameItem;
   childItemList << tableItem;
   childItemList << typeItem;
@@ -125,6 +131,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   childItemList << pkItem;
   childItemList << selItem;
   childItemList << sqlItem;
+  childItemList << isViewItem;
 
   bool detailsFromThread = needToDetect ||
                            ( wkbType != QgsWkbTypes::NoGeometry && layerProperty.srid.isEmpty() );
@@ -370,6 +377,16 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
 
   uri.setParam( QStringLiteral( "disableInvalidGeometryHandling" ), disableInvalidGeometryHandling ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
+  if ( QgsMssqlConnection::geometryColumnsOnly( mConnectionName ) )
+  {
+    uri.setParam( QStringLiteral( "extentInGeometryColumns" ), QgsMssqlConnection::extentInGeometryColumns( mConnectionName ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  }
+
+  QStandardItem *isViewItem = itemFromIndex( index.sibling( index.row(), DbtmView ) );
+
+  if ( isViewItem->data( Qt::UserRole + 1 ).toBool() )
+    uri.setParam( QStringLiteral( "primaryKeyInGeometryColumns" ), QgsMssqlConnection::primaryKeyInGeometryColumns( mConnectionName ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
   return uri.uri();
 }
 
@@ -377,4 +394,9 @@ QgsWkbTypes::Type QgsMssqlTableModel::wkbTypeFromMssql( QString type )
 {
   type = type.toUpper();
   return QgsWkbTypes::parseType( type );
+}
+
+void QgsMssqlTableModel::setConnectionName( const QString &connectionName )
+{
+  mConnectionName = connectionName;
 }

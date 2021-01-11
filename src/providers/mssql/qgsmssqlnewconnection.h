@@ -21,6 +21,8 @@
 #include "qgshelp.h"
 #include <QAbstractListModel>
 
+#include <QSqlDatabase>
+
 /**
  * \class QgsMssqlNewConnection
  * \brief Dialog to allow the user to configure and save connection
@@ -50,6 +52,10 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     //! Updates state of the OK button depending of the filled fields
     void updateOkButtonState();
     void onCurrentDataBaseChange();
+
+    void onExtentFromGeometryToggled( bool checked );
+    void onPrimaryKeyFromGeometryToggled( bool checked );
+
   private:
     //! Class that reprents a model to display available schemas on a database and choose which will be displayed in QGIS
     class SchemaModel: public QAbstractListModel
@@ -87,6 +93,11 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     QVariantMap mSchemaSettings; //store the schema settings edited during this QDialog life time
     SchemaModel mSchemaModel;
 
+    QSqlDatabase getDatabase( const QString &name = QString() ) const;
+
+    bool testExtentInGeometryColumns() const;
+
+    bool testPrimaryKeyInGeometryColumns() const;
 };
 
 #endif //  QGSMSSQLNEWCONNECTION_H

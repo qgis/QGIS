@@ -75,6 +75,7 @@ class QgsMssqlTableModel : public QStandardItemModel
       DbtmPkCol,
       DbtmSelectAtId,
       DbtmSql,
+      DbtmView,
       DbtmColumns
     };
 
@@ -84,9 +85,12 @@ class QgsMssqlTableModel : public QStandardItemModel
 
     static QgsWkbTypes::Type wkbTypeFromMssql( QString dbType );
 
+    void setConnectionName( const QString &connectionName );
+
   private:
     //! Number of tables in the model
     int mTableCount = 0;
+    QString mConnectionName;
 };
 
 #endif
