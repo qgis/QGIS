@@ -707,12 +707,11 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 
         layerUri = QgsDataSourceUri(uri)
         # Load and check if the layer is valid
-        loadedLayer = QgsVectorLayer(layerUri.uri(),"valid","mssql")
+        loadedLayer = QgsVectorLayer(layerUri.uri(), "valid", "mssql")
         self.assertTrue(loadedLayer.isValid())
         extent = loadedLayer.extent()
         self.assertEqual(extent.toString(1),
                          QgsRectangle(1.0, 2.0, 4.0, 3.0).toString(1))
-
 
         # Load with flag extent in geometry_columns table and check if the layer is not valid (no extent yet in geometry_columns)
         layerUri.setParam('extentInGeometryColumns', '1')
@@ -740,6 +739,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         extent = loadedLayer.extent()
         self.assertEqual(extent.toString(1),
                          QgsRectangle(0.0, 0.5, 5.5, 6.0).toString(1))
+
 
 if __name__ == '__main__':
     unittest.main()
