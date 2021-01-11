@@ -908,6 +908,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mTxtLatitude->setText( QString::number( info.latitude, 'f', 8 ) );
     mTxtLongitude->setText( QString::number( info.longitude, 'f', 8 ) );
     mTxtAltitude->setText( tr( "%1 m" ).arg( info.elevation, 0, 'f', 3 ) );
+    mTxtAltitudeDiff->setText( tr( "%1 m" ).arg( info.elevation_diff, 0, 'f', 3 ) );
 
     if ( mDateTimeFormat.isEmpty() )
     {

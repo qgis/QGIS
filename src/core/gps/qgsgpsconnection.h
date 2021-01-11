@@ -129,6 +129,12 @@ class CORE_EXPORT QgsGpsInformation
     double elevation = 0;
 
     /**
+     * Geoidal separation (Diff. between WGS-84 earth ellipsoid and
+     * mean sea level.  -=geoid is below WGS-84 ellipsoid)
+     */
+    double elevation_diff = 0;
+
+    /**
      * Ground speed, in km/h.
      */
     double speed = 0;

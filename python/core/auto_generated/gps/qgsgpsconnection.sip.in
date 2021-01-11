@@ -64,6 +64,8 @@ Encapsulates information relating to a GPS position fix.
 
     double elevation;
 
+    double elevation_diff;
+
     double speed;
 
 

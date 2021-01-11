@@ -188,6 +188,7 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.elevation = result.elv;
+    mLastGPSInformation.elevation_diff = result.diff;
     mLastGPSInformation.quality = result.sig;
     mLastGPSInformation.satellitesUsed = result.satinuse;
   }
