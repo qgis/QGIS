@@ -476,7 +476,7 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
 QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName )
 {
   QgsSettings settings;
-  QString databaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + "/database" ).toString();
+  QString databaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/database" ) ).toString();
 
   return excludedSchemasList( connName, databaseName );
 }
@@ -484,11 +484,11 @@ QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName )
 QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName, const QString &database )
 {
   QgsSettings settings;
-  bool schemaFilteringEnabled = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + "/schemasFiltering" ).toBool();
+  bool schemaFilteringEnabled = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/schemasFiltering" ) ).toBool();
 
   if ( schemaFilteringEnabled )
   {
-    QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + "/excludedSchemas" );
+    QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ) );
 
     if ( schemaSettingsVariant.type() == QVariant::Map )
     {
@@ -505,19 +505,19 @@ void QgsMssqlConnection::setExcludedSchemasList( const QString &connName, const 
 {
   QgsSettings settings;
 
-  QString currentDatabaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + "/database" ).toString();
+  QString currentDatabaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/database" ) ).toString();
   setExcludedSchemasList( connName, currentDatabaseName, excludedSchemas );
 }
 
 void QgsMssqlConnection::setExcludedSchemasList( const QString &connName, const QString &database, const QStringList &excludedSchemas )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + connName + "/schemasFiltering", excludedSchemas.isEmpty() ? 0 : 1 );
+  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/schemasFiltering" ), excludedSchemas.isEmpty() ? 0 : 1 );
 
-  QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + "/excludedSchemas" );
+  QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ) );
   QVariantMap schemaSettings = schemaSettingsVariant.toMap();
   schemaSettings.insert( database, excludedSchemas );
-  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + connName + "/excludedSchemas", schemaSettings );
+  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ), schemaSettings );
 }
 
 QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry, bool geometryColumnOnly, const QStringList &excludedSchemaList )

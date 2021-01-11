@@ -65,7 +65,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
         //! Returns the unchecked schemas
         QStringList uncheckedSchemas() const;
 
-        //! Returns the database nale represented by the model
+        //! Returns the database name represented by the model
         QString dataBaseName() const;
 
         //! Sets the database nale represented by the model
