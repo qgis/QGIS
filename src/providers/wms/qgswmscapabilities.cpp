@@ -326,7 +326,7 @@ QDateTime QgsWmsSettings::findLeastClosestDateTime( const QDateTime &dateTime, b
   long long seconds;
 
   if ( dateOnly )
-    seconds = QDateTime::fromString( closest.date().toString() ).toSecsSinceEpoch();
+    seconds = QDateTime( closest.date(), QTime( 0, 0, 0 ) ).toSecsSinceEpoch();
   else
     seconds = closest.toSecsSinceEpoch();
 
