@@ -566,3 +566,29 @@ QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras:
   settings.setShininess( material->shininess() );
   return settings;
 }
+
+QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera )
+{
+  QVector3D deviceCoords( point.x(), point.y(), 0.0 );
+  // normalized device coordinates
+  QVector3D normDeviceCoords( 2.0 * deviceCoords.x() / windowSize.width() - 1.0f, 1.0f - 2.0 * deviceCoords.y() / windowSize.height(), camera->nearPlane() );
+  // clip coordinates
+  QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0, 0.0 );
+
+  QMatrix4x4 projMatrix = camera->projectionMatrix();
+  QMatrix4x4 viewMatrix = camera->viewMatrix();
+
+  // ray direction in view coordinates
+  QVector4D rayDirView = projMatrix.inverted() * rayClip;
+  // ray origin in world coordinates
+  QVector4D rayOriginWorld = viewMatrix.inverted() * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
+
+  // ray direction in world coordinates
+  rayDirView.setZ( -1.0f );
+  rayDirView.setW( 0.0f );
+  QVector4D rayDirWorld4D = viewMatrix.inverted() * rayDirView;
+  QVector3D rayDirWorld( rayDirWorld4D.x(), rayDirWorld4D.y(), rayDirWorld4D.z() );
+  rayDirWorld = rayDirWorld.normalized();
+
+  return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
+}
