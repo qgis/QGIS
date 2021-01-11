@@ -151,7 +151,7 @@ void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mBaseDistance == 0 )
   {
-    mBaseDistance = 0.00001
+    mBaseDistance = 0.00001;
   }
   if ( mScalingActive )
   {
