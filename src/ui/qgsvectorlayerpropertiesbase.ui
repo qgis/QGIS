@@ -604,6 +604,13 @@ border-radius: 2px;</string>
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="mSourceGroupBox">
+                 <property name="title">
+                  <string>Layer Source</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QgsCollapsibleGroupBox" name="mGeomGroupBox">
                  <property name="focusPolicy">
                   <enum>Qt::StrongFocus</enum>
@@ -2560,6 +2567,11 @@ border-radius: 2px;</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -2569,11 +2581,6 @@ border-radius: 2px;</string>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
