@@ -29,7 +29,13 @@ import filecmp
 import tempfile
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsApplication, QgsFeatureRequest, NULL
+from qgis.core import (
+    QgsApplication,
+    QgsFeatureRequest,
+    QgsCoordinateReferenceSystem,
+    NULL
+)
+
 import unittest
 
 # Get a backup, we will patch this one later
@@ -86,9 +92,12 @@ class TestCase(_TestCase):
 
         # Compare CRS
         if 'ignore_crs_check' not in compare or not compare['ignore_crs_check']:
+            expected_wkt = layer_expected.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
+            result_wkt = layer_result.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
+
             if use_asserts:
-                _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
-            elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
+                _TestCase.assertEqual(self, layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())
+            elif layer_expected.dataProvider().crs() != layer_result.dataProvider().crs():
                 return False
 
         # Compare features
