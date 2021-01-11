@@ -81,8 +81,8 @@ double QgsRay3D::angleToPoint( const QVector3D &point ) const
 
 double QgsRay3D::distanceTo( const  QgsBox3d &box ) const
 {
-  float dx = std::max( box.xMinimum() - mOrigin.x(), std::max( 0., mOrigin.x() - box.xMaximum() ) );
-  float dy = std::max( box.yMinimum() - mOrigin.y(), std::max( 0., mOrigin.y() - box.yMaximum() ) );
-  float dz = std::max( box.zMinimum() - mOrigin.z(), std::max( 0., mOrigin.z() - box.zMaximum() ) );
+  double dx = std::max( box.xMinimum() - mOrigin.x(), std::max( 0., mOrigin.x() - box.xMaximum() ) );
+  double dy = std::max( box.yMinimum() - mOrigin.y(), std::max( 0., mOrigin.y() - box.yMaximum() ) );
+  double dz = std::max( box.zMinimum() - mOrigin.z(), std::max( 0., mOrigin.z() - box.zMaximum() ) );
   return sqrt( dx * dx + dy * dy + dz * dz );
 }
