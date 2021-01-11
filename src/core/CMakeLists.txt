@@ -687,6 +687,7 @@ set(QGIS_CORE_SRCS
   geometry/qgstriangle.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
+  geometry/qgsray3d.cpp
 
   3d/qgs3drendererregistry.cpp
   3d/qgs3dsymbolregistry.cpp
@@ -1194,6 +1195,7 @@ set(QGIS_CORE_HDRS
   geometry/qgstriangle.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
+  geometry/qgsray3d.h
 
   gps/qgsgpsconnection.h
   gps/qgsgpsdconnection.h

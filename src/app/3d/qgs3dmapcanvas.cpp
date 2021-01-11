@@ -33,6 +33,7 @@
 #include "qgstemporalcontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
+#include "qgsray3d.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
@@ -278,5 +279,5 @@ void Qgs3DMapCanvas::identifyPointCloudOnMouseEvent( QVector<QPair<QgsMapLayer *
   QVector3D rayDirWorld( rayDirWorld4D.x(), rayDirWorld4D.y(), rayDirWorld4D.z() );
   rayDirWorld = rayDirWorld.normalized();
 
-  mScene->identifyPointCloudOnRay( result, QVector3D( rayOriginWorld ), rayDirWorld );
+  mScene->identifyPointCloudOnRay( result, QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld ) );
 }

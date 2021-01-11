@@ -22,6 +22,7 @@
 
 #include "qgsfeatureid.h"
 #include "qgsshadowrenderingframegraph.h"
+#include "qgsray3d.h"
 
 namespace Qt3DRender
 {
@@ -128,7 +129,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      *
      * \since QGIS 3.18
      */
-    void identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QVector3D &rayOrigin, const QVector3D &rayDirection );
+    void identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QgsRay3D &ray );
 
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
