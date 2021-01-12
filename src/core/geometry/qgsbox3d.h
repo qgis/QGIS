@@ -208,6 +208,8 @@ class CORE_EXPORT QgsBox3d
     /**
      * Returns the smallest distance between the box and the point \a point
      * (returns 0 if the point is inside the box)
+     *
+     * \since QGIS 3.18
      */
     double distanceTo( const  QVector3D &point ) const;
 
