@@ -273,7 +273,7 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 }
 
 
-void QgsMapToolIdentifyAction::showIdentifyResults( const QVector<IdentifyResult> &identifyResults )
+void QgsMapToolIdentifyAction::showIdentifyResults( const QList<IdentifyResult> &identifyResults )
 {
   for ( const IdentifyResult &res : identifyResults )
   {

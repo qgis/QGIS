@@ -256,9 +256,7 @@ void Qgs3DMapCanvas::updateTemporalRange( const QgsDateTimeRange &temporalrange 
   mScene->updateTemporal();
 }
 
-void Qgs3DMapCanvas::identifyPointCloudOnMouseEvent( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &result, QMouseEvent *event )
+QSize Qgs3DMapCanvas::windowSize() const
 {
-  QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mEngine->size(), mEngine->camera() );
-
-  mScene->identifyPointCloudOnRay( result, ray );
+  return mEngine->size();
 }

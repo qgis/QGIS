@@ -36,6 +36,7 @@ class QgsMeshLayer;
 class QgsHighlight;
 class QgsIdentifyMenu;
 class QgsPointCloudLayer;
+class QgsPointCloudLayerElevationProperties;
 
 /**
  * \ingroup gui
@@ -145,6 +146,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * this menu can also be customized
      */
     QgsIdentifyMenu *identifyMenu() { return mIdentifyMenu; }
+
+    /**
+     * Converts point cloud identification results from variant maps to QgsMapToolIdentify::IdentifyResult and apply some formatting
+     * \note : the converted variant maps are pushed at the back of \a results without cleaning what's in it previously
+     * \since QGIS 3.18
+     */
+    static void fromPointCloudIdentificationToIdentifyResults( QgsPointCloudLayer *layer, const QVector<QVariantMap> &identified, QList<QgsMapToolIdentify::IdentifyResult> &results );
 
   public slots:
     void formatChanged( QgsRasterLayer *layer );

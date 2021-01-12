@@ -87,11 +87,11 @@ class Qgs3DMapCanvas : public QWidget
     void setTemporalController( QgsTemporalController *temporalController );
 
     /**
-     * Identifies point cloud using mouse event
+     * Returns the size of the 3D canvas window
      *
      * \since QGIS 3.18
      */
-    void identifyPointCloudOnMouseEvent( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &result, QMouseEvent *event );
+    QSize windowSize() const;
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
