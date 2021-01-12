@@ -1030,7 +1030,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def setSessionProjectionFromProject(self):
         """
         Set the projection from the project.
-        We creates a PROJ4 definition which is transmitted to Grass
+        We create a WKT definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet and iface:
             self.setSessionProjection(iface.mapCanvas().mapSettings().destinationCrs())
@@ -1038,7 +1038,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def setSessionProjectionFromLayer(self, layer):
         """
         Set the projection from a QgsVectorLayer.
-        We creates a PROJ4 definition which is transmitted to Grass
+        We create a WKT definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet:
             self.setSessionProjection(layer.crs())
