@@ -20,20 +20,6 @@ if (WITH_GUI)
 endif()
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/network
-  ${CMAKE_SOURCE_DIR}/src/core/project
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
@@ -54,6 +40,7 @@ include_directories(SYSTEM
 # static library
 add_library(wmsprovider_a STATIC ${WMS_SRCS})
 target_link_libraries(wmsprovider_a
+  qgis_core
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
   ${Qt5Svg_LIBRARIES}
@@ -66,6 +53,7 @@ target_compile_definitions(wmsprovider_a PRIVATE "-DQT_NO_FOREACH")
 if (WITH_GUI)
   add_library(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
   target_link_libraries(wmsprovider_gui_a
+    wmsprovider_a
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
     ${Qt5Svg_LIBRARIES}

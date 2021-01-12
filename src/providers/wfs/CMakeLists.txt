@@ -43,19 +43,6 @@ endif()
 # Build
 
 include_directories (
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/symbology  # needed by qgsvectorfilewriter.h
-  ${CMAKE_SOURCE_DIR}/src/core/effects    # needed by qgssymbollayer.h
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/network
-  ${CMAKE_SOURCE_DIR}/src/core/project
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
