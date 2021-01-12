@@ -97,13 +97,13 @@ TARGET_COMPILE_DEFINITIONS(hanaprovider_a PUBLIC ODBC_STATIC)
 
 TARGET_LINK_LIBRARIES(hanaprovider
   qgis_core
-  odbccpp
+  odbccpp_static
   ${ODBC_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES(hanaprovider_a
   qgis_core
-  odbccpp
+  odbccpp_static
   ${ODBC_LIBRARIES}
 )
 

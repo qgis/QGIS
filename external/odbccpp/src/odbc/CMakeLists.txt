@@ -55,25 +55,3 @@ TARGET_COMPILE_DEFINITIONS(odbccpp_static
         ODBC_STATIC
 )
 SET_PROPERTY(TARGET odbccpp_static PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-# Shared library
-ADD_LIBRARY(odbccpp
-    SHARED
-        ${odbccpp_sources}
-)
-TARGET_COMPILE_DEFINITIONS(odbccpp
-    PRIVATE
-        ODBC_EXPORTS
-)
-
-TARGET_LINK_LIBRARIES(odbccpp
-    PUBLIC
-        ${ODBC_LIBRARIES}
-)
-
-SET_PROPERTY(TARGET odbccpp PROPERTY public_headers ${public_headers})
-
-# Installation
-INSTALL(TARGETS odbccpp_static DESTINATION lib)
-INSTALL(TARGETS odbccpp DESTINATION lib)
-INSTALL(FILES ${public_headers} DESTINATION include/odbc)
