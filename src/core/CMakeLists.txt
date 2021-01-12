@@ -1747,6 +1747,7 @@ target_include_directories(qgis_core PUBLIC
   processing/models
   project
   providers
+  providers/arcgis
   providers/memory
   providers/gdal
   providers/ogr
