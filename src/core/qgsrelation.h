@@ -407,7 +407,6 @@ class CORE_EXPORT QgsRelation
     mutable QExplicitlySharedDataPointer<QgsRelationPrivate> d;
 
     QgsRelationContext mContext;
-    QString mPolymorphicRelationId;
 };
 
 // Register QgsRelation for usage with QVariant
