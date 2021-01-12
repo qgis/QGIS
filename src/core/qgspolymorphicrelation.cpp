@@ -66,7 +66,6 @@ QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &no
   QString referencedLayerExpression = elem.attribute( QStringLiteral( "referencedLayerExpression" ) );
   QString id = elem.attribute( QStringLiteral( "id" ) );
   QString name = elem.attribute( QStringLiteral( "name" ) );
-  // we UNsafely assume there are no "," is the relation ids
   const QStringList referencedLayerIds = elem.attribute( QStringLiteral( "referencedLayerIds" ) ).split( "," );
 
   QMap<QString, QgsMapLayer *> mapLayers = relationContext.project()->mapLayers();
@@ -104,6 +103,10 @@ void QgsPolymorphicRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "referencedLayerField" ), d->mReferencedLayerField );
   elem.setAttribute( QStringLiteral( "referencedLayerExpression" ), d->mReferencedLayerExpression );
   elem.setAttribute( QStringLiteral( "referencedLayerIds" ), d->mReferencedLayerIds.join( "," ) );
+
+  // note that a layer id can store a comma in theory. Luckyly, this is not easy to achieve, e.g. you need to modify the .qgs file manually
+  for ( const QString &layerId : qgis::as_const( d->mReferencedLayerIds ) )
+    Q_ASSERT( ! layerId.contains( "," ) );
 
   for ( const QgsRelation::FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
