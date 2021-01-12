@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorfield.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAttributeEditorField : QgsAttributeEditorElement
+{
+%Docstring
+This element will load a field's widget onto the form.
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorfield.h"
+%End
+  public:
+
+    QgsAttributeEditorField( const QString &name, int idx, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new attribute editor element which represents a field
+
+:param name: The name of the element
+:param idx: The index of the field which should be embedded
+:param parent: The parent of this widget (used as container)
+%End
+
+    int idx() const;
+%Docstring
+Returns the index of the field.
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorfield.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
