@@ -25,24 +25,41 @@ A ray is composed of an origin point (the start of the ray) and a direction vect
     QgsRay3D( const QVector3D &origin, const QVector3D &direction );
 %Docstring
 Constructor
+
+.. note::
+
+   : the direction is automatically normalized
 %End
 
     QVector3D origin() const;
 %Docstring
 Returns the origin of the ray
+
+.. seealso:: :py:func:`setOrigin`
 %End
+
     QVector3D direction() const;
 %Docstring
 Returns the direction of the ray
+see :py:func:`~QgsRay3D.setDirection`
 %End
 
     void setOrigin( const QVector3D &origin );
 %Docstring
 Sets the origin of the ray
+
+.. seealso:: :py:func:`origin`
 %End
+
     void setDirection( const QVector3D direction );
 %Docstring
 Sets the direction of the ray
+
+.. note::
+
+   : the direction is automatically normalized
+
+.. seealso:: :py:func:`direction`
 %End
 
     bool operator==( const QgsRay3D &r );

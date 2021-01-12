@@ -18,6 +18,7 @@
 #include "qgs3dutils.h"
 
 #include "qgsbox3d.h"
+#include "qgsray3d.h"
 
 #include <QSize>
 
@@ -38,6 +39,7 @@ class TestQgs3DUtils : public QObject
     void testTransforms();
     void testRayFromScreenPoint();
     void testQgsBox3DDistanceTo();
+    void testQgsRay3D();
   private:
 };
 
@@ -155,6 +157,40 @@ void TestQgs3DUtils::testQgsBox3DDistanceTo()
     QVERIFY( box.distanceTo( QVector3D( 1, 2, 1 ) ) == 0.0 );
     QVERIFY( box.distanceTo( QVector3D( 0, 0, 0 ) ) == qSqrt( 6.0 ) );
   }
+}
+
+void TestQgs3DUtils::testQgsRay3D()
+{
+  QgsRay3D ray( QVector3D( 0, 0, 0 ), QVector3D( 1, 1, 1 ) );
+  float t = 1.0f + ( float )( rand() % 1000 ) / 1000.0f;
+  QVector3D p1 = ray.origin() + t * ray.direction();
+  QVector3D p2 = ray.origin() - t * ray.direction();
+  // point already on the ray
+  QVERIFY( ray.projectedPoint( p1 ) == p1 );
+  QVERIFY( ray.projectedPoint( p2 ) == p2 );
+
+  // t >= 0 then the point is in front of the ray
+  QVERIFY( ray.isInFront( p1 ) );
+  // t < 0 then the point is in front of the ray
+  QVERIFY( !ray.isInFront( p2 ) );
+
+  for ( int i = 0; i < 8; ++i )
+  {
+    // random vector
+    QVector3D n = QVector3D( 1.0f + ( float )( rand() % 1000 ) / 1000.0f, 1.0f + ( float )( rand() % 1000 ) / 1000.0f, 1.0f + ( float )( rand() % 1000 ) / 1000.0f ).normalized();
+    // random point on the ray
+    float t = 1.0f + ( float )( rand() % 1000 ) / 1000.0f;
+    QVector3D p = ray.origin() + t * ray.direction();
+    // a random point that projects to p
+    QVector3D p2 = p + ( 1.0f + ( float )( rand() % 1000 ) / 1000.0f ) * QVector3D::crossProduct( ray.direction(), n );
+
+    QVERIFY( qFuzzyCompare( ray.projectedPoint( p2 ), p ) );
+
+    float angle = qRadiansToDegrees( std::atan2( ( p2 - ray.origin() ).length(), ( p - ray.origin() ).length() ) );
+
+    QVERIFY( qFuzzyCompare( ( float )ray.angleToPoint( p2 ), angle ) );
+  }
+
 }
 
 QGSTEST_MAIN( TestQgs3DUtils )
