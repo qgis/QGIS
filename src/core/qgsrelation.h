@@ -164,7 +164,7 @@ class CORE_EXPORT QgsRelation
     void setReferencedLayer( const QString &id );
 
     /**
-     * Add a field pairs which is part of this relation
+     * Add a field pair which is part of this relation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsRelation
     void addFieldPair( const QString &referencingField, const QString &referencedField );
 
     /**
-     * Add a field pairs which is part of this relation
+     * Add a field pair which is part of this relation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
