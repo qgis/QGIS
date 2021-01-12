@@ -206,7 +206,7 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
 
   if ( ! d->mPolymorphicRelationId.isEmpty() )
   {
-    QgsPolymorphicRelation polymorphicRelation = QgsProject::instance()->relationManager()->polymorphicRelation( d->mPolymorphicRelationId );
+    QgsPolymorphicRelation polymorphicRelation = mContext.project()->relationManager()->polymorphicRelation( d->mPolymorphicRelationId );
 
     if ( polymorphicRelation.isValid() )
     {
