@@ -47,6 +47,7 @@ class TestQgsMapToolScaleFeature: public QObject
     void testScaleFeatureWithAnchor();
     void testCancelManualAnchor();
     void testScaleFeatureWithAnchorSetAfterStart();
+    void testScaleSelectedFeatures();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -208,6 +209,23 @@ void TestQgsMapToolScaleFeature::testScaleFeatureWithAnchorSetAfterStart()
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-14 -6, -14 -1, -9 -1, -9 -6, -14 -6))" ) );
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
 
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolScaleFeature::testScaleSelectedFeatures()
+{
+  TestQgsMapToolUtils utils( mScaleTool );
+  mLayerBase->selectAll();
+
+  // resize
+  utils.mouseClick( -2, -1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( -2.5, -0.5 );
+  utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.54 -2.18, -2.54 -1, -1.36 -1, -1.36 -2.18, -2.54 -2.18))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.12 1.12, 1.12 6.07, 2.3 6.07, 2.3 1.12, 1.12 1.12))" ) );
+
+  mLayerBase->removeSelection();
   mLayerBase->undoStack()->undo();
 }
 
