@@ -98,7 +98,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   QList<QgsMapToolIdentify::IdentifyResult> identifyResults;
   for ( int i = 0; i < layerPoints.size(); ++i )
   {
-    QgsPointCloudLayer *pcLayer = dynamic_cast< QgsPointCloudLayer * >( layerPoints[i].first );
+    QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layerPoints[i].first );
     QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( pcLayer, layerPoints[i].second, identifyResults );
   }
 

@@ -130,16 +130,6 @@ Returns a pointer to the identify menu which will be used in layer selection mod
 this menu can also be customized
 %End
 
-    static void fromPointCloudIdentificationToIdentifyResults( QgsPointCloudLayer *layer, const QVector<QVariantMap> &identified, QList<QgsMapToolIdentify::IdentifyResult> &results );
-%Docstring
-Converts point cloud identification results from variant maps to QgsMapToolIdentify.IdentifyResult and apply some formatting
-
-.. note::
-
-   : the converted variant maps are pushed at the back of ``results`` without cleaning what's in it previously
-
-.. versionadded:: 3.18
-%End
 
   public slots:
     void formatChanged( QgsRasterLayer *layer );

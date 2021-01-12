@@ -1120,12 +1120,12 @@ void Qgs3DMapScene::identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVecto
   {
     if ( layer->type() != QgsMapLayerType::PointCloudLayer )
       continue;
-    if ( QgsPointCloudLayer *pc = dynamic_cast<QgsPointCloudLayer *>( layer ) )
+    if ( QgsPointCloudLayer *pc = qobject_cast<QgsPointCloudLayer *>( layer ) )
     {
       QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( pc->renderer3D() );
       const QgsPointCloud3DSymbol *symbol = renderer->symbol();
       // Symbol can be null in case of no rendering enabled
-      if ( symbol == nullptr )
+      if ( !symbol )
         continue;
       double maxScreenError = renderer->maximumScreenError();
       double pointSize = symbol->pointSize();
