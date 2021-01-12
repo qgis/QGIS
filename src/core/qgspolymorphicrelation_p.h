@@ -59,7 +59,7 @@ class QgsPolymorphicRelationPrivate : public QSharedData
     /**
      * A list of fields which define the relation.
      * In most cases there will be only one value, but multiple values
-     * are supported for composited foreign keys.
+     * are supported for composite foreign keys.
      * The first field is on the referencing layer, the second on the referenced
     */
     QList< QgsRelation::FieldPair > mFieldPairs;
