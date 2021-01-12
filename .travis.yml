@@ -48,7 +48,7 @@ matrix:
         - RUN_FLAKY_TESTS=$(.ci/travis/scripts/pr_has_label.py $TRAVIS_PULL_REQUEST 1271248184)
 
 git:
-  depth: 120
+  depth: 1
 
 notifications:
   irc:
