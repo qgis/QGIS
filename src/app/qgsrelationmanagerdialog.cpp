@@ -55,12 +55,14 @@ QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relation
 
   connect( mBtnAddRelation, &QPushButton::clicked, this, &QgsRelationManagerDialog::mBtnAddRelation_clicked );
   connect( mActionAddPolymorphicRelation, &QAction::triggered, this, &QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered );
+  connect( mActionEditPolymorphicRelation, &QAction::triggered, this, &QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered );
   connect( mBtnDiscoverRelations, &QPushButton::clicked, this, &QgsRelationManagerDialog::mBtnDiscoverRelations_clicked );
   connect( mBtnRemoveRelation, &QPushButton::clicked, this, &QgsRelationManagerDialog::mBtnRemoveRelation_clicked );
 
   mBtnRemoveRelation->setEnabled( false );
   mBtnAddRelation->setPopupMode( QToolButton::MenuButtonPopup );
   mBtnAddRelation->addAction( mActionAddPolymorphicRelation );
+  mBtnAddRelation->addAction( mActionEditPolymorphicRelation );
 
   connect( mRelationsTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRelationManagerDialog::onSelectionChanged );
 }
@@ -251,7 +253,40 @@ void QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered()
     relation.setReferencedLayerExpression( addDlg.referencedLayerExpression() );
     relation.setReferencedLayerIds( addDlg.referencedLayerIds() );
 
-    const auto references = addDlg.references();
+    const auto references = addDlg.fieldPairs();
+    for ( const auto &reference : references )
+      relation.addFieldPair( reference.first, reference.second );
+
+    QString relationId = addDlg.relationId();
+
+    if ( relationId.isEmpty() )
+      relation.generateId();
+    else
+      relation.setId( relationId );
+
+    addPolymorphicRelation( relation );
+  }
+}
+
+void QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered()
+{
+  QgsRelationAddPolymorphicDlg addDlg;
+  const QModelIndexList rows = mRelationsTree->selectionModel()->selectedRows();
+
+  if ( rows.size() != 1 )
+    return;
+
+  addDlg.setPolymorphicRelation( mRelationsTree->topLevelItem( rows[0].row() )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>() );
+
+  if ( addDlg.exec() )
+  {
+    QgsPolymorphicRelation relation;
+    relation.setReferencingLayer( addDlg.referencingLayerId() );
+    relation.setReferencedLayerField( addDlg.referencedLayerField() );
+    relation.setReferencedLayerExpression( addDlg.referencedLayerExpression() );
+    relation.setReferencedLayerIds( addDlg.referencedLayerIds() );
+
+    const auto references = addDlg.fieldPairs();
     for ( const auto &reference : references )
       relation.addFieldPair( reference.first, reference.second );
 
@@ -335,4 +370,11 @@ QList< QgsPolymorphicRelation > QgsRelationManagerDialog::polymorphicRelations()
 void QgsRelationManagerDialog::onSelectionChanged()
 {
   mBtnRemoveRelation->setEnabled( ! mRelationsTree->selectionModel()->selectedRows().isEmpty() );
+
+  const QModelIndexList rows = mRelationsTree->selectionModel()->selectedRows();
+  bool isEditPolymorphicRelationEnabled = (
+      rows.size() == 1
+      && mRelationsTree->topLevelItem( rows[0].row() )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>().isValid()
+                                          );
+  mActionEditPolymorphicRelation->setEnabled( isEditPolymorphicRelationEnabled );
 }

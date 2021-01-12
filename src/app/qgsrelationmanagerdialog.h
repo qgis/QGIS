@@ -43,6 +43,7 @@ class APP_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
   private slots:
     void mBtnAddRelation_clicked();
     void mActionAddPolymorphicRelation_triggered();
+    void mActionEditPolymorphicRelation_triggered();
     void mBtnDiscoverRelations_clicked();
     void mBtnRemoveRelation_clicked();
     void onSelectionChanged();

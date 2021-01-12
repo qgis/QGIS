@@ -43,14 +43,45 @@ class APP_EXPORT QgsRelationAddPolymorphicDlg : public QDialog, private Ui::QgsR
   public:
     explicit QgsRelationAddPolymorphicDlg( QWidget *parent = nullptr );
 
+    /**
+     * Returns the id of the referencing layer
+     */
     QString referencingLayerId();
+
+    /**
+     * Returns the field in the referencing layer that stores the referenced layer representation
+     */
     QString referencedLayerField();
+
+    /**
+     * Returns the expression used to generate the referenced layer representation
+     */
     QString referencedLayerExpression();
-    QList< QPair< QString, QString > > references();
+
+    /**
+     * Returns field pairs
+     */
+    QList< QPair< QString, QString > > fieldPairs();
+
+    /**
+     * Returns the polymorphic relation id
+     */
     QString relationId();
+
+    /**
+     * Returns the polymorphic relation name
+     */
     QString relationName();
+
+    /**
+     * Returns a list of layer ids used as referenced layers and stored in the referencing layers
+     */
     QStringList referencedLayerIds();
-    QgsRelation::RelationStrength relationStrength();
+
+    /**
+     * Sets the values of form fields in the dialog with the values of the passed \a polyRel
+     */
+    void setPolymorphicRelation( const QgsPolymorphicRelation polyRel );
 
   private slots:
     void addFieldsRow();
@@ -66,15 +97,6 @@ class APP_EXPORT QgsRelationAddPolymorphicDlg : public QDialog, private Ui::QgsR
   private:
     bool isDefinitionValid();
     void updateFieldsMapping();
-//    QList<QgsFieldPairWidget *> mFieldPairWidgets;
-
-//    QDialogButtonBox *mButtonBox = nullptr;
-//    QVBoxLayout *mFieldPairsLayout = nullptr;
-//    QLineEdit *mNameLineEdit = nullptr;
-//    QComboBox *mTypeComboBox = nullptr;
-//    QLineEdit *mIdLineEdit = nullptr;
-//    QLineEdit *mReferencedLayerExpressionLineEdit = nullptr;
-//    QComboBox *mStrengthCombobox = nullptr;
 
 };
 

@@ -73,6 +73,15 @@
      </item>
      <item>
       <widget class="QToolButton" name="mBtnAddRelation">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
        <property name="text">
         <string>Add Relation</string>
        </property>
@@ -126,6 +135,17 @@
   <action name="mActionAddPolymorphicRelation">
    <property name="text">
     <string>Add Polymorphic Relation</string>
+   </property>
+   <property name="toolTip">
+    <string>Polymorphic relations are for advanced usage where a set of standard relations have the same referencing layer but the referenced layer is calculated from an expression.</string>
+   </property>
+  </action>
+  <action name="mActionEditPolymorphicRelation">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Edit Polymorphic Relation</string>
    </property>
    <property name="toolTip">
     <string>Polymorphic relations are for advanced usage where a set of standard relations have the same referencing layer but the referenced layer is calculated from an expression.</string>
