@@ -35,6 +35,11 @@ void QgsRay3D::setDirection( const QVector3D direction )
   mDirection = direction;
 }
 
+bool QgsRay3D::operator==( const QgsRay3D &r )
+{
+  return this->mOrigin == r.origin() && this->direction() == r.direction();
+}
+
 QVector3D QgsRay3D::projectedPoint( const QVector3D &point ) const
 {
   return mOrigin + QVector3D::dotProduct( point - mOrigin, mDirection ) * mDirection;

@@ -229,6 +229,8 @@ Converts the box to a 2D rectangle.
 %Docstring
 Returns the smallest distance between the box and the point ``point``
 (returns 0 if the point is inside the box)
+
+.. versionadded:: 3.18
 %End
 
     bool operator==( const QgsBox3d &other ) const;

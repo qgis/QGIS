@@ -159,7 +159,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     SIP_PYLIST getPointsOnRay( const QgsRay3D &ray, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit = 1000 );
     % MethodCode
     {
-      QVector<QMap<QString, QVariant>> res = sipCpp->getPointsOnRay( *a0, a2, a3, a4, a5, a6 );
+      QVector<QMap<QString, QVariant>> res = sipCpp->getPointsOnRay( *a0, a1, a2, a3, a4, a5 );
       sipRes = PyList_New( res.size() );
       for ( int i = 0; i < res.size(); ++i )
       {

@@ -45,6 +45,8 @@ Sets the origin of the ray
 Sets the direction of the ray
 %End
 
+    bool operator==( const QgsRay3D &r );
+
     QVector3D projectedPoint( const QVector3D &point ) const;
 %Docstring
 Returns the projection of the point on the ray

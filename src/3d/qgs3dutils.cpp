@@ -575,18 +575,18 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   // clip coordinates
   QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0, 0.0 );
 
-  QMatrix4x4 projMatrix = camera->projectionMatrix();
-  QMatrix4x4 viewMatrix = camera->viewMatrix();
+  QMatrix4x4 invertedProjMatrix = camera->projectionMatrix().inverted();
+  QMatrix4x4 invertedViewMatrix = camera->viewMatrix().inverted();
 
   // ray direction in view coordinates
-  QVector4D rayDirView = projMatrix.inverted() * rayClip;
+  QVector4D rayDirView = invertedProjMatrix * rayClip;
   // ray origin in world coordinates
-  QVector4D rayOriginWorld = viewMatrix.inverted() * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
+  QVector4D rayOriginWorld = invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
 
   // ray direction in world coordinates
   rayDirView.setZ( -1.0f );
   rayDirView.setW( 0.0f );
-  QVector4D rayDirWorld4D = viewMatrix.inverted() * rayDirView;
+  QVector4D rayDirWorld4D = invertedViewMatrix * rayDirView;
   QVector3D rayDirWorld( rayDirWorld4D.x(), rayDirWorld4D.y(), rayDirWorld4D.z() );
   rayDirWorld = rayDirWorld.normalized();
 

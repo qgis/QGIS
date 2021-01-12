@@ -43,6 +43,9 @@ class CORE_EXPORT QgsRay3D
     //! Sets the direction of the ray
     void setDirection( const QVector3D direction );
 
+    //! Comparison operator
+    bool operator==( const QgsRay3D &r );
+
     /**
      * Returns the projection of the point on the ray
      * (which is the closest point of the ray to \a point)
