@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1064</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -2501,8 +2501,8 @@ Acts on the currently active layer only.</string>
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>../../images/themes/default/mActionScaleFeature.svg</normaloff>../../images/themes/default/mActionScaleFeature.svg</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionScaleFeature.svg</normaloff>:/images/themes/default/mActionScaleFeature.svg</iconset>
    </property>
    <property name="text">
     <string>Scale Feature(s)</string>
