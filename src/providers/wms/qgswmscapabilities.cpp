@@ -317,26 +317,40 @@ QDateTime QgsWmsSettings::findLeastClosestDateTime( const QDateTime &dateTime, b
 
   for ( const QgsWmstExtentPair &pair : mTimeDimensionExtent.datesResolutionList )
   {
-    if ( pair.dates.dateTimes.size() < 2 )
+    if ( pair.dates.dateTimes.empty() )
+    {
       continue;
+    }
+    else if ( pair.dates.dateTimes.size() == 1 )
+    {
+      long long startSeconds = pair.dates.dateTimes.at( 0 ).toSecsSinceEpoch();
 
-    long long startSeconds = pair.dates.dateTimes.at( 0 ).toSecsSinceEpoch();
-    long long endSeconds = pair.dates.dateTimes.at( 1 ).toSecsSinceEpoch();
+      // if out of bounds
+      if ( seconds < startSeconds )
+        continue;
 
-    // if out of bounds
-    if ( seconds < startSeconds || seconds > endSeconds )
-      continue;
-    if ( seconds == endSeconds )
-      break;
+      closest = pair.dates.dateTimes.at( 0 );
+    }
+    else
+    {
+      long long startSeconds = pair.dates.dateTimes.at( 0 ).toSecsSinceEpoch();
+      long long endSeconds = pair.dates.dateTimes.at( 1 ).toSecsSinceEpoch();
 
-    long long resolutionSeconds = pair.resolution.interval();
+      // if out of bounds
+      if ( seconds < startSeconds || seconds > endSeconds )
+        continue;
+      if ( seconds == endSeconds )
+        break;
 
-    if ( resolutionSeconds <= 0 )
-      continue;
-    long long step = std::floor( ( seconds - startSeconds ) / resolutionSeconds );
-    long long resultSeconds = startSeconds + ( step * resolutionSeconds );
+      long long resolutionSeconds = pair.resolution.interval();
 
-    closest.setSecsSinceEpoch( resultSeconds );
+      if ( resolutionSeconds <= 0 )
+        continue;
+      long long step = std::floor( ( seconds - startSeconds ) / resolutionSeconds );
+      long long resultSeconds = startSeconds + ( step * resolutionSeconds );
+
+      closest.setSecsSinceEpoch( resultSeconds );
+    }
   }
 
   return closest;
