@@ -571,29 +571,35 @@ void QgsCameraController::onKeyPressedFlyNavigation()
 
   QVector3D cameraPosDiff( 0.0f, 0.0f, 0.0f );
 
+  // shift = "run", ctrl = "slow walk"
+  const bool shiftPressed = mDepressedKeys.contains( Qt::Key_Shift );
+  const bool ctrlPressed = mDepressedKeys.contains( Qt::Key_Control );
+
+  double movementSpeed = mCameraMovementSpeed * ( shiftPressed ? 2 : 1 ) * ( ctrlPressed ? 0.1 : 1 );
+
   bool changed = false;
   if ( mDepressedKeys.contains( Qt::Key_Left ) || mDepressedKeys.contains( Qt::Key_A ) )
   {
     changed = true;
-    cameraPosDiff += mCameraMovementSpeed * cameraLeft;
+    cameraPosDiff += movementSpeed * cameraLeft;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Right ) || mDepressedKeys.contains( Qt::Key_D ) )
   {
     changed = true;
-    cameraPosDiff += - mCameraMovementSpeed * cameraLeft;
+    cameraPosDiff += - movementSpeed * cameraLeft;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Up ) || mDepressedKeys.contains( Qt::Key_W ) )
   {
     changed = true;
-    cameraPosDiff += mCameraMovementSpeed * cameraFront;
+    cameraPosDiff += movementSpeed * cameraFront;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Down ) || mDepressedKeys.contains( Qt::Key_S ) )
   {
     changed = true;
-    cameraPosDiff += - mCameraMovementSpeed * cameraFront;
+    cameraPosDiff += - movementSpeed * cameraFront;
   }
 
   // note -- vertical axis movements are slower by default then horizontal ones, as GIS projects
@@ -602,13 +608,13 @@ void QgsCameraController::onKeyPressedFlyNavigation()
   if ( mDepressedKeys.contains( Qt::Key_PageUp ) || mDepressedKeys.contains( Qt::Key_E ) )
   {
     changed = true;
-    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * movementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
   }
 
   if ( mDepressedKeys.contains( Qt::Key_PageDown ) || mDepressedKeys.contains( Qt::Key_Q ) )
   {
     changed = true;
-    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * - mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * - movementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
   }
 
   if ( changed )
