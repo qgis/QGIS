@@ -18,13 +18,6 @@ include_directories(
 )
 
 include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
-  ${QT_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
   ${O2_INCLUDE_DIR}
 )
 

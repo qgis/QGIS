@@ -51,16 +51,9 @@ endif()
 
 include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${SPATIALITE_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
 )
 
-if (WITH_GUI)
-  include_directories(SYSTEM
-    ${QSCINTILLA_INCLUDE_DIR}
-  )
-endif()
+
 
 add_library(virtuallayerprovider MODULE
   ${QGIS_VLAYER_PROVIDER_SRCS}

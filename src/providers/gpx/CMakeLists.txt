@@ -19,7 +19,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/gui
 )
 include_directories (SYSTEM
-  ${EXPAT_INCLUDE_DIR}
 )
 
 add_library(gpxprovider MODULE ${GPX_SRCS})

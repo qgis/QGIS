@@ -18,10 +18,6 @@ include_directories (
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )
-include_directories (SYSTEM
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-)
 include_directories (
   ../../gui
   ../../gui/auth
