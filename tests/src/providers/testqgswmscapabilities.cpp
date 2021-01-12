@@ -226,8 +226,20 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( extent.datesResolutionList.at( 6 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1972, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
       QCOMPARE( extent.datesResolutionList.at( 7 ).dates.dateTimes.size(), 1 );
       QCOMPARE( extent.datesResolutionList.at( 7 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-    }
 
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1930, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1930, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1932, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1933, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1949, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1950, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1973, 12, 31 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1972, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1974, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 2000, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+    }
 
     void wmsTemporalDimension_data()
     {
