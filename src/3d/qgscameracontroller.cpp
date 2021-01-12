@@ -583,7 +583,7 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
   double dy = mouse->y() - mMousePos.y();
   if ( mPressedButton ==  Qt3DInput::QMouseEvent::LeftButton || mPressedButton ==  Qt3DInput::QMouseEvent::MiddleButton || ( mCaptureFpsMouseMovements && mPressedButton != Qt3DInput::QMouseEvent::RightButton ) )
   {
-    float diffPitch = 0.2f * dy;
+    float diffPitch = ( mCaptureFpsMouseMovements ? -1 : 1 ) * 0.2f * dy;
     float diffYaw = - 0.2f * dx;
     rotateCamera( diffPitch, diffYaw );
     updateCameraFromPose( false );
