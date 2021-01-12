@@ -204,8 +204,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         command = '"{}" {} {}'.format(app_launcher_path, self.name(), OtbUtils.appFolder())
         outputPixelType = None
         for k, v in parameters.items():
-            # if value is None for a parameter we don't have any businees with this key
-            if v is None:
+            # if value is None or en empty string for a parameter we don't have any businees with this key
+            if v == '' or v is None:
                 continue
             # for 'outputpixeltype' parameter we find the pixeltype string from self.pixelTypes
             if k == 'outputpixeltype':
