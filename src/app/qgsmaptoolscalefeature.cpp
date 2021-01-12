@@ -185,8 +185,6 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     deleteRubberband();
 
-    mInitialCanvasPos = e->pos();
-
     if ( !vlayer->isEditable() )
     {
       notifyNotEditableLayer();
@@ -253,6 +251,7 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
       mScaledFeatures.clear();
       mScaledFeatures << cf.id(); //todo: take the closest feature, not the first one...
+      mOriginalGeometries << cf.geometry();
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
       mRubberBand->setToGeometry( cf.geometry(), vlayer );
@@ -268,15 +267,12 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       while ( it.nextFeature( feat ) )
       {
         mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mOriginalGeometries << feat.geometry();
       }
     }
 
-    QgsPointXY mapAnchor = toMapCoordinates( vlayer, mFeatureCenterMapCoords );
-    QPoint rubberAnchor = toCanvasCoordinates( mapAnchor );
+    mScalingActive = true;
 
-    mRubberScale = QPointF( rubberAnchor.x() - mRubberBand->x(), rubberAnchor.y() - mRubberBand->y() );
-    mRubberBand->setTransformOriginPoint( rubberAnchor );
-    mRubberBand->show();
     mBaseDistance = e->mapPoint().distance( mFeatureCenterMapCoords );
     mScaling = 1.0;
 
@@ -304,17 +300,25 @@ void QgsMapToolScaleFeature::cancel()
 
 void QgsMapToolScaleFeature::updateRubberband( double scale )
 {
-  if ( mScalingActive )
+  if ( mScalingActive && mRubberBand )
   {
     mScaling = scale;
 
-    double offsetx = ( 1 - mScaling ) * mRubberScale.x();
-    double offsety = ( 1 - mScaling ) *  mRubberScale.y();
+    QTransform t;
+    t.translate( mFeatureCenterMapCoords.x(), mFeatureCenterMapCoords.y() );
+    t.scale( mScaling, mScaling );
+    t.translate( -mFeatureCenterMapCoords.x(), -mFeatureCenterMapCoords.y() );
 
-    if ( mRubberBand )
+    QgsVectorLayer *vlayer = currentVectorLayer();
+    if ( !vlayer )
+      return;
+
+    mRubberBand->reset( vlayer->geometryType() );
+    for ( const QgsGeometry &originalGeometry : mOriginalGeometries )
     {
-      mRubberBand->setTransform( QTransform( mScaling, 0, 0, mScaling, offsetx, offsety ) );
-      mRubberBand->update();
+      QgsGeometry geom = originalGeometry;
+      geom.transform( t );
+      mRubberBand->addGeometry( geom, vlayer );
     }
   }
 }
@@ -396,6 +400,8 @@ void QgsMapToolScaleFeature::deleteRubberband()
 {
   delete mRubberBand;
   mRubberBand = nullptr;
+
+  mOriginalGeometries.clear();
 }
 
 void QgsMapToolScaleFeature::deactivate()
