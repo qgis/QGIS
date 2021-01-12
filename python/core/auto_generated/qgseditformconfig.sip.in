@@ -276,9 +276,12 @@ Write XML information
 Serialize on project save
 %End
 
-    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() );
+ QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Deprecated/;
 %Docstring
 Deserialize drag and drop designer elements.
+
+.. deprecated:: QGIS 3.18
+   use QgsAttributeEditorElement.create instead
 %End
 
     explicit QgsEditFormConfig();
