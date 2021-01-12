@@ -21,6 +21,8 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrelation_p.h"
+#include "qgspolymorphicrelation.h"
+#include "qgsrelationmanager.h"
 
 QgsRelation::QgsRelation()
   : d( new QgsRelationPrivate() )
@@ -201,6 +203,21 @@ QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature &feat
 QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
 {
   QStringList conditions;
+
+  if ( ! d->mPolymorphicRelationId.isEmpty() )
+  {
+    QgsPolymorphicRelation polymorphicRelation = QgsProject::instance()->relationManager()->polymorphicRelation( d->mPolymorphicRelationId );
+
+    if ( polymorphicRelation.isValid() )
+    {
+      conditions << QgsExpression::createFieldEqualityExpression( polymorphicRelation.referencedLayerField(), polymorphicRelation.layerRepresentation( referencedLayer() ) );
+    }
+    else
+    {
+      QgsDebugMsg( "The polymorphic relation is invalid" );
+      conditions << QStringLiteral( " FALSE " );
+    }
+  }
 
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
