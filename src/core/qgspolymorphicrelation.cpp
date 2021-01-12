@@ -377,7 +377,8 @@ QList<QgsRelation> QgsPolymorphicRelation::generateRelations() const
     relation.setId( QStringLiteral( "%1_%2" ).arg( d->mRelationId, referencedLayerName ) );
     relation.setPolymorphicRelationId( d->mRelationId );
 
-    for ( const QgsRelation::FieldPair &fieldPair : fieldPairs() )
+    const QList<QgsRelation::FieldPair> constFieldPairs = fieldPairs();
+    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       relation.addFieldPair( fieldPair );
 
     if ( !relation.isValid() )
