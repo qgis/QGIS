@@ -97,19 +97,17 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
 
     //! Start point of the move in map coordinates
     QgsPointXY mFeatureCenterMapCoords;
-    QPointF mRubberScale;
-    QPointF mInitialCanvasPos;
-
     //! Rubberband that shows the feature being moved
     QgsRubberBand *mRubberBand = nullptr;
 
     //! Id of moved feature
     QgsFeatureIds mScaledFeatures;
+    QVector< QgsGeometry > mOriginalGeometries;
+
     double mScaling = 0;
     double mBaseDistance = 1;
     QgsRectangle mExtent;
 
-    QgsPointXY mCenterPoint;
     std::unique_ptr<QgsVertexMarker> mAnchorPoint = nullptr;
 
     bool mScalingActive = false;
