@@ -31,10 +31,10 @@ class RelationNameEditorDelegate: public QStyledItemDelegate
       , mEditableColumns( editableColumns )
     {}
 
-    virtual QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+    virtual QWidget *createEditor( QWidget *parentWidget, const QStyleOptionViewItem &option, const QModelIndex &index ) const
     {
       if ( mEditableColumns.contains( index.column() ) )
-        return QStyledItemDelegate::createEditor( parent, option, index );
+        return QStyledItemDelegate::createEditor( parentWidget, option, index );
 
       return nullptr;
     }
@@ -51,7 +51,7 @@ QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relation
   setupUi( this );
 
   mRelationsTree->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-  mRelationsTree->setItemDelegate( new RelationNameEditorDelegate( QList<int>( {0} ), this ) );
+  mRelationsTree->setItemDelegate( new RelationNameEditorDelegate( QList<int>( {0} ), mRelationsTree ) );
 
   connect( mBtnAddRelation, &QPushButton::clicked, this, &QgsRelationManagerDialog::mBtnAddRelation_clicked );
   connect( mActionAddPolymorphicRelation, &QAction::triggered, this, &QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered );
@@ -107,6 +107,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
 
   if ( rel.polymorphicRelationId().isEmpty() )
   {
+    item->setFlags( item->flags() | Qt::ItemIsEditable );
     mRelationsTree->insertTopLevelItem( row, item );
   }
   else
@@ -123,6 +124,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
       if ( polymorphicRelation.id() != rel.polymorphicRelationId() )
         continue;
 
+      item->setFlags( item->flags().setFlag( Qt::ItemIsSelectable, false ) );
       parentItem->addChild( item );
       break;
     }
@@ -130,7 +132,6 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
 
   // Save relation in first column's item
   item->setData( 0, Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
-  item->setFlags( item->flags() | Qt::ItemIsEditable );
 
   item->setText( 0, rel.name() );
   item->setText( 1, rel.referencedLayer()->name() );
@@ -333,5 +334,5 @@ QList< QgsPolymorphicRelation > QgsRelationManagerDialog::polymorphicRelations()
 
 void QgsRelationManagerDialog::onSelectionChanged()
 {
-  mBtnRemoveRelation->setEnabled( mRelationsTree->selectionModel()->hasSelection() );
+  mBtnRemoveRelation->setEnabled( ! mRelationsTree->selectionModel()->selectedRows().isEmpty() );
 }
