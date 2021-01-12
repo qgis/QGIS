@@ -3098,12 +3098,10 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   dsUri.setDataSource( ownerName, tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri( false ), providerOptions );
+  std::unique_ptr<QgsOracleProvider> provider( new QgsOracleProvider( dsUri.uri( false ), providerOptions ) );
   if ( !provider->isValid() )
   {
     errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( ownerTableName );
-
-    delete provider;
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
@@ -3143,8 +3141,6 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
         if ( j == 3 )
         {
           errorMessage = QObject::tr( "Field name clash found (%1 not remappable)" ).arg( fld.name() );
-
-          delete provider;
           return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
         }
       }
@@ -3178,8 +3174,6 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
       if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && ! convertField( fld ) )
       {
         errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
-
-        delete provider;
         return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
@@ -3195,8 +3189,6 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     if ( !provider->addAttributes( flist ) )
     {
       errorMessage = QObject::tr( "Creation of fields failed" );
-
-      delete provider;
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
@@ -3211,11 +3203,8 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
        && !provider->deleteAttributes( QgsAttributeIds { provider->fields().indexOf( fakeColumn ) } ) )
   {
     errorMessage = QObject::tr( "Remove of temporary column '%1' failed" ).arg( fakeColumn );
-    delete provider;
     return QgsVectorLayerExporter::ErrAttributeCreationFailed;
   }
-
-  delete provider;
 
   return QgsVectorLayerExporter::NoError;
 }
