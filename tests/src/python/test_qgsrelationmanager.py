@@ -169,33 +169,33 @@ class TestQgsRelationManager(unittest.TestCase):
         # initially the map should be empty
         self.assertListEqual(list(manager.polymorphicRelations()), [])
 
-        polyRel1 = self.createPolymorphicRelation()
-        polyRel1.setId('poly_rel1')
-        polyRel1.setName('Poly Rel 1')
-        polyRel2 = self.createPolymorphicRelation()
-        polyRel2.setId('poly_rel2')
-        polyRel2.setName('Poly Rel 2')
-        polyRel3 = self.createPolymorphicRelation()
-        polyRel3.setId('poly_rel3')
-        polyRel3.setName('Poly Rel 3')
+        poly_rel1 = self.createPolymorphicRelation()
+        poly_rel1.setId('poly_rel1')
+        poly_rel1.setName('Poly Rel 1')
+        poly_rel2 = self.createPolymorphicRelation()
+        poly_rel2.setId('poly_rel2')
+        poly_rel2.setName('Poly Rel 2')
+        poly_rel3 = self.createPolymorphicRelation()
+        poly_rel3.setId('poly_rel3')
+        poly_rel3.setName('Poly Rel 3')
 
         # the relation should be valid now
-        self.assertTrue(polyRel1.isValid())
-        self.assertTrue(polyRel2.isValid())
-        self.assertTrue(polyRel3.isValid())
+        self.assertTrue(poly_rel1.isValid())
+        self.assertTrue(poly_rel2.isValid())
+        self.assertTrue(poly_rel3.isValid())
 
-        manager.setPolymorphicRelations([polyRel1, polyRel2, polyRel3])
+        manager.setPolymorphicRelations([poly_rel1, poly_rel2, poly_rel3])
 
         # the relations should match
         self.assertListEqual(list(manager.polymorphicRelations()), ['poly_rel1', 'poly_rel2', 'poly_rel3'])
         self.assertTrue(manager.polymorphicRelations()['poly_rel1'])
         self.assertTrue(manager.polymorphicRelations()['poly_rel2'])
         self.assertTrue(manager.polymorphicRelations()['poly_rel3'])
-        self.assertTrue(manager.polymorphicRelations()['poly_rel1'].hasEqualDefinition(polyRel1))
-        self.assertTrue(manager.polymorphicRelations()['poly_rel2'].hasEqualDefinition(polyRel2))
-        self.assertTrue(manager.polymorphicRelations()['poly_rel3'].hasEqualDefinition(polyRel3))
+        self.assertTrue(manager.polymorphicRelations()['poly_rel1'].hasEqualDefinition(poly_rel1))
+        self.assertTrue(manager.polymorphicRelations()['poly_rel2'].hasEqualDefinition(poly_rel2))
+        self.assertTrue(manager.polymorphicRelations()['poly_rel3'].hasEqualDefinition(poly_rel3))
 
-        manager.setPolymorphicRelations([polyRel1])
+        manager.setPolymorphicRelations([poly_rel1])
         self.assertListEqual(list(manager.polymorphicRelations()), ['poly_rel1'])
         manager.setPolymorphicRelations([])
         self.assertListEqual(list(manager.polymorphicRelations()), [])
@@ -208,25 +208,25 @@ class TestQgsRelationManager(unittest.TestCase):
         # initially the map should be empty
         self.assertFalse(manager.polymorphicRelations())
 
-        polyRel1 = self.createPolymorphicRelation()
-        polyRel1.setId('poly_rel1')
-        polyRel1.setName('Poly Rel 1')
-        polyRel2 = self.createPolymorphicRelation()
-        polyRel2.setId('poly_rel2')
-        polyRel2.setName('Poly Rel 2')
+        poly_rel1 = self.createPolymorphicRelation()
+        poly_rel1.setId('poly_rel1')
+        poly_rel1.setName('Poly Rel 1')
+        poly_rel2 = self.createPolymorphicRelation()
+        poly_rel2.setId('poly_rel2')
+        poly_rel2.setName('Poly Rel 2')
 
         # the relation should be valid now
-        self.assertTrue(polyRel1.isValid())
-        self.assertTrue(polyRel2.isValid())
+        self.assertTrue(poly_rel1.isValid())
+        self.assertTrue(poly_rel2.isValid())
 
-        manager.addPolymorphicRelation(polyRel1)
-        manager.addPolymorphicRelation(polyRel2)
+        manager.addPolymorphicRelation(poly_rel1)
+        manager.addPolymorphicRelation(poly_rel2)
 
         self.assertFalse(manager.polymorphicRelation('poly_invalid_id').isValid())
         self.assertTrue(manager.polymorphicRelation('poly_rel1').isValid())
         self.assertTrue(manager.polymorphicRelation('poly_rel2').isValid())
-        self.assertTrue(manager.polymorphicRelation('poly_rel1').hasEqualDefinition(polyRel1))
-        self.assertTrue(manager.polymorphicRelation('poly_rel2').hasEqualDefinition(polyRel2))
+        self.assertTrue(manager.polymorphicRelation('poly_rel1').hasEqualDefinition(poly_rel1))
+        self.assertTrue(manager.polymorphicRelation('poly_rel2').hasEqualDefinition(poly_rel2))
 
     def test_removePolymorphicRelation(self):
         # tests addPolymorphicRelation/removePolymorphicRelation
@@ -235,33 +235,39 @@ class TestQgsRelationManager(unittest.TestCase):
 
         # initially the map should be empty
         self.assertFalse(manager.polymorphicRelations())
+        self.assertFalse(manager.relations())
 
-        polyRel1 = self.createPolymorphicRelation()
-        polyRel1.setId('poly_rel1')
-        polyRel1.setName('Poly Rel 1')
-        polyRel2 = self.createPolymorphicRelation()
-        polyRel2.setId('poly_rel2')
-        polyRel2.setName('Poly Rel 2')
+        poly_rel1 = self.createPolymorphicRelation()
+        poly_rel1.setId('poly_rel1')
+        poly_rel1.setName('Poly Rel 1')
+        poly_rel2 = self.createPolymorphicRelation()
+        poly_rel2.setId('poly_rel2')
+        poly_rel2.setName('Poly Rel 2')
 
         # the relation should be valid now
-        self.assertTrue(polyRel1.isValid())
-        self.assertTrue(polyRel2.isValid())
-
-        manager.addPolymorphicRelation(polyRel1)
-        manager.addPolymorphicRelation(polyRel2)
-
+        self.assertTrue(poly_rel1.isValid())
+        self.assertTrue(poly_rel2.isValid())
         self.assertFalse(manager.polymorphicRelation('poly_invalid_id').isValid())
-        self.assertTrue(manager.polymorphicRelation('poly_rel1').isValid())
-        self.assertTrue(manager.polymorphicRelation('poly_rel2').isValid())
-        self.assertTrue(manager.polymorphicRelation('poly_rel1').hasEqualDefinition(polyRel1))
-        self.assertTrue(manager.polymorphicRelation('poly_rel2').hasEqualDefinition(polyRel2))
+        self.assertListEqual([r.polymorphicRelationId() for r in manager.relations().values()], [])
 
-        manager.removePolymorphicRelation(polyRel1.id())
+        manager.addPolymorphicRelation(poly_rel1)
+        self.assertTrue(manager.polymorphicRelation('poly_rel1').isValid())
+        self.assertTrue(manager.polymorphicRelation('poly_rel1').hasEqualDefinition(poly_rel1))
+        self.assertListEqual([r.polymorphicRelationId() for r in manager.relations().values()], [poly_rel1.id()])
+
+        manager.addPolymorphicRelation(poly_rel2)
+        self.assertTrue(manager.polymorphicRelation('poly_rel2').isValid())
+        self.assertTrue(manager.polymorphicRelation('poly_rel2').hasEqualDefinition(poly_rel2))
+        self.assertListEqual([r.polymorphicRelationId() for r in manager.relations().values()], [poly_rel1.id(), poly_rel2.id()])
+
+        manager.removePolymorphicRelation(poly_rel1.id())
         self.assertFalse(manager.polymorphicRelation('poly_rel1').isValid())
         self.assertTrue(manager.polymorphicRelation('poly_rel2').isValid())
-        manager.removePolymorphicRelation(polyRel2.id())
+        self.assertListEqual([r.polymorphicRelationId() for r in manager.relations().values()], [poly_rel2.id()])
+        manager.removePolymorphicRelation(poly_rel2.id())
         self.assertFalse(manager.polymorphicRelation('poly_rel1').isValid())
         self.assertFalse(manager.polymorphicRelation('poly_rel2').isValid())
+        self.assertListEqual([r.polymorphicRelationId() for r in manager.relations().values()], [])
 
 
 if __name__ == '__main__':
