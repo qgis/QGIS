@@ -44,6 +44,9 @@ class TestQgsMapToolScaleFeature: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testScaleFeature();
+    void testScaleFeatureWithAnchor();
+    void testCancelManualAnchor();
+    void testScaleFeatureWithAnchorSetAfterStart();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -145,6 +148,65 @@ void TestQgsMapToolScaleFeature::testScaleFeature()
 
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.84, 1.35 3.96, 1.85 3.96, 1.85 1.84, 1.35 1.84))" ) );
+
+  mLayerBase->undoStack()->undo();
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolScaleFeature::testScaleFeatureWithAnchor()
+{
+  TestQgsMapToolUtils utils( mScaleTool );
+
+  //set manual anchor point
+  utils.mouseClick( 1, -1, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // resize
+  utils.mouseClick( -2, -1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( -2.5, -0.5 );
+  utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.54 -2.18, -2.54 -1, -1.36 -1, -1.36 -2.18, -2.54 -2.18))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolScaleFeature::testCancelManualAnchor()
+{
+  TestQgsMapToolUtils utils( mScaleTool );
+
+  //set manual anchor point
+  utils.mouseClick( 1, -1, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // remove manual anchor point via right click
+  utils.mouseClick( 10, 25, Qt::RightButton, Qt::KeyboardModifiers(), true );
+
+  // resize
+  utils.mouseClick( -2, -1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( -2.5, -0.5 );
+  utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolScaleFeature::testScaleFeatureWithAnchorSetAfterStart()
+{
+  TestQgsMapToolUtils utils( mScaleTool );
+
+  // resize
+  utils.mouseClick( -2, -1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  //set manual anchor point
+  utils.mouseClick( 1, -1, Qt::LeftButton, Qt::ControlModifier, true );
+
+  utils.mouseMove( -2.5, -0.5 );
+  utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-14 -6, -14 -1, -9 -1, -9 -6, -14 -6))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
 
   mLayerBase->undoStack()->undo();
 }
