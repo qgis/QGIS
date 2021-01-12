@@ -30,17 +30,35 @@
 class CORE_EXPORT QgsRay3D
 {
   public:
-    //! Constructor
+    /*
+     *  Constructor
+     * \note : the direction is automatically normalized
+     */
     QgsRay3D( const QVector3D &origin, const QVector3D &direction );
 
-    //! Returns the origin of the ray
+    /**
+     * Returns the origin of the ray
+     * \see setOrigin()
+     */
     QVector3D origin() const { return mOrigin; }
-    //! Returns the direction of the ray
+
+    /**
+     * Returns the direction of the ray
+     * see setDirection()
+     */
     QVector3D direction() const { return mDirection; }
 
-    //! Sets the origin of the ray
+    /**
+     * Sets the origin of the ray
+     * \see origin()
+     */
     void setOrigin( const QVector3D &origin );
-    //! Sets the direction of the ray
+
+    /**
+     * Sets the direction of the ray
+     * \note : the direction is automatically normalized
+     * \see direction()
+     */
     void setDirection( const QVector3D direction );
 
     //! Comparison operator

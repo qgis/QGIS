@@ -20,7 +20,7 @@
 
 QgsRay3D::QgsRay3D( const QVector3D &origin, const QVector3D &direction )
   : mOrigin( origin )
-  , mDirection( direction )
+  , mDirection( direction.normalized() )
 {
 
 }
@@ -32,7 +32,7 @@ void QgsRay3D::setOrigin( const QVector3D &origin )
 
 void QgsRay3D::setDirection( const QVector3D direction )
 {
-  mDirection = direction;
+  mDirection = direction.normalized();
 }
 
 bool QgsRay3D::operator==( const QgsRay3D &r )
@@ -89,7 +89,7 @@ bool QgsRay3D::intersectsWith( const QgsBox3d &box ) const
 
 bool QgsRay3D::isInFront( const QVector3D &point ) const
 {
-  return QVector3D::dotProduct( point - mOrigin, mDirection ) > 0.0;
+  return QVector3D::dotProduct( point - mOrigin, mDirection ) >= 0.0;
 }
 
 double QgsRay3D::angleToPoint( const QVector3D &point ) const
@@ -98,7 +98,7 @@ double QgsRay3D::angleToPoint( const QVector3D &point ) const
   QVector3D projectedPoint = mOrigin + QVector3D::dotProduct( point - mOrigin, mDirection ) * mDirection;
 
   // calculate the angle between the point and the projected point
-  QVector3D v1 = ( projectedPoint - mOrigin ).normalized();
-  QVector3D v2 = ( point - mOrigin ).normalized();
-  return qRadiansToDegrees( std::acos( std::abs( QVector3D::dotProduct( v1, v2 ) ) ) );
+  QVector3D v1 = projectedPoint - mOrigin ;
+  QVector3D v2 = point - mOrigin;
+  return qRadiansToDegrees( std::atan2( v2.length(), v1.length() ) );
 }
