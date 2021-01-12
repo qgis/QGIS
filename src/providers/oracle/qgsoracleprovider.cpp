@@ -2997,7 +2997,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   // It's not possible to create a table without any column, so we add a fake one
   // if needed, and will remove it later
   const QString fakeColumn = geometryColumn.isEmpty() && !hasPrimaryKey ?
-                             QString( "fake_column_%1" ).arg( QUuid::createUuid().toString( QUuid::Id128 ) ) : QString();
+                             QString( "fake_column_%1" ).arg( QUuid::createUuid().toString() ) : QString();
 
   try
   {
