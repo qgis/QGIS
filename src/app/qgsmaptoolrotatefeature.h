@@ -112,6 +112,7 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 
     QPoint mStPoint;
     std::unique_ptr<QgsVertexMarker> mAnchorPoint = nullptr;
+    bool mAutoSetAnchorPoint = false;
 
     bool mRotationActive;
 
