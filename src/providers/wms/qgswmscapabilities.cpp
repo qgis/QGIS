@@ -221,34 +221,30 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &extent )
 {
   QgsWmstDimensionExtent dimensionExtent;
-  if ( extent.isNull() )
+  if ( extent.isEmpty() )
     return dimensionExtent;
 
   const QStringList parts = extent.split( ',' );
 
   for ( const QString &part : parts )
   {
-    const QString item = part;
+    const QString item = part.trimmed();
 
     // If item contain '/' content separator, it is an interval
     if ( item.contains( '/' ) )
     {
       const QStringList itemParts = item.split( '/' );
 
-      QgsWmstExtentPair itemPair;
-      QgsWmstResolution itemResolution = itemPair.resolution;
-      QgsWmstDates itemDatesList = itemPair.dates;
-
-      bool itemContainResolution = false;
+      QgsWmstResolution itemResolution;
+      QgsWmstDates itemDatesList;
 
       for ( const QString &itemPart : itemParts )
       {
-        QString itemContent = itemPart;
+        QString itemContent = itemPart.trimmed();
 
         if ( itemContent.startsWith( 'P' ) )
         {
           itemResolution = parseWmstResolution( itemContent );
-          itemContainResolution = true;
         }
         else
         {
@@ -256,34 +252,23 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &exten
         }
       }
 
-      if ( itemContainResolution )
-        dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution ) );
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution ) );
+    }
+    else
+    {
+      QgsWmstResolution resolution;
+      QgsWmstDates datesList;
+      if ( item.startsWith( 'P' ) )
+      {
+        resolution = parseWmstResolution( item );
+      }
       else
-        dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, QgsWmstResolution() ) );
-      itemContainResolution = false;
-      continue;
-    }
+      {
+        datesList.dateTimes.append( parseWmstDateTimes( item ) );
+      }
 
-    QgsWmstExtentPair pair;
-
-    QgsWmstResolution resolution = pair.resolution;
-    QgsWmstDates datesList = pair.dates;
-
-    if ( item.startsWith( 'P' ) )
-    {
-      resolution = parseWmstResolution( item );
-      containResolution = true;
-    }
-    else
-    {
-      datesList.dateTimes.append( parseWmstDateTimes( item ) );
-    }
-
-    if ( containResolution )
       dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, resolution ) );
-    else
-      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, QgsWmstResolution() ) );
-    containResolution = false;
+    }
   }
 
   return dimensionExtent;

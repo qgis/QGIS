@@ -201,6 +201,34 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( prop.dimensions.at( 0 ).units, QStringLiteral( "ISO8601" ) );
     }
 
+    void wmstListOfTimeExtents()
+    {
+      // test parsing a fixed list of time extents
+      QgsWmsSettings settings;
+
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "1932-01-01T00:00:00Z, 1947-01-01T00:00:00Z, 1950-01-01T00:00:00Z, 1959-01-01T00:00:00Z, 1960-01-01T00:00:00Z, 1967-01-01T00:00:00Z, 1972-01-01T00:00:00Z, 1974-01-01T00:00:00Z" ) );
+      settings.setTimeDimensionExtent( extent );
+
+      QCOMPARE( extent.datesResolutionList.size(), 8 );
+      QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 1 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 1 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 2 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 2 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 3 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 3 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1959, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 4 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 4 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1960, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 5 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 5 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1967, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 6 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 6 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1972, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 7 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 7 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+    }
+
+
     void wmsTemporalDimension_data()
     {
       QTest::addColumn<QString>( "dimension" );
