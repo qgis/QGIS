@@ -1285,8 +1285,8 @@ namespace QgsWms
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), dim.referenceValue.toString() );
               }
-              dimElem.setAttribute( QStringLiteral( "multipleValue" ), '1' );
-              dimElem.setAttribute( QStringLiteral( "nearestValue" ), '0' );
+              dimElem.setAttribute( QStringLiteral( "multipleValues" ), QStringLiteral( "1" ) );
+              dimElem.setAttribute( QStringLiteral( "nearestValue" ), QStringLiteral( "0" ) );
               // values list
               QStringList strValues;
               for ( const QVariant &v : values )
