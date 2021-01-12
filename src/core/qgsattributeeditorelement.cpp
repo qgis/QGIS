@@ -124,7 +124,7 @@ void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem, QDomDocu
   }
 }
 
-void QgsAttributeEditorContainer::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs )
+void QgsAttributeEditorContainer::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
 {
   mBackgroundColor = element.attribute( QStringLiteral( "backgroundColor" ), QString() );
   bool ok;
@@ -154,7 +154,7 @@ void QgsAttributeEditorContainer::loadConfiguration( const QDomElement &element,
   {
     QDomElement childElem = childNodeList.at( i ).toElement();
 
-    QgsAttributeEditorElement *myElem = create( childElem, layerId, fields, widgetConfigs, context, this );
+    QgsAttributeEditorElement *myElem = create( childElem, layerId, fields, context, this );
     if ( myElem )
       addChildElement( myElem );
   }
@@ -197,13 +197,12 @@ void QgsAttributeEditorField::saveConfiguration( QDomElement &elem, QDomDocument
   elem.setAttribute( QStringLiteral( "index" ), mIdx );
 }
 
-void QgsAttributeEditorField::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs )
+void QgsAttributeEditorField::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
 {
   Q_UNUSED( element )
   Q_UNUSED( layerId )
   Q_UNUSED( context )
   Q_UNUSED( fields )
-  Q_UNUSED( widgetConfigs )
 }
 
 QString QgsAttributeEditorField::typeIdentifier() const
@@ -211,7 +210,7 @@ QString QgsAttributeEditorField::typeIdentifier() const
   return QStringLiteral( "attributeEditorField" );
 }
 
-QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent )
+QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent )
 {
   QgsAttributeEditorElement *newElement = nullptr;
 
@@ -249,7 +248,7 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
     else
       newElement->setShowLabel( true );
 
-    newElement->loadConfiguration( element, layerId, context, fields, widgetConfigs );
+    newElement->loadConfiguration( element, layerId, context, fields );
   }
 
   return newElement;
@@ -287,7 +286,7 @@ void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem, QDomDocum
   elem.appendChild( elemConfig );
 }
 
-void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs )
+void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
 {
   Q_UNUSED( layerId )
   Q_UNUSED( context )
@@ -320,25 +319,13 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
 
   setRelationEditorConfiguration( config );
 
-  if ( element.hasAttribute( QStringLiteral( "forceSuppressFormPopup" ) ) )
-  {
-    setForceSuppressFormPopup( element.attribute( QStringLiteral( "forceSuppressFormPopup" ) ).toInt() );
-  }
-  else
-  {
-    // pre QGIS 3.16 compatibility - the widgets section is read before
-    setForceSuppressFormPopup( widgetConfigs.value( element.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "force-suppress-popup" ), false ).toBool() );
-  }
+  setForceSuppressFormPopup( element.attribute( QStringLiteral( "forceSuppressFormPopup" ), 0 ).toInt() );
 
   if ( element.hasAttribute( QStringLiteral( "nmRelationId" ) ) )
   {
     setNmRelationId( element.attribute( QStringLiteral( "nmRelationId" ) ) );
   }
-  else
-  {
-    // pre QGIS 3.16 compatibility - the widgets section is read before
-    setNmRelationId( widgetConfigs.value( element.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ) );
-  }
+
   if ( element.hasAttribute( "label" ) )
   {
     QString label = element.attribute( QStringLiteral( "label" ) );
@@ -430,12 +417,11 @@ void QgsAttributeEditorQmlElement::saveConfiguration( QDomElement &elem, QDomDoc
   elem.appendChild( codeElem );
 }
 
-void QgsAttributeEditorQmlElement::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs )
+void QgsAttributeEditorQmlElement::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
 {
   Q_UNUSED( layerId )
   Q_UNUSED( context )
   Q_UNUSED( fields )
-  Q_UNUSED( widgetConfigs )
   setQmlCode( element.text() );
 }
 
@@ -468,12 +454,11 @@ void QgsAttributeEditorHtmlElement::saveConfiguration( QDomElement &elem, QDomDo
   elem.appendChild( codeElem );
 }
 
-void QgsAttributeEditorHtmlElement::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields, const QMap<QString, QVariantMap> widgetConfigs )
+void QgsAttributeEditorHtmlElement::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
 {
   Q_UNUSED( layerId )
   Q_UNUSED( context )
   Q_UNUSED( fields )
-  Q_UNUSED( widgetConfigs )
   setHtmlCode( element.text() );
 }
 

@@ -477,14 +477,44 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
       {
         QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
+        fixLegacyConfig( elem );
+
         const QString layerId = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
-        QgsAttributeEditorElement *attributeEditorWidget = QgsAttributeEditorElement::create( elem, layerId, d->mFields, d->mWidgetConfigs, context, nullptr );
+        QgsAttributeEditorElement *attributeEditorWidget = QgsAttributeEditorElement::create( elem, layerId, d->mFields, context, nullptr );
         if ( attributeEditorWidget )
           addTab( attributeEditorWidget );
       }
 
       onRelationsLoaded();
     }
+  }
+}
+
+void QgsEditFormConfig::fixLegacyConfig( QDomElement &el )
+{
+  // recursive method to move widget config into attribute element config
+
+  if ( el.tagName() == QLatin1String( "attributeEditorRelation" ) )
+  {
+    if ( !el.hasAttribute( QStringLiteral( "forceSuppressFormPopup" ) ) )
+    {
+      // pre QGIS 3.16 compatibility - the widgets section is read before
+      bool forceSuppress = widgetConfig( el.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "force-suppress-popup" ), false ).toBool();
+      el.setAttribute( QStringLiteral( "forceSuppressFormPopup" ), forceSuppress ? 1 : 0 );
+    }
+    if ( !el.hasAttribute( QStringLiteral( "nmRelationId" ) ) )
+    {
+      // pre QGIS 3.16 compatibility - the widgets section is read before
+      el.setAttribute( QStringLiteral( "nmRelationId" ), widgetConfig( el.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ).toString() );
+    }
+  }
+
+  const QDomNodeList children = el.childNodes();
+  for ( int i = 0; i < children.size(); i++ )
+  {
+    QDomElement child = children.at( i ).toElement();
+    fixLegacyConfig( child );
+    el.replaceChild( child, children.at( i ) );
   }
 }
 
@@ -606,5 +636,5 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
 
 QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId, const QgsReadWriteContext &context )
 {
-  return QgsAttributeEditorElement::create( elem, layerId, d->mFields, d->mWidgetConfigs, context, parent );
+  return QgsAttributeEditorElement::create( elem, layerId, d->mFields, context, parent );
 }
