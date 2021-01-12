@@ -267,7 +267,7 @@ class CORE_EXPORT QgsPolymorphicRelation
     /**
      * Returns a list of generated relations, based on the currently set referencedLayerIds()
      */
-    QList<QgsRelation> getGeneratedRelations() const;
+    QList<QgsRelation> generateRelations() const;
 
     /**
      * Returns layer representation as evaluated string

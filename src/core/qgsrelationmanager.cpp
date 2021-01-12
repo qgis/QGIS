@@ -328,7 +328,7 @@ void QgsRelationManager::addPolymorphicRelation( const QgsPolymorphicRelation &p
 
   mPolymorphicRelations.insert( polymorphicRelation.id(), polymorphicRelation );
 
-  const QList<QgsRelation> generatedRelations = polymorphicRelation.getGeneratedRelations();
+  const QList<QgsRelation> generatedRelations = polymorphicRelation.generateRelations();
   for ( const QgsRelation &generatedRelation : generatedRelations )
     addRelation( generatedRelation );
 }
@@ -337,7 +337,7 @@ void QgsRelationManager::removePolymorphicRelation( const QString &polymorphicRe
 {
   QgsPolymorphicRelation relation = mPolymorphicRelations.take( polymorphicRelationId );
 
-  const QList<QgsRelation> generatedRelations = relation.getGeneratedRelations();
+  const QList<QgsRelation> generatedRelations = relation.generateRelations();
   for ( const QgsRelation &generatedRelation : generatedRelations )
     removeRelation( generatedRelation.id() );
 }

@@ -219,7 +219,7 @@ Sets a list of layer ids to be used as potential referenced layers
 Returns a list of layer ids to be used as potential referenced layers
 %End
 
-    QList<QgsRelation> getGeneratedRelations() const;
+    QList<QgsRelation> generateRelations() const;
 %Docstring
 Returns a list of generated relations, based on the currently set :py:func:`~QgsPolymorphicRelation.referencedLayerIds`
 %End

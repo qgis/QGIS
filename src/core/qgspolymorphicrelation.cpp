@@ -357,7 +357,7 @@ QStringList QgsPolymorphicRelation::referencedLayerIds() const
   return d->mReferencedLayerIds;
 }
 
-QList<QgsRelation> QgsPolymorphicRelation::getGeneratedRelations() const
+QList<QgsRelation> QgsPolymorphicRelation::generateRelations() const
 {
   QList<QgsRelation> relations;
 

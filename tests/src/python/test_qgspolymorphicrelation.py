@@ -164,7 +164,7 @@ class TestQgsRelation(unittest.TestCase):
 
         self.assertEqual(poly_rel.layerRepresentation(self.referencedLayer1), 'referencedlayer1')
 
-    def test_getGeneratedRelations(self):
+    def test_generateRelations(self):
         poly_rel = QgsPolymorphicRelation()
         poly_rel.setId('poly_rel1')
         poly_rel.setName('Polymorphic Relation Number One')
@@ -178,7 +178,7 @@ class TestQgsRelation(unittest.TestCase):
 
         self.assertTrue(poly_rel.isValid())
 
-        rels = poly_rel.getGeneratedRelations()
+        rels = poly_rel.generateRelations()
 
         self.assertEqual(len(rels), 2)
 
