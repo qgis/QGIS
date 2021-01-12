@@ -27,6 +27,9 @@
 #include <qgslayertree.h>
 #include <qgslayertreegroup.h>
 #include "qgsrelationmanager.h"
+#include "qgsattributeeditorelement.h"
+#include "qgsattributeeditorcontainer.h"
+
 
 class TestQgsTranslateProject : public QObject
 {

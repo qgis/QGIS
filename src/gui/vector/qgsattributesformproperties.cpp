@@ -26,6 +26,10 @@
 #include "qgscolorbutton.h"
 #include "qgscodeeditorhtml.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsattributeeditorfield.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorqmlelement.h"
+#include "qgsattributeeditorhtmlelement.h"
 
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )

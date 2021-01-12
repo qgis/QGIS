@@ -23,6 +23,7 @@
 #include "qgis.h"
 #include "qgsmaplayermodel.h"
 #include "qgsattributeeditorelement.h"
+#include "qgsattributeeditorrelation.h"
 
 /**
  * \ingroup UnitTests
