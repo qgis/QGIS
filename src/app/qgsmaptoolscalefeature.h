@@ -109,6 +109,7 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
     QgsRectangle mExtent;
 
     std::unique_ptr<QgsVertexMarker> mAnchorPoint = nullptr;
+    bool mAutoSetAnchorPoint = false;
 
     bool mScalingActive = false;
 
