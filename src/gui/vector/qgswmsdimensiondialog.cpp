@@ -147,8 +147,13 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
     int data = mNameComboBox->currentData().toInt();
     if ( data == QgsVectorLayerServerProperties::TIME )
     {
-      mFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::DateTime );
-      mEndFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::DateTime );
+      const QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::String |
+          QgsFieldProxyModel::Int |
+          QgsFieldProxyModel::LongLong |
+          QgsFieldProxyModel::Date |
+          QgsFieldProxyModel::DateTime;
+      mFieldComboBox->setFilters( filters );
+      mEndFieldComboBox->setFilters( filters );
       mUnitsLineEdit->setText( QStringLiteral( "ISO8601" ) );
       mUnitsLabel->setEnabled( false );
       mUnitsLineEdit->setEnabled( false );
