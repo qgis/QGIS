@@ -17,6 +17,8 @@
 
 #include "qgs3dutils.h"
 
+#include "qgsbox3d.h"
+
 #include <QSize>
 
 /**
@@ -35,6 +37,7 @@ class TestQgs3DUtils : public QObject
 
     void testTransforms();
     void testRayFromScreenPoint();
+    void testQgsBox3DDistanceTo();
   private:
 };
 
@@ -138,7 +141,20 @@ void TestQgs3DUtils::testRayFromScreenPoint()
       QVERIFY( ray1 == ray2 );
     }
   }
+}
 
+void TestQgs3DUtils::testQgsBox3DDistanceTo()
+{
+  {
+    QgsBox3d box( -1, -1, -1, 1, 1, 1 );
+    QVERIFY( box.distanceTo( QVector3D( 0, 0, 0 ) ) == 0.0 );
+    QVERIFY( box.distanceTo( QVector3D( 2, 2, 2 ) ) == qSqrt( 3.0 ) );
+  }
+  {
+    QgsBox3d box( 1, 2, 1, 4, 3, 3 );
+    QVERIFY( box.distanceTo( QVector3D( 1, 2, 1 ) ) == 0.0 );
+    QVERIFY( box.distanceTo( QVector3D( 0, 0, 0 ) ) == qSqrt( 6.0 ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgs3DUtils )
