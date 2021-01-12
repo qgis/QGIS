@@ -233,12 +233,12 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                              layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
-    bool autoCalculateAnchorPoint = false;
+    mAutoSetAnchorPoint = false;
     if ( !mAnchorPoint )
     {
       mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
-      autoCalculateAnchorPoint = true;
+      mAutoSetAnchorPoint = true;
     }
 
     if ( vlayer->selectedFeatureCount() == 0 )
@@ -276,7 +276,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
 
       QgsRectangle bound = cf.geometry().boundingBox();
-      if ( autoCalculateAnchorPoint )
+      if ( mAutoSetAnchorPoint )
       {
         mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
         mAnchorPoint->setCenter( mStartPointMapCoords );
@@ -336,7 +336,7 @@ void QgsMapToolRotateFeature::cancel()
   deleteRotationWidget();
   deleteRubberband();
   QgsVectorLayer *vlayer = currentVectorLayer();
-  if ( vlayer->selectedFeatureCount() == 0 )
+  if ( vlayer->selectedFeatureCount() == 0 || mAutoSetAnchorPoint )
   {
     mAnchorPoint.reset();
   }
@@ -419,6 +419,9 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
 
   deleteRotationWidget();
   deleteRubberband();
+
+  if ( mAutoSetAnchorPoint )
+    mAnchorPoint.reset();
 
   vlayer->endEditCommand();
   vlayer->triggerRepaint();

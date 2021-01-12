@@ -134,6 +134,10 @@ void TestQgsMapToolScaleFeature::testScaleFeature()
   utils.mouseClick( -2, -1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( -2.5, -0.5 );
   utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+
   //scale down
   utils.mouseClick( 1.1, 0.8, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 1.35, 1.85 );
