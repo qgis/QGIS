@@ -11,11 +11,6 @@ set(AUTH_BASIC_HDRS
 set(AUTH_BASIC_UIS qgsauthbasicedit.ui)
 
 include_directories (
-  ../../core
-  ../../core/auth
-  ../../core/geometry
-  ../../core/metadata
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )
 include_directories (SYSTEM

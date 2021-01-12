@@ -425,26 +425,6 @@ endif()
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/src/core/
-  ${CMAKE_SOURCE_DIR}/src/core/dxf
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geocoding
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/mesh
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/network
-  ${CMAKE_SOURCE_DIR}/src/core/processing
-  ${CMAKE_SOURCE_DIR}/src/core/project
-  ${CMAKE_SOURCE_DIR}/src/core/providers/meshmemory
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/core/vector
-  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann

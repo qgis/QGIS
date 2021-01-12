@@ -1628,56 +1628,6 @@ if (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   )
 endif()
 
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-  3d
-  annotations
-  auth
-  callouts
-  classification
-  dxf
-  effects
-  expression
-  fieldformatter
-  geometry
-  geocms
-  geocms/geonode
-  geocoding
-  labeling
-  layertree
-  layout
-  locator
-  mesh
-  metadata
-  network
-  numericformats
-  pal
-  pointcloud
-  processing
-  processing/models
-  project
-  providers
-  providers/memory
-  providers/gdal
-  providers/ogr
-  providers/meshmemory
-  raster
-  renderer
-  scalebar
-  symbology
-  textrenderer
-  validity
-  vector
-  vectortile
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-  ${CMAKE_SOURCE_DIR}/external/kdbush/include
-  ${CMAKE_SOURCE_DIR}/external/nmea
-  ${CMAKE_SOURCE_DIR}/external/rtree/include
-  ${CMAKE_SOURCE_DIR}/external/meshOptimizer
-)
-
 include_directories(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
@@ -1766,6 +1716,57 @@ set(IMAGE_RCCS ../../images/images.qrc)
 #############################################################
 # qgis_core library
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
+
+target_include_directories(qgis_core PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  3d
+  annotations
+  auth
+  callouts
+  classification
+  dxf
+  effects
+  expression
+  fieldformatter
+  geometry
+  geocms
+  geocms/geonode
+  geocoding
+  labeling
+  layertree
+  layout
+  locator
+  mesh
+  metadata
+  network
+  numericformats
+  pal
+  pointcloud
+  processing
+  processing/models
+  project
+  providers
+  providers/arcgis
+  providers/memory
+  providers/gdal
+  providers/ogr
+  providers/meshmemory
+  raster
+  renderer
+  scalebar
+  symbology
+  textrenderer
+  validity
+  vector
+  vectortile
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
+  ${CMAKE_SOURCE_DIR}/external/kdbush/include
+  ${CMAKE_SOURCE_DIR}/external/nmea
+  ${CMAKE_SOURCE_DIR}/external/rtree/include
+  ${CMAKE_SOURCE_DIR}/external/meshOptimizer
+)
 
 GENERATE_EXPORT_HEADER(
   qgis_core

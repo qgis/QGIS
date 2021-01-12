@@ -36,15 +36,6 @@ endif()
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/project
-  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/external
