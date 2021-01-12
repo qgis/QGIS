@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgspolymorphicrelation_p.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsPolymorphicRelation::QgsPolymorphicRelation()
   : d( new QgsPolymorphicRelationPrivate() )
@@ -225,19 +226,20 @@ bool QgsPolymorphicRelation::hasEqualDefinition( const QgsPolymorphicRelation &o
 
 void QgsPolymorphicRelation::updateRelationStatus()
 {
+  const QMap<QString, QgsMapLayer *> &mapLayers = mContext.project()->mapLayers();
+
+  d->mValid = true;
+  d->mReferencingLayer = mapLayers.contains( d->mReferencingLayerId )
+                         ? qobject_cast<QgsVectorLayer *>( mapLayers[d->mReferencingLayerId] )
+                         : nullptr;
+  d->mReferencedLayersMap.clear();
+
   if ( d->mRelationId.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Invalid relation: no ID" ) );
     d->mValid = false;
     return;
   }
-
-  const QMap<QString, QgsMapLayer *> &mapLayers = mContext.project()->mapLayers();
-
-  d->mValid = true;
-  d->mReferencingLayer = qobject_cast<QgsVectorLayer *>( mapLayers[d->mReferencingLayerId] );
-  // TODO probably this map is not needed??
-  d->mReferencedLayersMap.clear();
 
   if ( !d->mReferencingLayer )
   {
@@ -355,11 +357,6 @@ QStringList QgsPolymorphicRelation::referencedLayerIds() const
   return d->mReferencedLayerIds;
 }
 
-QgsExpressionContext QgsPolymorphicRelation::getLayerContext() const
-{
-  return QgsExpressionContext();
-}
-
 QList<QgsRelation> QgsPolymorphicRelation::getGeneratedRelations() const
 {
   QList<QgsRelation> relations;
@@ -390,4 +387,15 @@ QList<QgsRelation> QgsPolymorphicRelation::getGeneratedRelations() const
   }
 
   return relations;
+}
+
+QString QgsPolymorphicRelation::layerRepresentation( const QgsVectorLayer *layer ) const
+{
+  if ( !layer || !layer->isValid() )
+    return QString();
+
+  QgsExpressionContext context = layer->createExpressionContext();
+  QgsExpression expr( d->mReferencedLayerExpression );
+
+  return expr.evaluate( &context ).toString();
 }

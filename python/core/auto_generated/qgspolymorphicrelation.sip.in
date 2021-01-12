@@ -209,11 +209,6 @@ Sets the ``expression`` to identify the parent layer
 Returns the expression to identify the parent layer
 %End
 
-    QgsExpressionContext getLayerContext() const;
-%Docstring
-Provide layer metadata as variables in an expression context
-%End
-
     void setReferencedLayerIds( const QStringList &childRelationIds );
 %Docstring
 Sets a list of layer ids to be used as potential referenced layers
@@ -227,6 +222,11 @@ Returns a list of layer ids to be used as potential referenced layers
     QList<QgsRelation> getGeneratedRelations() const;
 %Docstring
 Returns a list of generated relations, based on the currently set :py:func:`~QgsPolymorphicRelation.referencedLayerIds`
+%End
+
+    QString layerRepresentation( const QgsVectorLayer *layer ) const;
+%Docstring
+Returns layer representation as evaluated string
 %End
 
 };

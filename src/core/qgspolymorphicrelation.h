@@ -255,11 +255,6 @@ class CORE_EXPORT QgsPolymorphicRelation
     QString referencedLayerExpression() const;
 
     /**
-     * Provide layer metadata as variables in an expression context
-     */
-    QgsExpressionContext getLayerContext() const;
-
-    /**
      * Sets a list of layer ids to be used as potential referenced layers
      */
     void setReferencedLayerIds( const QStringList &childRelationIds );
@@ -273,6 +268,11 @@ class CORE_EXPORT QgsPolymorphicRelation
      * Returns a list of generated relations, based on the currently set referencedLayerIds()
      */
     QList<QgsRelation> getGeneratedRelations() const;
+
+    /**
+     * Returns layer representation as evaluated string
+     */
+    QString layerRepresentation( const QgsVectorLayer *layer ) const;
 
   private:
 
