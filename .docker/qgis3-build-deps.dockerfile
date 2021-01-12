@@ -155,19 +155,6 @@ RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/develop
   && rm -rf client \
   && rm hanaclient*
 ENV PATH="/usr/sap/hdbclient:${PATH}"
-# Install cmake version 3.12 required by odbc-cpp-wrapper
-RUN curl -LJO https://cmake.org/files/v3.12/cmake-3.12.4-Linux-x86_64.tar.gz \
-  && tar -xvf cmake-3.12.4-Linux-x86_64.tar.gz && cp cmake-3.12.4-Linux-x86_64/bin/cmake /usr/local/bin \
-  && mkdir -p /usr/local/share/cmake-3.12 \
-  && cp -r cmake-3.12.4-Linux-x86_64/share/cmake-3.12/* /usr/local/share/cmake-3.12 \
-  && rm -rf cmake-3.12.4-Linux-x86_64*
-# Download and compile odbc-cpp-wrapper
-RUN git clone --branch v0.2 --depth 1 https://github.com/SAP/odbc-cpp-wrapper.git \
-  && mkdir odbc-cpp-wrapper/build \
-  && cd odbc-cpp-wrapper/build \
-  && cmake .. \
-  && make -j 2 \
-  && make install
 
 # MSSQL: client side
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
