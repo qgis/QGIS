@@ -19,6 +19,8 @@
 #include "qgsquickattributeformmodelbase.h"
 #include "qgsquickattributeformmodel.h"
 #include <qgsvectorlayerutils.h>
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
 
 /// @cond PRIVATE
 
