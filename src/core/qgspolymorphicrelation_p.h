@@ -64,10 +64,10 @@ class QgsPolymorphicRelationPrivate : public QSharedData
     */
     QList< QgsRelation::FieldPair > mFieldPairs;
 
-    //! A list of relation ids that are set as children
-    QStringList mGeneratedRelationIds;
+    //! A map of the layerIds and the respective layers
     QMap<QString, QgsVectorLayer *> mReferencedLayersMap;
 
+    //! Whether the polymorphic relation is valid
     bool mValid = false;
 };
 
