@@ -141,6 +141,7 @@ class TestPyQgsProviderConnectionBase():
             self.assertFalse('myUtf8\U0001f604NewSchema' in schemas)
 
         # Table operations
+        schema = None
         if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable
             and capabilities & QgsAbstractDatabaseProviderConnection.Tables
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
@@ -220,9 +221,8 @@ class TestPyQgsProviderConnectionBase():
             self.assertTrue(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)
 
             # Check executeSql
-            has_schema = capabilities & QgsAbstractDatabaseProviderConnection.Schemas
             if capabilities & QgsAbstractDatabaseProviderConnection.ExecuteSql:
-                if has_schema:
+                if schema:
                     table = "\"%s\".\"myNewAspatialTable\"" % schema
                 else:
                     table = 'myNewAspatialTable'

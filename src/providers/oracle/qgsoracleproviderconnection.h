@@ -17,6 +17,28 @@
 #define QGSORACLEPROVIDERCONNECTION_H
 #include "qgsabstractdatabaseproviderconnection.h"
 
+#include <QSqlQuery>
+
+struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+
+    QgsOracleProviderResultIterator( int columnCount, const QSqlQuery &query )
+      : mColumnCount( columnCount )
+      , mQuery( query )
+    {}
+
+    QVariantList nextRow() override;
+    bool hasNextRow() const override;
+
+  private:
+
+    int mColumnCount = 0;
+    QSqlQuery mQuery;
+    QVariantList mNextRow;
+
+    QVariantList nextRowPrivate();
+
+};
 
 class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
 
@@ -38,6 +60,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
 
+    QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = TableFlags() ) const override;
     void store( const QString &name ) const override;
@@ -46,7 +69,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
 
   private:
 
-    QList<QVariantList> executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
+    QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
     void setDefaultCapabilities();
 };
 

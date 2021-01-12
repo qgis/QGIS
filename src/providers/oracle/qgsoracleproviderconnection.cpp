@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 
 #include <QSqlRecord>
+#include <QSqlField>
 
 const QStringList CONFIGURATION_PARAMETERS
 {
@@ -152,15 +153,11 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeType
   return types;
 }
 
-QList<QVariantList> QgsOracleProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
-  QList<QVariantList> results;
-
   // Check feedback first!
   if ( feedback && feedback->isCanceled() )
-  {
-    return results;
-  }
+    return QgsAbstractDatabaseProviderConnection::QueryResult();
 
   QgsPoolOracleConn pconn( QgsDataSourceUri{ uri() }.connectionInfo( false ) );
   if ( !pconn.get() )
@@ -169,9 +166,7 @@ QList<QVariantList> QgsOracleProviderConnection::executeSqlPrivate( const QStrin
   }
 
   if ( feedback && feedback->isCanceled() )
-  {
-    return results;
-  }
+    return QgsAbstractDatabaseProviderConnection::QueryResult();
 
   QSqlQuery qry( *pconn.get() );
   if ( !qry.exec( sql ) )
@@ -181,22 +176,50 @@ QList<QVariantList> QgsOracleProviderConnection::executeSqlPrivate( const QStrin
                                               qry.lastError().text() ) );
   }
 
-  const int nbFields = qry.record().count();
-  while ( qry.next() )
+  if ( feedback && feedback->isCanceled() )
+    return QgsAbstractDatabaseProviderConnection::QueryResult();
+
+  if ( qry.isActive() )
   {
-    if ( feedback && feedback->isCanceled() )
+    const QSqlRecord rec { qry.record() };
+    const int numCols { rec.count() };
+    auto iterator = std::make_shared<QgsOracleProviderResultIterator>( numCols, qry );
+    QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
+    results.setRowCount( qry.size() );
+    for ( int idx = 0; idx < numCols; ++idx )
     {
-      return results;
+      results.appendColumn( rec.field( idx ).name() );
     }
-
-    QVariantList cols;
-    for ( int i = 0; i < nbFields; i++ )
-      cols << qry.value( i );
-
-    results << cols;
+    iterator->nextRow();
+    return results;
   }
 
-  return results;
+  return QgsAbstractDatabaseProviderConnection::QueryResult();
+}
+
+QVariantList QgsOracleProviderResultIterator::nextRow()
+{
+  const QVariantList currentRow( mNextRow );
+  mNextRow = nextRowPrivate();
+  return currentRow;
+}
+
+bool QgsOracleProviderResultIterator::hasNextRow() const
+{
+  return ! mNextRow.isEmpty();
+}
+
+QVariantList QgsOracleProviderResultIterator::nextRowPrivate()
+{
+  QVariantList row;
+  if ( mQuery.next() )
+  {
+    for ( int col = 0; col < mColumnCount; ++col )
+    {
+      row.push_back( mQuery.value( col ) );
+    }
+  }
+  return row;
 }
 
 void QgsOracleProviderConnection::createVectorTable( const QString &schema,
@@ -325,4 +348,10 @@ void QgsOracleProviderConnection::dropVectorTable( const QString &schema, const 
   executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
                      .arg( QgsOracleConn::quotedIdentifier( schema ) )
                      .arg( QgsOracleConn::quotedIdentifier( name ) ) );
+}
+
+QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
+{
+  checkCapability( Capability::ExecuteSql );
+  return executeSqlPrivate( sql, feedback );
 }
