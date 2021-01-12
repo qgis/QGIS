@@ -1367,10 +1367,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/native
 )
-include_directories(SYSTEM
-  ${QWT_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
-)
 
 if (WITH_EPT)
   include_directories(
@@ -1408,6 +1404,11 @@ endif()
 
 add_library(qgis_gui SHARED
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
+)
+
+target_include_directories(qgis_gui SYSTEM PUBLIC
+  ${QWT_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 GENERATE_EXPORT_HEADER(
