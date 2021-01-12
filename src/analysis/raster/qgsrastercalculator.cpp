@@ -497,7 +497,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       }
     }
 
-    programTemplate = programTemplate.replace( QLatin1String( "##INPUT_NODATA_CHECK##" ), inputNoDataCheck.isEmpty() ? QStringLiteral( "false" ) : inputNoDataCheck.join( QStringLiteral( " || " ) ) );
+    programTemplate = programTemplate.replace( QLatin1String( "##INPUT_NODATA_CHECK##" ), inputNoDataCheck.isEmpty() ? QStringLiteral( "false" ) : inputNoDataCheck.join( QLatin1String( " || " ) ) );
     programTemplate = programTemplate.replace( QLatin1String( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
     programTemplate = programTemplate.replace( QLatin1String( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
     programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION##" ), cExpression );

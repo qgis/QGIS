@@ -572,7 +572,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   const bool allowBatchInserts = ( flags & QgsFeatureSink::FastInsert );
   const QString sql = QStringLiteral( "INSERT INTO %1.%2(%3) VALUES (%4)" ).arg(
                         QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),
-                        columnNames.join( QStringLiteral( "," ) ), values.join( QStringLiteral( "," ) ) );
+                        columnNames.join( QLatin1Char( ',' ) ), values.join( QLatin1Char( ',' ) ) );
 
   try
   {
@@ -782,7 +782,7 @@ bool QgsHanaProvider::addAttributes( const QList<QgsField> &attributes )
   for ( const QgsField &field : attributes )
   {
     if ( !columnDefs.isEmpty() )
-      columnDefs += QStringLiteral( "," );
+      columnDefs += QLatin1Char( ',' );
 
     columnDefs += QgsHanaUtils::quotedIdentifier( field.name() ) + QStringLiteral( " " ) + field.typeName();
 
@@ -824,7 +824,7 @@ bool QgsHanaProvider::deleteAttributes( const QgsAttributeIds &attributes )
   for ( int attrId : attributes )
   {
     if ( !columnNames.isEmpty() )
-      columnNames += QStringLiteral( "," );
+      columnNames += QLatin1Char( ',' );
     const QgsField &field = mAttributeFields.at( attrId );
     columnNames +=  QgsHanaUtils::quotedIdentifier( field.name() );
   }
@@ -1048,7 +1048,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
       const QString sql = QStringLiteral( "UPDATE %1.%2 SET %3 WHERE %4" ).arg(
                             QgsHanaUtils::quotedIdentifier( mSchemaName ),
                             QgsHanaUtils::quotedIdentifier( mTableName ),
-                            attrs.join( QStringLiteral( "," ) ),
+                            attrs.join( QLatin1Char( ',' ) ),
                             fidWhereClause );
 
       PreparedStatementRef stmtUpdate = conn->prepareStatement( sql );

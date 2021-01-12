@@ -96,7 +96,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   const QgsPointCloudAttributeCollection attributes = provider->attributes();
 
   //if red/green/blue attributes are present, then default to a RGB renderer
-  if ( attributes.indexOf( QStringLiteral( "Red" ) ) >= 0 && attributes.indexOf( QStringLiteral( "Green" ) ) >= 0 && attributes.indexOf( QStringLiteral( "Blue" ) ) >= 0 )
+  if ( attributes.indexOf( QLatin1String( "Red" ) ) >= 0 && attributes.indexOf( QLatin1String( "Green" ) ) >= 0 && attributes.indexOf( QLatin1String( "Blue" ) ) >= 0 )
   {
     std::unique_ptr< QgsPointCloudRgbRenderer > renderer = qgis::make_unique< QgsPointCloudRgbRenderer >();
 
@@ -139,7 +139,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   }
 
   // otherwise try a classified renderer...
-  if ( attributes.indexOf( QStringLiteral( "Classification" ) ) >= 0 )
+  if ( attributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
     // are any classifications present?
     QVariantList classes = provider->metadataClasses( QStringLiteral( "Classification" ) );

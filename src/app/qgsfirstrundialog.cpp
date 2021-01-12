@@ -36,7 +36,7 @@ QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent ) : QDialog( parent )
   else
   {
     // Production version shows link.
-    mWelcomeProdLabel->setText( mWelcomeProdLabel->text().replace( QStringLiteral( "VERSION_TOKEN" ), major.append( minor ) ) );
+    mWelcomeProdLabel->setText( mWelcomeProdLabel->text().replace( QLatin1String( "VERSION_TOKEN" ), major.append( minor ) ) );
     mWelcomeDevLabel->hide();
   }
 

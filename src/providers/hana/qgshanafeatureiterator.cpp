@@ -440,7 +440,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
                   QgsHanaUtils::quotedIdentifier( mSource->mTableName ) );
 
   if ( !sqlFilter.isEmpty() )
-    sql += QStringLiteral( " WHERE (%1)" ).arg( sqlFilter.join( QStringLiteral( ") AND (" ) ) );
+    sql += QStringLiteral( " WHERE (%1)" ).arg( sqlFilter.join( QLatin1String( ") AND (" ) ) );
 
   if ( !orderByParts.isEmpty() )
     sql += QStringLiteral( " ORDER BY %1 " ).arg( orderByParts.join( ',' ) );

@@ -2540,7 +2540,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             // but we need to escape all double quotes and backslashes
             list_vals.replaceInStrings( "\\", "\\\\" );
             list_vals.replaceInStrings( "\"", "\\\"" );
-            v = QStringLiteral( "{\"" ) + value.toStringList().join( QStringLiteral( "\",\"" ) ) + QStringLiteral( "\"}" );
+            v = QStringLiteral( "{\"" ) + value.toStringList().join( QLatin1String( "\",\"" ) ) + QStringLiteral( "\"}" );
           }
           else if ( value.type() == QVariant::List )
           {
