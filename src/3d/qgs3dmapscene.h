@@ -60,15 +60,6 @@ class QgsPostprocessingEntity;
 
 #define SIP_NO_FILE
 
-//! Records some bits about the scene (context for update() method)
-struct CameraState
-{
-  QVector3D cameraPos;   //!< Camera position
-  float cameraFov;       //!< Field of view (in degrees)
-  int screenSizePx;      //!< Size of the viewport in pixels
-  QMatrix4x4 viewProjectionMatrix; //!< For frustum culling
-};
-
 /**
  * \ingroup 3d
  * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.

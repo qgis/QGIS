@@ -41,6 +41,7 @@
 #include <QOpenGLFunctions>
 #include <QTimer>
 
+#include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
@@ -1113,17 +1114,21 @@ void Qgs3DMapScene::identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVecto
 
   QRect rect = mCameraController->viewport();
   int screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct? (see _sceneState)
-  float fov = mCameraController->camera()->fieldOfView();
+  double fov = mCameraController->camera()->fieldOfView();
 
   for ( QgsMapLayer *layer : mMap.layers() )
   {
-    if ( layer->type() != QgsMapLayerType::PointCloudLayer ) continue;
+    if ( layer->type() != QgsMapLayerType::PointCloudLayer )
+      continue;
     if ( QgsPointCloudLayer *pc = dynamic_cast<QgsPointCloudLayer *>( layer ) )
     {
       QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( pc->renderer3D() );
-      double maxScreenError = renderer->maximumScreenError();
       const QgsPointCloud3DSymbol *symbol = renderer->symbol();
-      float pointSize = symbol->pointSize();
+      // Symbol can be null in case of no rendering enabled
+      if ( symbol == nullptr )
+        continue;
+      double maxScreenError = renderer->maximumScreenError();
+      double pointSize = symbol->pointSize();
       double angle = pointSize / screenSizePx * mCameraController->camera()->fieldOfView();
 
       // adjust ray to elevation properties

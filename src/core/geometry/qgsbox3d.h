@@ -21,6 +21,8 @@
 #include "qgis_core.h"
 #include "qgsrectangle.h"
 
+#include <QVector3D>
+
 class QgsPoint;
 
 /**
@@ -202,6 +204,12 @@ class CORE_EXPORT QgsBox3d
      * Converts the box to a 2D rectangle.
      */
     QgsRectangle toRectangle() const { return mBounds2d; }
+
+    /**
+     * Returns the smallest distance between the box and the point \a point
+     * (returns 0 if the point is inside the box)
+     */
+    double distanceTo( const  QVector3D &point ) const;
 
     bool operator==( const QgsBox3d &other ) const;
 

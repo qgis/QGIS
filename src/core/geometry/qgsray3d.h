@@ -5,21 +5,40 @@
 
 #include <QVector3D>
 
+/**
+ * \ingroup core
+ * A representation of a ray in 3D.
+ *
+ * A ray is composed of an origin point (the start of the ray) and a direction vector.
+ *
+ * \since QGIS 3.18
+ */
 class CORE_EXPORT QgsRay3D
 {
   public:
     QgsRay3D( const QVector3D &origin, const QVector3D &direction );
 
+    //! Returns the origin of the ray
     QVector3D origin() const { return mOrigin; }
+    //! Returns the direction of the ray
     QVector3D direction() const { return mDirection; }
 
+    //! Sets the origin of the ray
     void setOrigin( const QVector3D &origin );
+    //! Sets the direction of the ray
     void setDirection( const QVector3D direction );
 
+    /**
+     * Returns the projection of the point on the ray
+     * (which is the closest point of the ray to \a point)
+     */
+    QVector3D projectedPoint( const QVector3D &point ) const;
+    //! Checks whether the ray intersects with \a box
     bool intersectsWith( const QgsBox3d &box ) const;
+    //! Checks whether the point is in front of the ray
     bool isInFront( const QVector3D &point ) const;
+    //! Returns the angle between the ray and the vector from the ray's origin and the point \a point
     double angleToPoint( const QVector3D &point ) const;
-    double distanceTo( const  QgsBox3d &box ) const;
 
   private:
     QVector3D mOrigin;

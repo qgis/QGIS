@@ -21,6 +21,11 @@ void QgsRay3D::setDirection( const QVector3D direction )
   mDirection = direction;
 }
 
+QVector3D QgsRay3D::projectedPoint( const QVector3D &point ) const
+{
+  return mOrigin + QVector3D::dotProduct( point - mOrigin, mDirection ) * mDirection;
+}
+
 bool QgsRay3D::intersectsWith( const QgsBox3d &box ) const
 {
   double tminX = box.xMinimum() - mOrigin.x(), tmaxX = box.xMaximum() - mOrigin.x();
@@ -77,12 +82,4 @@ double QgsRay3D::angleToPoint( const QVector3D &point ) const
   QVector3D v1 = ( projectedPoint - mOrigin ).normalized();
   QVector3D v2 = ( point - mOrigin ).normalized();
   return qRadiansToDegrees( std::acos( std::abs( QVector3D::dotProduct( v1, v2 ) ) ) );
-}
-
-double QgsRay3D::distanceTo( const  QgsBox3d &box ) const
-{
-  double dx = std::max( box.xMinimum() - mOrigin.x(), std::max( 0., mOrigin.x() - box.xMaximum() ) );
-  double dy = std::max( box.yMinimum() - mOrigin.y(), std::max( 0., mOrigin.y() - box.yMaximum() ) );
-  double dz = std::max( box.zMinimum() - mOrigin.z(), std::max( 0., mOrigin.z() - box.zMaximum() ) );
-  return sqrt( dx * dx + dy * dy + dz * dz );
 }
