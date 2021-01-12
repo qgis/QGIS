@@ -23,6 +23,8 @@
 #include "qgspropertycollection.h"
 #include <QColor>
 
+class QgsRelationManager;
+
 /**
  * \ingroup core
  * This element will load a relation editor onto the form.

@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgseditformconfig_p.h"
 #include "qgseditformconfig.h"
 #include "qgsnetworkcontentfetcherregistry.h"
@@ -23,12 +24,10 @@
 #include "qgsxmlutils.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
+#include "qgsattributeeditorrelation.h"
 
-
-QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
-{
-  qDeleteAll( mChildren );
-}
 
 QgsEditFormConfig::QgsEditFormConfig()
   : d( new QgsEditFormConfigPrivate() )

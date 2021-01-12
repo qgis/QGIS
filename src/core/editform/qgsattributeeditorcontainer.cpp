@@ -17,6 +17,11 @@
 #include "qgsattributeeditorcontainer.h"
 
 
+QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
+{
+  qDeleteAll( mChildren );
+}
+
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );

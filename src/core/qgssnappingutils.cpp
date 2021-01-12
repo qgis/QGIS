@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgssnappingutils.h"
-
 #include "qgsgeometry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
