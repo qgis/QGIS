@@ -84,6 +84,14 @@ set(QGIS_CORE_SRCS
   diagram/qgsstackedbardiagram.cpp
   diagram/qgstextdiagram.cpp
 
+  editform/qgseditformconfig.cpp
+  editform/qgsattributeeditorelement.cpp
+  editform/qgsattributeeditorcontainer.cpp
+  editform/qgsattributeeditorfield.cpp
+  editform/qgsattributeeditorrelation.cpp
+  editform/qgsattributeeditorhtmlelement.cpp
+  editform/qgsattributeeditorqmlelement.cpp
+
   effects/qgsblureffect.cpp
   effects/qgscoloreffect.cpp
   effects/qgseffectstack.cpp
@@ -257,7 +265,6 @@ set(QGIS_CORE_SRCS
   qgspostgresstringutils.cpp
   qgsattributes.cpp
   qgsattributetableconfig.cpp
-  qgsattributeeditorelement.cpp
   qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
   qgsbookmarkmanager.cpp
@@ -298,7 +305,6 @@ set(QGIS_CORE_SRCS
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
-  qgseditformconfig.cpp
   qgselevationutils.cpp
   qgsellipsoidutils.cpp
   qgserror.cpp
@@ -836,7 +842,6 @@ set(QGIS_CORE_HDRS
   qgsanimatedicon.h
   qgsapplication.h
   qgsarchive.h
-  qgsattributeeditorelement.h
   qgsattributes.h
   qgsattributetableconfig.h
   qgsauxiliarystorage.h
@@ -878,7 +883,6 @@ set(QGIS_CORE_HDRS
   qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
-  qgseditformconfig.h
   qgseditorwidgetsetup.h
   qgselevationutils.h
   qgsellipsoidutils.h
@@ -1112,6 +1116,14 @@ set(QGIS_CORE_HDRS
   diagram/qgstextdiagram.h
 
   dxf/qgsdxfexport.h
+
+  editform/qgseditformconfig.h
+  editform/qgsattributeeditorelement.h
+  editform/qgsattributeeditorcontainer.h
+  editform/qgsattributeeditorfield.h
+  editform/qgsattributeeditorrelation.h
+  editform/qgsattributeeditorhtmlelement.h
+  editform/qgsattributeeditorqmlelement.h
 
   effects/qgsblureffect.h
   effects/qgscoloreffect.h
@@ -1569,7 +1581,6 @@ set(QGIS_CORE_PRIVATE_HDRS
   qgscoordinatereferencesystem_p.h
   qgscoordinatetransformcontext_p.h
   qgscoordinatetransform_p.h
-  qgseditformconfig_p.h
   qgsfeature_p.h
   qgsfield_p.h
   qgsfields_p.h
@@ -1577,6 +1588,7 @@ set(QGIS_CORE_PRIVATE_HDRS
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h
 
+  editform/qgseditformconfig_p.h
   textrenderer/qgstextrenderer_p.h
 )
 
@@ -1727,6 +1739,7 @@ target_include_directories(qgis_core PUBLIC
   callouts
   classification
   dxf
+  editform
   effects
   expression
   fieldformatter

@@ -63,6 +63,8 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsannotationlayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgsattributeeditorcontainer.h"
+
 
 #include <algorithm>
 #include <QApplication>

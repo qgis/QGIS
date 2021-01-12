@@ -29,6 +29,7 @@
 
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;
+class QgsAttributeEditorContainer;
 
 /**
  * \ingroup core

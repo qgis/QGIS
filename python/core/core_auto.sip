@@ -11,7 +11,6 @@
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsapplication.sip
 %Include auto_generated/qgsarchive.sip
-%Include auto_generated/qgsattributeeditorelement.sip
 %Include auto_generated/qgsattributes.sip
 %Include auto_generated/qgsattributetableconfig.sip
 %Include auto_generated/qgsauxiliarystorage.sip
@@ -51,7 +50,6 @@
 %Include auto_generated/qgsdefaultvalue.sip
 %Include auto_generated/qgsdiagramrenderer.sip
 %Include auto_generated/qgsdistancearea.sip
-%Include auto_generated/qgseditformconfig.sip
 %Include auto_generated/qgseditorwidgetsetup.sip
 %Include auto_generated/qgselevationutils.sip
 %Include auto_generated/qgsellipsoidutils.sip
@@ -251,6 +249,13 @@
 %Include auto_generated/diagram/qgsstackedbardiagram.sip
 %Include auto_generated/diagram/qgstextdiagram.sip
 %Include auto_generated/dxf/qgsdxfexport.sip
+%Include auto_generated/editform/qgseditformconfig.sip
+%Include auto_generated/editform/qgsattributeeditorelement.sip
+%Include auto_generated/editform/qgsattributeeditorcontainer.sip
+%Include auto_generated/editform/qgsattributeeditorfield.sip
+%Include auto_generated/editform/qgsattributeeditorrelation.sip
+%Include auto_generated/editform/qgsattributeeditorhtmlelement.sip
+%Include auto_generated/editform/qgsattributeeditorqmlelement.sip
 %Include auto_generated/effects/qgsblureffect.sip
 %Include auto_generated/effects/qgscoloreffect.sip
 %Include auto_generated/effects/qgseffectstack.sip

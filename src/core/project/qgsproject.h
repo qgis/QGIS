@@ -46,9 +46,10 @@
 #include "qgsprojectmetadata.h"
 #include "qgstranslationcontext.h"
 #include "qgsprojecttranslator.h"
-#include "qgsattributeeditorelement.h"
 #include "qgscolorscheme.h"
 #include "qgssettings.h"
+#include "qgspropertycollection.h"
+
 
 class QFileInfo;
 class QDomDocument;
@@ -77,6 +78,8 @@ class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
 class QgsProjectTimeSettings;
 class QgsAnnotationLayer;
+class QgsAttributeEditorContainer;
+class QgsPropertyCollection;
 
 
 /**

@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorhtmlelement.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAttributeEditorHtmlElement : QgsAttributeEditorElement
+{
+%Docstring
+An attribute editor widget that will represent arbitrary HTML code.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorhtmlelement.h"
+%End
+  public:
+
+    QgsAttributeEditorHtmlElement( const QString &name, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display HTML
+
+:param name: The name of the widget
+:param parent: The parent (used as container)
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    QString htmlCode() const;
+%Docstring
+The Html code that will be represented within this widget.
+
+.. versionadded:: 3.4
+%End
+
+    void setHtmlCode( const QString &htmlCode );
+%Docstring
+Sets the HTML code that will be represented within this widget to ``htmlCode``.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorhtmlelement.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

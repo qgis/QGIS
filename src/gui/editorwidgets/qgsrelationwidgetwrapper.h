@@ -19,6 +19,8 @@
 #include "qgswidgetwrapper.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgsattributeeditorrelation.h"
+
 
 class QgsAbstractRelationEditorWidget;
 

@@ -19,6 +19,7 @@
 #include <QMap>
 #include "qgsfields.h"
 #include "qgseditformconfig.h"
+#include "qgsattributeeditorcontainer.h"
 
 /// @cond PRIVATE
 

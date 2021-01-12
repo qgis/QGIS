@@ -1,0 +1,175 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorrelation.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAttributeEditorRelation : QgsAttributeEditorElement
+{
+%Docstring
+This element will load a relation editor onto the form.
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorrelation.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum Button
+    {
+      Link,
+      Unlink,
+      SaveChildEdits,
+      AddChildFeature,
+      DuplicateChildFeature,
+      DeleteChildFeature,
+      ZoomToChildFeature,
+      AllButtons
+    };
+    typedef QFlags<QgsAttributeEditorRelation::Button> Buttons;
+
+
+ QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
+%Docstring
+
+.. deprecated:: QGIS 3.0.2.
+   The name parameter is not used for anything and overwritten by the relationId internally.
+%End
+
+ QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent );
+%Docstring
+
+.. deprecated:: QGIS 3.0.2.
+   The name parameter is not used for anything and overwritten by the relationId internally.
+%End
+
+    QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which embeds a relation.
+
+:param relationId: The id of the relation to embed
+:param parent: The parent (used as container)
+%End
+
+    QgsAttributeEditorRelation( const QgsRelation &relation, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which embeds a relation.
+
+:param relation: The relation to embed
+:param parent: The parent (used as container)
+%End
+
+
+    const QgsRelation &relation() const;
+%Docstring
+Gets the id of the relation which shall be embedded
+
+:return: the id
+%End
+
+    bool init( QgsRelationManager *relManager );
+%Docstring
+Initializes the relation from the id
+
+:param relManager: The relation manager to use for the initialization
+
+:return: ``True`` if the relation was found in the relationmanager
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    bool forceSuppressFormPopup() const;
+%Docstring
+Determines the force suppress form popup status.
+
+.. versionadded:: 3.16
+%End
+
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+%Docstring
+Sets force suppress form popup status to ``forceSuppressFormPopup``.
+This flag is to override the layer and general settings regarding the automatic
+opening of the attribute form dialog when digitizing is completed.
+
+.. versionadded:: 3.16
+%End
+
+    QVariant nmRelationId() const;
+%Docstring
+Determines the relation id of the second relation involved in an N:M relation.
+
+.. versionadded:: 3.16
+%End
+
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+%Docstring
+Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
+If it's empty, then it's considered as a 1:M relationship.
+
+.. versionadded:: 3.16
+%End
+
+    QString label() const;
+%Docstring
+Determines the label of this element
+
+.. versionadded:: 3.16
+%End
+
+    void setLabel( const QString &label = QString() );
+%Docstring
+Sets ``label`` for this element
+If it's empty it takes the relation id as label
+
+.. versionadded:: 3.16
+%End
+
+    QString relationWidgetTypeId() const;
+%Docstring
+Returns the current relation widget type id
+
+.. versionadded:: 3.18
+%End
+
+    void setRelationWidgetTypeId( const QString &relationWidgetTypeId );
+%Docstring
+Sets the relation widget type
+
+.. versionadded:: 3.18
+%End
+
+    QVariantMap relationEditorConfiguration() const;
+%Docstring
+Returns the relation editor widget configuration
+
+.. versionadded:: 3.18
+%End
+
+    void setRelationEditorConfiguration( const QVariantMap &config );
+%Docstring
+Sets the relation editor configuration
+
+.. versionadded:: 3.18
+%End
+
+};
+
+QFlags<QgsAttributeEditorRelation::Button> operator|(QgsAttributeEditorRelation::Button f1, QFlags<QgsAttributeEditorRelation::Button> f2);
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorrelation.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

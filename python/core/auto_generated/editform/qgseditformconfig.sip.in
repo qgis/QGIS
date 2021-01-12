@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgseditformconfig.h                                         *
+ * src/core/editform/qgseditformconfig.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -316,7 +316,7 @@ Returns data defined property definitions.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgseditformconfig.h                                         *
+ * src/core/editform/qgseditformconfig.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

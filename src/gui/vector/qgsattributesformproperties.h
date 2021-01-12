@@ -46,6 +46,8 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsrelationmanager.h"
+#include "qgsattributeeditorrelation.h"
+
 
 class QgsAttributesDnDTree;
 class QgsAttributeFormContainerEdit;
