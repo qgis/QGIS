@@ -71,7 +71,7 @@ bool QgsExportLayersInformationAlgorithm::prepareAlgorithm( const QVariantMap &p
     {
       mCrs = layer->crs();
     }
-    else if ( mCrs.authid() != QStringLiteral( "EPSG:4326" ) )
+    else if ( mCrs.authid() != QLatin1String( "EPSG:4326" ) )
     {
       if ( mCrs != layer->crs() )
       {

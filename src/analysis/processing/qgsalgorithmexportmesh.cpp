@@ -227,18 +227,18 @@ static QgsInterval datasetRelativetime( const QVariant parameterTimeVariant, Qgs
   QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
   QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
 
-  if ( timeType == QStringLiteral( "dataset-time-step" ) )
+  if ( timeType == QLatin1String( "dataset-time-step" ) )
   {
     QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
     relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
   }
-  else if ( timeType == QStringLiteral( "defined-date-time" ) )
+  else if ( timeType == QLatin1String( "defined-date-time" ) )
   {
     QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
     if ( dateTime.isValid() )
       relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
   }
-  else if ( timeType == QStringLiteral( "current-context-time" ) )
+  else if ( timeType == QLatin1String( "current-context-time" ) )
   {
     QDateTime dateTime = context.currentTimeRange().begin();
     if ( dateTime.isValid() )

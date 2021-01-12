@@ -133,7 +133,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QStringLiteral( ", " ) ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QLatin1String( ", " ) ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }

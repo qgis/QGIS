@@ -337,7 +337,7 @@ void QgsProviderRegistry::init()
   {
     pointCloudFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( pointCloudWildcards.join( ' ' ) ) );
     pointCloudFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
-    mPointCloudFileFilters = pointCloudFilters.join( QStringLiteral( ";;" ) );
+    mPointCloudFileFilters = pointCloudFilters.join( QLatin1String( ";;" ) );
   }
 
   // load database drivers (only OGR)

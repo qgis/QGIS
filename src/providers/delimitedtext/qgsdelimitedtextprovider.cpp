@@ -1269,7 +1269,7 @@ QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri ) co
   QStringList openOptions;
   for ( const auto &item : queryItems.queryItems() )
   {
-    if ( item.first == QStringLiteral( "subset" ) )
+    if ( item.first == QLatin1String( "subset" ) )
     {
       subset = item.second;
     }

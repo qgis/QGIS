@@ -146,7 +146,7 @@ class TestQgsListWidget : public QObject
       QgsVectorLayer *vl_array_int = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"array_tbl\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
       QVERIFY( vl_array_int->isValid( ) );
 
-      QgsListWidgetWrapper w_array_int( vl_array_int, vl_array_int->fields().indexOf( QStringLiteral( "location" ) ), nullptr, nullptr );
+      QgsListWidgetWrapper w_array_int( vl_array_int, vl_array_int->fields().indexOf( QLatin1String( "location" ) ), nullptr, nullptr );
       QgsListWidget *widget = qobject_cast< QgsListWidget * >( w_array_int.widget( ) );
 
       vl_array_int->startEditing( );
@@ -192,7 +192,7 @@ class TestQgsListWidget : public QObject
       QgsVectorLayer *vl_array_str = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"string_array\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
       QVERIFY( vl_array_str->isValid() );
 
-      QgsListWidgetWrapper w_array_str( vl_array_str, vl_array_str->fields().indexOf( QStringLiteral( "value" ) ), nullptr, nullptr );
+      QgsListWidgetWrapper w_array_str( vl_array_str, vl_array_str->fields().indexOf( QLatin1String( "value" ) ), nullptr, nullptr );
       widget = qobject_cast< QgsListWidget * >( w_array_str.widget( ) );
       vl_array_str->startEditing( );
       QVariantList newListStr;

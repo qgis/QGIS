@@ -1348,7 +1348,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   QVariantMap paramDefMap;
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( def->name() == QStringLiteral( "VERBOSE_LOG" ) )
+    if ( def->name() == QLatin1String( "VERBOSE_LOG" ) )
       continue;
 
     paramDefMap.insert( def->name(), def->toVariantMap() );

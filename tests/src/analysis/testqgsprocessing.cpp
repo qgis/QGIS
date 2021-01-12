@@ -8173,7 +8173,7 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   std::unique_ptr< QgsProcessingParameterMeshDatasetGroups> def(
     new QgsProcessingParameterMeshDatasetGroups( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ), QString(), supportedData ) );
 
-  QVERIFY( def->type() == QStringLiteral( "meshdatasetgroups" ) );
+  QVERIFY( def->type() == QLatin1String( "meshdatasetgroups" ) );
   QVERIFY( def->isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataOnVertices ) );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( 1.0 ) );
@@ -8239,7 +8239,7 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   context.setProject( &project );
 
   std::unique_ptr< QgsProcessingParameterMeshDatasetTime> def( new QgsProcessingParameterMeshDatasetTime( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ) ) );
-  QVERIFY( def->type() == QStringLiteral( "meshdatasettime" ) );
+  QVERIFY( def->type() == QLatin1String( "meshdatasettime" ) );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( 1.0 ) );
   QVERIFY( !def->checkValueIsAcceptable( "test" ) );

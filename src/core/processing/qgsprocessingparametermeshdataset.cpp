@@ -77,13 +77,13 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
         dt.append( QStringLiteral( "QgsMeshDatasetGroupMetadata.DataOnEdges" ) );
       if ( !dt.isEmpty() )
       {
-        code += QStringLiteral( ", dataType=[" );
+        code += QLatin1String( ", dataType=[" );
         code += dt.join( ',' );
         code += ']';
       }
 
       if ( mFlags & FlagOptional )
-        code += QStringLiteral( ", optional=True" );
+        code += QLatin1String( ", optional=True" );
       code += ')';
       return code;
     }
@@ -174,12 +174,12 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsPythonString( const QVaria
   const QVariantMap variantTimeDataset = value.toMap();
   parts << QStringLiteral( "'type': " ) +  QgsProcessingUtils::variantToPythonLiteral( variantTimeDataset.value( QStringLiteral( "type" ) ).toString() );
 
-  if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QStringLiteral( "dataset-time-step" ) )
+  if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QLatin1String( "dataset-time-step" ) )
   {
     QVariantList datasetIndex = variantTimeDataset.value( QStringLiteral( "value" ) ).toList();
     parts << QStringLiteral( "'value': " ) + QString( "QgsMeshDatasetIndex(%1,%2)" ).arg( datasetIndex.at( 0 ).toString() ).arg( datasetIndex.at( 1 ).toString() );
   }
-  else if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QStringLiteral( "defined-date-time" ) )
+  else if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QLatin1String( "defined-date-time" ) )
   {
     parts << QStringLiteral( "'value': " ) + QgsProcessingUtils::variantToPythonLiteral( variantTimeDataset.value( QStringLiteral( "value" ) ) );
   }
@@ -202,7 +202,7 @@ QString QgsProcessingParameterMeshDatasetTime::asPythonString( QgsProcessing::Py
         code += QStringLiteral( ", datasetGroupParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mDatasetGroupParameterName ) );
 
       if ( mFlags & FlagOptional )
-        code += QStringLiteral( ", optional=True" );
+        code += QLatin1String( ", optional=True" );
       code += ')';
       return code;
     }
@@ -242,7 +242,7 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsTimeType( const QVariant &
 
 QgsMeshDatasetIndex QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( const QVariant &value )
 {
-  if ( !valueIsAcceptable( value, false ) || valueAsTimeType( value ) != QStringLiteral( "dataset-time-step" ) )
+  if ( !valueIsAcceptable( value, false ) || valueAsTimeType( value ) != QLatin1String( "dataset-time-step" ) )
     return QgsMeshDatasetIndex( -1, -1 );
 
   QVariantList list = value.toMap().value( QStringLiteral( "value" ) ).toList();
@@ -251,7 +251,7 @@ QgsMeshDatasetIndex QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetInd
 
 QDateTime QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( const QVariant &value )
 {
-  if ( !valueIsAcceptable( value, false ) && valueAsTimeType( value ) != QStringLiteral( "defined-date-time" ) )
+  if ( !valueIsAcceptable( value, false ) && valueAsTimeType( value ) != QLatin1String( "defined-date-time" ) )
     return QDateTime();
 
   return value.toMap().value( QStringLiteral( "value" ) ).toDateTime();
@@ -271,10 +271,10 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   QString type = map.value( QStringLiteral( "type" ) ).toString();
   QVariant value = map.value( QStringLiteral( "value" ) );
 
-  if ( type == QStringLiteral( "static" ) || type == QStringLiteral( "current-context-time" ) )
+  if ( type == QLatin1String( "static" ) || type == QLatin1String( "current-context-time" ) )
     return true;
 
-  if ( type == QStringLiteral( "dataset-time-step" ) )
+  if ( type == QLatin1String( "dataset-time-step" ) )
   {
     if ( value.type() != QVariant::List )
       return false;
@@ -284,7 +284,7 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
     if ( list.at( 0 ).type() != QVariant::Int || list.at( 1 ).type() != QVariant::Int )
       return false;
   }
-  else if ( type == QStringLiteral( "defined-date-time" ) )
+  else if ( type == QLatin1String( "defined-date-time" ) )
   {
     if ( value.type() != QVariant::DateTime )
       return false;

@@ -213,7 +213,7 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to HANA database" ) );
     output->setMessage( tr( "Failed to import some layers!\n\n" ) +
-                        importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+                        importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
 

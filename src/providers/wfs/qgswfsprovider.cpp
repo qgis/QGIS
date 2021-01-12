@@ -1636,7 +1636,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
   const QString WfsVersion = mShared->mWFSVersion;
   // only 1.1.0 and 1.0.0 are supported
-  if ( WfsVersion == QStringLiteral( "1.1.0" ) )
+  if ( WfsVersion == QLatin1String( "1.1.0" ) )
   {
     transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
   }
@@ -1689,7 +1689,7 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
 
   const QString WfsVersion = mShared->mWFSVersion;
 
-  if ( WfsVersion == QStringLiteral( "1.1.0" ) )
+  if ( WfsVersion == QLatin1String( "1.1.0" ) )
   {
     const QDomNodeList transactionSummaryList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionSummary" ) );
     if ( transactionSummaryList.size() < 1 )
@@ -1769,7 +1769,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
   // Handles WFS 1.1.0
   QString insertResultTagName;
-  if ( mShared->mWFSVersion == QStringLiteral( "1.1.0" ) )
+  if ( mShared->mWFSVersion == QLatin1String( "1.1.0" ) )
   {
     insertResultTagName = QStringLiteral( "InsertResults" );
   }

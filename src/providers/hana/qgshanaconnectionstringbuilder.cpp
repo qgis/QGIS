@@ -40,14 +40,14 @@ QString QgsHanaConnectionStringBuilder::toString() const
 {
   // For more details on how to escape special characters in passwords,
   // see https://stackoverflow.com/questions/55150362/maybe-illegal-character-in-odbc-sql-server-connection-string-pwd
-  QString pwd = QString( mPassword ).replace( '}', QStringLiteral( "}}" ) );
+  QString pwd = QString( mPassword ).replace( '}', QLatin1String( "}}" ) );
   QString ret = QStringLiteral( "DRIVER={%1};SERVERNODE=%2:%3;DATABASENAME=%4;UID=%5;PWD={%6};CHAR_AS_UTF8=1" ).arg(
                   mDriver, mHost, mPort, mDatabase, mUserName, pwd );
   if ( !mSchema.isEmpty() )
     ret += QStringLiteral( ";CURRENTSCHEMA=" ) + mSchema;
   if ( mSslEnabled )
   {
-    ret += QStringLiteral( ";encrypt=true" );
+    ret += QLatin1String( ";encrypt=true" );
     if ( !mSslCryptoProvider.isEmpty() )
       ret += QStringLiteral( ";sslCryptoProvider=" ) + mSslCryptoProvider;
     ret += QStringLiteral( ";sslValidateCertificate=" ) + QString( mSslValidateCertificate ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );

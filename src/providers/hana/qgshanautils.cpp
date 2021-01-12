@@ -30,7 +30,7 @@ namespace
   {
     QString escaped = val;
 
-    escaped.replace( '\\', QStringLiteral( "\\\\" ) );
+    escaped.replace( '\\', QLatin1String( "\\\\" ) );
     escaped.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
 
     return escaped;
@@ -79,20 +79,20 @@ QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
       addItem( "sslTrustStore", uri.param( QStringLiteral( "sslTrustStore" ) ) );
   }
 
-  return connectionItems.join( QStringLiteral( " " ) );
+  return connectionItems.join( QLatin1Char( ' ' ) );
 }
 
 QString QgsHanaUtils::quotedIdentifier( const QString &str )
 {
   QString result = str;
-  result.replace( '"', QStringLiteral( "\"\"" ) );
+  result.replace( '"', QLatin1String( "\"\"" ) );
   return result.prepend( '\"' ).append( '\"' );
 }
 
 QString QgsHanaUtils::quotedString( const QString &str )
 {
   QString result = str;
-  result.replace( '\'', QStringLiteral( "''" ) );
+  result.replace( '\'', QLatin1String( "''" ) );
   return result.prepend( '\'' ).append( '\'' );
 }
 

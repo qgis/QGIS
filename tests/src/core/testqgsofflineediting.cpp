@@ -156,7 +156,7 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
 
   //convert
-  if ( suffix_input.compare( QStringLiteral( "no suffix" ) ) == 0 )
+  if ( suffix_input.compare( QLatin1String( "no suffix" ) ) == 0 )
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite );
   else
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite, suffix_input );
@@ -210,7 +210,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   mpLayer->styleManager()->addStyle( QStringLiteral( "testStyle" ), style );
 
   //convert
-  if ( suffix_input.compare( QStringLiteral( "no suffix" ) ) == 0 )
+  if ( suffix_input.compare( QLatin1String( "no suffix" ) ) == 0 )
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
   else
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG, suffix_input );
