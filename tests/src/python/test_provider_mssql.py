@@ -713,10 +713,13 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(extent.toString(1),
                          QgsRectangle(1.0, 2.0, 4.0, 3.0).toString(1))
 
-        # Load with flag extent in geometry_columns table and check if the layer is not valid (no extent yet in geometry_columns)
+        # Load with flag extent in geometry_columns table and check if the layer is still valid and extent doesn't change
         layerUri.setParam('extentInGeometryColumns', '1')
         loadedLayer = QgsVectorLayer(layerUri.uri(), "invalid", "mssql")
-        self.assertFalse(loadedLayer.isValid())
+        self.assertTrue(loadedLayer.isValid())
+        extent = loadedLayer.extent()
+        self.assertEqual(extent.toString(1),
+                         QgsRectangle(1.0, 2.0, 4.0, 3.0).toString(1))
 
         md = QgsProviderRegistry.instance().providerMetadata('mssql')
         conn = md.createConnection(self.dbconn, {})
@@ -728,7 +731,11 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         # try with empty attribute
         layerUri.setParam('extentInGeometryColumns', '1')
         loadedLayer = QgsVectorLayer(layerUri.uri(), "invalid", "mssql")
-        self.assertFalse(loadedLayer.isValid())
+        self.assertTrue(loadedLayer.isValid())
+        self.assertTrue(loadedLayer.isValid())
+        extent = loadedLayer.extent()
+        self.assertEqual(extent.toString(1),
+                         QgsRectangle(1.0, 2.0, 4.0, 3.0).toString(1))
 
         conn.execSql('UPDATE dbo.geometry_columns SET qgis_xmin=0, qgis_xmax=5.5, qgis_ymin=0.5, qgis_ymax=6 WHERE f_table_name=\'layer_extent_in_geometry_table\'')
 

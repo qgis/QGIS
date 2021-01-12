@@ -90,7 +90,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     long featureCount() const override;
 
     //! Update the extent, feature count, wkb type and srid for this layer
-    void UpdateStatistics( bool estimate, QgsError &error ) const;
+    void UpdateStatistics( bool estimate ) const;
 
     QgsFields fields() const override;
 
