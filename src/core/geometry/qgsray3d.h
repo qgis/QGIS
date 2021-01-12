@@ -30,6 +30,7 @@
 class CORE_EXPORT QgsRay3D
 {
   public:
+    //! Constructor
     QgsRay3D( const QVector3D &origin, const QVector3D &direction );
 
     //! Returns the origin of the ray

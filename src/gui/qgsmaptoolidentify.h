@@ -152,7 +152,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * \note : the converted variant maps are pushed at the back of \a results without cleaning what's in it previously
      * \since QGIS 3.18
      */
-    static void fromPointCloudIdentificationToIdentifyResults( QgsPointCloudLayer *layer, const QVector<QVariantMap> &identified, QList<QgsMapToolIdentify::IdentifyResult> &results );
+    static void fromPointCloudIdentificationToIdentifyResults( QgsPointCloudLayer *layer, const QVector<QVariantMap> &identified, QList<QgsMapToolIdentify::IdentifyResult> &results ) SIP_SKIP;
 
   public slots:
     void formatChanged( QgsRasterLayer *layer );
