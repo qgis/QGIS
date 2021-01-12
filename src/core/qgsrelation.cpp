@@ -206,11 +206,10 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
 
   if ( ! d->mPolymorphicRelationId.isEmpty() )
   {
-    QgsPolymorphicRelation polymorphicRelation = mContext.project()->relationManager()->polymorphicRelation( d->mPolymorphicRelationId );
-
-    if ( polymorphicRelation.isValid() )
+    QgsPolymorphicRelation polyRel = polymorphicRelation();
+    if ( polyRel.isValid() )
     {
-      conditions << QgsExpression::createFieldEqualityExpression( polymorphicRelation.referencedLayerField(), polymorphicRelation.layerRepresentation( referencedLayer() ) );
+      conditions << QgsExpression::createFieldEqualityExpression( polyRel.referencedLayerField(), polyRel.layerRepresentation( referencedLayer() ) );
     }
     else
     {
@@ -429,3 +428,10 @@ QString QgsRelation::polymorphicRelationId() const
   return d->mPolymorphicRelationId;
 }
 
+QgsPolymorphicRelation QgsRelation::polymorphicRelation() const
+{
+  if ( ! mContext.project() || ! mContext.project()->relationManager() )
+    return QgsPolymorphicRelation();
+
+  return mContext.project()->relationManager()->polymorphicRelation( d->mPolymorphicRelationId );
+}

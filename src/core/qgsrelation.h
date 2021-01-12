@@ -33,7 +33,7 @@ class QgsFeatureRequest;
 class QgsAttributes;
 class QgsVectorLayer;
 class QgsRelationPrivate;
-class QgsExpressionContext;
+class QgsPolymorphicRelation;
 
 /**
  * \ingroup core
@@ -49,6 +49,7 @@ class CORE_EXPORT QgsRelation
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( bool isValid READ isValid )
     Q_PROPERTY( QString polymorphicRelationId READ polymorphicRelationId WRITE setPolymorphicRelationId )
+    Q_PROPERTY( QgsPolymorphicRelation polymorphicRelation READ polymorphicRelation )
 
   public:
 
@@ -394,6 +395,12 @@ class CORE_EXPORT QgsRelation
      * \since QGIS 3.18
      */
     QString polymorphicRelationId() const;
+
+    /**
+     * Returns the parent polymorphic relation. If the relation is a normal relation, an invalid polymorphic relation is returned.
+     * \since QGIS 3.18
+     */
+    QgsPolymorphicRelation polymorphicRelation() const;
 
   private:
 
