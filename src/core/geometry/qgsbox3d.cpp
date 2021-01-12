@@ -118,6 +118,15 @@ bool QgsBox3d::contains( const QgsPoint &p ) const
     return true;
 }
 
+double QgsBox3d::distanceTo( const  QVector3D &point ) const
+{
+  double dx = std::max( mBounds2d.xMinimum() - point.x(), std::max( 0., point.x() - mBounds2d.xMaximum() ) );
+  double dy = std::max( mBounds2d.yMinimum() - point.y(), std::max( 0., point.y() - mBounds2d.yMaximum() ) );
+  double dz = std::max( mZmin - point.z(), std::max( 0., point.z() - mZmax ) );
+  return sqrt( dx * dx + dy * dy + dz * dz );
+}
+
+
 bool QgsBox3d::operator==( const QgsBox3d &other ) const
 {
   return mBounds2d == other.mBounds2d &&

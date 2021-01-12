@@ -10,6 +10,7 @@
 
 
 
+
 class QgsBox3d
 {
 %Docstring
@@ -222,6 +223,12 @@ will be performed on the x/y extent of the box only.
     QgsRectangle toRectangle() const;
 %Docstring
 Converts the box to a 2D rectangle.
+%End
+
+    double distanceTo( const  QVector3D &point ) const;
+%Docstring
+Returns the smallest distance between the box and the point ``point``
+(returns 0 if the point is inside the box)
 %End
 
     bool operator==( const QgsBox3d &other ) const;

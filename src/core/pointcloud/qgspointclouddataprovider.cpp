@@ -411,13 +411,11 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
 QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QgsRay3D &ray, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit )
 {
-  QVector3D rayOrigin = ray.origin();
-  QVector3D rayDirection = ray.direction();
   QVector<QVariantMap> points;
   QgsPointCloudIndex *index = this->index();
   IndexedPointCloudNode root = index->root();
   QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
-  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
+  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
 
   QVector<IndexedPointCloudNode> nodes = getNodesIntersectingWithRay( index, root, maxScreenError, rootErrorInMapCoordinates, cameraFov, screenSizePx, ray );
 
@@ -446,27 +444,20 @@ QVector<QVariantMap> QgsPointCloudDataProvider::getPointsOnRay( const QgsRay3D &
       double x, y, z;
       _pointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, index->scale(), index->offset(), x, y, z );
       QVector3D point( x, y, z );
-      // project point on ray
-      QVector3D projectedPoint = rayOrigin + QgsVector3D::dotProduct( point - rayOrigin, rayDirection ) * rayDirection;
-      // check whether point is in front of the ray
-      bool isInFront = QgsVector3D::dotProduct( point - rayOrigin, rayDirection ) > 0.0;
 
-      if ( !isInFront )
+      // check whether point is in front of the ray
+      if ( !ray.isInFront( point ) )
         continue;
 
       // calculate the angle between the point and the projected point
-      QVector3D v1 = ( projectedPoint - rayOrigin ).normalized();
-      QVector3D v2 = ( point - rayOrigin ).normalized();
-      double angle = qRadiansToDegrees( std::acos( std::abs( QVector3D::dotProduct( v1, v2 ) ) ) );
-
-      if ( angle > pointAngle )
+      if ( ray.angleToPoint( point ) > pointAngle )
         continue;
 
       QVariantMap pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
       pointAttr[ QStringLiteral( "X" ) ] = x;
       pointAttr[ QStringLiteral( "Y" ) ] = y;
       pointAttr[ QStringLiteral( "Z" ) ] = z;
-      pointAttr[ QStringLiteral( "Distance to camera" ) ] = ( point - rayOrigin ).length();
+      pointAttr[ QStringLiteral( "Distance to camera" ) ] = ( point - ray.origin() ).length();
       points.push_back( pointAttr );
     }
   }
@@ -486,8 +477,8 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::getNodesIntersectingWi
   QgsBox3d box( n2DExtent.xMinimum(), n2DExtent.yMinimum(), zRange.lower(), n2DExtent.xMaximum(), n2DExtent.yMaximum(), zRange.upper() );
 
   // calculate screen space error:
-  float distance =  ray.distanceTo( box );
-  float phi = nodeError * screenSizePx / ( 2 * distance * tan( cameraFov * M_PI / ( 2 * 180 ) ) );
+  double distance =  box.distanceTo( ray.origin() );
+  double phi = nodeError * screenSizePx / ( 2 * distance * tan( cameraFov * M_PI / ( 2 * 180 ) ) );
 
   if ( !ray.intersectsWith( box ) )
   {
@@ -496,7 +487,7 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::getNodesIntersectingWi
 
   nodes.append( n );
 
-  float childrenError = nodeError / 2.0f;
+  double childrenError = nodeError / 2.0f;
   if ( phi < maxError )
     return nodes;
 
