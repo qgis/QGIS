@@ -1568,33 +1568,7 @@ namespace QgsWms
         featureAttributes = feature.attributes();
         for ( int i = 0; i < featureAttributes.count(); ++i )
         {
-          //skip attribute if it is explicitly excluded from WMS publication
-          if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
-          {
-            continue;
-          }
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-          //skip attribute if it is excluded by access control
-          if ( !attributes.contains( fields.at( i ).name() ) )
-          {
-            continue;
-          }
-#endif
-
-          //replace attribute name if there is an attribute alias?
-          QString attributeName = layer->attributeDisplayName( i );
-
-          QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
-          attributeElement.setAttribute( QStringLiteral( "name" ), attributeName );
-          const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( i );
-          attributeElement.setAttribute( QStringLiteral( "value" ),
-                                         QgsExpression::replaceExpressionText(
-                                           replaceValueMapAndRelation(
-                                             layer, i,
-                                             featureAttributes[i] ),
-                                           &renderContext.expressionContext() )
-                                       );
-          featureElement.appendChild( attributeElement );
+          writeVectorLayerAttribute( i, layer, fields, featureAttributes, infoDocument, featureElement, renderContext );
         }
 
         //add maptip attribute based on html/expression (in case there is no maptip attribute)
@@ -1660,6 +1634,41 @@ namespace QgsWms
     }
 
     return true;
+  }
+
+
+  void QgsRenderer::writeVectorLayerAttribute( int attributeIndex,  QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const
+  {
+    if ( !layer )
+    {
+      return;
+    }
+
+    //skip attribute if it is explicitly excluded from WMS publication
+    if ( fields.at( attributeIndex ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+    {
+      return;
+    }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    //skip attribute if it is excluded by access control
+    if ( !attributes.contains( fields.at( i ).name() ) )
+    {
+      return;
+    }
+#endif
+
+    QString attributeName = layer->attributeDisplayName( attributeIndex );
+    QDomElement attributeElement = doc.createElement( QStringLiteral( "Attribute" ) );
+    attributeElement.setAttribute( QStringLiteral( "name" ), attributeName );
+    const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( attributeIndex );
+    attributeElement.setAttribute( QStringLiteral( "value" ),
+                                   QgsExpression::replaceExpressionText(
+                                     replaceValueMapAndRelation(
+                                       layer, attributeIndex,
+                                       featureAttributes[attributeIndex] ),
+                                     &renderContext.expressionContext() )
+                                 );
+    featureElem.appendChild( attributeElement );
   }
 
   bool QgsRenderer::featureInfoFromRasterLayer( QgsRasterLayer *layer,

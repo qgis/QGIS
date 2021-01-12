@@ -221,6 +221,8 @@ namespace QgsWms
                                        QgsRectangle *featureBBox = nullptr,
                                        QgsGeometry *filterGeom = nullptr ) const;
 
+      void writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
+
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
                                        const QgsMapSettings &mapSettings,
