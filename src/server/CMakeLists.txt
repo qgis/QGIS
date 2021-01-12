@@ -83,19 +83,13 @@ if (WITH_SERVER_PLUGINS)
 endif()
 
 include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
   ${FCGI_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
-  ${QGIS_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-)
+
 include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
@@ -103,7 +97,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server

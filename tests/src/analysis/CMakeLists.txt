@@ -18,14 +18,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/analysis
-)
-include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
 )
 
 if(HAVE_OPENCL)

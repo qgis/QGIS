@@ -12,16 +12,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_BINARY_DIR}/src/core
 )
 include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${MDAL_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 

@@ -10,12 +10,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/gui
 )
 
-include_directories(SYSTEM
-  ${GEOS_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-)
-
 if (WITH_GUI)
   include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}

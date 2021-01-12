@@ -484,9 +484,7 @@ if (WITH_3D)
 endif()
 
 include_directories(SYSTEM
-  ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
 include_directories(

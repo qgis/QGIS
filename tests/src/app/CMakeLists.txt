@@ -28,23 +28,12 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/external/nmea
 
   ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/app
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
-  ${QWT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
-)
-
 
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is

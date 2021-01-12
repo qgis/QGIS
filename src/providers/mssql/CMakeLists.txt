@@ -36,16 +36,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
-  ${QT_INCLUDE_DIR}
-)
-
-if (WITH_GUI)
-  include_directories(SYSTEM
-    ${QSCINTILLA_INCLUDE_DIR}
-  )
-endif()
 
 
 add_library(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_HDRS})

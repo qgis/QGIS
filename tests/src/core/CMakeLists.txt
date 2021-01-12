@@ -8,16 +8,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/test
 )
-include_directories(SYSTEM
-  ${PROJ_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${QT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${SPATIALINDEX_INCLUDE_DIR}
-  )
 
 if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})

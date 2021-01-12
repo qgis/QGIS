@@ -32,15 +32,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_BINARY_DIR}/src/native
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${QWT_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
-)
 
 if(ENABLE_MODELTEST)
   include_directories(${CMAKE_SOURCE_DIR}/tests/qt_modeltest)

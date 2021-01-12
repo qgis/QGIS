@@ -41,14 +41,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
-)
-include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${SPATIALITE_INCLUDE_DIR}
 )
 
 add_library (spatialiteprovider MODULE ${SPATIALITE_SRCS})

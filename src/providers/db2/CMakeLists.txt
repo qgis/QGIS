@@ -41,20 +41,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-
-include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
-)
-
-if (WITH_GUI)
-  include_directories(SYSTEM
-    ${QSCINTILLA_INCLUDE_DIR}
-  )
-endif()
 
 add_library (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS})
 

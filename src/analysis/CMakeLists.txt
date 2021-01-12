@@ -429,16 +429,11 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/analysis
   interpolation
   network
 )
 include_directories(SYSTEM
-  ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
-  ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
   ${EXIV2_INCLUDE_DIR}
 )
 
