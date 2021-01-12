@@ -281,9 +281,18 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
       // If the value has changed as a result of another widget's value change,
       // we need to emit the signal to make sure other dependent widgets are
       // updated.
-      if ( oldValue != value() && fieldIdx() < formFeature().fields().count() )
+      QgsFields formFields( formFeature().fields() );
+
+      // Also check for fields in the layer in case this is a multi-edit form
+      // and there is not form feature set
+      if ( formFields.count() == 0 && layer() )
       {
-        QString attributeName( formFeature().fields().names().at( fieldIdx() ) );
+        formFields = layer()->fields();
+      }
+
+      if ( oldValue != value() && fieldIdx() < formFields.count() )
+      {
+        QString attributeName( formFields.names().at( fieldIdx() ) );
         setFormFeatureAttribute( attributeName, value( ) );
         emitValueChanged();
       }
@@ -305,7 +314,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   // A bit of logic to set the default value if AllowNull is false and this is a new feature
   // Note that this needs to be here after the cache has been created/updated by populate()
   // and signals unblocked (we want this to propagate to the feature itself)
-  if ( formFeature().isValid()
+  if ( context().attributeFormMode() != QgsAttributeEditorContext::Mode::MultiEditMode
        && ! formFeature().attribute( fieldIdx() ).isValid()
        && ! mCache.isEmpty()
        && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )

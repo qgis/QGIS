@@ -221,7 +221,8 @@ void QgsAttributeFormEditorWidget::setFieldTriggered()
 
 void QgsAttributeFormEditorWidget::onAggregateChanged()
 {
-  for ( QgsSearchWidgetWrapper *searchWidget : searchWidgetWrappers() )
+  const auto constWigets( searchWidgetWrappers() );
+  for ( QgsSearchWidgetWrapper *searchWidget : constWigets )
     searchWidget->setAggregate( mAggregateButton->aggregate() );
 }
 
