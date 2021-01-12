@@ -836,7 +836,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         # check IF there is an empty table (will throw error if the EMPTY_LAYER table does not exist)
         self.execSQLCommand('SELECT count(*) FROM "QGIS"."EMPTY_LAYER"')
 
-        # check that metadata table has been correclty populated
+        # check that metadata table has been correctly populated
         query = QSqlQuery(self.conn)
         self.assertTrue(query.exec_("SELECT column_name, srid FROM user_sdo_geom_metadata WHERE table_name = 'EMPTY_LAYER'"))
         self.assertTrue(query.next())
