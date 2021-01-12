@@ -551,13 +551,13 @@ void QgsCameraController::onKeyPressedFlyNavigation()
     cameraPosDiff += - mCameraMovementSpeed * cameraFront;
   }
 
-  if ( mDepressedKeys.contains( Qt::Key_PageUp ) || mDepressedKeys.contains( Qt::Key_Q ) )
+  if ( mDepressedKeys.contains( Qt::Key_PageUp ) || mDepressedKeys.contains( Qt::Key_E ) )
   {
     changed = true;
     cameraPosDiff += mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
   }
 
-  if ( mDepressedKeys.contains( Qt::Key_PageDown ) || mDepressedKeys.contains( Qt::Key_E ) )
+  if ( mDepressedKeys.contains( Qt::Key_PageDown ) || mDepressedKeys.contains( Qt::Key_Q ) )
   {
     changed = true;
     cameraPosDiff += - mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
