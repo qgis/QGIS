@@ -129,8 +129,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Returns the points that are on a ray
      *
-     * \param rayOrigin : The origin of the ray in layer coordinates
-     * \param rayDirection : The direction of the ray in layer coordinates
+     * \param ray : The ray in layer coordinates
      * \param maxScreenError : Maximum screen error (as taken from the 3D point cloud layer renderer)
      * \param cameraFov : The field of view of the camera in degrees
      * \param screenSizePx : The size of the screen's viewport in pixels
@@ -157,10 +156,10 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \since QGIS 3.18
      */
-    SIP_PYLIST getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit = 1000 );
+    SIP_PYLIST getPointsOnRay( const QgsRay3D &ray, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit = 1000 );
     % MethodCode
     {
-      QVector<QMap<QString, QVariant>> res = sipCpp->getPointsOnRay( *a0, *a1, a2, a3, a4, a5, a6 );
+      QVector<QMap<QString, QVariant>> res = sipCpp->getPointsOnRay( *a0, a2, a3, a4, a5, a6 );
       sipRes = PyList_New( res.size() );
       for ( int i = 0; i < res.size(); ++i )
       {
