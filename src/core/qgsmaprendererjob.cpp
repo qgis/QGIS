@@ -792,7 +792,7 @@ QImage QgsMapRendererJob::composeImage(
     painter.setOpacity( job.opacity );
 
 #if DEBUG_RENDERING
-    img->save( QString( "/tmp/final_%1.png" ).arg( i ) );
+    img.save( QString( "/tmp/final_%1.png" ).arg( i ) );
     i++;
 #endif
 
@@ -847,9 +847,9 @@ QImage QgsMapRendererJob::layerImageToBeComposed(
   }
   else
   {
-    if ( cache && cache->hasAnyCacheImage( job.layer->id() ) )
+    if ( cache && cache->hasAnyCacheImage( job.layerId ) )
     {
-      return cache->transformedCacheImage( job.layer->id(), settings.mapToPixel() );
+      return cache->transformedCacheImage( job.layerId, settings.mapToPixel() );
     }
     else
       return QImage();

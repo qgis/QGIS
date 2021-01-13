@@ -22,8 +22,8 @@ If triggered, the cache removes the rendered image (and disconnects from the
 layers).
 
 When user pans/zooms the canvas, the cache is also used in rendering period
-for particular layer after first render update and moment layer actually
-partially rendered something in the resulting image
+for particular layers between the first render update and the moment the layer
+actually has partially rendered something in the resulting image.
 
 The class is thread-safe (multiple classes can access the same instance safely).
 
@@ -49,9 +49,10 @@ Invalidates the cache contents, clearing all cached images.
 Initialize cache: sets extent and scale parameters and clears the cache if any
 parameters have changed since last initialization.
 
-Deprecated, use :py:func:`~QgsMapRendererCache.updateParameters` and :py:func:`~QgsMapRendererCache.clear`
-
 :return: flag whether the parameters are the same as last time
+
+.. deprecated:: QGIS 3.18
+   - will be removed in QGIS 4.0. Use the updateParameters() and clear()
 %End
 
     bool updateParameters( const QgsRectangle &extent, const QgsMapToPixel &mtp );

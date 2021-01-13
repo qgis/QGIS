@@ -98,8 +98,8 @@ Returns the render context associated with the renderer.
 
     bool isReadyToCompose() const;
 %Docstring
-Returns whether the renderer already drawn (at
-least partially) some data to resulting image
+Returns whether the renderer has already drawn (at
+least partially) some data
 
 .. versionadded:: 3.18
 %End

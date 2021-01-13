@@ -111,8 +111,8 @@ class CORE_EXPORT QgsMapLayerRenderer
     const QgsRenderContext *renderContext() const SIP_SKIP { return mContext; }
 
     /**
-     * Returns whether the renderer already drawn (at
-     * least partially) some data to resulting image
+     * Returns whether the renderer has already drawn (at
+     * least partially) some data
      *
      * \since QGIS 3.18
      */
