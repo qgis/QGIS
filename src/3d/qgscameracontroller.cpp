@@ -325,7 +325,7 @@ void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
-  if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
+  if ( mCameraNavigationMode == NavigationMode::WalkNavigation )
   {
     onPositionChangedFlyNavigation( mouse );
     return;
@@ -394,7 +394,7 @@ void QgsCameraController::zoom( float factor )
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 {
-  if ( mCameraNavigationMode == QgsCameraController::FlyNavigation )
+  if ( mCameraNavigationMode == QgsCameraController::WalkNavigation )
   {
     float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
     mCameraMovementSpeed += mCameraMovementSpeed * scaling * wheel->angleDelta().y();
@@ -437,11 +437,11 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
   {
     switch ( mCameraNavigationMode )
     {
-      case NavigationMode::FlyNavigation:
+      case NavigationMode::WalkNavigation:
         mCameraNavigationMode = NavigationMode::TerrainBasedNavigation;
         break;
       case NavigationMode::TerrainBasedNavigation:
-        mCameraNavigationMode = NavigationMode::FlyNavigation;
+        mCameraNavigationMode = NavigationMode::WalkNavigation;
         break;
     }
     emit navigationModeHotKeyPressed( mCameraNavigationMode );
@@ -450,7 +450,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
 
   if ( event->key() == Qt::Key_QuoteLeft )
   {
-    if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
+    if ( mCameraNavigationMode == NavigationMode::WalkNavigation )
     {
       mCaptureFpsMouseMovements = !mCaptureFpsMouseMovements;
       if ( mCaptureFpsMouseMovements )
@@ -467,7 +467,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
     }
   }
 
-  if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
+  if ( mCameraNavigationMode == NavigationMode::WalkNavigation )
   {
     if ( event->isAutoRepeat() )
       return;

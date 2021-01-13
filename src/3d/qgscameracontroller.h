@@ -63,11 +63,12 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Q_PROPERTY( Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged )
     Q_PROPERTY( QRect viewport READ viewport WRITE setViewport NOTIFY viewportChanged )
   public:
+
     //! The navigation mode used by the camera
     enum NavigationMode
     {
       TerrainBasedNavigation, //! The default navigation based on the terrain
-      FlyNavigation //! uses WASD keys or arrows to navigate in flying manner
+      WalkNavigation //! Uses WASD keys or arrows to navigate in walking (first person) manner
     };
 
   public:

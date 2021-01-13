@@ -52,6 +52,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   m3DOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) ) ;
 
+  mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QgsCameraController::TerrainBasedNavigation );
+  mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QgsCameraController::WalkNavigation );
+
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
   m3DOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/3DMapConfig/Tab" ), 0 ).toInt() );
@@ -135,7 +138,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   spinCameraFieldOfView->setValue( mMap->fieldOfView() );
   cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( mMap->projectionType() ) );
-  mCameraNavigationMode->setCurrentIndex( mMap->cameraNavigationMode() );
+  mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( mMap->cameraNavigationMode() ) );
   mCameraMovementSpeed->setValue( mMap->cameraMovementSpeed() );
   spinTerrainScale->setValue( mMap->terrainVerticalScale() );
   spinMapResolution->setValue( mMap->mapTileResolution() );
@@ -320,8 +323,8 @@ void Qgs3DMapConfigWidget::apply()
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
   mMap->setProjectionType( cboCameraProjectionType->currentData().value< Qt3DRender::QCameraLens::ProjectionType >() );
-  mMap->setCameraNavigationMode( static_cast<QgsCameraController::NavigationMode>( mCameraNavigationMode->currentIndex() ) );
-  m3DMapCanvas->scene()->cameraController()->setCameraNavigationMode( static_cast<QgsCameraController::NavigationMode>( mCameraNavigationMode->currentIndex() ) );
+  mMap->setCameraNavigationMode( static_cast<QgsCameraController::NavigationMode>( mCameraNavigationModeCombo->currentData().toInt() ) );
+  m3DMapCanvas->scene()->cameraController()->setCameraNavigationMode( mMap->cameraNavigationMode() );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );
   mMap->setMapTileResolution( spinMapResolution->value() );

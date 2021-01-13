@@ -105,8 +105,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     QString cameraNavigationMode = elemCamera.attribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "basic-navigation" ) );
     if ( cameraNavigationMode == QStringLiteral( "terrain-based-navigation" ) )
       mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;
-    else if ( cameraNavigationMode == QStringLiteral( "fly-navigation" ) )
-      mCameraNavigationMode = QgsCameraController::NavigationMode::FlyNavigation;
+    else if ( cameraNavigationMode == QStringLiteral( "walk-navigation" ) )
+      mCameraNavigationMode = QgsCameraController::NavigationMode::WalkNavigation;
     mCameraMovementSpeed = elemCamera.attribute( QStringLiteral( "camera-movement-speed" ), QStringLiteral( "5.0" ) ).toDouble();
   }
 
@@ -306,8 +306,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
     case QgsCameraController::TerrainBasedNavigation:
       elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "terrain-based-navigation" ) );
       break;
-    case QgsCameraController::FlyNavigation:
-      elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "fly-navigation" ) );
+    case QgsCameraController::WalkNavigation:
+      elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "walk-navigation" ) );
       break;
   }
   elemCamera.setAttribute( QStringLiteral( "camera-movement-speed" ), mCameraMovementSpeed );
