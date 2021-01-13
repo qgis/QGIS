@@ -32,7 +32,6 @@
 
 #include "qgseditformconfig.h"
 #include "qgsexpressioncontext.h"
-#include "qgsattributeeditorcontainer.h"
 
 #include "qgis_quick.h"
 #include "qgsquickattributemodel.h"
