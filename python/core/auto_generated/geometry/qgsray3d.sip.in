@@ -22,6 +22,7 @@ A ray is composed of an origin point (the start of the ray) and a direction vect
 #include "qgsray3d.h"
 %End
   public:
+
     QgsRay3D( const QVector3D &origin, const QVector3D &direction );
 %Docstring
 Constructor
