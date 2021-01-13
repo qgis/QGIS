@@ -202,13 +202,6 @@ endif()
 # 3D module
 if (WITH_3D)
   include_directories(
-    ${CMAKE_SOURCE_DIR}/src/3d
-    ${CMAKE_SOURCE_DIR}/src/3d/chunks
-    ${CMAKE_SOURCE_DIR}/src/3d/materials
-    ${CMAKE_SOURCE_DIR}/src/3d/processing
-    ${CMAKE_SOURCE_DIR}/src/3d/symbols
-    ${CMAKE_SOURCE_DIR}/src/3d/terrain
-    ${CMAKE_BINARY_DIR}/src/3d
     ${QT5_3DEXTRA_INCLUDE_DIR}
   )
   set(PY_MODULES ${PY_MODULES} 3d)

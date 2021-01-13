@@ -45,8 +45,6 @@ include_directories(
 
 if (WITH_3D)
   include_directories(
-    ${CMAKE_SOURCE_DIR}/src/3d/processing
-    ${CMAKE_BINARY_DIR}/src/3d
   )
   include_directories(SYSTEM
     ${QT5_3DEXTRA_INCLUDE_DIR}
