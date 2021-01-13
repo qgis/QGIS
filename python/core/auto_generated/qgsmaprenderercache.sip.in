@@ -117,9 +117,7 @@ The ``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which
 the image is a render of.
 Returns a null image if it is not cached.
 
-.. seealso:: :py:func:`setCacheImage`
-
-.. seealso:: :py:func:`hasCacheImageWithAnyParameters`
+.. seealso:: :py:func:`hasAnyCacheImage`
 
 .. versionadded:: 3.18
 %End

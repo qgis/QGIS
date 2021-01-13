@@ -121,8 +121,8 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * The \a cacheKey usually matches the QgsMapLayer::id() which
      * the image is a render of.
      * Returns a null image if it is not cached.
-     * \see setCacheImage()
-     * \see hasCacheImageWithAnyParameters()
+     *
+     * \see hasAnyCacheImage()
      *
      * \since QGIS 3.18
      */
