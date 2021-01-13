@@ -996,6 +996,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the canvas is about to be rendered.
     void renderStarting();
 
+    /**
+     * Emitted when the pending map refresh has been canceled
+     * \since QGIS 3.18
+     */
+    void mapRefreshCanceled();
+
     //! Emitted when a new set of layers has been received
     void layersChanged();
 
