@@ -63,8 +63,6 @@ ENDIF ()
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/odbccpp/src
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
 

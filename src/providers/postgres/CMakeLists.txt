@@ -36,8 +36,6 @@ set(PG_HDRS
 
 include_directories(
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
 

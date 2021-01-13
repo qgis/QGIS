@@ -33,7 +33,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/server/services/wmts
   ${CMAKE_SOURCE_DIR}/src/server/services/wms
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server

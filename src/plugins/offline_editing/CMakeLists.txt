@@ -40,8 +40,6 @@ include_directories(SYSTEM
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 

@@ -101,7 +101,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/analysis
 )
@@ -109,7 +108,6 @@ include_directories(
 if (WITH_GUI)
   include_directories(
 
-    ${CMAKE_BINARY_DIR}/src/gui
   )
 endif()
 

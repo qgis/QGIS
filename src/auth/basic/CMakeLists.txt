@@ -11,7 +11,6 @@ set(AUTH_BASIC_HDRS
 set(AUTH_BASIC_UIS qgsauthbasicedit.ui)
 
 include_directories (
-  ${CMAKE_BINARY_DIR}/src/gui
 )
 
 include_directories (

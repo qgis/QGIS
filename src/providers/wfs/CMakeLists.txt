@@ -44,7 +44,6 @@ endif()
 
 include_directories (
 
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
 

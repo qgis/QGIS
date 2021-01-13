@@ -15,8 +15,6 @@ include_directories (
   ../../core/auth
   ../../core/geometry
   ../../core/metadata
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
 )
 include_directories (SYSTEM
   ${QCA_INCLUDE_DIR}

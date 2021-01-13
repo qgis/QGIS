@@ -11,7 +11,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/native
 
   ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/ui/auth
   ${CMAKE_BINARY_DIR}/src/native

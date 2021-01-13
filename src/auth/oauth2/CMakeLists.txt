@@ -82,8 +82,6 @@ include_directories (SYSTEM
 )
 include_directories (
   ${CMAKE_SOURCE_DIR}/src/auth/oauth2
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/ui/auth
   ${CMAKE_BINARY_DIR}/src/auth/oauth2

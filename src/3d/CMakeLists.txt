@@ -203,7 +203,6 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/symbols
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/3d
 )
 

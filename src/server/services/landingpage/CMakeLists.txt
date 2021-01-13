@@ -23,7 +23,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/server/services
   ${CMAKE_SOURCE_DIR}/src/server/services/landingpage
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/server
 
