@@ -454,6 +454,8 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
     if ( event->isAutoRepeat() )
       return;
 
+    event->setAccepted( true );
+
     mDepressedKeys.insert( event->key() );
     onKeyPressedFlyNavigation();
     return;
@@ -597,14 +599,7 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     moveCameraPositionBy( 5.0 * mCameraMovementSpeed * cameraPosDiff );
   }
 
-  if ( mCaptureFpsMouseMovements )
-  {
-    QCursor::setPos( QCursor::pos().x() - dx, QCursor::pos().y() - dy );
-  }
-  else
-  {
-    mMousePos = QPoint( mouse->x(), mouse->y() );
-  }
+  mMousePos = QPoint( mouse->x(), mouse->y() );
 }
 
 void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
