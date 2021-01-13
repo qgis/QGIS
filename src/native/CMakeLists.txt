@@ -82,22 +82,22 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
   )
 endif()
 
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-if(MSVC)
-  include_directories(SYSTEM
-      ../../external/wintoast/src
-  )
-endif()
-
 #############################################################
 # qgis_native library
 
 add_library(qgis_native SHARED ${QGIS_NATIVE_SRCS} ${QGIS_NATIVE_HDRS})
 set_property(TARGET qgis_native PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+target_include_directories(qgis_native PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+if(MSVC)
+  taget_include_directories(qgis_native SYSTEM PUBLIC
+      ../../external/wintoast/src
+  )
+endif()
 
 GENERATE_EXPORT_HEADER(
    qgis_native

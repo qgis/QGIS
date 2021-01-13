@@ -82,27 +82,20 @@ if (WITH_SERVER_PLUGINS)
   )
 endif()
 
-include_directories(SYSTEM
-  ${FCGI_INCLUDE_DIR}
-  ${POSTGRES_INCLUDE_DIR}
-)
-include_directories(
-  ${CMAKE_CURRENT_BINARY_DIR}
-)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
-  ${CMAKE_SOURCE_DIR}/src/python
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_BINARY_DIR}/src/python
-  ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_BINARY_DIR}/src/server
 )
 
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
+
+target_include_directories(qgis_server SYSTEM PRIVATE
+  ${FCGI_INCLUDE_DIR}
+)
+
+target_include_directories(qgis_server PUBLIC
+  ${CMAKE_BINARY_DIR}/src/server
+)
 
 GENERATE_EXPORT_HEADER(
   qgis_server

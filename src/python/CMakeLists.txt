@@ -1,16 +1,14 @@
 set(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
+add_library (qgispython SHARED ${QGISPYTHON_SRCS})
 
-  ${CMAKE_BINARY_DIR}/src/core
+target_include_directories(qgispython PUBLIC
+  ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/python
 )
-include_directories(SYSTEM
+target_include_directories(qgispython SYSTEM PRIVATE
   ${PYTHON_INCLUDE_PATH}
 )
-
-add_library (qgispython SHARED ${QGISPYTHON_SRCS})
 
 set_target_properties(qgispython PROPERTIES
   CLEAN_DIRECT_OUTPUT 1

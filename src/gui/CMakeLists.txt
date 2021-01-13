@@ -1329,50 +1329,7 @@ if(ENABLE_MODELTEST)
   include_directories(../../tests/qt_modeltest)
 endif()
 
-include_directories(SYSTEM
-  ${QT_QTUITOOLS_INCLUDE_DIR}
-)
-include_directories(
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology
-  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/src/gui/devtools
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-  ${CMAKE_SOURCE_DIR}/src/gui/effects
-  ${CMAKE_SOURCE_DIR}/src/gui/labeling
-  ${CMAKE_SOURCE_DIR}/src/gui/layertree
-  ${CMAKE_SOURCE_DIR}/src/gui/layout
-  ${CMAKE_SOURCE_DIR}/src/gui/mesh
-  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
-  ${CMAKE_SOURCE_DIR}/src/gui/ogr
-  ${CMAKE_SOURCE_DIR}/src/gui/processing
-  ${CMAKE_SOURCE_DIR}/src/gui/processing/models
-  ${CMAKE_SOURCE_DIR}/src/gui/providers
-  ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
-  ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
-  ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/gui/raster
-  ${CMAKE_SOURCE_DIR}/src/gui/vector
-  ${CMAKE_SOURCE_DIR}/src/gui/vectortile
-  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
-  ${CMAKE_SOURCE_DIR}/src/native
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_BINARY_DIR}/src/gui
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_BINARY_DIR}/src/native
-)
-
 if (WITH_EPT)
-  include_directories(
-    ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
-  )
-
   set(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
     providers/ept/qgseptdataitemguiprovider.cpp
     providers/ept/qgseptproviderguimetadata.cpp
@@ -1410,6 +1367,51 @@ target_include_directories(qgis_gui SYSTEM PUBLIC
   ${QWT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
 )
+
+target_include_directories(qgis_gui SYSTEM PRIVATE
+  ${QT_QTUITOOLS_INCLUDE_DIR}
+)
+
+target_include_directories(qgis_gui PUBLIC
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology
+  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/callouts
+  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/gui/labeling
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui/layout
+  ${CMAKE_SOURCE_DIR}/src/gui/locator
+  ${CMAKE_SOURCE_DIR}/src/gui/mesh
+  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
+  ${CMAKE_SOURCE_DIR}/src/gui/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/processing
+  ${CMAKE_SOURCE_DIR}/src/gui/processing/models
+  ${CMAKE_SOURCE_DIR}/src/gui/providers
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/vector
+  ${CMAKE_SOURCE_DIR}/src/gui/vectortile
+  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
+)
+
+if (WITH_EPT)
+  target_include_directories(qgis_gui PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
+  )
+endif()
+
 
 GENERATE_EXPORT_HEADER(
    qgis_gui
@@ -1471,10 +1473,6 @@ target_link_libraries(qgis_gui
 )
 
 if (FORCE_STATIC_PROVIDERS)
-  include_directories(
-    ${CMAKE_SOURCE_DIR}/src/providers/wms
-    ${CMAKE_SOURCE_DIR}/src/providers/postgres
-  )
   target_link_libraries(qgis_gui
     wmsprovider_gui_a
     postgresprovider_gui_a

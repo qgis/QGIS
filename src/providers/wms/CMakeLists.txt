@@ -19,19 +19,17 @@ if (WITH_GUI)
   )
 endif()
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_BINARY_DIR}/src/gui
-)
 
 # static library
 add_library(wmsprovider_a STATIC ${WMS_SRCS})
+
+if (WITH_GUI)
+  add_library(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
+
+  add_dependencies(wmsprovider_a ui)
+  add_dependencies(wmsprovider_gui_a ui)
+endif()
+
 target_link_libraries(wmsprovider_a
   qgis_core
   ${Qt5Xml_LIBRARIES}
@@ -44,8 +42,8 @@ target_link_libraries(wmsprovider_a
 target_compile_definitions(wmsprovider_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  add_library(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
   target_link_libraries(wmsprovider_gui_a
+    qgis_gui
     wmsprovider_a
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
@@ -57,8 +55,6 @@ if (WITH_GUI)
     ${Qt5Widgets_LIBRARIES}
   )
   target_compile_definitions(wmsprovider_gui_a PRIVATE "-DQT_NO_FOREACH")
-  add_dependencies(wmsprovider_gui_a ui)
-  add_dependencies(wmsprovider_a ui)
 endif()
 
 if (FORCE_STATIC_PROVIDERS)

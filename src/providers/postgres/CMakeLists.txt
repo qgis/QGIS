@@ -35,9 +35,6 @@ set(PG_HDRS
 # Build
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
@@ -77,6 +74,7 @@ target_link_libraries (postgresprovider_a
 if (WITH_GUI)
   add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS})
   target_link_libraries(postgresprovider_gui_a
+    qgis_gui
     postgresprovider_a
     ${POSTGRES_LIBRARY}
     ${Qt5Xml_LIBRARIES}
@@ -116,6 +114,13 @@ target_link_libraries (postgresrasterprovider_a
     ${Qt5Gui_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
 )
+
+if (WITH_GUI)
+  target_link_libraries (postgresrasterprovider_a
+    qgis_gui
+  )
+  add_dependencies(postgresrasterprovider_a ui)
+endif()
 
 #################################################################
 

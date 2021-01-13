@@ -4,16 +4,6 @@
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/ui
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
-  ${CMAKE_SOURCE_DIR}/src/gui/labeling
-  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology
-  ${CMAKE_SOURCE_DIR}/src/gui/raster
-  ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/attributeformconfig
@@ -21,8 +11,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/test
-  ${CMAKE_SOURCE_DIR}/src/analysis
-  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/external/nmea

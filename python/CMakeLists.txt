@@ -98,45 +98,6 @@ if (WITH_GUI)
 endif()
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/3d
-  ${CMAKE_SOURCE_DIR}/src/core/annotations
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/callouts
-  ${CMAKE_SOURCE_DIR}/src/core/classification
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/pal
-  ${CMAKE_SOURCE_DIR}/src/core/diagram
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
-  ${CMAKE_SOURCE_DIR}/src/core/dxf
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/geocms
-  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
-  ${CMAKE_SOURCE_DIR}/src/core/geocoding
-  ${CMAKE_SOURCE_DIR}/src/core/gps
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/locator
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/mesh
-  ${CMAKE_SOURCE_DIR}/src/core/network
-  ${CMAKE_SOURCE_DIR}/src/core/numericformats
-  ${CMAKE_SOURCE_DIR}/src/core/processing
-  ${CMAKE_SOURCE_DIR}/src/core/processing/models
-  ${CMAKE_SOURCE_DIR}/src/core/providers
-  ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
-  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/core/project
-  ${CMAKE_SOURCE_DIR}/src/core/providers/memory
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/scalebar
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/core/validity
-  ${CMAKE_SOURCE_DIR}/src/core/vector
-  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
@@ -149,28 +110,6 @@ include_directories(
 
 if (WITH_GUI)
   include_directories(
-    ${CMAKE_SOURCE_DIR}/src/gui
-    ${CMAKE_SOURCE_DIR}/src/gui/callouts
-    ${CMAKE_SOURCE_DIR}/src/gui/symbology
-    ${CMAKE_SOURCE_DIR}/src/gui/raster
-    ${CMAKE_SOURCE_DIR}/src/gui/attributetable
-    ${CMAKE_SOURCE_DIR}/src/gui/auth
-    ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-    ${CMAKE_SOURCE_DIR}/src/gui/devtools
-    ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-    ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-    ${CMAKE_SOURCE_DIR}/src/gui/effects
-    ${CMAKE_SOURCE_DIR}/src/gui/labeling
-    ${CMAKE_SOURCE_DIR}/src/gui/layertree
-    ${CMAKE_SOURCE_DIR}/src/gui/layout
-    ${CMAKE_SOURCE_DIR}/src/gui/mesh
-    ${CMAKE_SOURCE_DIR}/src/gui/locator
-    ${CMAKE_SOURCE_DIR}/src/gui/numericformats
-    ${CMAKE_SOURCE_DIR}/src/gui/processing
-    ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
-    ${CMAKE_SOURCE_DIR}/src/gui/processing/models
-    ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
-    ${CMAKE_SOURCE_DIR}/src/gui/vector
 
     ${CMAKE_BINARY_DIR}/src/gui
   )
@@ -316,14 +255,6 @@ endif()
 # additional analysis includes
 if(WITH_ANALYSIS)
   include_directories(BEFORE
-    ${CMAKE_SOURCE_DIR}/src/analysis
-    ${CMAKE_SOURCE_DIR}/src/analysis/processing
-    ${CMAKE_SOURCE_DIR}/src/analysis/vector
-    ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
-    ${CMAKE_SOURCE_DIR}/src/analysis/mesh
-    ${CMAKE_SOURCE_DIR}/src/analysis/raster
-    ${CMAKE_SOURCE_DIR}/src/analysis/network
-    ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
 
     ${CMAKE_BINARY_DIR}/src/analysis/processing
     ${CMAKE_BINARY_DIR}/src/analysis/vector
