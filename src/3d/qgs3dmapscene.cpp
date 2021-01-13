@@ -80,6 +80,7 @@
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerchunkloader_p.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -1102,45 +1103,14 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   }
 }
 
-void Qgs3DMapScene::identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QgsRay3D &ray )
+QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLayer *layer )
 {
-  QgsVector3D originMapCoords = mMap.worldToMapCoordinates( ray.origin() );
-  QgsVector3D pointMapCoords = mMap.worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
-  QgsVector3D directionMapCoords = pointMapCoords - originMapCoords;
-  directionMapCoords.normalize();
-
-  QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
-  QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
-
-  QRect rect = mCameraController->viewport();
-  int screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct? (see _sceneState)
-  double fov = mCameraController->camera()->fieldOfView();
-
-  for ( QgsMapLayer *layer : mMap.layers() )
+  QVector<const QgsChunkNode *> chunks;
+  if ( !mLayerEntities.contains( layer ) ) return chunks;
+  if ( QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( mLayerEntities[ layer ] ) )
   {
-    if ( layer->type() != QgsMapLayerType::PointCloudLayer )
-      continue;
-    if ( QgsPointCloudLayer *pc = qobject_cast<QgsPointCloudLayer *>( layer ) )
-    {
-      QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( pc->renderer3D() );
-      const QgsPointCloud3DSymbol *symbol = renderer->symbol();
-      // Symbol can be null in case of no rendering enabled
-      if ( !symbol )
-        continue;
-      double maxScreenError = renderer->maximumScreenError();
-      double pointSize = symbol->pointSize();
-      double angle = pointSize / screenSizePx * mCameraController->camera()->fieldOfView();
-
-      // adjust ray to elevation properties
-      QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast<QgsPointCloudLayerElevationProperties *>( pc->elevationProperties() );
-      QVector3D adjutedRayOrigin = QVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() -  elevationProps->zOffset() ) / elevationProps->zScale() );
-      QVector3D adjutedRayDirection = QVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / elevationProps->zScale() );
-      adjutedRayDirection.normalize();
-
-      QgsRay3D ray( adjutedRayOrigin, adjutedRayDirection );
-
-      QVector<QVariantMap> points = pc->dataProvider()->getPointsOnRay( ray, maxScreenError, fov, screenSizePx, angle );
-      selectedPoints.append( qMakePair( layer, points ) );
-    }
+    for ( QgsChunkNode *n : c->activeNodes() )
+      chunks.push_back( n );
   }
+  return chunks;
 }

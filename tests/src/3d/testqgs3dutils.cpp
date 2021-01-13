@@ -186,7 +186,7 @@ void TestQgs3DUtils::testQgsRay3D()
 
     QVERIFY( qFuzzyCompare( ray.projectedPoint( p2 ), p ) );
 
-    float angle = qRadiansToDegrees( std::atan2( ( p2 - ray.origin() ).length(), ( p - ray.origin() ).length() ) );
+    float angle = qRadiansToDegrees( std::atan2( ( p - ray.origin() ).length(), ( p2 - ray.origin() ).length() ) );
 
     QVERIFY( qFuzzyCompare( ( float )ray.angleToPoint( p2 ), angle ) );
   }
