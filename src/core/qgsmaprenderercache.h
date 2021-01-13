@@ -36,8 +36,8 @@
  * layers).
  *
  * When user pans/zooms the canvas, the cache is also used in rendering period
- * for particular layer after first render update and moment layer actually
- * partially rendered something in the resulting image
+ * for particular layers between the first render update and the moment the layer
+ * actually has partially rendered something in the resulting image.
  *
  * The class is thread-safe (multiple classes can access the same instance safely).
  *
@@ -60,9 +60,8 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * Initialize cache: sets extent and scale parameters and clears the cache if any
      * parameters have changed since last initialization.
      *
-     * Deprecated, use updateParameters() and clear()
-     *
      * \returns flag whether the parameters are the same as last time
+     * \deprecated since QGIS 3.18 - will be removed in QGIS 4.0. Use the updateParameters() and clear()
      */
     bool Q_DECL_DEPRECATED init( const QgsRectangle &extent, double scale ) SIP_DEPRECATED;
 
