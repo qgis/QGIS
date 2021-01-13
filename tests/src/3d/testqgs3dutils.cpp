@@ -104,17 +104,20 @@ void TestQgs3DUtils::testRayFromScreenPoint()
     {
       QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 50, 50 ), QSize( 100, 100 ), &camera );
       QgsRay3D ray2( QVector3D( 8.99999904632568, 14.9999980926514, 29.9999980926514 ), QVector3D( -0.25916051864624, -0.431934207677841, -0.863868415355682 ) );
-      QVERIFY( ray1 == ray2 );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
     }
     {
       QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 100, 100 ), &camera );
       QgsRay3D ray2( QVector3D( 8.99999904632568, 14.9999980926514, 29.9999980926514 ), QVector3D( -0.810001313686371, -0.0428109727799892, -0.584863305091858 ) );
-      QVERIFY( ray1 == ray2 );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
     }
     {
       QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 100, 100 ), QSize( 100, 100 ), &camera );
       QgsRay3D ray2( QVector3D( 8.99999904632568, 14.9999980926514, 29.9999980926514 ), QVector3D( 0.429731547832489, -0.590972006320953, -0.682702660560608 ) );
-      QVERIFY( ray1 == ray2 );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
     }
   }
 
@@ -130,17 +133,20 @@ void TestQgs3DUtils::testRayFromScreenPoint()
     {
       QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 500 ), QSize( 1000, 1000 ), &camera );
       QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.70710676908493, -0.70710676908493 ) );
-      QVERIFY( ray1 == ray2 );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
     }
     {
       QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 1000, 1000 ), &camera );
       QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( -0.70710676908493, 0.683012664318085, -0.183012709021568 ) );
-      QVERIFY( ray1 == ray2 );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
     }
     {
       QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 1000 ), QSize( 1000, 1000 ), &camera );
       QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.258819073438644, -0.965925812721252 ) );
-      QVERIFY( ray1 == ray2 );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
     }
   }
 }
@@ -149,48 +155,61 @@ void TestQgs3DUtils::testQgsBox3DDistanceTo()
 {
   {
     QgsBox3d box( -1, -1, -1, 1, 1, 1 );
-    QVERIFY( box.distanceTo( QVector3D( 0, 0, 0 ) ) == 0.0 );
-    QVERIFY( box.distanceTo( QVector3D( 2, 2, 2 ) ) == qSqrt( 3.0 ) );
+    QCOMPARE( box.distanceTo( QVector3D( 0, 0, 0 ) ), 0.0 );
+    QCOMPARE( box.distanceTo( QVector3D( 2, 2, 2 ) ), qSqrt( 3.0 ) );
   }
   {
     QgsBox3d box( 1, 2, 1, 4, 3, 3 );
-    QVERIFY( box.distanceTo( QVector3D( 1, 2, 1 ) ) == 0.0 );
-    QVERIFY( box.distanceTo( QVector3D( 0, 0, 0 ) ) == qSqrt( 6.0 ) );
+    QCOMPARE( box.distanceTo( QVector3D( 1, 2, 1 ) ), 0.0 );
+    QCOMPARE( box.distanceTo( QVector3D( 0, 0, 0 ) ), qSqrt( 6.0 ) );
   }
 }
 
 void TestQgs3DUtils::testQgsRay3D()
 {
-  QgsRay3D ray( QVector3D( 0, 0, 0 ), QVector3D( 1, 1, 1 ) );
-  float t = 1.0f + ( float )( rand() % 1000 ) / 1000.0f;
-  QVector3D p1 = ray.origin() + t * ray.direction();
-  QVector3D p2 = ray.origin() - t * ray.direction();
-  // point already on the ray
-  QVERIFY( ray.projectedPoint( p1 ) == p1 );
-  QVERIFY( ray.projectedPoint( p2 ) == p2 );
-
-  // t >= 0 then the point is in front of the ray
-  QVERIFY( ray.isInFront( p1 ) );
-  // t < 0 then the point is in front of the ray
-  QVERIFY( !ray.isInFront( p2 ) );
-
-  for ( int i = 0; i < 8; ++i )
   {
-    // random vector
-    QVector3D n = QVector3D( 1.0f + ( float )( rand() % 1000 ) / 1000.0f, 1.0f + ( float )( rand() % 1000 ) / 1000.0f, 1.0f + ( float )( rand() % 1000 ) / 1000.0f ).normalized();
-    // random point on the ray
-    float t = 1.0f + ( float )( rand() % 1000 ) / 1000.0f;
-    QVector3D p = ray.origin() + t * ray.direction();
-    // a random point that projects to p
-    QVector3D p2 = p + ( 1.0f + ( float )( rand() % 1000 ) / 1000.0f ) * QVector3D::crossProduct( ray.direction(), n );
+    QgsRay3D ray( QVector3D( 0, 0, 0 ), QVector3D( 1, 1, 1 ) );
+    QVector3D p1( 0.5f, 0.5f, 0.5f );
+    QVector3D p2( -0.5f, -0.5f, -0.5f );
+    // points are already on the ray
+    QVector3D projP1 = ray.projectedPoint( p1 );
+    QVector3D projP2 = ray.projectedPoint( p2 );
 
-    QVERIFY( qFuzzyCompare( ray.projectedPoint( p2 ), p ) );
+    QCOMPARE( p1.x(), projP1.x() );
+    QCOMPARE( p1.y(), projP1.y() );
+    QCOMPARE( p1.z(), projP1.z() );
 
-    float angle = qRadiansToDegrees( std::atan2( ( p - ray.origin() ).length(), ( p2 - ray.origin() ).length() ) );
+    QCOMPARE( p2.x(), projP2.x() );
+    QCOMPARE( p2.y(), projP2.y() );
+    QCOMPARE( p2.z(), projP2.z() );
 
-    QVERIFY( qFuzzyCompare( ( float )ray.angleToPoint( p2 ), angle ) );
+    QVERIFY( qFuzzyIsNull( ( float )ray.angleToPoint( p1 ) ) );
+    QVERIFY( qFuzzyIsNull( ( float )ray.angleToPoint( p2 ) ) );
+
+    QVERIFY( ray.isInFront( p1 ) );
+    QVERIFY( !ray.isInFront( p2 ) );
   }
 
+  {
+    QgsRay3D ray( QVector3D( 0, 0, 0 ), QVector3D( 1, 1, 1 ) );
+    QVector3D p1( 0, 1, 1 );
+    QVector3D p2( 0, -1, -1 );
+    QVector3D expectedProjP1( 0.666667, 0.666667f, 0.666667 );
+    QVector3D expectedProjP2( -0.666667, -0.666667f, -0.666667f );
+
+    QVector3D projP1 = ray.projectedPoint( p1 );
+    QCOMPARE( projP1.x(), expectedProjP1.x() );
+    QCOMPARE( projP1.y(), expectedProjP1.y() );
+    QCOMPARE( projP1.z(), expectedProjP1.z() );
+
+    QVector3D projP2 = ray.projectedPoint( p2 );
+    QCOMPARE( projP2.x(), expectedProjP2.x() );
+    QCOMPARE( projP2.y(), expectedProjP2.y() );
+    QCOMPARE( projP2.z(), expectedProjP2.z() );
+
+    QVERIFY( ray.isInFront( p1 ) );
+    QVERIFY( !ray.isInFront( p2 ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgs3DUtils )

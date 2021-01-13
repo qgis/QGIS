@@ -61,16 +61,11 @@ class CORE_EXPORT QgsRay3D
      */
     void setDirection( const QVector3D direction );
 
-    //! Comparison operator
-    bool operator==( const QgsRay3D &r );
-
     /**
      * Returns the projection of the point on the ray
      * (which is the closest point of the ray to \a point)
      */
     QVector3D projectedPoint( const QVector3D &point ) const;
-    //! Checks whether the ray intersects with \a box
-    bool intersectsWith( const QgsBox3d &box ) const;
     //! Checks whether the point is in front of the ray
     bool isInFront( const QVector3D &point ) const;
     //! Returns the angle between the ray and the vector from the ray's origin and the point \a point

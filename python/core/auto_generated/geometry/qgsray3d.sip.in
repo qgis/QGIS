@@ -62,16 +62,10 @@ Sets the direction of the ray
 .. seealso:: :py:func:`direction`
 %End
 
-    bool operator==( const QgsRay3D &r );
-
     QVector3D projectedPoint( const QVector3D &point ) const;
 %Docstring
 Returns the projection of the point on the ray
 (which is the closest point of the ray to ``point``)
-%End
-    bool intersectsWith( const QgsBox3d &box ) const;
-%Docstring
-Checks whether the ray intersects with ``box``
 %End
     bool isInFront( const QVector3D &point ) const;
 %Docstring
