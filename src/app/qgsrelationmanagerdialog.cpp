@@ -148,15 +148,15 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   mRelationsTree->setSortingEnabled( true );
 }
 
-void QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelation &relation )
+void QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelation &polyRel )
 {
-  if ( ! relation.isValid() )
+  if ( ! polyRel.isValid() )
     return;
 
   QString referencingFields;
   QString referencedFields;
 
-  for ( int i = 0; i < relation.fieldPairs().count(); i++ )
+  for ( int i = 0; i < polyRel.fieldPairs().count(); i++ )
   {
     if ( i != 0 )
     {
@@ -164,8 +164,8 @@ void QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelat
       referencedFields += QStringLiteral( ", " );
     }
 
-    referencingFields += relation.fieldPairs().at( i ).referencingField();
-    referencedFields += relation.fieldPairs().at( i ).referencedField();
+    referencingFields += polyRel.fieldPairs().at( i ).referencingField();
+    referencedFields += polyRel.fieldPairs().at( i ).referencedField();
   }
 
   mRelationsTree->setSortingEnabled( false );
@@ -177,15 +177,18 @@ void QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelat
   // Save relation in first column's item
   item->setExpanded( true );
   item->setFlags( item->flags() | Qt::ItemIsEditable );
-  item->setData( 0, Qt::UserRole, QVariant::fromValue<QgsPolymorphicRelation>( relation ) );
-  item->setText( 0, relation.name() );
-  item->setText( 1, relation.referencingLayer()->name() );
+  item->setData( 0, Qt::UserRole, QVariant::fromValue<QgsPolymorphicRelation>( polyRel ) );
+  item->setText( 0, polyRel.name() );
+  item->setText( 1, polyRel.referencingLayer()->name() );
   item->setText( 2, referencedFields );
-  item->setText( 3, QStringLiteral( "as in \"%1\".\"%2\"" ).arg( relation.referencingLayer()->name(), relation.referencedLayerField() ) );
+  item->setText( 3, QStringLiteral( "as in \"%1\".\"%2\"" ).arg( polyRel.referencingLayer()->name(), polyRel.referencedLayerField() ) );
   item->setText( 4, referencingFields );
-  item->setText( 5, relation.id() );
+  item->setText( 5, polyRel.id() );
+  item->setText( 6, polyRel.strength() == QgsRelation::RelationStrength::Composition
+                 ? QStringLiteral( "Composition" )
+                 : QStringLiteral( "Association" ) );
 
-  const QList<QgsRelation> generatedRelations = relation.generateRelations();
+  const QList<QgsRelation> generatedRelations = polyRel.generateRelations();
   for ( const QgsRelation &generatedRelation : generatedRelations )
   {
     if ( !generatedRelation.isValid() )
@@ -252,6 +255,7 @@ void QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered()
     relation.setReferencedLayerField( addDlg.referencedLayerField() );
     relation.setReferencedLayerExpression( addDlg.referencedLayerExpression() );
     relation.setReferencedLayerIds( addDlg.referencedLayerIds() );
+    relation.setRelationStrength( addDlg.relationStrength() );
 
     const auto references = addDlg.fieldPairs();
     for ( const auto &reference : references )
@@ -285,6 +289,7 @@ void QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered()
     relation.setReferencedLayerField( addDlg.referencedLayerField() );
     relation.setReferencedLayerExpression( addDlg.referencedLayerExpression() );
     relation.setReferencedLayerIds( addDlg.referencedLayerIds() );
+    relation.setRelationStrength( addDlg.relationStrength() );
 
     const auto references = addDlg.fieldPairs();
     for ( const auto &reference : references )

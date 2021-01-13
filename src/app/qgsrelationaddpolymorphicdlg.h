@@ -79,6 +79,11 @@ class APP_EXPORT QgsRelationAddPolymorphicDlg : public QDialog, private Ui::QgsR
     QStringList referencedLayerIds();
 
     /**
+      * Return the relation strength for the generated normal relations
+      */
+    QgsRelation::RelationStrength relationStrength();
+
+    /**
      * Sets the values of form fields in the dialog with the values of the passed \a polyRel
      */
     void setPolymorphicRelation( const QgsPolymorphicRelation polyRel );

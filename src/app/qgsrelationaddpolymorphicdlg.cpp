@@ -57,6 +57,12 @@ QgsRelationAddPolymorphicDlg::QgsRelationAddPolymorphicDlg( QWidget *parent )
     mReferencedLayersComboBox->addItem( vl->name(), vl->id() );
   }
 
+  mRelationStrengthComboBox->addItem( tr( "Association" ), QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
+  mRelationStrengthComboBox->addItem( tr( "Composition" ), QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
+  mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will be duplicated too.\n"
+                                         "Duplications are made by the feature duplication action.\n"
+                                         "The default actions are activated in the Action section of the layer properties." ) );
+
   addFieldsRow();
   updateTypeConfigWidget();
   updateDialogButtons();
@@ -66,7 +72,8 @@ QgsRelationAddPolymorphicDlg::QgsRelationAddPolymorphicDlg( QWidget *parent )
   connect( mFieldsMappingAddButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDlg::addFieldsRow );
   connect( mFieldsMappingRemoveButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDlg::removeFieldsRow );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDlg::updateDialogButtons );
-//  connect( mReferencedLayerExpressionWidget, &QgsFieldExpressionWidget::fieldChanged, this, &QgsRelationAddPolymorphicDlg::updateDialogButtons );
+  connect( mRelationStrengthComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { Q_UNUSED( index ); updateDialogButtons(); } );
+  connect( mReferencedLayerExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsRelationAddPolymorphicDlg::updateDialogButtons );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDlg::updateChildRelationsComboBox );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDlg::updateReferencingFieldsComboBoxes );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDlg::updateReferencedLayerFieldComboBox );
@@ -79,6 +86,7 @@ void QgsRelationAddPolymorphicDlg::setPolymorphicRelation( const QgsPolymorphicR
   mReferencedLayerFieldComboBox->setLayer( polyRel.referencingLayer() );
   mReferencedLayerFieldComboBox->setField( polyRel.referencedLayerField() );
   mReferencedLayerExpressionWidget->setExpression( polyRel.referencedLayerExpression() );
+  mRelationStrengthComboBox->setCurrentIndex( mRelationStrengthComboBox->findData( polyRel.strength() ) );
 
   int index = 0;
   const QList<QgsRelation::FieldPair> fieldPairs = polyRel.fieldPairs();
@@ -201,6 +209,11 @@ QString QgsRelationAddPolymorphicDlg::relationName()
 {
   QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
   return tr( "Polymorphic relations for \"%1\"" ).arg( vl ? vl->name() : QStringLiteral( "<NO LAYER>" ) );
+}
+
+QgsRelation::RelationStrength QgsRelationAddPolymorphicDlg::relationStrength()
+{
+  return mRelationStrengthComboBox->currentData().value<QgsRelation::RelationStrength>();
 }
 
 void QgsRelationAddPolymorphicDlg::updateDialogButtons()

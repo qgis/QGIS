@@ -14,6 +14,20 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="1,2,0">
+   <item row="1" column="0">
+    <widget class="QLabel" name="mReferencingLayerLabel">
+     <property name="text">
+      <string>Referencing layer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="mReferencedLayerFieldLabel">
      <property name="text">
@@ -28,17 +42,27 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="1" colspan="2">
-    <widget class="QgsCheckableComboBox" name="mReferencedLayersComboBox"/>
-   </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QLabel" name="mFieldsMappingLabel">
+   <item row="10" column="0">
+    <widget class="QLabel" name="mReferencedLayersLabel">
      <property name="text">
-      <string>Fields mapping</string>
+      <string>Referenced layers</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="2">
+   <item row="1" column="1" colspan="2">
+    <widget class="QgsMapLayerComboBox" name="mReferencingLayerComboBox"/>
+   </item>
+   <item row="11" column="0" colspan="3">
+    <widget class="QLabel" name="mPolymorphicRelationHelpLabel">
+     <property name="text">
+      <string>Polymorphic relations are for advanced usage where a set of standard relations have the same referencing layer but the referenced layer is calculated from an expression.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2">
     <layout class="QVBoxLayout" name="mFieldsMappingButtonsVBoxLayout">
      <item>
       <widget class="QToolButton" name="mFieldsMappingAddButton">
@@ -77,14 +101,27 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mReferencingLayerLabel">
+   <item row="8" column="0" colspan="2">
+    <widget class="QLabel" name="mFieldsMappingLabel">
      <property name="text">
-      <string>Referencing layer</string>
+      <string>Fields mapping</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="2" column="1" colspan="2">
+    <widget class="QgsFieldComboBox" name="mReferencedLayerFieldComboBox"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mReferencedLayerExpressionLabel">
+     <property name="text">
+      <string>Layer field expression</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1" colspan="2">
+    <widget class="QgsCheckableComboBox" name="mReferencedLayersComboBox"/>
+   </item>
+   <item row="9" column="0" colspan="2">
     <widget class="QTableWidget" name="mFieldsMappingTable">
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
@@ -110,29 +147,6 @@
      </column>
     </widget>
    </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QgsMapLayerComboBox" name="mReferencingLayerComboBox"/>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QgsFieldExpressionWidget" name="mReferencedLayerExpressionWidget" native="true"/>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="mReferencedLayersLabel">
-     <property name="text">
-      <string>Referenced layers</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mReferencedLayerExpressionLabel">
-     <property name="text">
-      <string>Layer field expression</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QgsFieldComboBox" name="mReferencedLayerFieldComboBox"/>
-   </item>
    <item row="0" column="1" colspan="2">
     <widget class="QLineEdit" name="mIdLineEdit">
      <property name="placeholderText">
@@ -140,22 +154,18 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="3">
-    <widget class="QLabel" name="mPolymorphicRelationHelpLabel">
+   <item row="3" column="1" colspan="2">
+    <widget class="QgsFieldExpressionWidget" name="mReferencedLayerExpressionWidget"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="mRelationStrengthLabel">
      <property name="text">
-      <string>Polymorphic relations are for advanced usage where a set of standard relations have the same referencing layer but the referenced layer is calculated from an expression.</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+      <string>Relationship strength</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+   <item row="6" column="1" colspan="2">
+    <widget class="QComboBox" name="mRelationStrengthComboBox"/>
    </item>
   </layout>
  </widget>
