@@ -430,6 +430,24 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 
 void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
 {
+  bool hasShift = ( event->modifiers() & Qt::ShiftModifier );
+  bool hasCtrl = ( event->modifiers() & Qt::ControlModifier );
+
+  if ( hasCtrl && event->key() == Qt::Key_QuoteLeft )
+  {
+    switch ( mCameraNavigationMode )
+    {
+      case NavigationMode::FlyNavigation:
+        mCameraNavigationMode = NavigationMode::TerrainBasedNavigation;
+        break;
+      case NavigationMode::TerrainBasedNavigation:
+        mCameraNavigationMode = NavigationMode::FlyNavigation;
+        break;
+    }
+    emit navigationModeHotKeyPressed( mCameraNavigationMode );
+    return;
+  }
+
   if ( event->key() == Qt::Key_QuoteLeft )
   {
     if ( mCameraNavigationMode == NavigationMode::FlyNavigation )
@@ -458,9 +476,6 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
     onKeyPressedFlyNavigation();
     return;
   }
-
-  bool hasShift = ( event->modifiers() & Qt::ShiftModifier );
-  bool hasCtrl = ( event->modifiers() & Qt::ControlModifier );
 
   int tx = 0, ty = 0, tElev = 0;
   switch ( event->key() )

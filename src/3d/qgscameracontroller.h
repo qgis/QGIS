@@ -192,6 +192,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void cameraChanged();
     //! Emitted when viewport rectangle has been updated
     void viewportChanged();
+    //! Emitted when the navigation mode is changed using the hotkey ctrl + ~
+    void navigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
 
   private slots:
     void onPositionChanged( Qt3DInput::QMouseEvent *mouse );

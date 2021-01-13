@@ -36,10 +36,11 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 
-Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent )
+Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )
   , mMap( map )
   , mMainCanvas( mainCanvas )
+  , m3DMapCanvas( mapCanvas3D )
 {
   setupUi( this );
 
@@ -320,6 +321,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
   mMap->setProjectionType( cboCameraProjectionType->currentData().value< Qt3DRender::QCameraLens::ProjectionType >() );
   mMap->setCameraNavigationMode( static_cast<QgsCameraController::NavigationMode>( mCameraNavigationMode->currentIndex() ) );
+  m3DMapCanvas->scene()->cameraController()->setCameraNavigationMode( static_cast<QgsCameraController::NavigationMode>( mCameraNavigationMode->currentIndex() ) );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );
   mMap->setMapTileResolution( spinMapResolution->value() );

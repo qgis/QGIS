@@ -20,6 +20,7 @@
 #include <Qt3DRender/QRenderCapture>
 
 #include "qgsrange.h"
+#include "qgscameracontroller.h"
 
 namespace Qt3DExtras
 {
@@ -30,7 +31,6 @@ class Qgs3DMapSettings;
 class Qgs3DMapScene;
 class Qgs3DMapTool;
 class QgsWindow3DEngine;
-class QgsCameraController;
 class QgsPointXY;
 class Qgs3DNavigationWidget;
 class QgsTemporalController;
@@ -106,6 +106,7 @@ class Qgs3DMapCanvas : public QWidget
     void fpsCounterEnabledChanged( bool enabled );
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
+    void onNavigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;
