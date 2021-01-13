@@ -91,12 +91,12 @@ class CORE_EXPORT QgsPointCloudAttribute
     static void getPointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
                              int yOffset, QgsPointCloudAttribute::DataType yType,
                              int zOffset, QgsPointCloudAttribute::DataType zType,
-                             const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z );
+                             const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z ) SIP_SKIP;
 
     /**
     * Retrieves all the attributes of a point
     */
-    static QVariantMap getAttributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection );
+    static QVariantMap getAttributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection ) SIP_SKIP;
 
   private:
     void updateSize();

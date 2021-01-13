@@ -79,18 +79,7 @@ Returns ``True`` if the specified data ``type`` is numeric.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    static void getPointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
-                             int yOffset, QgsPointCloudAttribute::DataType yType,
-                             int zOffset, QgsPointCloudAttribute::DataType zType,
-                             const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z );
-%Docstring
-Retrieves the x, y, z values for the point at index ``i``.
-%End
 
-    static QVariantMap getAttributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection );
-%Docstring
-Retrieves all the attributes of a point
-%End
 
 };
 
