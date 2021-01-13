@@ -184,9 +184,18 @@ set(QGIS_3D_PRIVATE_HDRS
 
 set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
-# install headers
 
-include_directories(
+#############################################################
+# qgis_3d library
+
+
+add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
+
+target_include_directories(qgis_3d SYSTEM PRIVATE
+  ${QT5_3DEXTRA_INCLUDE_DIR}
+)
+
+target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
   ${CMAKE_CURRENT_SOURCE_DIR}/materials
@@ -197,18 +206,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/3d
 )
-include_directories(SYSTEM
-  ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${QT5_3DEXTRA_INCLUDE_DIR}
-)
-
-#############################################################
-# qgis_3d library
-
-
-add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
 
 target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
 
