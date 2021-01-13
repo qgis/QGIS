@@ -276,7 +276,7 @@ class CORE_EXPORT QgsPolymorphicRelation
 
   private:
 
-    mutable QExplicitlySharedDataPointer<QgsPolymorphicRelationPrivate> d;
+    QExplicitlySharedDataPointer<QgsPolymorphicRelationPrivate> d;
 
     QgsRelationContext mContext;
 
