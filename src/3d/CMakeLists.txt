@@ -200,6 +200,8 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
   ${CMAKE_CURRENT_SOURCE_DIR}/materials
   ${CMAKE_CURRENT_SOURCE_DIR}/mesh
+  ${CMAKE_CURRENT_SOURCE_DIR}/processing
+  ${CMAKE_CURRENT_SOURCE_DIR}/shaders
   ${CMAKE_CURRENT_SOURCE_DIR}/symbols
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
 
