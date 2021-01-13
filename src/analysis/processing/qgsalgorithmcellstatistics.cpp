@@ -413,7 +413,7 @@ QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::crea
 
 void QgsCellStatisticsPercentileAlgorithm::addSpecificAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr("Nearest rank") << QObject::tr("Inclusive linear interpolation (PERCENTILE.INC)") << QObject::tr("Exclusive linear interpolation (PERCENTILE.EXC)"), false, 0, false ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr( "Nearest rank" ) << QObject::tr( "Inclusive linear interpolation (PERCENTILE.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTILE.EXC)" ), false, 0, false ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PERCENTILE" ), QObject::tr( "Percentile" ), QgsProcessingParameterNumber::Double, 0.25, false, 0.0, 1.0 ) );
 }
 
@@ -554,7 +554,7 @@ QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFrom
 
 void QgsCellStatisticsPercentRankFromValueAlgorithm::addSpecificAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr("Inclusive linear interpolation (PERCENTRANK.INC)") << QObject::tr("Exclusive linear interpolation (PERCENTRANK.EXC)"), false, 0, false ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr( "Inclusive linear interpolation (PERCENTRANK.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTRANK.EXC)" ), false, 0, false ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), QgsProcessingParameterNumber::Double, 10, false ) );
 }
 
@@ -692,7 +692,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::addSpecificAlgorithmParams
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_VALUE_RASTER" ), QObject::tr( "Value raster layer" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "VALUE_RASTER_BAND" ), QObject::tr( "Value raster band" ), 1, QStringLiteral( "VALUE_LAYER" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr("Inclusive linear interpolation (PERCENTRANK.INC)") << QObject::tr("Exclusive linear interpolation (PERCENTRANK.EXC)"), false, 0, false ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr( "Inclusive linear interpolation (PERCENTRANK.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTRANK.EXC)" ), false, 0, false ) );
 }
 
 bool QgsCellStatisticsPercentRankFromRasterAlgorithm::prepareSpecificAlgorithmParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
