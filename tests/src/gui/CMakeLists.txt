@@ -7,7 +7,6 @@ set (util_SRCS)
 # the UI file won't be wrapped!
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
-  ${CMAKE_SOURCE_DIR}/src/analysis/processing
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_SOURCE_DIR}/external

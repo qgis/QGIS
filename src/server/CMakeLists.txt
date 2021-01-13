@@ -92,7 +92,6 @@ include_directories(
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann

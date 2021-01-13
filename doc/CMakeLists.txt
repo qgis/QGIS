@@ -49,14 +49,6 @@ if(WITH_APIDOC)
 
     set(DOXYGEN_INPUT
       ${CMAKE_SOURCE_DIR}/doc
-      ${CMAKE_SOURCE_DIR}/src/analysis
-      ${CMAKE_SOURCE_DIR}/src/analysis/mesh
-      ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
-      ${CMAKE_SOURCE_DIR}/src/analysis/network
-      ${CMAKE_SOURCE_DIR}/src/analysis/processing
-      ${CMAKE_SOURCE_DIR}/src/analysis/raster
-      ${CMAKE_SOURCE_DIR}/src/analysis/vector2
-      ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
       ${CMAKE_SOURCE_DIR}/src/3d
       ${CMAKE_SOURCE_DIR}/src/3d/chunks
       ${CMAKE_SOURCE_DIR}/src/3d/materials

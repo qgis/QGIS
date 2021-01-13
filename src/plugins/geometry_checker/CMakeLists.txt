@@ -35,7 +35,6 @@ QT5_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
 add_library (geometrycheckerplugin   MODULE ${geometrychecker_HDRS} ${geometrychecker_SRCS}  ${geometrychecker_RCC_SRCS} ${geometrychecker_UIS_H})
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann

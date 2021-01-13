@@ -255,14 +255,6 @@ endif()
 # additional analysis includes
 if(WITH_ANALYSIS)
   include_directories(BEFORE
-    ${CMAKE_SOURCE_DIR}/src/analysis
-    ${CMAKE_SOURCE_DIR}/src/analysis/processing
-    ${CMAKE_SOURCE_DIR}/src/analysis/vector
-    ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
-    ${CMAKE_SOURCE_DIR}/src/analysis/mesh
-    ${CMAKE_SOURCE_DIR}/src/analysis/raster
-    ${CMAKE_SOURCE_DIR}/src/analysis/network
-    ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
 
     ${CMAKE_BINARY_DIR}/src/analysis/processing
     ${CMAKE_BINARY_DIR}/src/analysis/vector

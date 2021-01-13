@@ -429,9 +429,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud
   ${CMAKE_SOURCE_DIR}/src/app/vectortile
-  ${CMAKE_SOURCE_DIR}/src/analysis
-  ${CMAKE_SOURCE_DIR}/src/analysis/raster
-  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/native
