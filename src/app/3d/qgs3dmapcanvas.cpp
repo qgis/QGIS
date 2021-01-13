@@ -113,15 +113,11 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   resetView();
 
   // Connect the camera to the navigation widget.
-  QObject::connect(
-    this->cameraController(),
-    &QgsCameraController::cameraChanged,
-    mNavigationWidget,
-    [ = ]
+  connect( cameraController(), &QgsCameraController::cameraChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
+  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [ = ]( QPoint point )
   {
-    mNavigationWidget->updateFromCamera();
-  }
-  );
+    QCursor::setPos( mapToGlobal( point ) );
+  } );
 
   emit mapSettingsChanged();
 }
