@@ -200,6 +200,7 @@ set(TESTS
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
  testqgstemporalnavigationobject.cpp
+ testqgstiledownloadmanager.cpp
  testqgstracer.cpp
  testqgstriangularmesh.cpp
  testqgsfontutils.cpp
