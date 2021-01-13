@@ -43,7 +43,6 @@ include_directories(
 )
 
 if (WITH_GUI)
-  include_directories(${CMAKE_SOURCE_DIR}/src/core/labeling)
 endif()
 
 include_directories(SYSTEM

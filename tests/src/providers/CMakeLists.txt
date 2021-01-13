@@ -79,7 +79,6 @@ endif()
 
 if (WITH_EPT)
   include_directories(
-    ${CMAKE_SOURCE_DIR}/src/core/providers/ept
   )
   ADD_QGIS_TEST(eptprovidertest testqgseptprovider.cpp)
 endif()

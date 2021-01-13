@@ -1,7 +1,6 @@
 set(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python

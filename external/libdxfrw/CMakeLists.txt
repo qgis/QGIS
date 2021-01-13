@@ -1,6 +1,4 @@
 include_directories(
-    ${CMAKE_SOURCE_DIR}/src/core
-    ${CMAKE_SOURCE_DIR}/src/core/geometry
 
     ${CMAKE_BINARY_DIR}/src/core
     ${CMAKE_BINARY_DIR}/src/core/geometry

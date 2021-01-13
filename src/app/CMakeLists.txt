@@ -448,7 +448,6 @@ include_directories(
 if (WITH_3D)
   include_directories(
     ${CMAKE_SOURCE_DIR}/src/app/3d
-    ${CMAKE_SOURCE_DIR}/src/core/3d
     ${CMAKE_SOURCE_DIR}/src/3d
     ${CMAKE_SOURCE_DIR}/src/3d/materials
     ${CMAKE_SOURCE_DIR}/src/3d/mesh
