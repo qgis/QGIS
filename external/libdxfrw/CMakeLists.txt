@@ -1,8 +1,3 @@
-include_directories(
-
-    ${CMAKE_BINARY_DIR}/src/core
-    ${CMAKE_BINARY_DIR}/src/core/geometry
-)
 
 include_directories(SYSTEM
     ${Qt5Core_INCLUDE_DIRS}
@@ -30,6 +25,10 @@ add_library(libdxfrw STATIC
     intern/rscodec.cpp
 )
 set_property(TARGET libdxfrw PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+target_link_libraries(libdxfrw
+  qgis_core # QgsDebugMsg
+)
 
 if(FALSE)
 if(DOXYGEN_FOUND)
