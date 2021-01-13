@@ -201,8 +201,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         command = '"{}" {} {}'.format(app_launcher_path, self.name(), OtbUtils.appFolder())
         outputPixelType = None
         for k, v in parameters.items():
-            # if value is None for a parameter we don't have any businees with this key
-            if v is None:
+            # if value is None or en empty string for a parameter then we don't want to pass that value to OTB (see https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2130)
+            if v == '' or v is None:
                 continue
             # for 'outputpixeltype' parameter we find the pixeltype string from self.pixelTypes
             if k == 'outputpixeltype':

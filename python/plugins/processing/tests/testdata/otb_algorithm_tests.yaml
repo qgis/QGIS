@@ -64,3 +64,19 @@ tests:
       out:
         hash: 987b1488daaa16d09ad6f40039ee85101c557354a4d821d3f31ad235
         type: rasterhash
+
+  - algorithm: otb:Rasterization
+    name: Test empty string and zero integer parameters (otb:Rasterization)
+    params:
+      in:
+        name: polys.gml
+        type: file
+      epsg: EPSG:4326
+      spx: 1
+      spy: 1
+      mode.attribute.field: ""
+      outputpixeltype: 0
+    results:
+      out:
+        hash: c898326f9327dd0a111532fdacc5f43fc485ae3e10f1238b5da04dde
+        type: rasterhash
