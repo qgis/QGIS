@@ -23,6 +23,10 @@
 #include <QString>
 #include <QVector>
 
+#include "qgsvector3d.h"
+
+class QgsPointCloudAttributeCollection;
+
 /**
  * \ingroup core
  *
@@ -80,6 +84,19 @@ class CORE_EXPORT QgsPointCloudAttribute
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
+
+    /**
+    * Retrieves the x, y, z values for the point at index \a i.
+    */
+    static void getPointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
+                             int yOffset, QgsPointCloudAttribute::DataType yType,
+                             int zOffset, QgsPointCloudAttribute::DataType zType,
+                             const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z );
+
+    /**
+    * Retrieves all the attributes of a point
+    */
+    static QVariantMap getAttributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection );
 
   private:
     void updateSize();

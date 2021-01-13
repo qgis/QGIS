@@ -86,117 +86,6 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
   identifyTool2D->clearResults();
 }
 
-template <typename T>
-void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
-{
-  switch ( type )
-  {
-    case QgsPointCloudAttribute::Char:
-      value = *( data + offset );
-      break;
-
-    case QgsPointCloudAttribute::Int32:
-      value = *reinterpret_cast< const qint32 * >( data + offset );
-      break;
-
-    case QgsPointCloudAttribute::Short:
-    {
-      value = *reinterpret_cast< const short * >( data + offset );
-    }
-    break;
-
-    case QgsPointCloudAttribute::UShort:
-      value = *reinterpret_cast< const unsigned short * >( data + offset );
-      break;
-
-    case QgsPointCloudAttribute::Float:
-      value = static_cast< T >( *reinterpret_cast< const float * >( data + offset ) );
-      break;
-
-    case QgsPointCloudAttribute::Double:
-      value = *reinterpret_cast< const double * >( data + offset );
-      break;
-  }
-}
-
-/**
-* Retrieves the x, y, z values for the point at index \a i.
-*/
-static void _pointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
-                       int yOffset, QgsPointCloudAttribute::DataType yType,
-                       int zOffset, QgsPointCloudAttribute::DataType zType,
-                       const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z )
-{
-  _attribute( ptr, i * pointRecordSize + xOffset, xType, x );
-  x = indexOffset.x() + indexScale.x() * x;
-
-  _attribute( ptr, i * pointRecordSize + yOffset, yType, y );
-  y = indexOffset.y() + indexScale.y() * y;
-
-  _attribute( ptr, i * pointRecordSize + zOffset, zType, z );
-  z = indexOffset.z() + indexScale.z() * z;
-}
-
-/**
-* Retrieves all the attributes of a point
-*/
-QVariantMap _attributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection )
-{
-  QVariantMap map;
-  const QVector<QgsPointCloudAttribute> attributes = attributeCollection.attributes();
-  for ( const QgsPointCloudAttribute &attr : attributes )
-  {
-    QString attributeName = attr.name();
-    int attributeOffset;
-    attributeCollection.find( attributeName, attributeOffset );
-    switch ( attr.type() )
-    {
-      case QgsPointCloudAttribute::Char:
-      {
-        const char value = *( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
-      }
-      break;
-
-      case QgsPointCloudAttribute::Int32:
-      {
-        const qint32 value = *reinterpret_cast< const qint32 * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
-      }
-      break;
-
-      case QgsPointCloudAttribute::Short:
-      {
-        const short value = *reinterpret_cast< const short * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
-      }
-      break;
-
-      case QgsPointCloudAttribute::UShort:
-      {
-        const unsigned short value = *reinterpret_cast< const unsigned short * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
-      }
-      break;
-
-      case QgsPointCloudAttribute::Float:
-      {
-        const float value = *reinterpret_cast< const float * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
-      }
-      break;
-
-      case QgsPointCloudAttribute::Double:
-      {
-        const double value = *reinterpret_cast< const double * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
-      }
-      break;
-    }
-  }
-  return map;
-}
-
 void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( event->button() != Qt::MouseButton::LeftButton )
@@ -278,7 +167,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       for ( int i = 0; i < block->pointCount(); ++i )
       {
         double x, y, z;
-        _pointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, index->scale(), index->offset(), x, y, z );
+        QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, index->scale(), index->offset(), x, y, z );
         QVector3D point( x, y, z );
 
         // check whether point is in front of the ray
@@ -290,7 +179,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
           continue;
 
         // Note : applying elevation properties is done in fromPointCloudIdentificationToIdentifyResults
-        QVariantMap pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
+        QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;
         pointAttr[ QStringLiteral( "Y" ) ] = y;
         pointAttr[ QStringLiteral( "Z" ) ] = z;
