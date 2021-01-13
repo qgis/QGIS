@@ -124,59 +124,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     % End
 #endif
 
-#ifndef SIP_RUN
-
-    /**
-     * Returns the points that are on a ray
-     *
-     * \param ray : The ray in layer coordinates
-     * \param maxScreenError : Maximum screen error (as taken from the 3D point cloud layer renderer)
-     * \param cameraFov : The field of view of the camera in degrees
-     * \param screenSizePx : The size of the screen's viewport in pixels
-     * \param pointAngle : The maximum accepted angle between the point and it's projected point on the ray in degrees
-     * \param pointsLimit : The maximum number of points returned
-     * \return a vector of the identified points
-     *
-     * \since QGIS 3.18
-     */
-    QVector<QVariantMap> getPointsOnRay( const QgsRay3D &ray, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit = 1000 );
-#else
-
-    /**
-     * Returns the points that are on a ray
-     *
-     * \param rayOrigin : The origin of the ray in layer coordinates
-     * \param rayDirection : The direction of the ray in layer coordinates
-     * \param maxScreenError : Maximum screen error (as taken from the 3D point cloud layer renderer)
-     * \param cameraFov : The field of view of the camera in degrees
-     * \param screenSizePx : The size of the screen's viewport in pixels
-     * \param pointAngle : the maximum accepted angle between the point and it's projected point on the ray in degrees
-     * \param pointsLimit : the maximum number of points returned
-     * \return a list of the identified points
-     *
-     * \since QGIS 3.18
-     */
-    SIP_PYLIST getPointsOnRay( const QgsRay3D &ray, double maxScreenError, double cameraFov, int screenSizePx, double pointAngle, int pointsLimit = 1000 );
-    % MethodCode
-    {
-      QVector<QMap<QString, QVariant>> res = sipCpp->getPointsOnRay( *a0, a1, a2, a3, a4, a5 );
-      sipRes = PyList_New( res.size() );
-      for ( int i = 0; i < res.size(); ++i )
-      {
-        PyObject *dict = PyDict_New();
-        for ( QString key : res[i].keys() )
-        {
-          PyObject *keyObj = sipConvertFromNewType( new QString( key ), sipType_QString, Py_None );
-          PyObject *valObj = sipConvertFromNewType( new QVariant( res[i][key] ), sipType_QVariant, Py_None );
-          PyDict_SetItem( dict, keyObj, valObj );
-        }
-        PyList_SET_ITEM( sipRes, i, dict );
-      }
-    }
-    % End
-#endif
-
-
     /**
      * Returns flags containing the supported capabilities for the data provider.
      */
@@ -399,7 +346,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
-    QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, double cameraFov, int screenSizePx, const QgsRay3D &ray );
 };
 
 #endif // QGSMESHDATAPROVIDER_H

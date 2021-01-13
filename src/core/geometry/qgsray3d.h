@@ -31,7 +31,7 @@ class CORE_EXPORT QgsRay3D
 {
   public:
     /*
-     *  Constructor
+     * Constructor
      * \note : the direction is automatically normalized
      */
     QgsRay3D( const QVector3D &origin, const QVector3D &direction );

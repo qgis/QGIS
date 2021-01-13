@@ -56,7 +56,7 @@ class QgsSkyboxSettings;
 class Qgs3DMapExportSettings;
 class QgsShadowRenderingFrameGraph;
 class QgsPostprocessingEntity;
-
+class QgsChunkNode;
 
 #define SIP_NO_FILE
 
@@ -115,12 +115,11 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void exportScene( const Qgs3DMapExportSettings &exportSettings );
 
     /**
-     * Identifies the points that are positioned on the ray specified in world coordinates as a point \a rayOrigin and direction \a rayDirection
-     * for every point cloud layer and returns the identified points in \a selectedPoints vector
+     * Returns the active chunk nodes of \a layer
      *
      * \since QGIS 3.18
      */
-    void identifyPointCloudOnRay( QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> &selectedPoints, const QgsRay3D &ray );
+    QVector<const QgsChunkNode *> getLayerActiveChunkNodes( QgsMapLayer *layer ) SIP_SKIP;
 
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
