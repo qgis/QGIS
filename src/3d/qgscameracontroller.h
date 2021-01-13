@@ -196,6 +196,12 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Emitted when the navigation mode is changed using the hotkey ctrl + ~
     void navigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
 
+    /**
+     * Emitted when the mouse cursor position should be moved to the specified \a point
+     * on the map viewport.
+     */
+    void setCursorPosition( QPoint point );
+
   private slots:
     void onPositionChanged( Qt3DInput::QMouseEvent *mouse );
     void onWheel( Qt3DInput::QWheelEvent *wheel );

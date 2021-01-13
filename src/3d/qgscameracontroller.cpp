@@ -614,14 +614,16 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
 
   if ( mCaptureFpsMouseMovements )
   {
+    const double dx = QCursor::pos().x() - mMousePos.x();
+    const double dy = QCursor::pos().y() - mMousePos.y();
+    mMousePos = QCursor::pos();
+
     if ( mIgnoreNextMouseMove )
     {
       mIgnoreNextMouseMove = false;
       return;
     }
 
-    double dx = QCursor::pos().x() - mMousePos.x();
-    double dy = QCursor::pos().y() - mMousePos.y();
     if ( mPressedButton != Qt3DInput::QMouseEvent::RightButton )
     {
       float diffPitch = -1 * 0.2f * dy;
@@ -629,21 +631,24 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
       rotateCamera( diffPitch, diffYaw );
       updateCameraFromPose( false );
     }
+
     mIgnoreNextMouseMove = true;
-    QCursor::setPos( mViewport.width(), mViewport.height() );
-    mMousePos = QCursor::pos();
+
+    // reset cursor back to center of map widget
+    emit setCursorPosition( QPoint( mViewport.width() / 2, mViewport.height() / 2 ) );
   }
   else
   {
+    const double dx = mouse->x() - mMousePos.x();
+    const double dy = mouse->y() - mMousePos.y();
+    mMousePos = QPoint( mouse->x(), mouse->y() );
+
     if ( mIgnoreNextMouseMove )
     {
-      mMousePos = QPoint( mouse->x(), mouse->y() );
       mIgnoreNextMouseMove = false;
       return;
     }
 
-    double dx = mouse->x() - mMousePos.x();
-    double dy = mouse->y() - mMousePos.y();
     if ( mPressedButton ==  Qt3DInput::QMouseEvent::LeftButton || mPressedButton ==  Qt3DInput::QMouseEvent::MiddleButton )
     {
       float diffPitch = 0.2f * dy;
@@ -659,8 +664,6 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
       QVector3D cameraPosDiff = dx / mViewport.width() * cameraLeft + dy / mViewport.height() * cameraUp;
       moveCameraPositionBy( 5.0 * mCameraMovementSpeed * cameraPosDiff );
     }
-
-    mMousePos = QPoint( mouse->x(), mouse->y() );
   }
 }
 
