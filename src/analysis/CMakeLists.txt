@@ -423,20 +423,6 @@ endif()
 
 # install headers
 
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_BINARY_DIR}/src/analysis
-  interpolation
-  network
-)
-include_directories(SYSTEM
-  ${EXIV2_INCLUDE_DIR}
-)
-
 if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
@@ -447,6 +433,23 @@ endif()
 # qgis_analysis library
 
 add_library(qgis_analysis ${LIBRARY_TYPE} ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
+
+target_include_directories(qgis_analysis PUBLIC
+  ${CMAKE_SOURCE_DIR}/src/analysis
+  ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
+  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
+  ${CMAKE_SOURCE_DIR}/src/analysis/network
+  ${CMAKE_SOURCE_DIR}/src/analysis/processing
+  ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/analysis/vector/
+  ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
+
+  ${CMAKE_BINARY_DIR}/src/analysis
+)
+
+target_include_directories(qgis_analysis SYSTEM PUBLIC
+  ${EXIV2_INCLUDE_DIR}
+)
 
 GENERATE_EXPORT_HEADER(
    qgis_analysis
