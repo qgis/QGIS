@@ -228,20 +228,33 @@ class TestPyQgsProviderConnectionBase():
                     table = 'myNewAspatialTable'
 
                 # MSSQL literal syntax for UTF8 requires 'N' prefix
-                sql = "INSERT INTO %s (\"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\", \"time_t\") VALUES (%s'QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08T12:00:12', '12:00:13.00')" % (
-                    table, 'N' if self.providerKey == 'mssql' else '')
+                # Oracle date time definition needs some prefix
+                sql = "INSERT INTO %s (\"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\", \"time_t\") VALUES (%s'QGIS Rocks - \U0001f604', 666, 1.234, 1234, %s '2019-07-08', %s, '12:00:13.00')" % (
+                    table, 'N' if self.providerKey == 'mssql' else '',
+                    "DATE" if self.providerKey == 'oracle' else '',
+                    "TIMESTAMP '2019-07-08 12:00:12'" if self.providerKey == 'oracle' else "'2019-07-08T12:00:12'"
+                )
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
                 sql = "SELECT \"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\" FROM %s" % table
                 res = conn.executeSql(sql)
 
+                expected_date = QtCore.QDate(2019, 7, 8)
+
                 # GPKG and spatialite have no type for time
-                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                if self.treat_date_as_string():
+                    expected_date = '2019-07-08'
+
+                # Oracle DATE type contains date and time and so returns a QDateTime object
+                elif self.providerKey == 'oracle':
+                    expected_date = QtCore.QDateTime(QtCore.QDate(2019, 7, 8))
+
+                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, expected_date, QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
 
                 # Test column names
                 res = conn.execSql(sql)
                 rows = res.rows()
-                self.assertEqual(rows, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                self.assertEqual(rows, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, expected_date, QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 self.assertEqual(res.columns(), ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t'])
 
                 # Test iterator
@@ -287,7 +300,7 @@ class TestPyQgsProviderConnectionBase():
             self.assertFalse('myNewAspatialTable' in table_names)
 
             # Query for rasters (in qgis_test schema or no schema for GPKG, spatialite has no support)
-            if self.providerKey not in ('spatialite', 'mssql', 'hana'):
+            if self.providerKey not in ('spatialite', 'mssql', 'hana', 'oracle'):
                 table_properties = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster)
                 # At least one raster should be there (except for spatialite)
                 self.assertTrue(len(table_properties) >= 1)
