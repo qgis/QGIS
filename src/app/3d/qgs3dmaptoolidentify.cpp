@@ -133,7 +133,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     if ( !symbol )
       continue;
     double pointSize = symbol->pointSize();
-    double limitAngle = pointSize / screenSizePx * canvas->cameraController()->camera()->fieldOfView();
+    double limitAngle = 2 * pointSize / screenSizePx * canvas->cameraController()->camera()->fieldOfView();
 
     // adjust ray to elevation properties
     QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
