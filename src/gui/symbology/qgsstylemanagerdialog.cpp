@@ -47,6 +47,7 @@
 #include <QStandardItemModel>
 #include <QMenu>
 #include <QClipboard>
+#include <QDesktopServices>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -171,6 +172,14 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
+
+  QPushButton *downloadButton = buttonBox->addButton( tr( "Browse Online Styles" ), QDialogButtonBox::ResetRole );
+  downloadButton->setToolTip( tr( "Download new styles from the online QGIS style repository" ) );
+  downloadButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFindReplace.svg" ) ) );
+  connect( downloadButton, &QPushButton::clicked, this, [ = ]
+  {
+    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://plugins.qgis.org/styles" ) ) );
+  } );
 
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
