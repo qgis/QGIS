@@ -280,7 +280,8 @@ void QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered()
   if ( rows.size() != 1 )
     return;
 
-  addDlg.setPolymorphicRelation( mRelationsTree->topLevelItem( rows[0].row() )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>() );
+  const QgsPolymorphicRelation polyRel = mRelationsTree->topLevelItem( rows[0].row() )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>();
+  addDlg.setPolymorphicRelation( polyRel );
 
   if ( addDlg.exec() )
   {
@@ -301,6 +302,19 @@ void QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered()
       relation.generateId();
     else
       relation.setId( relationId );
+
+    for ( int i = 0, l = mRelationsTree->topLevelItemCount(); i < l; i++ )
+    {
+      mRelationsTree->topLevelItem( i )->data( 0, Qt::UserRole );
+      QgsPolymorphicRelation currentPolyRel = mRelationsTree->topLevelItem( i )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>();
+
+      if ( currentPolyRel.id() == polyRel.id() )
+      {
+        // we safely assume that polymorphic relations are always a top level item
+        mRelationsTree->takeTopLevelItem( i );
+        break;
+      }
+    }
 
     addPolymorphicRelation( relation );
   }
