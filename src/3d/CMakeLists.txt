@@ -193,8 +193,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/mesh
   ${CMAKE_CURRENT_SOURCE_DIR}/symbols
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/3d

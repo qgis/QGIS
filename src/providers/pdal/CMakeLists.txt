@@ -95,8 +95,6 @@ set(UNTWINE_INCLUDE_DIRS
 # Build
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/external/untwine/api
 
   ${CMAKE_BINARY_DIR}/src/core

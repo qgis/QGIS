@@ -84,7 +84,6 @@ endif()
 
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/external
 )
 
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})

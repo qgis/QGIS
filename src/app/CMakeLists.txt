@@ -415,7 +415,6 @@ endif()
 include_directories(
   ${CMAKE_SOURCE_DIR}/external/libdxfrw
   ${CMAKE_SOURCE_DIR}/external/nmea
-  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
@@ -500,7 +499,6 @@ include_directories(
   gps
   dwg
   ${CMAKE_SOURCE_DIR}/external/libdxfrw
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/native
 
   ${CMAKE_BINARY_DIR}/src/native

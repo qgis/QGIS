@@ -10,8 +10,6 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/native
     ${CMAKE_SOURCE_DIR}/src/quickgui
     ${CMAKE_SOURCE_DIR}/src/test
-    ${CMAKE_SOURCE_DIR}/external
-    ${CMAKE_SOURCE_DIR}/external/nlohmann
 
     ${CMAKE_BINARY_DIR}/src/core
     ${CMAKE_BINARY_DIR}/src/native

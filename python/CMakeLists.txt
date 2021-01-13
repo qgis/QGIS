@@ -99,8 +99,6 @@ endif()
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
   ${CMAKE_BINARY_DIR}/src/core
@@ -234,7 +232,6 @@ if (WITH_SERVER AND WITH_SERVER_PLUGINS)
   include_directories(
     ../src/server
    ${CMAKE_BINARY_DIR}/src/server
-   ${CMAKE_SOURCE_DIR}/external
   )
 
   set(PY_MODULES ${PY_MODULES} server)

@@ -52,8 +52,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/attributes
   ${CMAKE_CURRENT_BINARY_DIR}
 
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
 )

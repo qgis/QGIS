@@ -1673,7 +1673,6 @@ if (WITH_EPT)
   else()
     # Use embedded laz-perf from external/laz-perf
     include_directories(SYSTEM
-      ${CMAKE_SOURCE_DIR}/external
     )
   endif()
 

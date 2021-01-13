@@ -61,8 +61,6 @@ ENDIF ()
 # Build
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/external/odbccpp/src
 
   ${CMAKE_BINARY_DIR}/src/core

@@ -37,8 +37,6 @@ endif()
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/python
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
