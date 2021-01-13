@@ -15,7 +15,6 @@ include_directories(
 
 
   ${CMAKE_BINARY_DIR}
-  ${CMAKE_BINARY_DIR}/src/core
 )
 include_directories(SYSTEM
   ${SQLITE3_INCLUDE_DIR}

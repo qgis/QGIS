@@ -13,8 +13,6 @@ set (GPX_SRCS
 
 include_directories(
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
 )
 include_directories (SYSTEM
 )

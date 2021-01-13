@@ -41,7 +41,6 @@ include_directories(
 
   ${CMAKE_SOURCE_DIR}/src/quickgui
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/quickgui
 )
 

@@ -33,8 +33,6 @@ QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedl
 
 include_directories(
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 
   ${CMAKE_CURRENT_BINARY_DIR} # ui_xxx_dlg.h

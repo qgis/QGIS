@@ -97,8 +97,6 @@ set(UNTWINE_INCLUDE_DIRS
 include_directories(
   ${CMAKE_SOURCE_DIR}/external/untwine/api
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
 

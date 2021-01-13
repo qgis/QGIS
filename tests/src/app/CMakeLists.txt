@@ -14,7 +14,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/external/nmea
 
   ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/app
   ${CMAKE_BINARY_DIR}/src/ui
