@@ -284,9 +284,8 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
      * Queries the attribute table's vector layer for attributes to show in the table.
      * \param contents table content
      * \returns TRUE if attributes were successfully fetched
-     * \note not available in Python bindings
      */
-    bool getTableContents( QgsLayoutTableContents &contents ) override SIP_SKIP;
+    bool getTableContents( QgsLayoutTableContents &contents ) override;
 
     QgsExpressionContext createExpressionContext() const override;
     void finalizeRestoreFromXml() override;
