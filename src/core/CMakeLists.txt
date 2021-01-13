@@ -439,6 +439,7 @@ set(QGIS_CORE_SRCS
   qgstemporalutils.cpp
   qgstessellator.cpp
   qgstilecache.cpp
+  qgstiledownloadmanager.cpp
   qgstiles.cpp
   qgstolerance.cpp
   qgstracer.cpp
@@ -1041,6 +1042,7 @@ set(QGIS_CORE_HDRS
   qgstestutils.h
   qgsthreadingutils.h
   qgstilecache.h
+  qgstiledownloadmanager.h
   qgstiles.h
   qgstolerance.h
   qgstracer.h
