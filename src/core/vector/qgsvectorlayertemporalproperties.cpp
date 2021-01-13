@@ -512,6 +512,9 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
       QString start = mStartFieldName;
       QString end = mEndFieldName;
       // if either there is no start- or end-field defined, we make it a 'momentary' event (start==end)
+      // BUT: see the testDualFieldMode test: I think the checks below are obsolete.
+      // IF a user defines the timeframe of a phenomenon having 2 fields, you should not be able to only give one
+      // NOTE this is not about a null value in the data, this is about (NOT) setting a fieldname while telling "I give you two fieldnames"
       if ( mStartFieldName.isEmpty() )
       {
         start = mEndFieldName;
