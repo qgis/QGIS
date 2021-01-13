@@ -288,6 +288,15 @@ be replaced by a line break.
 .. seealso:: :py:func:`setWrapString`
 %End
 
+    virtual bool getTableContents( QgsLayoutTableContents &contents );
+
+%Docstring
+Queries the attribute table's vector layer for attributes to show in the table.
+
+:param contents: table content
+
+:return: ``True`` if attributes were successfully fetched
+%End
 
     virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
 
