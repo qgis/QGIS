@@ -99,11 +99,13 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   {
     disconnect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
     disconnect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
+    disconnect( mScene, &Qgs3DMapScene::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
     mScene->deleteLater();
   }
   mScene = newScene;
   connect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
   connect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
+  connect( mScene, &Qgs3DMapScene::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
 
   delete mMap;
   mMap = map;
@@ -259,4 +261,10 @@ void Qgs3DMapCanvas::updateTemporalRange( const QgsDateTimeRange &temporalrange 
 QSize Qgs3DMapCanvas::windowSize() const
 {
   return mEngine->size();
+}
+
+void Qgs3DMapCanvas::onNavigationModeHotKeyPressed( QgsCameraController::NavigationMode mode )
+{
+  mMap->setCameraNavigationMode( mode );
+  mScene->cameraController()->setCameraNavigationMode( mode );
 }

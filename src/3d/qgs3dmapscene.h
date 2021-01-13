@@ -23,6 +23,7 @@
 #include "qgsfeatureid.h"
 #include "qgsshadowrenderingframegraph.h"
 #include "qgsray3d.h"
+#include "qgscameracontroller.h"
 
 namespace Qt3DRender
 {
@@ -46,7 +47,6 @@ namespace Qt3DExtras
 class QgsAbstract3DEngine;
 class QgsAbstract3DRenderer;
 class QgsMapLayer;
-class QgsCameraController;
 class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
@@ -139,6 +139,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void fpsCountChanged( float fpsCount );
     //! Emitted when the FPS counter is activated or deactivated
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );
+    //! Emitted when the navigation mode is changed using the hotkey ctrl + ~
+    void navigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
 
   public slots:
     //! Updates the temporale entities
@@ -161,7 +163,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onEyeDomeShadingSettingsChanged();
     void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
-    void onCameraNavigationModeChanged();
     void onCameraMovementSpeedChanged();
 
   private:

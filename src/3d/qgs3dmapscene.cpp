@@ -142,7 +142,6 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapScene::onDebugShadowMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
-  connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
 
   connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
@@ -197,6 +196,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mCameraController, &QgsCameraController::viewportChanged, this, &Qgs3DMapScene::onCameraChanged );
+  connect( mCameraController, &QgsCameraController::navigationModeHotKeyPressed, this, &Qgs3DMapScene::navigationModeHotKeyPressed );
 
 #if 0
   // experiments with loading of existing 3D models.
@@ -233,7 +233,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   onDebugShadowMapSettingsChanged();
   onDebugDepthMapSettingsChanged();
 
-  onCameraNavigationModeChanged();
+  mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
   onCameraMovementSpeedChanged();
 }
 
@@ -1058,11 +1058,6 @@ void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
   double edlStrength = mMap.eyeDomeLightingStrength();
   double edlDistance = mMap.eyeDomeLightingDistance();
   shadowRenderingFrameGraph->setupEyeDomeLighting( edlEnabled, edlStrength, edlDistance );
-}
-
-void Qgs3DMapScene::onCameraNavigationModeChanged()
-{
-  mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
 }
 
 void Qgs3DMapScene::onCameraMovementSpeedChanged()
