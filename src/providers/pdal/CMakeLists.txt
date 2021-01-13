@@ -95,6 +95,18 @@ set(UNTWINE_INCLUDE_DIRS
 # Build
 
 include_directories(
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/editform
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
+  ${CMAKE_SOURCE_DIR}/src/core/project
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/vector
+
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
+
   ${CMAKE_SOURCE_DIR}/external/untwine/api
 
   ${CMAKE_BINARY_DIR}/src/ui
