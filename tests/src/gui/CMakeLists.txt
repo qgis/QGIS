@@ -8,18 +8,6 @@ set (util_SRCS)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/analysis/processing
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-  ${CMAKE_SOURCE_DIR}/src/gui/layout
-  ${CMAKE_SOURCE_DIR}/src/gui/mesh
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology
-  ${CMAKE_SOURCE_DIR}/src/gui/processing
-  ${CMAKE_SOURCE_DIR}/src/gui/processing/models
-  ${CMAKE_SOURCE_DIR}/src/gui/raster
-  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_SOURCE_DIR}/external

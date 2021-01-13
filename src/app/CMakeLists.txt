@@ -432,27 +432,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology
-  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/src/gui/devtools
-  ${CMAKE_SOURCE_DIR}/src/gui/labeling
-  ${CMAKE_SOURCE_DIR}/src/gui/mesh
-  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
-  ${CMAKE_SOURCE_DIR}/src/gui/ogr
-  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
-  ${CMAKE_SOURCE_DIR}/src/gui/processing
-  ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/gui/raster
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-  ${CMAKE_SOURCE_DIR}/src/gui/layertree
-  ${CMAKE_SOURCE_DIR}/src/gui/locator
-  ${CMAKE_SOURCE_DIR}/src/gui/vector
-  ${CMAKE_SOURCE_DIR}/src/gui/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/native

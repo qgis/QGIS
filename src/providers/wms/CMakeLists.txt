@@ -20,9 +20,6 @@ if (WITH_GUI)
 endif()
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
@@ -47,6 +44,7 @@ if (WITH_GUI)
   add_library(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
   target_link_libraries(wmsprovider_gui_a
     wmsprovider_a
+    qgis_gui
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
     ${Qt5Svg_LIBRARIES}
