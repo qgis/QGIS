@@ -1089,6 +1089,13 @@ Emitted when canvas finished a refresh request.
 Emitted when the canvas is about to be rendered.
 %End
 
+    void mapRefreshCanceled();
+%Docstring
+Emitted when the pending map refresh has been canceled
+
+.. versionadded:: 3.18
+%End
+
     void layersChanged();
 %Docstring
 Emitted when a new set of layers has been received
