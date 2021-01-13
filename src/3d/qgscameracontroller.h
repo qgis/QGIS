@@ -207,7 +207,9 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
   private:
     void onKeyPressedFlyNavigation();
+    void onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *mouse );
     void onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse );
+    void onPositionChangedTerrainNavigation( Qt3DInput::QMouseEvent *mouse );
 
   private:
     //! Camera that is being controlled
