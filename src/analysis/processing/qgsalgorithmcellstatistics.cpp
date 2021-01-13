@@ -104,7 +104,7 @@ bool QgsCellStatisticsAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
   //determine output raster data type
   //initially raster data type to most primitive data type that is possible
   mDataType = Qgis::Byte;
-  for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+  for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
   {
     for ( int band : i.bands )
     {
@@ -275,7 +275,7 @@ void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feed
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -382,27 +382,27 @@ QString QgsCellStatisticsPercentileAlgorithm::name() const
 
 QStringList QgsCellStatisticsPercentileAlgorithm::tags() const
 {
-  return QObject::tr( "cell,pixel,statistic,percentile,quantile,quratile" ).split( ',' );
+  return QObject::tr( "cell,pixel,statistic,percentile,quantile,quartile" ).split( ',' );
 }
 
 QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentile algorithm returns the cell-wise percentile value of a stack of rasters."
-                      "and writes the results to an output raster. The percentile to return is determined by a percentile input value (ranges between 0 and 1)."
-                      "At each cell location, the specified percentile is used obtained the respective value from "
+  return QObject::tr( "The Cell stack percentile algorithm returns the cell-wise percentile value of a stack of rasters "
+                      "and writes the results to an output raster. The percentile to return is determined by the percentile input value (ranges between 0 and 1). "
+                      "At each cell location, the specified percentile is obtained using the respective value from "
                       "the stack of all overlaid and sorted cell values of the input rasters.\n\n"
                       "There are three methods for percentile calculation:"
                       "<ul> "
-                      "   <li>Nearest Rank</li>"
+                      "   <li>Nearest rank</li>"
                       "   <li>Inclusive linear interpolation (PERCENTILE.INC)</li>"
                       "   <li>Exclusive linear interpolation (PERCENTILE.EXC)</li>"
                       "</ul> "
                       "While the output value can stay the same for the nearest rank method (obtains the value that is nearest to the "
                       "specified percentile), the linear interpolation method return unique values for different percentiles. Both interpolation "
-                      "methods are following the methods implemented by LibreOffice or Excel. \n\n"
+                      "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
                       "The output raster's extent and resolution is defined by a reference "
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+                      "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will be set to the most complex data type present in the input datasets. " );
 }
 
@@ -413,8 +413,8 @@ QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::crea
 
 void QgsCellStatisticsPercentileAlgorithm::addSpecificAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "Nearest rank" << "Inclusive linear interpolation (PERCENTILE.INC)" << "Exclusive linear interpolation (PERCENTILE.EXC)", false, 0, false ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PERCENTILE" ), QObject::tr( "Percentile" ), QgsProcessingParameterNumber::Double, 10, false, 0.0, 1.0 ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr("Nearest rank") << QObject::tr("Inclusive linear interpolation (PERCENTILE.INC)") << QObject::tr("Exclusive linear interpolation (PERCENTILE.EXC)"), false, 0, false ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PERCENTILE" ), QObject::tr( "Percentile" ), QgsProcessingParameterNumber::Double, 0.25, false, 0.0, 1.0 ) );
 }
 
 bool QgsCellStatisticsPercentileAlgorithm::prepareSpecificAlgorithmParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -452,7 +452,7 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -515,7 +515,7 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
 //
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::displayName() const
 {
-  return QObject::tr( "Cell stack percentrank from value" );
+  return QObject::tr( "Cell stack percent rank from value" );
 }
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::name() const
@@ -530,9 +530,9 @@ QStringList QgsCellStatisticsPercentRankFromValueAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentrank from value algorithm returns the cell-wise percentrank value of a stack of rasters based on a single input value."
-                      "and writes them to an output raster. "
-                      "At each cell location, the specified value is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
+  return QObject::tr( "The Cell stack percentrank from value algorithm calculates the cell-wise percentrank value of a stack of rasters based on a single input value "
+                      "and writes them to an output raster.\n\n"
+                      "At each cell location, the specified value is ranked among the respective values in the stack of all overlaid and sorted cell values from the input rasters. "
                       "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
                       "There are two methods for percentile calculation:"
                       "<ul> "
@@ -540,7 +540,7 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
                       "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
                       "</ul> "
                       "The linear interpolation method return the unique percent rank for different values. Both interpolation "
-                      "methods are following the methods implemented by LibreOffice or Excel. \n\n"
+                      "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
                       "The output raster's extent and resolution is defined by a reference "
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
@@ -554,7 +554,7 @@ QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFrom
 
 void QgsCellStatisticsPercentRankFromValueAlgorithm::addSpecificAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "Inclusive linear interpolation (PERCENTRANK.INC)" << "Exclusive linear interpolation (PERCENTRANK.EXC)", false, 0, false ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr("Inclusive linear interpolation (PERCENTRANK.INC)") << QObject::tr("Exclusive linear interpolation (PERCENTRANK.EXC)"), false, 0, false ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), QgsProcessingParameterNumber::Double, 10, false ) );
 }
 
@@ -590,7 +590,7 @@ void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProc
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -666,8 +666,8 @@ QStringList QgsCellStatisticsPercentRankFromRasterAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentrank from raster layer algorithm returns the cell-wise percentrank value of a stack of rasters based on an input value raster."
-                      "and writes them to an output raster. "
+  return QObject::tr( "The Cell stack percentrank from raster layer algorithm calculates the cell-wise percentrank value of a stack of rasters based on an input value raster "
+                      "and writes them to an output raster.\n\n"
                       "At each cell location, the current value of the value raster is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
                       "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
                       "There are two methods for percentile calculation:"
@@ -676,7 +676,7 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
                       "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
                       "</ul> "
                       "The linear interpolation method return the unique percent rank for different values. Both interpolation "
-                      "methods are following the methods implemented by LibreOffice or Excel. \n\n"
+                      "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
                       "The output raster's extent and resolution is defined by a reference "
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
@@ -692,7 +692,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::addSpecificAlgorithmParams
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_VALUE_RASTER" ), QObject::tr( "Value raster layer" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "VALUE_RASTER_BAND" ), QObject::tr( "Value raster band" ), 1, QStringLiteral( "VALUE_LAYER" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "Inclusive linear interpolation (PERCENTRANK.INC)" << "Exclusive linear interpolation (PERCENTRANK.EXC)", false, 0, false ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr("Inclusive linear interpolation (PERCENTRANK.INC)") << QObject::tr("Exclusive linear interpolation (PERCENTRANK.EXC)"), false, 0, false ) );
 }
 
 bool QgsCellStatisticsPercentRankFromRasterAlgorithm::prepareSpecificAlgorithmParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -735,7 +735,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
     std::unique_ptr< QgsRasterBlock > valueBlock( mValueRasterInterface->block( mValueRasterBand, blockExtent, iterCols, iterRows ) );
 
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
