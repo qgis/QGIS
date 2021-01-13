@@ -109,7 +109,6 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         while self.running:
             QCoreApplication.processEvents()
 
-        #from IPython import embed; embed(using=False)
         self.assertTrue(res.fetchedRowCount() > 0 and res.fetchedRowCount() < self.NUM_RECORDS)
 
     @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Local manual test: not for CI')
