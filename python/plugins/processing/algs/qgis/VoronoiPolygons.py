@@ -85,6 +85,9 @@ class VoronoiPolygons(QgisAlgorithm):
     def displayName(self):
         return self.tr('Voronoi polygons')
 
+    def tags(self):
+        return self.tr('thiessen').split(',')
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
