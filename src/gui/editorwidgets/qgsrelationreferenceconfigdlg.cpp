@@ -38,6 +38,9 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
   const auto constReferencingRelations = vl->referencingRelations( fieldIdx );
   for ( const QgsRelation &relation : constReferencingRelations )
   {
+    if ( !relation.polymorphicRelationId().isNull() )
+      continue;
+
     if ( relation.name().isEmpty() )
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     else
