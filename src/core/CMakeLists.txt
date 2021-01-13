@@ -1738,6 +1738,7 @@ target_include_directories(qgis_core PUBLIC
   auth
   callouts
   classification
+  diagram
   dxf
   editform
   effects
@@ -1747,6 +1748,7 @@ target_include_directories(qgis_core PUBLIC
   geocms
   geocms/geonode
   geocoding
+  gps
   labeling
   layertree
   layout
@@ -1781,6 +1783,11 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
 )
+
+if (WITH_EPT)
+  target_include_directories(qgis_core PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/core/providers/ept)
+endif()
 
 GENERATE_EXPORT_HEADER(
   qgis_core

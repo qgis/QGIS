@@ -22,9 +22,6 @@
 #include "qgswmsconnection.h"
 #include "qgsxyzconnection.h"
 
-#ifdef HAVE_GUI
-#include "qgswmssourceselect.h"
-#endif
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
 #include "qgssettings.h"
