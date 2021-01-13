@@ -13,8 +13,6 @@ add_library (dummy MODULE ${dummy_SRCS})
 
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/server
   ${CMAKE_SOURCE_DIR}/src/server/services
   ${CMAKE_SOURCE_DIR}/src/server/services/DummeyService

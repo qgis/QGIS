@@ -12,8 +12,6 @@ set (BENCH_SRCS
 add_executable (qgis_bench MACOSX_BUNDLE WIN32 ${BENCH_SRCS} )
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
 
   ${CMAKE_BINARY_DIR}

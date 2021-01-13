@@ -10,8 +10,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/providers/mdal
   ${CMAKE_SOURCE_DIR}/src/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/test
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 )
 include_directories(SYSTEM
   ${MDAL_INCLUDE_DIR}

@@ -92,8 +92,6 @@ endif()
 
 include_directories(
   ${CMAKE_BINARY_DIR}/src/customwidgets
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 include_directories(SYSTEM

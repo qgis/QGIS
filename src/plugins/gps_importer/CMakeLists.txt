@@ -26,8 +26,6 @@ add_library (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_RCCS} ${GPS_UIS_H})
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui

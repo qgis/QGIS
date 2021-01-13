@@ -3,7 +3,6 @@ add_executable(crssync main.cpp)
 include_directories(
   ../core
   ../core/geometry
-  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_BINARY_DIR}/src/core
 )
 include_directories(SYSTEM
