@@ -103,41 +103,14 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         def loop_exiter():
             self.running = False
 
-        QTimer.singleShot(0, model_deleter)
-        QTimer.singleShot(1, loop_exiter)
+        QTimer.singleShot(1, model_deleter)
+        QTimer.singleShot(2, loop_exiter)
 
         while self.running:
             QCoreApplication.processEvents()
 
+        #from IPython import embed; embed(using=False)
         self.assertTrue(res.fetchedRowCount() > 0 and res.fetchedRowCount() < self.NUM_RECORDS)
-
-    def test_model_concurrency(self):
-        """Test concurrency: model is feching data from a separate thread"""
-
-        # while we internally loop through features with nextRow()
-
-        md = QgsProviderRegistry.instance().providerMetadata('postgres')
-        conn = md.createConnection(self.uri, {})
-        res = conn.execSql('SELECT * FROM qgis_test.random_big_data')
-        model = QgsQueryResultModel(res)
-
-        rowCount = 0
-        while res.hasNextRow():
-            rowCount += 1
-            res.nextRow()
-            QCoreApplication.processEvents()
-
-        QCoreApplication.processEvents()
-
-        self.assertEqual(rowCount, self.NUM_RECORDS)
-        self.assertEqual(res.fetchedRowCount(), self.NUM_RECORDS)
-        self.assertEqual(res.fetchedRowCount(), model.rowCount(model.index(-1)))
-        self.assertEqual(res.fetchedRowCount(), len(res.rows()))
-
-        rows = res.rows()
-        for i in range(self.NUM_RECORDS):
-            self.assertEqual(rows[i][0], i + 1)
-            self.assertEqual(model.data(model.index(i, 0), Qt.DisplayRole), i + 1)
 
     @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Local manual test: not for CI')
     def test_widget(self):

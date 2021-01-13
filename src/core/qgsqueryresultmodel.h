@@ -50,8 +50,8 @@ class QgsQueryResultFetcher: public QObject
 
   signals:
 
-    //! Emitted when \a newRowsCount has been fetched
-    void rowsReady( int newRowsCount );
+    //! Emitted when \a newRows have been fetched
+    void rowsReady( const QList<QList<QVariant>> &newRows );
 
   private:
 
@@ -95,17 +95,17 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
   public slots:
 
     /**
-     * Triggered when \a newRowsCount have been fetched and can be added to the model
+     * Triggered when \a newRows have been fetched and can be added to the model
      */
-    void newRowsReady( int newRowsCount );
+    void rowsReady( const QList<QList<QVariant> > &rows );
 
   private:
 
     const QgsAbstractDatabaseProviderConnection::QueryResult &mQueryResult;
     QStringList mColumns;
-    qlonglong mRowCount = 0;
     QThread mWorkerThread;
     QgsQueryResultFetcher *mWorker = nullptr;
+    QList<QVariantList> mRows;
 
 };
 

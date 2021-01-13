@@ -44,9 +44,9 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
 
   public slots:
 
-    void newRowsReady( int newRowsCount );
+    void rowsReady( const QList<QList<QVariant> > &rows );
 %Docstring
-Triggered when ``newRowsCount`` have been fetched and can be added to the model
+Triggered when ``newRows`` have been fetched and can be added to the model
 %End
 
 };

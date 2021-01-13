@@ -70,28 +70,17 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * The QueryResult class represents the result of a query executed by execSql()
      *
-     * It encapsulates the result rows and a list of the column names.
-     * The query result may be empty in case the query returns nothing.
+     * It encapsulates an iterator over the result rows and a list of the column names.
      *
      * Rows can be retrieved by iterating over the result with hasNextRow() and nextRow()
      * or by calling rows() that will internally iterate over the results and return
-     * the result list.
+     * the whole result list.
      *
-     * The list of results is cached internally and subsequent calls to rows() or at() return the
-     * cached results.
      *
      * \since QGIS 3.18
      */
     struct CORE_EXPORT QueryResult
     {
-#ifdef SIP_RUN
-        SIP_PYOBJECT __repr__();
-        % MethodCode
-        const qlonglong rowCount = sipCpp->rowCount();
-        const QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( rowCount > -1 ? QString::number( rowCount ) : QStringLiteral( "unknown" ) );
-        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-        % End
-#endif
 
         /**
          * Returns the column names
@@ -102,19 +91,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * Returns the result rows by calling the iterator internally and fetching
          * all the rows, an optional \a feedback can be used to interrupt the fetching loop.
          *
-         * \note results are cached internally and subsequent calls to this method
-         * will return the cached results.
+         * \note calling this function more than one time is not supported: the second
+         * call will always return an empty list.
          */
-        QList<QList<QVariant> > rows( QgsFeedback *feedback = nullptr ) const;
-
-        /**
-          * Returns the maximum value between the estimated row count (this value may not be exact or
-          * it may be -1 if not known) and the actual number of fetched rows
-          *
-          * \note When all the results have been retrieved returns the actual number of rows
-          * \see fetchedRowCount()
-         */
-        qlonglong rowCount() const;
+        QList<QList<QVariant> > rows( QgsFeedback *feedback = nullptr );
 
         /**
          * Returns TRUE if there are more rows to fetch
@@ -133,27 +113,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QList<QVariant> nextRow() const;
 
         /**
-         * Resets the internal iterator counter, the next call to nextRow()
-         * will return the first row (if any)
-         *
-         * \see hasNextRow()
-         * \see nextRow()
-         */
-        void rewind();
-
-        /**
          * Returns the number of fetched rows
          *
          * \see rowCount()
          */
         qlonglong fetchedRowCount( ) const;
 
-        /**
-         * Returns the row at 0-based index \a index, if index is not valid, an empty row is returned
-         *
-         * \note this method calls the iterator internally until \a index row is retrieved
-         */
-        QList<QVariant> at( qlonglong index ) const;
 
 #ifdef SIP_RUN
         // Python iterator
@@ -186,7 +151,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * The QueryResultIterator struct is an abstract interface for provider query result iterators.
          * Providers must implement their own concrete iterator over query results.
          *
-         * \note This struct is thread safe.
          */
         struct CORE_EXPORT QueryResultIterator SIP_SKIP
         {
@@ -194,22 +158,15 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
             bool hasNextRow() const;
             qlonglong fetchedRowCount();
             virtual ~QueryResultIterator() = default;
-            QList<QList<QVariant> > rows() const;
 
           private:
 
             virtual QVariantList nextRowPrivate() = 0;
             virtual bool hasNextRowPrivate() const = 0;
-            mutable QList<QList<QVariant>> mRows;
+            mutable qlonglong mFetchedRowCount = 0;
             mutable QMutex mMutex;
 
         };
-
-        /**
-          * Sets \a rowCount
-          * \note Not available in Python bindings
-          */
-        void setRowCount( const qlonglong &rowCount ) SIP_SKIP;
 
         /**
          * Appends \a columnName to the list of column names.
@@ -235,8 +192,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
         mutable std::shared_ptr<QueryResultIterator> mResultIterator;
         QStringList mColumns;
-        qlonglong mRowCount = 0;
-        mutable qlonglong mIteratorCounter = 0;
 
     };
 

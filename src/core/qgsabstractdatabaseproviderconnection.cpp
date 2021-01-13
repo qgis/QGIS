@@ -444,12 +444,10 @@ QStringList QgsAbstractDatabaseProviderConnection::QueryResult::columns() const
   return mColumns;
 }
 
-QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows( QgsFeedback *feedback ) const
+QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows( QgsFeedback *feedback )
 {
-  if ( ! mResultIterator )
-  {
-    return QList<QList<QVariant> >();
-  }
+
+  QList<QList<QVariant> > rows;
 
   while ( mResultIterator &&
           mResultIterator->hasNextRow() &&
@@ -460,8 +458,12 @@ QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows
     {
       break;
     }
+    else
+    {
+      rows.push_back( row );
+    }
   }
-  return mResultIterator->rows();
+  return rows;
 }
 
 QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow() const
@@ -470,13 +472,9 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow() co
   {
     return QList<QVariant>();
   }
-  return at( mIteratorCounter++ );
+  return mResultIterator->nextRow();
 }
 
-void QgsAbstractDatabaseProviderConnection::QueryResult::rewind()
-{
-  mIteratorCounter = 0;
-}
 
 qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() const
 {
@@ -487,39 +485,6 @@ qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() 
   return mResultIterator->fetchedRowCount();
 }
 
-QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::at( qlonglong index ) const
-{
-  if ( index < 0 || ! mResultIterator )
-  {
-    return QList<QVariant>();
-  }
-
-  // Fetch rows until the index
-  while ( index >= mResultIterator->fetchedRowCount() )
-  {
-    if ( mResultIterator->nextRow().isEmpty() )
-    {
-      break;
-    }
-  }
-
-  if ( index >= mResultIterator->fetchedRowCount() )
-  {
-    return QList<QVariant>();
-  }
-
-  return mResultIterator->rows().at( index );
-}
-
-
-qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
-{
-  if ( mResultIterator )
-  {
-    return std::max( mResultIterator->fetchedRowCount(), mRowCount );
-  }
-  return mRowCount;
-}
 
 bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
 {
@@ -527,7 +492,7 @@ bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
   {
     return false;
   }
-  return ! at( mIteratorCounter ).isEmpty();
+  return mResultIterator->hasNextRow();
 }
 
 void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QString &columnName )
@@ -535,10 +500,6 @@ void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QSt
   mColumns.push_back( columnName );
 }
 
-void QgsAbstractDatabaseProviderConnection::QueryResult::setRowCount( const qlonglong &rowCount )
-{
-  mRowCount = rowCount;
-}
 
 QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator )
   : mResultIterator( iterator )
@@ -551,7 +512,7 @@ QVariantList QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIter
   const QVariantList row { nextRowPrivate() };
   if ( ! row.isEmpty() )
   {
-    mRows.push_back( row );
+    mFetchedRowCount++;
   }
   return row;
 }
@@ -565,13 +526,7 @@ bool QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::ha
 qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::fetchedRowCount()
 {
   QMutexLocker lock( &mMutex );
-  return mRows.count();
-}
-
-QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::rows() const
-{
-  QMutexLocker lock( &mMutex );
-  return mRows;
+  return mFetchedRowCount;
 }
 
 

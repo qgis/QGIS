@@ -47,39 +47,21 @@ is not supported or cannot be performed without errors.
 
     struct QueryResult
     {
-        SIP_PYOBJECT __repr__();
-%MethodCode
-        const qlonglong rowCount = sipCpp->rowCount();
-        const QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( rowCount > -1 ? QString::number( rowCount ) : QStringLiteral( "unknown" ) );
-        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-%End
 
         QStringList columns() const;
 %Docstring
 Returns the column names
 %End
 
-        QList<QList<QVariant> > rows( QgsFeedback *feedback = 0 ) const;
+        QList<QList<QVariant> > rows( QgsFeedback *feedback = 0 );
 %Docstring
 Returns the result rows by calling the iterator internally and fetching
 all the rows, an optional ``feedback`` can be used to interrupt the fetching loop.
 
 .. note::
 
-   results are cached internally and subsequent calls to this method
-   will return the cached results.
-%End
-
-        qlonglong rowCount() const;
-%Docstring
-Returns the maximum value between the estimated row count (this value may not be exact or
-it may be -1 if not known) and the actual number of fetched rows
-
-.. note::
-
-   When all the results have been retrieved returns the actual number of rows
-
-.. seealso:: :py:func:`fetchedRowCount`
+   calling this function more than one time is not supported: the second
+   call will always return an empty list.
 %End
 
         bool hasNextRow() const;
@@ -100,16 +82,6 @@ Returns the next result row or an empty row if there are no rows left
 .. seealso:: :py:func:`rewind`
 %End
 
-        void rewind();
-%Docstring
-Resets the internal iterator counter, the next call to :py:func:`~QgsAbstractDatabaseProviderConnection.nextRow`
-will return the first row (if any)
-
-.. seealso:: :py:func:`hasNextRow`
-
-.. seealso:: :py:func:`nextRow`
-%End
-
         qlonglong fetchedRowCount( ) const;
 %Docstring
 Returns the number of fetched rows
@@ -117,14 +89,6 @@ Returns the number of fetched rows
 .. seealso:: :py:func:`rowCount`
 %End
 
-        QList<QVariant> at( qlonglong index ) const;
-%Docstring
-Returns the row at 0-based index ``index``, if index is not valid, an empty row is returned
-
-.. note::
-
-   this method calls the iterator internally until ``index`` row is retrieved
-%End
 
         // Python iterator
         QueryResult *__iter__();
@@ -148,7 +112,6 @@ Returns the row at 0-based index ``index``, if index is not valid, an empty row 
           PyErr_SetString( PyExc_StopIteration, "" );
         }
 %End
-
 
 
 

@@ -19,22 +19,22 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
   : QAbstractListModel( parent )
   , mQueryResult( queryResult )
   , mColumns( queryResult.columns() )
-  , mRowCount( mQueryResult.fetchedRowCount() )
 {
+  qRegisterMetaType< QList<QList<QVariant>>>( "QList<QList<QVariant>>" );
   if ( mQueryResult.hasNextRow() )
   {
     mWorker = new QgsQueryResultFetcher( &mQueryResult );
     mWorker->moveToThread( &mWorkerThread );
     connect( &mWorkerThread, &QThread::started, mWorker, &QgsQueryResultFetcher::fetchRows );
-    connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::newRowsReady );
+    connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
     mWorkerThread.start();
   }
 }
 
-void QgsQueryResultModel::newRowsReady( int newRowCount )
+void QgsQueryResultModel::rowsReady( const QList<QList<QVariant>> &rows )
 {
-  beginInsertRows( QModelIndex(), mRowCount, mRowCount + newRowCount - 1 );
-  mRowCount += newRowCount;
+  beginInsertRows( QModelIndex(), rows.count(), mRows.count( ) + rows.count() - 1 );
+  mRows.append( rows );
   endInsertRows();
 }
 
@@ -53,7 +53,7 @@ int QgsQueryResultModel::rowCount( const QModelIndex &parent ) const
 {
   if ( parent.isValid() )
     return 0;
-  return mRowCount;
+  return mRows.count();
 }
 
 int QgsQueryResultModel::columnCount( const QModelIndex &parent ) const
@@ -66,12 +66,12 @@ int QgsQueryResultModel::columnCount( const QModelIndex &parent ) const
 QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() || index.row() < 0 || index.column() > mColumns.count() - 1 ||
-       index.row() >= mRowCount )
+       index.row() >= mRows.count( ) )
     return QVariant();
 
   if ( role == Qt::DisplayRole )
   {
-    const QList<QVariant> result { mQueryResult.at( index.row() ) };
+    const QList<QVariant> result { mRows.at( index.row() ) };
     if ( index.column() < result.count( ) )
     {
       return result.at( index.column() );
@@ -87,22 +87,21 @@ const int QgsQueryResultFetcher::ROWS_TO_FETCH = 200;
 void QgsQueryResultFetcher::fetchRows()
 {
   qlonglong rowCount { 0 };
-  while ( mStopFetching == 0 )
+  QList<QList<QVariant>> newRows;
+  while ( mStopFetching == 0 && mQueryResult->hasNextRow() )
   {
-    if ( mQueryResult->at( rowCount ).isEmpty() )
-    {
-      break;
-    }
+    newRows.append( mQueryResult->nextRow() );
     ++rowCount;
     if ( rowCount % ROWS_TO_FETCH == 0 && mStopFetching == 0 )
     {
-      emit rowsReady( ROWS_TO_FETCH );
+      emit rowsReady( newRows );
+      newRows.clear();
     }
   }
 
   if ( rowCount % ROWS_TO_FETCH && mStopFetching == 0 )
   {
-    emit rowsReady( rowCount % ROWS_TO_FETCH );
+    emit rowsReady( newRows );
   }
 }
 

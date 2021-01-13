@@ -267,7 +267,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
       const int numCols { rec.count() };
       auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-      results.setRowCount( q.size() );
       for ( int idx = 0; idx < numCols; ++idx )
       {
         results.appendColumn( rec.field( idx ).name() );

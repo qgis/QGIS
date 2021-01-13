@@ -271,7 +271,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     }
 
     const qlonglong numRows { res->PQntuples() };
-    results.setRowCount( numRows );
 
     if ( numRows > 0 )
     {
