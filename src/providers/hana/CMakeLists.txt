@@ -1,5 +1,3 @@
-FIND_PACKAGE(ODBCCPP REQUIRED)
-
 ########################################################
 # Files
 
@@ -76,6 +74,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
+  ${CMAKE_SOURCE_DIR}/external/odbccpp/src
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -86,7 +85,6 @@ INCLUDE_DIRECTORIES (SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${ODBC_INCLUDE_DIRS}
-  ${ODBCCPP_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
@@ -99,13 +97,13 @@ TARGET_COMPILE_DEFINITIONS(hanaprovider_a PUBLIC ODBC_STATIC)
 
 TARGET_LINK_LIBRARIES(hanaprovider
   qgis_core
-  ${ODBCCPP_LIBRARY}
+  odbccpp_static
   ${ODBC_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES(hanaprovider_a
   qgis_core
-  ${ODBCCPP_LIBRARY}
+  odbccpp_static
   ${ODBC_LIBRARIES}
 )
 
