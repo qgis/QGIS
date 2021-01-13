@@ -23,20 +23,25 @@
 
 struct QgsHanaEmptyProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-  QVariantList nextRow() override { return QVariantList(); }
-  bool hasNextRow() const override { return false; }
+    // QueryResultIterator interface
+  private:
+    QVariantList nextRowPrivate();
+    bool hasNextRowPrivate() const;
 };
 
 struct QgsHanaProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
     QgsHanaProviderResultIterator( QgsHanaResultSetRef &&resultSet );
-    QVariantList nextRow() override;
-    bool hasNextRow() const override { return mNextRow; }
 
   private:
     QgsHanaResultSetRef mResultSet;
     unsigned short mNumColumns = 0;
     bool mNextRow = false;
+
+    // QueryResultIterator interface
+  private:
+    QVariantList nextRowPrivate();
+    bool hasNextRowPrivate() const;
 };
 
 class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection

@@ -33,7 +33,7 @@ QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRe
   , mNextRow( mResultSet->next() )
 {}
 
-QVariantList QgsHanaProviderResultIterator::nextRow()
+QVariantList QgsHanaProviderResultIterator::nextRowPrivate()
 {
   QVariantList ret;
   if ( !mNextRow )
@@ -42,6 +42,11 @@ QVariantList QgsHanaProviderResultIterator::nextRow()
     ret.push_back( mResultSet->getValue( i ) );
   mNextRow = mResultSet->next();
   return ret;
+}
+
+bool QgsHanaProviderResultIterator::hasNextRowPrivate() const
+{
+  return mNextRow;
 }
 
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
@@ -250,7 +255,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
       unsigned short numColumns = md.getColumnCount();
       for ( unsigned short i = 1; i <= numColumns; ++i )
         ret.appendColumn( QgsHanaUtils::toQString( md.getColumnName( i ) ) );
-      ret.setRowCount( -1 );
       return ret;
     }
     else
@@ -402,4 +406,14 @@ QList<QgsVectorDataProvider::NativeType> QgsHanaProviderConnection::nativeTypes(
   if ( types.isEmpty() )
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for connection %1" ).arg( uri() ) );
   return types;
+}
+
+QVariantList QgsHanaEmptyProviderResultIterator::nextRowPrivate()
+{
+  return QVariantList();
+}
+
+bool QgsHanaEmptyProviderResultIterator::hasNextRowPrivate() const
+{
+  return false;
 }
