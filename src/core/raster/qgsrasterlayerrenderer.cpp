@@ -57,6 +57,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mR->renderContext()->painter(), mR->mRasterViewPort, &mR->renderContext()->mapToPixel(), &feedback );
+  mR->mReadyToCompose = true;
   QgsDebugMsgLevel( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ), 3 );
   mLastPreview = QTime::currentTime();
 }
