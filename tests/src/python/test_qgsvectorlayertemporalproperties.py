@@ -18,7 +18,11 @@ from qgis.core import (QgsDateTimeRange,
                        QgsVectorLayer,
                        QgsVectorDataProviderTemporalCapabilities,
                        QgsUnitTypes,
-                       QgsVectorLayerTemporalContext)
+                       QgsVectorLayerTemporalContext,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsFeatureRequest)
 from qgis.PyQt.QtCore import (QDateTime,
                               QDate,
                               QTime,
@@ -347,6 +351,120 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         self.assertEqual(props.createFilterString(context, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13)')
+
+    def testFeatureTemporalFilterOutput(self):
+        # some background on the 'overlapping' code: https://wiki.c2.com/?TestIfDateRangesOverlap
+        # idea is to test:
+        #    - a phenemenon with a time-range (so having  a start time and an end time (OR duration))
+        #    - a phenemenon with only one attribute/timestamp (in time)
+        # both when the overlap with the timestep-frame (is ALWAYS a timeframe, though sometimes very short: 1 millisecond)
+        # for both sets test:
+        #    - when phenemenon timeframe is exactly on timestep frame (should be always be just 1 result)
+        #    - when phenomenon timeframe and timestep frame are overlapping (should have 2 results)
+        #    - when both do NOT overlap
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=start_field:datetime&field=end_field:datetime&field=text:string", "test", "memory")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.fields()[2].type(), QVariant.DateTime)
+        self.assertEqual(layer.fields()[3].type(), QVariant.DateTime)
+        # creating (point) features on a row with a one-hour duration phenomenon
+        # in a csv use:
+        #
+        #    X,Y,fid,id,t_start,t_end,text
+        #    5.02435455597371,52.6540035154413,"1","1",2020/08/26 01:00:00,2020/08/26 02:00:00,"1-2"
+        #    5.0646388842879,52.6544602897524,"2","2",2020/08/26 02:00:00,2020/08/26 03:00:00,"2-3"
+        #    5.11922979648937,52.6542319031934,"3","3",2020/08/26 03:00:00,2020/08/26 04:00:00,"3-4"
+        #    5.16930284009487,52.6546886751184,"4","4",,2020/08/26 05:00:00,"NULL-5"
+        #    5.22314077419701,52.6551454422712,"5","5",2020/08/26 05:00:00,,"5-NULL"
+        #    5.27584924115016,52.6558305840525,"6","6",2020/08/26 06:00:00,2020/08/26 07:00:00,"6-7"
+
+        # fldint and fldtxt hold the START of the temporal props (not used)
+        # fv=feature values
+        # X,Y,fldint,fldtxt,start_field,end_field,text
+        fv1 = [5.02435455597371, 52.6540035154413, 1, "1", QDateTime(QDate(2020, 8, 26), QTime(1, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(2, 0, 0)), "1-2"]
+        fv2 = [5.06463888428790, 52.6544602897524, 2, "2", QDateTime(QDate(2020, 8, 26), QTime(2, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(3, 0, 0)), "2-3"]
+        fv3 = [5.11922979648937, 52.6542319031934, 3, "3", QDateTime(QDate(2020, 8, 26), QTime(3, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(4, 0, 0)), "3-4"]
+        layer.startEditing()
+        for fv in [fv1, fv2, fv3]:
+            f = QgsFeature()
+            f.setAttributes(fv[2:])
+            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(fv[0], fv[0])))
+            self.assertTrue(f.isValid())
+            layer.addFeature(f)
+        layer.commitChanges()
+        self.assertEqual(len(list(layer.dataProvider().getFeatures())), 3)
+
+        context = QgsVectorLayerTemporalContext()
+        context.setLayer(layer)
+        props = QgsVectorLayerTemporalProperties(enabled=True)
+        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        props.setStartField('start_field')
+        props.setEndField('end_field')
+
+        # frame OUTSIDE data range, should return zero features
+        frame = QgsDateTimeRange(QDateTime(QDate(2020, 8, 26), QTime(0, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(1, 0, 0)))
+        featureRequest = QgsFeatureRequest().combineFilterExpression(props.createFilterString(context, frame))
+        result = list(layer.dataProvider().getFeatures(featureRequest))
+        self.assertEqual(len(result), 0)
+
+        frame = QgsDateTimeRange(QDateTime(QDate(2020, 8, 26), QTime(2, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(3, 0, 0)))
+        # timestep frame on exact one data range frame: 2:00-3:00
+        # should return only the feature with text attribute '2-3'
+        featureRequest = QgsFeatureRequest().combineFilterExpression(props.createFilterString(context, frame))
+        result = list(layer.dataProvider().getFeatures(featureRequest))
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['text'], '2-3')
+
+        # layer definition end_field value is NULL
+        # in practice we take that as: apparently the user means: start==end for the features (one moment in time)
+        # should return only the feature with text attribute '2-3' because only START of feature (=2) is taken into account and we check frame 2(including)-3(excluding)
+        props.setEndField(None)
+        featureRequest = QgsFeatureRequest().combineFilterExpression(props.createFilterString(context, frame))
+        result = list(layer.dataProvider().getFeatures(featureRequest))
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['text'], '2-3')
+
+        # layer definition start_field value is NULL
+        # in practice we take that as: apparently the user means: start==end for the features (one moment in time)
+        # should return only the feature with text attribute '1-2' because only END of feature (=2) is taken into account and we check frame 2(including)-3(excluding)
+        props.setEndField('end_field')  # RESET end_field
+        props.setStartField(None)
+        featureRequest = QgsFeatureRequest().combineFilterExpression(props.createFilterString(context, frame))
+        result = list(layer.dataProvider().getFeatures(featureRequest))
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['text'], '1-2')
+
+        # now add features which MISS either the start or then end VALUE
+        fv4 = [5.16930284009487, 52.6546886751184, 4, "4", None, QDateTime(QDate(2020, 8, 26), QTime(5, 0, 0)), "NULL-5"]
+        fv5 = [5.22314077419701, 52.6551454422712, 5, "5", QDateTime(QDate(2020, 8, 26), QTime(5, 0, 0)), None, "5-NULL"]
+        fv6 = [5.27584924115016, 52.6558305840525, 6, "6", QDateTime(QDate(2020, 8, 26), QTime(6, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(7, 0, 0)), "6-7"]
+        layer.startEditing()
+        layer.startEditing()
+        for fv in [fv4, fv5, fv6]:
+            f = QgsFeature()
+            f.setAttributes(fv[2:])
+            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(fv[0], fv[0])))
+            self.assertTrue(f.isValid())
+            layer.addFeature(f)
+        layer.commitChanges()
+        self.assertEqual(len(list(layer.dataProvider().getFeatures())), 6)
+        # REsetting the props to having both a start- and end-field
+        props.setStartField('start_field')
+        props.setEndField('end_field')
+
+        # looking at timestep 2-3: should now show '2-3' AND the feature which only has an end value of 5 'NULL-5'
+        featureRequest = QgsFeatureRequest().combineFilterExpression(props.createFilterString(context, frame))
+        result = list(layer.dataProvider().getFeatures(featureRequest))
+        self.assertEqual(len(result), 2)
+        self.assertEqual(list(result)[0]['text'], '2-3')
+        self.assertEqual(list(result)[1]['text'], 'NULL-5')
+
+        # changing timestep to 6-7: should show both '6-7' AND feature starting at 5 till infinity '5-NULL'
+        frame = QgsDateTimeRange(QDateTime(QDate(2020, 8, 26), QTime(6, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(7, 0, 0)))
+        featureRequest = QgsFeatureRequest().combineFilterExpression(props.createFilterString(context, frame))
+        result = list(layer.dataProvider().getFeatures(featureRequest))
+        self.assertEqual(len(result), 2)
+        self.assertEqual(list(result)[0]['text'], '5-NULL')
+        self.assertEqual(list(result)[1]['text'], '6-7')
 
 
 if __name__ == '__main__':
