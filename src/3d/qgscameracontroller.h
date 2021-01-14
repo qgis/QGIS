@@ -219,6 +219,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void navigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
 
     /**
+     * Emitted whenever the camera movement speed is changed by the controller.
+     */
+    void cameraMovementSpeedChanged( double speed );
+
+    /**
      * Emitted when the mouse cursor position should be moved to the specified \a point
      * on the map viewport.
      */
