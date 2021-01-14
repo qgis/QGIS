@@ -21,6 +21,7 @@
 #include "qgshanasettings.h"
 #include "qgssettings.h"
 
+#include <QFileInfo>
 #include <QInputDialog>
 #include <QMessageBox>
 
@@ -56,6 +57,17 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaNewConnection::showHelp );
 
   txtDriver->setText( QgsHanaDriver::instance()->driver() );
+#if defined(Q_OS_WIN)
+  txtDriver->setToolTip( tr( "The name of the HANA ODBC driver.\r\n\r\n"
+                             "The HANA ODBC driver is a part of the SAP HANA Client,\r\n"
+                             "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
+#else
+  txtDriver->setToolTip( tr( "The name or path to the HANA ODBC driver.\r\n\r\n"
+                             "If the driver is registered in odbcinst.ini, enter the driver's name.\r\n"
+                             "Otherwise, enter the path to the driver (libodbcHDB.so).\r\n\r\n"
+                             "The HANA ODBC driver is a part of the SAP HANA Client,\r\n"
+                             "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
+#endif
 
   cbxCryptoProvider->addItem( QStringLiteral( "openssl" ), QStringLiteral( "openssl" ) );
   cbxCryptoProvider->addItem( QStringLiteral( "commoncrypto" ), QStringLiteral( "commoncrypto" ) );
@@ -296,9 +308,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
 void QgsHanaNewConnection::testConnection()
 {
   QString warningMsg;
-  if ( txtDriver->text().isEmpty() )
-    warningMsg = tr( "Driver name has not been specified." );
-  else if ( txtHost->text().isEmpty() )
+  if ( txtHost->text().isEmpty() )
     warningMsg = tr( "Host name has not been specified." );
   else if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() &&
             txtTenantDatabaseName->text().isEmpty() )
@@ -309,6 +319,29 @@ void QgsHanaNewConnection::testConnection()
     warningMsg = tr( "Password has not been specified." );
   else if ( txtIdentifier->text().isEmpty() )
     warningMsg = tr( "Identifier has not been specified." );
+  else
+  {
+    QString driver = txtDriver->text();
+    if ( driver.isEmpty() )
+      warningMsg = tr( "Driver name/path has not been specified." );
+    else
+    {
+      if ( !QgsHanaDriver::isInstalled( driver ) )
+      {
+#if defined(Q_OS_WIN)
+        warningMsg = tr( "Driver with name '%1' is not installed." ).arg( driver );
+#else
+        if ( !QgsHanaDriver::isValidPath( driver ) )
+        {
+          if ( QFileInfo::exists( driver ) )
+            warningMsg = tr( "Specified driver '%1' cannot be used to connect to HANA." ).arg( driver );
+          else
+            warningMsg = tr( "Driver with name/path '%1' was not found." ).arg( driver );
+        }
+#endif
+      }
+    }
+  }
 
   if ( !warningMsg.isEmpty() )
   {
