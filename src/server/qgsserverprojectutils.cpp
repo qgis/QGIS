@@ -172,6 +172,13 @@ bool QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( const QgsProject &proj
          || wktGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
+bool QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project )
+{
+  QString useFormSettings = project.readEntry( QStringLiteral( "WMSFeatureInfoUseAttributeFormSettings" ), QStringLiteral( "/" ), "" );
+  return useFormSettings.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+         || useFormSettings.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+}
+
 bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project )
 {
   QString segmGeom = project.readEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), "" );
