@@ -33,6 +33,7 @@ class QgsFeatureRequest;
 class QgsAttributes;
 class QgsVectorLayer;
 class QgsRelationPrivate;
+class QgsPolymorphicRelation;
 
 /**
  * \ingroup core
@@ -47,6 +48,8 @@ class CORE_EXPORT QgsRelation
     Q_PROPERTY( QgsVectorLayer *referencedLayer READ referencedLayer )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( bool isValid READ isValid )
+    Q_PROPERTY( QString polymorphicRelationId READ polymorphicRelationId WRITE setPolymorphicRelationId )
+    Q_PROPERTY( QgsPolymorphicRelation polymorphicRelation READ polymorphicRelation )
 
   public:
 
@@ -161,7 +164,7 @@ class CORE_EXPORT QgsRelation
     void setReferencedLayer( const QString &id );
 
     /**
-     * Add a field pairs which is part of this relation
+     * Add a field pair which is part of this relation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
@@ -171,7 +174,7 @@ class CORE_EXPORT QgsRelation
     void addFieldPair( const QString &referencingField, const QString &referencedField );
 
     /**
-     * Add a field pairs which is part of this relation
+     * Add a field pair which is part of this relation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
@@ -380,6 +383,24 @@ class CORE_EXPORT QgsRelation
      * \since QGIS 3.6
      */
     void updateRelationStatus();
+
+    /**
+     * Sets the parent polymorphic relation id.
+     * \since QGIS 3.18
+     */
+    void setPolymorphicRelationId( const QString polymorphicRelationId );
+
+    /**
+     * Returns the parent polymorphic relation id. If the relation is a normal relation, a null string is returned.
+     * \since QGIS 3.18
+     */
+    QString polymorphicRelationId() const;
+
+    /**
+     * Returns the parent polymorphic relation. If the relation is a normal relation, an invalid polymorphic relation is returned.
+     * \since QGIS 3.18
+     */
+    QgsPolymorphicRelation polymorphicRelation() const;
 
   private:
 

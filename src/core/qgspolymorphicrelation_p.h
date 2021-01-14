@@ -1,9 +1,9 @@
 /***************************************************************************
-               qgsrelation_p.h
+               qgspolymorphicrelation_p.h
                --------------------------
-    begin                : August 2018
-    copyright            : (C) 2018 Matthias Kuhn
-    email                : matthias@opengis.ch
+    begin                : December 2020
+    copyright            : (C) 2020 Ivan Ivanov
+    email                : ivan@opengis.ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSRELATION_P_H
-#define QGSRELATION_P_H
+#ifndef QGSPOLYMORPHICRELATION_P_H
+#define QGSPOLYMORPHICRELATION_P_H
 
 #define SIP_NO_FILE
 
@@ -30,15 +30,16 @@
 // version without notice, or even be removed.
 //
 
+#include "qgspolymorphicrelation.h"
 #include "qgsrelation.h"
 
 #include <QSharedData>
 #include <QPointer>
 
-class QgsRelationPrivate : public QSharedData
+class QgsPolymorphicRelationPrivate : public QSharedData
 {
   public:
-    QgsRelationPrivate() = default;
+    QgsPolymorphicRelationPrivate() = default;
 
     //! Unique Id
     QString mRelationId;
@@ -48,14 +49,12 @@ class QgsRelationPrivate : public QSharedData
     QString mReferencingLayerId;
     //! The child layer
     QPointer<QgsVectorLayer> mReferencingLayer;
-    //! The parent layer id
-    QString mReferencedLayerId;
-    //! The parent layer
-    QPointer<QgsVectorLayer> mReferencedLayer;
-    //! The relation strength: Association, Composition
-    QgsRelation::RelationStrength mRelationStrength = QgsRelation::Association;
-    //! The parent polymorphic relation id. If the relation is a normal relation, a null string is returned.
-    QString mPolymorphicRelationId;
+    //! The field in the child layer that stores the parent layer
+    QString mReferencedLayerField;
+    //! The expression to identify the referenced (parent) layer
+    QString mReferencedLayerExpression;
+    //! A list of layerids that are set as parents
+    QStringList mReferencedLayerIds;
 
     /**
      * A list of fields which define the relation.
@@ -65,9 +64,13 @@ class QgsRelationPrivate : public QSharedData
     */
     QList< QgsRelation::FieldPair > mFieldPairs;
 
+    //! A map of the layerIds and the respective layers
+    QMap<QString, QgsVectorLayer *> mReferencedLayersMap;
+
+    //! Whether the polymorphic relation is valid
     bool mValid = false;
 };
 
 /// @endcond
 
-#endif // QGSRELATION_P_H
+#endif // QGSPOLYMORPHICRELATION_P_H
