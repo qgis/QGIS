@@ -94,7 +94,7 @@ target_include_directories(qgis_native PUBLIC
 )
 
 if(MSVC)
-  taget_include_directories(qgis_native SYSTEM PUBLIC
+  target_include_directories(qgis_native SYSTEM PUBLIC
       ../../external/wintoast/src
   )
 endif()
