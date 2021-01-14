@@ -533,7 +533,7 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
   return QObject::tr( "The Cell stack percentrank from value algorithm calculates the cell-wise percentrank value of a stack of rasters based on a single input value "
                       "and writes them to an output raster.\n\n"
                       "At each cell location, the specified value is ranked among the respective values in the stack of all overlaid and sorted cell values from the input rasters. "
-                      "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
+                      "For values outside of the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
                       "There are two methods for percentile calculation:"
                       "<ul> "
                       "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
@@ -543,7 +543,7 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
                       "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
                       "The output raster's extent and resolution is defined by a reference "
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+                      "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will always be Float32." );
 }
 
