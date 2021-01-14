@@ -5,15 +5,10 @@ set (util_SRCS)
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
+include_directories(
+  ${CMAKE_SOURCE_DIR}/tests/src/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/test
-  ${CMAKE_SOURCE_DIR}/src/native
 
-  ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_BINARY_DIR}/src/ui/auth
-  ${CMAKE_BINARY_DIR}/src/native
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
@@ -69,7 +64,8 @@ macro (ADD_QGIS_TEST testname testsrc)
     ${QWT_LIBRARY}
     qgis_analysis
     qgis_core
-    qgis_gui)
+    qgis_gui
+    qgis_native)
   add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   target_link_libraries(qgis_${testname} qgis_native)
   add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})

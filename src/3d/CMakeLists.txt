@@ -191,7 +191,7 @@ set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
 add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
 
-target_include_directories(qgis_3d SYSTEM PRIVATE
+target_include_directories(qgis_3d SYSTEM PUBLIC
   ${QT5_3DEXTRA_INCLUDE_DIR}
 )
 

@@ -2,21 +2,7 @@
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
 include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/src/ui
-  ${CMAKE_SOURCE_DIR}/src/python
-  ${CMAKE_SOURCE_DIR}/src/app
-  ${CMAKE_SOURCE_DIR}/src/app/attributeformconfig
-  ${CMAKE_SOURCE_DIR}/src/app/labeling
-  ${CMAKE_SOURCE_DIR}/src/app/mesh
-  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/test
-  ${CMAKE_SOURCE_DIR}/external/nmea
-
-  ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_BINARY_DIR}/src/python
-  ${CMAKE_BINARY_DIR}/src/app
-  ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
