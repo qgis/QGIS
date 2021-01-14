@@ -52,6 +52,7 @@ class TestPyQgsProviderConnectionBase():
     defaultSchema = 'public'
 
     myNewTable = 'myNewTable'
+    myVeryNewTable = 'myVeryNewTable'
     myUtf8Table = 'myUtf8\U0001f604Table'
 
     @classmethod
@@ -311,15 +312,15 @@ class TestPyQgsProviderConnectionBase():
 
             if capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable:
                 # Rename
-                conn.renameVectorTable(schema, self.myNewTable, 'myVeryNewTable')
+                conn.renameVectorTable(schema, self.myNewTable, self.myVeryNewTable)
                 tables = self._table_names(conn.tables(schema))
                 self.assertFalse(self.myNewTable in tables)
-                self.assertTrue('myVeryNewTable' in tables)
+                self.assertTrue(self.myVeryNewTable in tables)
                 # Rename it back
-                conn.renameVectorTable(schema, 'myVeryNewTable', self.myNewTable)
+                conn.renameVectorTable(schema, self.myVeryNewTable, self.myNewTable)
                 tables = self._table_names(conn.tables(schema))
                 self.assertTrue(self.myNewTable in tables)
-                self.assertFalse('myVeryNewTable' in tables)
+                self.assertFalse(self.myVeryNewTable in tables)
 
             # Vacuum
             if capabilities & QgsAbstractDatabaseProviderConnection.Vacuum:

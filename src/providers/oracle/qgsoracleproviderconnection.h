@@ -59,6 +59,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
 
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
+    void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
 
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
