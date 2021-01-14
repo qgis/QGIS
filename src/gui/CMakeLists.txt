@@ -1421,11 +1421,12 @@ GENERATE_EXPORT_HEADER(
 
 set(QGIS_GUI_HDRS ${QGIS_GUI_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_gui.h)
 
-if(NOT APPLE)
+if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
   if (WIN32 )
     include_directories(${CMAKE_SOURCE_DIR}/src/native/win)
-  endif()
-  if (UNIX)
+  elseif (APPLE)
+    include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)
+  elseif (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/src/native/linux)
   endif()
   install(FILES ${QGIS_GUI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
@@ -1508,7 +1509,7 @@ install(TARGETS qgis_gui
   PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
 # ui headers to install, don't exist at target definition time, install manually
-if (APPLE)
+if (APPLE AND QGIS_MACAPP_FRAMEWORK)
   install(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_FW_SUBDIR}/qgis_gui.framework/Headers)
 else()
   install(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
