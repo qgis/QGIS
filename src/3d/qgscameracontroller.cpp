@@ -596,16 +596,19 @@ void QgsCameraController::onKeyPressedFlyNavigation()
     cameraPosDiff += - mCameraMovementSpeed * cameraFront;
   }
 
+  // note -- vertical axis movements are slower by default then horizontal ones, as GIS projects
+  // tend to have much more limited elevation range vs ground range
+  static constexpr double ELEVATION_MOVEMENT_SCALE = 0.5;
   if ( mDepressedKeys.contains( Qt::Key_PageUp ) || mDepressedKeys.contains( Qt::Key_E ) )
   {
     changed = true;
-    cameraPosDiff += mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
   }
 
   if ( mDepressedKeys.contains( Qt::Key_PageDown ) || mDepressedKeys.contains( Qt::Key_Q ) )
   {
     changed = true;
-    cameraPosDiff += - mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * - mCameraMovementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
   }
 
   if ( changed )
