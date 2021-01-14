@@ -95,23 +95,7 @@ set(UNTWINE_INCLUDE_DIRS
 # Build
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/editform
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/core/project
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/vector
-
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
   ${CMAKE_SOURCE_DIR}/external/untwine/api
-
-  ${CMAKE_BINARY_DIR}/src/core
-
-  ${CMAKE_BINARY_DIR}/src/ui
 )
 
 include_directories(SYSTEM
@@ -130,7 +114,9 @@ target_link_libraries (untwine
 target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
 
 add_library (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
+
 target_link_libraries (pdalprovider
+  qgis_core
   ${PDAL_LIBRARIES}
   Threads::Threads
 )
@@ -144,8 +130,8 @@ if (WITH_GUI)
     ${Qt5Network_LIBRARIES}
     ${Qt5Sql_LIBRARIES}
     ${Qt5Concurrent_LIBRARIES}
+    qgis_gui
   )
-  target_link_libraries(pdalprovider qgis_gui)
   add_dependencies(pdalprovider ui)
 endif()
 
@@ -159,6 +145,7 @@ target_link_libraries (pdalprovider_a
   ${Qt5Network_LIBRARIES}
   ${Qt5Sql_LIBRARIES}
   ${Qt5Concurrent_LIBRARIES}
+  qgis_core
 )
 
 if (WITH_GUI)
@@ -171,8 +158,8 @@ if (WITH_GUI)
     ${Qt5Network_LIBRARIES}
     ${Qt5Sql_LIBRARIES}
     ${Qt5Concurrent_LIBRARIES}
+    qgis_gui
   )
-  target_link_libraries(pdalprovider_gui_a qgis_gui)
   add_dependencies(pdalprovider_gui_a ui)
 endif()
 
