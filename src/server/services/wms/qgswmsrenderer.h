@@ -249,7 +249,7 @@ namespace QgsWms
 
       /**
        * Writes a vectorlayer attribute into the XML document
-       * \param attributeindex of attribute to be written
+       * \param attributeIndex of attribute to be written
        * \param layer The vector layer
        * \param fields attribute fields
        * \param featureAttributes the feature attributes
