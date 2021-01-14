@@ -1562,11 +1562,18 @@ namespace QgsWms
         featureElement.setAttribute( QStringLiteral( "id" ), QgsServerFeatureId::getServerFid( feature, layer->dataProvider()->pkAttributeIndexes() ) );
         layerElement.appendChild( featureElement );
 
-        //read all attribute values from the feature
         featureAttributes = feature.attributes();
-        for ( int i = 0; i < featureAttributes.count(); ++i )
+        QgsEditFormConfig editConfig = layer->editFormConfig();
+        if ( editConfig.layout() == QgsEditFormConfig::TabLayout )
         {
-          writeVectorLayerAttribute( i, layer, fields, featureAttributes, infoDocument, featureElement, renderContext );
+          writeAttributesTabLayout( editConfig, layer, fields, featureAttributes, infoDocument, featureElement, renderContext );
+        }
+        else
+        {
+          for ( int i = 0; i < featureAttributes.count(); ++i )
+          {
+            writeVectorLayerAttribute( i, layer, fields, featureAttributes, infoDocument, featureElement, renderContext );
+          }
         }
 
         //add maptip attribute based on html/expression (in case there is no maptip attribute)
@@ -1634,6 +1641,49 @@ namespace QgsWms
     return true;
   }
 
+  void QgsRenderer::writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &parentElem, QgsRenderContext &renderContext ) const
+  {
+    const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
+    if ( container )
+    {
+      QString groupName = container->name();
+      QDomElement nameElem;
+
+      if ( !groupName.isEmpty() )
+      {
+        nameElem = doc.createElement( groupName );
+        parentElem.appendChild( nameElem );
+      }
+
+      QList<QgsAttributeEditorElement *> children =  container->children();
+      foreach ( const QgsAttributeEditorElement *child, children )
+      {
+        if ( child->type() == QgsAttributeEditorElement::AeTypeContainer )
+        {
+          writeAttributesTabGroup( child, layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext );
+        }
+        else if ( child->type() == QgsAttributeEditorElement::AeTypeField )
+        {
+          const QgsAttributeEditorField *editorField = dynamic_cast<const QgsAttributeEditorField *>( child );
+          if ( editorField )
+          {
+            writeVectorLayerAttribute( editorField->idx(), layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext );
+          }
+        }
+      }
+    }
+  }
+
+  void QgsRenderer::writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const
+  {
+    QgsAttributeEditorContainer *editorContainer = config.invisibleRootContainer();
+    if ( !editorContainer )
+    {
+      return;
+    }
+
+    writeAttributesTabGroup( editorContainer, layer, fields, featureAttributes, doc, featureElem, renderContext );
+  }
 
   void QgsRenderer::writeVectorLayerAttribute( int attributeIndex,  QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const
   {
