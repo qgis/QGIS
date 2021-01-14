@@ -40,12 +40,13 @@ from qgis.core import (Qgis,
                        QgsProcessing,
                        QgsProject,
                        QgsProcessingModelParameter,
-                       QgsSettings
+                       QgsSettings,
                        )
 from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
                       QgsModelGraphicsScene,
-                      QgsModelDesignerDialog)
+                      QgsModelDesignerDialog,
+                      QgsProcessingContextGenerator)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -104,6 +105,19 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.setModel(_model)
 
         self.view().centerOn(0, 0)
+
+        self.processing_context = createContext()
+
+        class ContextGenerator(QgsProcessingContextGenerator):
+
+            def __init__(self, context):
+                super().__init__()
+                self.processing_context = context
+
+            def processingContext(self):
+                return self.processing_context
+
+        self.context_generator = ContextGenerator(self.processing_context)
 
     def editHelp(self):
         alg = self.model()
@@ -270,6 +284,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                                                          context=context,
                                                          widgetContext=widget_context,
                                                          algorithm=self.model())
+            dlg.registerProcessingContextGenerator(self.context_generator)
             if dlg.exec_():
                 new_param = dlg.createParameter()
                 self.autogenerate_parameter_name(new_param)
