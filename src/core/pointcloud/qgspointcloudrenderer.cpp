@@ -25,12 +25,13 @@
 #include "qgslogger.h"
 #include "qgscircle.h"
 
-QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset )
+QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, const QVector<QPointF> &highlightedPoints )
   : mRenderContext( context )
   , mScale( scale )
   , mOffset( offset )
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
+  , mHighlightedPoints( highlightedPoints )
 {
 
 }
@@ -195,6 +196,8 @@ void QgsPointCloudRenderer::setPointSymbol( PointSymbol symbol )
   mPointSymbol = symbol;
 }
 
+
+
 QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, const QgsRenderContext &renderContext, const QgsGeometry &geometry, double toleranceForPointIdentification )
 {
   QVector<QVariantMap> selectedPoints;
@@ -283,3 +286,4 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
 
   return selectedPoints;
 }
+

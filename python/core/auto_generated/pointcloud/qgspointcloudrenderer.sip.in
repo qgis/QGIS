@@ -26,7 +26,7 @@ Encapsulates the render context for a 2D point cloud rendering operation.
   public:
 
     QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset );
+                                double zValueScale, double zValueFixedOffset, const QVector<QPointF> &highlightedPoints );
 %Docstring
 Constructor for QgsPointCloudRenderContext.
 
@@ -38,6 +38,8 @@ taken from the point cloud index.
 
 The ``zValueFixedOffset`` argument specifies any constant offset value which must be added to z values
 taken from the point cloud index.
+
+The ``highlightedPoints`` argument specifies highlighted points during rendering
 %End
 
 
@@ -133,6 +135,11 @@ Returns any constant offset which must be applied to z values taken from the poi
 .. note::
 
    Scaling of z values via :py:func:`~QgsPointCloudRenderContext.zValueScale` should be applied before the :py:func:`~QgsPointCloudRenderContext.zValueFixedOffset`.
+%End
+
+    bool isPointHighlighted( const QPointF &p ) const;
+%Docstring
+Returns whether the point cloud point ``p`` should be highlighted
 %End
 
 

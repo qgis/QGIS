@@ -53,9 +53,11 @@ class CORE_EXPORT QgsPointCloudRenderContext
      *
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
+     *
+     * The \a highlightedPoints argument specifies highlighted points during rendering
      */
     QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset );
+                                double zValueScale, double zValueFixedOffset, const QVector<QPointF> &highlightedPoints );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh ) = delete;
@@ -154,6 +156,11 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     double zValueFixedOffset() const { return mZValueFixedOffset; }
 
+    /**
+     * Returns whether the point cloud point \a p should be highlighted
+     */
+    bool isPointHighlighted( const QPointF &p ) const { return mHighlightedPoints.contains( p ); }
+
 #ifndef SIP_RUN
 
     /**
@@ -209,6 +216,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
 
+    QVector<QPointF> mHighlightedPoints;
 };
 
 
@@ -511,6 +519,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const
     {
+      QPointF originalXY( x, y );
       context.renderContext().mapToPixel().transformInPlace( x, y );
       QPainter *painter = context.renderContext().painter();
       switch ( mPointSymbol )
@@ -529,6 +538,22 @@ class CORE_EXPORT QgsPointCloudRenderer
                                         mPainterPenWidth, mPainterPenWidth ) );
           break;
       };
+      if ( context.isPointHighlighted( originalXY ) )
+      {
+        QPen highlightPen( QColor( 255 - color.red(), 255 - color.green(), 255 - color.blue() ), 0.3 * mPainterPenWidth );
+        painter->setPen( highlightPen );
+        switch ( mPointSymbol )
+        {
+          case Square:
+            painter->drawRect( QRectF( x - mPainterPenWidth * 0.65, y - mPainterPenWidth * 0.65,
+                                       mPainterPenWidth * 1.3, mPainterPenWidth * 1.3 ) );
+            break;
+          case Circle:
+            painter->drawEllipse( QRectF( x - mPainterPenWidth * 0.65, y - mPainterPenWidth * 0.65,
+                                          mPainterPenWidth * 1.3, mPainterPenWidth * 1.3 ) );
+            break;
+        }
+      }
     }
 
     /**

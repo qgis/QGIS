@@ -108,6 +108,8 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
     QgsAbstract3DSymbol *symbolClone = mSymbol->clone();
     r->setSymbol( dynamic_cast<QgsPointCloud3DSymbol *>( symbolClone ) );
   }
+  r->setShowBoundingBoxes( mShowBoundingBoxes );
+  r->setMaximumScreenError( mMaximumScreenError );
   return r;
 }
 
