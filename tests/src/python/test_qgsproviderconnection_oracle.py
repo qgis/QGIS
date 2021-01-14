@@ -40,6 +40,7 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
 
     # need to override this because tables with geometries need to be uppercase
     myNewTable = 'MYNEWTABLE'
+    myVeryNewTable = 'MYVERYNEWTABLE'
     myUtf8Table = 'MYUTF8\U0001F604TABLE'
 
     @classmethod

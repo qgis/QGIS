@@ -286,7 +286,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
   }
 
   const bool geometryColumnsOnly { configuration().value( "geometryColumnsOnly", false ).toBool() };
-  const bool userTablesOnly { configuration().value( "userTablesOnly", false ).toBool() && schema.isEmpty() };
+  const bool userTablesOnly { configuration().value( "userTablesOnly", false ).toBool() &&schema.isEmpty() };
   const bool onlyExistingTypes { configuration().value( "onlyExistingTypes", false ).toBool() };
   const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
 
@@ -348,10 +348,25 @@ void QgsOracleProviderConnection::dropVectorTable( const QString &schema, const 
   executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
                      .arg( QgsOracleConn::quotedIdentifier( schema ) )
                      .arg( QgsOracleConn::quotedIdentifier( name ) ) );
+
+  executeSqlPrivate( QStringLiteral( "DELETE FROM user_sdo_geom_metadata WHERE TABLE_NAME = '%1'" )
+                     .arg( name ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
   return executeSqlPrivate( sql, feedback );
+}
+
+void QgsOracleProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameVectorTable );
+  executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
+                     .arg( QgsOracleConn::quotedIdentifier( schema ),
+                           QgsOracleConn::quotedIdentifier( name ),
+                           QgsOracleConn::quotedIdentifier( newName ) ) );
+
+  executeSqlPrivate( QStringLiteral( "UPDATE user_sdo_geom_metadata SET TABLE_NAME = '%1' where TABLE_NAME = '%2'" )
+                     .arg( newName, name ) );
 }
