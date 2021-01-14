@@ -26,7 +26,7 @@ set (SVG_DIRS
  transport
  wind_roses
 )
-  
+
 foreach (SVG_DIR ${SVG_DIRS})
   file(GLOB_RECURSE IMAGES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${SVG_DIR}/*.svg)
   set(SVG_FILES ${SVG_FILES} ${IMAGES})

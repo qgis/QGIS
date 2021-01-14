@@ -171,8 +171,8 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
     set_target_properties(grassrasterprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
-    target_link_libraries(grassrasterprovider${GRASS_BUILD_VERSION} 
-      qgisgrass${GRASS_BUILD_VERSION} 
+    target_link_libraries(grassrasterprovider${GRASS_BUILD_VERSION}
+      qgisgrass${GRASS_BUILD_VERSION}
       qgis_core
     )
 

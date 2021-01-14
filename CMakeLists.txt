@@ -729,11 +729,11 @@ if (WITH_CORE)
       set (DEFAULT_CGIBIN_SUBDIR .)
     endif()
   else()
-  
+
     if(APPLE)
         set(QGIS_MACAPP_FRAMEWORK TRUE CACHE BOOL "Build as a framework on OSX")
     endif()
-    
+
     if (APPLE AND QGIS_MACAPP_FRAMEWORK)
       if (POLICY CMP0042) # in CMake 3.0.0+
         set (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
@@ -807,7 +807,7 @@ if (WITH_CORE)
       set (DEFAULT_QML_SUBDIR     qml)
 
       set (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
-      
+
       # QGIS_MACAPP_FRAMEWORK=FALSE
       if(APPLE)
         set (QGIS_MACAPP_BUNDLE -1)

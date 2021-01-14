@@ -146,7 +146,7 @@ else()
     target_link_libraries (postgresprovider
       qgis_gui
     )
-    add_dependencies(postgresprovider ui)    
+    add_dependencies(postgresprovider ui)
   endif()
 
 
