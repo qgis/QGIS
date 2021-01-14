@@ -221,7 +221,7 @@ endif()
 
 set(QGIS_3D_HDRS ${QGIS_3D_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_3d.h)
 
-if(NOT APPLE)
+if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
   install(FILES ${QGIS_3D_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 else()
   set_target_properties(qgis_3d PROPERTIES
