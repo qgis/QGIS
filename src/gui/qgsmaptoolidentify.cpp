@@ -517,8 +517,16 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
 
   const QVector<QVariantMap> points = renderer->identify( layer, context, geometry, searchRadiusMapUnits );
 
+  QVector<QPointF> highlightedPoints;
+  for ( const QVariantMap &point : points )
+  {
+    highlightedPoints.push_back( QPointF( point[QStringLiteral( "X" ) ].toDouble(), point[QStringLiteral( "Y" ) ].toDouble() ) );
+  }
+  layer->setHighlightedPoints( highlightedPoints );
+
   fromPointCloudIdentificationToIdentifyResults( layer, points, *results );
 
+  layer->triggerRepaint();
   return true;
 }
 
