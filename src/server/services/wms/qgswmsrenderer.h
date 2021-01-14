@@ -50,6 +50,8 @@ class QImage;
 class QPaintDevice;
 class QPainter;
 class QgsLayerTreeGroup;
+class QgsEditFormConfig;
+class QgsAttributeEditorElement;
 
 namespace QgsWms
 {
@@ -221,6 +223,11 @@ namespace QgsWms
                                        QgsRectangle *featureBBox = nullptr,
                                        QgsGeometry *filterGeom = nullptr ) const;
 
+      //!Recursively called to write tab layout groups to XML
+      void writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
+      //!Writes attributes to XML document using the group/attribute layout defined in the tab layout
+      void writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
+      //! Writes a vectorlayer attribute into the XML document
       void writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
 
       //! Appends feature info xml for the layer to the layer element of the dom document
