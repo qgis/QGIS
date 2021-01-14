@@ -67,10 +67,19 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! The navigation mode used by the camera
     enum NavigationMode
     {
-      TerrainBasedNavigation, //! The default navigation based on the terrain
-      WalkNavigation //! Uses WASD keys or arrows to navigate in walking (first person) manner
+      TerrainBasedNavigation, //!< The default navigation based on the terrain
+      WalkNavigation //!< Uses WASD keys or arrows to navigate in walking (first person) manner
     };
     Q_ENUM( NavigationMode )
+
+    //! Vertical axis inversion options
+    enum VerticalAxisInversion
+    {
+      Never, //!< Never invert vertical axis movements
+      WhenDragging, //!< Invert vertical axis movements when dragging in first person modes
+      Always, //!< Always invert vertical axis movements
+    };
+    Q_ENUM( VerticalAxisInversion )
 
   public:
     //! Constructs the camera controller with optional parent node that will take ownership
@@ -82,13 +91,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     QRect viewport() const { return mViewport; }
 
     /**
-     * Returns the nvigtion mode used by the camera controller
+     * Returns the navigation mode used by the camera controller.
      * \since QGIS 3.18
      */
     QgsCameraController::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
 
     /**
-     * Sets the nvigtion mode used by the camera controller
+     * Sets the navigation mode used by the camera controller.
      * \since QGIS 3.18
      */
     void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
@@ -104,6 +113,18 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      * \since QGIS 3.18
      */
     void setCameraMovementSpeed( double movementSpeed );
+
+    /**
+     * Returns the vertical axis inversion behavior.
+     * \since QGIS 3.18
+     */
+    QgsCameraController::VerticalAxisInversion verticalAxisInversion() const { return mVerticalAxisInversion; }
+
+    /**
+     * Sets the vertical axis \a inversion behavior.
+     * \since QGIS 3.18
+     */
+    void setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion );
 
     /**
      * Connects to object picker attached to terrain entity. Called internally from 3D scene.
@@ -243,6 +264,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
     NavigationMode mCameraNavigationMode = NavigationMode::TerrainBasedNavigation;
+    VerticalAxisInversion mVerticalAxisInversion = WhenDragging;
     double mCameraMovementSpeed = 5.0;
 
     QSet< int > mDepressedKeys;

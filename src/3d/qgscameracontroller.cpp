@@ -76,6 +76,11 @@ void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
   mCameraMovementSpeed = movementSpeed;
 }
 
+void QgsCameraController::setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion )
+{
+  mVerticalAxisInversion = inversion;
+}
+
 void QgsCameraController::setTerrainEntity( QgsTerrainEntity *te )
 {
   mTerrainEntity = te;
@@ -626,7 +631,18 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
 
     if ( mPressedButton != Qt3DInput::QMouseEvent::RightButton )
     {
-      float diffPitch = -1 * 0.2f * dy;
+      float diffPitch = -0.2f * dy;
+      switch ( mVerticalAxisInversion )
+      {
+        case Always:
+          diffPitch *= -1;
+          break;
+
+        case WhenDragging:
+        case Never:
+          break;
+      }
+
       float diffYaw = - 0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
       updateCameraFromPose( false );
@@ -651,7 +667,17 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
 
     if ( mPressedButton ==  Qt3DInput::QMouseEvent::LeftButton || mPressedButton ==  Qt3DInput::QMouseEvent::MiddleButton )
     {
-      float diffPitch = 0.2f * dy;
+      float diffPitch = -0.2f * dy;
+      switch ( mVerticalAxisInversion )
+      {
+        case Always:
+        case WhenDragging:
+          diffPitch *= -1;
+          break;
+
+        case Never:
+          break;
+      }
       float diffYaw = - 0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
       updateCameraFromPose( false );

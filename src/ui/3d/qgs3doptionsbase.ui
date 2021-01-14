@@ -69,12 +69,8 @@
            <string>Default Camera Settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="1" column="0">
-            <widget class="QLabel" name="labelCameraProjectionType">
-             <property name="text">
-              <string>Projection type</string>
-             </property>
-            </widget>
+           <item row="1" column="1" colspan="2">
+            <widget class="QComboBox" name="cboCameraProjectionType"/>
            </item>
            <item row="2" column="1" colspan="2">
             <widget class="QgsSpinBox" name="spinCameraFieldOfView">
@@ -86,20 +82,17 @@
              </property>
             </widget>
            </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelCameraProjectionType">
+             <property name="text">
+              <string>Projection type</string>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="0">
             <widget class="QLabel" name="labelFieldofView">
              <property name="text">
               <string>Field of View</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1" colspan="2">
-            <widget class="QComboBox" name="cboCameraProjectionType"/>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="labelCameraNavigationMode">
-             <property name="text">
-              <string>Navigation mode</string>
              </property>
             </widget>
            </item>
@@ -119,12 +112,29 @@
              </property>
             </widget>
            </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="labelCameraNavigationMode">
+             <property name="text">
+              <string>Navigation mode</string>
+             </property>
+            </widget>
+           </item>
            <item row="4" column="0">
             <widget class="QLabel" name="labelMovementSpeed">
              <property name="text">
               <string>Movement speed</string>
              </property>
             </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="labelCameraNavigationMode_2">
+             <property name="text">
+              <string>Invert vertical axis</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1" colspan="2">
+            <widget class="QComboBox" name="mInvertVerticalAxisCombo"/>
            </item>
           </layout>
          </widget>
