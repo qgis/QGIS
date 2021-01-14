@@ -233,11 +233,12 @@ class TestPyQgsProviderConnectionBase():
 
                 # Test column names
                 res = conn.execSql(sql)
-                self.assertEqual(res.rows(), [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                rows = res.rows()
+                self.assertEqual(rows, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 self.assertEqual(res.columns(), ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t'])
 
                 # Test iterator
-                old_rows = res.rows()
+                old_rows = rows
                 res = conn.execSql(sql)
                 rows = []
                 self.assertTrue(res.hasNextRow())
@@ -246,7 +247,6 @@ class TestPyQgsProviderConnectionBase():
                     rows.append(row)
 
                 self.assertEqual(rows, old_rows)
-                self.assertEqual(rows, res.rows())
 
                 # Java style
                 res = conn.execSql(sql)
@@ -257,9 +257,7 @@ class TestPyQgsProviderConnectionBase():
 
                 self.assertFalse(res.hasNextRow())
 
-                # But we still have access to rows:
-                self.assertEqual(rows, res.rows())
-
+                # Test time_t
                 sql = "SELECT \"time_t\" FROM %s" % table
                 res = conn.executeSql(sql)
 

@@ -47,41 +47,50 @@ is not supported or cannot be performed without errors.
 
     struct QueryResult
     {
-        SIP_PYOBJECT __repr__();
-%MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rowCount() );
-        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-%End
 
         QStringList columns() const;
 %Docstring
 Returns the column names
 %End
 
-        QList<QList<QVariant> > rows() const;
+        QList<QList<QVariant> > rows( QgsFeedback *feedback = 0 );
 %Docstring
-Returns the results rows
-%End
-
-        qlonglong rowCount() const;
-%Docstring
-Returns the row count
+Returns the result rows by calling the iterator internally and fetching
+all the rows, an optional ``feedback`` can be used to interrupt the fetching loop.
 
 .. note::
 
-   the value may not be exact or it may be -1 if not known
+   calling this function more than one time is not supported: the second
+   call will always return an empty list.
 %End
 
         bool hasNextRow() const;
 %Docstring
 Returns ``True`` if there are more rows to fetch
+
+.. seealso:: :py:func:`nextRow`
+
+.. seealso:: :py:func:`rewind`
 %End
 
-        QList<QVariant> nextRow();
+        QList<QVariant> nextRow() const;
 %Docstring
 Returns the next result row or an empty row if there are no rows left
+
+.. seealso:: :py:func:`hasNextRow`
+
+.. seealso:: :py:func:`rewind`
 %End
 
+        qlonglong fetchedRowCount( ) const;
+%Docstring
+Returns the number of fetched rows
+
+.. seealso:: :py:func:`rowCount`
+%End
+
+
+        // Python iterator
         QueryResult *__iter__();
 %MethodCode
         sipRes = sipCpp;
@@ -103,7 +112,6 @@ Returns the next result row or an empty row if there are no rows left
           PyErr_SetString( PyExc_StopIteration, "" );
         }
 %End
-
 
 
 

@@ -380,10 +380,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
 
       auto iterator = std::make_shared<QgsGeoPackageProviderResultIterator>( std::move( hDS ), ogrLayer );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-      // Note: Returns the number of features in the layer. For dynamic databases the count may not be exact.
-      //       If bForce is FALSE, and it would be expensive to establish the feature count a value of -1 may
-      //       be returned indicating that the count isn’t know.
-      results.setRowCount( OGR_L_GetFeatureCount( ogrLayer, 0 /* bForce=false: do not scan the whole layer */ ) );
 
       gdal::ogr_feature_unique_ptr fet;
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
@@ -425,14 +421,14 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
   return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
-QVariantList QgsGeoPackageProviderResultIterator::nextRow()
+QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
 {
   const QVariantList currentRow { mNextRow };
-  mNextRow = nextRowPrivate();
+  mNextRow = nextRowInternal();
   return currentRow;
 }
 
-QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
+QVariantList QgsGeoPackageProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mHDS && mOgrLayer )
@@ -457,11 +453,17 @@ QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
         }
       }
     }
+    else
+    {
+      // Release the resources
+      GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+      mHDS.release();
+    }
   }
   return row;
 }
 
-bool QgsGeoPackageProviderResultIterator::hasNextRow() const
+bool QgsGeoPackageProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
@@ -488,5 +490,8 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
 
 QgsGeoPackageProviderResultIterator::~QgsGeoPackageProviderResultIterator()
 {
-  GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  if ( mHDS )
+  {
+    GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  }
 }

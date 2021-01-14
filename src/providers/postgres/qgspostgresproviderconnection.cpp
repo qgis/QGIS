@@ -271,7 +271,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     }
 
     const qlonglong numRows { res->PQntuples() };
-    results.setRowCount( numRows );
 
     if ( numRows > 0 )
     {
@@ -371,13 +370,15 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 }
 
 
-QVariantList QgsPostgresProviderResultIterator::nextRow()
+QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
 {
   // Get results
   QVariantList row;
 
   if ( mRowIndex >= result->PQntuples() )
   {
+    // Release the resources
+    mConn.reset();
     return row;
   }
 
@@ -411,7 +412,7 @@ QVariantList QgsPostgresProviderResultIterator::nextRow()
   return row;
 }
 
-bool QgsPostgresProviderResultIterator::hasNextRow() const
+bool QgsPostgresProviderResultIterator::hasNextRowPrivate() const
 {
   return mRowIndex < result->PQntuples();
 }

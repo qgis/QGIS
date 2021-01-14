@@ -397,6 +397,7 @@ set(QGIS_CORE_SRCS
   qgspointxy.cpp
   qgspointlocator.cpp
   qgspointlocatorinittask.cpp
+  qgsqueryresultmodel.cpp
   qgssnappingconfig.cpp
   qgsprojutils.cpp
   qgsproperty.cpp
@@ -1004,6 +1005,7 @@ set(QGIS_CORE_HDRS
   qgsproxyfeaturesink.h
   qgsproxyprogresstask.h
   qgspythonrunner.h
+  qgsqueryresultmodel.h
   qgsrange.h
   qgsreadwritecontext.h
   qgsreadwritelocker.h

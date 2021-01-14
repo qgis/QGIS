@@ -267,7 +267,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
       const int numCols { rec.count() };
       auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-      results.setRowCount( q.size() );
       for ( int idx = 0; idx < numCols; ++idx )
       {
         results.appendColumn( rec.field( idx ).name() );
@@ -281,19 +280,19 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 }
 
 
-QVariantList QgssMssqlProviderResultIterator::nextRow()
+QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
 {
   const QVariantList currentRow( mNextRow );
-  mNextRow = nextRowPrivate();
+  mNextRow = nextRowInternal();
   return currentRow;
 }
 
-bool QgssMssqlProviderResultIterator::hasNextRow() const
+bool QgssMssqlProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
 
-QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
+QVariantList QgssMssqlProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mQuery.next() )
@@ -309,6 +308,10 @@ QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
         row.push_back( mQuery.value( col ).toString() );
       }
     }
+  }
+  else
+  {
+    mQuery.finish();
   }
   return row;
 }

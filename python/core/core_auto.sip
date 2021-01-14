@@ -156,6 +156,7 @@
 %Include auto_generated/qgsproxyfeaturesink.sip
 %Include auto_generated/qgsproxyprogresstask.sip
 %Include auto_generated/qgspythonrunner.sip
+%Include auto_generated/qgsqueryresultmodel.sip
 %Include auto_generated/qgsrange.sip
 %Include auto_generated/qgsreadwritecontext.sip
 %Include auto_generated/qgsreadwritelocker.sip

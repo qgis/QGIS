@@ -421,10 +421,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
       auto iterator = std::make_shared<QgsSpatialiteProviderResultIterator>( std::move( hDS ), ogrLayer );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-      // Note: Returns the number of features in the layer. For dynamic databases the count may not be exact.
-      //       If bForce is FALSE, and it would be expensive to establish the feature count a value of -1 may
-      //       be returned indicating that the count isn’t know.
-      results.setRowCount( OGR_L_GetFeatureCount( ogrLayer, 0 /* force=false: do not scan the whole layer */ ) );
 
       gdal::ogr_feature_unique_ptr fet;
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
@@ -474,17 +470,20 @@ void QgsSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
 
 QgsSpatialiteProviderResultIterator::~QgsSpatialiteProviderResultIterator()
 {
-  GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
-}
-
-QVariantList QgsSpatialiteProviderResultIterator::nextRow()
-{
-  const QVariantList currentRow { mNextRow };
-  mNextRow = nextRowPrivate();
-  return currentRow;
+  if ( mHDS )
+  {
+    GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  }
 }
 
 QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
+{
+  const QVariantList currentRow { mNextRow };
+  mNextRow = nextRowInternal();
+  return currentRow;
+}
+
+QVariantList QgsSpatialiteProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mHDS && mOgrLayer )
@@ -509,11 +508,17 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
         }
       }
     }
+    else
+    {
+      // Release the resources
+      GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+      mHDS.release();
+    }
   }
   return row;
 }
 
-bool QgsSpatialiteProviderResultIterator::hasNextRow() const
+bool QgsSpatialiteProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
@@ -524,14 +529,14 @@ bool QgsSpatiaLiteProviderConnection::executeSqlDirect( const QString &sql ) con
   int result = database.open( pathFromUri() );
   if ( result != SQLITE_OK )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( database.errorMessage() ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, database.errorMessage() ) );
   }
 
   QString errorMessage;
   result = database.exec( sql, errorMessage );
   if ( result != SQLITE_OK )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errorMessage ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errorMessage ) );
   }
   return true;
 }

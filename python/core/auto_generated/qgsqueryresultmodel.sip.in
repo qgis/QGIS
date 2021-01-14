@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsqueryresultmodel.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsQueryResultModel : QAbstractListModel
+{
+%Docstring
+The QgsQueryResultModel class is a model for QgsAbstractDatabaseProviderConnection.QueryResult
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsqueryresultmodel.h"
+%End
+  public:
+
+    QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = 0 );
+%Docstring
+Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
+%End
+
+    ~QgsQueryResultModel();
+
+  public:
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+
+  public slots:
+
+    void rowsReady( const QList<QList<QVariant> > &rows );
+%Docstring
+Triggered when ``newRows`` have been fetched and can be added to the model
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsqueryresultmodel.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
