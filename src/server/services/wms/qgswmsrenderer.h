@@ -223,11 +223,40 @@ namespace QgsWms
                                        QgsRectangle *featureBBox = nullptr,
                                        QgsGeometry *filterGeom = nullptr ) const;
 
-      //!Recursively called to write tab layout groups to XML
+      /**
+       * Recursively called to write tab layout groups to XML
+       * \param group the tab layout group
+       * \param layer The vector layer
+       * \param fields attribute fields
+       * \param featureAttributes the feature attributes
+       * \param doc Feature info XML document
+       * \param featureElem the feature XML element
+       * \param renderContext Context to use for feature rendering
+       */
       void writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
-      //!Writes attributes to XML document using the group/attribute layout defined in the tab layout
+
+      /**
+       * Writes attributes to XML document using the group/attribute layout defined in the tab layout
+       * \param config editor config object
+       * \param layer The vector layer
+       * \param fields attribute fields
+       * \param featureAttributes the feature attributes
+       * \param doc Feature info XML document
+       * \param featureElem the feature XML element
+       * \param renderContext Context to use for feature rendering
+       */
       void writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
-      //! Writes a vectorlayer attribute into the XML document
+
+      /**
+       * Writes a vectorlayer attribute into the XML document
+       * \param index of attribute to be written
+       * \param layer The vector layer
+       * \param fields attribute fields
+       * \param featureAttributes the feature attributes
+       * \param doc Feature info XML document
+       * \param featureElem the feature XML element
+       * \param renderContext Context to use for feature rendering
+       */
       void writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
 
       //! Appends feature info xml for the layer to the layer element of the dom document

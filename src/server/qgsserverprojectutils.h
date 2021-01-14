@@ -208,6 +208,13 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT bool wmsFeatureInfoAddWktGeometry( const QgsProject &project );
 
   /**
+    * Returns if feature form settings should be considered for the format of the feature info response
+    * \param project the QGIS project
+    * \returns true if the feature form settings shall be considered for the feature info response
+   */
+  SERVER_EXPORT bool wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project );
+
+  /**
    * Returns if the geometry has to be segmentize in GetFeatureInfo request.
    * \param project the QGIS project
    * \returns if the geometry has to be segmentize in GetFeatureInfo request.

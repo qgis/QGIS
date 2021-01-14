@@ -1566,7 +1566,7 @@ namespace QgsWms
 
         featureAttributes = feature.attributes();
         QgsEditFormConfig editConfig = layer->editFormConfig();
-        if ( editConfig.layout() == QgsEditFormConfig::TabLayout )
+        if ( QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == QgsEditFormConfig::TabLayout )
         {
           writeAttributesTabLayout( editConfig, layer, fields, featureAttributes, infoDocument, featureElement, renderContext );
         }
