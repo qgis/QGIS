@@ -159,7 +159,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
       mPrimaryKeyAttrs.clear();
       primaryKeyFromGeometryColumnsTable = getPrimaryKeyFromGeometryColumns( cols );
       if ( !primaryKeyFromGeometryColumnsTable )
-        QgsMessageLog::logMessage( tr( "Invalid extent from geometry_columns table for layer '%1', get primary key from the layer." )
+        QgsMessageLog::logMessage( tr( "Invalid primary key from geometry_columns table for layer '%1', get primary key from the layer." )
                                    .arg( anUri.table() ), tr( "MSSQL" ) );
     }
 
