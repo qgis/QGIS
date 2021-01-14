@@ -214,6 +214,15 @@ Returns if the geometry is displayed as Well Known Text in GetFeatureInfo reques
 :return: if the geometry is displayed as Well Known Text in GetFeatureInfo request.
 %End
 
+  bool wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project );
+%Docstring
+Returns if feature form settings should be considered for the format of the feature info response
+
+:param project: the QGIS project
+
+:return: true if the feature form settings shall be considered for the feature info response
+%End
+
   bool wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project );
 %Docstring
 Returns if the geometry has to be segmentize in GetFeatureInfo request.
