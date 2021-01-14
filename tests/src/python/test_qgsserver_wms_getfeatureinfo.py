@@ -356,6 +356,87 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  urllib.parse.quote(':"NAME" = \'two\''),
                                  'wms_getfeatureinfo_filter_no_crs')
 
+    def testGetFeatureInfoOGCfilterJSON(self):
+        # OGC Filter test with info_format=application/json
+
+        # Test OGC filter with I/J and BBOX
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=application%2Fjson&' +
+                                 'WIDTH=1266&HEIGHT=531&' +
+                                 'QUERY_LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&' +
+                                 'CRS=EPSG:4326&' +
+                                 'BBOX=44.90139177500000045,8.20339159915254967,44.90148522499999473,8.20361440084745297&' +
+                                 'I=882&J=282&'
+                                 'FILTER=<Filter><PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>2</Literal></PropertyIsEqualTo></Filter>', 'wms_getfeatureinfo_filter_ogc')
+
+        # Test OGC filter with I/J and BBOX, filter id 3: empty result
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=application%2Fjson&' +
+                                 'WIDTH=1266&HEIGHT=531&' +
+                                 'QUERY_LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&' +
+                                 'CRS=EPSG:4326&' +
+                                 'BBOX=44.90139177500000045,8.20339159915254967,44.90148522499999473,8.20361440084745297&' +
+                                 'I=882&J=282&'
+                                 'FILTER=<Filter><PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>3</Literal></PropertyIsEqualTo></Filter>', 'wms_getfeatureinfo_filter_ogc_empty')
+
+        # Test OGC filter with no I/J and BBOX
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=application%2Fjson&' +
+                                 'WIDTH=1266&HEIGHT=531&' +
+                                 'QUERY_LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&' +
+                                 'CRS=EPSG:4326&' +
+                                 'FILTER=<Filter><PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>2</Literal></PropertyIsEqualTo></Filter>', 'wms_getfeatureinfo_filter_ogc')
+
+        # Test OGC filter with no I/J and wrong BBOX
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=application%2Fjson&' +
+                                 'WIDTH=1266&HEIGHT=531&' +
+                                 'QUERY_LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&' +
+                                 'CRS=EPSG:4326&' +
+                                 'BBOX=46,9,47,10&' +
+                                 'FILTER=<Filter><PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>2</Literal></PropertyIsEqualTo></Filter>', 'wms_getfeatureinfo_filter_ogc_empty')
+
+        # Test OGC filter with no I/J and BBOX plus complex OR filter
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=application%2Fjson&' +
+                                 'WIDTH=1266&HEIGHT=531&' +
+                                 'QUERY_LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&' +
+                                 'CRS=EPSG:4326&' +
+                                 'FILTER=<Filter><Or><PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>2</Literal></PropertyIsEqualTo>' +
+                                 '<PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>3</Literal></PropertyIsEqualTo></Or></Filter>', 'wms_getfeatureinfo_filter_ogc_complex')
+
+        # Test OGC filter with no I/J and BBOX plus complex AND filter
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=application%2Fjson&' +
+                                 'WIDTH=1266&HEIGHT=531&' +
+                                 'QUERY_LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&' +
+                                 'CRS=EPSG:4326&' +
+                                 'FILTER=<Filter><And><PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>2</Literal></PropertyIsEqualTo>' +
+                                 '<PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>3</Literal></PropertyIsEqualTo></And></Filter>', 'wms_getfeatureinfo_filter_ogc_empty')
+
+        # Test OGC filter with no I/J and BBOX plus complex AND filter
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=application%2Fjson&' +
+                                 'WIDTH=1266&HEIGHT=531&' +
+                                 'QUERY_LAYERS=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&' +
+                                 'CRS=EPSG:4326&' +
+                                 'FILTER=<Filter><And><PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>2</Literal></PropertyIsEqualTo>' +
+                                 '<PropertyIsEqualTo><PropertyName>name</PropertyName><Literal>two</Literal></PropertyIsEqualTo></And></Filter>', 'wms_getfeatureinfo_filter_ogc')
+
     def testGetFeatureInfoTolerance(self):
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=layer3&styles=&' +
