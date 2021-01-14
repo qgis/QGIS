@@ -8,9 +8,6 @@ set (util_SRCS)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/test
-  ${CMAKE_SOURCE_DIR}/src/native
-
-
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/native
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -44,7 +41,8 @@ macro (ADD_QGIS_TEST testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core
-    qgis_3d)
+    qgis_3d
+    qgis_native)
   add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   target_link_libraries(qgis_${testname} qgis_native)
   add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})

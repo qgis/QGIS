@@ -412,99 +412,6 @@ set_source_files_properties(
   PROPERTIES COMPILE_FLAGS -wd4091)
 endif()
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}/external/libdxfrw
-  ${CMAKE_SOURCE_DIR}/external/nmea
-
-  ${CMAKE_SOURCE_DIR}/src/app
-  ${CMAKE_SOURCE_DIR}/src/app/decorations
-  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
-  ${CMAKE_SOURCE_DIR}/src/app/labeling
-  ${CMAKE_SOURCE_DIR}/src/app/layout
-  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
-  ${CMAKE_SOURCE_DIR}/src/app/gps
-  ${CMAKE_SOURCE_DIR}/src/app/dwg
-  ${CMAKE_SOURCE_DIR}/src/app/mesh
-  ${CMAKE_SOURCE_DIR}/src/app/locator
-  ${CMAKE_SOURCE_DIR}/src/app/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/app/vectortile
-  ${CMAKE_SOURCE_DIR}/src/plugins
-  ${CMAKE_SOURCE_DIR}/src/python
-  ${CMAKE_SOURCE_DIR}/src/native
-
-  ${CMAKE_BINARY_DIR}/src/python
-  ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_BINARY_DIR}/src/app
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_BINARY_DIR}/src/native
-)
-
-if (WITH_3D)
-  include_directories(
-    ${CMAKE_SOURCE_DIR}/src/app/3d
-  )
-  include_directories(SYSTEM
-    ${QT5_3DEXTRA_INCLUDE_DIR}
-  )
-endif()
-
-include_directories(SYSTEM
-  ${QT_QTUITOOLS_INCLUDE_DIR}
-  ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
-)
-include_directories(
-  ../analysis/processing
-  ../analysis/raster
-  ../analysis/vector/geometry_checker
-  ../core
-  ../core/annotations
-  ../core/auth
-  ../core/gps
-  ../core/dxf
-  ../core/geometry
-  ../core/geocms/geonode
-  ../core/layout
-  ../core/metadata
-  ../core/layertree
-  ../core/processing
-  ../core/providers/memory
-  ../core/raster
-  ../core/mesh
-  ../core/scalebar
-  ../core/symbology
-  ../core/textrenderer
-  ../gui
-  ../gui/symbology
-  ../gui/attributetable
-  ../gui/auth
-  ../gui/effects
-  ../gui/ogr
-  ../gui/raster
-  ../gui/editorwidgets
-  ../gui/editorwidgets/core
-  ../gui/layertree
-  ../gui/layout
-  ../gui/tableeditor
-  ../plugins
-  ../python
-  gps
-  dwg
-  ${CMAKE_SOURCE_DIR}/external/libdxfrw
-  ${CMAKE_SOURCE_DIR}/src/native
-
-  ${CMAKE_BINARY_DIR}/src/native
-)
-include_directories(SYSTEM
-  ${PROJ_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${SPATIALITE_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${QWTPOLAR_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-)
-
 if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
@@ -542,6 +449,42 @@ endif()
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
 add_library(qgis_app SHARED ${QGIS_APP_SRCS})
 
+target_include_directories(qgis_app PUBLIC
+  ${CMAKE_SOURCE_DIR}/external/nmea
+
+  ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/decorations
+  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
+  ${CMAKE_SOURCE_DIR}/src/app/labeling
+  ${CMAKE_SOURCE_DIR}/src/app/layout
+  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
+  ${CMAKE_SOURCE_DIR}/src/app/gps
+  ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/mesh
+  ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/app/pointcloud
+  ${CMAKE_SOURCE_DIR}/src/app/vectortile
+  ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/src/python
+  ${CMAKE_SOURCE_DIR}/src/native
+
+  ${CMAKE_BINARY_DIR}/src/app
+)
+
+if (WITH_3D)
+  target_include_directories(qgis_app PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/app/3d
+  )
+endif()
+
+target_include_directories(qgis_app SYSTEM PUBLIC
+  ${QT_QTUITOOLS_INCLUDE_DIR}
+  ${QWTPOLAR_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
+)
+
+add_dependencies(qgis_gui ui)
+
 target_link_libraries(qgis_app
   ${QWT_LIBRARY}
   ${Qt5Sql_LIBRARIES}
@@ -549,8 +492,6 @@ target_link_libraries(qgis_app
   ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
-  ${QWTPOLAR_LIBRARY}
-  ${GDAL_LIBRARY}
   qgis_core
   qgis_gui
   qgis_analysis
@@ -560,14 +501,16 @@ target_link_libraries(qgis_app
 
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
 
+if (WITH_BINDINGS)
+  target_link_libraries(qgis_app qgispython)
+endif()
+
 if(ENABLE_MODELTEST)
   target_link_libraries(qgis_app ${Qt5Test_LIBRARIES})
 endif()
 
 if (WITH_3D)
-  target_link_libraries(qgis_app
-    qgis_3d
-  )
+  target_link_libraries(qgis_app qgis_3d)
 endif()
 
 if (WITH_GEOREFERENCER)
