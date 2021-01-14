@@ -73,7 +73,11 @@ void QgsCameraController::setCameraNavigationMode( QgsCameraController::Navigati
 
 void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
 {
+  if ( movementSpeed == mCameraMovementSpeed )
+    return;
+
   mCameraMovementSpeed = movementSpeed;
+  emit cameraMovementSpeedChanged( mCameraMovementSpeed );
 }
 
 void QgsCameraController::setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion )
@@ -413,7 +417,7 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
     case QgsCameraController::WalkNavigation:
     {
       float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
-      mCameraMovementSpeed += mCameraMovementSpeed * scaling * wheel->angleDelta().y();
+      setCameraMovementSpeed( mCameraMovementSpeed + mCameraMovementSpeed * scaling * wheel->angleDelta().y() );
       break;
     }
 
