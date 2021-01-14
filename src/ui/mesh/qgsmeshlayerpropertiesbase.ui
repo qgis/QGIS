@@ -654,9 +654,6 @@ border-radius: 2px;</string>
                 <property name="toolTip">
                  <string>Reference time used to render mesh dataset when using temporal range or temporal animation</string>
                 </property>
-                <property name="displayFormat">
-                 <string>dd/MM/yyyy HH:mm:ss</string>
-                </property>
                 <property name="calendarPopup">
                  <bool>true</bool>
                 </property>
@@ -703,9 +700,6 @@ border-radius: 2px;</string>
                 <property name="buttonSymbols">
                  <enum>QAbstractSpinBox::NoButtons</enum>
                 </property>
-                <property name="displayFormat">
-                 <string>dd/MM/yyyy HH:mm:ss</string>
-                </property>
                </widget>
               </item>
               <item row="2" column="0">
@@ -737,9 +731,6 @@ border-radius: 2px;</string>
                 </property>
                 <property name="showGroupSeparator" stdset="0">
                  <bool>false</bool>
-                </property>
-                <property name="displayFormat">
-                 <string>dd/MM/yyyy HH:mm:ss</string>
                 </property>
                 <property name="timeSpec">
                  <enum>Qt::UTC</enum>
