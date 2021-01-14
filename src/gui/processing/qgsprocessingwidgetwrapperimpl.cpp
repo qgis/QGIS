@@ -1841,18 +1841,13 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFileWidgetWrapper::
 QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
-  mModel = widgetContext.model();
-
   QVBoxLayout *vlayout = new QVBoxLayout();
   vlayout->setContentsMargins( 0, 0, 0, 0 );
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
   mDefaultLineEdit = new QgsExpressionLineEdit();
-  if ( mModel )
-  {
-    QgsExpressionContext expressionContext = createExpressionContext( context, algorithm );
-    mDefaultLineEdit->setExpressionContext( expressionContext );
-  }
+  mDefaultLineEdit->registerExpressionContextGenerator( this );
+
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
     mDefaultLineEdit->setExpression( QgsProcessingParameters::parameterAsExpression( expParam, expParam->defaultValueForGui(), context ) );
   vlayout->addWidget( mDefaultLineEdit );
@@ -1866,14 +1861,13 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
     initialParent = expParam->parentLayerParameterName();
 
-
-  if ( mModel )
+  if ( QgsProcessingModelAlgorithm *model = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = mModel->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = model->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( mModel->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( model->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -1881,7 +1875,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( mModel->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( model->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -1907,44 +1901,7 @@ QgsProcessingParameterDefinition *QgsProcessingExpressionParameterDefinitionWidg
 {
   auto param = qgis::make_unique< QgsProcessingParameterExpression >( name, description, mDefaultLineEdit->expression(), mParentLayerComboBox->currentData().toString() );
   param->setFlags( flags );
-  if ( mModel )
-  {
-    QStringList extraVars = mModel->variables().keys();
-    param->setAdditionalExpressionContextVariables( extraVars );
-  }
   return param.release();
-}
-
-QgsExpressionContext QgsProcessingExpressionParameterDefinitionWidget::createExpressionContext( QgsProcessingContext &context, const QgsProcessingAlgorithm *algorithm ) const
-{
-  QgsExpressionContext finalContext = context.expressionContext();
-  QString childId;
-
-  QgsExpressionContextScope *algScope = QgsExpressionContextUtils::processingAlgorithmScope( algorithm, QVariantMap(), context );
-  finalContext.appendScope( algScope );
-
-  QgsExpressionContextScope *modelScope = QgsExpressionContextUtils::processingModelAlgorithmScope( mModel, QVariantMap(), context );
-  finalContext << modelScope;
-  const QgsProcessingAlgorithm *childAlg = nullptr;
-  if ( mModel->childAlgorithms().contains( childId ) )
-    childAlg = mModel->childAlgorithm( childId ).algorithm();
-  QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( childAlg, QVariantMap(), context );
-  finalContext << algorithmScope;
-
-  QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( childId, context, QVariantMap(), QVariantMap() );
-  finalContext << childScope;
-
-  QStringList highlightedVariables = childScope->variableNames();
-  QStringList highlightedFunctions = childScope->functionNames();
-  highlightedVariables += algorithmScope->variableNames();
-  highlightedVariables += algScope->variableNames();
-  highlightedVariables += mModel->variables().keys();
-  highlightedFunctions += algScope->functionNames();
-  highlightedFunctions += algorithmScope->functionNames();
-  finalContext.setHighlightedVariables( highlightedVariables );
-  finalContext.setHighlightedFunctions( highlightedFunctions );
-
-  return finalContext;
 }
 
 QgsProcessingExpressionWidgetWrapper::QgsProcessingExpressionWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )

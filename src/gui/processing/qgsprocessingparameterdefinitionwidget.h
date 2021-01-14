@@ -25,8 +25,11 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsprocessingparameters.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsprocessingwidgetwrapper.h"
 
-class QgsProcessingParameterWidgetContext;
+class QgsProcessingContextGenerator;
+
 class QLineEdit;
 class QCheckBox;
 class QTabWidget;
@@ -40,7 +43,7 @@ class QgsColorButton;
  * \ingroup gui
  * \since QGIS 3.10
  */
-class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
+class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -73,6 +76,43 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
      * also respects the additional properties specific to the parameter type handled by the widget subclass.
      */
     virtual QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const = 0 SIP_FACTORY;
+
+    /**
+     * Sets the \a context in which the Processing definition widget is shown, e.g., the
+     * parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+     * to fine-tune its behavior.
+     *
+     * Subclasses should take care to call the base class method when reimplementing this method.
+     *
+     * \see widgetContext()
+     * \since QGIS 3.18
+     */
+    virtual void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+
+    /**
+     * Returns the context in which the Processing definition widget is shown, e.g., the
+     * parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+     * to fine-tune its behavior.
+     *
+     * \see setWidgetContext()
+     * \since QGIS 3.18
+     */
+    const QgsProcessingParameterWidgetContext &widgetContext() const;
+
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * \since QGIS 3.18
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
+  private:
+
+    QgsProcessingContextGenerator *mContextGenerator = nullptr;
+    QgsProcessingParameterWidgetContext mWidgetContext;
 };
 
 
@@ -116,6 +156,14 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget: public QWidget
      * The \a name parameter specifies the name for the newly created parameter.
      */
     QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
+
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * \since QGIS 3.18
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
   private:
 
@@ -202,6 +250,14 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog: public QDialog
      * Switches the dialog to the comments tab.
      */
     void switchToCommentTab();
+
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * \since QGIS 3.18
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
   public slots:
     void accept() override;

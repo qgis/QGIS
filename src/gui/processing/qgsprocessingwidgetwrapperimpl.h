@@ -66,8 +66,6 @@ class QgsProcessingMapLayerComboBox;
 class QgsRasterBandComboBox;
 class QgsProcessingLayerOutputDestinationWidget;
 class QgsCheckableComboBox;
-class QgsProcessingModelAlgorithm;
-class QgsExpressionContext;
 
 ///@cond PRIVATE
 
@@ -635,13 +633,11 @@ class GUI_EXPORT QgsProcessingExpressionParameterDefinitionWidget : public QgsPr
         const QgsProcessingParameterDefinition *definition = nullptr,
         const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const override;
-    QgsExpressionContext createExpressionContext( QgsProcessingContext &context, const QgsProcessingAlgorithm *algorithm ) const;
 
   private:
 
     QComboBox *mParentLayerComboBox = nullptr;
     QgsExpressionLineEdit *mDefaultLineEdit = nullptr;
-    QgsProcessingModelAlgorithm *mModel = nullptr;
 
 };
 
