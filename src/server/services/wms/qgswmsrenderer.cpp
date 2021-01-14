@@ -1466,6 +1466,8 @@ namespace QgsWms
       fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( layerFilterGeom->asWkt() ) );
     }
 
+    mFeatureFilter.filterFeatures( layer, fReq );
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     mContext.accessControl()->filterFeatures( layer, fReq );
 

@@ -1,0 +1,7 @@
+Content-Length: 51
+Content-Type: application/json; charset=utf-8
+
+{
+  "features": [],
+  "type": "FeatureCollection"
+}
