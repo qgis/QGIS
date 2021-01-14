@@ -13315,6 +13315,7 @@ void QgisApp::new3DMapCanvas()
 
     const QgsCameraController::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), QgsCameraController::TerrainBasedNavigation, QgsSettings::App );
     map->setCameraNavigationMode( defaultNavMode );
+
     map->setCameraMovementSpeed( settings.value( QStringLiteral( "map3d/defaultMovementSpeed" ), 5, QgsSettings::App ).toDouble() );
     const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( QStringLiteral( "map3d/defaultProjection" ), Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
     map->setProjectionType( defaultProjection );
@@ -13342,6 +13343,10 @@ void QgisApp::new3DMapCanvas()
     QgsRectangle extent = mMapCanvas->extent();
     float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
     dock->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
+
+    const QgsCameraController::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), QgsCameraController::WhenDragging, QgsSettings::App );
+    if ( dock->mapCanvas3D()->cameraController() )
+      dock->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
   }
 #endif
 }
