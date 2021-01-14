@@ -193,6 +193,9 @@ class HdfDataset
   public:
     typedef HdfH<H5I_DATASET> Handle;
 
+    //! creates invalid dataset
+    HdfDataset() = default;
+
     //! Create new, simple 1 dimensional dataset
     HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, size_t nItems = 1 );
     //! Create new dataset with custom dimensions
