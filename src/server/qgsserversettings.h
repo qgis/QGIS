@@ -57,7 +57,6 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_LOG_FILE,
       QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
-      MAX_CACHE_LAYERS,
       QGIS_SERVER_IGNORE_BAD_LAYERS, //!< Do not consider the whole project unavailable if it contains bad layers
       QGIS_SERVER_CACHE_DIRECTORY,
       QGIS_SERVER_CACHE_SIZE,
@@ -134,12 +133,6 @@ class SERVER_EXPORT QgsServerSettings
      * \returns the number of threads.
      */
     int maxThreads() const;
-
-    /**
-      * Returns the maximum number of cached layers.
-      * \returns the number of cached layers.
-      */
-    int maxCacheLayers() const;
 
     /**
      * Returns the log level.

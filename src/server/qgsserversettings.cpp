@@ -108,17 +108,6 @@ void QgsServerSettings::initSettings()
                            };
   mSettings[ sProject.envVar ] = sProject;
 
-  // max cache layers
-  const Setting sMaxCacheLayers = { QgsServerSettingsEnv::MAX_CACHE_LAYERS,
-                                    QgsServerSettingsEnv::DEFAULT_VALUE,
-                                    QStringLiteral( "Specify the maximum number of cached layers" ),
-                                    QString(),
-                                    QVariant::Int,
-                                    QVariant( 100 ),
-                                    QVariant()
-                                  };
-  mSettings[ sMaxCacheLayers.envVar ] = sMaxCacheLayers;
-
   // cache directory
   const Setting sCacheDir = { QgsServerSettingsEnv::QGIS_SERVER_CACHE_DIRECTORY,
                               QgsServerSettingsEnv::DEFAULT_VALUE,
@@ -451,11 +440,6 @@ bool QgsServerSettings::logStderr() const
 Qgis::MessageLevel QgsServerSettings::logLevel() const
 {
   return static_cast<Qgis::MessageLevel>( value( QgsServerSettingsEnv::QGIS_SERVER_LOG_LEVEL ).toInt() );
-}
-
-int QgsServerSettings::maxCacheLayers() const
-{
-  return value( QgsServerSettingsEnv::MAX_CACHE_LAYERS ).toInt();
 }
 
 QString QgsServerSettings::projectFile() const
