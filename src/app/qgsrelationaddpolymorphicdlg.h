@@ -41,7 +41,7 @@ class APP_EXPORT QgsRelationAddPolymorphicDlg : public QDialog, private Ui::QgsR
     Q_OBJECT
 
   public:
-    explicit QgsRelationAddPolymorphicDlg( QWidget *parent = nullptr );
+    explicit QgsRelationAddPolymorphicDlg( bool isEditDialog, QWidget *parent = nullptr );
 
     /**
      * Returns the id of the referencing layer
@@ -102,6 +102,8 @@ class APP_EXPORT QgsRelationAddPolymorphicDlg : public QDialog, private Ui::QgsR
   private:
     bool isDefinitionValid();
     void updateFieldsMapping();
+
+    bool mIsEditDialog = false;
 
 };
 

@@ -33,12 +33,16 @@
 #include "qgsrelationmanager.h"
 #include "qgsfieldexpressionwidget.h"
 
-QgsRelationAddPolymorphicDlg::QgsRelationAddPolymorphicDlg( QWidget *parent )
+QgsRelationAddPolymorphicDlg::QgsRelationAddPolymorphicDlg( bool isEditDialog, QWidget *parent )
   : QDialog( parent )
   , Ui::QgsRelationManagerAddPolymorphicDialogBase()
+  , mIsEditDialog( isEditDialog )
 {
   setupUi( this );
-  setWindowTitle( tr( "Add New Polymorphic Relation" ) );
+
+  setWindowTitle( mIsEditDialog
+                  ? tr( "Edit Polymorphic Relation" )
+                  : tr( "Add Polymorphic Relation" ) );
 
   mButtonBox->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRelationAddPolymorphicDlg::accept );

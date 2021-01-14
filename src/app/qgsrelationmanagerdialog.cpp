@@ -246,7 +246,7 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
 
 void QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered()
 {
-  QgsRelationAddPolymorphicDlg addDlg;
+  QgsRelationAddPolymorphicDlg addDlg( false );
 
   if ( addDlg.exec() )
   {
@@ -274,7 +274,7 @@ void QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered()
 
 void QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered()
 {
-  QgsRelationAddPolymorphicDlg addDlg;
+  QgsRelationAddPolymorphicDlg addDlg( true );
   const QModelIndexList rows = mRelationsTree->selectionModel()->selectedRows();
 
   if ( rows.size() != 1 )

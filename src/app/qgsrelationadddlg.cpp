@@ -40,7 +40,6 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   , Ui::QgsRelationManagerAddDialogBase()
 {
   setupUi( this );
-  setWindowTitle( tr( "Add New Relation" ) );
 
   mReferencedLayerCombobox = new QgsMapLayerComboBox( this );
   mReferencedLayerCombobox->setFilters( QgsMapLayerProxyModel::VectorLayer );
