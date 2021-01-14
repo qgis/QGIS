@@ -410,7 +410,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
+                <width>77</width>
                 <height>47</height>
                </rect>
               </property>
@@ -584,7 +584,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>710</width>
+                <width>709</width>
                 <height>604</height>
                </rect>
               </property>
@@ -645,7 +645,7 @@
                    <widget class="QComboBox" name="mCameraNavigationModeCombo"/>
                   </item>
                   <item row="4" column="1" colspan="2">
-                   <widget class="QDoubleSpinBox" name="mCameraMovementSpeed">
+                   <widget class="QgsDoubleSpinBox" name="mCameraMovementSpeed">
                     <property name="minimum">
                      <double>0.010000000000000</double>
                     </property>

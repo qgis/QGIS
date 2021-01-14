@@ -73,13 +73,14 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mMeshSymbolWidget = new QgsMesh3dSymbolWidget( nullptr, groupMeshTerrainShading );
   mMeshSymbolWidget->configureForTerrain();
 
-  cboCameraProjectionType->addItem( tr( "Perspective projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
-  cboCameraProjectionType->addItem( tr( "Orthogonal projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
+  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
+  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
   connect( cboCameraProjectionType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
   {
     spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( Qt3DRender::QCameraLens::PerspectiveProjection ) );
   } );
 
+  mCameraMovementSpeed->setClearValue( 4 );
   spinCameraFieldOfView->setClearValue( 45.0 );
   spinTerrainScale->setClearValue( 1.0 );
   spinTerrainResolution->setClearValue( 16 );
