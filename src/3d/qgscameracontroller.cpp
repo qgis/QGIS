@@ -17,6 +17,7 @@
 #include "qgsraycastingutils_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsvector3d.h"
+#include "qgssettings.h"
 
 #include "qgis.h"
 
@@ -35,7 +36,6 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   , mMouseHandler( new Qt3DInput::QMouseHandler )
   , mKeyboardHandler( new Qt3DInput::QKeyboardHandler )
 {
-
   mMouseHandler->setSourceDevice( mMouseDevice );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::positionChanged,
            this, &QgsCameraController::onPositionChanged );

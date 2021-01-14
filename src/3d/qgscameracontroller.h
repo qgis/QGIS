@@ -70,6 +70,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
       TerrainBasedNavigation, //! The default navigation based on the terrain
       WalkNavigation //! Uses WASD keys or arrows to navigate in walking (first person) manner
     };
+    Q_ENUM( NavigationMode )
 
   public:
     //! Constructs the camera controller with optional parent node that will take ownership

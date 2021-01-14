@@ -118,6 +118,7 @@
 #include "qgsmeshlayer3drendererwidget.h"
 #include "qgspointcloudlayer3drendererwidget.h"
 #include "qgs3dapputils.h"
+#include "qgs3doptions.h"
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -1723,7 +1724,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   } );
 
   mCodeEditorWidgetFactory.reset( qgis::make_unique< QgsCodeEditorOptionsFactory >() );
-} // QgisApp ctor
+
+#ifdef HAVE_3D
+  m3DOptionsWidgetFactory.reset( qgis::make_unique< Qgs3DOptionsFactory >() );
+#endif
+}
 
 QgisApp::QgisApp()
   : QMainWindow( nullptr, Qt::WindowFlags() )
@@ -13297,6 +13302,8 @@ void QgisApp::new3DMapCanvas()
   {
     setupDockWidget( dock, true );
 
+    QgsSettings settings;
+
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
     map->setCrs( prj->crs() );
     map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
@@ -13305,6 +13312,13 @@ void QgisApp::new3DMapCanvas()
     map->setLayers( mMapCanvas->layers() );
     map->setTerrainLayers( mMapCanvas->layers() );
     map->setTemporalRange( mMapCanvas->temporalRange() );
+
+    const QgsCameraController::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), QgsCameraController::TerrainBasedNavigation, QgsSettings::App );
+    map->setCameraNavigationMode( defaultNavMode );
+    map->setCameraMovementSpeed( settings.value( QStringLiteral( "map3d/defaultMovementSpeed" ), 5, QgsSettings::App ).toDouble() );
+    const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( QStringLiteral( "map3d/defaultProjection" ), Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
+    map->setProjectionType( defaultProjection );
+    map->setFieldOfView( settings.value( QStringLiteral( "map3d/defaultFieldOfView" ), 45, QgsSettings::App ).toInt() );
 
     map->setTransformContext( QgsProject::instance()->transformContext() );
     map->setPathResolver( QgsProject::instance()->pathResolver() );
