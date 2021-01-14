@@ -19,6 +19,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QLibrary>
 
 #include "odbc/Connection.h"
 #include "odbc/Environment.h"
@@ -69,12 +70,6 @@ QgsHanaDriver::~QgsHanaDriver()
   QgsDebugCall;
 }
 
-QgsHanaDriver *QgsHanaDriver::instance()
-{
-  static QgsHanaDriver instance;
-  return &instance;
-}
-
 ConnectionRef QgsHanaDriver::createConnection()
 {
   return mEnv->createConnection();
@@ -83,4 +78,29 @@ ConnectionRef QgsHanaDriver::createConnection()
 const QString &QgsHanaDriver::driver() const
 {
   return mDriver;
+}
+
+QgsHanaDriver *QgsHanaDriver::instance()
+{
+  static QgsHanaDriver instance;
+  return &instance;
+}
+
+bool QgsHanaDriver::isInstalled( const QString &name )
+{
+  EnvironmentRef env = Environment::create();
+  return env->isDriverInstalled( name.toStdString().c_str() );
+}
+
+bool QgsHanaDriver::isValidPath( const QString &path )
+{
+  if ( !QLibrary::isLibrary( path ) )
+    return false;
+
+  QLibrary lib( path );
+  if ( !lib.load() )
+    return false;
+  bool ret = lib.resolve( "SQLConnect" ) != nullptr;
+  lib.unload();
+  return ret;
 }

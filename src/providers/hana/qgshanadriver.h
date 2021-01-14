@@ -32,6 +32,8 @@ class QgsHanaDriver
     const QString &driver() const;
 
     static QgsHanaDriver *instance();
+    static bool isInstalled( const QString &name );
+    static bool isValidPath( const QString &path );
 
   protected:
     Q_DISABLE_COPY( QgsHanaDriver )
