@@ -25,6 +25,8 @@
 #include "qgswmsrendercontext.h"
 #include "qgsfeaturefilter.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsattributeeditorelement.h"
+#include "qgseditformconfig.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QString>
@@ -50,8 +52,6 @@ class QImage;
 class QPaintDevice;
 class QPainter;
 class QgsLayerTreeGroup;
-class QgsEditFormConfig;
-class QgsAttributeEditorElement;
 
 namespace QgsWms
 {
