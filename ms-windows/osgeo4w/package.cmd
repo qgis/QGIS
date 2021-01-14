@@ -125,6 +125,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_SERVER=TRUE ^
+	-D WITH_HANA=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GRASS=TRUE ^
 	-D WITH_3D=TRUE ^
@@ -310,6 +311,7 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/plugins/arcgismapserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/arcgisfeatureserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mdalprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/hanaprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/oauth2authmethod.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
