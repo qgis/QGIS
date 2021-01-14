@@ -86,10 +86,14 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
   }
   else if ( QgsMssqlLayerItem *layerItem = qobject_cast< QgsMssqlLayerItem * >( item ) )
   {
+    QMenu *maintainMenu = new QMenu( tr( "Table Operations" ), menu );
+
     // truncate
     QAction *actionTruncateLayer = new QAction( tr( "Truncate Table" ), menu );
     connect( actionTruncateLayer, &QAction::triggered, this, [layerItem] { truncateTable( layerItem ); } );
-    menu->addAction( actionTruncateLayer );
+    maintainMenu->addAction( actionTruncateLayer );
+
+    menu->addMenu( maintainMenu );
   }
 }
 
