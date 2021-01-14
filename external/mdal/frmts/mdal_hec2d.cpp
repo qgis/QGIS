@@ -237,7 +237,16 @@ void MDAL::DriverHec2D::readFaceOutput( const HdfFile &hdfFile,
     std::string flowAreaName = flowAreaNames[nArea];
 
     HdfGroup gFlowAreaRes = openHdfGroup( rootGroup, flowAreaName );
-    HdfDataset dsVals = openHdfDataset( gFlowAreaRes, rawDatasetName );
+    HdfDataset dsVals;
+    try
+    {
+      dsVals = openHdfDataset( gFlowAreaRes, rawDatasetName );
+    }
+    catch ( MDAL::Error )
+    {
+      return;
+    }
+
     std::vector<float> vals = dsVals.readArray();
 
     HdfGroup gGeom = openHdfGroup( hdfFile, "Geometry" );
@@ -334,7 +343,7 @@ void MDAL::DriverHec2D::readFaceOutput( const HdfFile &hdfFile,
     }
   }
 
-  for ( auto dataset : datasets )
+  for ( auto &dataset : datasets )
   {
     dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
     group->datasets.push_back( dataset );
@@ -371,7 +380,7 @@ std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readElemOutput( const 
     std::shared_ptr<MDAL::MemoryDataset2D> bed_elevation,
     const DateTime &referenceTime )
 {
-  double eps = std::numeric_limits<double>::min();
+  double eps = static_cast<double>( std::numeric_limits<float>::epsilon() ); //hecras use float so comparison needs to use float epsilon
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
                                           name(),
@@ -398,7 +407,16 @@ std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readElemOutput( const 
     std::string flowAreaName = flowAreaNames[nArea];
     HdfGroup gFlowAreaRes = openHdfGroup( rootGroup, flowAreaName );
 
-    HdfDataset dsVals = openHdfDataset( gFlowAreaRes, rawDatasetName );
+    HdfDataset dsVals;
+    try
+    {
+      dsVals = openHdfDataset( gFlowAreaRes, rawDatasetName );
+    }
+    catch ( MDAL::Error )
+    {
+      return nullptr;
+    }
+
     std::vector<float> vals = dsVals.readArray();
 
     for ( size_t tidx = 0; tidx < times.size(); ++tidx )
@@ -410,7 +428,7 @@ std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readElemOutput( const 
       {
         size_t idx = tidx * nAreaElements + i;
         size_t eInx = areaElemStartIndex[nArea] + i;
-        double val = static_cast<double>( vals[idx] );
+        double val =  static_cast<double>( vals[idx] );
         if ( !std::isnan( val ) )
         {
           if ( !bed_elevation )
@@ -431,7 +449,7 @@ std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readElemOutput( const 
             {
               assert( bed_elevation );
               double bed_elev = bed_elevation->scalarValue( eInx );
-              if ( std::isnan( bed_elev ) || fabs( bed_elev - val ) > eps ) // change from bed elevation
+              if ( std::isnan( bed_elev ) || fabs( val - bed_elev ) > ( val + bed_elev )*eps )  // change from bed elevation
               {
                 values[eInx] = val;
               }
@@ -442,7 +460,7 @@ std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readElemOutput( const 
     }
   }
 
-  for ( auto dataset : datasets )
+  for ( auto &dataset : datasets )
   {
     dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
     group->datasets.push_back( dataset );
@@ -461,16 +479,20 @@ std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readBedElevation(
   std::vector<MDAL::RelativeTimestamp> times( 1 );
   DateTime referenceTime;
 
-  return readElemOutput(
-           gGeom2DFlowAreas,
-           areaElemStartIndex,
-           flowAreaNames,
-           "Cells Minimum Elevation",
-           "Bed Elevation",
-           times,
-           std::shared_ptr<MDAL::MemoryDataset2D>(),
-           referenceTime
-         );
+  std::shared_ptr<MDAL::MemoryDataset2D> bedElevation = readElemOutput(
+        gGeom2DFlowAreas,
+        areaElemStartIndex,
+        flowAreaNames,
+        "Cells Minimum Elevation",
+        "Bed Elevation",
+        times,
+        std::shared_ptr<MDAL::MemoryDataset2D>(),
+        referenceTime
+      );
+
+  if ( ! bedElevation ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Unable to read bed elevation values" );
+
+  return bedElevation;
 }
 
 void MDAL::DriverHec2D::readElemResults(
