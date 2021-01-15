@@ -97,12 +97,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     QgsCameraController::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
 
     /**
-     * Sets the navigation mode used by the camera controller.
-     * \since QGIS 3.18
-     */
-    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
-
-    /**
      * Returns the camera movement speed
      * \since QGIS 3.18
      */
@@ -204,6 +198,14 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void setCameraHeadingAngle( float angle );
     //! Move the map by \a tx and \a ty
     void moveView( float tx, float ty );
+
+  public slots:
+
+    /**
+     * Sets the navigation mode used by the camera controller.
+     * \since QGIS 3.18
+     */
+    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
 
   private:
     void rotateCamera( float diffPitch, float diffYaw );

@@ -196,7 +196,6 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mCameraController, &QgsCameraController::viewportChanged, this, &Qgs3DMapScene::onCameraChanged );
-  connect( mCameraController, &QgsCameraController::navigationModeHotKeyPressed, this, &Qgs3DMapScene::navigationModeHotKeyPressed );
 
 #if 0
   // experiments with loading of existing 3D models.

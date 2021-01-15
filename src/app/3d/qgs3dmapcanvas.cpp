@@ -102,7 +102,6 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   mScene = newScene;
   connect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
   connect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
-  connect( mScene, &Qgs3DMapScene::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
 
   delete mMap;
   mMap = map;
@@ -116,6 +115,7 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
     QCursor::setPos( mapToGlobal( point ) );
   } );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMap, &Qgs3DMapSettings::setCameraMovementSpeed );
+  connect( cameraController(), &QgsCameraController::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
 
   emit mapSettingsChanged();
 }
