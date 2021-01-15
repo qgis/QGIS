@@ -50,7 +50,6 @@ QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relation
 {
   setupUi( this );
 
-  mRelationsTree->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
   mRelationsTree->setItemDelegate( new RelationNameEditorDelegate( QList<int>( {0} ), mRelationsTree ) );
 
   connect( mBtnAddRelation, &QPushButton::clicked, this, &QgsRelationManagerDialog::mBtnAddRelation_clicked );
