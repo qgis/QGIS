@@ -1571,13 +1571,21 @@ namespace QgsWms
         QgsEditFormConfig editConfig = layer->editFormConfig();
         if ( QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == QgsEditFormConfig::TabLayout )
         {
-          writeAttributesTabLayout( editConfig, layer, fields, featureAttributes, infoDocument, featureElement, renderContext );
+          writeAttributesTabLayout( editConfig, layer, fields, featureAttributes, infoDocument, featureElement, renderContext
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                                    , &attributes
+#endif
+                                  );
         }
         else
         {
           for ( int i = 0; i < featureAttributes.count(); ++i )
           {
-            writeVectorLayerAttribute( i, layer, fields, featureAttributes, infoDocument, featureElement, renderContext );
+            writeVectorLayerAttribute( i, layer, fields, featureAttributes, infoDocument, featureElement, renderContext
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                                       , &attributes
+#endif
+                                     );
           }
         }
 
@@ -1646,7 +1654,7 @@ namespace QgsWms
     return true;
   }
 
-  void QgsRenderer::writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &parentElem, QgsRenderContext &renderContext ) const
+  void QgsRenderer::writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &parentElem, QgsRenderContext &renderContext, QStringList *attributes ) const
   {
     const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
     if ( container )
@@ -1672,14 +1680,14 @@ namespace QgsWms
           const QgsAttributeEditorField *editorField = dynamic_cast<const QgsAttributeEditorField *>( child );
           if ( editorField )
           {
-            writeVectorLayerAttribute( editorField->idx(), layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext );
+            writeVectorLayerAttribute( editorField->idx(), layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext, attributes );
           }
         }
       }
     }
   }
 
-  void QgsRenderer::writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const
+  void QgsRenderer::writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes ) const
   {
     QgsAttributeEditorContainer *editorContainer = config.invisibleRootContainer();
     if ( !editorContainer )
@@ -1687,11 +1695,15 @@ namespace QgsWms
       return;
     }
 
-    writeAttributesTabGroup( editorContainer, layer, fields, featureAttributes, doc, featureElem, renderContext );
+    writeAttributesTabGroup( editorContainer, layer, fields, featureAttributes, doc, featureElem, renderContext, attributes );
   }
 
-  void QgsRenderer::writeVectorLayerAttribute( int attributeIndex,  QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const
+  void QgsRenderer::writeVectorLayerAttribute( int attributeIndex,  QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes ) const
   {
+#ifndef HAVE_SERVER_PYTHON_PLUGINS
+    Q_UNUSED( attributes );
+#endif
+
     if ( !layer )
     {
       return;
@@ -1704,7 +1716,7 @@ namespace QgsWms
     }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //skip attribute if it is excluded by access control
-    if ( !attributes.contains( fields.at( i ).name() ) )
+    if ( attributes && !attributes->contains( fields.at( attributeIndex ).name() ) )
     {
       return;
     }

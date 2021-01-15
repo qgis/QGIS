@@ -233,8 +233,9 @@ namespace QgsWms
        * \param doc Feature info XML document
        * \param featureElem the feature XML element
        * \param renderContext Context to use for feature rendering
+       * \param attributes attributes for access control
        */
-      void writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
+      void writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes = nullptr ) const;
 
       /**
        * Writes attributes to XML document using the group/attribute layout defined in the tab layout
@@ -245,8 +246,9 @@ namespace QgsWms
        * \param doc Feature info XML document
        * \param featureElem the feature XML element
        * \param renderContext Context to use for feature rendering
+       * \param attributes attributes for access control
        */
-      void writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
+      void writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes = nullptr ) const;
 
       /**
        * Writes a vectorlayer attribute into the XML document
@@ -257,8 +259,9 @@ namespace QgsWms
        * \param doc Feature info XML document
        * \param featureElem the feature XML element
        * \param renderContext Context to use for feature rendering
+       * \param attributes attributes for access control
        */
-      void writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext ) const;
+      void writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes = nullptr ) const;
 
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
