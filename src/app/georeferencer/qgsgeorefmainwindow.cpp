@@ -545,6 +545,8 @@ void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &pixelCoords, const 
 {
   QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(), pixelCoords, mapCoords, crs, enable );
   mPoints.append( pnt );
+  if ( !mLastGCPProjection.isValid() || mLastGCPProjection.toWkt() != crs.toWkt() )
+    mLastGCPProjection = QgsCoordinateReferenceSystem( crs );
   mGCPsDirty = true;
   if ( finalize )
   {
@@ -632,9 +634,11 @@ void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
 
 void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords )
 {
+
+  QgsCoordinateReferenceSystem lastProjection = mLastGCPProjection.isValid() ? mLastGCPProjection : mProjection;
   if ( mLayer && !mMapCoordsDialog )
   {
-    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, mProjection, this );
+    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, lastProjection, this );
     connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & b, const QgsCoordinateReferenceSystem & crs )
     {
       addPoint( a, b, crs );
@@ -1180,6 +1184,7 @@ void QgsGeoreferencerMainWindow::setupConnections()
 
   // Connect mapCanvas rotation widget
   connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsGeoreferencerMainWindow::updateCanvasRotation );
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeoreferencerMainWindow::invalidateCanvasCoords );
 }
 
 void QgsGeoreferencerMainWindow::removeOldLayer()
@@ -1273,30 +1278,31 @@ bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
   QTextStream points( &pointFile );
   QString line = points.readLine();
   int i = 0;
+  QgsCoordinateReferenceSystem proj;
+  if ( line.contains( "#CRS: " ) )
+  {
+    proj = QgsCoordinateReferenceSystem( line.remove( "#CRS: " ) );
+    line = points.readLine();
+  }
+  else
+    proj = QgsProject::instance()->crs();
+
   while ( !points.atEnd() )
   {
     line = points.readLine();
     QStringList ls;
     if ( line.contains( ',' ) ) // in previous format "\t" is delimiter of points in new - ","
-    {
-      // points from new georeferencer
-      ls = line.split( ',' );
-    }
+      ls = line.split( ',' ); // points from new georeferencer
     else
-    {
-      // points from prev georeferencer
-      ls = line.split( '\t' );
-    }
+      ls = line.split( '\t' ); // points from prev georeferencer
 
     if ( ls.count() < 4 )
-    {
       return false;
-    }
 
     QgsPointXY mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
     QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-    QgsCoordinateReferenceSystem proj( ls.at( 8 ) );
-    if ( ls.count() == 5 || ls.count() == 9 )
+
+    if ( ls.count() == 5 )
     {
       bool enable = ls.at( 4 ).toInt();
       addPoint( pixelCoords, mapCoords, proj, enable, false );
@@ -1326,19 +1332,19 @@ void QgsGeoreferencerMainWindow::saveGCPs()
   if ( pointFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream points( &pointFile );
+    points << QStringLiteral( "#CRS: %1" ).arg( mProjection.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) ) << endl;
     points << "mapX,mapY,pixelX,pixelY,enable,dX,dY,residual" << endl;
     for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
     {
-      points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8,%9" )
-             .arg( qgsDoubleToString( pt->mapCoords().x() ),
-                   qgsDoubleToString( pt->mapCoords().y() ),
+      points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
+             .arg( qgsDoubleToString( pt->transCoords().x() ),
+                   qgsDoubleToString( pt->transCoords().y() ),
                    qgsDoubleToString( pt->pixelCoords().x() ),
                    qgsDoubleToString( pt->pixelCoords().y() ) )
              .arg( pt->isEnabled() )
              .arg( qgsDoubleToString( pt->residual().x() ),
                    qgsDoubleToString( pt->residual().y() ),
-                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ),
-                   pt->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) )
+                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) )
              << endl;
     }
 
@@ -2225,4 +2231,16 @@ void QgsGeoreferencerMainWindow::clearGCPData()
   mGCPListWidget->updateGCPList();
 
   QgisApp::instance()->mapCanvas()->refresh();
+}
+
+void QgsGeoreferencerMainWindow::invalidateCanvasCoords()
+{
+  int count = mPoints.count();
+  int j = 0;
+  for ( int i = 0; i < count; ++i, ++j )
+  {
+    QgsGeorefDataPoint *p = mPoints.at( i );
+    p->setCanvasCoords( QgsPointXY() );
+    p->updateCoords();
+  }
 }
