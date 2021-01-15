@@ -590,6 +590,7 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
         qApp->restoreOverrideCursor();
         return;
       }
+      break;
     }
 
     default:
@@ -794,4 +795,59 @@ void QgsCameraController::moveView( float tx, float ty )
   center.set( center.x() + dx, center.y(), center.z() + dy );
   mCameraPose.setCenterPoint( center );
   updateCameraFromPose( true );
+}
+
+bool QgsCameraController::willHandleKeyEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_QuoteLeft )
+    return true;
+
+  switch ( mCameraNavigationMode )
+  {
+    case WalkNavigation:
+    {
+      switch ( event->key() )
+      {
+        case Qt::Key_Left:
+        case Qt::Key_A:
+        case Qt::Key_Right:
+        case Qt::Key_D:
+        case Qt::Key_Up:
+        case Qt::Key_W:
+        case Qt::Key_Down:
+        case Qt::Key_S:
+        case Qt::Key_PageUp:
+        case Qt::Key_E:
+        case Qt::Key_PageDown:
+        case Qt::Key_Q:
+          return true;
+
+        case Qt::Key_Escape:
+          if ( mCaptureFpsMouseMovements )
+            return true;
+          break;
+
+        default:
+          break;
+      }
+      break;
+    }
+
+    case TerrainBasedNavigation:
+    {
+      switch ( event->key() )
+      {
+        case Qt::Key_Left:
+        case Qt::Key_Right:
+        case Qt::Key_PageUp:
+        case Qt::Key_PageDown:
+          return true;
+
+        default:
+          break;
+      }
+      break;
+    }
+  }
+  return false;
 }
