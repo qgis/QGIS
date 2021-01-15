@@ -71,14 +71,16 @@ void QgsCodeEditorSQL::initializeLexer()
 
 void QgsCodeEditorSQL::setFields( const QgsFields &fields )
 {
-  mFieldNames.clear();
 
-  for ( const QgsField &field : fields )
+  QStringList fieldNames;
+
+  for ( const QgsField &field : qgis::as_const( fields ) )
   {
-    mFieldNames << field.name();
+    fieldNames.push_back( field.name() );
   }
 
-  updateApis();
+  setFieldNames( fieldNames );
+
 }
 
 void QgsCodeEditorSQL::updateApis()
@@ -92,4 +94,10 @@ void QgsCodeEditorSQL::updateApis()
 
   mApis->prepare();
   mSqlLexer->setAPIs( mApis );
+}
+
+void QgsCodeEditorSQL::setFieldNames( const QStringList &fieldNames )
+{
+  mFieldNames = fieldNames;
+  updateApis();
 }

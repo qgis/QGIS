@@ -1,0 +1,107 @@
+/***************************************************************************
+    testqgsqueryresultwidget.cpp
+     ----------------------
+    Date                 : Jan 2021
+    Copyright            : (C) 2021 Alessandro Pasotti
+    Email                : elpaso at itopen dot it
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#include "qgstest.h"
+
+#include "qgsqueryresultwidget.h"
+#include "qgsqueryresultmodel.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include <QApplication>
+#include <QAction>
+#include <QDialog>
+#include <QVBoxLayout>
+
+class TestQgsQueryResultWidget: public QObject
+{
+    Q_OBJECT
+  private slots:
+    void initTestCase(); // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
+
+    void testWidgetCrash();
+    void testWidget();
+
+  private:
+
+    std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConn;
+
+};
+
+void TestQgsQueryResultWidget::initTestCase()
+{
+  QgsApplication::initQgis();
+  auto conn { QgsProviderRegistry::instance( )->providerMetadata( QStringLiteral( "postgres" ) )->createConnection( qgetenv( "QGIS_PGTEST_DB" ), QVariantMap() ) };
+  mConn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( conn ) );
+  // Prepare data for fetching test
+  mConn->execSql( QStringLiteral( "DROP TABLE IF EXISTS qgis_test.random_big_data" ) );
+  mConn->execSql( QStringLiteral( "SELECT * INTO qgis_test.random_big_data FROM generate_series(1,1000000) AS id, md5(random()::text) AS descr" ) );
+}
+
+void TestQgsQueryResultWidget::cleanupTestCase()
+{
+}
+
+void TestQgsQueryResultWidget::init()
+{
+}
+
+void TestQgsQueryResultWidget::cleanup()
+{
+}
+
+// Test do not crash when deleting the result while the model fetcher is running
+void TestQgsQueryResultWidget::testWidgetCrash()
+{
+  // Make a copy
+  auto res = new QgsAbstractDatabaseProviderConnection::QueryResult( mConn->execSql( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) ) );
+  auto model = new QgsQueryResultModel( *res );
+  bool exited { false };
+  QTimer::singleShot( 0, model, [ & ] { delete res; } );
+  QTimer::singleShot( 1, model, [ & ] { exited = true; } );
+  while ( ! exited )
+    QgsApplication::processEvents();
+  const auto rowCount { model->rowCount( model->index( -1, -1 ) ) };
+  QVERIFY( rowCount > 0 && rowCount < 1000000 );
+  delete model;
+}
+
+
+void TestQgsQueryResultWidget::testWidget()
+{
+  auto d = qgis::make_unique<QDialog>( );
+  auto l = new QVBoxLayout();
+  auto w = new QgsQueryResultWidget( d.get(), mConn.release() );
+  w->setQuery( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) );
+  l->addWidget( w );
+  d->setLayout( l );
+  // For interactive testing
+  //d->exec();
+  w->executeQuery();
+  QTimer::singleShot( 0, d.get(), [ = ]
+  {
+    QTest::mousePress( w->mStopButton, Qt::MouseButton::LeftButton );
+  } );
+  QgsApplication::processEvents();
+  const auto rowCount { w->mModel->rowCount( w->mModel->index( -1, -1 ) ) };
+  QVERIFY( rowCount > 0 && rowCount < 1000000 );
+}
+
+QGSTEST_MAIN( TestQgsQueryResultWidget )
+#include "testqgsqueryresultwidget.moc"

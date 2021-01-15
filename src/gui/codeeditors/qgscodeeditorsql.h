@@ -46,6 +46,13 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
      */
     void setFields( const QgsFields &fields );
 
+    /**
+     * Set field names to \a fieldNames to be added to the lexer API.
+     *
+     * \since QGIS 3.18
+     */
+    void setFieldNames( const QStringList &fieldNames );
+
   protected:
     void initializeLexer() override;
 

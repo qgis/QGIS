@@ -67,6 +67,7 @@ set(TESTS
   testqgsmeshlayerpropertiesdialog.cpp
   testqgsexternalresourcewidgetwrapper.cpp
   testqgsquerybuilder.cpp
+  testqgsqueryresultwidget.cpp
 )
 
 foreach(TESTSRC ${TESTS})
