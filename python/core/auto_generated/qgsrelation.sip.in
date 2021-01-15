@@ -22,6 +22,12 @@ class QgsRelation
 
   public:
 
+    enum RelationType
+    {
+      Normal,
+      Generated,
+    };
+
     enum RelationStrength
     {
       Association,
@@ -332,6 +338,13 @@ Returns the parent polymorphic relation id. If the relation is a normal relation
     QgsPolymorphicRelation polymorphicRelation() const;
 %Docstring
 Returns the parent polymorphic relation. If the relation is a normal relation, an invalid polymorphic relation is returned.
+
+.. versionadded:: 3.18
+%End
+
+    RelationType type() const;
+%Docstring
+Returns the type of the relation
 
 .. versionadded:: 3.18
 %End
