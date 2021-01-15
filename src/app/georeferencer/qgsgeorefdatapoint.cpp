@@ -33,6 +33,7 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *d
   , mEnabled( enable )
 {
   mTransCoords = QgsPointXY( mapCoords );
+  mCanvasCoords = QgsPointXY();
   mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, this, true );
   mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, this, false );
   mGCPSourceItem->setEnabled( enable );
@@ -52,6 +53,7 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
   mTransCoords = p.transCoords();
   mEnabled = p.isEnabled();
   mResidual = p.residual();
+  mCanvasCoords = p.canvasCoords();
   mCrs = p.crs();
   mId = p.id();
 }
@@ -98,6 +100,17 @@ void QgsGeorefDataPoint::setTransCoords( const QgsPointXY &p )
 QgsPointXY QgsGeorefDataPoint::transCoords() const
 {
   return mTransCoords.isEmpty() ? mMapCoords : mTransCoords;
+}
+
+
+void QgsGeorefDataPoint::setCanvasCoords( const QgsPointXY &p )
+{
+  mCanvasCoords = p;
+}
+
+QgsPointXY QgsGeorefDataPoint::canvasCoords() const
+{
+  return mCanvasCoords;
 }
 
 void QgsGeorefDataPoint::setEnabled( bool enabled )
@@ -169,12 +182,15 @@ void QgsGeorefDataPoint::moveTo( QPoint p, bool isMapPlugin )
   else
   {
     QgsPointXY pnt = mGCPDestinationItem->toMapCoordinates( p );
+    setCanvasCoords( pnt );
     mMapCoords = pnt;
-    if ( mSrcCanvas && !mSrcCanvas->mapSettings().destinationCrs().isValid() )
+    if ( mSrcCanvas && mSrcCanvas->mapSettings().destinationCrs().isValid() )
       mCrs = mSrcCanvas->mapSettings().destinationCrs();
     else
-      mCrs = mGCPDestinationItem->canvas()->mapSettings().destinationCrs() ;
+      mCrs = mGCPDestinationItem->canvas()->mapSettings().destinationCrs();
   }
+  if ( !mCrs.isValid() )
+    mCrs =  QgsProject::instance()->crs();
   mGCPSourceItem->update();
   mGCPDestinationItem->update();
   updateCoords();

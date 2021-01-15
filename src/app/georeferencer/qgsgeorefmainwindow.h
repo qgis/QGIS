@@ -124,6 +124,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void extentsChanged(); // Use for need add again Raster (case above)
 
     bool updateGeorefTransform();
+    void invalidateCanvasCoords();
 
   private:
     enum SaveGCPs
@@ -225,6 +226,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QString mTranslatedRasterFileName;
     QString mGCPpointsFileName;
     QgsCoordinateReferenceSystem mProjection;
+    QgsCoordinateReferenceSystem mLastGCPProjection;
     QString mPdfOutputFile;
     QString mPdfOutputMapFile;
     QString mSaveGcp;
