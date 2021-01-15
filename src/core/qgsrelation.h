@@ -58,8 +58,8 @@ class CORE_EXPORT QgsRelation
      */
     enum RelationType
     {
-      Normal, //! A normal relation
-      Generated, //! A generated relation is a child of a polymorphic relation
+      Normal, //!< A normal relation
+      Generated, //!< A generated relation is a child of a polymorphic relation
     };
     Q_ENUM( RelationType )
 
