@@ -18,6 +18,8 @@
 #ifndef QGSTILEDOWNLOADMANAGER_H
 #define QGSTILEDOWNLOADMANAGER_H
 
+#define SIP_NO_FILE
+
 #include <QTimer>
 #include <QThread>
 #include <QMutex>
@@ -152,9 +154,9 @@ class QgsTileDownloadManagerWorker : public QObject
  *
  * - a map rendering job starts which requests tiles from a remote server, then in a short
  *   while user zooms/pans map, which would normally mean that all pending requests get
- *   aborted and then restarted soon afterwards. The download manager lets the requests
+ *   aborted and then restarted soon afterwards. The download manager allows the requests
  *   to finish to avoid excessive load on servers and needless aborts and repeated requests.
- * - multiple map rendering jobs start at a similar time, requesting map the same map tiles.
+ * - multiple map rendering jobs start at a similar time, requesting the same map tiles.
  *   Normally they could be requested multiple times from the server - the download manager
  *   groups these requests and only does a single request at a time.
  *

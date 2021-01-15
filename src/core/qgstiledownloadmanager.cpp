@@ -146,7 +146,7 @@ QgsTileDownloadManager::QgsTileDownloadManager()
 
 QgsTileDownloadManager::~QgsTileDownloadManager()
 {
-  // make sure the worker thread is gone and any pending requests are cancelled
+  // make sure the worker thread is gone and any pending requests are canceled
   shutdown();
 }
 
