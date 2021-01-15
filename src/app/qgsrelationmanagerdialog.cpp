@@ -79,7 +79,7 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layer
     if ( rel.type() == QgsRelation::Generated )
       continue;
 
-    addRelation( rel );
+    addRelationPrivate( rel );
   }
   const QList<QgsPolymorphicRelation> &polymorphicRelations = mRelationManager->polymorphicRelations().values();
   for ( const QgsPolymorphicRelation &polymorphicRel : polymorphicRelations )
