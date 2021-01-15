@@ -68,7 +68,11 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
 
 void QgsCameraController::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
 {
+  if ( navigationMode == mCameraNavigationMode )
+    return;
+
   mCameraNavigationMode = navigationMode;
+  mIgnoreNextMouseMove = true;
 }
 
 void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
@@ -348,6 +352,13 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 
 void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseEvent *mouse )
 {
+  if ( mIgnoreNextMouseMove )
+  {
+    mIgnoreNextMouseMove = false;
+    mMousePos = QPoint( mouse->x(), mouse->y() );
+    return;
+  }
+
   int dx = mouse->x() - mMousePos.x();
   int dy = mouse->y() - mMousePos.y();
 
@@ -462,10 +473,10 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
     switch ( mCameraNavigationMode )
     {
       case NavigationMode::WalkNavigation:
-        mCameraNavigationMode = NavigationMode::TerrainBasedNavigation;
+        setCameraNavigationMode( NavigationMode::TerrainBasedNavigation );
         break;
       case NavigationMode::TerrainBasedNavigation:
-        mCameraNavigationMode = NavigationMode::WalkNavigation;
+        setCameraNavigationMode( NavigationMode::WalkNavigation );
         break;
     }
     emit navigationModeHotKeyPressed( mCameraNavigationMode );
