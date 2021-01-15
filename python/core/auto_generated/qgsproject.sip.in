@@ -444,7 +444,7 @@ Reads a double from the specified ``scope`` and ``key``.
 
 :param scope: entry scope (group) name
 :param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
-:param default: value to return if the specified ``key`` does not exist within the ``scope``.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
 
 :return: - entry value as double from ``scope`` given its ``key``
          - ok: set to ``True`` if key exists and has been successfully retrieved as a double
@@ -456,12 +456,11 @@ Reads a boolean from the specified ``scope`` and ``key``.
 
 :param scope: entry scope (group) name
 :param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
-:param default: value to return if the specified ``key`` does not exist within the ``scope``.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
 
 :return: - entry value as boolean from ``scope`` given its ``key``
          - ok: set to ``True`` if key exists and has been successfully retrieved as a boolean
 %End
-
 
     bool removeEntry( const QString &scope, const QString &key );
 %Docstring
@@ -472,7 +471,7 @@ Remove the given ``key`` from the specified ``scope``.
 %Docstring
 Returns a list of child keys with values which exist within the the specified ``scope`` and ``key``.
 
-This method does not return keys that contain other keys. See :py:func:`~QgsProject.subkeyList` to retrieve keys
+This method does not return keys that contain other keys. See subkeyList() to retrieve keys
 which contain other keys.
 
 .. note::
@@ -485,7 +484,7 @@ which contain other keys.
 Returns a list of child keys which contain other keys that exist within the the specified ``scope`` and ``key``.
 
 This method only returns keys with keys, it will not return keys that contain only values. See
-:py:func:`~QgsProject.entryList` to retrieve keys with values.
+entryList() to retrieve keys with values.
 
 .. note::
 
