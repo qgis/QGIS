@@ -62,7 +62,7 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
 
   mFpsNavTimer = new QTimer( this );
   mFpsNavTimer->setInterval( 10 );
-  connect( mFpsNavTimer, &QTimer::timeout, this, &QgsCameraController::onKeyPressedFlyNavigation );
+  connect( mFpsNavTimer, &QTimer::timeout, this, &QgsCameraController::applyFlyModeKeyMovements );
   mFpsNavTimer->start();
 }
 
@@ -476,27 +476,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
   {
     case WalkNavigation:
     {
-      if ( event->key() == Qt::Key_QuoteLeft )
-      {
-        mCaptureFpsMouseMovements = !mCaptureFpsMouseMovements;
-        if ( mCaptureFpsMouseMovements )
-        {
-          mIgnoreNextMouseMove = true;
-          qApp->setOverrideCursor( QCursor( Qt::BlankCursor ) );
-        }
-        else
-        {
-          mIgnoreNextMouseMove = false;
-          qApp->restoreOverrideCursor();
-        }
-        return;
-      }
-
-      if ( event->isAutoRepeat() )
-        return;
-
-      mDepressedKeys.insert( event->key() );
-      onKeyPressedFlyNavigation();
+      onKeyPressedFlyNavigation( event );
       break;
     }
 
@@ -569,7 +549,49 @@ void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *e
   }
 }
 
-void QgsCameraController::onKeyPressedFlyNavigation()
+void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event )
+{
+  switch ( event->key() )
+  {
+    case Qt::Key_QuoteLeft:
+    {
+      // toggle mouse lock mode
+      mCaptureFpsMouseMovements = !mCaptureFpsMouseMovements;
+      mIgnoreNextMouseMove = true;
+      if ( mCaptureFpsMouseMovements )
+      {
+        qApp->setOverrideCursor( QCursor( Qt::BlankCursor ) );
+      }
+      else
+      {
+        qApp->restoreOverrideCursor();
+      }
+      return;
+    }
+
+    case Qt::Key_Escape:
+    {
+      // always exit mouse lock mode
+      if ( mCaptureFpsMouseMovements )
+      {
+        mCaptureFpsMouseMovements = false;
+        mIgnoreNextMouseMove = true;
+        qApp->restoreOverrideCursor();
+        return;
+      }
+    }
+
+    default:
+      break;
+  }
+
+  if ( event->isAutoRepeat() )
+    return;
+
+  mDepressedKeys.insert( event->key() );
+}
+
+void QgsCameraController::applyFlyModeKeyMovements()
 {
   QVector3D cameraUp = mCamera->upVector().normalized();
   QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
