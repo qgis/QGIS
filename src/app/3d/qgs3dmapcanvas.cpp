@@ -97,9 +97,6 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
 
   if ( mScene )
   {
-    disconnect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
-    disconnect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
-    disconnect( mScene, &Qgs3DMapScene::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
     mScene->deleteLater();
   }
   mScene = newScene;
