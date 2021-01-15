@@ -85,20 +85,6 @@ class TestQgsServerSettings(unittest.TestCase):
         self.assertEqual(self.settings.projectFile(), "/tmp/myproject2.qgs")
         os.environ.pop(env)
 
-    def test_env_max_cache_layers(self):
-        env = "MAX_CACHE_LAYERS"
-
-        # test parallel rendering value from environment variable
-        os.environ[env] = "3"
-        self.settings.load()
-        self.assertEqual(self.settings.maxCacheLayers(), 3)
-        os.environ.pop(env)
-
-        os.environ[env] = "100"
-        self.settings.load()
-        self.assertEqual(self.settings.maxCacheLayers(), 100)
-        os.environ.pop(env)
-
     def test_env_max_threads(self):
         env = "QGIS_SERVER_MAX_THREADS"
 
