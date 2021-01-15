@@ -164,18 +164,18 @@ bool QgsRelationManagerDialog::addRelationPrivate( const QgsRelation &rel, QTree
   mRelationsTree->setSortingEnabled( false );
   QTreeWidgetItem *item = new QTreeWidgetItem();
 
-  if ( parentItem )
+  switch ( rel.type() )
   {
-    item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+    case QgsRelation::Normal:
+      item->setFlags( item->flags() | Qt::ItemIsEditable );
+      mRelationsTree->invisibleRootItem()->addChild( item );
+      break;
+    case QgsRelation::Generated:
+      Q_ASSERT( parentItem );
+      item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+      parentItem->addChild( item );
+      break;
   }
-  else
-  {
-    Q_ASSERT( rel.type() != QgsRelation::Generated );
-    item->setFlags( item->flags() | Qt::ItemIsEditable );
-    parentItem = mRelationsTree->invisibleRootItem();
-  }
-
-  parentItem->addChild( item );
 
   // Save relation in first column's item
   item->setData( 0, Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
