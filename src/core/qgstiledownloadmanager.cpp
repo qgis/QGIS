@@ -17,54 +17,82 @@
 
 #include "qgstiledownloadmanager.h"
 
+#include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 
 #include <QNetworkReply>
 
-QList<QgsTileDownloadManager::QueueEntry> QgsTileDownloadManager::queue;
-bool QgsTileDownloadManager::shuttingDown = false;
-QMutex QgsTileDownloadManager::mutex;
-QThread *QgsTileDownloadManager::workerThread = nullptr;
-QObject *QgsTileDownloadManager::worker = nullptr;
-QgsTileDownloadManager::Stats QgsTileDownloadManager::stats;
 
+QgsTileDownloadManagerWorker::QgsTileDownloadManagerWorker( QgsTileDownloadManager *manager, QObject *parent )
+  : QObject( parent )
+  , mManager( manager )
+  , mIdleTimer( this )
+{
+  connect( &mIdleTimer, &QTimer::timeout, this, &QgsTileDownloadManagerWorker::idleTimerTimeout );
+}
+
+void QgsTileDownloadManagerWorker::startIdleTimer()
+{
+  if ( !mIdleTimer.isActive() )
+  {
+    mIdleTimer.start( mManager->mIdleThreadTimeoutMs );
+  }
+}
 
 void QgsTileDownloadManagerWorker::queueUpdated()
 {
-  qDebug() << "queueUpdated";
+  QMutexLocker locker( &mManager->mMutex );
 
-  // TODO: - if timer to kill thread is running: stop the timer
-
-  QMutexLocker locker( &QgsTileDownloadManager::mutex );
-
-  // TODO:  - if shutting down: abort all network requests, quit() thread
-  if ( QgsTileDownloadManager::shuttingDown )
+  if ( mManager->mShuttingDown )
   {
-    qDebug() << "shutting down!";
-    for ( auto it = QgsTileDownloadManager::queue.begin(); it != QgsTileDownloadManager::queue.end(); ++it )
+    for ( auto it = mManager->mQueue.begin(); it != mManager->mQueue.end(); ++it )
     {
-
+      it->networkReply->abort();
     }
-    QgsTileDownloadManager::shuttingDown = false;
+
+    quitThread();
     return;
   }
 
-  for ( auto it = QgsTileDownloadManager::queue.begin(); it != QgsTileDownloadManager::queue.end(); ++it )
+  if ( mIdleTimer.isActive() && !mManager->mQueue.isEmpty() )
+  {
+    // if timer to kill thread is running: stop the timer, we have work to do
+    mIdleTimer.stop();
+  }
+
+  for ( auto it = mManager->mQueue.begin(); it != mManager->mQueue.end(); ++it )
   {
     if ( !it->networkReply )
     {
-      qDebug() << "starting request " << it->request.url();
+      QgsDebugMsgLevel( QStringLiteral( "Tile download manager: starting request: " ) + it->request.url().toString(), 2 );
       // start entries which are not in progress
 
-      //QNetworkRequest request( it->url );
       it->networkReply = QgsNetworkAccessManager::instance()->get( it->request );
       connect( it->networkReply, &QNetworkReply::finished, it->objWorker, &QgsTileDownloadManagerReplyWorkerObject::replyFinished );
 
-      ++QgsTileDownloadManager::stats.networkRequestsStarted;
+      ++mManager->mStats.networkRequestsStarted;
     }
   }
+}
 
+void QgsTileDownloadManagerWorker::quitThread()
+{
+  QgsDebugMsgLevel( QStringLiteral( "Tile download manager: stopping worker thread" ), 2 );
 
+  mManager->mWorker->deleteLater();
+  mManager->mWorker = nullptr;
+  // we signal to our worker thread it's time to go. Its finished() signal is connected
+  // to deleteLater() call, so it will get deleted automatically
+  mManager->mWorkerThread->quit();
+  mManager->mWorkerThread = nullptr;
+  mManager->mShuttingDown = false;
+}
+
+void QgsTileDownloadManagerWorker::idleTimerTimeout()
+{
+  QMutexLocker locker( &mManager->mMutex );
+  Q_ASSERT( mManager->mQueue.isEmpty() );
+  quitThread();
 }
 
 
@@ -73,37 +101,38 @@ void QgsTileDownloadManagerWorker::queueUpdated()
 
 void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 {
-  QMutexLocker locker( &QgsTileDownloadManager::mutex );
+  QMutexLocker locker( &mManager->mMutex );
 
-  qDebug() << "reply finished " << mRequest.url();
+  QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal reply finished: " ) + mRequest.url().toString(), 2 );
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   QByteArray data;
 
-  bool ok = reply->error() == QNetworkReply::NoError;
-  if ( ok )
+  if ( reply->error() == QNetworkReply::NoError )
   {
-    ++QgsTileDownloadManager::stats.networkRequestsOk;
+    ++mManager->mStats.networkRequestsOk;
 
     data = reply->readAll();
   }
   else
   {
-    ++QgsTileDownloadManager::stats.networkRequestsFailed;
-
-    // TODO: more handling of network errors?
+    ++mManager->mStats.networkRequestsFailed;
   }
 
-  emit finished( data );
+  emit finished( data, reply->error(), reply->errorString() );
 
   reply->deleteLater();
 
   // kill the worker obj
   deleteLater();
 
-  QgsTileDownloadManager::removeEntry( mRequest );
+  mManager->removeEntry( mRequest );
 
-  // TODO: - if this was the last thing in the queue, start a timer to kill thread after X seconds
+  if ( mManager->mQueue.isEmpty() )
+  {
+    // if this was the last thing in the queue, start a timer to kill thread after X seconds
+    mManager->mWorker->startIdleTimer();
+  }
 }
 
 
@@ -111,51 +140,54 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 
 
 QgsTileDownloadManager::QgsTileDownloadManager()
+  : mMutex( QMutex::Recursive )
 {
+}
 
+QgsTileDownloadManager::~QgsTileDownloadManager()
+{
+  // make sure the worker thread is gone and any pending requests are cancelled
+  shutdown();
 }
 
 QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest &request )
 {
-  QMutexLocker locker( &mutex );
+  QMutexLocker locker( &mMutex );
 
-  if ( !worker )
+  if ( !mWorker )
   {
-    workerThread = new QThread;
-    worker = new QgsTileDownloadManagerWorker;
-    worker->moveToThread( workerThread );
-    QObject::connect( workerThread, &QThread::finished, worker, &QObject::deleteLater );
-    workerThread->start();
+    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: starting worker thread" ), 2 );
+    mWorkerThread = new QThread;
+    mWorker = new QgsTileDownloadManagerWorker( this );
+    mWorker->moveToThread( mWorkerThread );
+    QObject::connect( mWorkerThread, &QThread::finished, mWorker, &QObject::deleteLater );
+    mWorkerThread->start();
   }
 
-  QgsTileDownloadManagerReply *reply = new QgsTileDownloadManagerReply( request ); // lives in the same thread as the caller
+  QgsTileDownloadManagerReply *reply = new QgsTileDownloadManagerReply( this, request ); // lives in the same thread as the caller
 
-  ++stats.requestsTotal;
+  ++mStats.requestsTotal;
 
   QgsTileDownloadManager::QueueEntry entry = findEntryForRequest( request );
   if ( !entry.isValid() )
   {
-    qDebug() << "new entry for " << request.url();
+    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: get (new entry): " ) + request.url().toString(), 2 );
     // create a new entry and add it to queue
     entry.request = request;
-    //entry.state = 0;
-    entry.objWorker = new QgsTileDownloadManagerReplyWorkerObject( request );
-    entry.objWorker->moveToThread( workerThread );
+    entry.objWorker = new QgsTileDownloadManagerReplyWorkerObject( this, request );
+    entry.objWorker->moveToThread( mWorkerThread );
 
-    entry.listeners.append( reply );
     QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished );  // should be queued connection
 
     addEntry( entry );
   }
   else
   {
-    qDebug() << " adding listener for " << request.url();
+    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: get (existing entry): " ) + request.url().toString(), 2 );
 
-    entry.listeners.append( reply );
     QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished );  // should be queued connection
 
-    updateEntry( entry );
-    ++stats.requestsMerged;
+    ++mStats.requestsMerged;
   }
 
   signalQueueModified();
@@ -163,11 +195,11 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
   return reply;
 }
 
-bool QgsTileDownloadManager::hasPendingRequests()
+bool QgsTileDownloadManager::hasPendingRequests() const
 {
-  QMutexLocker locker( &mutex );
+  QMutexLocker locker( &mMutex );
 
-  return !queue.isEmpty();
+  return !mQueue.isEmpty();
 }
 
 bool QgsTileDownloadManager::waitForPendingRequests( int msec )
@@ -178,8 +210,8 @@ bool QgsTileDownloadManager::waitForPendingRequests( int msec )
   while ( msec == -1 || t.elapsed() < msec )
   {
     {
-      QMutexLocker locker( &mutex );
-      if ( queue.isEmpty() )
+      QMutexLocker locker( &mMutex );
+      if ( mQueue.isEmpty() )
         return true;
     }
     QThread::currentThread()->usleep( 1000 );
@@ -191,23 +223,44 @@ bool QgsTileDownloadManager::waitForPendingRequests( int msec )
 void QgsTileDownloadManager::shutdown()
 {
   {
-    QMutexLocker locker( &mutex );
-    shuttingDown = true;
+    QMutexLocker locker( &mMutex );
+    if ( !mWorkerThread )
+      return;  // nothing to stop
+
+    // let's signal to the thread
+    mShuttingDown = true;
     signalQueueModified();
   }
+
+  // wait until the thread is gone
+  while ( 1 )
+  {
+    {
+      QMutexLocker locker( &mMutex );
+      if ( !mWorkerThread )
+        return;  // the thread has stopped
+    }
+
+    QThread::currentThread()->usleep( 1000 );
+  }
+}
+
+bool QgsTileDownloadManager::hasWorkerThreadRunning() const
+{
+  return mWorkerThread && mWorkerThread->isRunning();
 }
 
 void QgsTileDownloadManager::resetStatistics()
 {
-  QMutexLocker locker( &mutex );
-  stats = QgsTileDownloadManager::Stats();
+  QMutexLocker locker( &mMutex );
+  mStats = QgsTileDownloadManager::Stats();
 }
 
 QgsTileDownloadManager::QueueEntry QgsTileDownloadManager::findEntryForRequest( const QNetworkRequest &request )
 {
-  for ( auto it = queue.constBegin(); it != queue.constEnd(); ++it )
+  for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it )
   {
-    if ( it->request == request )
+    if ( it->request.url() == request.url() )
       return *it;
   }
   return QgsTileDownloadManager::QueueEntry();
@@ -215,19 +268,19 @@ QgsTileDownloadManager::QueueEntry QgsTileDownloadManager::findEntryForRequest( 
 
 void QgsTileDownloadManager::addEntry( const QgsTileDownloadManager::QueueEntry &entry )
 {
-  for ( auto it = queue.constBegin(); it != queue.constEnd(); ++it )
+  for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it )
   {
-    Q_ASSERT( entry.request != it->request );
+    Q_ASSERT( entry.request.url() != it->request.url() );
   }
 
-  queue.append( entry );
+  mQueue.append( entry );
 }
 
 void QgsTileDownloadManager::updateEntry( const QgsTileDownloadManager::QueueEntry &entry )
 {
-  for ( auto it = queue.begin(); it != queue.end(); ++it )
+  for ( auto it = mQueue.begin(); it != mQueue.end(); ++it )
   {
-    if ( entry.request == it->request )
+    if ( entry.request.url() == it->request.url() )
     {
       *it = entry;
       return;
@@ -239,11 +292,11 @@ void QgsTileDownloadManager::updateEntry( const QgsTileDownloadManager::QueueEnt
 void QgsTileDownloadManager::removeEntry( const QNetworkRequest &request )
 {
   int i = 0;
-  for ( auto it = queue.constBegin(); it != queue.constEnd(); ++it, ++i )
+  for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it, ++i )
   {
-    if ( it->request == request )
+    if ( it->request.url() == request.url() )
     {
-      queue.removeAt( i );
+      mQueue.removeAt( i );
       return;
     }
   }
@@ -252,36 +305,38 @@ void QgsTileDownloadManager::removeEntry( const QNetworkRequest &request )
 
 void QgsTileDownloadManager::signalQueueModified()
 {
-  QMetaObject::invokeMethod( worker, "queueUpdated", Qt::QueuedConnection );
-  //QMetaObject::invokeMethod( worker, &QgsTileDownloadManagerWorker::queueUpdated, Qt::QueuedConnection ); //&QgsTileDownloadManagerWorker::queueUpdated );
+  QMetaObject::invokeMethod( mWorker, &QgsTileDownloadManagerWorker::queueUpdated, Qt::QueuedConnection );
 }
 
 
 ///
 
 
-QgsTileDownloadManagerReply::~QgsTileDownloadManagerReply()
+QgsTileDownloadManagerReply::QgsTileDownloadManagerReply( QgsTileDownloadManager *manager, const QNetworkRequest &request )
+  : mManager( manager )
+  , mRequest( request )
 {
-  QMutexLocker locker( &QgsTileDownloadManager::mutex );
-
-  QgsTileDownloadManager::QueueEntry entry = QgsTileDownloadManager::findEntryForRequest( mRequest );
-  if ( entry.isValid() )
-  {
-    // remove it from the list of listeners
-    Q_ASSERT( entry.listeners.contains( this ) );
-    entry.listeners.removeOne( this );
-
-    ++QgsTileDownloadManager::stats.requestsEarlyDeleted;
-
-    // TODO: we could also remove the whole entry if it has not started yet
-  }
-
 }
 
-void QgsTileDownloadManagerReply::requestFinished( QByteArray data )
+QgsTileDownloadManagerReply::~QgsTileDownloadManagerReply()
 {
-  qDebug() << QThread::currentThread() << mRequest.url();
+  QMutexLocker locker( &mManager->mMutex );
 
+  if ( !mHasFinished )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: reply deleted before finished: " ) + mRequest.url().toString(), 2 );
+
+    ++mManager->mStats.requestsEarlyDeleted;
+  }
+}
+
+void QgsTileDownloadManagerReply::requestFinished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString )
+{
+  QgsDebugMsgLevel( QStringLiteral( "Tile download manager: reply finished: " ) + mRequest.url().toString(), 2 );
+
+  mHasFinished = true;
   mData = data;
+  mError = error;
+  mErrorString = errorString;
   emit finished();
 }

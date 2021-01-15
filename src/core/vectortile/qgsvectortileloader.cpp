@@ -104,7 +104,7 @@ void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsT
     QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
   }
 
-  QgsTileDownloadManagerReply *replyV2 = QgsTileDownloadManager::get( request );
+  QgsTileDownloadManagerReply *replyV2 = QgsApplication::tileDownloadManager()->get( request );
   connect( replyV2, &QgsTileDownloadManagerReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
   mRepliesV2 << replyV2;
 
@@ -123,7 +123,7 @@ void QgsVectorTileLoader::tileReplyFinished()
   int reqZ = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ) ).toInt();
   QgsTileXYZ tileID( reqX, reqY, reqZ );
 
-  if ( !reply->data().isEmpty() ) // TODO:  //reply->error() == QNetworkReply::NoError )
+  if ( reply->error() == QNetworkReply::NoError )
   {
     // TODO: handle redirections?
 
@@ -137,7 +137,7 @@ void QgsVectorTileLoader::tileReplyFinished()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Tile download failed! " ) );  // TODO + reply->errorString() );
+    QgsDebugMsg( QStringLiteral( "Tile download failed! " ) + reply->errorString() );
     mRepliesV2.removeOne( reply );
     //mReplies.removeOne( reply );
     reply->deleteLater();
@@ -157,6 +157,10 @@ void QgsVectorTileLoader::canceled()
   QgsDebugMsgLevel( QStringLiteral( "Canceling %1 pending requests" ).arg( mRepliesV2.count() ), 2 );
   qDeleteAll( mRepliesV2 );
   mRepliesV2.clear();
+
+  // stop blocking download
+  mEventLoop->quit();
+
 //  const QList<QNetworkReply *> replies = mReplies;
 //  for ( QNetworkReply *reply : replies )
 //  {

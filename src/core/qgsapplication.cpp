@@ -51,6 +51,7 @@
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
+#include "qgstiledownloadmanager.h"
 #include "qgsunittypes.h"
 #include "qgsuserprofile.h"
 #include "qgsuserprofilemanager.h"
@@ -2276,6 +2277,11 @@ QgsBookmarkManager *QgsApplication::bookmarkManager()
   return members()->mBookmarkManager;
 }
 
+QgsTileDownloadManager *QgsApplication::tileDownloadManager()
+{
+  return members()->mTileDownloadManager;
+}
+
 QgsStyleModel *QgsApplication::defaultStyleModel()
 {
   return members()->mStyleModel;
@@ -2493,6 +2499,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup tile download manager" ) );
+    mTileDownloadManager = new QgsTileDownloadManager();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup scalebar registry" ) );
     mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
     profiler->end();
@@ -2502,6 +2513,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
   delete mStyleModel;
+  delete mTileDownloadManager;
   delete mScaleBarRendererRegistry;
   delete mValidityCheckRegistry;
   delete mActionScopeRegistry;

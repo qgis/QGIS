@@ -18,12 +18,16 @@
 #ifndef QGSTILEDOWNLOADMANAGER_H
 #define QGSTILEDOWNLOADMANAGER_H
 
+#include <QTimer>
 #include <QThread>
 #include <QMutex>
 
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include "qgis_core.h"
+
+class QgsTileDownloadManager;
 
 /**
  * \ingroup core
@@ -41,22 +45,40 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
 {
     Q_OBJECT
   public:
-    QgsTileDownloadManagerReply( const QNetworkRequest &request ): mRequest( request ) {}
     ~QgsTileDownloadManagerReply();
 
+    //! Returns whether the reply has already finished (with success/failure)
+    bool hasFinished() const { return mHasFinished; }
+    //! Returns binary data returned in the reply (only valid when already finished)
     QByteArray data() const { return mData; }
+    //! Returns error code (only valid when already finished)
+    QNetworkReply::NetworkError error() const { return mError; }
+    //! Returns error string (only valid when already finished)
+    QString errorString() const { return mErrorString; }
 
+    //! Returns the original request for this reply object
     QNetworkRequest request() const { return mRequest; }
 
   public slots:
-    void requestFinished( QByteArray data );
+    void requestFinished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString );
 
   signals:
+    //! Emitted when the reply has finished (either with a success or with a failure)
     void finished();
 
   private:
+    QgsTileDownloadManagerReply( QgsTileDownloadManager *manager, const QNetworkRequest &request );
+
+    friend class QgsTileDownloadManager;  // allows creation of new instances from the manager
+
+  private:
+    //! "parent" download manager of this reply
+    QgsTileDownloadManager *mManager = nullptr;
     QNetworkRequest mRequest;
+    bool mHasFinished = false;
     QByteArray mData;
+    QNetworkReply::NetworkError mError = QNetworkReply::NoError;
+    QString mErrorString;
 };
 
 
@@ -71,15 +93,18 @@ class QgsTileDownloadManagerReplyWorkerObject : public QObject
 {
     Q_OBJECT
   public:
-    QgsTileDownloadManagerReplyWorkerObject( const QNetworkRequest &request ): mRequest( request ) {}
+    QgsTileDownloadManagerReplyWorkerObject( QgsTileDownloadManager *manager, const QNetworkRequest &request )
+      : mManager( manager ), mRequest( request ) {}
 
   public slots:
     void replyFinished();
 
   signals:
-    void finished( QByteArray data );
+    void finished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString );
 
   private:
+    //! "parent" download manager of this worker object
+    QgsTileDownloadManager *mManager = nullptr;
     QNetworkRequest mRequest;
 };
 
@@ -94,16 +119,25 @@ class QgsTileDownloadManagerWorker : public QObject
     Q_OBJECT
 
   public:
-    QgsTileDownloadManagerWorker( QObject *parent = nullptr ): QObject( parent ) {}
-    //~QgsTileDownloadManagerWorker();
+    QgsTileDownloadManagerWorker( QgsTileDownloadManager *manager, QObject *parent = nullptr );
+
+    void startIdleTimer();
 
   public slots:
     void queueUpdated();
+    void idleTimerTimeout();
 
   signals:
     void requestFinished( QString url, QByteArray data );
 
   private:
+    void quitThread();
+
+  private:
+    //! "parent" download manager of this worker
+    QgsTileDownloadManager *mManager = nullptr;
+    //! Timer used to delete the worker thread if thread is not doing anything for some time
+    QTimer mIdleTimer;
 };
 
 /// @endcond
@@ -149,7 +183,7 @@ class CORE_EXPORT QgsTileDownloadManager
 {
   public:
 
-
+    //! An entry in the queue of requests to be handled by this class
     class QueueEntry
     {
       public:
@@ -159,13 +193,11 @@ class CORE_EXPORT QgsTileDownloadManager
         QNetworkRequest request;
         //! Helper QObject that lives in worker thread that emits signals
         QgsTileDownloadManagerReplyWorkerObject *objWorker = nullptr;
-        //! Sources waiting for this data
-        QList<QgsTileDownloadManagerReply *> listeners;
         //! Internal network reply - only to be touched by the worker thread
         QNetworkReply *networkReply = nullptr;
     };
 
-
+    //! Encapsulates any statistics we would like to keep about requests
     class Stats
     {
       public:
@@ -185,18 +217,43 @@ class CORE_EXPORT QgsTileDownloadManager
     };
 
     QgsTileDownloadManager();
+    ~QgsTileDownloadManager();
 
-    static QgsTileDownloadManagerReply *get( const QNetworkRequest &request );
+    /**
+     * Starts a request. Returns a new object that should be deleted by the caller
+     * when not needed anymore.
+     */
+    QgsTileDownloadManagerReply *get( const QNetworkRequest &request );
 
-    static bool hasPendingRequests();
+    //! Returns whether there are any pending requests in the queue
+    bool hasPendingRequests() const;
 
-    static bool waitForPendingRequests( int msec = -1 );
+    /**
+     * Blocks the current thread until the queue is empty. This should not be used
+     * in production code, it is however useful for auto tests
+     */
+    bool waitForPendingRequests( int msec = -1 );
 
-    static void shutdown();
+    //! Asks the worker thread to stop and blocks until it is not stopped.
+    void shutdown();
 
-    static Stats statistics() { return stats; }
+    /**
+     * Returns whether the worker thread is running currently (it may be stopped
+     * if there were no requests recently
+     */
+    bool hasWorkerThreadRunning() const;
 
-    static void resetStatistics();
+    /**
+     * Sets after how many milliseconds the idle worker therad should terminate.
+     * This function is meant mainly for unit testing.
+     */
+    void setIdleThreadTimeout( int timeoutMs ) { mIdleThreadTimeoutMs = timeoutMs; }
+
+    //! Returns basic statistics of the queries handled by this class
+    Stats statistics() { return mStats; }
+
+    //! Resets statistics of numbers of queries handled by this class
+    void resetStatistics();
 
     friend class QgsTileDownloadManagerWorker;
     friend class QgsTileDownloadManagerReply;
@@ -205,21 +262,23 @@ class CORE_EXPORT QgsTileDownloadManager
   private:
 
     // these can be only used with mutex locked!
-    static QueueEntry findEntryForRequest( const QNetworkRequest &request );
-    static void addEntry( const QueueEntry &entry );
-    static void updateEntry( const QueueEntry &entry );
-    static void removeEntry( const QNetworkRequest &request );
+    QueueEntry findEntryForRequest( const QNetworkRequest &request );
+    void addEntry( const QueueEntry &entry );
+    void updateEntry( const QueueEntry &entry );
+    void removeEntry( const QNetworkRequest &request );
 
-    static void signalQueueModified();
+    void signalQueueModified();
 
   private:
 
-    static QList<QueueEntry> queue;
-    static bool shuttingDown;
-    static QMutex mutex;
-    static QThread *workerThread;
-    static QObject *worker;
-    static Stats stats;
+    QList<QueueEntry> mQueue;
+    bool mShuttingDown = false;
+    mutable QMutex mMutex;
+    QThread *mWorkerThread = nullptr;
+    QgsTileDownloadManagerWorker *mWorker = nullptr;
+    Stats mStats;
+
+    int mIdleThreadTimeoutMs = 10000;
 };
 
 #endif // QGSTILEDOWNLOADMANAGER_H
