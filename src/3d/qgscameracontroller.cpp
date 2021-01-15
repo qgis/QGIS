@@ -442,6 +442,8 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mPressedButton = mouse->button();
     mMousePressed = true;
+    if ( mCaptureFpsMouseMovements )
+      mIgnoreNextMouseMove = true;
   }
 }
 
@@ -627,22 +629,36 @@ void QgsCameraController::onKeyPressedFlyNavigation()
 
 void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse )
 {
-  if ( !mMousePressed && !mCaptureFpsMouseMovements )
-    return;
+  const bool hasMiddleButton = ( mouse->buttons() & Qt::MiddleButton );
+  const bool hasRightButton = ( mouse->buttons() & Qt::RightButton );
 
-  if ( mCaptureFpsMouseMovements )
+  const double dx = mCaptureFpsMouseMovements ? QCursor::pos().x() - mMousePos.x() : mouse->x() - mMousePos.x();
+  const double dy = mCaptureFpsMouseMovements ? QCursor::pos().y() - mMousePos.y() : mouse->y() - mMousePos.y();
+  mMousePos = mCaptureFpsMouseMovements ? QCursor::pos() : QPoint( mouse->x(), mouse->y() );
+
+  if ( mIgnoreNextMouseMove )
   {
-    const double dx = QCursor::pos().x() - mMousePos.x();
-    const double dy = QCursor::pos().y() - mMousePos.y();
-    mMousePos = QCursor::pos();
+    mIgnoreNextMouseMove = false;
+    return;
+  }
 
-    if ( mIgnoreNextMouseMove )
-    {
-      mIgnoreNextMouseMove = false;
-      return;
-    }
-
-    if ( mPressedButton != Qt3DInput::QMouseEvent::RightButton )
+  if ( hasRightButton )
+  {
+    QVector3D cameraUp = mCamera->upVector().normalized();
+    QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
+    QVector3D cameraLeft = QVector3D::crossProduct( cameraUp, cameraFront );
+    QVector3D cameraPosDiff = -dx * cameraLeft - dy * cameraUp;
+    moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 10.0 );
+  }
+  else if ( hasMiddleButton )
+  {
+    QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
+    QVector3D cameraPosDiff = -dy * cameraFront;
+    moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 5.0 );
+  }
+  else
+  {
+    if ( mCaptureFpsMouseMovements )
     {
       float diffPitch = -0.2f * dy;
       switch ( mVerticalAxisInversion )
@@ -660,49 +676,31 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
       rotateCamera( diffPitch, diffYaw );
       updateCameraFromPose( false );
     }
+    else if ( mouse->buttons() & Qt::LeftButton )
+    {
+      float diffPitch = -0.2f * dy;
+      switch ( mVerticalAxisInversion )
+      {
+        case Always:
+        case WhenDragging:
+          diffPitch *= -1;
+          break;
 
+        case Never:
+          break;
+      }
+      float diffYaw = - 0.2f * dx;
+      rotateCamera( diffPitch, diffYaw );
+      updateCameraFromPose( false );
+    }
+  }
+
+  if ( mCaptureFpsMouseMovements )
+  {
     mIgnoreNextMouseMove = true;
 
     // reset cursor back to center of map widget
     emit setCursorPosition( QPoint( mViewport.width() / 2, mViewport.height() / 2 ) );
-  }
-  else
-  {
-    const double dx = mouse->x() - mMousePos.x();
-    const double dy = mouse->y() - mMousePos.y();
-    mMousePos = QPoint( mouse->x(), mouse->y() );
-
-    if ( mIgnoreNextMouseMove )
-    {
-      mIgnoreNextMouseMove = false;
-      return;
-    }
-
-    if ( mPressedButton ==  Qt3DInput::QMouseEvent::LeftButton || mPressedButton ==  Qt3DInput::QMouseEvent::MiddleButton )
-    {
-      float diffPitch = -0.2f * dy;
-      switch ( mVerticalAxisInversion )
-      {
-        case Always:
-        case WhenDragging:
-          diffPitch *= -1;
-          break;
-
-        case Never:
-          break;
-      }
-      float diffYaw = - 0.2f * dx;
-      rotateCamera( diffPitch, diffYaw );
-      updateCameraFromPose( false );
-    }
-    else if ( mPressedButton ==  Qt3DInput::QMouseEvent::RightButton )
-    {
-      QVector3D cameraUp = mCamera->upVector().normalized();
-      QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
-      QVector3D cameraLeft = QVector3D::crossProduct( cameraUp, cameraFront );
-      QVector3D cameraPosDiff = dx / mViewport.width() * cameraLeft + dy / mViewport.height() * cameraUp;
-      moveCameraPositionBy( 5.0 * mCameraMovementSpeed * cameraPosDiff );
-    }
   }
 }
 
