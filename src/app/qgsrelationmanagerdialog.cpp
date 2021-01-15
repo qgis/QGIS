@@ -90,68 +90,16 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layer
   mRelationsTree->sortByColumn( 0, Qt::AscendingOrder );
 }
 
-void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
+bool QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
 {
-  if ( ! rel.isValid() )
-    return;
-
-  QString referencingFields = rel.fieldPairs().at( 0 ).referencingField();
-  QString referencedFields = rel.fieldPairs().at( 0 ).referencedField();
-  for ( int i = 1; i < rel.fieldPairs().count(); i++ )
-  {
-    referencingFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencingField() ) );
-    referencedFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencedField() ) );
-  }
-
-  mRelationsTree->setSortingEnabled( false );
-  int row = mRelationsTree->topLevelItemCount();
-  QTreeWidgetItem *item = new QTreeWidgetItem();
-
-  if ( rel.polymorphicRelationId().isEmpty() )
-  {
-    item->setFlags( item->flags() | Qt::ItemIsEditable );
-    mRelationsTree->insertTopLevelItem( row, item );
-  }
-  else
-  {
-    for ( int i = 0, l = mRelationsTree->topLevelItemCount(); i < l; i++ )
-    {
-      QTreeWidgetItem *parentItem = mRelationsTree->topLevelItem( i );
-
-      if ( parentItem->data( 0, Qt::UserRole ).typeName() != QStringLiteral( "QgsPolymorphicRelation" ) )
-        continue;
-
-      QgsPolymorphicRelation polymorphicRelation = parentItem->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>();
-
-      if ( polymorphicRelation.id() != rel.polymorphicRelationId() )
-        continue;
-
-      item->setFlags( item->flags().setFlag( Qt::ItemIsSelectable, false ) );
-      parentItem->addChild( item );
-      break;
-    }
-  }
-
-  // Save relation in first column's item
-  item->setData( 0, Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
-
-  item->setText( 0, rel.name() );
-  item->setText( 1, rel.referencedLayer()->name() );
-  item->setText( 2, referencedFields );
-  item->setText( 3, rel.referencingLayer()->name() );
-  item->setText( 4, referencingFields );
-  item->setText( 5, rel.id() );
-  item->setText( 6, rel.strength() == QgsRelation::RelationStrength::Composition
-                 ? QStringLiteral( "Composition" )
-                 : QStringLiteral( "Association" ) );
-
-  mRelationsTree->setSortingEnabled( true );
+  return addRelationPrivate( rel );
 }
 
-void QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelation &polyRel )
+int QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelation &polyRel )
 {
+  int itemsAdded = 0;
   if ( ! polyRel.isValid() )
-    return;
+    return itemsAdded;
 
   QString referencingFields;
   QString referencedFields;
@@ -191,13 +139,60 @@ void QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelat
   const QList<QgsRelation> generatedRelations = polyRel.generateRelations();
   for ( const QgsRelation &generatedRelation : generatedRelations )
   {
-    if ( !generatedRelation.isValid() )
-      continue;
-
-    addRelation( generatedRelation );
+    if ( addRelationPrivate( generatedRelation, item ) )
+      itemsAdded++;
   }
 
   mRelationsTree->setSortingEnabled( true );
+
+  return itemsAdded;
+}
+
+bool QgsRelationManagerDialog::addRelationPrivate( const QgsRelation &rel, QTreeWidgetItem *parentItem )
+{
+  if ( ! rel.isValid() )
+    return false;
+
+  QString referencingFields = rel.fieldPairs().at( 0 ).referencingField();
+  QString referencedFields = rel.fieldPairs().at( 0 ).referencedField();
+  for ( int i = 1; i < rel.fieldPairs().count(); i++ )
+  {
+    referencingFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+  }
+
+  mRelationsTree->setSortingEnabled( false );
+  QTreeWidgetItem *item = new QTreeWidgetItem();
+
+  if ( parentItem )
+  {
+    item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+  }
+  else
+  {
+    Q_ASSERT( rel.type() != QgsRelation::Generated );
+    item->setFlags( item->flags() | Qt::ItemIsEditable );
+    parentItem = mRelationsTree->invisibleRootItem();
+  }
+
+  parentItem->addChild( item );
+
+  // Save relation in first column's item
+  item->setData( 0, Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
+
+  item->setText( 0, rel.name() );
+  item->setText( 1, rel.referencedLayer()->name() );
+  item->setText( 2, referencedFields );
+  item->setText( 3, rel.referencingLayer()->name() );
+  item->setText( 4, referencingFields );
+  item->setText( 5, rel.id() );
+  item->setText( 6, rel.strength() == QgsRelation::RelationStrength::Composition
+                 ? QStringLiteral( "Composition" )
+                 : QStringLiteral( "Association" ) );
+
+  mRelationsTree->setSortingEnabled( true );
+
+  return true;
 }
 
 void QgsRelationManagerDialog::mBtnAddRelation_clicked()
