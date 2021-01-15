@@ -38,13 +38,17 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
   const auto constReferencingRelations = vl->referencingRelations( fieldIdx );
   for ( const QgsRelation &relation : constReferencingRelations )
   {
-    if ( relation.type() == QgsRelation::Generated )
-      continue;
-
     if ( relation.name().isEmpty() )
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     else
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.name(), relation.referencedLayerId() ), relation.id() );
+
+    QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mComboRelation->model() );
+    QStandardItem *item = model->item( model->rowCount() - 1 );
+    item->setFlags( relation.type() == QgsRelation::Generated
+                    ? item->flags() & ~Qt::ItemIsEnabled
+                    : item->flags() | Qt::ItemIsEnabled );
+
     if ( auto *lReferencedLayer = relation.referencedLayer() )
     {
       mExpressionWidget->setField( lReferencedLayer->displayExpression() );
