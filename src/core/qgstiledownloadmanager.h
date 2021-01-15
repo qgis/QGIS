@@ -121,6 +121,7 @@ class QgsTileDownloadManagerWorker : public QObject
     Q_OBJECT
 
   public:
+    //! Creates the worker
     QgsTileDownloadManagerWorker( QgsTileDownloadManager *manager, QObject *parent = nullptr );
 
     void startIdleTimer();
