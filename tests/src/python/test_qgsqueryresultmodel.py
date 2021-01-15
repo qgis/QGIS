@@ -44,6 +44,8 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
 
         # Prepare data for threaded test
         cls._deleteBigData()
+
+        return
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         conn = md.createConnection(cls.uri, {})
         conn.executeSql('SELECT * INTO qgis_test.random_big_data FROM generate_series(1,%s) AS id, md5(random()::text) AS descr' % cls.NUM_RECORDS)
@@ -56,6 +58,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
     @classmethod
     def _deleteBigData(cls):
 
+        return
         try:
             md = QgsProviderRegistry.instance().providerMetadata('postgres')
             conn = md.createConnection(cls.uri, {})
@@ -70,13 +73,13 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         conn = md.createConnection(self.uri, {})
         res = conn.execSql('SELECT generate_series(1, 1000)')
         model = QgsQueryResultModel(res)
-        self.assertEqual(model.rowCount(model.index(-1)), 0)
+        self.assertEqual(model.rowCount(model.index(-1, -1)), 0)
 
-        while model.rowCount(model.index(-1)) < 1000:
+        while model.rowCount(model.index(-1, -1)) < 1000:
             QCoreApplication.processEvents()
 
-        self.assertEqual(model.columnCount(model.index(-1)), 1)
-        self.assertEqual(model.rowCount(model.index(-1)), 1000)
+        self.assertEqual(model.columnCount(model.index(-1, -1)), 1)
+        self.assertEqual(model.rowCount(model.index(-1, -1)), 1000)
         self.assertEqual(model.data(model.index(999, 0), Qt.DisplayRole), 1000)
 
         # Test data
@@ -130,11 +133,15 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         v.setModel(model)
 
         def _set_row_count(idx, first, last):
-            lbl.setText('Rows %s fetched' % model.rowCount(model.index(-1)))
+            lbl.setText('Rows %s fetched' % model.rowCount(model.index(-1, -1)))
 
         model.rowsInserted.connect(_set_row_count)
 
         d.exec_()
+
+        # Because exit handler will exit QGIS and clear the connections pool before
+        # the model is deleted (and it will in turn clear the connection)
+        del(model)
 
 
 if __name__ == '__main__':

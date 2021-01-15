@@ -16,7 +16,7 @@
 #ifndef QgsQueryResultModel_H
 #define QgsQueryResultModel_H
 
-#include <QAbstractListModel>
+#include <QAbstractTableModel>
 #include <QThread>
 
 #include "qgis_core.h"
@@ -73,7 +73,7 @@ class QgsQueryResultFetcher: public QObject
  * \ingroup core
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
+class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
 {
     Q_OBJECT
   public:
@@ -91,6 +91,7 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
     int rowCount( const QModelIndex &parent ) const override;
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 
   public slots:
 
@@ -99,9 +100,14 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
      */
     void rowsReady( const QList<QList<QVariant> > &rows );
 
+    /**
+     * Cancels the row fetching.
+     */
+    void cancel();
+
   private:
 
-    const QgsAbstractDatabaseProviderConnection::QueryResult &mQueryResult;
+    QgsAbstractDatabaseProviderConnection::QueryResult mQueryResult;
     QStringList mColumns;
     QThread mWorkerThread;
     QgsQueryResultFetcher *mWorker = nullptr;
