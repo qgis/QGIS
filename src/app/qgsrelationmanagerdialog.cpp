@@ -76,7 +76,7 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layer
   {
     // the generated relations for polymorphic relations should be ignored,
     // they are generated when the polymorphic relation is added to the table
-    if ( !rel.polymorphicRelationId().isEmpty() )
+    if ( rel.type() == QgsRelation::Generated )
       continue;
 
     addRelation( rel );

@@ -38,7 +38,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
   const auto constReferencingRelations = vl->referencingRelations( fieldIdx );
   for ( const QgsRelation &relation : constReferencingRelations )
   {
-    if ( !relation.polymorphicRelationId().isNull() )
+    if ( relation.type() == QgsRelation::Generated )
       continue;
 
     if ( relation.name().isEmpty() )

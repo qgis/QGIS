@@ -223,8 +223,8 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
   if ( mNmRelation.isValid() )
   {
-    // there is no such case where we have polymorphic relations and m:n relation
-    Q_ASSERT( mNmRelation.polymorphicRelationId().isNull() );
+    // only normal relations support m:n relation
+    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
     // n:m Relation: first let the user create a new feature on the other table
     // and autocreate a new linking feature.
@@ -261,7 +261,7 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
   else
   {
     QgsFields fields = mRelation.referencingLayer()->fields();
-    if ( ! mRelation.polymorphicRelationId().isNull() )
+    if ( mRelation.type() == QgsRelation::Normal )
     {
       QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
       keyAttrs.insert( fields.indexFromName( polyRel.referencedLayerField() ), polyRel.layerRepresentation( mRelation.referencedLayer() ) );
@@ -288,8 +288,8 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
   QgsVectorLayer *layer;
   if ( mNmRelation.isValid() )
   {
-    // there is no such case where we have polymorphic relations and m:n relation
-    Q_ASSERT( mNmRelation.polymorphicRelationId().isNull() );
+    // only normal relations support m:n relation
+    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
     layer = mNmRelation.referencedLayer();
 
@@ -404,8 +404,8 @@ void QgsAbstractRelationEditorWidget::linkFeature()
 
   if ( mNmRelation.isValid() )
   {
-    // there is no such case where we have polymorphic relations and m:n relation
-    Q_ASSERT( mNmRelation.polymorphicRelationId().isNull() );
+    // only normal relations support m:n relation
+    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
     layer = mNmRelation.referencedLayer();
   }
@@ -427,8 +427,8 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
   QgsFeatureSelectionDlg *selectionDlg = qobject_cast<QgsFeatureSelectionDlg *>( sender() );
   if ( mNmRelation.isValid() )
   {
-    // there is no such case where we have polymorphic relations and m:n relation
-    Q_ASSERT( mNmRelation.polymorphicRelationId().isNull() );
+    // only normal relations support m:n relation
+    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
     QgsFeatureIterator it = mNmRelation.referencedLayer()->getFeatures(
                               QgsFeatureRequest()
@@ -488,7 +488,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     for ( QgsFeatureId fid : constSelectedFeatures )
     {
       QgsVectorLayer *referencingLayer = mRelation.referencingLayer();
-      if ( ! mRelation.polymorphicRelationId().isNull() )
+      if ( mRelation.type() == QgsRelation::Normal )
       {
         QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 
@@ -520,8 +520,8 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
 {
   if ( mNmRelation.isValid() )
   {
-    // there is no such case where we have polymorphic relations and m:n relation
-    Q_ASSERT( mNmRelation.polymorphicRelationId().isNull() );
+    // only normal relations support m:n relation
+    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
     QgsFeatureIterator selectedIterator = mNmRelation.referencedLayer()->getFeatures(
                                             QgsFeatureRequest()
@@ -577,7 +577,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
     for ( QgsFeatureId fid : constFeatureids )
     {
       QgsVectorLayer *referencingLayer = mRelation.referencingLayer();
-      if ( ! mRelation.polymorphicRelationId().isNull() )
+      if ( mRelation.type() == QgsRelation::Normal )
       {
         QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 
