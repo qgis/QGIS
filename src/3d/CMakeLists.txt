@@ -215,9 +215,6 @@ GENERATE_EXPORT_HEADER(
    BASE_NAME 3D
    EXPORT_FILE_NAME qgis_3d.h
 )
-if(MSVC)
-  set_target_properties(qgis_3d PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
-endif()
 
 set(QGIS_3D_HDRS ${QGIS_3D_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_3d.h)
 

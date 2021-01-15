@@ -456,9 +456,6 @@ GENERATE_EXPORT_HEADER(
    BASE_NAME ANALYSIS
    EXPORT_FILE_NAME qgis_analysis.h
 )
-if(MSVC)
-  set_target_properties(qgis_analysis PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
-endif()
 
 set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_analysis.h)
 

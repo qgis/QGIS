@@ -54,7 +54,7 @@ typedef QMap<int, QgsField> QgsFieldMap;
  * \note QgsAttributes is implemented as a Python list of Python objects.
  */
 #ifndef SIP_RUN
-class CORE_EXPORT QgsAttributes : public QVector<QVariant>
+class QgsAttributes : public QVector<QVariant>
 {
   public:
 
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * \note not available in Python bindings
      * \since QGIS 3.0
      */
-    QgsAttributeMap toMap() const SIP_SKIP;
+    CORE_EXPORT QgsAttributeMap toMap() const SIP_SKIP;
 
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
 };
