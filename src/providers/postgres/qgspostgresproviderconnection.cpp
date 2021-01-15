@@ -418,7 +418,7 @@ bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, c
                                                                   AND i.oid=ix.indexrelid
                                                                   AND a.attrelid=t.oid
                                                                   AND a.attnum=ANY(ix.indkey)
-                                                                  AND t.relkind='r'
+                                                                  AND t.relkind IN ('r', 'm')
                                                                   AND ns.nspname=%1
                                                                   AND t.relname=%2
                                                                   AND a.attname=%3;
