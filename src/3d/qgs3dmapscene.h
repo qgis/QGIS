@@ -139,8 +139,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void fpsCountChanged( float fpsCount );
     //! Emitted when the FPS counter is activated or deactivated
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );
-    //! Emitted when the navigation mode is changed using the hotkey ctrl + ~
-    void navigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
 
   public slots:
     //! Updates the temporale entities
