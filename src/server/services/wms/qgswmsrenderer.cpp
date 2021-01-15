@@ -64,6 +64,9 @@
 #include "qgsserverexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturestore.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorelement.h"
+#include "qgsattributeeditorfield.h"
 
 #include <QImage>
 #include <QPainter>
@@ -1564,37 +1567,26 @@ namespace QgsWms
         featureElement.setAttribute( QStringLiteral( "id" ), QgsServerFeatureId::getServerFid( feature, layer->dataProvider()->pkAttributeIndexes() ) );
         layerElement.appendChild( featureElement );
 
-        //read all attribute values from the feature
         featureAttributes = feature.attributes();
-        for ( int i = 0; i < featureAttributes.count(); ++i )
+        QgsEditFormConfig editConfig = layer->editFormConfig();
+        if ( QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == QgsEditFormConfig::TabLayout )
         {
-          //skip attribute if it is explicitly excluded from WMS publication
-          if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
-          {
-            continue;
-          }
+          writeAttributesTabLayout( editConfig, layer, fields, featureAttributes, infoDocument, featureElement, renderContext
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-          //skip attribute if it is excluded by access control
-          if ( !attributes.contains( fields.at( i ).name() ) )
-          {
-            continue;
-          }
+                                    , &attributes
 #endif
-
-          //replace attribute name if there is an attribute alias?
-          QString attributeName = layer->attributeDisplayName( i );
-
-          QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
-          attributeElement.setAttribute( QStringLiteral( "name" ), attributeName );
-          const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( i );
-          attributeElement.setAttribute( QStringLiteral( "value" ),
-                                         QgsExpression::replaceExpressionText(
-                                           replaceValueMapAndRelation(
-                                             layer, i,
-                                             featureAttributes[i] ),
-                                           &renderContext.expressionContext() )
-                                       );
-          featureElement.appendChild( attributeElement );
+                                  );
+        }
+        else
+        {
+          for ( int i = 0; i < featureAttributes.count(); ++i )
+          {
+            writeVectorLayerAttribute( i, layer, fields, featureAttributes, infoDocument, featureElement, renderContext
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                                       , &attributes
+#endif
+                                     );
+          }
         }
 
         //add maptip attribute based on html/expression (in case there is no maptip attribute)
@@ -1660,6 +1652,88 @@ namespace QgsWms
     }
 
     return true;
+  }
+
+  void QgsRenderer::writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &parentElem, QgsRenderContext &renderContext, QStringList *attributes ) const
+  {
+    const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
+    if ( container )
+    {
+      QString groupName = container->name();
+      QDomElement nameElem;
+
+      if ( !groupName.isEmpty() )
+      {
+        nameElem = doc.createElement( groupName );
+        parentElem.appendChild( nameElem );
+      }
+
+      QList<QgsAttributeEditorElement *> children =  container->children();
+      foreach ( const QgsAttributeEditorElement *child, children )
+      {
+        if ( child->type() == QgsAttributeEditorElement::AeTypeContainer )
+        {
+          writeAttributesTabGroup( child, layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext );
+        }
+        else if ( child->type() == QgsAttributeEditorElement::AeTypeField )
+        {
+          const QgsAttributeEditorField *editorField = dynamic_cast<const QgsAttributeEditorField *>( child );
+          if ( editorField )
+          {
+            writeVectorLayerAttribute( editorField->idx(), layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext, attributes );
+          }
+        }
+      }
+    }
+  }
+
+  void QgsRenderer::writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes ) const
+  {
+    QgsAttributeEditorContainer *editorContainer = config.invisibleRootContainer();
+    if ( !editorContainer )
+    {
+      return;
+    }
+
+    writeAttributesTabGroup( editorContainer, layer, fields, featureAttributes, doc, featureElem, renderContext, attributes );
+  }
+
+  void QgsRenderer::writeVectorLayerAttribute( int attributeIndex,  QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes ) const
+  {
+#ifndef HAVE_SERVER_PYTHON_PLUGINS
+    Q_UNUSED( attributes );
+#endif
+
+    if ( !layer )
+    {
+      return;
+    }
+
+    //skip attribute if it is explicitly excluded from WMS publication
+    if ( fields.at( attributeIndex ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+    {
+      return;
+    }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    //skip attribute if it is excluded by access control
+    if ( attributes && !attributes->contains( fields.at( attributeIndex ).name() ) )
+    {
+      return;
+    }
+#endif
+
+    QString attributeName = layer->attributeDisplayName( attributeIndex );
+    QDomElement attributeElement = doc.createElement( QStringLiteral( "Attribute" ) );
+    attributeElement.setAttribute( QStringLiteral( "name" ), attributeName );
+    const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( attributeIndex );
+    attributeElement.setAttribute( QStringLiteral( "value" ),
+                                   QgsExpression::replaceExpressionText(
+                                     replaceValueMapAndRelation(
+                                       layer, attributeIndex,
+                                       featureAttributes[attributeIndex] ),
+                                     &renderContext.expressionContext() )
+                                 );
+    featureElem.appendChild( attributeElement );
   }
 
   bool QgsRenderer::featureInfoFromRasterLayer( QgsRasterLayer *layer,

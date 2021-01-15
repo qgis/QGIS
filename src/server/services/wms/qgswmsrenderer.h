@@ -25,6 +25,7 @@
 #include "qgswmsrendercontext.h"
 #include "qgsfeaturefilter.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgseditformconfig.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QString>
@@ -45,6 +46,8 @@ class QgsDxfExport;
 class QgsLayerTreeModel;
 class QgsLayerTree;
 class QgsServerInterface;
+class QgsAttributeEditorElement;
+class QgsEditFormConfig;
 
 class QImage;
 class QPaintDevice;
@@ -220,6 +223,45 @@ namespace QgsWms
                                        const QString &version,
                                        QgsRectangle *featureBBox = nullptr,
                                        QgsGeometry *filterGeom = nullptr ) const;
+
+      /**
+       * Recursively called to write tab layout groups to XML
+       * \param group the tab layout group
+       * \param layer The vector layer
+       * \param fields attribute fields
+       * \param featureAttributes the feature attributes
+       * \param doc Feature info XML document
+       * \param featureElem the feature XML element
+       * \param renderContext Context to use for feature rendering
+       * \param attributes attributes for access control
+       */
+      void writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes = nullptr ) const;
+
+      /**
+       * Writes attributes to XML document using the group/attribute layout defined in the tab layout
+       * \param config editor config object
+       * \param layer The vector layer
+       * \param fields attribute fields
+       * \param featureAttributes the feature attributes
+       * \param doc Feature info XML document
+       * \param featureElem the feature XML element
+       * \param renderContext Context to use for feature rendering
+       * \param attributes attributes for access control
+       */
+      void writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes = nullptr ) const;
+
+      /**
+       * Writes a vectorlayer attribute into the XML document
+       * \param attributeIndex of attribute to be written
+       * \param layer The vector layer
+       * \param fields attribute fields
+       * \param featureAttributes the feature attributes
+       * \param doc Feature info XML document
+       * \param featureElem the feature XML element
+       * \param renderContext Context to use for feature rendering
+       * \param attributes attributes for access control
+       */
+      void writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes = nullptr ) const;
 
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
