@@ -64,6 +64,9 @@
 #include "qgsserverexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturestore.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorelement.h"
+#include "qgsattributeeditorfield.h"
 
 #include <QImage>
 #include <QPainter>

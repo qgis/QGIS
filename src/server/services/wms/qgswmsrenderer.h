@@ -25,7 +25,6 @@
 #include "qgswmsrendercontext.h"
 #include "qgsfeaturefilter.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgsattributeeditorelement.h"
 #include "qgseditformconfig.h"
 #include <QDomDocument>
 #include <QMap>
@@ -47,6 +46,8 @@ class QgsDxfExport;
 class QgsLayerTreeModel;
 class QgsLayerTree;
 class QgsServerInterface;
+class QgsAttributeEditorElement;
+class QgsEditFormConfig;
 
 class QImage;
 class QPaintDevice;
