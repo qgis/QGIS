@@ -133,7 +133,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         v.setModel(model)
 
         def _set_row_count(idx, first, last):
-            lbl.setText('Rows %s fetched' % model.rowCount(model.index(-1, -1)))
+            lbl.setText('Rows %s fetched' % model.rowCount(model.index(-1, -1)))  # noqa: F821
 
         model.rowsInserted.connect(_set_row_count)
 
