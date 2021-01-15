@@ -199,6 +199,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Move the map by \a tx and \a ty
     void moveView( float tx, float ty );
 
+    /**
+     * Returns TRUE if the camera controller will handle the specified key \a event,
+     * preventing it from being instead handled by parents of the 3D window before
+     * the controller ever receives it.
+     */
+    bool willHandleKeyEvent( QKeyEvent *event );
+
   public slots:
 
     /**
