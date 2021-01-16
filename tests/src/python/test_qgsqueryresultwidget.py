@@ -72,8 +72,12 @@ class PyQgsQueryResultWidget(unittest.TestCase):
         l = QVBoxLayout(d)
         d.setLayout(l)
         l.addWidget(widget)
-
         d.exec_()
+
+    def test_widget_invalid(self):
+        """Test it does not crash"""
+
+        QgsQueryResultWidget(None, None)
 
 
 if __name__ == '__main__':

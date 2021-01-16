@@ -58,7 +58,6 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
     @classmethod
     def _deleteBigData(cls):
 
-        return
         try:
             md = QgsProviderRegistry.instance().providerMetadata('postgres')
             conn = md.createConnection(cls.uri, {})

@@ -56,6 +56,14 @@ Triggered when ``newRows`` have been fetched and can be added to the model
 Cancels the row fetching.
 %End
 
+
+  signals:
+
+    void fetchingComplete();
+%Docstring
+Emitted when all rows have been fetched or when the fetching has been stopped
+%End
+
 };
 
 /************************************************************************

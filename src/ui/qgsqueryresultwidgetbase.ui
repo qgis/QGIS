@@ -14,11 +14,14 @@
    <string notr="true">Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+  <item>
+   <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
+  </item>
    <item>
     <widget class="QgsCodeEditorSQL" name="mCodeEditor" native="true"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout">    
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -71,6 +74,12 @@
    <class>QgsCodeEditorSQL</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorsql.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

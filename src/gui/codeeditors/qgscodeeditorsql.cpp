@@ -96,6 +96,11 @@ void QgsCodeEditorSQL::updateApis()
   mSqlLexer->setAPIs( mApis );
 }
 
+QStringList QgsCodeEditorSQL::fieldNames() const
+{
+  return mFieldNames;
+}
+
 void QgsCodeEditorSQL::setFieldNames( const QStringList &fieldNames )
 {
   mFieldNames = fieldNames;

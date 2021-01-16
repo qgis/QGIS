@@ -45,6 +45,11 @@ Set field names to ``fieldNames`` to be added to the lexer API.
 .. versionadded:: 3.18
 %End
 
+    QStringList fieldNames() const;
+%Docstring
+Return field names from the lexer API.
+%End
+
   protected:
     virtual void initializeLexer();
 

@@ -53,6 +53,11 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
      */
     void setFieldNames( const QStringList &fieldNames );
 
+    /**
+     * Return field names from the lexer API.
+     */
+    QStringList fieldNames() const;
+
   protected:
     void initializeLexer() override;
 

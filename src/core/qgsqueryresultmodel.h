@@ -53,6 +53,9 @@ class QgsQueryResultFetcher: public QObject
     //! Emitted when \a newRows have been fetched
     void rowsReady( const QList<QList<QVariant>> &newRows );
 
+    //! Emitted when all rows have been fetched or when the fetching has been stopped
+    void fetchingComplete();
+
   private:
 
     const QgsAbstractDatabaseProviderConnection::QueryResult *mQueryResult = nullptr;
@@ -104,6 +107,12 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
      * Cancels the row fetching.
      */
     void cancel();
+
+
+  signals:
+
+    //! Emitted when all rows have been fetched or when the fetching has been stopped
+    void fetchingComplete();
 
   private:
 

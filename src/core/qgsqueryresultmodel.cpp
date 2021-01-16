@@ -27,6 +27,8 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
     mWorker->moveToThread( &mWorkerThread );
     connect( &mWorkerThread, &QThread::started, mWorker, &QgsQueryResultFetcher::fetchRows );
     connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
+    // Forward signal
+    connect( mWorker, &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
     mWorkerThread.start();
   }
 }
@@ -54,6 +56,10 @@ QgsQueryResultModel::~QgsQueryResultModel()
     mWorkerThread.quit();
     mWorkerThread.wait();
     mWorker->deleteLater();
+  }
+  else
+  {
+    emit fetchingComplete();
   }
 }
 
@@ -124,6 +130,8 @@ void QgsQueryResultFetcher::fetchRows()
   {
     emit rowsReady( newRows );
   }
+
+  emit fetchingComplete();
 }
 
 void QgsQueryResultFetcher::stopFetching()

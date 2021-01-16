@@ -1,0 +1,84 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsqueryresultwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsQueryResultWidget: QWidget
+{
+%Docstring
+The QgsQueryResultWidget class allow users to enter and run an SQL query on a
+DB connection (an instance of QgsAbstractDatabaseProviderConnection).
+
+Query results are displayed in a table view.
+Query execution and result
+fetching can be interrupted by pressing the "Stop" push button.
+
+.. note::
+
+   the ownership of the connection is transferred to the widget.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsqueryresultwidget.h"
+%End
+  public:
+
+    QgsQueryResultWidget( QWidget *parent = 0, QgsAbstractDatabaseProviderConnection* connection /Transfer/ = 0 );
+%Docstring
+Creates a QgsQueryResultWidget with the given ``connection``, ownership is transferred to the widget.
+%End
+
+    virtual ~QgsQueryResultWidget();
+
+    void setConnection(QgsAbstractDatabaseProviderConnection* connection);
+%Docstring
+Set the connection to ``connection``, ownership is transferred to the widget.
+%End
+
+    void setQuery( const QString& sql );
+%Docstring
+Convenience method to set the SQL editor test to ``sql``.
+%End
+
+  public slots:
+
+    void executeQuery();
+%Docstring
+Executes the query
+%End
+
+    void updateButtons();
+%Docstring
+Updates buttons status
+%End
+
+    void showError( const QString &title, const QString &message);
+%Docstring
+Hides the result table and shows the error ``title`` and ``message`` in the message bar.
+%End
+
+    void tokensReady(const QStringList &tokens );
+%Docstring
+Triggered when the threaded API fetcher has new ``tokens`` to add.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsqueryresultwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
