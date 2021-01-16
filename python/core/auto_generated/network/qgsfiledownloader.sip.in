@@ -38,13 +38,20 @@ An optional authentication configuration can be specified.
 %Docstring
 QgsFileDownloader
 
-:param url: the download url
+:param url: the download URL
 :param outputFileName: file name where the downloaded content will be stored
 :param authcfg: optionally apply this authentication configuration
 :param delayStart: if ``True``, the download will not be commenced immediately and must
                    be triggered by a later call to :py:func:`~QgsFileDownloader.startDownload`. This can be useful if connections need
                    to be made to the downloader and there's a chance the download will emit
                    signals before these connections have been made.
+%End
+
+    const QUrl downloadedUrl() const;
+%Docstring
+Returns the downloaded URL, which can differ from the original URL if redirects occurred.
+
+.. versionadded:: 3.18
 %End
 
   signals:

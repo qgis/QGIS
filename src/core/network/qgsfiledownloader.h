@@ -47,7 +47,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
 
     /**
      * QgsFileDownloader
-     * \param url the download url
+     * \param url the download URL
      * \param outputFileName file name where the downloaded content will be stored
      * \param authcfg optionally apply this authentication configuration
      * \param delayStart if TRUE, the download will not be commenced immediately and must
@@ -56,6 +56,12 @@ class CORE_EXPORT QgsFileDownloader : public QObject
      * signals before these connections have been made.
      */
     QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false );
+
+    /**
+     * Returns the downloaded URL, which can differ from the original URL if redirects occurred.
+     * \since QGIS 3.18
+     */
+    const QUrl downloadedUrl() const;
 
   signals:
     //! Emitted when the download has completed successfully
