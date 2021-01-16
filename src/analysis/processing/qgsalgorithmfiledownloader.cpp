@@ -93,6 +93,21 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 
+  if ( outputFile.startsWith( QgsProcessingUtils::tempFolder() ) )
+  {
+    // the output is temporary and its file name automatically generated, try to add a file extension
+    const QString downloadedUrl = downloader->downloadedUrl().toDisplayString();
+    const int length = downloadedUrl.size();
+    const int lastDotIndex = downloadedUrl.lastIndexOf( "." );
+    const int lastSlashIndex = downloadedUrl.lastIndexOf( "/" );
+    if ( lastDotIndex > -1 && lastDotIndex > lastSlashIndex && length - lastDotIndex <= 6 )
+    {
+      QFile tmpFile( outputFile );
+      tmpFile.rename( tmpFile.fileName() + downloadedUrl.mid( lastDotIndex ) );
+      outputFile += downloadedUrl.mid( lastDotIndex );
+    }
+  }
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), exists ? outputFile : QString() );
   return outputs;

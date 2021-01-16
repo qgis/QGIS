@@ -176,6 +176,8 @@ class TestQgsProcessingAlgs: public QObject
     void exportMeshCrossSection();
     void exportMeshTimeSeries();
 
+    void fileDownloader();
+
   private:
 
     bool imageCheck( const QString &testName, const QString &renderedImage );
@@ -6464,6 +6466,26 @@ void TestQgsProcessingAlgs::exportMeshCrossSection()
   }
 
   QVERIFY( i == expectedLines.count() );
+}
+
+void TestQgsProcessingAlgs::fileDownloader()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:filedownloader" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "URL" ), QStringLiteral( "https://version.qgis.org/version.txt" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  // verify that temporary outputs have the URL file extension appended
+  QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().endsWith( QStringLiteral( ".txt" ) ) );
 }
 
 void TestQgsProcessingAlgs::exportMeshTimeSeries()

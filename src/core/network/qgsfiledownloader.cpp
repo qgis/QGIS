@@ -45,6 +45,10 @@ QgsFileDownloader::~QgsFileDownloader()
   }
 }
 
+const QUrl QgsFileDownloader::downloadedUrl() const
+{
+  return mReply ? mReply->url() : QUrl();
+}
 
 void QgsFileDownloader::startDownload()
 {
