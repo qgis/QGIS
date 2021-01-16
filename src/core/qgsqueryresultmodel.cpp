@@ -16,7 +16,7 @@
 #include "qgsqueryresultmodel.h"
 
 QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent )
-  : QAbstractListModel( parent )
+  : QAbstractTableModel( parent )
   , mQueryResult( queryResult )
   , mColumns( queryResult.columns() )
 {
@@ -33,9 +33,17 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
 
 void QgsQueryResultModel::rowsReady( const QList<QList<QVariant>> &rows )
 {
-  beginInsertRows( QModelIndex(), rows.count(), mRows.count( ) + rows.count() - 1 );
+  beginInsertRows( QModelIndex(), mRows.count( ), mRows.count( ) + rows.count() - 1 );
   mRows.append( rows );
   endInsertRows();
+}
+
+void QgsQueryResultModel::cancel()
+{
+  if ( mWorker )
+  {
+    mWorker->stopFetching();
+  }
 }
 
 QgsQueryResultModel::~QgsQueryResultModel()
@@ -65,19 +73,32 @@ int QgsQueryResultModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || index.row() < 0 || index.column() > mColumns.count() - 1 ||
+  if ( !index.isValid() || index.row() < 0 || index.column() >= mColumns.count() ||
        index.row() >= mRows.count( ) )
     return QVariant();
 
-  if ( role == Qt::DisplayRole )
+  switch ( role )
   {
-    const QList<QVariant> result { mRows.at( index.row() ) };
-    if ( index.column() < result.count( ) )
+    case  Qt::DisplayRole:
     {
-      return result.at( index.column() );
+      const QList<QVariant> result { mRows.at( index.row() ) };
+      if ( index.column() < result.count( ) )
+      {
+        return result.at( index.column() );
+      }
+      break;
     }
   }
   return QVariant();
+}
+
+QVariant QgsQueryResultModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Orientation::Horizontal && role == Qt::ItemDataRole::DisplayRole && section < mColumns.count() )
+  {
+    return mColumns.at( section );
+  }
+  return QAbstractTableModel::headerData( section, orientation, role );
 }
 
 ///@cond private

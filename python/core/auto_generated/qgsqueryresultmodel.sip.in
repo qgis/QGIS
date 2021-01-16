@@ -13,7 +13,7 @@
 
 
 
-class QgsQueryResultModel : QAbstractListModel
+class QgsQueryResultModel : QAbstractTableModel
 {
 %Docstring
 The QgsQueryResultModel class is a model for QgsAbstractDatabaseProviderConnection.QueryResult
@@ -41,12 +41,19 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
 
   public slots:
 
     void rowsReady( const QList<QList<QVariant> > &rows );
 %Docstring
 Triggered when ``newRows`` have been fetched and can be added to the model
+%End
+
+    void cancel();
+%Docstring
+Cancels the row fetching.
 %End
 
 };
