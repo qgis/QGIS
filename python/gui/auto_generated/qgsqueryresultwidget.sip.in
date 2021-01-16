@@ -34,19 +34,19 @@ fetching can be interrupted by pressing the "Stop" push button.
 %End
   public:
 
-    QgsQueryResultWidget( QWidget *parent = 0, QgsAbstractDatabaseProviderConnection* connection /Transfer/ = 0 );
+    QgsQueryResultWidget( QWidget *parent = 0, QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0 );
 %Docstring
 Creates a QgsQueryResultWidget with the given ``connection``, ownership is transferred to the widget.
 %End
 
     virtual ~QgsQueryResultWidget();
 
-    void setConnection(QgsAbstractDatabaseProviderConnection* connection);
+    void setConnection( QgsAbstractDatabaseProviderConnection *connection );
 %Docstring
 Set the connection to ``connection``, ownership is transferred to the widget.
 %End
 
-    void setQuery( const QString& sql );
+    void setQuery( const QString &sql );
 %Docstring
 Convenience method to set the SQL editor test to ``sql``.
 %End
@@ -63,12 +63,12 @@ Executes the query
 Updates buttons status
 %End
 
-    void showError( const QString &title, const QString &message);
+    void showError( const QString &title, const QString &message );
 %Docstring
 Hides the result table and shows the error ``title`` and ``message`` in the message bar.
 %End
 
-    void tokensReady(const QStringList &tokens );
+    void tokensReady( const QStringList &tokens );
 %Docstring
 Triggered when the threaded API fetcher has new ``tokens`` to add.
 %End
