@@ -104,6 +104,14 @@ class Qgs3DMapCanvas : public QWidget
     void fpsCountChanged( float fpsCount );
     //! Emitted when the FPS counter is enabled or disabeld
     void fpsCounterEnabledChanged( bool enabled );
+
+    /**
+     * Emitted when the camera navigation \a speed is changed.
+     *
+     * \since QGIS 3.18
+     */
+    void cameraNavigationSpeedChanged( double speed );
+
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
     void onNavigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
