@@ -34,6 +34,30 @@ class QgsServerRequest
       PatchMethod
     };
 
+    enum RequestHeader
+    {
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
+      HOST,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
+      // https://tools.ietf.org/html/rfc7239
+      FORWARDED,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+      X_FORWARDED_FOR,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Host
+      X_FORWARDED_HOST,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
+      X_FORWARDED_PROTO,
+      // The QGIS service URL
+      X_QGIS_SERVICE_URL,
+      // The QGIS WMS service URL
+      X_QGIS_WMS_SERVICE_URL,
+      // The QGIS WFS service URL
+      X_QGIS_WFS_SERVICE_URL,
+      // The QGIS WCS service URL
+      X_QGIS_WCS_SERVICE_URL,
+      // The QGIS WMTS service URL
+      X_QGIS_WMTS_SERVICE_URL,
+    };
 
     QgsServerRequest();
 %Docstring
@@ -115,11 +139,20 @@ Gets a parameter value
 Remove a parameter
 %End
 
-    QString header( const QString &name ) const;
+    virtual QString header( const QString &name ) const;
 %Docstring
 Returns the header value
 
 :param name: of the header
+
+:return: the header value or an empty string
+%End
+
+    virtual QString header( const RequestHeader &headerEnum ) const;
+%Docstring
+Returns the header value
+
+:param headerEnum: of the header
 
 :return: the header value or an empty string
 %End
@@ -144,6 +177,8 @@ Returns the header map
 Remove an header
 
 :param name:
+
+.. versionadded:: 3.20
 %End
 
     virtual QByteArray data() const;
@@ -166,6 +201,16 @@ by default this is equal to the url seen by QGIS server
 .. seealso:: :py:func:`url`
 
 .. versionadded:: 3.6
+%End
+
+    QUrl baseUrl() const;
+%Docstring
+Returns the base URL of QGIS server
+
+E.g. if we call QGIS server with 'http://example.com/folder?REQUEST=WMS&...'
+the base URL will be 'http://example.com/folder'
+
+.. versionadded:: 3.20
 %End
 
     void setMethod( QgsServerRequest::Method method );
@@ -191,6 +236,12 @@ Set the request original ``url`` (the request url as seen by the web server)
 .. versionadded:: 3.6
 %End
 
+    void setBaseUrl( const QUrl &url );
+%Docstring
+Set the base URL of QGIS server
+
+.. versionadded:: 3.20
+%End
 
 };
 

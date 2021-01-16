@@ -96,7 +96,7 @@ namespace QgsWmts
     wmtsCapabilitiesElement.appendChild( getServiceProviderElement( doc, project ) );
 
     //INSERT OperationsMetadata
-    wmtsCapabilitiesElement.appendChild( getOperationsMetadataElement( doc, project, request ) );
+    wmtsCapabilitiesElement.appendChild( getOperationsMetadataElement( doc, project, request, serverIface->serverSettings() ) );
 
     //INSERT Contents
     wmtsCapabilitiesElement.appendChild( getContentsElement( doc, serverIface, project ) );
@@ -256,7 +256,7 @@ namespace QgsWmts
     return serviceElem;
   }
 
-  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request )
+  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request, const QgsServerSettings *settings )
   {
     //ows:OperationsMetadata element
     QDomElement operationsMetadataElement = doc.createElement( QStringLiteral( "ows:OperationsMetadata" )/*ows:OperationsMetadata*/ );
@@ -273,7 +273,7 @@ namespace QgsWmts
     dcpElement.appendChild( httpElement );
 
     // Get service URL
-    const QUrl href = serviceUrl( request, project );
+    const QUrl href = serviceUrl( request, project, *settings );
 
     //href needs to be a prefix
     QString hrefString = href.toString();

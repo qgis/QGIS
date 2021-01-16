@@ -23,6 +23,7 @@
 
 #include "qgsmodule.h"
 #include "qgswcsserviceexception.h"
+#include "qgsserversettings.h"
 
 #include "qgsrasterlayer.h"
 
@@ -50,7 +51,7 @@ namespace QgsWcs
   /**
    * Service URL string
    */
-  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings );
 
   /**
    * Parse bounding box

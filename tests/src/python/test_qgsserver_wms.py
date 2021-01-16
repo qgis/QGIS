@@ -35,7 +35,7 @@ from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \\d+'
+RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|SERVICE=[^"]+|Content-Length: \\d+'
 RE_STRIP_EXTENTS = b'<(north|east|south|west)Bound(Lat|Long)itude>.*</(north|east|south|west)Bound(Lat|Long)itude>|<BoundingBox .*/>'
 RE_ATTRIBUTES = b'[^>\\s]+=[^>\\s]+'
 
@@ -93,11 +93,11 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
     """QGIS Server WMS Tests"""
 
     def test_getcapabilities(self):
-        self.wms_request_compare('GetCapabilities')
+        self.wms_request_compare('GetCapabilities', reference_file="getcapabilities-map")
 
     def test_getcapabilities_case_insensitive(self):
-        self.wms_request_compare('getcapabilities')
-        self.wms_request_compare('GETCAPABILITIES')
+        self.wms_request_compare('getcapabilities', reference_file="getcapabilities-map")
+        self.wms_request_compare('GETCAPABILITIES', reference_file="getcapabilities-map")
 
     def test_getprojectsettings(self):
         self.wms_request_compare('GetProjectSettings')

@@ -53,6 +53,11 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
       QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS,
       QGIS_SERVER_LOG_PROFILE,
+      QGIS_SERVER_SERVICE_URL,
+      QGIS_SERVER_WMS_SERVICE_URL,
+      QGIS_SERVER_WFS_SERVICE_URL,
+      QGIS_SERVER_WCS_SERVICE_URL,
+      QGIS_SERVER_WMTS_SERVICE_URL,
     };
 };
 
@@ -273,6 +278,13 @@ The default value is ``False``, this value can be changed by setting the environ
 variable QGIS_SERVER_DISABLE_GETPRINT.
 
 .. versionadded:: 3.16
+%End
+
+    QString serviceUrl( const QString &service ) const;
+%Docstring
+Returns the service URL from the setting.
+
+.. versionadded:: 3.20
 %End
 
     static QString name( QgsServerSettingsEnv::EnvVar env );

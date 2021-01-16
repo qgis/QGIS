@@ -128,7 +128,7 @@ Content-Type: text/xml; charset=utf-8
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=bug_gh30264_empty_layer_wrong_bbox&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
    </Layer>
