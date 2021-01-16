@@ -45,7 +45,6 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         # Prepare data for threaded test
         cls._deleteBigData()
 
-        return
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         conn = md.createConnection(cls.uri, {})
         conn.executeSql('SELECT * INTO qgis_test.random_big_data FROM generate_series(1,%s) AS id, md5(random()::text) AS descr' % cls.NUM_RECORDS)
