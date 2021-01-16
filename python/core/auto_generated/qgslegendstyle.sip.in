@@ -107,7 +107,7 @@ Sets the alignment for the legend component.
 
     double indent();
 %Docstring
-Returns the indent of a group or subgroup.
+Returns the indent (in mm) of a group or subgroup.
 
 .. seealso:: :py:func:`indent`
 
@@ -116,7 +116,7 @@ Returns the indent of a group or subgroup.
 
     void setIndent( double indent );
 %Docstring
-Sets the indent of a group or subgroup.
+Sets the indent (in mm) of a group or subgroup.
 
 .. seealso:: :py:func:`indent`
 

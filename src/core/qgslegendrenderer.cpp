@@ -284,6 +284,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
     {
       QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
       QString style = node->customProperty( QStringLiteral( "legend/title-style" ) ).toString();
+      // Update the required indent for the group/subgroup items, starting from the indent accumulated from parent groups
       double newIndent = indent;
       if ( style == QLatin1String( "subgroup" ) )
       {
@@ -680,13 +681,22 @@ QSizeF QgsLegendRenderer::drawGroup( const LegendComponentGroup &group, QgsRende
         double indentWidth =  component.indent;
         if ( s == QgsLegendStyle::Subgroup )
         {
+          // Remove indent - the subgroup items should be indented, not the subgroup title
           indentWidth -= mSettings.style( QgsLegendStyle::Subgroup ).indent( );
         }
         else
         {
+          // Remove indent - the group items should be indented, not the group title
           indentWidth -= mSettings.style( QgsLegendStyle::Group ).indent( );
         }
-        columnContextForItem.left += indentWidth;
+        if ( mSettings.style( QgsLegendStyle::SymbolLabel ).alignment() == Qt::AlignLeft )
+        {
+          columnContextForItem.left += indentWidth;
+        }
+        if ( mSettings.style( QgsLegendStyle::SymbolLabel ).alignment() == Qt::AlignRight )
+        {
+          columnContextForItem.right -= indentWidth;
+        }
         groupSize = drawGroupTitle( groupItem, context, columnContextForItem, currentY );
         size.rwidth() = std::max( groupSize.width(), size.width() );
       }
@@ -719,7 +729,14 @@ QSizeF QgsLegendRenderer::drawGroup( const LegendComponentGroup &group, QgsRende
       ColumnContext columnContextForItem = columnContext;
       double indentWidth = 0;
       indentWidth = component.indent;
-      columnContextForItem.left += indentWidth;
+      if ( mSettings.style( QgsLegendStyle::SymbolLabel ).alignment() == Qt::AlignLeft )
+      {
+        columnContextForItem.left += indentWidth;
+      }
+      if ( mSettings.style( QgsLegendStyle::SymbolLabel ).alignment() == Qt::AlignRight )
+      {
+        columnContextForItem.right -= indentWidth;
+      }
 
       LegendComponent symbolComponent = drawSymbolItem( legendNode, context, columnContextForItem, currentY, component.maxSiblingSymbolWidth );
       // expand width, it may be wider because of label offsets

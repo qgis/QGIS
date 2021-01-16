@@ -144,6 +144,10 @@ class CORE_EXPORT QgsLegendRenderer
         //! Component size
         QSizeF size;
 
+        /**
+         * Starting indent for groups/subgroups nested in other groups/subgroups.
+         * This value is the sum of the indents of all parent groups/subgroups.
+         */
         double indent = 0;
 
         /**

@@ -122,7 +122,7 @@ class CORE_EXPORT QgsLegendStyle
     void setAlignment( Qt::Alignment alignment ) { mAlignment = alignment; }
 
     /**
-    * Returns the indent of a group or subgroup.
+    * Returns the indent (in mm) of a group or subgroup.
     *
     * \see indent()
     * \since QGIS 3.18
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsLegendStyle
     double indent() { return mIndent; }
 
     /**
-     * Sets the indent of a group or subgroup.
+     * Sets the indent (in mm) of a group or subgroup.
      *
      * \see indent()
      * \since QGIS 3.18
