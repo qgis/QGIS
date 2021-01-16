@@ -676,18 +676,20 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     return;
   }
 
-  if ( hasRightButton )
+  if ( hasMiddleButton )
   {
+    // middle button drag = pan camera in place (strafe)
     QVector3D cameraUp = mCamera->upVector().normalized();
     QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
     QVector3D cameraLeft = QVector3D::crossProduct( cameraUp, cameraFront );
     QVector3D cameraPosDiff = -dx * cameraLeft - dy * cameraUp;
     moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 10.0 );
   }
-  else if ( hasMiddleButton )
+  else if ( hasRightButton )
   {
+    // right button drag = camera dolly
     QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
-    QVector3D cameraPosDiff = -dy * cameraFront;
+    QVector3D cameraPosDiff = dy * cameraFront;
     moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 5.0 );
   }
   else
