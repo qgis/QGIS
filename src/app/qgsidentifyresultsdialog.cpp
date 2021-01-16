@@ -1287,8 +1287,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
     connect( layer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
   }
 
+  QgsFeature feature;
+  QgsPointXY point( attributes[ QStringLiteral( "X" ) ].toDouble(), attributes[ QStringLiteral( "Y" ) ].toDouble() );
+  feature.setGeometry( QgsGeometry::fromPointXY( point ) );
+
   QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( QgsFields(),
-      QgsFeature(),
+      feature,
       layer->crs(),
       QStringList() << label << QString() );
   layItem->addChild( featItem );
@@ -1304,6 +1308,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
   {
     featItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
   }
+
+  highlightFeature( featItem );
 }
 
 
@@ -1825,6 +1831,14 @@ QgsVectorTileLayer *QgsIdentifyResultsDialog::vectorTileLayer( QTreeWidgetItem *
   return qobject_cast<QgsVectorTileLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
+QgsPointCloudLayer *QgsIdentifyResultsDialog::pointCloudLayer( QTreeWidgetItem *item )
+{
+  item = layerItem( item );
+  if ( !item )
+    return nullptr;
+  return qobject_cast<QgsPointCloudLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
+}
+
 QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &idx )
 {
   QTreeWidgetItem *featItem = featureItem( item );
@@ -2054,9 +2068,11 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
   QgsVectorTileLayer *vtlayer = vectorTileLayer( item );
+  QgsPointCloudLayer *pcLayer = pointCloudLayer( item );
 
   layer = vlayer ? static_cast<QgsMapLayer *>( vlayer ) : static_cast<QgsMapLayer *>( rlayer );
   layer = layer ? layer : vtlayer;
+  layer = layer ? layer : pcLayer;
 
   if ( !layer ) return;
 
@@ -2074,6 +2090,11 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( vlayer )
   {
     highlight = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
+  }
+  else if ( pcLayer )
+  {
+    highlight = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
+    highlight->setWidth( 2 );
   }
   else
   {

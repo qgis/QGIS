@@ -167,16 +167,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     void setRenderer( QgsPointCloudRenderer *renderer SIP_TRANSFER );
 
-    /**
-     * Sets the points that will be highlighted when the layer is rendered
-     */
-    void setHighlightedPoints( const QVector<QPointF> &points );
-
-    /**
-     * Returns the list of the points that need to be highlighted when the layer is rendered
-     */
-    QVector<QPointF> highlightedPoints() const { return mHighlightedPoints; }
-
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
 
@@ -193,8 +183,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
-
-    QVector<QPointF> mHighlightedPoints;
 };
 
 

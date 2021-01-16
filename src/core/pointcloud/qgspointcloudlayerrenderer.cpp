@@ -64,7 +64,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
 bool QgsPointCloudLayerRenderer::render()
 {
-  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZScale, mZOffset, mLayer->highlightedPoints() );
+  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZScale, mZOffset );
 
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
