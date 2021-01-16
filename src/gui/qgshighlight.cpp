@@ -30,6 +30,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgspointcloudlayer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgspointcloudlayerrenderer.h"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer
@@ -111,9 +114,37 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
 {
   std::unique_ptr<QgsFeatureRenderer> renderer;
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
+  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer );
   if ( layer && layer->renderer() )
   {
     renderer.reset( layer->renderer()->clone() );
+  }
+  else if ( pcLayer )
+  {
+    QgsPointCloudRenderer *pcRenderer = pcLayer->renderer();
+    const double pointSizePixels = context.convertToPainterUnits( pcRenderer->pointSize(), pcRenderer->pointSizeUnit(), pcRenderer->pointSizeMapUnitScale() );
+
+    QgsSimpleMarkerSymbolLayerBase::Shape shape;
+    switch ( pcRenderer->pointSymbol() )
+    {
+      case QgsPointCloudRenderer::PointSymbol::Circle:
+        shape = QgsSimpleMarkerSymbolLayerBase::Shape::Circle;
+        break;
+      case QgsPointCloudRenderer::PointSymbol::Square:
+        shape = QgsSimpleMarkerSymbolLayerBase::Shape::Square;
+        break;
+    }
+    QColor color = DEFAULT_SIMPLEMARKER_COLOR;
+    QColor strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR;
+    Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE;
+    double size = 0.3 * pointSizePixels;
+    double angle = DEFAULT_SIMPLEMARKER_ANGLE;
+    QgsSymbol::ScaleMethod scaleMethod = QgsSymbol::ScaleMethod::ScaleDiameter;
+
+    QgsSimpleMarkerSymbolLayer *symbolLayer = new QgsSimpleMarkerSymbolLayer( shape, size, angle, scaleMethod, color, strokeColor, penJoinStyle );
+
+    QgsSymbol *symbol = new QgsMarkerSymbol( QgsSymbolLayerList() << symbolLayer );
+    renderer.reset( new QgsSingleSymbolRenderer( symbol ) );
   }
   if ( renderer )
   {
@@ -256,7 +287,73 @@ void QgsHighlight::updatePosition()
 
 void QgsHighlight::paint( QPainter *p )
 {
-  if ( mGeometry )
+  if ( mFeature.hasGeometry() || qobject_cast< QgsPointCloudLayer *>( mLayer ) )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+    QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer );
+    if ( !vlayer && !pcLayer )
+      return;
+    QgsMapSettings mapSettings = mMapCanvas->mapSettings();
+    QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+//    if ( vlayer )
+    context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+
+    // Because lower level outlines must be covered by upper level fill color
+    // we render first with temporary opaque color, which is then replaced
+    // by final transparent fill color.
+    QColor tmpColor( 255, 0, 0, 255 );
+    QColor tmpFillColor( 0, 255, 0, 255 );
+
+    std::unique_ptr< QgsFeatureRenderer > renderer = createRenderer( context, tmpColor, tmpFillColor );
+    if ( ( vlayer || pcLayer ) && renderer )
+    {
+
+      QSize imageSize( mMapCanvas->mapSettings().outputSize() );
+      QImage image = QImage( imageSize.width(), imageSize.height(), QImage::Format_ARGB32 );
+      image.fill( 0 );
+      QPainter imagePainter( &image );
+      imagePainter.setRenderHint( QPainter::Antialiasing, true );
+
+      context.setPainter( &imagePainter );
+      QgsFeature feature = mFeature;
+
+      if ( pcLayer )
+        feature.setGeometry( *mGeometry );
+
+      renderer->startRender( context, feature.fields() );
+      context.expressionContext().setFeature( feature );
+      renderer->renderFeature( feature, context );
+      renderer->stopRender( context );
+
+      imagePainter.end();
+
+      // true output color
+      int penRed = mPen.color().red();
+      int penGreen = mPen.color().green();
+      int penBlue = mPen.color().blue();
+      // coefficient to subtract alpha using green (temporary fill)
+      double k = ( 255. - mBrush.color().alpha() ) / 255.;
+      QRgb *line = nullptr;
+      const int height = image.height();
+      const int width = image.width();
+      for ( int r = 0; r < height; r++ )
+      {
+        line = reinterpret_cast<QRgb *>( image.scanLine( r ) );
+        for ( int c = 0; c < width; c++ )
+        {
+          int alpha = qAlpha( line[c] );
+          if ( alpha > 0 )
+          {
+            int green = qGreen( line[c] );
+            line[c] = qRgba( penRed, penGreen, penBlue, qBound<int>( 0, alpha - ( green * k ), 255 ) );
+          }
+        }
+      }
+
+      p->drawImage( 0, 0, image );
+    }
+  }
+  else if ( mGeometry )
   {
     p->setPen( mPen );
     p->setBrush( mBrush );
@@ -320,88 +417,12 @@ void QgsHighlight::paint( QPainter *p )
         return;
     }
   }
-  else if ( mFeature.hasGeometry() )
-  {
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
-    if ( !layer )
-      return;
-    QgsMapSettings mapSettings = mMapCanvas->mapSettings();
-    QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
 
-
-    // Because lower level outlines must be covered by upper level fill color
-    // we render first with temporary opaque color, which is then replaced
-    // by final transparent fill color.
-    QColor tmpColor( 255, 0, 0, 255 );
-    QColor tmpFillColor( 0, 255, 0, 255 );
-
-    std::unique_ptr< QgsFeatureRenderer > renderer = createRenderer( context, tmpColor, tmpFillColor );
-    if ( layer && renderer )
-    {
-
-      QSize imageSize( mMapCanvas->mapSettings().outputSize() );
-      QImage image = QImage( imageSize.width(), imageSize.height(), QImage::Format_ARGB32 );
-      image.fill( 0 );
-      QPainter imagePainter( &image );
-      imagePainter.setRenderHint( QPainter::Antialiasing, true );
-
-      context.setPainter( &imagePainter );
-
-      renderer->startRender( context, layer->fields() );
-      context.expressionContext().setFeature( mFeature );
-      renderer->renderFeature( mFeature, context );
-      renderer->stopRender( context );
-
-      imagePainter.end();
-
-      // true output color
-      int penRed = mPen.color().red();
-      int penGreen = mPen.color().green();
-      int penBlue = mPen.color().blue();
-      // coefficient to subtract alpha using green (temporary fill)
-      double k = ( 255. - mBrush.color().alpha() ) / 255.;
-      QRgb *line = nullptr;
-      const int height = image.height();
-      const int width = image.width();
-      for ( int r = 0; r < height; r++ )
-      {
-        line = reinterpret_cast<QRgb *>( image.scanLine( r ) );
-        for ( int c = 0; c < width; c++ )
-        {
-          int alpha = qAlpha( line[c] );
-          if ( alpha > 0 )
-          {
-            int green = qGreen( line[c] );
-            line[c] = qRgba( penRed, penGreen, penBlue, qBound<int>( 0, alpha - ( green * k ), 255 ) );
-          }
-        }
-      }
-
-      p->drawImage( 0, 0, image );
-    }
-  }
 }
 
 void QgsHighlight::updateRect()
 {
-  if ( mGeometry )
-  {
-    QgsRectangle r = mGeometry->boundingBox();
-
-    if ( r.isEmpty() )
-    {
-      double d = mMapCanvas->extent().width() * 0.005;
-      r.setXMinimum( r.xMinimum() - d );
-      r.setYMinimum( r.yMinimum() - d );
-      r.setXMaximum( r.xMaximum() + d );
-      r.setYMaximum( r.yMaximum() + d );
-    }
-
-    setRect( r );
-    setVisible( mGeometry );
-  }
-  else if ( mFeature.hasGeometry() )
+  if ( qobject_cast<QgsPointCloudLayer *>( mLayer ) || mFeature.hasGeometry() )
   {
     // We are currently using full map canvas extent for two reasons:
     // 1) currently there is no method in QgsFeatureRenderer to get rendered feature
@@ -418,6 +439,22 @@ void QgsHighlight::updateRect()
     setRect( rect );
 
     setVisible( true );
+  }
+  else if ( mGeometry )
+  {
+    QgsRectangle r = mGeometry->boundingBox();
+
+    if ( r.isEmpty() )
+    {
+      double d = mMapCanvas->extent().width() * 0.005;
+      r.setXMinimum( r.xMinimum() - d );
+      r.setYMinimum( r.yMinimum() - d );
+      r.setXMaximum( r.xMaximum() + d );
+      r.setYMaximum( r.yMaximum() + d );
+    }
+
+    setRect( r );
+    setVisible( mGeometry );
   }
   else
   {

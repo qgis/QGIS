@@ -90,6 +90,8 @@
 #include <nlohmann/json.hpp>
 
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudrenderer.h"
+#include "qgscircle.h"
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -1288,13 +1290,17 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
   }
 
   QgsFeature feature;
-  QgsPointXY point( attributes[ QStringLiteral( "X" ) ].toDouble(), attributes[ QStringLiteral( "Y" ) ].toDouble() );
-  feature.setGeometry( QgsGeometry::fromPointXY( point ) );
 
-  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( QgsFields(),
-      feature,
-      layer->crs(),
-      QStringList() << label << QString() );
+  if ( !layer->renderer() )
+    return;
+
+  QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+  renderContext.setCoordinateTransform( QgsCoordinateTransform( layer->crs(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() ) );
+
+  QgsGeometry selectionGeometry( QgsGeometry::fromPointXY( QgsPointXY( attributes[ QStringLiteral( "X" ) ].toDouble(), attributes[ QStringLiteral( "Y" ) ].toDouble() ) ) );
+  feature.setGeometry( selectionGeometry );
+
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( QgsFields(), feature, layer->crs(), QStringList() << label << QString() );
   layItem->addChild( featItem );
 
   layItem->setFirstColumnSpanned( true );
@@ -1955,8 +1961,7 @@ void QgsIdentifyResultsDialog::disconnectLayer( QObject *layer )
   if ( vlayer )
   {
     disconnect( vlayer, &QgsVectorLayer::featureDeleted, this, &QgsIdentifyResultsDialog::featureDeleted );
-    disconnect( vlayer, &QgsVectorLayer::attributeValueChanged,
-                this, &QgsIdentifyResultsDialog::attributeValueChanged );
+    disconnect( vlayer, &QgsVectorLayer::attributeValueChanged, this, &QgsIdentifyResultsDialog::attributeValueChanged );
     disconnect( vlayer, &QgsVectorLayer::editingStarted, this, &QgsIdentifyResultsDialog::editingToggled );
     disconnect( vlayer, &QgsVectorLayer::editingStopped, this, &QgsIdentifyResultsDialog::editingToggled );
   }
@@ -2090,11 +2095,6 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( vlayer )
   {
     highlight = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
-  }
-  else if ( pcLayer )
-  {
-    highlight = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
-    highlight->setWidth( 2 );
   }
   else
   {
