@@ -145,7 +145,6 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
   connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
-  qDebug() << w->mCodeEditor->fieldNames();
   QVERIFY( w->mCodeEditor->fieldNames().contains( QStringLiteral( "qgis_test" ) ) );
   QVERIFY( w->mCodeEditor->fieldNames().contains( QStringLiteral( "random_big_data" ) ) );
   QVERIFY( w->mCodeEditor->fieldNames().contains( QStringLiteral( "descr" ) ) );
