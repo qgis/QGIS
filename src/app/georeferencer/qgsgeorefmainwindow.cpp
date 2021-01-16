@@ -162,10 +162,7 @@ void QgsGeoreferencerMainWindow::closeEvent( QCloseEvent *e )
   switch ( checkNeedGCPSave() )
   {
     case QgsGeoreferencerMainWindow::GCPSAVE:
-      if ( mGCPpointsFileName.isEmpty() )
-        saveGCPsDialog();
-      else
-        saveGCPs();
+      saveGCPsDialog();
       writeSettings();
       clearGCPData();
       removeOldLayer();
@@ -1184,7 +1181,7 @@ void QgsGeoreferencerMainWindow::setupConnections()
 
   // Connect mapCanvas rotation widget
   connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsGeoreferencerMainWindow::updateCanvasRotation );
-  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeoreferencerMainWindow::invalidateCanvasCoords );
+  connect( QgisApp::instance()->mapCanvas(), &QgsMapCanvas::destinationCrsChanged, this, &QgsGeoreferencerMainWindow::invalidateCanvasCoords );
 }
 
 void QgsGeoreferencerMainWindow::removeOldLayer()
