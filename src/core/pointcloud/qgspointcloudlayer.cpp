@@ -621,8 +621,3 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
   emit rendererChanged();
   emit styleChanged();
 }
-
-void QgsPointCloudLayer::setHighlightedPoints( const QVector<QPointF> &points )
-{
-  mHighlightedPoints = points;
-}
