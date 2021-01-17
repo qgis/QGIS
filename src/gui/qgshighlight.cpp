@@ -145,10 +145,11 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
   }
   if ( renderer )
   {
-    const auto constSymbols = renderer->symbols( context );
-    for ( QgsSymbol *symbol : constSymbols )
+    const QgsSymbolList symbols = renderer->symbols( context );
+    for ( QgsSymbol *symbol : symbols )
     {
-      if ( !symbol ) continue;
+      if ( !symbol )
+        continue;
       setSymbol( symbol, context, color, fillColor );
     }
   }
@@ -157,13 +158,14 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
 
 void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context,   const QColor &color, const QColor &fillColor )
 {
-  if ( !symbol ) return;
-
+  if ( !symbol )
+    return;
 
   for ( int i = symbol->symbolLayerCount() - 1; i >= 0;  i-- )
   {
     QgsSymbolLayer *symbolLayer = symbol->symbolLayer( i );
-    if ( !symbolLayer ) continue;
+    if ( !symbolLayer )
+      continue;
 
     if ( symbolLayer->subSymbol() )
     {
@@ -292,7 +294,6 @@ void QgsHighlight::paint( QPainter *p )
       return;
     QgsMapSettings mapSettings = mMapCanvas->mapSettings();
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-//    if ( vlayer )
     context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
 
     // Because lower level outlines must be covered by upper level fill color
@@ -302,7 +303,7 @@ void QgsHighlight::paint( QPainter *p )
     QColor tmpFillColor( 0, 255, 0, 255 );
 
     std::unique_ptr< QgsFeatureRenderer > renderer = createRenderer( context, tmpColor, tmpFillColor );
-    if ( ( vlayer || pcLayer ) && renderer )
+    if ( renderer )
     {
 
       QSize imageSize( mMapCanvas->mapSettings().outputSize() );
