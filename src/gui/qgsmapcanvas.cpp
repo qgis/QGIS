@@ -417,11 +417,16 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 
   if ( !rect.isEmpty() )
   {
+    // we will be manually calling updateCanvasItemPositions() later, AFTER setting the updating the mSettings destination CRS, and we don't
+    // want to do that twice!
+    mBlockItemPositionUpdates++;
     setExtent( rect );
+    mBlockItemPositionUpdates--;
   }
 
   mSettings.setDestinationCrs( crs );
   updateScale();
+  updateCanvasItemPositions();
 
   QgsDebugMsgLevel( QStringLiteral( "refreshing after destination CRS changed" ), 2 );
   refresh();
@@ -1996,6 +2001,9 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
 
 void QgsMapCanvas::updateCanvasItemPositions()
 {
+  if ( mBlockItemPositionUpdates )
+    return;
+
   const QList<QGraphicsItem *> items = mScene->items();
   for ( QGraphicsItem *gi : items )
   {
