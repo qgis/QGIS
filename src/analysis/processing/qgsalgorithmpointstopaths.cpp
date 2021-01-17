@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmpointstopaths.h"
 #include "qgsvectorlayer.h"
+#include "qgsmultipoint.h"
 
 ///@cond PRIVATE
 
@@ -229,8 +230,21 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
 
       if ( ! allPoints.contains( groupValue ) )
         allPoints[ groupValue ] = QVector< QPair< QVariant, QgsPoint > >();
-      QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet() ) );
-      allPoints[ groupValue ] << qMakePair( orderValue, point );
+      const QgsAbstractGeometry *geom = f.geometry().constGet();
+      if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
+      {
+        QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+        for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
+        {
+          QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( *pit ) );
+          allPoints[ groupValue ] << qMakePair( orderValue, point );
+        }
+      }
+      else
+      {
+        QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( geom ) );
+        allPoints[ groupValue ] << qMakePair( orderValue, point );
+      }
     }
     ++currentPoint;
   }
@@ -250,20 +264,20 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
 
     if ( naturalSort )
     {
-      std::sort( pairs.begin(),
-                 pairs.end(),
-                 [&collator]( const QPair< const QVariant, QgsPoint > &pair1,
-                              const QPair< const QVariant, QgsPoint > &pair2 )
+      std::stable_sort( pairs.begin(),
+                        pairs.end(),
+                        [&collator]( const QPair< const QVariant, QgsPoint > &pair1,
+                                     const QPair< const QVariant, QgsPoint > &pair2 )
       {
         return collator.compare( pair1.first.toString(), pair2.first.toString() ) < 0;
       } );
     }
     else
     {
-      std::sort( pairs.begin(),
-                 pairs.end(),
-                 []( const QPair< const QVariant, QgsPoint > &pair1,
-                     const QPair< const QVariant, QgsPoint > &pair2 )
+      std::stable_sort( pairs.begin(),
+                        pairs.end(),
+                        []( const QPair< const QVariant, QgsPoint > &pair1,
+                            const QPair< const QVariant, QgsPoint > &pair2 )
       {
         return qgsVariantLessThan( pair1.first, pair2.first );
       } );
