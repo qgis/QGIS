@@ -34,7 +34,7 @@ QString QgsPointsToPathsAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a point layer and connects its features creating a new line layer.\n\n"
                       "An attribute or expression may be specified to define the order the points should be connected. "
-                      "If no order expression is specified, the fid is used.\n\n"
+                      "If no order expression is specified, the feature ID is used.\n\n"
                       "A natural sort can be used when sorting by a string attribute "
                       "or expression (ie. place 'a9' before 'a10').\n\n"
                       "An attribute or expression can be selected to group points having the same value into the same resulting line." );
@@ -47,12 +47,12 @@ QStringList QgsPointsToPathsAlgorithm::tags() const
 
 QString QgsPointsToPathsAlgorithm::group() const
 {
-  return QObject::tr( "Vector geometry" );
+  return QObject::tr( "Vector creation" );
 }
 
 QString QgsPointsToPathsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return QStringLiteral( "vectorcreation" );
 }
 
 void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
@@ -174,7 +174,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   if ( ! groupExpressionString.isEmpty() )
   {
     requiredFields.append( groupExpression.referencedColumns().values() );
-    const QgsField field = groupExpression.isField() ? source->fields().field( requiredFields.last() ) : QString( "group" );
+    const QgsField field = groupExpression.isField() ? source->fields().field( requiredFields.last() ) : QStringLiteral( "group" );
     outputFields.append( field );
   }
   outputFields.append( QgsField( "begin", orderFieldType ) );
@@ -200,8 +200,12 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
        ! QDir( textDir ).exists() )
     throw QgsProcessingException( QObject::tr( "The text output directory does not exist" ) );
 
+  QgsDistanceArea da = QgsDistanceArea();
+  da.setSourceCrs( source->sourceCrs(), context.transformContext() );
+  da.setEllipsoid( context.ellipsoid() );
+
   // Store the points in a hash with the group identifier as the key
-  QHash< QVariant, QVector< QPair< QVariant, const QgsPoint * > > > allPoints;
+  QHash< QVariant, QVector< QPair< QVariant, QgsPoint > > > allPoints;
 
   QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( requiredFields, source->fields() );
   QgsFeatureIterator fit = source->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
@@ -215,25 +219,25 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     {
       break;
     }
-    feedback->setProgress( currentPoint * totalPoints );
+    feedback->setProgress( 0.5 * currentPoint * totalPoints );
 
-    if ( f.hasGeometry() && ! f.geometry().isNull() )
+    if ( f.hasGeometry() )
     {
       expressionContext.setFeature( f );
       const QVariant orderValue = orderExpression.evaluate( &expressionContext );
       const QVariant groupValue = groupExpressionString.isEmpty() ? QVariant() : groupExpression.evaluate( &expressionContext );
 
-      if ( ! allPoints.keys().contains( groupValue ) )
-        allPoints[ groupValue ] = QVector< QPair< QVariant, const QgsPoint * > >();
-      const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet()->clone() );
-      allPoints[ groupValue ] << QPair< QVariant, const QgsPoint *>( orderValue, point );
+      if ( ! allPoints.contains( groupValue ) )
+        allPoints[ groupValue ] = QVector< QPair< QVariant, QgsPoint > >();
+      QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet() ) );
+      allPoints[ groupValue ] << qMakePair( orderValue, point );
     }
     ++currentPoint;
   }
 
   int pathCount = 0;
   currentPoint = 0;
-  QHashIterator< QVariant, QVector< QPair< QVariant, const QgsPoint * > > > hit( allPoints );
+  QHashIterator< QVariant, QVector< QPair< QVariant, QgsPoint > > > hit( allPoints );
   feedback->setProgressText( QObject::tr( "Creating paths…" ) );
   while ( hit.hasNext() )
   {
@@ -248,8 +252,8 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     {
       std::sort( pairs.begin(),
                  pairs.end(),
-                 [&collator]( const QPair< const QVariant, const QgsPoint * > &pair1,
-                              const QPair< const QVariant, const QgsPoint * > &pair2 )
+                 [&collator]( const QPair< const QVariant, QgsPoint > &pair1,
+                              const QPair< const QVariant, QgsPoint > &pair2 )
       {
         return collator.compare( pair1.first.toString(), pair2.first.toString() ) < 0;
       } );
@@ -258,8 +262,8 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     {
       std::sort( pairs.begin(),
                  pairs.end(),
-                 []( const QPair< const QVariant, const QgsPoint * > &pair1,
-                     const QPair< const QVariant, const QgsPoint * > &pair2 )
+                 []( const QPair< const QVariant, QgsPoint > &pair1,
+                     const QPair< const QVariant, QgsPoint > &pair2 )
       {
         return qgsVariantLessThan( pair1.first, pair2.first );
       } );
@@ -267,14 +271,14 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
 
 
     QVector<QgsPoint> pathPoints;
-    for ( QVector< QPair< QVariant, const QgsPoint * > >::ConstIterator pit = pairs.constBegin(); pit != pairs.constEnd(); ++pit )
+    for ( auto pit = pairs.constBegin(); pit != pairs.constEnd(); ++pit )
     {
       if ( feedback->isCanceled() )
       {
         break;
       }
-      feedback->setProgress( currentPoint * totalPoints );
-      pathPoints.append( *pit->second );
+      feedback->setProgress( 50 + 0.5 * currentPoint * totalPoints );
+      pathPoints.append( pit->second );
       ++currentPoint;
     }
     if ( pathPoints.size() < 2 )
@@ -282,8 +286,8 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       feedback->pushInfo( QObject::tr( "Skipping path with group %1 : insufficient vertices" ).arg( hit.key().toString() ) );
       continue;
     }
-    if ( closePaths && pathPoints.size() > 2 && pathPoints.first() != pathPoints.last() )
-      pathPoints.append( pathPoints.first() );
+    if ( closePaths && pathPoints.size() > 2 && pathPoints.constFirst() != pathPoints.constLast() )
+      pathPoints.append( pathPoints.constFirst() );
 
     QgsFeature outputFeature;
     QgsAttributes attrs;
@@ -302,9 +306,6 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       if ( !textFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
         throw QgsProcessingException( QObject::tr( "Cannot open file for writing " ) + filename );
 
-      QgsDistanceArea da = QgsDistanceArea();
-      da.setSourceCrs( source->sourceCrs(), context.transformContext() );
-      da.setEllipsoid( context.ellipsoid() );
       QTextStream out( &textFile );
       out << QString( "angle=Azimuth\n"
                       "heading=Coordinate_System\n"
