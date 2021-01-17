@@ -468,10 +468,13 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
       mProviderMax = std::numeric_limits< double >::quiet_NaN();
     }
 
-    const double zScale = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zScale();
-    const double zOffset = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset();
-    mProviderMin = mProviderMin * zScale + zOffset;
-    mProviderMax = mProviderMax * zScale + zOffset;
+    if ( mRenderingParameterComboBox->currentAttribute() == QStringLiteral( "Z" ) )
+    {
+      const double zScale = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zScale();
+      const double zOffset = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset();
+      mProviderMin = mProviderMin * zScale + zOffset;
+      mProviderMax = mProviderMax * zScale + zOffset;
+    }
   }
   mScalarRecalculateMinMaxButton->setEnabled( !std::isnan( mProviderMin ) && !std::isnan( mProviderMax ) );
   emitChangedSignal();
