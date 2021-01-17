@@ -52,9 +52,10 @@
 
 QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer )
   : QgsMapCanvasItem( mapCanvas )
+  , mGeometry( geom )
   , mLayer( layer )
+
 {
-  mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 
@@ -71,9 +72,9 @@ void QgsHighlight::init()
   QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( mLayer );
   if ( ct.isValid() )
   {
-    if ( mGeometry )
+    if ( !mGeometry.isNull() )
     {
-      mGeometry->transform( ct );
+      mGeometry.transform( ct );
     }
     else if ( mFeature.hasGeometry() )
     {
@@ -88,11 +89,7 @@ void QgsHighlight::init()
   setColor( QColor( Qt::lightGray ) );
 }
 
-QgsHighlight::~QgsHighlight()
-{
-  delete mGeometry;
-}
-
+QgsHighlight::~QgsHighlight() = default;
 
 void QgsHighlight::setColor( const QColor &color )
 {
@@ -318,7 +315,7 @@ void QgsHighlight::paint( QPainter *p )
       QgsFeature feature = mFeature;
 
       if ( pcLayer )
-        feature.setGeometry( *mGeometry );
+        feature.setGeometry( mGeometry );
 
       renderer->startRender( context, feature.fields() );
       context.expressionContext().setFeature( feature );
@@ -353,22 +350,22 @@ void QgsHighlight::paint( QPainter *p )
       p->drawImage( 0, 0, image );
     }
   }
-  else if ( mGeometry )
+  else if ( !mGeometry.isNull() )
   {
     p->setPen( mPen );
     p->setBrush( mBrush );
 
-    switch ( mGeometry->type() )
+    switch ( mGeometry.type() )
     {
       case QgsWkbTypes::PointGeometry:
       {
-        if ( !mGeometry->isMultipart() )
+        if ( !mGeometry.isMultipart() )
         {
-          paintPoint( p, mGeometry->asPoint() );
+          paintPoint( p, mGeometry.asPoint() );
         }
         else
         {
-          QgsMultiPointXY m = mGeometry->asMultiPoint();
+          QgsMultiPointXY m = mGeometry.asMultiPoint();
           for ( int i = 0; i < m.size(); i++ )
           {
             paintPoint( p, m[i] );
@@ -379,13 +376,13 @@ void QgsHighlight::paint( QPainter *p )
 
       case QgsWkbTypes::LineGeometry:
       {
-        if ( !mGeometry->isMultipart() )
+        if ( !mGeometry.isMultipart() )
         {
-          paintLine( p, mGeometry->asPolyline() );
+          paintLine( p, mGeometry.asPolyline() );
         }
         else
         {
-          QgsMultiPolylineXY m = mGeometry->asMultiPolyline();
+          QgsMultiPolylineXY m = mGeometry.asMultiPolyline();
 
           for ( int i = 0; i < m.size(); i++ )
           {
@@ -397,13 +394,13 @@ void QgsHighlight::paint( QPainter *p )
 
       case QgsWkbTypes::PolygonGeometry:
       {
-        if ( !mGeometry->isMultipart() )
+        if ( !mGeometry.isMultipart() )
         {
-          paintPolygon( p, mGeometry->asPolygon() );
+          paintPolygon( p, mGeometry.asPolygon() );
         }
         else
         {
-          QgsMultiPolygonXY m = mGeometry->asMultiPolygon();
+          QgsMultiPolygonXY m = mGeometry.asMultiPolygon();
           for ( int i = 0; i < m.size(); i++ )
           {
             paintPolygon( p, m[i] );
@@ -440,9 +437,9 @@ void QgsHighlight::updateRect()
 
     setVisible( true );
   }
-  else if ( mGeometry )
+  else if ( !mGeometry.isNull() )
   {
-    QgsRectangle r = mGeometry->boundingBox();
+    QgsRectangle r = mGeometry.boundingBox();
 
     if ( r.isEmpty() )
     {
@@ -454,7 +451,7 @@ void QgsHighlight::updateRect()
     }
 
     setRect( r );
-    setVisible( mGeometry );
+    setVisible( true );
   }
   else
   {
