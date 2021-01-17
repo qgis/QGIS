@@ -432,8 +432,10 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
       }
       else if ( qgsDoubleNear( mFixedDuration, 0.0 ) )
       {
+        // Working with features with a momentarily duration (so only one timestamp and duration about zero)
+        // You really need to take at least ONE limit into account (in practice mostly the beginning)
         return QStringLiteral( "(%1 %2 %3 AND %1 %4 %5) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               ">=",  // always taking the begin into account
                dateTimeExpressionLiteral( range.begin() ),
                range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
                dateTimeExpressionLiteral( range.end() ) );
@@ -442,8 +444,10 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
       {
         // Working with features with events with a duration, so taking this duration into account (+ QgsInterval( -mFixedDuration, mDurationUnit ) ))
         // Then we are NOT taking the range.includeBeginning() and range.includeEnd() into account (deliberately, see #38468)
-        return QStringLiteral( "(%1 > %2 AND %1 < %3) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+        return QStringLiteral( "(%1 %2 %3 AND %1 %4 %5) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
                dateTimeExpressionLiteral( range.begin() + QgsInterval( -mFixedDuration, mDurationUnit ) ),
+               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
                dateTimeExpressionLiteral( range.end() ) );
       }
     }
@@ -508,39 +512,26 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
 
     case ModeFeatureDateTimeStartAndEndFromFields:
     {
-
-      QString start = mStartFieldName;
-      QString end = mEndFieldName;
-      // if either there is no start- or end-field defined, we make it a 'momentary' event (start==end)
-      // BUT: see the testDualFieldMode test: I think the checks below are obsolete.
-      // IF a user defines the timeframe of a phenomenon having 2 fields, you should not be able to only give one
-      // NOTE this is not about a null value in the data, this is about (NOT) setting a fieldname while telling "I give you two fieldnames"
-      if ( mStartFieldName.isEmpty() )
+      if ( !mStartFieldName.isEmpty() && !mEndFieldName.isEmpty() )
       {
-        start = mEndFieldName;
+        return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND (%4 %5 %6 OR %4 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ),
+               QgsExpression::quotedColumnRef( mEndFieldName ),
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( range.begin() ) );
       }
-      if ( mEndFieldName.isEmpty() )
+      else if ( !mStartFieldName.isEmpty() )
       {
-        end = mStartFieldName;
+        return QStringLiteral( "%1 %2 %3 OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               range.includeBeginning() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ) );
       }
-      if ( end == start )
+      else if ( !mEndFieldName.isEmpty() )
       {
-        // a momentary phenomenon, take the start limit of the filter frame into account
-        // and test if the timeframestart <= phenomenon < timeframeend
-        return QStringLiteral( "(%1 >= %2) AND (%3 < %4)" ).arg(
-                 QgsExpression::quotedColumnRef( start ),
-                 dateTimeExpressionLiteral( range.begin() ),
-                 QgsExpression::quotedColumnRef( end ),
-                 dateTimeExpressionLiteral( range.end() ) );
-      }
-      else
-      {
-        // searching for overlapping dataframe and timeframe, do NOT take limits into account
-        return QStringLiteral( "(%1 < %2 OR %1 IS NULL) AND (%3 > %4 OR %3 IS NULL)" ).arg(
-                 QgsExpression::quotedColumnRef( start ),
-                 dateTimeExpressionLiteral( range.end() ),
-                 QgsExpression::quotedColumnRef( end ),
-                 dateTimeExpressionLiteral( range.begin() ) );
+        return QStringLiteral( "%1 %2 %3 OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mEndFieldName ),
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( range.begin() ) );
       }
       break;
     }
