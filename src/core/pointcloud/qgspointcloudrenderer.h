@@ -53,8 +53,6 @@ class CORE_EXPORT QgsPointCloudRenderContext
      *
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
-     *
-     * The \a highlightedPoints argument specifies highlighted points during rendering
      */
     QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
                                 double zValueScale, double zValueFixedOffset );
