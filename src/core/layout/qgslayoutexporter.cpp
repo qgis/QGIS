@@ -293,8 +293,9 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
   {
-    if ( ( width * height ) > 32768 )
-      QgsMessageLog::logMessage( QObject::tr( "Error: output is bigger than 32768 pixel, result will be clipped" ) );
+    // see https://doc.qt.io/qt-5/qpainter.html#limitations
+    if ( width > 32768 || height > 32768 )
+      QgsMessageLog::logMessage( QObject::tr( "Error: output width or height is larger than 32768 pixel, result will be clipped" ) );
     image.setDotsPerMeterX( static_cast< int >( std::round( resolution / 25.4 * 1000 ) ) );
     image.setDotsPerMeterY( static_cast< int>( std::round( resolution / 25.4 * 1000 ) ) );
     image.fill( Qt::transparent );
