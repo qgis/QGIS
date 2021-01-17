@@ -87,11 +87,9 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsidentifymenu.h"
 #include "qgsjsonutils.h"
-#include <nlohmann/json.hpp>
-
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudrenderer.h"
-#include "qgscircle.h"
+
+#include <nlohmann/json.hpp>
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -2069,17 +2067,23 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
 void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
 {
-  QgsMapLayer *layer = nullptr;
   QgsVectorLayer *vlayer = vectorLayer( item );
-  QgsRasterLayer *rlayer = rasterLayer( item );
-  QgsVectorTileLayer *vtlayer = vectorTileLayer( item );
-  QgsPointCloudLayer *pcLayer = pointCloudLayer( item );
+  QgsMapLayer *layer = vlayer ? static_cast<QgsMapLayer *>( vlayer ) : QgsIdentifyResultsDialog::layer( item );
+  if ( !layer )
+    return;
 
-  layer = vlayer ? static_cast<QgsMapLayer *>( vlayer ) : static_cast<QgsMapLayer *>( rlayer );
-  layer = layer ? layer : vtlayer;
-  layer = layer ? layer : pcLayer;
-
-  if ( !layer ) return;
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::PointCloudLayer:
+      break;
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::AnnotationLayer:
+      return; // not supported
+  }
 
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
   if ( !featItem )
