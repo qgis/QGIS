@@ -183,7 +183,7 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     QColor mFillColor; // line / stroke fillColor property
     QBrush mBrush;
     QPen mPen;
-    QgsGeometry *mGeometry = nullptr;
+    QgsGeometry mGeometry;
     QgsMapLayer *mLayer = nullptr;
     QgsFeature mFeature;
     double mBuffer = 0; // line / stroke buffer in pixels
