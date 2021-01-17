@@ -81,6 +81,10 @@ void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
       QObject::tr( "Order field" ), QVariant(), QString(), QgsProcessingParameterField::Any, false, true );
   orderField->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
   addParameter( orderField );
+  QgsProcessingParameterField *groupField = new QgsProcessingParameterField( QStringLiteral( "GROUP_FIELD" ),
+      QObject::tr( "Group field" ), QVariant(), QString(), QgsProcessingParameterField::Any, false, true );
+  groupField->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
+  addParameter( groupField );
   QgsProcessingParameterString *dateFormat = new QgsProcessingParameterString( QStringLiteral( "DATE_FORMAT" ),
       QObject::tr( "Date format (if order field is DateTime)" ), QVariant(), false, true );
   dateFormat->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
@@ -101,7 +105,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   const bool closePaths = parameterAsBool( parameters, QStringLiteral( "CLOSE_PATH" ), context );
 
   QString orderExpressionString = parameterAsString( parameters, QStringLiteral( "ORDER_EXPRESSION" ), context );
-  QString orderFieldString = parameterAsString( parameters, QStringLiteral( "ORDER_FIELD" ), context );
+  const QString orderFieldString = parameterAsString( parameters, QStringLiteral( "ORDER_FIELD" ), context );
   if ( ! orderFieldString.isEmpty() )
   {
     // this is a backwards compatibility parameter
@@ -166,7 +170,12 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
 
-  const QString groupExpressionString = parameterAsString( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
+  QString groupExpressionString = parameterAsString( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
+  // handle backwards compatibility parameter GROUP_FIELD
+  const QString groupFieldString = parameterAsString( parameters, QStringLiteral( "GROUP_FIELD" ), context );
+  if ( ! groupFieldString.isEmpty() )
+    groupExpressionString = QgsExpression::quotedColumnRef( groupFieldString );
+
   QgsExpression groupExpression = groupExpressionString.isEmpty() ? QgsExpression( QString( "true" ) ) : QgsExpression( groupExpressionString );
   if ( groupExpression.hasParserError() )
     throw QgsProcessingException( groupExpression.parserErrorString() );
