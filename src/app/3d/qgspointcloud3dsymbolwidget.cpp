@@ -40,7 +40,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mColorRampShaderMaxEdit->setShowClearButton( false );
 
   mRenderingParameterComboBox->setLayer( layer );
-  mRenderingParameterComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
+  mRenderingParameterComboBox->setFilters( QgsPointCloudAttributeProxyModel::AllTypes );
   mRenderingParameterComboBox->setAllowEmptyAttributeName( false );
 
   mSingleColorBtn->setAllowOpacity( false );
