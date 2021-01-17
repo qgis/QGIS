@@ -1304,6 +1304,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QList< QgsMapCanvasInteractionBlocker * > mInteractionBlockers;
 
+    int mBlockItemPositionUpdates = 0;
+
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
      * \since QGIS 3.4
