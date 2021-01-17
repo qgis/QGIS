@@ -61,12 +61,12 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
     //! Returns the original request for this reply object
     QNetworkRequest request() const { return mRequest; }
 
-  public slots:
-    void requestFinished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString );
-
   signals:
     //! Emitted when the reply has finished (either with a success or with a failure)
     void finished();
+
+  private slots:
+    void requestFinished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString );
 
   private:
     QgsTileDownloadManagerReply( QgsTileDownloadManager *manager, const QNetworkRequest &request );
@@ -184,7 +184,6 @@ class QgsTileDownloadManagerWorker : public QObject
  */
 class CORE_EXPORT QgsTileDownloadManager
 {
-  public:
 
     //! An entry in the queue of requests to be handled by this class
     class QueueEntry
@@ -200,7 +199,13 @@ class CORE_EXPORT QgsTileDownloadManager
         QNetworkReply *networkReply = nullptr;
     };
 
-    //! Encapsulates any statistics we would like to keep about requests
+  public:
+
+    /**
+     * \ingroup core
+     * Encapsulates any statistics we would like to keep about requests
+     * \since QGIS 3.18
+     */
     class Stats
     {
       public:
