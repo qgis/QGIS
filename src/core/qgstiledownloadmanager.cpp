@@ -20,8 +20,11 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 
+#include <QElapsedTimer>
 #include <QNetworkReply>
 
+
+/// @cond PRIVATE
 
 QgsTileDownloadManagerWorker::QgsTileDownloadManagerWorker( QgsTileDownloadManager *manager, QObject *parent )
   : QObject( parent )
@@ -135,6 +138,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
   }
 }
 
+/// @endcond
 
 ///
 
@@ -204,7 +208,7 @@ bool QgsTileDownloadManager::hasPendingRequests() const
 
 bool QgsTileDownloadManager::waitForPendingRequests( int msec )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   while ( msec == -1 || t.elapsed() < msec )
@@ -305,7 +309,11 @@ void QgsTileDownloadManager::removeEntry( const QNetworkRequest &request )
 
 void QgsTileDownloadManager::signalQueueModified()
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+  QMetaObject::invokeMethod( mWorker, "queueUpdated", Qt::QueuedConnection );
+#else
   QMetaObject::invokeMethod( mWorker, &QgsTileDownloadManagerWorker::queueUpdated, Qt::QueuedConnection );
+#endif
 }
 
 
