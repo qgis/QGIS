@@ -38,8 +38,6 @@ taken from the point cloud index.
 
 The ``zValueFixedOffset`` argument specifies any constant offset value which must be added to z values
 taken from the point cloud index.
-
-The ``highlightedPoints`` argument specifies highlighted points during rendering
 %End
 
 
