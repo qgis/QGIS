@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QtTest>
 #include <iostream>
+#include <memory>
 
 #include "qgsapplication.h"
 #include "qgstiledownloadmanager.h"
