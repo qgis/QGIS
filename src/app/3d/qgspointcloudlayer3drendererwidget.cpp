@@ -73,18 +73,14 @@ void QgsPointCloudLayer3DRendererWidget::apply()
 void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
   QgsAbstract3DRenderer *r = layer->renderer3D();
+  QgsPointCloudLayer3DRenderer *pointCloudRenderer = nullptr;
   if ( r && r->type() == QLatin1String( "pointcloud" ) )
   {
-    QgsPointCloudLayer3DRenderer *pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( r );
+    pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( r );
     pointCloudRenderer->setSymbol( mWidgetPointCloudSymbol->symbol() );
-    setRenderer( pointCloudRenderer );
-    mWidgetPointCloudSymbol->setEnabled( true );
   }
-  else
-  {
-    setRenderer( nullptr );
-    mWidgetPointCloudSymbol->setEnabled( false );
-  }
+  setRenderer( pointCloudRenderer );
+  mWidgetPointCloudSymbol->setEnabled( true );
 }
 
 void QgsPointCloudLayer3DRendererWidget::setDockMode( bool dockMode )
