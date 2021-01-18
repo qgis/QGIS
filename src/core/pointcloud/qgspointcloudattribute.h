@@ -60,8 +60,19 @@ class CORE_EXPORT QgsPointCloudAttribute
     //! Returns size of the attribute in bytes
     int size() const { return mSize; }
 
-    //! Returns the data type
+    /**
+     * Returns the data type
+     *
+     * \see variantType()
+     */
     DataType type() const { return mType; }
+
+    /**
+     * Returns the most suitable equivalent QVariant data type to this attribute type.
+     *
+     * \see type()
+     */
+    QVariant::Type variantType() const;
 
     /**
      * Returns the type to use when displaying this field.

@@ -40,6 +40,7 @@ class TestQgsPointCloudAttribute: public QObject
     void cleanup();// will be called after every testfunction.
     void testAttribute();
     void testAttributeDisplayType();
+    void testVariantType();
     void testIsNumeric();
     void testCollection();
 
@@ -90,6 +91,16 @@ void TestQgsPointCloudAttribute::testAttributeDisplayType()
   QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Int32 ).displayType(), QStringLiteral( "Integer" ) );
   QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Float ).displayType(), QStringLiteral( "Float" ) );
   QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Double ).displayType(), QStringLiteral( "Double" ) );
+}
+
+void TestQgsPointCloudAttribute::testVariantType()
+{
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Char ).variantType(), QVariant::Int );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Short ).variantType(), QVariant::Int );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::UShort ).variantType(), QVariant::Int );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Int32 ).variantType(), QVariant::Int );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Float ).variantType(), QVariant::Double );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Double ).variantType(), QVariant::Double );
 }
 
 void TestQgsPointCloudAttribute::testIsNumeric()
