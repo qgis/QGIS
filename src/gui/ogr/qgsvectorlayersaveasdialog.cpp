@@ -189,7 +189,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     if ( !filePath.isEmpty() && leLayername->isEnabled() )
     {
       QFileInfo fileInfo( filePath );
-      leLayername->setText( fileInfo.baseName() );
+      leLayername->setText( fileInfo.completeBaseName() );
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
