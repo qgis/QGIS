@@ -152,6 +152,11 @@ Returns -1 if a matching attribute was not found.
 Returns total size of record
 %End
 
+    QgsFields toFields() const;
+%Docstring
+Converts the attribute collection to an equivalent QgsFields collection.
+%End
+
 };
 
 /************************************************************************

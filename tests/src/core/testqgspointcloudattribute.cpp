@@ -43,6 +43,7 @@ class TestQgsPointCloudAttribute: public QObject
     void testVariantType();
     void testIsNumeric();
     void testCollection();
+    void testToFields();
 
   private:
 
@@ -185,6 +186,26 @@ void TestQgsPointCloudAttribute::testCollection()
   QCOMPARE( offset, 4 );
   QCOMPARE( collection2.find( QStringLiteral( "at3" ), offset )->name(), QStringLiteral( "at3" ) );
   QCOMPARE( offset, 6 );
+}
+
+void TestQgsPointCloudAttribute::testToFields()
+{
+  QgsFields fields = QgsPointCloudAttributeCollection().toFields();
+  QCOMPARE( fields.size(), 0 );
+
+  QgsPointCloudAttributeCollection collection( QVector< QgsPointCloudAttribute >()
+      << QgsPointCloudAttribute( QStringLiteral( "at1" ), QgsPointCloudAttribute::DataType::Float )
+      << QgsPointCloudAttribute( QStringLiteral( "at2" ), QgsPointCloudAttribute::DataType::Short )
+      << QgsPointCloudAttribute( QStringLiteral( "at3" ), QgsPointCloudAttribute::DataType::Double ) );
+  fields = collection.toFields();
+  QCOMPARE( fields.size(), 3 );
+
+  QCOMPARE( fields.at( 0 ).name(), QStringLiteral( "at1" ) );
+  QCOMPARE( fields.at( 0 ).type(), QVariant::Double );
+  QCOMPARE( fields.at( 1 ).name(), QStringLiteral( "at2" ) );
+  QCOMPARE( fields.at( 1 ).type(), QVariant::Int );
+  QCOMPARE( fields.at( 2 ).name(), QStringLiteral( "at3" ) );
+  QCOMPARE( fields.at( 2 ).type(), QVariant::Double );
 }
 
 QGSTEST_MAIN( TestQgsPointCloudAttribute )

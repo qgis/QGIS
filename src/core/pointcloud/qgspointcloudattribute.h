@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsfields.h"
 #include <QString>
 #include <QVector>
 
@@ -163,6 +164,11 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
 
     //! Returns total size of record
     int pointRecordSize() const { return mSize; }
+
+    /**
+     * Converts the attribute collection to an equivalent QgsFields collection.
+     */
+    QgsFields toFields() const;
 
   private:
     int mSize = 0;
