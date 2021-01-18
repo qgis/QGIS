@@ -75,6 +75,11 @@ void QgsHighlight::init()
     if ( !mGeometry.isNull() )
     {
       mGeometry.transform( ct );
+
+      if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+      {
+        mRenderContext = createRenderContext();
+      }
     }
     else if ( mFeature.hasGeometry() )
     {
@@ -217,18 +222,37 @@ void QgsHighlight::setWidth( int width )
   mPen.setWidth( width );
 }
 
-void QgsHighlight::paintPoint( QPainter *p, const QgsPointXY &point )
+void QgsHighlight::paintPoint( QgsRenderContext &context, const QgsPoint *point, double size, QgsUnitTypes::RenderUnit sizeUnit, PointSymbol symbol )
 {
-  QPolygonF r( 5 );
+  if ( !point )
+    return;
 
-  double d = mMapCanvas->extent().width() * 0.005;
-  r[0] = toCanvasCoordinates( point + QgsVector( -d, -d ) ) - pos();
-  r[1] = toCanvasCoordinates( point + QgsVector( d, -d ) ) - pos();
-  r[2] = toCanvasCoordinates( point + QgsVector( d, d ) ) - pos();
-  r[3] = toCanvasCoordinates( point + QgsVector( -d, d ) ) - pos();
-  r[4] = r[0];
+  const double radius = context.convertToPainterUnits( size, sizeUnit );
+  const double xMin = toCanvasCoordinates( *point ).x() - radius - pos().x();
+  const double yMin = toCanvasCoordinates( *point ).y() - radius - pos().y();
 
-  p->drawPolygon( r );
+  switch ( symbol )
+  {
+    case QgsHighlight::Square:
+    {
+      const double xMax = xMin + 2 * radius;
+      const double yMax = yMin + 2 * radius;
+      QPolygonF r( QVector<QPointF> { QPointF( xMin, yMin ),
+                                      QPointF( xMax, yMin ),
+                                      QPointF( xMax, yMax ),
+                                      QPointF( xMin, yMax ),
+                                      QPointF( xMin, yMin )
+                                    } );
+      context.painter()->drawPolygon( r );
+      break;
+    }
+
+    case QgsHighlight::Circle:
+    {
+      context.painter()->drawEllipse( QRectF( xMin, yMin, radius * 2, radius * 2 ) );
+      break;
+    }
+  }
 }
 
 void QgsHighlight::paintLine( QPainter *p, QgsPolylineXY line )
@@ -279,9 +303,25 @@ void QgsHighlight::paintPolygon( QPainter *p, const QgsPolygonXY &polygon )
   p->drawPath( path );
 }
 
+QgsRenderContext QgsHighlight::createRenderContext()
+{
+  QgsMapSettings mapSettings = mMapCanvas->mapSettings();
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+  return context;
+}
+
 void QgsHighlight::updatePosition()
 {
-  if ( isVisible() ) updateRect();
+  if ( !isVisible() )
+    return;
+
+  if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+  {
+    mRenderContext = createRenderContext();
+  }
+
+  updateRect();
 }
 
 void QgsHighlight::paint( QPainter *p )
@@ -292,9 +332,8 @@ void QgsHighlight::paint( QPainter *p )
     QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer );
     if ( !vlayer && !pcLayer )
       return;
-    QgsMapSettings mapSettings = mMapCanvas->mapSettings();
-    QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+
+    QgsRenderContext context = createRenderContext();
 
     // Because lower level outlines must be covered by upper level fill color
     // we render first with temporary opaque color, which is then replaced
@@ -360,17 +399,35 @@ void QgsHighlight::paint( QPainter *p )
     {
       case QgsWkbTypes::PointGeometry:
       {
-        if ( !mGeometry.isMultipart() )
+        setRenderContextVariables( p, mRenderContext );
+
+        // default to 1.5 mm radius square points
+        double pointSizeRadius = 1.5;
+        QgsUnitTypes::RenderUnit sizeUnit = QgsUnitTypes::RenderMillimeters;
+        PointSymbol symbol = Square;
+
+        // but for point clouds, use actual sizes (+a little margin!)
+        if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer ) )
         {
-          paintPoint( p, mGeometry.asPoint() );
-        }
-        else
-        {
-          QgsMultiPointXY m = mGeometry.asMultiPoint();
-          for ( int i = 0; i < m.size(); i++ )
+          if ( QgsPointCloudRenderer *pcRenderer = pcLayer->renderer() )
           {
-            paintPoint( p, m[i] );
+            pointSizeRadius = 1.2 * 0.5 * mRenderContext.convertToPainterUnits( pcRenderer->pointSize(), pcRenderer->pointSizeUnit(), pcRenderer->pointSizeMapUnitScale() );
+            sizeUnit = QgsUnitTypes::RenderPixels;
+            switch ( pcRenderer->pointSymbol() )
+            {
+              case QgsPointCloudRenderer::PointSymbol::Circle:
+                symbol = Circle;
+                break;
+              case QgsPointCloudRenderer::PointSymbol::Square:
+                symbol = Square;
+                break;
+            }
           }
+        }
+
+        for ( auto it = mGeometry.const_parts_begin(); it != mGeometry.const_parts_end(); ++it )
+        {
+          paintPoint( mRenderContext, qgsgeometry_cast< const QgsPoint *>( *it ), pointSizeRadius, sizeUnit, symbol );
         }
       }
       break;
@@ -415,7 +472,6 @@ void QgsHighlight::paint( QPainter *p )
         return;
     }
   }
-
 }
 
 void QgsHighlight::updateRect()
