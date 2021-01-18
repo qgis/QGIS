@@ -3066,6 +3066,38 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertEqual(l.fields().count(), 3)
         self.assertEqual([f.name() for f in l.fields()], ['__rid__', 'id', 'id (2)'])
 
+    def testInsertOnlyFieldIsEditable(self):
+        """Test issue #40922 when an INSERT only use cannot insert a new feature"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        conn.executeSql('DROP TABLE IF EXISTS public.insert_only_points')
+        conn.executeSql('DROP USER IF EXISTS insert_only_user')
+        conn.executeSql('CREATE USER insert_only_user WITH PASSWORD \'insert_only_user\'')
+        conn.executeSql('CREATE TABLE insert_only_points (id SERIAL PRIMARY KEY, name VARCHAR(64))')
+        conn.executeSql("SELECT AddGeometryColumn('public', 'insert_only_points', 'geom', 4326, 'POINT', 2 )")
+        conn.executeSql('GRANT SELECT ON "public"."insert_only_points" TO insert_only_user')
+
+        uri = QgsDataSourceUri(self.dbconn +
+                               ' sslmode=disable  key=\'id\'srid=4326 type=POINT table="public"."insert_only_points" (geom) sql=')
+        uri.setUsername('insert_only_user')
+        uri.setPassword('insert_only_user')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.startEditing())
+
+        feature = QgsFeature(vl.fields())
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+
+        conn.executeSql('GRANT INSERT ON "public"."insert_only_points" TO insert_only_user')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+
+        feature = QgsFeature(vl.fields())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+
 
 if __name__ == '__main__':
     unittest.main()
