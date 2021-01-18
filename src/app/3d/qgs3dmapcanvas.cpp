@@ -186,13 +186,11 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   // For Camera Control tool
   if ( mMapTool && !tool )
   {
-    mEngine->window()->removeEventFilter( this );
     mScene->cameraController()->setEnabled( true );
     mEngine->window()->setCursor( Qt::OpenHandCursor );
   }
   else if ( !mMapTool && tool )
   {
-    mEngine->window()->installEventFilter( this );
     mScene->cameraController()->setEnabled( tool->allowsCameraControls() );
   }
 
@@ -211,18 +209,18 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
 
 bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 {
-  if ( watched == mEngine->window() )
+  if ( watched != mEngine->window() )
+    return false;
+
+  if ( event->type() == QEvent::ShortcutOverride )
   {
-    if ( event->type() == QEvent::ShortcutOverride )
+    // if the camera controller will handle a key event, don't allow it to propagate
+    // outside of the 3d window or it may be grabbed by a parent window level shortcut
+    // and accordingly never be received by the camera controller
+    if ( cameraController() && cameraController()->willHandleKeyEvent( static_cast< QKeyEvent * >( event ) ) )
     {
-      // if the camera controller will handle a key event, don't allow it to propagate
-      // outside of the 3d window or it may be grabbed by a parent window level shortcut
-      // and accordingly never be received by the camera controller
-      if ( cameraController() && cameraController()->willHandleKeyEvent( static_cast< QKeyEvent * >( event ) ) )
-      {
-        event->accept();
-        return true;
-      }
+      event->accept();
+      return true;
     }
     return false;
   }
