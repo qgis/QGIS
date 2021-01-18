@@ -500,7 +500,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   }
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
-  for ( const QgsMimeDataUtils::Uri &u : lst )
+  for ( const QgsMimeDataUtils::Uri &u : qgis::as_const( lst ) )
   {
     if ( !rawPaths.contains( u.uri ) )
       rawPaths.append( u.uri );
