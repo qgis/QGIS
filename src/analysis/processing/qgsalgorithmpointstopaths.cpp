@@ -82,7 +82,7 @@ void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
   orderField->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
   addParameter( orderField );
   QgsProcessingParameterField *groupField = new QgsProcessingParameterField( QStringLiteral( "GROUP_FIELD" ),
-      QObject::tr( "Group field" ), QVariant(), QString(), QgsProcessingParameterField::Any, false, true );
+      QObject::tr( "Group field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true );
   groupField->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
   addParameter( groupField );
   QgsProcessingParameterString *dateFormat = new QgsProcessingParameterString( QStringLiteral( "DATE_FORMAT" ),
