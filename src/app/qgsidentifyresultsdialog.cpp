@@ -1287,18 +1287,30 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
     connect( layer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
   }
 
-  QgsFeature feature;
-
   if ( !layer->renderer() )
     return;
 
   QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   renderContext.setCoordinateTransform( QgsCoordinateTransform( layer->crs(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() ) );
 
+  const QgsFields fields = layer->attributes().toFields();
+  QgsFeature feature( fields );
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  {
+    int fieldIndex = fields.lookupField( it.key() );
+    if ( fieldIndex < 0 )
+      continue;
+
+    QgsField field = fields.at( fieldIndex );
+    QVariant v = it.value();
+    field.convertCompatible( v );
+    feature.setAttribute( fieldIndex, v );
+  }
+
   QgsGeometry selectionGeometry( QgsGeometry::fromPointXY( QgsPointXY( attributes[ QStringLiteral( "X" ) ].toDouble(), attributes[ QStringLiteral( "Y" ) ].toDouble() ) ) );
   feature.setGeometry( selectionGeometry );
 
-  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( QgsFields(), feature, layer->crs(), QStringList() << label << QString() );
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( fields, feature, layer->crs(), QStringList() << label << QString() );
   layItem->addChild( featItem );
 
   layItem->setFirstColumnSpanned( true );
