@@ -116,37 +116,9 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
 {
   std::unique_ptr<QgsFeatureRenderer> renderer;
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
-  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer );
   if ( layer && layer->renderer() )
   {
     renderer.reset( layer->renderer()->clone() );
-  }
-  else if ( pcLayer )
-  {
-    QgsPointCloudRenderer *pcRenderer = pcLayer->renderer();
-    const double pointSizePixels = context.convertToPainterUnits( pcRenderer->pointSize(), pcRenderer->pointSizeUnit(), pcRenderer->pointSizeMapUnitScale() );
-
-    QgsSimpleMarkerSymbolLayerBase::Shape shape;
-    switch ( pcRenderer->pointSymbol() )
-    {
-      case QgsPointCloudRenderer::PointSymbol::Circle:
-        shape = QgsSimpleMarkerSymbolLayerBase::Shape::Circle;
-        break;
-      case QgsPointCloudRenderer::PointSymbol::Square:
-        shape = QgsSimpleMarkerSymbolLayerBase::Shape::Square;
-        break;
-    }
-    QColor color = DEFAULT_SIMPLEMARKER_COLOR;
-    QColor strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR;
-    Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE;
-    double size = 0.3 * pointSizePixels;
-    double angle = DEFAULT_SIMPLEMARKER_ANGLE;
-    QgsSymbol::ScaleMethod scaleMethod = QgsSymbol::ScaleMethod::ScaleDiameter;
-
-    QgsSimpleMarkerSymbolLayer *symbolLayer = new QgsSimpleMarkerSymbolLayer( shape, size, angle, scaleMethod, color, strokeColor, penJoinStyle );
-
-    QgsSymbol *symbol = new QgsMarkerSymbol( QgsSymbolLayerList() << symbolLayer );
-    renderer.reset( new QgsSingleSymbolRenderer( symbol ) );
   }
   if ( renderer )
   {
@@ -326,11 +298,10 @@ void QgsHighlight::updatePosition()
 
 void QgsHighlight::paint( QPainter *p )
 {
-  if ( mFeature.hasGeometry() || qobject_cast< QgsPointCloudLayer *>( mLayer ) )
+  if ( mFeature.hasGeometry() )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
-    QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer );
-    if ( !vlayer && !pcLayer )
+    if ( !vlayer )
       return;
 
     QgsRenderContext context = createRenderContext();
@@ -352,14 +323,9 @@ void QgsHighlight::paint( QPainter *p )
       imagePainter.setRenderHint( QPainter::Antialiasing, true );
 
       context.setPainter( &imagePainter );
-      QgsFeature feature = mFeature;
-
-      if ( pcLayer )
-        feature.setGeometry( mGeometry );
-
-      renderer->startRender( context, feature.fields() );
-      context.expressionContext().setFeature( feature );
-      renderer->renderFeature( feature, context );
+      renderer->startRender( context, mFeature.fields() );
+      context.expressionContext().setFeature( mFeature );
+      renderer->renderFeature( mFeature, context );
       renderer->stopRender( context );
 
       imagePainter.end();
