@@ -212,7 +212,7 @@ void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteConte
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "No polymorphic relations data present in this document" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No polymorphic relations data present in this document" ), 3 );
   }
 
   emit relationsLoaded();
