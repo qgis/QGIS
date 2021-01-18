@@ -153,6 +153,16 @@ int QgsPointCloudAttributeCollection::indexOf( const QString &name ) const
   return -1;
 }
 
+QgsFields QgsPointCloudAttributeCollection::toFields() const
+{
+  QgsFields fields;
+  for ( const QgsPointCloudAttribute &attribute : mAttributes )
+  {
+    fields.append( QgsField( attribute.name(), attribute.variantType(), attribute.displayType() ) );
+  }
+  return fields;
+}
+
 template <typename T>
 void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
 {
