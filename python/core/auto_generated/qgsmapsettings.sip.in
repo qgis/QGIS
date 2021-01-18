@@ -63,17 +63,31 @@ ratio shall be set accordingly.
     QgsRectangle extent() const;
 %Docstring
 Returns geographical coordinates of the rectangle that should be rendered.
-The actual visible extent used for rendering could be slightly different
-since the given extent may be expanded in order to fit the aspect ratio
-of output size. Use :py:func:`~QgsMapSettings.visibleExtent` to get the resulting extent.
+
+.. warning::
+
+   The actual visible extent used for rendering can be significantly different from this
+   value, since the given extent may be expanded in order to fit the aspect ratio
+   of the :py:func:`~QgsMapSettings.outputSize`. Use :py:func:`~QgsMapSettings.visibleExtent` to get the actual extent which will be rendered.
+
+.. seealso:: :py:func:`visibleExtent`
+
+.. seealso:: :py:func:`setExtent`
 %End
 
     void setExtent( const QgsRectangle &rect, bool magnified = true );
 %Docstring
-Set coordinates of the rectangle which should be rendered.
-The actual visible extent used for rendering could be slightly different
-since the given extent may be expanded in order to fit the aspect ratio
-of output size. Use :py:func:`~QgsMapSettings.visibleExtent` to get the resulting extent.
+Sets the coordinates of the rectangle which should be rendered.
+
+.. warning::
+
+   The actual visible extent used for rendering can be significantly different
+   from the specified extent, since the given extent may be expanded in order to match the
+   aspect ratio of :py:func:`~QgsMapSettings.outputSize`. Use :py:func:`~QgsMapSettings.visibleExtent` to retrieve the actual extent to be rendered.
+
+.. seealso:: :py:func:`visibleExtent`
+
+.. seealso:: :py:func:`extent`
 %End
 
     double extentBuffer() const;
@@ -97,16 +111,24 @@ is useful when using tiles to avoid cut symbols at tile boundaries.
 
     QSize outputSize() const;
 %Docstring
-Returns the size of the resulting map image
+Returns the size of the resulting map image, in pixels.
+
+.. seealso:: :py:func:`deviceOutputSize`
+
+.. seealso:: :py:func:`setOutputSize`
 %End
+
     void setOutputSize( QSize size );
 %Docstring
-Sets the size of the resulting map image
+Sets the ``size`` of the resulting map image, in pixels.
+
+.. seealso:: :py:func:`outputSize`
 %End
 
     float devicePixelRatio() const;
 %Docstring
-Returns device pixel ratio
+Returns the device pixel ratio.
+
 Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
 
 .. versionadded:: 3.4
@@ -114,7 +136,8 @@ Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays
 
     void setDevicePixelRatio( float dpr );
 %Docstring
-Sets the device pixel ratio
+Sets the device pixel ratio.
+
 Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
 
 .. versionadded:: 3.4
@@ -122,9 +145,16 @@ Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays
 
     QSize deviceOutputSize() const;
 %Docstring
-Returns the device output size of the map canvas
+Returns the device output size of the map render.
+
 This is equivalent to the output size multiplicated
 by the device pixel ratio.
+
+.. seealso:: :py:func:`outputSize`
+
+.. seealso:: :py:func:`devicePixelRatio`
+
+.. seealso:: :py:func:`setOutputSize`
 
 .. versionadded:: 3.4
 %End
@@ -149,12 +179,18 @@ Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 
     double outputDpi() const;
 %Docstring
-Returns DPI used for conversion between real world units (e.g. mm) and pixels
-Default value is 96
+Returns the DPI (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
+
+The default value is 96 dpi.
+
+.. seealso:: :py:func:`setOutputDpi`
 %End
+
     void setOutputDpi( double dpi );
 %Docstring
-Sets DPI used for conversion between real world units (e.g. mm) and pixels
+Sets the ``dpi`` (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
+
+.. seealso:: :py:func:`outputDpi`
 %End
 
     void setMagnificationFactor( double factor, const QgsPointXY *center = 0 );
@@ -180,43 +216,62 @@ Returns the magnification factor.
 
     QStringList layerIds() const;
 %Docstring
-Gets list of layer IDs for map rendering
-The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+Returns the list of layer IDs which will be rendered in the map.
+
+The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top).
+
+.. seealso:: :py:func:`layers`
+
+.. seealso:: :py:func:`setLayers`
 %End
 
     QList<QgsMapLayer *> layers() const;
 %Docstring
-Gets list of layers for map rendering
+Returns the list of layers which will be rendered in the map.
+
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+
+.. seealso:: :py:func:`setLayers`
+
+.. seealso:: :py:func:`layerIds`
 %End
 
     void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
-Set list of layers for map rendering. The layers must be registered in :py:class:`QgsProject`.
+Sets the list of ``layers`` to render in the map.
+
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
 
 .. note::
 
    Any non-spatial layers will be automatically stripped from the list (since they cannot be rendered!).
+
+.. seealso:: :py:func:`layers`
+
+.. seealso:: :py:func:`layerIds`
 %End
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
-Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+Returns the map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one.
+
+.. seealso:: :py:func:`setLayerStyleOverrides`
 
 .. versionadded:: 2.8
 %End
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 %Docstring
-Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+Sets the map of map layer style ``overrides`` (key: layer ID, value: style name) where a different style should be used instead of the current one.
+
+.. seealso:: :py:func:`layerStyleOverrides`
 
 .. versionadded:: 2.8
 %End
 
  QString customRenderFlags() const;
 %Docstring
-Gets custom rendering flags. Layers might honour these to alter their rendering.
+Returns custom rendering flags. Layers might honour these to alter their rendering.
 
 :return: custom flags strings, separated by ';'
 
@@ -244,7 +299,7 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 
     QVariantMap customRenderingFlags() const;
 %Docstring
-Gets custom rendering flags. Layers might honour these to alter their rendering.
+Returns any custom rendering flags. Layers might honour these to alter their rendering.
 
 :return: a map of custom flags
 
@@ -255,7 +310,7 @@ Gets custom rendering flags. Layers might honour these to alter their rendering.
 
     void setCustomRenderingFlag( const QString &flag, const QVariant &value );
 %Docstring
-Sets a custom rendering flag. Layers might honour these to alter their rendering.
+Sets a custom rendering ``flag``. Layers might honour these to alter their rendering.
 
 :param flag: the flag name
 :param value: the flag value
@@ -267,7 +322,7 @@ Sets a custom rendering flag. Layers might honour these to alter their rendering
 
     void clearCustomRenderingFlag( const QString &flag );
 %Docstring
-Clears the specified custom rendering flag.
+Clears the specified custom rendering ``flag``.
 
 :param flag: the flag name
 
@@ -278,16 +333,21 @@ Clears the specified custom rendering flag.
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-sets destination coordinate reference system
+Sets the destination ``crs`` (coordinate reference system) for the map render.
+
+.. seealso:: :py:func:`destinationCrs`
 %End
+
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
-returns CRS of destination coordinate reference system
+Returns the destination coordinate reference system for the map render.
+
+.. seealso:: :py:func:`setDestinationCrs`
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
 %Docstring
-Gets units of map's geographical coordinates - used for scale calculation
+Returns the units of the map's geographical coordinates - used for scale calculation.
 %End
 
     bool setEllipsoid( const QString &ellipsoid );
@@ -315,20 +375,30 @@ ellipsoid if a valid ellipsoid has been set.
 
     void setBackgroundColor( const QColor &color );
 %Docstring
-Sets the background color of the map
+Sets the background ``color`` of the map.
+
+.. seealso:: :py:func:`backgroundColor`
 %End
+
     QColor backgroundColor() const;
 %Docstring
-Gets the background color of the map
+Returns the background color of the map.
+
+.. seealso:: :py:func:`setBackgroundColor`
 %End
 
     void setSelectionColor( const QColor &color );
 %Docstring
-Sets color that is used for drawing of selected vector features
+Sets the ``color`` that is used for drawing of selected vector features.
+
+.. seealso:: :py:func:`selectionColor`
 %End
+
     QColor selectionColor() const;
 %Docstring
-Gets color that is used for drawing of selected vector features
+Returns the color that is used for drawing of selected vector features.
+
+.. seealso:: :py:func:`setSelectionColor`
 %End
 
     enum Flag
