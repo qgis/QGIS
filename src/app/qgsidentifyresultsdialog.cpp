@@ -1442,11 +1442,12 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   if ( !item )
     return;
 
-  QgsMapLayer *layer = vectorLayer( item );
+  QgsMapLayer *layer = QgsIdentifyResultsDialog::layer( item );
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
   QgsVectorTileLayer *vtlayer = vectorTileLayer( item );
-  if ( !vlayer && !rlayer && !vtlayer )
+  QgsPointCloudLayer *pclayer = pointCloudLayer( item );
+  if ( !vlayer && !rlayer && !vtlayer && !pclayer )
   {
     QgsDebugMsg( QStringLiteral( "Item does not belong to a layer." ) );
     return;
@@ -1791,6 +1792,9 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QTreeWidgetItem *item )
 
 QgsMapLayer *QgsIdentifyResultsDialog::layer( QTreeWidgetItem *item )
 {
+  if ( QgsVectorLayer *vlayer = vectorLayer( item ) )
+    return vlayer;
+
   item = layerItem( item );
   if ( !item )
     return nullptr;
@@ -2068,7 +2072,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
 {
   QgsVectorLayer *vlayer = vectorLayer( item );
-  QgsMapLayer *layer = vlayer ? static_cast<QgsMapLayer *>( vlayer ) : QgsIdentifyResultsDialog::layer( item );
+  QgsMapLayer *layer = QgsIdentifyResultsDialog::layer( item );
   if ( !layer )
     return;
 
@@ -2114,20 +2118,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
 void QgsIdentifyResultsDialog::zoomToFeature()
 {
   QTreeWidgetItem *item = lstResults->currentItem();
-
-  QgsVectorLayer *vlayer = vectorLayer( item );
-  QgsRasterLayer *rlayer = rasterLayer( item );
-  QgsVectorTileLayer *vtlayer = vectorTileLayer( item );
-  if ( !vlayer && !rlayer && !vtlayer )
-    return;
-
-  QgsMapLayer *layer = nullptr;
-  if ( vlayer )
-    layer = vlayer;
-  else if ( rlayer )
-    layer = rlayer;
-  else
-    layer = vtlayer;
+  QgsMapLayer *layer = QgsIdentifyResultsDialog::layer( item );
 
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
   if ( !featItem )
@@ -2230,11 +2221,11 @@ void QgsIdentifyResultsDialog::activateLayer()
 
 void QgsIdentifyResultsDialog::layerProperties( QTreeWidgetItem *item )
 {
-  QgsVectorLayer *vlayer = vectorLayer( item );
-  if ( !vlayer )
+  QgsMapLayer *layer = QgsIdentifyResultsDialog::layer( item );
+  if ( !layer )
     return;
 
-  QgisApp::instance()->showLayerProperties( vlayer );
+  QgisApp::instance()->showLayerProperties( layer );
 }
 
 void QgsIdentifyResultsDialog::expandAll()
@@ -2261,9 +2252,8 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
   QString text;
 
   QgsVectorLayer *vlayer = vectorLayer( lstResults->currentItem() );
-  QgsRasterLayer *rlayer = rasterLayer( lstResults->currentItem() );
-  QgsVectorTileLayer *vtlayer = vectorTileLayer( lstResults->currentItem() );
-  if ( !vlayer && !rlayer && !vtlayer )
+  QgsMapLayer *layer = QgsIdentifyResultsDialog::layer( lstResults->currentItem() );
+  if ( !layer )
   {
     return;
   }
@@ -2285,7 +2275,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
       text += QStringLiteral( "%1: %2\n" ).arg( fields.at( attrIdx ).name(), it.value().toString() );
     }
   }
-  else if ( rlayer || vtlayer )
+  else
   {
     QTreeWidgetItem *featItem = featureItem( lstResults->currentItem() );
     if ( !featItem )
@@ -2373,7 +2363,6 @@ void QgsIdentifyResultsDialog::mActionCopy_triggered( bool checked )
 
 void QgsIdentifyResultsDialog::copyFeature()
 {
-
   QgsIdentifyResultsFeatureItem *item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
 
   if ( !item ) // should not happen
