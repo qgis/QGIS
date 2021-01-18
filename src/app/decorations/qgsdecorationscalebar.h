@@ -79,6 +79,7 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     double mapWidth( const QgsMapSettings &settings ) const;
 
     friend class QgsDecorationScaleBarDialog;
+    friend class TestQgsDecorationScalebar;
 };
 
 #endif
