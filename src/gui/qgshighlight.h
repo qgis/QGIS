@@ -168,6 +168,9 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     //! recalculates needed rectangle
     void updateRect();
 
+  private slots:
+    void updateTransformedGeometry();
+
   private:
     enum PointSymbol
     {
@@ -190,6 +193,7 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     QColor mFillColor; // line / stroke fillColor property
     QBrush mBrush;
     QPen mPen;
+    QgsGeometry mOriginalGeometry;
     QgsGeometry mGeometry;
     QgsMapLayer *mLayer = nullptr;
     QgsFeature mFeature;

@@ -69,29 +69,53 @@ QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, 
 
 void QgsHighlight::init()
 {
+  mOriginalGeometry = mGeometry.isNull() ? mFeature.geometry() : mGeometry;
+  setColor( QColor( Qt::lightGray ) );
+
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsHighlight::updateTransformedGeometry );
+  updateTransformedGeometry();
+
+  if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+  {
+    mRenderContext = createRenderContext();
+  }
+}
+
+void QgsHighlight::updateTransformedGeometry()
+{
   QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( mLayer );
   if ( ct.isValid() )
   {
+    // reset to original geometry and transform
     if ( !mGeometry.isNull() )
     {
-      mGeometry.transform( ct );
-
-      if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+      mGeometry = mOriginalGeometry;
+      try
       {
-        mRenderContext = createRenderContext();
+        mGeometry.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not transform highlight geometry to canvas CRS" ) );
       }
     }
     else if ( mFeature.hasGeometry() )
     {
+      mFeature.setGeometry( mOriginalGeometry );
       QgsGeometry g = mFeature.geometry();
-      g.transform( ct );
-      mFeature.setGeometry( g );
+      try
+      {
+        g.transform( ct );
+        mFeature.setGeometry( g );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not transform highlight geometry to canvas CRS" ) );
+      }
     }
   }
-
   updateRect();
   update();
-  setColor( QColor( Qt::lightGray ) );
 }
 
 QgsHighlight::~QgsHighlight() = default;
