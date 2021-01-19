@@ -19,15 +19,9 @@
 #define QGSABSTRACTRELATIONEDITORWIDGET_H
 
 #include <QWidget>
-#include <QToolButton>
-#include <QButtonGroup>
-#include <QGridLayout>
 #include "qobjectuniqueptr.h"
 
-#include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
-#include "qgscollapsiblegroupbox.h"
-#include "qgsdualview.h"
 #include "qgsrelation.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
@@ -41,11 +35,6 @@
 
 class QgsFeature;
 class QgsVectorLayer;
-class QgsVectorLayerTools;
-class QgsMapTool;
-class QgsMapToolDigitizeFeature;
-class QgsBaseRelationWidget;
-class QgsPropertyOverrideButton;
 
 /**
  * Base class to build new relation widgets.
