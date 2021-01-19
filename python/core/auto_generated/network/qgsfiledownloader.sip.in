@@ -47,15 +47,8 @@ QgsFileDownloader
                    signals before these connections have been made.
 %End
 
-    const QUrl downloadedUrl() const;
-%Docstring
-Returns the downloaded URL, which can differ from the original URL if redirects occurred.
-
-.. versionadded:: 3.18
-%End
-
   signals:
-    void downloadCompleted();
+    void downloadCompleted( const QUrl &url );
 %Docstring
 Emitted when the download has completed successfully
 %End

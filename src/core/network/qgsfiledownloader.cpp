@@ -45,11 +45,6 @@ QgsFileDownloader::~QgsFileDownloader()
   }
 }
 
-const QUrl QgsFileDownloader::downloadedUrl() const
-{
-  return mReply ? mReply->url() : QUrl();
-}
-
 void QgsFileDownloader::startDownload()
 {
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
@@ -198,7 +193,7 @@ void QgsFileDownloader::onFinished()
     }
     else
     {
-      emit downloadCompleted();
+      emit downloadCompleted( mReply->url() );
     }
   }
   emit downloadExited();

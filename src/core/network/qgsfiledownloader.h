@@ -57,15 +57,9 @@ class CORE_EXPORT QgsFileDownloader : public QObject
      */
     QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false );
 
-    /**
-     * Returns the downloaded URL, which can differ from the original URL if redirects occurred.
-     * \since QGIS 3.18
-     */
-    const QUrl downloadedUrl() const;
-
   signals:
     //! Emitted when the download has completed successfully
-    void downloadCompleted();
+    void downloadCompleted( const QUrl &url );
     //! Emitted always when the downloader exits
     void downloadExited();
 
