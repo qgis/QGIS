@@ -136,56 +136,72 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderConte
 
   const QgsRenderContext &ctx = context.renderContext();
 
-  const QgsFeature *f = context.feature();
-  if ( !f )
+  if ( !context.feature() )
   {
     //preview
     QPolygonF line;
     line << QPointF( 0, 50 );
     line << QPointF( 100, 50 );
     mLineSymbol->renderPolyline( line, nullptr, context.renderContext() );
+    return;
   }
+
+  const QgsFeature f( *context.feature() );
 
   double xComponent = 0;
   double yComponent = 0;
 
   double xVal = 0;
-  if ( f && mXIndex != -1 )
+  if ( mXIndex != -1 )
   {
-    xVal = f->attribute( mXIndex ).toDouble();
+    xVal = f.attribute( mXIndex ).toDouble();
   }
   double yVal = 0;
-  if ( f && mYIndex != -1 )
+  if ( mYIndex != -1 )
   {
-    yVal = f->attribute( mYIndex ).toDouble();
+    yVal = f.attribute( mYIndex ).toDouble();
   }
 
-  switch ( mVectorFieldType )
-  {
-    case Cartesian:
-      xComponent = ctx.convertToPainterUnits( xVal, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = ctx.convertToPainterUnits( yVal, mDistanceUnit, mDistanceMapUnitScale );
-      break;
-    case Polar:
-      convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
-      xComponent = ctx.convertToPainterUnits( xComponent, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = ctx.convertToPainterUnits( yComponent, mDistanceUnit, mDistanceMapUnitScale );
-      break;
-    case Height:
-      xComponent = 0;
-      yComponent = ctx.convertToPainterUnits( yVal, mDistanceUnit, mDistanceMapUnitScale );
-      break;
-    default:
-      break;
-  }
-
-  xComponent *= mScale;
-  yComponent *= mScale;
+  const QgsMapToPixel &m2p = ctx.mapToPixel();
+  const double mapRotation = m2p.mapRotation();
 
   QPolygonF line;
   line << point;
-  line << QPointF( point.x() + xComponent, point.y() - yComponent );
-  mLineSymbol->renderPolyline( line, f, context.renderContext() );
+
+  QPointF destPoint;
+  switch ( mVectorFieldType )
+  {
+    case Cartesian:
+    {
+      destPoint = QPointF( point.x() + mScale * ctx.convertToPainterUnits( xVal, mDistanceUnit, mDistanceMapUnitScale ),
+                           point.y() - mScale * ctx.convertToPainterUnits( yVal, mDistanceUnit, mDistanceMapUnitScale ) );
+      break;
+    }
+
+    case Polar:
+    {
+      convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
+      destPoint = QPointF( point.x() + mScale * ctx.convertToPainterUnits( xComponent, mDistanceUnit, mDistanceMapUnitScale ),
+                           point.y() - mScale * ctx.convertToPainterUnits( yComponent, mDistanceUnit, mDistanceMapUnitScale ) );
+      break;
+    }
+
+    case Height:
+    {
+      destPoint = QPointF( point.x(), point.y() - ( mScale * ctx.convertToPainterUnits( yVal, mDistanceUnit, mDistanceMapUnitScale ) ) );
+      break;
+    }
+  }
+
+  if ( !qgsDoubleNear( mapRotation, 0.0 ) && mVectorFieldType != Height )
+  {
+    const double radians = mapRotation * M_PI / 180.0;
+    destPoint = QPointF( cos( radians ) * ( destPoint.x() - point.x() ) - sin( radians ) * ( destPoint.y() - point.y() ) + point.x(),
+                         sin( radians ) * ( destPoint.x() - point.x() ) + cos( radians ) * ( destPoint.y() - point.y() ) + point.y() );
+  }
+
+  line << destPoint;
+  mLineSymbol->renderPolyline( line, &f, context.renderContext() );
 }
 
 void QgsVectorFieldSymbolLayer::startRender( QgsSymbolRenderContext &context )
