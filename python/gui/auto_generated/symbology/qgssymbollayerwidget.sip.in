@@ -120,6 +120,8 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
 
     virtual QgsSymbolLayer *symbolLayer();
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
 
   protected:
 
@@ -366,6 +368,8 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
 
     virtual QgsSymbolLayer *symbolLayer();
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
 
   public slots:
 
@@ -411,6 +415,8 @@ Creates a new QgsHashedLineSymbolLayerWidget.
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
 
     virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
 };
