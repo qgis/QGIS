@@ -69,6 +69,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
         const TableFlags &flags = TableFlags() ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
+    QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
