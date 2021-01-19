@@ -845,10 +845,32 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(query.value(1), 4326)
         query.finish()
 
-        vl = QgsVectorLayer(
-            self.dbconn + ' sslmode=disable table="QGIS"."EMPTY_LAYER" sql=',
-            'test', 'oracle')
+        # no feature, so we cannot guess the geometry type, so the layer is not valid
+        # but srid is set for provider in case you want to add a feature even if the layer is invalid!
+        # layer sourceCrs is empty because the layer is not considered spatial (not know geometry type)
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."EMPTY_LAYER" (GEOM) sql=', 'test', 'oracle')
+        self.assertFalse(vl.isValid())
+        self.assertEqual(vl.dataProvider().sourceCrs().authid(), "EPSG:4326")
+
+        # so we set the geometry type
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable type=POINT table="QGIS"."EMPTY_LAYER" (GEOM) sql=', 'test', 'oracle')
         self.assertTrue(vl.isValid())
+        self.assertEqual(vl.sourceCrs().authid(), "EPSG:4326")
+
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('POINT (43.5 1.42)'))
+        vl.dataProvider().addFeatures([f])
+
+        query = QSqlQuery(self.conn)
+        self.assertTrue(query.exec_('SELECT "l"."GEOM"."SDO_SRID" from "QGIS"."EMPTY_LAYER" "l"'))
+        self.assertTrue(query.next())
+        self.assertEqual(query.value(0), 4326)
+        query.finish()
+
+        # now we can autodetect geom type and srid
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."EMPTY_LAYER" (GEOM) sql=', 'test', 'oracle')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.sourceCrs().authid(), "EPSG:4326")
 
     def testCreateAspatialLayer(self):
         """

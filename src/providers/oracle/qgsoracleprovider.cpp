@@ -2704,7 +2704,6 @@ bool QgsOracleProvider::getGeometryDetails()
       }
 
       detectedType = QgsWkbTypes::Unknown;
-      detectedSrid = -1;
     }
     else
     {
@@ -2721,7 +2720,6 @@ bool QgsOracleProvider::getGeometryDetails()
         {
           // we need to filter
           detectedType = QgsWkbTypes::Unknown;
-          detectedSrid = -1;
         }
       }
       else
@@ -2729,7 +2727,6 @@ bool QgsOracleProvider::getGeometryDetails()
         // geometry type undetermined or not unrequested
         QgsMessageLog::logMessage( tr( "Feature type or srid for %1 of %2 could not be determined or was not requested." ).arg( mGeometryColumn ).arg( mQuery ) );
         detectedType = QgsWkbTypes::Unknown;
-        detectedSrid = -1;
       }
     }
   }
