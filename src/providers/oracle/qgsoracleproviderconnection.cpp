@@ -246,7 +246,7 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema,
   }
   QMap<int, int> map;
   QString errCause;
-  QgsVectorLayerExporter::ExportError errCode = QgsOracleProvider::createEmptyLayer(
+  const QgsVectorLayerExporter::ExportError errCode = QgsOracleProvider::createEmptyLayer(
         newUri.uri(),
         fields,
         wkbType,
@@ -257,9 +257,7 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema,
         options
       );
   if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
-  {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
-  }
 }
 
 QString QgsOracleProviderConnection::tableUri( const QString &schema, const QString &name ) const
@@ -278,13 +276,11 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
   checkCapability( Capability::Tables );
   QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables;
 
-  QgsDataSourceUri dsUri( uri() );
+  const QgsDataSourceUri dsUri( uri() );
   QgsPoolOracleConn pconn( dsUri.connectionInfo( false ) );
   QgsOracleConn *conn = pconn.get();
   if ( !conn )
-  {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
-  }
 
   const bool geometryColumnsOnly { configuration().value( "geometryColumnsOnly", false ).toBool() };
   const bool userTablesOnly { configuration().value( "userTablesOnly", false ).toBool() &&schema.isEmpty() };
@@ -292,7 +288,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
   const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
 
   QVector<QgsOracleLayerProperty> properties;
-  bool ok = conn->supportedLayers( properties, schema, geometryColumnsOnly, userTablesOnly, aspatial );
+  const bool ok = conn->supportedLayers( properties, schema, geometryColumnsOnly, userTablesOnly, aspatial );
   if ( ! ok )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not retrieve tables: %1" ).arg( uri() ) );
@@ -376,13 +372,11 @@ void QgsOracleProviderConnection::createSpatialIndex( const QString &schema, con
 {
   checkCapability( Capability::CreateSpatialIndex );
 
-  QgsDataSourceUri dsUri( uri() );
+  const QgsDataSourceUri dsUri( uri() );
   QgsPoolOracleConn pconn( dsUri.connectionInfo( false ) );
   QgsOracleConn *conn = pconn.get();
   if ( !conn )
-  {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
-  }
 
   const QString indexName = conn->createSpatialIndex( schema, name, options.geometryColumnName );
   if ( indexName.isEmpty() )
@@ -391,14 +385,14 @@ void QgsOracleProviderConnection::createSpatialIndex( const QString &schema, con
 
 void QgsOracleProviderConnection::deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const
 {
-  QgsDataSourceUri dsUri( uri() );
+  const QgsDataSourceUri dsUri( uri() );
   QgsPoolOracleConn pconn( dsUri.connectionInfo( false ) );
   QgsOracleConn *conn = pconn.get();
   if ( !conn )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
   bool isValid;
-  QString indexName = conn->getSpatialIndexName( schema, name, geometryColumn, isValid );
+  const QString indexName = conn->getSpatialIndexName( schema, name, geometryColumn, isValid );
 
   if ( indexName.isEmpty() )
     throw QgsProviderConnectionException( QObject::tr( "No spatial index exists for %1.%2(%3)" ).arg( schema, name, geometryColumn ) );
@@ -410,7 +404,7 @@ bool QgsOracleProviderConnection::spatialIndexExists( const QString &schema, con
 {
   checkCapability( Capability::SpatialIndexExists );
 
-  QgsDataSourceUri dsUri( uri() );
+  const QgsDataSourceUri dsUri( uri() );
   QgsPoolOracleConn pconn( dsUri.connectionInfo( false ) );
   QgsOracleConn *conn = pconn.get();
   if ( !conn )
