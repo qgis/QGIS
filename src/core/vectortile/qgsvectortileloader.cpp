@@ -57,7 +57,7 @@ QgsVectorTileLoader::~QgsVectorTileLoader()
 {
   QgsDebugMsgLevel( QStringLiteral( "Terminating network loader" ), 2 );
 
-  if ( !mRepliesV2.isEmpty() )
+  if ( !mReplies.isEmpty() )
   {
     // this can happen when the loader is terminated without getting requests finalized
     // (e.g. downloadBlocking() was not called)
@@ -73,13 +73,13 @@ void QgsVectorTileLoader::downloadBlocking()
     return; // nothing to do
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Starting event loop with %1 requests" ).arg( mRepliesV2.count() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Starting event loop with %1 requests" ).arg( mReplies.count() ), 2 );
 
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
   QgsDebugMsgLevel( QStringLiteral( "downloadBlocking finished" ), 2 );
 
-  Q_ASSERT( mRepliesV2.isEmpty() );
+  Q_ASSERT( mReplies.isEmpty() );
 }
 
 void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl )
@@ -104,18 +104,13 @@ void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsT
     QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
   }
 
-  QgsTileDownloadManagerReply *replyV2 = QgsApplication::tileDownloadManager()->get( request );
-  connect( replyV2, &QgsTileDownloadManagerReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
-  mRepliesV2 << replyV2;
-
-  //QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
-  //connect( reply, &QNetworkReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
-  //mReplies << reply;
+  QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
+  connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
+  mReplies << reply;
 }
 
 void QgsVectorTileLoader::tileReplyFinished()
 {
-  //QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   QgsTileDownloadManagerReply *reply = qobject_cast<QgsTileDownloadManagerReply *>( sender() );
 
   int reqX = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
@@ -128,9 +123,8 @@ void QgsVectorTileLoader::tileReplyFinished()
     // TODO: handle redirections?
 
     QgsDebugMsgLevel( QStringLiteral( "Tile download successful: " ) + tileID.toString(), 2 );
-    QByteArray rawData = reply->data(); //reply->readAll();
-    mRepliesV2.removeOne( reply );
-    //mReplies.removeOne( reply );
+    QByteArray rawData = reply->data();
+    mReplies.removeOne( reply );
     reply->deleteLater();
 
     emit tileRequestFinished( QgsVectorTileRawData( tileID, rawData ) );
@@ -138,14 +132,13 @@ void QgsVectorTileLoader::tileReplyFinished()
   else
   {
     QgsDebugMsg( QStringLiteral( "Tile download failed! " ) + reply->errorString() );
-    mRepliesV2.removeOne( reply );
-    //mReplies.removeOne( reply );
+    mReplies.removeOne( reply );
     reply->deleteLater();
 
     emit tileRequestFinished( QgsVectorTileRawData( tileID, QByteArray() ) );
   }
 
-  if ( mRepliesV2.isEmpty() )
+  if ( mReplies.isEmpty() )
   {
     // exist the event loop
     QMetaObject::invokeMethod( mEventLoop.get(), "quit", Qt::QueuedConnection );
@@ -154,18 +147,13 @@ void QgsVectorTileLoader::tileReplyFinished()
 
 void QgsVectorTileLoader::canceled()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Canceling %1 pending requests" ).arg( mRepliesV2.count() ), 2 );
-  qDeleteAll( mRepliesV2 );
-  mRepliesV2.clear();
+  QgsDebugMsgLevel( QStringLiteral( "Canceling %1 pending requests" ).arg( mReplies.count() ), 2 );
+  qDeleteAll( mReplies );
+  mReplies.clear();
 
   // stop blocking download
   mEventLoop->quit();
 
-//  const QList<QNetworkReply *> replies = mReplies;
-//  for ( QNetworkReply *reply : replies )
-//  {
-//    reply->abort();
-//  }
 }
 
 //////

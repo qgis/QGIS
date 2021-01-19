@@ -111,9 +111,7 @@ class QgsVectorTileLoader : public QObject
     QString mReferer;
 
     //! Running tile requests
-    //QList<QNetworkReply *> mReplies;
-
-    QList<QgsTileDownloadManagerReply *> mRepliesV2;
+    QList<QgsTileDownloadManagerReply *> mReplies;
 
 };
 

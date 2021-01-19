@@ -789,10 +789,6 @@ Returns the application's classification methods registry, used in graduated ren
 %Docstring
 Returns the application's bookmark manager, used for storing installation-wide bookmarks.
 
-.. note::
-
-   not available in Python bindings
-
 .. versionadded:: 3.10
 %End
 
