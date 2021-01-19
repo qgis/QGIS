@@ -151,6 +151,8 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
 void QgsLayerPropertiesWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
+  if ( mSymbol )
+    mContext.setSymbolType( mSymbol->type() );
 
   QgsSymbolLayerWidget *w = dynamic_cast< QgsSymbolLayerWidget * >( stackedWidget->currentWidget() );
   if ( w )

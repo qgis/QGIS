@@ -119,6 +119,26 @@ Ownership is transferred to the caller.
 .. versionadded:: 3.0
 %End
 
+    QgsSymbol::SymbolType symbolType() const;
+%Docstring
+Returns the associated symbol type, if the widget is being shown as a subcomponent
+of a parent symbol configuration widget.
+
+.. seealso:: :py:func:`setSymbolType`
+
+.. versionadded:: 3.18
+%End
+
+    void setSymbolType( QgsSymbol::SymbolType type );
+%Docstring
+Sets the associated symbol ``type``, if the widget is being shown as a subcomponent
+of a parent symbol configuration widget.
+
+.. seealso:: :py:func:`symbolType`
+
+.. versionadded:: 3.18
+%End
+
 };
 
 /************************************************************************
