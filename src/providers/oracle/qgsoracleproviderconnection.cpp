@@ -24,6 +24,7 @@
 #include <QSqlRecord>
 #include <QSqlField>
 
+// read from QSettings and used in the provider connection
 const QStringList CONFIGURATION_PARAMETERS
 {
   QStringLiteral( "geometryColumnsOnly" ),
@@ -34,13 +35,18 @@ const QStringList CONFIGURATION_PARAMETERS
   QStringLiteral( "savePassword" ),
 };
 
+// read from uri and used in the provider connection
+const QStringList EXTRA_CONNECTION_PARAMETERS
+{
+  QStringLiteral( "dboptions" ),
+  QStringLiteral( "dbworkspace" )
+};
+
 QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
   mProviderKey = QStringLiteral( "oracle" );
-  // Remove the sql and table empty parts
-  const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
-  setUri( QgsOracleConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
+  setUri( QgsOracleConn::connUri( name ).uri() );
   setDefaultCapabilities();
 
   // load existing configuration
@@ -62,6 +68,26 @@ QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &uri, co
 {
   mProviderKey = QStringLiteral( "oracle" );
   setDefaultCapabilities();
+
+  // Additional connection information
+  const QgsDataSourceUri inputUri( uri );
+  QgsDataSourceUri currentUri { QgsDataSourceUri( uri ).connectionInfo( false ) };
+
+  if ( inputUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) )
+  {
+    currentUri.setUseEstimatedMetadata( inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == QStringLiteral( "true" )
+                                        || inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' );
+  }
+
+  for ( const auto &param : EXTRA_CONNECTION_PARAMETERS )
+  {
+    if ( inputUri.hasParam( param ) )
+    {
+      currentUri.setParam( param, inputUri.param( param ) );
+    }
+  }
+
+  setUri( currentUri.uri() );
 }
 
 void QgsOracleProviderConnection::setDefaultCapabilities()
@@ -114,13 +140,17 @@ void QgsOracleProviderConnection::store( const QString &name ) const
   settings.setValue( "database", dsUri.database() );
   settings.setValue( "username", dsUri.username() );
   settings.setValue( "password", dsUri.password() );
-  settings.setValue( "dbworkspace", dsUri.param( "dbworkspace" ) );
-  settings.setValue( "estimatedMetadata", dsUri.useEstimatedMetadata() );
   settings.setValue( "host", dsUri.host() );
-  settings.setValue( "includeGeoAttributes", dsUri.param( "includegeoattributes" ) );
   settings.setValue( "port", dsUri.port() );
-  settings.setValue( "schema", dsUri.schema() );
-  settings.setValue( "dboptions", dsUri.param( "dboptions" ) );
+  settings.setValue( "estimatedMetadata", dsUri.useEstimatedMetadata() );
+
+  for ( const auto &param : EXTRA_CONNECTION_PARAMETERS )
+  {
+    if ( dsUri.hasParam( param ) )
+    {
+      settings.setValue( param, dsUri.param( param ) );
+    }
+  }
 
   // From configuration
   for ( const auto &p : CONFIGURATION_PARAMETERS )
