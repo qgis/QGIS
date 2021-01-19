@@ -1040,12 +1040,12 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
 
   endDistance = std::max( startDistance, endDistance );
 
-  double distanceTraversed = 0;
   const int totalPoints = numPoints();
   if ( totalPoints == 0 )
     return clone();
 
   QVector< QgsPoint > substringPoints;
+  substringPoints.reserve( totalPoints );
 
   QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
   if ( is3D() )
@@ -1058,19 +1058,15 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
   const double *z = is3D() ? mZ.constData() : nullptr;
   const double *m = isMeasure() ? mM.constData() : nullptr;
 
+  double distanceTraversed = 0;
   double prevX = *x++;
   double prevY = *y++;
   double prevZ = z ? *z++ : 0.0;
   double prevM = m ? *m++ : 0.0;
   bool foundStart = false;
 
-  if ( qgsDoubleNear( startDistance, 0.0 ) || startDistance < 0 )
-  {
-    substringPoints << QgsPoint( pointType, prevX, prevY, prevZ, prevM );
-    foundStart = true;
-  }
-
-  substringPoints.reserve( totalPoints );
+  if ( startDistance < 0 )
+    startDistance = 0;
 
   for ( int i = 1; i < totalPoints; ++i )
   {
@@ -1080,7 +1076,8 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
     double thisM = m ? *m++ : 0.0;
 
     const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
-    if ( distanceTraversed < startDistance && distanceTraversed + segmentLength > startDistance )
+
+    if ( distanceTraversed <= startDistance && startDistance < distanceTraversed + segmentLength )
     {
       // start point falls on this segment
       const double distanceToStart = startDistance - distanceTraversed;
@@ -1110,14 +1107,20 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
       substringPoints << QgsPoint( pointType, thisX, thisY, thisZ, thisM );
     }
 
-    distanceTraversed += segmentLength;
-    if ( distanceTraversed > endDistance )
-      break;
-
     prevX = thisX;
     prevY = thisY;
     prevZ = thisZ;
     prevM = thisM;
+    distanceTraversed += segmentLength;
+    if ( distanceTraversed >= endDistance )
+      break;
+  }
+
+  // start point is the last node
+  if ( !foundStart && qgsDoubleNear( distanceTraversed, startDistance ) )
+  {
+    substringPoints << QgsPoint( pointType, prevX, prevY, prevZ, prevM )
+                    << QgsPoint( pointType, prevX, prevY, prevZ, prevM );
   }
 
   return new QgsLineString( substringPoints );
