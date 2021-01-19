@@ -51,6 +51,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgslegendpatchshape.h"
+#include "qgsgeos.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -601,6 +602,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
         for ( const QList< QPolygonF > &poly : polys )
         {
           QVector< QPolygonF > rings;
+          rings.reserve( poly.size() );
           for ( int i = 1; i < poly.size(); ++i )
             rings << poly.at( i );
           lsl->renderPolygonStroke( poly.value( 0 ), &rings, symbolContext );
@@ -864,7 +866,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   }
 
   GeometryRestorer geomRestorer( context );
-  QgsGeometry segmentizedGeometry = geom;
+
   bool usingSegmentizedGeometry = false;
   context.setGeometry( geom.constGet() );
 
@@ -884,35 +886,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
   bool tileMapRendering = context.testFlag( QgsRenderContext::RenderMapTile );
 
-  //convert curve types to normal point/line/polygon ones
-  bool needsSegmentizing = QgsWkbTypes::isCurvedType( geom.constGet()->wkbType() ) || geom.constGet()->hasCurvedSegments();
-  if ( !needsSegmentizing )
-  {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
-    {
-      for ( int i = 0; i < collection->numGeometries(); ++i )
-      {
-        if ( QgsWkbTypes::isCurvedType( collection->geometryN( i )->wkbType() ) )
-        {
-          needsSegmentizing = true;
-          break;
-        }
-      }
-    }
-  }
-
-  if ( needsSegmentizing )
-  {
-    QgsAbstractGeometry *g = geom.constGet()->segmentize( context.segmentationTolerance(), context.segmentationToleranceType() );
-    if ( !g )
-    {
-      return;
-    }
-    segmentizedGeometry = QgsGeometry( g );
-    usingSegmentizedGeometry = true;
-  }
-
-  mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry.constGet()->partCount() );
+  mSymbolRenderContext->setGeometryPartCount( geom.constGet()->partCount() );
   mSymbolRenderContext->setGeometryPartNum( 1 );
 
   const bool needsExpressionContext = hasDataDefinedProperties();
@@ -938,23 +912,6 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   // Collection of markers to paint, only used for no curve types.
   QPolygonF markers;
 
-  // Simplify the geometry, if needed.
-  if ( context.vectorSimplifyMethod().forceLocalOptimization() )
-  {
-    const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
-    const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(),
-        static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( context.vectorSimplifyMethod().simplifyAlgorithm() ) );
-    segmentizedGeometry = simplifier.simplify( segmentizedGeometry );
-  }
-  if ( !context.featureClipGeometry().isEmpty() )
-  {
-    // apply feature clipping from context to the rendered geometry only -- just like the render time simplification,
-    // we should NEVER apply this to the geometry attached to the feature itself. Doing so causes issues with certain
-    // renderer settings, e.g. if polygons are being rendered using a rule based renderer based on the feature's area,
-    // then we need to ensure that the original feature area is used instead of the clipped area..
-    segmentizedGeometry = segmentizedGeometry.intersection( context.featureClipGeometry() );
-  }
-
   QgsGeometry renderedBoundsGeom;
 
   // Step 1 - collect the set of painter coordinate geometries to render.
@@ -978,19 +935,90 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   {
     QPolygonF renderExterior;
     QVector< QPolygonF > renderRings;
-    const QgsPolygon *originalGeometry = nullptr;
+    const QgsCurvePolygon *originalGeometry = nullptr;
   };
   QVector< PolygonInfo > polygonsToRender;
 
   std::function< void ( const QgsAbstractGeometry * )> getPartGeometry;
-  getPartGeometry = [&pointsToRender, &linesToRender, &polygonsToRender, &getPartGeometry, &context, &tileMapRendering, &markers, &feature, this]( const QgsAbstractGeometry * part )
+  getPartGeometry = [&pointsToRender, &linesToRender, &polygonsToRender, &getPartGeometry, &context, &tileMapRendering, &markers, &feature, &usingSegmentizedGeometry, this]( const QgsAbstractGeometry * part )
   {
     Q_UNUSED( feature )
 
     if ( !part )
       return;
 
-    switch ( QgsWkbTypes::flatType( part->wkbType() ) )
+    // geometry preprocessing
+    QgsGeometry temporaryGeometryContainer;
+    const QgsAbstractGeometry *processedGeometry = nullptr;
+
+    const bool isMultiPart = qgsgeometry_cast< const QgsGeometryCollection * >( part ) && qgsgeometry_cast< const QgsGeometryCollection * >( part )->numGeometries() > 1;
+
+    if ( !isMultiPart )
+    {
+      // segmentize curved geometries
+      const bool needsSegmentizing = QgsWkbTypes::isCurvedType( part->wkbType() ) || part->hasCurvedSegments();
+      if ( needsSegmentizing )
+      {
+        std::unique_ptr< QgsAbstractGeometry > segmentizedPart( part->segmentize( context.segmentationTolerance(), context.segmentationToleranceType() ) );
+        if ( !segmentizedPart )
+        {
+          return;
+        }
+        temporaryGeometryContainer.set( segmentizedPart.release() );
+        processedGeometry = temporaryGeometryContainer.constGet();
+        usingSegmentizedGeometry = true;
+      }
+      else
+      {
+        // no segmentation required
+        processedGeometry = part;
+      }
+
+      // Simplify the geometry, if needed.
+      if ( context.vectorSimplifyMethod().forceLocalOptimization() )
+      {
+        const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
+        const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(),
+            static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( context.vectorSimplifyMethod().simplifyAlgorithm() ) );
+
+        std::unique_ptr< QgsAbstractGeometry > simplified( simplifier.simplify( processedGeometry ) );
+        if ( simplified )
+        {
+          temporaryGeometryContainer.set( simplified.release() );
+          processedGeometry = temporaryGeometryContainer.constGet();
+        }
+      }
+
+      // clip geometry to render context clipping regions
+      if ( !context.featureClipGeometry().isEmpty() )
+      {
+        // apply feature clipping from context to the rendered geometry only -- just like the render time simplification,
+        // we should NEVER apply this to the geometry attached to the feature itself. Doing so causes issues with certain
+        // renderer settings, e.g. if polygons are being rendered using a rule based renderer based on the feature's area,
+        // then we need to ensure that the original feature area is used instead of the clipped area..
+        QgsGeos geos( processedGeometry );
+        std::unique_ptr< QgsAbstractGeometry > clippedGeom( geos.intersection( context.featureClipGeometry().constGet() ) );
+        if ( clippedGeom )
+        {
+          temporaryGeometryContainer.set( clippedGeom.release() );
+          processedGeometry = temporaryGeometryContainer.constGet();
+        }
+      }
+    }
+    else
+    {
+      // for multipart geometries, the processing is deferred till we're rendering the actual part...
+      processedGeometry = part;
+    }
+
+    if ( !processedGeometry )
+    {
+      // shouldn't happen!
+      QgsDebugMsg( QStringLiteral( "No processed geometry to render for part!" ) );
+      return;
+    }
+
+    switch ( QgsWkbTypes::flatType( processedGeometry->wkbType() ) )
     {
       case QgsWkbTypes::Point:
       {
@@ -1017,7 +1045,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         LineInfo info;
         info.originalGeometry = qgsgeometry_cast<const QgsCurve *>( part );
-        info.renderLine = _getLineString( context, *info.originalGeometry, !tileMapRendering && clipFeaturesToExtent() );
+        info.renderLine = _getLineString( context, *qgsgeometry_cast<const QgsCurve *>( processedGeometry ), !tileMapRendering && clipFeaturesToExtent() );
         linesToRender << info;
         break;
       }
@@ -1026,7 +1054,6 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case QgsWkbTypes::Triangle:
       {
         QPolygonF pts;
-        QVector<QPolygonF> holes;
         if ( mType != QgsSymbol::Fill )
         {
           QgsDebugMsgLevel( QStringLiteral( "polygon can be drawn only with fill symbol!" ), 2 );
@@ -1034,14 +1061,14 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         }
 
         PolygonInfo info;
-        info.originalGeometry = qgsgeometry_cast<const QgsPolygon *>( part );
-        if ( !info.originalGeometry->exteriorRing() )
+        info.originalGeometry = qgsgeometry_cast<const QgsCurvePolygon *>( part );
+        if ( !qgsgeometry_cast<const QgsPolygon *>( processedGeometry )->exteriorRing() )
         {
           QgsDebugMsg( QStringLiteral( "cannot render polygon with no exterior ring" ) );
           break;
         }
 
-        _getPolygon( info.renderExterior, info.renderRings, context, *info.originalGeometry, !tileMapRendering && clipFeaturesToExtent(), mForceRHR );
+        _getPolygon( info.renderExterior, info.renderRings, context, *qgsgeometry_cast<const QgsPolygon *>( processedGeometry ), !tileMapRendering && clipFeaturesToExtent(), mForceRHR );
         polygonsToRender << info;
         break;
       }
@@ -1079,7 +1106,6 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         }
 
         QPolygonF pts;
-        QVector<QPolygonF> holes;
 
         const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( part );
         const unsigned int num = geomCollection->numGeometries();
@@ -1089,8 +1115,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         std::map<double, QList<unsigned int> > thisAreaToPartNum;
         for ( unsigned int i = 0; i < num; ++i )
         {
-          const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( geomCollection->geometryN( i ) );
-          const QgsRectangle r( polygon->boundingBox() );
+          const QgsRectangle r( geomCollection->geometryN( i )->boundingBox() );
           thisAreaToPartNum[ r.width() * r.height()] << i;
         }
 
@@ -1104,8 +1129,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           for ( int idx = 0; idx < listPartIndex.size(); ++idx )
           {
             const unsigned i = listPartIndex[idx];
-            const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( geomCollection->geometryN( i ) );
-            getPartGeometry( polygon );
+            getPartGeometry( geomCollection->geometryN( i ) );
           }
         }
         break;
@@ -1119,7 +1143,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
   };
 
-  getPartGeometry( segmentizedGeometry.constGet() );
+  getPartGeometry( geom.constGet() );
 
   // step 2 - determine which layers to render
   std::vector< int > layers;
@@ -1177,7 +1201,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           break;
 
         int geometryPartNumber = 0;
-        for ( const LineInfo &line : linesToRender )
+        for ( const LineInfo &line : qgis::as_const( linesToRender ) )
         {
           if ( context.renderingStopped() )
             break;
@@ -1196,7 +1220,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case QgsSymbol::Fill:
       {
         int geometryPartNumber = 0;
-        for ( const PolygonInfo &info : polygonsToRender )
+        for ( const PolygonInfo &info : qgis::as_const( polygonsToRender ) )
         {
           if ( context.renderingStopped() )
             break;
