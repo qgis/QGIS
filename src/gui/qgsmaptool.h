@@ -51,6 +51,7 @@ class QMenu;
 #include <qgsmaptoolpan.h>
 #include <qgsmaptoolemitpoint.h>
 #include <qgsmaptoolidentify.h>
+#include <qgsmaptooldigitizefeature.h>
 % End
 #endif
 
@@ -74,6 +75,8 @@ class GUI_EXPORT QgsMapTool : public QObject
       sipType = sipType_QgsMapToolEmitPoint;
     else if ( dynamic_cast<QgsMapToolIdentify *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolIdentify;
+    else if ( dynamic_cast<QgsMapToolDigitizeFeature *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolDigitizeFeature;
     else
       sipType = NULL;
     SIP_END
