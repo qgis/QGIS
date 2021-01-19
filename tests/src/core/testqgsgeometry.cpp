@@ -2846,6 +2846,8 @@ void TestQgsGeometry::circularString()
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (13.51 -0.98 13 14, 14.01 -1 13.03 14.03, 14.5 -0.9 14.65 15.65)" ) );
   substringResult.reset( substring.curveSubstring( 5, 1000 ) );
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (13.51 -0.98 13 14, 15.19 -0.53 17.2 18.2, 16 1 23 24)" ) );
+  substringResult.reset( substring.curveSubstring( QgsGeometryUtils::distanceToVertex( substring, QgsVertexId( 0, 0, 2 ) ), QgsGeometryUtils::distanceToVertex( substring, QgsVertexId( 0, 0, 4 ) ) ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (12 0 13 14, 14.36 -0.94 14.19 15.19, 16 1 23 24)" ) );
 
   substring.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1 ) <<  QgsPoint( 11, 1, 3 ) <<  QgsPoint( 12, 0, 13 )
                        <<  QgsPoint( 14, -1, 13 ) <<  QgsPoint( 16, 1, 23 ) );
@@ -4930,6 +4932,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 3 4 5, 11 12 13 14, 111 12 23 24)" ) );
   substringResult.reset( substring.curveSubstring( 1, 20 ) );
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 3 4 5, 11 12 13 14, 21 12 14 15)" ) );
+  substringResult.reset( substring.curveSubstring( QgsGeometryUtils::distanceToVertex( substring, QgsVertexId( 0, 0, 1 ) ), QgsGeometryUtils::distanceToVertex( substring, QgsVertexId( 0, 0, 2 ) ) ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 12 13 14, 111 12 23 24)" ) );
   substring.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 0, QgsWkbTypes::PointZ ) << QgsPoint( 11, 12, 13, 0, QgsWkbTypes::PointZ ) << QgsPoint( 111, 12, 23, 0, QgsWkbTypes::PointZ ) );
   substringResult.reset( substring.curveSubstring( 1, 20 ) );
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZ (11 3 4, 11 12 13, 21 12 14)" ) );
