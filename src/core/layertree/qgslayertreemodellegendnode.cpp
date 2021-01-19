@@ -416,6 +416,7 @@ void QgsSymbolLegendNode::toggleAllItems()
   }
 
   emit dataChanged();
+  vlayer->emitStyleChanged();
   vlayer->triggerRepaint();
 }
 
@@ -453,6 +454,7 @@ void QgsSymbolLegendNode::checkAll( bool state )
   }
 
   emit dataChanged();
+  vlayer->emitStyleChanged();
   vlayer->triggerRepaint();
 }
 
