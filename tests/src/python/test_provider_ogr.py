@@ -19,14 +19,16 @@ from datetime import datetime
 import mockedwebserver
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.PyQt.QtCore import QVariant, QByteArray
+from qgis.PyQt.QtCore import QVariant, QByteArray, QTemporaryDir
 from qgis.core import (
     NULL,
     QgsAuthMethodConfig,
     QgsApplication,
+    QgsCoordinateTransformContext,
     QgsProject,
     QgsField,
     QgsFields,
+    QgsGeometry,
     QgsRectangle,
     QgsProviderRegistry,
     QgsFeature,
@@ -35,6 +37,7 @@ from qgis.core import (
     QgsDataProvider,
     QgsVectorDataProvider,
     QgsVectorLayer,
+    QgsVectorFileWriter,
     QgsWkbTypes,
     QgsNetworkAccessManager
 )
@@ -868,6 +871,35 @@ class PyQgsOGRProvider(unittest.TestCase):
                 'Authorization': 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='})
             with mockedwebserver.install_http_handler(handler):
                 QgsVectorLayer("OAPIF:http://127.0.0.1:%d/collections/foo authcfg='%s'" % (port, config.id()), 'test', 'ogr')
+
+    def testShapefilesWithNoAttributes(self):
+        """Test issue GH #38834"""
+
+        ml = QgsVectorLayer('Point?crs=epsg:4326', 'test', 'memory')
+        self.assertTrue(ml.isValid())
+
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'ESRI Shapefile'
+        options.layerName = 'writetest'
+        err, _ = QgsVectorFileWriter.writeAsVectorFormatV2(ml, os.path.join(d.path(), 'writetest.shp'), QgsCoordinateTransformContext(), options)
+        self.assertEqual(err, QgsVectorFileWriter.NoError)
+        self.assertTrue(os.path.isfile(os.path.join(d.path(), 'writetest.shp')))
+
+        vl = QgsVectorLayer(os.path.join(d.path(), 'writetest.shp'))
+        self.assertTrue(bool(vl.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures))
+
+        # Let's try if we can really add features
+        feature = QgsFeature(vl.fields())
+        geom = QgsGeometry.fromWkt('POINT(9 45)')
+        feature.setGeometry(geom)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([feature]))
+        self.assertTrue(vl.commitChanges())
+        del (vl)
+
+        vl = QgsVectorLayer(os.path.join(d.path(), 'writetest.shp'))
+        self.assertEqual(vl.featureCount(), 1)
 
 
 if __name__ == '__main__':
