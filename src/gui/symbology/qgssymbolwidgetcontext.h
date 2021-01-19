@@ -18,6 +18,7 @@
 #include <memory>
 
 #include "qgsexpressioncontext.h"
+#include "qgssymbol.h"
 #include "qgis_gui.h"
 
 
@@ -116,12 +117,31 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      */
     QList<QgsExpressionContextScope *> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const SIP_FACTORY;
 
+    /**
+     * Returns the associated symbol type, if the widget is being shown as a subcomponent
+     * of a parent symbol configuration widget.
+     *
+     * \see setSymbolType()
+     * \since QGIS 3.18
+     */
+    QgsSymbol::SymbolType symbolType() const;
+
+    /**
+     * Sets the associated symbol \a type, if the widget is being shown as a subcomponent
+     * of a parent symbol configuration widget.
+     *
+     * \see symbolType()
+     * \since QGIS 3.18
+     */
+    void setSymbolType( QgsSymbol::SymbolType type );
+
   private:
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     std::unique_ptr< QgsExpressionContext > mExpressionContext;
     QList< QgsExpressionContextScope > mAdditionalScopes;
+    QgsSymbol::SymbolType mSymbolType = QgsSymbol::Hybrid;
 
 };
 

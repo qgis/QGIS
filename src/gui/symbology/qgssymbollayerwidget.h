@@ -146,6 +146,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   protected:
     QgsSimpleLineSymbolLayer *mLayer = nullptr;
@@ -485,6 +486,7 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
 
@@ -540,6 +542,7 @@ class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   private slots:
 
