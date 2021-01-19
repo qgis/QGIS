@@ -409,6 +409,30 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void setupDefaultProxyAndCache( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns TRUE if all network caching is disabled.
+     *
+     * \see setCacheDisabled()
+     * \note Not available in Python bindings.
+     * \since QGIS 3.18
+     */
+    bool cacheDisabled() const { return mCacheDisabled; }
+
+    /**
+     * Sets whether all network caching should be disabled.
+     *
+     * If \a disabled is TRUE then all caching will be disabled, causing all requests
+     * to be retrieved from the network regardless of the request's attributes.
+     *
+     * \see cacheDisabled()
+     * \note Not available in Python bindings.
+     * \since QGIS 3.18
+     */
+    void setCacheDisabled( bool disabled ) { mCacheDisabled = disabled; }
+#endif
+
     /**
      * Returns whether the system proxy should be used.
      */
@@ -655,6 +679,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QStringList mNoProxyURLs;
     bool mUseSystemProxy = false;
     bool mInitialized = false;
+    bool mCacheDisabled = false;
     static QgsNetworkAccessManager *sMainNAM;
     // ssl error handler, will be set for main thread ONLY
     std::unique_ptr< QgsSslErrorHandler > mSslErrorHandler;

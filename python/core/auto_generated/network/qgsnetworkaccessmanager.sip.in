@@ -250,6 +250,7 @@ need to be handled on the main thread. See in-depth discussion in the documentat
 for the constructor of this class.
 %End
 
+
     bool useSystemProxy() const;
 %Docstring
 Returns whether the system proxy should be used.

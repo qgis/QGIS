@@ -127,7 +127,10 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType c
     sMainNAM = nam;
 
   if ( !nam->mInitialized )
+  {
     nam->setupDefaultProxyAndCache( connectionType );
+    nam->setCacheDisabled( sMainNAM->cacheDisabled() );
+  }
 
   return nam;
 }
@@ -248,6 +251,13 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
     pReq->setSslConfiguration( sslconfig );
   }
 #endif
+
+  if ( sMainNAM->mCacheDisabled )
+  {
+    // if caching is disabled then we override whatever the request actually has set!
+    pReq->setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+    pReq->setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+  }
 
   static QAtomicInt sRequestId = 0;
   const int requestId = ++sRequestId;
