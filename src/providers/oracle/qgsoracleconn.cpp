@@ -628,7 +628,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   if ( !onlyExistingTypes )
   {
     layerProperty.types << QgsWkbTypes::Unknown;
-    layerProperty.srids << ( srids.size() == 1 ? *srids.constBegin() : 0 );
+    layerProperty.srids << ( detectedSrid > 0 ? detectedSrid : ( srids.size() == 1 ? *srids.constBegin() : 0 ) );
   }
 }
 
