@@ -1948,6 +1948,9 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
           mFieldExpWidget->setToolTip( parameterDefinition()->toolTip() );
           mFieldExpWidget->setExpressionDialogTitle( parameterDefinition()->description() );
           mFieldExpWidget->registerExpressionContextGenerator( this );
+          if ( expParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+            mFieldExpWidget->setAllowEmptyFieldName( true );
+
           connect( mFieldExpWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & )
           {
             emit widgetValueHasChanged( this );
