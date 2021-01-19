@@ -441,3 +441,8 @@ bool QgsOracleProviderConnection::spatialIndexExists( const QString &schema, con
   conn->getSpatialIndexName( schema, name, geometryColumn, isValid );
   return isValid;
 }
+
+QIcon QgsOracleProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
+}
