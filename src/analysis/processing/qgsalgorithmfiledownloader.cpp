@@ -77,10 +77,12 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
 
   QEventLoop loop;
   QTimer timer;
+  QUrl downloadedUrl;
   QgsFileDownloader *downloader = new QgsFileDownloader( QUrl( url ), outputFile, QString(), true );
   connect( mFeedback, &QgsFeedback::canceled, downloader, &QgsFileDownloader::cancelDownload );
   connect( downloader, &QgsFileDownloader::downloadError, this, &QgsFileDownloaderAlgorithm::reportErrors );
   connect( downloader, &QgsFileDownloader::downloadProgress, this, &QgsFileDownloaderAlgorithm::receiveProgressFromDownloader );
+  connect( downloader, &QgsFileDownloader::downloadCompleted, this, [&downloadedUrl]( const QUrl url ) { downloadedUrl = url; } );
   connect( downloader, &QgsFileDownloader::downloadExited, &loop, &QEventLoop::quit );
   connect( &timer, &QTimer::timeout, this, &QgsFileDownloaderAlgorithm::sendProgressFeedback );
   downloader->startDownload();
@@ -96,15 +98,15 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   if ( outputFile.startsWith( QgsProcessingUtils::tempFolder() ) )
   {
     // the output is temporary and its file name automatically generated, try to add a file extension
-    const QString downloadedUrl = downloader->downloadedUrl().toDisplayString();
-    const int length = downloadedUrl.size();
-    const int lastDotIndex = downloadedUrl.lastIndexOf( "." );
-    const int lastSlashIndex = downloadedUrl.lastIndexOf( "/" );
+    url = downloadedUrl.toDisplayString();
+    const int length = url.size();
+    const int lastDotIndex = url.lastIndexOf( "." );
+    const int lastSlashIndex = url.lastIndexOf( "/" );
     if ( lastDotIndex > -1 && lastDotIndex > lastSlashIndex && length - lastDotIndex <= 6 )
     {
       QFile tmpFile( outputFile );
-      tmpFile.rename( tmpFile.fileName() + downloadedUrl.mid( lastDotIndex ) );
-      outputFile += downloadedUrl.mid( lastDotIndex );
+      tmpFile.rename( tmpFile.fileName() + url.mid( lastDotIndex ) );
+      outputFile += url.mid( lastDotIndex );
     }
   }
 
