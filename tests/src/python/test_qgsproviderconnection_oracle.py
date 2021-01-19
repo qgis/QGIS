@@ -128,60 +128,36 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
         self.assertEqual(get_tables('', {"userTablesOnly": False}, QgsAbstractDatabaseProviderConnection.Vector),
                          ['LINE_DATA', 'OTHER_TABLE', 'POINT_DATA', 'POINT_DATA_IDENTITY', 'POLY_DATA', 'SOME_DATA', 'SOME_POLY_DATA'])
 
-        # def test_configuration(self):
-    #     """Test storage and retrieval for configuration parameters"""
+    def test_configuration(self):
+        """Test storage and retrieval for configuration parameters"""
 
-    #     uri = 'dbname=\'qgis_test\' service=\'driver={SQL Server};server=localhost;port=1433;database=qgis_test\' user=\'sa\' password=\'<YourStrong!Passw0rd>\' srid=4326 type=Point estimatedMetadata=\'true\' disableInvalidGeometryHandling=\'1\' table="qgis_test"."someData" (geom)'
-    #     md = QgsProviderRegistry.instance().providerMetadata('mssql')
-    #     conn = md.createConnection(uri, {})
-    #     ds_uri = QgsDataSourceUri(conn.uri())
-    #     self.assertEqual(ds_uri.username(), 'sa')
-    #     self.assertEqual(ds_uri.database(), 'qgis_test')
-    #     self.assertEqual(ds_uri.table(), '')
-    #     self.assertEqual(ds_uri.schema(), '')
-    #     self.assertEqual(ds_uri.geometryColumn(), '')
-    #     self.assertTrue(ds_uri.useEstimatedMetadata())
-    #     self.assertEqual(ds_uri.srid(), '')
-    #     self.assertEqual(ds_uri.password(), '<YourStrong!Passw0rd>')
-    #     self.assertEqual(ds_uri.param('disableInvalidGeometryHandling'), '1')
+        uri = ("authcfg='test_cfg' dbname='qgis_test' username='QGIS' password='qgis' dbworkspace='workspace' "
+               "estimatedMetadata='true' host='localhost' port='1521' dboptions='test_opts' ")
 
-    #     conn.store('coronavirus')
-    #     conn = md.findConnection('coronavirus', False)
-    #     ds_uri = QgsDataSourceUri(conn.uri())
-    #     self.assertEqual(ds_uri.username(), 'sa')
-    #     self.assertEqual(ds_uri.database(), 'qgis_test')
-    #     self.assertEqual(ds_uri.table(), '')
-    #     self.assertEqual(ds_uri.schema(), '')
-    #     self.assertTrue(ds_uri.useEstimatedMetadata())
-    #     self.assertEqual(ds_uri.geometryColumn(), '')
-    #     self.assertEqual(ds_uri.srid(), '')
-    #     self.assertEqual(ds_uri.password(), '<YourStrong!Passw0rd>')
-    #     self.assertEqual(ds_uri.param('disableInvalidGeometryHandling'), 'true')
-    #     conn.remove('coronavirus')
+        md = QgsProviderRegistry.instance().providerMetadata('oracle')
+        conn = md.createConnection(uri, {"saveUsername": True, "savePassword": True})
+        ds_uri = QgsDataSourceUri(conn.uri())
+        self.assertEqual(ds_uri.username(), 'QGIS')
+        self.assertEqual(ds_uri.host(), 'localhost')
+        self.assertEqual(ds_uri.port(), '1521')
+        self.assertEqual(ds_uri.database(), 'qgis_test')
+        self.assertTrue(ds_uri.useEstimatedMetadata())
+        self.assertEqual(ds_uri.password(), 'qgis')
+        self.assertEqual(ds_uri.param('dboptions'), 'test_opts')
+        self.assertEqual(ds_uri.param('dbworkspace'), 'workspace')
 
-    # def test_mssql_connections_from_uri(self):
-    #     """Create a connection from a layer uri and retrieve it"""
-
-    #     md = QgsProviderRegistry.instance().providerMetadata('mssql')
-
-    # def test_table_uri(self):
-    #     """Create a connection from a layer uri and create a table URI"""
-
-    #     md = QgsProviderRegistry.instance().providerMetadata('mssql')
-    #     conn = md.createConnection(self.uri, {})
-    #     vl = QgsVectorLayer(conn.tableUri('qgis_test', 'someData'), 'my', 'mssql')
-    #     self.assertTrue(vl.isValid())
-
-    # def test_gpkg_fields(self):
-    #     """Test fields"""
-
-    #     md = QgsProviderRegistry.instance().providerMetadata('mssql')
-    #     conn = md.createConnection(self.uri, {})
-    #     fields = conn.fields('qgis_test', 'someData')
-    #     self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time'])
-
-    # def treat_date_as_string(self):
-    #     return True
+        conn.store('myconf')
+        conn = md.findConnection('myconf', False)
+        ds_uri = QgsDataSourceUri(conn.uri())
+        self.assertEqual(ds_uri.username(), 'QGIS')
+        self.assertEqual(ds_uri.host(), 'localhost')
+        self.assertEqual(ds_uri.port(), '1521')
+        self.assertEqual(ds_uri.database(), 'qgis_test')
+        self.assertTrue(ds_uri.useEstimatedMetadata())
+        self.assertEqual(ds_uri.password(), 'qgis')
+        self.assertEqual(ds_uri.param('dboptions'), 'test_opts')
+        self.assertEqual(ds_uri.param('dbworkspace'), 'workspace')
+        conn.remove('myconf')
 
 
 if __name__ == '__main__':
