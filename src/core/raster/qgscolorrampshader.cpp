@@ -186,10 +186,8 @@ void QgsColorRampShader::setSourceColorRamp( QgsColorRamp *colorramp )
 
 void QgsColorRampShader::classifyColorRamp( const int classes, const int band, const QgsRectangle &extent, QgsRasterInterface *input )
 {
-  if ( minimumValue() >= maximumValue() )
-  {
+  if ( minimumValue() > maximumValue() )
     return;
-  }
 
   bool discrete = colorRampType() == Discrete;
 
@@ -199,7 +197,18 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
   double min = minimumValue();
   double max = maximumValue();
 
-  if ( classificationMode() == Continuous )
+  if ( minimumValue() == maximumValue() )
+  {
+    if ( sourceColorRamp() &&  sourceColorRamp()->count() > 1 )
+    {
+      entryValues.push_back( min );
+      if ( discrete )
+        entryValues.push_back( std::numeric_limits<double>::infinity() );
+      for ( int i = 0; i < entryValues.size(); ++i )
+        entryColors.push_back( sourceColorRamp()->color( sourceColorRamp()->value( i ) ) );
+    }
+  }
+  else if ( classificationMode() == Continuous )
   {
     if ( sourceColorRamp() &&  sourceColorRamp()->count() > 1 )
     {
