@@ -1598,6 +1598,10 @@ tests:
         name:
           - expected/points_to_path_grouped.gml
         type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:pointstopath
     name: Points to path (close path)
