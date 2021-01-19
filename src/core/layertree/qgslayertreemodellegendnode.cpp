@@ -266,6 +266,7 @@ void QgsLayerTreeModelLegendNode::toggleAllItems()
     }
 
     emit dataChanged();
+    vlayer->emitStyleChanged();
     vlayer->triggerRepaint();
   }
   else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mLayerNode->layer() ) )
@@ -475,6 +476,7 @@ void QgsLayerTreeModelLegendNode::checkAll( bool state )
     }
 
     emit dataChanged();
+    vlayer->emitStyleChanged();
     vlayer->triggerRepaint();
   }
   else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mLayerNode->layer() ) )
