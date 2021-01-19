@@ -89,8 +89,8 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     //! Sets the local simplification algorithm of the vector layer managed
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
 
-    //! Returns a simplified version the specified geometry
     QgsGeometry simplify( const QgsGeometry &geometry ) const override;
+    QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const override SIP_FACTORY;
 
     //! Sets the tolerance of the vector layer managed
     void setTolerance( double value ) { mTolerance = value; }

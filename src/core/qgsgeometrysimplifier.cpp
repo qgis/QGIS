@@ -18,6 +18,7 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgsrectangle.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 
 bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol )
 {
@@ -45,5 +46,17 @@ QgsTopologyPreservingSimplifier::QgsTopologyPreservingSimplifier( double toleran
 QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry &geometry ) const
 {
   return geometry.simplify( mTolerance );
+}
+
+QgsAbstractGeometry *QgsTopologyPreservingSimplifier::simplify( const QgsAbstractGeometry *geometry ) const
+{
+  if ( !geometry )
+  {
+    return nullptr;
+  }
+
+  QgsGeos geos( geometry );
+  std::unique_ptr< QgsAbstractGeometry > simplifiedGeom( geos.simplify( mTolerance ) );
+  return simplifiedGeom.release();
 }
 
