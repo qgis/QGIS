@@ -78,9 +78,8 @@ Sets the local simplification algorithm of the vector layer managed
 
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const;
 
-%Docstring
-Returns a simplified version the specified geometry
-%End
+    virtual QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const /Factory/;
+
 
     void setTolerance( double value );
 %Docstring
