@@ -2982,12 +2982,6 @@ void QgsOgrProvider::computeCapabilities()
       ability |= CreateSpatialIndex;
       ability |= CreateAttributeIndex;
 
-      if ( mAttributeFields.size() == 0 )
-      {
-        QgsMessageLog::logMessage( tr( "Shapefiles without attribute are considered read-only." ), tr( "OGR" ) );
-        ability &= ~( AddFeatures | DeleteFeatures | ChangeAttributeValues | AddAttributes | DeleteAttributes );
-      }
-
       if ( ( ability & ChangeAttributeValues ) == 0 )
       {
         // on readonly shapes OGR reports that it can delete features although it can't RandomWrite
