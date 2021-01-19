@@ -16,7 +16,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsmapsettings.h"
-#include "qgsdecorationscalebar.h"
+#include "decorations/qgsdecorationscalebar.h"
 
 class TestQgsDecorationScalebar : public QObject
 {
