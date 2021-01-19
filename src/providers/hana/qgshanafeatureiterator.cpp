@@ -278,7 +278,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     filterRect = mSource->mSrsExtent.intersect( filterRect );
 
   if ( !filterRect.isFinite() )
-    QgsMessageLog::logMessage( QObject::tr( "Infinite filter rectangle specified" ), QObject::tr( "HANA" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Infinite filter rectangle specified" ), QObject::tr( "SAP HANA" ) );
 
   QStringList orderByParts;
 #if 0

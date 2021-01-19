@@ -174,7 +174,7 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
         connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this,
                  [ = ]()
         {
-          QMessageBox::information( nullptr, tr( "Import to HANA database" ), tr( "Import was successful." ) );
+          QMessageBox::information( nullptr, tr( "Import to SAP HANA database" ), tr( "Import was successful." ) );
           refreshSchema( toSchema );
         } );
 
@@ -185,7 +185,7 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
           if ( error != QgsVectorLayerExporter::ErrUserCanceled )
           {
             QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-            output->setTitle( tr( "Import to HANA database" ) );
+            output->setTitle( tr( "Import to SAP HANA database" ) );
             output->setMessage( tr( "Failed to import some layers!\n\n" ) +
                                 errorMessage, QgsMessageOutput::MessageText );
             output->showMessage();
@@ -211,7 +211,7 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
   if ( hasError )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-    output->setTitle( tr( "Import to HANA database" ) );
+    output->setTitle( tr( "Import to SAP HANA database" ) );
     output->setMessage( tr( "Failed to import some layers!\n\n" ) +
                         importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
@@ -381,5 +381,5 @@ QgsDataItem *QgsHanaDataItemProvider::createDataItem(
   const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn );
-  return new QgsHanaRootItem( parentItem, QStringLiteral( "HANA" ), QStringLiteral( "hana:" ) );
+  return new QgsHanaRootItem( parentItem, QStringLiteral( "SAP HANA" ), QStringLiteral( "hana:" ) );
 }

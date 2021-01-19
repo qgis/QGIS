@@ -28,7 +28,7 @@ class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
   public:
     QString providerKey() const override { return QgsHanaProvider::HANA_KEY; }
 
-    QString text() const override { return QObject::tr( "HANA" ); }
+    QString text() const override { return QObject::tr( "SAP HANA" ); }
 
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 70; }
 

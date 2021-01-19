@@ -1650,7 +1650,7 @@
      <normaloff>:/images/themes/default/mActionAddHanaLayer.svg</normaloff>:/images/themes/default/mActionAddHanaLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add HANA Spatial Layer…</string>
+    <string>Add SAP HANA Spatial Layer…</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+G</string>
