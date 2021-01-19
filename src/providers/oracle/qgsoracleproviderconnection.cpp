@@ -101,10 +101,8 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
     Capability::CreateVectorTable,
     Capability::RenameVectorTable,
     Capability::RenameRasterTable,
-    Capability::Vacuum,
     Capability::ExecuteSql,
     Capability::SqlLayers,
-    //Capability::Transaction,
     Capability::Tables,
     Capability::Spatial,
     Capability::TableExists,
@@ -118,7 +116,6 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
   mGeometryColumnCapabilities =
   {
     GeometryColumnCapability::Z,
-    GeometryColumnCapability::M,
     GeometryColumnCapability::SinglePart,
     GeometryColumnCapability::Curves
   };
