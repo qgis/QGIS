@@ -22,8 +22,10 @@
 
 class QgsGeometry;
 class QgsRectangle;
+class QgsAbstractGeometry;
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup core
@@ -36,6 +38,17 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const = 0;
+
+    /**
+     * Returns a simplified version the specified \a geometry.
+     *
+     * Will return NULLPTR if no simplification is to be performed to the geometry.
+     *
+     * Caller takes ownership of the returned geometry.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const = 0 SIP_FACTORY;
 
     // MapToPixel simplification helper methods
   public:
@@ -65,6 +78,7 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
     QgsTopologyPreservingSimplifier( double tolerance );
 
     QgsGeometry simplify( const QgsGeometry &geometry ) const override;
+    QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const override SIP_FACTORY;
 
   protected:
     //! Distance tolerance for the simplification

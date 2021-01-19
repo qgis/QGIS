@@ -415,3 +415,47 @@ QgsGeometry QgsMapToPixelSimplifier::simplify( const QgsGeometry &geometry ) con
 
   return QgsGeometry( simplifyGeometry( mSimplifyFlags, mSimplifyAlgorithm, *geometry.constGet(), mTolerance, false ) );
 }
+
+QgsAbstractGeometry *QgsMapToPixelSimplifier::simplify( const QgsAbstractGeometry *geometry ) const
+{
+  //
+  // IMPORTANT!!!!!!!
+  // We want to avoid any geometry cloning we possibly can here, which is why the
+  // "fail" paths always return nullptr
+  //
+
+  if ( !geometry )
+  {
+    return nullptr;
+  }
+  if ( mSimplifyFlags == QgsMapToPixelSimplifier::NoFlags )
+  {
+    return nullptr;
+  }
+
+  // Check whether the geometry can be simplified using the map2pixel context
+  const QgsWkbTypes::Type singleType = QgsWkbTypes::singleType( geometry->wkbType() );
+  const QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( singleType );
+  if ( flatType == QgsWkbTypes::Point )
+  {
+    return nullptr;
+  }
+
+  const bool isaLinearRing = flatType == QgsWkbTypes::Polygon;
+  const int numPoints = geometry->nCoordinates();
+
+  if ( numPoints <= ( isaLinearRing ? 6 : 3 ) )
+  {
+    // No simplify simple geometries
+    return nullptr;
+  }
+
+  const QgsRectangle envelope = geometry->boundingBox();
+  if ( std::max( envelope.width(), envelope.height() ) / numPoints > mTolerance * 2.0 )
+  {
+    //points are in average too far apart to lead to any significant simplification
+    return nullptr;
+  }
+
+  return simplifyGeometry( mSimplifyFlags, mSimplifyAlgorithm, *geometry, mTolerance, false ).release();
+}
