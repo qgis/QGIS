@@ -251,14 +251,6 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   spinOffset->setClearValue( 0.0 );
   spinPatternOffset->setClearValue( 0.0 );
 
-  if ( vl && vl->geometryType() != QgsWkbTypes::PolygonGeometry )
-  {
-    //draw inside polygon checkbox only makes sense for polygon layers
-    mDrawInsideCheckBox->hide();
-    mRingFilterComboBox->hide();
-    mRingsLabel->hide();
-  }
-
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol.reset( new QgsLineSymbol() );
 
@@ -378,6 +370,26 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 QgsSymbolLayer *QgsSimpleLineSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
+}
+
+void QgsSimpleLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+
+  switch ( context.symbolType() )
+  {
+    case QgsSymbol::Marker:
+    case QgsSymbol::Line:
+      //these settings only have an effect when the symbol layers is part of a fill symbol
+      mDrawInsideCheckBox->hide();
+      mRingFilterComboBox->hide();
+      mRingsLabel->hide();
+      break;
+
+    case QgsSymbol::Fill:
+    case QgsSymbol::Hybrid:
+      break;
+  }
 }
 
 void QgsSimpleLineSymbolLayerWidget::penWidthChanged()
@@ -1844,13 +1856,6 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
 
   spinOffset->setClearValue( 0.0 );
 
-
-  if ( vl && vl->geometryType() != QgsWkbTypes::PolygonGeometry )
-  {
-    mRingFilterComboBox->hide();
-    mRingsLabel->hide();
-  }
-
   mSpinAverageAngleLength->setClearValue( 4.0 );
 
   connect( spinInterval, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setInterval );
@@ -1935,6 +1940,25 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 QgsSymbolLayer *QgsMarkerLineSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
+}
+
+void QgsMarkerLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+
+  switch ( context.symbolType() )
+  {
+    case QgsSymbol::Marker:
+    case QgsSymbol::Line:
+      //these settings only have an effect when the symbol layers is part of a fill symbol
+      mRingFilterComboBox->hide();
+      mRingsLabel->hide();
+      break;
+
+    case QgsSymbol::Fill:
+    case QgsSymbol::Hybrid:
+      break;
+  }
 }
 
 void QgsMarkerLineSymbolLayerWidget::setInterval( double val )
@@ -2079,13 +2103,6 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
 
   spinOffset->setClearValue( 0.0 );
 
-
-  if ( vl && vl->geometryType() != QgsWkbTypes::PolygonGeometry )
-  {
-    mRingFilterComboBox->hide();
-    mRingsLabel->hide();
-  }
-
   mHashRotationSpinBox->setClearValue( 0 );
   mSpinAverageAngleLength->setClearValue( 4.0 );
 
@@ -2178,6 +2195,25 @@ void QgsHashedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 QgsSymbolLayer *QgsHashedLineSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
+}
+
+void QgsHashedLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+
+  switch ( context.symbolType() )
+  {
+    case QgsSymbol::Marker:
+    case QgsSymbol::Line:
+      //these settings only have an effect when the symbol layers is part of a fill symbol
+      mRingFilterComboBox->hide();
+      mRingsLabel->hide();
+      break;
+
+    case QgsSymbol::Fill:
+    case QgsSymbol::Hybrid:
+      break;
+  }
 }
 
 void QgsHashedLineSymbolLayerWidget::setInterval( double val )
