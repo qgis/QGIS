@@ -1278,12 +1278,12 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
 
   endDistance = std::max( startDistance, endDistance );
 
-  double distanceTraversed = 0;
   const int totalPoints = numPoints();
   if ( totalPoints == 0 )
     return clone();
 
   QVector< QgsPoint > substringPoints;
+  substringPoints.reserve( totalPoints );
 
   QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
   if ( is3D() )
@@ -1296,19 +1296,15 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
   const double *z = is3D() ? mZ.constData() : nullptr;
   const double *m = isMeasure() ? mM.constData() : nullptr;
 
+  double distanceTraversed = 0;
   double prevX = *x++;
   double prevY = *y++;
   double prevZ = z ? *z++ : 0.0;
   double prevM = m ? *m++ : 0.0;
   bool foundStart = false;
 
-  if ( qgsDoubleNear( startDistance, 0.0 ) || startDistance < 0 )
-  {
-    substringPoints << QgsPoint( pointType, prevX, prevY, prevZ, prevM );
-    foundStart = true;
-  }
-
-  substringPoints.reserve( totalPoints );
+  if ( startDistance < 0 )
+    startDistance = 0;
 
   for ( int i = 0; i < ( totalPoints - 2 ) ; i += 2 )
   {
@@ -1329,7 +1325,7 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
 
     bool addedSegmentEnd = false;
     const double segmentLength = QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
-    if ( distanceTraversed < startDistance && distanceTraversed + segmentLength > startDistance )
+    if ( distanceTraversed <= startDistance && startDistance < distanceTraversed + segmentLength )
     {
       // start point falls on this segment
       const double distanceToStart = startDistance - distanceTraversed;
@@ -1383,14 +1379,21 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
                       << QgsPoint( pointType, x3, y3, z3, m3 );
     }
 
-    distanceTraversed += segmentLength;
-    if ( distanceTraversed > endDistance )
-      break;
-
     prevX = x3;
     prevY = y3;
     prevZ = z3;
     prevM = m3;
+    distanceTraversed += segmentLength;
+    if ( distanceTraversed >= endDistance )
+      break;
+  }
+
+  // start point is the last node
+  if ( !foundStart && qgsDoubleNear( distanceTraversed, startDistance ) )
+  {
+    substringPoints << QgsPoint( pointType, prevX, prevY, prevZ, prevM )
+                    << QgsPoint( pointType, prevX, prevY, prevZ, prevM )
+                    << QgsPoint( pointType, prevX, prevY, prevZ, prevM );
   }
 
   std::unique_ptr< QgsCircularString > result = qgis::make_unique< QgsCircularString >();
