@@ -336,8 +336,7 @@ QString QgsRasterLayer::htmlMetadata() const
   }
 
   // data source
-  if ( publicSource() != path )
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
 
   // EPSG
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) + QStringLiteral( "</td><td>" );
