@@ -734,13 +734,13 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's bookmark manager, used for storing installation-wide bookmarks.
-     * \note not available in Python bindings
      * \since QGIS 3.10
      */
     static QgsBookmarkManager *bookmarkManager();
 
     /**
      * Returns the application's tile download manager, used for download of map tiles when rendering.
+     * \note not available in Python bindings
      * \since QGIS 3.18
      */
     static QgsTileDownloadManager *tileDownloadManager() SIP_SKIP;
