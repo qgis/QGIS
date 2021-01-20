@@ -35,7 +35,7 @@ PYDEPLOY=${DIR}/deploy.py
 # Configuration: change this!
 
 # Location of mxe install dir
-MXE=${MXE:-/mxe/}
+MXE=${MXE:-/usr/lib/mxe/}
 
 # Directory for build
 BUILD_DIR=${PWD}/build-mxe
@@ -45,10 +45,10 @@ RELEASE_DIR=${PWD}/qgis-mxe-release
 # End configuration
 
 # Windows 64 bit with posix threads
-TARGET=x86_64-w64-mingw32.shared.posix
+TARGET=x86_64-w64-mingw32.shared
 
 # Set base path for all tools
-export PATH=${PATH}:/mxe/usr/bin
+export PATH=${PATH}:${MXE}/usr/bin
 
 # Fix CCACHE directory
 export CCACHE_DIR=${PWD}/.ccache
