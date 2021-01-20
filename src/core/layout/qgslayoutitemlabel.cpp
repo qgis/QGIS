@@ -198,6 +198,7 @@ void QgsLayoutItemLabel::contentChanged()
       break;
     }
     case ModeFont:
+      invalidateCache();
       break;
   }
 }
