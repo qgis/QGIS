@@ -350,6 +350,7 @@ QgsDefaultVectorLayerLegend::QgsDefaultVectorLayerLegend( QgsVectorLayer *vl )
   : mLayer( vl )
 {
   connect( mLayer, &QgsMapLayer::rendererChanged, this, &QgsMapLayerLegend::itemsChanged );
+  connect( mLayer, &QgsMapLayer::nameChanged, this, &QgsMapLayerLegend::itemsChanged );
 }
 
 QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
