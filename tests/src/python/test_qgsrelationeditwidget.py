@@ -337,7 +337,11 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertTrue(self.mapCanvas.mapTool())
         feature = QgsFeature(vl_leaks.fields())
         feature.setGeometry(QgsGeometry.fromWkt('POINT(0 0.8)'))
+        for f in vl_leaks.getFeatures():
+            print('FEATURE_ID ONE: ', f.id(), f.geometry())
         self.mapCanvas.mapTool().digitizingCompleted.emit(feature)
+        for f in vl_leaks.getFeatures():
+            print('FEATURE_ID TWO: ', f.id(), f.geometry())
         self.assertEqual(table_view.model().rowCount(), 2)
         self.assertEqual(vl_leaks.featureCount(), 4)
         request = QgsFeatureRequest()

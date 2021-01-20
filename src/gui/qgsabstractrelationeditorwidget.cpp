@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 #include "qgstransactiongroup.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsmessagelog.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -258,8 +259,15 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
-      Q_ASSERT( vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) );
     }
+
+    QgsMessageLog::logMessage( QStringLiteral( "ADDED FEATURES1 %1 %2" ).arg( mRelation.referencingLayer()->name() ).arg( mRelation.referencingLayer()->featureCount() ) );
+
+    Q_ASSERT( vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) );
+
+    QgsMessageLog::logMessage( QStringLiteral( "ADDED FEATURES2 %1 %2" ).arg( mRelation.referencingLayer()->name() ).arg( mRelation.referencingLayer()->featureCount() ) );
+    mRelation.referencingLayer()->dataProvider()->reloadData();
+    QgsMessageLog::logMessage( QStringLiteral( "ADDED FEATURES3 %1 %2" ).arg( mRelation.referencingLayer()->name() ).arg( mRelation.referencingLayer()->featureCount() ) );
   }
 }
 
