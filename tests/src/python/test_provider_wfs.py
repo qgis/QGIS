@@ -124,7 +124,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -160,7 +160,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         cls.source = cls.vl.dataProvider()
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -235,7 +235,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&RESULTTYPE=hits'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&RESULTTYPE=hits'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -245,7 +245,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="5" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsGreaterThan>
    <fes:ValueReference>cnt</fes:ValueReference>
@@ -265,7 +265,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="3" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsGreaterThan>
    <fes:ValueReference>cnt</fes:ValueReference>
@@ -317,7 +317,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsGreaterThan>
    <fes:ValueReference>cnt</fes:ValueReference>
@@ -337,7 +337,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="2" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsGreaterThan>
    <fes:ValueReference>cnt</fes:ValueReference>
@@ -378,7 +378,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>Apple</fes:Literal>
@@ -392,7 +392,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="1" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>Apple</fes:Literal>
@@ -418,7 +418,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>AppleBearOrangePear</fes:Literal>
@@ -432,7 +432,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="0" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>AppleBearOrangePear</fes:Literal>
@@ -462,6 +462,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     def testWkbType(self):
         """N/A for WFS provider"""
         pass
+
+
+class TestPyQgsWFSProvider():
 
     def testInconsistentUri(self):
         """Test a URI with a typename that doesn't match a type of the capabilities"""
@@ -1126,7 +1129,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -1146,7 +1149,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1167,7 +1170,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1183,7 +1186,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1197,11 +1200,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Suppress GetFeature responses to demonstrate that the cache is used
         os.unlink(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
         os.unlink(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
         os.unlink(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
 
         values = [f['id'] for f in vl.getFeatures()]
         self.assertEqual(values, [1, 2])
@@ -1218,7 +1221,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Hits working
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&RESULTTYPE=hits'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&RESULTTYPE=hits'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1264,7 +1267,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -1290,7 +1293,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1310,7 +1313,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1329,9 +1332,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [1, 2, 3])
 
         os.unlink(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
         os.unlink(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
 
         # user maxNumFeatures < user pageSize < server pagesize
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' maxNumFeatures='1' pageSize='2'",
@@ -1340,7 +1343,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1359,7 +1362,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [1])
 
         os.unlink(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
 
         # user user pageSize > server pagesize
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' pageSize='100'", 'test', 'WFS')
@@ -1367,7 +1370,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1386,7 +1389,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [1])
 
         os.unlink(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
 
         vl = QgsVectorLayer(
             "url='http://" + endpoint + "' typename='my:typename' pagingEnabled='false' maxNumFeatures='3'", 'test',
@@ -1395,7 +1398,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&COUNT=3&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&COUNT=3&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1758,7 +1761,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -1777,7 +1780,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2192,7 +2195,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fields[0].name(), 'id')
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write(schema.encode('UTF-8'))
 
@@ -2411,7 +2414,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                   'wb') as f:
             f.write(schema.encode('UTF-8'))
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write(schema.encode('UTF-8'))
 
@@ -2498,7 +2501,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -2520,7 +2523,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""),
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -2623,7 +2626,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -2643,7 +2646,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""),
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -2678,7 +2681,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # First request that will be attempted
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=-0.125,-0.125,1.125,1.125,urn:ogc:def:crs:EPSG::4326"""),
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=-0.125,-0.125,1.125,1.125,urn:ogc:def:crs:EPSG::4326"""),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -2689,7 +2692,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # And fallback
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&COUNT=1"""),
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&COUNT=1"""),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -2742,7 +2745,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -2762,7 +2765,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:32631"""),
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:32631"""),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -2779,7 +2782,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Simulate improper paging support by returning same result set whatever the STARTINDEX is
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=EPSG:32631"""),
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=EPSG:32631"""),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -2795,7 +2798,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=EPSG:32631"""),
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=EPSG:32631"""),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -3060,7 +3063,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -3140,7 +3143,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".format(endpoint=endpoint).encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -3285,7 +3288,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(vl.fields()), 1)
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -3612,7 +3615,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(
-                sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=EC422&TYPENAME=EC422'),
+                sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=EC422'),
                 'wb') as f:
             f.write("""<schema xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -3790,12 +3793,12 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>"""
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=EC422&TYPENAME=EC422&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=EC422&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write(feature_content.encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=EC422&TYPENAME=EC422&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=EC422&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write(feature_content.encode('UTF-8'))
 
@@ -3827,7 +3830,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write(("""
 <schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -4416,7 +4419,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -4441,7 +4444,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Initial request: exception
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0.0" xsi:schemaLocation="http://www.opengis.net/ows/1.1 http://localhost/geoserver/schemas/ows/1.1.0/owsAll.xsd">
 <ows:Exception exceptionCode="NoApplicableCode">
@@ -4453,7 +4456,7 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
 
         # Retry
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&RETRY=1'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&RETRY=1'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection

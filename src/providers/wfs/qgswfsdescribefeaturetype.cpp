@@ -39,11 +39,13 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
       query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
     }
   }
-
-  query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
-  if ( !namespaceValue.isEmpty() )
+  else
   {
-    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+    query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+    if ( !namespaceValue.isEmpty() )
+    {
+      query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+    }
   }
 
   url.setQuery( query );
