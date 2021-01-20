@@ -509,7 +509,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr
 QVariantList QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::nextRow()
 {
   QMutexLocker lock( &mMutex );
-  const QVariantList row { nextRowPrivate() };
+  const QVariantList row = nextRowPrivate();
   if ( ! row.isEmpty() )
   {
     mFetchedRowCount++;

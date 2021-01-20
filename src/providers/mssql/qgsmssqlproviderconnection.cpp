@@ -282,7 +282,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
 QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
 {
-  const QVariantList currentRow( mNextRow );
+  const QVariantList currentRow = mNextRow;
   mNextRow = nextRowInternal();
   return currentRow;
 }
