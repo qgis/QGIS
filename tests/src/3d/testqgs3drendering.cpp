@@ -972,8 +972,8 @@ void TestQgs3DRendering::testColorRampShaderClassification()
     std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Interpolated, QgsColorRampShader::ClassificationMode::EqualInterval ) );
     shader->classifyColorRamp( 5, -1 );
 
-    QVector<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItems();
-    QVector<QgsColorRampShader::ColorRampItem> itemsList2;
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
     itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( 63.75, QColor( 0,  191,  64 ),  "63.8" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  128,  128 ),  "128" ) );
@@ -995,8 +995,8 @@ void TestQgs3DRendering::testColorRampShaderClassification()
     std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Exact, QgsColorRampShader::ClassificationMode::EqualInterval ) );
     shader->classifyColorRamp( 5, -1 );
 
-    QVector<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItems();
-    QVector<QgsColorRampShader::ColorRampItem> itemsList2;
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
     itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( 63.75, QColor( 0,  191,  64 ),  "63.8" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  128,  128 ),  "128" ) );
@@ -1019,8 +1019,8 @@ void TestQgs3DRendering::testColorRampShaderClassification()
     std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::EqualInterval ) );
     shader->classifyColorRamp( 5, -1 );
 
-    QVector<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItems();
-    QVector<QgsColorRampShader::ColorRampItem> itemsList2;
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
     itemsList2.append( QgsColorRampShader::ColorRampItem( 51, QColor( 0,  255,  0 ),  "51" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( 102, QColor( 0,  191,  64 ),  "102" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( 153, QColor( 0,  128,  128 ),  "153" ) );
@@ -1043,8 +1043,8 @@ void TestQgs3DRendering::testColorRampShaderClassification()
     std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Interpolated, QgsColorRampShader::ClassificationMode::Continuous ) );
     shader->classifyColorRamp( 5, -1 );
 
-    QVector<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItems();
-    QVector<QgsColorRampShader::ColorRampItem> itemsList2;
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
     itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
 
@@ -1063,8 +1063,8 @@ void TestQgs3DRendering::testColorRampShaderClassification()
     std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Exact, QgsColorRampShader::ClassificationMode::Continuous ) );
     shader->classifyColorRamp( 5, -1 );
 
-    QVector<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItems();
-    QVector<QgsColorRampShader::ColorRampItem> itemsList2;
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
     itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
 
@@ -1084,8 +1084,8 @@ void TestQgs3DRendering::testColorRampShaderClassification()
     std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::Continuous ) );
     shader->classifyColorRamp( 5, -1 );
 
-    QVector<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItems();
-    QVector<QgsColorRampShader::ColorRampItem> itemsList2;
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
     itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  255,  0 ),  "128" ) );
     itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
 
@@ -1107,8 +1107,8 @@ void TestQgs3DRendering::testColorRampShaderClassification()
     std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, QgsColorRampShader::ClassificationMode::Continuous ) );
     shader->classifyColorRamp( 5, -1 );
 
-    QVector<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItems();
-    QVector<QgsColorRampShader::ColorRampItem> itemsList2;
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
     itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
     if ( type == QgsColorRampShader::Type::Discrete )
       itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
@@ -1131,8 +1131,8 @@ void TestQgs3DRendering::testColorRampShaderClassification()
     std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, QgsColorRampShader::ClassificationMode::EqualInterval ) );
     shader->classifyColorRamp( 5, -1 );
 
-    QVector<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItems();
-    QVector<QgsColorRampShader::ColorRampItem> itemsList2;
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
     itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
     if ( type == QgsColorRampShader::Type::Discrete )
       itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
