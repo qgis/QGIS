@@ -330,9 +330,6 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         table_view = widget.findChild(QTableView)
         self.assertEqual(table_view.model().rowCount(), 1)
 
-        vl_leaks.raiseError.connect(TestQgsRelationEditWidget.error_raised)
-        vl_leaks.featureAdded.connect(TestQgsRelationEditWidget.feature_added)
-
         btn = widget.findChild(QToolButton, 'mAddFeatureGeometryButton')
         self.assertTrue(btn.isVisible())
         self.assertTrue(btn.isEnabled())
@@ -340,11 +337,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertTrue(self.mapCanvas.mapTool())
         feature = QgsFeature(vl_leaks.fields())
         feature.setGeometry(QgsGeometry.fromWkt('POINT(0 0.8)'))
-        for f in vl_leaks.getFeatures():
-            print('FEATURE_ID ONE: ', f.id(), f.geometry())
         self.mapCanvas.mapTool().digitizingCompleted.emit(feature)
-        for f in vl_leaks.getFeatures():
-            print('FEATURE_ID TWO: ', f.id(), f.geometry())
         self.assertEqual(table_view.model().rowCount(), 2)
         self.assertEqual(vl_leaks.featureCount(), 4)
         request = QgsFeatureRequest()
@@ -356,14 +349,6 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertTrue(feat.geometry().equals(QgsGeometry.fromWkt('POINT(0 0.8)')))
 
         vl_leaks.rollBack()
-
-    @classmethod
-    def error_raised(cls, msg):
-        print("LAYER ERROR RAISED: ", len(msg), msg)
-
-    @classmethod
-    def feature_added(cls, fid):
-        print("LAYER FEATURE ADDDED: ", fid)
 
     def startTransaction(self):
         """
