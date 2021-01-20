@@ -230,7 +230,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         // Fixes GH #41076 (empty strings shown as NULL), because we have checked before that it was NOT NULL
         // Note:  QVariant( QString( ) ).isNull( ) is still true on windows so we really need string literal :(
         if ( value.isNull() )
-          value = QVariant( QStringLiteral( "" ) );
+          value = QVariant( QStringLiteral( "" ) ); // skip-keyword-check
 #endif
 
         break;
