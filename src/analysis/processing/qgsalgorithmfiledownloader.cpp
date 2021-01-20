@@ -95,10 +95,12 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 
+  url = downloadedUrl.toDisplayString();
+  feedback->pushInfo( QObject::tr( "Successfully downloaded %1" ).arg( url ) );
+
   if ( outputFile.startsWith( QgsProcessingUtils::tempFolder() ) )
   {
     // the output is temporary and its file name automatically generated, try to add a file extension
-    url = downloadedUrl.toDisplayString();
     const int length = url.size();
     const int lastDotIndex = url.lastIndexOf( "." );
     const int lastSlashIndex = url.lastIndexOf( "/" );
