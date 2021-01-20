@@ -263,7 +263,9 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
     QgsMessageLog::logMessage( QStringLiteral( "ADDED FEATURES1 %1 %2" ).arg( mRelation.referencingLayer()->name() ).arg( mRelation.referencingLayer()->featureCount() ) );
 
-    Q_ASSERT( vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) );
+    bool success = vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry );
+    Q_ASSERT( success );
+    QgsMessageLog::logMessage( QStringLiteral( "SUCESS??? %1" ).arg( success ) );
 
     QgsMessageLog::logMessage( QStringLiteral( "ADDED FEATURES2 %1 %2" ).arg( mRelation.referencingLayer()->name() ).arg( mRelation.referencingLayer()->featureCount() ) );
     mRelation.referencingLayer()->dataProvider()->reloadData();
