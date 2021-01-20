@@ -103,7 +103,7 @@ class QgsHanaLayerItem : public QgsLayerItem
 class QgsHanaDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "HANA" ); }
+    QString name() override { return QStringLiteral( "SAP HANA" ); }
     int capabilities() const override { return QgsDataProvider::Database; }
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

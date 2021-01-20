@@ -58,14 +58,14 @@ QgsHanaNewConnection::QgsHanaNewConnection(
 
   txtDriver->setText( QgsHanaDriver::instance()->driver() );
 #if defined(Q_OS_WIN)
-  txtDriver->setToolTip( tr( "The name of the HANA ODBC driver.\r\n\r\n"
-                             "The HANA ODBC driver is a part of the SAP HANA Client,\r\n"
+  txtDriver->setToolTip( tr( "The name of the SAP HANA ODBC driver.\r\n\r\n"
+                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\r\n"
                              "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
 #else
-  txtDriver->setToolTip( tr( "The name or path to the HANA ODBC driver.\r\n\r\n"
+  txtDriver->setToolTip( tr( "The name or path to the SAP HANA ODBC driver.\r\n\r\n"
                              "If the driver is registered in odbcinst.ini, enter the driver's name.\r\n"
                              "Otherwise, enter the path to the driver (libodbcHDB.so).\r\n\r\n"
-                             "The HANA ODBC driver is a part of the SAP HANA Client,\r\n"
+                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\r\n"
                              "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
 #endif
 
@@ -334,7 +334,7 @@ void QgsHanaNewConnection::testConnection()
         if ( !QgsHanaDriver::isValidPath( driver ) )
         {
           if ( QFileInfo::exists( driver ) )
-            warningMsg = tr( "Specified driver '%1' cannot be used to connect to HANA." ).arg( driver );
+            warningMsg = tr( "Specified driver '%1' cannot be used to connect to SAP HANA." ).arg( driver );
           else
             warningMsg = tr( "Driver with name/path '%1' was not found." ).arg( driver );
         }

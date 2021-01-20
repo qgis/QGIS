@@ -278,7 +278,7 @@ namespace
 static const size_t MAXIMUM_BATCH_DATA_SIZE = 4 * 1024 * 1024;
 
 const QString QgsHanaProvider::HANA_KEY = QStringLiteral( "hana" );
-const QString QgsHanaProvider::HANA_DESCRIPTION = QStringLiteral( "HANA spatial data provider" );
+const QString QgsHanaProvider::HANA_DESCRIPTION = QStringLiteral( "SAP HANA spatial data provider" );
 
 QgsHanaProvider::QgsHanaProvider(
   const QString &uri,
@@ -299,14 +299,14 @@ QgsHanaProvider::QgsHanaProvider(
 
   if ( mSchemaName.isEmpty() || mTableName.isEmpty() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Schema or table name cannot be empty" ), QObject::tr( "HANA" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Schema or table name cannot be empty" ), QObject::tr( "SAP HANA" ) );
     return;
   }
 
   QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Failed to connect to database" ), QObject::tr( "HANA" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Failed to connect to database" ), QObject::tr( "SAP HANA" ) );
     return;
   }
 
@@ -326,7 +326,7 @@ QgsHanaProvider::QgsHanaProvider(
   {
     if ( !checkPermissionsAndSetCapabilities() )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Provider does not have enough permissions" ), QObject::tr( "HANA" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Provider does not have enough permissions" ), QObject::tr( "SAP HANA" ) );
       return;
     }
 
@@ -684,7 +684,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   }
   catch ( const exception &ex )
   {
-    pushError( tr( "HANA error while adding features: %1" )
+    pushError( tr( "SAP HANA error while adding features: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
   }
@@ -713,7 +713,7 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &ids )
   const QString featureIdsWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( ids, mAttributeFields,  mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx );
   if ( featureIdsWhereClause.isEmpty() )
   {
-    pushError( tr( "HANA failed to delete features: Unable to find feature ids" ) );
+    pushError( tr( "SAP HANA failed to delete features: Unable to find feature ids" ) );
     return false;
   }
 
@@ -728,7 +728,7 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &ids )
   }
   catch ( const QgsHanaException &ex )
   {
-    pushError( tr( "HANA failed to delete features: %1" )
+    pushError( tr( "SAP HANA failed to delete features: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
     return false;
@@ -761,7 +761,7 @@ bool QgsHanaProvider::truncate()
   }
   catch ( const QgsHanaException &ex )
   {
-    pushError( tr( "HANA failed to truncate: %1" ).arg( QgsHanaUtils::formatErrorMessage( ex.what() ) ) );
+    pushError( tr( "SAP HANA failed to truncate: %1" ).arg( QgsHanaUtils::formatErrorMessage( ex.what() ) ) );
     conn->rollback();
     return false;
   }
@@ -800,7 +800,7 @@ bool QgsHanaProvider::addAttributes( const QList<QgsField> &attributes )
   }
   catch ( const QgsHanaException &ex )
   {
-    pushError( tr( "HANA failed to add feature: %1" )
+    pushError( tr( "SAP HANA failed to add feature: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
     return false;
@@ -839,7 +839,7 @@ bool QgsHanaProvider::deleteAttributes( const QgsAttributeIds &attributes )
   }
   catch ( const QgsHanaException &ex )
   {
-    pushError( tr( "HANA error while deleting attributes: %1" )
+    pushError( tr( "SAP HANA error while deleting attributes: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
     return false;
@@ -926,7 +926,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
   }
   catch ( const QgsHanaException &ex )
   {
-    pushError( tr( "HANA error while renaming attributes: %1" )
+    pushError( tr( "SAP HANA error while renaming attributes: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
     return false;
@@ -982,7 +982,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
   }
   catch ( const exception &ex )
   {
-    pushError( tr( "HANA failed to change feature geometry: %1" )
+    pushError( tr( "SAP HANA failed to change feature geometry: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
     return false;
@@ -1079,7 +1079,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
   }
   catch ( const exception &ex )
   {
-    pushError( tr( "HANA failed to change feature attributes: %1" )
+    pushError( tr( "SAP HANA failed to change feature attributes: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
     return false;

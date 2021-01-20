@@ -222,7 +222,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
     mHoldDialogOpen->hide();
   else
-    setWindowTitle( tr( "Add HANA Table(s)" ) );
+    setWindowTitle( tr( "Add SAP HANA Table(s)" ) );
 
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
@@ -550,7 +550,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   if ( !conn )
   {
     if ( !canceled )
-      QMessageBox::warning( this, tr( "HANA" ), tr( "Unable to connect to a database" ) );
+      QMessageBox::warning( this, tr( "SAP HANA" ), tr( "Unable to connect to a database" ) );
     return;
   }
 

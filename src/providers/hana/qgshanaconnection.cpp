@@ -65,7 +65,7 @@ QgsHanaConnection::~QgsHanaConnection()
   }
   catch ( const Exception &ex )
   {
-    QgsMessageLog::logMessage( QgsHanaUtils::formatErrorMessage( ex.what() ), tr( "HANA" ) );
+    QgsMessageLog::logMessage( QgsHanaUtils::formatErrorMessage( ex.what() ), tr( "SAP HANA" ) );
   }
 }
 
@@ -104,7 +104,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
       {
         errorMessage = QObject::tr( "Connection to database failed" ) + '\n' + QgsHanaUtils::formatErrorMessage( ex.what() );
         QgsDebugMsg( errorMessage );
-        QgsMessageLog::logMessage( errorMessage, tr( "HANA" ) );
+        QgsMessageLog::logMessage( errorMessage, tr( "SAP HANA" ) );
       }
 
       return conn->connected();

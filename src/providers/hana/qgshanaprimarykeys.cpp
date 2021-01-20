@@ -146,7 +146,7 @@ QPair<QgsHanaPrimaryKeyType, QList<int>> QgsHanaPrimaryKeyUtils::determinePrimar
     if ( idx < 0 )
     {
       attrs.clear();
-      QgsMessageLog::logMessage( QObject::tr( "Key field '%1' for view/query not found." ).arg( clmName ), QObject::tr( "HANA" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Key field '%1' for view/query not found." ).arg( clmName ), QObject::tr( "SAP HANA" ) );
       break;
     }
     attrs << idx;
@@ -155,7 +155,7 @@ QPair<QgsHanaPrimaryKeyType, QList<int>> QgsHanaPrimaryKeyUtils::determinePrimar
   if ( !attrs.isEmpty() )
     keyType = ( attrs.size() == 1 ) ? getPrimaryKeyType( fields.at( attrs[0] ) ) : PktFidMap;
   else
-    QgsMessageLog::logMessage( QObject::tr( "Keys for view/query undefined." ), QObject::tr( "HANA" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Keys for view/query undefined." ), QObject::tr( "SAP HANA" ) );
 
   return qMakePair( keyType, attrs );
 }
@@ -164,7 +164,7 @@ QPair<QgsHanaPrimaryKeyType, QList<int>> QgsHanaPrimaryKeyUtils::determinePrimar
 {
   if ( primaryKey.isEmpty() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "No key field for view/query given." ), QObject::tr( "HANA" ) );
+    QgsMessageLog::logMessage( QObject::tr( "No key field for view/query given." ), QObject::tr( "SAP HANA" ) );
     return qMakePair( PktUnknown, QList<int>() );
   }
 

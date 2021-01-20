@@ -504,6 +504,6 @@ QString QgsHanaUtils::formatErrorMessage( const char *message, bool withPrefix )
   if ( pos != -1 )
     ret = ret.remove( 0, pos + mark.length() );
   if ( withPrefix && ret.indexOf( QLatin1String( "HANA" ) ) == -1 )
-    return QStringLiteral( "HANA: " ) + ret;
+    return QStringLiteral( "SAP HANA: " ) + ret;
   return ret;
 }
