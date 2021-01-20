@@ -117,6 +117,7 @@ void QgsPointCloudAttributeByRampRendererWidget::attributeChanged()
     }
 
   }
+  setMinMaxFromLayer();
   mScalarRecalculateMinMaxButton->setEnabled( !std::isnan( mProviderMin ) && !std::isnan( mProviderMax ) );
   emitWidgetChanged();
 }
