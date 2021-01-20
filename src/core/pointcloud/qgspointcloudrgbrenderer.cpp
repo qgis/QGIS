@@ -153,6 +153,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
         blue = mBlueContrastEnhancement->enhanceContrast( blue );
       }
 
+      red = std::max( 0, std::min( 255, red ) );
+      green = std::max( 0, std::min( 255, green ) );
+      blue = std::max( 0, std::min( 255, blue ) );
+
       drawPoint( x, y, QColor( red, green, blue ), context );
       rendered++;
     }
