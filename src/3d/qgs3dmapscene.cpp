@@ -852,6 +852,8 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     connect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 
+  if ( layer->type() == QgsMapLayerType::PointCloudLayer )
+    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 }
 
 void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
@@ -880,6 +882,9 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   {
     disconnect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
+
+  if ( layer->type() == QgsMapLayerType::PointCloudLayer )
+    disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 }
 
 void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )

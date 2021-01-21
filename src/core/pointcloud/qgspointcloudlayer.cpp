@@ -368,6 +368,8 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
       setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
     }
     triggerRepaint();
+
+    emit renderer3DChanged();
   }
 }
 
