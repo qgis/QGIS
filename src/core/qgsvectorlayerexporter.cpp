@@ -139,6 +139,13 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     }
   }
 
+  // Oracle specific HACK: we cannot guess the geometry type when there is no rows, so we need
+  // to force it in the uri
+  if ( providerKey == QLatin1String( "oracle" ) )
+  {
+    uriUpdated += QStringLiteral( " type=%1" ).arg( QgsWkbTypes::displayString( geometryType ) );
+  }
+
   QgsDataProvider::ProviderOptions providerOptions;
   QgsVectorDataProvider *vectorProvider = qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
