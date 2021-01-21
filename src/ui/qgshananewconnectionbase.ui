@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>464</width>
-    <height>725</height>
+    <height>729</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -99,13 +99,13 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>100</height>
+            <height>124</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>16777215</height>
+            <height>124</height>
            </size>
           </property>
           <property name="frameShape">
@@ -361,7 +361,13 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>22</height>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
            </size>
           </property>
           <property name="frameShadow">
@@ -373,7 +379,7 @@
              <x>0</x>
              <y>0</y>
              <width>151</width>
-             <height>20</height>
+             <height>25</height>
             </rect>
            </property>
            <item>
@@ -393,8 +399,20 @@
              <x>160</x>
              <y>0</y>
              <width>51</width>
-             <height>20</height>
+             <height>25</height>
             </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
            </property>
            <property name="text">
             <string>00</string>

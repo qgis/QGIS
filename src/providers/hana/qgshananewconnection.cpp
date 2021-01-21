@@ -15,6 +15,7 @@
  *
  ***************************************************************************/
 #include "qgsauthmanager.h"
+#include "qgsgui.h"
 #include "qgshanadriver.h"
 #include "qgshanaconnection.h"
 #include "qgshananewconnection.h"
@@ -43,6 +44,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   cmbIdentifierType_changed( cmbIdentifierType->currentIndex() );
 
