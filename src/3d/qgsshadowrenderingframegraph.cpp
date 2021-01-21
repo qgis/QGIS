@@ -44,13 +44,9 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
 
   mRenderCapture = new Qt3DRender::QRenderCapture( mForwardRenderLayerFilter );
 
-  // TODO: make the width and height change dynamically as the 3D viewer is resized
-  int width = 1024;
-  int height = 768;
-
   mForwardColorTexture = new Qt3DRender::QTexture2D;
-  mForwardColorTexture->setWidth( width );
-  mForwardColorTexture->setHeight( height );
+  mForwardColorTexture->setWidth( mWidth );
+  mForwardColorTexture->setHeight( mWidth );
   mForwardColorTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::RGBA16F );
   mForwardColorTexture->setGenerateMipMaps( false );
   mForwardColorTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -59,8 +55,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardColorTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
 
   mForwardDepthTexture = new Qt3DRender::QTexture2D;
-  mForwardDepthTexture->setWidth( width );
-  mForwardDepthTexture->setHeight( height );
+  mForwardDepthTexture->setWidth( mWidth );
+  mForwardDepthTexture->setHeight( mHeight );
   mForwardDepthTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
   mForwardDepthTexture->setGenerateMipMaps( false );
   mForwardDepthTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -141,9 +137,12 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   return mPostprocessPassLayerFilter;
 }
 
-QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
+QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, int width, int height, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
   : Qt3DCore::QEntity( root )
 {
+  mWidth = width;
+  mHeight = height;
+
   mRootEntity = root;
   mMainCamera = mainCamera;
   mLightCamera = new Qt3DRender::QCamera;
@@ -403,4 +402,12 @@ void QgsShadowRenderingFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Cor
         break;
     }
   }
+}
+
+void QgsShadowRenderingFrameGraph::setSize( int width, int height )
+{
+  mWidth = width;
+  mHeight = height;
+  mForwardColorTexture->setSize( mWidth, mHeight );
+  mForwardDepthTexture->setSize( mWidth, mHeight );
 }

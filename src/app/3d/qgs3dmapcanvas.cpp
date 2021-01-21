@@ -61,6 +61,9 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
 
   mEngine->window()->setCursor( Qt::OpenHandCursor );
   mEngine->window()->installEventFilter( this );
+
+  if (QgsWindow3DEngine *window = dynamic_cast< QgsWindow3DEngine * >( mEngine ))
+    window->setSize( mContainer->width(), mContainer->height() );
 }
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
@@ -83,6 +86,8 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
 
   QRect viewportRect( QPoint( 0, 0 ), size() );
   mScene->cameraController()->setViewport( viewportRect );
+  if (QgsWindow3DEngine *window = dynamic_cast< QgsWindow3DEngine * >( mEngine ))
+    window->setSize( viewportRect.width(), viewportRect.height() );
 }
 
 void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
