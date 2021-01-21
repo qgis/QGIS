@@ -57,7 +57,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 {
   public:
     //! Constructor
-    QgsShadowRenderingFrameGraph( QWindow *window, int width, int height, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
+    QgsShadowRenderingFrameGraph( QWindow *window, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
 
     //! Returns the root of the frame graph object
     Qt3DRender::QFrameGraphNode *getFrameGraphRoot() { return mRenderSurfaceSelector; }
@@ -123,7 +123,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Sets the depth map debugging view port
     void setupDepthMapDebugging( bool enabled, Qt::Corner corner, double size );
     //! Sets the size of the buffers used for rendering
-    void setSize( int width, int height );
+    void setSize( QSize s );
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -161,8 +161,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     float mShadowBias = 0.00001f;
     int mShadowMapResolution = 2048;
 
-    int mWidth = 1024;
-    int mHeight = 768;
+    QSize mSize = QSize( 1024, 768 );
 
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;

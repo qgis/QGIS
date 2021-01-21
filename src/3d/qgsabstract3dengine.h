@@ -77,6 +77,8 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     virtual Qt3DRender::QCamera *camera() = 0;
     //! Returns size of the engine's rendering area in pixels
     virtual QSize size() const = 0;
+    //! Sets the size of the rendering area (in pixels)
+    virtual void setSize( QSize s ) = 0;
 
     /**
      * Starts a request for an image rendered by the engine.

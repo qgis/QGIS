@@ -45,8 +45,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mRenderCapture = new Qt3DRender::QRenderCapture( mForwardRenderLayerFilter );
 
   mForwardColorTexture = new Qt3DRender::QTexture2D;
-  mForwardColorTexture->setWidth( mWidth );
-  mForwardColorTexture->setHeight( mWidth );
+  mForwardColorTexture->setWidth( mSize.width() );
+  mForwardColorTexture->setHeight( mSize.height() );
   mForwardColorTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::RGBA16F );
   mForwardColorTexture->setGenerateMipMaps( false );
   mForwardColorTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -55,8 +55,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardColorTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
 
   mForwardDepthTexture = new Qt3DRender::QTexture2D;
-  mForwardDepthTexture->setWidth( mWidth );
-  mForwardDepthTexture->setHeight( mHeight );
+  mForwardDepthTexture->setWidth( mSize.width() );
+  mForwardDepthTexture->setHeight( mSize.height() );
   mForwardDepthTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
   mForwardDepthTexture->setGenerateMipMaps( false );
   mForwardDepthTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -137,11 +137,10 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   return mPostprocessPassLayerFilter;
 }
 
-QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, int width, int height, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
+QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
   : Qt3DCore::QEntity( root )
 {
-  mWidth = width;
-  mHeight = height;
+  mSize = s;
 
   mRootEntity = root;
   mMainCamera = mainCamera;
@@ -404,10 +403,9 @@ void QgsShadowRenderingFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Cor
   }
 }
 
-void QgsShadowRenderingFrameGraph::setSize( int width, int height )
+void QgsShadowRenderingFrameGraph::setSize( QSize s )
 {
-  mWidth = width;
-  mHeight = height;
-  mForwardColorTexture->setSize( mWidth, mHeight );
-  mForwardDepthTexture->setSize( mWidth, mHeight );
+  mSize = s;
+  mForwardColorTexture->setSize( mSize.width(), mSize.height() );
+  mForwardDepthTexture->setSize( mSize.width(), mSize.height() );
 }
