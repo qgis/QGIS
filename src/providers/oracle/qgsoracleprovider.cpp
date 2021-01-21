@@ -674,42 +674,7 @@ bool QgsOracleProvider::loadFields()
     }
 
     if ( !mGeometryColumn.isEmpty() )
-    {
-      if ( exec( qry, QString( "SELECT i.index_name,i.domidx_opstatus"
-                               " FROM all_indexes i"
-                               " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=?"
-                               " WHERE i.table_owner=? AND i.table_name=? AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'" ),
-                 QVariantList() << mGeometryColumn << mOwnerName << mTableName ) )
-      {
-        if ( qry.next() )
-        {
-          mSpatialIndexName = qry.value( 0 ).toString();
-          if ( qry.value( 1 ).toString() != "VALID" )
-          {
-            QgsMessageLog::logMessage( tr( "Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance." )
-                                       .arg( mSpatialIndexName )
-                                       .arg( mOwnerName )
-                                       .arg( mTableName )
-                                       .arg( mGeometryColumn ),
-                                       tr( "Oracle" ) );
-          }
-          else
-          {
-            QgsDebugMsgLevel( QStringLiteral( "Valid spatial index %1 found" ).arg( mSpatialIndexName ), 2 );
-            mHasSpatialIndex = true;
-          }
-        }
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "Probing for spatial index on column %1.%2.%3 failed [%4]" )
-                                   .arg( mOwnerName )
-                                   .arg( mTableName )
-                                   .arg( mGeometryColumn )
-                                   .arg( qry.lastError().text() ),
-                                   tr( "Oracle" ) );
-      }
-    }
+      mSpatialIndexName = conn->getSpatialIndexName( mOwnerName, mTableName, mGeometryColumn, mHasSpatialIndex );
 
     mEnabledCapabilities |= QgsVectorDataProvider::CreateSpatialIndex;
   }
@@ -2787,27 +2752,11 @@ bool QgsOracleProvider::createSpatialIndex()
 
   if ( !mHasSpatialIndex )
   {
-    int n = 0;
-    if ( exec( qry, QString( "SELECT coalesce(substr(max(index_name),10),'0') FROM all_indexes WHERE index_name LIKE 'QGIS_IDX_%' ESCAPE '#' ORDER BY index_name" ), QVariantList() ) &&
-         qry.next() )
-    {
-      n = qry.value( 0 ).toInt() + 1;
-    }
-
-    if ( !exec( qry, QString( "CREATE INDEX QGIS_IDX_%1 ON %2.%3(%4) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARALLEL" )
-                .arg( n, 10, 10, QChar( '0' ) )
-                .arg( quotedIdentifier( mOwnerName ) )
-                .arg( quotedIdentifier( mTableName ) )
-                .arg( quotedIdentifier( mGeometryColumn ) ), QVariantList() ) )
-    {
-      QgsMessageLog::logMessage( tr( "Creation spatial index failed.\nSQL: %1\nError: %2" )
-                                 .arg( qry.lastQuery() )
-                                 .arg( qry.lastError().text() ),
-                                 tr( "Oracle" ) );
+    const QString spatialIndexName = conn->createSpatialIndex( mOwnerName, mTableName, mGeometryColumn );
+    if ( spatialIndexName.isEmpty() )
       return false;
-    }
-
-    mSpatialIndexName = QString( "QGIS_IDX_%1" ).arg( n, 10, 10, QChar( '0' ) );
+    else
+      mSpatialIndexName = spatialIndexName;
   }
   else
   {
