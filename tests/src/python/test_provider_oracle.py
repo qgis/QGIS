@@ -951,6 +951,69 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().addFeatures([feature])[0])
         self.assertEqual(countFeature('EMPTYFEATURE_NOGEOM_LAYER'), 1)
 
+    def testCreateLayerLongFieldNames(self):
+        """
+        Test to create an empty layer with long field names
+        """
+
+        # cleanup (it seems overwrite option doesn't clean the sdo_geom_metadata table)
+        self.execSQLCommand('DROP TABLE "QGIS"."LONGFIELD_LAYER"', ignore_errors=True)
+
+        long_name = "this_is_a_very_long_field_name_more_than_30_characters"
+
+        fields = QgsFields()
+        fields.append(QgsField(long_name, QVariant.Int))
+
+        uri = self.dbconn + "table=\"LONGFIELD_LAYER\""
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
+        self.assertEqual(exporter.errorCount(), 0)
+        self.assertEqual(exporter.errorCode(), 0)
+
+        self.execSQLCommand('SELECT count(*) FROM "QGIS"."LONGFIELD_LAYER"')
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."LONGFIELD_LAYER" sql=', 'test', 'oracle')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.fields().names(), [long_name])
+
+    def testCreateGeomLowercase(self):
+        """
+        Test to create an empty layer with either table or geometry column in lower case. It has to fail
+        """
+
+        # table is lower case -> fails
+        self.execSQLCommand('DROP TABLE "QGIS"."lowercase_layer"', ignore_errors=True)
+
+        fields = QgsFields()
+        fields.append(QgsField("test", QVariant.Int))
+
+        uri = self.dbconn + "table=\"lowercase_layer\" (GEOM)"
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
+        self.assertEqual(exporter.errorCode(), 2)
+
+        # geom column is lower case -> fails
+        self.execSQLCommand('DROP TABLE "QGIS"."LOWERCASEGEOM_LAYER"', ignore_errors=True)
+
+        fields = QgsFields()
+        fields.append(QgsField("test", QVariant.Int))
+
+        uri = self.dbconn + "table=\"LOWERCASEGEOM\" (geom)"
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
+        self.assertEqual(exporter.errorCode(), 2)
+
+        # table and geom column are uppercase -> success
+        self.execSQLCommand('DROP TABLE "QGIS"."UPPERCASEGEOM_LAYER"', ignore_errors=True)
+        self.execSQLCommand("""DELETE FROM user_sdo_geom_metadata  where TABLE_NAME = 'UPPERCASEGEOM_LAYER'""")
+
+        fields = QgsFields()
+        fields.append(QgsField("test", QVariant.Int))
+
+        uri = self.dbconn + "table=\"UPPERCASEGEOM_LAYER\" (GEOM)"
+
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
+        print(exporter.errorMessage())
+        self.assertEqual(exporter.errorCount(), 0)
+        self.assertEqual(exporter.errorCode(), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
