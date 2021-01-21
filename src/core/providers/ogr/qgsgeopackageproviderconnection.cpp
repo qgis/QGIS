@@ -423,7 +423,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
 
 QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
 {
-  const QVariantList currentRow { mNextRow };
+  const QVariantList currentRow = mNextRow;
   mNextRow = nextRowInternal();
   return currentRow;
 }
@@ -439,10 +439,10 @@ QVariantList QgsGeoPackageProviderResultIterator::nextRowInternal()
       if ( ! mFields.isEmpty() )
       {
         QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
-        const QgsAttributes &constAttrs { f.attributes() };
-        for ( int i = 0; i < constAttrs.length(); i++ )
+        const QgsAttributes constAttrs  = f.attributes();
+        for ( const QVariant &attribute : constAttrs )
         {
-          row.push_back( constAttrs.at( i ) );
+          row.push_back( attribute );
         }
       }
       else // Fallback to strings
