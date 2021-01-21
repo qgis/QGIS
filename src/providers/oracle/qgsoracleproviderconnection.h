@@ -27,8 +27,8 @@ struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnec
       , mQuery( query )
     {}
 
-    QVariantList nextRow() override;
-    bool hasNextRow() const override;
+    QVariantList nextRowPrivate() override;
+    bool hasNextRowPrivate() const override;
 
   private:
 
@@ -36,7 +36,7 @@ struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnec
     QSqlQuery mQuery;
     QVariantList mNextRow;
 
-    QVariantList nextRowPrivate();
+    QVariantList nextRowInternal();
 
 };
 

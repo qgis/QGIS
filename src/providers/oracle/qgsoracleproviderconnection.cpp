@@ -213,7 +213,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
     const int numCols { rec.count() };
     auto iterator = std::make_shared<QgsOracleProviderResultIterator>( numCols, qry );
     QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-    results.setRowCount( qry.size() );
     for ( int idx = 0; idx < numCols; ++idx )
     {
       results.appendColumn( rec.field( idx ).name() );
@@ -225,19 +224,19 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
-QVariantList QgsOracleProviderResultIterator::nextRow()
+QVariantList QgsOracleProviderResultIterator::nextRowPrivate()
 {
   const QVariantList currentRow( mNextRow );
-  mNextRow = nextRowPrivate();
+  mNextRow = nextRowInternal();
   return currentRow;
 }
 
-bool QgsOracleProviderResultIterator::hasNextRow() const
+bool QgsOracleProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
 
-QVariantList QgsOracleProviderResultIterator::nextRowPrivate()
+QVariantList QgsOracleProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mQuery.next() )
@@ -246,6 +245,10 @@ QVariantList QgsOracleProviderResultIterator::nextRowPrivate()
     {
       row.push_back( mQuery.value( col ) );
     }
+  }
+  else
+  {
+    mQuery.finish();
   }
   return row;
 }
