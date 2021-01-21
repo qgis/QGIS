@@ -1221,10 +1221,10 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       else if ( tagName == QLatin1String( "LatLonBoundingBox" ) )    // legacy from earlier versions of WMS
       {
         layerProperty.ex_GeographicBoundingBox = QgsRectangle(
-              nodeElement.attribute( QStringLiteral( "minx" ) ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "miny" ) ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "maxx" ) ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "maxy" ) ).toDouble()
+              nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ",", "." ).toDouble(),
+              nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ",", "." ).toDouble(),
+              nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ",", "." ).toDouble(),
+              nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ",", "." ).toDouble()
             );
 
         if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) && nodeElement.attribute( QStringLiteral( "SRS" ) ) != DEFAULT_LATLON_CRS )
@@ -1275,10 +1275,10 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
         QgsWmsBoundingBoxProperty bbox;
-        bbox.box = QgsRectangle( nodeElement.attribute( QStringLiteral( "minx" ) ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "miny" ) ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "maxx" ) ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "maxy" ) ).toDouble()
+        bbox.box = QgsRectangle( nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ",", "." ).toDouble(),
+                                 nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ",", "." ).toDouble(),
+                                 nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ",", "." ).toDouble(),
+                                 nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ",", "." ).toDouble()
                                );
         if ( nodeElement.hasAttribute( QStringLiteral( "CRS" ) ) || nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) )
         {
@@ -1627,10 +1627,10 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       {
         QgsWmsBoundingBoxProperty boundingBoxProperty;
         boundingBoxProperty.box = QgsRectangle(
-                                    nodeElement.attribute( QStringLiteral( "minx" ) ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "miny" ) ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "maxx" ) ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "maxy" ) ).toDouble()
+                                    nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ",", "." ).toDouble(),
+                                    nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ",", "." ).toDouble(),
+                                    nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ",", "." ).toDouble(),
+                                    nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ",", "." ).toDouble()
                                   );
         if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) )
           boundingBoxProperty.crs = nodeElement.attribute( QStringLiteral( "SRS" ) );
