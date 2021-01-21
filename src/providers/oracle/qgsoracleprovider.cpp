@@ -3091,6 +3091,9 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   // use the provider to edit the table1
   dsUri.setDataSource( ownerName, tableName, geometryColumn, QString(), primaryKey );
 
+  // provider cannot guess the type when there is no feature, so force the wkbtype in the uri
+  dsUri.setWkbType( wkbType );
+
   QgsDataProvider::ProviderOptions providerOptions;
   std::unique_ptr<QgsOracleProvider> provider( new QgsOracleProvider( dsUri.uri( false ), providerOptions ) );
   if ( !provider->isValid() )
@@ -3114,7 +3117,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     {
       QgsField fld = fields.at( i );
 
-      QString name = fld.name().left( 30 ).toUpper();
+      QString name = fld.name();
 
       if ( names.contains( name ) )
       {
@@ -3267,6 +3270,10 @@ void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &
       }
     }
   }
+
+  if ( tableName.toUpper() != tableName || geometryColumn.toUpper() != geometryColumn )
+    throw OracleException( tr( "Cannot insert geometry metadata for table '%1' and geometry column '%2'. Both needs to be uppercase" ).arg(
+                             tableName, geometryColumn ), qry );
 
   if ( !exec( qry, QStringLiteral( "INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (?,?,?,%1)" ).arg( diminfo ),
               QVariantList() << tableName.toUpper() << geometryColumn.toUpper() << srid ) )
