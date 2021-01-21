@@ -21,10 +21,10 @@ if [ ${HANA_TESTS} == "true" ] ; then
   echo "Wait a moment while trying to connect to a HANA database."
   while ! echo exit | hdbsql -n '${HANA_HOST}:${HANA_PORT}' -u '${HANA_USER}' -p '${HANA_PASSWORD}' &> /dev/null
   do
-    printf "."
+    printf "⚘"
     sleep 1
   done
-  echo " done"
+  echo "🌊 done"
   
   echo "travis_fold:end:hana"
 fi
