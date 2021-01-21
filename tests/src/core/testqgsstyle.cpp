@@ -96,6 +96,7 @@ class TestStyle : public QObject
     void testSmartGroup();
     void testIsStyleXml();
     void testVisitor();
+    void testColorRampShaderClassification();
 
 };
 
@@ -1664,6 +1665,192 @@ void TestStyle::testVisitor()
             << QStringLiteral( "exit: annotation Annotation" )
             << QStringLiteral( "exit: annotations Annotations" ) );
 }
+
+void TestStyle::testColorRampShaderClassification()
+{
+  // Test Type::Interpolated and ClassificationMode::EqualInterval
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Interpolated, QgsColorRampShader::ClassificationMode::EqualInterval ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 63.75, QColor( 0,  191,  64 ),  "63.8" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  128,  128 ),  "128" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 191.25, QColor( 0,  64,  191 ),  "191" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
+
+    QVERIFY( itemsList.size() == itemsList2.size() );
+    for ( int i = 0; i < itemsList.size(); ++i )
+    {
+      QVERIFY( itemsList[i].value == itemsList2[i].value );
+      QVERIFY( itemsList[i].color.red() == itemsList2[i].color.red() );
+      QVERIFY( itemsList[i].color.green() == itemsList2[i].color.green() );
+      QVERIFY( itemsList[i].color.blue() == itemsList2[i].color.blue() );
+      QVERIFY( itemsList[i].color.alpha() == itemsList2[i].color.alpha() );
+    }
+  }
+  // Test Type::Exact and ClassificationMode::EqualInterval
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Exact, QgsColorRampShader::ClassificationMode::EqualInterval ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 63.75, QColor( 0,  191,  64 ),  "63.8" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  128,  128 ),  "128" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 191.25, QColor( 0,  64,  191 ),  "191" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
+
+    QVERIFY( itemsList.size() == itemsList2.size() );
+    for ( int i = 0; i < itemsList.size(); ++i )
+    {
+      QVERIFY( itemsList[i].value == itemsList2[i].value );
+      QVERIFY( itemsList[i].color.red() == itemsList2[i].color.red() );
+      QVERIFY( itemsList[i].color.green() == itemsList2[i].color.green() );
+      QVERIFY( itemsList[i].color.blue() == itemsList2[i].color.blue() );
+      QVERIFY( itemsList[i].color.alpha() == itemsList2[i].color.alpha() );
+    }
+  }
+
+  // Test Type::Discrete and ClassificationMode::EqualInterval
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::EqualInterval ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 51, QColor( 0,  255,  0 ),  "51" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 102, QColor( 0,  191,  64 ),  "102" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 153, QColor( 0,  128,  128 ),  "153" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 204, QColor( 0,  64,  191 ),  "204" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
+
+    QVERIFY( itemsList.size() == itemsList2.size() );
+    for ( int i = 0; i < itemsList.size(); ++i )
+    {
+      QVERIFY( itemsList[i].value == itemsList2[i].value );
+      QVERIFY( itemsList[i].color.red() == itemsList2[i].color.red() );
+      QVERIFY( itemsList[i].color.green() == itemsList2[i].color.green() );
+      QVERIFY( itemsList[i].color.blue() == itemsList2[i].color.blue() );
+      QVERIFY( itemsList[i].color.alpha() == itemsList2[i].color.alpha() );
+    }
+  }
+
+  // Test Type::Interpolated and ClassificationMode::Continuous
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Interpolated, QgsColorRampShader::ClassificationMode::Continuous ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
+
+    QVERIFY( itemsList.size() == itemsList2.size() );
+    for ( int i = 0; i < itemsList.size(); ++i )
+    {
+      QVERIFY( itemsList[i].value == itemsList2[i].value );
+      QVERIFY( itemsList[i].color.red() == itemsList2[i].color.red() );
+      QVERIFY( itemsList[i].color.green() == itemsList2[i].color.green() );
+      QVERIFY( itemsList[i].color.blue() == itemsList2[i].color.blue() );
+      QVERIFY( itemsList[i].color.alpha() == itemsList2[i].color.alpha() );
+    }
+  }
+  // Test Type::Exact and ClassificationMode::Continuous
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Exact, QgsColorRampShader::ClassificationMode::Continuous ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
+
+    QVERIFY( itemsList.size() == itemsList2.size() );
+    for ( int i = 0; i < itemsList.size(); ++i )
+    {
+      QVERIFY( itemsList[i].value == itemsList2[i].value );
+      QVERIFY( itemsList[i].color.red() == itemsList2[i].color.red() );
+      QVERIFY( itemsList[i].color.green() == itemsList2[i].color.green() );
+      QVERIFY( itemsList[i].color.blue() == itemsList2[i].color.blue() );
+      QVERIFY( itemsList[i].color.alpha() == itemsList2[i].color.alpha() );
+    }
+  }
+
+  // Test Type::Discrete and ClassificationMode::Continuous
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::Continuous ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  255,  0 ),  "128" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
+
+    QVERIFY( itemsList.size() == itemsList2.size() );
+    for ( int i = 0; i < itemsList.size(); ++i )
+    {
+      QVERIFY( itemsList[i].value == itemsList2[i].value );
+      QVERIFY( itemsList[i].color.red() == itemsList2[i].color.red() );
+      QVERIFY( itemsList[i].color.green() == itemsList2[i].color.green() );
+      QVERIFY( itemsList[i].color.blue() == itemsList2[i].color.blue() );
+      QVERIFY( itemsList[i].color.alpha() == itemsList2[i].color.alpha() );
+    }
+  }
+
+  // Test when min == max for Continuous mode
+  for ( int i = 0; i < 3; ++i )
+  {
+    QgsColorRampShader::Type type = static_cast<QgsColorRampShader::Type>( i );
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, QgsColorRampShader::ClassificationMode::Continuous ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    if ( type == QgsColorRampShader::Type::Discrete )
+      itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
+
+    QVERIFY( itemsList.size() == itemsList2.size() );
+    for ( int i = 0; i < itemsList.size(); ++i )
+    {
+      QVERIFY( itemsList[i].value == itemsList2[i].value );
+      QVERIFY( itemsList[i].color.red() == itemsList2[i].color.red() );
+      QVERIFY( itemsList[i].color.green() == itemsList2[i].color.green() );
+      QVERIFY( itemsList[i].color.blue() == itemsList2[i].color.blue() );
+      QVERIFY( itemsList[i].color.alpha() == itemsList2[i].color.alpha() );
+    }
+  }
+
+  // Test when min == max for EqualInterval mode
+  for ( int i = 0; i < 3; ++i )
+  {
+    QgsColorRampShader::Type type = static_cast<QgsColorRampShader::Type>( i );
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, QgsColorRampShader::ClassificationMode::EqualInterval ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    if ( type == QgsColorRampShader::Type::Discrete )
+      itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
+
+    QVERIFY( itemsList.size() == itemsList2.size() );
+    for ( int i = 0; i < itemsList.size(); ++i )
+    {
+      QVERIFY( itemsList[i].value == itemsList2[i].value );
+      QVERIFY( itemsList[i].color.red() == itemsList2[i].color.red() );
+      QVERIFY( itemsList[i].color.green() == itemsList2[i].color.green() );
+      QVERIFY( itemsList[i].color.blue() == itemsList2[i].color.blue() );
+      QVERIFY( itemsList[i].color.alpha() == itemsList2[i].color.alpha() );
+    }
+  }
+
+}
+
 
 QGSTEST_MAIN( TestStyle )
 #include "testqgsstyle.moc"
