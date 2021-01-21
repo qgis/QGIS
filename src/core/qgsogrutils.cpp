@@ -225,6 +225,14 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
           value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
         else
           value = QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
+
+#ifdef Q_OS_WIN
+        // Fixes GH #41076 (empty strings shown as NULL), because we have checked before that it was NOT NULL
+        // Note:  QVariant( QString( ) ).isNull( ) is still true on windows so we really need string literal :(
+        if ( value.isNull() )
+          value = QVariant( QStringLiteral( "" ) ); // skip-keyword-check
+#endif
+
         break;
       }
       case QVariant::Int:
@@ -315,7 +323,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   }
   else
   {
-    value = QVariant( QString() );
+    value = QVariant( field.type() );
   }
 
   return value;
