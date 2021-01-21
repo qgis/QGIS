@@ -34,7 +34,8 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
 
     # there is no service for oracle provider test so we need to save user and password
     # to keep them when storing/loading connections in parent class _test_save_load method
-    configuration = {"saveUsername": True, "savePassword": True, "geometryColumnsOnly": True}
+    configuration = {"saveUsername": True, "savePassword": True, "geometryColumnsOnly": True,
+                     "onlyExistingTypes": True}
 
     defaultSchema = 'QGIS'
 
@@ -42,6 +43,7 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
     myNewTable = 'MYNEWTABLE'
     myVeryNewTable = 'MYVERYNEWTABLE'
     myUtf8Table = 'MYUTF8\U0001F604TABLE'
+    geometryColumnName = 'GEOM'
 
     @classmethod
     def setUpClass(cls):

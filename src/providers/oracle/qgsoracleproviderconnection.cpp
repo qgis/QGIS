@@ -29,6 +29,7 @@ const QStringList CONFIGURATION_PARAMETERS
   QStringLiteral( "geometryColumnsOnly" ),
   QStringLiteral( "allowGeometrylessTables" ),
   QStringLiteral( "disableInvalidGeometryHandling" ),
+  QStringLiteral( "onlyExistingTypes" ),
   QStringLiteral( "saveUsername" ),
   QStringLiteral( "savePassword" ),
 };
@@ -369,4 +370,53 @@ void QgsOracleProviderConnection::renameVectorTable( const QString &schema, cons
 
   executeSqlPrivate( QStringLiteral( "UPDATE user_sdo_geom_metadata SET TABLE_NAME = '%1' where TABLE_NAME = '%2'" )
                      .arg( newName, name ) );
+}
+
+void QgsOracleProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsOracleProviderConnection::SpatialIndexOptions &options ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+
+  QgsDataSourceUri dsUri( uri() );
+  QgsPoolOracleConn pconn( dsUri.connectionInfo( false ) );
+  QgsOracleConn *conn = pconn.get();
+  if ( !conn )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+  }
+
+  const QString indexName = conn->createSpatialIndex( schema, name, options.geometryColumnName );
+  if ( indexName.isEmpty() )
+    throw QgsProviderConnectionException( QObject::tr( "Failed to create spatial index for %1.%2(%3)" ).arg( schema, name, options.geometryColumnName ) );
+}
+
+void QgsOracleProviderConnection::deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  QgsDataSourceUri dsUri( uri() );
+  QgsPoolOracleConn pconn( dsUri.connectionInfo( false ) );
+  QgsOracleConn *conn = pconn.get();
+  if ( !conn )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  bool isValid;
+  QString indexName = conn->getSpatialIndexName( schema, name, geometryColumn, isValid );
+
+  if ( indexName.isEmpty() )
+    throw QgsProviderConnectionException( QObject::tr( "No spatial index exists for %1.%2(%3)" ).arg( schema, name, geometryColumn ) );
+
+  executeSqlPrivate( QStringLiteral( "DROP INDEX %1" ).arg( indexName ) );
+}
+
+bool QgsOracleProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::SpatialIndexExists );
+
+  QgsDataSourceUri dsUri( uri() );
+  QgsPoolOracleConn pconn( dsUri.connectionInfo( false ) );
+  QgsOracleConn *conn = pconn.get();
+  if ( !conn )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  bool isValid;
+  conn->getSpatialIndexName( schema, name, geometryColumn, isValid );
+  return isValid;
 }

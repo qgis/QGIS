@@ -62,6 +62,9 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
 
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
+    void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
+    bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
+    void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = TableFlags() ) const override;
     void store( const QString &name ) const override;

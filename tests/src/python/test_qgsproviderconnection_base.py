@@ -54,6 +54,7 @@ class TestPyQgsProviderConnectionBase():
     myNewTable = 'myNewTable'
     myVeryNewTable = 'myVeryNewTable'
     myUtf8Table = 'myUtf8\U0001f604Table'
+    geometryColumnName = 'geom'
 
     @classmethod
     def setUpClass(cls):
@@ -324,38 +325,38 @@ class TestPyQgsProviderConnectionBase():
 
             # Vacuum
             if capabilities & QgsAbstractDatabaseProviderConnection.Vacuum:
-                conn.vacuum('myNewSchema', self.myNewTable)
+                conn.vacuum(schema, self.myNewTable)
 
             # Spatial index
             spatial_index_exists = False
             # we don't initially know if a spatial index exists -- some formats may create them by default, others not
             if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
-                spatial_index_exists = conn.spatialIndexExists('myNewSchema', self.myNewTable, 'geom')
+                spatial_index_exists = conn.spatialIndexExists(schema, self.myNewTable, self.geometryColumnName)
             if capabilities & QgsAbstractDatabaseProviderConnection.DeleteSpatialIndex:
                 if spatial_index_exists:
-                    conn.deleteSpatialIndex('myNewSchema', self.myNewTable, 'geom')
+                    conn.deleteSpatialIndex(schema, self.myNewTable, self.geometryColumnName)
                 if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
-                    self.assertFalse(conn.spatialIndexExists('myNewSchema', self.myNewTable, 'geom'))
+                    self.assertFalse(conn.spatialIndexExists(schema, self.myNewTable, self.geometryColumnName))
 
             if capabilities & (QgsAbstractDatabaseProviderConnection.CreateSpatialIndex | QgsAbstractDatabaseProviderConnection.SpatialIndexExists):
                 options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
-                options.geometryColumnName = 'geom'
+                options.geometryColumnName = self.geometryColumnName
 
-                if not conn.spatialIndexExists('myNewSchema', self.myNewTable, options.geometryColumnName):
-                    conn.createSpatialIndex('myNewSchema', self.myNewTable, options)
+                if not conn.spatialIndexExists(schema, self.myNewTable, options.geometryColumnName):
+                    conn.createSpatialIndex(schema, self.myNewTable, options)
 
-                self.assertTrue(conn.spatialIndexExists('myNewSchema', 'myNewTable', 'geom'))
+                self.assertTrue(conn.spatialIndexExists(schema, self.myNewTable, self.geometryColumnName))
 
                 # now we know for certain a spatial index exists, let's retry dropping it
                 if capabilities & QgsAbstractDatabaseProviderConnection.DeleteSpatialIndex:
-                    conn.deleteSpatialIndex('myNewSchema', self.myNewTable, 'geom')
+                    conn.deleteSpatialIndex(schema, self.myNewTable, self.geometryColumnName)
                     if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
-                        self.assertFalse(conn.spatialIndexExists('myNewSchema', self.myNewTable, 'geom'))
+                        self.assertFalse(conn.spatialIndexExists(schema, self.myNewTable, self.geometryColumnName))
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema:
                 # Drop schema (should fail)
                 with self.assertRaises(QgsProviderConnectionException) as ex:
-                    conn.dropSchema('myNewSchema')
+                    conn.dropSchema(schema)
 
             # Check some column types operations
             table = self._table_by_name(conn.tables(schema), self.myNewTable)
@@ -380,21 +381,21 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
 
             # Check fields
-            fields = conn.fields('myNewSchema', self.myNewTable)
+            fields = conn.fields(schema, self.myNewTable)
             for f in ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t', 'time_t']:
                 self.assertTrue(f in fields.names())
 
             if capabilities & QgsAbstractDatabaseProviderConnection.AddField:
                 field = QgsField('short_lived_field', QVariant.Int, 'integer')
-                conn.addField(field, 'myNewSchema', self.myNewTable)
-                fields = conn.fields('myNewSchema', self.myNewTable)
+                conn.addField(field, schema, self.myNewTable)
+                fields = conn.fields(schema, self.myNewTable)
                 self.assertTrue('short_lived_field' in fields.names())
 
                 if capabilities & QgsAbstractDatabaseProviderConnection.DeleteField:
-                    conn.deleteField('short_lived_field', 'myNewSchema', self.myNewTable)
+                    conn.deleteField('short_lived_field', schema, self.myNewTable)
                     # This fails on Travis for spatialite, for no particular reason
                     if self.providerKey == 'spatialite' and not os.environ.get('TRAVIS', False):
-                        fields = conn.fields('myNewSchema', self.myNewTable)
+                        fields = conn.fields(schema, self.myNewTable)
                         self.assertFalse('short_lived_field' in fields.names())
 
             # Drop table
@@ -405,8 +406,8 @@ class TestPyQgsProviderConnectionBase():
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema:
                 # Drop schema
-                conn.dropSchema('myNewSchema')
-                self.assertFalse('myNewSchema' in conn.schemas())
+                conn.dropSchema(schema)
+                self.assertFalse(schema in conn.schemas())
 
         conns = md.connections()
         self.assertTrue(isinstance(list(conns.values())[0], QgsAbstractDatabaseProviderConnection))
