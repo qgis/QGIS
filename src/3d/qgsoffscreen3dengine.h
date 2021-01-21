@@ -68,8 +68,7 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     QgsOffscreen3DEngine();
     ~QgsOffscreen3DEngine() override;
 
-    //! Sets the size of the rendering area (in pixels)
-    void setSize( QSize s );
+    void setSize( QSize s ) override;
 
     void setClearColor( const QColor &color ) override;
     void setFrustumCullingEnabled( bool enabled ) override;

@@ -78,8 +78,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     QSize size() const override;
     QSurface *surface() const override;
 
-    //! Sets the size of the window (useful to fix frame graph parameters)
-    void setSize( int width, int height );
+    void setSize( QSize s ) override;
   private:
     //! 3D window with all the 3D magic inside
     Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
@@ -91,6 +90,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     Qt3DCore::QEntity *mSceneRoot = nullptr;
 
     QgsPreviewQuad *mPreviewQuad = nullptr;
+    QSize mSize = QSize( 1024, 768 );
 };
 
 #endif // QGSWINDOW3DENGINE_H
