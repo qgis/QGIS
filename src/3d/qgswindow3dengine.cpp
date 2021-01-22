@@ -103,10 +103,6 @@ void QgsWindow3DEngine::setSize( QSize s )
 {
   mSize = s;
 
-//  mTexture->setSize( mSize.width(), mSize.height() );
-//  mDepthTexture->setSize( mSize.width(), mSize.height() );
-//  mSurfaceSelector->setExternalRenderTargetSize( mSize );
-
   mWindow3D->setWidth( mSize.width() );
   mWindow3D->setHeight( mSize.height() );
   mShadowRenderingFrameGraph->setSize( mSize );
