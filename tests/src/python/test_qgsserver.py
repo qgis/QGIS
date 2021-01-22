@@ -108,7 +108,9 @@ class QgsServerTestBase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+
         cls.app = QgsApplication([], False)
+        cls.app.initQgis()
 
     @classmethod
     def tearDownClass(cls):
