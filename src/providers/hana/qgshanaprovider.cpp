@@ -336,8 +336,6 @@ QgsHanaProvider::QgsHanaProvider(
     mDatabaseVersion = QgsHanaUtils::toHANAVersion( conn->getDatabaseVersion() );
     readGeometryType();
     readAttributeFields();
-    if ( !mIsQuery && mPrimaryKeyType == PktUnknown )
-      return;
     readSrsInformation();
     readMetadata();
 
@@ -1403,20 +1401,25 @@ void QgsHanaProvider::readSrsInformation()
 
 void QgsHanaProvider::determinePrimaryKey()
 {
+  QPair<QgsHanaPrimaryKeyType, QList<int>> primaryKey;
   if ( !mIsQuery )
   {
     QgsHanaConnectionRef conn( mUri );
-    QStringList layerPrimaryKey = conn->getLayerPrimaryeKey( mSchemaName, mTableName );
-    auto primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromColumns( layerPrimaryKey, mAttributeFields );
-    mPrimaryKeyType = primaryKey.first;
-    mPrimaryKeyAttrs = primaryKey.second;
+    if ( conn->isTable( mSchemaName, mTableName ) )
+    {
+      QStringList layerPrimaryKey = conn->getLayerPrimaryeKey( mSchemaName, mTableName );
+      primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromColumns( layerPrimaryKey, mAttributeFields );
+    }
+    else
+      primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mAttributeFields );
   }
   else
   {
-    auto primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mAttributeFields );
-    mPrimaryKeyType = primaryKey.first;
-    mPrimaryKeyAttrs = primaryKey.second;
+    primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mAttributeFields );
   }
+
+  mPrimaryKeyType = primaryKey.first;
+  mPrimaryKeyAttrs = primaryKey.second;
 
   if ( mPrimaryKeyAttrs.size() == 1 )
   {
@@ -1426,9 +1429,6 @@ void QgsHanaProvider::determinePrimaryKey()
     constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
     mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
   }
-
-  if ( !mIsQuery )
-    mValid =  mPrimaryKeyType != PktUnknown;
 }
 
 long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const

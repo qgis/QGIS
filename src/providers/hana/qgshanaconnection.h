@@ -71,6 +71,7 @@ class QgsHanaConnection : public QObject
     QString getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName );
     int getColumnSrid( const QString &schemaName, const QString &tableName, const QString &columnName );
     QgsHanaResultSetRef getColumns( const QString &schemaName, const QString &tableName, const QString &fieldName );
+    bool isTable( const QString &schemaName, const QString &tableName );
 
     static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri );
     static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, bool *canceled );

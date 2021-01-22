@@ -155,7 +155,7 @@ QPair<QgsHanaPrimaryKeyType, QList<int>> QgsHanaPrimaryKeyUtils::determinePrimar
   if ( !attrs.isEmpty() )
     keyType = ( attrs.size() == 1 ) ? getPrimaryKeyType( fields.at( attrs[0] ) ) : PktFidMap;
   else
-    QgsMessageLog::logMessage( QObject::tr( "Keys for view/query undefined." ), QObject::tr( "SAP HANA" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Keys for view/query undefined. Some functionality might not be available." ), QObject::tr( "SAP HANA" ) );
 
   return qMakePair( keyType, attrs );
 }
