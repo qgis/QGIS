@@ -2470,8 +2470,7 @@ namespace QgsWms
       {
         try
         {
-          const QgsRectangle transformedBox = transform.transformBoundingBox( box );
-          box = transformedBox;
+          box = transform.transformBoundingBox( box );
         }
         catch ( QgsCsException &e )
         {
