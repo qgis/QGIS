@@ -5035,9 +5035,17 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     else
     {
       // multi reference field => add the field pair to all the referenced layers found
+      const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
+      const auto constFoundLayers = foundLayers;
       for ( int i = 0; i < nbFound; ++i )
       {
-        result[result.size() - 1 - i].addFieldPair( fkColumn, refColumn );
+        for ( const QgsVectorLayer *foundLayer : constFoundLayers )
+        {
+          if ( result[result.size() - 1 - i].referencedLayerId() == foundLayer->id() )
+          {
+            result[result.size() - 1 - i].addFieldPair( fkColumn, refColumn );
+          }
+        }
       }
     }
   }
