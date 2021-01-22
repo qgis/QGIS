@@ -224,6 +224,11 @@ class QgsOracleConn : public QObject
      */
     QString createSpatialIndex( const QString &ownerName, const QString &tableName, const QString &geometryColumn );
 
+    /**
+     * Returns list of defined primary keys for \a tableName table in \a ownerName schema/user
+     */
+    QStringList getPrimaryKeys( const QString &ownerName, const QString &tableName );
+
     static const int sGeomTypeSelectLimit;
 
     static QgsWkbTypes::Type wkbTypeFromDatabase( int gtype );

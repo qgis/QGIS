@@ -1058,6 +1058,33 @@ QString QgsOracleConn::createSpatialIndex( const QString &ownerName, const QStri
   return QString( "QGIS_IDX_%1" ).arg( n, 10, 10, QChar( '0' ) );
 }
 
+QStringList QgsOracleConn::getPrimaryKeys( const QString &ownerName, const QString &tableName )
+{
+  QSqlQuery qry( mDatabase );
+
+  QStringList result;
+
+  if ( !exec( qry, QString( "SELECT column_name"
+                            " FROM all_cons_columns a"
+                            " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
+                            " WHERE b.constraint_type='P' AND b.owner=? AND b.table_name=?" ),
+              QVariantList() << ownerName << tableName ) )
+  {
+    QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                               .arg( qry.lastError().text() )
+                               .arg( qry.lastQuery() ), tr( "Oracle" ) );
+    return result;
+  }
+
+  while ( qry.next() )
+  {
+    QString name = qry.value( 0 ).toString();
+    result << name;
+  }
+
+  return result;
+}
+
 
 QgsPoolOracleConn::QgsPoolOracleConn( const QString &connInfo )
   : mConn( QgsOracleConnPool::instance()->acquireConnection( connInfo ) )

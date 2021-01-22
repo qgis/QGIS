@@ -65,13 +65,6 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
         cls.conn.setPassword('qgis')
         assert cls.conn.open()
 
-        # try:
-        #     md = QgsProviderRegistry.instance().providerMetadata(cls.providerKey)
-        #     conn = md.createConnection(cls.uri, {})
-        #     conn.executeSql('drop schema [myNewSchema]')
-        # except:
-        #     pass
-
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.conn)
         query = QSqlQuery(self.conn)
@@ -157,6 +150,21 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
         self.assertEqual(ds_uri.param('dboptions'), 'test_opts')
         self.assertEqual(ds_uri.param('dbworkspace'), 'workspace')
         conn.remove('myconf')
+
+    def test_pkcols(self):
+        """Test retrieval of primary columns"""
+
+        self.execSQLCommand("""CREATE OR REPLACE VIEW "QGIS"."SOME_DATA_VIEW" AS SELECT * FROM "QGIS"."SOME_DATA" """)
+
+        md = QgsProviderRegistry.instance().providerMetadata('oracle')
+        conn = md.createConnection(self.uri, {})
+        tables = conn.tables('QGIS')
+
+        tables_dict = dict([(table.tableName(), table.primaryKeyColumns()) for table in tables])
+
+        self.assertEqual(sorted(tables_dict['SOME_DATA_VIEW']), ['GEOM', 'cnt', 'date', 'dt', 'name', 'name2', 'num_char', 'pk', 'time'])
+        self.assertEqual(sorted(tables_dict['SOME_DATA']), ['pk'])
+        self.assertEqual(sorted(tables_dict['POINT_DATA_IDENTITY']), ['pk'])
 
 
 if __name__ == '__main__':

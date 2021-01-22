@@ -851,24 +851,12 @@ bool QgsOracleProvider::determinePrimaryKey()
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
-    if ( !exec( qry, QString( "SELECT column_name"
-                              " FROM all_cons_columns a"
-                              " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
-                              " WHERE b.constraint_type='P' AND b.owner=? AND b.table_name=?" ),
-                QVariantList() << mOwnerName << mTableName ) )
-    {
-      QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ), tr( "Oracle" ) );
-      return false;
-    }
+    const QStringList pkeys = conn->getPrimaryKeys( mOwnerName, mTableName );
 
     bool isInt = true;
 
-    while ( qry.next() )
+    for ( QString name : pkeys )
     {
-      QString name = qry.value( 0 ).toString();
-
       int idx = mAttributeFields.indexFromName( name );
       if ( idx < 0 )
       {
