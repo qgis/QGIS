@@ -941,6 +941,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "length line" ) << "length(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant( 4.0 );
       QTest::newRow( "length polygon" ) << "length(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant();
       QTest::newRow( "length point" ) << "length(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
+      QTest::newRow( "length3D lineZ" ) << "length3D(geom_from_wkt('LINESTRINGZ(0 0 0, 3 0 4)'))" << false << QVariant( 5.0 );
+      QTest::newRow( "length3D line" ) << "length3D(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant( 4.0 );
+      QTest::newRow( "length3D polygon" ) << "length3D(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant();
+      QTest::newRow( "length3D point" ) << "length3D(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
       QTest::newRow( "area polygon" ) << "area(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant( 8.0 );
       QTest::newRow( "area line" ) << "area(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant();
       QTest::newRow( "area point" ) << "area(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
@@ -2775,13 +2779,17 @@ class TestQgsExpression: public QObject
     void eval_geometry_calc()
     {
       QgsPolylineXY polyline, polygon_ring;
+      QgsPolyline polylineZ;
       polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
+      polylineZ << QgsPoint( 0, 0, 0 ) << QgsPoint( 3, 0, 4 );
       polygon_ring << QgsPointXY( 2, 1 ) << QgsPointXY( 10, 1 ) << QgsPointXY( 10, 6 ) << QgsPointXY( 2, 6 ) << QgsPointXY( 2, 1 );
       QgsPolygonXY polygon;
       polygon << polygon_ring;
-      QgsFeature fPolygon, fPolyline;
+      QgsFeature fPolygon, fPolyline, fPolylineZ;
       QgsGeometry polylineGeom = QgsGeometry::fromPolylineXY( polyline );
       fPolyline.setGeometry( polylineGeom );
+      QgsGeometry polylineZGeom = QgsGeometry::fromPolyline( polylineZ );
+      fPolylineZ.setGeometry( polylineZGeom );
       QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
       fPolygon.setGeometry( polygonGeom );
 
@@ -2898,6 +2906,11 @@ class TestQgsExpression: public QObject
       QgsExpression exp13( QStringLiteral( "perimeter($geometry)" ) );
       QVariant vPerimeterPoly = exp13.evaluate( &context );
       QCOMPARE( vPerimeterPoly.toDouble(), 26.0 );
+
+      context.setFeature( fPolylineZ );
+      QgsExpression exp14( QStringLiteral( "length3D($geometry)" ) );
+      QVariant vLengthLineZ = exp14.evaluate( &context );
+      QCOMPARE( vLengthLineZ.toDouble(), 5.0 );
     }
 
     void geom_calculator()
