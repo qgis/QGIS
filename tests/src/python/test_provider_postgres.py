@@ -2286,6 +2286,31 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(vl.isValid())
         self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
 
+    def testValidLayerDiscoverRelations(self):
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'pk\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referencing_layer"',
+            'referencing_layer', 'postgres')
+        vls = [
+            QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'pk_ref_1\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referenced_layer_1"',
+                'referenced_layer_1', 'postgres'),
+            QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'pk_ref_2\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referenced_layer_2"',
+                'referenced_layer_2', 'postgres'),
+            vl
+        ]
+
+        for lyr in vls:
+            self.assertTrue(lyr.isValid())
+            QgsProject.instance().addMapLayer(lyr)
+        relations = vl.dataProvider().discoverRelations(vl, vls)
+        self.assertEqual(len(relations), 2)
+        for i, r in enumerate(relations):
+            self.assertEqual(r.referencedLayer(), vls[i])
+
     def testCheckTidPkOnViews(self):
         """Test vector layer based on a view with `ctid` as a key"""
 

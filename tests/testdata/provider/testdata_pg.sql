@@ -721,3 +721,27 @@ CREATE TABLE IF NOT EXISTS "test_check_constraint" (
 INSERT INTO test_check_constraint (geom, i_will_fail_on_no_name)
 VALUES ('SRID=4326;POINT(9 45)'::geometry, 'I have a name'), ('SRID=4326;POINT(10 46)'::geometry, 'I have a name too');
 
+---------------------------------------------
+--
+-- Tables to check tables relation in project
+--
+
+CREATE TABLE qgis_test.referenced_layer_1(
+  pk_ref_1 serial primary key 
+);
+
+CREATE TABLE qgis_test.referenced_layer_2(
+  pk_ref_2 serial primary key 
+);
+
+CREATE TABLE qgis_test.referencing_layer(
+  pk serial primary key,
+  fk_ref_1 integer,
+  fk_ref_2 integer,
+    CONSTRAINT fk_ref_1
+      FOREIGN KEY(fk_ref_1) 
+    REFERENCES qgis_test.referenced_layer_1(pk_ref_1),
+    CONSTRAINT fk_ref_2
+      FOREIGN KEY(fk_ref_2) 
+    REFERENCES qgis_test.referenced_layer_2(pk_ref_2)
+);
