@@ -66,7 +66,8 @@ QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &no
   QString referencedLayerExpression = elem.attribute( QStringLiteral( "referencedLayerExpression" ) );
   QString id = elem.attribute( QStringLiteral( "id" ) );
   QString name = elem.attribute( QStringLiteral( "name" ) );
-  const QStringList referencedLayerIds = elem.attribute( QStringLiteral( "referencedLayerIds" ) ).split( "," );
+  QString relationStrength = elem.attribute( QStringLiteral( "relationStrength" ) );
+  QStringList referencedLayerIds = elem.attribute( QStringLiteral( "referencedLayerIds" ) ).split( "," );
 
   QMap<QString, QgsMapLayer *> mapLayers = relationContext.project()->mapLayers();
 
@@ -77,6 +78,7 @@ QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &no
   relation.d->mReferencedLayerIds = referencedLayerIds;
   relation.d->mRelationId = id;
   relation.d->mRelationName = name;
+  relation.d->mRelationStrength = qgsEnumKeyToValue<QgsRelation::RelationStrength>( relationStrength, QgsRelation::RelationStrength::Association );
 
   QDomNodeList references = elem.elementsByTagName( QStringLiteral( "fieldRef" ) );
   for ( int i = 0; i < references.size(); ++i )
@@ -103,6 +105,7 @@ void QgsPolymorphicRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "referencedLayerField" ), d->mReferencedLayerField );
   elem.setAttribute( QStringLiteral( "referencedLayerExpression" ), d->mReferencedLayerExpression );
   elem.setAttribute( QStringLiteral( "referencedLayerIds" ), d->mReferencedLayerIds.join( "," ) );
+  elem.setAttribute( QStringLiteral( "relationStrength" ), qgsEnumValueToKey<QgsRelation::RelationStrength>( d->mRelationStrength ) );
 
   // note that a layer id can store a comma in theory. Luckyly, this is not easy to achieve, e.g. you need to modify the .qgs file manually
   for ( const QString &layerId : qgis::as_const( d->mReferencedLayerIds ) )
@@ -360,6 +363,18 @@ QStringList QgsPolymorphicRelation::referencedLayerIds() const
   return d->mReferencedLayerIds;
 }
 
+QgsRelation::RelationStrength QgsPolymorphicRelation::strength() const
+{
+  return d->mRelationStrength;
+}
+
+void QgsPolymorphicRelation::setRelationStrength( QgsRelation::RelationStrength relationStrength )
+{
+  d.detach();
+  d->mRelationStrength = relationStrength;
+  updateRelationStatus();
+}
+
 QList<QgsRelation> QgsPolymorphicRelation::generateRelations() const
 {
   QList<QgsRelation> relations;
@@ -379,6 +394,7 @@ QList<QgsRelation> QgsPolymorphicRelation::generateRelations() const
     relation.setName( QStringLiteral( "Generated for \"%1\"" ).arg( referencedLayerName ) );
     relation.setId( QStringLiteral( "%1_%2" ).arg( d->mRelationId, referencedLayerName ) );
     relation.setPolymorphicRelationId( d->mRelationId );
+    relation.setStrength( d->mRelationStrength );
 
     const QList<QgsRelation::FieldPair> constFieldPairs = fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )

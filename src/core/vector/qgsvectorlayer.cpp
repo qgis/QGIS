@@ -2640,7 +2640,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     const auto constReferencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
     for ( const auto &rel : constReferencingRelations )
     {
-      QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
+      if ( rel.type() == QgsRelation::Normal )
+      {
+        QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
+      }
     }
 
     // Store referencing layers: relations where "this" is the parent layer (the referenced part, that holds the FK)
@@ -2650,7 +2653,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
     for ( const auto &rel : constReferencedRelations )
     {
-      QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
+      if ( rel.type() == QgsRelation::Normal )
+      {
+        QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
+      }
     }
 
   }

@@ -17,6 +17,7 @@
 
 #include <QDialog>
 #include "qgis_app.h"
+#include "ui_qgsrelationmanageradddialogbase.h"
 #include "qgsrelation.h"
 
 class QDialogButtonBox;
@@ -28,51 +29,14 @@ class QVBoxLayout;
 class QHBoxLayout;
 
 class QgsVectorLayer;
-class QgsMapLayerComboBox;
 class QgsFieldComboBox;
-
-/**
- * QgsFieldPairWidget is horizontal widget with a field pair and buttons to enable/disable it
- */
-class APP_EXPORT QgsFieldPairWidget : public QWidget
-{
-    Q_OBJECT
-  public:
-    explicit QgsFieldPairWidget( int index, QWidget *parent = nullptr );
-    QString referencingField() const;
-    QString referencedField() const;
-    bool isPairEnabled() const;
-
-  signals:
-    void configChanged();
-    void pairDisabled( int index );
-    void pairEnabled();
-
-  public slots:
-    void setReferencingLayer( QgsMapLayer *layer );
-    void setReferencedLayer( QgsMapLayer *layer );
-
-  private:
-    void updateWidgetVisibility();
-    void changeEnable();
-
-    int mIndex;
-    bool mEnabled;
-    QToolButton *mAddButton;
-    QToolButton *mRemoveButton;
-    QgsFieldComboBox *mReferencingFieldCombobox;
-    QgsFieldComboBox *mReferencedFieldCombobox;
-    QSpacerItem *mSpacerItem;
-    QHBoxLayout *mLayout;
-
-};
-
+class QgsMapLayerComboBox;
 
 /**
  * QgsRelationAddDlg allows configuring a new relation.
  * Multiple field pairs can be set.
  */
-class APP_EXPORT QgsRelationAddDlg : public QDialog
+class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationManagerAddDialogBase
 {
     Q_OBJECT
 
@@ -87,18 +51,19 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog
     QgsRelation::RelationStrength relationStrength();
 
   private slots:
-    void checkDefinitionValid();
-    void fieldPairRemoved( QgsFieldPairWidget *fieldPairWidget );
-    void addFieldPairWidget();
+    void addFieldsRow();
+    void removeFieldsRow();
+    void updateFieldsMappingButtons();
+    void updateFieldsMappingHeaders();
+    void updateDialogButtons();
+    void updateChildRelationsComboBox();
+    void updateReferencedFieldsComboBoxes();
+    void updateReferencingFieldsComboBoxes();
 
   private:
-    QList<QgsFieldPairWidget *> mFieldPairWidgets;
+    bool isDefinitionValid();
+    void updateFieldsMapping();
 
-    QDialogButtonBox *mButtonBox = nullptr;
-    QVBoxLayout *mFieldPairsLayout = nullptr;
-    QLineEdit *mNameLineEdit = nullptr;
-    QLineEdit *mIdLineEdit = nullptr;
-    QComboBox *mStrengthCombobox = nullptr;
     QgsMapLayerComboBox *mReferencedLayerCombobox = nullptr;
     QgsMapLayerComboBox *mReferencingLayerCombobox = nullptr;
 

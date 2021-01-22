@@ -435,3 +435,11 @@ QgsPolymorphicRelation QgsRelation::polymorphicRelation() const
 
   return mContext.project()->relationManager()->polymorphicRelation( d->mPolymorphicRelationId );
 }
+
+QgsRelation::RelationType QgsRelation::type() const
+{
+  if ( d->mPolymorphicRelationId.isNull() )
+    return QgsRelation::Normal;
+  else
+    return QgsRelation::Generated;
+}

@@ -274,6 +274,16 @@ class CORE_EXPORT QgsPolymorphicRelation
      */
     QString layerRepresentation( const QgsVectorLayer *layer ) const;
 
+    /**
+     * Returns the relation strength for all the generated normal relations
+     */
+    QgsRelation::RelationStrength strength() const;
+
+    /**
+     * Sets the relation strength for all the generated normal relations
+     */
+    void setRelationStrength( QgsRelation::RelationStrength relationStrength );
+
   private:
 
     QExplicitlySharedDataPointer<QgsPolymorphicRelationPrivate> d;

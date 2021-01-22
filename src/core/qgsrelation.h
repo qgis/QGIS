@@ -54,9 +54,19 @@ class CORE_EXPORT QgsRelation
   public:
 
     /**
-     * enum for the relation strength
-     * Association, Composition
+     * Enum holding the relations type
      */
+    enum RelationType
+    {
+      Normal, //!< A normal relation
+      Generated, //!< A generated relation is a child of a polymorphic relation
+    };
+    Q_ENUM( RelationType )
+
+    /**
+    * enum for the relation strength
+    * Association, Composition
+    */
     enum RelationStrength
     {
       Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
@@ -401,6 +411,12 @@ class CORE_EXPORT QgsRelation
      * \since QGIS 3.18
      */
     QgsPolymorphicRelation polymorphicRelation() const;
+
+    /**
+     * Returns the type of the relation
+     * \since QGIS 3.18
+     */
+    RelationType type() const;
 
   private:
 
