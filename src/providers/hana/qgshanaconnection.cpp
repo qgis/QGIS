@@ -762,7 +762,7 @@ QgsHanaResultSetRef QgsHanaConnection::getColumns( const QString &schemaName, co
 
 bool  QgsHanaConnection::isTable( const QString &schemaName, const QString &tableName )
 {
-  QString sql = "SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?";
+  QString sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?" );
   return executeCountQuery( sql, {schemaName, tableName } ) == 1;
 }
 
