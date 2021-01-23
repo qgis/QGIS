@@ -261,11 +261,15 @@ QString QgsRelation::id() const
 
 void QgsRelation::generateId()
 {
-  d->mRelationId = QStringLiteral( "%1_%2_%3_%4" )
-                   .arg( referencingLayerId(),
-                         d->mFieldPairs.at( 0 ).referencingField(),
-                         referencedLayerId(),
-                         d->mFieldPairs.at( 0 ).referencedField() );
+  if ( !d->mFieldPairs.isEmpty() )
+  {
+    const QgsRelation::FieldPair fieldPair = d->mFieldPairs.at( 0 );
+    d->mRelationId = QStringLiteral( "%1_%2_%3_%4" )
+                     .arg( referencingLayerId(),
+                           fieldPair.referencingField(),
+                           referencedLayerId(),
+                           fieldPair.referencedField() );
+  }
   updateRelationStatus();
 }
 
