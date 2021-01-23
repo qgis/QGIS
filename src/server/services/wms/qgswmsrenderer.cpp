@@ -2245,11 +2245,15 @@ namespace QgsWms
         if ( featuresNode.isEmpty() )
           continue;
 
+        QMap<QgsFeatureId, QString> fidMap;
+
         for ( int j = 0; j < featuresNode.size(); ++j )
         {
           const QDomElement featureNode = featuresNode.at( j ).toElement();
           const QgsFeatureId fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
           QgsFeature feature = QgsFeature( vl->getFeature( fid ) );
+
+          fidMap.insert( feature.id(), fid );
 
           QString wkt;
           if ( withGeometry )
@@ -2296,7 +2300,7 @@ namespace QgsWms
 
         for ( const auto &feature : qgis::as_const( features ) )
         {
-          const QString id = QStringLiteral( "%1.%2" ).arg( layerName ).arg( feature.id() );
+          const QString id = QStringLiteral( "%1.%2" ).arg( layerName ).arg( fidMap.value( feature.id() ) );
           json["features"].push_back( exporter.exportFeatureToJsonObject( feature, QVariantMap(), id ) );
         }
       }
@@ -2347,7 +2351,13 @@ namespace QgsWms
   {
     //qgs:%TYPENAME%
     QDomElement typeNameElement = doc.createElement( "qgs:" + typeName /*qgs:%TYPENAME%*/ );
-    typeNameElement.setAttribute( QStringLiteral( "fid" ), typeName + "." + QString::number( feat->id() ) );
+    QString fid;
+    if ( layer && layer->dataProvider() )
+      fid = QgsServerFeatureId::getServerFid( *feat, layer->dataProvider()->pkAttributeIndexes() );
+    else
+      fid = feat->id();
+
+    typeNameElement.setAttribute( QStringLiteral( "fid" ), QStringLiteral( "%1.%2" ).arg( typeName, fid ) );
 
     QgsCoordinateTransform transform;
     if ( layer && layer->crs() != crs )
@@ -2375,8 +2385,7 @@ namespace QgsWms
       {
         try
         {
-          QgsRectangle transformedBox = transform.transformBoundingBox( box );
-          box = transformedBox;
+          box = transform.transformBoundingBox( box );
         }
         catch ( QgsCsException &e )
         {
