@@ -216,6 +216,15 @@ unsigned short Konsole::vt100_graphics[32] =
   0x252c, 0x2502, 0x2264, 0x2265, 0x03C0, 0x2260, 0x00A3, 0x00b7
 };
 
+template<class T> inline int horizontalAdvance(const QFontMetrics& fm, T t)
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+    return fm.width( t );
+#else
+    return fm.horizontalAdvance( t );
+#endif
+}
+
 void TerminalDisplay::fontChange( const QFont & )
 {
   QFontMetrics fm( font() );
@@ -225,14 +234,14 @@ void TerminalDisplay::fontChange( const QFont & )
   // "Base character width on widest ASCII character. This prevents too wide
   //  characters in the presence of double wide (e.g. Japanese) characters."
   // Get the width from representative normal width characters
-  _fontWidth = qRound( static_cast<double>(fm.width( REPCHAR )) / static_cast<double>(strlen( REPCHAR )) );
+  _fontWidth = qRound( static_cast<double>(horizontalAdvance(fm, REPCHAR )) / static_cast<double>(strlen( REPCHAR )) );
 
   _fixedFont = true;
 
-  int fw = fm.width( REPCHAR[0] );
+  int fw = horizontalAdvance(fm, REPCHAR[0] );
   for ( unsigned int i = 1; i < strlen( REPCHAR ); i++ )
   {
-    if ( fw != fm.width( REPCHAR[i] ) )
+    if ( fw != horizontalAdvance(fm, REPCHAR[i] ) )
     {
       _fixedFont = false;
       break;
@@ -627,7 +636,7 @@ void TerminalDisplay::drawBackground( QPainter &painter, const QRect &rect, cons
   else
     painter.fillRect( contentsRect, backgroundColor );
 
-  painter.fillRect( scrollBarArea, _scrollBar->palette().background() );
+  painter.fillRect( scrollBarArea, _scrollBar->palette().window() );
 }
 
 void TerminalDisplay::drawCursor( QPainter &painter,
@@ -754,7 +763,7 @@ void TerminalDisplay::drawTextFragment( QPainter &painter,
   const QColor backgroundColor = style->backgroundColor.color( _colorTable );
 
   // draw background if different from the display's background color
-  if ( backgroundColor != palette().background().color() )
+  if ( backgroundColor != palette().window().color() )
     drawBackground( painter, rect, backgroundColor,
                     false /* do not use transparency */ );
 
@@ -1159,7 +1168,7 @@ void TerminalDisplay::showResizeNotification()
     if ( !_resizeWidget )
     {
       _resizeWidget = new QLabel( QStringLiteral( "Size: XXX x XXX" ), this );
-      _resizeWidget->setMinimumWidth( _resizeWidget->fontMetrics().width( QStringLiteral( "Size: XXX x XXX" ) ) );
+      _resizeWidget->setMinimumWidth( horizontalAdvance(_resizeWidget->fontMetrics(), QStringLiteral( "Size: XXX x XXX" ) ) );
       _resizeWidget->setMinimumHeight( _resizeWidget->sizeHint().height() );
       _resizeWidget->setAlignment( Qt::AlignCenter );
 
@@ -1241,9 +1250,9 @@ void TerminalDisplay::paintEvent( QPaintEvent *pe )
 {
   QPainter paint( this );
 
-  foreach ( const QRect &rect, ( pe->region() & contentsRect() ).rects() )
+  for ( const QRect &rect: pe->region() & contentsRect() )
   {
-    drawBackground( paint, rect, palette().background().color(),
+    drawBackground( paint, rect, palette().window().color(),
                     true /* use opacity setting */ );
     drawContents( paint, rect );
   }
@@ -1421,7 +1430,7 @@ int TerminalDisplay::textWidth( const int startColumn, const int length, const i
   int result = 0;
   for ( int column = 0; column < length; column++ )
   {
-    result += fm.width( _image[loc( startColumn + column, line )].character );
+    result += horizontalAdvance( fm,  _image[loc( startColumn + column, line )].character );
   }
   return result;
 }
@@ -1532,7 +1541,7 @@ void TerminalDisplay::drawContents( QPainter &paint, const QRect &rect )
       }
 
       //Apply text scaling matrix.
-      paint.setWorldMatrix( textScale, true );
+      paint.setWorldTransform(QTransform(textScale), true );
 
       //calculate the area in which the text will be drawn
       QRect textArea = calculateTextArea( tLx, tLy, x, y, len );
@@ -1556,7 +1565,7 @@ void TerminalDisplay::drawContents( QPainter &paint, const QRect &rect )
       _fixedFont = save__fixedFont;
 
       //reset back to single-width, single-height _lines
-      paint.setWorldMatrix( textScale.inverted(), true );
+      paint.setWorldTransform(QTransform(textScale.inverted()), true );
 
       if ( y < _lineProperties.size() - 1 )
       {
@@ -3029,7 +3038,7 @@ void TerminalDisplay::doDrag()
   QMimeData *mimeData = new QMimeData;
   mimeData->setText( QApplication::clipboard()->text( QClipboard::Selection ) );
   dragInfo.dragObject->setMimeData( mimeData );
-  dragInfo.dragObject->start( Qt::CopyAction );
+  dragInfo.dragObject->exec( Qt::CopyAction );
   // Don't delete the QTextDrag object.  Qt will delete it when it's done with it.
 }
 
