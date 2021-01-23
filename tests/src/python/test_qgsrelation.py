@@ -197,6 +197,11 @@ class TestQgsRelation(unittest.TestCase):
                     valid = t.relation().isValid()
         self.assertTrue(valid)
 
+    def test_generateId_empty_relation(self):
+        rel = QgsRelation()
+        # Check that it does not crash
+        rel.generateId()
+
 
 if __name__ == '__main__':
     unittest.main()
