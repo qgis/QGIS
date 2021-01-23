@@ -493,7 +493,13 @@ QgsDataItem *QgsDb2DataItemProvider::createDataItem( const QString &pathIn, QgsD
 {
   Q_UNUSED( pathIn );
   QgsDebugMsgLevel( QStringLiteral( "DB2: Browser Panel; data item detected." ), 2 );
-  return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
+  return new QgsDb2RootItem( parentItem,
+#ifdef QGISDEBUG
+                             QObject::tr( "DB2 (considered for removal)" ),
+#else
+                             QObject::tr( "DB2" ),
+#endif
+                             QStringLiteral( "DB2:" ) );
 }
 
 
