@@ -141,11 +141,11 @@ bool QgsEptPointCloudIndex::loadSchema( QFile &f )
       return false;
     }
 
-    float scale = 1.f;
+    double scale = 1.f;
     if ( schemaObj.contains( QLatin1String( "scale" ) ) )
       scale = schemaObj.value( QLatin1String( "scale" ) ).toDouble();
 
-    float offset = 0.f;
+    double offset = 0.f;
     if ( schemaObj.contains( QLatin1String( "offset" ) ) )
       offset = schemaObj.value( QLatin1String( "offset" ) ).toDouble();
 
