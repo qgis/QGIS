@@ -321,7 +321,7 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
 {
   const QString authid = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
 
-  QString format = QStringLiteral( "jpg" );
+  QString format = QStringLiteral( "" );
   bool found = false;
   const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
   const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
