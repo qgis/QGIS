@@ -238,7 +238,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   QgsDataSourceUri uri( conninfo );
   QString expandedConnectionInfo = uri.connectionInfo( true );
 
-  auto addDefaultTimeout = []( QString & connectString )
+  auto addDefaultTimeoutAndClientEncoding = []( QString & connectString )
   {
     if ( !connectString.contains( QStringLiteral( "connect_timeout=" ) ) )
     {
@@ -247,10 +247,12 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       int timeout = settings.value( QStringLiteral( "PostgreSQL/default_timeout" ), PG_DEFAULT_TIMEOUT, QgsSettings::Providers ).toInt();
       connectString += QStringLiteral( " connect_timeout=%1" ).arg( timeout );
     }
-  };
-  addDefaultTimeout( expandedConnectionInfo );
 
-  mConn = PQconnectdb( expandedConnectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+    connectString += QStringLiteral( " client_encoding='UTF-8'" );
+  };
+  addDefaultTimeoutAndClientEncoding( expandedConnectionInfo );
+
+  mConn = PQconnectdb( expandedConnectionInfo.toUtf8() );
 
   // remove temporary cert/key/CA if they exist
   QgsDataSourceUri expandedUri( expandedConnectionInfo );
@@ -314,8 +316,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
       QgsDebugMsgLevel( "Connecting to " + uri.connectionInfo( false ), 2 );
       QString connectString = uri.connectionInfo();
-      addDefaultTimeout( connectString );
-      mConn = PQconnectdb( connectString.toLocal8Bit() );
+      addDefaultTimeoutAndClientEncoding( connectString );
+      mConn = PQconnectdb( connectString.toUtf8() );
     }
 
     if ( PQstatus() == CONNECTION_OK )
@@ -331,22 +333,6 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     QgsMessageLog::logMessage( tr( "Connection to database failed" ) + '\n' + errorMsg, tr( "PostGIS" ) );
     mRef = 0;
     return;
-  }
-
-  //set client encoding to Unicode because QString uses UTF-8 anyway
-  QgsDebugMsgLevel( QStringLiteral( "setting client encoding to UNICODE" ), 2 );
-  int errcode = PQsetClientEncoding( mConn, QStringLiteral( "UNICODE" ).toLocal8Bit() );
-  if ( errcode == 0 )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "encoding successfully set" ), 2 );
-  }
-  else if ( errcode == -1 )
-  {
-    QgsMessageLog::logMessage( tr( "error in setting encoding" ), tr( "PostGIS" ) );
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "undefined return value from encoding setting" ), tr( "PostGIS" ) );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Connection to the database was successful" ), 2 );
