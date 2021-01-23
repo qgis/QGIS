@@ -23,20 +23,10 @@ import tempfile
 # executions
 os.environ['QT_HASH_SEED'] = '1'
 
-os.environ['QGIS_CUSTOM_CONFIG_PATH'] = tempfile.mkdtemp('', 'QGIS-PythonTestConfigPath')
-
 import re
-import urllib.request
 import urllib.parse
-import urllib.error
 
-import xml.etree.ElementTree as ET
-import json
-
-from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QSize
-
-import osgeo.gdal  # NOQA
+from qgis.testing import unittest
 
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 from qgis.core import QgsProject, QgsVectorLayer, QgsFeatureRequest, QgsExpression, QgsProviderRegistry
@@ -51,13 +41,14 @@ class TestQgsServerWMSGetFeatureInfoPG(TestQgsServerWMSTestBase):
 
         super().setUpClass()
 
-        cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        else:
+            cls.dbconn = 'service=qgis_test dbname=qgis_test sslmode=disable '
 
         # Test layer
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
-        uri = cls.dbconn + 'dbname=qgis_test sslmode=disable '
+        uri = cls.dbconn + ' dbname=qgis_test sslmode=disable '
         conn = md.createConnection(uri, {})
         conn.executeSql('DROP TABLE IF EXISTS "qgis_test"."someDataLong" CASCADE')
         conn.executeSql('SELECT * INTO "qgis_test"."someDataLong" FROM "qgis_test"."someData"')

@@ -10,7 +10,7 @@ Content-Type: application/geo+json
         ],
         "type": "Point"
       },
-      "id": 0,
+      "id": "0",
       "properties": {
         "id": 1,
         "name": "one",
@@ -26,7 +26,7 @@ Content-Type: application/geo+json
         ],
         "type": "Point"
       },
-      "id": 1,
+      "id": "1",
       "properties": {
         "id": 2,
         "name": "two",
