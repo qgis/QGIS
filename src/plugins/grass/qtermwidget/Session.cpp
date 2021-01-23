@@ -112,7 +112,7 @@ Session::Session(QObject* parent) :
     connect( _emulation,SIGNAL(lockPtyRequest(bool)),_shellProcess,SLOT(lockPty(bool)) );
     connect( _emulation,SIGNAL(useUtf8Request(bool)),_shellProcess,SLOT(setUtf8Mode(bool)) );
 
-    connect( _shellProcess,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(done(int)) );
+    connect( _shellProcess,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(done(int,QProcess::ExitStatus)) );
     // not in kprocess anymore connect( _shellProcess,SIGNAL(done(int)), this, SLOT(done(int)) );
 
     //setup timer for monitoring session activity
@@ -587,7 +587,7 @@ QString Session::profileKey() const
     return _profileKey;
 }
 
-void Session::done(int exitStatus)
+void Session::done(int exitCode, QProcess::ExitStatus exitStatus)
 {
     if (!_autoClose) {
         _userTitle = QString::fromLatin1("This session is done. Finished");
@@ -600,16 +600,16 @@ void Session::done(int exitStatus)
     // So, we make it translatable, hoping that in the future it will
     // be used in some kind of notification.
     QString message;
-    if (!_wantedClose || exitStatus != 0) {
+    if (!_wantedClose || exitCode != 0) {
 
         if (_shellProcess->exitStatus() == QProcess::NormalExit) {
-            message = tr("Session '%1' exited with status %2.").arg(_nameTitle).arg(exitStatus);
+            message = tr("Session '%1' exited with code %2.").arg(_nameTitle).arg(exitCode);
         } else {
             message = tr("Session '%1' crashed.").arg(_nameTitle);
         }
     }
 
-    if ( !_wantedClose && _shellProcess->exitStatus() != QProcess::NormalExit )
+    if ( !_wantedClose && exitStatus != QProcess::NormalExit )
         message = tr("Session '%1' exited unexpectedly.").arg(_nameTitle);
     else
         emit finished();
