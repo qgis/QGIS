@@ -115,9 +115,10 @@ class fillnodata(GdalAlgorithm):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
-        arguments.append('-md')
-        arguments.append(str(self.parameterAsInt(parameters, self.DISTANCE, context)))
+        arguments = [
+            '-md',
+            str(self.parameterAsInt(parameters, self.DISTANCE, context)),
+        ]
 
         nIterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
         if nIterations:

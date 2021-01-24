@@ -111,13 +111,13 @@ class PointsAlongLines(GdalAlgorithm):
         else:
             other_fields = ''
 
-        arguments = []
-        arguments.append(output)
-        arguments.append(ogrLayer)
-        arguments.append('-dialect')
-        arguments.append('sqlite')
-        arguments.append('-sql')
-
+        arguments = [
+            output,
+            ogrLayer,
+            '-dialect',
+            'sqlite',
+            '-sql'
+        ]
         sql = 'SELECT ST_Line_Interpolate_Point({}, {}) AS {}{} FROM "{}"'.format(geometry, distance, geometry, other_fields, layerName)
         arguments.append(sql)
 

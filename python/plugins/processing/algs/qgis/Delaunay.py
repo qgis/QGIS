@@ -121,7 +121,7 @@ class Delaunay(QgisAlgorithm):
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
 
-        uniqueSet = set(item for item in pts)
+        uniqueSet = set(pts)
         ids = [pts.index(item) for item in uniqueSet]
         sl = voronoi.SiteList([voronoi.Site(*i) for i in uniqueSet])
         c.triangulate = True
@@ -138,8 +138,7 @@ class Delaunay(QgisAlgorithm):
             indices.append(indices[0])
             polygon = []
             attrs = []
-            step = 0
-            for index in indices:
+            for step, index in enumerate(indices):
                 fid, n = ptDict[ids[index]]
                 request = QgsFeatureRequest().setFilterFid(fid)
                 inFeat = next(source.getFeatures(request))
@@ -151,7 +150,6 @@ class Delaunay(QgisAlgorithm):
                 polygon.append(point)
                 if step <= 3:
                     attrs.append(ids[index])
-                step += 1
             feat.setAttributes(attrs)
             geometry = QgsGeometry().fromPolygonXY([polygon])
             feat.setGeometry(geometry)

@@ -64,14 +64,16 @@ class rasterize_over(GdalAlgorithm):
                                                       QgsProcessingParameterField.Numeric,
                                                       optional=False))
 
-        params = []
-        params.append(QgsProcessingParameterBoolean(self.ADD,
-                                                    self.tr('Add burn in values to existing raster values'),
-                                                    defaultValue=False))
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional command-line parameters'),
-                                                   defaultValue=None,
-                                                   optional=True))
+        params = [
+            QgsProcessingParameterBoolean(self.ADD,
+                                          self.tr('Add burn in values to existing raster values'),
+                                          defaultValue=False,
+                                          ),
+            QgsProcessingParameterString(self.EXTRA,
+                                         self.tr('Additional command-line parameters'),
+                                         defaultValue=None,
+                                         optional=True)
+        ]
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
@@ -106,11 +108,12 @@ class rasterize_over(GdalAlgorithm):
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         self.setOutputValue(self.OUTPUT, inLayer.source())
 
-        arguments = ['-l']
-        arguments.append(layerName)
-        arguments.append('-a')
-        arguments.append(fieldName)
-
+        arguments = [
+            '-l',
+            layerName,
+            '-a',
+            fieldName
+        ]
         if self.parameterAsBool(parameters, self.ADD, context):
             arguments.append('-add')
 

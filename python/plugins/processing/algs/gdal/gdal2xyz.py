@@ -75,10 +75,10 @@ class gdal2xyz(GdalAlgorithm):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
-        arguments.append('-band')
-        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
-
+        arguments = [
+            '-band',
+            str(self.parameterAsInt(parameters, self.BAND, context))
+        ]
         if self.parameterAsBoolean(parameters, self.CSV, context):
             arguments.append('-csv')
 

@@ -112,11 +112,11 @@ class rearrange_bands(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
-        arguments = []
-
         bands = self.parameterAsInts(parameters, self.BANDS, context)
-        for band in bands:
-            arguments.append('-b {}'.format(band))
+        arguments = [
+            '-b {}'.format(band)
+            for band in bands
+        ]
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
         if data_type:

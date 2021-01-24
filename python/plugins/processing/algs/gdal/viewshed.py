@@ -127,22 +127,23 @@ class viewshed(GdalAlgorithm):
 
         observer = self.parameterAsPoint(parameters, self.OBSERVER, context, dem.crs())
 
-        arguments = []
-        arguments.append('-b')
-        arguments.append('{}'.format(self.parameterAsInt(parameters, self.BAND, context)))
-        arguments.append('-ox')
-        arguments.append('{}'.format(observer.x()))
-        arguments.append('-oy')
-        arguments.append('{}'.format(observer.y()))
-        arguments.append('-oz')
-        arguments.append('{}'.format(self.parameterAsDouble(parameters, self.OBSERVER_HEIGHT, context)))
-        arguments.append('-tz')
-        arguments.append('{}'.format(self.parameterAsDouble(parameters, self.TARGET_HEIGHT, context)))
-        arguments.append('-md')
-        arguments.append('{}'.format(self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)))
+        arguments = [
+            '-b',
+            '{}'.format(self.parameterAsInt(parameters, self.BAND, context)),
+            '-ox',
+            '{}'.format(observer.x()),
+            '-oy',
+            '{}'.format(observer.y()),
+            '-oz',
+            '{}'.format(self.parameterAsDouble(parameters, self.OBSERVER_HEIGHT, context)),
+            '-tz',
+            '{}'.format(self.parameterAsDouble(parameters, self.TARGET_HEIGHT, context)),
+            '-md',
+            '{}'.format(self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)),
 
-        arguments.append('-f')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+            '-f',
+            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        ]
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:

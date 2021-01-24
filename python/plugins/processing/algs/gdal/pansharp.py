@@ -118,15 +118,15 @@ class pansharp(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
-        arguments = []
-        arguments.append(panchromatic.source())
-        arguments.append(spectral.source())
-        arguments.append(out)
-
-        arguments.append('-r')
-        arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
-        arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+        arguments = [
+            panchromatic.source(),
+            spectral.source(),
+            out,
+            '-r',
+            self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1],
+            '-of',
+            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        ]
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:

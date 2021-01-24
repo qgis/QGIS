@@ -104,18 +104,18 @@ class nearblack(GdalAlgorithm):
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        arguments = []
-        arguments.append(inLayer.source())
-
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
-        arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
-        arguments.append('-o')
-        arguments.append(out)
+        arguments = [
+            inLayer.source(),
 
-        arguments.append('-near')
-        arguments.append(str(self.parameterAsInt(parameters, self.NEAR, context)))
+            '-of',
+            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]),
+            '-o',
+            out,
+            '-near',
+            str(self.parameterAsInt(parameters, self.NEAR, context))
+        ]
 
         if self.parameterAsBoolean(parameters, self.WHITE, context):
             arguments.append('-white')

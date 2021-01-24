@@ -91,20 +91,22 @@ class retile(GdalAlgorithm):
                                                        minValue=0,
                                                        defaultValue=1))
 
-        params = []
-        params.append(QgsProcessingParameterCrs(self.SOURCE_CRS,
-                                                self.tr('Source coordinate reference system'),
-                                                optional=True))
-        params.append(QgsProcessingParameterEnum(self.RESAMPLING,
-                                                 self.tr('Resampling method'),
-                                                 options=[i[0] for i in self.methods],
-                                                 allowMultiple=False,
-                                                 defaultValue=0))
-        params.append(QgsProcessingParameterString(self.DELIMITER,
-                                                   self.tr('Column delimiter used in the CSV file'),
-                                                   defaultValue=';',
-                                                   optional=True))
+        params = [
+            QgsProcessingParameterCrs(self.SOURCE_CRS,
+                                      self.tr('Source coordinate reference system'),
+                                      optional=True,
+                                      ),
+            QgsProcessingParameterEnum(self.RESAMPLING,
+                                       self.tr('Resampling method'),
+                                       options=[i[0] for i in self.methods],
+                                       allowMultiple=False,
+                                       defaultValue=0),
+            QgsProcessingParameterString(self.DELIMITER,
+                                         self.tr('Column delimiter used in the CSV file'),
+                                         defaultValue=';',
+                                         optional=True)
 
+        ]
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
@@ -162,17 +164,17 @@ class retile(GdalAlgorithm):
         return "gdal_retile"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
+        arguments = [
+            '-ps',
+            str(self.parameterAsInt(parameters, self.TILE_SIZE_X, context)),
+            str(self.parameterAsInt(parameters, self.TILE_SIZE_Y, context)),
 
-        arguments.append('-ps')
-        arguments.append(str(self.parameterAsInt(parameters, self.TILE_SIZE_X, context)))
-        arguments.append(str(self.parameterAsInt(parameters, self.TILE_SIZE_Y, context)))
+            '-overlap',
+            str(self.parameterAsInt(parameters, self.OVERLAP, context)),
 
-        arguments.append('-overlap')
-        arguments.append(str(self.parameterAsInt(parameters, self.OVERLAP, context)))
-
-        arguments.append('-levels')
-        arguments.append(str(self.parameterAsInt(parameters, self.LEVELS, context)))
+            '-levels',
+            str(self.parameterAsInt(parameters, self.LEVELS, context))
+        ]
 
         crs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         if crs.isValid():
