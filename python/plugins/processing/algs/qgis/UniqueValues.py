@@ -146,8 +146,8 @@ class UniqueValues(QgisAlgorithm):
             results[self.OUTPUT_HTML_FILE] = output_file
 
         results[self.TOTAL_VALUES] = len(values)
-        results[self.UNIQUE_VALUES] = ';'.join([','.join([str(attr) for attr in v]) for v in
-                                                values])
+        results[self.UNIQUE_VALUES] = ';'.join(','.join(str(attr) for attr in v) for v in
+                                               values)
         return results
 
     def createHTML(self, outputFile, algData):
@@ -159,5 +159,5 @@ class UniqueValues(QgisAlgorithm):
             f.write(self.tr('<p>Unique values:</p>'))
             f.write('<ul>')
             for s in algData:
-                f.write('<li>' + ','.join([str(attr) for attr in s]) + '</li>')
+                f.write('<li>' + ','.join(str(attr) for attr in s) + '</li>')
             f.write('</ul></body></html>')

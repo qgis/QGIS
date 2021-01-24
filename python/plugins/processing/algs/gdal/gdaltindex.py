@@ -126,9 +126,10 @@ class gdaltindex(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, outFile)
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        arguments = []
-        arguments.append('-tileindex')
-        arguments.append(self.parameterAsString(parameters, self.PATH_FIELD_NAME, context))
+        arguments = [
+            '-tileindex',
+            self.parameterAsString(parameters, self.PATH_FIELD_NAME, context),
+        ]
 
         if self.parameterAsBoolean(parameters, self.ABSOLUTE_PATH, context):
             arguments.append('-write_absolute_path')

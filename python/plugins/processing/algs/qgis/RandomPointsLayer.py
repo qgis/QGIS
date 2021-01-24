@@ -117,7 +117,7 @@ class RandomPointsLayer(QgisAlgorithm):
         total = 100.0 / pointCount if pointCount else 1
 
         index = QgsSpatialIndex()
-        points = dict()
+        points = {}
 
         random.seed()
 
