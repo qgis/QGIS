@@ -50,10 +50,10 @@ class BaseTableModel(QAbstractTableModel):
         return sep.join(header)
 
     def rowToString(self, row, sep=u"\t"):
-        text = u""
-        for col in range(self.columnCount()):
-            text += u"%s" % self.getData(row, col) + sep
-        return text[:-1]
+        return sep.join(
+            u"%s" % self.getData(row, col)
+            for col in range(self.columnCount())
+        )
 
     def getData(self, row, col):
         return self.resdata[row][col]

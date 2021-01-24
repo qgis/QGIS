@@ -300,17 +300,20 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
-        if hasUniqueField:
-            if self.allowMultiColumnPk:
-                checkedCols = []
-                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-                    if item.checkState() == Qt.Checked:
-                        checkedCols.append(item.data())
-                uniqueFieldName = ",".join(checkedCols)
-            elif self.uniqueCombo.currentIndex() >= 0:
-                uniqueFieldName = self.uniqueModel.item(self.uniqueCombo.currentIndex()).data()
-            else:
-                uniqueFieldName = None
+        if hasUniqueField and self.allowMultiColumnPk:
+            checkedCols = [
+                item.data()
+                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+                if item.checkState() == Qt.Checked
+            ]
+
+            uniqueFieldName = ",".join(checkedCols)
+        elif (
+            hasUniqueField
+            and not self.allowMultiColumnPk
+            and self.uniqueCombo.currentIndex() >= 0
+        ):
+            uniqueFieldName = self.uniqueModel.item(self.uniqueCombo.currentIndex()).data()
         else:
             uniqueFieldName = None
         hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
