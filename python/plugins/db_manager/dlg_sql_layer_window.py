@@ -538,10 +538,12 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def uniqueTextChanged(self, text):
         # Whenever there is new text displayed in the combobox, check if it is the correct one and if not, display the correct one.
-        checkedItems = []
-        for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-            if item.checkState() == Qt.Checked:
-                checkedItems.append(item.text())
+        checkedItems = [
+            item.text()
+            for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+            if item.checkState() == Qt.Checked
+        ]
+
         label = ", ".join(checkedItems)
         if text != label:
             self.uniqueCombo.setEditText(label)

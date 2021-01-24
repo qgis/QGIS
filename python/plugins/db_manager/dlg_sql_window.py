@@ -80,13 +80,11 @@ def check_comments_in_sql(raw_sql_input):
     for line in raw_sql_input.splitlines():
         if not line.strip().startswith('--'):
             if '--' in line:
-                comment_positions = []
                 comments = re.finditer(r'--', line)
-                for match in comments:
-                    comment_positions.append(match.start())
-                quote_positions = []
+                comment_positions = [match.start() for match in comments]
                 identifiers = re.finditer(r'"(?:[^"]|"")*"', line)
                 quotes = re.finditer(r"'(?:[^']|'')*'", line)
+                quote_positions = []
                 for match in identifiers:
                     quote_positions.append((match.start(), match.end()))
                 for match in quotes:
@@ -390,14 +388,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         with OverrideCursor(Qt.WaitCursor):
             if self.modelAsync.task.status() == QgsTask.Complete:
                 model = self.modelAsync.model
-                quotedCols = []
-
                 self.showError(None)
                 self.viewResult.setModel(model)
                 self.lblResult.setText(self.tr("{0} rows, {1:.3f} seconds").format(model.affectedRows(), model.secs()))
                 cols = self.viewResult.model().columnNames()
-                for col in cols:
-                    quotedCols.append(self.db.connector.quoteId(col))
+                quotedCols = [self.db.connector.quoteId(col) for col in cols]
 
                 self.setColumnCombos(cols, quotedCols)
 
@@ -681,10 +676,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def uniqueTextChanged(self, text):
         # Whenever there is new text displayed in the combobox, check if it is the correct one and if not, display the correct one.
-        checkedItems = []
-        for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-            if item.checkState() == Qt.Checked:
-                checkedItems.append(item.text())
+        checkedItems = [
+            item.text()
+            for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+            if item.checkState() == Qt.Checked
+        ]
+
         label = ", ".join(checkedItems)
         if text != label:
             self.uniqueCombo.setEditText(label)
