@@ -385,6 +385,20 @@ Units are set via :py:func:`~QgsPointCloudRenderer.setMaximumScreenErrorUnit`.
 .. seealso:: :py:func:`setMaximumScreenErrorUnit`
 %End
 
+    int pointBudget() const;
+%Docstring
+Returns the maximum number of points rendered
+
+.. seealso:: :py:func:`setPointBudget`
+%End
+
+    void setPointBudget( int budget );
+%Docstring
+Sets the maximum number of points rendered
+
+.. seealso:: :py:func:`pointBudget`
+%End
+
     QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const;
 %Docstring
 Returns the unit for the maximum screen error allowed when rendering the point cloud.

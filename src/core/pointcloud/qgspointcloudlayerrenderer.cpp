@@ -168,7 +168,12 @@ bool QgsPointCloudLayerRenderer::render()
     return false;
   }
   double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
-  const QVector<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
+  QVector<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
+
+  std::sort( nodes.begin(), nodes.end(), []( IndexedPointCloudNode & n1, IndexedPointCloudNode & n2 )
+  {
+    return n1.d() < n2.d();
+  } );
 
   QgsPointCloudRequest request;
   request.setAttributes( mAttributes );
@@ -182,6 +187,11 @@ bool QgsPointCloudLayerRenderer::render()
     {
       QgsDebugMsgLevel( "canceled", 2 );
       canceled = true;
+      break;
+    }
+    if ( context.pointsRendered() > mRenderer->pointBudget() )
+    {
+      QgsDebugMsgLevel( "point budget exceeded", 2 );
       break;
     }
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
