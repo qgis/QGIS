@@ -454,6 +454,18 @@ class CORE_EXPORT QgsPointCloudRenderer
     void setMaximumScreenError( double error );
 
     /**
+     * Returns the maximum number of points rendered
+     * \see setPointBudget()
+     */
+    int pointBudget() const;
+
+    /**
+     * Sets the maximum number of points rendered
+     * \see pointBudget()
+     */
+    void setPointBudget( int budget );
+
+    /**
      * Returns the unit for the maximum screen error allowed when rendering the point cloud.
      *
      * \see maximumScreenError()
@@ -568,6 +580,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     double mPointSize = 1;
     QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mPointSizeMapUnitScale;
+    int mPointBudget = 10000000;
 
     PointSymbol mPointSymbol = Square;
     int mPainterPenWidth = 1;

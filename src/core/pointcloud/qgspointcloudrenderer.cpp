@@ -141,6 +141,16 @@ void QgsPointCloudRenderer::setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit 
   mMaximumScreenErrorUnit = unit;
 }
 
+int QgsPointCloudRenderer::pointBudget() const
+{
+  return mPointBudget;
+}
+
+void QgsPointCloudRenderer::setPointBudget( int budget )
+{
+  mPointBudget = budget;
+}
+
 QList<QgsLayerTreeModelLegendNode *> QgsPointCloudRenderer::createLegendNodes( QgsLayerTreeLayer * )
 {
   return QList<QgsLayerTreeModelLegendNode *>();
@@ -156,6 +166,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setPointSize( mPointSize );
   destination->setPointSizeUnit( mPointSizeUnit );
   destination->setPointSizeMapUnitScale( mPointSizeMapUnitScale );
+  destination->setPointBudget( mPointBudget );
   destination->setMaximumScreenError( mMaximumScreenError );
   destination->setMaximumScreenErrorUnit( mMaximumScreenErrorUnit );
   destination->setPointSymbol( mPointSymbol );
@@ -166,6 +177,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mPointSize = element.attribute( QStringLiteral( "pointSize" ), QStringLiteral( "1" ) ).toDouble();
   mPointSizeUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "pointSizeUnit" ), QStringLiteral( "MM" ) ) );
   mPointSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( QStringLiteral( "pointSizeMapUnitScale" ), QString() ) );
+  mPointBudget = element.attribute( QStringLiteral( "pointBudget" ), QStringLiteral( "10000000" ) ).toInt();
 
   mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "0.3" ) ).toDouble();
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
@@ -177,6 +189,7 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "pointSize" ), qgsDoubleToString( mPointSize ) );
   element.setAttribute( QStringLiteral( "pointSizeUnit" ), QgsUnitTypes::encodeUnit( mPointSizeUnit ) );
   element.setAttribute( QStringLiteral( "pointSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mPointSizeMapUnitScale ) );
+  element.setAttribute( QStringLiteral( "pointBudget" ), QString::number( mPointBudget ) );
 
   element.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( mMaximumScreenError ) );
   element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
