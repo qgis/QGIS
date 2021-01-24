@@ -61,6 +61,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyMesh(); // test identification for mesh layer
     void identifyVectorTile();  // test identification for vector tile layer
     void identifyInvalidPolygons(); // test selecting invalid polygons
+    void identifyViaTransformedRectangle();
     void clickxy(); // test if clicked_x and clicked_y variables are propagated
     void closestPoint();
 
@@ -783,6 +784,31 @@ void TestQgsMapToolIdentifyAction::identifyInvalidPolygons()
 
 }
 
+void TestQgsMapToolIdentifyAction::identifyViaTransformedRectangle()
+{
+  // create temp layer
+  std::unique_ptr< QgsVectorLayer> memoryLayer( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( memoryLayer->isValid() );
+
+  QgsFeature f1( memoryLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(-68.2 70.8)" ) ) );
+  memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:2056" ) );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( QgsRectangle( -200000, 200000, 5300000, 5700000 ) );
+
+  QList<QgsMapToolIdentify::IdentifyResult> identified;
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QgsIdentifyContext identifyContext;
+
+  QgsGeometry selectionRect = QgsGeometry::fromRect( QgsRectangle( -147172.0, 5471426.0, 32484.0, 5625003.0 ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( selectionRect, QgsMapToolIdentify::DefaultQgsSetting, QList<QgsMapLayer *>() << memoryLayer.get(), QgsMapToolIdentify::VectorLayer );
+
+  QCOMPARE( result.length(), 1 );
+  QCOMPARE( result[0].mFeature.attribute( "pk" ), QVariant( 1 ) );
+}
 
 QGSTEST_MAIN( TestQgsMapToolIdentifyAction )
 #include "testqgsmaptoolidentifyaction.moc"
