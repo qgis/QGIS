@@ -51,7 +51,7 @@ class BaseTableModel(QAbstractTableModel):
 
     def rowToString(self, row, sep=u"\t"):
         return sep.join(
-            u"%s" % self.getData(row, col)
+            str(self.getData(row, col))
             for col in range(self.columnCount())
         )
 
