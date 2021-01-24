@@ -106,7 +106,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
         total = 100.0 / pointCount if pointCount else 1
 
         index = QgsSpatialIndex()
-        points = dict()
+        points = {}
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs(), context.transformContext())
