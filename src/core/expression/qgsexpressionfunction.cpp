@@ -1365,19 +1365,17 @@ static QVariant fcnLength3D( const QVariantList &values, const QgsExpressionCont
     return QVariant();
 
   if ( !geom.isMultipart() )
-    return QVariant( qgsgeometry_cast< const QgsLineString * >( geom.constGet() )->length3D() );
+    return QVariant( qgsgeometry_cast< const QgsCurve * >( geom.constGet() )->curveToLine()->length3D() );
 
   if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
   {
-    if ( collection->numGeometries() > 0 )
+    double sumLength3DParts = 0;
+    for ( int i = 0; i < collection->numGeometries(); ++i )
     {
-      double sumLength3DParts = 0;
-      for ( int i = 0; i < collection->numGeometries(); ++i )
-      {
-        sumLength3DParts += qgsgeometry_cast< const QgsLineString * >( collection->geometryN( i ) )->length3D();
-      }
-      return QVariant( sumLength3DParts );
+      if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( collection->geometryN( i ) ) )
+        sumLength3DParts += curve->curveToLine()->length3D();
     }
+    return QVariant( sumLength3DParts );
   }
 
   return QVariant();
