@@ -166,6 +166,13 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
         self.assertEqual(sorted(tables_dict['SOME_DATA']), ['pk'])
         self.assertEqual(sorted(tables_dict['POINT_DATA_IDENTITY']), ['pk'])
 
+    def test_schemas(self):
+        """Test schemas retrieval"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('oracle')
+        conn = md.createConnection(self.uri, {})
+        self.assertTrue('QGIS' in conn.schemas())
+
 
 if __name__ == '__main__':
     unittest.main()

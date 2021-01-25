@@ -151,7 +151,8 @@ class TestPyQgsProviderConnectionBase():
             if capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema:
                 schema = 'myNewSchema'
                 conn.createSchema(schema)
-            else:
+
+            elif capabilities & QgsAbstractDatabaseProviderConnection.Schemas:
                 schema = self.defaultSchema
 
             # Start clean
