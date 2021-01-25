@@ -206,6 +206,11 @@ class TestQgsRelation(unittest.TestCase):
 
         self.assertEqual(rel.polymorphicRelationId(), 'poly_rel_id')
 
+    def test_generateId_empty_relation(self):
+        rel = QgsRelation()
+        # Check that it does not crash
+        rel.generateId()
+
 
 if __name__ == '__main__':
     unittest.main()
