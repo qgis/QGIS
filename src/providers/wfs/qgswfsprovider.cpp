@@ -1528,6 +1528,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
 
     QRegExp gmlPT( "gml:(.*)PropertyType" );
     QRegExp gmlRefProperty( "gml:(.*)Property" );
+    QRegExp gmlType( "gml:(.*)Type" ); // QGIS server specific
 
     // gmgml: is Geomedia Web Server
     if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
@@ -1551,15 +1552,17 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     }
     //is it a geometry attribute?
     // the GeometryAssociationType has been seen in #11785
-    else if ( ! foundGeometryAttribute && ( type.indexOf( gmlPT ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) ) )
+    else if ( ! foundGeometryAttribute && ( type.indexOf( gmlPT ) == 0 || type.indexOf( gmlType ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
       // We have a choice parent element we cannot assume any valid information over the geometry type
       if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
         geomType = QgsWkbTypes::Unknown;
-      else
+      else if ( gmlPT.captureCount() )
         geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
+      else
+        geomType = geomTypeFromPropertyType( geometryAttribute, gmlType.cap( 1 ) );
     }
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty"
     //Note: this was deprecated with GML3.
