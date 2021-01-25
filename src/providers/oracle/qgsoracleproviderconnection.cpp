@@ -355,7 +355,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
     property.setTableName( pr.tableName );
     property.setSchema( pr.ownerName );
     property.setGeometryColumn( pr.geometryColName );
-    property.setGeometryColumnCount( prFlags & QgsAbstractDatabaseProviderConnection::TableFlag::Aspatial ? 0 : 1 );
+    property.setGeometryColumnCount( ( prFlags & QgsAbstractDatabaseProviderConnection::TableFlag::Aspatial ) ? 0 : 1 );
     property.setPrimaryKeyColumns( pr.isView ? pr.pkCols : conn->getPrimaryKeys( pr.ownerName, pr.tableName ) );
 
     tables.push_back( property );

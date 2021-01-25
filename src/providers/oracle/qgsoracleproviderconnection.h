@@ -45,7 +45,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
   public:
 
-    QgsOracleProviderConnection( const QString &name );
+    explicit QgsOracleProviderConnection( const QString &name );
     QgsOracleProviderConnection( const QString &uri, const QVariantMap &configuration );
 
     // QgsAbstractProviderConnection interface
