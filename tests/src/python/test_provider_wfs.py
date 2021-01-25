@@ -124,7 +124,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -462,9 +462,6 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     def testWkbType(self):
         """N/A for WFS provider"""
         pass
-
-
-class TestPyQgsWFSProvider():
 
     def testInconsistentUri(self):
         """Test a URI with a typename that doesn't match a type of the capabilities"""
@@ -1129,7 +1126,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -1267,7 +1264,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -1761,7 +1758,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -2069,7 +2066,7 @@ class TestPyQgsWFSProvider():
                   'wb') as f:
             f.write(schema.encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename,my:othertypename&TYPENAME=my:typename,my:othertypename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename,my:othertypename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsEqualTo>
    <fes:ValueReference>my:typename/id</fes:ValueReference>
@@ -2195,7 +2192,7 @@ class TestPyQgsWFSProvider():
         self.assertEqual(fields[0].name(), 'id')
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write(schema.encode('UTF-8'))
 
@@ -2414,7 +2411,7 @@ class TestPyQgsWFSProvider():
                   'wb') as f:
             f.write(schema.encode('UTF-8'))
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write(schema.encode('UTF-8'))
 
@@ -2501,7 +2498,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -2626,7 +2623,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -2745,7 +2742,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -3020,6 +3017,11 @@ class TestPyQgsWFSProvider():
 
 """.encode('UTF-8'))
 
+        shutil.copyfile(sanitize(endpoint,
+                                 """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""),
+                        sanitize(endpoint,
+                                 """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::4326"""))
+
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.1.0'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
@@ -3063,7 +3065,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -3143,7 +3145,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".format(endpoint=endpoint).encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -3615,7 +3617,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(
-                sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=EC422'),
+                sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=EC422&TYPENAME=EC422'),
                 'wb') as f:
             f.write("""<schema xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -3830,7 +3832,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write(("""
 <schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -4419,7 +4421,7 @@ class TestPyQgsWFSProvider():
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
