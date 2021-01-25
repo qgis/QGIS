@@ -28,7 +28,11 @@ class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
   public:
 
     QString providerKey() const override { return QgsDb2Provider::DB2_PROVIDER_KEY; }
+#ifdef QGISDEBUG
+    QString text() const override { return QObject::tr( "DB2 (considered for removal)" ); }
+#else
     QString text() const override { return QObject::tr( "DB2" ); }
+#endif
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
