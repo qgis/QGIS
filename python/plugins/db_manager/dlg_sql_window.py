@@ -395,7 +395,10 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 self.viewResult.setModel(model)
                 self.lblResult.setText(self.tr("{0} rows, {1:.3f} seconds").format(model.affectedRows(), model.secs()))
                 cols = self.viewResult.model().columnNames()
-                quotedCols = [self.db.connector.quoteId(col) for col in cols]
+                quotedCols = [
+                    self.db.connector.quoteId(col)
+                    for col in cols
+                ]
 
                 self.setColumnCombos(cols, quotedCols)
 
