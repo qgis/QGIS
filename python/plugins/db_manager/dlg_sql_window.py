@@ -81,7 +81,10 @@ def check_comments_in_sql(raw_sql_input):
         if not line.strip().startswith('--'):
             if '--' in line:
                 comments = re.finditer(r'--', line)
-                comment_positions = [match.start() for match in comments]
+                comment_positions = [
+                    match.start()
+                    for match in comments
+                ]
                 identifiers = re.finditer(r'"(?:[^"]|"")*"', line)
                 quotes = re.finditer(r"'(?:[^']|'')*'", line)
                 quote_positions = []
