@@ -104,6 +104,7 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
     Capability::ExecuteSql,
     Capability::SqlLayers,
     Capability::Tables,
+    Capability::Schemas,
     Capability::Spatial,
     Capability::TableExists,
     Capability::CreateSpatialIndex,
@@ -443,4 +444,16 @@ bool QgsOracleProviderConnection::spatialIndexExists( const QString &schema, con
 QIcon QgsOracleProviderConnection::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
+}
+
+QStringList QgsOracleProviderConnection::schemas( ) const
+{
+  checkCapability( Capability::Schemas );
+  QStringList schemas;
+
+  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS" ) ).rows();
+  for ( QVariantList userInfos : users )
+    schemas << userInfos.at( 0 ).toString();
+
+  return schemas;
 }
