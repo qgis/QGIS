@@ -278,7 +278,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      */
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) SIP_PYNAME( toMapCoordinatesV2 );
 
-    //! trnasformation of the rect from map coordinates to layer's coordinates
+    //! transformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 
     //! transformation from map coordinates to screen coordinates
