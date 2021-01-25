@@ -149,8 +149,8 @@ class TestPyQgsProviderConnectionBase():
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema:
-                schema = self.myNewSchema
-                conn.createSchema(self.myNewSchema)
+                schema = 'myNewSchema'
+                conn.createSchema(schema)
             else:
                 schema = self.defaultSchema
 
