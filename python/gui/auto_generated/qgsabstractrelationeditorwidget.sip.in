@@ -48,13 +48,20 @@ Sets the ``relation`` and the ``feature``
 
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 %Docstring
-Set the relation(s) for this widget
+Sets the relation(s) for this widget
 If only one relation is set, it will act as a simple 1:N relation widget
 If both relations are set, it will act as an N:M relation widget
 inserting and deleting entries on the intermediate table as required.
 
 :param relation: Relation referencing the edited table
 :param nmrelation: Optional reference from the referencing table to a 3rd N:M table
+%End
+
+    QgsRelation relation() const;
+%Docstring
+Returns the relation
+
+.. versionadded:: 3.18
 %End
 
     void setFeature( const QgsFeature &feature, bool update = true );

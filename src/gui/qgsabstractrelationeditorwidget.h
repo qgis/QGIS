@@ -70,7 +70,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
 
     /**
-     * Set the relation(s) for this widget
+     * Sets the relation(s) for this widget
      * If only one relation is set, it will act as a simple 1:N relation widget
      * If both relations are set, it will act as an N:M relation widget
      * inserting and deleting entries on the intermediate table as required.
@@ -79,6 +79,12 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * \param nmrelation  Optional reference from the referencing table to a 3rd N:M table
      */
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
+
+    /**
+     * Returns the relation
+     * \since QGIS 3.18
+     */
+    QgsRelation relation() const {return mRelation;}
 
     /**
      * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
