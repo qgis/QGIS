@@ -571,11 +571,10 @@ class Database(DbItemObject):
     def tables(self, schema=None, sys_tables=False):
         tables = self.connector.getTables(schema.name if schema else None, sys_tables)
         if tables is not None:
-            ret = []
-            for t in tables:
-                table = self.tablesFactory(t, self, schema)
-                ret.append(table)
-
+            ret = [
+                self.tablesFactory(t, self, schema)
+                for t in tables
+            ]
         return ret
 
     def createTable(self, table, fields, schema=None):

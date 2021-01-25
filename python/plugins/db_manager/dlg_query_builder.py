@@ -349,15 +349,17 @@ class QueryBuilderDlg(QDialog):
             return
         self.query = query
 
-        saveParameter = {}
-        saveParameter["coltables"] = self.coltables
-        saveParameter["col_col"] = self.col_col
-        saveParameter["col_where"] = self.col_where
-        saveParameter["col"] = query_col
-        saveParameter["tab"] = query_table
-        saveParameter["where"] = query_where
-        saveParameter["group"] = query_group
-        saveParameter["order"] = query_order
+        saveParameter = {
+            "coltables": self.coltables,
+            "col_col": self.col_col,
+            "col_where": self.col_where,
+            "col": query_col,
+            "tab": query_table,
+            "where": query_where,
+            "group": query_group,
+            "order": query_order,
+        }
+
         QueryBuilderDlg.saveParameter = saveParameter
 
     def restoreLastQuery(self):
