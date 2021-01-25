@@ -60,7 +60,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
      * The factory takes ownership over the passed \a symbol
      */
     QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
-                                          double zValueScale, double zValueOffset );
+                                          double zValueScale, double zValueOffset, int pointBudget );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -71,6 +71,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mZValueScale = 1.0;
     double mZValueOffset = 0;
+    int mPointBudget = 1000000;
 };
 
 
@@ -90,8 +91,10 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
      * Constructs the loader
      * QgsPointCloudLayerChunkLoader takes ownership over symbol
      */
-    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol, double zValueScale, double zValueOffset );
+    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol, double zValueScale, double zValueOffset, int pointBudget, int count );
     ~QgsPointCloudLayerChunkLoader() override;
+
+    int primitiveCount() override;
 
     virtual void cancel() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
@@ -102,6 +105,7 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     QgsPointCloud3DRenderContext mContext;
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
+    int mPointsCount;
 };
 
 
@@ -120,7 +124,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     Q_OBJECT
   public:
     explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
-        double zValueScale, double zValueOffset );
+        double zValueScale, double zValueOffset, int pointBudget );
 
     ~QgsPointCloudLayerChunkedEntity();
 };

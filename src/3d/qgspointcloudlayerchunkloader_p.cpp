@@ -47,10 +47,11 @@
 ///////////////
 
 QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
-    double zValueScale, double zValueOffset )
-  : QgsChunkLoader( node )
+    double zValueScale, double zValueOffset, int pointBudget, int count )
+  : QgsChunkLoader( node, pointBudget )
   , mFactory( factory )
   , mContext( factory->mMap, std::move( symbol ), zValueScale, zValueOffset )
+  , mPointsCount( count )
 {
   mContext.setIsCanceledCallback( [this] { return mCanceled; } );
 
@@ -125,16 +126,21 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
   return entity;
 }
 
+int QgsPointCloudLayerChunkLoader::primitiveCount()
+{
+  return mPointsCount;
+}
 
 ///////////////
 
 
 QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
-    double zValueScale, double zValueOffset )
+    double zValueScale, double zValueOffset, int pointBudget )
   : mMap( map )
   , mPointCloudIndex( pc )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
+  , mPointBudget( pointBudget )
 {
   mSymbol.reset( symbol );
 }
@@ -143,7 +149,8 @@ QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChun
 {
   QgsChunkNodeId id = node->tileId();
   Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
-  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset );
+  QgsPointCloudBlock *block = mPointCloudIndex->nodeData( IndexedPointCloudNode( id.d, id.x, id.y, id.z ), QgsPointCloudRequest() );
+  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset, mPointBudget, block->pointCount() );
 }
 
 QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, double zValueOffset );
@@ -202,9 +209,9 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
   : QgsChunkedEntity( maxScreenError,
-                      new QgsPointCloudLayerChunkLoaderFactory( map, pc, symbol, zValueScale, zValueOffset ), true )
+                      new QgsPointCloudLayerChunkLoaderFactory( map, pc, symbol, zValueScale, zValueOffset, pointBudget ), true )
 {
   setUsingAdditiveStrategy( true );
   setShowBoundingBoxes( showBoundingBoxes );

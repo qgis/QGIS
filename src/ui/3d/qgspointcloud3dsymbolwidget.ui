@@ -41,6 +41,20 @@
       <property name="rightMargin">
        <number>3</number>
       </property>
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="mShowBoundingBoxesCheckBox">
+        <property name="text">
+         <string>Show bounding boxes</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblTransparency_4">
+        <property name="text">
+         <string>Point size</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
         <property name="maximum">
@@ -51,10 +65,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblTransparency_4">
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelMaximumScreenSpaceError">
         <property name="text">
-         <string>Point size</string>
+         <string>Maximum screen space error</string>
         </property>
        </widget>
       </item>
@@ -68,17 +82,17 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label">
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelPointBudget">
         <property name="text">
-         <string>Maximum screen space error</string>
+         <string>Point budget</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="mShowBoundingBoxesCheckBox">
-        <property name="text">
-         <string>Show bounding boxes</string>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="mPointBudgetSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
         </property>
        </widget>
       </item>

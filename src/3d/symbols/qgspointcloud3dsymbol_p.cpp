@@ -650,9 +650,11 @@ void QgsClassificationPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *pa
   makeEntity( parent, context, outNormal, false );
 }
 
+
 Qt3DRender::QGeometry *QgsClassificationPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
 {
   return new QgsColorRampPointCloud3DGeometry( parent, data, byteStride );
 }
+
 
 /// @endcond
