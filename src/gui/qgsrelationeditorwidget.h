@@ -193,6 +193,13 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
   public slots:
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue ) override;
 
+  protected:
+    virtual void updateUi() override;
+    void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature ) override;
+    void afterSetRelationFeature() override;
+    void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation ) override;
+    void afterSetRelations() override;
+
   private slots:
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
     void updateButtons();
@@ -206,7 +213,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void onDigitizingCompleted( const QgsFeature &feature );
 
   private:
-    virtual void updateUi() override SIP_FORCE;
     void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
@@ -234,11 +240,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     Buttons mButtonsVisibility = Button::AllButtons;
     bool mVisible = true;
-
-    void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature ) override;
-    void afterSetRelationFeature() override;
-    void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation ) override;
-    void afterSetRelations() override;
 };
 
 
