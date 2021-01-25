@@ -297,7 +297,7 @@ transformation from layer's coordinates to map coordinates (which is different i
 
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 %Docstring
-trnasformation of the rect from map coordinates to layer's coordinates
+transformation of the rect from map coordinates to layer's coordinates
 %End
 
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
