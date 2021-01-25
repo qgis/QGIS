@@ -442,13 +442,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
         if hasUniqueField and self.allowMultiColumnPk:
-            checkedCols = [
+            uniqueFieldName = ",".join(
                 item.data()
                 for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
                 if item.checkState() == Qt.Checked
-            ]
-
-            uniqueFieldName = ",".join(checkedCols)
+            )
         elif (
             hasUniqueField
             and not self.allowMultiColumnPk
@@ -679,13 +677,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def uniqueTextChanged(self, text):
         # Whenever there is new text displayed in the combobox, check if it is the correct one and if not, display the correct one.
-        checkedItems = [
+        label = ", ".join(
             item.text()
             for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
             if item.checkState() == Qt.Checked
-        ]
-
-        label = ", ".join(checkedItems)
+        )
         if text != label:
             self.uniqueCombo.setEditText(label)
 

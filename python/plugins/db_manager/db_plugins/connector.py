@@ -188,12 +188,11 @@ class DBConnector(object):
     @classmethod
     def quoteId(self, identifier):
         if hasattr(identifier, '__iter__') and not isinstance(identifier, str):
-            ids = [
+            return u'.'.join(
                 self.quoteId(i)
                 for i in identifier
                 if i is not None and i != ""
-            ]
-            return u'.'.join(ids)
+            )
 
         identifier = str(
             identifier) if identifier is not None else str()  # make sure it's python unicode string
@@ -203,12 +202,11 @@ class DBConnector(object):
     def quoteString(self, txt):
         """ make the string safe - replace ' with '' """
         if hasattr(txt, '__iter__') and not isinstance(txt, str):
-            txts = [
+            return u'.'.join(
                 self.quoteString(i)
                 for i in txt
                 if i is not None
-            ]
-            return u'.'.join(txts)
+            )
 
         txt = str(txt) if txt is not None else str()  # make sure it's python unicode string
         return u"'%s'" % txt.replace("'", "''")
