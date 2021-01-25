@@ -237,14 +237,14 @@ namespace QgsWfs
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPointPropertyType" ) );
           break;
         case QgsWkbTypes::MultiCurve:
-          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiCurveType" ) );
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiCurvePropertyType" ) );
           break;
         case QgsWkbTypes::MultiLineString25D:
         case QgsWkbTypes::MultiLineString:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiLineStringPropertyType" ) );
           break;
         case QgsWkbTypes::MultiSurface:
-          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiSurfaceType" ) );
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiSurfacePropertyType" ) );
           break;
         case QgsWkbTypes::MultiPolygon25D:
         case QgsWkbTypes::MultiPolygon:
