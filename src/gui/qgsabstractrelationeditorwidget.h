@@ -238,13 +238,14 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      */
     void unlinkFeatures( const QgsFeatureIds &fids );
 
+
   private:
-    virtual void updateUi() {};
-    virtual void setTitle( const QString &title ) { Q_UNUSED( title ); };
-    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature ) { Q_UNUSED( newRelation ); Q_UNUSED( newFeature ); };
-    virtual void afterSetRelationFeature() {};
-    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation ) { Q_UNUSED( newRelation ); Q_UNUSED( newNmRelation ); };
-    virtual void afterSetRelations() {};
+    virtual void updateUi() SIP_FORCE;
+    virtual void setTitle( const QString &title ) SIP_FORCE;
+    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature ) SIP_FORCE;
+    virtual void afterSetRelationFeature() SIP_FORCE;
+    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation ) SIP_FORCE;
+    virtual void afterSetRelations() SIP_FORCE;
 };
 
 

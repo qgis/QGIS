@@ -587,6 +587,32 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
   }
 }
 
+void QgsAbstractRelationEditorWidget::updateUi()
+{}
+
+void QgsAbstractRelationEditorWidget::setTitle( const QString &title )
+{
+  Q_UNUSED( title )
+}
+
+void QgsAbstractRelationEditorWidget::beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature )
+{
+  Q_UNUSED( newRelation )
+  Q_UNUSED( newFeature )
+}
+
+void QgsAbstractRelationEditorWidget::afterSetRelationFeature()
+{}
+
+void QgsAbstractRelationEditorWidget::beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation )
+{
+  Q_UNUSED( newRelation )
+  Q_UNUSED( newNmRelation )
+}
+
+void QgsAbstractRelationEditorWidget::afterSetRelations()
+{}
+
 void QgsAbstractRelationEditorWidget::duplicateFeature( const QgsFeatureId &fid )
 {
   duplicateFeatures( QgsFeatureIds() << fid );

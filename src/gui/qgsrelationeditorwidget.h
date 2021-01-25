@@ -80,7 +80,7 @@ class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
 
 
 /**
- * The default relation widget in QGIS. Successor of the now deprecated {\see QgsRelationEditorWidget}.
+ * The default relation widget in QGIS.
  * \ingroup gui
  * \class QgsRelationEditorWidget
  * \since QGIS 3.18
@@ -206,7 +206,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void onDigitizingCompleted( const QgsFeature &feature );
 
   private:
-    void updateUi() override;
+    virtual void updateUi() override SIP_FORCE;
     void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
