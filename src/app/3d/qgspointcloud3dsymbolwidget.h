@@ -41,6 +41,9 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setShowBoundingBoxes( bool showBoundingBoxes );
     double showBoundingBoxes() const;
 
+    void setPointBudget( int budget );
+    int pointBudget() const;
+
     void connectChildPanels( QgsPanelWidget *parent );
 
   private slots:

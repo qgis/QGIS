@@ -101,6 +101,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
 
   connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+  connect( mPointBudgetSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
   connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, [&]() { emitChangedSignal(); } );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
@@ -605,6 +606,16 @@ double QgsPointCloud3DSymbolWidget::maximumScreenError() const
 void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
 {
   whileBlocking( mShowBoundingBoxesCheckBox )->setChecked( showBoundingBoxes );
+}
+
+void QgsPointCloud3DSymbolWidget::setPointBudget( int budget )
+{
+  whileBlocking( mPointBudgetSpinBox )->setValue( budget );
+}
+
+int QgsPointCloud3DSymbolWidget::pointBudget() const
+{
+  return mPointBudgetSpinBox->value();
 }
 
 double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const

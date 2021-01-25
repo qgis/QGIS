@@ -142,10 +142,25 @@ void QgsChunkedEntity::update( const SceneState &state )
 
   int enabled = 0, disabled = 0, unloaded = 0;
 
-  Q_FOREACH ( QgsChunkNode *node, mActiveNodes )
+  QList<QgsChunkNode *> newActiveNodes;
+  int rendered = 0;
+  for ( QgsChunkNode *node : mActiveNodes )
+  {
+    QgsChunkLoader *nodeLoader = mChunkLoaderFactory->createChunkLoader( node );
+    if ( nodeLoader->primitiveCount() + rendered > nodeLoader->primitiveBudget() )
+      break;
+    rendered += nodeLoader->primitiveCount();
+    newActiveNodes.append( node );
+  }
+
+  mActiveNodes = newActiveNodes;
+
+  for ( QgsChunkNode *node : mActiveNodes )
   {
     if ( activeBefore.contains( node ) )
+    {
       activeBefore.remove( node );
+    }
     else
     {
       node->entity()->setEnabled( true );
@@ -154,7 +169,7 @@ void QgsChunkedEntity::update( const SceneState &state )
   }
 
   // disable those that were active but will not be anymore
-  Q_FOREACH ( QgsChunkNode *node, activeBefore )
+  for ( QgsChunkNode *node : activeBefore )
   {
     node->entity()->setEnabled( false );
     ++disabled;
@@ -241,69 +256,87 @@ int QgsChunkedEntity::pendingJobsCount() const
 }
 
 
-void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
+void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
 {
-  if ( Qgs3DUtils::isCullable( node->bbox(), state.viewProjectionMatrix ) )
+  int renderedCount = 0;
+  QVector<QgsChunkNode *> currentNodes;
+  currentNodes.append( root );
+  while ( !currentNodes.empty() )
   {
-    ++mFrustumCulled;
-    return;
-  }
-
-  // ensure we have child nodes (at least skeletons) available, if any
-  if ( node->childCount() == -1 )
-  {
-    node->populateChildren( mChunkLoaderFactory->createChildren( node ) );
-  }
-
-  // make sure all nodes leading to children are always loaded
-  // so that zooming out does not create issues
-  requestResidency( node );
-
-  if ( !node->entity() )
-  {
-    // this happens initially when root node is not ready yet
-    return;
-  }
-
-  //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
-  if ( node->childCount() == 0 )
-  {
-    // there's no children available for this node, so regardless of whether it has an acceptable error
-    // or not, it's the best we'll ever get...
-    mActiveNodes << node;
-  }
-  else if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
-  {
-    // acceptable error for the current chunk - let's render it
-
-    mActiveNodes << node;
-  }
-  else if ( node->allChildChunksResident( mCurrentTime ) )
-  {
-    // error is not acceptable and children are ready to be used - recursive descent
-
-    if ( mAdditiveStrategy )
+    QVector<QgsChunkNode *> nextNodes;
+    for ( QgsChunkNode * node : currentNodes )
     {
-      // With additive strategy enabled, also all parent nodes are added to active nodes.
-      // This is desired when child nodes add more detailed data rather than just replace
-      // coarser data in parents. We use this e.g. with point cloud data.
-      mActiveNodes << node;
+      QgsChunkLoader *nodeLoader = mChunkLoaderFactory->createChunkLoader( node );
+
+      if ( Qgs3DUtils::isCullable( node->bbox(), state.viewProjectionMatrix ) )
+      {
+        ++mFrustumCulled;
+        continue;
+      }
+
+      // ensure we have child nodes (at least skeletons) available, if any
+      if ( node->childCount() == -1 )
+      {
+        node->populateChildren( mChunkLoaderFactory->createChildren( node ) );
+      }
+
+      // make sure all nodes leading to children are always loaded
+      // so that zooming out does not create issues
+      requestResidency( node );
+
+      if ( !node->entity() )
+      {
+        // this happens initially when root node is not ready yet
+        continue;
+      }
+
+      //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
+      if ( node->childCount() == 0 )
+      {
+        if ( nodeLoader != nullptr )
+          renderedCount += nodeLoader->primitiveCount();
+        // there's no children available for this node, so regardless of whether it has an acceptable error
+        // or not, it's the best we'll ever get...
+        mActiveNodes << node;
+      }
+      else if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
+      {
+        // acceptable error for the current chunk - let's render it
+        mActiveNodes << node;
+      }
+      else if ( node->allChildChunksResident( mCurrentTime ) )
+      {
+        // error is not acceptable and children are ready to be used - recursive descent
+
+
+        if ( mAdditiveStrategy )
+        {
+          // With additive strategy enabled, also all parent nodes are added to active nodes.
+          // This is desired when child nodes add more detailed data rather than just replace
+          // coarser data in parents. We use this e.g. with point cloud data.
+          mActiveNodes << node;
+        }
+
+        QgsChunkNode *const *children = node->children();
+        for ( int i = 0; i < node->childCount(); ++i )
+        {
+          nextNodes.push_back( children[ i ] );
+        }
+      }
+      else
+      {
+        // error is not acceptable but children are not ready either - still use parent but request children
+        mActiveNodes << node;
+
+        QgsChunkNode *const *children = node->children();
+        for ( int i = 0; i < node->childCount(); ++i )
+          requestResidency( children[i] );
+      }
     }
-
-    QgsChunkNode *const *children = node->children();
-    for ( int i = 0; i < node->childCount(); ++i )
-      update( children[i], state );
+    currentNodes = nextNodes;
   }
-  else
-  {
-    // error is not acceptable but children are not ready either - still use parent but request children
 
-    mActiveNodes << node;
-
-    QgsChunkNode *const *children = node->children();
-    for ( int i = 0; i < node->childCount(); ++i )
-      requestResidency( children[i] );
-  }
+//  qDebug() << "Rendered points: " << renderedCount;
 }
 
 
