@@ -58,27 +58,35 @@ void QgsDateTimeStatisticalSummary::calculate( const QVariantList &values )
 
 void QgsDateTimeStatisticalSummary::addValue( const QVariant &value )
 {
-  if ( value.type() == QVariant::DateTime )
-  {
-    testDateTime( value.toDateTime() );
-  }
-  else if ( value.type() == QVariant::Date )
-  {
-    QDate date = value.toDate();
-    testDateTime( ! date.isNull() ? QDateTime( date, QTime( 0, 0, 0 ) )
-                  : QDateTime() );
-  }
-  else if ( value.type() == QVariant::Time )
-  {
-    mIsTimes = true;
-    QTime time = value.toTime();
-    testDateTime( ! time.isNull() ? QDateTime( QDate::fromJulianDay( 0 ), time )
-                  : QDateTime() );
-  }
-  else //not a date
+  if ( value.isNull() )
   {
     mCountMissing++;
     mCount++;
+  }
+  else
+  {
+    if ( value.type() == QVariant::DateTime )
+    {
+      testDateTime( value.toDateTime() );
+    }
+    else if ( value.type() == QVariant::Date )
+    {
+      QDate date = value.toDate();
+      testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
+                    : QDateTime() );
+    }
+    else if ( value.type() == QVariant::Time )
+    {
+      mIsTimes = true;
+      QTime time = value.toTime();
+      testDateTime( time.isValid() ? QDateTime( QDate::fromJulianDay( 0 ), time )
+                    : QDateTime() );
+    }
+    else //not a date
+    {
+      mCountMissing++;
+      mCount++;
+    }
   }
   // QTime?
 }
