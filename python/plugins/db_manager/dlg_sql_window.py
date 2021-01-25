@@ -492,9 +492,10 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                                    self.avoidSelectById.isChecked(), _filter)
         if layer.isValid():
             return layer
-        e = BaseError(self.tr("There was an error creating the SQL layer, please check the logs for further information."))
-        DlgDbError.showError(e, self)
-        return None
+        else:
+            e = BaseError(self.tr("There was an error creating the SQL layer, please check the logs for further information."))
+            DlgDbError.showError(e, self)
+            return None
 
     def loadSqlLayer(self):
         with OverrideCursor(Qt.WaitCursor):
