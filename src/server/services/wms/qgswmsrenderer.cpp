@@ -862,9 +862,54 @@ namespace QgsWms
       dxfLayers.append( QgsDxfExport::DxfLayer( vlayer, layerAttribute ) );
     }
 
+    //map extent
+    QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
+
+    QString crs = mWmsParameters.crs();
+    if ( crs.compare( QStringLiteral( "CRS:84" ), Qt::CaseInsensitive ) == 0 )
+    {
+      crs = QStringLiteral( "EPSG:4326" );
+      mapExtent.invert();
+    }
+    else if ( crs.isEmpty() )
+    {
+      crs = QStringLiteral( "EPSG:4326" );
+    }
+
+    QgsCoordinateReferenceSystem outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+
+    if ( !outputCRS.isValid() )
+    {
+      QgsServiceException::ExceptionCode code;
+      QgsWmsParameter parameter;
+
+      if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
+      {
+        code = QgsServiceException::OGC_InvalidCRS;
+        parameter = mWmsParameters[ QgsWmsParameter::CRS ];
+      }
+      else
+      {
+        code = QgsServiceException::OGC_InvalidSRS;
+        parameter = mWmsParameters[ QgsWmsParameter::SRS ];
+      }
+
+      throw QgsBadRequestException( code, parameter );
+    }
+
+    //then set destinationCrs
+
+    // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
+    if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) && outputCRS.hasAxisInverted() )
+    {
+      mapExtent.invert();
+    }
+
+
     // add layers to dxf
     std::unique_ptr<QgsDxfExport> dxf = qgis::make_unique<QgsDxfExport>();
-    dxf->setExtent( mWmsParameters.bboxAsRectangle() );
+    dxf->setExtent( mapExtent );
+    dxf->setDestinationCrs( outputCRS );
     dxf->addLayers( dxfLayers );
     dxf->setLayerTitleAsName( mWmsParameters.dxfUseLayerTitleAsName() );
     dxf->setSymbologyExport( mWmsParameters.dxfMode() );
