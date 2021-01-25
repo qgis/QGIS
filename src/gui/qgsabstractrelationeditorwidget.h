@@ -244,8 +244,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      */
     void unlinkFeatures( const QgsFeatureIds &fids );
 
-
-  private:
+    // Following virtual methods need to be protected so they can be overridden in bindings
 
     /**
      * A hook called every time the state of the relation editor widget has changed via calling its `set*` methods or slots,
@@ -253,37 +252,37 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * Should be used to refresh the UI regarding the new data.
      * Check QgsRealationEditorWidget as an example.
      */
-    virtual void updateUi() SIP_FORCE;
+    virtual void updateUi();
 
     /**
      * Sets the title of the widget, if it is wrapped within a QgsCollapsibleGroupBox
      * Check QgsRealationEditorWidget as an example.
      */
-    virtual void setTitle( const QString &title ) SIP_FORCE;
+    virtual void setTitle( const QString &title );
 
     /**
      * A hook called right before setRelationFeature() is executed. Used to update the UI once setting the relation feature is done.
      * Check QgsRealationEditorWidget as an example.
      */
-    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature ) SIP_FORCE;
+    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
 
     /**
      * A hook called right after setRelationFeature() is executed, but before updateUi() is called. Used to update the UI once setting the relation feature is done.
      * Check QgsRealationEditorWidget as an example.
      */
-    virtual void afterSetRelationFeature() SIP_FORCE;
+    virtual void afterSetRelationFeature();
 
     /**
      * A hook called right before setRelations() is executed. Used to manipulate UI once setting the relations is done.
      * Check QgsRealationEditorWidget as an example.
      */
-    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation ) SIP_FORCE;
+    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation );
 
     /**
      * A hook called right after setRelations() is executed, but before updateUi() is called. Used to update the UI once setting the relations is done.
      * Check QgsRealationEditorWidget as an example.
      */
-    virtual void afterSetRelations() SIP_FORCE;
+    virtual void afterSetRelations();
 };
 
 
