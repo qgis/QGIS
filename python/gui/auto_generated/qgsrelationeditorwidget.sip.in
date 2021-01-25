@@ -24,7 +24,7 @@
 class QgsRelationEditorWidget : QgsAbstractRelationEditorWidget
 {
 %Docstring
-The default relation widget in QGIS. Successor of the now deprecated {:py:class:`QgsRelationEditorWidget`}.
+The default relation widget in QGIS.
 
 .. versionadded:: 3.18
 %End
@@ -145,6 +145,8 @@ Sets the title of the root groupbox
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
 
+  private:
+    virtual void updateUi();
 };
 
 

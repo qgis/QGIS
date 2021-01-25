@@ -209,6 +209,14 @@ Deletes the features with ``fids``
 Unlinks the features with ``fids``
 %End
 
+
+  private:
+    virtual void updateUi();
+    virtual void setTitle( const QString &title );
+    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
+    virtual void afterSetRelationFeature();
+    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation );
+    virtual void afterSetRelations();
 };
 
 
