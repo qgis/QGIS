@@ -159,6 +159,11 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
     // get the new definition!
     QgsCoordinateReferenceSystem crs4( authid );
     QCOMPARE( crs4.toProj(), madeUpProjection2 );
+
+    // original crs object should be unchanged until it's refreshed
+    QCOMPARE( userCrs.toProj(), madeUpProjection );
+    userCrs.updateDefinition();
+    QCOMPARE( userCrs.toProj(), madeUpProjection2 );
   } );
 
   QVERIFY( registry->updateUserCrs( id, crs2, QStringLiteral( "test 2" ) ) );
