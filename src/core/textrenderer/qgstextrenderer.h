@@ -318,6 +318,29 @@ class CORE_EXPORT QgsTextRenderer
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part );
 
+
+    /**
+     * Returna the number of lines needed to fully display the text
+     * \param context renderer context
+     * \param text text to be used
+     * \param width width available to display the text
+     * \param format text formatting
+     *
+     * \since QGIS 3.20
+     */
+    static bool requiresWrapping( QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format ) const;
+
+    /**
+     * Returna the number of lines needed to fully display the text
+     * \param context renderer context
+     * \param text text to be used
+     * \param width width available to display the text
+     * \param format text formatting
+     *
+     * \since QGIS 3.20
+     */
+    static QStringList wrapText( QgsRenderContext &context, const QString &value, double width, const QgsTextFormat &format ) const;
+
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,
                               const QgsTextFormat &format );

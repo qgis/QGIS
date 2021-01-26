@@ -1879,3 +1879,79 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
     i++;
   }
 }
+
+bool QgsTextRenderer::textRequiresWrapping( QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format ) const
+{
+  if ( qgsDoubleNear( width, 0.0 ) )
+    return false;
+
+  const QStringList multiLineSplit = text.split( '\n' );
+  const double currentTextWidth = QgsTextRenderer::textWidth( context, format, multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  return currentTextWidth > width;
+}
+
+QString QgsTextRenderer::wrapText(  QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format ) const
+{
+  QStringList lines = value.split( '\n' );
+  QStringList outLines;
+  const auto constLines = lines;
+  for ( const QString &line : constLines )
+  {
+    if ( QgsTextRenderer::textRequiresWrapping( context, line, width, format ) )
+    {
+      //first step is to identify words which must be on their own line (too long to fit)
+      QStringList words = line.split( ' ' );
+      QStringList linesToProcess;
+      QString wordsInCurrentLine;
+      const auto constWords = words;
+      for ( const QString &word : constWords )
+      {
+        if ( QgsTextRenderer::textRequiresWrapping( context, word, width, format ) )
+        {
+          //too long to fit
+          if ( !wordsInCurrentLine.isEmpty() )
+            linesToProcess << wordsInCurrentLine;
+          wordsInCurrentLine.clear();
+          linesToProcess << word;
+        }
+        else
+        {
+          if ( !wordsInCurrentLine.isEmpty() )
+            wordsInCurrentLine.append( ' ' );
+          wordsInCurrentLine.append( word );
+        }
+      }
+      if ( !wordsInCurrentLine.isEmpty() )
+        linesToProcess << wordsInCurrentLine;
+
+      const auto constLinesToProcess = linesToProcess;
+      for ( const QString &line : constLinesToProcess )
+      {
+        QString remainingText = line;
+        int lastPos = remainingText.lastIndexOf( ' ' );
+        while ( lastPos > -1 )
+        {
+          //check if remaining text is short enough to go in one line
+          if ( !textRequiresWrapping( context, remainingText, width, format ) )
+          {
+            break;
+          }
+
+          if ( !textRequiresWrapping( context, remainingText.left( lastPos ), width, format ) )
+          {
+            outLines << remainingText.left( lastPos );
+            remainingText = remainingText.mid( lastPos + 1 );
+            lastPos = 0;
+          }
+          lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
+        }
+        outLines << remainingText;
+      }
+    }
+    else
+    {
+      outLines << line;
+    }
+  }
+  return outLines;
+}
