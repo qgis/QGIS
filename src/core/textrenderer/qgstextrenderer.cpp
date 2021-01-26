@@ -1880,7 +1880,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
   }
 }
 
-bool QgsTextRenderer::textRequiresWrapping( QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format ) const
+bool QgsTextRenderer::textRequiresWrapping( QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format )
 {
   if ( qgsDoubleNear( width, 0.0 ) )
     return false;
@@ -1890,7 +1890,7 @@ bool QgsTextRenderer::textRequiresWrapping( QgsRenderContext &context, const QSt
   return currentTextWidth > width;
 }
 
-QString QgsTextRenderer::wrapText(  QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format ) const
+QString QgsTextRenderer::wrapText(  QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format )
 {
   QStringList lines = value.split( '\n' );
   QStringList outLines;

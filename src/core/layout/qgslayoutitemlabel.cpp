@@ -148,7 +148,7 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
       const QString textToDraw = currentText();
       painter->setFont( mFont );
       QgsScopedRenderContextScaleToPixels scale( context.renderContext() );
-      QgsTextRenderer::drawText( painterRect, 0, headerAlign, QgsTextRenderer::wrapText( context.renderContext(), textToDraw, painterRect.width() , mFormat ), context.renderContext(), mFormat, true, QgsTextRenderer::AlignVCenter );
+      QgsTextRenderer::drawText( painterRect, 0, headerAlign, QgsTextRenderer::wrapText( context.renderContext(), textToDraw, painterRect.width(), mFormat ), context.renderContext(), mFormat, true, QgsTextRenderer::AlignVCenter );
       break;
     }
   }

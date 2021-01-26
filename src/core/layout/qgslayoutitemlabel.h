@@ -196,13 +196,13 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
      * Sets the label font \a color.
      * \see fontColor()
      */
-    void setFontColor( const QColor &color ) SIP_DEPRECATED { mFontColor = color; }
+    void setFontColor( const QColor &color ) SIP_DEPRECATED { mFormat.setColor( color ); }
 
     /**
      * Returns the label font color.
      * \see setFontColor()
      */
-    QColor fontColor() const SIP_DEPRECATED { return mFontColor; }
+    QColor fontColor() const SIP_DEPRECATED { return mFormat.color(); }
 
     // In case of negative margins, the bounding rect may be larger than the
     // label's frame

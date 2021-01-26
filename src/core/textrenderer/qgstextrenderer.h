@@ -328,7 +328,7 @@ class CORE_EXPORT QgsTextRenderer
      *
      * \since QGIS 3.20
      */
-    static bool requiresWrapping( QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format ) const;
+    static bool requiresWrapping( QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format );
 
     /**
      * Returna the number of lines needed to fully display the text
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsTextRenderer
      *
      * \since QGIS 3.20
      */
-    static QStringList wrapText( QgsRenderContext &context, const QString &value, double width, const QgsTextFormat &format ) const;
+    static QStringList wrapText( QgsRenderContext &context, const QString &value, double width, const QgsTextFormat &format );
 
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,
