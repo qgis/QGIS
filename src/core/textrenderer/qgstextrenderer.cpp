@@ -1963,6 +1963,28 @@ QStringList QgsTextRenderer::wrapText(  QgsRenderContext &context, const QString
 
 QString QgsTextRenderer::justify( QgsRenderContext &context, const QString &text, const int width, const QgsTextFormat &format )
 {
-  const double currentTextWidth = QgsTextRenderer::textWidth( context, format, text ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
-  //todo
+  QStringList words = text.split( ' ', Qt::SkipEmptyParts ); 
+  const double screenScale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  double currentTextWidth = QgsTextRenderer::textWidth( context, format, text ) / screeenScale;
+  if ( currentTextWidth >= width || words.length() < 1 )
+    return text;
+  double gap = width - currentTextWidth;
+  const double spaceRatio = gap / ( words.length() - 1 );
+  const double spaceW =  QgsTextRenderer::textWidth( context, format, " " ) / screeenScale;
+  if ( spaceW > gap || spaceW > spacreRation )
+    return text;
+  
+  const int i = (int) spaceRatio;
+  QString justified = words.takeFirst();
+  int padSpace = (int) ( gap - ( words.lenght() * i * spaceW ) ) / spaceW;
+  int spaces = i;
+  while ( gap > spaceW || !words.isEmpty() )
+  {
+    // sprinkle pad spaces somehow
+    justified.append( QString( " " ).repeat( spaces  ) )
+    
+    gap -= spaceW * spaces
+  }
+  
+  return justified;
 }
