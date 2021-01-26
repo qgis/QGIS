@@ -756,6 +756,24 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // Mutators -----------------------------------
 
     /**
+     * Updates the definition and parameters of the coordinate reference system to their
+     * latest values.
+     *
+     * This only has an effect if the CRS is a user defined custom CRS, and the definition
+     * of that custom CRS has changed. In this case the parameters of the object (such as the
+     * proj and WKT string definitions, and other related properties) will be updated to
+     * reflect the current definition of the custom CRS.
+     *
+     * Any objects which store CRS objects should connect to the QgsApplication::coordinateReferenceSystemRegistry()'s
+     * QgsCoordinateReferenceSystemRegistry::userCrsChanged() signal and call this method
+     * on their stored CRS objects whenever the signal is emitted in order to update these
+     * CRSes to their new definitions.
+     *
+     * \since QGIS 3.18
+     */
+    void updateDefinition();
+
+    /**
      * Set user hint for validation
      */
     void setValidationHint( const QString &html );

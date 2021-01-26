@@ -1522,6 +1522,22 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
 #endif
 }
 
+void QgsCoordinateReferenceSystem::updateDefinition()
+{
+  if ( !d->mIsValid )
+    return;
+
+  if ( d->mSrsId >= USER_CRS_START_ID )
+  {
+    // user CRS, so update to new definition
+    createFromSrsId( d->mSrsId );
+  }
+  else
+  {
+    // nothing to do -- only user CRS definitions can be changed
+  }
+}
+
 void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
 {
   d.detach();
