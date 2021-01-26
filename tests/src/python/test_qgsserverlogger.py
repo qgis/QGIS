@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServerLogger.
+
+From build dir, run: ctest -R PyQgsServerLogger -V
+
 """
 __author__ = 'Eric Lemoine'
 __date__ = '11/09/2018'

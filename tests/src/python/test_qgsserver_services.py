@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """
+
+From build dir, run: ctest -R PyQgsServerServices -V
+
 ***************************************************************************
     test_qgsserver_services.py
     ---------------------
