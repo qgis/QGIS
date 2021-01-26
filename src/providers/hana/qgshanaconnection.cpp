@@ -553,7 +553,7 @@ void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
 {
   layerProperty.srid = getColumnSrid( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
   layerProperty.type = getColumnGeometryType( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
-  layerProperty.pkCols = getPrimaryeKeyCandidates( layerProperty );
+  layerProperty.pkCols = getPrimaryKeyCandidates( layerProperty );
 }
 
 QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &ownerName )
@@ -585,7 +585,7 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
   return list;
 }
 
-QStringList QgsHanaConnection::getLayerPrimaryeKey( const QString &schemaName, const QString &tableName )
+QStringList QgsHanaConnection::getLayerPrimaryKey( const QString &schemaName, const QString &tableName )
 {
   try
   {
@@ -609,7 +609,7 @@ QStringList QgsHanaConnection::getLayerPrimaryeKey( const QString &schemaName, c
   }
 }
 
-QStringList QgsHanaConnection::getPrimaryeKeyCandidates( const QgsHanaLayerProperty &layerProperty )
+QStringList QgsHanaConnection::getPrimaryKeyCandidates( const QgsHanaLayerProperty &layerProperty )
 {
   if ( !layerProperty.isView )
     return QStringList();
@@ -618,6 +618,11 @@ QStringList QgsHanaConnection::getPrimaryeKeyCandidates( const QgsHanaLayerPrope
   QgsHanaResultSetRef rsColumns = getColumns( layerProperty.schemaName, layerProperty.tableName, QStringLiteral( "%" ) );
   while ( rsColumns->next() )
   {
+    int dataType = rsColumns->getValue( 5/*DATA_TYPE */ ).toInt();
+    // We exclude GEOMETRY and LOB columns
+    if ( dataType == 29812 /* GEOMETRY TYPE */ || dataType == SQLDataTypes::LongVarBinary ||
+         dataType == SQLDataTypes::LongVarChar || dataType == SQLDataTypes::WLongVarChar )
+      continue;
     ret << rsColumns->getValue( 4/*COLUMN_NAME */ ).toString();
   }
   rsColumns->close();

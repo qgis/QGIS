@@ -338,7 +338,7 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
         }
         else  // Fetch and set the real pks
         {
-          QStringList pks = conn->getLayerPrimaryeKey( layerInfo.schemaName, layerInfo.tableName );
+          QStringList pks = conn->getLayerPrimaryKey( layerInfo.schemaName, layerInfo.tableName );
           property.setPrimaryKeyColumns( pks );
         }
         tables.push_back( property );

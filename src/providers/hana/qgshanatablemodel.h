@@ -66,7 +66,7 @@ class QgsHanaTableModel : public QStandardItemModel
     QgsHanaTableModel();
 
     //! Adds entry for one database table to the model
-    void addTableEntry( const QgsHanaLayerProperty &property );
+    void addTableEntry( const QString &connName, const QgsHanaLayerProperty &property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex &index, const QString &sql );
@@ -90,7 +90,7 @@ class QgsHanaTableModel : public QStandardItemModel
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    QString layerURI( const QModelIndex &index, const QString &connInfo );
+    QString layerURI( const QModelIndex &index, const QString &connName, const QString &connInfo );
 
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 

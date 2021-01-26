@@ -18,6 +18,8 @@
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanatablemodel.h"
+#include "qgshanasettings.h"
+#include "qgshanautils.h"
 #include "qgslogger.h"
 
 QgsHanaTableModel::QgsHanaTableModel()
@@ -35,7 +37,7 @@ QgsHanaTableModel::QgsHanaTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty )
+void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLayerProperty &layerProperty )
 {
   QgsWkbTypes::Type wkbType = layerProperty.type;
   int srid = layerProperty.srid;
@@ -43,13 +45,17 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
   if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
     wkbType = QgsWkbTypes::NoGeometry;
 
+  bool withTipButSelectable = false;
   QString tip;
   if ( wkbType == QgsWkbTypes::Unknown )
     tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
   else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
     tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
-  else if ( layerProperty.pkCols.size() > 1 )
+  else if ( !layerProperty.pkCols.empty() )
+  {
     tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
+    withTipButSelectable = true;
+  }
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
@@ -70,26 +76,34 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
     sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
   }
 
-  QString pkText;
-  QString pkCol;
-  switch ( layerProperty.pkCols.size() )
+  QStandardItem *pkItem = new QStandardItem( QString() );
+  if ( !layerProperty.pkCols.isEmpty() )
   {
-    case 0:
-      break;
-    case 1:
-      pkText = layerProperty.pkCols[0];
-      pkCol = pkText;
-      break;
-    default:
-      pkText = tr( "Select…" );
-      break;
+    pkItem->setText( tr( "Select…" ) );
+    pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
+  }
+  else
+    pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
+
+  pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
+
+  QgsHanaSettings settings( connName, true );
+  QStringList pkColumns;
+  if ( !layerProperty.pkCols.isEmpty() )
+  {
+    QStringList pkColumnsStored = settings.keyColumns( layerProperty.schemaName, layerProperty.tableName );
+    if ( !pkColumnsStored.empty() )
+    {
+      // We check whether the primary key columns still exist.
+      auto intersection = pkColumnsStored.toSet().intersect( layerProperty.pkCols.toSet() );
+      if ( intersection.size() == pkColumnsStored.size() )
+        pkColumns = pkColumnsStored;
+    }
   }
 
-  QStandardItem *pkItem = new QStandardItem( pkText );
-  if ( layerProperty.pkCols.size() > 1 )
-    pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
-  pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
-  pkItem->setData( pkCol, Qt::UserRole + 2 );
+  pkItem->setData( pkColumns, Qt::UserRole + 2 );
+  if ( !pkColumns.isEmpty() )
+    pkItem->setText( pkColumns.join( ',' ) );
 
   QStandardItem *selItem = new QStandardItem( QString( ) );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
@@ -113,15 +127,17 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
 
   for ( QStandardItem *item :  qgis::as_const( childItemList ) )
   {
+    if ( tip.isEmpty() || withTipButSelectable )
+      item->setFlags( item->flags() | Qt::ItemIsSelectable );
+    else
+      item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+
     if ( tip.isEmpty() )
     {
-      item->setFlags( item->flags() | Qt::ItemIsSelectable );
       item->setToolTip( QString( ) );
     }
     else
     {
-      item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
-
       if ( item == schemaNameItem )
         item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
 
@@ -283,7 +299,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
   return true;
 }
 
-QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &connInfo )
+QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &connName, const QString &connInfo )
 {
   if ( !index.isValid() )
     return QString();
@@ -294,15 +310,24 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
     return QString();
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
-  QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
-
-  if ( !pkItem->data( Qt::UserRole + 1 ).toStringList().isEmpty() &&
-       !pkItem->data( Qt::UserRole + 1 ).toStringList().contains( pkColumnName ) )
-    // no valid primary candidate selected
+  const QSet<QString> pkColumnsAll( qgis::listToSet( pkItem->data( Qt::UserRole + 1 ).toStringList() ) );
+  const QSet<QString> pkColumnsSelected( qgis::listToSet( pkItem->data( Qt::UserRole + 2 ).toStringList() ) );
+  if ( !pkColumnsAll.isEmpty() && !pkColumnsAll.intersects( pkColumnsSelected ) )
+  {
+    QgsDebugMsg( QStringLiteral( "no pk candidate selected" ) );
     return QString();
+  }
 
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
   QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
+
+  QgsHanaSettings settings( connName, true );
+  settings.setKeyColumns( schemaName, tableName, pkColumnsSelected.toList() );
+  settings.save();
+
+  QStringList pkColumns;
+  for ( const QString &column : pkColumnsSelected )
+    pkColumns <<  QgsHanaUtils::quotedIdentifier( column );
 
   QString geomColumnName;
   QString srid;
@@ -321,7 +346,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
 
   QgsDataSourceUri uri( connInfo );
-  uri.setDataSource( schemaName, tableName, geomColumnName, sql, pkColumnName );
+  uri.setDataSource( schemaName, tableName, geomColumnName, sql,  pkColumns.join( ',' ) );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
