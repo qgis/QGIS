@@ -26,6 +26,8 @@
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 #include "qgsfontutils.h"
+#include "qgstextformat.h"
+#include "qgstextrenderer.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmapsettings.h"
 #include "qgslayoutitemmap.h"
@@ -145,7 +147,10 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
     {
       const QString textToDraw = currentText();
       painter->setFont( mFont );
-      QgsLayoutUtils::drawText( painter, painterRect, textToDraw, mFont, mFontColor, mHAlignment, mVAlignment, Qt::TextWordWrap );
+              QgsScopedRenderContextScaleToPixels scale( context.renderContext() );
+        QgsTextRenderer::drawText( painterRect, 0,
+                                   headerAlign, str, context.renderContext(), mFormat, true, QgsTextRenderer::AlignVCenter );
+      QgsTextRenderer ::drawText( painter, painterRect, textToDraw, mFont, mFontColor, mHAlignment, mVAlignment, Qt::TextWordWrap );
       break;
     }
   }
@@ -314,7 +319,23 @@ void QgsLayoutItemLabel::replaceDateText( QString &text ) const
 
 void QgsLayoutItemLabel::setFont( const QFont &f )
 {
-  mFont = f;
+  Q_NOWARN_DEPRECATED_PUSH
+  mFormat.setFont( font );
+  Q_NOWARN_DEPRECATED_POP
+  refreshItemSize();
+  emit changed();
+}
+
+QgsTextFormat QgsLayoutItemLabel::textFormat() const
+{
+  return mFormat;
+}
+
+void QgsLayoutItemLabel::setTextFormat( const QgsTextFormat &format )
+{
+  mFormat = format;
+  refreshItemSize();
+  emit changed();
 }
 
 void QgsLayoutItemLabel::setMargin( const double m )
@@ -365,7 +386,7 @@ QSizeF QgsLayoutItemLabel::sizeForText() const
 
 QFont QgsLayoutItemLabel::font() const
 {
-  return mFont;
+  return mFormat.font();
 }
 
 bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem, QDomDocument &doc, const QgsReadWriteContext & ) const
@@ -379,8 +400,8 @@ bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem,
   layoutLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
 
   //font
-  QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "LabelFont" ) );
-  layoutLabelElem.appendChild( labelFontElem );
+  QDomElement textElem = mFormat.writeXml( doc, rwContext );
+  layoutLabelElem.appendChild( textElem );
 
   //font color
   QDomElement fontColorElem = doc.createElement( QStringLiteral( "FontColor" ) );
@@ -423,9 +444,32 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
   mVAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "valign" ) ).toInt() );
 
   //font
-  QgsFontUtils::setFromXmlChildNode( mFont, itemElem, QStringLiteral( "LabelFont" ) );
+  QDomNodeList textFormatNodeList = itemElem.elementsByTagName( QStringLiteral( "text-style" ) );
+  if ( !textFormatNodeList.isEmpty() )
+  {
+    QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
+    mFormat.readXml( textFormatElem, context );
+  }
+  else
+  {
+    QFont f;
+    if ( !QgsFontUtils::setFromXmlChildNode( f, itemElem, QStringLiteral( "scaleBarFont" ) ) )
+    {
+      f.fromString( itemElem.attribute( QStringLiteral( "font" ), QString() ) );
+    }
+    mFormat.setFont( f );
+    if ( f.pointSizeF() > 0 )
+    {
+      mFormat.setSize( f.pointSizeF() );
+      mFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+    }
+    else if ( f.pixelSize() > 0 )
+    {
+      mFormat.setSize( f.pixelSize() );
+      mFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+    }
+  }
 
-  //font color
   QDomNodeList fontColorList = itemElem.elementsByTagName( QStringLiteral( "FontColor" ) );
   if ( !fontColorList.isEmpty() )
   {
@@ -435,10 +479,14 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
     int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
     int alpha = fontColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
     mFontColor = QColor( red, green, blue, alpha );
+
+    mFormat.setColor( mFontColor );
   }
-  else
+  else if ( itemElem.hasAttribute( QStringLiteral( "fontColor" ) ) )
   {
-    mFontColor = QColor( 0, 0, 0 );
+    QColor c;
+    c.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+    mFormat.setColor( c );
   }
 
   return true;

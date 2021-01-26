@@ -50,7 +50,7 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mMiddleRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::mMiddleRadioButton_clicked );
   setPanelTitle( tr( "Label Properties" ) );
 
-  mFontButton->setMode( QgsFontButton::ModeQFont );
+  mFontButton->setMode( QgsFontButton::ModeTextRenderer );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, label );
@@ -277,9 +277,8 @@ void QgsLayoutLabelWidget::fontChanged()
 {
   if ( mLabel )
   {
-    QFont newFont = mFontButton->currentFont();
     mLabel->beginCommand( tr( "Change Label Font" ), QgsLayoutItem::UndoLabelFont );
-    mLabel->setFont( newFont );
+    mScalebar->setTextFormat( mFontButton->textFormat() );
     mLabel->update();
     mLabel->endCommand();
   }
@@ -448,7 +447,7 @@ void QgsLayoutLabelWidget::setGuiElementValues()
   mCenterRadioButton->setChecked( mLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mLabel->hAlign() == Qt::AlignRight );
   mFontColorButton->setColor( mLabel->fontColor() );
-  mFontButton->setCurrentFont( mLabel->font() );
+  mFontButton->setTextFormat( mLabel->textFormat() );
   mVerticalAlignementLabel->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
   mTopRadioButton->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
   mMiddleRadioButton->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
