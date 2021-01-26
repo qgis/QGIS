@@ -129,7 +129,6 @@ After execution completes, the process' result code will be returned.
 %Docstring
 After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' exit status.
 %End
-    int exitStatus() const;
 
 };
 
