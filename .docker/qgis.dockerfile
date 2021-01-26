@@ -57,7 +57,7 @@ RUN SUCCESS=OK \
   && echo "$SUCCESS" > /QGIS/build_exit_value
 
 # Additional run-time dependencies
-RUN pip3 install jinja2 pygments
+RUN pip3 install jinja2 pygments pexpect
 
 ################################################################################
 # Python testing environment setup
