@@ -40,7 +40,7 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
     }
   }
 
-  // Always add singular form for broken servers (ESRI)
+  // Always add singular form for broken servers
   // See: https://github.com/qgis/QGIS/issues/41087
   query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
   if ( !namespaceValue.isEmpty() )
