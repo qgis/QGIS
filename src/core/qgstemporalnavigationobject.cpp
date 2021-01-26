@@ -101,13 +101,10 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
   if ( mCumulativeTemporalRange )
     frameStart = start;
 
-  // RD: as most data will have some kind of range (and we handle this later if it is NOT)
-  // DO NOT TAKE the limits into account of this sliding time window
-  // (else data frames will show up in 2 windows instead of the (intuitive) one)
   if ( end <= mTemporalExtents.end() )
-    return QgsDateTimeRange( frameStart, end, false, false );
+    return QgsDateTimeRange( frameStart, end, true, false );
 
-  return QgsDateTimeRange( frameStart, mTemporalExtents.end(), false, false );
+  return QgsDateTimeRange( frameStart, mTemporalExtents.end(), true, false );
 }
 
 void QgsTemporalNavigationObject::setNavigationMode( const NavigationMode mode )
@@ -200,8 +197,6 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
 
   mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalFrameDurationChanged( mFrameDuration );
-
-  // temporarily disable the updateTemporalRange signal, as we'll emit it ourselves at the end of this function...
 
   // forcing an update of our views
   QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
@@ -318,7 +313,7 @@ QgsTemporalNavigationObject::AnimationState QgsTemporalNavigationObject::animati
 long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const
 {
   long bestFrame = 0;
-  QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart, false, false ); // creating an 'instant' Range here
+  QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creating an 'instant' Range here
   for ( long i = 0; i < totalFrameCount(); ++i )
   {
     QgsDateTimeRange range = dateTimeRangeForFrameNumber( i );

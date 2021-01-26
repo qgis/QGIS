@@ -184,13 +184,13 @@ void TestQgsTemporalNavigationObject::frameSettings()
   QgsDateTimeRange range = QgsDateTimeRange(
                              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
                              QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
-                             false,  // defaulting to view ranges NOT taking both limits into account
+                             true,
                              false
                            );
   QgsDateTimeRange lastRange = QgsDateTimeRange(
                                  QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
                                  QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
-                                 false,  // defaulting to view ranges NOT taking both limits into account
+                                 true,
                                  false
                                );
   navigationObject->setTemporalExtents( range );
