@@ -184,7 +184,7 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
 #if QT_CONFIG(process)
     QProcess::ExitStatus exitStatus() const;
 #else
-    int exitStatus() const {return 0;}
+    int exitStatus() const SIP_SKIP {return 0;}
 #endif
 
   private:
