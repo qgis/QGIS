@@ -257,6 +257,7 @@ QStringList QgsRunProcess::splitCommand( const QString & )
 // QgsBlockingProcess
 //
 
+#if QT_CONFIG(process)
 QgsBlockingProcess::QgsBlockingProcess( const QString &process, const QStringList &arguments )
   : QObject()
   , mProcess( process )
@@ -345,4 +346,16 @@ QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
 {
   return mExitStatus;
 };
+#else
+QgsBlockingProcess::QgsBlockingProcess( const QString &action, const QStringList & )
+{
+  Q_UNUSED( action )
+  QgsDebugMsg( "Skipping command: " + action );
+}
 
+
+int QgsBlockingProcess::run( const QString & )
+{
+  return 0;
+}
+#endif
