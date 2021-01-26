@@ -354,7 +354,7 @@ QgsBlockingProcess::QgsBlockingProcess( const QString &action, const QStringList
 }
 
 
-int QgsBlockingProcess::run( const QString & )
+int QgsBlockingProcess::run( QgsFeedback * )
 {
   return 0;
 }
