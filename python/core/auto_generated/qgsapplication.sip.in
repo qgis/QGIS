@@ -696,6 +696,14 @@ providers that may add items to the browser tree.
 .. versionadded:: 3.0
 %End
 
+    static QgsCoordinateReferenceSystemRegistry *coordinateReferenceSystemRegistry() /KeepReference/;
+%Docstring
+Returns the application's coordinate reference system (CRS) registry, which handles
+known CRS definitions (including user-defined CRSes).
+
+.. versionadded:: 3.18
+%End
+
     static QgsSvgCache *svgCache();
 %Docstring
 Returns the application's SVG cache, used for caching SVG images and handling parameter replacement

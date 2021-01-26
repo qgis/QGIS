@@ -65,6 +65,7 @@ class QgsScaleBarRendererRegistry;
 class Qgs3DSymbolRegistry;
 class QgsPointCloudRendererRegistry;
 class QgsTileDownloadManager;
+class QgsCoordinateReferenceSystemRegistry;
 
 /**
  * \ingroup core
@@ -655,6 +656,14 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsDataItemProviderRegistry *dataItemProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's coordinate reference system (CRS) registry, which handles
+     * known CRS definitions (including user-defined CRSes).
+     *
+     * \since QGIS 3.18
+     */
+    static QgsCoordinateReferenceSystemRegistry *coordinateReferenceSystemRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
      * within SVG files.
      *
@@ -985,6 +994,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     struct ApplicationMembers
     {
+      QgsCoordinateReferenceSystemRegistry *mCrsRegistry = nullptr;
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
       Qgs3DSymbolRegistry *m3DSymbolRegistry = nullptr;
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;

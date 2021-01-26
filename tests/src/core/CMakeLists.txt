@@ -65,6 +65,7 @@ set(TESTS
  testqgsconnectionpool.cpp
  testcontrastenhancements.cpp
  testqgscoordinatereferencesystem.cpp
+ testqgscoordinatereferencesystemregistry.cpp
  testqgscoordinatetransform.cpp
  testqgscredentials.cpp
  testqgscurve.cpp
