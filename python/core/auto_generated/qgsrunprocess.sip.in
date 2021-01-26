@@ -11,6 +11,7 @@
 
 
 
+
 class QgsRunProcess: QObject /NoDefaultCtors/
 {
 %Docstring
@@ -60,6 +61,9 @@ A thread safe class for performing blocking (sync) execution of external process
 This class should be used whenever a blocking process run is required. Unlike implementations
 which rely on QApplication.processEvents() or creation of a QEventLoop, this class is completely
 thread safe and can be used on either the main thread or background threads without issue.
+
+On some platforms (e.g. iOS) , the process execution is skipped
+https://lists.qt-project.org/pipermail/development/2015-July/022205.html
 
 .. versionadded:: 3.18
 %End
@@ -125,6 +129,7 @@ After execution completes, the process' result code will be returned.
 %Docstring
 After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' exit status.
 %End
+    int exitStatus() const;
 
 };
 
