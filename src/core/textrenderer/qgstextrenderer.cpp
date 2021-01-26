@@ -1890,7 +1890,7 @@ bool QgsTextRenderer::textRequiresWrapping( QgsRenderContext &context, const QSt
   return currentTextWidth > width;
 }
 
-QString QgsTextRenderer::wrapText(  QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format )
+QStringList QgsTextRenderer::wrapText(  QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format, Qt::Alignment alignment )
 {
   QStringList lines = value.split( '\n' );
   QStringList outLines;
@@ -1945,13 +1945,24 @@ QString QgsTextRenderer::wrapText(  QgsRenderContext &context, const QString &te
           }
           lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
         }
+        if ( alignment == Qt::AlignJustify )
+          remainingText = justify( remainingText, width );
         outLines << remainingText;
       }
     }
     else
     {
-      outLines << line;
+      if ( alignment == Qt::AlignJustify )
+        outline << justify( line, width );
+      else
+        outLines << line;
     }
   }
   return outLines;
+}
+
+QString QgsTextRenderer::justify( QgsRenderContext &context, const QString &text, const int width, const QgsTextFormat &format )
+{
+  const double currentTextWidth = QgsTextRenderer::textWidth( context, format, text ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  //todo
 }

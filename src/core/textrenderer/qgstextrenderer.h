@@ -341,6 +341,8 @@ class CORE_EXPORT QgsTextRenderer
      */
     static QStringList wrapText( QgsRenderContext &context, const QString &value, double width, const QgsTextFormat &format );
 
+    static QString justify( QgsRenderContext &context, const QString &text, const int width, const QgsTextFormat &format );
+
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,
                               const QgsTextFormat &format );
