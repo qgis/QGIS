@@ -174,7 +174,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     QDateTime mMax;
     bool mIsTimes;
 
-    void testDateTime( const QDateTime &dateTime );
+    void testDateTime( const QDateTime &dateTime, bool isNull );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDateTimeStatisticalSummary::Statistics )

@@ -132,14 +132,14 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
     double x = attrs.at( xFieldIndex ).toDouble( &xOk );
     double y = attrs.at( yFieldIndex ).toDouble( &yOk );
 
-    if ( xOk && yOk )
+    if ( ! attrs.at( xFieldIndex ).isNull() && ! attrs.at( yFieldIndex ).isNull() && xOk && yOk )
     {
       QgsPoint point( x, y );
 
-      if ( zFieldIndex >= 0 )
+      if ( zFieldIndex >= 0 && ! attrs.at( zFieldIndex ).isNull() )
         point.addZValue( attrs.at( zFieldIndex ).toDouble() );
 
-      if ( mFieldIndex >= 0 )
+      if ( mFieldIndex >= 0 && ! attrs.at( mFieldIndex ).isNull() )
         point.addMValue( attrs.at( mFieldIndex ).toDouble() );
 
       f.setGeometry( QgsGeometry( point.clone() ) );
