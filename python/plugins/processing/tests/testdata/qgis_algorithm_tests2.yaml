@@ -1115,7 +1115,7 @@ tests:
         rules:
           - 'Analyzed field: date_time'
           - 'Count: 4'
-          - 'Unique values: 3'
+          - 'Unique values: 4'
           - 'Minimum value: 2014-11-30T14:30:02'
           - 'Maximum value: 2016-11-30T14:29:22'
           - 'NULL \(missing\) values: 1'
@@ -1134,7 +1134,7 @@ tests:
         rules:
           - 'Analyzed field: date'
           - 'Count: 4'
-          - 'Unique values: 3'
+          - 'Unique values: 4'
           - 'Minimum value: 2014-11-30T00:00:00'
           - 'Maximum value: 2016-11-30T00:00:00'
           - 'NULL \(missing\) values: 1'
@@ -1153,7 +1153,7 @@ tests:
         rules:
           - 'Analyzed field: time'
           - 'Count: 4'
-          - 'Unique values: 3'
+          - 'Unique values: 4'
           - 'Minimum value: 03:29:40'
           - 'Maximum value: 15:29:22'
           - 'NULL \(missing\) values: 1'
