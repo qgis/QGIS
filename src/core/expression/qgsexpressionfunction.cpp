@@ -61,6 +61,7 @@
 #include "qgsunittypes.h"
 #include "qgsspatialindex.h"
 
+
 typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
 
 Q_GLOBAL_STATIC( ExpressionFunctionList, sOwnedFunctions )
@@ -5075,6 +5076,13 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
   return result;
 }
 
+static QVariant fcnMimeType( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  const QVariant data = values.at( 0 );
+  const QMimeDatabase db;
+  return db.mimeTypeForData( data.toByteArray() ).name();
+}
+
 static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
@@ -6955,6 +6963,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "part" ), true ),
                                             fcnDecodeUri, QStringLiteral( "Map Layers" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "mime_type" ),
+                                            QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "binary_data" ) ),
+                                            fcnMimeType, QStringLiteral( "General" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_statistic" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "Rasters" ) );
