@@ -242,7 +242,6 @@ QString QgsHanaLayerItem::comments() const
 
 QString QgsHanaLayerItem::createUri() const
 {
-  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
   QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( parent() ?
                                     parent()->parent() : nullptr );
 
@@ -253,9 +252,26 @@ QString QgsHanaLayerItem::createUri() const
   }
 
   QgsHanaSettings settings( connItem->name(), true );
+
+  QStringList pkColumns;
+  if ( !mLayerProperty.pkCols.isEmpty() )
+  {
+    const QStringList pkColumnsStored = settings.keyColumns( mLayerProperty.schemaName, mLayerProperty.tableName );
+    if ( !pkColumnsStored.empty() )
+    {
+      // We check whether the primary key columns still exist.
+      auto intersection = pkColumnsStored.toSet().intersect( mLayerProperty.pkCols.toSet() );
+      if ( intersection.size() == pkColumnsStored.size() )
+      {
+        for ( const auto &column : pkColumnsStored )
+          pkColumns << QgsHanaUtils::quotedIdentifier( column );
+      }
+    }
+  }
+
   QgsDataSourceUri uri = settings.toDataSourceUri();
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName,
-                     mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
+                     mLayerProperty.geometryColName, mLayerProperty.sql, pkColumns.join( ',' ) );
   uri.setWkbType( mLayerProperty.type );
   if ( uri.wkbType() != QgsWkbTypes::NoGeometry )
     uri.setSrid( QString::number( mLayerProperty.srid ) );

@@ -14,6 +14,7 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgis.h"
 #include "qgshanasettings.h"
 #include "qgssettings.h"
 
@@ -46,6 +47,19 @@ QString QgsHanaSettings::port() const
   }
   else
     return mIdentifier;
+}
+
+QStringList QgsHanaSettings::keyColumns( const QString &schemaName, const QString &objectName ) const
+{
+  return mKeyColumns.value( schemaName ).value( objectName );
+}
+
+void QgsHanaSettings::setKeyColumns( const QString &schemaName, const QString &objectName, const QStringList &columnNames )
+{
+  if ( columnNames.empty() )
+    mKeyColumns[schemaName].remove( objectName );
+  else
+    mKeyColumns[schemaName][objectName] = columnNames;
 }
 
 void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
@@ -102,6 +116,7 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
   uri.setConnection( mHost, port(), mDatabase, mUserName, mPassword );
   uri.setDriver( mDriver );
   uri.setSchema( mSchema );
+
   if ( mSslEnabled )
   {
     uri.setParam( QStringLiteral( "sslEnabled" ), QStringLiteral( "true" ) );
@@ -122,7 +137,7 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
 void QgsHanaSettings::load()
 {
   QgsSettings settings;
-  QString key = path();
+  const QString key = path();
   mDriver = settings.value( key + "/driver" ).toString();
   mHost = settings.value( key + "/host" ).toString();
   mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
@@ -145,11 +160,33 @@ void QgsHanaSettings::load()
   mSslTrustStore = settings.value( key + "/sslTrustStore" ).toString();
   mSslValidateCertificate = settings.value( key + "/sslValidateCertificate", true ).toBool();
   mSslHostNameInCertificate = settings.value( key + "/sslHostNameInCertificate" ).toString();
+
+  const QString keysPath = key + "/keys";
+  settings.beginGroup( keysPath );
+  const QStringList schemaNames = settings.childGroups();
+  if ( !schemaNames.empty() )
+  {
+    for ( const QString &schemaName : schemaNames )
+    {
+      const QString schemaKey = keysPath + "/" + schemaName;
+      QgsSettings subSettings;
+      subSettings.beginGroup( schemaKey );
+      const QStringList objectNames = subSettings.childKeys();
+      if ( objectNames.empty() )
+        continue;
+      for ( const QString &objectName : objectNames )
+      {
+        QVariant value = subSettings.value( objectName );
+        if ( !value.isNull() )
+          mKeyColumns[schemaName][objectName] = value.toStringList();
+      }
+    }
+  }
 }
 
 void QgsHanaSettings::save()
 {
-  QString key( path() );
+  const QString key( path() );
   QgsSettings settings;
   settings.setValue( key + "/driver", mDriver );
   settings.setValue( key + "/host", mHost );
@@ -171,12 +208,32 @@ void QgsHanaSettings::save()
   settings.setValue( key + "/sslTrustStore", mSslTrustStore );
   settings.setValue( key + "/sslValidateCertificate", mSslValidateCertificate );
   settings.setValue( key + "/sslHostNameInCertificate", mSslHostNameInCertificate );
+
+  if ( !mKeyColumns.empty() )
+  {
+    const QString keysPath = key + "/keys/";
+    settings.beginGroup( keysPath );
+    const QStringList schemaNames = mKeyColumns.keys();
+    for ( const QString &schemaName : schemaNames )
+    {
+      const auto &schemaKeys = mKeyColumns[schemaName];
+      if ( schemaKeys.empty() )
+        continue;
+      const QStringList objectNames = schemaKeys.keys();
+      settings.beginGroup( schemaName );
+      for ( const QString &objectName : objectNames )
+        settings.setValue( objectName, schemaKeys[objectName] );
+      settings.endGroup();
+    }
+    settings.endGroup();
+  }
+
   settings.sync();
 }
 
 void QgsHanaSettings::removeConnection( const QString &name )
 {
-  QString key( getBaseKey() + name );
+  const QString key( getBaseKey() + name );
   QgsSettings settings;
   settings.remove( key + "/driver" );
   settings.remove( key + "/host" );
@@ -198,6 +255,7 @@ void QgsHanaSettings::removeConnection( const QString &name )
   settings.remove( key + "/sslTrustStore" );
   settings.remove( key + "/sslValidateCertificate" );
   settings.remove( key + "/sslHostNameInCertificate" );
+  settings.remove( key + "/keys" );
   settings.remove( key );
   settings.sync();
 }
