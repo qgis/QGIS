@@ -31,6 +31,7 @@
 %Include auto_generated/qgsconnectionregistry.sip
 %Include auto_generated/qgscoordinateformatter.sip
 %Include auto_generated/qgscoordinatereferencesystem.sip
+%Include auto_generated/qgscoordinatereferencesystemregistry.sip
 %Include auto_generated/qgscoordinatetransform.sip
 %Include auto_generated/qgscoordinatetransformcontext.sip
 %Include auto_generated/qgscredentials.sip

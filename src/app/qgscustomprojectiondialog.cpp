@@ -27,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgssqliteutils.h"
 #include "qgsgui.h"
+#include "qgscoordinatereferencesystemregistry.h"
 
 //qt includes
 #include <QFileInfo>
@@ -259,7 +260,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
   QString ellipsoidAcronym = crs.ellipsoidAcronym();
   if ( newEntry )
   {
-    returnId = crs.saveAsUserCrs( name, format );
+    returnId = QgsApplication::coordinateReferenceSystemRegistry()->addUserCrs( crs, name, format );
     if ( returnId == -1 )
       return false;
     else
@@ -267,37 +268,12 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
   }
   else
   {
-    sql = "update tbl_srs set description="
-          + QgsSqliteUtils::quotedString( name )
-          + ",projection_acronym=" + ( !projectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( projectionAcronym ) : QStringLiteral( "''" ) )
-          + ",ellipsoid_acronym=" + ( !ellipsoidAcronym.isEmpty() ? QgsSqliteUtils::quotedString( ellipsoidAcronym ) : QStringLiteral( "''" ) )
-          + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : QStringLiteral( "''" ) )
-          + ",is_geo=0" // <--shamelessly hard coded for now
-          + ",wkt=" + ( format == QgsCoordinateReferenceSystem::FormatWkt ? QgsSqliteUtils::quotedString( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) ) : QStringLiteral( "''" ) )
-          + " where srs_id=" + QgsSqliteUtils::quotedString( id )
-          ;
-    QgsDebugMsgLevel( sql, 4 );
-    sqlite3_database_unique_ptr database;
-    //check if the db is available
-    int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
-    if ( result != SQLITE_OK )
+    if ( !QgsApplication::coordinateReferenceSystemRegistry()->updateUserCrs( id.toLong(), crs, name ) )
     {
-      QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
-                   QgsApplication::qgisUserDatabaseFilePath() ) );
-      // XXX This will likely never happen since on open, sqlite creates the
-      //     database if it does not exist.
-      Q_ASSERT( result == SQLITE_OK );
-    }
-    sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
-    if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
-    {
-      QgsDebugMsg( QStringLiteral( "failed to write to database in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
-    }
-
-    preparedStatement.reset();
-    if ( result != SQLITE_OK )
       return false;
+    }
   }
+
   mExistingCRSwkt[id] = format == QgsCoordinateReferenceSystem::FormatWkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
   mExistingCRSproj[id] = format == QgsCoordinateReferenceSystem::FormatProj ? crs.toProj() : QString();
   mExistingCRSnames[id] = name;
@@ -312,7 +288,6 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
 
   return true;
 }
-
 
 void QgsCustomProjectionDialog::pbnAdd_clicked()
 {

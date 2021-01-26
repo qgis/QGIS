@@ -774,7 +774,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static int syncDatabase();
 
     /**
-     * Saves the CRS as a custom ("USER") CRS.
+     * Saves the CRS as a new custom ("USER") CRS.
      *
      * Returns the new CRS srsid(), or -1 if the CRS could not be saved.
      *
@@ -783,6 +783,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \warning Not all CRS definitions can be represented as a Proj string, so
      * take care when using the FormatProj option.
+     *
+     * \note Since QGIS 3.18, internally this calls QgsCoordinateReferenceSystemRegistry::addUserCrs().
      */
     long saveAsUserCrs( const QString &name, Format nativeFormat = FormatWkt );
 
@@ -909,7 +911,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     void setMapUnits();
 
     //! Helper for getting number of user CRS already in db
-    long getRecordCount();
+    static long getRecordCount();
 
 #if PROJ_VERSION_MAJOR>=6
     bool loadFromAuthCode( const QString &auth, const QString &code );
@@ -978,6 +980,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     friend class TestQgsCoordinateReferenceSystem;
     friend class QgsPostgresProvider;
+    friend class QgsCoordinateReferenceSystemRegistry;
 
     bool createFromPostgisSrid( const long id );
 };

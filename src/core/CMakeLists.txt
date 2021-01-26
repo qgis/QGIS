@@ -283,6 +283,7 @@ set(QGIS_CORE_SRCS
   qgsconnectionregistry.cpp
   qgscoordinateformatter.cpp
   qgscoordinatereferencesystem.cpp
+  qgscoordinatereferencesystemregistry.cpp
   qgscoordinatetransform.cpp
   qgscoordinatetransform_p.cpp
   qgscoordinatetransformcontext.cpp
@@ -867,6 +868,7 @@ set(QGIS_CORE_HDRS
   qgsconnectionregistry.h
   qgscoordinateformatter.h
   qgscoordinatereferencesystem.h
+  qgscoordinatereferencesystemregistry.h
   qgscoordinatetransform.h
   qgscoordinatetransformcontext.h
   qgscoordinateutils.h
