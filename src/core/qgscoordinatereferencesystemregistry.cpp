@@ -176,3 +176,53 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
 
   return res;
 }
+
+bool QgsCoordinateReferenceSystemRegistry::removeUserCrs( long id )
+{
+  sqlite3_database_unique_ptr database;
+
+  QString sql = "delete from tbl_srs where srs_id=" + QgsSqliteUtils::quotedString( QString::number( id ) );
+  QgsDebugMsgLevel( sql, 4 );
+  //check the db is available
+  int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+  if ( result != SQLITE_OK )
+  {
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+                 QgsApplication::qgisUserDatabaseFilePath() ) );
+    return false;
+  }
+
+  bool res = true;
+  {
+    sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
+    if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
+    {
+      QgsDebugMsg( QStringLiteral( "failed to remove custom CRS from database: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+      res = false;
+    }
+    else
+    {
+      const int changed = sqlite3_changes( database.get() );
+      if ( changed )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Removed user CRS [%1]" ).arg( id ), QObject::tr( "CRS" ) );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error removing user CRS [%1]: No matching ID found in database" ).arg( id ), QObject::tr( "CRS" ) );
+        res = false;
+      }
+    }
+  }
+
+  QgsCoordinateReferenceSystem::invalidateCache();
+  QgsCoordinateTransform::invalidateCache();
+
+  if ( res )
+  {
+    emit userCrsRemoved( id );
+    emit crsDefinitionsChanged();
+  }
+
+  return res;
+}

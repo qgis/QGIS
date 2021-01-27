@@ -30,6 +30,7 @@ class TestQgsCoordinateReferenceSystemRegistry: public QObject
     void cleanupTestCase();
     void addUserCrs();
     void changeUserCrs();
+    void removeUserCrs();
 
   private:
 
@@ -176,6 +177,62 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   // newly created crs should get new definition, not old
   QgsCoordinateReferenceSystem crs3( authid );
   QCOMPARE( crs3.toProj(), madeUpProjection2 );
+}
+
+void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
+{
+  QgsCoordinateReferenceSystemRegistry *registry = QgsApplication::coordinateReferenceSystemRegistry();
+
+  QString madeUpProjection = QStringLiteral( "+proj=aea +lat_1=27 +lat_2=-26 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
+  QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromProj( madeUpProjection );
+  QVERIFY( userCrs.isValid() );
+  QCOMPARE( userCrs.toProj(), madeUpProjection );
+  QCOMPARE( userCrs.srsid(), 0L ); // not saved to database yet
+
+  QSignalSpy spyAdded( registry, &QgsCoordinateReferenceSystemRegistry::userCrsAdded );
+  QSignalSpy spyChanged( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged );
+  QSignalSpy spyRemoved( registry, &QgsCoordinateReferenceSystemRegistry::userCrsRemoved );
+  QSignalSpy spyCrsDefsChanged( registry, &QgsCoordinateReferenceSystemRegistry::crsDefinitionsChanged );
+
+  // non-existing crs - should be rejected
+  bool res = registry->removeUserCrs( 100100 );
+  QVERIFY( !res );
+  QCOMPARE( spyAdded.length(), 0 );
+  QCOMPARE( spyChanged.length(), 0 );
+  QCOMPARE( spyRemoved.length(), 0 );
+  QCOMPARE( spyCrsDefsChanged.length(), 0 );
+
+  // add valid new user crs
+  const long id = registry->addUserCrs( userCrs, QStringLiteral( "test" ) );
+  QVERIFY( id != -1L );
+  const QString authid = userCrs.authid();
+  QCOMPARE( spyAdded.length(), 1 );
+  QCOMPARE( spyAdded.at( 0 ).at( 0 ).toString(), authid );
+  QCOMPARE( spyChanged.length(), 0 );
+  QCOMPARE( spyRemoved.length(), 0 );
+  QCOMPARE( spyCrsDefsChanged.length(), 1 );
+
+  QgsCoordinateReferenceSystem crs2( authid );
+  QVERIFY( crs2.isValid() );
+
+  // now try removing it
+  connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsRemoved, this, [&]
+  {
+    // make sure that caches are invalidated before the signals are emitted
+    QgsCoordinateReferenceSystem crs4( authid );
+    QVERIFY( !crs4.isValid() );
+  } );
+  QVERIFY( registry->removeUserCrs( id ) );
+
+  QCOMPARE( spyAdded.length(), 1 );
+  QCOMPARE( spyChanged.length(), 0 );
+  QCOMPARE( spyRemoved.length(), 1 );
+  QCOMPARE( spyRemoved.at( 0 ).at( 0 ).toLongLong(), static_cast< long long >( id ) );
+  QCOMPARE( spyCrsDefsChanged.length(), 2 );
+
+  // doesn't exist anymore...
+  QgsCoordinateReferenceSystem crs3( authid );
+  QVERIFY( !crs3.isValid() );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystemRegistry )
