@@ -5036,10 +5036,9 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     {
       // multi reference field => add the field pair to all the referenced layers found
       const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
-      const auto constFoundLayers = foundLayers;
       for ( int i = 0; i < nbFound; ++i )
       {
-        for ( const QgsVectorLayer *foundLayer : constFoundLayers )
+        for ( const QgsVectorLayer *foundLayer : foundLayers )
         {
           if ( result[result.size() - 1 - i].referencedLayerId() == foundLayer->id() )
           {
