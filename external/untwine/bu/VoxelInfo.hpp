@@ -123,7 +123,8 @@ public:
         double y = p.y() - m_bounds.miny;
         double z = p.z() - m_bounds.minz;
 
-        return GridKey((int)(x / m_gridCellWidth), (int)(y / m_gridCellWidth), (int)(z / m_gridCellWidth));
+        return GridKey((int)(x / m_gridCellWidth), (int)(y / m_gridCellWidth),
+            (int)(z / m_gridCellWidth));
     }
 
     //ABELL - Really torn WRT making Grid its own thing.
@@ -139,6 +140,9 @@ public:
 
     int gridZCount() const
         { return m_gridZCount; }
+
+    pdal::BOX3D bounds() const
+        { return m_bounds; }
 
 private:
     pdal::BOX3D m_fullBounds;

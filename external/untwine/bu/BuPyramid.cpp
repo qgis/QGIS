@@ -8,7 +8,6 @@
 #include <pdal/util/ProgramArgs.hpp>
 
 #include "BuPyramid.hpp"
-#include "BuTypes.hpp"
 #include "FileInfo.hpp"
 #include "OctantInfo.hpp"
 #include "../untwine/Common.hpp"
@@ -21,7 +20,7 @@ namespace bu
 
 /// BuPyramid
 
-BuPyramid::BuPyramid() : m_manager(m_b)
+BuPyramid::BuPyramid(BaseInfo& common) : m_b(common), m_manager(m_b)
 {}
 
 
@@ -31,7 +30,6 @@ void BuPyramid::run(const Options& options, ProgressWriter& progress)
     m_b.outputDir = options.outputDir;
     m_b.stats = options.stats;
 
-    readBaseInfo();
     getInputFiles();
     size_t count = queueWork();
     
@@ -41,76 +39,6 @@ void BuPyramid::run(const Options& options, ProgressWriter& progress)
     std::thread runner(&PyramidManager::run, &m_manager);
     runner.join();
     writeInfo();
-}
-
-
-void BuPyramid::readBaseInfo()
-{
-    auto nextblock = [](std::istream& in)
-    {
-        std::string s;
-        bool firstnl = false;
-
-        while (in)
-        {
-            char c;
-            in.get(c);
-            if (c == '\n')
-            {
-                if (firstnl)
-                {
-                    // Remove trailing newline.
-                    s.resize(s.size() - 1);
-                    return s;
-                }
-                else
-                    firstnl = true;
-            }
-            else
-                firstnl = false;
-            s += c;
-        }
-        return s;
-    };
-
-    std::string baseFilename = m_b.inputDir + "/" + MetadataFilename;
-    std::ifstream in(baseFilename);
-
-    if (!in)
-        fatal("Can't open '" + MetadataFilename + "' in directory '" + m_b.inputDir + "'.");
-
-    std::stringstream ss(nextblock(in));
-    ss >> m_b.bounds.minx >> m_b.bounds.miny >> m_b.bounds.minz;
-    ss >> m_b.bounds.maxx >> m_b.bounds.maxy >> m_b.bounds.maxz;
-
-    ss.str(nextblock(in));
-    ss.clear();
-    ss >> m_b.trueBounds.minx >> m_b.trueBounds.miny >> m_b.trueBounds.minz;
-    ss >> m_b.trueBounds.maxx >> m_b.trueBounds.maxy >> m_b.trueBounds.maxz;
-
-    std::string srs = nextblock(in);
-    if (srs != "NONE")
-        m_b.srs.set(srs);
-
-    if (!in)
-        throw "Couldn't read info file.";
-
-    ss.str(nextblock(in));
-    ss.clear();
-    m_b.pointSize = 0;
-    while (true)
-    {
-        FileDimInfo fdi;
-        ss >> fdi;
-        if (!ss)
-            break;
-        if (fdi.name.empty())
-            fatal("Invalid dimension in info.txt.");
-        m_b.pointSize += pdal::Dimension::size(fdi.type);
-        m_b.dimInfo.push_back(fdi);
-    }
-    if (m_b.pointSize == 0)
-        throw "Couldn't read info file.";
 }
 
 
@@ -138,9 +66,9 @@ void BuPyramid::writeInfo()
     out << "{\n";
 
     pdal::BOX3D& b = m_b.bounds;
-    std::ios init(NULL);
-    init.copyfmt(out);
-    out << std::fixed << std::setw(12);
+
+    // Set fixed output for bounds output to get sufficient precision.
+    out << std::fixed;
     out << "\"bounds\": [" <<
         b.minx << ", " << b.miny << ", " << b.minz << ", " <<
         b.maxx << ", " << b.maxy << ", " << b.maxz << "],\n";
@@ -149,6 +77,8 @@ void BuPyramid::writeInfo()
     out << "\"boundsConforming\": [" <<
         tb.minx << ", " << tb.miny << ", " << tb.minz << ", " <<
         tb.maxx << ", " << tb.maxy << ", " << tb.maxz << "],\n";
+    // Reset to default float output to match PDAL option handling for now.
+    out << std::defaultfloat;
 
     out << "\"dataType\": \"laszip\",\n";
     out << "\"hierarchyType\": \"json\",\n";
@@ -163,8 +93,12 @@ void BuPyramid::writeInfo()
         out << "\t{";
             out << "\"name\": \"" << fdi.name << "\", ";
             out << "\"type\": \"" << typeString(pdal::Dimension::base(fdi.type)) << "\", ";
-            if (fdi.name == "X" || fdi.name == "Y" || fdi.name == "Z")
-                out << "\"scale\": 0.01, \"offset\": 0, ";
+            if (fdi.name == "X")
+                out << "\"scale\": " << m_b.scale[0] << ", \"offset\": " << m_b.offset[0] << ", ";
+            if (fdi.name == "Y")
+                out << "\"scale\": " << m_b.scale[1] << ", \"offset\": " << m_b.offset[1] << ", ";
+            if (fdi.name == "Z")
+                out << "\"scale\": " << m_b.scale[2] << ", \"offset\": " << m_b.offset[2] << ", ";
             out << "\"size\": " << pdal::Dimension::size(fdi.type);
             const Stats *stats = m_manager.stats(fdi.name);
             if (stats)
@@ -205,7 +139,6 @@ void BuPyramid::writeInfo()
     out << "}\n";
 
     out << "}\n";
-    out.copyfmt(init);
 }
 
 
