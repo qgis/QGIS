@@ -157,6 +157,16 @@ class CORE_EXPORT QgsMapLayerRenderer
      */
     bool mReadyToCompose = true;
 
+    /**
+     * Maximum time (in ms) to allow display of a previously cached
+     * preview image while rendering layers, before switching to
+     * a progressive rendering display.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.18
+     */
+    static constexpr int MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE = 3000 SIP_SKIP;
+
   private:
 
     // TODO QGIS 4.0 - make reference instead of pointer!
