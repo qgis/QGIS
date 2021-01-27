@@ -65,6 +65,18 @@ struct LayerRenderJob
   bool cached;
   QgsWeakMapLayerPointer layer;
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+
+  /**
+   * Estimated time for the layer to render, in ms.
+   *
+   * This can be used to specifies hints at the expected render times for the layer, so that
+   * the corresponding layer renderer can apply heuristics and determine appropriate update
+   * intervals during the render operation.
+   *
+   * \since QGIS 3.18
+   */
+  int estimatedRenderingTime = 0;
+
   QStringList errors; //!< Rendering errors
 
   /**
@@ -287,6 +299,20 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QHash< QgsMapLayer *, int > perLayerRenderingTime() const SIP_SKIP;
 
     /**
+     * Sets approximate render times (in ms) for map layers.
+     *
+     * This can be used to specifies hints at the expected render times for layers, so that
+     * the individual layer renderers can apply heuristics and determine appropriate update
+     * intervals during the render operation.
+     *
+     * The keys for \a hints must be set to the corresponding layer IDs.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.18
+     */
+    void setLayerRenderingTimeHints( const QHash< QString, int > &hints ) SIP_SKIP;
+
+    /**
      * Returns map settings with which this job was started.
      * \returns A QgsMapSettings instance with render settings
      * \since QGIS 2.8
@@ -325,6 +351,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! Render time (in ms) per layer, by layer ID
     QHash< QgsWeakMapLayerPointer, int > mPerLayerRenderingTime;
+
+    /**
+     * Approximate expected layer rendering time per layer, by layer ID
+     *
+     * \since QGIS 3.18
+     */
+    QHash< QString, int > mLayerRenderingTimeHints;
 
     /**
      * TRUE if layer rendering time should be recorded.

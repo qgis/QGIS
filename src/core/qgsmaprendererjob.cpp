@@ -95,10 +95,15 @@ QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
   QHash<QgsMapLayer *, int> result;
   for ( auto it = mPerLayerRenderingTime.constBegin(); it != mPerLayerRenderingTime.constEnd(); ++it )
   {
-    if ( auto &&lKey = it.key() )
+    if ( auto && lKey = it.key() )
       result.insert( lKey, it.value() );
   }
   return result;
+}
+
+void QgsMapRendererJob::setLayerRenderingTimeHints( const QHash<QString, int> &hints )
+{
+  mLayerRenderingTimeHints = hints;
 }
 
 const QgsMapSettings &QgsMapRendererJob::mapSettings() const
@@ -399,6 +404,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     job.img = nullptr;
     job.layer = ml;
     job.layerId = ml->id();
+    job.estimatedRenderingTime = mLayerRenderingTimeHints.value( ml->id(), 0 );
     job.renderingTime = -1;
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
@@ -438,6 +444,8 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     QElapsedTimer layerTime;
     layerTime.start();
     job.renderer = ml->createMapRenderer( job.context );
+    if ( job.renderer )
+      job.renderer->setLayerRenderingTimeHint( job.estimatedRenderingTime );
 
     // If we are drawing with an alternative blending mode then we need to render to a separate image
     // before compositing this on the map. This effectively flattens the layer and prevents
