@@ -52,7 +52,6 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
 
     //helper functions
     void populateList();
-    bool deleteCrs( const QString &id );
     bool saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &id, bool newEntry, QgsCoordinateReferenceSystem::Format format );
     void insertProjection( const QString &projectionAcronym );
     void showHelp();

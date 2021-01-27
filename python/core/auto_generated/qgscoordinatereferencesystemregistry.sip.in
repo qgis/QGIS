@@ -71,6 +71,15 @@ definition. FormatWkt is recommended as it is a lossless format.
 .. seealso:: :py:func:`userCrsChanged`
 %End
 
+    bool removeUserCrs( long id );
+%Docstring
+Removes the existing user CRS with matching ``id``.
+
+Returns ``False`` if the CRS could not be removed.
+
+.. seealso:: :py:func:`userCrsRemoved`
+%End
+
   signals:
 
     void userCrsChanged( const QString &id );
@@ -97,6 +106,14 @@ The ``id`` argument specifies the ID of the user CRS which has been changed.
 .. seealso:: :py:func:`userCrsChanged`
 
 .. seealso:: :py:func:`crsDefinitionsChanged`
+%End
+
+    void userCrsRemoved( long id );
+%Docstring
+Emitted when the user CRS with matching ``id`` is removed
+from the database.
+
+.. seealso:: :py:func:`removeUserCrs`
 %End
 
     void crsDefinitionsChanged();

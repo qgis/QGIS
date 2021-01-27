@@ -76,6 +76,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     bool updateUserCrs( long id, const QgsCoordinateReferenceSystem &crs, const QString &name, QgsCoordinateReferenceSystem::Format nativeFormat = QgsCoordinateReferenceSystem::FormatWkt );
 
+    /**
+     * Removes the existing user CRS with matching \a id.
+     *
+     * Returns FALSE if the CRS could not be removed.
+     *
+     * \see userCrsRemoved()
+     */
+    bool removeUserCrs( long id );
+
   signals:
 
     /**
@@ -101,6 +110,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      * \see crsDefinitionsChanged()
      */
     void userCrsAdded( const QString &id );
+
+    /**
+     * Emitted when the user CRS with matching \a id is removed
+     * from the database.
+     *
+     * \see removeUserCrs()
+     */
+    void userCrsRemoved( long id );
 
     /**
      * Emitted whenever an operation has caused any of the known CRS definitions (including

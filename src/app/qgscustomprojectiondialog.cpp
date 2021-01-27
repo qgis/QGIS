@@ -168,36 +168,6 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
-{
-  sqlite3_database_unique_ptr database;
-
-  QString sql = "delete from tbl_srs where srs_id=" + QgsSqliteUtils::quotedString( id );
-  QgsDebugMsgLevel( sql, 4 );
-  //check the db is available
-  int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
-  if ( result != SQLITE_OK )
-  {
-    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
-                 QgsApplication::qgisUserDatabaseFilePath() ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( result == SQLITE_OK );
-  }
-  {
-    sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
-    if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
-    {
-      QgsDebugMsg( QStringLiteral( "failed to remove CRS from database in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
-    }
-  }
-
-  QgsCoordinateReferenceSystem::invalidateCache();
-  QgsCoordinateTransform::invalidateCache();
-
-  return result == SQLITE_OK;
-}
-
 void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcronym )
 {
   sqlite3_database_unique_ptr database;
@@ -268,7 +238,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
   }
   else
   {
-    if ( !QgsApplication::coordinateReferenceSystemRegistry()->updateUserCrs( id.toLong(), crs, name ) )
+    if ( !QgsApplication::coordinateReferenceSystemRegistry()->updateUserCrs( id.toLong(), crs, name, format ) )
     {
       return false;
     }
@@ -513,7 +483,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
   QgsDebugMsgLevel( QStringLiteral( "We remove the deleted CRS." ), 4 );
   for ( int i = 0; i < mDeletedCRSs.size(); ++i )
   {
-    saveSuccess &= deleteCrs( mDeletedCRSs[i] );
+    saveSuccess &= QgsApplication::coordinateReferenceSystemRegistry()->removeUserCrs( mDeletedCRSs[i].toLong() );
     if ( ! saveSuccess )
     {
       QgsDebugMsg( QStringLiteral( "Error deleting CRS for '%1'" ).arg( mDefinitions[i].name ) );
