@@ -32,7 +32,7 @@ import osgeo.gdal  # NOQA
 
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsVectorLayer
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -1811,6 +1811,47 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_DuplicateNames")
+
+    def test_wms_getmap_plus_sign(self):
+        """Test issue GH #41116"""
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer', 'test+plus', 'memory')
+        p = QgsProject()
+        p.addMapLayers([vl])
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": urllib.parse.quote('test+plus'),
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-170,-80,170,80",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request_project(qs, p))
+        # No exceptions
+        self.assertEqual(h['Content-Type'], 'image/png')
+        self.assertFalse(b"The layer 'test plus' does not exist" in r)
+
+        # + literal: we get an exception
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": 'test+plus',
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-170,-80,170,80",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request_project(qs, p))
+        self.assertTrue(b"The layer 'test plus' does not exist" in r)
 
 
 if __name__ == '__main__':
