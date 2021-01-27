@@ -314,7 +314,7 @@ void QgsMapRendererCustomPainterJob::doRender()
         job.imageInitialized = true;
       }
 
-      job.renderer->render();
+      job.completed = job.renderer->render();
 
       job.renderingTime += layerTime.elapsed();
     }
@@ -385,7 +385,7 @@ void QgsMapRendererCustomPainterJob::doRender()
           job.imageInitialized = true;
         }
 
-        job.renderer->render();
+        job.completed = job.renderer->render();
 
         job.renderingTime += layerTime.elapsed();
       }

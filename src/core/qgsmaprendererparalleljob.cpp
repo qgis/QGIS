@@ -359,7 +359,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 #ifdef SIMULATE_SLOW_RENDERER
     QThread::sleep( 1 );
 #endif
-    job.renderer->render();
+    job.completed = job.renderer->render();
   }
   catch ( QgsException &e )
   {
