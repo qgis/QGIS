@@ -1042,8 +1042,8 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   {
     if ( mActiveSubLayerVisibility.constFind( *it ).value() )
     {
-      visibleLayers += *it;
-      visibleStyles += *it2;
+      visibleLayers += QUrl::toPercentEncoding( *it );
+      visibleStyles += QUrl::toPercentEncoding( *it2 );
     }
 
     ++it2;
