@@ -44,8 +44,6 @@
 
 #include <QPicture>
 
-constexpr int MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE = 3000;
-
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )

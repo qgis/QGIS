@@ -33,6 +33,7 @@
 #include "qgscircle.h"
 #include "qgsmapclippingutils.h"
 
+
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
@@ -60,6 +61,8 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   mCloudExtent = mLayer->dataProvider()->polygonBounds();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+
+  mReadyToCompose = false;
 }
 
 bool QgsPointCloudLayerRenderer::render()
@@ -86,13 +89,25 @@ bool QgsPointCloudLayerRenderer::render()
     mRenderer->startRender( context );
     static_cast< QgsPointCloudExtentRenderer * >( mRenderer.get() )->renderExtent( mCloudExtent, context );
     mRenderer->stopRender( context );
+    mReadyToCompose = true;
     return true;
   }
 
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
   if ( !pc || !pc->isValid() )
+  {
+    mReadyToCompose = true;
     return false;
+  }
+
+  // if the previous layer render was relatively quick (e.g. less than 3 seconds), the we show any previously
+  // cached version of the layer during rendering instead of the usual progressive updates
+  if ( mRenderTimeHint > 0 && mRenderTimeHint <= MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+  {
+    mBlockRenderUpdates = true;
+    mElapsedTimer.start();
+  }
 
   mRenderer->startRender( context );
 
@@ -149,6 +164,7 @@ bool QgsPointCloudLayerRenderer::render()
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
   {
     QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
+    mReadyToCompose = true;
     return false;
   }
   double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
@@ -177,6 +193,14 @@ bool QgsPointCloudLayerRenderer::render()
 
     mRenderer->renderBlock( block.get(), context );
     ++nodesDrawn;
+
+    // as soon as first block is rendered, we can start showing layer updates.
+    // but if we are blocking render updates (so that a previously cached image is being shown), we wait
+    // at most e.g. 3 seconds before we start forcing progressive updates.
+    if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+    {
+      mReadyToCompose = true;
+    }
   }
 
   QgsDebugMsgLevel( QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
@@ -185,6 +209,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   mRenderer->stopRender( context );
 
+  mReadyToCompose = true;
   return !canceled;
 }
 
@@ -193,6 +218,11 @@ bool QgsPointCloudLayerRenderer::forceRasterRender() const
   // unless we are using the extent only renderer, point cloud layers should always be rasterized -- we don't want to export points as vectors
   // to formats like PDF!
   return mRenderer ? mRenderer->type() != QLatin1String( "extent" ) : false;
+}
+
+void QgsPointCloudLayerRenderer::setLayerRenderingTimeHint( int time )
+{
+  mRenderTimeHint = time;
 }
 
 QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
