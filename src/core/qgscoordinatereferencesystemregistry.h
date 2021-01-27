@@ -43,7 +43,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = nullptr );
 
     /**
-     * Contains details of a custom (user defined) CRS
+     * Contains details of a custom (user defined) CRS.
+     * \ingroup core
+     * \since QGIS 3.18
      */
     class UserCrsDetails
     {

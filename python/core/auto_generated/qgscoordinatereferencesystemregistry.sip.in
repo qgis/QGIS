@@ -34,7 +34,9 @@ Constructor for QgsCoordinateReferenceSystemRegistry, with the specified ``paren
     class UserCrsDetails
 {
 %Docstring
-Contains details of a custom (user defined) CRS
+Contains details of a custom (user defined) CRS.
+
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
