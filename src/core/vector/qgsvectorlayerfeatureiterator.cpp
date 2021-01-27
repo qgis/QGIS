@@ -1084,11 +1084,11 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   {
     const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo );
     QVector<int> subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, subsetNames );
-    joinedAttributeIndices = attributes.toSet().intersect( subsetIndices.toList().toSet() ).toList();
+    joinedAttributeIndices = qgis::setToList( qgis::listToSet( attributes ).intersect( qgis::listToSet( subsetIndices.toList() ) ) );
   }
   else
   {
-    joinedAttributeIndices = attributes.toVector().toList();
+    joinedAttributeIndices = attributes;
   }
 
   // we don't need the join field, it is already present in the other table
