@@ -121,11 +121,6 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   if ( QgsProject::instance()->timeSettings() )
     range = QgsProject::instance()->timeSettings()->temporalRange();
 
-  mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-  mEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-  mFixedRangeStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-  mFixedRangeEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-
   if ( range.begin().isValid() && range.end().isValid() )
   {
     whileBlocking( mStartDateTime )->setDateTime( range.begin() );
@@ -154,7 +149,10 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   // TODO: might want to choose an appropriate default unit based on the range
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
 
-  mStepSpinBox->setMinimum( 0.0000001 );
+  // NOTE 'minimum' and 'decimals' should be in sync with the 'decimals' in qgstemporalcontrollerwidgetbase.ui
+  mStepSpinBox->setDecimals( 3 );
+  // minimum timestep one millisecond
+  mStepSpinBox->setMinimum( 0.001 );
   mStepSpinBox->setMaximum( std::numeric_limits<int>::max() );
   mStepSpinBox->setSingleStep( 1 );
   mStepSpinBox->setValue( 1 );
@@ -330,10 +328,10 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   const QString endString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/EndDateTime" ) );
   if ( !startString.isEmpty() && !endString.isEmpty() )
   {
-    whileBlocking( mStartDateTime )->setDateTime( QDateTime::fromString( startString, Qt::ISODate ) );
-    whileBlocking( mEndDateTime )->setDateTime( QDateTime::fromString( endString, Qt::ISODate ) );
-    whileBlocking( mFixedRangeStartDateTime )->setDateTime( QDateTime::fromString( startString, Qt::ISODate ) );
-    whileBlocking( mFixedRangeEndDateTime )->setDateTime( QDateTime::fromString( endString, Qt::ISODate ) );
+    whileBlocking( mStartDateTime )->setDateTime( QDateTime::fromString( startString, Qt::ISODateWithMs ) );
+    whileBlocking( mEndDateTime )->setDateTime( QDateTime::fromString( endString, Qt::ISODateWithMs ) );
+    whileBlocking( mFixedRangeStartDateTime )->setDateTime( QDateTime::fromString( startString, Qt::ISODateWithMs ) );
+    whileBlocking( mFixedRangeEndDateTime )->setDateTime( QDateTime::fromString( endString, Qt::ISODateWithMs ) );
   }
   else
   {
@@ -459,17 +457,21 @@ void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 
 void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &range )
 {
+  QString timeFrameFormat = "yyyy-MM-dd HH:mm:ss";
+  // but if timesteps are < 1 second (as: in milliseconds), add milliseconds to the format
+  if ( mTimeStepsComboBox->currentIndex() == mTimeStepsComboBox->findData( QgsUnitTypes::TemporalMilliseconds ) )
+    timeFrameFormat = "yyyy-MM-dd HH:mm:ss.zzz";
   switch ( mNavigationObject->navigationMode() )
   {
     case QgsTemporalNavigationObject::Animated:
       mCurrentRangeLabel->setText( tr( "Frame: %1 to %2" ).arg(
-                                     range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
-                                     range.end().toString( "yyyy-MM-dd HH:mm:ss" ) ) );
+                                     range.begin().toString( timeFrameFormat ),
+                                     range.end().toString( timeFrameFormat ) ) );
       break;
     case QgsTemporalNavigationObject::FixedRange:
       mCurrentRangeLabel->setText( tr( "Range: %1 to %2" ).arg(
-                                     range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
-                                     range.end().toString( "yyyy-MM-dd HH:mm:ss" ) ) );
+                                     range.begin().toString( timeFrameFormat ),
+                                     range.end().toString( timeFrameFormat ) ) );
       break;
     case QgsTemporalNavigationObject::NavigationOff:
       mCurrentRangeLabel->setText( tr( "Temporal navigation disabled" ) );
@@ -582,8 +584,20 @@ void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
 
 void QgsTemporalControllerWidget::updateTimeStepInputs( const QgsInterval &timeStep )
 {
-  if ( ! timeStep.isValid() || timeStep.seconds() <= 0 )
+  if ( ! timeStep.isValid() || timeStep.seconds() <= 0.0001 )
     return;
+
+  QString timeDisplayFormat = "yyyy-MM-dd HH:mm:ss";
+  if ( QgsUnitTypes::TemporalMilliseconds == timeStep.originalUnit() )
+  {
+    timeDisplayFormat = "yyyy-MM-dd HH:mm:ss.zzz";
+    // very big change that you have to update the range too, as defaulting to NOT handling millis
+    updateTemporalExtent();
+  }
+  mStartDateTime->setDisplayFormat( timeDisplayFormat );
+  mEndDateTime->setDisplayFormat( timeDisplayFormat );
+  mFixedRangeStartDateTime->setDisplayFormat( timeDisplayFormat );
+  mFixedRangeEndDateTime->setDisplayFormat( timeDisplayFormat );
 
   // Only update ui when the intervals are different
   if ( timeStep == QgsInterval( mStepSpinBox->value(),
@@ -644,7 +658,7 @@ void QgsTemporalControllerWidget::setDatesToProjectTime()
 void QgsTemporalControllerWidget::saveRangeToProject()
 {
   QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ),
-                                      QStringLiteral( "/StartDateTime" ), mStartDateTime->dateTime().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+                                      QStringLiteral( "/StartDateTime" ), mStartDateTime->dateTime().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODateWithMs ) );
   QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ),
-                                      QStringLiteral( "/EndDateTime" ), mEndDateTime->dateTime().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+                                      QStringLiteral( "/EndDateTime" ), mEndDateTime->dateTime().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODateWithMs ) );
 }
