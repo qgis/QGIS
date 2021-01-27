@@ -132,7 +132,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         for nodeLayer in QgsProject.instance().layerTreeRoot().findLayers():
             layer = nodeLayer.layer()
             # TODO: add import raster support!
-            if layer != None and layer.type() == QgsMapLayerType.VectorLayer:
+            if layer is not None and layer.type() == QgsMapLayerType.VectorLayer:
                 self.cboInputLayer.addItem(layer.name(), layer.id())
 
     def deleteInputLayer(self):
