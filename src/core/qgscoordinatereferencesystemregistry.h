@@ -43,6 +43,38 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = nullptr );
 
     /**
+     * Contains details of a custom (user defined) CRS
+     */
+    class UserCrsDetails
+    {
+      public:
+
+        //! CRS ID
+        long id = -1;
+
+        //! CRS name (or description)
+        QString name;
+
+        //! PROJ string definition of CRS
+        QString proj;
+
+        /**
+         * WKT definition of CRS. This will be empty for custom CRSes
+         * which were defined using a PROJ string only.
+         */
+        QString wkt;
+
+        //! QgsCoordinateReferenceSystem object representing the user-defined CRS.
+        QgsCoordinateReferenceSystem crs;
+    };
+
+    /**
+     * Returns a list containing the details of all registered
+     * custom (user-defined) CRSes.
+     */
+    QList< QgsCoordinateReferenceSystemRegistry::UserCrsDetails > userCrsList() const;
+
+    /**
      * Adds a new \a crs definition as a custom ("USER") CRS.
      *
      * Returns the new CRS srsid(), or -1 if the CRS could not be saved.

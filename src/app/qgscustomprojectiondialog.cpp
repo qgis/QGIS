@@ -25,7 +25,6 @@
 #include "qgslogger.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
-#include "qgssqliteutils.h"
 #include "qgsgui.h"
 #include "qgscoordinatereferencesystemregistry.h"
 
@@ -33,10 +32,6 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
-
-//stdc++ includes
-#include <fstream>
-#include <sqlite3.h>
 
 //proj4 includes
 #if PROJ_VERSION_MAJOR>=6
@@ -102,55 +97,25 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
 void QgsCustomProjectionDialog::populateList()
 {
-  //Setup connection to the existing custom CRS database:
-  sqlite3_database_unique_ptr database;
-  sqlite3_statement_unique_ptr preparedStatement;
-  //check the db is available
-  int result = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
-  if ( result != SQLITE_OK )
-  {
-    QgsDebugMsg( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( result == SQLITE_OK );
-  }
-  QString sql = QStringLiteral( "select srs_id,description,parameters, wkt from tbl_srs" );
-  QgsDebugMsgLevel( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ), 4 );
-  preparedStatement = database.prepare( sql, result );
-  if ( result == SQLITE_OK )
-  {
-    QgsCoordinateReferenceSystem crs;
-    while ( preparedStatement.step() == SQLITE_ROW )
-    {
-      const QString id = preparedStatement.columnAsText( 0 );
-      const QString name = preparedStatement.columnAsText( 1 );
-      const QString parameters = preparedStatement.columnAsText( 2 );
-      const QString wkt = preparedStatement.columnAsText( 3 );
+  const QList< QgsCoordinateReferenceSystemRegistry::UserCrsDetails > userCrsList = QgsApplication::coordinateReferenceSystemRegistry()->userCrsList();
 
-      if ( !wkt.isEmpty() )
-        crs.createFromWkt( wkt );
-      else
-        crs.createFromProj( parameters );
-
-      mExistingCRSnames[id] = name;
-      const QString actualWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false );
-      const QString actualWktFormatted = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true );
-      const QString actualProj = crs.toProj();
-      mExistingCRSwkt[id] = wkt.isEmpty() ? QString() : actualWkt;
-      mExistingCRSproj[id] = wkt.isEmpty() ? actualProj : QString();
-
-      QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
-      newItem->setText( QgisCrsNameColumn, name );
-      newItem->setText( QgisCrsIdColumn, id );
-      newItem->setText( QgisCrsParametersColumn, wkt.isEmpty() ? actualProj : actualWkt );
-      newItem->setData( 0, FormattedWktRole, actualWktFormatted );
-    }
-  }
-  else
+  for ( const QgsCoordinateReferenceSystemRegistry::UserCrsDetails &details : userCrsList )
   {
-    QgsDebugMsg( QStringLiteral( "Populate list query failed: %1" ).arg( sql ) );
+    const QString id = QString::number( details.id );
+
+    mExistingCRSnames[id] = details.name;
+    const QString actualWkt = details.crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false );
+    const QString actualWktFormatted = details.crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true );
+    const QString actualProj = details.crs.toProj();
+    mExistingCRSwkt[id] = details.wkt.isEmpty() ? QString() : actualWkt;
+    mExistingCRSproj[id] = details.wkt.isEmpty() ? actualProj : QString();
+
+    QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
+    newItem->setText( QgisCrsNameColumn, details.name );
+    newItem->setText( QgisCrsIdColumn, id );
+    newItem->setText( QgisCrsParametersColumn, details.wkt.isEmpty() ? actualProj : actualWkt );
+    newItem->setData( 0, FormattedWktRole, actualWktFormatted );
   }
-  preparedStatement.reset();
 
   leNameList->sortByColumn( QgisCrsNameColumn, Qt::AscendingOrder );
 
