@@ -87,6 +87,12 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
         MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_grass
         COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
       )
+    else()
+        set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
+        CLEAN_DIRECT_OUTPUT 1
+        FRAMEWORK 0
+        COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
+      )
     endif()
 
     if (APPLE)
