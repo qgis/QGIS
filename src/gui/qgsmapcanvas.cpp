@@ -604,8 +604,10 @@ void QgsMapCanvas::refreshMap()
     mJob = new QgsMapRendererParallelJob( renderSettings );
   else
     mJob = new QgsMapRendererSequentialJob( renderSettings );
+
   connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
   mJob->setCache( mCache );
+  mJob->setLayerRenderingTimeHints( mLastLayerRenderTime );
 
   mJob->start();
 

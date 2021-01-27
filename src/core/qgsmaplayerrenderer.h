@@ -118,6 +118,18 @@ class CORE_EXPORT QgsMapLayerRenderer
      */
     bool isReadyToCompose() const { return mReadyToCompose; }
 
+    /**
+     * Sets approximate render \a time (in ms) for the layer to render.
+     *
+     * This can be used to specifies a hint at the expected render times for the layer, so that
+     * the individual layer renderer subclasses can apply heuristics and determine appropriate update
+     * intervals during the render operation.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.18
+     */
+    virtual void setLayerRenderingTimeHint( int time ) SIP_SKIP { Q_UNUSED( time ) }
+
   protected:
     QStringList mErrors;
     QString mLayerID;
