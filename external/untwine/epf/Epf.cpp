@@ -21,7 +21,7 @@
 #include <unordered_set>
 
 #include <pdal/Dimension.hpp>
-#include <pdal/PointLayout.hpp>
+#include <pdal/Metadata.hpp>
 #include <pdal/StageFactory.hpp>
 #include <pdal/util/Algorithm.hpp>
 #include <pdal/util/Bounds.hpp>
@@ -33,35 +33,9 @@ namespace untwine
 namespace epf
 {
 
-void writeMetadata(const std::string& tempDir, const Grid& grid,
-    const std::string& srs, const pdal::PointLayoutPtr& layout)
-{
-    std::ofstream out(tempDir + "/" + MetadataFilename);
-    pdal::BOX3D b = grid.processingBounds();
-    std::ios init(NULL);
-    init.copyfmt(out);
-    out << std::setw(10) << std::fixed;
-    out << b.minx << " " << b.miny << " " << b.minz << "\n";
-    out << b.maxx << " " << b.maxy << " " << b.maxz << "\n";
-    out << "\n";
-
-    b = grid.conformingBounds();
-    out << b.minx << " " << b.miny << " " << b.minz << "\n";
-    out << b.maxx << " " << b.maxy << " " << b.maxz << "\n";
-    out << "\n";
-    out.copyfmt(init);
-
-    out << srs << "\n";
-    out << "\n";
-
-    for (pdal::Dimension::Id id : layout->dims())
-        out << layout->dimName(id) << " " << (int)layout->dimType(id) << " " <<
-            layout->dimOffset(id) << "\n";
-}
-
 /// Epf
 
-Epf::Epf() : m_pool(NumFileProcessors)
+Epf::Epf(BaseInfo& common) : m_b(common), m_pool(NumFileProcessors)
 {}
 
 
@@ -154,6 +128,7 @@ void Epf::run(const Options& options, ProgressWriter& progress)
     //ABELL - would be nice to avoid this copy, but it probably doesn't matter much.
     Totals totals = m_writer->totals(MaxPointsPerNode);
 
+    // Progress for reprocessing goes from .4 to .6.
     progress.setPercent(.4);
     progress.setIncrement(.2 / totals.size());
 
@@ -175,8 +150,47 @@ void Epf::run(const Options& options, ProgressWriter& progress)
     m_pool.stop();
     m_writer->stop();
 
-    std::string srs = m_srsFileInfo.valid() ? m_srsFileInfo.srs.getWKT() : "NONE";
-    writeMetadata(options.tempDir, m_grid, srs, layout);
+    fillMetadata(layout);
+}
+
+void Epf::fillMetadata(const pdal::PointLayoutPtr layout)
+{
+    // Info to be passed to sampler.
+    m_b.bounds = m_grid.processingBounds();
+    m_b.trueBounds = m_grid.conformingBounds();
+    if (m_srsFileInfo.valid())
+        m_b.srs = m_srsFileInfo.srs;
+    m_b.pointSize = 0;
+    for (pdal::Dimension::Id id : layout->dims())
+    {
+        FileDimInfo di;
+        di.name = layout->dimName(id);
+        di.type = layout->dimType(id);
+        di.offset = layout->dimOffset(id);
+        m_b.pointSize += pdal::Dimension::size(di.type);
+        m_b.dimInfo.push_back(di);
+    }
+    m_b.offset[0] = m_b.bounds.maxx / 2 + m_b.bounds.minx / 2;
+    m_b.offset[1] = m_b.bounds.maxy / 2 + m_b.bounds.miny / 2;
+    m_b.offset[2] = m_b.bounds.maxz / 2 + m_b.bounds.minz / 2;
+
+    auto calcScale = [](double scale, double low, double high)
+    {
+        if (scale > 0)
+            return scale;
+
+        // 2 billion is a little less than the int limit.  We center the data around 0 with the
+        // offset, so we're applying the scale to half the range of the data.
+        double val = high / 2 - low / 2;
+        double power = std::ceil(std::log10(val / 2000000000.0));
+
+        // Set an arbitrary limit on scale of 1e10-4.
+        return std::pow(10, (std::max)(power, -4.0));
+    };
+
+    m_b.scale[0] = calcScale(m_b.scale[0], m_b.bounds.minx, m_b.bounds.maxx);
+    m_b.scale[1] = calcScale(m_b.scale[1], m_b.bounds.minx, m_b.bounds.maxx);
+    m_b.scale[2] = calcScale(m_b.scale[2], m_b.bounds.minx, m_b.bounds.maxx);
 }
 
 PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
@@ -226,9 +240,20 @@ PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
         s->setOptions(opts);
 
         QuickInfo qi = s->preview();
-
         if (!qi.valid())
             throw "Couldn't get quick info for '" + filename + "'.";
+
+        // Get scale values from the reader if they exist.
+        pdal::MetadataNode root = s->getMetadata();
+        pdal::MetadataNode m = root.findChild("scale_x");
+        if (m.valid())
+            m_b.scale[0] = (std::max)(m_b.scale[0], m.value<double>());
+        m = root.findChild("scale_y");
+        if (m.valid())
+            m_b.scale[1] = (std::max)(m_b.scale[1], m.value<double>());
+        m = root.findChild("scale_z");
+        if (m.valid())
+            m_b.scale[2] = (std::max)(m_b.scale[2], m.value<double>());
 
         FileInfo fi;
         fi.bounds = qi.m_bounds;

@@ -368,7 +368,6 @@ void Processor::appendCompressed(pdal::PointViewPtr view, const DimInfoList& dim
     }
 }
 
-
 void Processor::flushCompressed(pdal::PointTableRef table, pdal::PointViewPtr view,
     const OctantInfo& oi, IndexedStats& stats)
 {
@@ -412,6 +411,12 @@ void Processor::flushCompressed(pdal::PointTableRef table, pdal::PointViewPtr vi
     wopts.add("software_id", "Entwine 1.0");
     wopts.add("compression", "laszip");
     wopts.add("filename", filename);
+    wopts.add("offset_x", m_b.offset[0]);
+    wopts.add("offset_y", m_b.offset[1]);
+    wopts.add("offset_z", m_b.offset[2]);
+    wopts.add("scale_x", m_b.scale[0]);
+    wopts.add("scale_y", m_b.scale[1]);
+    wopts.add("scale_z", m_b.scale[2]);
     w->setOptions(wopts);
     w->setInput(*prev);
     // Set dataformat ID based on time/rgb, but for now accept the default.

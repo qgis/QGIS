@@ -15,7 +15,6 @@
 #include <pdal/PointTable.hpp>
 #include <pdal/PointView.hpp>
 
-#include "BuTypes.hpp"
 #include "PointAccessor.hpp"
 #include "Stats.hpp"
 #include "VoxelInfo.hpp"
