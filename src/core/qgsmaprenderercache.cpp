@@ -40,8 +40,7 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  const auto constMConnectedLayers = mConnectedLayers;
-  for ( const QgsWeakMapLayerPointer &layer : constMConnectedLayers )
+  for ( const QgsWeakMapLayerPointer &layer : qgis::as_const( mConnectedLayers ) )
   {
     if ( layer.data() )
     {
@@ -56,9 +55,8 @@ void QgsMapRendererCache::clearInternal()
 void QgsMapRendererCache::dropUnusedConnections()
 {
   QSet< QgsWeakMapLayerPointer > stillDepends = dependentLayers();
-  QSet< QgsWeakMapLayerPointer > disconnects = mConnectedLayers.subtract( stillDepends );
-  const auto constDisconnects = disconnects;
-  for ( const QgsWeakMapLayerPointer &layer : constDisconnects )
+  const QSet< QgsWeakMapLayerPointer > disconnects = mConnectedLayers.subtract( stillDepends );
+  for ( const QgsWeakMapLayerPointer &layer : disconnects )
   {
     if ( layer.data() )
     {
@@ -133,8 +131,7 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
   params.cachedMtp = mMtp;
 
   // connect to the layer to listen to layer's repaintRequested() signals
-  const auto constDependentLayers = dependentLayers;
-  for ( QgsMapLayer *layer : constDependentLayers )
+  for ( QgsMapLayer *layer : dependentLayers )
   {
     if ( layer )
     {
@@ -154,9 +151,11 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
 bool QgsMapRendererCache::hasCacheImage( const QString &cacheKey ) const
 {
   QMutexLocker lock( &mMutex );
-  if ( mCachedImages.contains( cacheKey ) )
+
+  auto it = mCachedImages.constFind( cacheKey );
+  if ( it != mCachedImages.constEnd() )
   {
-    const CacheParameters params = mCachedImages[cacheKey];
+    const CacheParameters &params = it.value();
     return ( params.cachedExtent == mExtent &&
              params.cachedMtp.transform() == mMtp.transform() );
   }
@@ -226,9 +225,10 @@ QImage QgsMapRendererCache::transformedCacheImage( const QString &cacheKey, cons
 
 QList< QgsMapLayer * > QgsMapRendererCache::dependentLayers( const QString &cacheKey ) const
 {
-  if ( mCachedImages.contains( cacheKey ) )
+  auto it = mCachedImages.constFind( cacheKey );
+  if ( it != mCachedImages.constEnd() )
   {
-    return _qgis_listQPointerToRaw( mCachedImages.value( cacheKey ).dependentLayers );
+    return _qgis_listQPointerToRaw( ( *it ).dependentLayers );
   }
   return QList< QgsMapLayer * >();
 }
