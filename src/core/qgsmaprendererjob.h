@@ -59,11 +59,21 @@ struct LayerRenderJob
   bool imageCanBeComposed() const;
 
   QgsMapLayerRenderer *renderer; // must be deleted
+
   QPainter::CompositionMode blendMode;
   double opacity;
   //! If TRUE, img already contains cached image from previous rendering
   bool cached;
   QgsWeakMapLayerPointer layer;
+
+  /**
+   * TRUE if the render job was successfully completed in its entirety (i.e. it was
+   * not canceled or aborted early).
+   *
+   * \since QGIS 3.18
+   */
+  bool completed = false;
+
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
 
   /**
