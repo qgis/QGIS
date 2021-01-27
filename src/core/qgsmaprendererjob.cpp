@@ -686,6 +686,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
       {
         QgsDebugMsgLevel( QStringLiteral( "caching image for %1" ).arg( job.layerId ), 2 );
         mCache->setCacheImage( job.layerId, *job.img, QList< QgsMapLayer * >() << job.layer );
+        mCache->setCacheImage( job.layerId + QStringLiteral( "_preview" ), *job.img, QList< QgsMapLayer * >() << job.layer );
       }
 
       delete job.img;
@@ -864,9 +865,9 @@ QImage QgsMapRendererJob::layerImageToBeComposed(
   }
   else
   {
-    if ( cache && cache->hasAnyCacheImage( job.layerId ) )
+    if ( cache && cache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
     {
-      return cache->transformedCacheImage( job.layerId, settings.mapToPixel() );
+      return cache->transformedCacheImage( job.layerId + QStringLiteral( "_preview" ), settings.mapToPixel() );
     }
     else
       return QImage();
