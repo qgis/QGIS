@@ -325,6 +325,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     static const QString LABEL_CACHE_ID SIP_SKIP;
 
+    /**
+     * QgsMapRendererCache ID string for cached label image during preview compositions only.
+     * \note not available in Python bindings
+     * \since QGIS 3.18
+     */
+    static const QString LABEL_PREVIEW_CACHE_ID SIP_SKIP;
+
   signals:
 
     /**
