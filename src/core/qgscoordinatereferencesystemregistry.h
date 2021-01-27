@@ -125,6 +125,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     void crsDefinitionsChanged();
 
+  private:
+
+    bool insertProjection( const QString &projectionAcronym );
+
 };
+
 
 #endif // QGSCOORDINATEREFERENCESYSTEMREGISTRY_H

@@ -53,7 +53,6 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     //helper functions
     void populateList();
     bool saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &id, bool newEntry, QgsCoordinateReferenceSystem::Format format );
-    void insertProjection( const QString &projectionAcronym );
     void showHelp();
     QString multiLineWktToSingleLine( const QString &wkt );
 

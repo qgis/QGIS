@@ -168,69 +168,12 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcronym )
-{
-  sqlite3_database_unique_ptr database;
-  sqlite3_database_unique_ptr srsDatabase;
-  QString sql;
-  //check the db is available
-  int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
-  if ( result != SQLITE_OK )
-  {
-    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
-                 QgsApplication::qgisUserDatabaseFilePath() ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( result == SQLITE_OK );
-  }
-  int srsResult = srsDatabase.open( QgsApplication::srsDatabaseFilePath() );
-  if ( result != SQLITE_OK )
-  {
-    QgsDebugMsg( QStringLiteral( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(),
-                 srsDatabase.errorMessage() ) );
-  }
-  else
-  {
-    // Set up the query to retrieve the projection information needed to populate the PROJECTION list
-    QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + QgsSqliteUtils::quotedString( projectionAcronym );
-
-    sqlite3_statement_unique_ptr srsPreparedStatement = srsDatabase.prepare( srsSql, srsResult );
-    if ( srsResult == SQLITE_OK )
-    {
-      if ( srsPreparedStatement.step() == SQLITE_ROW )
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Trying to insert projection" ), 4 );
-        // We have the result from system srs.db. Now insert into user db.
-        sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
-              + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
-              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 1 ) )
-              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 2 ) )
-              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 3 ) )
-              + ')';
-        sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
-        if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
-        {
-          QgsDebugMsg( QStringLiteral( "Update or insert failed in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
-        }
-      }
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "prepare failed: %1 [%2]" ).arg( srsSql, srsDatabase.errorMessage() ) );
-    }
-  }
-}
-
 bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, QgsCoordinateReferenceSystem::Format format )
 {
   QString id = existingId;
-  QString sql;
-  long returnId = -1;
-  QString projectionAcronym = crs.projectionAcronym();
-  QString ellipsoidAcronym = crs.ellipsoidAcronym();
   if ( newEntry )
   {
-    returnId = QgsApplication::coordinateReferenceSystemRegistry()->addUserCrs( crs, name, format );
+    const long returnId = QgsApplication::coordinateReferenceSystemRegistry()->addUserCrs( crs, name, format );
     if ( returnId == -1 )
       return false;
     else
@@ -247,14 +190,6 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
   mExistingCRSwkt[id] = format == QgsCoordinateReferenceSystem::FormatWkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
   mExistingCRSproj[id] = format == QgsCoordinateReferenceSystem::FormatProj ? crs.toProj() : QString();
   mExistingCRSnames[id] = name;
-
-  QgsCoordinateReferenceSystem::invalidateCache();
-  QgsCoordinateTransform::invalidateCache();
-
-  // If we have a projection acronym not in the user db previously, add it.
-  // This is a must, or else we can't select it from the vw_srs table.
-  // Actually, add it always and let the SQL PRIMARY KEY remove duplicates.
-  insertProjection( projectionAcronym );
 
   return true;
 }
