@@ -50,7 +50,10 @@ Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and render 
 
     virtual bool render() = 0;
 %Docstring
-Do the rendering (based on data stored in the class)
+Do the rendering (based on data stored in the class).
+
+Returns ``True`` if the layer was completely rendered successfully (i.e. the render
+was not canceled early).
 %End
 
     virtual bool forceRasterRender() const;

@@ -62,7 +62,12 @@ class CORE_EXPORT QgsMapLayerRenderer
 
     virtual ~QgsMapLayerRenderer() = default;
 
-    //! Do the rendering (based on data stored in the class)
+    /**
+     * Do the rendering (based on data stored in the class).
+     *
+     * Returns TRUE if the layer was completely rendered successfully (i.e. the render
+     * was not canceled early).
+     */
     virtual bool render() = 0;
 
     /**
