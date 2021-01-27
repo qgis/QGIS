@@ -231,7 +231,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   // compose final image for labeling
   if ( mSecondPassLayerJobs.isEmpty() )
   {
-    mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+    mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL layers finished" ), 2 );

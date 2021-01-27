@@ -47,6 +47,7 @@
 ///@cond PRIVATE
 
 const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
+const QString QgsMapRendererJob::LABEL_PREVIEW_CACHE_ID = QStringLiteral( "_preview_labels_" );
 
 bool LayerRenderJob::imageCanBeComposed() const
 {
@@ -750,6 +751,7 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
     {
       QgsDebugMsgLevel( QStringLiteral( "caching label result image" ), 2 );
       mCache->setCacheImage( LABEL_CACHE_ID, *job.img, _qgis_listQPointerToRaw( job.participatingLayers ) );
+      mCache->setCacheImage( LABEL_PREVIEW_CACHE_ID, *job.img, _qgis_listQPointerToRaw( job.participatingLayers ) );
     }
 
     delete job.img;
@@ -815,6 +817,13 @@ QImage QgsMapRendererJob::composeImage(
     painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
     painter.setOpacity( 1.0 );
     painter.drawImage( 0, 0, *labelJob.img );
+  }
+  else if ( cache && cache->hasAnyCacheImage( LABEL_PREVIEW_CACHE_ID ) )
+  {
+    const QImage labelCacheImage = cache->transformedCacheImage( LABEL_PREVIEW_CACHE_ID, settings.mapToPixel() );
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
+    painter.setOpacity( 1.0 );
+    painter.drawImage( 0, 0, labelCacheImage );
   }
 
   // render any layers with the renderAboveLabels flag now
