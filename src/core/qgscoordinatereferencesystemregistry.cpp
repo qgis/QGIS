@@ -103,6 +103,14 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
     crs.d->mDescription = name;
   }
 
+  if ( returnId != -1 )
+  {
+    // If we have a projection acronym not in the user db previously, add it.
+    // This is a must, or else we can't select it from the vw_srs table.
+    // Actually, add it always and let the SQL PRIMARY KEY remove duplicates.
+    insertProjection( crs.projectionAcronym() );
+  }
+
   QgsCoordinateReferenceSystem::invalidateCache();
   QgsCoordinateTransform::invalidateCache();
 
@@ -165,6 +173,14 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
     }
   }
 
+  if ( res )
+  {
+    // If we have a projection acronym not in the user db previously, add it.
+    // This is a must, or else we can't select it from the vw_srs table.
+    // Actually, add it always and let the SQL PRIMARY KEY remove duplicates.
+    insertProjection( crs.projectionAcronym() );
+  }
+
   QgsCoordinateReferenceSystem::invalidateCache();
   QgsCoordinateTransform::invalidateCache();
 
@@ -225,4 +241,58 @@ bool QgsCoordinateReferenceSystemRegistry::removeUserCrs( long id )
   }
 
   return res;
+}
+
+bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &projectionAcronym )
+{
+  sqlite3_database_unique_ptr database;
+  sqlite3_database_unique_ptr srsDatabase;
+  QString sql;
+  //check the db is available
+  int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+  if ( result != SQLITE_OK )
+  {
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+                 QgsApplication::qgisUserDatabaseFilePath() ) );
+    return false;
+  }
+  int srsResult = srsDatabase.open( QgsApplication::srsDatabaseFilePath() );
+  if ( result != SQLITE_OK )
+  {
+    QgsDebugMsg( QStringLiteral( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(),
+                 srsDatabase.errorMessage() ) );
+    return false;
+  }
+
+  // Set up the query to retrieve the projection information needed to populate the PROJECTION list
+  QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + QgsSqliteUtils::quotedString( projectionAcronym );
+
+  sqlite3_statement_unique_ptr srsPreparedStatement = srsDatabase.prepare( srsSql, srsResult );
+  if ( srsResult == SQLITE_OK )
+  {
+    if ( srsPreparedStatement.step() == SQLITE_ROW )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Trying to insert projection" ), 4 );
+      // We have the result from system srs.db. Now insert into user db.
+      sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
+            + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
+            + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 1 ) )
+            + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 2 ) )
+            + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 3 ) )
+            + ')';
+      sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
+      if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not insert projection into database: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+        return false;
+      }
+    }
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "prepare failed: %1 [%2]" ).arg( srsSql, srsDatabase.errorMessage() ) );
+    return false;
+  }
+
+  return true;
 }
