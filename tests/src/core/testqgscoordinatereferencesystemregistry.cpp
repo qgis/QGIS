@@ -131,7 +131,7 @@ void TestQgsCoordinateReferenceSystemRegistry::addUserCrs()
   QCOMPARE( registry->userCrsList().at( 1 ).name, QStringLiteral( "test2" ) );
   QCOMPARE( registry->userCrsList().at( 1 ).proj, madeUpProjection );
   QVERIFY( registry->userCrsList().at( 1 ).wkt.isEmpty() );
-  QCOMPARE( registry->userCrsList().at( 1 ).crs, userCrs );
+  QCOMPARE( registry->userCrsList().at( 1 ).crs.toProj(), userCrs.toProj() );
 }
 
 void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
