@@ -263,46 +263,46 @@ signal emitted once the map tool is deactivated
 
     QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );
 %Docstring
-constructor takes map canvas as a parameter
+Constructor takes a map canvas as a parameter.
 %End
 
     QgsPointXY toMapCoordinates( QPoint point );
 %Docstring
-transformation from screen coordinates to map coordinates
+Transforms a ``point`` from screen coordinates to map coordinates.
 %End
 
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 %Docstring
-transformation from screen coordinates to layer's coordinates
+Transforms a ``point`` from screen coordinates to ``layer`` coordinates.
 %End
 
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 %Docstring
-transformation from map coordinates to layer's coordinates
+Transforms a ``point`` from map coordinates to ``layer`` coordinates.
 %End
 
     QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 %Docstring
-transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+Transforms a ``point`` from ``layer`` coordinates to map coordinates (which is different in case reprojection is used).
 %End
 
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toMapCoordinatesV2/;
 %Docstring
-transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+Transforms a ``point`` from ``layer`` coordinates to map coordinates (which is different in case reprojection is used).
 
 .. note::
 
-   available in Python bindings as toMapCoordinatesV2
+   This method is available in the Python bindings as toMapCoordinatesV2.
 %End
 
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 %Docstring
-trnasformation of the rect from map coordinates to layer's coordinates
+Transforms a ``rect`` from map coordinates to ``layer`` coordinates.
 %End
 
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 %Docstring
-transformation from map coordinates to screen coordinates
+Transforms a ``point`` from map coordinates to screen coordinates.
 %End
 
 
