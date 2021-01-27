@@ -62,7 +62,7 @@ This class should be used whenever a blocking process run is required. Unlike im
 which rely on QApplication.processEvents() or creation of a QEventLoop, this class is completely
 thread safe and can be used on either the main thread or background threads without issue.
 
-On some platforms (e.g. iOS) , the process execution is skipped
+Not available on some platforms (e.g. iOS)
 https://lists.qt-project.org/pipermail/development/2015-July/022205.html
 
 .. versionadded:: 3.18

@@ -346,16 +346,4 @@ QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
 {
   return mExitStatus;
 };
-#else
-QgsBlockingProcess::QgsBlockingProcess( const QString &action, const QStringList & )
-{
-  Q_UNUSED( action )
-  QgsDebugMsg( "Skipping command: " + action );
-}
-
-
-int QgsBlockingProcess::run( QgsFeedback * )
-{
-  return 0;
-}
-#endif
+#endif // QT_CONFIG(process)
