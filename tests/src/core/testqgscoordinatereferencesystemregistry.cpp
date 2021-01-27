@@ -72,6 +72,8 @@ void TestQgsCoordinateReferenceSystemRegistry::addUserCrs()
 {
   QgsCoordinateReferenceSystemRegistry *registry = QgsApplication::coordinateReferenceSystemRegistry();
 
+  QVERIFY( registry->userCrsList().isEmpty() );
+
   QString madeUpProjection = QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
   QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromProj( madeUpProjection );
   QVERIFY( userCrs.isValid() );
@@ -88,6 +90,7 @@ void TestQgsCoordinateReferenceSystemRegistry::addUserCrs()
   QCOMPARE( spyAdded.length(), 0 );
   QCOMPARE( spyChanged.length(), 0 );
   QCOMPARE( spyCrsDefsChanged.length(), 0 );
+  QVERIFY( registry->userCrsList().isEmpty() );
 
   // valid new crs
   res = registry->addUserCrs( userCrs, QStringLiteral( "test" ) );
@@ -100,8 +103,15 @@ void TestQgsCoordinateReferenceSystemRegistry::addUserCrs()
   QCOMPARE( userCrs.authid(), QStringLiteral( "USER:100000" ) );
   QCOMPARE( userCrs.description(), QStringLiteral( "test" ) );
 
+  QCOMPARE( registry->userCrsList().count(), 1 );
+  QCOMPARE( registry->userCrsList().at( 0 ).id, 100000L );
+  QCOMPARE( registry->userCrsList().at( 0 ).name, QStringLiteral( "test" ) );
+  QCOMPARE( registry->userCrsList().at( 0 ).proj, madeUpProjection );
+  QVERIFY( !registry->userCrsList().at( 0 ).wkt.isEmpty() );
+  QCOMPARE( registry->userCrsList().at( 0 ).crs, userCrs );
+
   // try adding again, should be assigned a new ID because we are calling the "add" method
-  res = registry->addUserCrs( userCrs, QStringLiteral( "test2" ) );
+  res = registry->addUserCrs( userCrs, QStringLiteral( "test2" ), QgsCoordinateReferenceSystem::FormatProj );
   QCOMPARE( res, 100001L );
   QCOMPARE( spyAdded.length(), 2 );
   QCOMPARE( spyAdded.at( 1 ).at( 0 ).toString(), QStringLiteral( "USER:100001" ) );
@@ -110,6 +120,18 @@ void TestQgsCoordinateReferenceSystemRegistry::addUserCrs()
   QCOMPARE( userCrs.srsid(), 100001L );
   QCOMPARE( userCrs.authid(), QStringLiteral( "USER:100001" ) );
   QCOMPARE( userCrs.description(), QStringLiteral( "test2" ) );
+
+  QCOMPARE( registry->userCrsList().count(), 2 );
+  QCOMPARE( registry->userCrsList().at( 0 ).id, 100000L );
+  QCOMPARE( registry->userCrsList().at( 0 ).name, QStringLiteral( "test" ) );
+  QCOMPARE( registry->userCrsList().at( 0 ).proj, madeUpProjection );
+  QVERIFY( !registry->userCrsList().at( 0 ).wkt.isEmpty() );
+  QCOMPARE( registry->userCrsList().at( 0 ).crs.toProj(), madeUpProjection );
+  QCOMPARE( registry->userCrsList().at( 1 ).id, 100001L );
+  QCOMPARE( registry->userCrsList().at( 1 ).name, QStringLiteral( "test2" ) );
+  QCOMPARE( registry->userCrsList().at( 1 ).proj, madeUpProjection );
+  QVERIFY( registry->userCrsList().at( 1 ).wkt.isEmpty() );
+  QCOMPARE( registry->userCrsList().at( 1 ).crs, userCrs );
 }
 
 void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
@@ -132,12 +154,14 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   QCOMPARE( spyAdded.length(), 0 );
   QCOMPARE( spyChanged.length(), 0 );
   QCOMPARE( spyCrsDefsChanged.length(), 0 );
+  QCOMPARE( registry->userCrsList().count(), 2 );
   // non-existing crs - should be rejected
   res = registry->updateUserCrs( 100100, userCrs, QStringLiteral( "test" ) );
   QVERIFY( !res );
   QCOMPARE( spyAdded.length(), 0 );
   QCOMPARE( spyChanged.length(), 0 );
   QCOMPARE( spyCrsDefsChanged.length(), 0 );
+  QCOMPARE( registry->userCrsList().count(), 2 );
 
   // add valid new user crs
   const long id = registry->addUserCrs( userCrs, QStringLiteral( "test" ) );
@@ -147,6 +171,7 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   QCOMPARE( spyAdded.at( 0 ).at( 0 ).toString(), authid );
   QCOMPARE( spyChanged.length(), 0 );
   QCOMPARE( spyCrsDefsChanged.length(), 1 );
+  QCOMPARE( registry->userCrsList().count(), 3 );
 
   // now try changing it
   QgsCoordinateReferenceSystem crs2( authid );
@@ -154,7 +179,7 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   const QString madeUpProjection2 = QStringLiteral( "+proj=aea +lat_1=22.5 +lat_2=-24.5 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
   crs2.createFromProj( madeUpProjection2 );
 
-  connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [&]
+  QMetaObject::Connection conn1 =  connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [&]
   {
     // make sure that caches are invalidated before the signals are emitted, so that slots will
     // get the new definition!
@@ -174,9 +199,31 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   QCOMPARE( spyChanged.at( 0 ).at( 0 ).toString(), authid );
   QCOMPARE( spyCrsDefsChanged.length(), 2 );
 
+  QCOMPARE( registry->userCrsList().count(), 3 );
+  QCOMPARE( registry->userCrsList().at( 2 ).id, 100002L );
+  QCOMPARE( registry->userCrsList().at( 2 ).name, QStringLiteral( "test 2" ) );
+  QCOMPARE( registry->userCrsList().at( 2 ).proj, madeUpProjection2 );
+  QVERIFY( !registry->userCrsList().at( 2 ).wkt.isEmpty() );
+  QCOMPARE( registry->userCrsList().at( 2 ).crs.toProj(), madeUpProjection2 );
+
   // newly created crs should get new definition, not old
   QgsCoordinateReferenceSystem crs3( authid );
   QCOMPARE( crs3.toProj(), madeUpProjection2 );
+
+  // with proj native format
+  QObject::disconnect( conn1 );
+  QVERIFY( registry->updateUserCrs( id, crs2, QStringLiteral( "test 2" ), QgsCoordinateReferenceSystem::FormatProj ) );
+
+  QCOMPARE( spyAdded.length(), 1 );
+  QCOMPARE( spyChanged.length(), 2 );
+  QCOMPARE( spyCrsDefsChanged.length(), 3 );
+
+  QCOMPARE( registry->userCrsList().count(), 3 );
+  QCOMPARE( registry->userCrsList().at( 2 ).id, 100002L );
+  QCOMPARE( registry->userCrsList().at( 2 ).name, QStringLiteral( "test 2" ) );
+  QCOMPARE( registry->userCrsList().at( 2 ).proj, madeUpProjection2 );
+  QVERIFY( registry->userCrsList().at( 2 ).wkt.isEmpty() );
+  QCOMPARE( registry->userCrsList().at( 2 ).crs.toProj(), madeUpProjection2 );
 }
 
 void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
@@ -194,6 +241,7 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   QSignalSpy spyRemoved( registry, &QgsCoordinateReferenceSystemRegistry::userCrsRemoved );
   QSignalSpy spyCrsDefsChanged( registry, &QgsCoordinateReferenceSystemRegistry::crsDefinitionsChanged );
 
+  QCOMPARE( registry->userCrsList().count(), 3 );
   // non-existing crs - should be rejected
   bool res = registry->removeUserCrs( 100100 );
   QVERIFY( !res );
@@ -201,6 +249,7 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   QCOMPARE( spyChanged.length(), 0 );
   QCOMPARE( spyRemoved.length(), 0 );
   QCOMPARE( spyCrsDefsChanged.length(), 0 );
+  QCOMPARE( registry->userCrsList().count(), 3 );
 
   // add valid new user crs
   const long id = registry->addUserCrs( userCrs, QStringLiteral( "test" ) );
@@ -211,6 +260,7 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   QCOMPARE( spyChanged.length(), 0 );
   QCOMPARE( spyRemoved.length(), 0 );
   QCOMPARE( spyCrsDefsChanged.length(), 1 );
+  QCOMPARE( registry->userCrsList().count(), 4 );
 
   QgsCoordinateReferenceSystem crs2( authid );
   QVERIFY( crs2.isValid() );
@@ -229,6 +279,22 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   QCOMPARE( spyRemoved.length(), 1 );
   QCOMPARE( spyRemoved.at( 0 ).at( 0 ).toLongLong(), static_cast< long long >( id ) );
   QCOMPARE( spyCrsDefsChanged.length(), 2 );
+
+  QCOMPARE( registry->userCrsList().count(), 3 );
+  QCOMPARE( registry->userCrsList().at( 0 ).id, 100000L );
+  QCOMPARE( registry->userCrsList().at( 0 ).name, QStringLiteral( "test" ) );
+  QCOMPARE( registry->userCrsList().at( 0 ).proj, QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" ) );
+  QVERIFY( !registry->userCrsList().at( 0 ).wkt.isEmpty() );
+  QCOMPARE( registry->userCrsList().at( 0 ).crs.toProj(), QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" ) );
+  QCOMPARE( registry->userCrsList().at( 1 ).id, 100001L );
+  QCOMPARE( registry->userCrsList().at( 1 ).name, QStringLiteral( "test2" ) );
+  QCOMPARE( registry->userCrsList().at( 1 ).proj, QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" ) );
+  QVERIFY( registry->userCrsList().at( 1 ).wkt.isEmpty() );
+  QCOMPARE( registry->userCrsList().at( 1 ).crs.toProj(), QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" ) );
+  QCOMPARE( registry->userCrsList().at( 2 ).id, 100002L );
+  QCOMPARE( registry->userCrsList().at( 2 ).name, QStringLiteral( "test 2" ) );
+  QCOMPARE( registry->userCrsList().at( 2 ).proj, QStringLiteral( "+proj=aea +lat_1=22.5 +lat_2=-24.5 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" ) );
+  QVERIFY( registry->userCrsList().at( 2 ).wkt.isEmpty() );
 
   // doesn't exist anymore...
   QgsCoordinateReferenceSystem crs3( authid );

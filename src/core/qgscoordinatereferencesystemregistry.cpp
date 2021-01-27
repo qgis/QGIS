@@ -31,6 +31,45 @@ QgsCoordinateReferenceSystemRegistry::QgsCoordinateReferenceSystemRegistry( QObj
 
 }
 
+QList<QgsCoordinateReferenceSystemRegistry::UserCrsDetails> QgsCoordinateReferenceSystemRegistry::userCrsList() const
+{
+  QList<QgsCoordinateReferenceSystemRegistry::UserCrsDetails> res;
+
+  //Setup connection to the existing custom CRS database:
+  sqlite3_database_unique_ptr database;
+  //check the db is available
+  int result = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
+  if ( result != SQLITE_OK )
+  {
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    return res;
+  }
+
+  const QString sql = QStringLiteral( "select srs_id,description,parameters, wkt from tbl_srs" );
+  QgsDebugMsgLevel( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ), 4 );
+  sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
+  if ( result == SQLITE_OK )
+  {
+    QgsCoordinateReferenceSystem crs;
+    while ( preparedStatement.step() == SQLITE_ROW )
+    {
+      UserCrsDetails details;
+      details.id = preparedStatement.columnAsText( 0 ).toLong();
+      details.name = preparedStatement.columnAsText( 1 );
+      details.proj = preparedStatement.columnAsText( 2 );
+      details.wkt = preparedStatement.columnAsText( 3 );
+
+      if ( !details.wkt.isEmpty() )
+        details.crs.createFromWkt( details.wkt );
+      else
+        details.crs.createFromProj( details.proj );
+
+      res << details;
+    }
+  }
+  return res;
+}
+
 long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateReferenceSystem &crs, const QString &name, QgsCoordinateReferenceSystem::Format nativeFormat )
 {
   if ( !crs.isValid() )

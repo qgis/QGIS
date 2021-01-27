@@ -31,6 +31,34 @@ QgsCoordinateReferenceSystemRegistry is not usually directly created, but rather
 Constructor for QgsCoordinateReferenceSystemRegistry, with the specified ``parent`` object.
 %End
 
+    class UserCrsDetails
+{
+%Docstring
+Contains details of a custom (user defined) CRS
+%End
+
+%TypeHeaderCode
+#include "qgscoordinatereferencesystemregistry.h"
+%End
+      public:
+
+        long id;
+
+        QString name;
+
+        QString proj;
+
+        QString wkt;
+
+        QgsCoordinateReferenceSystem crs;
+    };
+
+    QList< QgsCoordinateReferenceSystemRegistry::UserCrsDetails > userCrsList() const;
+%Docstring
+Returns a list containing the details of all registered
+custom (user-defined) CRSes.
+%End
+
     long addUserCrs( const QgsCoordinateReferenceSystem &crs, const QString &name, QgsCoordinateReferenceSystem::Format nativeFormat = QgsCoordinateReferenceSystem::FormatWkt );
 %Docstring
 Adds a new ``crs`` definition as a custom ("USER") CRS.
