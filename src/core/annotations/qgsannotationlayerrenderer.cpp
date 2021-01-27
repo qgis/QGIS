@@ -49,14 +49,18 @@ bool QgsAnnotationLayerRenderer::render()
 {
   QgsRenderContext &context = *renderContext();
 
+  bool canceled = false;
   for ( QgsAnnotationItem *item : qgis::as_const( mItems ) )
   {
     if ( mFeedback->isCanceled() )
+    {
+      canceled = true;
       break;
+    }
 
     item->render( context, mFeedback.get() );
   }
-  return true;
+  return !canceled;
 }
 
 bool QgsAnnotationLayerRenderer::forceRasterRender() const

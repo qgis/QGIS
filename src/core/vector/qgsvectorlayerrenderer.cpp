@@ -230,7 +230,7 @@ bool QgsVectorLayerRenderer::render()
   }
 
   mReadyToCompose = true;
-  return res;
+  return res && !renderContext()->renderingStopped();
 }
 
 bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )

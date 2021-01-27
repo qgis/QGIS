@@ -300,7 +300,7 @@ bool QgsMeshLayerRenderer::render()
   renderMesh();
   renderVectorDataset();
 
-  return true;
+  return !renderContext()->renderingStopped();
 }
 
 bool QgsMeshLayerRenderer::forceRasterRender() const

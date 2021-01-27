@@ -159,11 +159,13 @@ bool QgsPointCloudLayerRenderer::render()
 
   // drawing
   int nodesDrawn = 0;
+  bool canceled = false;
   for ( const IndexedPointCloudNode &n : nodes )
   {
     if ( context.renderContext().renderingStopped() )
     {
       QgsDebugMsgLevel( "canceled", 2 );
+      canceled = true;
       break;
     }
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
@@ -183,7 +185,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   mRenderer->stopRender( context );
 
-  return true;
+  return !canceled;
 }
 
 bool QgsPointCloudLayerRenderer::forceRasterRender() const
