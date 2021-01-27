@@ -75,11 +75,6 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mRecentProjectsListView->setModel( mRecentProjectsModel );
   QgsProjectListItemDelegate *recentProjectsDelegate = new QgsProjectListItemDelegate( mRecentProjectsListView );
   mRecentProjectsListView->setItemDelegate( recentProjectsDelegate );
-  connect( mRecentProjectsModel, &QAbstractItemModel::rowsRemoved, this, [this]
-  {
-    updateRecentProjectsVisibility();
-  }
-         );
 
   leftLayout->addWidget( mRecentProjectsListView, 1 );
   leftContainer->setLayout( leftLayout );
@@ -150,6 +145,8 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   rightContainer->setLayout( rightLayout );
   mSplitter->addWidget( rightContainer );
+  mSplitter->setStretchFactor( 0, 4 );
+  mSplitter->setStretchFactor( 1, 6 );
 
   mVersionInformation = new QTextBrowser;
   mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
@@ -194,7 +191,6 @@ QgsWelcomePage::~QgsWelcomePage()
 void QgsWelcomePage::setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects )
 {
   mRecentProjectsModel->setRecentProjects( recentProjects );
-  updateRecentProjectsVisibility();
 }
 
 QString QgsWelcomePage::newsFeedUrl()
@@ -409,13 +405,6 @@ void QgsWelcomePage::showContextMenuForNews( QPoint point )
   menu->addAction( hideAction );
 
   menu->popup( mNewsFeedListView->mapToGlobal( point ) );
-}
-
-void QgsWelcomePage::updateRecentProjectsVisibility()
-{
-  const bool visible = mRecentProjectsModel->rowCount() > 0;
-  mRecentProjectsListView->setVisible( visible );
-  mRecentProjectsTitle->setVisible( visible );
 }
 
 void QgsWelcomePage::updateNewsFeedVisibility()
