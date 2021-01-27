@@ -682,7 +682,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
       delete job.context.painter();
       job.context.setPainter( nullptr );
 
-      if ( mCache && !job.cached && !job.context.renderingStopped() && job.layer )
+      if ( mCache && !job.cached && job.completed && job.layer )
       {
         QgsDebugMsgLevel( QStringLiteral( "caching image for %1" ).arg( job.layerId ), 2 );
         mCache->setCacheImage( job.layerId, *job.img, QList< QgsMapLayer * >() << job.layer );
