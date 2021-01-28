@@ -129,7 +129,7 @@ QVariantList QgsHanaPrimaryKeyContext::lookupKey( QgsFeatureId featureId )
 {
   QMutexLocker locker( &mMutex );
 
-  QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.find( featureId );
+  QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.constFind( featureId );
   if ( it != mFidToKey.constEnd() )
     return it.value();
   return QVariantList();
