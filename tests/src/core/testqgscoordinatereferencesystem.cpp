@@ -499,6 +499,11 @@ void TestQgsCoordinateReferenceSystem::createFromWktUnknown()
   QVERIFY( crs4.isValid() );
   QCOMPARE( crs4.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ), expectedWkt );
   QCOMPARE( crs4.mapUnits(), QgsUnitTypes::DistanceMeters );
+  QgsCoordinateReferenceSystem::invalidateCache();
+  crs4.createFromOgcWmsCrs( QStringLiteral( "USER:100001" ) );
+  QVERIFY( crs4.isValid() );
+  QCOMPARE( crs4.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ), expectedWkt );
+  QCOMPARE( crs4.mapUnits(), QgsUnitTypes::DistanceMeters );
 
   QgsCoordinateReferenceSystem crs5;
   crs5.createFromWkt( expectedWkt );
