@@ -248,7 +248,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       connectString += QStringLiteral( " connect_timeout=%1" ).arg( timeout );
     }
 
-    connectString += QStringLiteral( " client_encoding='UTF-8'" );
+    connectString += QLatin1String( " client_encoding='UTF-8'" );
   };
   addDefaultTimeoutAndClientEncoding( expandedConnectionInfo );
 
