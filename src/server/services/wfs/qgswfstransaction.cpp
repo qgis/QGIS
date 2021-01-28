@@ -716,7 +716,7 @@ namespace QgsWfs
       catch ( QgsOgcServiceException &ex )
       {
         action.error = true;
-        action.errorMsg = QStringLiteral( "%1 '%2'" ).arg( ex.message() ).arg( typeName );
+        action.errorMsg = QStringLiteral( "%1 '%2'" ).arg( ex.message(), typeName );
         continue;
       }
 

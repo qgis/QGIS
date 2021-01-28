@@ -702,6 +702,46 @@ class TestQgsServerWFS(QgsServerTestBase):
         geom = feature.geometry()
         self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0))
 
+        # Tests for inverted axis issue GH #36584
+        # Cleanup
+        self.assertTrue(vl.startEditing())
+        vl.selectByExpression('"name" LIKE \'4326-test%\'')
+        vl.deleteSelectedFeatures()
+        self.assertTrue(vl.commitChanges())
+
+        self.i = 0
+
+        def _test(version, srsName, lat_lon=False):
+            self.i += 1
+            name = '4326-test_%s' % self.i
+            request = post_data.format(
+                name=name,
+                version=version,
+                srsName=srsName,
+                coordinates='52.48,10.67' if lat_lon else '10.67,52.48'
+            )
+            header, body = self._execute_request(
+                query_string, requestMethod=QgsServerRequest.PostMethod, data=request.encode('utf-8'))
+            feature = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"name" = \'%s\'' % name))))
+            geom = feature.geometry()
+            self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0), "Failed: %s , %s, lat_lon=%s" % (version, srsName, lat_lon))
+
+        _test('1.1.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
+        _test('1.1.0', 'http://www.opengis.net/def/crs/EPSG/0/4326', lat_lon=True)
+        _test('1.1.0', 'http://www.opengis.net/gml/srs/epsg.xml#4326', lat_lon=False)
+        _test('1.1.0', 'EPSG:4326', lat_lon=False)
+
+        _test('1.0.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
+        _test('1.0.0', 'http://www.opengis.net/def/crs/EPSG/0/4326', lat_lon=True)
+        _test('1.0.0', 'http://www.opengis.net/gml/srs/epsg.xml#4326', lat_lon=False)
+        _test('1.0.0', 'EPSG:4326', lat_lon=False)
+
+        # Cleanup
+        self.assertTrue(vl.startEditing())
+        vl.selectByExpression('"name" LIKE \'4326-test%\'')
+        vl.deleteSelectedFeatures()
+        self.assertTrue(vl.commitChanges())
+
 
 if __name__ == '__main__':
     unittest.main()
