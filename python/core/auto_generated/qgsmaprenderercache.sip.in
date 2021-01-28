@@ -68,13 +68,35 @@ Sets extent and scale parameters
                         const QImage &image,
                         const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 %Docstring
-Set the cached ``image`` for a particular ``cacheKey``. The ``cacheKey`` usually
-matches the :py:func:`QgsMapLayer.id()` which the image is a render of.
+Set the cached ``image`` for a particular ``cacheKey``, using the current cache parameters.
+
+The ``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which the image is a render of.
+
 A list of ``dependentLayers`` should be passed containing all layer
 on which this cache image is dependent. If any of these layers triggers a
 repaint then the cache image will be cleared.
 
 .. seealso:: :py:func:`cacheImage`
+%End
+
+    void setCacheImage( const QString &cacheKey,
+                        const QImage &image,
+                        const QgsRectangle &extent,
+                        const QgsMapToPixel &mapToPixel,
+                        const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+%Docstring
+Set the cached ``image`` for a particular ``cacheKey``, using a specific ``extent`` and ``mapToPixel``
+(which may differ from the current cache parameters).
+
+The ``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which the image is a render of.
+
+A list of ``dependentLayers`` should be passed containing all layer
+on which this cache image is dependent. If any of these layers triggers a
+repaint then the cache image will be cleared.
+
+.. seealso:: :py:func:`cacheImage`
+
+.. versionadded:: 3.18
 %End
 
     bool hasCacheImage( const QString &cacheKey ) const;
