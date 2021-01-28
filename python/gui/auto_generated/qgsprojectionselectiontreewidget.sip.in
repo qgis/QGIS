@@ -173,6 +173,13 @@ Emitted when a projection is double clicked in the list.
 .. versionadded:: 2.14
 %End
 
+    void hasValidSelectionChanged( bool isValid );
+%Docstring
+Emitted when the selection in the tree is changed from a valid selection to an invalid selection, or vice-versa.
+
+.. versionadded:: 3.18
+%End
+
   protected:
     virtual void showEvent( QShowEvent *event );
 

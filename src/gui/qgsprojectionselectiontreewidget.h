@@ -162,6 +162,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     void projectionDoubleClicked();
 
+    /**
+     * Emitted when the selection in the tree is changed from a valid selection to an invalid selection, or vice-versa.
+     *
+     * \since QGIS 3.18
+     */
+    void hasValidSelectionChanged( bool isValid );
+
   protected:
     // Used to ensure the projection list view is actually populated
     void showEvent( QShowEvent *event ) override;
