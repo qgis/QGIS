@@ -367,7 +367,7 @@ QVector<QgsDataItem *> QgsHanaRootItem::createChildren()
 
 QWidget *QgsHanaRootItem::paramWidget()
 {
-  QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, nullptr,
+  QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, Qt::WindowFlags(),
       QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsHanaSourceSelect::connectionsChanged, this,
            &QgsHanaRootItem::onConnectionsChanged );
