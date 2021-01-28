@@ -382,6 +382,6 @@ void QgsHanaRootItem::onConnectionsChanged()
 QgsDataItem *QgsHanaDataItemProvider::createDataItem(
   const QString &pathIn, QgsDataItem *parentItem )
 {
-  Q_UNUSED( pathIn );
+  Q_UNUSED( pathIn )
   return new QgsHanaRootItem( parentItem, QStringLiteral( "SAP HANA" ), QStringLiteral( "hana:" ) );
 }

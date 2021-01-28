@@ -659,13 +659,13 @@ void QgsHanaSourceSelect::setConnectionListPosition()
 
 void QgsHanaSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsHanaSourceSelect::treeWidgetSelectionChanged(
   const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( deselected );
+  Q_UNUSED( deselected )
   emit enableButtons( !selected.isEmpty() );
 }
 
