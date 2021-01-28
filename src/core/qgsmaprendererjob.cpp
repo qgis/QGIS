@@ -819,7 +819,10 @@ QImage QgsMapRendererJob::composeImage(
     painter.setOpacity( 1.0 );
     painter.drawImage( 0, 0, *labelJob.img );
   }
-  else if ( cache && cache->hasAnyCacheImage( LABEL_PREVIEW_CACHE_ID ) )
+  // when checking for a label cache image, we only look for those which would be drawn between 30% and 300% of the
+  // original size. We don't want to draw massive pixelated labels on top of everything else, and we also don't need
+  // to draw tiny unreadable labels... better to draw nothing in this case and wait till the updated label results are ready!
+  else if ( cache && cache->hasAnyCacheImage( LABEL_PREVIEW_CACHE_ID, 0.3, 3 ) )
   {
     const QImage labelCacheImage = cache->transformedCacheImage( LABEL_PREVIEW_CACHE_ID, settings.mapToPixel() );
     painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
