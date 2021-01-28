@@ -869,19 +869,18 @@ namespace QgsWms
     QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
 
     QString crs = mWmsParameters.crs();
-    if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
+    if ( crs.compare( QStringLiteral( "CRS:84" ), Qt::CaseInsensitive ) == 0 )
     {
-      crs = QString( "EPSG:4326" );
+      crs = QStringLiteral( "EPSG:4326" );
       mapExtent.invert();
     }
     else if ( crs.isEmpty() )
     {
-      crs = QString( "EPSG:4326" );
+      crs = QStringLiteral( "EPSG:4326" );
     }
 
-    QgsCoordinateReferenceSystem outputCRS;
+    QgsCoordinateReferenceSystem outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
 
-    outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !outputCRS.isValid() )
     {
       QgsServiceException::ExceptionCode code;

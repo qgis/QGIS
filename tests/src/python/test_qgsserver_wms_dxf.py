@@ -24,6 +24,8 @@ from test_qgsserver import QgsServerTestBase
 
 from qgis.core import (QgsVectorLayer)
 
+from qgis.PyQt import QtCore
+
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
@@ -48,16 +50,17 @@ class PyQgsServerWMSGetMapDxf(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
 
-        dxf = '/tmp/test_dxf_export.dxf'
+        tempDir = QtCore.QTemporaryDir()
+        dxf = os.path.join(tempDir.path(), 'test_dxf_export.dxf')
         f = open(dxf, 'wb')
         f.write(r)
         f.close()
 
         vl = QgsVectorLayer(dxf, "lyr", "ogr")
-        myMessage = ('Expected downloaded: %s dxf contains 1 line\nGot: %s\n' %
+        myMessage = ('Expected downloaded dxf contains: %s line\nGot: %s\n' %
                      (1, vl.featureCount()))
 
-        assert vl.featureCount() == 1, myMessage
+        self.assertEqual(vl.featureCount(), 1, myMessage)
 
         line_from_dxf = next(vl.getFeatures()).geometry().asWkt()
         line = 'LineString (450000 400000, 450100 400000)'
