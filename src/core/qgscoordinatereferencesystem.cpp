@@ -1959,7 +1959,13 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   if ( !d->mIsValid || !srs.d->mIsValid )
     return false;
 
-  if ( ( !d->mAuthId.isEmpty() || !srs.d->mAuthId.isEmpty() ) )
+  const bool isUser = d->mSrsId >= USER_CRS_START_ID;
+  const bool otherIsUser = srs.d->mSrsId >= USER_CRS_START_ID;
+  if ( isUser != otherIsUser )
+    return false;
+
+  // we can't directly compare authid for user crses -- the actual definition of these may have changed
+  if ( !isUser && ( !d->mAuthId.isEmpty() || !srs.d->mAuthId.isEmpty() ) )
     return d->mAuthId == srs.d->mAuthId;
 
   return toWkt( WKT_PREFERRED ) == srs.toWkt( WKT_PREFERRED );
