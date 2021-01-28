@@ -133,8 +133,8 @@ void QgsHanaProviderConnection::setCapabilities()
 void QgsHanaProviderConnection::dropTable( const QString &schema, const QString &name ) const
 {
   executeSqlStatement( QStringLiteral( "DROP TABLE %1.%2" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ) )
-                       .arg( QgsHanaUtils::quotedIdentifier( name ) ) );
+                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                             QgsHanaUtils::quotedIdentifier( name ) ) );
 }
 
 void QgsHanaProviderConnection::createVectorTable( const QString &schema,
@@ -194,9 +194,9 @@ void QgsHanaProviderConnection::dropVectorTable( const QString &schema, const QS
 void QgsHanaProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlStatement( QStringLiteral( "RENAME TABLE %1.%2 TO %1.%3" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ) )
-                       .arg( QgsHanaUtils::quotedIdentifier( name ) )
-                       .arg( QgsHanaUtils::quotedIdentifier( newName ) ) );
+                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                             QgsHanaUtils::quotedIdentifier( name ),
+                             QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
 void QgsHanaProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
@@ -216,8 +216,8 @@ void QgsHanaProviderConnection::dropSchema( const QString &name,  bool force ) c
 {
   checkCapability( Capability::DropSchema );
   executeSqlStatement( QStringLiteral( "DROP SCHEMA %1 %2" )
-                       .arg( QgsHanaUtils::quotedIdentifier( name ) )
-                       .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
+                       .arg( QgsHanaUtils::quotedIdentifier( name ),
+                             force ? QStringLiteral( "CASCADE" ) : QString() ) );
 }
 
 void QgsHanaProviderConnection::renameSchema( const QString &name, const QString &newName ) const
