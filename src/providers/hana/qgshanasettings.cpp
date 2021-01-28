@@ -66,7 +66,7 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
   mSslKeyStore = QString();
   mSslTrustStore = QString();
   if ( uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
-    mSslEnabled = QVariant( uri.param( "sslEnabled" ) ).toBool();
+    mSslEnabled = QVariant( uri.param( QStringLiteral( "sslEnabled" ) ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
     mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
   if ( uri.hasParam( QStringLiteral( "sslValidateCertificate" ) ) )

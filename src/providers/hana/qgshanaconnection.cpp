@@ -498,7 +498,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
           continue;
         if ( layersCount == 1 )
         {
-          QgsHanaLayerProperty firstLayer = layers.values( layerKey )[0];
+          QgsHanaLayerProperty firstLayer = layers.values( layerKey ).value( 0 );
           if ( firstLayer.geometryColName.isEmpty() )
             layers.remove( layerKey );
         }
@@ -523,13 +523,14 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
   }
 
   QVector<QgsHanaLayerProperty> list;
-  for ( const QPair<QString, QString> &key : layers.uniqueKeys() )
+  const auto uniqueKeys = layers.uniqueKeys();
+  for ( const QPair<QString, QString> &key : uniqueKeys )
   {
     QList<QgsHanaLayerProperty> values = layers.values( key );
     if ( values.size() == 1 )
       values[0].isUnique = true;
 
-    for ( const QgsHanaLayerProperty &lp : values )
+    for ( const QgsHanaLayerProperty &lp : qgis::as_const( values ) )
       list << lp;
   }
 
