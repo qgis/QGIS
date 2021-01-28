@@ -109,10 +109,15 @@ that has the same extent and scale as the cache's global extent and scale
 .. versionadded:: 3.0
 %End
 
-    bool hasAnyCacheImage( const QString &cacheKey ) const;
+    bool hasAnyCacheImage( const QString &cacheKey, double minimumScaleThreshold = 0, double maximumScaleThreshold = 0 ) const;
 %Docstring
 Returns ``True`` if the cache contains an image with the specified ``cacheKey``
 with any cache's parameters (extent and scale)
+
+The optional ``minimumScaleThreshold`` and ``maximumScaleThreshold`` arguments can be used to
+specify a range of acceptable cached scales vs current cache scale parameter. E.g. if the
+``minimumScaleThreshold`` is 0.5 and ``maximumScaleThreshold`` is 2.0, then only cached images
+with a scale between 0.5 * current cache scale and 2.0 * current cache scale will be considered.
 
 .. seealso:: :py:func:`transformedCacheImage`
 

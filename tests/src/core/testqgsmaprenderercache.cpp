@@ -20,12 +20,12 @@
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 
-class TestQgsMapRendereCache: public QObject
+class TestQgsMapRendererCache: public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsMapRendereCache();
+    TestQgsMapRendererCache();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -37,28 +37,28 @@ class TestQgsMapRendereCache: public QObject
 };
 
 
-TestQgsMapRendereCache::TestQgsMapRendereCache() = default;
+TestQgsMapRendererCache::TestQgsMapRendererCache() = default;
 
-void TestQgsMapRendereCache::initTestCase()
+void TestQgsMapRendererCache::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
 }
 
-void TestQgsMapRendereCache::cleanupTestCase()
+void TestQgsMapRendererCache::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapRendereCache::init()
+void TestQgsMapRendererCache::init()
 {
 }
 
-void TestQgsMapRendereCache::cleanup()
+void TestQgsMapRendererCache::cleanup()
 {
 }
 
-void TestQgsMapRendereCache::testCache()
+void TestQgsMapRendererCache::testCache()
 {
   QgsMapRendererCache cache;
   QImage imgRed( 100, 100, QImage::Format::Format_ARGB32_Premultiplied );
@@ -80,12 +80,14 @@ void TestQgsMapRendereCache::testCache()
   QVERIFY( !cache.hasCacheImage( imgRedKey ) );
   QVERIFY( cache.hasCacheImage( imgBlueKey ) );
   QVERIFY( cache.hasAnyCacheImage( imgBlueKey ) );
+  QVERIFY( cache.hasAnyCacheImage( imgBlueKey, 0.9, 1.1 ) );
 
   cache.setCacheImage( imgRedKey, imgRed );
   QVERIFY( cache.hasCacheImage( imgRedKey ) );
   QVERIFY( cache.hasCacheImage( imgBlueKey ) );
   QVERIFY( cache.hasAnyCacheImage( imgBlueKey ) );
   QVERIFY( cache.hasAnyCacheImage( imgRedKey ) );
+  QVERIFY( cache.hasAnyCacheImage( imgRedKey, 0.9, 1.1 ) );
 
   {
     QImage img = cache.cacheImage( imgBlueKey );
@@ -104,11 +106,38 @@ void TestQgsMapRendereCache::testCache()
   QVERIFY( !cache.hasCacheImage( imgRedKey ) );
   QVERIFY( !cache.hasCacheImage( imgBlueKey ) );
   QVERIFY( cache.hasAnyCacheImage( imgBlueKey ) );
-  QVERIFY( cache.hasAnyCacheImage( imgRedKey ) );
+  QVERIFY( cache.hasAnyCacheImage( imgBlueKey, 0.9, 1.1 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgRedKey, 0.9, 1.1 ) );
 
   QImage transformed = cache.transformedCacheImage( imgBlueKey, mtp2 );
   QVERIFY( transformed.pixelColor( 30, 20 ) == Qt::transparent );
   QVERIFY( transformed.pixelColor( 10, 20 ) == Qt::blue );
+
+  QgsMapToPixel mtp3( 2, 70, 50, 100, 100, 0.0 ); // scale by 2
+  cache.updateParameters( extent2, mtp3 );
+  QVERIFY( !cache.hasCacheImage( imgRedKey ) );
+  QVERIFY( !cache.hasCacheImage( imgBlueKey ) );
+  QVERIFY( cache.hasAnyCacheImage( imgBlueKey ) );
+  // outside of range
+  QVERIFY( !cache.hasAnyCacheImage( imgBlueKey, 0.9, 1.1 ) );
+  QVERIFY( !cache.hasAnyCacheImage( imgRedKey, 0.9, 1.1 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgBlueKey, 0.9, 0 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgRedKey, 0.9, 0 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgBlueKey, 0.9, 2.0 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgRedKey, 0.9, 2.0 ) );
+
+  QgsMapToPixel mtp4( 0.5, 70, 50, 100, 100, 0.0 ); // scale by 0.5
+  cache.updateParameters( extent2, mtp4 );
+  QVERIFY( !cache.hasCacheImage( imgRedKey ) );
+  QVERIFY( !cache.hasCacheImage( imgBlueKey ) );
+  QVERIFY( cache.hasAnyCacheImage( imgBlueKey ) );
+  // outside of range
+  QVERIFY( !cache.hasAnyCacheImage( imgBlueKey, 0.9, 1.1 ) );
+  QVERIFY( !cache.hasAnyCacheImage( imgRedKey, 0.9, 1.1 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgBlueKey, 0, 1.1 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgRedKey, 0, 1.1 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgBlueKey, 0.5, 1.1 ) );
+  QVERIFY( cache.hasAnyCacheImage( imgRedKey, 0.5, 1.1 ) );
 
   /* we can replace the cache image */
   cache.setCacheImage( imgBlueKey, transformed );
@@ -126,5 +155,5 @@ void TestQgsMapRendereCache::testCache()
 }
 
 
-QGSTEST_MAIN( TestQgsMapRendereCache )
+QGSTEST_MAIN( TestQgsMapRendererCache )
 #include "testqgsmaprenderercache.moc"
