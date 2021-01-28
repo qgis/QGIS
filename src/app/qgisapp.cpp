@@ -2790,7 +2790,6 @@ void QgisApp::createActions()
   connect( mActionAddWcsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wcs" ) ); } );
   connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "WFS" ) ); } );
   connect( mActionAddAfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgisfeatureserver" ) ); } );
-  connect( mActionAddAmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgismapserver" ) ); } );
   connect( mActionAddDelimitedText, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "delimitedtext" ) ); } );
   connect( mActionAddVirtualLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "virtual" ) ); } );
   connect( mActionOpenTable, &QAction::triggered, this, [ = ]
@@ -3519,48 +3518,6 @@ void QgisApp::createToolBars()
   newLayerAction->setObjectName( QStringLiteral( "ActionNewLayer" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-  // map service tool button
-  bt = new QToolButton();
-  bt->setPopupMode( QToolButton::MenuButtonPopup );
-  bt->addAction( mActionAddWmsLayer );
-  bt->addAction( mActionAddAmsLayer );
-  QAction *defMapServiceAction = mActionAddWmsLayer;
-  switch ( settings.value( QStringLiteral( "UI/defaultMapService" ), 0 ).toInt() )
-  {
-    case 0:
-      defMapServiceAction = mActionAddWmsLayer;
-      break;
-    case 1:
-      defMapServiceAction = mActionAddAmsLayer;
-      break;
-  }
-  bt->setDefaultAction( defMapServiceAction );
-  QAction *mapServiceAction = mLayerToolBar->insertWidget( mActionAddWmsLayer, bt );
-  mLayerToolBar->removeAction( mActionAddWmsLayer );
-  mapServiceAction->setObjectName( QStringLiteral( "ActionMapService" ) );
-  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-
-  // feature service tool button
-  bt = new QToolButton();
-  bt->setPopupMode( QToolButton::MenuButtonPopup );
-  bt->addAction( mActionAddWfsLayer );
-  bt->addAction( mActionAddAfsLayer );
-  QAction *defFeatureServiceAction = mActionAddWfsLayer;
-  switch ( settings.value( QStringLiteral( "UI/defaultFeatureService" ), 0 ).toInt() )
-  {
-    case 0:
-      defFeatureServiceAction = mActionAddWfsLayer;
-      break;
-    case 1:
-      defFeatureServiceAction = mActionAddAfsLayer;
-      break;
-  }
-  bt->setDefaultAction( defFeatureServiceAction );
-  QAction *featureServiceAction = mLayerToolBar->insertWidget( mActionAddWfsLayer, bt );
-  mLayerToolBar->removeAction( mActionAddWfsLayer );
-  featureServiceAction->setObjectName( QStringLiteral( "ActionFeatureService" ) );
-  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-
   // add db layer button
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
@@ -3595,7 +3552,7 @@ void QgisApp::createToolBars()
   }
   if ( defAddDbLayerAction )
     bt->setDefaultAction( defAddDbLayerAction );
-  QAction *addDbLayerAction = mLayerToolBar->insertWidget( mapServiceAction, bt );
+  QAction *addDbLayerAction = mLayerToolBar->insertWidget( mActionAddWmsLayer, bt );
   addDbLayerAction->setObjectName( QStringLiteral( "ActionAddDbLayer" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -4156,7 +4113,6 @@ void QgisApp::setTheme( const QString &themeName )
   mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ) );
   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ) );
   mActionAddAfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ) );
-  mActionAddAmsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ) );
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ) );
   mActionAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAnnotation.svg" ) ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormAnnotation.svg" ) ) );
@@ -16653,14 +16609,6 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 3 );
   else if ( mActionAddHanaLayer && action == mActionAddHanaLayer )
     settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 4 );
-  else if ( action == mActionAddWfsLayer )
-    settings.setValue( QStringLiteral( "UI/defaultFeatureService" ), 0 );
-  else if ( action == mActionAddAfsLayer )
-    settings.setValue( QStringLiteral( "UI/defaultFeatureService" ), 1 );
-  else if ( action == mActionAddWmsLayer )
-    settings.setValue( QStringLiteral( "UI/defaultMapService" ), 0 );
-  else if ( action == mActionAddAmsLayer )
-    settings.setValue( QStringLiteral( "UI/defaultMapService" ), 1 );
   else if ( action == mActionMoveFeature )
     settings.setValue( QStringLiteral( "UI/defaultMoveTool" ), 0 );
   else if ( action == mActionMoveFeatureCopy )
