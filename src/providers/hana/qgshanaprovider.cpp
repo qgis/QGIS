@@ -1139,7 +1139,6 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities()
       if ( !objName.isEmpty() && objName != mTableName )
         continue;
 
-      QString objType = rsPrivileges->getString( 2 );
       QString privType = rsPrivileges->getString( 3 );
 
       if ( privType == QLatin1String( "ALL PRIVILEGES" ) || privType == QLatin1String( "CREATE ANY" ) )
@@ -1243,7 +1242,6 @@ void QgsHanaProvider::readAttributeFields()
   mFieldInfos.clear();
   mDefaultValues.clear();
 
-  QString sql = buildQuery( QStringLiteral( "*" ) );
   QgsHanaConnectionRef conn( mUri );
   PreparedStatementRef stmt = conn->prepareStatement( buildQuery( QStringLiteral( "*" ) ) );
   ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
@@ -1513,7 +1511,6 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   }
 
   QString geometryColumn = dsUri.geometryColumn();
-  QString geometryType;
 
   QString primaryKey = dsUri.keyColumn();
   QString primaryKeyType;
