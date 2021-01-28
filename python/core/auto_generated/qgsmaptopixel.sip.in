@@ -205,6 +205,10 @@ Returns the center y-coordinate for the transform.
 .. versionadded:: 3.0
 %End
 
+    bool operator==( const QgsMapToPixel &other ) const;
+
+    bool operator!=( const QgsMapToPixel &other ) const;
+
 };
 
 
