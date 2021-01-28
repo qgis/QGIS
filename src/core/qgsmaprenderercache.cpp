@@ -189,9 +189,25 @@ bool QgsMapRendererCache::hasCacheImage( const QString &cacheKey ) const
   }
 }
 
-bool QgsMapRendererCache::hasAnyCacheImage( const QString &cacheKey ) const
+bool QgsMapRendererCache::hasAnyCacheImage( const QString &cacheKey, double minimumScaleThreshold, double maximumScaleThreshold ) const
 {
-  return mCachedImages.contains( cacheKey );
+  auto it = mCachedImages.constFind( cacheKey );
+  if ( it != mCachedImages.constEnd() )
+  {
+    const CacheParameters &params = it.value();
+
+    // check if cached image is outside desired scale range
+    if ( minimumScaleThreshold != 0 && mMtp.mapUnitsPerPixel() < params.cachedMtp.mapUnitsPerPixel() * minimumScaleThreshold )
+      return false;
+    if ( maximumScaleThreshold != 0 && mMtp.mapUnitsPerPixel() > params.cachedMtp.mapUnitsPerPixel() * maximumScaleThreshold )
+      return false;
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 QImage QgsMapRendererCache::cacheImage( const QString &cacheKey ) const

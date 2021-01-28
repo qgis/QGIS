@@ -121,11 +121,16 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * Returns TRUE if the cache contains an image with the specified \a cacheKey
      * with any cache's parameters (extent and scale)
      *
+     * The optional \a minimumScaleThreshold and \a maximumScaleThreshold arguments can be used to
+     * specify a range of acceptable cached scales vs current cache scale parameter. E.g. if the
+     * \a minimumScaleThreshold is 0.5 and \a maximumScaleThreshold is 2.0, then only cached images
+     * with a scale between 0.5 * current cache scale and 2.0 * current cache scale will be considered.
+     *
      * \see transformedCacheImage()
      *
      * \since QGIS 3.18
      */
-    bool hasAnyCacheImage( const QString &cacheKey ) const;
+    bool hasAnyCacheImage( const QString &cacheKey, double minimumScaleThreshold = 0, double maximumScaleThreshold = 0 ) const;
 
     /**
      * Returns the cached image for the specified \a cacheKey. The \a cacheKey usually
