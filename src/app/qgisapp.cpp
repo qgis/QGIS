@@ -14622,6 +14622,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     }
   }
 
+  bool identifyModeIsActiveLayer = QgsSettings().enumValue( QStringLiteral( "/Map/identifyMode" ), QgsMapToolIdentify::ActiveLayer ) == QgsMapToolIdentify::ActiveLayer;
+
   if ( !layer )
   {
     mMenuSelect->setEnabled( false );
@@ -14629,7 +14631,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionSelectPolygon->setEnabled( false );
     mActionSelectFreehand->setEnabled( false );
     mActionSelectRadius->setEnabled( false );
-    mActionIdentify->setEnabled( QgsSettings().enumValue( QStringLiteral( "/Map/identifyMode" ), QgsMapToolIdentify::ActiveLayer ) != QgsMapToolIdentify::ActiveLayer );
+    mActionIdentify->setEnabled( !identifyModeIsActiveLayer );
     mActionSelectByExpression->setEnabled( false );
     mActionSelectByForm->setEnabled( false );
     mActionLabeling->setEnabled( false );
@@ -14782,7 +14784,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectPolygon->setEnabled( isSpatial );
       mActionSelectFreehand->setEnabled( isSpatial );
       mActionSelectRadius->setEnabled( isSpatial );
-      mActionIdentify->setEnabled( isSpatial );
+      mActionIdentify->setEnabled( isSpatial || !identifyModeIsActiveLayer );
       mActionSelectByExpression->setEnabled( true );
       mActionSelectByForm->setEnabled( true );
       mActionOpenTable->setEnabled( true );
@@ -15104,8 +15106,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionIdentify->setEnabled( true );
 
       QgsSettings settings;
-      QgsMapToolIdentify::IdentifyMode identifyMode = settings.enumValue( QStringLiteral( "Map/identifyMode" ), QgsMapToolIdentify::ActiveLayer );
-      if ( identifyMode == QgsMapToolIdentify::ActiveLayer )
+
+      if ( identifyModeIsActiveLayer )
       {
         if ( dprovider )
         {
