@@ -148,9 +148,10 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
 QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
   QgsChunkNodeId id = node->tileId();
-  Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
-  QgsPointCloudBlock *block = mPointCloudIndex->nodeData( IndexedPointCloudNode( id.d, id.x, id.y, id.z ), QgsPointCloudRequest() );
-  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset, mPointBudget, block->pointCount() );
+  IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
+  Q_ASSERT( mPointCloudIndex->hasNode( n ) );
+  int pointCount = mPointCloudIndex->nodePointCount( n );
+  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset, mPointBudget, pointCount );
 }
 
 QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, double zValueOffset );
