@@ -464,7 +464,7 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
       mProviderMax = std::numeric_limits< double >::quiet_NaN();
     }
 
-    if ( mRenderingParameterComboBox->currentAttribute() == QStringLiteral( "Z" ) )
+    if ( mRenderingParameterComboBox->currentAttribute() == QLatin1String( "Z" ) )
     {
       const double zScale = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zScale();
       const double zOffset = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset();

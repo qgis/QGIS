@@ -560,7 +560,7 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
   QString query( QStringLiteral( "SELECT " ) );
   if ( geometryColumnOnly )
   {
-    query += QStringLiteral( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 FROM geometry_columns" );
+    query += QLatin1String( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 FROM geometry_columns" );
     if ( !notSelectedSchemas.isEmpty() )
       query += QStringLiteral( " WHERE f_table_schema NOT IN %1" ).arg( notSelectedSchemas );
   }

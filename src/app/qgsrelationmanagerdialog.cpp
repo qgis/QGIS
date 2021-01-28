@@ -107,8 +107,8 @@ int QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelati
   {
     if ( i != 0 )
     {
-      referencingFields += QStringLiteral( ", " );
-      referencedFields += QStringLiteral( ", " );
+      referencingFields += QLatin1String( ", " );
+      referencedFields += QLatin1String( ", " );
     }
 
     referencingFields += polyRel.fieldPairs().at( i ).referencingField();
@@ -346,7 +346,7 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
   {
     QTreeWidgetItem *item = mRelationsTree->topLevelItem( i );
 
-    if ( item->data( 0, Qt::UserRole ).typeName() != QStringLiteral( "QgsRelation" ) )
+    if ( item->data( 0, Qt::UserRole ).typeName() != QLatin1String( "QgsRelation" ) )
       continue;
 
     QgsRelation relation = item->data( 0, Qt::UserRole ).value<QgsRelation>();
@@ -368,7 +368,7 @@ QList< QgsPolymorphicRelation > QgsRelationManagerDialog::polymorphicRelations()
   {
     QTreeWidgetItem *item = mRelationsTree->topLevelItem( i );
 
-    if ( item->data( 0, Qt::UserRole ).typeName() != QStringLiteral( "QgsPolymorphicRelation" ) )
+    if ( item->data( 0, Qt::UserRole ).typeName() != QLatin1String( "QgsPolymorphicRelation" ) )
       continue;
 
     QgsPolymorphicRelation relation = item->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>();

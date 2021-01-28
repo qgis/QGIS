@@ -103,9 +103,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     mFieldOfView = elemCamera.attribute( QStringLiteral( "field-of-view" ), QStringLiteral( "45" ) ).toFloat();
     mProjectionType = static_cast< Qt3DRender::QCameraLens::ProjectionType >( elemCamera.attribute( QStringLiteral( "projection-type" ), QStringLiteral( "1" ) ).toInt() );
     QString cameraNavigationMode = elemCamera.attribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "basic-navigation" ) );
-    if ( cameraNavigationMode == QStringLiteral( "terrain-based-navigation" ) )
+    if ( cameraNavigationMode == QLatin1String( "terrain-based-navigation" ) )
       mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;
-    else if ( cameraNavigationMode == QStringLiteral( "walk-navigation" ) )
+    else if ( cameraNavigationMode == QLatin1String( "walk-navigation" ) )
       mCameraNavigationMode = QgsCameraController::NavigationMode::WalkNavigation;
     mCameraMovementSpeed = elemCamera.attribute( QStringLiteral( "camera-movement-speed" ), QStringLiteral( "5.0" ) ).toDouble();
   }
