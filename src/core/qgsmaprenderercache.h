@@ -75,15 +75,37 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     bool updateParameters( const QgsRectangle &extent, const QgsMapToPixel &mtp );
 
     /**
-     * Set the cached \a image for a particular \a cacheKey. The \a cacheKey usually
-     * matches the QgsMapLayer::id() which the image is a render of.
+     * Set the cached \a image for a particular \a cacheKey, using the current cache parameters.
+     *
+     * The \a cacheKey usually matches the QgsMapLayer::id() which the image is a render of.
+     *
      * A list of \a dependentLayers should be passed containing all layer
      * on which this cache image is dependent. If any of these layers triggers a
      * repaint then the cache image will be cleared.
+     *
      * \see cacheImage()
      */
     void setCacheImage( const QString &cacheKey,
                         const QImage &image,
+                        const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+
+    /**
+     * Set the cached \a image for a particular \a cacheKey, using a specific \a extent and \a mapToPixel
+     * (which may differ from the current cache parameters).
+     *
+     * The \a cacheKey usually matches the QgsMapLayer::id() which the image is a render of.
+     *
+     * A list of \a dependentLayers should be passed containing all layer
+     * on which this cache image is dependent. If any of these layers triggers a
+     * repaint then the cache image will be cleared.
+     *
+     * \see cacheImage()
+     * \since QGIS 3.18
+     */
+    void setCacheImage( const QString &cacheKey,
+                        const QImage &image,
+                        const QgsRectangle &extent,
+                        const QgsMapToPixel &mapToPixel,
                         const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
     /**

@@ -685,8 +685,8 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
       if ( mCache && !job.cached && job.completed && job.layer )
       {
         QgsDebugMsgLevel( QStringLiteral( "caching image for %1" ).arg( job.layerId ), 2 );
-        mCache->setCacheImage( job.layerId, *job.img, QList< QgsMapLayer * >() << job.layer );
-        mCache->setCacheImage( job.layerId + QStringLiteral( "_preview" ), *job.img, QList< QgsMapLayer * >() << job.layer );
+        mCache->setCacheImage( job.layerId, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), QList< QgsMapLayer * >() << job.layer );
+        mCache->setCacheImage( job.layerId + QStringLiteral( "_preview" ), *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), QList< QgsMapLayer * >() << job.layer );
       }
 
       delete job.img;
@@ -751,8 +751,8 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
     if ( mCache && !job.cached && !job.context.renderingStopped() )
     {
       QgsDebugMsgLevel( QStringLiteral( "caching label result image" ), 2 );
-      mCache->setCacheImage( LABEL_CACHE_ID, *job.img, _qgis_listQPointerToRaw( job.participatingLayers ) );
-      mCache->setCacheImage( LABEL_PREVIEW_CACHE_ID, *job.img, _qgis_listQPointerToRaw( job.participatingLayers ) );
+      mCache->setCacheImage( LABEL_CACHE_ID, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), _qgis_listQPointerToRaw( job.participatingLayers ) );
+      mCache->setCacheImage( LABEL_PREVIEW_CACHE_ID, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), _qgis_listQPointerToRaw( job.participatingLayers ) );
     }
 
     delete job.img;

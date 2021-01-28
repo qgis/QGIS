@@ -125,10 +125,34 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
 {
   QMutexLocker lock( &mMutex );
 
+  QgsRectangle extent = mExtent;
+  QgsMapToPixel mapToPixel = mMtp;
+
+  lock.unlock();
+  setCacheImage( cacheKey, image, extent, mapToPixel, dependentLayers );
+}
+
+void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &image, const QgsRectangle &extent, const QgsMapToPixel &mapToPixel, const QList<QgsMapLayer *> &dependentLayers )
+{
+  QMutexLocker lock( &mMutex );
+
+  if ( extent != mExtent || mapToPixel != mMtp )
+  {
+    auto it = mCachedImages.constFind( cacheKey );
+    if ( it != mCachedImages.constEnd() )
+    {
+      // if the specified extent or map to pixel differs from the current cache parameters, AND
+      // there's an existing cached image with parameters which DO match the current cache parameters,
+      // then we leave the existing image intact and discard the one with non-matching parameters
+      if ( it->cachedExtent == mExtent && it->cachedMtp == mMtp )
+        return;
+    }
+  }
+
   CacheParameters params;
   params.cachedImage = image;
-  params.cachedExtent = mExtent;
-  params.cachedMtp = mMtp;
+  params.cachedExtent = extent;
+  params.cachedMtp = mapToPixel;
 
   // connect to the layer to listen to layer's repaintRequested() signals
   for ( QgsMapLayer *layer : dependentLayers )
