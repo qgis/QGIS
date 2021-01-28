@@ -228,3 +228,10 @@ int QgsPointCloudIndex::span() const
 {
   return mSpan;
 }
+
+int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
+{
+  if ( !mHierarchy.contains( n ) )
+    return -1;
+  return mHierarchy[n];
+}
