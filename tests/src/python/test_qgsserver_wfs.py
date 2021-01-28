@@ -724,7 +724,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                 query_string, requestMethod=QgsServerRequest.PostMethod, data=request.encode('utf-8'))
             feature = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"name" = \'%s\'' % name))))
             geom = feature.geometry()
-            self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0), "Transaction Failed: %s , %s, lat_lon=%s" % (version, srsName, lat_lon))
+            self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0), "Failed: %s , %s, lat_lon=%s" % (version, srsName, lat_lon))
 
         _test('1.1.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
         _test('1.1.0', 'http://www.opengis.net/def/crs/EPSG/0/4326', lat_lon=True)
