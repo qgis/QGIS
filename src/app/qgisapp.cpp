@@ -15105,8 +15105,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       //but turn off if data provider exists and has no Identify capabilities
       mActionIdentify->setEnabled( true );
 
-      QgsSettings settings;
-
       if ( identifyModeIsActiveLayer )
       {
         if ( dprovider )
