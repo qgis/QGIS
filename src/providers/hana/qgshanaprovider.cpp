@@ -119,7 +119,7 @@ namespace
   void SetStatementValue(
     PreparedStatementRef &stmt,
     unsigned short paramIndex,
-    const FieldInfo &fieldInfo,
+    FieldInfo fieldInfo,
     const QVariant &value )
   {
     bool isNull = ( value.isNull() || !value.isValid() );
