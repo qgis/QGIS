@@ -83,11 +83,10 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * on which this cache image is dependent. If any of these layers triggers a
      * repaint then the cache image will be cleared.
      *
+     * \see setCacheImageWithParameters()
      * \see cacheImage()
      */
-    void setCacheImage( const QString &cacheKey,
-                        const QImage &image,
-                        const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+    void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
     /**
      * Set the cached \a image for a particular \a cacheKey, using a specific \a extent and \a mapToPixel
@@ -102,11 +101,11 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * \see cacheImage()
      * \since QGIS 3.18
      */
-    void setCacheImage( const QString &cacheKey,
-                        const QImage &image,
-                        const QgsRectangle &extent,
-                        const QgsMapToPixel &mapToPixel,
-                        const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+    void setCacheImageWithParameters( const QString &cacheKey,
+                                      const QImage &image,
+                                      const QgsRectangle &extent,
+                                      const QgsMapToPixel &mapToPixel,
+                                      const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
     /**
      * Returns TRUE if the cache contains an image with the specified \a cacheKey

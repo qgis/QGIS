@@ -301,13 +301,13 @@ class TestQgsMapRendererCache(unittest.TestCase):
         # if existing cached image exists with matching parameters, we don't store a new image -- old
         # one should still be retained
         im = QImage(201, 201, QImage.Format_RGB32)
-        cache.setCacheImage('im1', im, QgsRectangle(1, 1, 3, 4), QgsMapToPixel(5), [])
+        cache.setCacheImageWithParameters('im1', im, QgsRectangle(1, 1, 3, 4), QgsMapToPixel(5), [])
         self.assertEqual(cache.cacheImage('im1').width(), 200)
-        cache.setCacheImage('im1', im, QgsRectangle(1, 1, 3, 3), QgsMapToPixel(6), [])
+        cache.setCacheImageWithParameters('im1', im, QgsRectangle(1, 1, 3, 3), QgsMapToPixel(6), [])
         self.assertEqual(cache.cacheImage('im1').width(), 200)
 
         # replace with matching parameters
-        cache.setCacheImage('im1', im, QgsRectangle(1, 1, 3, 3), QgsMapToPixel(5), [])
+        cache.setCacheImageWithParameters('im1', im, QgsRectangle(1, 1, 3, 3), QgsMapToPixel(5), [])
         self.assertEqual(cache.cacheImage('im1').width(), 201)
         im = QImage(202, 202, QImage.Format_RGB32)
         cache.setCacheImage('im1', im, [])
