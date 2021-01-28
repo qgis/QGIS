@@ -31,7 +31,7 @@
 
 namespace
 {
-  QgsRectangle clampBBOX( QgsRectangle bbox, const QgsCoordinateReferenceSystem &crs, double allowedExcessFactor )
+  QgsRectangle clampBBOX( const QgsRectangle &bbox, const QgsCoordinateReferenceSystem &crs, double allowedExcessFactor )
   {
     // In geographic CRS', HANA will reject any points outside the "normalized"
     // range, which is (in radian) [-PI;PI] for longitude and [-PI/2;PI/2] for
