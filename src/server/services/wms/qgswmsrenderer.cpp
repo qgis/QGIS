@@ -1165,6 +1165,8 @@ namespace QgsWms
     // enable rendering optimization
     mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
 
+    mapSettings.setFlag( QgsMapSettings::RenderMapTile, mContext.renderMapTiles() );
+
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
   }
