@@ -648,7 +648,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           if ( mPrimaryKeyType == PktInt )
           {
-            feature.setId( QgsHanaPrimaryKeyUtils::intToFid( attrs.at( mPrimaryKeyAttrs[ 0 ] ).toInt() ) );
+            feature.setId( QgsHanaPrimaryKeyUtils::intToFid( attrs.at( mPrimaryKeyAttrs.value( 0 ) ).toInt() ) );
           }
           else
           {
@@ -1424,7 +1424,7 @@ void QgsHanaProvider::determinePrimaryKey()
   if ( mPrimaryKeyAttrs.size() == 1 )
   {
     //primary keys are unique, not null
-    QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs[0] ).constraints();
+    QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs.value( 0 ) ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
     mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );

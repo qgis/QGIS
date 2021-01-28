@@ -200,7 +200,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   // Read attributes
   if ( mHasAttributes )
   {
-    for ( int idx : mAttributesToFetch )
+    for ( int idx : qgis::as_const( mAttributesToFetch ) )
     {
       feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
       ++paramIndex;
@@ -342,7 +342,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
   }
 
-  for ( int idx : attrIds )
+  for ( int idx : qgis::as_const( attrIds ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;
