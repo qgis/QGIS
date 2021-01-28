@@ -173,7 +173,7 @@ namespace QgsServerProjectUtils
 
   /**
    * Returns TRUE if WMS requests should use the QgsMapSettings::RenderMapTile flag,
-   * so that no visible artefacts are visible between adjacent tiles.
+   * so that no visible artifacts are visible between adjacent tiles.
    *
    * This flag can slow down rendering considerably, so it is only used if the corresponding
    * setting is enabled in the project.
