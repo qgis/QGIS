@@ -1002,10 +1002,17 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     // no dups detected or overwrite is allowed
