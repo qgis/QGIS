@@ -595,10 +595,11 @@ class CORE_EXPORT QgsExpression
      * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * \param value expression result to format
      * \param htmlOutput set to TRUE to allow HTML formatting, or FALSE for plain text output
+     * \param maximumPreviewLength define the maximum character length of the preview
      * \returns formatted string, may contain HTML formatting characters if \a htmlOutput is TRUE
      * \since QGIS 2.14
      */
-    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true );
+    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true, int maximumPreviewLength = 60 );
 
     /**
      * Create an expression allowing to evaluate if a field is equal to a

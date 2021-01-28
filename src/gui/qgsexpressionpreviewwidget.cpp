@@ -98,9 +98,10 @@ void QgsExpressionPreviewWidget::refreshPreview()
     }
 
     QVariant value = mExpression.evaluate( &mExpressionContext );
+    QString preview = QgsExpression::formatPreviewString( value );
     if ( !mExpression.hasEvalError() )
     {
-      mPreviewLabel->setText( QgsExpression::formatPreviewString( value ) );
+      mPreviewLabel->setText( preview );
     }
 
     if ( mExpression.hasParserError() || mExpression.hasEvalError() )
@@ -124,7 +125,11 @@ void QgsExpressionPreviewWidget::refreshPreview()
     else
     {
       mPreviewLabel->setStyleSheet( QString() );
-      setExpressionToolTip( QString() );
+      QString longerPreview = QgsExpression::formatPreviewString( value, true, 255 );
+      if ( longerPreview != preview )
+        setExpressionToolTip( longerPreview );
+      else
+        setExpressionToolTip( QString() );
       emit expressionParsed( true );
       setParserError( false );
       setEvalError( false );

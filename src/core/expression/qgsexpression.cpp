@@ -942,10 +942,8 @@ QString QgsExpression::group( const QString &name )
   return sGroups()->value( name, name );
 }
 
-QString QgsExpression::formatPreviewString( const QVariant &value, const bool htmlOutput )
+QString QgsExpression::formatPreviewString( const QVariant &value, const bool htmlOutput, int maximumPreviewLength )
 {
-  static const int MAX_PREVIEW = 60;
-
   const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
   const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
@@ -1015,9 +1013,9 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   else if ( value.type() == QVariant::String )
   {
     const QString previewString = value.toString();
-    if ( previewString.length() > MAX_PREVIEW + 3 )
+    if ( previewString.length() > maximumPreviewLength + 3 )
     {
-      return tr( "'%1…'" ).arg( previewString.left( MAX_PREVIEW ) );
+      return tr( "'%1…'" ).arg( previewString.left( maximumPreviewLength ) );
     }
     else
     {
@@ -1036,9 +1034,9 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
         separator = QStringLiteral( "," );
 
       mapStr.append( QStringLiteral( " '%1': %2" ).arg( it.key(), formatPreviewString( it.value(), htmlOutput ) ) );
-      if ( mapStr.length() > MAX_PREVIEW - 3 )
+      if ( mapStr.length() > maximumPreviewLength - 3 )
       {
-        mapStr = tr( "%1…" ).arg( mapStr.left( MAX_PREVIEW - 2 ) );
+        mapStr = tr( "%1…" ).arg( mapStr.left( maximumPreviewLength - 2 ) );
         break;
       }
     }
@@ -1060,9 +1058,9 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
 
       listStr.append( " " );
       listStr.append( formatPreviewString( arrayValue, htmlOutput ) );
-      if ( listStr.length() > MAX_PREVIEW - 3 )
+      if ( listStr.length() > maximumPreviewLength - 3 )
       {
-        listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW - 2 ) );
+        listStr = QString( tr( "%1…" ) ).arg( listStr.left( maximumPreviewLength - 2 ) );
         break;
       }
     }
