@@ -129,10 +129,10 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
   QgsMapToPixel mapToPixel = mMtp;
 
   lock.unlock();
-  setCacheImage( cacheKey, image, extent, mapToPixel, dependentLayers );
+  setCacheImageWithParameters( cacheKey, image, extent, mapToPixel, dependentLayers );
 }
 
-void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &image, const QgsRectangle &extent, const QgsMapToPixel &mapToPixel, const QList<QgsMapLayer *> &dependentLayers )
+void QgsMapRendererCache::setCacheImageWithParameters( const QString &cacheKey, const QImage &image, const QgsRectangle &extent, const QgsMapToPixel &mapToPixel, const QList<QgsMapLayer *> &dependentLayers )
 {
   QMutexLocker lock( &mMutex );
 
