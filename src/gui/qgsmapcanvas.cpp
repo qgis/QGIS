@@ -85,6 +85,7 @@ email                : sherman at mrcc.com
 #include "qgsprojectionselectiondialog.h"
 #include "qgsannotationlayer.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgscoordinatereferencesystemregistry.h"
 
 /**
  * \ingroup gui
@@ -168,6 +169,17 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
       mSettings.setTransformContext( QgsProject::instance()->transformContext() );
       emit transformContextChanged();
       refresh();
+    } );
+
+    connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [ = ]
+    {
+      QgsCoordinateReferenceSystem crs = mSettings.destinationCrs();
+      crs.updateDefinition();
+      if ( mSettings.destinationCrs() != crs )
+      {
+        // user crs has changed definition, refresh the map
+        setDestinationCrs( crs );
+      }
     } );
   }
 
