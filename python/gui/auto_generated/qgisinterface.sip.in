@@ -591,11 +591,7 @@ Returns the native Add Point Cloud Layer action.
 
     virtual QAction *actionAddAfsLayer() = 0;
 %Docstring
-Returns the native Add ArcGIS FeatureServer action.
-%End
-    virtual QAction *actionAddAmsLayer() = 0;
-%Docstring
-Returns the native Add ArcGIS MapServer action.
+Returns the native Add ArcGIS REST Server action.
 %End
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;

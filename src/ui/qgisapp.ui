@@ -194,7 +194,6 @@
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddXyzLayer"/>
-     <addaction name="mActionAddAmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
@@ -2893,28 +2892,16 @@ Acts on the currently active layer only.</string>
     <string>Modify the Attributes of all Selected Features Simultaneously</string>
    </property>
   </action>
-  <action name="mActionAddAmsLayer">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Arc&amp;GIS Map Service Layer…</string>
-   </property>
-   <property name="toolTip">
-    <string>Add ArcGIS Map Service Layer</string>
-   </property>
-  </action>
   <action name="mActionAddAfsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Ar&amp;cGIS Feature Service Layer…</string>
+    <string>Add Ar&amp;cGIS REST Server Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add ArcGIS Feature Service Layer</string>
+    <string>Add ArcGIS REST Server Layer</string>
    </property>
   </action>
   <action name="mActionSelectByForm">
