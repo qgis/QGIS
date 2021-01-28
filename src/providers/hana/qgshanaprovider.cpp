@@ -653,6 +653,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           else
           {
             QVariantList primaryKeyVals;
+            primaryKeyVals.reserve( mPrimaryKeyAttrs.size() );
             for ( int idx : qgis::as_const( mPrimaryKeyAttrs ) )
               primaryKeyVals << attrs.at( idx );
             feature.setId( mPrimaryKeyCntx->lookupFid( primaryKeyVals ) );

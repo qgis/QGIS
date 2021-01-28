@@ -38,6 +38,8 @@ QVariantList QgsHanaProviderResultIterator::nextRowPrivate()
   QVariantList ret;
   if ( !mNextRow )
     return ret;
+
+  ret.reserve( mNumColumns );
   for ( unsigned short i = 1; i <= mNumColumns; ++i )
     ret.push_back( mResultSet->getValue( i ) );
   mNextRow = mResultSet->next();
@@ -302,6 +304,7 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
   try
   {
     const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, flags.testFlag( TableFlag::Aspatial ), false );
+    tables.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo :  layers )
     {
       // Classify
@@ -363,6 +366,7 @@ QStringList QgsHanaProviderConnection::schemas( ) const
   {
     QStringList schemas;
     const QVector<QgsHanaSchemaProperty> schemaProperties = conn->getSchemas( QString() );
+    schemas.reserve( schemaProperties.size() );
     for ( const QgsHanaSchemaProperty &s : schemaProperties )
       schemas.push_back( s.name );
     return schemas;

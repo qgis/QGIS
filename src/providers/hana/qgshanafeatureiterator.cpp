@@ -179,6 +179,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
       case QgsHanaPrimaryKeyType::PktFidMap:
       {
         QVariantList pkValues;
+        pkValues.reserve( mSource->mPrimaryKeyAttrs.size() );
         for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
         {
           QVariant v = mResultSet->getValue( paramIndex );

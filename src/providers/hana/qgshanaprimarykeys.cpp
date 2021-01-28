@@ -208,6 +208,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFields &fields, QgsHa
     case PktFidMap:
     {
       QList<QString> conditions;
+      conditions.reserve( pkAttrs.size() );
       for ( int idx : pkAttrs )
         conditions << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( fields[idx].name() ) );
       return conditions.join( QLatin1String( " AND " ) );

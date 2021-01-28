@@ -291,7 +291,8 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
   const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( mSchemaName,
       settings.allowGeometrylessTables(), settings.userTablesOnly() );
 
-  for ( const QgsHanaLayerProperty &layerInfo :  layers )
+  items.reserve( layers.size() );
+  for ( const QgsHanaLayerProperty &layerInfo : layers )
     items.append( createLayer( layerInfo ) );
 
   setName( mSchemaName );
@@ -356,6 +357,7 @@ QVector<QgsDataItem *> QgsHanaRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
   const QStringList connectionNames = QgsHanaSettings::getConnectionNames();
+  connections.reserve( connectionNames.size() );
   for ( const QString &connName : connectionNames )
   {
     connections << new QgsHanaConnectionItem( this, connName, mPath + '/' + connName );
