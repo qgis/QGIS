@@ -190,6 +190,7 @@ void QgsProjectionSelectionWidget::selectCrs()
   {
     dlg.setShowNoProjection( true );
   }
+  dlg.setRequireValidSelection();
 
   if ( dlg.exec() )
   {

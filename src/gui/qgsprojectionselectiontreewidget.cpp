@@ -79,7 +79,10 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]
   {
     if ( !mBlockSignals )
+    {
       emit crsSelected();
+      emit hasValidSelectionChanged( hasValidSelection() );
+    }
   } );
   connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
@@ -297,6 +300,7 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
     if ( changed )
     {
       emit crsSelected();
+      emit hasValidSelectionChanged( hasValidSelection() );
     }
   }
 }
@@ -484,6 +488,7 @@ void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter
   // User defined coordinate system node
   // Make in an italic font to distinguish them from real projections
   mUserProjList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "User Defined Coordinate Systems" ) ) );
+  mUserProjList->setFlags( mUserProjList->flags() & ~Qt::ItemIsSelectable );
 
   QFont fontTemp = mUserProjList->font( 0 );
   fontTemp.setItalic( true );
@@ -519,6 +524,7 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
   //
   // Geographic coordinate system node
   mGeoList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Geographic Coordinate Systems" ) ) );
+  mGeoList->setFlags( mGeoList->flags() & ~Qt::ItemIsSelectable );
 
   QFont fontTemp = mGeoList->font( 0 );
   fontTemp.setItalic( true );
@@ -528,6 +534,7 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
 
   // Projected coordinate system node
   mProjList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Projected Coordinate Systems" ) ) );
+  mProjList->setFlags( mProjList->flags() & ~Qt::ItemIsSelectable );
 
   fontTemp = mProjList->font( 0 );
   fontTemp.setItalic( true );
@@ -614,6 +621,8 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
             // the node doesn't exist -- create it
             // Make in an italic font to distinguish them from real projections
             node = new QTreeWidgetItem( mProjList, QStringList( srsType ) );
+            node->setFlags( node->flags() & ~Qt::ItemIsSelectable );
+
             QFont fontTemp = node->font( 0 );
             fontTemp.setItalic( true );
             node->setFont( 0, fontTemp );
@@ -656,6 +665,8 @@ void QgsProjectionSelectionTreeWidget::loadUnknownCrs( const QgsCoordinateRefere
   if ( !mUnknownList )
   {
     mUnknownList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Custom Coordinate Systems" ) ) );
+    mUnknownList->setFlags( mUnknownList->flags() & ~Qt::ItemIsSelectable );
+
     QFont fontTemp = mUnknownList->font( 0 );
     fontTemp.setItalic( true );
     fontTemp.setBold( true );
@@ -689,7 +700,10 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
   {
     // Found a real CRS
     if ( !mBlockSignals )
+    {
       emit crsSelected();
+      emit hasValidSelectionChanged( true );
+    }
 
     updateBoundsPreview();
 
@@ -721,6 +735,7 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
     current->setSelected( false );
     teProjection->clear();
     lstRecent->clearSelection();
+    emit hasValidSelectionChanged( false );
   }
 }
 

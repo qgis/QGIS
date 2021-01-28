@@ -106,6 +106,14 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      */
     void setNotSetText( const QString &text );
 
+    /**
+     * Sets the dialog to require a valid selection only, preventing users from accepting the
+     * dialog if no selection is present.
+     *
+     * \since QGIS 3.18
+     */
+    void setRequireValidSelection();
+
   public slots:
 
     /**
