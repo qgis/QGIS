@@ -69,7 +69,14 @@ json QgsLandingPageHandler::projectsData() const
   const auto constProjectKeys { availableProjects.keys() };
   for ( const auto &p : constProjectKeys )
   {
-    j.push_back( QgsLandingPageUtils::projectInfo( availableProjects[ p ] ) );
+    try
+    {
+      j.push_back( QgsLandingPageUtils::projectInfo( availableProjects[ p ] ) );
+    }
+    catch ( QgsServerException & )
+    {
+      // skip broken projects!
+    }
   }
   return j;
 }
