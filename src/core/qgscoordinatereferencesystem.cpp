@@ -421,7 +421,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   else
   {
     thread_local const QRegExp re_urn_custom( QStringLiteral( "(user|custom|qgis):(\\d+)" ), Qt::CaseInsensitive );
-    if ( re_urn_custom.exactMatch( wmsCrs ) && createFromSrsId( re_urn.cap( 2 ).toInt() ) )
+    if ( re_urn_custom.exactMatch( wmsCrs ) && createFromSrsId( re_urn_custom.cap( 2 ).toInt() ) )
     {
       locker.changeMode( QgsReadWriteLocker::Write );
       if ( !sDisableOgcCache )
