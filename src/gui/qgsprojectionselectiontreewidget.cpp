@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatereferencesystemregistry.h"
 
 //qt includes
 #include <QFileInfo>
@@ -480,9 +481,6 @@ void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter
 
   QgsDebugMsgLevel( QStringLiteral( "Fetching user projection list..." ), 4 );
 
-  // convert our Coordinate Reference System filter into the SQL expression
-  QString sqlFilter = ogcWmsCrsFilterAsSqlExpression( crsFilter );
-
   // User defined coordinate system node
   // Make in an italic font to distinguish them from real projections
   mUserProjList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "User Defined Coordinate Systems" ) ) );
@@ -493,58 +491,17 @@ void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter
   mUserProjList->setFont( 0, fontTemp );
   mUserProjList->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ) );
 
-  //determine where the user proj database lives for this user. If none is found an empty
-  //now only will be shown
-  QString databaseFileName = QgsApplication::qgisUserDatabaseFilePath();
-  // first we look for ~/.qgis/qgis.db
-  // if it doesn't exist we copy it in from the global resources dir
-
-  //return straight away if the user has not created any custom projections
-  if ( !QFileInfo::exists( databaseFileName ) )
+  const QList<QgsCoordinateReferenceSystemRegistry::UserCrsDetails> userCrsList = QgsApplication::coordinateReferenceSystemRegistry()->userCrsList();
+  for ( const QgsCoordinateReferenceSystemRegistry::UserCrsDetails &details : userCrsList )
   {
-    QgsDebugMsg( QStringLiteral( "Users qgis.db not found...skipping" ) );
-    mUserProjListDone = true;
-    return;
-  }
+    const QString authid = QStringLiteral( "USER:%1" ).arg( details.id );
+    if ( crsFilter && !crsFilter->isEmpty() && !crsFilter->contains( authid ) && !crsFilter->contains( authid.toLower() ) )
+      continue;
 
-  sqlite3      *database = nullptr;
-  const char   *tail = nullptr;
-  sqlite3_stmt *stmt = nullptr;
-  //check the db is available
-  int result = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
-  if ( result )
-  {
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist. But we checked earlier for its existence
-    //     and aborted in that case. This is because we may be running from read only
-    //     media such as live cd and don't want to force trying to create a db.
-    showDBMissingWarning( databaseFileName );
-    return;
+    QTreeWidgetItem *newItem = new QTreeWidgetItem( mUserProjList, QStringList() << details.name );
+    newItem->setText( QgisCrsIdColumn, QString::number( details.id ) );
+    newItem->setText( AuthidColumn, authid );
   }
-
-  // Set up the query to retrieve the projection information needed to populate the list
-  QString sql = QStringLiteral( "select description, srs_id from vw_srs where %1" ).arg( sqlFilter );
-
-  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( result == SQLITE_OK )
-  {
-    QTreeWidgetItem *newItem = nullptr;
-    while ( sqlite3_step( stmt ) == SQLITE_ROW )
-    {
-      newItem = new QTreeWidgetItem( mUserProjList, QStringList( QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 0 ) ) ) );
-      // EpsgCrsId for user projections is not always defined in some dbases.
-      // It's also not written from customprojections dialog.
-      // display the epsg (field 2) in the second column of the list view
-      // newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
-      // display the qgis srs_id (field 1) in the third column of the list view
-      newItem->setText( QgisCrsIdColumn, QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 1 ) ) );
-      newItem->setText( AuthidColumn, QStringLiteral( "USER:%1" ).arg( QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 1 ) ).toInt() ) );
-    }
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( stmt );
-  sqlite3_close( database );
 
   mUserProjListDone = true;
 }
