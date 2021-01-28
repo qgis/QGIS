@@ -472,6 +472,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
     QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList() << QStringLiteral( "postgres" )
         << QStringLiteral( "mssql" )
         << QStringLiteral( "ogr" )
+        << QStringLiteral( "hana" )
         << QStringLiteral( "spatialite" ), this );
     widget->setPanelTitle( tr( "Save “%1” to Database Table" ).arg( mParameter->description() ) );
     widget->setAcceptButtonVisible( true );
