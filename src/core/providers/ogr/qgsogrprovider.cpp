@@ -951,6 +951,19 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
   }
 }
 
+uint QgsOgrProvider::subLayerCount() const
+{
+  uint count = layerCount();
+
+  QString errCause;
+  QgsOgrLayerUniquePtr layerStyles = QgsOgrProviderUtils::getLayer( mFilePath, "layer_styles", errCause );
+  if ( layerStyles )
+  {
+    count--;
+  }
+  return count;
+}
+
 QStringList QgsOgrProvider::subLayers() const
 {
   const bool withFeatureCount = ( mReadFlags & QgsDataProvider::SkipFeatureCount ) == 0;
