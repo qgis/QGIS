@@ -38,7 +38,7 @@ QgsHanaConnectionItem::QgsHanaConnectionItem(
   QgsDataItem *parent,
   const QString &name,
   const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -269,7 +269,7 @@ QgsHanaSchemaItem::QgsHanaSchemaItem(
   const QString &connectionName,
   const QString &name,
   const QString &path )
-  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "HANA" ) )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
   , mConnectionName( connectionName )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
@@ -345,7 +345,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
 }
 
 QgsHanaRootItem::QgsHanaRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "HANA" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconHana.svg" );
