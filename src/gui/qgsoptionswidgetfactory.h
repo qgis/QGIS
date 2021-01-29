@@ -135,6 +135,20 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
     void setTitle( const QString &title ) { mTitle = title; }
 
     /**
+     * Returns a tab name hinting at where this page should be inserted into the
+     * options properties tab list.
+     *
+     * If the returned string is non-empty, the options widget page will be inserted
+     * before the existing page with matching object name.
+     *
+     * The default implementation returns an empty string, which causes the widget
+     * to be placed at the end of the dialog page list.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QString pagePositionHint() const { return QString(); }
+
+    /**
      * \brief Factory function to create the widget on demand as needed by the options dialog.
      * \param parent The parent of the widget.
      * \returns A new widget to show as a page in the options dialog.
