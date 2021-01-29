@@ -330,7 +330,7 @@ QFunctionPointer QgsAuthMethodRegistry::function( QString const &authMethodKey,
 {
   QLibrary myLib( library( authMethodKey ) );
 
-  QgsDebugMsg( "Library name is " + myLib.fileName() );
+  QgsDebugMsgLevel( "Library name is " + myLib.fileName(), 2 );
 
   if ( myLib.load() )
   {
@@ -347,7 +347,7 @@ std::unique_ptr<QLibrary> QgsAuthMethodRegistry::authMethodLibrary( const QStrin
 {
   std::unique_ptr< QLibrary > myLib( new QLibrary( library( authMethodKey ) ) );
 
-  QgsDebugMsg( "Library name is " + myLib->fileName() );
+  QgsDebugMsgLevel( "Library name is " + myLib->fileName(), 2 );
 
   if ( myLib->load() )
     return myLib;
