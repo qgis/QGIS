@@ -40,7 +40,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     QgsTriangle() SIP_HOLDGIL;
 
     /**
-     * Construct a QgsTriangle from three QgsPointV2.
+     * Construct a QgsTriangle from three QgsPoint.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 ) SIP_HOLDGIL;
 
     /**
-     * Construct a QgsTriangle from three QgsPoint.
+     * Construct a QgsTriangle from three QgsPointXY.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     /**
      *  Returns coordinates of a vertex.
      *  \param atVertex index of the vertex
-     *  \returns Coordinates of the vertex or empty QgsPoint() on error (\a atVertex < 0 or > 3).
+     *  \returns Coordinates of the vertex or empty QgsPoint on error (\a atVertex < 0 or > 3).
      */
     QgsPoint vertexAt( int atVertex ) const SIP_HOLDGIL;
 
