@@ -2379,7 +2379,8 @@ bool QgsGdalProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 
 QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsGdalProvider( uri, options, flags );
+  Q_UNUSED( flags );
+  return new QgsGdalProvider( uri, options );
 }
 
 /**
