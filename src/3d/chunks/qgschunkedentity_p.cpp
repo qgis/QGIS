@@ -246,6 +246,8 @@ int QgsChunkedEntity::pendingJobsCount() const
 
 void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
 {
+  QVector<QgsChunkNode *> nodes;
+
   using slot = std::pair<QgsChunkNode *, float>;
   auto cmp_funct = []( std::pair<QgsChunkNode *, float> p1, std::pair<QgsChunkNode *, float> p2 )
   {
@@ -254,19 +256,35 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
   int renderedCount = 0;
   std::priority_queue<slot, std::vector<slot>, decltype( cmp_funct )> pq( cmp_funct );
   pq.push( std::make_pair( root, screenSpaceError( root, state ) ) );
+  int nodes_count = 0;
   while ( !pq.empty() )
   {
     slot s = pq.top();
     pq.pop();
     QgsChunkNode *node = s.first;
     QgsChunkLoader *nodeLoader = mChunkLoaderFactory->createChunkLoader( node );
-
     if ( Qgs3DUtils::isCullable( node->bbox(), state.viewProjectionMatrix ) )
     {
       ++mFrustumCulled;
       continue;
     }
 
+    if ( renderedCount + nodeLoader->primitiveCount() >  nodeLoader->primitiveBudget() )
+      continue;
+
+    QgsChunkNode *const *children = node->children();
+    for ( int i = 0; i < node->childCount(); ++i )
+    {
+      pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
+    }
+    renderedCount += nodeLoader->primitiveCount();
+    nodes_count++;
+    nodes.push_back( node );
+    continue;
+  }
+
+  for ( QgsChunkNode *node : nodes )
+  {
     // ensure we have child nodes (at least skeletons) available, if any
     if ( node->childCount() == -1 )
     {
@@ -283,22 +301,16 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
       continue;
     }
 
-    if ( renderedCount + nodeLoader->primitiveCount() > nodeLoader->primitiveBudget() )
-      continue;
-
-
     //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
     if ( node->childCount() == 0 )
     {
       // there's no children available for this node, so regardless of whether it has an acceptable error
       // or not, it's the best we'll ever get...
-      renderedCount += nodeLoader->primitiveCount();
       mActiveNodes << node;
     }
     else if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
     {
       // acceptable error for the current chunk - let's render it
-      renderedCount += nodeLoader->primitiveCount();
       mActiveNodes << node;
     }
     else if ( node->allChildChunksResident( mCurrentTime ) )
@@ -310,25 +322,26 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
         // With additive strategy enabled, also all parent nodes are added to active nodes.
         // This is desired when child nodes add more detailed data rather than just replace
         // coarser data in parents. We use this e.g. with point cloud data.
-        renderedCount += nodeLoader->primitiveCount();
         mActiveNodes << node;
-      }
-
-      QgsChunkNode *const *children = node->children();
-      for ( int i = 0; i < node->childCount(); ++i )
-      {
-        pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
       }
     }
     else
     {
       // error is not acceptable but children are not ready either - still use parent but request children
-      renderedCount += nodeLoader->primitiveCount();
       mActiveNodes << node;
 
+      QVector<std::pair<QgsChunkNode *, float>> childrenVector;
       QgsChunkNode *const *children = node->children();
       for ( int i = 0; i < node->childCount(); ++i )
-        requestResidency( children[i] );
+        childrenVector.push_back( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
+      std::sort( childrenVector.begin(), childrenVector.end(), [&]( std::pair<QgsChunkNode *, float> n1, std::pair<QgsChunkNode *, float> n2 )
+      {
+        return n1.second > n2.second;
+      } );
+      for ( int i = 0; i < node->childCount(); ++i )
+        requestResidency( childrenVector[i].first );
+//      for ( int i = 0; i < node->childCount(); ++i )
+//        requestResidency( children[i] );
     }
   }
 }
