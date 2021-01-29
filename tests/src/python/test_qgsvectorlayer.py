@@ -26,6 +26,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsDataProvider,
                        QgsDefaultValue,
                        QgsEditorWidgetSetup,
+                       QgsMapLayer,
                        QgsVectorLayer,
                        QgsRectangle,
                        QgsFeature,
@@ -488,6 +489,79 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         vl = QgsVectorLayer('None?crs=epsg:3111field=pk:integer', 'test', 'memory')
         self.assertFalse(vl.isSpatial())
         self.assertFalse(vl.crs().isValid())
+
+    def test_wgs84Extent(self):
+
+        # We use this particular shapefile because we need a layer with an
+        # epsg != 4326
+        p = os.path.join(unitTestDataPath(), 'bug5598.shp')
+        vl0 = QgsVectorLayer(p, 'test', 'ogr')
+
+        extent = vl0.extent()
+        wgs84_extent = vl0.wgs84Extent()
+
+        # write xml document where the wgs84 extent will be stored
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(vl0.writeLayerXml(elem, doc, QgsReadWriteContext()))
+
+        # create a 2nd layer and read the xml document WITHOUT trust
+        vl1 = QgsVectorLayer()
+        flags = QgsMapLayer.ReadFlags()
+        vl1.readLayerXml(elem, QgsReadWriteContext(), flags)
+
+        self.assertTrue(extent == vl1.extent())
+        self.assertTrue(wgs84_extent == vl1.wgs84Extent())
+
+        # we add a feature and check that the original extent has been
+        # updated (the extent is bigger with the new feature)
+        vl1.startEditing()
+
+        f = QgsFeature()
+        f.setAttributes([0, "", "", 0.0, 0.0, 0.0, 0.0])
+        f.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425732), QgsPointXY(2482767, 2398853),
+                                                  QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                                  QgsPointXY(2484588, 2425732)]]))
+        vl1.addFeature(f)
+        vl1.updateExtents()
+
+        self.assertTrue(extent != vl1.extent())
+
+        # trust is not activated so the wgs84 extent is updated
+        # accordingly
+        self.assertTrue(wgs84_extent != vl1.wgs84Extent())
+        vl1.rollBack()
+
+        # create a 3rd layer and read the xml document WITH trust
+        vl2 = QgsVectorLayer()
+        flags = QgsMapLayer.ReadFlags()
+        flags |= QgsMapLayer.FlagTrustLayerMetadata
+        vl2.readLayerXml(elem, QgsReadWriteContext(), flags)
+
+        self.assertTrue(extent == vl2.extent())
+        self.assertTrue(wgs84_extent == vl2.wgs84Extent())
+
+        # we add a feature and check that the original extent has been
+        # updated (the extent is bigger with the new feature)
+        vl2.startEditing()
+
+        f = QgsFeature()
+        f.setAttributes([0, "", "", 0.0, 0.0, 0.0, 0.0])
+        f.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425732), QgsPointXY(2482767, 2398853),
+                                                  QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                                  QgsPointXY(2484588, 2425732)]]))
+        vl2.addFeature(f)
+        vl2.updateExtents()
+
+        self.assertTrue(extent != vl2.extent())
+
+        # trust is activated so the wgs84 extent is not updated
+        self.assertTrue(wgs84_extent == vl2.wgs84Extent())
+
+        # but we can still retrieve the current wgs84 xtent with the force
+        # parameter
+        self.assertTrue(wgs84_extent != vl2.wgs84Extent(True))
+        vl2.rollBack()
 
     # ADD FEATURE
 
