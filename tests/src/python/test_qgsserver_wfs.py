@@ -702,6 +702,61 @@ class TestQgsServerWFS(QgsServerTestBase):
         geom = feature.geometry()
         self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0))
 
+        # Tests for inverted axis issue GH #36584
+        # Cleanup
+        self.assertTrue(vl.startEditing())
+        vl.selectByExpression('"name" LIKE \'4326-test%\'')
+        vl.deleteSelectedFeatures()
+        self.assertTrue(vl.commitChanges())
+
+        self.i = 0
+
+        def _test(version, srsName, lat_lon=False):
+            self.i += 1
+            name = '4326-test_%s' % self.i
+            request = post_data.format(
+                name=name,
+                version=version,
+                srsName=srsName,
+                coordinates='52.48,10.67' if lat_lon else '10.67,52.48'
+            )
+            header, body = self._execute_request(
+                query_string, requestMethod=QgsServerRequest.PostMethod, data=request.encode('utf-8'))
+            feature = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"name" = \'%s\'' % name))))
+            geom = feature.geometry()
+            self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0), "Transaction Failed: %s , %s, lat_lon=%s" % (version, srsName, lat_lon))
+
+        _test('1.1.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
+        _test('1.1.0', 'http://www.opengis.net/def/crs/EPSG/0/4326', lat_lon=True)
+        _test('1.1.0', 'http://www.opengis.net/gml/srs/epsg.xml#4326', lat_lon=False)
+        _test('1.1.0', 'EPSG:4326', lat_lon=False)
+
+        _test('1.0.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
+        _test('1.0.0', 'http://www.opengis.net/def/crs/EPSG/0/4326', lat_lon=True)
+        _test('1.0.0', 'http://www.opengis.net/gml/srs/epsg.xml#4326', lat_lon=False)
+        _test('1.0.0', 'EPSG:4326', lat_lon=False)
+
+        def _test_getFeature(version, srsName, lat_lon=False):
+            # Now get the feature through WFS using BBOX filter
+            bbox = QgsGeometry.fromWkt('point( 10.7006 52.4317)').boundingBox()
+            bbox.grow(0.0001)
+            bbox_text = "%s,%s,%s,%s" % ((bbox.yMinimum(), bbox.xMinimum(), bbox.yMaximum(), bbox.xMaximum()) if lat_lon else (bbox.xMinimum(), bbox.yMinimum(), bbox.xMaximum(), bbox.yMaximum()))
+            req = query_string + '&REQUEST=GetFeature&VERSION={version}&TYPENAME=as_symbols&SRSNAME={srsName}&BBOX={bbox},{srsName}'.format(version=version, srsName=srsName, bbox=bbox_text)
+            header, body = self._execute_request(req)
+            self.assertTrue(b'gid>7' in body, "GetFeature Failed: %s , %s, lat_lon=%s" % (version, srsName, lat_lon))
+
+        _test_getFeature('1.1.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
+        _test_getFeature('1.1.0', 'EPSG:4326', lat_lon=False)
+
+        _test_getFeature('1.0.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
+        _test_getFeature('1.0.0', 'EPSG:4326', lat_lon=False)
+
+        # Cleanup
+        self.assertTrue(vl.startEditing())
+        vl.selectByExpression('"name" LIKE \'4326-test%\'')
+        vl.deleteSelectedFeatures()
+        self.assertTrue(vl.commitChanges())
+
 
 if __name__ == '__main__':
     unittest.main()
