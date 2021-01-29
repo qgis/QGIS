@@ -285,7 +285,7 @@ void QgsArcGisRestQueryUtils::visitFolderItems( const std::function< void( const
   }
 }
 
-void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( const QString &, const QString &, const ServiceTypeFilter )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter )
+void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( const QString &, const QString &, const QString &, const ServiceTypeFilter )> &visitor, const QVariantMap &serviceData, const QString &baseUrl )
 {
   QString base( baseUrl );
   bool baseChecked = false;
@@ -300,10 +300,7 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
     if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "ImageServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
       continue;
 
-    // If the requested service type is raster, do not show vector-only services
     const ServiceTypeFilter type = serviceType == QLatin1String( "FeatureServer" ) ? Vector : Raster;
-    if ( type == Raster && ( filter != Raster && filter != AllTypes ) )
-      continue;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
     QString displayName = serviceName.split( '/' ).last();
@@ -313,18 +310,18 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
       baseChecked = true;
     }
 
-    visitor( displayName, base + serviceName + '/' + serviceType, type );
+    visitor( displayName, base + serviceName + '/' + serviceType, serviceType, type );
   }
 }
 
-void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QString &, ServiceTypeFilter, QgsWkbTypes::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter )
+void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QString &, ServiceTypeFilter, QgsWkbTypes::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter )
 {
   const QString authid = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
 
-  QString format = QStringLiteral( "jpg" );
   bool found = false;
   const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
+  const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().isEmpty() ? parentSupportedFormats.split( ',' ) : serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
+  QString format = supportedImageFormatTypes.value( 0 );
   for ( const QString &encoding : supportedImageFormatTypes )
   {
     for ( const QByteArray &fmt : supportedFormats )
