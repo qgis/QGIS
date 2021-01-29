@@ -87,13 +87,13 @@ void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &servic
                       const QString &supportedFormats )
 {
   QgsArcGisRestQueryUtils::visitServiceItems(
-    [&items, parent, authcfg, headers, supportedFormats]( const QString & name, const QString & url, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType )
+    [&items, parent, authcfg, headers, supportedFormats]( const QString & name, const QString & url, const QString & service, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType )
   {
     switch ( serviceType )
     {
       case QgsArcGisRestQueryUtils::Raster:
       {
-        std::unique_ptr< QgsArcGisMapServiceItem > serviceItem = qgis::make_unique< QgsArcGisMapServiceItem >( parent, name, url, url, authcfg, headers );
+        std::unique_ptr< QgsArcGisMapServiceItem > serviceItem = qgis::make_unique< QgsArcGisMapServiceItem >( parent, name, url, url, authcfg, headers, service );
         items.append( serviceItem.release() );
         break;
       }
@@ -109,7 +109,7 @@ void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &servic
       case QgsArcGisRestQueryUtils::AllTypes:
         break;
     }
-  }, serviceData, baseUrl, QgsArcGisRestQueryUtils::AllTypes );
+  }, serviceData, baseUrl );
 }
 
 void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &parentUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceTypeFilter,
@@ -156,7 +156,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
         layerItems.insert( id, layerItem.release() );
     }
 
-  }, serviceData, parentUrl, serviceTypeFilter );
+  }, serviceData, parentUrl, supportedFormats, serviceTypeFilter );
 
   // create groups
   for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
@@ -349,7 +349,7 @@ QVector<QgsDataItem *> QgsArcGisPortalGroupItem::createChildren()
     {
       items << new QgsArcGisMapServiceItem( this, itemData.value( QStringLiteral( "title" ) ).toString(),
                                             itemData.value( QStringLiteral( "url" ) ).toString(),
-                                            itemData.value( QStringLiteral( "url" ) ).toString(), mAuthCfg, mHeaders );
+                                            itemData.value( QStringLiteral( "url" ) ).toString(), mAuthCfg, mHeaders, itemData.value( QStringLiteral( "type" ) ).toString().compare( QStringLiteral( "Map Service" ), Qt::CaseInsensitive ) == 0 ? QStringLiteral( "MapServer" ) : QStringLiteral( "ImageServer" ) );
     }
   }
 
@@ -514,11 +514,12 @@ bool QgsArcGisFeatureServiceItem::equal( const QgsDataItem *other )
 // QgsArcGisMapServiceItem
 //
 
-QgsArcGisMapServiceItem::QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers )
+QgsArcGisMapServiceItem::QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers, const QString &serviceType )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AMS" ) )
   , mBaseUrl( baseUrl )
   , mAuthCfg( authcfg )
   , mHeaders( headers )
+  , mServiceType( serviceType )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   mCapabilities |= Collapse;
@@ -544,7 +545,9 @@ QVector<QgsDataItem *> QgsArcGisMapServiceItem::createChildren()
     return items;
   }
 
-  const QString supportedFormats = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString();
+  const QString supportedFormats = mServiceType == QLatin1String( "ImageServer" ) ?
+                                   QStringLiteral( "JPGPNG,PNG,PNG8,PNG24,JPG,BMP,GIF,TIFF,PNG32,BIP,BSQ,LERC" ) // ImageServer supported formats
+                                   : serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString();
 
   addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this, supportedFormats );
   addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this, supportedFormats );
