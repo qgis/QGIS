@@ -1612,6 +1612,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
+    /**
+     * Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
+     * the extent is not invalidated because we want to trust metadata whatever
+     * happens.
+     * \since QGIS 3.18
+     */
     void invalidateWgs84Extent();
 
     //! Indicates if the layer is valid and can be drawn

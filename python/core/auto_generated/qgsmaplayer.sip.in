@@ -1813,6 +1813,13 @@ Sets error message
 %End
 
     void invalidateWgs84Extent();
+%Docstring
+Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
+the extent is not invalidated because we want to trust metadata whatever
+happens.
+
+.. versionadded:: 3.18
+%End
 
 
 
