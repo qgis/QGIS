@@ -28,12 +28,12 @@ void O0BaseAuth::setStore(O0AbstractStore *store) {
 bool O0BaseAuth::linked() {
     QString key = QString(O2_KEY_LINKED).arg(clientId_);
     bool result = !store_->value(key).isEmpty();
-    qDebug() << "O0BaseAuth::linked:" << (result? "Yes": "No");
+    //qDebug() << "O0BaseAuth::linked:" << (result? "Yes": "No");
     return result;
 }
 
 void O0BaseAuth::setLinked(bool v) {
-    qDebug() << "O0BaseAuth::setLinked:" << (v? "true": "false");
+    //qDebug() << "O0BaseAuth::setLinked:" << (v? "true": "false");
     bool oldValue = linked();
     QString key = QString(O2_KEY_LINKED).arg(clientId_);
     store_->setValue(key, v? "1": "");
@@ -87,7 +87,7 @@ int O0BaseAuth::localPort() {
 }
 
 void O0BaseAuth::setLocalPort(int value) {
-    qDebug() << "O0BaseAuth::setLocalPort:" << value;
+    //qDebug() << "O0BaseAuth::setLocalPort:" << value;
     localPort_ = value;
     Q_EMIT localPortChanged();
 }
