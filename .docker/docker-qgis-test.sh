@@ -11,7 +11,7 @@ set -e
 
 if [ ${HANA_TESTS} == "true" ] ; then
   echo "travis_fold:start:hana"
-  echo "${bold}Load HANA database...${endbold}"   
+  echo "${bold}Load HANA database...${endbold}"
 
   export QGIS_HANA_TEST_DB='driver='/usr/sap/hdbclient/libodbcHDB.so' host='${HANA_HOST}' port='${HANA_PORT}' user='${HANA_USER}' password='${HANA_PASSWORD}' sslEnabled=true sslValidateCertificate=False'
 
@@ -23,7 +23,7 @@ if [ ${HANA_TESTS} == "true" ] ; then
     sleep 1
   done
   echo "🌊 done"
-  
+
   echo "travis_fold:end:hana"
 fi
 
@@ -57,30 +57,30 @@ popd > /dev/null # /root/QGIS
 # Restore Oracle test data
 ##############################
 
-echo "${bold}Load Oracle database...🙏${endbold}"
-
-export ORACLE_HOST="oracle"
-export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
-export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
-
-echo "Wait a moment while loading Oracle database."
-COUNT=0
-while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
-do
-  printf "🙏"
-  sleep 5
-  if [[ $(( COUNT++ )) -eq 200 ]]; then
-    break
-  fi
-done
-if [[ ${COUNT} -eq 201 ]]; then
-  echo "timeout, no oracle, no 🙏"
-else
-  echo " done 👀"
-  pushd /root/QGIS > /dev/null
-  /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
-  popd > /dev/null # /root/QGIS
-fi
+# echo "${bold}Load Oracle database...🙏${endbold}"
+#
+# export ORACLE_HOST="oracle"
+# export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
+# export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
+#
+# echo "Wait a moment while loading Oracle database."
+# COUNT=0
+# while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
+# do
+#   printf "🙏"
+#   sleep 5
+#   if [[ $(( COUNT++ )) -eq 200 ]]; then
+#     break
+#   fi
+# done
+# if [[ ${COUNT} -eq 201 ]]; then
+#   echo "timeout, no oracle, no 🙏"
+# else
+#   echo " done 👀"
+#   pushd /root/QGIS > /dev/null
+#   /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
+#   popd > /dev/null # /root/QGIS
+# fi
 # this is proving very flaky:
 
 ##############################

@@ -11,15 +11,15 @@ services:
       - SSL_KEY_FILE=/etc/ssl/private/postgres_key.key
       - SSL_CA_FILE=/etc/ssl/certs/issuer_ca_cert.pem
 
-  oracle:
-    image: oslandia/oracle-for-qgis-tests-configured:18.4.0-xe
-    environment:
-      - ORACLE_SID=XE
-      - ORACLE_PWD=adminpass
-      - ORACLE_PDB=ORCLPDBTEST
-      - ORACLE_CHARACTERSET=AL32UTF8
-    ports:
-      - 1521:1521
+#  oracle:
+#    image: oslandia/oracle-for-qgis-tests-configured:18.4.0-xe
+#    environment:
+#      - ORACLE_SID=XE
+#      - ORACLE_PWD=adminpass
+#      - ORACLE_PDB=ORCLPDBTEST
+#      - ORACLE_CHARACTERSET=AL32UTF8
+#    ports:
+#      - 1521:1521
 
 # Proving very fragile!
 #  mssql:
@@ -35,7 +35,7 @@ services:
       - ${GH_WORKSPACE}:/root/QGIS
     links:
       - postgres
-      - oracle
+    #  - oracle
     #  - mssql
     env_file:
       - docker-variables.env
