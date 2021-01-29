@@ -1096,10 +1096,17 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     //no dups detected or overwrite is allowed
@@ -1186,10 +1193,17 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     //no dups detected or overwrite is allowed
@@ -1276,10 +1290,17 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     //no dups detected or overwrite is allowed
@@ -1363,10 +1384,17 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     //no dups detected or overwrite is allowed
@@ -1461,10 +1489,17 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     //no dups detected or overwrite is allowed
@@ -1541,10 +1576,17 @@ void QgsManageConnectionsDialog::loadGeonodeConnections( const QDomDocument &doc
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     // no dups detected or overwrite is allowed
@@ -1621,10 +1663,17 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     settings.beginGroup( "qgis/connections-xyz/" + connectionName );
@@ -1700,10 +1749,17 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     // no dups detected or overwrite is allowed
@@ -1780,10 +1836,17 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
       }
     }
 
-    if ( keys.contains( connectionName ) && !overwrite )
+    if ( keys.contains( connectionName ) )
     {
-      child = child.nextSiblingElement();
-      continue;
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
     }
 
     settings.beginGroup( "qgis/connections-vector-tile/" + connectionName );
