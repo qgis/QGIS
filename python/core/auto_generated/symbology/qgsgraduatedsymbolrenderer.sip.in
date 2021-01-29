@@ -228,7 +228,7 @@ Does not put a break on the symmetryPoint. This is done before.
 .. versionadded:: 3.4
 
 .. deprecated:: QGIS 3.10
-  use QgsClassificationMethod.makeBreaksSymmetric instead
+  use :py:class:`QgsClassificationMethod`.makeBreaksSymmetric instead
 %End
 
  static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride ) /Deprecated/;
@@ -243,7 +243,7 @@ Compute the equal interval classification
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
 .. deprecated:: QGIS 3.10
-   use QgsClassificationEqualInterval class instead
+   use :py:class:`QgsClassificationEqualInterval` class instead
 %End
 
  void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false ) /Deprecated/;
@@ -278,7 +278,7 @@ Returns the label format used to generate default classification labels
 .. versionadded:: 2.6
 
 .. deprecated:: QGIS 3.10
-   use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
+   use :py:func:`~QgsGraduatedSymbolRenderer.classificationMethod` and :py:class:`QgsClassificationMethod`.setLabelFormat instead
 %End
 
  void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false ) /Deprecated/;
@@ -291,7 +291,7 @@ Set the label format used to generate default classification labels
 .. versionadded:: 2.6
 
 .. deprecated:: QGIS 3.10
-   use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
+   use :py:func:`~QgsGraduatedSymbolRenderer.classificationMethod` and :py:class:`QgsClassificationMethod`.setLabelFormat instead
 %End
 
 

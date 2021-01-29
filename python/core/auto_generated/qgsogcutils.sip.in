@@ -13,7 +13,7 @@
 class QgsOgcUtils
 {
 %Docstring
-The QgsOgcUtils class provides various utility functions for conversion between
+The :py:class:`QgsOgcUtils` class provides various utility functions for conversion between
 OGC (Open Geospatial Consortium) standards and QGIS internal representations.
 
 Currently supported standards:

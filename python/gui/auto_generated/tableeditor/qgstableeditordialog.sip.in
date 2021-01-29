@@ -14,7 +14,7 @@ class QgsTableEditorDialog : QMainWindow
 
 A reusable window for editing simple spreadsheet-style tables.
 
-Table content is retrieved and set using the QgsTableContents class. The editor
+Table content is retrieved and set using the :py:class:`QgsTableContents` class. The editor
 has support for table foreground and background colors, and numeric formats.
 
 .. versionadded:: 3.12

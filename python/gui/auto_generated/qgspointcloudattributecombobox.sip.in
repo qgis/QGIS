@@ -14,8 +14,8 @@
 class QgsPointCloudAttributeComboBox : QComboBox
 {
 %Docstring
-The QgsPointCloudAttributeComboBox is a combo box which displays the list of attributes of a given point cloud layer.
-It might be combined with a QgsMapLayerComboBox to automatically update attributes according to a chosen layer.
+The :py:class:`QgsPointCloudAttributeComboBox` is a combo box which displays the list of attributes of a given point cloud layer.
+It might be combined with a :py:class:`QgsMapLayerComboBox` to automatically update attributes according to a chosen layer.
 
 .. versionadded:: 3.18
 %End
@@ -28,7 +28,7 @@ It might be combined with a QgsMapLayerComboBox to automatically update attribut
     explicit QgsPointCloudAttributeComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsPointCloudAttributeComboBox creates a combo box to display the fields of a layer.
-The layer can be either manually given or dynamically set by connecting the signal QgsMapLayerComboBox.layerChanged to the slot setLayer.
+The layer can be either manually given or dynamically set by connecting the signal :py:class:`QgsMapLayerComboBox`.layerChanged to the slot setLayer.
 %End
 
     void setFilters( QgsPointCloudAttributeProxyModel::Filters filters );

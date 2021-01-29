@@ -12,7 +12,7 @@
 class QgsColorBrewerColorRampWidget : QgsPanelWidget
 {
 %Docstring
-A widget which allows users to modify the properties of a QgsColorBrewerColorRamp.
+A widget which allows users to modify the properties of a :py:class:`QgsColorBrewerColorRamp`.
 
 .. versionadded:: 3.0
 %End

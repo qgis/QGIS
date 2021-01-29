@@ -12,7 +12,7 @@
 class QgsBrowserDockWidget : QgsDockWidget
 {
 %Docstring
-The QgsBrowserDockWidget class
+The :py:class:`QgsBrowserDockWidget` class
 
 .. versionadded:: 3.0
 %End
@@ -37,7 +37,7 @@ Constructor for QgsBrowserDockWidget
 Add directory to favorites.
 
 .. deprecated::
-   will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
 %End
 
     void setMessageBar( QgsMessageBar *bar );
@@ -84,7 +84,7 @@ Returns ``True`` if the index was successfully intrepreted as a map layer and lo
 ``False`` if the index is not a map layer or could not be loaded.
 
 .. deprecated::
-   will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
+   will be removed in QGIS 4.0 - retrieve the :py:class:`QgsLayerItem` itself and manually add to project.
 %End
 
     void showContextMenu( QPoint );
@@ -97,7 +97,7 @@ Show context menu
 Add current item to favorite.
 
 .. deprecated::
-   will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
 %End
 
  void addFavoriteDirectory() /Deprecated/;
@@ -105,7 +105,7 @@ Add current item to favorite.
 Add directory from file dialog to favorite.
 
 .. deprecated::
-   will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
 %End
 
  void removeFavorite() /Deprecated/;
@@ -113,7 +113,7 @@ Add directory from file dialog to favorite.
 Remove from favorite.
 
 .. deprecated::
-   will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
 %End
 
     void refresh();

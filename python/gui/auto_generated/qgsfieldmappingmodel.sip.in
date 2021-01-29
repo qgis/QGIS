@@ -12,7 +12,7 @@
 class QgsFieldMappingModel: QAbstractTableModel
 {
 %Docstring
-The QgsFieldMappingModel holds mapping information for mapping from one set of QgsFields to another,
+The :py:class:`QgsFieldMappingModel` holds mapping information for mapping from one set of :py:class:`QgsFields` to another,
 for each set of "destination" fields an expression defines how to obtain the values of the
 "destination" fields.
 The model can be optionally set "editable" allowing to modify all the fields, by default only
@@ -83,7 +83,7 @@ Returns a list of Field objects representing the current status of the model
 
     QMap< QString, QgsProperty > fieldPropertyMap() const;
 %Docstring
-Returns a map of destination field name to QgsProperty definition for field value,
+Returns a map of destination field name to :py:class:`QgsProperty` definition for field value,
 representing the current status of the model.
 
 .. seealso:: :py:func:`setFieldPropertyMap`
@@ -91,7 +91,7 @@ representing the current status of the model.
 
     void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
 %Docstring
-Sets a map of destination field name to QgsProperty definition for field value.
+Sets a map of destination field name to :py:class:`QgsProperty` definition for field value.
 
 .. seealso:: :py:func:`fieldPropertyMap`
 %End

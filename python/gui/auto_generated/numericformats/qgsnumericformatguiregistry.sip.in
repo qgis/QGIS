@@ -33,9 +33,9 @@ Create a new configuration widget for a format.
 class QgsNumericFormatGuiRegistry
 {
 %Docstring
-The QgsNumericFormatGuiRegistry is a home for widgets for configuring QgsNumericFormat objects.
+The :py:class:`QgsNumericFormatGuiRegistry` is a home for widgets for configuring :py:class:`QgsNumericFormat` objects.
 
-QgsNumericFormatGuiRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsNumericFormatGuiRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.numericFormatGuiRegistry()`.
 
 .. versionadded:: 3.12

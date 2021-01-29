@@ -14,12 +14,12 @@ class QgsLayoutItemAbstractMetadata
 %Docstring
 Stores metadata about one layout item class.
 
-A companion class, QgsLayoutItemAbstractGuiMetadata, handles the
-GUI behavior of QgsLayoutItems.
+A companion class, :py:class:`QgsLayoutItemAbstractGuiMetadata`, handles the
+GUI behavior of :py:class:`QgsLayoutItems`.
 
 .. note::
 
-   In C++ you can use QgsLayoutItemMetadata convenience class.
+   In C++ you can use :py:class:`QgsLayoutItemMetadata` convenience class.
 
 .. versionadded:: 3.0
 %End
@@ -88,7 +88,7 @@ GUI behavior of :py:class:`QgsLayoutMultiFrames`.
 
 .. note::
 
-   In C++ you can use QgsLayoutMultiFrameMetadata convenience class.
+   In C++ you can use :py:class:`QgsLayoutMultiFrameMetadata` convenience class.
 
 .. versionadded:: 3.0
 %End
@@ -147,7 +147,7 @@ class QgsLayoutItemRegistry : QObject
 %Docstring
 Registry of available layout item types.
 
-QgsLayoutItemRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsLayoutItemRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.layoutItemRegistry()`.
 
 A companion class, :py:class:`QgsLayoutItemGuiRegistry`, handles the GUI behavior

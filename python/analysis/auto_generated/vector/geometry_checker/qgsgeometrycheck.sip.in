@@ -24,14 +24,14 @@ Implementing a custom geometry check consists of the following parts
 Writing the check
 -----------------
 
-A new subclass of QgsGeometryCheck needs to be written and at least the following
+A new subclass of :py:class:`QgsGeometryCheck` needs to be written and at least the following
 abstract methods need to be implemented:
 
 - :py:func:`~compatibleGeometryTypes`: A list of geometry types to which this check applies
 - :py:func:`~resolutionMethods`: A list of names for (automated) resolution methods that can be used to fix errors of this type
 - :py:func:`~description`: A description for the geometry check.
 - :py:func:`~id`: A unique id for this check.
-- :py:func:`~checkType`: One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
+- :py:func:`~checkType`: One of :py:class:`QgsGeometryCheck`.LayerCheck, :py:class:`QgsGeometryCheck`.FeatureCheck,:py:class:`QgsGeometryCheck`.FeatureNodeCheck
 - :py:func:`~collectErrors`: This method will be called to validate geometries. All geometries which should be validated are passed
   into this method with the parameter ids and should be retrieved from the available featurePools to make
   use of caching. New errors should be appended to the error list and other message strings to messages.
@@ -41,18 +41,18 @@ Creating a geometry check factory
 ---------------------------------
 
 A Geometry check factory manages meta information for checks. There will always be one single
-geometry check factory created per check type, but it's possible that multiple QgsGeometryCheck
+geometry check factory created per check type, but it's possible that multiple :py:class:`QgsGeometryCheck`
 instances are created and used in parallel.
 
-A new subclass of QgsGeometryCheckFactory needs to be written and at least the following
+A new subclass of :py:class:`QgsGeometryCheckFactory` needs to be written and at least the following
 abstract methods need to be implemented:
 
-- :py:func:`QgsGeometryCheckFactory.createGeometryCheck()`: Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
+- :py:func:`QgsGeometryCheckFactory.createGeometryCheck()`: Needs to return a new subclassed :py:class:`QgsGeometryCheck` object that has been written in the previous step.
 - :py:func:`QgsGeometryCheckFactory.id()`: A unique id for this geometry check.
 - :py:func:`QgsGeometryCheckFactory.description()`: A description for this geometry check that can be presented to the user for more explanation.
 - :py:func:`QgsGeometryCheckFactory.isCompatible()`: Returns a boolean that determines if this check is available for a given layer. This often
   checks for the geometry type of the layer.
-- :py:func:`QgsGeometryCheckFactory.flags()`: Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
+- :py:func:`QgsGeometryCheckFactory.flags()`: Returns additional flags for a geometry check. If unsure return :py:class:`QgsGeometryCheck`.AvailableInValidation.
 - :py:func:`QgsGeometryCheckFactory.checkType()`: Returns the type of this geometry check.
 
 Registering the geometry check
@@ -195,7 +195,7 @@ Returns a list of descriptions for available resolutions for errors.
 The index will be passed as ``method`` to :py:func:`fixError`.
 
 .. deprecated:: QGIS 3.12
-  use availableResolutionMethods() instead
+  use :py:func:`~QgsGeometryCheck.availableResolutionMethods` instead
 
 .. versionadded:: 3.4
 %End

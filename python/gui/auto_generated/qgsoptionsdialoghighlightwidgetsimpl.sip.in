@@ -16,7 +16,7 @@ class QgsOptionsDialogHighlightLabel : QgsOptionsDialogHighlightWidget
 {
 %Docstring
 A highlight widget for labels.
-This is used to search and highlight text in QgsOptionsDialogBase implementations.
+This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 
 .. versionadded:: 3.0
 %End
@@ -42,7 +42,7 @@ class QgsOptionsDialogHighlightCheckBox : QgsOptionsDialogHighlightWidget
 {
 %Docstring
 A highlight widget for checkboxes.
-This is used to search and highlight text in QgsOptionsDialogBase implementations.
+This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 
 .. versionadded:: 3.0
 %End
@@ -68,7 +68,7 @@ class QgsOptionsDialogHighlightButton : QgsOptionsDialogHighlightWidget
 {
 %Docstring
 A highlight widget for buttons.
-This is used to search and highlight text in QgsOptionsDialogBase implementations.
+This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 
 .. versionadded:: 3.0
 %End
@@ -94,7 +94,7 @@ class QgsOptionsDialogHighlightGroupBox : QgsOptionsDialogHighlightWidget
 {
 %Docstring
 A highlight widget for group boxes.
-This is used to search and highlight text in QgsOptionsDialogBase implementations.
+This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 
 .. versionadded:: 3.0
 %End
@@ -120,7 +120,7 @@ class QgsOptionsDialogHighlightTree : QgsOptionsDialogHighlightWidget
 {
 %Docstring
 A highlight widget for trees.
-This is used to search and highlight text in QgsOptionsDialogBase implementations.
+This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 Highlighting is only available for tree widgets only while searching can be performed
 in any tree view or inherited class.
 

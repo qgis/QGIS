@@ -15,7 +15,7 @@ class QgsLayerTreeProxyModel : QSortFilterProxyModel
 {
 %Docstring
 
-The QgsLayerTreeProxyModel class is a proxy model for QgsLayerTreeModel, supports
+The :py:class:`QgsLayerTreeProxyModel` class is a proxy model for :py:class:`QgsLayerTreeModel`, supports
 private layers and text filtering.
 
 .. versionadded:: 3.18
@@ -57,7 +57,7 @@ Determines if private layers are shown.
 class QgsLayerTreeView : QTreeView
 {
 %Docstring
-The QgsLayerTreeView class extends QTreeView and provides some additional functionality
+The :py:class:`QgsLayerTreeView` class extends QTreeView and provides some additional functionality
 when working with a layer tree.
 
 The view updates expanded state of layer tree nodes and also listens to changes
@@ -93,7 +93,7 @@ Constructor for QgsLayerTreeView
     virtual void setModel( QAbstractItemModel *model );
 
 %Docstring
-Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only QgsLayerTreeModel is an acceptable model.
+Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only :py:class:`QgsLayerTreeModel` is an acceptable model.
 %End
 
     QgsLayerTreeModel *layerTreeModel() const;

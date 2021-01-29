@@ -11,7 +11,7 @@ class QgsPluginLayer : QgsMapLayer
 {
 %Docstring
 Base class for plugin layers. These can be implemented by plugins
-and registered in QgsPluginLayerRegistry.
+and registered in :py:class:`QgsPluginLayerRegistry`.
 
 In order to be readable from project files, they should set these attributes in layer DOM node:
 "type" = "plugin"
@@ -43,7 +43,7 @@ Returns a new instance equivalent to this one.
 
     QString pluginLayerType();
 %Docstring
-Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
+Returns plugin layer type (the same as used in :py:class:`QgsPluginLayerRegistry`)
 %End
 
     virtual void setExtent( const QgsRectangle &extent );

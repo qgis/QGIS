@@ -528,7 +528,7 @@ determines what type of stylesheet is supported by the widget.
 Typically you will use this method by doing:
 QString myStyle = :py:func:`QgsApplication.reportStyleSheet()`;
 textBrowserReport->:py:func:`~QgsApplication.document`->setDefaultStyleSheet(myStyle);
-if you are using a QgsWebView you will need to manually inject
+if you are using a :py:class:`QgsWebView` you will need to manually inject
 the CSS into a head -> script tag instead.
 
 :return: the stylesheet CSS rules.
@@ -803,9 +803,9 @@ Returns the application's bookmark manager, used for storing installation-wide b
 
     static QgsStyleModel *defaultStyleModel();
 %Docstring
-Returns a shared QgsStyleModel containing the default style library (see :py:func:`QgsStyle.defaultStyle()`).
+Returns a shared :py:class:`QgsStyleModel` containing the default style library (see :py:func:`QgsStyle.defaultStyle()`).
 
-Using this shared model instead of creating a new QgsStyleModel improves performance.
+Using this shared model instead of creating a new :py:class:`QgsStyleModel` improves performance.
 
 .. versionadded:: 3.10
 %End

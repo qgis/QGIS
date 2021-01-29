@@ -17,11 +17,11 @@ class QgsAnnotation : QObject
 
 Abstract base class for annotation items which are drawn over a map.
 
-QgsAnnotation is an abstract base class for map annotation items. These annotations can be
+:py:class:`QgsAnnotation` is an abstract base class for map annotation items. These annotations can be
 drawn within a map, and have either a fixed map position (retrieved using :py:func:`~mapPosition`)
 or are placed relative to the map's frame (retrieved using :py:func:`~relativePosition`).
 Annotations with a fixed map position also have a corresponding
-QgsCoordinateReferenceSystem, which can be determined by calling :py:func:`~mapPositionCrs`.
+:py:class:`QgsCoordinateReferenceSystem`, which can be determined by calling :py:func:`~mapPositionCrs`.
 
 Derived classes should implement their custom painting routines within
 a :py:func:`~renderAnnotation` override.
@@ -150,7 +150,7 @@ Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotati
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
 
 .. deprecated::
-   use setFrameOffsetFromReferencePointMm() instead
+   use :py:func:`~QgsAnnotation.setFrameOffsetFromReferencePointMm` instead
 %End
 
  QPointF frameOffsetFromReferencePoint() const /Deprecated/;
@@ -160,7 +160,7 @@ Returns the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnot
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
 
 .. deprecated::
-   use frameOffsetFromReferencePointMm() instead
+   use :py:func:`~QgsAnnotation.frameOffsetFromReferencePointMm` instead
 %End
 
     void setFrameOffsetFromReferencePointMm( QPointF offset );
@@ -189,7 +189,7 @@ the annotation's content is drawn).
 .. seealso:: :py:func:`frameSize`
 
 .. deprecated::
-   use setFrameSizeMm() instead
+   use :py:func:`~QgsAnnotation.setFrameSizeMm` instead
 %End
 
  QSizeF frameSize() const /Deprecated/;
@@ -200,7 +200,7 @@ the annotation's content is drawn).
 .. seealso:: :py:func:`setFrameSize`
 
 .. deprecated::
-   use frameSizeMm() instead
+   use :py:func:`~QgsAnnotation.frameSizeMm` instead
 %End
 
     void setFrameSizeMm( QSizeF size );

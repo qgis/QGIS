@@ -35,7 +35,7 @@ Security can define any (or none) of the following method:
     QgsAccessControlFilter( const QgsServerInterface *serverInterface );
 %Docstring
 Constructor
-QgsServerInterface passed to plugins constructors
+:py:class:`QgsServerInterface` passed to plugins constructors
 and must be passed to QgsAccessControlFilter instances.
 %End
 
@@ -51,7 +51,7 @@ and must be passed to QgsAccessControlFilter instances.
 
     const QgsServerInterface *serverInterface() const;
 %Docstring
-Returns the QgsServerInterface instance
+Returns the :py:class:`QgsServerInterface` instance
 %End
 
     virtual QString layerFilterExpression( const QgsVectorLayer *layer ) const;

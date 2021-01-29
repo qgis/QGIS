@@ -17,7 +17,7 @@ class QgsColorScheme
 %Docstring
 Abstract base class for color schemes
 
-A color scheme for display in QgsColorButton. Color schemes return lists
+A color scheme for display in :py:class:`QgsColorButton`. Color schemes return lists
 of colors with an optional associated color name. The colors returned
 can be generated using an optional base color.
 

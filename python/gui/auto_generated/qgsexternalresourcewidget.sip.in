@@ -126,13 +126,13 @@ which should be the base path.
     QString defaultRoot() const;
 %Docstring
 Configures the base path which should be used if the relativeStorage property
-is set to QgsFileWidget.RelativeDefaultPath.
+is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
 %End
 
     void setDefaultRoot( const QString &defaultRoot );
 %Docstring
 Configures the base path which should be used if the relativeStorage property
-is set to QgsFileWidget.RelativeDefaultPath.
+is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
 %End
 
   signals:

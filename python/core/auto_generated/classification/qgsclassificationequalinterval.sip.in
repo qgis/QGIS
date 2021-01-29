@@ -11,7 +11,7 @@
 class QgsClassificationEqualInterval : QgsClassificationMethod
 {
 %Docstring
-QgsClassificationEqualInterval is an implementation of QgsClassificationMethod
+:py:class:`QgsClassificationEqualInterval` is an implementation of :py:class:`QgsClassificationMethod`
 for equal intervals
 
 .. versionadded:: 3.10

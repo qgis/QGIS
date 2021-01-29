@@ -378,7 +378,7 @@ symbol layer definitions will interpret this in different ways, e.g., a marker s
 may use it to specify the units for the marker size, while a line symbol
 may use it to specify the units for the line width.
 
-:return: output unit, or QgsUnitTypes.RenderUnknownUnit if the symbol contains mixed units
+:return: output unit, or :py:class:`QgsUnitTypes`.RenderUnknownUnit if the symbol contains mixed units
 
 .. seealso:: :py:func:`setOutputUnit`
 %End
@@ -594,17 +594,17 @@ Returns the symbol render context. Only valid between startRender and stopRender
 
     static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
 %Docstring
-Creates a point in screen coordinates from a QgsPoint in map coordinates
+Creates a point in screen coordinates from a :py:class:`QgsPoint` in map coordinates
 %End
 
     static QPolygonF _getLineString( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent = true );
 %Docstring
-Creates a line string in screen coordinates from a QgsCurve in map coordinates
+Creates a line string in screen coordinates from a :py:class:`QgsCurve` in map coordinates
 %End
 
     static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent, bool isExteriorRing = false, bool correctRingOrientation = false );
 %Docstring
-Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates.
+Creates a polygon ring in screen coordinates from a :py:class:`QgsCurve` in map coordinates.
 
 If ``correctRingOrientation`` is ``True`` then the ring will be oriented to match standard ring orientation, e.g.
 clockwise for exterior rings and counter-clockwise for interior rings.
@@ -612,7 +612,7 @@ clockwise for exterior rings and counter-clockwise for interior rings.
 
     static void _getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
 %Docstring
-Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
+Creates a polygon in screen coordinates from a :py:class:`QgsPolygonXYin` map coordinates
 
 If ``correctRingOrientation`` is ``True`` then the ring will be oriented to match standard ring orientation, e.g.
 clockwise for exterior rings and counter-clockwise for interior rings.
@@ -804,7 +804,7 @@ simple line style will look different if the simple line is rendering a polygon 
 %Docstring
 Fields of the layer. Currently only available in :py:func:`~QgsSymbolRenderContext.startRender` calls
 to allow symbols with data-defined properties prepare the expressions
-(other times :py:func:`~QgsSymbolRenderContext.fields` returns an empty QgsFields object).
+(other times :py:func:`~QgsSymbolRenderContext.fields` returns an empty :py:class:`QgsFields` object).
 
 .. versionadded:: 2.4
 %End
@@ -841,14 +841,14 @@ Sets the part number of current geometry
 %Docstring
 
 .. deprecated::
-   Use the size conversion methods in QgsRenderContext instead.
+   Use the size conversion methods in :py:class:`QgsRenderContext` instead.
 %End
 
  double outputPixelSize( double size ) const /Deprecated/;
 %Docstring
 
 .. deprecated::
-   Use the size conversion methods in QgsRenderContext instead.
+   Use the size conversion methods in :py:class:`QgsRenderContext` instead.
 %End
 
 

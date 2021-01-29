@@ -14,7 +14,7 @@ class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
 {
 %Docstring
 A collection of overviews which are drawn above the map content in a
-QgsLayoutItemMap. The overview stack controls which overviews are drawn and the
+:py:class:`QgsLayoutItemMap`. The overview stack controls which overviews are drawn and the
 order they are drawn in.
 
 .. seealso:: :py:class:`QgsLayoutItemMapOverview`
@@ -42,7 +42,7 @@ above any existing map overviews already present in the stack.
 .. note::
 
    After adding a overview to the stack, :py:func:`~QgsLayoutItemMapOverviewStack.update`
-   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the :py:class:`QgsLayoutItemMap` to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeOverview`
 %End
@@ -54,7 +54,7 @@ Removes an overview with matching overviewId from the stack and deletes the corr
 .. note::
 
    After removing an overview from the stack, :py:func:`~QgsLayoutItemMapOverviewStack.update`
-   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the :py:class:`QgsLayoutItemMap` to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addOverview`
 %End
@@ -66,7 +66,7 @@ Moves an overview with matching overviewId up the stack, causing it to be render
 .. note::
 
    After moving an overview within the stack, :py:func:`~QgsLayoutItemMapOverviewStack.update` should be
-   called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
+   called for the :py:class:`QgsLayoutItemMap` to redraw the map with the new overview stack order.
 
 .. seealso:: :py:func:`moveOverviewDown`
 %End
@@ -78,7 +78,7 @@ Moves an overview with matching overviewId down the stack, causing it to be rend
 .. note::
 
    After moving an overview within the stack, :py:func:`~QgsLayoutItemMapOverviewStack.update` should be
-   called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
+   called for the :py:class:`QgsLayoutItemMap` to redraw the map with the new overview stack order.
 
 .. seealso:: :py:func:`moveOverviewUp`
 %End
@@ -97,7 +97,7 @@ Returns a reference to an overview at the specified ``index`` within the stack.
 
     QList< QgsLayoutItemMapOverview * > asList() const;
 %Docstring
-Returns a list of QgsLayoutItemMapOverviews contained by the stack.
+Returns a list of :py:class:`QgsLayoutItemMapOverviews` contained by the stack.
 %End
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
@@ -133,7 +133,7 @@ An individual overview which is drawn above the map content in a
 Constructor for QgsLayoutItemMapOverview.
 
 :param name: friendly display name for overview
-:param map: QgsLayoutItemMap the overview is attached to
+:param map: :py:class:`QgsLayoutItemMap` the overview is attached to
 %End
     ~QgsLayoutItemMapOverview();
 
@@ -229,7 +229,7 @@ map's extent.
 
     QgsVectorLayer *asMapLayer();
 %Docstring
-Returns a vector layer to render as part of the QgsLayoutItemMap render, containing
+Returns a vector layer to render as part of the :py:class:`QgsLayoutItemMap` render, containing
 a feature representing the overview extent (and with an appropriate renderer set matching
 the overview's :py:func:`~QgsLayoutItemMapOverview.frameSymbol` ).
 

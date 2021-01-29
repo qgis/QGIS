@@ -12,7 +12,7 @@
 class QgsLayoutItemRenderContext
 {
 %Docstring
-Contains settings and helpers relating to a render of a QgsLayoutItem.
+Contains settings and helpers relating to a render of a :py:class:`QgsLayoutItem`.
 
 .. versionadded:: 3.0
 %End
@@ -26,7 +26,7 @@ Contains settings and helpers relating to a render of a QgsLayoutItem.
 %Docstring
 Constructor for QgsLayoutItemRenderContext.
 
-The ``renderContext`` parameter specifies a QgsRenderContext for use within
+The ``renderContext`` parameter specifies a :py:class:`QgsRenderContext` for use within
 the QgsLayoutItemRenderContext.
 
 The ``viewScaleFactor`` gives the current view zoom (scale factor). It can be
@@ -41,7 +41,7 @@ regardless of the current view zoom.
 Returns a reference to the context's render context.
 
 Note that the context's painter has been scaled so that painter units are pixels.
-Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
+Use the :py:class:`QgsRenderContext` methods to convert from millimeters or other units to the painter's units.
 %End
 
 
@@ -272,7 +272,7 @@ tasks.
 %Docstring
 Returns a unique graphics item type identifier.
 
-Plugin based subclasses should return an identifier greater than QgsLayoutItemRegistry.PluginItem.
+Plugin based subclasses should return an identifier greater than :py:class:`QgsLayoutItemRegistry`.PluginItem.
 %End
 
     virtual QIcon icon() const;
@@ -367,7 +367,7 @@ Returns ``True`` if the item is locked, and cannot be interacted with using the 
 
     bool isGroupMember() const;
 %Docstring
-Returns ``True`` if the item is part of a QgsLayoutItemGroup group.
+Returns ``True`` if the item is part of a :py:class:`QgsLayoutItemGroup` group.
 
 .. seealso:: :py:func:`parentGroup`
 
@@ -376,7 +376,7 @@ Returns ``True`` if the item is part of a QgsLayoutItemGroup group.
 
     QgsLayoutItemGroup *parentGroup() const;
 %Docstring
-Returns the item's parent group, if the item is part of a QgsLayoutItemGroup group.
+Returns the item's parent group, if the item is part of a :py:class:`QgsLayoutItemGroup` group.
 
 .. seealso:: :py:func:`isGroupMember`
 
@@ -425,7 +425,7 @@ their rendering to determine which layer should be drawn.
 .. seealso:: :py:func:`exportLayerDetails`
 
 .. deprecated::
-   Use nextExportPart() and exportLayerBehavior() instead.
+   Use :py:func:`~QgsLayoutItem.nextExportPart` and :py:func:`~QgsLayoutItem.exportLayerBehavior` instead.
 %End
 
     virtual void startLayeredExport();
@@ -1064,7 +1064,7 @@ Triggers a redraw (update) of the item.
 %Docstring
 Refreshes a data defined ``property`` for the item by reevaluating the property's value
 and redrawing the item with this new value. If ``property`` is set to
-QgsLayoutObject.AllProperties then all data defined properties for the item will be
+:py:class:`QgsLayoutObject`.AllProperties then all data defined properties for the item will be
 refreshed.
 %End
 
@@ -1146,7 +1146,7 @@ painter.
 Draws the item's contents using the specified item render ``context``.
 
 Note that the context's painter has been scaled so that painter units are pixels.
-Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
+Use the :py:class:`QgsRenderContext` methods to convert from millimeters or other units to the painter's units.
 %End
 
     virtual QPainterPath framePath() const;

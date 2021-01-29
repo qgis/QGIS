@@ -18,14 +18,14 @@ class QgsSpatialIndex : QgsFeatureSink
 {
 %Docstring
 
-A spatial index for QgsFeature objects.
+A spatial index for :py:class:`QgsFeature` objects.
 
-QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
+:py:class:`QgsSpatialIndex` objects are implicitly shared and can be inexpensively copied.
 
 .. note::
 
-   While the underlying libspatialindex is not thread safe on some platforms, the QgsSpatialIndex
-   class implements its own locks and accordingly, a single QgsSpatialIndex object can safely
+   While the underlying libspatialindex is not thread safe on some platforms, the :py:class:`QgsSpatialIndex`
+   class implements its own locks and accordingly, a single :py:class:`QgsSpatialIndex` object can safely
    be used across multiple threads.
 
 .. seealso:: :py:class:`QgsSpatialIndexKDBush`
@@ -90,7 +90,7 @@ Copy constructor
 Adds a ``feature`` to the index.
 
 .. deprecated::
-   Use addFeature() instead
+   Use :py:func:`~QgsSpatialIndex.addFeature` instead
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
@@ -120,7 +120,7 @@ Add a feature ``id`` to the index with a specified bounding box.
 :return: ``True`` if feature was successfully added to index.
 
 .. deprecated::
-   Use addFeature() instead
+   Use :py:func:`~QgsSpatialIndex.addFeature` instead
 %End
 
     bool addFeature( QgsFeatureId id, const QgsRectangle &bounds );

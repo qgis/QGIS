@@ -12,9 +12,9 @@
 class QgsLayoutView: QGraphicsView
 {
 %Docstring
-A graphical widget to display and interact with QgsLayouts.
+A graphical widget to display and interact with :py:class:`QgsLayouts`.
 
-QgsLayoutView manages the layout interaction tools and mouse/key events.
+:py:class:`QgsLayoutView` manages the layout interaction tools and mouse/key events.
 
 .. versionadded:: 3.0
 %End
@@ -91,7 +91,7 @@ Unsets the current view tool, if it matches the specified ``tool``.
 
 This is called from destructor of view tools to make sure
 that the tool won't be used any more.
-You don't have to call it manually, QgsLayoutViewTool takes care of it.
+You don't have to call it manually, :py:class:`QgsLayoutViewTool` takes care of it.
 %End
 
     void setPreviewModeEnabled( bool enabled );

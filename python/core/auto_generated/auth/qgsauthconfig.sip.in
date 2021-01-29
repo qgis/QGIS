@@ -40,7 +40,7 @@ Gets 'authcfg' 7-character alphanumeric ID of the config
 
 .. note::
 
-   This is set by QgsAuthManager when the config is initially stored
+   This is set by :py:class:`QgsAuthManager` when the config is initially stored
 %End
     void setId( const QString &id );
 %Docstring
@@ -90,7 +90,7 @@ The extended configuration, as stored and retrieved from the authentication data
 
 .. note::
 
-   This is an internal construct used by QgsAuthManager that should generally not be set by client code
+   This is an internal construct used by :py:class:`QgsAuthManager` that should generally not be set by client code
 %End
 
     void loadConfigString( const QString &configstr );

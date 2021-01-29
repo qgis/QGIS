@@ -212,7 +212,7 @@ Sets the canvas to the specified ``extent``.
 
 :return: ``True`` if the zoom was successful.
 
-:raises QgsCsException: if a transformation error occurred.
+:raises :: py:class:`QgsCsException` if a transformation error occurred.
 
 .. versionadded:: 3.10
 %End
@@ -344,7 +344,7 @@ Unset the current map tool or last non zoom tool
 
 This is called from destructor of map tools to make sure
 that this map tool won't be used any more.
-You don't have to call it manually, QgsMapTool takes care of it.
+You don't have to call it manually, :py:class:`QgsMapTool` takes care of it.
 %End
 
     QgsMapTool *mapTool();
@@ -486,7 +486,7 @@ a theme present in the associated project's :py:class:`QgsMapThemeCollection`.
 When the canvas is associated to a map theme, it will automatically follow
 the layer selection and layer styles from that theme. Calls to :py:func:`~QgsMapCanvas.setLayers`
 or :py:func:`~QgsMapCanvas.setLayerStyleOverrides` will have no effect, and canvases associated
-with a QgsLayerTreeMapCanvasBridge will no longer synchronize their
+with a :py:class:`QgsLayerTreeMapCanvasBridge` will no longer synchronize their
 state with the layer tree. In these cases it is necessary to call
 :py:func:`~QgsMapCanvas.setTheme` with an empty string to clear the theme association and
 allow map updates with :py:func:`~QgsMapCanvas.setLayers`, :py:func:`~QgsMapCanvas.setLayerStyleOverrides`, or via

@@ -133,7 +133,7 @@ class QgsProcessingOutputMapLayer : QgsProcessingOutputDefinition
 A map layer output for processing algorithms, where layers may be either vector or raster.
 
 If the actual layer output type is known (e.g. always vector or always raster), use
-QgsProcessingOutputVectorLayer or QgsProcessingOutputRasterLayer instead.
+:py:class:`QgsProcessingOutputVectorLayer` or :py:class:`QgsProcessingOutputRasterLayer` instead.
 
 .. versionadded:: 3.0
 %End
@@ -233,7 +233,7 @@ the number and nature of the output layers is not predefined.
 
 .. note::
 
-   Always prefer to explicitly define QgsProcessingOutputVectorLayer,
+   Always prefer to explicitly define :py:class:`QgsProcessingOutputVectorLayer`,
    QgsProcessingOutputRasterLayer or QgsProcessingOutputMapLayer where possible. :py:class:`QgsProcessingOutputMultipleLayers`
    should only ever be used when the number of output layers is not
    fixed - e.g. as a result of processing all layers in a specified

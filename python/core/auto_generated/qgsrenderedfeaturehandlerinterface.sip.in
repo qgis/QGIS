@@ -16,7 +16,7 @@ class QgsRenderedFeatureHandlerInterface
 An interface for classes which provider custom handlers for features rendered
 as part of a map render job.
 
-QgsRenderedFeatureHandlerInterface objects are registered in the QgsMapSettings
+:py:class:`QgsRenderedFeatureHandlerInterface` objects are registered in the :py:class:`QgsMapSettings`
 objects used to construct map render jobs. During the rendering operation,
 the :py:func:`~handleRenderedFeature` method will be called once for every rendered feature,
 allowing the handler to perform some custom task based on the provided information.

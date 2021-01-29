@@ -14,12 +14,12 @@ class QgsLayoutItemAbstractGuiMetadata
 %Docstring
 Stores GUI metadata about one layout item class.
 
-This is a companion to QgsLayoutItemAbstractMetadata, storing only
+This is a companion to :py:class:`QgsLayoutItemAbstractMetadata`, storing only
 the components related to the GUI behavior of a layout item.
 
 .. note::
 
-   In C++ you can use QgsLayoutItemGuiMetadata convenience class.
+   In C++ you can use :py:class:`QgsLayoutItemGuiMetadata` convenience class.
 
 .. versionadded:: 3.0
 %End
@@ -42,7 +42,7 @@ Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type
 
 ``visibleName`` should be set to a translated, user visible name identifying the corresponding layout item.
 
-An optional ``groupId`` can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
+An optional ``groupId`` can be set, which allows grouping of related layout item classes. See :py:class:`QgsLayoutItemGuiMetadata` for details.
 
 If ``isNodeBased`` is ``True``, then the corresponding item is a node based item.
 %End
@@ -126,7 +126,7 @@ class QgsLayoutItemGuiGroup
 %Docstring
 Stores GUI metadata about a group of layout item classes.
 
-QgsLayoutItemGuiGroup stores settings about groups of related layout item classes
+:py:class:`QgsLayoutItemGuiGroup` stores settings about groups of related layout item classes
 which should be presented to users grouped together.
 
 For instance, the various basic shape creation tools would use :py:class:`QgsLayoutItemGuiGroup`
@@ -159,7 +159,7 @@ class QgsLayoutItemGuiRegistry : QObject
 %Docstring
 Registry of available layout item GUI behavior.
 
-QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsLayoutItemGuiRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.layoutItemGuiRegistry()`.
 
 This acts as a companion to :py:class:`QgsLayoutItemRegistry`, handling only

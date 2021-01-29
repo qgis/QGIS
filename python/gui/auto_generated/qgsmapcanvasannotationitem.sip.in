@@ -18,7 +18,7 @@
 class QgsMapCanvasAnnotationItem: QObject, QgsMapCanvasItem
 {
 %Docstring
-An interactive map canvas item which displays a QgsAnnotation.
+An interactive map canvas item which displays a :py:class:`QgsAnnotation`.
 
 .. versionadded:: 3.0
 %End

@@ -14,7 +14,7 @@ class QgsGeometryOptions : QObject
 {
 %Docstring
 
-The QgsGeometryOptions class contains options to automatically adjust geometries to
+The :py:class:`QgsGeometryOptions` class contains options to automatically adjust geometries to
 constraints on a layer.
 
 .. versionadded:: 3.4

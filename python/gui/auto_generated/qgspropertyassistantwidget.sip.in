@@ -14,7 +14,7 @@
 class QgsPropertyAssistantWidget : QgsPanelWidget
 {
 %Docstring
-Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
+Shows a user-friendly assistant guiding users through the creation of :py:class:`QgsProperty` overrides.
 
 .. versionadded:: 3.0
 %End

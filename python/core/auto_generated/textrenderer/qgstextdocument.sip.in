@@ -14,7 +14,7 @@ class QgsTextDocument
 {
 %Docstring
 
-Represents a document consisting of one or more QgsTextBlock objects.
+Represents a document consisting of one or more :py:class:`QgsTextBlock` objects.
 
 .. warning::
 

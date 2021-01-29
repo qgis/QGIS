@@ -28,7 +28,7 @@ This uses stylesheets.
     static QgsOptionsDialogHighlightWidget *createWidget( QWidget *widget ) /Factory/;
 %Docstring
 create a highlight widget implementation for the proper widget type.
-For instance a QgsOptionsDialogHighlightButton for button.
+For instance a :py:class:`QgsOptionsDialogHighlightButton` for button.
 
 :return: a QgsOptionsDialogHighlightWidget or ``None`` if there is no implementation
          for the given widget.

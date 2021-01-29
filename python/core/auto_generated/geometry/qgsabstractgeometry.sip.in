@@ -24,10 +24,10 @@ Abstract base class for all geometries
 
 .. note::
 
-   QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
-   of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
+   :py:class:`QgsAbstractGeometry` objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+   of the methods or properties exposed from the :py:class:`QgsAbstractGeometry` API (or :py:class:`QgsGeometry` API) utilize
    geodesic calculations. Accordingly, properties like :py:func:`~length` and :py:func:`~area` and spatial operations like :py:func:`~centroid`
-   are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+   are always calculated using strictly Cartesian mathematics. In contrast, the :py:class:`QgsDistanceArea` class exposes
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
    are required.
@@ -453,7 +453,7 @@ Returns the planar, 2-dimensional length of the geometry.
 
    QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length
    returned by this method is calculated using strictly Cartesian mathematics. In contrast,
-   the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+   the :py:class:`QgsDistanceArea` class exposes methods for calculating the lengths of geometries using
    geodesic calculations which account for the curvature of the Earth (or any other
    celestial body).
 
@@ -470,7 +470,7 @@ Returns the planar, 2-dimensional perimeter of the geometry.
 
    QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the perimeter
    returned by this method is calculated using strictly Cartesian mathematics. In contrast,
-   the QgsDistanceArea class exposes methods for calculating the perimeters of geometries using
+   the :py:class:`QgsDistanceArea` class exposes methods for calculating the perimeters of geometries using
    geodesic calculations which account for the curvature of the Earth (or any other
    celestial body).
 
@@ -487,7 +487,7 @@ Returns the planar, 2-dimensional area of the geometry.
 
    QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
    returned by this method is calculated using strictly Cartesian mathematics. In contrast,
-   the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+   the :py:class:`QgsDistanceArea` class exposes methods for calculating the areas of geometries using
    geodesic calculations which account for the curvature of the Earth (or any other
    celestial body).
 
@@ -535,7 +535,7 @@ the returned geometry.
     virtual QgsAbstractGeometry *toCurveType() const = 0 /Factory/;
 %Docstring
 Returns the geometry converted to the more generic curve type.
-E.g. :py:class:`QgsLineString` -> :py:class:`QgsCompoundCurve`, :py:class:`QgsPolygon` -> QgsCurvePolygon,
+E.g. :py:class:`QgsLineString` -> :py:class:`QgsCompoundCurve`, :py:class:`QgsPolygon` -> :py:class:`QgsCurvePolygon`,
 :py:class:`QgsMultiLineString` -> :py:class:`QgsMultiCurve`, :py:class:`QgsMultiPolygon` -> :py:class:`QgsMultiSurface`
 
 :return: the converted geometry. Caller takes ownership
@@ -698,7 +698,7 @@ Converts the geometry to a specified type.
 Checks validity of the geometry, and returns ``True`` if the geometry is valid.
 
 :param flags: indicates optional flags which control the type of validity checking performed
-              (corresponding to QgsGeometry.ValidityFlags).
+              (corresponding to :py:class:`QgsGeometry`.ValidityFlags).
 
 :return: - ``True`` if geometry is valid
          - error: will be set to the validity error message
@@ -860,7 +860,7 @@ struct QgsVertexId
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex ) /HoldGIL/;
 %Docstring
-Constructor for QgsVertexId.
+Constructor for :py:class:`QgsVertexId`.
 %End
 
   bool isValid() const  /HoldGIL/;

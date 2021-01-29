@@ -151,7 +151,7 @@ Example
 :param config: The config to set for this widget
 
 :return: ``False`` if a field exists with the provided widgetName. In this case
-         QgsVectorLayer.setEditorWidgetSetup should be used.
+         :py:class:`QgsVectorLayer`.setEditorWidgetSetup should be used.
 
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup`
 %End
@@ -281,7 +281,7 @@ Serialize on project save
 Deserialize drag and drop designer elements.
 
 .. deprecated:: QGIS 3.18
-   use QgsAttributeEditorElement.create instead
+   use :py:class:`QgsAttributeEditorElement`.create instead
 %End
 
     explicit QgsEditFormConfig();

@@ -14,7 +14,7 @@
 class QgsExpressionFunction
 {
 %Docstring
-A abstract base class for defining QgsExpression functions.
+A abstract base class for defining :py:class:`QgsExpression` functions.
 %End
 
 %TypeHeaderCode
@@ -169,7 +169,7 @@ other permissible names for the function, e.g., deprecated names.
 
     bool lazyEval() const;
 %Docstring
-``True`` if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression.Node objects
+``True`` if this function should use lazy evaluation.  Lazy evaluation functions take :py:class:`QgsExpression`.Node objects
 rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
 Functions are non lazy default and will be given the node return value when called.
 %End
@@ -199,7 +199,7 @@ evaluation.
     virtual QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const;
 %Docstring
 Returns a set of field names which are required for this function.
-May contain QgsFeatureRequest.AllAttributes to signal that all
+May contain :py:class:`QgsFeatureRequest`.AllAttributes to signal that all
 attributes are required.
 If in doubt this will return more fields than strictly required.
 
@@ -208,7 +208,7 @@ If in doubt this will return more fields than strictly required.
 
     bool isContextual() const;
 %Docstring
-Returns whether the function is only available if provided by a QgsExpressionContext object.
+Returns whether the function is only available if provided by a :py:class:`QgsExpressionContext` object.
 
 .. versionadded:: 2.12
 %End

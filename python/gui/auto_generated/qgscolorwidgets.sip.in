@@ -14,7 +14,7 @@ class QgsColorWidget : QWidget
 {
 %Docstring
 A base class for interactive color widgets. Widgets can either allow setting a single component of
-a color (e.g., the red or green components), or an entire color. The QgsColorWidget also keeps track of
+a color (e.g., the red or green components), or an entire color. The :py:class:`QgsColorWidget` also keeps track of
 any explicitly set hue for the color, so that this information is not lost when the widget is
 set to a color with an ambiguous hue (e.g., black or white shades).
 
@@ -228,7 +228,7 @@ An action containing a color widget, which can be embedded into a menu.
 %Docstring
 Construct a new color widget action.
 
-:param colorWidget: QgsColorWidget to show in action
+:param colorWidget: :py:class:`QgsColorWidget` to show in action
 :param menu: parent menu
 :param parent: parent widget
 %End

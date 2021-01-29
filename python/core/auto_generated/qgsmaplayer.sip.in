@@ -495,7 +495,7 @@ Synchronises with changes in the datasource
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0 /Factory/;
 %Docstring
-Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
+Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for rendering of given context
 
 .. versionadded:: 2.4
 %End
@@ -1300,7 +1300,7 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 Gets the list of dependencies. This includes data dependencies set by the user (:py:func:`setDataDependencies`)
 as well as dependencies given by the provider
 
-:return: a set of QgsMapLayerDependency
+:return: a set of :py:class:`QgsMapLayerDependency`
 
 .. versionadded:: 3.0
 %End
@@ -1452,7 +1452,7 @@ Sets the list of dependencies.
 
 .. seealso:: :py:func:`dependencies`
 
-:param layers: set of QgsMapLayerDependency. Only user-defined dependencies will be added
+:param layers: set of :py:class:`QgsMapLayerDependency`. Only user-defined dependencies will be added
 
 :return: ``False`` if a dependency cycle has been detected
 

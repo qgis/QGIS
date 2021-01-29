@@ -13,10 +13,10 @@ class QgsDefaultValue
 {
 %Docstring
 
-The QgsDefaultValue class provides a container for managing client
+The :py:class:`QgsDefaultValue` class provides a container for managing client
 side default values for fields.
 
-A QgsDefaultValue consists of an expression string that will be evaluated
+A :py:class:`QgsDefaultValue` consists of an expression string that will be evaluated
 on the client when a default field value needs to be generated.
 
 Usual values for such an expression are
@@ -26,7 +26,7 @@ Usual values for such an expression are
   the username of the one digitizing a feature
 - `$length` to insert a derived attribute of a geometry
 
-QgsDefaultValue also has a `applyOnUpdate` flag which will indicate that a
+:py:class:`QgsDefaultValue` also has a `applyOnUpdate` flag which will indicate that a
 default value should also be applied when a feature is updated. If this is
 not set, the default value will only be used when a feature is created.
 

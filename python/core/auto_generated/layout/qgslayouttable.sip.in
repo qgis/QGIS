@@ -203,7 +203,7 @@ Sets the ``font`` used to draw header text in the table.
 .. seealso:: :py:func:`setContentFont`
 
 .. deprecated::
-   use setHeaderTextFormat() instead
+   use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead
 %End
 
  QFont headerFont() const /Deprecated/;
@@ -215,7 +215,7 @@ Returns the font used to draw header text in the table.
 .. seealso:: :py:func:`contentFont`
 
 .. deprecated::
-   use headerTextFormat() instead
+   use :py:func:`~QgsLayoutTable.headerTextFormat` instead
 %End
 
  void setHeaderFontColor( const QColor &color ) /Deprecated/;
@@ -229,7 +229,7 @@ Sets the ``color`` used to draw header text in the table.
 .. seealso:: :py:func:`setContentFontColor`
 
 .. deprecated::
-   use setHeaderTextFormat() instead
+   use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead
 %End
 
  QColor headerFontColor() const /Deprecated/;
@@ -243,7 +243,7 @@ Returns the color used to draw header text in the table.
 .. seealso:: :py:func:`contentFontColor`
 
 .. deprecated::
-   use headerTextFormat() instead
+   use :py:func:`~QgsLayoutTable.headerTextFormat` instead
 %End
 
     void setHeaderTextFormat( const QgsTextFormat &format );
@@ -307,7 +307,7 @@ Sets the ``font`` used to draw text in table body cells.
 .. seealso:: :py:func:`setHeaderFont`
 
 .. deprecated::
-   use setContentTextFormat() instead
+   use :py:func:`~QgsLayoutTable.setContentTextFormat` instead
 %End
 
  QFont contentFont() const /Deprecated/;
@@ -319,7 +319,7 @@ Returns the font used to draw text in table body cells.
 .. seealso:: :py:func:`headerFont`
 
 .. deprecated::
-   use contextTextFormat() instead
+   use :py:func:`~QgsLayoutTable.contextTextFormat` instead
 %End
 
  void setContentFontColor( const QColor &color ) /Deprecated/;
@@ -333,7 +333,7 @@ Sets the ``color`` used to draw text in table body cells.
 .. seealso:: :py:func:`setHeaderFontColor`
 
 .. deprecated::
-   use setContentTextFormat() instead
+   use :py:func:`~QgsLayoutTable.setContentTextFormat` instead
 %End
 
  QColor contentFontColor() const /Deprecated/;
@@ -347,7 +347,7 @@ Returns the color used to draw text in table body cells.
 .. seealso:: :py:func:`headerFontColor`
 
 .. deprecated::
-   use contextTextFormat() instead
+   use :py:func:`~QgsLayoutTable.contextTextFormat` instead
 %End
 
     void setContentTextFormat( const QgsTextFormat &format );
@@ -532,23 +532,23 @@ automatically wrapped.
 
     QgsLayoutTableColumns &columns();
 %Docstring
-Returns a reference to the list of QgsLayoutTableColumns shown in the table
+Returns a reference to the list of :py:class:`QgsLayoutTableColumns` shown in the table
 
 .. seealso:: :py:func:`setColumns`
 %End
 
     void setColumns( const QgsLayoutTableColumns &columns );
 %Docstring
-Replaces the columns in the table with a specified list of QgsLayoutTableColumns.
+Replaces the columns in the table with a specified list of :py:class:`QgsLayoutTableColumns`.
 
-:param columns: list of QgsLayoutTableColumns to show in table.
+:param columns: list of :py:class:`QgsLayoutTableColumns` to show in table.
 
 .. seealso:: :py:func:`columns`
 %End
 
     QgsLayoutTableSortColumns &sortColumns();
 %Docstring
-Returns a reference to the list of QgsLayoutTableSortColumns shown in the table
+Returns a reference to the list of :py:class:`QgsLayoutTableSortColumns` shown in the table
 
 .. seealso:: :py:func:`setSortColumns`
 
@@ -557,9 +557,9 @@ Returns a reference to the list of QgsLayoutTableSortColumns shown in the table
 
     void setSortColumns( const QgsLayoutTableSortColumns &sortColumns );
 %Docstring
-Replaces the sorting columns in the table with a specified list of QgsLayoutTableSortColumns.
+Replaces the sorting columns in the table with a specified list of :py:class:`QgsLayoutTableSortColumns`.
 
-:param sortColumns: list of QgsLayoutTableColumns used to sort the table.
+:param sortColumns: list of :py:class:`QgsLayoutTableColumns` used to sort the table.
 
 .. seealso:: :py:func:`sortColumns`
 
@@ -587,7 +587,7 @@ Fetches the contents used for the cells in the table.
 
 :return: ``True`` if table contents were successfully retrieved.
 
-:param contents: QgsLayoutTableContents to store retrieved row data in
+:param contents: :py:class:`QgsLayoutTableContents` to store retrieved row data in
 %End
 
     virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
@@ -599,7 +599,7 @@ Returns the conditional style to use for the cell at ``row``, ``column``.
 
     virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const /Factory/;
 %Docstring
-Creates a new QgsExpressionContextScope for the cell at ``row``, ``column``.
+Creates a new :py:class:`QgsExpressionContextScope` for the cell at ``row``, ``column``.
 
 .. versionadded:: 3.16
 %End

@@ -16,7 +16,7 @@ class QgsMeshDatasetIndex
 {
 %Docstring
 
-QgsMeshDatasetIndex is index that identifies the dataset group (e.g. wind speed)
+:py:class:`QgsMeshDatasetIndex` is index that identifies the dataset group (e.g. wind speed)
 and a dataset in this group (e.g. magnitude of wind speed in particular time)
 
 .. note::
@@ -54,7 +54,7 @@ class QgsMeshDatasetValue
 {
 %Docstring
 
-QgsMeshDatasetValue represents single dataset value
+:py:class:`QgsMeshDatasetValue` represents single dataset value
 
 could be scalar or vector. Nodata values are represented by NaNs.
 
@@ -125,7 +125,7 @@ class QgsMeshDataBlock
 {
 %Docstring
 
-QgsMeshDataBlock is a block of integers/doubles that can be used
+:py:class:`QgsMeshDataBlock` is a block of integers/doubles that can be used
 to retrieve:
 active flags (e.g. face's active integer flag)
 scalars (e.g. scalar dataset double values)
@@ -246,7 +246,7 @@ class QgsMesh3dDataBlock
 {
 %Docstring
 
-QgsMesh3dDataBlock is a block of 3d stacked mesh data related N
+:py:class:`QgsMesh3dDataBlock` is a block of 3d stacked mesh data related N
 faces defined on base mesh frame.
 
 data are implicitly shared, so the class can be quickly copied
@@ -369,7 +369,7 @@ class QgsMeshDatasetGroupMetadata
 {
 %Docstring
 
-QgsMeshDatasetGroupMetadata is a collection of dataset group metadata
+:py:class:`QgsMeshDatasetGroupMetadata` is a collection of dataset group metadata
 such as whether the data is vector or scalar, name
 
 .. note::
@@ -411,7 +411,7 @@ Constructs an empty metadata object
 Constructs a valid metadata object
 
 :param name: name of the dataset group
-:param isScalar: dataset contains scalar data, specifically the y-value of QgsMeshDatasetValue is NaN
+:param isScalar: dataset contains scalar data, specifically the y-value of :py:class:`QgsMeshDatasetValue` is NaN
 :param dataType: where the data are defined on (vertices, faces or volumes)
 :param minimum: minimum value (magnitude for vectors) present among all group's dataset values
 :param maximum: maximum value (magnitude for vectors) present among all group's dataset values
@@ -491,7 +491,7 @@ class QgsMeshDatasetMetadata
 {
 %Docstring
 
-QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
+:py:class:`QgsMeshDatasetMetadata` is a collection of mesh dataset metadata such
 as whether the data is valid or associated time for the dataset
 
 .. note::

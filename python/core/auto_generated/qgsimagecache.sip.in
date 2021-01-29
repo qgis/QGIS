@@ -16,10 +16,10 @@ class QgsImageCache : QgsAbstractContentCacheBase
 %Docstring
 A cache for images derived from raster files.
 
-QgsImageCache stores pre-rendered resampled versions of raster image files, allowing efficient
+:py:class:`QgsImageCache` stores pre-rendered resampled versions of raster image files, allowing efficient
 reuse without incurring the cost of resampling on every render.
 
-QgsImageCache is not usually directly created, but rather accessed through
+:py:class:`QgsImageCache` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.imageCache()`.
 
 .. versionadded:: 3.6

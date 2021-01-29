@@ -147,6 +147,31 @@ sub python_header {
     return @header;
 }
 
+sub create_class_links {
+    my $line = $_[0];
+
+    if ( $line =~ m/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/) {
+        if ( defined $ACTUAL_CLASS && $1 !~ $ACTUAL_CLASS ) {
+            $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
+        }
+    }
+    $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(?!\w)/:py:func:`$1`/g;
+    if ( defined $ACTUAL_CLASS && $ACTUAL_CLASS) {
+        $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$ACTUAL_CLASS.$1`/g;
+    }
+    else {
+        $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$1`/g;
+    }
+
+    if ( $line =~ m/\b(?<![`~])(Qgs[A-Z]\w+)\b(?!\()/) {
+        if ( (!$ACTUAL_CLASS) || $1 ne $ACTUAL_CLASS ) {
+            $line =~ s/\b(?<![`~])(Qgs[A-Z]\w+)\b(?!\()/:py:class:`$1`/g;
+        }
+    }
+
+    return $line;
+}
+
 sub processDoxygenLine {
     my $line = $_[0];
 
@@ -274,7 +299,7 @@ sub processDoxygenLine {
         my $depr_line = "\n.. deprecated::";
         $depr_line .= " QGIS $+{DEPR_VERSION}" if (defined $+{DEPR_VERSION});
         $depr_line .= "\n  $+{DEPR_MESSAGE}\n" if (defined $+{DEPR_MESSAGE});
-        return $depr_line;
+        return create_class_links($depr_line);
     }
 
     # create links in see also
@@ -311,18 +336,7 @@ sub processDoxygenLine {
     else
     {
         # create links in plain text too (less performant)
-        if ( $line =~ m/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/) {
-            if ( defined $ACTUAL_CLASS && $1 !~ $ACTUAL_CLASS ) {
-                $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
-            }
-        }
-        $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(?!\w)/:py:func:`$1`/g;
-        if ( defined $ACTUAL_CLASS && $ACTUAL_CLASS) {
-          $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$ACTUAL_CLASS.$1`/g;
-        }
-        else {
-          $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$1`/g;
-        }
+        $line = create_class_links($line)
     }
 
     if ( $line =~ m/[\\@]note (.*)/ ) {

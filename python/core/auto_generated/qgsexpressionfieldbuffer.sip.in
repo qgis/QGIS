@@ -82,7 +82,7 @@ Reads expressions from project file
 
     void updateFields( QgsFields &flds );
 %Docstring
-Adds fields with the expressions buffered in this object to a QgsFields object
+Adds fields with the expressions buffered in this object to a :py:class:`QgsFields` object
 
 :param flds: The fields to be updated
 %End

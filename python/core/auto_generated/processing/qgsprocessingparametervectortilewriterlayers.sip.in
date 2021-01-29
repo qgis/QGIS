@@ -13,11 +13,11 @@ class QgsProcessingParameterVectorTileWriterLayers : QgsProcessingParameterDefin
 {
 %Docstring
 A parameter for processing algorithms that need a list of input vector layers for writing
-of vector tiles - this parameter provides processing framework's adapter for QList<QgsVectorTileWriter.Layer>.
+of vector tiles - this parameter provides processing framework's adapter for QList<:py:class:`QgsVectorTileWriter`.Layer>.
 
 A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
 {
-'layer':  string or QgsMapLayer,
+'layer':  string or :py:class:`QgsMapLayer`,
 // key-value pairs below are optional
 'layerName': string,
 'filterExpression': string,
@@ -26,7 +26,7 @@ A valid value for this parameter is a list (QVariantList), where each item is a 
 }
 
 Static functions :py:func:`~parametersAsLayers`, :py:func:`~variantMapAsLayer`, :py:func:`~layerAsVariantMap` provide conversion between
-QgsVectorTileWriter.Layer representation and QVariant representation.
+:py:class:`QgsVectorTileWriter`.Layer representation and QVariant representation.
 
 .. versionadded:: 3.14
 %End

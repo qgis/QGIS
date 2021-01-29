@@ -18,7 +18,7 @@ Stores metadata about one symbol layer class.
 .. note::
 
    It's necessary to implement :py:func:`~createSymbolLayer` function.
-   In C++ you can use QgsSymbolLayerMetadata convenience class.
+   In C++ you can use :py:class:`QgsSymbolLayerMetadata` convenience class.
 %End
 
 %TypeHeaderCode
@@ -91,7 +91,7 @@ class QgsSymbolLayerRegistry
 %Docstring
 Registry of available symbol layer classes.
 
-QgsSymbolLayerRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsSymbolLayerRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.symbolLayerRegistry()`.
 %End
 

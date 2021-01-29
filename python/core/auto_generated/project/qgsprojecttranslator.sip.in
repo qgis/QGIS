@@ -27,7 +27,7 @@ Wherever an object of this class is available, the derived translate function ca
 The derived :py:func:`~QgsProjectTranslator.translate` translates with QTranslator and qm file the sourceText.
 It
 :return: the result string and in case there is no QTranslator loaded, the sourceText.
-           This function can be called from wherever the QgsReadWriteContext is available.
+           This function can be called from wherever the :py:class:`QgsReadWriteContext` is available.
 
 :param context: describing layer etc.
 :param sourceText: is the identifier of this text

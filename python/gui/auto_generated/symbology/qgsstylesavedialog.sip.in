@@ -28,7 +28,7 @@ a dialog for setting properties of a newly saved style.
 Constructor for :py:class:`QgsSymbolSaveDialog`
 
 :param parent: parent widget
-:param type: the QgsStyle entity type being saved
+:param type: the :py:class:`QgsStyle` entity type being saved
 %End
 
     QString name() const;

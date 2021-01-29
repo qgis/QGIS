@@ -188,8 +188,8 @@ Sets the name of the geometry field
     QgsWkbTypes::Type geometryWkbType() const;
 %Docstring
 Gets the type of the geometry
-QgsWkbTypes.NoGeometry to hide any geometry
-QgsWkbTypes.Unknown for unknown types
+:py:class:`QgsWkbTypes`.NoGeometry to hide any geometry
+:py:class:`QgsWkbTypes`.Unknown for unknown types
 %End
     void setGeometryWkbType( QgsWkbTypes::Type t );
 %Docstring

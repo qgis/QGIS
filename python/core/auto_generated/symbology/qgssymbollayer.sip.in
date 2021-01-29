@@ -369,7 +369,7 @@ symbol layer subclasses will interpret this in different ways, e.g., a marker sy
 layer may use it to specify the units for the marker size, while a line symbol
 layer may use it to specify the units for the line width.
 
-:return: output unit, or QgsUnitTypes.RenderUnknownUnit if the symbol layer contains mixed units
+:return: output unit, or :py:class:`QgsUnitTypes`.RenderUnknownUnit if the symbol layer contains mixed units
 
 .. seealso:: :py:func:`setOutputUnit`
 %End

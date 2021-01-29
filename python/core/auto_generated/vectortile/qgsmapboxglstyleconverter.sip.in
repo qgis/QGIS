@@ -45,9 +45,9 @@ Clears the list of warning messages.
 %Docstring
 Returns the target unit type.
 
-By default this is QgsUnitTypes.RenderPixels in order to exactly match the original
+By default this is :py:class:`QgsUnitTypes`.RenderPixels in order to exactly match the original
 style rendering. But rendering in pixels can cause issues on hidpi displays or with print
-layouts, so setting a target unit of QgsUnitTypes.Millimeters or another real-world unit
+layouts, so setting a target unit of :py:class:`QgsUnitTypes`.Millimeters or another real-world unit
 type is often more appropriate.
 
 .. seealso:: :py:func:`setTargetUnit`
@@ -57,9 +57,9 @@ type is often more appropriate.
 %Docstring
 Sets the target unit type.
 
-By default this is QgsUnitTypes.RenderPixels in order to exactly match the original
+By default this is :py:class:`QgsUnitTypes`.RenderPixels in order to exactly match the original
 style rendering. But rendering in pixels can cause issues on hidpi displays or with print
-layouts, so setting a target unit of QgsUnitTypes.Millimeters or another real-world unit
+layouts, so setting a target unit of :py:class:`QgsUnitTypes`.Millimeters or another real-world unit
 type is often more appropriate.
 
 If setting to a non-pixel unit, be sure to call :py:func:`~QgsMapBoxGlStyleConversionContext.setPixelSizeConversionFactor` in order
@@ -316,7 +316,7 @@ Parses a color value which is interpolated by zoom range.
 :param json: definition of color interpolation
 :param context: conversion context
 
-:return: - QgsProperty representing interpolation settings
+:return: - :py:class:`QgsProperty` representing interpolation settings
          - defaultColor: storage for a reasonable "default" color representing the overall property.
 %End
 
@@ -328,7 +328,7 @@ Parses a numeric value which is interpolated by zoom range.
 :param context: conversion context
 :param multiplier: optional multiplication factor
 
-:return: - QgsProperty representing interpolation settings
+:return: - :py:class:`QgsProperty` representing interpolation settings
          - defaultNumber: storage for a reasonable "default" number representing the overall property.
 %End
 

@@ -13,7 +13,7 @@
 class QgsAnnotationItem
 {
 %Docstring
-Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
+Abstract base class for annotation items which are drawn with :py:class:`QgsAnnotationLayers`.
 
 .. versionadded:: 3.16
 %End

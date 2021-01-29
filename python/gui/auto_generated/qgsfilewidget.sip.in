@@ -12,7 +12,7 @@
 class QgsFileWidget : QWidget
 {
 %Docstring
-The QgsFileWidget class creates a widget for selecting a file or a folder.
+The :py:class:`QgsFileWidget` class creates a widget for selecting a file or a folder.
 %End
 
 %TypeHeaderCode

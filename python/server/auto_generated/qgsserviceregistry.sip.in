@@ -14,7 +14,7 @@
 class QgsServiceRegistry
 {
 %Docstring
-QgsServiceRegistry
+:py:class:`QgsServiceRegistry`
 Class defining the registry manager for QGIS server services
 
 This class provides methods for registering and retrieving
@@ -59,7 +59,7 @@ services. A module may register multiple services.
 
 The registry takes ownership of services and will call 'delete' on cleanup
 
-:param service: a QgsService to be registered
+:param service: a :py:class:`QgsService` to be registered
 %End
 
     bool registerApi( QgsServerApi *api /Transfer/ );

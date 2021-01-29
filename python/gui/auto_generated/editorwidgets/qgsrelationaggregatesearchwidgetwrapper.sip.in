@@ -15,7 +15,7 @@ class QgsRelationAggregateSearchWidgetWrapper : QgsSearchWidgetWrapper
 %Docstring
 
 Search widget for the children of a relation.
-For each attribute of the child, an additional QgsAggregateToolButton will be shown
+For each attribute of the child, an additional :py:class:`QgsAggregateToolButton` will be shown
 to determine how the values should be aggregated for searching.
 
 .. versionadded:: 3.0

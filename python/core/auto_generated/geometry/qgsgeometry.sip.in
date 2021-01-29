@@ -34,20 +34,20 @@ class QgsGeometry
 %Docstring
 A geometry is the spatial representation of a feature.
 
-QgsGeometry acts as a generic container for geometry objects. QgsGeometry objects are implicitly shared,
+:py:class:`QgsGeometry` acts as a generic container for geometry objects. :py:class:`QgsGeometry` objects are implicitly shared,
 so making copies of geometries is inexpensive. The geometry container class can also be stored inside
 a QVariant object.
 
-The actual geometry representation is stored as a QgsAbstractGeometry within the container, and
+The actual geometry representation is stored as a :py:class:`QgsAbstractGeometry` within the container, and
 can be accessed via the :py:func:`~get` method or set using the :py:func:`~set` method. This gives access to the underlying
 raw geometry primitive, such as the point, line, polygon, curve or other geometry subclasses.
 
 .. note::
 
-   QgsGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
-   of the methods or properties exposed from the QgsGeometry API (or QgsAbstractGeometry subclasses) utilize
+   :py:class:`QgsGeometry` objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+   of the methods or properties exposed from the :py:class:`QgsGeometry` API (or :py:class:`QgsAbstractGeometry` subclasses) utilize
    geodesic calculations. Accordingly, properties like :py:func:`~length` and :py:func:`~area` or spatial operations like :py:func:`~buffer`
-   are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+   are always calculated using strictly Cartesian mathematics. In contrast, the :py:class:`QgsDistanceArea` class exposes
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
    are required.
@@ -176,16 +176,16 @@ Creates a new geometry from a WKT string
 %End
     static QgsGeometry fromPointXY( const QgsPointXY &point ) /HoldGIL/;
 %Docstring
-Creates a new geometry from a QgsPointXY object
+Creates a new geometry from a :py:class:`QgsPointXY` object
 %End
     static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 %Docstring
-Creates a new geometry from a QgsMultiPointXY object
+Creates a new geometry from a :py:class:`QgsMultiPointXY` object
 %End
 
     static QgsGeometry fromPolylineXY( const QgsPolylineXY &polyline );
 %Docstring
-Creates a new LineString geometry from a list of QgsPointXY points.
+Creates a new LineString geometry from a list of :py:class:`QgsPointXY` points.
 
 Using :py:func:`~QgsGeometry.fromPolyline` is preferred, as :py:func:`~QgsGeometry.fromPolyline` is more efficient
 and will respect any Z or M dimensions present in the input points.
@@ -201,7 +201,7 @@ and will respect any Z or M dimensions present in the input points.
 
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
 %Docstring
-Creates a new LineString geometry from a list of QgsPoint points.
+Creates a new LineString geometry from a list of :py:class:`QgsPoint` points.
 
 This method will respect any Z or M dimensions present in the input points.
 E.g. if input points are PointZ type, the resultant linestring will be
@@ -212,7 +212,7 @@ a LineStringZ type.
 
     static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
 %Docstring
-Creates a new geometry from a QgsMultiPolylineXY object
+Creates a new geometry from a :py:class:`QgsMultiPolylineXY` object
 %End
     static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
 %Docstring
@@ -266,7 +266,7 @@ Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
 
     QgsWkbTypes::GeometryType type() const /HoldGIL/;
 %Docstring
-Returns type of the geometry as a QgsWkbTypes.GeometryType
+Returns type of the geometry as a :py:class:`QgsWkbTypes`.GeometryType
 
 .. seealso:: :py:func:`wkbType`
 %End
@@ -363,7 +363,7 @@ Returns the planar, 2-dimensional area of the geometry.
 
    QgsGeometry objects are inherently Cartesian/planar geometries, and the area
    returned by this method is calculated using strictly Cartesian mathematics. In contrast,
-   the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+   the :py:class:`QgsDistanceArea` class exposes methods for calculating the areas of geometries using
    geodesic calculations which account for the curvature of the Earth (or any other
    celestial body).
 
@@ -380,7 +380,7 @@ Returns the planar, 2-dimensional length of geometry.
 
    QgsGeometry objects are inherently Cartesian/planar geometries, and the length
    returned by this method is calculated using strictly Cartesian mathematics. In contrast,
-   the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+   the :py:class:`QgsDistanceArea` class exposes methods for calculating the lengths of geometries using
    geodesic calculations which account for the curvature of the Earth (or any other
    celestial body).
 
@@ -672,7 +672,7 @@ Returns coordinates of a vertex.
 
 :param atVertex: index of the vertex
 
-:return: Coordinates of the vertex or empty QgsPoint on error
+:return: Coordinates of the vertex or empty :py:class:`QgsPoint` on error
 %End
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
@@ -853,7 +853,7 @@ Splits this geometry according to a given line.
 :return: OperationResult a result code: success or reason of failure
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true);
@@ -2129,7 +2129,7 @@ geometry will be a polyline.
 
  static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
 %Docstring
-Creates a QgsPolylineXY from a QPolygonF.
+Creates a :py:class:`QgsPolylineXY` from a QPolygonF.
 
 :param polygon: source polygon
 
@@ -2138,12 +2138,12 @@ Creates a QgsPolylineXY from a QPolygonF.
 .. seealso:: :py:func:`createPolygonFromQPolygonF`
 
 .. deprecated::
-   use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead.
+   use :py:func:`QgsGeometry.fromQPolygonF()` or :py:func:`QgsLineString.fromQPolygonF()` instead.
 %End
 
  static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
 %Docstring
-Creates a QgsPolygonXYfrom a QPolygonF.
+Creates a :py:class:`QgsPolygonXYfrom` a QPolygonF.
 
 :param polygon: source polygon
 
@@ -2152,14 +2152,14 @@ Creates a QgsPolygonXYfrom a QPolygonF.
 .. seealso:: :py:func:`createPolylineFromQPolygonF`
 
 .. deprecated::
-   use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead.
+   use :py:func:`QgsGeometry.fromQPolygonF()` or :py:func:`QgsLineString.fromQPolygonF()` instead.
 %End
 
 
     static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * DBL_EPSILON );
 %Docstring
 Compares two geometry objects for equality within a specified tolerance.
-The objects can be of type :py:class:`QgsPolylineXY`, QgsPolygonXYor :py:class:`QgsMultiPolygon`.
+The objects can be of type :py:class:`QgsPolylineXY`, :py:class:`QgsPolygonXYor` :py:class:`QgsMultiPolygon`.
 The 2 types should match.
 
 :param p1: first geometry object
@@ -2302,17 +2302,17 @@ Creates and returns a new geometry engine
 
     static void convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output );
 %Docstring
-Upgrades a point list from QgsPointXY to :py:class:`QgsPoint`
+Upgrades a point list from :py:class:`QgsPointXY` to :py:class:`QgsPoint`
 
-:param input: list of QgsPointXY objects to be upgraded
+:param input: list of :py:class:`QgsPointXY` objects to be upgraded
 :param output: destination for list of points converted to :py:class:`QgsPoint`
 %End
 
     static void convertPointList( const QgsPointSequence &input, QVector<QgsPointXY> &output );
 %Docstring
-Downgrades a point list from QgsPoint to :py:class:`QgsPointXY`
+Downgrades a point list from :py:class:`QgsPoint` to :py:class:`QgsPointXY`
 
-:param input: list of QgsPoint objects to be downgraded
+:param input: list of :py:class:`QgsPoint` objects to be downgraded
 :param output: destination for list of points converted to :py:class:`QgsPointXY`
 %End
 

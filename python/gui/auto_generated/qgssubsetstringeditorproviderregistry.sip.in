@@ -15,7 +15,7 @@ class QgsSubsetStringEditorProviderRegistry
 %Docstring
 This class keeps a list of subset string editor providers.
 
-QgsSubsetStringEditorProviderRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsSubsetStringEditorProviderRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.subsetStringEditorProvideRegistry()`.
 
 .. versionadded:: 3.18
@@ -50,7 +50,7 @@ Remove ``provider`` implementation from the list (``provider`` object is deleted
     void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 %Docstring
 Initializes the registry. The registry needs to be passed explicitly
-(instead of using singleton) because this gets called from QgsGui constructor.
+(instead of using singleton) because this gets called from :py:class:`QgsGui` constructor.
 %End
 
     QgsSubsetStringEditorProvider *providerByName( const QString &name );

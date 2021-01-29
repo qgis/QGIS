@@ -28,7 +28,7 @@ Layers can only be included in one transaction at a time.
 When editing layers which are part of a transaction group, all changes are
 sent directly to the data provider (bypassing the undo/redo stack), and the
 changes can either be committed or rolled back on the database side via the
-QgsTransaction.commit and QgsTransaction.rollback methods.
+:py:class:`QgsTransaction`.commit and :py:class:`QgsTransaction`.rollback methods.
 
 As long as the transaction is active, the state of all layer features reflects
 the current state in the transaction.

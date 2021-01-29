@@ -12,7 +12,7 @@
 class QgsLayoutItemMapItem : QgsLayoutObject
 {
 %Docstring
-An item which is drawn inside a QgsLayoutItemMap, e.g., a grid or map overview.
+An item which is drawn inside a :py:class:`QgsLayoutItemMap`, e.g., a grid or map overview.
 
 .. versionadded:: 3.0
 %End
@@ -302,7 +302,7 @@ above any existing map items already present in the stack.
 .. note::
 
    After adding an item to the stack :py:func:`~QgsLayoutItemMapItemStack.update`
-   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the :py:class:`QgsLayoutItemMap` to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeItem`
 %End
@@ -314,7 +314,7 @@ Removes an item which matching ``itemId`` from the stack and deletes the corresp
 .. note::
 
    After removing an item from the stack, :py:func:`~QgsLayoutItemMapItemStack.update`
-   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the :py:class:`QgsLayoutItemMap` to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addItem`
 %End
@@ -326,7 +326,7 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
 .. note::
 
    After moving an item within the stack, :py:func:`~QgsLayoutItemMapItemStack.update` should be
-   called for the QgsLayoutItemMap to redraw the map with the new item stack order.
+   called for the :py:class:`QgsLayoutItemMap` to redraw the map with the new item stack order.
 
 .. seealso:: :py:func:`moveItemDown`
 %End
@@ -338,7 +338,7 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
 .. note::
 
    After moving an item within the stack, :py:func:`~QgsLayoutItemMapItemStack.update` should be
-   called for the QgsLayoutItemMap to redraw the map with the new item stack order.
+   called for the :py:class:`QgsLayoutItemMap` to redraw the map with the new item stack order.
 
 .. seealso:: :py:func:`moveItemUp`
 %End
@@ -351,7 +351,7 @@ Returns a reference to an item which matching ``itemId`` within the stack.
 
     QList< QgsLayoutItemMapItem * > asList() const;
 %Docstring
-Returns a list of QgsLayoutItemMapItems contained by the stack.
+Returns a list of :py:class:`QgsLayoutItemMapItems` contained by the stack.
 %End
 
   protected:
@@ -360,7 +360,7 @@ Returns a list of QgsLayoutItemMapItems contained by the stack.
 
     void removeItems();
 %Docstring
-Clears the item stack and deletes all QgsLayoutItemMapItems contained
+Clears the item stack and deletes all :py:class:`QgsLayoutItemMapItems` contained
 by the stack
 %End
 };

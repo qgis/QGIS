@@ -73,7 +73,7 @@ to the specified ``metadata`` object.
 
     QgsAbstractMetadataBase *metadata() /Factory/;
 %Docstring
-Returns a QgsAbstractMetadataBase object representing the current state of the widget.
+Returns a :py:class:`QgsAbstractMetadataBase` object representing the current state of the widget.
 
 Caller takes ownership of the returned object.
 

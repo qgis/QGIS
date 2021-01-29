@@ -12,9 +12,9 @@
 class QgsNumericFormatRegistry
 {
 %Docstring
-The QgsNumericFormatRegistry manages registered classes of QgsNumericFormat.
+The :py:class:`QgsNumericFormatRegistry` manages registered classes of :py:class:`QgsNumericFormat`.
 
-A reference to the QgsFieldFormatterRegistry can be obtained from
+A reference to the :py:class:`QgsFieldFormatterRegistry` can be obtained from
 :py:func:`QgsApplication.numericFormatRegistry()`.
 
 .. versionadded:: 3.12
@@ -53,7 +53,7 @@ Removes the format with matching ``id`` from the registry.
     QgsNumericFormat *format( const QString &id ) const /TransferBack/;
 %Docstring
 Creates a new numeric format by ``id``. If there is no such ``id`` registered,
-a default QgsFallbackNumericFormat with a null id will be returned instead.
+a default :py:class:`QgsFallbackNumericFormat` with a null id will be returned instead.
 
 The caller takes ownership of the returned object.
 %End
@@ -61,7 +61,7 @@ The caller takes ownership of the returned object.
     QgsNumericFormat *create( const QString &id, const QVariantMap &configuration, const QgsReadWriteContext &context ) const /TransferBack/;
 %Docstring
 Creates a new numeric format by ``id``, using the supplied ``configuration``. If there is no such ``id`` registered,
-a default QgsFallbackNumericFormat with a null id will be returned instead.
+a default :py:class:`QgsFallbackNumericFormat` with a null id will be returned instead.
 
 The caller takes ownership of the returned object.
 %End
@@ -69,7 +69,7 @@ The caller takes ownership of the returned object.
     QgsNumericFormat *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const /TransferBack/;
 %Docstring
 Creates a new numeric format from an XML ``element``. If there is no matching format ID registered,
-a default QgsFallbackNumericFormat will be returned instead.
+a default :py:class:`QgsFallbackNumericFormat` will be returned instead.
 
 The caller takes ownership of the returned object.
 %End

@@ -38,7 +38,7 @@ Current context for a report section.
 class QgsAbstractReportSection : QgsAbstractLayoutIterator
 {
 %Docstring
-An abstract base class for QgsReport subsections.
+An abstract base class for :py:class:`QgsReport` subsections.
 
 .. warning::
 

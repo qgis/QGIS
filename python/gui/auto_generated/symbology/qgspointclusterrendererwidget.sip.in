@@ -14,7 +14,7 @@
 class QgsPointClusterRendererWidget: QgsRendererWidget, QgsExpressionContextGenerator
 {
 %Docstring
-A widget which allows configuration of the properties for a QgsPointClusterRenderer.
+A widget which allows configuration of the properties for a :py:class:`QgsPointClusterRenderer`.
 
 .. versionadded:: 3.0
 %End
@@ -30,7 +30,7 @@ Returns a new QgsPointClusterRendererWidget.
 
 :param layer: associated vector layer
 :param style: style collection
-:param renderer: source QgsPointClusterRenderer renderer
+:param renderer: source :py:class:`QgsPointClusterRenderer` renderer
 
 :return: new :py:class:`QgsRendererWidget`
 %End
@@ -41,7 +41,7 @@ Constructor for QgsPointClusterRendererWidget.
 
 :param layer: associated vector layer
 :param style: style collection
-:param renderer: source QgsPointClusterRenderer renderer
+:param renderer: source :py:class:`QgsPointClusterRenderer` renderer
 %End
 
     ~QgsPointClusterRendererWidget();

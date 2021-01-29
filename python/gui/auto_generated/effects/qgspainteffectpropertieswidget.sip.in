@@ -14,7 +14,7 @@
 class QgsPaintEffectPropertiesWidget : QWidget
 {
 %Docstring
-A widget which modifies the properties of a QgsPaintEffect
+A widget which modifies the properties of a :py:class:`QgsPaintEffect`
 
 .. versionadded:: 2.9
 %End
@@ -28,7 +28,7 @@ A widget which modifies the properties of a QgsPaintEffect
 %Docstring
 QgsPaintEffectPropertiesWidget constructor
 
-:param effect: QgsPaintEffect to modify in the widget
+:param effect: :py:class:`QgsPaintEffect` to modify in the widget
 :param parent: parent widget
 %End
 

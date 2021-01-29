@@ -12,7 +12,7 @@
 class QgsPresetColorRampWidget : QgsPanelWidget
 {
 %Docstring
-A widget which allows users to modify the properties of a QgsPresetSchemeColorRamp.
+A widget which allows users to modify the properties of a :py:class:`QgsPresetSchemeColorRamp`.
 
 .. versionadded:: 3.0
 %End

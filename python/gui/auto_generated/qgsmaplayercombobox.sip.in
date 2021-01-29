@@ -14,7 +14,7 @@
 class QgsMapLayerComboBox : QComboBox
 {
 %Docstring
-The QgsMapLayerComboBox class is a combo box which displays the list of layers
+The :py:class:`QgsMapLayerComboBox` class is a combo box which displays the list of layers
 
 .. versionadded:: 2.3
 %End

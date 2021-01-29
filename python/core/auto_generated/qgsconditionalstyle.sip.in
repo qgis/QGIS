@@ -15,7 +15,7 @@ typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 class QgsConditionalLayerStyles : QObject
 {
 %Docstring
-The QgsConditionalLayerStyles class holds conditional style information
+The :py:class:`QgsConditionalLayerStyles` class holds conditional style information
 for a layer. This includes field styles and full row styles.
 %End
 
@@ -128,10 +128,10 @@ Set the name of the style.  Names are optional but handy for display
 
     void setRule( const QString &value );
 %Docstring
-Set the rule for the style.  Rules should be of QgsExpression syntax.
+Set the rule for the style.  Rules should be of :py:class:`QgsExpression` syntax.
 Special value of \@value is replaced at run time with the check value
 
-:param value: The QgsExpression style rule to use for this style
+:param value: The :py:class:`QgsExpression` style rule to use for this style
 %End
 
     void setBackgroundColor( const QColor &value );
@@ -159,7 +159,7 @@ Set the font for the style
 %Docstring
 Set the icon for the style. Icons are generated from symbols
 
-:param value: QgsSymbol to be used when generating the icon
+:param value: :py:class:`QgsSymbol` to be used when generating the icon
 %End
 
     QString displayText() const;
@@ -187,7 +187,7 @@ The icon set for style generated from the set symbol
 %Docstring
 The symbol used to generate the icon for the style
 
-:return: The QgsSymbol used for the icon
+:return: The :py:class:`QgsSymbol` used for the icon
 %End
 
     QColor textColor() const;

@@ -47,7 +47,7 @@ The optional ``schema`` argument can be used to restrict the tables to those fro
 
 .. warning::
 
-   The ``provider`` must support the connection API methods in its QgsProviderMetadata implementation
+   The ``provider`` must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly.
 %End
 

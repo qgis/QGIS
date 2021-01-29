@@ -12,7 +12,7 @@
 class QgsRasterFileWriterTask : QgsTask
 {
 %Docstring
-QgsTask task which performs a QgsRasterFileWriter layer saving operation as a background
+:py:class:`QgsTask` task which performs a :py:class:`QgsRasterFileWriter` layer saving operation as a background
 task. This can be used to save a raster layer out to a file without blocking the
 QGIS interface.
 

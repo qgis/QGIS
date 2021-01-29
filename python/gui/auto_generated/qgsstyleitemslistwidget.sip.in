@@ -15,7 +15,7 @@
 class QgsStyleItemsListWidget : QWidget
 {
 %Docstring
-A reusable widget for showing a filtered list of entities from a QgsStyle database.
+A reusable widget for showing a filtered list of entities from a :py:class:`QgsStyle` database.
 
 .. versionadded:: 3.10
 %End
@@ -55,7 +55,7 @@ Sets the ``type`` of symbols to show in the widget.
 
     void setLayerType( QgsWkbTypes::GeometryType type );
 %Docstring
-Sets the layer ``type`` to show in the widget. Set ``type`` to QgsWkbTypes.UnknownGeometry if no
+Sets the layer ``type`` to show in the widget. Set ``type`` to :py:class:`QgsWkbTypes`.UnknownGeometry if no
 layer type filter is desired.
 
 This setting only applies to label settings and 3d style entities.

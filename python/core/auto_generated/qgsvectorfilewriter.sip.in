@@ -15,7 +15,7 @@ class QgsVectorFileWriter : QgsFeatureSink
 %Docstring
 A convenience class for writing vector files to disk.
 There are two possibilities how to use this class:
-1. static call to QgsVectorFileWriter.writeAsVectorFormat(...) which saves the whole vector layer
+1. static call to :py:class:`QgsVectorFileWriter`.writeAsVectorFormat(...) which saves the whole vector layer
 2. create an instance of the class and issue calls to addFeature(...)
 %End
 
@@ -280,7 +280,7 @@ Write contents of vector layer to an (OGR supported) vector format
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
 .. deprecated::
-   Use writeAsVectorFormatV2() instead.
+   Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
 
@@ -332,7 +332,7 @@ Writes a layer out to a vector file.
 .. versionadded:: 2.2
 
 .. deprecated::
-   Use writeAsVectorFormatV2() instead.
+   Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
     class SaveVectorOptions
@@ -412,7 +412,7 @@ Writes a layer out to a vector file.
 .. versionadded:: 3.0
 
 .. deprecated::
-   Use writeAsVectorFormatV2() instead.
+   Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
  QgsVectorFileWriter( const QString &vectorFileName,

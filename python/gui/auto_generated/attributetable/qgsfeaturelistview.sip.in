@@ -16,7 +16,7 @@ class QgsFeatureListView : QListView
 Shows a list of features and renders a edit button next to each feature.
 
 Accepts a display expression to define the way, features are rendered.
-Uses a QgsFeatureListModel as source model.
+Uses a :py:class:`QgsFeatureListModel` as source model.
 %End
 
 %TypeHeaderCode
@@ -40,7 +40,7 @@ Returns the layer cache
 
     virtual void setModel( QgsFeatureListModel *featureListModel );
 %Docstring
-Set the QgsFeatureListModel which is used to retrieve information
+Set the :py:class:`QgsFeatureListModel` which is used to retrieve information
 
 :param featureListModel: The model to use
 %End

@@ -326,7 +326,7 @@ ChangeGeometries capabilities. Providers which report the ChangeFeatures
 capability implement an optimised version of this method.
 
 :param attr_map: a map containing changed attributes
-:param geometry_map: A QgsGeometryMap whose index contains the feature IDs
+:param geometry_map: A :py:class:`QgsGeometryMap` whose index contains the feature IDs
                      that will have their geometries changed.
                      The second map parameter being the new geometries themselves
 
@@ -341,7 +341,7 @@ directly into the database. Do not call this method for non-feature creation or 
 e.g., when validating an attribute or to compare it against an existing value, as calling it
 can cause changes to the underlying data source (e.g., Postgres provider where the default value
 is calculated as a result of a sequence). It is recommended that you instead use the methods
-in QgsVectorLayerUtils such as :py:func:`QgsVectorLayerUtils.createFeature()`
+in :py:class:`QgsVectorLayerUtils` such as :py:func:`QgsVectorLayerUtils.createFeature()`
 so that default value handling and validation is automatically carried out.
 
 .. seealso:: :py:func:`defaultValueClause`
@@ -383,7 +383,7 @@ passed which can help refine the skip constraint check.
 %Docstring
 Changes geometries of existing features
 
-:param geometry_map: A QgsGeometryMap whose index contains the feature IDs
+:param geometry_map: A :py:class:`QgsGeometryMap` whose index contains the feature IDs
                      that will have their geometries changed.
                      The second map parameter being the new geometries themselves
 
@@ -460,7 +460,7 @@ Returns list of indexes of fields that make up the primary key
 
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
 %Docstring
-Returns list of indexes to names for QgsPalLabeling fix
+Returns list of indexes to names for :py:class:`QgsPalLabeling` fix
 %End
 
     bool supportedType( const QgsField &field ) const;

@@ -285,7 +285,7 @@ legend items of passed layer tree model.
 
     QgsProject *project();
 %Docstring
-The QgsProject on which this map theme collection works.
+The :py:class:`QgsProject` on which this map theme collection works.
 
 .. versionadded:: 3.0
 %End

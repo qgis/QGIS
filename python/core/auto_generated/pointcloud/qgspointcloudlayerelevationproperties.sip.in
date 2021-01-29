@@ -13,7 +13,7 @@
 class QgsPointCloudLayerElevationProperties : QgsMapLayerElevationProperties
 {
 %Docstring
-Point cloud layer specific subclass of QgsMapLayerElevationProperties.
+Point cloud layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
 
 .. versionadded:: 3.18
 %End

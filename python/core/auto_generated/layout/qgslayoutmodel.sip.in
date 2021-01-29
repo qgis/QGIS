@@ -19,7 +19,7 @@ class QgsLayoutModel: QAbstractItemModel
 A model for items attached to a layout. The model also maintains the z-order for the
 layout, and must be notified whenever item stacking changes.
 
-Internally, QgsLayoutModel maintains two lists. One contains a complete list of all items for
+Internally, :py:class:`QgsLayoutModel` maintains two lists. One contains a complete list of all items for
 the layout, ordered by their position within the z-order stack.
 
 The second list contains only items which are currently displayed in the layout's scene.
@@ -77,7 +77,7 @@ Constructor for a QgsLayoutModel attached to the specified ``layout``.
 
     QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
 %Docstring
-Returns the QgsLayoutItem corresponding to a QModelIndex ``index``, if possible.
+Returns the :py:class:`QgsLayoutItem` corresponding to a QModelIndex ``index``, if possible.
 
 .. seealso:: :py:func:`indexForItem`
 %End
@@ -110,12 +110,12 @@ Allows for filtering a QgsLayoutModel by item type.
 
     QgsLayoutProxyModel( QgsLayout *layout, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsLayoutProxyModelm, attached to the specified ``layout``.
+Constructor for :py:class:`QgsLayoutProxyModelm`, attached to the specified ``layout``.
 %End
 
     QgsLayoutItemRegistry::ItemType filterType() const;
 %Docstring
-Returns the current item type filter, or QgsLayoutItemRegistry.LayoutItem if no
+Returns the current item type filter, or :py:class:`QgsLayoutItemRegistry`.LayoutItem if no
 item type filter is set.
 
 .. seealso:: :py:func:`setFilterType`
@@ -124,7 +124,7 @@ item type filter is set.
     void setFilterType( QgsLayoutItemRegistry::ItemType filter );
 %Docstring
 Sets the item type ``filter``. Only matching item types will be shown.
-Set ``filter`` to QgsLayoutItemRegistry.LayoutItem to show all
+Set ``filter`` to :py:class:`QgsLayoutItemRegistry`.LayoutItem to show all
 item types.
 
 .. seealso:: :py:func:`filterType`
@@ -146,13 +146,13 @@ Returns the list of specific items excluded from the model.
 
     QgsLayoutModel *sourceLayerModel() const;
 %Docstring
-Returns the QgsLayoutModel used in this proxy model.
+Returns the :py:class:`QgsLayoutModel` used in this proxy model.
 %End
 
     QgsLayoutItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 %Docstring
-Returns the QgsLayoutItem corresponding to an index from the source
-QgsLayoutModel model.
+Returns the :py:class:`QgsLayoutItem` corresponding to an index from the source
+:py:class:`QgsLayoutModel` model.
 %End
 
     QgsLayout *layout();

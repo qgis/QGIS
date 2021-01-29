@@ -198,7 +198,7 @@ source data type may be shorter than dataType
 %Docstring
 Gets the extent of the interface.
 
-:return: QgsRectangle containing the extent of the layer
+:return: :py:class:`QgsRectangle` containing the extent of the layer
 %End
 
     int dataTypeSize( int bandNo );

@@ -38,17 +38,17 @@ layer types use. The process of rendering of vector tiles looks like this:
 +--------+                +------+                 +---------+
 
 Data source is a place from where tiles are fetched from (URL for HTTP access, local
-files, MBTiles file, GeoPackage file or others. Loader (QgsVectorTileLoader) class
+files, MBTiles file, GeoPackage file or others. Loader (:py:class:`QgsVectorTileLoader`) class
 takes care of loading data from the data source. The "raw tile" data is just a blob
 (QByteArray) that is encoded in some way. There are multiple ways how vector tiles
 are encoded just like there are different formats how to store images. For example,
 tiles can be encoded using Mapbox Vector Tiles (MVT) format or in GeoJSON. Decoder
-(QgsVectorTileDecoder) takes care of decoding raw tile data into QgsFeature objects.
+(:py:class:`QgsVectorTileDecoder`) takes care of decoding raw tile data into :py:class:`QgsFeature` objects.
 A decoded tile is essentially an array of vector features for each sub-layer found
-in the tile - this is what vector tile renderer (QgsVectorTileRenderer) expects
+in the tile - this is what vector tile renderer (:py:class:`QgsVectorTileRenderer`) expects
 and does the map rendering.
 
-To construct a vector tile layer, it is best to use QgsDataSourceUri class and set
+To construct a vector tile layer, it is best to use :py:class:`QgsDataSourceUri` class and set
 the following parameters to get a valid encoded URI:
 
 - "type" - what kind of data source will be used

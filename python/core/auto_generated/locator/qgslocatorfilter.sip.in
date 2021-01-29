@@ -14,7 +14,7 @@
 class QgsLocatorResult
 {
 %Docstring
-Encapsulates properties of an individual matching result found by a QgsLocatorFilter.
+Encapsulates properties of an individual matching result found by a :py:class:`QgsLocatorFilter`.
 
 .. versionadded:: 3.0
 %End

@@ -15,7 +15,7 @@ class QgsSingleGeometryCheckError
 {
 %Docstring
 
-An error from a QgsSingleGeometryCheck.
+An error from a :py:class:`QgsSingleGeometryCheck`.
 
 .. note::
 
@@ -83,7 +83,7 @@ class QgsGeometryCheckErrorSingle : QgsGeometryCheckError
 {
 %Docstring
 
-Wraps a QgsSingleGeometryError into a standard :py:class:`QgsGeometryCheckError`.
+Wraps a :py:class:`QgsSingleGeometryError` into a standard :py:class:`QgsGeometryCheckError`.
 The single error can be obtained via singleError.
 
 .. note::
@@ -146,7 +146,7 @@ Creates a new single geometry check.
 %Docstring
 Check the ``geometry`` for errors. It may make use of ``configuration`` options.
 
-Returns a list of QgsSingleGeometryCheckErrors, ownership is transferred to the caller.
+Returns a list of :py:class:`QgsSingleGeometryCheckErrors`, ownership is transferred to the caller.
 An empty list is returned for geometries without errors.
 
 .. versionadded:: 3.4

@@ -15,9 +15,9 @@ class QgsProxyFeatureSink : QgsFeatureSink
 %Docstring
 A simple feature sink which proxies feature addition on to another feature sink.
 
-This class is designed to allow factory methods which always return new QgsFeatureSink
-objects. Since it is not always possible to create an entirely new QgsFeatureSink
-(e.g. if the feature sink is a layer's data provider), a new QgsProxyFeatureSink
+This class is designed to allow factory methods which always return new :py:class:`QgsFeatureSink`
+objects. Since it is not always possible to create an entirely new :py:class:`QgsFeatureSink`
+(e.g. if the feature sink is a layer's data provider), a new :py:class:`QgsProxyFeatureSink`
 can instead be returned which forwards features on to the destination sink. The
 proxy sink can be safely deleted without affecting the destination sink.
 
@@ -40,7 +40,7 @@ Constructs a new QgsProxyFeatureSink which forwards features onto a destination 
 
     QgsFeatureSink *destinationSink();
 %Docstring
-Returns the destination QgsFeatureSink which the proxy will forward features to.
+Returns the destination :py:class:`QgsFeatureSink` which the proxy will forward features to.
 %End
 
 };

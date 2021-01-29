@@ -14,7 +14,7 @@
 class QgsLayerTreeViewDefaultActions : QObject
 {
 %Docstring
-The QgsLayerTreeViewDefaultActions class serves as a factory of actions
+The :py:class:`QgsLayerTreeViewDefaultActions` class serves as a factory of actions
 that can be used together with a layer tree view.
 
 .. seealso:: :py:class:`QgsLayerTreeView`
@@ -54,7 +54,7 @@ Action to check a group and all its parents
 Action to zoom to the active layer from the layer tree.
 
 .. deprecated:: QGIS 3.18
-  use actionZoomToLayers()
+  use :py:func:`~QgsLayerTreeViewDefaultActions.actionZoomToLayers`
 %End
 
     QAction *actionZoomToLayers( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
@@ -76,7 +76,7 @@ Action to zoom to selected features of a vector layer
 %Docstring
 
 .. deprecated:: QGIS 3.2
-  use actionMoveOutOfGroup()
+  use :py:func:`~QgsLayerTreeViewDefaultActions.actionMoveOutOfGroup`
 %End
 
     QAction *actionMoveOutOfGroup( QObject *parent = 0 ) /Factory/;
@@ -116,7 +116,7 @@ Action to enable/disable mutually exclusive flag of a group (only one child node
 Zooms a map ``canvas`` to the extent of the active layer in the layer tree.
 
 .. deprecated:: QGIS 3.18
-  use zoomToLayers()
+  use :py:func:`~QgsLayerTreeViewDefaultActions.zoomToLayers`
 %End
 
     void zoomToLayers( QgsMapCanvas *canvas );
@@ -151,7 +151,7 @@ Zooms a map ``canvas`` to all the selected layer(s) in the layer tree
 Zooms to the extent of the active layer in the layer tree.
 
 .. deprecated:: QGIS 3.18
-  use zoomToLayers()
+  use :py:func:`~QgsLayerTreeViewDefaultActions.zoomToLayers`
 %End
 
     void zoomToLayers();
@@ -173,7 +173,7 @@ Zooms to the bounding box of all selected features of a vector layer.
 %Docstring
 
 .. deprecated:: QGIS 3.2
-  use moveOutOfGroup()
+  use :py:func:`~QgsLayerTreeViewDefaultActions.moveOutOfGroup`
 %End
 
     void moveOutOfGroup();

@@ -17,8 +17,8 @@ class QgsLayoutConfigObject: QObject
 An object for property widgets for layout items. All layout config type widgets should contain
 this object.
 
-If you are creating a new QgsLayoutItem configuration widget, you should instead
-inherit from QgsLayoutItemBaseWidget (rather then directly working with QgsLayoutConfigObject).
+If you are creating a new :py:class:`QgsLayoutItem` configuration widget, you should instead
+inherit from :py:class:`QgsLayoutItemBaseWidget` (rather then directly working with :py:class:`QgsLayoutConfigObject`).
 
 .. versionadded:: 3.0
 %End

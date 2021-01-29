@@ -149,7 +149,7 @@ model and ``parent`` object.
 
     QgsPointCloudAttributeModel *sourceAttributeModel();
 %Docstring
-Returns the QgsPointCloudAttributeModel used in this QSortFilterProxyModel.
+Returns the :py:class:`QgsPointCloudAttributeModel` used in this QSortFilterProxyModel.
 %End
 
     QgsPointCloudAttributeProxyModel *setFilters( QgsPointCloudAttributeProxyModel::Filters filters );

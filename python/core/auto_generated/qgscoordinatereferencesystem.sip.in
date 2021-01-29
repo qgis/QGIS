@@ -42,7 +42,7 @@ as that is the representation that will be ultimately used.
 Methods that allow inspection of CRS instances include :py:func:`~isValid`, :py:func:`~authid`, :py:func:`~description`,
 :py:func:`~toWkt`, :py:func:`~toProj`, :py:func:`~mapUnits` and others.
 Creation of CRS instances is further described in \ref crs_construct_and_copy section below.
-Transformations between coordinate reference systems are done using QgsCoordinateTransform class.
+Transformations between coordinate reference systems are done using :py:class:`QgsCoordinateTransform` class.
 
 For example, the following code will create and inspect "British national grid" CRS:
 
@@ -133,7 +133,7 @@ QGIS also features a GUI for management of local custom CRS definitions.
 There are therefore two databases: one for shipped CRS definitions and one for custom CRS definitions.
 Custom CRS have internal IDs (accessible with :py:func:`~srsid`) greater or equal to \ref USER_CRS_START_ID.
 The local CRS databases should never be accessed directly with SQLite functions, instead
-you should use QgsCoordinateReferenceSystem API for CRS lookups and for managements of custom CRS.
+you should use :py:class:`QgsCoordinateReferenceSystem` API for CRS lookups and for managements of custom CRS.
 
 Validation
 ----------
@@ -157,7 +157,7 @@ be potentially expensive. Consequently, CRS creation methods use an internal cac
 unnecessary database lookups. If the CRS database is modified, then it is necessary to call
 :py:func:`~invalidateCache` to ensure that outdated records are not being returned from the cache.
 
-Since QGIS 2.16 QgsCoordinateReferenceSystem objects are implicitly shared.
+Since QGIS 2.16 :py:class:`QgsCoordinateReferenceSystem` objects are implicitly shared.
 
 Caveats
 -------
@@ -291,7 +291,7 @@ Creates a CRS from a proj style formatted string.
 .. seealso:: :py:func:`createFromProj`
 
 .. deprecated::
-   QGIS 3.10 Use fromProj() instead.
+   QGIS 3.10 Use :py:func:`~QgsCoordinateReferenceSystem.fromProj` instead.
 %End
 
     static QgsCoordinateReferenceSystem fromProj( const QString &proj );
@@ -455,7 +455,7 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 .. seealso:: :py:func:`fromProj`
 
 .. deprecated::
-   QGIS 3.10 Use createFromProj() instead
+   QGIS 3.10 Use :py:func:`~QgsCoordinateReferenceSystem.createFromProj` instead
 %End
 
     bool createFromProj( const QString &projString );
@@ -763,7 +763,7 @@ overridden with these.
 .. seealso:: :py:func:`toWkt`
 
 .. deprecated::
-   QGIS 3.10 Use toProj() instead.
+   QGIS 3.10 Use :py:func:`~QgsCoordinateReferenceSystem.toProj` instead.
 %End
 
     QString toProj() const;
@@ -895,7 +895,7 @@ Returns a list of recently used projections
 :return: list of srsid for recently used projections
 
 .. deprecated::
-   QGIS 3.10 Use recentCoordinateReferenceSystems() instead.
+   QGIS 3.10 Use :py:func:`~QgsCoordinateReferenceSystem.recentCoordinateReferenceSystems` instead.
 %End
 
     static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems();

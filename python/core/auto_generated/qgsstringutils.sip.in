@@ -125,8 +125,8 @@ Sets the list of string replacements in this collection.
     QString process( const QString &input ) const;
 %Docstring
 Processes a given input string, applying any valid replacements which should be made
-using QgsStringReplacement objects contained by this collection. Replacements
-are made in order of the QgsStringReplacement objects contained in the collection.
+using :py:class:`QgsStringReplacement` objects contained by this collection. Replacements
+are made in order of the :py:class:`QgsStringReplacement` objects contained in the collection.
 
 :param input: input string
 

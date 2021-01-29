@@ -16,7 +16,7 @@ class QgsRange
 %Docstring
 A template based class for storing ranges (lower to upper values).
 
-QgsRange classes represent a range of values of some element type. For instance,
+:py:class:`QgsRange` classes represent a range of values of some element type. For instance,
 ranges of int might be used to represent integer ranges.
 
 Ranges can indicate whether the upper and lower values are inclusive or exclusive.
@@ -195,7 +195,7 @@ typedef QgsRange<int> QgsRangeintBase;
 class QgsIntRange : QgsRangeintBase
 {
 %Docstring
-QgsRange which stores a range of integer values.
+:py:class:`QgsRange` which stores a range of integer values.
 
 .. seealso:: :py:class:`QgsDoubleRange`
 
@@ -253,7 +253,7 @@ class QgsTemporalRange
 %Docstring
 A template based class for storing temporal ranges (beginning to end values).
 
-QgsTemporalRange classes represent a range of values of some temporal type. For instance,
+:py:class:`QgsTemporalRange` classes represent a range of values of some temporal type. For instance,
 ranges of QDateTime might be used to represent datetime ranges.
 
 Ranges can indicate whether the upper and lower values are inclusive or exclusive.
@@ -384,7 +384,7 @@ If the range is empty and ``other`` is not, the range is changed and set to ``ot
 
 typedef QgsTemporalRange< QDate > QgsDateRange;
 @DOCSTRINGSTEMPLATE@%Docstring
-@DOCSTRINGSTEMPLATE@QgsRange which stores a range of dates.
+@DOCSTRINGSTEMPLATE@:py:class:`QgsRange` which stores a range of dates.
 @DOCSTRINGSTEMPLATE@
 @DOCSTRINGSTEMPLATE@Invalid QDates as the beginning or end are permitted. In this case,
 @DOCSTRINGSTEMPLATE@the bound is considered to be infinite. E.g. QgsDateRange(QDate(),QDate(2017,1,1))
@@ -398,7 +398,7 @@ typedef QgsTemporalRange< QDate > QgsDateRange;
 
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
 @DOCSTRINGSTEMPLATE@%Docstring
-@DOCSTRINGSTEMPLATE@QgsRange which stores a range of date times.
+@DOCSTRINGSTEMPLATE@:py:class:`QgsRange` which stores a range of date times.
 @DOCSTRINGSTEMPLATE@
 @DOCSTRINGSTEMPLATE@Invalid QDateTimes as the beginning or end are permitted. In this case,
 @DOCSTRINGSTEMPLATE@the bound is considered to be infinite. E.g. QgsDateTimeRange(QDateTime(),QDateTime(2017,1,1))

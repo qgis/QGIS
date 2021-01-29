@@ -17,7 +17,7 @@ class QgsProjectStorageGuiRegistry
 %Docstring
 A registry / canonical manager of GUI parts of project storage backends.
 
-QgsProjectStorageGuiRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsProjectStorageGuiRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.projectStorageGuiRegistry()`.
 
 .. seealso:: :py:class:`QgsProjectStorageRegistry`
@@ -61,7 +61,7 @@ Unregisters a storage backend and destroys its instance
     void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 %Docstring
 Initializes the registry. The registry needs to be passed explicitly
-(instead of using singleton) because this gets called from QgsGui constructor.
+(instead of using singleton) because this gets called from :py:class:`QgsGui` constructor.
 %End
 
   private:

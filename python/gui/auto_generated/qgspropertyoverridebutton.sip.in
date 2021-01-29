@@ -14,9 +14,9 @@ class QgsPropertyOverrideButton: QToolButton
 %Docstring
 A button for controlling property overrides which may apply to a widget.
 
-QgsPropertyOverrideButton is designed to be used alongside the QGIS
-properties framework (QgsProperty, QgsPropertyDefinition
-and QgsPropertyCollection).
+:py:class:`QgsPropertyOverrideButton` is designed to be used alongside the QGIS
+properties framework (:py:class:`QgsProperty`, :py:class:`QgsPropertyDefinition`
+and :py:class:`QgsPropertyCollection`).
 
 It allows users to specify field or expression based overrides
 which should be applied to a property of an object. Eg, this widget
@@ -87,7 +87,7 @@ Initialize a newly constructed property button (useful if button was included in
 
     QgsProperty toProperty() const;
 %Docstring
-Returns a QgsProperty object encapsulating the current state of the
+Returns a :py:class:`QgsProperty` object encapsulating the current state of the
 widget.
 
 .. seealso:: :py:func:`setToProperty`
@@ -201,7 +201,7 @@ an expression context for the button when required.
 Registers a ``widget`` which is linked to this button. The meaning of linked widgets
 depends on the property type, and the type of linked widget.
 
-For color properties, linking a QgsColorButton allows the color button to correctly
+For color properties, linking a :py:class:`QgsColorButton` allows the color button to correctly
 reflect the status of the property when it's set to follow a project color.
 
 .. versionadded:: 3.6

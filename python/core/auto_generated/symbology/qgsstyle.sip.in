@@ -323,7 +323,7 @@ Returns count of legend patch shapes in the style.
     QgsSymbol::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
 %Docstring
 Returns the symbol type corresponding to the legend patch shape
-with the specified ``name``, or QgsSymbol.Hybrid
+with the specified ``name``, or :py:class:`QgsSymbol`.Hybrid
 if a matching legend patch shape is not present.
 
 .. versionadded:: 3.14
@@ -354,7 +354,7 @@ with the specified ``name``, or an empty list if a matching 3d symbol is not pre
     QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
 %Docstring
 Returns the layer geometry type corresponding to the label settings
-with the specified ``name``, or QgsWkbTypes.UnknownGeometry
+with the specified ``name``, or :py:class:`QgsWkbTypes`.UnknownGeometry
 if matching label settings are not present.
 
 .. versionadded:: 3.10
@@ -567,7 +567,7 @@ Removes the entry of the specified ``type`` with matching ``name`` from the data
 Adds the symbol to the database with tags.
 
 :param name: is the name of the symbol as QString
-:param symbol: is the pointer to the new QgsSymbol being saved
+:param symbol: is the pointer to the new :py:class:`QgsSymbol` being saved
 :param favorite: is a boolean value to specify whether the symbol should be added to favorites
 :param tags: is a list of tags that are associated with the symbol as a QStringList.
 
@@ -579,7 +579,7 @@ Adds the symbol to the database with tags.
 Adds the colorramp to the database.
 
 :param name: is the name of the colorramp as QString
-:param ramp: is the pointer to the new QgsColorRamp being saved
+:param ramp: is the pointer to the new :py:class:`QgsColorRamp` being saved
 :param favorite: is a boolean value to specify whether the colorramp should be added to favorites
 :param tags: is a list of tags that are associated with the color ramp as a QStringList.
 
@@ -854,7 +854,7 @@ Returns the smart groups list
 
     QgsSmartConditionMap smartgroup( int id );
 %Docstring
-Returns the QgsSmartConditionMap for the given id
+Returns the :py:class:`QgsSmartConditionMap` for the given id
 %End
 
     QString smartgroupOperator( int id );
@@ -1164,7 +1164,7 @@ Returns the type of style entity.
 class QgsStyleSymbolEntity : QgsStyleEntityInterface
 {
 %Docstring
-A symbol entity for QgsStyle databases.
+A symbol entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
 %End
@@ -1194,7 +1194,7 @@ Returns the entity's symbol.
 class QgsStyleColorRampEntity : QgsStyleEntityInterface
 {
 %Docstring
-A color ramp entity for QgsStyle databases.
+A color ramp entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
 %End
@@ -1224,7 +1224,7 @@ Returns the entity's color ramp.
 class QgsStyleTextFormatEntity : QgsStyleEntityInterface
 {
 %Docstring
-A text format entity for QgsStyle databases.
+A text format entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
 %End
@@ -1252,7 +1252,7 @@ Returns the entity's text format.
 class QgsStyleLabelSettingsEntity : QgsStyleEntityInterface
 {
 %Docstring
-A label settings entity for QgsStyle databases.
+A label settings entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
 %End
@@ -1281,7 +1281,7 @@ Returns the entity's label settings.
 class QgsStyleLegendPatchShapeEntity : QgsStyleEntityInterface
 {
 %Docstring
-A legend patch shape entity for QgsStyle databases.
+A legend patch shape entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.14
 %End
@@ -1310,7 +1310,7 @@ Returns the entity's legend patch shape.
 class QgsStyleSymbol3DEntity : QgsStyleEntityInterface
 {
 %Docstring
-A 3d symbol entity for QgsStyle databases.
+A 3d symbol entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.16
 %End

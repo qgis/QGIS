@@ -14,7 +14,7 @@
 class QgsValidityCheckResultsModel : QAbstractItemModel
 {
 %Docstring
-A QAbstractItemModel subclass for displaying the results from a QgsAbtractValidityCheck.
+A QAbstractItemModel subclass for displaying the results from a :py:class:`QgsAbtractValidityCheck`.
 
 .. versionadded:: 3.6
 %End
@@ -80,7 +80,7 @@ Sets the list of check ``results`` to show in the dialog.
 Runs all registered validity checks of the given ``type``, and if any warnings or critical
 errors are encountered then displays them to users in a dialog.
 
-The ``context`` argument must specify the correct QgsValidityCheckContext subclass for the
+The ``context`` argument must specify the correct :py:class:`QgsValidityCheckContext` subclass for the
 given check ``type``.
 
 The ``title`` argument is used as the dialog's title, and the ``description`` text will be shown

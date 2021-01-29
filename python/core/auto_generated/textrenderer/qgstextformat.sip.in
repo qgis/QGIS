@@ -17,7 +17,7 @@ Container for all settings relating to text rendering.
 
 .. note::
 
-   QgsTextFormat objects are implicitly shared.
+   :py:class:`QgsTextFormat` objects are implicitly shared.
 
 .. versionadded:: 3.0
 %End
@@ -172,7 +172,7 @@ units and map unit scale) for a specified render context.
 
 :param context: destination render context
 :param scaleFactor: optional font size scaling factor. It is recommended to set this to
-                    QgsTextRenderer.FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+                    :py:class:`QgsTextRenderer`.FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
                     based on the resultant font metrics. Failure to do so will result in poor quality text rendering
                     at small font sizes.
 
@@ -265,7 +265,7 @@ Sets the units for the size of rendered text.
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the size. This is only used if the
-:py:func:`~QgsTextFormat.sizeUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextFormat.sizeUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -275,7 +275,7 @@ Returns the map unit scale object for the size. This is only used if the
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the size. This is only used if the
-:py:func:`~QgsTextFormat.sizeUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextFormat.sizeUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`sizeMapUnitScale`
 

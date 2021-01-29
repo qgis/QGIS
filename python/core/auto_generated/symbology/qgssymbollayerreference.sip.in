@@ -17,17 +17,17 @@ We may need stable references to symbol layers, when pointers to symbol layers i
 
 A symbol layer identifier consists of:
 
-- an identifier to its symbol (given by the QgsFeatureRenderer)
+- an identifier to its symbol (given by the :py:class:`QgsFeatureRenderer`)
 - a path of indexes inside its symbol and subsymbols.
 
-For a symbol in a QgsSingleSymbolRenderer that has two symbol layers, it will give:
+For a symbol in a :py:class:`QgsSingleSymbolRenderer` that has two symbol layers, it will give:
 
 - "" for the symbol key
 - [0] and [1] for the two symbol layer indexes
 
-For a QgsRuleBasedRenderer each rule key is the symbol key.
+For a :py:class:`QgsRuleBasedRenderer` each rule key is the symbol key.
 
-For a symbol with a symbol layer that has a sub symbol (say a QgsArrowSymbolLayer),
+For a symbol with a symbol layer that has a sub symbol (say a :py:class:`QgsArrowSymbolLayer`),
 path to symbol layers of the sub symbol are given by a list of indexes:
 
 - [0, 0] : first symbol layer of the sub symbol of the first symbol layer
@@ -120,7 +120,7 @@ typedef QList<QgsSymbolLayerReference> QgsSymbolLayerReferenceList;
 
 QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList & );
 %Docstring
-Utilitary function to turn a QgsSymbolLayerReferenceList into a string
+Utilitary function to turn a :py:class:`QgsSymbolLayerReferenceList` into a string
 
 .. seealso:: :py:func:`stringToSymbolLayerReferenceList`
 
@@ -130,7 +130,7 @@ Utilitary function to turn a QgsSymbolLayerReferenceList into a string
 QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString & );
 %Docstring
 Utilitary function to parse a string originated from symbolLayerReferenceListToString
-into a QgsSymbolLayerReferenceList
+into a :py:class:`QgsSymbolLayerReferenceList`
 
 .. seealso:: :py:func:`symbolLayerReferenceListToString`
 

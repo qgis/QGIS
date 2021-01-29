@@ -13,7 +13,7 @@
 class QgsLayoutViewMouseEvent : QMouseEvent
 {
 %Docstring
-A QgsLayoutViewMouseEvent is the result of a user interaction with the mouse on a QgsLayoutView.
+A :py:class:`QgsLayoutViewMouseEvent` is the result of a user interaction with the mouse on a :py:class:`QgsLayoutView`.
 
 It is sent whenever the user moves, clicks, releases or double clicks the mouse.
 In addition to the coordinates in pixel space it also knows the coordinates the layout space.

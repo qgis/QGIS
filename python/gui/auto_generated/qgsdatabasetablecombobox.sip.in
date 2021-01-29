@@ -14,11 +14,11 @@
 class QgsDatabaseTableComboBox : QWidget
 {
 %Docstring
-The QgsDatabaseTableComboBox class is a combo box which displays the list of tables for a specific database connection.
+The :py:class:`QgsDatabaseTableComboBox` class is a combo box which displays the list of tables for a specific database connection.
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the combobox to work correctly.
 
 .. versionadded:: 3.14
@@ -37,7 +37,7 @@ The optional ``schema`` argument can be used to restrict the listed tables to a 
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly.
 %End
 

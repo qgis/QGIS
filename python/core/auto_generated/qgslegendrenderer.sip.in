@@ -14,9 +14,9 @@
 class QgsLegendRenderer
 {
 %Docstring
-The QgsLegendRenderer class handles automatic layout and rendering of legend.
-The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
-within QgsLegendRenderer.
+The :py:class:`QgsLegendRenderer` class handles automatic layout and rendering of legend.
+The content is given by :py:class:`QgsLayerTreeModel` instance. Various layout properties can be configured
+within :py:class:`QgsLegendRenderer`.
 
 All spacing and sizes are in millimeters.
 
@@ -71,7 +71,7 @@ Draws the legend with given ``painter``. The legend will occupy the area reporte
 The ``painter`` should be scaled beforehand so that units correspond to millimeters.
 
 .. deprecated::
-   Use the variant which accepts a QgsRenderContext instead.
+   Use the variant which accepts a :py:class:`QgsRenderContext` instead.
 %End
 
     void drawLegend( QgsRenderContext &context );

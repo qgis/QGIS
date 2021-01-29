@@ -15,15 +15,15 @@
 class QgsServerInterface
 {
 %Docstring
-QgsServerInterface
+:py:class:`QgsServerInterface`
 Class defining interfaces exposed by QGIS Server and
 made available to plugins.
 
 This class provides methods to access the request handler and
 the capabilities cache. A method to read the environment
 variables set in the main FCGI loop is also available.
-Plugins can add listeners (instances of QgsServerFilter) with
-a certain priority through the registerFilter( QgsServerFilter* , int) method.
+Plugins can add listeners (instances of :py:class:`QgsServerFilter`) with
+a certain priority through the registerFilter( :py:class:`QgsServerFilter`* , int) method.
 %End
 
 %TypeHeaderCode
@@ -54,7 +54,7 @@ Gets pointer to the request handler
 %Docstring
 Register a :py:class:`QgsServerFilter`
 
-:param filter: the QgsServerFilter to add
+:param filter: the :py:class:`QgsServerFilter` to add
 :param priority: an optional priority for the filter order
 %End
 
@@ -69,7 +69,7 @@ Set the filters map
 %Docstring
 Returns the list of current :py:class:`QgsServerFilter`
 
-:return: QgsServerFiltersMap list of :py:class:`QgsServerFilter`
+:return: :py:class:`QgsServerFiltersMap` list of :py:class:`QgsServerFilter`
 %End
 
     virtual void registerAccessControl( QgsAccessControlFilter *accessControl /Transfer/, int priority = 0 ) = 0;

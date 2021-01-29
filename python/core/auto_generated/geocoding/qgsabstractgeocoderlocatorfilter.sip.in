@@ -12,16 +12,16 @@
 class QgsAbstractGeocoderLocatorFilter : QgsLocatorFilter /Abstract/
 {
 %Docstring
-An abstract base class which implements a locator filter populated from a QgsGeocoderInterface.
+An abstract base class which implements a locator filter populated from a :py:class:`QgsGeocoderInterface`.
 
 This base class implements the required logic to bridge a class which implements the
-QgsGeocoderInterface interface to a QgsLocatorFilter. It allows easy creation of a locator
+:py:class:`QgsGeocoderInterface` interface to a :py:class:`QgsLocatorFilter`. It allows easy creation of a locator
 filter from a geocoder.
 
 .. note::
 
    This is a low-level API, designed for use by client applications which do not
-   utilize the QGIS gui library. Usually the concrete class QgsGeocoderLocatorFilter from
+   utilize the QGIS gui library. Usually the concrete class :py:class:`QgsGeocoderLocatorFilter` from
    the gui library should be used instead.
 
 .. versionadded:: 3.18

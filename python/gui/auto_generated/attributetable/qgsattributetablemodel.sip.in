@@ -13,7 +13,7 @@
 class QgsAttributeTableModel: QAbstractTableModel
 {
 %Docstring
-A model backed by a QgsVectorLayerCache which is able to provide
+A model backed by a :py:class:`QgsVectorLayerCache` which is able to provide
 feature/attribute information to a QAbstractItemView.
 
 Is able to generate editor widgets for its QModelIndexes as well.

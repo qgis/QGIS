@@ -13,9 +13,9 @@
 class QgsMessageBarItem : QWidget
 {
 %Docstring
-Represents an item shown within a QgsMessageBar widget.
+Represents an item shown within a :py:class:`QgsMessageBar` widget.
 
-QgsMessageBarItem represents a single item (or message) which can be shown in a QgsMessageBar widget.
+:py:class:`QgsMessageBarItem` represents a single item (or message) which can be shown in a :py:class:`QgsMessageBar` widget.
 %End
 
 %TypeHeaderCode
@@ -163,7 +163,7 @@ manually dismissed by the user.
 
     QString getStyleSheet();
 %Docstring
-Returns the styleSheet which should be used to style a QgsMessageBar object when
+Returns the styleSheet which should be used to style a :py:class:`QgsMessageBar` object when
 this item is displayed.
 %End
 

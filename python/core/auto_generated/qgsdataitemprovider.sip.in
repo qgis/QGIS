@@ -22,8 +22,8 @@ There are two occasions when :py:func:`~createDataItem` is called:
 
 # to create root items (passed path is empty, parent item is ``None``).
 # to create items in directory structure. For this capabilities have to return at least
-  of the following: QgsDataProvider.Dir or QgsDataProvider.File. Passed path is the file
-  or directory being inspected, parent item is a valid QgsDirectoryItem
+  of the following: :py:class:`QgsDataProvider`.Dir or :py:class:`QgsDataProvider`.File. Passed path is the file
+  or directory being inspected, parent item is a valid :py:class:`QgsDirectoryItem`
 
 .. versionadded:: 2.10
 %End
@@ -48,7 +48,7 @@ the default implementation returns an empty string.
 %End
     virtual int capabilities() const = 0;
 %Docstring
-Returns combination of flags from QgsDataProvider.DataCapabilities
+Returns combination of flags from :py:class:`QgsDataProvider`.DataCapabilities
 %End
 
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 /Factory/;

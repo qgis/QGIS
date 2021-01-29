@@ -84,7 +84,7 @@ for maps which are set to the predefined atlas scaling mode.
 .. seealso:: :py:func:`predefinedScales`
 
 .. deprecated::
-   Use QgsLayoutRenderContext.setPredefinedScales()
+   Use :py:func:`QgsLayoutRenderContext.setPredefinedScales()`
 %End
 
  QVector<qreal> predefinedScales() const /Deprecated/;
@@ -94,7 +94,7 @@ Returns the current list of predefined scales for use with the layout.
 .. seealso:: :py:func:`setPredefinedScales`
 
 .. deprecated::
-   Use QgsLayoutRenderContext.predefinedScales()
+   Use :py:func:`QgsLayoutRenderContext.predefinedScales()`
 %End
 
   signals:

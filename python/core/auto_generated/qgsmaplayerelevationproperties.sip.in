@@ -16,8 +16,8 @@ class QgsMapLayerElevationProperties : QObject
 %Docstring
 Base class for storage of map layer elevation properties.
 
-QgsMapLayerElevationProperties exposes user-configurable settings for controlling
-how an individual QgsMapLayer behaves with relation to z values or elevations.
+:py:class:`QgsMapLayerElevationProperties` exposes user-configurable settings for controlling
+how an individual :py:class:`QgsMapLayer` behaves with relation to z values or elevations.
 
 .. versionadded:: 3.18
 %End

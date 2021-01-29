@@ -58,7 +58,7 @@ will return true.
 Creates a new dialog to edit the subset string of the provided ``layer``.
 It may return None if it cannot handle the layer.
 The returned object must be destroyed by the caller.
-On successful :py:func:`~QgsSubsetStringEditorProvider.accept`, the QgsSubsetStringEditorInterface implementation
+On successful :py:func:`~QgsSubsetStringEditorProvider.accept`, the :py:class:`QgsSubsetStringEditorInterface` implementation
 is responsible for setting the updated string on layer.
 %End
 };

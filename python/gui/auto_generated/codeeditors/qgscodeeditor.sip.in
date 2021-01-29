@@ -63,7 +63,7 @@ Set margin visible state
 :param margin: Set margin in the editor
 
 .. deprecated::
-   Use base class methods for individual margins instead, or setLineNumbersVisible()
+   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.setLineNumbersVisible`
 %End
 
  bool marginVisible() /Deprecated/;
@@ -71,7 +71,7 @@ Set margin visible state
 Returns whether margins are in a visible state
 
 .. deprecated::
-   Use base class methods for individual margins instead, or lineNumbersVisible()
+   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.lineNumbersVisible`
 %End
 
     void setLineNumbersVisible( bool visible );
@@ -123,7 +123,7 @@ Returns the default color for the specified ``role``.
 The optional ``theme`` argument can be used to specify a color ``theme``. A blank
 ``theme`` indicates the default color scheme.
 
-Available themes are stored in QgsCodeEditorColorSchemeRegistry, and can be retrieved
+Available themes are stored in :py:class:`QgsCodeEditorColorSchemeRegistry`, and can be retrieved
 via :py:func:`QgsGui.codeEditorColorSchemeRegistry()`.
 
 .. versionadded:: 3.16

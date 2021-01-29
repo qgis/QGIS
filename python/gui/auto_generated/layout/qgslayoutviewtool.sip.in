@@ -18,7 +18,7 @@ class QgsLayoutViewTool : QObject
 %Docstring
 Abstract base class for all layout view tools.
 Layout view tools are user interactive tools for manipulating and adding items
-to QgsLayoutView widgets.
+to :py:class:`QgsLayoutView` widgets.
 
 .. versionadded:: 3.0
 %End
@@ -96,7 +96,7 @@ Key release event for overriding. Default implementation does nothing.
     void setAction( QAction *action );
 %Docstring
 Associates an ``action`` with this tool. When the setLayoutTool
-method of QgsLayoutView is called the action's state will be set to on.
+method of :py:class:`QgsLayoutView` is called the action's state will be set to on.
 Usually this will cause a toolbutton to appear pressed in and
 the previously used toolbutton to pop out.
 

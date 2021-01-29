@@ -131,7 +131,7 @@ Factory function to create the widget on demand as needed by the dock.
 :param dockWidget: ``True`` of the widget will be shown a dock style widget.
 :param parent: The parent of the widget.
 
-:return: A new QgsMapStylePanel which is shown in the map style dock.
+:return: A new :py:class:`QgsMapStylePanel` which is shown in the map style dock.
 
 .. note::
 

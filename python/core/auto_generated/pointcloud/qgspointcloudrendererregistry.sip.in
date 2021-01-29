@@ -17,7 +17,7 @@ Stores metadata about one point cloud renderer class.
 .. note::
 
    It's necessary to implement :py:func:`~createRenderer` function.
-   In C++ you can use QgsPointCloudRendererMetadata convenience class.
+   In C++ you can use :py:class:`QgsPointCloudRendererMetadata` convenience class.
 
 .. versionadded:: 3.18
 %End
@@ -107,7 +107,7 @@ class QgsPointCloudRendererRegistry
 %Docstring
 Registry of 2D renderers for point clouds.
 
-QgsPointCloudRendererRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsPointCloudRendererRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.pointCloudRendererRegistry()`.
 
 .. versionadded:: 3.18

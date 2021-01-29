@@ -19,7 +19,7 @@ Stores metadata about one 3D material settings class.
 .. note::
 
    It's necessary to implement :py:func:`~createMaterialSettings` function.
-   In C++ you can use QgsMaterialSettingsMetadata convenience class.
+   In C++ you can use :py:class:`QgsMaterialSettingsMetadata` convenience class.
 
 .. versionadded:: 3.16
 %End
@@ -78,7 +78,7 @@ class QgsMaterialRegistry
 %Docstring
 Registry of available 3d material settings classes.
 
-QgsMaterialRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsMaterialRegistry` is not usually directly created, but rather accessed through
 Qgs3D.materialRegistry().
 
 .. versionadded:: 3.16

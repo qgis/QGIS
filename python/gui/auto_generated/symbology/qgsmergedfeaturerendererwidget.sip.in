@@ -11,7 +11,7 @@
 class QgsMergedFeatureRendererWidget : QgsRendererWidget
 {
 %Docstring
-A widget used represent options of a QgsMergedFeatureRenderer
+A widget used represent options of a :py:class:`QgsMergedFeatureRenderer`
 
 .. versionadded:: 3.18
 %End

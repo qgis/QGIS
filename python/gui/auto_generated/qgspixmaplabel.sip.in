@@ -11,7 +11,7 @@
 class QgsPixmapLabel : QLabel
 {
 %Docstring
-The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given
+The :py:class:`QgsPixmapLabel` class shows a pixmap and adjusts its size to the space given
 to the widget by the layout and keeping its aspect ratio.
 %End
 

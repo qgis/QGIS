@@ -11,7 +11,7 @@
 class QgsLegendPatchShapeButton : QToolButton
 {
 %Docstring
-A button for creating and modifying QgsLegendPatchShape settings.
+A button for creating and modifying :py:class:`QgsLegendPatchShape` settings.
 
 .. versionadded:: 3.14
 %End

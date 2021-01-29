@@ -124,13 +124,13 @@ Update proxy settings with authentication components
 
     virtual void clearCachedConfig( const QString &authcfg ) = 0;
 %Docstring
-Clear any cached configuration. Called when the QgsAuthManager deletes an authentication configuration (authcfg).
+Clear any cached configuration. Called when the :py:class:`QgsAuthManager` deletes an authentication configuration (authcfg).
 
 .. note::
 
    It is highly recommended that a cache of authentication components (per requested authcfg)
    be implemented, to avoid excessive queries on the auth database. Such a cache could be as
-   simple as a QHash or QMap of authcfg -> QgsAuthMethodConfig. See 'Basic' auth method plugin for example.
+   simple as a QHash or QMap of authcfg -> :py:class:`QgsAuthMethodConfig`. See 'Basic' auth method plugin for example.
 %End
 
     virtual void updateMethodConfig( QgsAuthMethodConfig &mconfig ) = 0;

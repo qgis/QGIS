@@ -15,24 +15,24 @@ class QgsAbstractMetadataBase
 %Docstring
 An abstract base class for metadata stores.
 
-QgsAbstractMetadataBase is the base class for handling storage and management of the metadata
+:py:class:`QgsAbstractMetadataBase` is the base class for handling storage and management of the metadata
 for various map related assets. This class is an internal QGIS format with a common
 metadata structure. It is subclassed by layer and project specific metadata classes,
-such as QgsLayerMetadata and QgsProjectMetadata.
+such as :py:class:`QgsLayerMetadata` and :py:class:`QgsProjectMetadata`.
 
 The metadata store is designed to be compatible with the Dublin Core metadata
 specifications, and will be expanded to allow compatibility with ISO specifications
 in future releases. However, the QGIS internal schema does not represent a superset
 of all existing metadata schemas and accordingly conversion from specific
-metadata formats to QgsAbstractMetadataBase may result in a loss of information.
+metadata formats to :py:class:`QgsAbstractMetadataBase` may result in a loss of information.
 
 This class is designed to follow the specifications detailed in
 the schema definition available at resources/qgis-base-metadata.xsd
 within the QGIS source code.
 
-Metadata can be validated through the use of QgsAbstractMetadataBaseValidator
+Metadata can be validated through the use of :py:class:`QgsAbstractMetadataBaseValidator`
 subclasses. E.g. validating against the native QGIS metadata schema can be performed
-using QgsNativeMetadataValidator.
+using :py:class:`QgsNativeMetadataValidator`.
 
 .. versionadded:: 3.2
 %End

@@ -11,7 +11,7 @@
 class QgsMaskMarkerSymbolLayerWidget: QgsSymbolLayerWidget
 {
 %Docstring
-Symbol layer widget for the handling of QgsMaskMarkerSymbolLayer.
+Symbol layer widget for the handling of :py:class:`QgsMaskMarkerSymbolLayer`.
 
 .. versionadded:: 3.12
 %End

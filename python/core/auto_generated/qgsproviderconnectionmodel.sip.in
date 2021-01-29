@@ -17,7 +17,7 @@ A model containing registered connection names for a specific data provider.
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly.
 
 .. versionadded:: 3.14
@@ -42,7 +42,7 @@ Constructor for QgsProviderConnectionModel, for the specified ``provider``.
 
 .. warning::
 
-   The ``provider`` must support the connection API methods in its QgsProviderMetadata implementation
+   The ``provider`` must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly.
 %End
 

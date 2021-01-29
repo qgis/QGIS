@@ -14,9 +14,9 @@ class QgsTextPreview : QLabel
 %Docstring
 A widget for previewing text formatting settings.
 
-QgsTextPreview provides a widget for previewing the appearance of text rendered
-using QgsTextRenderer. The preview includes all settings contained within
-a QgsTextFormat, including shadow, background and buffer.
+:py:class:`QgsTextPreview` provides a widget for previewing the appearance of text rendered
+using :py:class:`QgsTextRenderer`. The preview includes all settings contained within
+a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 
 In order to preview the exact appearance of text which uses sizes in map units,
 the scale and map units must be set by calling :py:func:`~setScale` and :py:func:`~setMapUnits`.

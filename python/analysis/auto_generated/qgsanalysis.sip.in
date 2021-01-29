@@ -14,7 +14,7 @@
 class QgsAnalysis
 {
 %Docstring
-QgsAnalysis is a singleton class containing various registry and other global members
+:py:class:`QgsAnalysis` is a singleton class containing various registry and other global members
 related to analysis classes.
 
 .. versionadded:: 3.4

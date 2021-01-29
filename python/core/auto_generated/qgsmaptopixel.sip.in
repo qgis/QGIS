@@ -70,7 +70,7 @@ Transform the point ``p`` from map (world) coordinates to device coordinates.
 
 :param p: Point to transform
 
-:return: QgsPointXY in device coordinates
+:return: :py:class:`QgsPointXY` in device coordinates
 %End
 
     void transform( QgsPointXY *p ) const;
@@ -86,7 +86,7 @@ coordinates to device coordinates
 :param x: x coordinate o point to transform
 :param y: y coordinate of point to transform
 
-:return: QgsPointXY in device coordinates
+:return: :py:class:`QgsPointXY` in device coordinates
 %End
 
     void transformInPlace( double &x, double &y ) const;
@@ -114,7 +114,7 @@ Transform device coordinates to map (world) coordinates
 
 :param p: Point to be converted to map cooordinates
 
-:return: QgsPointXY in map coorndiates
+:return: :py:class:`QgsPointXY` in map coorndiates
 %End
 
  QgsPointXY toMapPoint( double x, double y ) const /Deprecated/;

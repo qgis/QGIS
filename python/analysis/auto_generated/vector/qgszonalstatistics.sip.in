@@ -66,7 +66,7 @@ The raster layer must exist for the lifetime of the zonal statistics calculation
 .. warning::
 
    Constructing QgsZonalStatistics using this method is not thread safe, and
-   the constructor which accepts a QgsRasterInterface should be used instead.
+   the constructor which accepts a :py:class:`QgsRasterInterface` should be used instead.
 %End
 
     QgsZonalStatistics( QgsVectorLayer *polygonLayer,

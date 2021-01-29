@@ -12,8 +12,8 @@
 class QgsServerOgcApiHandler
 {
 %Docstring
-The QgsServerOgcApiHandler abstract class represents a OGC API handler to be registered
-in QgsServerOgcApi class.
+The :py:class:`QgsServerOgcApiHandler` abstract class represents a OGC API handler to be registered
+in :py:class:`QgsServerOgcApi` class.
 
 Subclasses must override operational and informative methods and define
 the core functionality in :py:func:`~handleRequest` method.
@@ -145,13 +145,13 @@ Handles the request within its ``context``
 Subclasses must implement this methods, and call :py:func:`~QgsServerOgcApiHandler.validate` to
 extract validated parameters from the request.
 
-:raises QgsServerApiBadRequestError: if the method encounters any error
+:raises :: py:class:`QgsServerApiBadRequestError` if the method encounters any error
 %End
 
     virtual QVariantMap values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
 %Docstring
 Analyzes the incoming request ``context`` and returns the validated
-parameter map, throws QgsServerApiBadRequestError in case of errors.
+parameter map, throws :py:class:`QgsServerApiBadRequestError` in case of errors.
 
 Path fragments from the named groups in the :py:func:`~QgsServerOgcApiHandler.path` regular expression
 are also added to the map.
@@ -168,7 +168,7 @@ the parameters map.
 
 .. seealso:: :py:func:`parameters`
 
-:raises QgsServerApiBadRequestError: if validation fails
+:raises :: py:class:`QgsServerApiBadRequestError` if validation fails
 %End
 
     QString contentTypeForAccept( const QString &accept ) const;
@@ -214,7 +214,7 @@ Returns an URL to self, to be used for links to the current resources and as a b
 %Docstring
 Returns the HTML template path for the handler in the given ``context``
 
-The template path is calculated from QgsServerSettings's :py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` as follow:
+The template path is calculated from :py:class:`QgsServerSettings`'s :py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` as follow:
 :py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
 e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
 will be :py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` + "/ogc/templates/wfs3/collectionItems.html"
@@ -246,7 +246,7 @@ Returns a link to the parent page up to ``levels`` in the HTML hierarchy from th
 %Docstring
 Returns a vector layer from the ``collectionId`` in the given ``context``.
 
-:raises QgsServerApiNotFoundError: if the layer could not be found.
+:raises :: py:class:`QgsServerApiNotFoundError` if the layer could not be found.
 %End
 
 

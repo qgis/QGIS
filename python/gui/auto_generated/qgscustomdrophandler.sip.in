@@ -19,7 +19,7 @@ Implementations have three approaches they can use to handle drops.
 # The simplest approach is to implement :py:func:`~handeFileDrop` when they need to handle
   dropped files (i.e. with mime type "text/uri-list").
 # Reimplement :py:func:`~handleCustomUriDrop` when they want to handle dropped custom
-  QgsMimeDataUtils.Uri entries, for instance handling dropping custom entries
+  :py:class:`QgsMimeDataUtils`.Uri entries, for instance handling dropping custom entries
   from the browser tree (with mime type "application/x-vnd.qgis.qgis.uri"). In
   this case the implementation's :py:func:`~customUriProviderKey` must match the uri
   entry's providerKey.
@@ -88,7 +88,7 @@ Accordingly, only implementations must be lightweight and return ASAP.
 the data after a short timeout).
 
 .. deprecated:: QGIS 3.10
-   - use handleMimeDataV2() instead.
+   - use :py:func:`~QgsCustomDropHandler.handleMimeDataV2` instead.
 %End
 
     virtual bool handleMimeDataV2( const QMimeData *data );
@@ -107,7 +107,7 @@ Accordingly, only implementations must be lightweight and return ASAP.
 the data after a short timeout).
 
 If the function returns ``True``, it means the handler has accepted the drop
-and it should not be further processed (e.g. by other QgsCustomDropHandlers)
+and it should not be further processed (e.g. by other :py:class:`QgsCustomDropHandlers`)
 
 .. versionadded:: 3.10
 %End
@@ -116,7 +116,7 @@ and it should not be further processed (e.g. by other QgsCustomDropHandlers)
 %Docstring
 Called when the specified ``file`` has been dropped onto QGIS. If ``True``
 is returned, then the handler has accepted this file and it should not
-be further processed (e.g. by other QgsCustomDropHandlers).
+be further processed (e.g. by other :py:class:`QgsCustomDropHandlers`).
 
 The base class implementation does nothing.
 
@@ -156,7 +156,7 @@ also implement :py:func:`~QgsCustomDropHandler.customUriProviderKey` to indicate
 value which the handler accepts.
 
 If the function returns ``True``, it means the handler has accepted the drop
-and it should not be further processed (e.g. by other QgsCustomDropHandlers).
+and it should not be further processed (e.g. by other :py:class:`QgsCustomDropHandlers`).
 
 Subclasses which implement this must also implement corresponding versions of
 :py:func:`~QgsCustomDropHandler.canHandleCustomUriCanvasDrop`.

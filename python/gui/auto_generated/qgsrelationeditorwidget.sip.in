@@ -98,7 +98,7 @@ Returns the buttons which are shown
 Duplicates a feature
 
 .. deprecated:: QGIS 3.18
-  use duplicateSelectedFeatures() instead
+  use :py:func:`~QgsRelationEditorWidget.duplicateSelectedFeatures` instead
 %End
 
     void duplicateSelectedFeatures();

@@ -33,7 +33,7 @@ Filters can define any (or none) of the following hooks:
     QgsServerFilter( QgsServerInterface *serverInterface );
 %Docstring
 Constructor
-QgsServerInterface passed to plugins constructors
+:py:class:`QgsServerInterface` passed to plugins constructors
 and must be passed to QgsServerFilter instances.
 %End
 
@@ -41,25 +41,25 @@ and must be passed to QgsServerFilter instances.
 
     QgsServerInterface *serverInterface();
 %Docstring
-Returns the QgsServerInterface instance
+Returns the :py:class:`QgsServerInterface` instance
 %End
 
     virtual void requestReady();
 %Docstring
-Method called when the QgsRequestHandler is ready and populated with
+Method called when the :py:class:`QgsRequestHandler` is ready and populated with
 parameters, just before entering the main switch for core services.
 %End
 
     virtual void responseComplete();
 %Docstring
-Method called when the QgsRequestHandler processing has done and
+Method called when the :py:class:`QgsRequestHandler` processing has done and
 the response is ready, just after the main switch for core services
 and before final sending response to FCGI stdout.
 %End
 
     virtual void sendResponse();
 %Docstring
-Method called when the QgsRequestHandler sends its data to FCGI stdout.
+Method called when the :py:class:`QgsRequestHandler` sends its data to FCGI stdout.
 This normally occurs at the end of core services processing just after
 the :py:func:`~QgsServerFilter.responseComplete` plugin hook. For streaming services (like WFS on
 getFeature requests, :py:func:`~QgsServerFilter.sendResponse` might have been called several times

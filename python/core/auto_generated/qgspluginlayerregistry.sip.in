@@ -53,7 +53,7 @@ class QgsPluginLayerRegistry
 %Docstring
 A registry of plugin layers types.
 
-QgsPluginLayerRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsPluginLayerRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.pluginLayerRegistry()`.
 %End
 

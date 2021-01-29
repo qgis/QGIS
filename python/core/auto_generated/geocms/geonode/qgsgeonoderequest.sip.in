@@ -29,7 +29,7 @@ class QgsGeoNodeRequest : QObject
 %Docstring
 Request handler for GeoNode servers.
 
-QgsGeoNodeRequest handles requesting and parsing service details from a GeoNode
+:py:class:`QgsGeoNodeRequest` handles requesting and parsing service details from a GeoNode
 server instance, for instance requesting all available layers or layer styles.
 
 .. versionadded:: 3.0

@@ -52,7 +52,7 @@ Caller takes ownership of the returned object.
 
     static QgsCoordinateReferenceSystem convertSpatialReference( const QVariantMap &spatialReferenceMap );
 %Docstring
-Converts a spatial reference JSON definition to a QgsCoordinateReferenceSystem value.
+Converts a spatial reference JSON definition to a :py:class:`QgsCoordinateReferenceSystem` value.
 %End
 
     static QgsSymbol *convertSymbol( const QVariantMap &definition ) /Factory/;

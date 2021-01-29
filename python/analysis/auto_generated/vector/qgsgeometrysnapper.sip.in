@@ -13,7 +13,7 @@
 class QgsGeometrySnapper : QObject
 {
 %Docstring
-QgsGeometrySnapper allows a geometry to be snapped to the geometries within a
+:py:class:`QgsGeometrySnapper` allows a geometry to be snapped to the geometries within a
 different reference layer. Vertices in the geometries will be modified to
 match the reference layer features within a specified snap tolerance.
 
@@ -75,14 +75,14 @@ Emitted each time a feature has been processed when calling :py:func:`~QgsGeomet
 class QgsInternalGeometrySnapper
 {
 %Docstring
-QgsInternalGeometrySnapper allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
+:py:class:`QgsInternalGeometrySnapper` allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
 
 To use :py:class:`QgsInternalGeometrySnapper`, first construct the snapper using the desired snap parameters. Then,
 features are fed to to the snapper one-by-one by calling :py:func:`~QgsGeometrySnapper.snapFeature`. Each feature passed by calling
 :py:func:`~QgsGeometrySnapper.snapFeature` will be snapped to any features which have already been processed by the snapper.
 
 After processing all desired features, the results can be fetched by calling :py:func:`~QgsGeometrySnapper.snappedGeometries`.
-The returned QgsGeometryMap can be passed to :py:func:`QgsVectorDataProvider.changeGeometryValues()` to save
+The returned :py:class:`QgsGeometryMap` can be passed to :py:func:`QgsVectorDataProvider.changeGeometryValues()` to save
 the snapped geometries back to the source layer.
 
 .. versionadded:: 3.0
@@ -107,7 +107,7 @@ calls to :py:func:`~QgsInternalGeometrySnapper.snapFeature` in this object, and 
 
     QgsGeometryMap snappedGeometries() const;
 %Docstring
-Returns a QgsGeometryMap of all feature geometries snapped by this object.
+Returns a :py:class:`QgsGeometryMap` of all feature geometries snapped by this object.
 %End
 
 };

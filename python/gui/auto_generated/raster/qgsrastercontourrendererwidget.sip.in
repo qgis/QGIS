@@ -11,7 +11,7 @@
 class QgsRasterContourRendererWidget : QgsRasterRendererWidget
 {
 %Docstring
-Configuration widget for QgsRasterContourRenderer
+Configuration widget for :py:class:`QgsRasterContourRenderer`
 
 .. versionadded:: 3.14
 %End

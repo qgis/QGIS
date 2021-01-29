@@ -34,7 +34,7 @@ E.g:
 
 .. note::
 
-   QgsSvgCache is not usually directly created, but rather accessed through :py:func:`QgsApplication.svgCache()`.
+   :py:class:`QgsSvgCache` is not usually directly created, but rather accessed through :py:func:`QgsApplication.svgCache()`.
 %End
 
 %TypeHeaderCode

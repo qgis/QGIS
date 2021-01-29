@@ -16,7 +16,7 @@ class QgsProcessingFeedback : QgsFeedback
 Base class for providing feedback from a processing algorithm.
 
 This base class implementation silently ignores all feedback reported by algorithms.
-Subclasses of QgsProcessingFeedback can be used to log this feedback or report
+Subclasses of :py:class:`QgsProcessingFeedback` can be used to log this feedback or report
 it to users via the GUI.
 
 .. versionadded:: 3.0

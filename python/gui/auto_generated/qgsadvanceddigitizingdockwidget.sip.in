@@ -15,10 +15,10 @@
 class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
 %Docstring
-The QgsAdvancedDigitizingDockWidget class is a dockable widget
+The :py:class:`QgsAdvancedDigitizingDockWidget` class is a dockable widget
 used to handle the CAD tools on top of a selection of map tools.
 It handles both the UI and the constraints. Constraints are applied
-by implementing filters called from QgsMapToolAdvancedDigitizing.
+by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
 %End
 
 %TypeHeaderCode

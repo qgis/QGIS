@@ -16,7 +16,7 @@ class QgsTableEditorWidget : QTableWidget
 
 A reusable widget for editing simple spreadsheet-style tables.
 
-Table content is retrieved and set using the QgsTableContents class. The editor
+Table content is retrieved and set using the :py:class:`QgsTableContents` class. The editor
 has support for table foreground and background colors, and numeric formats.
 
 .. versionadded:: 3.12
@@ -88,7 +88,7 @@ invalid color will be returned.
 .. seealso:: :py:func:`selectionBackgroundColor`
 
 .. deprecated::
-   use selectionTextFormat() instead.
+   use :py:func:`~QgsTableEditorWidget.selectionTextFormat` instead.
 %End
 
     QColor selectionBackgroundColor();
@@ -125,7 +125,7 @@ the selected cells have a mix of different vertical alignments.
 
     QgsProperty selectionCellProperty();
 %Docstring
-Returns the QgsProperty used for the contents of the currently selected cells.
+Returns the :py:class:`QgsProperty` used for the contents of the currently selected cells.
 
 If the returned value is a default constructed :py:class:`QgsProperty`, then the selected
 cells have a mix of different properties.
@@ -137,7 +137,7 @@ cells have a mix of different properties.
 %Docstring
 Returns the text format for the currently selected cells.
 
-Returns an invalid QgsTextFormat if the selection has mixed text format.
+Returns an invalid :py:class:`QgsTextFormat` if the selection has mixed text format.
 
 .. versionadded:: 3.16
 %End
@@ -290,7 +290,7 @@ Sets the foreground color for the currently selected cells.
 .. seealso:: :py:func:`setSelectionBackgroundColor`
 
 .. deprecated::
-   Use setSelectionTextFormat() instead.
+   Use :py:func:`~QgsTableEditorWidget.setSelectionTextFormat` instead.
 %End
 
     void setSelectionBackgroundColor( const QColor &color );
@@ -326,7 +326,7 @@ Sets the vertical alignment for the currently selected cells.
 
     void setSelectionCellProperty( const QgsProperty &property );
 %Docstring
-Sets the cell contents QgsProperty for the currently selected cells.
+Sets the cell contents :py:class:`QgsProperty` for the currently selected cells.
 
 .. versionadded:: 3.16
 %End

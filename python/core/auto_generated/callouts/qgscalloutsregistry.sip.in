@@ -18,7 +18,7 @@ Stores metadata about one callout renderer class.
 .. note::
 
    It's necessary to implement :py:func:`~createCallout` function.
-   In C++ you can use QgsCalloutMetadata convenience class.
+   In C++ you can use :py:class:`QgsCalloutMetadata` convenience class.
 
 .. versionadded:: 3.10
 %End
@@ -118,7 +118,7 @@ class QgsCalloutRegistry
 %Docstring
 Registry of available callout classes.
 
-QgsCalloutRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsCalloutRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.calloutRegistry()`.
 
 .. versionadded:: 3.10

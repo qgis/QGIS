@@ -13,9 +13,9 @@
 class QgsAdvancedDigitizingFloater : QWidget
 {
 %Docstring
-The QgsAdvancedDigitizingFloater class is widget that floats
+The :py:class:`QgsAdvancedDigitizingFloater` class is widget that floats
 next to the mouse pointer, and allow interaction with the AdvancedDigitizing
-feature. It proxies display and actions to QgsMapToolAdvancedDigitizingDockWidget.
+feature. It proxies display and actions to :py:class:`QgsMapToolAdvancedDigitizingDockWidget`.
 
 .. note::
 

@@ -17,13 +17,13 @@ class QgsTextFormatWidget : QWidget, QgsExpressionContextGenerator, protected Ui
 %Docstring
 A widget for customizing text formatting settings.
 
-QgsTextFormatWidget provides a widget for controlling the appearance of text rendered
-using QgsTextRenderer. The widget includes all settings contained within
-a QgsTextFormat, including shadow, background and buffer.
+:py:class:`QgsTextFormatWidget` provides a widget for controlling the appearance of text rendered
+using :py:class:`QgsTextRenderer`. The widget includes all settings contained within
+a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 
 Additionally, the widget can handle labeling settings due to the large overlap between
 the text renderer settings and the labeling settings. This mode is possible by
-subclassing QgsTextFormatWidget and calling the protected constructor with a mode
+subclassing :py:class:`QgsTextFormatWidget` and calling the protected constructor with a mode
 of Labeling.
 
 .. versionadded:: 3.0
@@ -211,7 +211,7 @@ class QgsTextFormatDialog : QDialog
 %Docstring
 A simple dialog for customizing text formatting settings.
 
-QgsTextFormatDialog provides a dialog for controlling the appearance of text rendered
+:py:class:`QgsTextFormatDialog` provides a dialog for controlling the appearance of text rendered
 using :py:class:`QgsTextRenderer`. The dialog includes all settings contained within
 a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 
@@ -261,7 +261,7 @@ class QgsTextFormatPanelWidget : QgsPanelWidgetWrapper
 %Docstring
 A panel widget for customizing text formatting settings.
 
-QgsTextFormatPanelWidget provides a panel widget for controlling the appearance of text rendered
+:py:class:`QgsTextFormatPanelWidget` provides a panel widget for controlling the appearance of text rendered
 using :py:class:`QgsTextRenderer`. The dialog includes all settings contained within
 a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 

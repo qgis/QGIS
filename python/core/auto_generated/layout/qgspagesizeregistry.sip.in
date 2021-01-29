@@ -50,7 +50,7 @@ class QgsPageSizeRegistry
 %Docstring
 A registry for known page sizes.
 
-QgsPageSizeRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsPageSizeRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.pageSizeRegistry()`.
 
 .. versionadded:: 3.0

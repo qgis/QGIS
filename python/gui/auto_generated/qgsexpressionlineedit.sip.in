@@ -12,16 +12,16 @@
 class QgsExpressionLineEdit : QWidget
 {
 %Docstring
-The QgsExpressionLineEdit widget includes a line edit for entering expressions
+The :py:class:`QgsExpressionLineEdit` widget includes a line edit for entering expressions
 together with a button to open the expression creation dialog.
 
 This widget is designed for use in contexts where no layer fields are available for
 use in an expression. In contexts where the expression is directly associated with
-a layer and fields can be used, then QgsFieldExpressionWidget is a more appropriate
+a layer and fields can be used, then :py:class:`QgsFieldExpressionWidget` is a more appropriate
 choice as it gives users direct access to select fields from a drop-down list.
 
-QgsExpressionLineEdit also supports a multiline editor mode which is useful where
-more space is available for the widget, but where QgsExpressionBuilderWidget
+:py:class:`QgsExpressionLineEdit` also supports a multiline editor mode which is useful where
+more space is available for the widget, but where :py:class:`QgsExpressionBuilderWidget`
 is too complex or large for use.
 
 .. versionadded:: 3.0
@@ -123,7 +123,7 @@ Determines if the current expression is valid.
 Register an expression context generator class that will be used to retrieve
 an expression context for the widget.
 
-:param generator: A QgsExpressionContextGenerator class that will be used to
+:param generator: A :py:class:`QgsExpressionContextGenerator` class that will be used to
                   create an expression context when required.
 %End
 

@@ -16,13 +16,13 @@ class QgsNetworkContentFetcherTask : QgsTask
 %Docstring
 Handles HTTP network content fetching in a background task.
 
-Provides a simple method for fetching remote HTTP content in a QgsTask.
+Provides a simple method for fetching remote HTTP content in a :py:class:`QgsTask`.
 Url redirects are automatically handled.
 
-After constructing a QgsNetworkContentFetcherTask, callers should
-connect to the QgsNetworkContentFetcherTask.fetched signal. They can
+After constructing a :py:class:`QgsNetworkContentFetcherTask`, callers should
+connect to the :py:class:`QgsNetworkContentFetcherTask`.fetched signal. They can
 then safely access the network :py:func:`~reply` from the connected slot
-without danger of the task being first removed by the QgsTaskManager.
+without danger of the task being first removed by the :py:class:`QgsTaskManager`.
 
 .. seealso:: :py:class:`QgsNetworkContentFetcher`
 

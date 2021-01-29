@@ -14,7 +14,7 @@ class QgsPropertyDefinition
 %Docstring
 Definition for a property.
 
-QgsPropertyDefinition defines the type of values allowed for a property, and
+:py:class:`QgsPropertyDefinition` defines the type of values allowed for a property, and
 handles descriptive names and help text for using the property. Definitions
 can use one of the predefined standard templates to simplify definition of
 commonly used property types, such as colors and blend modes.
@@ -87,7 +87,7 @@ Constructor for QgsPropertyDefinition, using a standard property template.
 
     QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QString(), const QString &comment = QString() );
 %Docstring
-Constructor for custom QgsPropertyDefinitions.
+Constructor for custom :py:class:`QgsPropertyDefinitions`.
 
 :param name: is used internally and should be a unique, alphanumeric string.
 :param dataType: the data type for the property
@@ -173,11 +173,11 @@ class QgsProperty
 %Docstring
 A store for object properties.
 
-QgsProperty objects are used for storing properties for objects, which can then be transformed to
-a QVariant value by evaluating them against a supplied :py:class:`QgsExpressionContext`. Multiple QgsProperty objects
-can be grouped using a QgsPropertyCollection for easier bulk storage, retrieval and evaluation.
+:py:class:`QgsProperty` objects are used for storing properties for objects, which can then be transformed to
+a QVariant value by evaluating them against a supplied :py:class:`QgsExpressionContext`. Multiple :py:class:`QgsProperty` objects
+can be grouped using a :py:class:`QgsPropertyCollection` for easier bulk storage, retrieval and evaluation.
 
-QgsProperty objects are implicitly shared and can be inexpensively copied.
+:py:class:`QgsProperty` objects are implicitly shared and can be inexpensively copied.
 
 .. versionadded:: 3.0
 %End
@@ -331,7 +331,7 @@ Returns ``True`` if the property is set to a linked project color.
 %Docstring
 Calculates the current value of the property, including any transforms which are set for the property
 
-:param context: QgsExpressionContext to evaluate the property for. The variables and functions contained
+:param context: :py:class:`QgsExpressionContext` to evaluate the property for. The variables and functions contained
                 in the expression context can be used to alter the calculated value for the property, so that a property
                 is able to respond to the current environment, layers and features within QGIS.
 :param defaultValue: default value to return if the property is not active or cannot be calculated
@@ -354,7 +354,7 @@ Calculates the current value of the property, including any transforms which are
 %Docstring
 Calculates the current value of the property and interprets it as a datetime.
 
-:param context: QgsExpressionContext to evaluate the property for.
+:param context: :py:class:`QgsExpressionContext` to evaluate the property for.
 :param defaultDateTime: default datetime to return if the property cannot be calculated as a datetime
 
 :return: - value parsed to datetime
@@ -379,7 +379,7 @@ Calculates the current value of the property and interprets it as a datetime.
 %Docstring
 Calculates the current value of the property and interprets it as a string.
 
-:param context: QgsExpressionContext to evaluate the property for.
+:param context: :py:class:`QgsExpressionContext` to evaluate the property for.
 :param defaultString: default string to return if the property cannot be calculated as a string
 
 :return: - value parsed to string
@@ -402,7 +402,7 @@ Calculates the current value of the property and interprets it as a string.
 %Docstring
 Calculates the current value of the property and interprets it as a color.
 
-:param context: QgsExpressionContext to evaluate the property for.
+:param context: :py:class:`QgsExpressionContext` to evaluate the property for.
 :param defaultColor: default color to return if the property cannot be calculated as a color
 
 :return: - value parsed to color
@@ -425,7 +425,7 @@ Calculates the current value of the property and interprets it as a color.
 %Docstring
 Calculates the current value of the property and interprets it as a double.
 
-:param context: QgsExpressionContext to evaluate the property for.
+:param context: :py:class:`QgsExpressionContext` to evaluate the property for.
 :param defaultValue: default double to return if the property cannot be calculated as a double
 
 :return: - value parsed to double
@@ -448,7 +448,7 @@ Calculates the current value of the property and interprets it as a double.
 %Docstring
 Calculates the current value of the property and interprets it as an integer.
 
-:param context: QgsExpressionContext to evaluate the property for.
+:param context: :py:class:`QgsExpressionContext` to evaluate the property for.
 :param defaultValue: default integer to return if the property cannot be calculated as an integer
 
 :return: - value parsed to integer
@@ -471,7 +471,7 @@ Calculates the current value of the property and interprets it as an integer.
 %Docstring
 Calculates the current value of the property and interprets it as an boolean.
 
-:param context: QgsExpressionContext to evaluate the property for.
+:param context: :py:class:`QgsExpressionContext` to evaluate the property for.
 :param defaultValue: default boolean to return if the property cannot be calculated as an boolean
 
 :return: - value parsed to boolean
@@ -493,7 +493,7 @@ Calculates the current value of the property and interprets it as an boolean.
     QVariant toVariant() const;
 %Docstring
 Saves this property to a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.writeVariant to save it to an XML document.
+You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
 %End
@@ -501,7 +501,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
     bool loadVariant( const QVariant &property );
 %Docstring
 Loads this property from a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.readVariant to load it from an XML document.
+You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`
 %End

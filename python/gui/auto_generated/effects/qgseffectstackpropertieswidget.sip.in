@@ -14,7 +14,7 @@
 class QgsEffectStackPropertiesWidget : QgsPanelWidget
 {
 %Docstring
-A widget for modifying the properties of a QgsEffectStack, including adding
+A widget for modifying the properties of a :py:class:`QgsEffectStack`, including adding
 and reordering effects within the stack.
 
 .. seealso:: :py:class:`QgsEffectStack`
@@ -35,7 +35,7 @@ and reordering effects within the stack.
 %Docstring
 QgsEffectStackPropertiesWidget constructor
 
-:param stack: QgsEffectStack to modify in the widget
+:param stack: :py:class:`QgsEffectStack` to modify in the widget
 :param parent: parent widget
 %End
 
@@ -45,7 +45,7 @@ QgsEffectStackPropertiesWidget constructor
 %Docstring
 Returns effect stack attached to the widget
 
-:return: QgsEffectStack modified by the widget
+:return: :py:class:`QgsEffectStack` modified by the widget
 %End
 
     void setPreviewPicture( const QPicture &picture );
@@ -106,7 +106,7 @@ Refreshes the widget to reflect the current state of the stack.
 %Docstring
 Refreshes the widget to reflect the current state of a specified stack.
 
-:param stack: QgsEffectStack for widget
+:param stack: :py:class:`QgsEffectStack` for widget
 %End
 
     void updateUi();
@@ -153,7 +153,7 @@ and reordering effects within the stack.
 %Docstring
 QgsEffectStackPropertiesDialog constructor
 
-:param stack: QgsEffectStack to modify in the dialog
+:param stack: :py:class:`QgsEffectStack` to modify in the dialog
 :param parent: parent widget
 :param f: window flags
 %End
@@ -162,7 +162,7 @@ QgsEffectStackPropertiesDialog constructor
 %Docstring
 Returns effect stack attached to the dialog
 
-:return: QgsEffectStack modified by the dialog
+:return: :py:class:`QgsEffectStack` modified by the dialog
 %End
 
     void setPreviewPicture( const QPicture &picture );
@@ -204,7 +204,7 @@ and a button for opening an effect stack customization dialog.
 QgsEffectStackCompactWidget constructor
 
 :param parent: parent widget
-:param effect: QgsPaintEffect for modification by the widget. If the effect
+:param effect: :py:class:`QgsPaintEffect` for modification by the widget. If the effect
                is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
                stack consisting of the original effect
 %End
@@ -214,7 +214,7 @@ QgsEffectStackCompactWidget constructor
 %Docstring
 Sets paint effect attached to the widget,
 
-:param effect: QgsPaintEffect for modification by the widget. If the effect
+:param effect: :py:class:`QgsPaintEffect` for modification by the widget. If the effect
                is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
                stack consisting of the original effect
 
@@ -225,7 +225,7 @@ Sets paint effect attached to the widget,
 %Docstring
 Returns paint effect attached to the widget
 
-:return: QgsPaintEffect modified by the widget
+:return: :py:class:`QgsPaintEffect` modified by the widget
 
 .. seealso:: :py:func:`setPaintEffect`
 %End

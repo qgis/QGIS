@@ -579,7 +579,7 @@ Returns the unit for the maximum distance to shade inside of the shape from the 
 
     void setColorType( ShapeburstColorType colorType );
 %Docstring
-Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
+Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a :py:class:`QgsColorRamp` color ramp
 or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
 
 :param colorType: color type to use for shapeburst fill
@@ -597,7 +597,7 @@ or by simply specificing a start and end color. setColorType is used to specify 
 
     ShapeburstColorType colorType() const;
 %Docstring
-Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
+Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a :py:class:`QgsColorRamp` color ramp
 or by simply specificing a start and end color.
 
 :return: current color mode used for the shapeburst fill
@@ -630,7 +630,7 @@ Ownership of ``ramp`` is transferred to the fill.
 %Docstring
 Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType.ColorRamp
 
-:return: a QgsColorRamp color ramp
+:return: a :py:class:`QgsColorRamp` color ramp
 
 .. seealso:: :py:func:`setColorRamp`
 
