@@ -52,6 +52,7 @@ class Qgs3DOptionsFactory : public QgsOptionsWidgetFactory
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
+    QString pagePositionHint() const override;
 
 };
 

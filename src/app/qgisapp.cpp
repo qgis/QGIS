@@ -12476,43 +12476,67 @@ void QgisApp::showSettings( const QString &page )
 
 QMap< QString, int > QgisApp::optionsPagesMap()
 {
-  static QMap< QString, int > sOptionsPagesMap;
+  static QList< std::pair< QString, QString > > sOptionsPagesList;
   static std::once_flag initialized;
   std::call_once( initialized, []
   {
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "General" ), 0 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "System" ), 1 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "CRS" ), 2 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Transformations" ), 3 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), 4 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), 5 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), 6 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), 7 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Colors" ), 8 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), 9 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Layouts" ), 10 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), 11 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Variables" ), 12 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), 13 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Network" ), 14 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Locator" ), 15 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ), 16 );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "General" ), QStringLiteral( "mOptionsPageGeneral" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "System" ), QStringLiteral( "mOptionsPageSystem" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QStringLiteral( "mOptionsPageCRS" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Transformations" ), QStringLiteral( "mOptionsPageTransformations" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QStringLiteral( "mOptionsPageDataSources" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "mOptionsPageRendering" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QStringLiteral( "mOptionsPageMapCanvas" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QStringLiteral( "mOptionsPageMapTools" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QStringLiteral( "mOptionsPageColors" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "mOptionsPageDigitizing" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Layouts" ), QStringLiteral( "mOptionsPageComposer" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "mOptionsPageGDAL" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Variables" ), QStringLiteral( "mOptionsPageVariables" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), QStringLiteral( "mOptionsPageAuth" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Network" ), QStringLiteral( "mOptionsPageNetwork" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Locator" ),  QStringLiteral( "mOptionsLocatorSettings" ) } );
+    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ),  QStringLiteral( "mOptionsPageAcceleration" ) } );
   } );
 
-  QMap< QString, int > map = sOptionsPagesMap;
-  int idx = map.count();
+  QList< std::pair< QString, QString > > pages = sOptionsPagesList;
   for ( const QPointer< QgsOptionsWidgetFactory > &f : qgis::as_const( mOptionsWidgetFactories ) )
   {
     // remove any deleted factories
     if ( f )
     {
-      map.insert( f->title(), idx );
+      const QString positionHint = f->pagePositionHint();
+      if ( positionHint.isEmpty() )
+      {
+        pages.push_back( { f->title(), QString() } );
+      }
+      else
+      {
+        bool found = false;
+        for ( int idx = 0; idx < pages.size(); ++idx )
+        {
+          if ( pages.at( idx ).second == positionHint )
+          {
+            pages.insert( idx, { f->title(), QString() } );
+            found = true;
+            break;
+          }
+        }
+        if ( !found )
+          pages.push_back( { f->title(), QString() } );
+      }
     }
+  }
+
+  QMap< QString, int > map;
+  int idx = 0;
+  for ( auto it = pages.constBegin(); it != pages.constEnd(); ++it )
+  {
+    map.insert( it->first, idx );
     idx++;
   }
 
   map.insert( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), idx );
-
   return map;
 }
 
