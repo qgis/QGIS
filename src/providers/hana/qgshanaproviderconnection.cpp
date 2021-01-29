@@ -23,6 +23,7 @@
 #include "qgshanautils.h"
 #include "qgsapplication.h"
 #include "qgsexception.h"
+#include "qgsmessagelog.h"
 #include "qgssettings.h"
 
 #include "odbc/PreparedStatement.h"
@@ -98,36 +99,51 @@ void QgsHanaProviderConnection::setCapabilities()
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
-  const QString sql = QStringLiteral( "SELECT OBJECT_TYPE, PRIVILEGE, SCHEMA_NAME, OBJECT_NAME FROM PUBLIC.EFFECTIVE_PRIVILEGES "
-                                      "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'" );
-  QgsHanaResultSetRef rsPrivileges = conn->executeQuery( sql );
-  while ( rsPrivileges->next() )
+  if ( !conn.isNull() )
   {
-    QString objType = rsPrivileges->getString( 1 );
-    QString privType = rsPrivileges->getString( 2 );
-    if ( objType == QLatin1String( "SYSTEMPRIVILEGE" ) )
+    const QString sql = QStringLiteral( "SELECT OBJECT_TYPE, PRIVILEGE, SCHEMA_NAME, OBJECT_NAME FROM PUBLIC.EFFECTIVE_PRIVILEGES "
+                                        "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'" );
+    try
     {
-      if ( privType == QLatin1String( "CREATE SCHEMA" ) )
-        mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema;
-      else if ( privType == QLatin1String( "CATALOG READ" ) || privType == QLatin1String( "DATA ADMIN" ) )
-        mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
-    }
-    else if ( objType == QLatin1String( "TABLE" ) || objType == QLatin1String( "VIEW" ) )
-    {
-      if ( privType == QLatin1String( "SELECT" ) )
+      QgsHanaResultSetRef rsPrivileges = conn->executeQuery( sql );
+      while ( rsPrivileges->next() )
       {
-        QString schemaName = rsPrivileges->getString( 3 );
-        QString objName = rsPrivileges->getString( 4 );
+        QString objType = rsPrivileges->getString( 1 );
+        QString privType = rsPrivileges->getString( 2 );
+        if ( objType == QLatin1String( "SYSTEMPRIVILEGE" ) )
+        {
+          if ( privType == QLatin1String( "CREATE SCHEMA" ) )
+            mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema;
+          else if ( privType == QLatin1String( "CATALOG READ" ) || privType == QLatin1String( "DATA ADMIN" ) )
+            mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
+        }
+        else if ( objType == QLatin1String( "TABLE" ) || objType == QLatin1String( "VIEW" ) )
+        {
+          if ( privType == QLatin1String( "SELECT" ) )
+          {
+            QString schemaName = rsPrivileges->getString( 3 );
+            QString objName = rsPrivileges->getString( 4 );
 
-        if ( schemaName == QLatin1String( "SYS" ) && objName == QLatin1String( "SCHEMAS" ) )
-          mCapabilities |= Capability::Schemas;
-        else if ( objName == QLatin1String( "TABLE_COLUMNS" ) )
-          mCapabilities |= Capability::Tables | Capability::TableExists;
+            if ( schemaName == QLatin1String( "SYS" ) && objName == QLatin1String( "SCHEMAS" ) )
+              mCapabilities |= Capability::Schemas;
+            else if ( objName == QLatin1String( "TABLE_COLUMNS" ) )
+              mCapabilities |= Capability::Tables | Capability::TableExists;
+          }
+        }
       }
+      rsPrivileges->close();
+
+      return;
+    }
+    catch ( const QgsHanaException &ex )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Unable to retrieve user privileges: %1" ).arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ), QObject::tr( "SAP HANA" ) );
     }
   }
 
-  rsPrivileges->close();
+  // We enable all capabilities, if we were not able to retrieve them from the database.
+  mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema |
+                   Capability::Schemas | Capability::Tables | Capability::TableExists;
 }
 
 void QgsHanaProviderConnection::dropTable( const QString &schema, const QString &name ) const
@@ -270,7 +286,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
   {
     throw QgsProviderConnectionException( ex.what() );
   }
-
 }
 
 void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const

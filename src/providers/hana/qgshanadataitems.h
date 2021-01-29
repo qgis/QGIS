@@ -74,6 +74,9 @@ class QgsHanaSchemaItem : public QgsDatabaseSchemaItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    // QgsDataItem interface
+    bool layerCollection() const override { return true; }
+
   private:
     QgsHanaLayerItem *createLayer( const QgsHanaLayerProperty &layerProperty );
 
@@ -107,6 +110,5 @@ class QgsHanaDataItemProvider : public QgsDataItemProvider
     int capabilities() const override { return QgsDataProvider::Database; }
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
-
 
 #endif // QGSHANADATAITEMS_H
