@@ -13,9 +13,9 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
 Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
 
-While the raw QGraphicsScene API can be used to render the contents of a QgsLayout
-to a QPainter, it is recommended to instead use a QgsLayoutExporter to handle rendering
-layouts instead. QgsLayoutExporter automatically takes care of the intracacies of
+While the raw QGraphicsScene API can be used to render the contents of a :py:class:`QgsLayout`
+to a QPainter, it is recommended to instead use a :py:class:`QgsLayoutExporter` to handle rendering
+layouts instead. :py:class:`QgsLayoutExporter` automatically takes care of the intracacies of
 preparing the layout and paint devices for correct exports, respecting various
 user settings such as the layout context DPI.
 

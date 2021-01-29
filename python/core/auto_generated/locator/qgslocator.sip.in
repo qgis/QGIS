@@ -14,9 +14,9 @@
 class QgsLocator : QObject
 {
 %Docstring
-Handles the management of QgsLocatorFilter objects and async collection of search results from them.
+Handles the management of :py:class:`QgsLocatorFilter` objects and async collection of search results from them.
 
-QgsLocator acts as both a registry for QgsLocatorFilter objects and a means of firing up
+:py:class:`QgsLocator` acts as both a registry for :py:class:`QgsLocatorFilter` objects and a means of firing up
 asynchronous queries against these filter objects.
 
 Filters are first registered to the locator by calling :py:func:`~registerFilter`. Registering filters
@@ -90,7 +90,7 @@ with valid prefixes.
 .. seealso:: :py:func:`filters`
 
 .. deprecated:: QGIS 3.2
-   use filters() instead
+   use :py:func:`~QgsLocator.filters` instead
 %End
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );

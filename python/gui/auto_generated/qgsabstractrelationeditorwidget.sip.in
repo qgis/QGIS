@@ -222,37 +222,37 @@ Unlinks the features with ``fids``
 A hook called every time the state of the relation editor widget has changed via calling its `set*` methods or slots,
 e.g. changed relation, added feature, etc.
 Should be used to refresh the UI regarding the new data.
-Check QgsRealationEditorWidget as an example.
+Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
     virtual void setTitle( const QString &title );
 %Docstring
 Sets the title of the widget, if it is wrapped within a :py:class:`QgsCollapsibleGroupBox`
-Check QgsRealationEditorWidget as an example.
+Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
     virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
 %Docstring
 A hook called right before :py:func:`~QgsAbstractRelationEditorWidget.setRelationFeature` is executed. Used to update the UI once setting the relation feature is done.
-Check QgsRealationEditorWidget as an example.
+Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
     virtual void afterSetRelationFeature();
 %Docstring
 A hook called right after :py:func:`~QgsAbstractRelationEditorWidget.setRelationFeature` is executed, but before :py:func:`~QgsAbstractRelationEditorWidget.updateUi` is called. Used to update the UI once setting the relation feature is done.
-Check QgsRealationEditorWidget as an example.
+Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
     virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation );
 %Docstring
 A hook called right before :py:func:`~QgsAbstractRelationEditorWidget.setRelations` is executed. Used to manipulate UI once setting the relations is done.
-Check QgsRealationEditorWidget as an example.
+Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
     virtual void afterSetRelations();
 %Docstring
 A hook called right after :py:func:`~QgsAbstractRelationEditorWidget.setRelations` is executed, but before :py:func:`~QgsAbstractRelationEditorWidget.updateUi` is called. Used to update the UI once setting the relations is done.
-Check QgsRealationEditorWidget as an example.
+Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 };
 

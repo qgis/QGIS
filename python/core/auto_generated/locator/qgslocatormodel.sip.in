@@ -15,7 +15,7 @@ class QgsLocatorModel : QAbstractTableModel
 %Docstring
 An abstract list model for displaying the results of locator searches.
 
-Note that this class should generally be used with a QgsLocatorProxyModel
+Note that this class should generally be used with a :py:class:`QgsLocatorProxyModel`
 in order to ensure correct sorting of results by priority and match level.
 
 .. versionadded:: 3.0
@@ -88,7 +88,7 @@ A QgsLocatorModel which has is associated directly with a
 from locator searches.
 
 Use this QgsLocatorModel subclass when you want the connections
-between a QgsLocator and the model to be automatically created
+between a :py:class:`QgsLocator` and the model to be automatically created
 for you. If more flexibility in model behavior is required,
 use the base QgsLocatorModel class instead and setup the
 connections manually.

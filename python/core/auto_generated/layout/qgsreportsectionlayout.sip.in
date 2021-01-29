@@ -12,7 +12,7 @@
 class QgsReportSectionLayout : QgsAbstractReportSection
 {
 %Docstring
-A report section consisting of a single QgsLayout body.
+A report section consisting of a single :py:class:`QgsLayout` body.
 
 .. warning::
 

@@ -14,10 +14,10 @@
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring
-The QgsLegendRendererItem class is abstract interface for legend items
-returned from QgsMapLayerLegend implementation.
+The :py:class:`QgsLegendRendererItem` class is abstract interface for legend items
+returned from :py:class:`QgsMapLayerLegend` implementation.
 
-The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
+The objects are used in :py:class:`QgsLayerTreeModel`. Custom implementations may offer additional interactivity
 and customized look.
 
 .. versionadded:: 2.6
@@ -179,7 +179,7 @@ Default implementation does nothing.
 
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 %Docstring
-Entry point called from QgsLegendRenderer to do the rendering.
+Entry point called from :py:class:`QgsLegendRenderer` to do the rendering.
 Default implementation calls :py:func:`~QgsLayerTreeModelLegendNode.drawSymbol` and :py:func:`~QgsLayerTreeModelLegendNode.drawSymbolText` methods.
 
 If ctx is ``None``, this is just first stage when preparing layout - without actual rendering.
@@ -187,7 +187,7 @@ If ctx is ``None``, this is just first stage when preparing layout - without act
 
     QJsonObject exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context );
 %Docstring
-Entry point called from QgsLegendRenderer to do the rendering in a
+Entry point called from :py:class:`QgsLegendRenderer` to do the rendering in a
 JSON object.
 
 :param settings: Legend layout configuration
@@ -476,7 +476,7 @@ Ownership of ``symbol`` is transferred.
 %Docstring
 Evaluates  and returns the text label of the current node
 
-:param context: extra QgsExpressionContext to use for evaluating the expression
+:param context: extra :py:class:`QgsExpressionContext` to use for evaluating the expression
 :param label: text to evaluate instead of the layer layertree string
 
 .. versionadded:: 3.10
@@ -653,7 +653,7 @@ Produces legend node with a marker symbol
   public:
     QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Construct the node using QgsDataDefinedSizeLegend as definition of the node's appearance
+Construct the node using :py:class:`QgsDataDefinedSizeLegend` as definition of the node's appearance
 %End
     ~QgsDataDefinedSizeLegendNode();
 

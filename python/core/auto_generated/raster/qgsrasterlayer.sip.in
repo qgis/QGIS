@@ -18,13 +18,13 @@ class QgsRasterLayer : QgsMapLayer
 
 Represents a raster layer.
 
-A QgsRasterLayer is instantiated by specifying the name of a data provider,
+A :py:class:`QgsRasterLayer` is instantiated by specifying the name of a data provider,
 such as "gdal" or "wms", and a url defining the specific data set to connect to.
-The raster layer constructor in turn instantiates a QgsRasterDataProvider subclass
+The raster layer constructor in turn instantiates a :py:class:`QgsRasterDataProvider` subclass
 corresponding to the provider type, and passes it the url. The data provider
 connects to the data source.
 
-Sample usage of the QgsRasterLayer class:
+Sample usage of the :py:class:`QgsRasterLayer` class:
 
 .. code-block:: python
 
@@ -151,7 +151,7 @@ Set the data provider.
 %Docstring
 Set the data provider.
 
-:param provider: provider key string, must match a valid QgsRasterDataProvider key. E.g. "gdal", "wms", etc.
+:param provider: provider key string, must match a valid :py:class:`QgsRasterDataProvider` key. E.g. "gdal", "wms", etc.
 :param options: provider options
 :param flags: provider flags since QGIS 3.16
 
@@ -302,7 +302,7 @@ This is an overloaded version of the :py:func:`~QgsRasterLayer.draw` function th
 Returns a list with classification items (Text and color).
 
 .. deprecated::
-   use QgsRasterRenderer.createLegendNodes() instead.
+   use :py:func:`QgsRasterRenderer.createLegendNodes()` instead.
 %End
 
     virtual bool isSpatial() const;

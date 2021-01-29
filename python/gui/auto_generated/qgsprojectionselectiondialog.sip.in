@@ -28,7 +28,7 @@ to get an epsg code:
            mCrs = mySelector.crs()
 
 If you wish to embed the projection selector into an existing dialog
-the you probably want to look at QgsProjectionSelectionWidget instead.
+the you probably want to look at :py:class:`QgsProjectionSelectionWidget` instead.
 
 .. versionadded:: 3.0
 %End

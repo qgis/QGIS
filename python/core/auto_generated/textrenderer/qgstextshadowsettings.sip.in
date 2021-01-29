@@ -17,7 +17,7 @@ Container for settings relating to a text shadow.
 
 .. note::
 
-   QgsTextShadowSettings objects are implicitly shared.
+   :py:class:`QgsTextShadowSettings` objects are implicitly shared.
 
 .. versionadded:: 3.0
 %End
@@ -151,7 +151,7 @@ Sets the units used for the shadow's offset.
     QgsMapUnitScale offsetMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shadow offset distance. This is only used if the
-:py:func:`~QgsTextShadowSettings.offsetUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextShadowSettings.offsetUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 
@@ -161,7 +161,7 @@ Returns the map unit scale object for the shadow offset distance. This is only u
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shadow offset distance. This is only used if the
-:py:func:`~QgsTextShadowSettings.offsetUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextShadowSettings.offsetUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for shadow offset
 
@@ -227,7 +227,7 @@ Sets the units used for the shadow's blur radius.
     QgsMapUnitScale blurRadiusMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shadow blur radius. This is only used if the
-:py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setBlurRadiusMapUnitScale`
 
@@ -237,7 +237,7 @@ Returns the map unit scale object for the shadow blur radius. This is only used 
     void setBlurRadiusMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shadow blur radius. This is only used if the
-:py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for shadow blur radius
 

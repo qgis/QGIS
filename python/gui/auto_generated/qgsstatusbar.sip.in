@@ -15,15 +15,15 @@ class QgsStatusBar : QWidget
 %Docstring
 A proxy widget for QStatusBar.
 
-Unlike QStatusBar, QgsStatusBar allows finer control of widget placement, including
+Unlike QStatusBar, :py:class:`QgsStatusBar` allows finer control of widget placement, including
 the option to locate permanent widgets on the left side of the bar.
 
-QgsStatusBar is designed to be embedded into an existing
+:py:class:`QgsStatusBar` is designed to be embedded into an existing
 window's QStatusBar, as a permanent widget. This allows reuse of the special QStatusBar handling
 for resize grips and other platform specific status bar tweaks.
 
 Instead of adding child widgets and showing messages directly in the window's status bar,
-these widgets (and messages) should instead be added into the embedded QgsStatusBar.
+these widgets (and messages) should instead be added into the embedded :py:class:`QgsStatusBar`.
 
 .. versionadded:: 3.0
 %End

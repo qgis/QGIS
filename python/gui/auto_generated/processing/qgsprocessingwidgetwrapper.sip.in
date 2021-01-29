@@ -567,9 +567,9 @@ for this widget for the specified ``parameter``.
 
 In order to determine the available sources for the parameter in a model
 the types returned by this method are checked. The returned list corresponds
-to the various available values from QgsProcessing.SourceType.
+to the various available values from :py:class:`QgsProcessing`.SourceType.
 
-Subclasses should return a list of all QgsProcessing.SourceType
+Subclasses should return a list of all :py:class:`QgsProcessing`.SourceType
 values which can be used as values for the parameter.
 
 .. seealso:: :py:func:`compatibleParameterTypes`

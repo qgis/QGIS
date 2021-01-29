@@ -14,10 +14,10 @@
 class QgsAttributeTableView : QTableView
 {
 %Docstring
-Provides a table view of features of a QgsVectorLayer.
+Provides a table view of features of a :py:class:`QgsVectorLayer`.
 
-This can either be used as a standalone widget. QgsBrowser features a reference implementation.
-Or this can be used within the QgsDualView stacked widget.
+This can either be used as a standalone widget. :py:class:`QgsBrowser` features a reference implementation.
+Or this can be used within the :py:class:`QgsDualView` stacked widget.
 %End
 
 %TypeHeaderCode

@@ -18,7 +18,7 @@ Stores metadata about one renderer class.
 .. note::
 
    It's necessary to implement :py:func:`~createRenderer` function.
-   In C++ you can use QgsRendererMetadata convenience class.
+   In C++ you can use :py:class:`QgsRendererMetadata` convenience class.
 %End
 
 %TypeHeaderCode
@@ -141,7 +141,7 @@ class QgsRendererRegistry
 %Docstring
 Registry of renderers.
 
-QgsRendererRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsRendererRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.rendererRegistry()`.
 %End
 

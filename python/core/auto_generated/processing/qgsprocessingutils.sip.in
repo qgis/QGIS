@@ -47,7 +47,7 @@ value.
 Returns a list of vector layers from a ``project`` which are compatible with the processing
 framework.
 
-The ``sourceTypes`` list should be filled with a list of QgsProcessing.SourceType values.
+The ``sourceTypes`` list should be filled with a list of :py:class:`QgsProcessing`.SourceType values.
 If the ``sourceTypes`` list is non-empty then the layers will be sorted so that only
 layers with the specified source type included in the list will be returned. Leaving the ``sourceTypes``
 list empty will cause all vector layers, regardless of their geometry type, to be returned.
@@ -224,7 +224,7 @@ Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system.
 
 .. deprecated::
-   Use version with QgsProcessingContext argument instead
+   Use version with :py:class:`QgsProcessingContext` argument instead
 %End
 
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
@@ -388,7 +388,7 @@ a fallback value of "tif".
 class QgsProcessingFeatureSource : QgsFeatureSource
 {
 %Docstring
-QgsFeatureSource subclass which proxies methods to an underlying :py:class:`QgsFeatureSource`, modifying
+:py:class:`QgsFeatureSource` subclass which proxies methods to an underlying :py:class:`QgsFeatureSource`, modifying
 results according to the settings in a :py:class:`QgsProcessingContext`.
 
 .. versionadded:: 3.0

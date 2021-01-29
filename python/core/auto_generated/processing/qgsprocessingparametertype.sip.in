@@ -105,7 +105,7 @@ be used (which must be translated), eg "str: as comma delimited list of numbers"
 %Docstring
 Returns a descriptive list of the possible string values acceptable for the parameter.
 
-E.g. for a QgsProcessingParameterVectorLayer this may include "Path to a vector layer",
+E.g. for a :py:class:`QgsProcessingParameterVectorLayer` this may include "Path to a vector layer",
 for :py:class:`QgsProcessingParameterBoolean` "1 for true, 0 for false" etc.
 
 Extra explanatory help can be used (which must be translated), eg "a comma delimited list of numbers".

@@ -18,14 +18,14 @@ class QgsProjectProperty
 %Docstring
 An Abstract Base Class for QGIS project property hierarchys.
 
-Each sub-class is either a QgsProjectPropertyKey or QgsProjectPropertyValue.  QgsProjectPropertyKey can
-contain either QgsProjectPropertyKey or QgsProjectPropertyValues, thus describing an
-hierarchy.  QgsProjectPropertyValues are always graph leaves.
+Each sub-class is either a :py:class:`QgsProjectPropertyKey` or :py:class:`QgsProjectPropertyValue`.  :py:class:`QgsProjectPropertyKey` can
+contain either :py:class:`QgsProjectPropertyKey` or :py:class:`QgsProjectPropertyValues`, thus describing an
+hierarchy.  :py:class:`QgsProjectPropertyValues` are always graph leaves.
 
 .. note::
 
-   This class is used internally by QgsProject. It's generally recommended that the methods in
-   QgsProject are used to modify project properties rather than using these low-level classes.
+   This class is used internally by :py:class:`QgsProject`. It's generally recommended that the methods in
+   :py:class:`QgsProject` are used to modify project properties rather than using these low-level classes.
 
 .. versionadded:: 3.0
 %End
@@ -46,7 +46,7 @@ Dumps out the keys and values
 
     virtual bool isKey() const = 0;
 %Docstring
-Returns ``True`` if the property is a QgsProjectPropertyKey.
+Returns ``True`` if the property is a :py:class:`QgsProjectPropertyKey`.
 
 .. seealso:: :py:func:`isValue`
 
@@ -55,7 +55,7 @@ Returns ``True`` if the property is a QgsProjectPropertyKey.
 
     virtual bool isValue() const = 0;
 %Docstring
-Returns ``True`` if the property is a QgsProjectPropertyValue.
+Returns ``True`` if the property is a :py:class:`QgsProjectPropertyValue`.
 
 .. seealso:: :py:func:`isKey`
 
@@ -96,10 +96,10 @@ Used for saving properties to project file.
 %Docstring
 Returns the node's value.
 
-For QgsProjectPropertyValue nodes, this is straightforward -- just return the
-embedded QVariant, _value.  For QgsProjectPropertyKey, this means returning
-the QgsProjectPropertyValue _value that is keyed by its name, if it exists;
-i.e., QgsProjectPropertyKey "foo" will return the property value mapped to its
+For :py:class:`QgsProjectPropertyValue` nodes, this is straightforward -- just return the
+embedded QVariant, _value.  For :py:class:`QgsProjectPropertyKey`, this means returning
+the :py:class:`QgsProjectPropertyValue` _value that is keyed by its name, if it exists;
+i.e., :py:class:`QgsProjectPropertyKey` "foo" will return the property value mapped to its
 name, "foo", in its QHash of QProperties.
 %End
 
@@ -109,7 +109,7 @@ name, "foo", in its QHash of QProperties.
 class QgsProjectPropertyValue : QgsProjectProperty
 {
 %Docstring
-Project property value node, contains a QgsProjectPropertyKey's value.
+Project property value node, contains a :py:class:`QgsProjectPropertyKey`'s value.
 
 .. versionadded:: 3.0
 %End
@@ -152,16 +152,16 @@ class QgsProjectPropertyKey : QgsProjectProperty
 
 Project property key node.
 
-Can, itself, contain QgsProjectPropertyKey and QgsProjectPropertyValues.
+Can, itself, contain :py:class:`QgsProjectPropertyKey` and :py:class:`QgsProjectPropertyValues`.
 
 The internal QHash, mProperties, maps key names to their respective
 QgsProjectPropertyValue or next QgsProjectPropertyKey in the key name sequence.  The key with
 the current name should contain its QgsProjectPropertyValue.
 
 E.g., given the key sequence "/foo/bar", "foo" will have a corresponding
-QgsProjectPropertyKey with a name "foo".  It will contain an element in its
+:py:class:`QgsProjectPropertyKey` with a name "foo".  It will contain an element in its
 mProperties that maps to "bar", which is another :py:class:`QgsProjectPropertyKey`.  The "bar"
-QgsProjectPropertyKey will, in turn, have an element that maps to itself, i.e. "bar",
+:py:class:`QgsProjectPropertyKey` will, in turn, have an element that maps to itself, i.e. "bar",
 that will contain a QgsProjectPropertyValue.
 
 .. versionadded:: 3.0

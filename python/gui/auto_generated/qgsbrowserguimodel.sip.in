@@ -15,7 +15,7 @@ class QgsBrowserGuiModel : QgsBrowserModel
 A model for showing available data sources and other items in a structured
 tree.
 
-QgsBrowserGuiModel is the foundation for the QGIS browser panel, and includes
+:py:class:`QgsBrowserGuiModel` is the foundation for the QGIS browser panel, and includes
 items for the different data providers and folders accessible to users.
 
 .. versionadded:: 3.10
@@ -32,7 +32,7 @@ Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
 
 .. note::
 
-   QgsBrowserModel models are not initially populated and use a deferred initialization
+   :py:class:`QgsBrowserModel` models are not initially populated and use a deferred initialization
    approach. After constructing a :py:class:`QgsBrowserModel`, a call must be made
    to :py:func:`~QgsBrowserGuiModel.initialize` in order to populate the model.
 %End
@@ -45,7 +45,7 @@ Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets message bar that will be passed in QgsDataItemGuiContext to data items
+Sets message bar that will be passed in :py:class:`QgsDataItemGuiContext` to data items
 %End
 
 };

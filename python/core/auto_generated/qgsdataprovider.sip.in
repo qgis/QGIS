@@ -91,7 +91,7 @@ Additional creation options are specified within the ``options`` value and since
 %Docstring
 Returns the coordinate system for the data source.
 If the provider isn't capable of returning its projection then an invalid
-QgsCoordinateReferenceSystem will be returned.
+:py:class:`QgsCoordinateReferenceSystem` will be returned.
 %End
 
     virtual void setDataSourceUri( const QString &uri );
@@ -158,7 +158,7 @@ This may be ``None``, depending on the data provider.
 %Docstring
 Returns the extent of the layer
 
-:return: QgsRectangle containing the extent of the layer
+:return: :py:class:`QgsRectangle` containing the extent of the layer
 %End
 
 
@@ -469,7 +469,7 @@ feature ids should be invalidated.
 
    This signal is NOT emitted when changes are made to a provider
    from INSIDE QGIS -- e.g. when adding features to a vector layer, deleting features
-   or modifying existing features. Instead, the specific QgsVectorLayer signals
+   or modifying existing features. Instead, the specific :py:class:`QgsVectorLayer` signals
    should be used to detect these operations.
 %End
 

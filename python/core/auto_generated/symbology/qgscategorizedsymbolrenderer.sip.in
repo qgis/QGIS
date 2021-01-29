@@ -12,7 +12,7 @@
 class QgsRendererCategory
 {
 %Docstring
-Represents an individual category (class) from a QgsCategorizedSymbolRenderer.
+Represents an individual category (class) from a :py:class:`QgsCategorizedSymbolRenderer`.
 %End
 
 %TypeHeaderCode

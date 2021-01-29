@@ -15,8 +15,8 @@ class QgsProjectMetadata : QgsAbstractMetadataBase
 %Docstring
 A structured metadata store for a map layer.
 
-QgsProjectMetadata handles storage and management of the metadata
-for a QgsProject. This class is an internal QGIS format with a common
+:py:class:`QgsProjectMetadata` handles storage and management of the metadata
+for a :py:class:`QgsProject`. This class is an internal QGIS format with a common
 metadata structure, which allows for code to access the metadata properties for
 projects in a uniform way.
 
@@ -24,15 +24,15 @@ The metadata store is designed to be compatible with the Dublin Core metadata
 specifications, and will be expanded to allow compatibility with ISO specifications
 in future releases. However, the QGIS internal schema does not represent a superset
 of all existing metadata schemas and accordingly conversion from specific
-metadata formats to QgsProjectMetadata may result in a loss of information.
+metadata formats to :py:class:`QgsProjectMetadata` may result in a loss of information.
 
 This class is designed to follow the specifications detailed in
 the schema definition available at resources/qgis-project-metadata.xsd
 within the QGIS source code.
 
-Metadata can be validated through the use of QgsLayerMetadataValidator
+Metadata can be validated through the use of :py:class:`QgsLayerMetadataValidator`
 subclasses. E.g. validating against the native QGIS metadata schema can be performed
-using QgsNativeProjectMetadataValidator.
+using :py:class:`QgsNativeProjectMetadataValidator`.
 
 .. versionadded:: 3.2
 %End

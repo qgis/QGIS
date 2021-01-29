@@ -14,7 +14,7 @@ class QgsGraduatedHistogramWidget : QgsHistogramWidget
 {
 %Docstring
 Graphical histogram for displaying distribution of field values and
-editing range breaks for a QgsGraduatedSymbolRenderer renderer.
+editing range breaks for a :py:class:`QgsGraduatedSymbolRenderer` renderer.
 
 .. versionadded:: 2.9
 %End
@@ -33,7 +33,7 @@ QgsGraduatedHistogramWidget constructor
 
     void setRenderer( QgsGraduatedSymbolRenderer *renderer );
 %Docstring
-Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
+Sets the :py:class:`QgsGraduatedSymbolRenderer` renderer associated with the histogram.
 The histogram will fetch the ranges from the renderer before every refresh.
 
 :param renderer: associated :py:class:`QgsGraduatedSymbolRenderer`

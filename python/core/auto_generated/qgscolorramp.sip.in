@@ -94,7 +94,7 @@ listed first.
 class QgsGradientStop
 {
 %Docstring
-Represents a color stop within a QgsGradientColorRamp color ramp.
+Represents a color stop within a :py:class:`QgsGradientColorRamp` color ramp.
 
 .. versionadded:: 3.0
 %End
@@ -151,7 +151,7 @@ Constructor for QgsGradientColorRamp
 
     static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsColorRamp from a map of properties
+Creates a new :py:class:`QgsColorRamp` from a map of properties
 %End
 
     virtual int count() const;

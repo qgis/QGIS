@@ -12,7 +12,7 @@
 class QgsDataSourceSelectWidget: QgsPanelWidget
 {
 %Docstring
-The QgsDataSourceSelectWidget class embeds the browser view to
+The :py:class:`QgsDataSourceSelectWidget` class embeds the browser view to
 select an existing data source.
 
 By default any layer type can be chosen, the valid layer
@@ -21,7 +21,7 @@ setLayerTypeFilter(layerType) or by activating the filter
 directly from the constructor.
 
 To retrieve the selected data source, :py:func:`~uri` can be called and it
-will return a (possibly invalid) QgsMimeDataUtils.Uri.
+will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 
 .. versionadded:: 3.14
 %End
@@ -117,7 +117,7 @@ Emitted when an item is triggered, e.g. via a double-click.
 class QgsDataSourceSelectDialog: QDialog
 {
 %Docstring
-The QgsDataSourceSelectDialog class embeds the browser view to
+The :py:class:`QgsDataSourceSelectDialog` class embeds the browser view to
 select an existing data source.
 
 By default any layer type can be chosen, the valid layer
@@ -126,7 +126,7 @@ setLayerTypeFilter(layerType) or by activating the filter
 directly from the constructor.
 
 To retrieve the selected data source, :py:func:`~QgsDataSourceSelectWidget.uri` can be called and it
-will return a (possibly invalid) QgsMimeDataUtils.Uri.
+will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 
 .. versionadded:: 3.6
 %End

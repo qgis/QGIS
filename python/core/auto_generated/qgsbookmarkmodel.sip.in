@@ -13,10 +13,10 @@ class QgsBookmarkManagerModel: QAbstractTableModel
 {
 %Docstring
 
-Implements a model for the contents of QgsBookmarkManager objects.
+Implements a model for the contents of :py:class:`QgsBookmarkManager` objects.
 
-QgsBookmarkModel provides a Qt table model for displaying and manipulating
-the bookmarks managed by a QgsBookmarkManager object. The model requires
+:py:class:`QgsBookmarkModel` provides a Qt table model for displaying and manipulating
+the bookmarks managed by a :py:class:`QgsBookmarkManager` object. The model requires
 both a main manager (usually the application bookmark manager, accessed
 via :py:func:`QgsApplication.bookmarkManager()`) and a project-based manager. The resultant
 model data is a merge of the bookmarks stored in both managers.

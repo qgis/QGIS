@@ -55,7 +55,7 @@ Ownership of ``panel`` is transferred to the stack.
 The main panel widget that is set in the stack. The main widget can not be closed
 and doesn't display a back button.
 
-:return: The main QgsPanelWidget that is active in the stack.
+:return: The main :py:class:`QgsPanelWidget` that is active in the stack.
 
 .. seealso:: :py:func:`setMainPanel`
 %End

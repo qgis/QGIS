@@ -17,20 +17,20 @@ class QgsBrowserModel : QAbstractItemModel
 A model for showing available data sources and other items in a structured
 tree.
 
-QgsBrowserModel is the foundation for the QGIS browser panel, and includes
+:py:class:`QgsBrowserModel` is the foundation for the QGIS browser panel, and includes
 items for the different data providers and folders accessible to users.
 
-QgsBrowserModel models are not initially populated and use a deferred initialization
-approach. After constructing a QgsBrowserModel, a call must be made
+:py:class:`QgsBrowserModel` models are not initially populated and use a deferred initialization
+approach. After constructing a :py:class:`QgsBrowserModel`, a call must be made
 to :py:func:`~initialize` in order to populate the model.
 
 .. note::
 
-   Since QGIS 3.10 it is recommended to use QgsBrowserGuiModel from GUI library.
-   Implementation of data items used from QgsBrowserModel should not trigger any GUI
+   Since QGIS 3.10 it is recommended to use :py:class:`QgsBrowserGuiModel` from GUI library.
+   Implementation of data items used from :py:class:`QgsBrowserModel` should not trigger any GUI
    operations such as opening of widgets/dialogs or showing message boxes. Such actions
-   should be implemented in a new QgsDataItemGuiProvider subclass which is used
-   by QgsBrowserGuiModel (but not by QgsBrowserModel).
+   should be implemented in a new :py:class:`QgsDataItemGuiProvider` subclass which is used
+   by :py:class:`QgsBrowserGuiModel` (but not by :py:class:`QgsBrowserModel`).
 %End
 
 %TypeHeaderCode

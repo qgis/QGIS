@@ -15,7 +15,7 @@ class QgsCallout
 %Docstring
 Abstract base class for callout renderers.
 
-Implementations of QgsCallout are responsible for performing the actual render of
+Implementations of :py:class:`QgsCallout` are responsible for performing the actual render of
 callouts, including determining the desired shape of the callout and using any
 relevant symbology elements to render them.
 

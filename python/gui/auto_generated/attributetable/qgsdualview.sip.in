@@ -14,7 +14,7 @@
 class QgsDualView : QStackedWidget
 {
 %Docstring
-This widget is used to show the attributes of a set of features of a QgsVectorLayer.
+This widget is used to show the attributes of a set of features of a :py:class:`QgsVectorLayer`.
 The attributes can be edited.
 It supports two different layouts: the table layout, in which the attributes for the features
 are shown in a table and the editor layout, where the features are shown as a selectable list
@@ -60,7 +60,7 @@ Has to be called to initialize the dual view.
 
 :param layer: The layer which should be used to fetch features
 :param mapCanvas: The mapCanvas (used for the FilterMode
-                  QgsAttributeTableFilterModel.ShowVisible)
+                  :py:class:`QgsAttributeTableFilterModel`.ShowVisible)
 :param request: Use a modified request to limit the shown features
 :param context: The context in which this view is shown
 :param loadFeatures: whether to initially load all features into the view. If set to

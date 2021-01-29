@@ -168,7 +168,7 @@ CRS as the current layer.
 
     QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
 %Docstring
-Creates a QgsPoint with ZM support if necessary (according to the
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
 WkbType of the current layer). If the point is snapped, then the Z
 value is took from the snapped point.
 
@@ -182,7 +182,7 @@ value is took from the snapped point.
 
     QgsPoint mapPoint( const QgsPointXY &point ) const;
 %Docstring
-Creates a QgsPoint with ZM support if necessary (according to the
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
 WkbType of the current layer).
 
 :param point: A point in 2D
@@ -242,7 +242,7 @@ List of digitized points
 :return: List of points
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant returns :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
 
@@ -262,7 +262,7 @@ Set the points on which to work
 :param pointList: A list of points
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     void setPoints( const QgsPointSequence &pointList );

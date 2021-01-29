@@ -15,7 +15,7 @@ class QgsStyleManagerDialog : QDialog
 {
 %Docstring
 
-A dialog allowing users to customize and populate a QgsStyle.
+A dialog allowing users to customize and populate a :py:class:`QgsStyle`.
 %End
 
 %TypeHeaderCode
@@ -28,7 +28,7 @@ A dialog allowing users to customize and populate a QgsStyle.
 %Docstring
 Constructor for QgsStyleManagerDialog, with the specified ``parent`` widget and window ``flags``.
 
-The ``style`` argument specifies the linked QgsStyle database. Symbols and objects contained within
+The ``style`` argument specifies the linked :py:class:`QgsStyle` database. Symbols and objects contained within
 this style will be shown in the dialog, and changes made within the dialog will be applied to ``style``.
 The ``style`` object must last for the lifetime of the dialog.
 %End

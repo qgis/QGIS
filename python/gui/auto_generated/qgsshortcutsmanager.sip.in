@@ -15,7 +15,7 @@ class QgsShortcutsManager : QObject
 Shortcuts manager is a class that contains a list of QActions and QShortcuts
 that have been registered and their shortcuts can be changed.
 
-QgsShortcutsManager is not usually directly created, but rather accessed through
+:py:class:`QgsShortcutsManager` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.shortcutsManager()`.
 
 .. versionadded:: 2.16
@@ -31,7 +31,7 @@ QgsShortcutsManager is not usually directly created, but rather accessed through
 Constructor for QgsShortcutsManager.
 
 :param parent: parent object
-:param settingsRoot: root QgsSettings path for storing settings, e.g., "/myplugin/shortcuts". Leave
+:param settingsRoot: root :py:class:`QgsSettings` path for storing settings, e.g., "/myplugin/shortcuts". Leave
                      as the default value to store settings alongside built in QGIS shortcuts, but care must be
                      taken to not register actions which conflict with the built in QGIS actions.
 %End

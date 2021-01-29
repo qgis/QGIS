@@ -51,7 +51,7 @@ and ``style`` is the initial definition of the style.
 %Docstring
 
 .. deprecated::
-   no longer used, use QgsEditConditionalFormatRuleWidget.loadStyle instead.
+   no longer used, use :py:class:`QgsEditConditionalFormatRuleWidget`.loadStyle instead.
 %End
 
  void reset() /Deprecated/;

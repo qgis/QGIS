@@ -15,7 +15,7 @@
 class QgsMapLayerLegend : QObject
 {
 %Docstring
-The QgsMapLayerLegend class is abstract interface for implementations
+The :py:class:`QgsMapLayerLegend` class is abstract interface for implementations
 of legends for one map layer.
 
 .. versionadded:: 2.6
@@ -175,7 +175,7 @@ Caller takes ownership of the returned symbol.
 %Docstring
 Sets a custom legend color ramp ``settings`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
 
-If the corresponding legend node is not a QgsColorRampLegendNode then calling this method will have no effect.
+If the corresponding legend node is not a :py:class:`QgsColorRampLegendNode` then calling this method will have no effect.
 
 If ``settings`` is non-``None``, they will be used in place of the default settigns when rendering
 the legend node.
@@ -189,7 +189,7 @@ the legend node.
 %Docstring
 Returns the custom legend color ramp settings for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
 
-If the corresponding legend node is not a QgsColorRampLegendNode then calling this method will return ``None``.
+If the corresponding legend node is not a :py:class:`QgsColorRampLegendNode` then calling this method will return ``None``.
 
 If the returned value is non-``None``, they will be used in place of the default settings when rendering
 the legend node.

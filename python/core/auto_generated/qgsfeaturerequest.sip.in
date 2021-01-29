@@ -571,7 +571,7 @@ Gets simplification method for geometries that will be fetched
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
 Returns the destination coordinate reference system for feature's geometries,
-or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
+or an invalid :py:class:`QgsCoordinateReferenceSystem` if no reprojection will be done
 and all features will be left with their original geometry.
 
 .. seealso:: :py:func:`setDestinationCrs`
@@ -598,7 +598,7 @@ and reprojection is required
 Sets the destination ``crs`` for feature's geometries. If set, all
 geometries will be reprojected from their original coordinate reference
 system to this desired reference system. If ``crs`` is an invalid
-QgsCoordinateReferenceSystem then no reprojection will be done
+:py:class:`QgsCoordinateReferenceSystem` then no reprojection will be done
 and all features will be left with their original geometry.
 
 When a ``crs`` is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, then any :py:func:`~QgsFeatureRequest.filterRect`
@@ -670,7 +670,7 @@ at this moment. A negative value (which is set by default) will wait forever.
    Only works if the provider supports this option.
 
 .. deprecated::
-   Use timeout() instead.
+   Use :py:func:`~QgsFeatureRequest.timeout` instead.
 
 .. versionadded:: 3.0
 %End
@@ -685,7 +685,7 @@ at this moment. A negative value (which is set by default) will wait forever.
    Only works if the provider supports this option.
 
 .. deprecated::
-   Use setTimeout() instead.
+   Use :py:func:`~QgsFeatureRequest.setTimeout` instead.
 
 .. versionadded:: 3.0
 %End

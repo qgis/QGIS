@@ -14,7 +14,7 @@
 class QgsGraphBuilder : QgsGraphBuilderInterface /NoDefaultCtors/
 {
 %Docstring
-This class used for making the QgsGraph object
+This class used for making the :py:class:`QgsGraph` object
 %End
 
 %TypeHeaderCode

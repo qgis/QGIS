@@ -11,7 +11,7 @@ class QgsColorSwatchGrid : QWidget
 {
 %Docstring
 A grid of color swatches, which allows for user selection. Colors are taken from an
-associated QgsColorScheme.
+associated :py:class:`QgsColorScheme`.
 
 .. seealso:: :py:class:`QgsColorGridAction`
 
@@ -27,7 +27,7 @@ associated QgsColorScheme.
 %Docstring
 Construct a new color swatch grid.
 
-:param scheme: QgsColorScheme for colors to show in grid
+:param scheme: :py:class:`QgsColorScheme` for colors to show in grid
 :param context: context string provided to color scheme
 :param parent: parent widget
 %End
@@ -142,7 +142,7 @@ A color swatch grid which can be embedded into a menu.
 %Docstring
 Construct a new color swatch grid action.
 
-:param scheme: QgsColorScheme for colors to show in grid
+:param scheme: :py:class:`QgsColorScheme` for colors to show in grid
 :param menu: parent menu
 :param context: context string provided to color scheme
 :param parent: parent widget

@@ -11,11 +11,11 @@
 class QgsServerApiContext
 {
 %Docstring
-The QgsServerApiContext class encapsulates the resources for a particular client
+The :py:class:`QgsServerApiContext` class encapsulates the resources for a particular client
 request: the request and response objects, the project (might be NULL) and
 the server interface, the API root path that matched the request is also added.
 
-QgsServerApiContext is lightweight copyable object meant to be passed along the
+:py:class:`QgsServerApiContext` is lightweight copyable object meant to be passed along the
 request handlers chain.
 
 .. versionadded:: 3.10

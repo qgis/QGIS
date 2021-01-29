@@ -16,7 +16,7 @@ class QgsFilterLineEdit : QLineEdit
 QLineEdit subclass with built in support for clearing the widget's value and
 handling custom null value representations.
 
-When using QgsFilterLineEdit the :py:func:`~value`, :py:func:`~setValue` and :py:func:`~clearValue` methods should be used
+When using :py:class:`QgsFilterLineEdit` the :py:func:`~value`, :py:func:`~setValue` and :py:func:`~clearValue` methods should be used
 instead of QLineEdit's :py:func:`~text`, :py:func:`~setText` and :py:func:`~clear` methods, and the :py:func:`~valueChanged`
 signal should be used instead of :py:func:`~textChanged`.
 %End

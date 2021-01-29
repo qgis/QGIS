@@ -16,7 +16,7 @@ class QgsProcessingRegistry : QObject
 Registry for various processing components, including providers, algorithms
 and various parameters and outputs.
 
-QgsProcessingRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsProcessingRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.processingRegistry()`.
 
 .. versionadded:: 3.0

@@ -15,14 +15,14 @@ class QgsFields
 %Docstring
 Container of fields for a vector layer.
 
-In addition to storing a list of QgsField instances, it also:
+In addition to storing a list of :py:class:`QgsField` instances, it also:
 
 - allows quick lookups of field names to index in the list
 - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
 
 .. note::
 
-   QgsFields objects are implicitly shared.
+   :py:class:`QgsFields` objects are implicitly shared.
 %End
 
 %TypeHeaderCode
@@ -285,7 +285,7 @@ Utility function to get list of attribute indexes
 
     QList<QgsField> toList() const;
 %Docstring
-Utility function to return a list of QgsField instances
+Utility function to return a list of :py:class:`QgsField` instances
 %End
 
     bool operator==( const QgsFields &other ) const;

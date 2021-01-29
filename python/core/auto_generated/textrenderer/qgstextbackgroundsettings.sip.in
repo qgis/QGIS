@@ -17,7 +17,7 @@ Container for settings relating to a text background object.
 
 .. note::
 
-   QgsTextBackgroundSettings objects are implicitly shared.
+   :py:class:`QgsTextBackgroundSettings` objects are implicitly shared.
 
 .. versionadded:: 3.0
 %End
@@ -220,7 +220,7 @@ QgsTextBackgroundSettings.SizePercent.
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shape size. This is only used if the
-:py:func:`~QgsTextBackgroundSettings.sizeUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.sizeUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -230,7 +230,7 @@ Returns the map unit scale object for the shape size. This is only used if the
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shape size. This is only used if the
-:py:func:`~QgsTextBackgroundSettings.sizeUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.sizeUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for shape size
 
@@ -322,7 +322,7 @@ Sets the units used for the shape's offset.
     QgsMapUnitScale offsetMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shape offset. This is only used if the
-:py:func:`~QgsTextBackgroundSettings.offsetUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.offsetUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 
@@ -332,7 +332,7 @@ Returns the map unit scale object for the shape offset. This is only used if the
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shape offset. This is only used if the
-:py:func:`~QgsTextBackgroundSettings.offsetUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.offsetUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for shape offset
 
@@ -387,7 +387,7 @@ Sets the units used for the shape's radii.
     QgsMapUnitScale radiiMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shape radii. This is only used if the
-:py:func:`~QgsTextBackgroundSettings.radiiUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.radiiUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setRadiiMapUnitScale`
 
@@ -397,7 +397,7 @@ Returns the map unit scale object for the shape radii. This is only used if the
     void setRadiiMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shape radii. This is only used if the
-:py:func:`~QgsTextBackgroundSettings.radiiUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.radiiUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for shape radii
 
@@ -523,7 +523,7 @@ Sets the units used for the shape's stroke width.
     QgsMapUnitScale strokeWidthMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shape stroke width. This is only used if the
-:py:func:`~QgsTextBackgroundSettings.strokeWidthUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.strokeWidthUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 
@@ -533,7 +533,7 @@ Returns the map unit scale object for the shape stroke width. This is only used 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shape stroke width. This is only used if the
-:py:func:`~QgsTextBackgroundSettings.strokeWidthUnit` is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.strokeWidthUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for shape stroke width
 

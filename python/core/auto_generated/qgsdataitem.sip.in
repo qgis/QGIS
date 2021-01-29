@@ -64,7 +64,7 @@ be used wherever appropriate.
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
 but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
 
-The optional ``providerKey`` string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string (added in QGIS 3.12) can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsDataItem();
@@ -285,7 +285,7 @@ Items which implement this method should return the QgsDataItem.Rename capabilit
 
 The default implementation does nothing.
 
-Use QgsDataItemGuiProvider:
+Use :py:class:`QgsDataItemGuiProvider`:
 
 .. versionadded:: 3.4
 
@@ -589,7 +589,7 @@ Returns the icon name of the given ``layerType``
  virtual bool deleteLayer() /Deprecated/;
 %Docstring
 Delete this layer item
-Use QgsDataItemGuiProvider.deleteLayer instead
+Use :py:class:`QgsDataItemGuiProvider`.deleteLayer instead
 
 .. deprecated::
    QGIS 3.10
@@ -653,7 +653,7 @@ be used wherever appropriate.
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
 but QgsDataCollectionItem items pointing to different logical locations should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsDataCollectionItem();
@@ -713,9 +713,9 @@ The ``name`` argument specifies the text to show in the model for the item. A tr
 be used wherever appropriate.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but QgsSchemaItem items pointing to different logical locations should always use a different item ``path``.
+but :py:class:`QgsSchemaItem` items pointing to different logical locations should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsDatabaseSchemaItem();
@@ -753,9 +753,9 @@ The ``name`` argument specifies the text to show in the model for the item. A tr
 be used wherever appropriate.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but QgsSchemaItem items pointing to different logical locations should always use a different item ``path``.
+but :py:class:`QgsSchemaItem` items pointing to different logical locations should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsConnectionsRootItem();
@@ -802,7 +802,7 @@ The ``path`` argument gives the item path in the browser tree. The ``path`` stri
 the same as ``dirPath`` or ``dirPath`` with a prefix, e.g. "favorites:/home/gsherman/Downloads"). QgsDirectoryItem
 items pointing to different ``dirPaths`` should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     virtual void setState( State state );
@@ -1035,10 +1035,10 @@ the schema and the table name.
 Constructor for QgsFieldsItem, with the specified ``parent`` item.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
+but :py:class:`QgsDataItem` items pointing to different logical locations should always use a different item ``path``.
 The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
 a connection and retrieve fields information.
-The ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 The ``schema`` and ``tableName`` are used to retrieve the layer and field information from the ``connectionUri``.
 %End
 

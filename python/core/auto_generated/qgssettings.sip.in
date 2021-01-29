@@ -27,11 +27,11 @@ the first existing setting in the order specified below:
 - Global Settings
 - Default Value
 
-The path to the Global Settings storage can be set before constructing the QgsSettings
+The path to the Global Settings storage can be set before constructing the :py:class:`QgsSettings`
 objects, with a static call to:
 static bool setGlobalSettingsPath( QString path );
 
-QgsSettings provides some shortcuts to get/set namespaced settings from/to a specific section:
+:py:class:`QgsSettings` provides some shortcuts to get/set namespaced settings from/to a specific section:
 
 - Core
 - Gui

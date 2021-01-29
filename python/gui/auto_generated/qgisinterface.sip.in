@@ -519,7 +519,7 @@ Returns the native zoom full extent action. Call :py:func:`~QgisInterface.trigge
 Returns the native zoom to layer action. Call :py:func:`~QgisInterface.trigger` on it to zoom to the active layer.
 
 .. deprecated::
-   Use actionZoomToLayers() instead.
+   Use :py:func:`~QgisInterface.actionZoomToLayers` instead.
 %End
 
     virtual QAction *actionZoomToLayers() = 0;
@@ -756,7 +756,7 @@ status bar (do not use the native Qt :py:func:`~QgisInterface.statusBar` method)
 Take screenshots for user documentation
 
 :param saveDirectory: path where the screenshots will be saved
-:param categories: an int as a flag value of QgsAppScreenShots.Categories
+:param categories: an int as a flag value of :py:class:`QgsAppScreenShots`.Categories
 
 .. versionadded:: 3.4
 %End

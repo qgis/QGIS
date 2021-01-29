@@ -530,7 +530,7 @@ Encodes a color ramp's settings to an XML element
     static QVariant colorRampToVariant( const QString &name, QgsColorRamp *ramp );
 %Docstring
 Saves a color ramp to a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.writeVariant to save it to an XML document.
+You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadColorRamp`
 %End
@@ -538,7 +538,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
     static QgsColorRamp *loadColorRamp( const QVariant &value ) /Factory/;
 %Docstring
 Load a color ramp from a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.readVariant to load it from an XML document.
+You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`colorRampToVariant`
 %End

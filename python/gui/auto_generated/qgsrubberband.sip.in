@@ -20,7 +20,7 @@ class QgsRubberBand : QgsMapCanvasItem
 %Docstring
 A class for drawing transient features (e.g. digitizing lines) on the map.
 
-The QgsRubberBand class provides a transparent overlay widget
+The :py:class:`QgsRubberBand` class provides a transparent overlay widget
 for tracking the mouse while drawing polylines or polygons.
 %End
 
@@ -66,7 +66,7 @@ Creates a new RubberBand.
                   Its CRS will be used to map points onto screen coordinates.
                   The ownership is transferred to this canvas.
 :param geometryType: Defines how the data should be drawn onto the screen.
-                     QgsWkbTypes.LineGeometry, QgsWkbTypes.PolygonGeometry or QgsWkbTypes.PointGeometry
+                     :py:class:`QgsWkbTypes`.LineGeometry, :py:class:`QgsWkbTypes`.PolygonGeometry or :py:class:`QgsWkbTypes`.PointGeometry
 %End
 
     void setColor( const QColor &color );

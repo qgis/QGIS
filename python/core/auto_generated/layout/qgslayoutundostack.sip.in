@@ -14,7 +14,7 @@
 class QgsLayoutUndoStack : QObject
 {
 %Docstring
-An undo stack for QgsLayouts.
+An undo stack for :py:class:`QgsLayouts`.
 
 .. versionadded:: 3.0
 %End

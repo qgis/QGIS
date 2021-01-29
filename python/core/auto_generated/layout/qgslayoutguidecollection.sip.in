@@ -27,7 +27,7 @@ Constructor for a new guide with the specified ``orientation`` and
 initial ``position``.
 
 A layout must be set by calling :py:func:`~QgsLayoutGuide.setLayout` before the guide can be used.
-Adding the guide to a QgsLayoutGuideCollection will automatically set
+Adding the guide to a :py:class:`QgsLayoutGuideCollection` will automatically set
 the corresponding layout for you.
 %End
 
@@ -46,7 +46,7 @@ Sets the ``layout`` the guide belongs to.
 
 .. note::
 
-   Adding the guide to a QgsLayoutGuideCollection will automatically set
+   Adding the guide to a :py:class:`QgsLayoutGuideCollection` will automatically set
    the corresponding layout for you.
 
 .. seealso:: :py:func:`layout`

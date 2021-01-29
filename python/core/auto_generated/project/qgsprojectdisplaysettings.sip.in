@@ -11,7 +11,7 @@
 class QgsProjectDisplaySettings : QObject
 {
 %Docstring
-Contains settings and properties relating to how a QgsProject should display
+Contains settings and properties relating to how a :py:class:`QgsProject` should display
 values such as map coordinates and bearings.
 
 .. versionadded:: 3.12

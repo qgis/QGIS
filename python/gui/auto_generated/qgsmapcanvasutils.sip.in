@@ -12,7 +12,7 @@
 class QgsMapCanvasUtils
 {
 %Docstring
-Utility functions for working with QgsMapCanvas widgets.
+Utility functions for working with :py:class:`QgsMapCanvas` widgets.
 
 .. versionadded:: 3.14
 %End

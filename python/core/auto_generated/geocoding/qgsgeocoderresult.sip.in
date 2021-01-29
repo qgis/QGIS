@@ -15,7 +15,7 @@ class QgsGeocoderResult
 %Docstring
 Represents a matching result from a geocoder search.
 
-QgsGeocoderResult objects may represent valid matches, or an invalid
+:py:class:`QgsGeocoderResult` objects may represent valid matches, or an invalid
 error result. This can be checked by testing :py:func:`~isValid`. An invalid
 result represents that an error was encountered while geocoding, in which case the
 error message can be retrieved by calling :py:func:`~error`.

@@ -13,10 +13,10 @@
 class QgsProcessingGuiRegistry
 {
 %Docstring
-The QgsProcessingGuiRegistry is a home for widgets for processing
+The :py:class:`QgsProcessingGuiRegistry` is a home for widgets for processing
 configuration widgets.
 
-QgsProcessingGuiRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsProcessingGuiRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.processingGuiRegistry()`.
 
 .. versionadded:: 3.2

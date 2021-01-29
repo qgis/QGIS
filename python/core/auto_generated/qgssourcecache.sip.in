@@ -15,7 +15,7 @@ class QgsSourceCache : QgsAbstractContentCacheBase
 %Docstring
 A cache for source strings that returns a local file path containing the source content.
 
-QgsSourceCache is not usually directly created, but rather accessed through
+:py:class:`QgsSourceCache` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.sourceCache()`.
 
 .. versionadded:: 3.16

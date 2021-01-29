@@ -52,7 +52,7 @@ parameters have changed since last initialization.
 :return: flag whether the parameters are the same as last time
 
 .. deprecated:: QGIS 3.18
-   - will be removed in QGIS 4.0. Use the updateParameters() and clear()
+   - will be removed in QGIS 4.0. Use the :py:func:`~QgsMapRendererCache.updateParameters` and :py:func:`~QgsMapRendererCache.clear`
 %End
 
     bool updateParameters( const QgsRectangle &extent, const QgsMapToPixel &mtp );

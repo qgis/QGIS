@@ -12,7 +12,7 @@
 class QgsRemappingSinkDefinition
 {
 %Docstring
-Defines the parameters used to remap features when creating a QgsRemappingProxyFeatureSink.
+Defines the parameters used to remap features when creating a :py:class:`QgsRemappingProxyFeatureSink`.
 
 The definition includes parameters required to correctly map incoming features to the structure
 of the destination sink, e.g. information about how to create output field values and how to transform
@@ -31,8 +31,8 @@ geometries to match the destination CRS.
 Returns the field mapping, which defines how to map the values from incoming features to destination
 field values.
 
-Field values are mapped using a QgsProperty source object, which allows either direct field value to field value
-mapping or use of QgsExpression expressions to transform values to the destination field.
+Field values are mapped using a :py:class:`QgsProperty` source object, which allows either direct field value to field value
+mapping or use of :py:class:`QgsExpression` expressions to transform values to the destination field.
 
 .. seealso:: :py:func:`setFieldMap`
 
@@ -44,8 +44,8 @@ mapping or use of QgsExpression expressions to transform values to the destinati
 Sets the field mapping, which defines how to map the values from incoming features to destination
 field values.
 
-Field values are mapped using a QgsProperty source object, which allows either direct field value to field value
-mapping or use of QgsExpression expressions to transform values to the destination field.
+Field values are mapped using a :py:class:`QgsProperty` source object, which allows either direct field value to field value
+mapping or use of :py:class:`QgsExpression` expressions to transform values to the destination field.
 
 .. seealso:: :py:func:`fieldMap`
 
@@ -56,8 +56,8 @@ mapping or use of QgsExpression expressions to transform values to the destinati
 %Docstring
 Adds a mapping for a destination field.
 
-Field values are mapped using a QgsProperty source object, which allows either direct field value to field value
-mapping or use of QgsExpression expressions to transform values to the destination field.
+Field values are mapped using a :py:class:`QgsProperty` source object, which allows either direct field value to field value
+mapping or use of :py:class:`QgsExpression` expressions to transform values to the destination field.
 
 .. seealso:: :py:func:`setFieldMap`
 
@@ -123,7 +123,7 @@ Sets the ``fields`` for the destination sink.
     QVariant toVariant() const;
 %Docstring
 Saves this remapping definition to a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.writeVariant to save it to an XML document.
+You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
 %End
@@ -131,7 +131,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
     bool loadVariant( const QVariantMap &map );
 %Docstring
 Loads this remapping definition from a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.readVariant to load it from an XML document.
+You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`
 %End
@@ -147,7 +147,7 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
 class QgsRemappingProxyFeatureSink : QgsFeatureSink
 {
 %Docstring
-A QgsFeatureSink which proxies incoming features to a destination feature sink, after applying
+A :py:class:`QgsFeatureSink` which proxies incoming features to a destination feature sink, after applying
 transformations and field value mappings.
 
 This sink allows for transformation of incoming features to match the requirements of storing
@@ -197,7 +197,7 @@ Remaps a ``feature`` to a set of features compatible with the destination sink.
 
     QgsFeatureSink *destinationSink();
 %Docstring
-Returns the destination QgsFeatureSink which the proxy will forward features to.
+Returns the destination :py:class:`QgsFeatureSink` which the proxy will forward features to.
 %End
 
 };

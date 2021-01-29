@@ -14,7 +14,7 @@
 class QgsTemporalControllerWidget : QgsPanelWidget
 {
 %Docstring
-A widget for controlling playback properties of a QgsTemporalController.
+A widget for controlling playback properties of a :py:class:`QgsTemporalController`.
 
 .. versionadded:: 3.14
 %End

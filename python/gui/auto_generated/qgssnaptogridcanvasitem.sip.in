@@ -71,14 +71,14 @@ If a crs has been specified it will be in CRS units.
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 The CRS in which the grid should be calculated.
-By default will be an invalid QgsCoordinateReferenceSystem and
+By default will be an invalid :py:class:`QgsCoordinateReferenceSystem` and
 as such equal to the CRS of the map canvas.
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 The CRS in which the grid should be calculated.
-By default will be an invalid QgsCoordinateReferenceSystem and
+By default will be an invalid :py:class:`QgsCoordinateReferenceSystem` and
 as such equal to the CRS of the map canvas.
 %End
 

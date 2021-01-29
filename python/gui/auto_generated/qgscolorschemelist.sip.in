@@ -159,7 +159,7 @@ An editable list of color swatches, taken from an associated :py:class:`QgsColor
 Construct a new color swatch grid.
 
 :param parent: parent widget
-:param scheme: QgsColorScheme for colors to show in the list
+:param scheme: :py:class:`QgsColorScheme` for colors to show in the list
 :param context: context string provided to color scheme
 :param baseColor: base color for color scheme
 %End
@@ -214,7 +214,7 @@ Returns the scheme currently selected in the list.
 %Docstring
 Sets the color scheme to show in the list
 
-:param scheme: QgsColorScheme for colors to show in the list
+:param scheme: :py:class:`QgsColorScheme` for colors to show in the list
 :param context: context string provided to color scheme
 :param baseColor: base color for color scheme
 

@@ -18,7 +18,7 @@ This interface allows plugins to implement custom logic to determine whether it 
 for the application to exit, e.g. by checking whether the plugin or script has any
 unsaved changes which should be saved or discarded before allowing QGIS to exit.
 
-QgsApplicationExitBlockerInterface are registered via the iface object:
+:py:class:`QgsApplicationExitBlockerInterface` are registered via the iface object:
 
 Example
 -------

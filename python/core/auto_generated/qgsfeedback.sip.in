@@ -23,7 +23,7 @@ When :py:func:`~cancel` is called, the internal code has two options to check fo
 
 The class is meant to be created and destroyed in the main thread.
 
-For map rendering, the object may be created in constructor of a QgsMapLayerRenderer
+For map rendering, the object may be created in constructor of a :py:class:`QgsMapLayerRenderer`
 subclass and available with :py:func:`QgsMapLayerRenderer.feedback()` method. When a map rendering job
 gets canceled, the :py:func:`~cancel` method is called on the feedback object of all layers.
 

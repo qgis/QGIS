@@ -13,10 +13,10 @@
 class QgsSourceSelectProviderRegistry
 {
 %Docstring
-This class keeps a list of source select providers that may add items to the QgsDataSourceManagerDialog
+This class keeps a list of source select providers that may add items to the :py:class:`QgsDataSourceManagerDialog`
 When created, it automatically adds providers from data provider plugins (e.g. PostGIS, WMS, ...)
 
-QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsSourceSelectProviderRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.sourceSelectProviderRegistry()`.
 
 .. versionadded:: 3.0
@@ -51,7 +51,7 @@ Remove ``provider`` implementation from the list (``provider`` object is deleted
     void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 %Docstring
 Initializes the registry. The registry needs to be passed explicitly
-(instead of using singleton) because this gets called from QgsGui constructor.
+(instead of using singleton) because this gets called from :py:class:`QgsGui` constructor.
 
 .. versionadded:: 3.10
 %End

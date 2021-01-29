@@ -202,7 +202,7 @@ Returns the symbol to use for drawing pages in the collection.
 .. seealso:: :py:func:`setPageStyleSymbol`
 
 .. deprecated::
-   Use QgsLayoutItemPage.pageStyleSymbol() instead.
+   Use :py:func:`QgsLayoutItemPage.pageStyleSymbol()` instead.
 %End
 
     void beginPageSizeChange();

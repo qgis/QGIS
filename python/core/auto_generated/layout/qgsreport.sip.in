@@ -12,9 +12,9 @@
 class QgsReport : QObject, QgsAbstractReportSection, QgsMasterLayoutInterface
 {
 %Docstring
-Represents a report for use with the QgsLayout engine.
+Represents a report for use with the :py:class:`QgsLayout` engine.
 
-Reports consist of multiple sections, represented by QgsAbstractReportSection
+Reports consist of multiple sections, represented by :py:class:`QgsAbstractReportSection`
 subclasses.
 
 .. warning::

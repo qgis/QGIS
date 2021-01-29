@@ -15,14 +15,14 @@ class QgsMeshSpatialIndex
 {
 %Docstring
 
-A spatial index for QgsMeshFace or QgsMeshEdge objects.
+A spatial index for :py:class:`QgsMeshFace` or :py:class:`QgsMeshEdge` objects.
 
-QgsMeshSpatialIndex objects are implicitly shared and can be inexpensively copied.
+:py:class:`QgsMeshSpatialIndex` objects are implicitly shared and can be inexpensively copied.
 
 .. note::
 
-   While the underlying libspatialindex is not thread safe on some platforms, the QgsMeshSpatialIndex
-   class implements its own locks and accordingly, a single QgsMeshSpatialIndex object can safely
+   While the underlying libspatialindex is not thread safe on some platforms, the :py:class:`QgsMeshSpatialIndex`
+   class implements its own locks and accordingly, a single :py:class:`QgsMeshSpatialIndex` object can safely
    be used across multiple threads
 
 .. seealso:: :py:class:`QgsSpatialIndex`

@@ -14,7 +14,7 @@ class QgsMapUnitScaleWidget : QgsPanelWidget
 %Docstring
 A widget which allows the user to choose the minimum and maximum scale of an object in map units
 and millimeters. This widget is designed to allow users to edit the properties of a
-QgsMapUnitScale object.
+:py:class:`QgsMapUnitScale` object.
 
 .. seealso:: :py:class:`QgsMapUnitScaleDialog`
 
@@ -37,7 +37,7 @@ Constructor for QgsMapUnitScaleWidget.
 
     QgsMapUnitScale mapUnitScale() const;
 %Docstring
-Returns a QgsMapUnitScale representing the settings shown in the
+Returns a :py:class:`QgsMapUnitScale` representing the settings shown in the
 widget.
 
 .. seealso:: :py:func:`setMapUnitScale`
@@ -48,7 +48,7 @@ widget.
     void setMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Updates the widget to reflect the settings from the specified
-QgsMapUnitScale object.
+:py:class:`QgsMapUnitScale` object.
 
 :param scale: map unit scale to show in widget
 
@@ -71,7 +71,7 @@ widget to retrieve the current map scale from the canvas.
 %Docstring
 Emitted when the settings in the widget are modified.
 
-:param scale: QgsMapUnitScale reflecting new settings from the widget
+:param scale: :py:class:`QgsMapUnitScale` reflecting new settings from the widget
 %End
 
 };
@@ -81,7 +81,7 @@ class QgsMapUnitScaleDialog : QDialog
 %Docstring
 A dialog which allows the user to choose the minimum and maximum scale of an object in map units
 and millimeters. This dialog is designed to allow users to edit the properties of a
-QgsMapUnitScale object.
+:py:class:`QgsMapUnitScale` object.
 
 .. seealso:: :py:class:`QgsMapUnitScaleWidget`
 
@@ -102,7 +102,7 @@ Constructor for QgsMapUnitScaleDialog.
 
     QgsMapUnitScale getMapUnitScale() const;
 %Docstring
-Returns a QgsMapUnitScale representing the settings shown in the
+Returns a :py:class:`QgsMapUnitScale` representing the settings shown in the
 dialog.
 
 .. seealso:: :py:func:`setMapUnitScale`
@@ -111,7 +111,7 @@ dialog.
     void setMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Updates the dialog to reflect the settings from the specified
-QgsMapUnitScale object.
+:py:class:`QgsMapUnitScale` object.
 
 :param scale: map unit scale to show in dialog
 
@@ -180,7 +180,7 @@ Gets the selected unit index
 %Docstring
 Returns the current predefined selected unit (if applicable).
 
-:return: selected output unit, or QgsUnitTypes.RenderUnknownUnit if the widget was populated with custom unit types
+:return: selected output unit, or :py:class:`QgsUnitTypes`.RenderUnknownUnit if the widget was populated with custom unit types
 
 .. versionadded:: 2.9
 %End

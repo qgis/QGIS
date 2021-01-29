@@ -12,7 +12,7 @@
 class QgsSourceSelectProvider
 {
 %Docstring
-This is the interface for those who want to add entries to the QgsDataSourceManagerDialog
+This is the interface for those who want to add entries to the :py:class:`QgsDataSourceManagerDialog`
 
 .. versionadded:: 3.0
 %End

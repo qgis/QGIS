@@ -348,7 +348,7 @@ Returns the behavior used for checking invalid geometries in input layers.
     void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check );
 %Docstring
 Sets the behavior used for checking invalid geometries in input layers.
-Settings this to anything but QgsFeatureRequest.GeometryNoCheck will also
+Settings this to anything but :py:class:`QgsFeatureRequest`.GeometryNoCheck will also
 reset the :py:func:`~QgsProcessingContext.invalidGeometryCallback` to a default implementation.
 
 .. seealso:: :py:func:`invalidGeometryCheck`

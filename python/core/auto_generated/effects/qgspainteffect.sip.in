@@ -15,7 +15,7 @@ class QgsPaintEffect /NoDefaultCtors/
 %Docstring
 Base class for visual effects which can be applied to QPicture drawings
 
-QgsPaintEffect objects can be used to modify QPicture drawings prior to rendering
+:py:class:`QgsPaintEffect` objects can be used to modify QPicture drawings prior to rendering
 them with a QPainter operation. There are two methods for drawing using an effect,
 either drawing a picture directly, or by intercepting drawing operations to a
 render context.
@@ -344,7 +344,7 @@ Constructor for QgsDrawSourceEffect
 
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
-Creates a new QgsDrawSource effect from a properties string map.
+Creates a new :py:class:`QgsDrawSource` effect from a properties string map.
 
 :param map: encoded properties string map
 
@@ -423,7 +423,7 @@ A class to manager painter saving and restoring required for effect drawing
 %Docstring
 QgsEffectPainter constructor
 
-:param renderContext: the QgsRenderContext object
+:param renderContext: the :py:class:`QgsRenderContext` object
 
 .. versionadded:: 3.0
 %End
@@ -432,8 +432,8 @@ QgsEffectPainter constructor
 %Docstring
 QgsEffectPainter constructor alternative if no painter translation is needed
 
-:param renderContext: the QgsRenderContext object
-:param effect: the QgsPaintEffect object
+:param renderContext: the :py:class:`QgsRenderContext` object
+:param effect: the :py:class:`QgsPaintEffect` object
 
 .. versionadded:: 3.0
 %End
@@ -443,7 +443,7 @@ QgsEffectPainter constructor alternative if no painter translation is needed
 %Docstring
 Sets the effect to be painted
 
-:param effect: the QgsPaintEffect object
+:param effect: the :py:class:`QgsPaintEffect` object
 %End
 
 

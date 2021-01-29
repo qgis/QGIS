@@ -278,10 +278,10 @@ if point is outside data source extent.
 :param height: context height
 :param dpi: context dpi
 
-:return: QgsRaster.IdentifyFormatValue: map of values for each band, keys are band numbers
+:return: :py:class:`QgsRaster`.IdentifyFormatValue: map of values for each band, keys are band numbers
          (from 1).
-         QgsRaster.IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
-         QgsRaster.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+         :py:class:`QgsRaster`.IdentifyFormatFeature: map of :py:class:`QgsRasterFeatureList` for each sublayer
+         :py:class:`QgsRaster`.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
          Empty if failed or there are no results.
 
 .. note::

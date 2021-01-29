@@ -15,7 +15,7 @@ class QgsBookmark
 
 Represents a spatial bookmark, with a name, CRS and extent.
 
-QgsBookmark objects are typically used alongside the QgsBookmarkManager class,
+:py:class:`QgsBookmark` objects are typically used alongside the :py:class:`QgsBookmarkManager` class,
 which handles storage of a set of bookmarks.
 
 .. versionadded:: 3.10
@@ -122,9 +122,9 @@ class QgsBookmarkManager : QObject
 
 Manages storage of a set of bookmarks.
 
-QgsBookmarkManager handles the storage, serializing and deserializing
+:py:class:`QgsBookmarkManager` handles the storage, serializing and deserializing
 of geographic bookmarks. Usually this class is not constructed directly, but
-rather accessed through a QgsProject via :py:func:`QgsProject.bookmarkManager()`, or via
+rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.bookmarkManager()`, or via
 the application-wide bookmark store at :py:func:`QgsApplication.bookmarkManager()`.
 
 .. versionadded:: 3.10

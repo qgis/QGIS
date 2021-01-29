@@ -14,7 +14,7 @@
 class QgsVectorTileBasicLabelingStyle
 {
 %Docstring
-Configuration of a single style within QgsVectorTileBasicLabeling
+Configuration of a single style within :py:class:`QgsVectorTileBasicLabeling`
 
 .. versionadded:: 3.14
 %End

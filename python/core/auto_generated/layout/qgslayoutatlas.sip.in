@@ -11,13 +11,13 @@
 class QgsLayoutAtlas : QObject, QgsAbstractLayoutIterator, QgsLayoutSerializableObject, QgsExpressionContextGenerator
 {
 %Docstring
-Class used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
+Class used to render :py:class:`QgsLayout` as an atlas, by iterating over the features from an associated vector layer.
 
-QgsLayoutAtlas implement the QgsAbstractLayoutIterator interface, allowing them to be used
-directly with QgsLayoutExporter to automatically output all pages from the atlas.
+:py:class:`QgsLayoutAtlas` implement the :py:class:`QgsAbstractLayoutIterator` interface, allowing them to be used
+directly with :py:class:`QgsLayoutExporter` to automatically output all pages from the atlas.
 
-For QgsPrintLayout layouts, it is not necessary to manually construct a
-QgsLayoutAtlas object. Instead, the atlas attached to the print layout
+For :py:class:`QgsPrintLayout` layouts, it is not necessary to manually construct a
+:py:class:`QgsLayoutAtlas` object. Instead, the atlas attached to the print layout
 should be used. This can be retrieved by calling :py:func:`QgsPrintLayout.atlas()`.
 
 .. versionadded:: 3.0

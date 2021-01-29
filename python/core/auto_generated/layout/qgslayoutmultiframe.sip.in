@@ -14,7 +14,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 {
 %Docstring
 Abstract base class for layout items with the ability to distribute the content to
-several frames (QgsLayoutFrame items).
+several frames (:py:class:`QgsLayoutFrame` items).
 
 .. versionadded:: 3.0
 %End
@@ -269,7 +269,7 @@ Returns the index of a ``frame`` within the multiframe.
 %Docstring
 Creates a new frame and adds it to the multi frame and layout.
 
-:param currentFrame: an existing QgsLayoutFrame from which to copy the size
+:param currentFrame: an existing :py:class:`QgsLayoutFrame` from which to copy the size
                      and general frame properties (e.g., frame style, background, rendering settings).
 :param pos: position of top-left corner of the new frame, in layout units
 :param size: size of the new frame, in layout units
@@ -367,7 +367,7 @@ method is useful for multiframes which implement a :py:func:`~QgsLayoutMultiFram
 %Docstring
 Refreshes a data defined ``property`` for the multi frame by reevaluating the property's value
 and redrawing the item with this new value. If ``property`` is set to
-QgsLayoutObject.AllProperties then all data defined properties for the item will be
+:py:class:`QgsLayoutObject`.AllProperties then all data defined properties for the item will be
 refreshed.
 %End
 

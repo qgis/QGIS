@@ -69,7 +69,7 @@ Constructor for QgsInterval, using the specified ``years``, ``months``,
 %Docstring
 Returns the interval duration in years (based on an average year length)
 
-If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalYears then this value
+If the :py:func:`~QgsInterval.originalUnit` is :py:class:`QgsUnitTypes`.TemporalYears then this value
 will match the exact number of months as returned by :py:func:`~QgsInterval.originalDuration`,
 otherwise it will be calculated using the average year length (31557600 seconds).
 
@@ -83,7 +83,7 @@ Sets the interval duration in years.
 Replaces the interval size and changes the original interval unit
 and duration, :py:func:`originalDuration` and \see originalUnit().
 
-Changes the original unit to QgsUnitTypes.TemporalYears
+Changes the original unit to :py:class:`QgsUnitTypes`.TemporalYears
 
 :param years: duration in years (based on average year length)
 
@@ -94,7 +94,7 @@ Changes the original unit to QgsUnitTypes.TemporalYears
 %Docstring
 Returns the interval duration in months (based on a 30 day month).
 
-If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalMonths then this value
+If the :py:func:`~QgsInterval.originalUnit` is :py:class:`QgsUnitTypes`.TemporalMonths then this value
 will match the exact number of months as returned by :py:func:`~QgsInterval.originalDuration`,
 otherwise it will be calculated using the assumption that
 a month consists of exactly 30 days.
@@ -109,7 +109,7 @@ Sets the interval duration in months.
 Replaces the interval size and changes the original interval unit
 and duration, :py:func:`originalDuration` and \see originalUnit().
 
-Changes the original unit to QgsUnitTypes.TemporalMonths
+Changes the original unit to :py:class:`QgsUnitTypes`.TemporalMonths
 
 :param months: duration in months (based on a 30 day month)
 
@@ -120,7 +120,7 @@ Changes the original unit to QgsUnitTypes.TemporalMonths
 %Docstring
 Returns the interval duration in weeks.
 
-If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalWeeks then this value
+If the :py:func:`~QgsInterval.originalUnit` is :py:class:`QgsUnitTypes`.TemporalWeeks then this value
 will match the exact number of weeks as returned by :py:func:`~QgsInterval.originalDuration`,
 otherwise it will be calculated using the QgsInterval.WEEKS constant.
 
@@ -134,7 +134,7 @@ Sets the interval duration in weeks.
 Replaces the interval size and changes the original interval unit
 and duration, :py:func:`originalDuration` and \see originalUnit().
 
-Changes the original unit to QgsUnitTypes.TemporalWeeks
+Changes the original unit to :py:class:`QgsUnitTypes`.TemporalWeeks
 
 :param weeks: duration in weeks
 
@@ -145,7 +145,7 @@ Changes the original unit to QgsUnitTypes.TemporalWeeks
 %Docstring
 Returns the interval duration in days.
 
-If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalDays then this value
+If the :py:func:`~QgsInterval.originalUnit` is :py:class:`QgsUnitTypes`.TemporalDays then this value
 will match the exact number of days as returned by :py:func:`~QgsInterval.originalDuration`,
 otherwise it will be calculated using the QgsInterval.DAY constant.
 
@@ -159,7 +159,7 @@ Sets the interval duration in days.
 Replaces the interval size and changes the original interval unit
 and duration, :py:func:`originalDuration` and \see originalUnit().
 
-Changes the original unit to QgsUnitTypes.TemporalDays
+Changes the original unit to :py:class:`QgsUnitTypes`.TemporalDays
 
 :param days: duration in days
 
@@ -170,7 +170,7 @@ Changes the original unit to QgsUnitTypes.TemporalDays
 %Docstring
 Returns the interval duration in hours.
 
-If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalHours then this value
+If the :py:func:`~QgsInterval.originalUnit` is :py:class:`QgsUnitTypes`.TemporalHours then this value
 will match the exact number of hours as returned by :py:func:`~QgsInterval.originalDuration`,
 otherwise it will be calculated using the QgsInterval.HOUR constant.
 
@@ -184,7 +184,7 @@ Sets the interval duration in hours.
 Replaces the interval size and changes the original interval unit
 and duration, :py:func:`originalDuration` and \see originalUnit().
 
-The original unit to QgsUnitTypes.TemporalHours
+The original unit to :py:class:`QgsUnitTypes`.TemporalHours
 
 :param hours: duration in hours
 
@@ -195,7 +195,7 @@ The original unit to QgsUnitTypes.TemporalHours
 %Docstring
 Returns the interval duration in minutes.
 
-If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalMinutes then this value
+If the :py:func:`~QgsInterval.originalUnit` is :py:class:`QgsUnitTypes`.TemporalMinutes then this value
 will match the exact number of minutes as returned by :py:func:`~QgsInterval.originalDuration`,
 otherwise it will be calculated using the QgsInterval.MINUTE constant.
 
@@ -209,7 +209,7 @@ Sets the interval duration in minutes.
 Replaces the interval size and changes the original interval unit
 and duration, :py:func:`originalDuration` and \see originalUnit().
 
-Changes the original unit to QgsUnitTypes.TemporalMinutes
+Changes the original unit to :py:class:`QgsUnitTypes`.TemporalMinutes
 
 :param minutes: duration in minutes
 
@@ -230,7 +230,7 @@ Sets the interval duration in seconds.
 Replaces the interval size and changes the original interval unit
 and duration, :py:func:`originalDuration` and \see originalUnit().
 
-Changes the original unit to QgsUnitTypes.TemporalSeconds
+Changes the original unit to :py:class:`QgsUnitTypes`.TemporalSeconds
 
 :param seconds: duration in seconds
 
@@ -264,7 +264,7 @@ QgsInterval setter methods.
 
 If the original interval duration is not available or
 interval was set with a mix of units, calling :py:func:`~QgsInterval.originalUnit`
-will return QgsUnitTypes.TemporalUnknownUnit
+will return :py:class:`QgsUnitTypes`.TemporalUnknownUnit
 
 Returns 0.0 if the original duration was not set.
 
@@ -278,7 +278,7 @@ Returns the original interval temporal unit.
 The interval temporal unit can be set through the
 QgsInterval constructors or through the available setter methods.
 
-Returns QgsUnitTypes.TemporalUnknownUnit if unit was not set when creating the
+Returns :py:class:`QgsUnitTypes`.TemporalUnknownUnit if unit was not set when creating the
 QgsInterval instance or interval was set with a mix of units.
 
 .. seealso:: :py:func:`originalDuration`

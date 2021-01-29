@@ -14,7 +14,7 @@
 class QgsVectorLayerTemporalContext
 {
 %Docstring
-Encapsulates the context in which a QgsVectorLayer's temporal capabilities
+Encapsulates the context in which a :py:class:`QgsVectorLayer`'s temporal capabilities
 will be applied
 
 .. versionadded:: 3.14

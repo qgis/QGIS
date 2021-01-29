@@ -13,7 +13,7 @@
 class QgsMapLayerStyleManagerWidget : QgsMapLayerConfigWidget
 {
 %Docstring
-The QgsMapLayerStyleManagerWidget class which is used to visually manage
+The :py:class:`QgsMapLayerStyleManagerWidget` class which is used to visually manage
 the layer styles.
 %End
 

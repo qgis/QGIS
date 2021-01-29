@@ -218,7 +218,7 @@ Creates a new QgsSimpleFillSymbolLayerWidget.
 class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring
-Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
+Widget for configuring :py:class:`QgsFilledMarkerSymbolLayer` symbol layers.
 
 .. versionadded:: 2.16
 %End
@@ -493,7 +493,7 @@ Updates the GUI to reflect the SVG marker symbol ``layer``.
 class QgsRasterMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring
-Widget for configuring QgsRasterMarkerSymbolLayer symbol layers.
+Widget for configuring :py:class:`QgsRasterMarkerSymbolLayer` symbol layers.
 
 .. versionadded:: 3.6
 %End

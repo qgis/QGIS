@@ -11,7 +11,7 @@
 class QgsValidityCheckResult
 {
 %Docstring
-Represents an individual result from a validity check run by a QgsAbstractValidityCheck subclass.
+Represents an individual result from a validity check run by a :py:class:`QgsAbstractValidityCheck` subclass.
 
 Results can either be warnings or critical errors, as dictated by the type member. Critical error
 are errors which are serious enough to prevent an operation from proceeding, while a warning
@@ -55,7 +55,7 @@ providers are not available or if compulsory algorithm parameters have not been 
 
 Subclasses must indicate the type of check they represent via the :py:func:`~QgsValidityCheckResult.checkType` method. When checks are performed,
 all the registered checks with a matching check type are performed sequentially. The check type also
-dictates the subclass of the QgsValidityCheckContext which is given to the subclass' runCheck method.
+dictates the subclass of the :py:class:`QgsValidityCheckContext` which is given to the subclass' runCheck method.
 
 Checks must be registered in the application's :py:class:`QgsValidityCheckRegistry`, which is accessible via
 :py:func:`QgsApplication.validityCheckRegistry()`.

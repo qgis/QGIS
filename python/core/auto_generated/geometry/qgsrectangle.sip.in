@@ -16,7 +16,7 @@ class QgsRectangle
 %Docstring
 A rectangle specified with double values.
 
-QgsRectangle is used to store a rectangle when double values are required.
+:py:class:`QgsRectangle` is used to store a rectangle when double values are required.
 Examples are storing a layer extent or the current view extent of a map
 
 .. seealso:: :py:class:`QgsBox3d`

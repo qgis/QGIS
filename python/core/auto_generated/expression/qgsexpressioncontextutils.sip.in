@@ -12,7 +12,7 @@
 class QgsExpressionContextUtils
 {
 %Docstring
-Contains utilities for working with QgsExpressionContext objects, including methods
+Contains utilities for working with :py:class:`QgsExpressionContext` objects, including methods
 for creating scopes for specific uses (e.g., project scopes, layer scopes).
 
 .. versionadded:: 2.12
@@ -188,7 +188,7 @@ with the variables specified.
 
     static QgsExpressionContextScope *mapSettingsScope( const QgsMapSettings &mapSettings ) /Factory/;
 %Docstring
-Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsMapSettings` object.
 For instance, map scale and rotation.
 %End
 
@@ -202,7 +202,7 @@ a map tool capture like add feature.
 
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = 0 );
 %Docstring
-Updates a symbol scope related to a QgsSymbol to an expression context.
+Updates a symbol scope related to a :py:class:`QgsSymbol` to an expression context.
 
 :param symbol: symbol to extract properties from
 :param symbolScope: pointer to an existing scope to update
@@ -364,7 +364,7 @@ Creates a new scope which contains variables and functions relating to provider 
 
     static void registerContextFunctions();
 %Docstring
-Registers all known core functions provided by QgsExpressionContextScope objects.
+Registers all known core functions provided by :py:class:`QgsExpressionContextScope` objects.
 %End
 
       public:

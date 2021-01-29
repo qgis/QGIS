@@ -23,16 +23,16 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpression
 %Docstring
 Represents a vector layer which manages a vector based data sets.
 
-The QgsVectorLayer is instantiated by specifying the name of a data provider,
+The :py:class:`QgsVectorLayer` is instantiated by specifying the name of a data provider,
 such as postgres or wfs, and url defining the specific data set to connect to.
-The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
+The vector layer constructor in turn instantiates a :py:class:`QgsVectorDataProvider` subclass
 corresponding to the provider type, and passes it the url. The data provider
 connects to the data source.
 
-The QgsVectorLayer provides a common interface to the different data types. It also
+The :py:class:`QgsVectorLayer` provides a common interface to the different data types. It also
 manages editing transactions.
 
-Sample usage of the QgsVectorLayer class:
+Sample usage of the :py:class:`QgsVectorLayer` class:
 
 .. code-block:: python
 
@@ -87,21 +87,21 @@ SpatiaLite data provider (spatialite)
 
 Access data in a SpatiaLite database. The url defines the connection parameters, table,
 geometry column, and other attributes. The url can be constructed using the
-QgsDataSourceUri class.
+:py:class:`QgsDataSourceUri` class.
 
 PostgreSQL data provider (postgres)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Connects to a PostgreSQL database. The url defines the connection parameters, table,
 geometry column, and other attributes. The url can be constructed using the
-QgsDataSourceUri class.
+:py:class:`QgsDataSourceUri` class.
 
 Microsoft SQL server data provider (mssql)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Connects to a Microsoft SQL server database. The url defines the connection parameters, table,
 geometry column, and other attributes. The url can be constructed using the
-QgsDataSourceUri class.
+:py:class:`QgsDataSourceUri` class.
 
 WFS (web feature service) data provider (wfs)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,7 +109,7 @@ WFS (web feature service) data provider (wfs)
 Used to access data provided by a web feature service.
 
 The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
-starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
+starting with QGIS 2.16, a URI constructed using the :py:class:`QgsDataSourceUri` class with the following parameters :
 
 - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
 - typename=string (mandatory): WFS typename
@@ -142,7 +142,7 @@ OGC API - Features data provider (oapif)
 
 Used to access data provided by a OGC API - Features server.
 
-The URI should be constructed using the QgsDataSourceUri class with the following parameters:
+The URI should be constructed using the :py:class:`QgsDataSourceUri` class with the following parameters:
 
 - url=string (mandatory): HTTP url to a OGC API - Features landing page.
 - typename=string (mandatory): Collection id
@@ -510,7 +510,7 @@ select the most appropriate encoding.
 .. warning::
 
    Support for setting the provider encoding depends on the underlying data
-   provider. Check :py:func:`~QgsVectorLayer.dataProvider`.capabilities() for the QgsVectorDataProvider.SelectEncoding
+   provider. Check :py:func:`~QgsVectorLayer.dataProvider`.capabilities() for the :py:class:`QgsVectorDataProvider`.SelectEncoding
    capability in order to determine if the provider supports this ability.
 %End
 
@@ -1071,7 +1071,7 @@ Determines if this vector layer has features.
 
    when a layer is editable and some features
    have been deleted, this will return
-   QgsFeatureSource.FeatureAvailability.FeaturesMayBeAvailable
+   :py:class:`QgsFeatureSource`.FeatureAvailability.FeaturesMayBeAvailable
    to avoid a potentially expensive call to the dataprovider.
 
 .. versionadded:: 3.4
@@ -1322,7 +1322,7 @@ Adds a ring to polygon/multipolygon features
 :param ring: ring to add
 :param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - LayerNotEditable
@@ -1340,7 +1340,7 @@ Adds a ring to polygon/multipolygon features
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
 
@@ -1351,7 +1351,7 @@ Adds a ring to polygon/multipolygon features
 :param ring: ring to add
 :param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - LayerNotEditable
@@ -1376,7 +1376,7 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 :param ring: ring to add
 :param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - LayerNotEditable
@@ -1402,7 +1402,7 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - LayerNotEditable
@@ -1421,14 +1421,14 @@ Adds a new part polygon to a multipart feature
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
  QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) /PyName=addPartV2,Deprecated/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - LayerNotEditable
@@ -1451,14 +1451,14 @@ Adds a new part polygon to a multipart feature
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - LayerNotEditable
@@ -1521,7 +1521,7 @@ Splits parts cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - NothingHappened
@@ -1539,7 +1539,7 @@ Splits parts cut by the given line
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1549,7 +1549,7 @@ Splits parts cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - NothingHappened
@@ -1574,7 +1574,7 @@ Splits features cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - NothingHappened
@@ -1592,7 +1592,7 @@ Splits features cut by the given line
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1602,7 +1602,7 @@ Splits features cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - NothingHappened
@@ -1629,7 +1629,7 @@ Splits features cut by the given curve
 :param preserveCircular: whether circular strings are preserved after splitting
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
          - Success
          - NothingHappened
@@ -1688,7 +1688,7 @@ editing.
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     int addTopologicalPoints( const QgsPoint &p );
@@ -1788,7 +1788,7 @@ Synchronises with changes in the datasource
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) ${SIP_FINAL} /Factory/;
 
 %Docstring
-Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
+Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for rendering of given context
 
 .. versionadded:: 2.4
 %End
@@ -2020,7 +2020,7 @@ Returns a map of field name to attribute alias
 A set of attributes that are not advertised in WMS requests with QGIS server.
 
 .. deprecated:: QGIS 3.16
-  use fields().configurationFlags() instead
+  use :py:func:`~QgsVectorLayer.fields`.configurationFlags() instead
 %End
 
  void setExcludeAttributesWms( const QSet<QString> &att ) /Deprecated/;
@@ -2036,7 +2036,7 @@ A set of attributes that are not advertised in WMS requests with QGIS server.
 A set of attributes that are not advertised in WFS requests with QGIS server.
 
 .. deprecated:: QGIS 3.16
-  use fields().configurationFlags() instead
+  use :py:func:`~QgsVectorLayer.fields`.configurationFlags() instead
 %End
 
  void setExcludeAttributesWfs( const QSet<QString> &att ) /Deprecated/;
@@ -2197,7 +2197,7 @@ Destroy active command and reverts all changes in it
 Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
 
 .. deprecated::
-   Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
+   Use the equivalent :py:class:`QgsSymbolLayerUtils`.drawVertexMarker function instead
 %End
 
     void updateFields();
@@ -2361,7 +2361,7 @@ can also be set. Setting an empty expression will clear any existing expression 
 
     QgsEditorWidgetSetup editorWidgetSetup( int index ) const;
 %Docstring
-The editor widget setup defines which QgsFieldFormatter and editor widget will be used
+The editor widget setup defines which :py:class:`QgsFieldFormatter` and editor widget will be used
 for the field at `index`.
 
 .. versionadded:: 3.0
@@ -2492,7 +2492,7 @@ Returns whether the VectorLayer can apply the specified simplification hint
 Returns the conditional styles that are set for this layer. Style information is
 used to render conditional formatting in the attribute table.
 
-:return: Return a QgsConditionalLayerStyles object holding the conditional attribute
+:return: Return a :py:class:`QgsConditionalLayerStyles` object holding the conditional attribute
          style information. Style information is generic and can be used for anything.
 
 .. versionadded:: 2.12
@@ -2763,7 +2763,7 @@ Emitted after changes are rolled back.
     void attributeAdded( int idx );
 %Docstring
 Will be emitted, when a new attribute has been added to this vector layer.
-Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFields.OriginExpression
+Applies only to types :py:class:`QgsFields`.OriginEdit, :py:class:`QgsFields`.OriginProvider and :py:class:`QgsFields`.OriginExpression
 
 :param idx: The index of the new attribute
 
@@ -2773,7 +2773,7 @@ Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFiel
     void beforeAddingExpressionField( const QString &fieldName );
 %Docstring
 Will be emitted, when an expression field is going to be added to this vector layer.
-Applies only to types QgsFields.OriginExpression
+Applies only to types :py:class:`QgsFields`.OriginExpression
 
 :param fieldName: The name of the attribute to be added
 %End
@@ -2781,7 +2781,7 @@ Applies only to types QgsFields.OriginExpression
     void attributeDeleted( int idx );
 %Docstring
 Will be emitted, when an attribute has been deleted from this vector layer.
-Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFields.OriginExpression
+Applies only to types :py:class:`QgsFields`.OriginEdit, :py:class:`QgsFields`.OriginProvider and :py:class:`QgsFields`.OriginExpression
 
 :param idx: The index of the deleted attribute
 
@@ -2791,7 +2791,7 @@ Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFiel
     void beforeRemovingExpressionField( int idx );
 %Docstring
 Will be emitted, when an expression field is going to be deleted from this vector layer.
-Applies only to types QgsFields.OriginExpression
+Applies only to types :py:class:`QgsFields`.OriginExpression
 
 :param idx: The index of the attribute to be deleted
 %End

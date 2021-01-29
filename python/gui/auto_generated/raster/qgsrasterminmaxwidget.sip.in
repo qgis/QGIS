@@ -78,7 +78,7 @@ Sets the "source" of min/max values.
 
     QgsRasterMinMaxOrigin minMaxOrigin();
 %Docstring
-Returns a QgsRasterMinMaxOrigin object with the widget values.
+Returns a :py:class:`QgsRasterMinMaxOrigin` object with the widget values.
 %End
 
     void hideUpdatedExtent();

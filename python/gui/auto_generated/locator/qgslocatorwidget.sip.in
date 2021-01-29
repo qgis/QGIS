@@ -14,7 +14,7 @@
 class QgsLocatorWidget : QWidget
 {
 %Docstring
-A special locator widget which allows searching for matching results from a QgsLocator
+A special locator widget which allows searching for matching results from a :py:class:`QgsLocator`
 and presenting them to users for selection.
 
 .. seealso:: :py:class:`QgsLocator`

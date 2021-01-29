@@ -209,7 +209,7 @@ Returns the clip path as a map clipping region.
 %Docstring
 Sets the source ``item`` which will provide the clipping path for the map.
 
-The specified ``item`` must return the QgsLayoutItem.FlagProvidesClipPath flag.
+The specified ``item`` must return the :py:class:`QgsLayoutItem`.FlagProvidesClipPath flag.
 
 .. seealso:: :py:func:`sourceItem`
 %End

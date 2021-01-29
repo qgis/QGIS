@@ -13,7 +13,7 @@
 class QgsVirtualLayerDefinitionUtils
 {
 %Docstring
-Utils class for QgsVirtualLayerDefinition
+Utils class for :py:class:`QgsVirtualLayerDefinition`
 %End
 
 %TypeHeaderCode

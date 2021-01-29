@@ -23,11 +23,11 @@ system.
 
 .. note::
 
-   QgsCoordinateTransformContext objects are thread safe for read and write.
+   :py:class:`QgsCoordinateTransformContext` objects are thread safe for read and write.
 
 .. note::
 
-   QgsCoordinateTransformContext objects are implicitly shared.
+   :py:class:`QgsCoordinateTransformContext` objects are implicitly shared.
 
 
 .. seealso:: :py:class:`QgsDatumTransform`
@@ -66,7 +66,7 @@ Clears all stored transform information from the context.
  QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const /Deprecated/;
 %Docstring
 Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
-The map keys will be QgsCoordinateReferenceSystems.authid()s.
+The map keys will be :py:class:`QgsCoordinateReferenceSystems`.authid()s.
 
 If either the source transform ID or destination transform ID is -1, then no datum transform is
 required for transformations for that source or destination.
@@ -81,13 +81,13 @@ required for transformations for that source or destination.
 
 
 .. deprecated::
-   Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
+   Has no effect on builds based on Proj 6.0 or later, use :py:func:`~QgsCoordinateTransformContext.coordinateOperations` instead.
 %End
 
     QMap< QPair< QString, QString>, QString > coordinateOperations() const;
 %Docstring
 Returns the stored mapping for source to destination CRS pairs to associated coordinate operation to use
-(as a proj string). The map keys will be QgsCoordinateReferenceSystems.authid()s.
+(as a proj string). The map keys will be :py:class:`QgsCoordinateReferenceSystems`.authid()s.
 
 .. warning::
 
@@ -122,7 +122,7 @@ Returns ``True`` if the new transform pair was added successfully.
 .. seealso:: :py:func:`removeSourceDestinationDatumTransform`
 
 .. deprecated::
-   Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
+   Has no effect on builds based on Proj 6.0 or later, use :py:func:`~QgsCoordinateTransformContext.addCoordinateOperation` instead.
 %End
 
     bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString, bool allowFallback = true );
@@ -173,7 +173,7 @@ Removes the source to destination datum transform pair for the specified ``sourc
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
 .. deprecated::
-   Use removeCoordinateOperation() instead
+   Use :py:func:`~QgsCoordinateTransformContext.removeCoordinateOperation` instead
 %End
 
     void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
@@ -207,7 +207,7 @@ destination.
    source and destination are reversible.
 
 .. deprecated::
-   Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead.
+   Has no effect on builds based on Proj 6.0 or later. Use :py:func:`~QgsCoordinateTransformContext.calculateCoordinateOperation` instead.
 %End
 
     QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;

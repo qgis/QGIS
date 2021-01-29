@@ -111,7 +111,7 @@ Returns coordinates of a vertex.
 
 :param atVertex: index of the vertex
 
-:return: Coordinates of the vertex or empty QgsPoint on error (``atVertex`` < 0 or > 3).
+:return: Coordinates of the vertex or empty :py:class:`QgsPoint` on error (``atVertex`` < 0 or > 3).
 %End
 
     QVector<double> lengths() const /HoldGIL/;

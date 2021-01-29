@@ -17,8 +17,8 @@ class QgsProjectionSelectionTreeWidget : QWidget
 A widget for selecting a coordinate reference system from a tree.
 
 This widget implements a tree view of projections, as seen in the
-QgsProjectionSelectionDialog dialog. In most cases it is more
-suitable to use the compact QgsProjectionSelectionWidget widget.
+:py:class:`QgsProjectionSelectionDialog` dialog. In most cases it is more
+suitable to use the compact :py:class:`QgsProjectionSelectionWidget` widget.
 
 .. seealso:: :py:class:`QgsProjectionSelectionDialog`
 

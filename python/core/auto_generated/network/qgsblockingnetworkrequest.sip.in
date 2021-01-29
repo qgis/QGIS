@@ -21,7 +21,7 @@ thread safe and can be used on either the main thread or background threads with
 Redirects are automatically handled by the class.
 
 After completion of a request, the reply content should be retrieved by calling :py:func:`~getReplyContent`.
-This method returns a QgsNetworkReplyContent container, which is safe and cheap to copy and pass
+This method returns a :py:class:`QgsNetworkReplyContent` container, which is safe and cheap to copy and pass
 between threads without issue.
 
 .. versionadded:: 3.6

@@ -20,9 +20,9 @@ Definition of map rendering of a subset of vector tile data. The subset of data 
 - geometry type (a single sub-layer may have multiple geometry types)
 - filter expression
 
-Rendering is determined by the associated symbol (QgsSymbol). Symbol has to be of the same
-type as the chosen :py:func:`~geometryType` - i.e. QgsMarkerSymbol for points, QgsLineSymbol for linestrings
-and QgsFillSymbol for polygons.
+Rendering is determined by the associated symbol (:py:class:`QgsSymbol`). Symbol has to be of the same
+type as the chosen :py:func:`~geometryType` - i.e. :py:class:`QgsMarkerSymbol` for points, :py:class:`QgsLineSymbol` for linestrings
+and :py:class:`QgsFillSymbol` for polygons.
 
 It is possible to further constrain when this style is applied by setting a range of allowed
 zoom levels, or by disabling it.

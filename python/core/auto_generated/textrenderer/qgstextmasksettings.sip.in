@@ -19,7 +19,7 @@ A selective masking only makes sense in contexts where the text is rendered over
 
 .. note::
 
-   QgsTextMaskSettings objects are implicitly shared.
+   :py:class:`QgsTextMaskSettings` objects are implicitly shared.
 
 .. versionadded:: 3.12
 %End
@@ -118,7 +118,7 @@ Sets the units used for the buffer size.
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the buffer size. This is only used if the
-buffer size is set to QgsUnitTypes.RenderMapUnit.
+buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -128,7 +128,7 @@ buffer size is set to QgsUnitTypes.RenderMapUnit.
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the buffer size. This is only used if the
-buffer size is set to QgsUnitTypes.RenderMapUnit.
+buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for buffer size
 

@@ -82,7 +82,7 @@ and outputs according to this configuration. This is generally used only for
 algorithms in a model, allowing them to adjust their behavior at run time
 according to some user configuration.
 
-Raises a QgsProcessingException if a new algorithm instance could not be created,
+Raises a :py:class:`QgsProcessingException` if a new algorithm instance could not be created,
 e.g. if there is an issue with the subclass' :py:func:`~QgsProcessingAlgorithm.createInstance` method.
 
 .. seealso:: :py:func:`initAlgorithm`
@@ -342,7 +342,7 @@ is passed in order to make a best guess determination of the output properties.
 %Docstring
 Executes the algorithm using the specified ``parameters``. This method internally
 creates a copy of the algorithm before running it, so it is safe to call
-on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`.
+on algorithms directly retrieved from :py:class:`QgsProcessingRegistry` and :py:class:`QgsProcessingProvider`.
 
 The ``context`` argument specifies the context in which the algorithm is being run.
 
@@ -350,7 +350,7 @@ Algorithm progress should be reported using the supplied ``feedback`` object.
 
 If specified, ``ok`` will be set to ``True`` if algorithm was successfully run.
 
-If ``catchExceptions`` is set to ``False``, then QgsProcessingExceptions raised during
+If ``catchExceptions`` is set to ``False``, then :py:class:`QgsProcessingExceptions` raised during
 the algorithm run will not be automatically caught and will be raised instead.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
@@ -359,7 +359,7 @@ the algorithm run will not be automatically caught and will be raised instead.
 .. note::
 
    this method can only be called from the main thread. Use :py:func:`~QgsProcessingAlgorithm.prepare`, :py:func:`~QgsProcessingAlgorithm.runPrepared` and :py:func:`~QgsProcessingAlgorithm.postProcess`
-   if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
+   if you need to run algorithms from a background thread, or use the :py:class:`QgsProcessingAlgRunnerTask` class.
 %End
 
     bool prepare( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
@@ -375,7 +375,7 @@ calling :py:func:`~QgsProcessingAlgorithm.runPrepared` (which is safe to do in a
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-   on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
+   on algorithms directly retrieved from :py:class:`QgsProcessingRegistry` and :py:class:`QgsProcessingProvider`. Instead, a copy
    of the algorithm should be created with :py:func:`~QgsProcessingAlgorithm.clone` and :py:func:`~QgsProcessingAlgorithm.prepare`/:py:func:`~QgsProcessingAlgorithm.runPrepared` called on the copy.
 %End
 
@@ -393,7 +393,7 @@ to allow the algorithm to perform any required cleanup tasks and return its fina
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-   on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
+   on algorithms directly retrieved from :py:class:`QgsProcessingRegistry` and :py:class:`QgsProcessingProvider`. Instead, a copy
    of the algorithm should be created with :py:func:`~QgsProcessingAlgorithm.clone` and :py:func:`~QgsProcessingAlgorithm.prepare`/:py:func:`~QgsProcessingAlgorithm.runPrepared` called on the copy.
 %End
 
@@ -406,7 +406,7 @@ includes the results evaluated by the algorithm.
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-   on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
+   on algorithms directly retrieved from :py:class:`QgsProcessingRegistry` and :py:class:`QgsProcessingProvider`. Instead, a copy
    of the algorithm should be created with :py:func:`~QgsProcessingAlgorithm.clone` and :py:func:`~QgsProcessingAlgorithm.prepare`/:py:func:`~QgsProcessingAlgorithm.runPrepared` called on the copy.
 %End
 
@@ -424,7 +424,7 @@ parameters widget should be used.
 Creates an expression context relating to the algorithm. This can be called by algorithms
 to create a new expression context ready for evaluating expressions within the algorithm.
 Optionally, a ``source`` can be specified which will be used to populate the context if it
-implements the QgsExpressionContextGenerator interface.
+implements the :py:class:`QgsExpressionContextGenerator` interface.
 %End
 
     virtual bool validateInputCrs( const QVariantMap &parameters,
@@ -490,7 +490,7 @@ This should usually be called from a subclass' :py:func:`~QgsProcessingAlgorithm
 
 If the ``createOutput`` argument is ``True``, then a corresponding output definition will also be created
 (and added to the algorithm) where appropriate. E.g. when adding a :py:class:`QgsProcessingParameterVectorDestination`
-and ``createOutput`` is ``True``, then a QgsProcessingOutputVectorLayer output will be created and
+and ``createOutput`` is ``True``, then a :py:class:`QgsProcessingOutputVectorLayer` output will be created and
 added to the algorithm. There is no need to call :py:func:`~QgsProcessingAlgorithm.addOutput` to manually add a corresponding output
 for this vector. If ``createOutput`` is ``False`` then this automatic output creation will not
 occur.
@@ -575,7 +575,7 @@ algorithm should be canceled and exited early.
 
 This method will not be called if the :py:func:`~QgsProcessingAlgorithm.prepareAlgorithm` step failed (returned ``False``).
 
-Implementations of processAlgorithm can throw the QgsProcessingException exception
+Implementations of processAlgorithm can throw the :py:class:`QgsProcessingException` exception
 to indicate that a fatal error occurred within the execution.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
@@ -907,7 +907,7 @@ Evaluates the parameter with matching ``name`` to a list of map layers.
 
     QStringList parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
-Evaluates the parameter with matching ``name`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+Evaluates the parameter with matching ``name`` to a list of files (for :py:class:`QgsProcessingParameterMultipleLayers` in :py:class:`QgsProcessing`:TypeFile mode).
 
 .. versionadded:: 3.10
 %End
@@ -1060,7 +1060,7 @@ or buffer of a feature is calculated for each feature in isolation. An algorithm
 is NOT suitable for a feature based algorithm as the dissolved output depends on multiple input features
 and these features cannot be processed in isolation.
 
-Using QgsProcessingFeatureBasedAlgorithm as the base class for feature based algorithms allows
+Using :py:class:`QgsProcessingFeatureBasedAlgorithm` as the base class for feature based algorithms allows
 shortcutting much of the common algorithm code for handling iterating over sources and pushing
 features to output sinks. It also allows the algorithm execution to be optimised in future
 (for instance allowing automatic multi-thread processing of the algorithm, or use of the
@@ -1101,7 +1101,7 @@ The provided ``feedback`` object can be used to push messages to the log and for
 to users. Note that handling of progress reports and algorithm cancellation is handled by
 the base class and subclasses do not need to reimplement this logic.
 
-Algorithms can throw a QgsProcessingException if a fatal error occurred which should
+Algorithms can throw a :py:class:`QgsProcessingException` if a fatal error occurred which should
 prevent the algorithm execution from continuing. This can be annoying for users though as it
 can break valid model execution - so use with extreme caution, and consider using
 ``feedback`` to instead report non-fatal processing failures for features instead.

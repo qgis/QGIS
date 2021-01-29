@@ -117,10 +117,10 @@ values are represented.
 Create a cache for a given field.
 
 This will be used in situations where a field is being represented various times in a loop. And will be passed
-to other methods on QgsFieldKit and :py:class:`QgsEditorWidgetWrapper`.
+to other methods on :py:class:`QgsFieldKit` and :py:class:`QgsEditorWidgetWrapper`.
 
 For example, the attribute table will create a cache once for each field and then use this
-cache for representation. The QgsValueRelationFieldFormatter and :py:class:`QgsValueRelationEditorWidget`
+cache for representation. The :py:class:`QgsValueRelationFieldFormatter` and :py:class:`QgsValueRelationEditorWidget`
 implement this functionality to create a lookuptable once (a QVariantMap / dict) and are
 make use of a cache if present.
 

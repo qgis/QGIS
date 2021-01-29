@@ -16,7 +16,7 @@
 class QgsVectorLayerUndoCommand : QUndoCommand
 {
 %Docstring
-Base class for undo commands within a QgsVectorLayerEditBuffer.
+Base class for undo commands within a :py:class:`QgsVectorLayerEditBuffer`.
 %End
 
 %TypeHeaderCode

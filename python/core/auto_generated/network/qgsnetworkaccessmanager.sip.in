@@ -277,7 +277,7 @@ If set to 0, no timeout is set.
 
     static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = 0 );
 %Docstring
-Posts a GET request to obtain the contents of the target request and returns a new QgsNetworkReplyContent object for reading.
+Posts a GET request to obtain the contents of the target request and returns a new :py:class:`QgsNetworkReplyContent` object for reading.
 The current thread will be blocked until the request is returned.
 
 This method is safe to call in either the main thread or a worker thread.
@@ -301,7 +301,7 @@ The contents of the reply will be returned after the request is completed or an 
     static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = 0 );
 %Docstring
 Posts a POST request to obtain the contents of the target ``request``, using the given ``data``, and returns a new
-QgsNetworkReplyContent object for reading. The current thread will be blocked until the request is returned.
+:py:class:`QgsNetworkReplyContent` object for reading. The current thread will be blocked until the request is returned.
 
 This method is safe to call in either the main thread or a worker thread.
 
@@ -327,7 +327,7 @@ The contents of the reply will be returned after the request is completed or an 
 %Docstring
 
 .. deprecated::
-   Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+   Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
 %End
 
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
@@ -349,7 +349,7 @@ created in any thread.
 %Docstring
 Emitted whenever a pending network reply is finished.
 
-The ``reply`` parameter will contain a QgsNetworkReplyContent object, containing all the useful
+The ``reply`` parameter will contain a :py:class:`QgsNetworkReplyContent` object, containing all the useful
 information relating to the reply, including headers and reply content.
 
 This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
@@ -405,7 +405,7 @@ only to connect to the main thread's signal in order to receive notifications ab
 from any thread.
 
 This signal is for debugging and logging purposes only, and cannot be used to respond to the
-requests. See QgsNetworkAuthenticationHandler for details on how to handle authentication requests.
+requests. See :py:class:`QgsNetworkAuthenticationHandler` for details on how to handle authentication requests.
 
 .. seealso:: :py:func:`requestAuthDetailsAdded`
 
@@ -423,7 +423,7 @@ only to connect to the main thread's signal in order to receive notifications ab
 from any thread.
 
 This signal is for debugging and logging purposes only, and should not be used to respond to the
-requests. See QgsNetworkAuthenticationHandler for details on how to handle authentication requests.
+requests. See :py:class:`QgsNetworkAuthenticationHandler` for details on how to handle authentication requests.
 
 .. seealso:: :py:func:`requestRequiresAuth`
 
@@ -442,7 +442,7 @@ only to connect to the main thread's signal in order to receive notifications ab
 from any thread.
 
 This signal is for debugging and logging purposes only, and cannot be used to respond to the errors.
-See QgsSslErrorHandler for details on how to handle SSL errors and potentially ignore them.
+See :py:class:`QgsSslErrorHandler` for details on how to handle SSL errors and potentially ignore them.
 
 .. versionadded:: 3.6
 %End
@@ -453,7 +453,7 @@ See QgsSslErrorHandler for details on how to handle SSL errors and potentially i
 %Docstring
 
 .. deprecated::
-   Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+   Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
 %End
 
     void requestTimedOut( QNetworkReply * );

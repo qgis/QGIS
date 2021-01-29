@@ -13,7 +13,7 @@ class QgsSpatialIndexKDBushData
 {
 %Docstring
 
-A container for data stored inside a QgsSpatialIndexKDBush index.
+A container for data stored inside a :py:class:`QgsSpatialIndexKDBush` index.
 
 .. versionadded:: 3.4
 %End

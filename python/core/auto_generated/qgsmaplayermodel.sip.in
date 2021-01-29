@@ -13,7 +13,7 @@
 class QgsMapLayerModel : QAbstractItemModel
 {
 %Docstring
-The QgsMapLayerModel class is a model to display layers in widgets.
+The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 
 .. seealso:: :py:class:`QgsMapLayerProxyModel`
 

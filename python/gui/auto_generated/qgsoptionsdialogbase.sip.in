@@ -42,10 +42,10 @@ To use:
 %Docstring
 Constructor
 
-:param settingsKey: QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+:param settingsKey: :py:class:`QgsSettings` subgroup key for saving/restore ui states, e.g. "ProjectProperties".
 :param parent: parent object (owner)
 :param fl: widget flags
-:param settings: custom QgsSettings pointer
+:param settings: custom :py:class:`QgsSettings` pointer
 %End
     ~QgsOptionsDialogBase();
 

@@ -14,11 +14,11 @@
 class QgsProviderConnectionComboBox : QComboBox
 {
 %Docstring
-The QgsProviderConnectionComboBox class is a combo box which displays the list of connections registered for a given provider.
+The :py:class:`QgsProviderConnectionComboBox` class is a combo box which displays the list of connections registered for a given provider.
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly.
 
 .. versionadded:: 3.14
@@ -35,7 +35,7 @@ Constructor for QgsProviderConnectionComboBox, for the specified ``provider``.
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly.
 %End
 
@@ -46,7 +46,7 @@ Sets the provider to be used.
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly.
 %End
 

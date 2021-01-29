@@ -15,7 +15,7 @@ class QgsCoordinateReferenceSystemRegistry : QObject
 A registry for known coordinate reference system (CRS) definitions, including
 any user-defined CRSes.
 
-QgsCoordinateReferenceSystemRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsCoordinateReferenceSystemRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`.
 
 .. versionadded:: 3.18
@@ -118,7 +118,7 @@ Emitted whenever an existing user CRS definition is changed.
 
 The ``id`` argument specifies the ID of the user CRS which has been changed.
 
-Objects which store QgsCoordinateReferenceSystem members should connect to this signal
+Objects which store :py:class:`QgsCoordinateReferenceSystem` members should connect to this signal
 and update any stored CRS definitions to ensure that they always use the current
 definition of any user defined CRSes.
 

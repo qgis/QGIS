@@ -65,8 +65,8 @@ This class is implicitly shared, copying has a very low overhead.
 It is normally preferable to call `QgsExpression( otherExpression )` instead of
 `QgsExpression( otherExpression.expression() )`. A deep copy will only be made
 when :py:func:`~prepare` is called. For usage this means mainly, that you should
-normally keep an unprepared master copy of a QgsExpression and whenever using it
-with a particular QgsFeatureIterator copy it just before and prepare it using the
+normally keep an unprepared master copy of a :py:class:`QgsExpression` and whenever using it
+with a particular :py:class:`QgsFeatureIterator` copy it just before and prepare it using the
 same context as the iterator.
 
 Implicit sharing was added in 2.14
@@ -175,9 +175,9 @@ Gets list of columns referenced by the expression.
 
 .. note::
 
-   If the returned list contains the QgsFeatureRequest.AllAttributes constant then
+   If the returned list contains the :py:class:`QgsFeatureRequest`.AllAttributes constant then
    all attributes from the layer are required for evaluation of the expression.
-   QgsFeatureRequest.setSubsetOfAttributes automatically handles this case.
+   :py:class:`QgsFeatureRequest`.setSubsetOfAttributes automatically handles this case.
 
 .. seealso:: :py:func:`referencedAttributeIndexes`
 %End
@@ -338,7 +338,7 @@ Returns the desired distance units for calculations involving :py:func:`~QgsExpr
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 %Docstring
 Sets the desired distance units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and "$perimeter".
-If distance units are set to QgsUnitTypes.DistanceUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
+If distance units are set to :py:class:`QgsUnitTypes`.DistanceUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
 variables from the expression context ("project_distance_units") to determine distance units.
 
 .. note::
@@ -370,7 +370,7 @@ Returns the desired areal units for calculations involving :py:func:`~QgsExpress
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Sets the desired areal units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
-If distance units are set to QgsUnitTypes.AreaUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
+If distance units are set to :py:class:`QgsUnitTypes`.AreaUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
 variables from the expression context ("project_distance_units") to determine distance units.
 
 .. note::
@@ -394,7 +394,7 @@ Additional substitutions can be passed through the substitutionMap parameter
 
 :param action: The source string in which placeholders should be replaced.
 :param context: Expression context
-:param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the QgsDistanceArea is used for distance
+:param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the :py:class:`QgsDistanceArea` is used for distance
                      and area conversion
 
 .. versionadded:: 2.12

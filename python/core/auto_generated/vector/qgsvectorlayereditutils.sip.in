@@ -72,7 +72,7 @@ Adds a ring to polygon/multipolygon features
 :return: OperationResult result code: success or reason of failure
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     QgsGeometry::OperationResult addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
@@ -107,27 +107,27 @@ Adds a ring to polygon/multipolygon features
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: - QgsGeometry.Success
+:return: - :py:class:`QgsGeometry`.Success
 
-         - QgsGeometry.AddPartSelectedGeometryNotFound
-         - QgsGeometry.AddPartNotMultiGeometry
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.InvalidInput
+         - :py:class:`QgsGeometry`.AddPartSelectedGeometryNotFound
+         - :py:class:`QgsGeometry`.AddPartNotMultiGeometry
+         - :py:class:`QgsGeometry`.InvalidBaseGeometry
+         - :py:class:`QgsGeometry`.InvalidInput
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: - QgsGeometry.Success
+:return: - :py:class:`QgsGeometry`.Success
 
-         - QgsGeometry.AddPartSelectedGeometryNotFound
-         - QgsGeometry.AddPartNotMultiGeometry
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.InvalidInput
+         - :py:class:`QgsGeometry`.AddPartSelectedGeometryNotFound
+         - :py:class:`QgsGeometry`.AddPartNotMultiGeometry
+         - :py:class:`QgsGeometry`.InvalidBaseGeometry
+         - :py:class:`QgsGeometry`.InvalidInput
 
 .. note::
 
@@ -138,12 +138,12 @@ Adds a new part polygon to a multipart feature
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: - QgsGeometry.Success
+:return: - :py:class:`QgsGeometry`.Success
 
-         - QgsGeometry.AddPartSelectedGeometryNotFound
-         - QgsGeometry.AddPartNotMultiGeometry
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.InvalidInput
+         - :py:class:`QgsGeometry`.AddPartSelectedGeometryNotFound
+         - :py:class:`QgsGeometry`.AddPartNotMultiGeometry
+         - :py:class:`QgsGeometry`.InvalidBaseGeometry
+         - :py:class:`QgsGeometry`.InvalidInput
 
 .. note::
 
@@ -168,17 +168,17 @@ Splits parts cut by the given line
 :param splitLine: line that splits the layer feature parts
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: - QgsGeometry.InvalidBaseGeometry
+:return: - :py:class:`QgsGeometry`.InvalidBaseGeometry
 
-         - QgsGeometry.Success
-         - QgsGeometry.InvalidInput
-         - QgsGeometry.NothingHappened if a selection is present but no feature has been split
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.GeometryEngineError
-         - QgsGeometry.SplitCannotSplitPoint
+         - :py:class:`QgsGeometry`.Success
+         - :py:class:`QgsGeometry`.InvalidInput
+         - :py:class:`QgsGeometry`.NothingHappened if a selection is present but no feature has been split
+         - :py:class:`QgsGeometry`.InvalidBaseGeometry
+         - :py:class:`QgsGeometry`.GeometryEngineError
+         - :py:class:`QgsGeometry`.SplitCannotSplitPoint
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -188,14 +188,14 @@ Splits parts cut by the given line
 :param splitLine: line that splits the layer feature parts
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: - QgsGeometry.InvalidBaseGeometry
+:return: - :py:class:`QgsGeometry`.InvalidBaseGeometry
 
-         - QgsGeometry.Success
-         - QgsGeometry.InvalidInput
-         - QgsGeometry.NothingHappened if a selection is present but no feature has been split
-         - QgsGeometry.InvalidBaseGeometry
-         - QgsGeometry.GeometryEngineError
-         - QgsGeometry.SplitCannotSplitPoint
+         - :py:class:`QgsGeometry`.Success
+         - :py:class:`QgsGeometry`.InvalidInput
+         - :py:class:`QgsGeometry`.NothingHappened if a selection is present but no feature has been split
+         - :py:class:`QgsGeometry`.InvalidBaseGeometry
+         - :py:class:`QgsGeometry`.GeometryEngineError
+         - :py:class:`QgsGeometry`.SplitCannotSplitPoint
 %End
 
  QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
@@ -205,10 +205,10 @@ Splits features cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -218,7 +218,7 @@ Splits features cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, QgsPointSequence &topologyTestPoints /Out/, bool preserveCircular = false, bool topologicalEditing = false );
@@ -230,7 +230,7 @@ Splits features cut by the given curve
 :param preserveCircular: whether circular strings are preserved after splitting
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: QgsGeometry.OperationResult
+:return: :py:class:`QgsGeometry`.OperationResult
 
 .. versionadded:: 3.16
 %End

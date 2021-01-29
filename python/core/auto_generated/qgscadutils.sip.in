@@ -13,7 +13,7 @@
 class QgsCadUtils
 {
 %Docstring
-The QgsCadUtils class provides routines for CAD editing.
+The :py:class:`QgsCadUtils` class provides routines for CAD editing.
 
 .. versionadded:: 3.0
 %End

@@ -54,7 +54,7 @@ log.
 
     DataType dataType( const QDomNode &layerNode );
 %Docstring
-Returns data type associated with the given QgsProject file Dom node
+Returns data type associated with the given :py:class:`QgsProject` file Dom node
 
 The Dom node should represent the state associated with a specific layer.
 
@@ -65,7 +65,7 @@ The Dom node should represent the state associated with a specific layer.
 %Docstring
 Returns the data source for the given layer
 
-The QDomNode is a QgsProject Dom node corresponding to a map layer state.
+The QDomNode is a :py:class:`QgsProject` Dom node corresponding to a map layer state.
 
 Essentially dumps datasource tag.
 
@@ -76,7 +76,7 @@ Essentially dumps datasource tag.
 %Docstring
 Returns the physical storage type associated with the given layer
 
-The QDomNode is a QgsProject Dom node corresponding to a map layer state.
+The QDomNode is a :py:class:`QgsProject` Dom node corresponding to a map layer state.
 
 If the provider tag is "ogr", then it's a file type.
 

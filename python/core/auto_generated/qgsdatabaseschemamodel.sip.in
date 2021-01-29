@@ -39,7 +39,7 @@ Constructor for QgsDatabaseSchemaModel, for the specified ``provider`` and ``con
 
 .. warning::
 
-   The ``provider`` must support the connection API methods in its QgsProviderMetadata implementation
+   The ``provider`` must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly.
 %End
 

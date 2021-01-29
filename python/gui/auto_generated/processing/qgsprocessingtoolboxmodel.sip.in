@@ -13,7 +13,7 @@
 class QgsProcessingToolboxModelNode : QObject
 {
 %Docstring
-Abstract base class for nodes contained within a QgsProcessingToolboxModel.
+Abstract base class for nodes contained within a :py:class:`QgsProcessingToolboxModel`.
 
 .. warning::
 
@@ -237,7 +237,7 @@ class QgsProcessingToolboxModel : QAbstractItemModel
 %Docstring
 A model for providers and algorithms shown within the Processing toolbox.
 
-See QgsProcessingToolboxProxyModel for a sorted, filterable version
+See :py:class:`QgsProcessingToolboxProxyModel` for a sorted, filterable version
 of this model.
 
 .. versionadded:: 3.4

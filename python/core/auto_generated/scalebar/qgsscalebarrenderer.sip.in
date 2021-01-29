@@ -70,7 +70,7 @@ Constructor for QgsScaleBarRenderer.
 Returns the unique name for this style.
 
 .. deprecated::
-   use id() instead
+   use :py:func:`~QgsScaleBarRenderer.id` instead
 %End
 
     virtual QString id() const = 0;
@@ -119,7 +119,7 @@ Draws the scalebar using the specified ``settings`` and ``scaleContext`` to a de
 Calculates the required box size (in millimeters) for a scalebar using the specified ``settings`` and ``scaleContext``.
 
 .. deprecated::
-   Use the version with a QgsRenderContext instead.
+   Use the version with a :py:class:`QgsRenderContext` instead.
 %End
 
     virtual QSizeF calculateBoxSize( QgsRenderContext &context,
@@ -159,7 +159,7 @@ Returns the text used for the first label in the scalebar.
 Returns the x-offset (in millimeters) used for the first label in the scalebar.
 
 .. deprecated::
-   Use the version with QgsRenderContext instead.
+   Use the version with :py:class:`QgsRenderContext` instead.
 %End
 
     double firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context, const ScaleBarContext &scaleContext ) const;
@@ -174,7 +174,7 @@ Returns the x-offset (in render context painter units) used for the first label 
 Returns a list of positions for each segment within the scalebar.
 
 .. deprecated::
-   use the version with a QgsRenderContext instead
+   use the version with a :py:class:`QgsRenderContext` instead
 %End
 
     QList<double> segmentPositions( QgsRenderContext &context, const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;

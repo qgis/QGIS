@@ -31,7 +31,7 @@ Property sheet for a raster map layer
 Constructor
 
 :param lyr: Map layer for which properties will be displayed
-:param canvas: the QgsMapCanvas instance
+:param canvas: the :py:class:`QgsMapCanvas` instance
 :param parent: the parent of this widget
 :param fl: windows flag
 %End

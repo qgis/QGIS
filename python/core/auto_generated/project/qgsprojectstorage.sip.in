@@ -15,7 +15,7 @@ class QgsProjectStorage
 {
 %Docstring
 Abstract interface for project storage - to be implemented by various backends
-and registered in QgsProjectStorageRegistry.
+and registered in :py:class:`QgsProjectStorageRegistry`.
 
 .. versionadded:: 3.2
 %End
@@ -104,7 +104,7 @@ indicates that the storage does not implement GUI support (:py:func:`~QgsProject
 The name may be translatable and ideally unique as well.
 
 .. deprecated:: QGIS 3.10
-   - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
+   - use :py:class:`QgsProjectStorageGuiProvider` for GUI-related project storage functionality
 %End
 
  virtual QString showLoadGui() /Deprecated/;
@@ -113,7 +113,7 @@ Opens GUI to allow user to select a project to be loaded (GUI specific to this s
 Returns project URI if user has picked a project or empty string if the GUI was canceled.
 
 .. deprecated:: QGIS 3.10
-   - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
+   - use :py:class:`QgsProjectStorageGuiProvider` for GUI-related project storage functionality
 %End
 
  virtual QString showSaveGui() /Deprecated/;
@@ -122,7 +122,7 @@ Opens GUI to allow user to select where a project should be saved (GUI specific 
 Returns project URI if user has picked a destination or empty string if the GUI was canceled.
 
 .. deprecated:: QGIS 3.10
-   - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
+   - use :py:class:`QgsProjectStorageGuiProvider` for GUI-related project storage functionality
 %End
 
 };

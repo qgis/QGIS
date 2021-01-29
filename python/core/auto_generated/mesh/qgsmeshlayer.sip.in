@@ -17,13 +17,13 @@ class QgsMeshLayer : QgsMapLayer
 
 Represents a mesh layer supporting display of data on structured or unstructured meshes
 
-The QgsMeshLayer is instantiated by specifying the name of a data provider,
+The :py:class:`QgsMeshLayer` is instantiated by specifying the name of a data provider,
 such as mdal, and url defining the specific data set to connect to.
-The vector layer constructor in turn instantiates a QgsMeshDataProvider subclass
+The vector layer constructor in turn instantiates a :py:class:`QgsMeshDataProvider` subclass
 corresponding to the provider type, and passes it the url. The data provider
 connects to the data source.
 
-The QgsMeshLayer provides a common interface to the different data types. It does not
+The :py:class:`QgsMeshLayer` provides a common interface to the different data types. It does not
 yet support editing transactions.
 
 The main data providers supported by QGIS are listed below.
@@ -647,7 +647,7 @@ The returned position is in map coordinates.
 :param point: the center of the search area in map coordinates
 :param searchRadius: the radius of the search area in map units
 
-:return: the position of the snapped point on the closest element, empty QgsPointXY if no element of type ``elementType``
+:return: the position of the snapped point on the closest element, empty :py:class:`QgsPointXY` if no element of type ``elementType``
 
 
 .. versionadded:: 3.14

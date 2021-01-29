@@ -16,7 +16,7 @@ class QgsMessageBar: QFrame
 %Docstring
 A bar for displaying non-blocking messages to the user.
 
-QgsMessageBar is a reusable widget which allows for providing feedback to users in
+:py:class:`QgsMessageBar` is a reusable widget which allows for providing feedback to users in
 a non-intrusive way. Messages are shown in a horizontal bar widget, which is styled
 automatically to reflect the severity ("message level") of the displayed message (e.g.
 warning messages are styled in an orange color scheme, critical errors are shown in

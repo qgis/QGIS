@@ -69,7 +69,7 @@ support.
 Calculates the frame time for an animation.
 
 If the interval original duration is fractional or interval original unit is
-unknown (QgsUnitTypes.TemporalUnit.TemporalUnknownUnit), then QgsInterval is used
+unknown (:py:class:`QgsUnitTypes`.TemporalUnit.TemporalUnknownUnit), then :py:class:`QgsInterval` is used
 to determine the duration of the frame. This uses average durations for months and years.
 
 Otherwise, we use QDateTime to advance by the exact duration of the current

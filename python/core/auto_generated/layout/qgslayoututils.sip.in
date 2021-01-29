@@ -48,7 +48,7 @@ Snaps an ``angle`` (in degrees) to its closest 45 degree angle.
     static QgsRenderContext createRenderContextForMap( QgsLayoutItemMap *map, QPainter *painter, double dpi = -1 );
 %Docstring
 Creates a render context suitable for the specified layout ``map`` and ``painter`` destination.
-This method returns a new QgsRenderContext which matches the scale and settings of the
+This method returns a new :py:class:`QgsRenderContext` which matches the scale and settings of the
 target map. If the ``dpi`` argument is not specified then the dpi will be taken from the destination
 painter device.
 
@@ -58,7 +58,7 @@ painter device.
     static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter, double dpi = -1 );
 %Docstring
 Creates a render context suitable for the specified ``layout`` and ``painter`` destination.
-This method returns a new QgsRenderContext which matches the scale and settings from the layout's
+This method returns a new :py:class:`QgsRenderContext` which matches the scale and settings from the layout's
 :py:func:`QgsLayout.referenceMap()`.
 If the ``dpi`` argument is not specified then the dpi will be taken from the destination
 painter device.

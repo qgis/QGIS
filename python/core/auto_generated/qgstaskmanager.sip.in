@@ -17,7 +17,7 @@ class QgsTask : QObject
 {
 %Docstring
 Abstract base class for long running background tasks. Tasks can be controlled directly,
-or added to a QgsTaskManager for automatic management.
+or added to a :py:class:`QgsTaskManager` for automatic management.
 
 Derived classes should implement the process they want to execute in the background
 within the :py:func:`~run` method. This method will be called when the
@@ -70,7 +70,7 @@ Returns the flags associated with the task.
 
     void setDescription( const QString &description );
 %Docstring
-Sets the task's ``description``. This must be called before adding the task to a QgsTaskManager,
+Sets the task's ``description``. This must be called before adding the task to a :py:class:`QgsTaskManager`,
 changing the description after queuing the task has no effect.
 
 .. versionadded:: 3.10
@@ -128,14 +128,14 @@ from any overridden version.
 Places the task on hold. If the task in not queued
 (ie it is already running or has finished) then calling this has no effect.
 Calling this method only has an effect for tasks which are managed
-by a QgsTaskManager.
+by a :py:class:`QgsTaskManager`.
 
 .. seealso:: :py:func:`unhold`
 %End
 
     void unhold();
 %Docstring
-Releases the task from being held. For tasks managed by a QgsTaskManager
+Releases the task from being held. For tasks managed by a :py:class:`QgsTaskManager`
 calling this will re-add them to the queue. If the
 task in not currently being held then calling this has no effect.
 
@@ -163,8 +163,8 @@ time as the parent task. This behavior can be overridden through the subTaskDepe
 argument. Note that subtasks should NEVER be dependent on their parent task, and violating
 this constraint will prevent the task from completing successfully.
 
-The parent task must be added to a QgsTaskManager for subtasks to be utilized.
-Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
+The parent task must be added to a :py:class:`QgsTaskManager` for subtasks to be utilized.
+Subtasks should not be added manually to a :py:class:`QgsTaskManager`, rather, only the parent
 task should be added to the manager.
 
 Subtasks can be nested, ie a subtask can legally be a parent task itself with
@@ -270,7 +270,7 @@ task was completed successfully or terminated before completion.
 
     virtual void finished( bool result );
 %Docstring
-If the task is managed by a QgsTaskManager, this will be called after the
+If the task is managed by a :py:class:`QgsTaskManager`, this will be called after the
 task has finished (whether through successful completion or via early
 termination). The result argument reflects whether
 the task was successfully completed or not. This method is always called

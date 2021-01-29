@@ -12,10 +12,10 @@
 class QgsGeocoderLocatorFilter : QgsAbstractGeocoderLocatorFilter
 {
 %Docstring
-An adapter class which implements a locator filter populated from a QgsGeocoderInterface.
+An adapter class which implements a locator filter populated from a :py:class:`QgsGeocoderInterface`.
 
 This class implements the required logic to bridge a class which implements the
-QgsGeocoderInterface interface to a QgsLocatorFilter. It allows easy creation of a locator
+:py:class:`QgsGeocoderInterface` interface to a :py:class:`QgsLocatorFilter`. It allows easy creation of a locator
 filter from a geocoder.
 
 .. versionadded:: 3.18

@@ -14,8 +14,8 @@ class QgsVariableEditorWidget : QWidget
 {
 %Docstring
 A tree based widget for editing expression context scope variables. The widget allows editing
-variables from a QgsExpressionContextScope, and can optionally also show inherited
-variables from a QgsExpressionContext.
+variables from a :py:class:`QgsExpressionContextScope`, and can optionally also show inherited
+variables from a :py:class:`QgsExpressionContext`.
 
 .. versionadded:: 2.12
 %End
@@ -36,7 +36,7 @@ Constructor for QgsVariableEditorWidget.
 
     void setContext( QgsExpressionContext *context );
 %Docstring
-Overwrites the QgsExpressionContext for the widget. Setting a context
+Overwrites the :py:class:`QgsExpressionContext` for the widget. Setting a context
 allows the widget to show all inherited variables for the context,
 and highlight any overridden variables within scopes.
 

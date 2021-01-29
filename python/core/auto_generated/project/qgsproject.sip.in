@@ -21,13 +21,13 @@ class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextS
 Encapsulates a QGIS project, including sets of map layers and their styles,
 layouts, annotations, canvases, etc.
 
-QgsProject is available both as a singleton (:py:func:`QgsProject.instance()`) and for use as
+:py:class:`QgsProject` is available both as a singleton (:py:func:`QgsProject.instance()`) and for use as
 standalone objects. The QGIS project singleton always gives access to the canonical project reference
 open within the main QGIS application.
 
 .. note::
 
-   QgsProject has two general kinds of state to make persistent. (I.e., to read and
+   :py:class:`QgsProject` has two general kinds of state to make persistent. (I.e., to read and
    write.) First, QGIS proprietary information. Second plugin information.
 %End
 
@@ -222,7 +222,7 @@ Returns QFileInfo object for the project's associated file.
 .. seealso:: :py:func:`fileName`
 
 .. deprecated:: QGIS 3.2
-   use absoluteFilePath(), baseName() or lastModifiedTime() instead
+   use :py:func:`~QgsProject.absoluteFilePath`, :py:func:`~QgsProject.baseName` or :py:func:`~QgsProject.lastModifiedTime` instead
 %End
 
     QgsProjectStorage *projectStorage() const;
@@ -372,7 +372,7 @@ Reads the layer described in the associated DOM node.
 
 .. note::
 
-   This method is mainly for use by QgsProjectBadLayerHandler subclasses
+   This method is mainly for use by :py:class:`QgsProjectBadLayerHandler` subclasses
    that may fix definition of bad layers with the user's help in GUI. Calling
    this method with corrected DOM node adds the layer back to the project.
 
@@ -561,7 +561,7 @@ which contain other keys.
 
 .. note::
 
-   equivalent to QgsSettings :py:func:`~QgsProject.entryList`
+   equivalent to :py:class:`QgsSettings` :py:func:`~QgsProject.entryList`
 %End
 
     QStringList subkeyList( const QString &scope, const QString &key ) const;
@@ -573,7 +573,7 @@ This method only returns keys with keys, it will not return keys that contain on
 
 .. note::
 
-   equivalent to QgsSettings :py:func:`~QgsProject.subkeyList`
+   equivalent to :py:class:`QgsSettings` :py:func:`~QgsProject.subkeyList`
 %End
 
 
@@ -800,7 +800,7 @@ Returns pointer to the project's annotation manager.
 Set a list of layers which should not be taken into account on map identification
 
 .. deprecated:: QGIS 3.4
-   use QgsMapLayer.setFlags() instead
+   use :py:func:`QgsMapLayer.setFlags()` instead
 %End
 
  void setNonIdentifiableLayers( const QStringList &layerIds );
@@ -808,7 +808,7 @@ Set a list of layers which should not be taken into account on map identificatio
 Set a list of layers which should not be taken into account on map identification
 
 .. deprecated:: QGIS 3.4
-   use QgsMapLayer.setFlags() instead
+   use :py:func:`QgsMapLayer.setFlags()` instead
 %End
 
  QStringList nonIdentifiableLayers() const;
@@ -816,7 +816,7 @@ Set a list of layers which should not be taken into account on map identificatio
 Gets the list of layers which currently should not be taken into account on map identification
 
 .. deprecated:: QGIS 3.4
-   use QgsMapLayer.setFlags() instead
+   use :py:func:`QgsMapLayer.setFlags()` instead
 %End
 
     bool autoTransaction() const;
@@ -1278,7 +1278,7 @@ and it is mainly a hint for the user interface to protect users from removing la
 in the project. The :py:func:`~QgsProject.removeMapLayer`, :py:func:`~QgsProject.removeMapLayers` calls do not block removal of layers listed here.
 
 .. deprecated:: QGIS 3.4
-   use QgsMapLayer.flags() instead
+   use :py:func:`QgsMapLayer.flags()` instead
 
 .. versionadded:: 3.2
 %End
@@ -1291,14 +1291,14 @@ and it is mainly a hint for the user interface to protect users from removing la
 in the project. The :py:func:`~QgsProject.removeMapLayer`, :py:func:`~QgsProject.removeMapLayers` calls do not block removal of layers listed here.
 
 .. deprecated:: QGIS 3.4
-   use QgsMapLayer.setFlags() instead
+   use :py:func:`QgsMapLayer.setFlags()` instead
 
 .. versionadded:: 3.2
 %End
 
     void setProjectColors( const QgsNamedColorList &colors );
 %Docstring
-Sets the ``colors`` for the project's color scheme (see QgsProjectColorScheme).
+Sets the ``colors`` for the project's color scheme (see :py:class:`QgsProjectColorScheme`).
 
 .. seealso:: :py:func:`projectColorsChanged`
 
@@ -1353,7 +1353,7 @@ The ``scales`` list consists of a list of scale denominator values, e.g.
 .. seealso:: :py:func:`mapScalesChanged`
 
 .. deprecated::
-   Use viewSettings() instead
+   Use :py:func:`~QgsProject.viewSettings` instead
 %End
 
  QVector<double> mapScales() const /Deprecated/;
@@ -1368,7 +1368,7 @@ The scales list consists of a list of scale denominator values, e.g.
 .. seealso:: :py:func:`mapScalesChanged`
 
 .. deprecated::
-   Use viewSettings() instead
+   Use :py:func:`~QgsProject.viewSettings` instead
 %End
 
  void setUseProjectScales( bool enabled ) /Deprecated/;
@@ -1380,7 +1380,7 @@ Sets whether project :py:func:`~QgsProject.mapScales` are ``enabled``.
 .. seealso:: :py:func:`setMapScales`
 
 .. deprecated::
-   Use viewSettings() instead
+   Use :py:func:`~QgsProject.viewSettings` instead
 %End
 
  bool useProjectScales() const /Deprecated/;
@@ -1392,7 +1392,7 @@ Returns ``True`` if project :py:func:`~QgsProject.mapScales` are enabled.
 .. seealso:: :py:func:`mapScales`
 
 .. deprecated::
-   Use viewSettings() instead
+   Use :py:func:`~QgsProject.viewSettings` instead
 %End
 
     void generateTsFile( const QString &locale );
@@ -1787,7 +1787,7 @@ Layers can also be private layers, which are signalled by
 :py:func:`~QgsProject.layersAdded` and :py:func:`~QgsProject.layerWasAdded` but will not be
 advertised by this signal.
 
-:param layers: List of QgsMapLayer which were added to the legend.
+:param layers: List of :py:class:`QgsMapLayer` which were added to the legend.
 %End
 
     void isDirtyChanged( bool dirty );
@@ -1809,7 +1809,7 @@ Emitted when the list of custom project map scales changes.
 .. seealso:: :py:func:`setMapScales`
 
 .. deprecated::
-   Use viewSettings() instead
+   Use :py:func:`~QgsProject.viewSettings` instead
 %End
 
   public slots:
@@ -1894,13 +1894,13 @@ class QgsProjectDirtyBlocker
 %Docstring
 Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
 
-QgsProjectDirtyBlocker supports "stacked" blocking, so two QgsProjectDirtyBlockers created
+:py:class:`QgsProjectDirtyBlocker` supports "stacked" blocking, so two :py:class:`QgsProjectDirtyBlockers` created
 for the same project will both need to be destroyed before the project can be dirtied again.
 
-Note that QgsProjectDirtyBlocker only blocks calls which set the project as dirty - calls
+Note that :py:class:`QgsProjectDirtyBlocker` only blocks calls which set the project as dirty - calls
 which set the project as clean are not blocked.
 
-Python scripts should not use QgsProjectDirtyBlocker directly. Instead, use :py:func:`QgsProject.blockDirtying()`
+Python scripts should not use :py:class:`QgsProjectDirtyBlocker` directly. Instead, use :py:func:`QgsProject.blockDirtying()`
 .. code-block:: python
 
        project = QgsProject.instance()

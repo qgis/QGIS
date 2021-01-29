@@ -17,7 +17,7 @@ Dataset group index can be evaluated with the method :py:func:`~valueAsDatasetGr
 
 .. note::
 
-   This parameter is dependent on a mesh layer parameter (see QgsProcessingParameterMeshLayer)
+   This parameter is dependent on a mesh layer parameter (see :py:class:`QgsProcessingParameterMeshLayer`)
 
 .. versionadded:: 3.18
 %End
@@ -38,7 +38,7 @@ Constructor
 :param name: name of the parameter
 :param description: description of the parameter
 :param meshLayerParameterName: name of the associated mesh layer parameter
-:param supportedDataType: a set of QgsMeshDatasetGroupMetadata.DataType values for data types supported by the parameter
+:param supportedDataType: a set of :py:class:`QgsMeshDatasetGroupMetadata`.DataType values for data types supported by the parameter
 :param optional: whether the parameter is optional
 %End
 
@@ -153,7 +153,7 @@ static : dataset groups are all static, in this case the value does not contain 
 
     static QgsMeshDatasetIndex timeValueAsDatasetIndex( const QVariant &value );
 %Docstring
-Returns the ``value`` as a QgsMeshDatasetIndex if the value has "dataset-time-step" type.
+Returns the ``value`` as a :py:class:`QgsMeshDatasetIndex` if the value has "dataset-time-step" type.
 If the value has the wrong type return an invalid dataset index
 
 .. seealso:: :py:func:`valueAsTimeType`

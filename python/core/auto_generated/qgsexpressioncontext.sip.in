@@ -11,8 +11,8 @@
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring
-Expression function for use within a QgsExpressionContextScope. This differs from a
-standard QgsExpression.Function in that it requires an implemented
+Expression function for use within a :py:class:`QgsExpressionContextScope`. This differs from a
+standard :py:class:`QgsExpression`.Function in that it requires an implemented
 :py:func:`~clone` method.
 
 .. versionadded:: 2.12
@@ -79,10 +79,10 @@ class QgsExpressionContextScope
 %Docstring
 Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
 Examples include a project's scope, which could contain information about the current project such as
-the project file's location. QgsExpressionContextScope can encapsulate both variables (static values)
+the project file's location. :py:class:`QgsExpressionContextScope` can encapsulate both variables (static values)
 and functions(which are calculated only when an expression is evaluated).
 
-See QgsExpressionContextUtils for helper methods for working with QgsExpressionContextScope objects.
+See :py:class:`QgsExpressionContextUtils` for helper methods for working with :py:class:`QgsExpressionContextScope` objects.
 
 .. versionadded:: 2.12
 %End
@@ -365,13 +365,13 @@ Writes scope variables to an XML ``element``.
 class QgsExpressionContext
 {
 %Docstring
-Expression contexts are used to encapsulate the parameters around which a QgsExpression should
-be evaluated. QgsExpressions can then utilize the information stored within a context to contextualise
-their evaluated result. A QgsExpressionContext consists of a stack of QgsExpressionContextScope objects,
+Expression contexts are used to encapsulate the parameters around which a :py:class:`QgsExpression` should
+be evaluated. :py:class:`QgsExpressions` can then utilize the information stored within a context to contextualise
+their evaluated result. A :py:class:`QgsExpressionContext` consists of a stack of :py:class:`QgsExpressionContextScope` objects,
 where scopes added later to the stack will override conflicting variables and functions from scopes
 lower in the stack.
 
-See QgsExpressionContextUtils for helper methods for working with QgsExpressionContext objects.
+See :py:class:`QgsExpressionContextUtils` for helper methods for working with :py:class:`QgsExpressionContext` objects.
 
 .. versionadded:: 2.12
 %End

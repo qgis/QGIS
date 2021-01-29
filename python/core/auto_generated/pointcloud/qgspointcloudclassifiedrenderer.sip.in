@@ -13,7 +13,7 @@
 class QgsPointCloudCategory
 {
 %Docstring
-Represents an individual category (class) from a QgsPointCloudClassifiedRenderer.
+Represents an individual category (class) from a :py:class:`QgsPointCloudClassifiedRenderer`.
 
 .. versionadded:: 3.18
 %End

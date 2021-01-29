@@ -17,8 +17,8 @@ class QgsMapLayerTemporalProperties : QgsTemporalProperty
 %Docstring
 Base class for storage of map layer temporal properties.
 
-QgsMapLayerTemporalProperties exposes user-configurable settings for controlling
-how an individual QgsMapLayer behaves in a temporal context, e.g. while animating a map object.
+:py:class:`QgsMapLayerTemporalProperties` exposes user-configurable settings for controlling
+how an individual :py:class:`QgsMapLayer` behaves in a temporal context, e.g. while animating a map object.
 
 .. versionadded:: 3.14
 %End

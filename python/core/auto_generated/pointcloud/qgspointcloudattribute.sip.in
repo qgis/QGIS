@@ -154,7 +154,7 @@ Returns total size of record
 
     QgsFields toFields() const;
 %Docstring
-Converts the attribute collection to an equivalent QgsFields collection.
+Converts the attribute collection to an equivalent :py:class:`QgsFields` collection.
 %End
 
 };

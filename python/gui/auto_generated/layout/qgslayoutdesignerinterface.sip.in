@@ -23,7 +23,7 @@ open layout designer dialogs.
    Layout designer dialogs are transitory. They are created only on demand
    (when a user opens the dialog) and are deleted as soon as the user closes the dialog.
    There can be multiple designer dialogs open at any one time, and each is a separate
-   instance of the dialog and QgsLayoutDesignerInterface. Accordingly, plugins must
+   instance of the dialog and :py:class:`QgsLayoutDesignerInterface`. Accordingly, plugins must
    take care to react to newly created designer dialogs and apply their customizations
    to all newly created dialogs. This can be done by listening for the QgisInterface.layoutDesignerOpened
    signal. Plugins must also listen for the QgisInterface.layoutDesignerWillBeClosed

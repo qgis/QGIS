@@ -12,7 +12,7 @@ class QgsNewsFeedModel : QAbstractItemModel
 %Docstring
 A model for published QGIS news feeds.
 
-This class is designed to work with QgsNewsFeedParser, for displaying
+This class is designed to work with :py:class:`QgsNewsFeedParser`, for displaying
 feeds from a https://github.com/elpaso/qgis-feed server instance.
 
 .. versionadded:: 3.10
@@ -38,7 +38,7 @@ feeds from a https://github.com/elpaso/qgis-feed server instance.
 %Docstring
 Constructor for QgsNewsFeedModel, with the specified ``parent`` object.
 
-The ``parser`` argument must specify a valid QgsNewsFeedParser object, which
+The ``parser`` argument must specify a valid :py:class:`QgsNewsFeedParser` object, which
 must exist for the lifetime of this model.
 %End
 
@@ -62,7 +62,7 @@ class QgsNewsFeedProxyModel : QSortFilterProxyModel
 %Docstring
 A proxy model for use with QgsNewsFeedModel.
 
-QgsNewsFeedProxyModel applies custom sorting to the entries in a QgsNewsFeedModel.
+:py:class:`QgsNewsFeedProxyModel` applies custom sorting to the entries in a :py:class:`QgsNewsFeedModel`.
 
 .. versionadded:: 3.10
 %End
@@ -76,7 +76,7 @@ QgsNewsFeedProxyModel applies custom sorting to the entries in a QgsNewsFeedMode
 %Docstring
 Constructor for QgsNewsFeedProxyModel, with the specified ``parent`` object.
 
-The ``parser`` argument must specify a valid QgsNewsFeedParser object, which
+The ``parser`` argument must specify a valid :py:class:`QgsNewsFeedParser` object, which
 must exist for the lifetime of this model.
 %End
 

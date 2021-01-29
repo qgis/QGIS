@@ -12,7 +12,7 @@
 class QgsLimitedRandomColorRampWidget : QgsPanelWidget
 {
 %Docstring
-A widget which allows users to modify the properties of a QgsLimitedRandomColorRamp.
+A widget which allows users to modify the properties of a :py:class:`QgsLimitedRandomColorRamp`.
 
 .. versionadded:: 3.0
 %End

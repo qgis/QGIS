@@ -232,56 +232,56 @@ Sets method used for drawing arrows
 %Docstring
 Returns mininimum shaft length (in millimeters)
 
-Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.MinMax
+Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
 %End
 
     void setMinShaftLength( double minShaftLength );
 %Docstring
 Sets mininimum shaft length (in millimeters)
 
-Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.MinMax
+Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
 %End
 
     double maxShaftLength() const;
 %Docstring
 Returns maximum shaft length (in millimeters)
 
-Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.MinMax
+Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
 %End
 
     void setMaxShaftLength( double maxShaftLength );
 %Docstring
 Sets maximum shaft length (in millimeters)
 
-Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.MinMax
+Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
 %End
 
     double scaleFactor() const;
 %Docstring
 Returns scale factor
 
-Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.Scaled
+Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Scaled
 %End
 
     void setScaleFactor( double scaleFactor );
 %Docstring
 Sets scale factor
 
-Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.Scaled
+Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Scaled
 %End
 
     double fixedShaftLength() const;
 %Docstring
 Returns fixed arrow length (in millimeters)
 
-Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.Fixed
+Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Fixed
 %End
 
     void setFixedShaftLength( double fixedShaftLength );
 %Docstring
 Sets fixed length  (in millimeters)
 
-Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.Fixed
+Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Fixed
 %End
 
     double arrowHeadWidthRatio() const;

@@ -13,7 +13,7 @@
 class QgsNullSymbolRendererWidget : QgsRendererWidget
 {
 %Docstring
-Blank widget for customizing QgsNullSymbolRenderer.
+Blank widget for customizing :py:class:`QgsNullSymbolRenderer`.
 
 .. versionadded:: 2.16
 %End

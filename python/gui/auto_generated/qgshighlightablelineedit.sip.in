@@ -13,7 +13,7 @@ class QgsHighlightableLineEdit: QgsFilterLineEdit
 {
 %Docstring
 
-A QgsFilterLineEdit subclass with the ability to "highlight" the edges of the widget.
+A :py:class:`QgsFilterLineEdit` subclass with the ability to "highlight" the edges of the widget.
 
 .. versionadded:: 3.14
 %End

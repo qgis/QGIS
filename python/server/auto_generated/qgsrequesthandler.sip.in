@@ -27,7 +27,7 @@ output from/to a wms request mechanism.
 %Docstring
 Constructor
 
-Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
+Note that :py:class:`QgsServerRequest` and :py:class:`QgsServerResponse` MUST live in the same scope
 %End
 
     void setServiceException( const QgsServerException &ex );

@@ -13,7 +13,7 @@ class QgsDataItemGuiContext
 {
 %Docstring
 
-Encapsulates the context in which a QgsDataItem is shown within the application GUI.
+Encapsulates the context in which a :py:class:`QgsDataItem` is shown within the application GUI.
 
 .. versionadded:: 3.6
 %End
@@ -53,7 +53,7 @@ class QgsDataItemGuiProvider
 {
 %Docstring
 
-Abstract base class for providers which affect how QgsDataItem items behave
+Abstract base class for providers which affect how :py:class:`QgsDataItem` items behave
 within the application GUI.
 
 Providers must be registered via :py:class:`QgsDataItemGuiProviderRegistry`.
@@ -87,7 +87,7 @@ Subclasses can utilize this list in order to create actions which operate on mul
 at once, e.g. to allow deletion of multiple layers from a database at once.
 
 When creating a context menu, this method is called for EVERY QgsDataItemGuiProvider
-within the QgsDataItemGuiProviderRegistry. It is the QgsDataItemGuiProvider subclass'
+within the :py:class:`QgsDataItemGuiProviderRegistry`. It is the :py:class:`QgsDataItemGuiProvider` subclass'
 responsibility to test the ``item`` and ``selectedItems`` for their properties and classes and decide what actions
 (if any) are appropriate to add to the context ``menu``.
 
@@ -104,7 +104,7 @@ The base class method has no effect.
 %Docstring
 Sets a new ``name`` for the item, and returns ``True`` if the item was successfully renamed.
 
-Items which implement this method should return the QgsDataItem.Rename capability.
+Items which implement this method should return the :py:class:`QgsDataItem`.Rename capability.
 
 The default implementation does nothing.
 
@@ -116,7 +116,7 @@ The default implementation does nothing.
 Tries to permanently delete map layer representing the given item.
 Returns ``True`` if the layer was successfully deleted.
 
-Items which implement this method should return the QgsDataItem.Delete capability.
+Items which implement this method should return the :py:class:`QgsDataItem`.Delete capability.
 
 The default implementation does nothing.
 

@@ -11,7 +11,7 @@
 class QgsCodeEditorColorScheme
 {
 %Docstring
-Defines a color scheme for use in QgsCodeEditor widgets.
+Defines a color scheme for use in :py:class:`QgsCodeEditor` widgets.
 
 .. versionadded:: 3.16
 %End

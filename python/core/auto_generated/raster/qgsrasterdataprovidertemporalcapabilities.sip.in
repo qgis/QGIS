@@ -12,11 +12,11 @@
 class QgsRasterDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
 {
 %Docstring
-Implementation of data provider temporal properties for QgsRasterDataProviders.
+Implementation of data provider temporal properties for :py:class:`QgsRasterDataProviders`.
 
-Data provider temporal capabilities reflect the temporal capabilities of a QgsDataProvider.
-Unlike QgsMapLayerTemporalProperties, these settings are not user-configurable,
-and should only be set by the QgsDataProvider itself.
+Data provider temporal capabilities reflect the temporal capabilities of a :py:class:`QgsDataProvider`.
+Unlike :py:class:`QgsMapLayerTemporalProperties`, these settings are not user-configurable,
+and should only be set by the :py:class:`QgsDataProvider` itself.
 
 .. versionadded:: 3.14
 %End

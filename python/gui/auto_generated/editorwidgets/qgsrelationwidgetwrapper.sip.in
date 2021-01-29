@@ -63,7 +63,7 @@ Determines if the "link feature" button should be shown
 .. versionadded:: 2.18
 
 .. deprecated:: QGIS 3.16
-   use visibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead
 %End
 
  void setShowLinkButton( bool showLinkButton ) /Deprecated/;
@@ -73,7 +73,7 @@ Determines if the "link feature" button should be shown
 .. versionadded:: 2.18
 
 .. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead
 %End
 
  bool showUnlinkButton() const /Deprecated/;
@@ -83,7 +83,7 @@ Determines if the "unlink feature" button should be shown
 .. versionadded:: 2.18
 
 .. deprecated:: QGIS 3.16
-   use visibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead
 %End
 
  void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
@@ -93,7 +93,7 @@ Determines if the "unlink feature" button should be shown
 .. versionadded:: 2.18
 
 .. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead
 %End
 
  void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
@@ -103,7 +103,7 @@ Determines if the "Save child layer edits" button should be shown
 .. versionadded:: 3.14
 
 .. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead
 %End
 
  bool showSaveChildEditsButton() const /Deprecated/;
@@ -113,7 +113,7 @@ Determines if the "Save child layer edits" button should be shown
 .. versionadded:: 3.14
 
 .. deprecated:: QGIS 3.16
-   use visibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead
 %End
 
  void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) /Deprecated/;
@@ -123,7 +123,7 @@ Defines the buttons which are shown
 .. versionadded:: 3.16
 
 .. deprecated:: QGIS 3.18
-   use setWidgetConfig() instead
+   use :py:func:`~QgsRelationWidgetWrapper.setWidgetConfig` instead
 %End
 
  QgsAttributeEditorRelation::Buttons visibleButtons() const /Deprecated/;
@@ -133,7 +133,7 @@ Returns the buttons which are shown
 .. versionadded:: 3.16
 
 .. deprecated:: QGIS 3.18
-   use widgetConfig() instead
+   use :py:func:`~QgsRelationWidgetWrapper.widgetConfig` instead
 %End
 
 

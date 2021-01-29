@@ -18,7 +18,7 @@ Stores metadata about a paint effect class.
 .. note::
 
    It's necessary to implement the :py:func:`~createPaintEffect` function.
-   In C++ you can use the QgsPaintEffectMetadata convenience class to
+   In C++ you can use the :py:class:`QgsPaintEffectMetadata` convenience class to
    simplify creation of the metadata.
 
 .. versionadded:: 2.9
@@ -86,7 +86,7 @@ class QgsPaintEffectRegistry
 %Docstring
 Registry of available paint effects.
 
-QgsPaintEffectRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsPaintEffectRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.paintEffectRegistry()`.
 
 .. versionadded:: 2.9

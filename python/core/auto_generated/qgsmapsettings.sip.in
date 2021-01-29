@@ -38,10 +38,10 @@ Constructor for a label blocking region
 class QgsMapSettings : QgsTemporalRangeObject
 {
 %Docstring
-The QgsMapSettings class contains configuration for rendering of the map.
-The rendering itself is done by QgsMapRendererJob subclasses.
+The :py:class:`QgsMapSettings` class contains configuration for rendering of the map.
+The rendering itself is done by :py:class:`QgsMapRendererJob` subclasses.
 
-In order to set up QgsMapSettings instance, it is necessary to set at least
+In order to set up :py:class:`QgsMapSettings` instance, it is necessary to set at least
 few members: extent, output size and layers.
 
 Some systems use high DPI scaling that is an alternative to the traditional
@@ -280,7 +280,7 @@ Returns custom rendering flags. Layers might honour these to alter their renderi
 .. versionadded:: 2.16
 
 .. deprecated::
-   use \see customRenderingFlags().
+   use \see :py:func:`~QgsMapSettings.customRenderingFlags`.
 %End
 
  void setCustomRenderFlags( const QString &customRenderFlags );
@@ -294,7 +294,7 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 .. versionadded:: 2.16
 
 .. deprecated::
-   use \see setCustomRenderingFlag() instead.
+   use \see :py:func:`~QgsMapSettings.setCustomRenderingFlag` instead.
 %End
 
     QVariantMap customRenderingFlags() const;

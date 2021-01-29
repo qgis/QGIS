@@ -369,7 +369,7 @@ Returns the labeling property definitions.
 
     QgsExpression *getLabelExpression();
 %Docstring
-Returns the QgsExpression for this label settings. May be ``None`` if isExpression is ``False``.
+Returns the :py:class:`QgsExpression` for this label settings. May be ``None`` if isExpression is ``False``.
 %End
 
  QColor previewBkgrdColor;
@@ -549,7 +549,7 @@ vertically oriented text will be written to ``rotatedLabelX`` and ``rotatedLabel
 Register a feature for labeling.
 
 :param f: feature to label
-:param context: render context. The QgsExpressionContext contained within the render context
+:param context: render context. The :py:class:`QgsExpressionContext` contained within the render context
                 must have already had the feature and fields sets prior to calling this method.
 :param labelFeature: if using :py:class:`QgsLabelingEngine`, this will receive the label feature. Not available
                      in Python bindings.

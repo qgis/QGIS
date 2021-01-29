@@ -16,7 +16,7 @@
 class QgsServerApiUtils
 {
 %Docstring
-The QgsServerApiUtils class contains helper functions to handle common API operations.
+The :py:class:`QgsServerApiUtils` class contains helper functions to handle common API operations.
 
 .. versionadded:: 3.10
 %End
@@ -46,7 +46,7 @@ Returns a list of temporal dimensions information for the given ``layer`` (eithe
 %Docstring
 Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 
-:raises QgsServerApiBadRequestException: if interval cannot be parsed
+:raises :: py:class:`QgsServerApiBadRequestException` if interval cannot be parsed
 
 .. versionadded:: 3.12
 %End
@@ -55,7 +55,7 @@ Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 %Docstring
 Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 
-:raises QgsServerApiBadRequestException: if interval cannot be parsed
+:raises :: py:class:`QgsServerApiBadRequestException` if interval cannot be parsed
 
 .. versionadded:: 3.12
 %End
@@ -118,7 +118,7 @@ Sanitizes the input ``value`` by removing URL encoding.
 
 .. note::
 
-   the returned value is meant to become part of a QgsExpression filter
+   the returned value is meant to become part of a :py:class:`QgsExpression` filter
 %End
 
     static QStringList publishedCrsList( const QgsProject *project );

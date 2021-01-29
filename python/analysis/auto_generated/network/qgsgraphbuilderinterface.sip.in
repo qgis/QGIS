@@ -18,7 +18,7 @@ class QgsGraphBuilderInterface
 {
 %Docstring
 Determine interface for creating a graph. Contains the settings of the graph.
-QgsGraphBuilder and QgsGraphDirector both use a "builder" design pattern
+:py:class:`QgsGraphBuilder` and :py:class:`QgsGraphDirector` both use a "builder" design pattern
 %End
 
 %TypeHeaderCode

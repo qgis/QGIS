@@ -14,7 +14,7 @@
 class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 {
 %Docstring
-Child algorithm representing a single component of a QgsProcessingModelAlgorithm.
+Child algorithm representing a single component of a :py:class:`QgsProcessingModelAlgorithm`.
 
 .. versionadded:: 3.0
 %End
@@ -27,7 +27,7 @@ Child algorithm representing a single component of a QgsProcessingModelAlgorithm
     QgsProcessingModelChildAlgorithm( const QString &algorithmId = QString() );
 %Docstring
 Constructor for QgsProcessingModelChildAlgorithm. The ``algorithmId`` parameter
-should be set to a QgsProcessingAlgorithm algorithm ID.
+should be set to a :py:class:`QgsProcessingAlgorithm` algorithm ID.
 %End
 
     QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
@@ -87,7 +87,7 @@ Returns the underlying child algorithm's ID.
     bool setAlgorithmId( const QString &algorithmId );
 %Docstring
 Sets the underlying child algorithm's ID. This
-should be set to an existing QgsProcessingAlgorithm algorithm ID.
+should be set to an existing :py:class:`QgsProcessingAlgorithm` algorithm ID.
 
 Returns ``True`` if the algorithm was successfully set.
 

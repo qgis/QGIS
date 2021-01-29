@@ -17,7 +17,7 @@
 class QgsGraphDirector : QObject
 {
 %Docstring
-Determine making the graph. QgsGraphBuilder and QgsGraphDirector implemented
+Determine making the graph. :py:class:`QgsGraphBuilder` and :py:class:`QgsGraphDirector` implemented
 using "builder" design patter.
 %End
 

@@ -15,7 +15,7 @@
 class QgsJsonExporter
 {
 %Docstring
-Handles exporting QgsFeature features to GeoJSON features.
+Handles exporting :py:class:`QgsFeature` features to GeoJSON features.
 
 Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
 if either the source vector layer or source CRS is set.
@@ -317,7 +317,7 @@ where required.
     static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = 0,
                                      const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 %Docstring
-Exports all attributes from a QgsFeature as a JSON map type.
+Exports all attributes from a :py:class:`QgsFeature` as a JSON map type.
 
 :param feature: feature to export
 :param layer: optional associated vector layer. If specified, this allows

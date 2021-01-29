@@ -12,9 +12,9 @@
 class QgsCodeEditorColorSchemeRegistry
 {
 %Docstring
-A registry of color schemes for use in QgsCodeEditor widgets.
+A registry of color schemes for use in :py:class:`QgsCodeEditor` widgets.
 
-QgsCodeEditorColorSchemeRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsCodeEditorColorSchemeRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.codeEditorColorSchemeRegistry()`.
 
 .. versionadded:: 3.16

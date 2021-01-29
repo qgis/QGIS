@@ -21,7 +21,7 @@ geometry and a list of field/values attributes.
 
 .. note::
 
-   QgsFeature objects are implicitly shared.
+   :py:class:`QgsFeature` objects are implicitly shared.
 %End
 
 %TypeHeaderCode
@@ -345,7 +345,7 @@ Returns ``True`` if the feature has an associated geometry.
     QgsGeometry geometry() const;
 %Docstring
 Returns the geometry associated with this feature. If the feature has no geometry,
-an empty QgsGeometry object will be returned.
+an empty :py:class:`QgsGeometry` object will be returned.
 
 .. seealso:: :py:func:`hasGeometry`
 

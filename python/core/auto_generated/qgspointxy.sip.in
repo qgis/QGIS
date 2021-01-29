@@ -17,8 +17,8 @@ class QgsPointXY
 %Docstring
 A class to represent a 2D point.
 
-A QgsPointXY represents a position with X and Y coordinates.
-In most scenarios it is preferable to use a QgsPoint instead which also
+A :py:class:`QgsPointXY` represents a position with X and Y coordinates.
+In most scenarios it is preferable to use a :py:class:`QgsPoint` instead which also
 supports Z and M values.
 
 .. versionadded:: 3.0

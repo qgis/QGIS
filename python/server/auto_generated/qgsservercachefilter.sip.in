@@ -29,7 +29,7 @@ Class defining cache interface for QGIS Server plugins.
     QgsServerCacheFilter( const QgsServerInterface *serverInterface );
 %Docstring
 Constructor
-QgsServerInterface passed to plugins constructors
+:py:class:`QgsServerInterface` passed to plugins constructors
 and must be passed to QgsServerCacheFilter instances.
 %End
 

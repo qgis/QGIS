@@ -15,7 +15,7 @@ class QgsRuntimeProfiler : QAbstractItemModel
 Provides a method of recording run time profiles of operations, allowing
 easy recording of their overall run time.
 
-QgsRuntimeProfiler is not usually instantied manually, but rather accessed
+:py:class:`QgsRuntimeProfiler` is not usually instantied manually, but rather accessed
 through :py:func:`QgsApplication.profiler()`.
 
 This class is thread-safe only if accessed through :py:func:`QgsApplication.profiler()`.
@@ -46,7 +46,7 @@ front of the profile tag set using start.
 :param name: The name of the group.
 
 .. deprecated::
-   use start() instead
+   use :py:func:`~QgsRuntimeProfiler.start` instead
 %End
 
  void endGroup() /Deprecated/;
@@ -54,7 +54,7 @@ front of the profile tag set using start.
 End the current active group.
 
 .. deprecated::
-   use end() instead
+   use :py:func:`~QgsRuntimeProfiler.end` instead
 %End
 
     QStringList childGroups( const QString &parent = QString(), const QString &group = "startup" ) const;
@@ -145,7 +145,7 @@ Scoped object for logging of the runtime for a single operation or group of oper
 This class automatically takes care of registering an operation in the :py:func:`QgsApplication.profiler()`
 registry upon construction, and recording of the elapsed runtime upon destruction.
 
-Python scripts should not use QgsScopedRuntimeProfile directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
+Python scripts should not use :py:class:`QgsScopedRuntimeProfile` directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
 .. code-block:: python
 
        with QgsRuntimeProfiler.profile('My operation'):

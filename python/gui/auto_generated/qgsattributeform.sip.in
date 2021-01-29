@@ -70,7 +70,7 @@ Hides the button box (OK/Cancel) and enables auto-commit
 
 .. note::
 
-   set Embed in QgsAttributeEditorContext in constructor instead
+   set Embed in :py:class:`QgsAttributeEditorContext` in constructor instead
 %End
 
 
@@ -80,7 +80,7 @@ Shows the button box (OK/Cancel) and disables auto-commit
 
 .. note::
 
-   set Embed in QgsAttributeEditorContext in constructor instead
+   set Embed in :py:class:`QgsAttributeEditorContext` in constructor instead
 %End
 
 

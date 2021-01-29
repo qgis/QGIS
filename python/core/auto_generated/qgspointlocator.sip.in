@@ -41,7 +41,7 @@ Works with one layer.
 %Docstring
 Construct point locator for a ``layer``.
 
-If a valid QgsCoordinateReferenceSystem is passed for ``destinationCrs`` then the locator will
+If a valid :py:class:`QgsCoordinateReferenceSystem` is passed for ``destinationCrs`` then the locator will
 do the searches on data reprojected to the given CRS. For accurate reprojection it is important
 to set the correct ``transformContext`` if a ``destinationCrs`` is specified. This is usually taken
 from the current :py:func:`QgsProject.transformContext()`.
@@ -60,7 +60,7 @@ Gets associated layer
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
-Gets destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
+Gets destination CRS - may be an invalid :py:class:`QgsCoordinateReferenceSystem` if not doing OTF reprojection
 
 .. versionadded:: 2.14
 %End

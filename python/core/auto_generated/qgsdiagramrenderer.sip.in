@@ -17,8 +17,8 @@ class QgsDiagramLayerSettings
 %Docstring
 Stores the settings for rendering of all diagrams for a layer.
 
-QgsDiagramSettings stores the settings related to rendering the individual diagrams themselves, while
-QgsDiagramLayerSettings stores settings which control how ALL diagrams within a layer are rendered.
+:py:class:`QgsDiagramSettings` stores the settings related to rendering the individual diagrams themselves, while
+:py:class:`QgsDiagramLayerSettings` stores settings which control how ALL diagrams within a layer are rendered.
 %End
 
 %TypeHeaderCode
@@ -343,7 +343,7 @@ class QgsDiagramSettings
 %Docstring
 Stores the settings for rendering a single diagram.
 
-QgsDiagramSettings stores the settings related to rendering the individual diagrams themselves, while
+:py:class:`QgsDiagramSettings` stores the settings related to rendering the individual diagrams themselves, while
 QgsDiagramLayerSettings stores settings which control how ALL diagrams within a layer are rendered.
 %End
 

@@ -13,13 +13,13 @@ class QgsAnnotationManager : QObject
 {
 %Docstring
 
-Manages storage of a set of QgsAnnotation annotation objects.
+Manages storage of a set of :py:class:`QgsAnnotation` annotation objects.
 
-QgsAnnotationManager handles the storage, serializing and deserializing
-of QgsAnnotations. Usually this class is not constructed directly, but
-rather accessed through a QgsProject via :py:func:`QgsProject.annotationManager()`.
+:py:class:`QgsAnnotationManager` handles the storage, serializing and deserializing
+of :py:class:`QgsAnnotations`. Usually this class is not constructed directly, but
+rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.annotationManager()`.
 
-QgsAnnotationManager retains ownership of all the annotations contained
+:py:class:`QgsAnnotationManager` retains ownership of all the annotations contained
 in the manager.
 
 .. versionadded:: 3.0

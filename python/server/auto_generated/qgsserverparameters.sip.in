@@ -170,7 +170,7 @@ Raises an exception in case of an invalid parameters.
 
 :param msg: The message describing the exception
 
-:raises QgsBadRequestException: Invalid parameter exception
+:raises :: py:class:`QgsBadRequestException` Invalid parameter exception
 %End
 
     QVariant::Type mType;
@@ -218,7 +218,7 @@ Constructor for QgsServerParameter.
 %Docstring
 Raises an error in case of an invalid conversion.
 
-:raises QgsBadRequestException: Invalid parameter exception
+:raises :: py:class:`QgsBadRequestException` Invalid parameter exception
 %End
 
     static QString name( const QgsServerParameter::Name name );
@@ -238,7 +238,7 @@ invalid string).
 class QgsServerParameters
 {
 %Docstring
-QgsServerParameters provides an interface to retrieve and manipulate global parameters received from the client.
+:py:class:`QgsServerParameters` provides an interface to retrieve and manipulate global parameters received from the client.
 
 .. versionadded:: 3.4
 %End

@@ -29,7 +29,7 @@ expression). But setting this up on an existing layer requires either to
 add new columns to the source layer, while it is not always possible or
 desirable.
 
-This QgsAuxiliaryLayer provides the solution to this limitation. Actually
+This :py:class:`QgsAuxiliaryLayer` provides the solution to this limitation. Actually
 it's an editable join to the original vector layer with some
 synchronisation mechanisms activated such as "Upsert On Edit" or "Delete
 Cascade". Thus, auxiliary fields are editable even if the

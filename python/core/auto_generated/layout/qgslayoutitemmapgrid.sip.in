@@ -14,7 +14,7 @@ class QgsLayoutItemMapGridStack : QgsLayoutItemMapItemStack
 {
 %Docstring
 A collection of grids which is drawn above the map content in a
-QgsLayoutItemMap. The grid stack controls which grids are drawn and the
+:py:class:`QgsLayoutItemMap`. The grid stack controls which grids are drawn and the
 order they are drawn in.
 
 .. seealso:: :py:class:`QgsLayoutItemMapGrid`
@@ -41,7 +41,7 @@ above any existing map grids already present in the stack.
 .. note::
 
    After adding a grid to the stack, :py:func:`~QgsLayoutItemMapGridStack.updateBoundingRect` and :py:func:`~QgsLayoutItemMapGridStack.update`
-   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the :py:class:`QgsLayoutItemMap` to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeGrid`
 %End
@@ -53,7 +53,7 @@ Removes a grid with matching ``gridId`` from the stack and deletes the correspon
 .. note::
 
    After removing a grid from the stack, :py:func:`~QgsLayoutItemMapGridStack.updateBoundingRect` and :py:func:`~QgsLayoutItemMapGridStack.update`
-   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the :py:class:`QgsLayoutItemMap` to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addGrid`
 %End
@@ -65,7 +65,7 @@ Moves a grid with matching ``gridId`` up the stack, causing it to be rendered ab
 .. note::
 
    After moving a grid within the stack, :py:func:`~QgsLayoutItemMapGridStack.update` should be
-   called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
+   called for the :py:class:`QgsLayoutItemMap` to redraw the map with the new grid stack order.
 
 .. seealso:: :py:func:`moveGridDown`
 %End
@@ -77,7 +77,7 @@ Moves a grid with matching ``gridId`` down the stack, causing it to be rendered 
 .. note::
 
    After moving a grid within the stack, :py:func:`~QgsLayoutItemMapGridStack.update` should be
-   called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
+   called for the :py:class:`QgsLayoutItemMap` to redraw the map with the new grid stack order.
 
 .. seealso:: :py:func:`moveGridUp`
 %End
@@ -96,7 +96,7 @@ Returns a reference to a grid at the specified ``index`` within the stack.
 
     QList< QgsLayoutItemMapGrid * > asList() const;
 %Docstring
-Returns a list of QgsLayoutItemMapGrids contained by the stack.
+Returns a list of :py:class:`QgsLayoutItemMapGrids` contained by the stack.
 %End
 
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
@@ -105,7 +105,7 @@ Returns a list of QgsLayoutItemMapGrids contained by the stack.
     double maxGridExtension() const;
 %Docstring
 Calculates the maximum distance grids within the stack extend
-beyond the QgsLayoutItemMap's item rect.
+beyond the :py:class:`QgsLayoutItemMap`'s item rect.
 
 .. seealso:: :py:func:`calculateMaxGridExtension`
 %End
@@ -113,7 +113,7 @@ beyond the QgsLayoutItemMap's item rect.
     void calculateMaxGridExtension( double &top, double &right, double &bottom, double &left ) const;
 %Docstring
 Calculates the maximum distance grids within the stack extend beyond the
-QgsLayoutItemMap's item rect. This method calculates the distance for each side of the
+:py:class:`QgsLayoutItemMap`'s item rect. This method calculates the distance for each side of the
 map item separately.
 
 .. seealso:: :py:func:`maxGridExtension`
@@ -238,7 +238,7 @@ An individual grid which is drawn above the map content in a
 Constructor for QgsLayoutItemMapGrid.
 
 :param name: friendly display name for grid
-:param map: QgsLayoutItemMap the grid is attached to
+:param map: :py:class:`QgsLayoutItemMap` the grid is attached to
 %End
 
     virtual void draw( QPainter *painter );
@@ -281,14 +281,14 @@ Retrieves the blending mode used for drawing the grid.
 
     double maxExtension() const;
 %Docstring
-Calculates the maximum distance the grid extends beyond the QgsLayoutItemMap's
+Calculates the maximum distance the grid extends beyond the :py:class:`QgsLayoutItemMap`'s
 item rect (in layout units).
 %End
 
     void calculateMaxExtension( double &top, double &right, double &bottom, double &left ) const;
 %Docstring
 Calculates the maximum distance the grid extends beyond the
-QgsLayoutItemMap's item rect. This method calculates the distance for each side of the
+:py:class:`QgsLayoutItemMap`'s item rect. This method calculates the distance for each side of the
 map item separately.
 
 .. seealso:: :py:func:`maxExtension`
@@ -600,7 +600,7 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setFont().
 .. seealso:: :py:func:`annotationFont`
 
 .. deprecated::
-   use setAnnotationTextFormat() instead
+   use :py:func:`~QgsLayoutItemMapGrid.setAnnotationTextFormat` instead
 %End
 
  QFont annotationFont() const /Deprecated/;
@@ -611,7 +611,7 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.font().
 .. seealso:: :py:func:`setAnnotationFont`
 
 .. deprecated::
-   use annotationTextFormat() instead
+   use :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat` instead
 %End
 
  void setAnnotationFontColor( const QColor &color ) /Deprecated/;
@@ -622,7 +622,7 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setColor() an
 .. seealso:: :py:func:`annotationFontColor`
 
 .. deprecated::
-   use setAnnotationTextFormat() instead
+   use :py:func:`~QgsLayoutItemMapGrid.setAnnotationTextFormat` instead
 %End
 
  QColor annotationFontColor() const /Deprecated/;
@@ -633,7 +633,7 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.color() and :
 .. seealso:: :py:func:`setAnnotationFontColor`
 
 .. deprecated::
-   use annotationTextFormat() instead
+   use :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat` instead
 %End
 
     void setAnnotationPrecision( const int precision );

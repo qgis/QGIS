@@ -29,7 +29,7 @@ QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
 
 :param canvas: the map canvas
 :param cadDockWidget: widget to setup advanced digitizing parameters
-:param mode: type of geometry to capture (point/line/polygon), QgsMapToolCapture.CaptureNone to autodetect geometry
+:param mode: type of geometry to capture (point/line/polygon), :py:class:`QgsMapToolCapture`.CaptureNone to autodetect geometry
 %End
 
     virtual QgsMapToolCapture::Capabilities capabilities() const;

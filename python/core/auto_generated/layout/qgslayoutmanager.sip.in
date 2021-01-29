@@ -15,11 +15,11 @@ class QgsLayoutManager : QObject
 
 Manages storage of a set of layouts.
 
-QgsLayoutManager handles the storage, serializing and deserializing
+:py:class:`QgsLayoutManager` handles the storage, serializing and deserializing
 of print layouts and reports. Usually this class is not constructed directly, but
-rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`.
+rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.layoutManager()`.
 
-QgsLayoutManager retains ownership of all the layouts contained
+:py:class:`QgsLayoutManager` retains ownership of all the layouts contained
 in the manager.
 
 .. versionadded:: 3.0

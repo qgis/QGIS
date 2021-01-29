@@ -14,9 +14,9 @@
 class QgsLegendSettings
 {
 %Docstring
-The QgsLegendSettings class stores the appearance and layout settings
-for legend drawing with QgsLegendRenderer. The content of the legend is given
-in QgsLegendModel class.
+The :py:class:`QgsLegendSettings` class stores the appearance and layout settings
+for legend drawing with :py:class:`QgsLegendRenderer`. The content of the legend is given
+in :py:class:`QgsLegendModel` class.
 
 .. versionadded:: 2.6
 %End
