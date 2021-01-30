@@ -34,65 +34,91 @@
      <property name="checkable">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,2">
+     <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,0">
       <property name="leftMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
        <number>3</number>
       </property>
-      <item row="3" column="0" colspan="2">
+      <item row="1" column="0">
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelPointBudget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Point budget percentage</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>2.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QDoubleSpinBox" name="mPointBudgetPercentageSpinBox">
+          <property name="maximum">
+           <double>100.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblTransparency_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Point size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSlider" name="mPointBudgetPercentageSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Maximum number of rendered points:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QSpinBox" name="mRenderedPointsSpinBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="mShowBoundingBoxesCheckBox">
         <property name="text">
          <string>Show bounding boxes</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblTransparency_4">
-        <property name="text">
-         <string>Point size</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
-        <property name="maximum">
-         <double>10.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>2.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelMaximumScreenSpaceError">
-        <property name="text">
-         <string>Maximum screen space error</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsDoubleSpinBox" name="mMaxScreenErrorSpinBox">
-        <property name="maximum">
-         <double>100000.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelPointBudget">
-        <property name="text">
-         <string>Point budget</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="mPointBudgetSpinBox">
-        <property name="maximum">
-         <number>999999999</number>
         </property>
        </widget>
       </item>
@@ -102,7 +128,7 @@
    <item row="2" column="0" colspan="3">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="noRendererPage"/>
      <widget class="QWidget" name="singleColorRendererPage">

@@ -72,11 +72,12 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
   return sse;
 }
 
-QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mTau( tau )
   , mChunkLoaderFactory( loaderFactory )
   , mOwnsFactory( ownsFactory )
+  , mPrimitivesBudget( primitiveBudget )
 {
   mRootNode = loaderFactory->createRootNode();
   mChunkLoaderQueue = new QgsChunkList;
@@ -256,31 +257,26 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
   int renderedCount = 0;
   std::priority_queue<slot, std::vector<slot>, decltype( cmp_funct )> pq( cmp_funct );
   pq.push( std::make_pair( root, screenSpaceError( root, state ) ) );
-  int nodes_count = 0;
   while ( !pq.empty() )
   {
     slot s = pq.top();
     pq.pop();
     QgsChunkNode *node = s.first;
-    QgsChunkLoader *nodeLoader = mChunkLoaderFactory->createChunkLoader( node );
     if ( Qgs3DUtils::isCullable( node->bbox(), state.viewProjectionMatrix ) )
     {
       ++mFrustumCulled;
       continue;
     }
-
-    if ( renderedCount + nodeLoader->primitiveCount() >  nodeLoader->primitiveBudget() )
-      continue;
+    // use this instead of renderedCount + mChunkLoaderFactory->primitivesCount( node ) > mPrimitivesBudget to avoid
+    // showing nothing when the user supplies a small value
+    if ( renderedCount > mPrimitivesBudget )
+      break;
 
     QgsChunkNode *const *children = node->children();
     for ( int i = 0; i < node->childCount(); ++i )
-    {
       pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
-    }
-    renderedCount += nodeLoader->primitiveCount();
-    nodes_count++;
+    renderedCount += mChunkLoaderFactory->primitivesCount( node );
     nodes.push_back( node );
-    continue;
   }
 
   for ( QgsChunkNode *node : nodes )
@@ -316,7 +312,6 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     else if ( node->allChildChunksResident( mCurrentTime ) )
     {
       // error is not acceptable and children are ready to be used - recursive descent
-
       if ( mAdditiveStrategy )
       {
         // With additive strategy enabled, also all parent nodes are added to active nodes.
@@ -330,10 +325,11 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
       // error is not acceptable but children are not ready either - still use parent but request children
       mActiveNodes << node;
 
-      QVector<std::pair<QgsChunkNode *, float>> childrenVector;
       QgsChunkNode *const *children = node->children();
+      // load the closest nodes to the camera first
+      QVector<std::pair<QgsChunkNode *, float>> childrenVector;
       for ( int i = 0; i < node->childCount(); ++i )
-        childrenVector.push_back( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
+        childrenVector.push_back( std::make_pair( children[i], children[i]->bbox().distanceFromPoint( state.cameraPos ) ) );
       std::sort( childrenVector.begin(), childrenVector.end(), [&]( std::pair<QgsChunkNode *, float> n1, std::pair<QgsChunkNode *, float> n2 )
       {
         return n1.second > n2.second;
