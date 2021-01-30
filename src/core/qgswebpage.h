@@ -125,6 +125,7 @@ class CORE_EXPORT QWebPage : public QObject
       , mSettings( new QWebSettings() )
       , mFrame( new QWebFrame() )
     {
+      connect( mFrame, &QWebFrame::loadFinished, this, &QWebPage::loadFinished );
     }
 
     ~QWebPage()
