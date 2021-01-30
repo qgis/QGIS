@@ -66,7 +66,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     virtual QgsChunkNode *createRootNode() const override;
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
-    virtual int primitivesCount( QgsChunkNode *node ) override;
+    virtual int primitivesCount( QgsChunkNode *node ) const override;
     const Qgs3DMapSettings &mMap;
     QgsPointCloudIndex *mPointCloudIndex;
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
@@ -95,7 +95,7 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol, double zValueScale, double zValueOffset, int pointBudget, int count );
     ~QgsPointCloudLayerChunkLoader() override;
 
-    int primitiveCount() override;
+    int primitiveCount() const override;
 
     virtual void cancel() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;

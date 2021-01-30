@@ -56,7 +56,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
      */
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) = 0;
 
-    virtual int primitiveCount() { return 0; }
+    virtual int primitiveCount() const { return 0; }
     virtual int primitiveBudget() const { return mPrimitiveBudget; }
   protected:
     int mPrimitiveBudget = 1000000;
@@ -78,7 +78,11 @@ class QgsChunkLoaderFactory  : public QObject
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const = 0;
 
     //! Returns the primitives count for the chunk \a node
-    virtual int primitivesCount( QgsChunkNode *node ) { return 0; }
+    virtual int primitivesCount( QgsChunkNode *node ) const
+    {
+      Q_UNUSED(node);
+      return 0;
+    }
 
     //! Creates root node of the hierarchy. Ownership of the returned object is passed to the caller.
     virtual QgsChunkNode *createRootNode() const = 0;

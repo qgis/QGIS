@@ -126,7 +126,7 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
   return entity;
 }
 
-int QgsPointCloudLayerChunkLoader::primitiveCount()
+int QgsPointCloudLayerChunkLoader::primitiveCount() const
 {
   return mPointsCount;
 }
@@ -154,7 +154,7 @@ QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChun
   return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset, mPointBudget, pointCount );
 }
 
-int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node )
+int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) const
 {
   QgsChunkNodeId id = node->tileId();
   IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
