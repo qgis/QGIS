@@ -80,7 +80,7 @@ class QgsChunkLoaderFactory  : public QObject
     //! Returns the primitives count for the chunk \a node
     virtual int primitivesCount( QgsChunkNode *node ) const
     {
-      Q_UNUSED(node);
+      Q_UNUSED( node );
       return 0;
     }
 
