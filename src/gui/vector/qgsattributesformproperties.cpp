@@ -289,6 +289,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   FieldConfig cfg;
 
+  cfg.mComment = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).comment();
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
   cfg.mAlias = mAttributeTypeDialog->alias();
