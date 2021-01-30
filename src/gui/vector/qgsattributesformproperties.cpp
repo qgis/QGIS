@@ -714,7 +714,8 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
   }
 
-  widgetDef->setShowLabel( itemData.showLabel() );
+  if ( widgetDef )
+    widgetDef->setShowLabel( itemData.showLabel() );
 
   return widgetDef;
 }
@@ -854,7 +855,8 @@ void QgsAttributesFormProperties::apply()
   {
     QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
     QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( tabItem, nullptr, false ) };
-    editFormConfig.addTab( editorElement );
+    if ( editorElement )
+      editFormConfig.addTab( editorElement );
   }
 
   editFormConfig.setUiForm( mEditFormLineEdit->text() );
