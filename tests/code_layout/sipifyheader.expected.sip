@@ -51,7 +51,7 @@ class QgsSipifyHeader : QtClassQVariantBase
 %Docstring
 Documentation goes here
 
-Here's some comment mentioning another class QgsAutoAwesomemater.makeAwesome.
+Here's some comment mentioning another class :py:class:`QgsAutoAwesomemater`.makeAwesome.
 
 .. note::
 
@@ -165,7 +165,7 @@ is not very interesting!
 some brief
 My long doc ``string``
 is not very interesting!
-Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome.
+Here's some comment mentioning another class :py:class:`QgsAutoAwesomemater`.makeLessAwesome.
 %End
 
     MyPointer *pointerReturnValue();
