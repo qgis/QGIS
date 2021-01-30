@@ -31,7 +31,7 @@
 
 namespace
 {
-  QgsRectangle clampBBOX( QgsRectangle bbox, const QgsCoordinateReferenceSystem &crs, double allowedExcessFactor )
+  QgsRectangle clampBBOX( const QgsRectangle &bbox, const QgsCoordinateReferenceSystem &crs, double allowedExcessFactor )
   {
     // In geographic CRS', HANA will reject any points outside the "normalized"
     // range, which is (in radian) [-PI;PI] for longitude and [-PI/2;PI/2] for
@@ -179,6 +179,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
       case QgsHanaPrimaryKeyType::PktFidMap:
       {
         QVariantList pkValues;
+        pkValues.reserve( mSource->mPrimaryKeyAttrs.size() );
         for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
         {
           QVariant v = mResultSet->getValue( paramIndex );
@@ -200,7 +201,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   // Read attributes
   if ( mHasAttributes )
   {
-    for ( int idx : mAttributesToFetch )
+    for ( int idx : qgis::as_const( mAttributesToFetch ) )
     {
       feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
       ++paramIndex;
@@ -342,7 +343,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
   }
 
-  for ( int idx : attrIds )
+  for ( int idx : qgis::as_const( attrIds ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;

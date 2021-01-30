@@ -70,7 +70,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
 
     /**
-     * Set the relation(s) for this widget
+     * Sets the relation(s) for this widget
      * If only one relation is set, it will act as a simple 1:N relation widget
      * If both relations are set, it will act as an N:M relation widget
      * inserting and deleting entries on the intermediate table as required.
@@ -79,6 +79,12 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * \param nmrelation  Optional reference from the referencing table to a 3rd N:M table
      */
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
+
+    /**
+     * Returns the relation
+     * \since QGIS 3.18
+     */
+    QgsRelation relation() const {return mRelation;}
 
     /**
      * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
@@ -238,13 +244,45 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      */
     void unlinkFeatures( const QgsFeatureIds &fids );
 
-  private:
-    virtual void updateUi() {};
-    virtual void setTitle( const QString &title ) { Q_UNUSED( title ); };
-    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature ) { Q_UNUSED( newRelation ); Q_UNUSED( newFeature ); };
-    virtual void afterSetRelationFeature() {};
-    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation ) { Q_UNUSED( newRelation ); Q_UNUSED( newNmRelation ); };
-    virtual void afterSetRelations() {};
+    // Following virtual methods need to be protected so they can be overridden in bindings
+
+    /**
+     * A hook called every time the state of the relation editor widget has changed via calling its `set*` methods or slots,
+     * e.g. changed relation, added feature, etc.
+     * Should be used to refresh the UI regarding the new data.
+     * Check QgsRealationEditorWidget as an example.
+     */
+    virtual void updateUi();
+
+    /**
+     * Sets the title of the widget, if it is wrapped within a QgsCollapsibleGroupBox
+     * Check QgsRealationEditorWidget as an example.
+     */
+    virtual void setTitle( const QString &title );
+
+    /**
+     * A hook called right before setRelationFeature() is executed. Used to update the UI once setting the relation feature is done.
+     * Check QgsRealationEditorWidget as an example.
+     */
+    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
+
+    /**
+     * A hook called right after setRelationFeature() is executed, but before updateUi() is called. Used to update the UI once setting the relation feature is done.
+     * Check QgsRealationEditorWidget as an example.
+     */
+    virtual void afterSetRelationFeature();
+
+    /**
+     * A hook called right before setRelations() is executed. Used to manipulate UI once setting the relations is done.
+     * Check QgsRealationEditorWidget as an example.
+     */
+    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation );
+
+    /**
+     * A hook called right after setRelations() is executed, but before updateUi() is called. Used to update the UI once setting the relations is done.
+     * Check QgsRealationEditorWidget as an example.
+     */
+    virtual void afterSetRelations();
 };
 
 

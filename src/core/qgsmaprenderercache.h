@@ -75,16 +75,37 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     bool updateParameters( const QgsRectangle &extent, const QgsMapToPixel &mtp );
 
     /**
-     * Set the cached \a image for a particular \a cacheKey. The \a cacheKey usually
-     * matches the QgsMapLayer::id() which the image is a render of.
+     * Set the cached \a image for a particular \a cacheKey, using the current cache parameters.
+     *
+     * The \a cacheKey usually matches the QgsMapLayer::id() which the image is a render of.
+     *
      * A list of \a dependentLayers should be passed containing all layer
      * on which this cache image is dependent. If any of these layers triggers a
      * repaint then the cache image will be cleared.
+     *
+     * \see setCacheImageWithParameters()
      * \see cacheImage()
      */
-    void setCacheImage( const QString &cacheKey,
-                        const QImage &image,
-                        const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+    void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+
+    /**
+     * Set the cached \a image for a particular \a cacheKey, using a specific \a extent and \a mapToPixel
+     * (which may differ from the current cache parameters).
+     *
+     * The \a cacheKey usually matches the QgsMapLayer::id() which the image is a render of.
+     *
+     * A list of \a dependentLayers should be passed containing all layer
+     * on which this cache image is dependent. If any of these layers triggers a
+     * repaint then the cache image will be cleared.
+     *
+     * \see cacheImage()
+     * \since QGIS 3.18
+     */
+    void setCacheImageWithParameters( const QString &cacheKey,
+                                      const QImage &image,
+                                      const QgsRectangle &extent,
+                                      const QgsMapToPixel &mapToPixel,
+                                      const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
     /**
      * Returns TRUE if the cache contains an image with the specified \a cacheKey
@@ -99,11 +120,16 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * Returns TRUE if the cache contains an image with the specified \a cacheKey
      * with any cache's parameters (extent and scale)
      *
+     * The optional \a minimumScaleThreshold and \a maximumScaleThreshold arguments can be used to
+     * specify a range of acceptable cached scales vs current cache scale parameter. E.g. if the
+     * \a minimumScaleThreshold is 0.5 and \a maximumScaleThreshold is 2.0, then only cached images
+     * with a scale between 0.5 * current cache scale and 2.0 * current cache scale will be considered.
+     *
      * \see transformedCacheImage()
      *
      * \since QGIS 3.18
      */
-    bool hasAnyCacheImage( const QString &cacheKey ) const;
+    bool hasAnyCacheImage( const QString &cacheKey, double minimumScaleThreshold = 0, double maximumScaleThreshold = 0 ) const;
 
     /**
      * Returns the cached image for the specified \a cacheKey. The \a cacheKey usually

@@ -129,8 +129,13 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
     }
   }
   if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+  {
     query.addQueryItem( QStringLiteral( "TYPENAMES" ),  typenames );
-  query.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
+  }
+  else
+  {
+    query.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
+  }
 
   if ( forHits )
   {

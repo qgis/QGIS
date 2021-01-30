@@ -40,8 +40,7 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  const auto constMConnectedLayers = mConnectedLayers;
-  for ( const QgsWeakMapLayerPointer &layer : constMConnectedLayers )
+  for ( const QgsWeakMapLayerPointer &layer : qgis::as_const( mConnectedLayers ) )
   {
     if ( layer.data() )
     {
@@ -56,9 +55,8 @@ void QgsMapRendererCache::clearInternal()
 void QgsMapRendererCache::dropUnusedConnections()
 {
   QSet< QgsWeakMapLayerPointer > stillDepends = dependentLayers();
-  QSet< QgsWeakMapLayerPointer > disconnects = mConnectedLayers.subtract( stillDepends );
-  const auto constDisconnects = disconnects;
-  for ( const QgsWeakMapLayerPointer &layer : constDisconnects )
+  const QSet< QgsWeakMapLayerPointer > disconnects = mConnectedLayers.subtract( stillDepends );
+  for ( const QgsWeakMapLayerPointer &layer : disconnects )
   {
     if ( layer.data() )
     {
@@ -127,14 +125,37 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
 {
   QMutexLocker lock( &mMutex );
 
+  QgsRectangle extent = mExtent;
+  QgsMapToPixel mapToPixel = mMtp;
+
+  lock.unlock();
+  setCacheImageWithParameters( cacheKey, image, extent, mapToPixel, dependentLayers );
+}
+
+void QgsMapRendererCache::setCacheImageWithParameters( const QString &cacheKey, const QImage &image, const QgsRectangle &extent, const QgsMapToPixel &mapToPixel, const QList<QgsMapLayer *> &dependentLayers )
+{
+  QMutexLocker lock( &mMutex );
+
+  if ( extent != mExtent || mapToPixel != mMtp )
+  {
+    auto it = mCachedImages.constFind( cacheKey );
+    if ( it != mCachedImages.constEnd() )
+    {
+      // if the specified extent or map to pixel differs from the current cache parameters, AND
+      // there's an existing cached image with parameters which DO match the current cache parameters,
+      // then we leave the existing image intact and discard the one with non-matching parameters
+      if ( it->cachedExtent == mExtent && it->cachedMtp == mMtp )
+        return;
+    }
+  }
+
   CacheParameters params;
   params.cachedImage = image;
-  params.cachedExtent = mExtent;
-  params.cachedMtp = mMtp;
+  params.cachedExtent = extent;
+  params.cachedMtp = mapToPixel;
 
   // connect to the layer to listen to layer's repaintRequested() signals
-  const auto constDependentLayers = dependentLayers;
-  for ( QgsMapLayer *layer : constDependentLayers )
+  for ( QgsMapLayer *layer : dependentLayers )
   {
     if ( layer )
     {
@@ -154,9 +175,11 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
 bool QgsMapRendererCache::hasCacheImage( const QString &cacheKey ) const
 {
   QMutexLocker lock( &mMutex );
-  if ( mCachedImages.contains( cacheKey ) )
+
+  auto it = mCachedImages.constFind( cacheKey );
+  if ( it != mCachedImages.constEnd() )
   {
-    const CacheParameters params = mCachedImages[cacheKey];
+    const CacheParameters &params = it.value();
     return ( params.cachedExtent == mExtent &&
              params.cachedMtp.transform() == mMtp.transform() );
   }
@@ -166,9 +189,25 @@ bool QgsMapRendererCache::hasCacheImage( const QString &cacheKey ) const
   }
 }
 
-bool QgsMapRendererCache::hasAnyCacheImage( const QString &cacheKey ) const
+bool QgsMapRendererCache::hasAnyCacheImage( const QString &cacheKey, double minimumScaleThreshold, double maximumScaleThreshold ) const
 {
-  return mCachedImages.contains( cacheKey );
+  auto it = mCachedImages.constFind( cacheKey );
+  if ( it != mCachedImages.constEnd() )
+  {
+    const CacheParameters &params = it.value();
+
+    // check if cached image is outside desired scale range
+    if ( minimumScaleThreshold != 0 && mMtp.mapUnitsPerPixel() < params.cachedMtp.mapUnitsPerPixel() * minimumScaleThreshold )
+      return false;
+    if ( maximumScaleThreshold != 0 && mMtp.mapUnitsPerPixel() > params.cachedMtp.mapUnitsPerPixel() * maximumScaleThreshold )
+      return false;
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 QImage QgsMapRendererCache::cacheImage( const QString &cacheKey ) const
@@ -226,9 +265,10 @@ QImage QgsMapRendererCache::transformedCacheImage( const QString &cacheKey, cons
 
 QList< QgsMapLayer * > QgsMapRendererCache::dependentLayers( const QString &cacheKey ) const
 {
-  if ( mCachedImages.contains( cacheKey ) )
+  auto it = mCachedImages.constFind( cacheKey );
+  if ( it != mCachedImages.constEnd() )
   {
-    return _qgis_listQPointerToRaw( mCachedImages.value( cacheKey ).dependentLayers );
+    return _qgis_listQPointerToRaw( ( *it ).dependentLayers );
   }
   return QList< QgsMapLayer * >();
 }

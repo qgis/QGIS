@@ -2273,6 +2273,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         _test(vl, [1, 3])
 
     def testValidLayerDiscoverRelationsNone(self):
+        """
+        Test checks that discover relation feature can be used on a layer that has no relation.
+        """
         vl = QgsVectorLayer(
             self.dbconn +
             ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
@@ -2281,10 +2284,42 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
 
     def testInvalidLayerDiscoverRelations(self):
+        """
+        Test that discover relations feature can be used on invalid layer.
+        """
         vl = QgsVectorLayer('{} table="qgis_test"."invalid_layer" sql='.format(self.dbconn), "invalid_layer",
                             "postgres")
         self.assertFalse(vl.isValid())
         self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
+
+    def testValidLayerDiscoverRelations(self):
+        """
+        Test implicit relations that can be discovers between tables, based on declared foreign keys.
+        The test also checks that two distinct relations can be discovered when two foreign keys are declared (see #41138).
+        """
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'pk\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referencing_layer"',
+            'referencing_layer', 'postgres')
+        vls = [
+            QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'pk_ref_1\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referenced_layer_1"',
+                'referenced_layer_1', 'postgres'),
+            QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'pk_ref_2\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referenced_layer_2"',
+                'referenced_layer_2', 'postgres'),
+            vl
+        ]
+
+        for lyr in vls:
+            self.assertTrue(lyr.isValid())
+            QgsProject.instance().addMapLayer(lyr)
+        relations = vl.dataProvider().discoverRelations(vl, vls)
+        self.assertEqual(len(relations), 2)
+        for i, r in enumerate(relations):
+            self.assertEqual(r.referencedLayer(), vls[i])
 
     def testCheckTidPkOnViews(self):
         """Test vector layer based on a view with `ctid` as a key"""

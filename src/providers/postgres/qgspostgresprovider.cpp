@@ -4989,6 +4989,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
   }
 
   int nbFound = 0;
+  QList<QString> refTableFound;
   for ( int row = 0; row < sqlResult.PQntuples(); ++row )
   {
     const QString name = sqlResult.PQgetvalue( row, 0 );
@@ -5006,7 +5007,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     }
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     const QString position = sqlResult.PQgetvalue( row, 5 );
-    if ( ( position == QLatin1String( "1" ) ) || ( nbFound == 0 ) )
+    if ( ( position == QLatin1String( "1" ) ) || ( nbFound == 0 ) || ( !refTableFound.contains( refTable ) ) )
     {
       // first reference field => try to find if we have layers for the referenced table
       const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
@@ -5023,6 +5024,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
         {
           result.append( relation );
           ++nbFound;
+          refTableFound.append( refTable );
         }
         else
         {
@@ -5033,9 +5035,16 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     else
     {
       // multi reference field => add the field pair to all the referenced layers found
+      const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
       for ( int i = 0; i < nbFound; ++i )
       {
-        result[result.size() - 1 - i].addFieldPair( fkColumn, refColumn );
+        for ( const QgsVectorLayer *foundLayer : foundLayers )
+        {
+          if ( result[result.size() - 1 - i].referencedLayerId() == foundLayer->id() )
+          {
+            result[result.size() - 1 - i].addFieldPair( fkColumn, refColumn );
+          }
+        }
       }
     }
   }

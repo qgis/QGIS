@@ -62,6 +62,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     bool render() override;
     bool forceRasterRender() const override;
+    void setLayerRenderingTimeHint( int time ) override;
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels );
@@ -79,6 +80,10 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
     QList< QgsMapClippingRegion > mClippingRegions;
+
+    int mRenderTimeHint = 0;
+    bool mBlockRenderUpdates = false;
+    QElapsedTimer mElapsedTimer;
 
 };
 

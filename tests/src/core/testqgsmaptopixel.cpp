@@ -28,6 +28,7 @@ class TestQgsMapToPixel: public QObject
     void rotation();
     void getters();
     void fromScale();
+    void equality();
     void toMapCoordinates();
 };
 
@@ -104,6 +105,36 @@ void TestQgsMapToPixel::fromScale()
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.352778, 0.000001 );
   m2p = QgsMapToPixel::fromScale( 1000, QgsUnitTypes::DistanceKilometers, 96.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.000265, 0.000001 );
+}
+
+void TestQgsMapToPixel::equality()
+{
+  QgsMapToPixel m2p( 1, 5, 6, 10, 100, 90 );
+  QgsMapToPixel m2p2( 1, 5, 6, 10, 100, 90 );
+  QVERIFY( m2p == m2p2 );
+  QVERIFY( !( m2p != m2p2 ) );
+
+  m2p2.setParameters( 1, 5, 6, 10, 100, 91 );
+  QVERIFY( m2p != m2p2 );
+  QVERIFY( !( m2p == m2p2 ) );
+  m2p2.setParameters( 1, 5, 6, 10, 101, 90 );
+  QVERIFY( m2p != m2p2 );
+  QVERIFY( !( m2p == m2p2 ) );
+  m2p2.setParameters( 1, 5, 6, 9, 100, 90 );
+  QVERIFY( m2p != m2p2 );
+  QVERIFY( !( m2p == m2p2 ) );
+  m2p2.setParameters( 1, 5, 4, 10, 100, 90 );
+  QVERIFY( m2p != m2p2 );
+  QVERIFY( !( m2p == m2p2 ) );
+  m2p2.setParameters( 1, 3, 6, 10, 100, 90 );
+  QVERIFY( m2p != m2p2 );
+  QVERIFY( !( m2p == m2p2 ) );
+  m2p2.setParameters( 1.1, 5, 6, 10, 100, 90 );
+  QVERIFY( m2p != m2p2 );
+  QVERIFY( !( m2p == m2p2 ) );
+  m2p2.setParameters( 1, 5, 6, 10, 100, 90 );
+  QVERIFY( m2p == m2p2 );
+  QVERIFY( !( m2p != m2p2 ) );
 }
 
 void TestQgsMapToPixel::toMapCoordinates()

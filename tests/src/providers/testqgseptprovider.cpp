@@ -289,9 +289,9 @@ void TestQgsEptProvider::testIdentify()
     expected[ QStringLiteral( "ScanAngleRank" ) ] = -28;
     expected[ QStringLiteral( "ScanDirectionFlag" ) ] = 1;
     expected[ QStringLiteral( "UserData" ) ] = 17;
-    expected[ QStringLiteral( "X" ) ] = 498062.52000005543232;
-    expected[ QStringLiteral( "Y" ) ] = 7050996.6099999640137;
-    expected[ QStringLiteral( "Z" ) ] = 75.000000044703483582;
+    expected[ QStringLiteral( "X" ) ] = 498062.52;
+    expected[ QStringLiteral( "Y" ) ] = 7050996.61;
+    expected[ QStringLiteral( "Z" ) ] = 75.0;
     QVERIFY( identifiedPoint == expected );
   }
 
@@ -323,12 +323,11 @@ void TestQgsEptProvider::testIdentify()
       point[ QStringLiteral( "ScanAngleRank" ) ] =  "-28" ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
       point[ QStringLiteral( "UserData" ) ] =  "17" ;
-      point[ QStringLiteral( "X" ) ] =  "498066.2699999716" ;
-      point[ QStringLiteral( "Y" ) ] =  "7050995.059999999" ;
-      point[ QStringLiteral( "Z" ) ] =  "74.60000005364418" ;
+      point[ QStringLiteral( "X" ) ] =  "498066.27" ;
+      point[ QStringLiteral( "Y" ) ] =  "7050995.06" ;
+      point[ QStringLiteral( "Z" ) ] =  "74.60" ;
       expected.push_back( point );
     }
-
     QVERIFY( identifiedPoints == expected );
   }
 
@@ -359,9 +358,9 @@ void TestQgsEptProvider::testIdentify()
       point[ QStringLiteral( "ScanAngleRank" ) ] =  "-28" ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
       point[ QStringLiteral( "UserData" ) ] =  "17" ;
-      point[ QStringLiteral( "X" ) ] =  "498063.1400000416" ;
-      point[ QStringLiteral( "Y" ) ] =  "7050996.78999996" ;
-      point[ QStringLiteral( "Z" ) ] =  "74.89000004716218" ;
+      point[ QStringLiteral( "X" ) ] =  "498063.14" ;
+      point[ QStringLiteral( "Y" ) ] =  "7050996.79" ;
+      point[ QStringLiteral( "Z" ) ] =  "74.89" ;
       expected.push_back( point );
     }
     {
@@ -379,9 +378,9 @@ void TestQgsEptProvider::testIdentify()
       point[ QStringLiteral( "ScanAngleRank" ) ] =  "-12" ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
       point[ QStringLiteral( "UserData" ) ] =  "17" ;
-      point[ QStringLiteral( "X" ) ] =  "498063.11000004224" ;
-      point[ QStringLiteral( "Y" ) ] =  "7050996.749999961" ;
-      point[ QStringLiteral( "Z" ) ] =  "74.90000004693866" ;
+      point[ QStringLiteral( "X" ) ] =  "498063.11" ;
+      point[ QStringLiteral( "Y" ) ] =  "7050996.75" ;
+      point[ QStringLiteral( "Z" ) ] =  "74.90" ;
       expected.push_back( point );
     }
 

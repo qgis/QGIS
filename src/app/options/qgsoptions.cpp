@@ -1186,19 +1186,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   factories << &advancedFactory;
   for ( QgsOptionsWidgetFactory *factory : qgis::as_const( factories ) )
   {
-    QListWidgetItem *item = new QListWidgetItem();
-    item->setIcon( factory->icon() );
-    item->setText( factory->title() );
-    item->setToolTip( factory->title() );
-
-    mOptionsListWidget->addItem( item );
-
     QgsOptionsPageWidget *page = factory->createWidget( this );
     if ( !page )
       continue;
 
     mAdditionalOptionWidgets << page;
-    mOptionsStackedWidget->addWidget( page );
+    const QString beforePage = factory->pagePositionHint();
+    if ( beforePage.isEmpty() )
+      addPage( factory->title(), factory->title(), factory->icon(), page );
+    else
+      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
 
     if ( QgsAdvancedSettingsWidget *advancedPage = qobject_cast< QgsAdvancedSettingsWidget * >( page ) )
     {

@@ -19,6 +19,7 @@
 #include "qgscoordinatereferencesystem_p.h"
 
 #include "qgscoordinatereferencesystem_legacy.h"
+#include "qgscoordinatereferencesystemregistry.h"
 #include "qgsreadwritelocker.h"
 
 #include <cmath>
@@ -420,7 +421,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   else
   {
     thread_local const QRegExp re_urn_custom( QStringLiteral( "(user|custom|qgis):(\\d+)" ), Qt::CaseInsensitive );
-    if ( re_urn_custom.exactMatch( wmsCrs ) && createFromSrsId( re_urn.cap( 2 ).toInt() ) )
+    if ( re_urn_custom.exactMatch( wmsCrs ) && createFromSrsId( re_urn_custom.cap( 2 ).toInt() ) )
     {
       locker.changeMode( QgsReadWriteLocker::Write );
       if ( !sDisableOgcCache )
@@ -1521,6 +1522,22 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
 #endif
 }
 
+void QgsCoordinateReferenceSystem::updateDefinition()
+{
+  if ( !d->mIsValid )
+    return;
+
+  if ( d->mSrsId >= USER_CRS_START_ID )
+  {
+    // user CRS, so update to new definition
+    createFromSrsId( d->mSrsId );
+  }
+  else
+  {
+    // nothing to do -- only user CRS definitions can be changed
+  }
+}
+
 void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
 {
   d.detach();
@@ -1942,7 +1959,13 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   if ( !d->mIsValid || !srs.d->mIsValid )
     return false;
 
-  if ( ( !d->mAuthId.isEmpty() || !srs.d->mAuthId.isEmpty() ) )
+  const bool isUser = d->mSrsId >= USER_CRS_START_ID;
+  const bool otherIsUser = srs.d->mSrsId >= USER_CRS_START_ID;
+  if ( isUser != otherIsUser )
+    return false;
+
+  // we can't directly compare authid for user crses -- the actual definition of these may have changed
+  if ( !isUser && ( !d->mAuthId.isEmpty() || !srs.d->mAuthId.isEmpty() ) )
     return d->mAuthId == srs.d->mAuthId;
 
   return toWkt( WKT_PREFERRED ) == srs.toWkt( WKT_PREFERRED );
@@ -2294,84 +2317,9 @@ QString QgsCoordinateReferenceSystem::validationHint()
   return mValidationHint;
 }
 
-/// Copied from QgsCustomProjectionDialog ///
-/// Please refactor into SQL handler !!!  ///
-
 long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Format nativeFormat )
 {
-  if ( !d->mIsValid )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Can't save an invalid CRS!" ), 4 );
-    return -1;
-  }
-
-  QString mySql;
-
-  QString proj4String = d->mProj4;
-  if ( proj4String.isEmpty() )
-  {
-    proj4String = toProj();
-  }
-  QString wktString = toWkt( WKT_PREFERRED );
-
-  // ellipsoid acroynym column is incorrectly marked as not null in many crs database instances,
-  // hack around this by using an empty string instead
-  const QString quotedEllipsoidString = ellipsoidAcronym().isNull() ? QStringLiteral( "''" ) : QgsSqliteUtils::quotedString( ellipsoidAcronym() );
-
-  //if this is the first record we need to ensure that its srs_id is 10000. For
-  //any rec after that sqlite3 will take care of the autonumbering
-  //this was done to support sqlite 3.0 as it does not yet support
-  //the autoinc related system tables.
-  if ( getRecordCount() == 0 )
-  {
-    mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
-            + QString::number( USER_CRS_START_ID )
-            + ',' + QgsSqliteUtils::quotedString( name )
-            + ',' + ( !d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( d->mProjectionAcronym ) : QStringLiteral( "''" ) )
-            + ',' + quotedEllipsoidString
-            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : QStringLiteral( "''" ) )
-            + ",0,"  // <-- is_geo shamelessly hard coded for now
-            + ( nativeFormat == FormatWkt ? QgsSqliteUtils::quotedString( wktString ) : QStringLiteral( "''" ) )
-            + ')';
-  }
-  else
-  {
-    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
-            + QgsSqliteUtils::quotedString( name )
-            + ',' + ( !d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( d->mProjectionAcronym ) : QStringLiteral( "''" ) )
-            + ',' + quotedEllipsoidString
-            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : QStringLiteral( "''" ) )
-            + ",0,"  // <-- is_geo shamelessly hard coded for now
-            + ( nativeFormat == FormatWkt ? QgsSqliteUtils::quotedString( wktString ) : QStringLiteral( "''" ) )
-            + ')';
-  }
-  sqlite3_database_unique_ptr database;
-  sqlite3_statement_unique_ptr statement;
-  //check the db is available
-  int myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QStringLiteral( "Can't open or create database %1: %2" )
-                 .arg( QgsApplication::qgisUserDatabaseFilePath(),
-                       database.errorMessage() ) );
-    return false;
-  }
-  statement = database.prepare( mySql, myResult );
-
-  qint64 returnId = -1;
-  if ( myResult == SQLITE_OK && statement.step() == SQLITE_DONE )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj() ), QObject::tr( "CRS" ) );
-
-    returnId = sqlite3_last_insert_rowid( database.get() );
-    d->mSrsId = returnId;
-    if ( authid().isEmpty() )
-      d->mAuthId = QStringLiteral( "USER:%1" ).arg( returnId );
-    d->mDescription = name;
-  }
-
-  invalidateCache();
-  return returnId;
+  return QgsApplication::coordinateReferenceSystemRegistry()->addUserCrs( *this, name, nativeFormat );
 }
 
 long QgsCoordinateReferenceSystem::getRecordCount()

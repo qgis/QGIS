@@ -22,7 +22,10 @@
 #define QGSRUNPROCESS_H
 
 #include <QObject>
+#if QT_CONFIG(process)
 #include <QProcess>
+#endif
+
 #include <QThread>
 
 #include "qgis_core.h"
@@ -87,6 +90,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
 #endif // !(QT_CONFIG(process)
 };
 
+#if QT_CONFIG(process)
 
 /**
  * A thread safe class for performing blocking (sync) execution of external processes.
@@ -94,6 +98,9 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
  * This class should be used whenever a blocking process run is required. Unlike implementations
  * which rely on QApplication::processEvents() or creation of a QEventLoop, this class is completely
  * thread safe and can be used on either the main thread or background threads without issue.
+ *
+ * Not available on some platforms (e.g. iOS)
+ * https://lists.qt-project.org/pipermail/development/2015-July/022205.html
  *
  * \ingroup core
  * \since QGIS 3.18
@@ -185,9 +192,9 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
     std::function< void( const QByteArray & ) > mStderrHandler;
 
     QProcess::ExitStatus mExitStatus = QProcess::NormalExit;
-
 };
 
+#endif // QT_CONFIG(process)
 
 ///@cond PRIVATE
 #ifndef SIP_RUN

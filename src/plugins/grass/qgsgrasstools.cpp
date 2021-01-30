@@ -430,7 +430,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
             myData.setIcon( pixmap );
             myData.setCheckable( false );
             myData.setRenderAsWidget( false );
-            QVariant myVariant = qVariantFromValue( myData );
+            QVariant myVariant = QVariant::fromValue( myData );
             listItem->setData( myVariant, Qt::UserRole );
             modulesListModel->appendRow( listItem );
           }

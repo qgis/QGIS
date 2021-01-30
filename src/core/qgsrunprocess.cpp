@@ -257,6 +257,7 @@ QStringList QgsRunProcess::splitCommand( const QString & )
 // QgsBlockingProcess
 //
 
+#if QT_CONFIG(process)
 QgsBlockingProcess::QgsBlockingProcess( const QString &process, const QStringList &arguments )
   : QObject()
   , mProcess( process )
@@ -345,4 +346,4 @@ QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
 {
   return mExitStatus;
 };
-
+#endif // QT_CONFIG(process)

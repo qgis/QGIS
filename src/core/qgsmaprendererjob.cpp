@@ -47,6 +47,7 @@
 ///@cond PRIVATE
 
 const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
+const QString QgsMapRendererJob::LABEL_PREVIEW_CACHE_ID = QStringLiteral( "_preview_labels_" );
 
 bool LayerRenderJob::imageCanBeComposed() const
 {
@@ -99,6 +100,11 @@ QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
       result.insert( lKey, it.value() );
   }
   return result;
+}
+
+void QgsMapRendererJob::setLayerRenderingTimeHints( const QHash<QString, int> &hints )
+{
+  mLayerRenderingTimeHints = hints;
 }
 
 const QgsMapSettings &QgsMapRendererJob::mapSettings() const
@@ -399,6 +405,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     job.img = nullptr;
     job.layer = ml;
     job.layerId = ml->id();
+    job.estimatedRenderingTime = mLayerRenderingTimeHints.value( ml->id(), 0 );
     job.renderingTime = -1;
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
@@ -438,6 +445,8 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     QElapsedTimer layerTime;
     layerTime.start();
     job.renderer = ml->createMapRenderer( job.context );
+    if ( job.renderer )
+      job.renderer->setLayerRenderingTimeHint( job.estimatedRenderingTime );
 
     // If we are drawing with an alternative blending mode then we need to render to a separate image
     // before compositing this on the map. This effectively flattens the layer and prevents
@@ -673,10 +682,11 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
       delete job.context.painter();
       job.context.setPainter( nullptr );
 
-      if ( mCache && !job.cached && !job.context.renderingStopped() && job.layer )
+      if ( mCache && !job.cached && job.completed && job.layer )
       {
         QgsDebugMsgLevel( QStringLiteral( "caching image for %1" ).arg( job.layerId ), 2 );
-        mCache->setCacheImage( job.layerId, *job.img, QList< QgsMapLayer * >() << job.layer );
+        mCache->setCacheImageWithParameters( job.layerId, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), QList< QgsMapLayer * >() << job.layer );
+        mCache->setCacheImageWithParameters( job.layerId + QStringLiteral( "_preview" ), *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), QList< QgsMapLayer * >() << job.layer );
       }
 
       delete job.img;
@@ -741,7 +751,8 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
     if ( mCache && !job.cached && !job.context.renderingStopped() )
     {
       QgsDebugMsgLevel( QStringLiteral( "caching label result image" ), 2 );
-      mCache->setCacheImage( LABEL_CACHE_ID, *job.img, _qgis_listQPointerToRaw( job.participatingLayers ) );
+      mCache->setCacheImageWithParameters( LABEL_CACHE_ID, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), _qgis_listQPointerToRaw( job.participatingLayers ) );
+      mCache->setCacheImageWithParameters( LABEL_PREVIEW_CACHE_ID, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), _qgis_listQPointerToRaw( job.participatingLayers ) );
     }
 
     delete job.img;
@@ -808,6 +819,16 @@ QImage QgsMapRendererJob::composeImage(
     painter.setOpacity( 1.0 );
     painter.drawImage( 0, 0, *labelJob.img );
   }
+  // when checking for a label cache image, we only look for those which would be drawn between 30% and 300% of the
+  // original size. We don't want to draw massive pixelated labels on top of everything else, and we also don't need
+  // to draw tiny unreadable labels... better to draw nothing in this case and wait till the updated label results are ready!
+  else if ( cache && cache->hasAnyCacheImage( LABEL_PREVIEW_CACHE_ID, 0.3, 3 ) )
+  {
+    const QImage labelCacheImage = cache->transformedCacheImage( LABEL_PREVIEW_CACHE_ID, settings.mapToPixel() );
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
+    painter.setOpacity( 1.0 );
+    painter.drawImage( 0, 0, labelCacheImage );
+  }
 
   // render any layers with the renderAboveLabels flag now
   for ( LayerRenderJobs::const_iterator it = jobs.constBegin(); it != jobs.constEnd(); ++it )
@@ -847,9 +868,9 @@ QImage QgsMapRendererJob::layerImageToBeComposed(
   }
   else
   {
-    if ( cache && cache->hasAnyCacheImage( job.layerId ) )
+    if ( cache && cache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
     {
-      return cache->transformedCacheImage( job.layerId, settings.mapToPixel() );
+      return cache->transformedCacheImage( job.layerId + QStringLiteral( "_preview" ), settings.mapToPixel() );
     }
     else
       return QImage();

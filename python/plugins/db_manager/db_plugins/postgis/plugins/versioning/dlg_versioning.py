@@ -191,7 +191,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
     def sql_functions(self):
         cols = ",".join(self.columns)
         all_cols = self.colPkey + "," + ",".join(self.columns)
-        old_cols = ",".join([u"OLD." + x for x in self.columns])
+        old_cols = ",".join(u"OLD." + x for x in self.columns)
 
         sql = u"""
 CREATE OR REPLACE FUNCTION %(func_at_time)s(timestamp)
@@ -253,8 +253,8 @@ FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
     def sql_updatesView(self):
         cols = ",".join(self.columns)
         return_cols = self.colPkey + "," + ",".join(self.columns)
-        new_cols = ",".join([u"NEW." + x for x in self.columns])
-        assign_cols = ",".join([u"%s = NEW.%s" % (x, x) for x in self.columns])
+        new_cols = ",".join(u"NEW." + x for x in self.columns)
+        assign_cols = ",".join(u"%s = NEW.%s" % (x, x) for x in self.columns)
 
         return u"""
 CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO %(view)s DO INSTEAD

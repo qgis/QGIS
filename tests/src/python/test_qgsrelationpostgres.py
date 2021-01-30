@@ -61,7 +61,9 @@ class TestQgsRelationPostgresql(unittest.TestCase):
             QgsProject.instance().addMapLayer(vl_tables[i])
 
         relations = self.relMgr.discoverRelations([], vl_tables)
-        self.assertEqual(len(relations), 10)
+        for r in relations:
+            self.assertTrue(r.isValid())
+        self.assertEqual(len(relations), 18)
         self.assertEqual(sum([len(r.referencingFields()) for r in relations]), 18)
         self.assertEqual(sum([len(r.referencedFields()) for r in relations]), 18)
 

@@ -238,35 +238,43 @@ void QgsGeoPackageProviderConnection::deleteSpatialIndex( const QString &schema,
 
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
-// List of GPKG quoted system and dummy tables names to be excluded from the tables listing
+
+  // List of GPKG quoted system and dummy tables names to be excluded from the tables listing
   static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
 
   checkCapability( Capability::Tables );
+
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
+
   QList<QgsGeoPackageProviderConnection::TableProperty> tableInfo;
   QString errCause;
   QList<QVariantList> results;
+
   try
   {
     const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
                                         "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
                                         "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
     results = executeSql( sql );
+
     for ( const auto &row : qgis::as_const( results ) )
     {
+
       if ( row.size() != 6 )
       {
         throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: wrong number of columns returned by query" ).arg( uri() ) );
       }
+
       QgsGeoPackageProviderConnection::TableProperty property;
       property.setTableName( row.at( 0 ).toString() );
       property.setPrimaryKeyColumns( { QStringLiteral( "fid" ) } );
       property.setGeometryColumnCount( 0 );
       static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
       const QString dataType = row.at( 1 ).toString();
+
       // Table type
       if ( dataType == QLatin1String( "tiles" ) || dataType == QLatin1String( "2d-gridded-coverage" ) )
       {
@@ -278,6 +286,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
         property.setGeometryColumn( row.at( 5 ).toString() );
         property.setGeometryColumnCount( 1 );
       }
+
       if ( aspatialTypes.contains( dataType ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
@@ -287,13 +296,16 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       {
         bool ok;
         int srid = row.at( 3 ).toInt( &ok );
+
         if ( !ok )
         {
           throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( row.at( 3 ).toString() ) );
         }
+
         QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( srid );
         property.addGeometryColumnType( QgsWkbTypes::parseType( row.at( 4 ).toString() ),  crs );
       }
+
       property.setComment( row.at( 4 ).toString() );
       tableInfo.push_back( property );
     }

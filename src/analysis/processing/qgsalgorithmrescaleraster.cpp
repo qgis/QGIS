@@ -103,6 +103,16 @@ bool QgsRescaleRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   {
     mNoData = layer->dataProvider()->sourceNoDataValue( mBand );
   }
+
+  if ( std::isfinite( mNoData ) )
+  {
+    // Clamp nodata to float32 range, since that's the type of the raster
+    if ( mNoData < std::numeric_limits<float>::lowest() )
+      mNoData = std::numeric_limits<float>::lowest();
+    else if ( mNoData > std::numeric_limits<float>::max() )
+      mNoData = std::numeric_limits<float>::max();
+  }
+
   mXSize = mInterface->xSize();
   mYSize = mInterface->ySize();
 
@@ -143,9 +153,10 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  std::unique_ptr< QgsRasterBlock > block;
-  while ( iter.readNextRasterPart( mBand, iterCols, iterRows, block, iterLeft, iterTop ) )
+  std::unique_ptr< QgsRasterBlock > inputBlock;
+  while ( iter.readNextRasterPart( mBand, iterCols, iterRows, inputBlock, iterLeft, iterTop ) )
   {
+    std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( destProvider->dataType( 1 ), iterCols, iterRows ) );
     feedback->setProgress( 100 * ( ( iterTop / blockHeight * numBlocksX ) + iterLeft / blockWidth ) / numBlocks );
 
     for ( int row = 0; row < iterRows; row++ )
@@ -156,19 +167,19 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
       for ( int col = 0; col < iterCols; col++ )
       {
         bool isNoData = false;
-        double val = block->valueAndNoData( row, col, isNoData );
+        double val = inputBlock->valueAndNoData( row, col, isNoData );
         if ( isNoData )
         {
-          block->setValue( row, col, mNoData );
+          outputBlock->setValue( row, col, mNoData );
         }
         else
         {
           double newValue = ( ( val - stats.minimumValue ) * ( mMaximum - mMinimum ) / ( stats.maximumValue - stats.minimumValue ) ) + mMinimum;
-          block->setValue( row, col, newValue );
+          outputBlock->setValue( row, col, newValue );
         }
       }
     }
-    destProvider->writeBlock( block.get(), mBand, iterLeft, iterTop );
+    destProvider->writeBlock( outputBlock.get(), mBand, iterLeft, iterTop );
   }
   destProvider->setEditable( false );
 

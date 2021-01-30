@@ -25,7 +25,7 @@
 #include "qgslogger.h"
 #include "qgscredentials.h"
 #include "qgsapplication.h"
-
+#include "qgssettings.h"
 
 const QString QgsDb2Provider::DB2_PROVIDER_KEY = QStringLiteral( "DB2" );
 const QString QgsDb2Provider::DB2_PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
@@ -1731,7 +1731,11 @@ QgsDb2ProviderMetadata::QgsDb2ProviderMetadata()
 QList< QgsDataItemProvider * > QgsDb2ProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;
-  providers << new QgsDb2DataItemProvider;
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "showDeprecated" ), false, QgsSettings::Providers ).toBool() )
+  {
+    providers << new QgsDb2DataItemProvider;
+  }
   return providers;
 }
 

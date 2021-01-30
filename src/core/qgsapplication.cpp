@@ -43,6 +43,7 @@
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgspointcloudrendererregistry.h"
+#include "qgscoordinatereferencesystemregistry.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscalloutsregistry.h"
@@ -2212,6 +2213,11 @@ QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
   }
 }
 
+QgsCoordinateReferenceSystemRegistry *QgsApplication::coordinateReferenceSystemRegistry()
+{
+  return members()->mCrsRegistry;
+}
+
 QgsSvgCache *QgsApplication::svgCache()
 {
   return members()->mSvgCache;
@@ -2355,6 +2361,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mMessageLog = new QgsMessageLog();
   QgsRuntimeProfiler *profiler = QgsRuntimeProfiler::threadLocalInstance();
 
+  {
+    profiler->start( tr( "Setup coordinate reference system registry" ) );
+    mCrsRegistry = new QgsCoordinateReferenceSystemRegistry();
+    profiler->end();
+  }
   {
     profiler->start( tr( "Create connection registry" ) );
     mConnectionRegistry = new QgsConnectionRegistry();
@@ -2546,6 +2557,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mBookmarkManager;
   delete mConnectionRegistry;
   delete mLocalizedDataPathRegistry;
+  delete mCrsRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

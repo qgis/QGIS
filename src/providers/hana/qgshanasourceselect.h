@@ -144,7 +144,8 @@ class QgsHanaSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsD
     void finishList();
     void showHelp();
 
-    QgsDataSourceUri mDataSrcUri;
+    QString mConnectionName;
+    QString mConnectionInfo;
     // A thread for detecting geometry types
     std::unique_ptr<QgsHanaColumnTypeThread> mColumnTypeThread;
     std::unique_ptr<QgsProxyProgressTask> mColumnTypeTask;

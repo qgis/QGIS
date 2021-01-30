@@ -20,6 +20,7 @@
 #include "qgsdb2dataitemguiprovider.h"
 #include "qgsdb2provider.h"
 #include "qgsdb2sourceselect.h"
+#include "qgssettings.h"
 
 
 //! Provider for DB2 source select
@@ -28,7 +29,7 @@ class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
   public:
 
     QString providerKey() const override { return QgsDb2Provider::DB2_PROVIDER_KEY; }
-    QString text() const override { return QObject::tr( "DB2" ); }
+    QString text() const override { return QObject::tr( "DB2 (deprecated)" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
@@ -49,14 +50,23 @@ class QgsDb2ProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
     {
       QList<QgsDataItemGuiProvider *> providers;
-      providers << new QgsDb2DataItemGuiProvider;
+
+      QgsSettings settings;
+      if ( settings.value( QStringLiteral( "showDeprecated" ), false, QgsSettings::Providers ).toBool() )
+      {
+        providers << new QgsDb2DataItemGuiProvider;
+      }
       return providers;
     }
 
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override
     {
       QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsDb2SourceSelectProvider;
+      QgsSettings settings;
+      if ( settings.value( QStringLiteral( "showDeprecated" ), false, QgsSettings::Providers ).toBool() )
+      {
+        providers << new QgsDb2SourceSelectProvider;
+      }
       return providers;
     }
 };

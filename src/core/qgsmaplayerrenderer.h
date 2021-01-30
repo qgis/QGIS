@@ -62,7 +62,12 @@ class CORE_EXPORT QgsMapLayerRenderer
 
     virtual ~QgsMapLayerRenderer() = default;
 
-    //! Do the rendering (based on data stored in the class)
+    /**
+     * Do the rendering (based on data stored in the class).
+     *
+     * Returns TRUE if the layer was completely rendered successfully (i.e. the render
+     * was not canceled early).
+     */
     virtual bool render() = 0;
 
     /**
@@ -118,6 +123,18 @@ class CORE_EXPORT QgsMapLayerRenderer
      */
     bool isReadyToCompose() const { return mReadyToCompose; }
 
+    /**
+     * Sets approximate render \a time (in ms) for the layer to render.
+     *
+     * This can be used to specifies a hint at the expected render times for the layer, so that
+     * the individual layer renderer subclasses can apply heuristics and determine appropriate update
+     * intervals during the render operation.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.18
+     */
+    virtual void setLayerRenderingTimeHint( int time ) SIP_SKIP { Q_UNUSED( time ) }
+
   protected:
     QStringList mErrors;
     QString mLayerID;
@@ -139,6 +156,16 @@ class CORE_EXPORT QgsMapLayerRenderer
      * \since QGIS 3.18
      */
     bool mReadyToCompose = true;
+
+    /**
+     * Maximum time (in ms) to allow display of a previously cached
+     * preview image while rendering layers, before switching to
+     * a progressive rendering display.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.18
+     */
+    static constexpr int MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE = 3000 SIP_SKIP;
 
   private:
 

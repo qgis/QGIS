@@ -34,6 +34,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsannotationlayer.h"
+#include "qgscoordinatereferencesystemregistry.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -67,6 +68,17 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   connect( mItemClippingSettings, &QgsLayoutItemMapItemClipPathSettings::changed, this, [ = ]
   {
     refresh();
+  } );
+
+  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [ = ]
+  {
+    QgsCoordinateReferenceSystem crs = mCrs;
+    crs.updateDefinition();
+    if ( mCrs != crs )
+    {
+      setCrs( crs );
+      invalidateCache();
+    }
   } );
 
   if ( layout )

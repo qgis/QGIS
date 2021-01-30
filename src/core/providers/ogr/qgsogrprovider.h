@@ -105,6 +105,13 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QgsAbstractFeatureSource *featureSource() const override;
 
     QgsCoordinateReferenceSystem crs() const override;
+
+    /**
+     * Gets the number of sublayer in the OGR datasource.
+     * layer_styles is not counted.
+     * \since QGIS 3.16
+     */
+    uint subLayerCount() const override;
     QStringList subLayers() const override;
     QgsLayerMetadata layerMetadata() const override;
     QStringList subLayersWithoutFeatureCount() const;

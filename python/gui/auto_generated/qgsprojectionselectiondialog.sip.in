@@ -99,6 +99,14 @@ by default and must be set visible by calling :py:func:`~QgsProjectionSelectionD
 .. versionadded:: 3.16
 %End
 
+    void setRequireValidSelection();
+%Docstring
+Sets the dialog to require a valid selection only, preventing users from accepting the
+dialog if no selection is present.
+
+.. versionadded:: 3.18
+%End
+
   public slots:
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );

@@ -23,6 +23,7 @@
 #include "qgshanautils.h"
 #include "qgsapplication.h"
 #include "qgsexception.h"
+#include "qgsmessagelog.h"
 #include "qgssettings.h"
 
 #include "odbc/PreparedStatement.h"
@@ -38,6 +39,8 @@ QVariantList QgsHanaProviderResultIterator::nextRowPrivate()
   QVariantList ret;
   if ( !mNextRow )
     return ret;
+
+  ret.reserve( mNumColumns );
   for ( unsigned short i = 1; i <= mNumColumns; ++i )
     ret.push_back( mResultSet->getValue( i ) );
   mNextRow = mResultSet->next();
@@ -96,43 +99,58 @@ void QgsHanaProviderConnection::setCapabilities()
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
-  const QString sql = QStringLiteral( "SELECT OBJECT_TYPE, PRIVILEGE, SCHEMA_NAME, OBJECT_NAME FROM PUBLIC.EFFECTIVE_PRIVILEGES "
-                                      "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'" );
-  QgsHanaResultSetRef rsPrivileges = conn->executeQuery( sql );
-  while ( rsPrivileges->next() )
+  if ( !conn.isNull() )
   {
-    QString objType = rsPrivileges->getString( 1 );
-    QString privType = rsPrivileges->getString( 2 );
-    if ( objType == QLatin1String( "SYSTEMPRIVILEGE" ) )
+    const QString sql = QStringLiteral( "SELECT OBJECT_TYPE, PRIVILEGE, SCHEMA_NAME, OBJECT_NAME FROM PUBLIC.EFFECTIVE_PRIVILEGES "
+                                        "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'" );
+    try
     {
-      if ( privType == QLatin1String( "CREATE SCHEMA" ) )
-        mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema;
-      else if ( privType == QLatin1String( "CATALOG READ" ) || privType == QLatin1String( "DATA ADMIN" ) )
-        mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
-    }
-    else if ( objType == QLatin1String( "TABLE" ) || objType == QLatin1String( "VIEW" ) )
-    {
-      if ( privType == QLatin1String( "SELECT" ) )
+      QgsHanaResultSetRef rsPrivileges = conn->executeQuery( sql );
+      while ( rsPrivileges->next() )
       {
-        QString schemaName = rsPrivileges->getString( 3 );
-        QString objName = rsPrivileges->getString( 4 );
+        QString objType = rsPrivileges->getString( 1 );
+        QString privType = rsPrivileges->getString( 2 );
+        if ( objType == QLatin1String( "SYSTEMPRIVILEGE" ) )
+        {
+          if ( privType == QLatin1String( "CREATE SCHEMA" ) )
+            mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema;
+          else if ( privType == QLatin1String( "CATALOG READ" ) || privType == QLatin1String( "DATA ADMIN" ) )
+            mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
+        }
+        else if ( objType == QLatin1String( "TABLE" ) || objType == QLatin1String( "VIEW" ) )
+        {
+          if ( privType == QLatin1String( "SELECT" ) )
+          {
+            QString schemaName = rsPrivileges->getString( 3 );
+            QString objName = rsPrivileges->getString( 4 );
 
-        if ( schemaName == QLatin1String( "SYS" ) && objName == QLatin1String( "SCHEMAS" ) )
-          mCapabilities |= Capability::Schemas;
-        else if ( objName == QLatin1String( "TABLE_COLUMNS" ) )
-          mCapabilities |= Capability::Tables | Capability::TableExists;
+            if ( schemaName == QLatin1String( "SYS" ) && objName == QLatin1String( "SCHEMAS" ) )
+              mCapabilities |= Capability::Schemas;
+            else if ( objName == QLatin1String( "TABLE_COLUMNS" ) )
+              mCapabilities |= Capability::Tables | Capability::TableExists;
+          }
+        }
       }
+      rsPrivileges->close();
+
+      return;
+    }
+    catch ( const QgsHanaException &ex )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Unable to retrieve user privileges: %1" ).arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ), QObject::tr( "SAP HANA" ) );
     }
   }
 
-  rsPrivileges->close();
+  // We enable all capabilities, if we were not able to retrieve them from the database.
+  mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema |
+                   Capability::Schemas | Capability::Tables | Capability::TableExists;
 }
 
 void QgsHanaProviderConnection::dropTable( const QString &schema, const QString &name ) const
 {
   executeSqlStatement( QStringLiteral( "DROP TABLE %1.%2" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ) )
-                       .arg( QgsHanaUtils::quotedIdentifier( name ) ) );
+                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                             QgsHanaUtils::quotedIdentifier( name ) ) );
 }
 
 void QgsHanaProviderConnection::createVectorTable( const QString &schema,
@@ -192,9 +210,9 @@ void QgsHanaProviderConnection::dropVectorTable( const QString &schema, const QS
 void QgsHanaProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlStatement( QStringLiteral( "RENAME TABLE %1.%2 TO %1.%3" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ) )
-                       .arg( QgsHanaUtils::quotedIdentifier( name ) )
-                       .arg( QgsHanaUtils::quotedIdentifier( newName ) ) );
+                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                             QgsHanaUtils::quotedIdentifier( name ),
+                             QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
 void QgsHanaProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
@@ -214,8 +232,8 @@ void QgsHanaProviderConnection::dropSchema( const QString &name,  bool force ) c
 {
   checkCapability( Capability::DropSchema );
   executeSqlStatement( QStringLiteral( "DROP SCHEMA %1 %2" )
-                       .arg( QgsHanaUtils::quotedIdentifier( name ) )
-                       .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
+                       .arg( QgsHanaUtils::quotedIdentifier( name ),
+                             force ? QStringLiteral( "CASCADE" ) : QString() ) );
 }
 
 void QgsHanaProviderConnection::renameSchema( const QString &name, const QString &newName ) const
@@ -268,7 +286,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
   {
     throw QgsProviderConnectionException( ex.what() );
   }
-
 }
 
 void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
@@ -302,6 +319,7 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
   try
   {
     const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, flags.testFlag( TableFlag::Aspatial ), false );
+    tables.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo :  layers )
     {
       // Classify
@@ -335,7 +353,7 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
         }
         else  // Fetch and set the real pks
         {
-          QStringList pks = conn->getLayerPrimaryeKey( layerInfo.schemaName, layerInfo.tableName );
+          QStringList pks = conn->getLayerPrimaryKey( layerInfo.schemaName, layerInfo.tableName );
           property.setPrimaryKeyColumns( pks );
         }
         tables.push_back( property );
@@ -363,6 +381,7 @@ QStringList QgsHanaProviderConnection::schemas( ) const
   {
     QStringList schemas;
     const QVector<QgsHanaSchemaProperty> schemaProperties = conn->getSchemas( QString() );
+    schemas.reserve( schemaProperties.size() );
     for ( const QgsHanaSchemaProperty &s : schemaProperties )
       schemas.push_back( s.name );
     return schemas;

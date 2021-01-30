@@ -18,7 +18,6 @@
 #include <vector>
 
 #include "PyramidManager.hpp"
-#include "BuTypes.hpp"
 
 namespace pdal
 {
@@ -39,7 +38,7 @@ class FileInfo;
 class BuPyramid
 {
 public:
-    BuPyramid();
+    BuPyramid(BaseInfo& common);
     void run(const Options& options, ProgressWriter& progress);
 
 private:
@@ -48,8 +47,8 @@ private:
     size_t queueWork();
     void writeInfo();
 
-    PyramidManager m_manager;
     BaseInfo m_b;
+    PyramidManager m_manager;
     std::unordered_map<VoxelKey, FileInfo> m_allFiles;
 };
 

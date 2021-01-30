@@ -145,6 +145,7 @@ Returns the total time it took to finish the job (in milliseconds).
 %End
 
 
+
     const QgsMapSettings &mapSettings() const;
 %Docstring
 Returns map settings with which this job was started.
@@ -153,6 +154,7 @@ Returns map settings with which this job was started.
 
 .. versionadded:: 2.8
 %End
+
 
 
   signals:
@@ -172,6 +174,7 @@ emitted when asynchronous rendering is finished (or canceled).
 %End
 
   protected:
+
 
 
 

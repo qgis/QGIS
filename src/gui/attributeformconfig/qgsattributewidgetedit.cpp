@@ -109,10 +109,17 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId );
   const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() );
-  for ( const QgsRelation &nmrel : relations )
+  if ( !relation.fieldPairs().isEmpty() )
   {
-    if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
-      setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+    const QgsRelation::FieldPair relationFirstFieldPair = relation.fieldPairs().at( 0 );
+    for ( const QgsRelation &nmrel : relations )
+    {
+      if ( !nmrel.fieldPairs().isEmpty() &&
+           nmrel.fieldPairs().at( 0 ).referencingField() != relationFirstFieldPair.referencingField() )
+      {
+        setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+      }
+    }
   }
 
   int widgetTypeIdx = mWidgetTypeComboBox->findData( config.mRelationWidgetType );

@@ -17,7 +17,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "BuTypes.hpp"
 #include "OctantInfo.hpp"
 #include "Stats.hpp"
 #include "../untwine/ThreadPool.hpp"

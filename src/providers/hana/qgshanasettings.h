@@ -183,6 +183,16 @@ class QgsHanaSettings
     QString port() const;
 
     /**
+     * Gets the key columns for the given database object.
+     */
+    QStringList keyColumns( const QString &schemaName, const QString &objectName ) const;
+
+    /**
+     * Sets the key columns for the given database object.
+     */
+    void setKeyColumns( const QString &schemaName, const QString &objectName, const QStringList &columnNames );
+
+    /**
      * Sets values from a RDBMS data source URI.
      */
     void setFromDataSourceUri( const QgsDataSourceUri &uri );
@@ -234,6 +244,7 @@ class QgsHanaSettings
     QString mSslTrustStore;
     bool mSslValidateCertificate = false;
     QString mSslHostNameInCertificate;
+    QMap<QString, QMap<QString, QStringList>> mKeyColumns;
 };
 
 #endif // QGSHANAPSETTINGS_H

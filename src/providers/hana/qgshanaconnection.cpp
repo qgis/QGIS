@@ -498,7 +498,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
           continue;
         if ( layersCount == 1 )
         {
-          QgsHanaLayerProperty firstLayer = layers.values( layerKey )[0];
+          QgsHanaLayerProperty firstLayer = layers.values( layerKey ).value( 0 );
           if ( firstLayer.geometryColName.isEmpty() )
             layers.remove( layerKey );
         }
@@ -523,13 +523,14 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
   }
 
   QVector<QgsHanaLayerProperty> list;
-  for ( const QPair<QString, QString> &key : layers.uniqueKeys() )
+  const auto uniqueKeys = layers.uniqueKeys();
+  for ( const QPair<QString, QString> &key : uniqueKeys )
   {
     QList<QgsHanaLayerProperty> values = layers.values( key );
     if ( values.size() == 1 )
       values[0].isUnique = true;
 
-    for ( const QgsHanaLayerProperty &lp : values )
+    for ( const QgsHanaLayerProperty &lp : qgis::as_const( values ) )
       list << lp;
   }
 
@@ -552,7 +553,7 @@ void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
 {
   layerProperty.srid = getColumnSrid( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
   layerProperty.type = getColumnGeometryType( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
-  layerProperty.pkCols = getPrimaryeKeyCandidates( layerProperty );
+  layerProperty.pkCols = getPrimaryKeyCandidates( layerProperty );
 }
 
 QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &ownerName )
@@ -584,7 +585,7 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
   return list;
 }
 
-QStringList QgsHanaConnection::getLayerPrimaryeKey( const QString &schemaName, const QString &tableName )
+QStringList QgsHanaConnection::getLayerPrimaryKey( const QString &schemaName, const QString &tableName )
 {
   try
   {
@@ -608,7 +609,7 @@ QStringList QgsHanaConnection::getLayerPrimaryeKey( const QString &schemaName, c
   }
 }
 
-QStringList QgsHanaConnection::getPrimaryeKeyCandidates( const QgsHanaLayerProperty &layerProperty )
+QStringList QgsHanaConnection::getPrimaryKeyCandidates( const QgsHanaLayerProperty &layerProperty )
 {
   if ( !layerProperty.isView )
     return QStringList();
@@ -617,6 +618,11 @@ QStringList QgsHanaConnection::getPrimaryeKeyCandidates( const QgsHanaLayerPrope
   QgsHanaResultSetRef rsColumns = getColumns( layerProperty.schemaName, layerProperty.tableName, QStringLiteral( "%" ) );
   while ( rsColumns->next() )
   {
+    int dataType = rsColumns->getValue( 5/*DATA_TYPE */ ).toInt();
+    // We exclude GEOMETRY and LOB columns
+    if ( dataType == 29812 /* GEOMETRY TYPE */ || dataType == SQLDataTypes::LongVarBinary ||
+         dataType == SQLDataTypes::LongVarChar || dataType == SQLDataTypes::WLongVarChar )
+      continue;
     ret << rsColumns->getValue( 4/*COLUMN_NAME */ ).toString();
   }
   rsColumns->close();
@@ -758,6 +764,12 @@ QgsHanaResultSetRef QgsHanaConnection::getColumns( const QString &schemaName, co
   {
     throw QgsHanaException( ex.what() );
   }
+}
+
+bool  QgsHanaConnection::isTable( const QString &schemaName, const QString &tableName )
+{
+  QString sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?" );
+  return executeCountQuery( sql, {schemaName, tableName } ) == 1;
 }
 
 PreparedStatementRef QgsHanaConnection::createPreparedStatement( const QString &sql, const QVariantList &args )

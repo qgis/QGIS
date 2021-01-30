@@ -88,3 +88,8 @@ QgsOptionsPageWidget *Qgs3DOptionsFactory::createWidget( QWidget *parent ) const
 {
   return new Qgs3DOptionsWidget( parent );
 }
+
+QString Qgs3DOptionsFactory::pagePositionHint() const
+{
+  return QStringLiteral( "mOptionsPageColors" );
+}

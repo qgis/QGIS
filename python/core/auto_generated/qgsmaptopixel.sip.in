@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapToPixel
 {
 %Docstring
@@ -65,7 +66,7 @@ Use setParameters to fill
 
     QgsPointXY transform( const QgsPointXY &p ) const;
 %Docstring
-Transform the point from map (world) coordinates to device coordinates
+Transform the point ``p`` from map (world) coordinates to device coordinates.
 
 :param p: Point to transform
 
@@ -73,6 +74,9 @@ Transform the point from map (world) coordinates to device coordinates
 %End
 
     void transform( QgsPointXY *p ) const;
+%Docstring
+Transform the point ``p`` from map (world) coordinates to device coordinates in place.
+%End
 
     QgsPointXY transform( qreal x, qreal y ) const;
 %Docstring
@@ -87,7 +91,7 @@ coordinates to device coordinates
 
     void transformInPlace( double &x, double &y ) const;
 %Docstring
-Transform device coordinates to map coordinates. Modifies the
+Transforms device coordinates to map coordinates. Modifies the
 given coordinates in place. Intended as a fast way to do the
 transform.
 %End
@@ -186,6 +190,9 @@ String representation of the parameters used in the transform
 %End
 
     QTransform transform() const;
+%Docstring
+Returns a QTransform encapsulating the map to pixel conversion.
+%End
 
     double xCenter() const;
 %Docstring
@@ -204,6 +211,10 @@ Returns the center y-coordinate for the transform.
 
 .. versionadded:: 3.0
 %End
+
+    bool operator==( const QgsMapToPixel &other ) const;
+
+    bool operator!=( const QgsMapToPixel &other ) const;
 
 };
 

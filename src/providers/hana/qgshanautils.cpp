@@ -134,11 +134,11 @@ QString QgsHanaUtils::toConstant( const QVariant &value, QVariant::Type type )
     case QVariant::String:
       return QgsHanaUtils::quotedString( value.toString() );
     case QVariant::Date:
-      return QStringLiteral( "date'%1'" ).arg( value.toDate().toString( "yyyy-MM-dd" ) );
+      return QStringLiteral( "date'%1'" ).arg( value.toDate().toString( QStringLiteral( "yyyy-MM-dd" ) ) );
     case QVariant::DateTime:
-      return QStringLiteral( "timestamp'%1'" ).arg( value.toDateTime().toString( "yyyy-MM-dd hh:mm:ss.zzz" ) );
+      return QStringLiteral( "timestamp'%1'" ).arg( value.toDateTime().toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss.zzz" ) ) );
     case QVariant::Time:
-      return QStringLiteral( "time'%1'" ).arg( value.toTime().toString( "hh:mm:ss.zzz" ) );
+      return QStringLiteral( "time'%1'" ).arg( value.toTime().toString( QStringLiteral( "hh:mm:ss.zzz" ) ) );
     case QVariant::ByteArray:
       return QStringLiteral( "x'%1'" ).arg( QString( value.toByteArray().toHex() ) );
     default:

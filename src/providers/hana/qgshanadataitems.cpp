@@ -38,7 +38,7 @@ QgsHanaConnectionItem::QgsHanaConnectionItem(
   QgsDataItem *parent,
   const QString &name,
   const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -242,7 +242,6 @@ QString QgsHanaLayerItem::comments() const
 
 QString QgsHanaLayerItem::createUri() const
 {
-  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
   QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( parent() ?
                                     parent()->parent() : nullptr );
 
@@ -253,9 +252,26 @@ QString QgsHanaLayerItem::createUri() const
   }
 
   QgsHanaSettings settings( connItem->name(), true );
+
+  QStringList pkColumns;
+  if ( !mLayerProperty.pkCols.isEmpty() )
+  {
+    const QStringList pkColumnsStored = settings.keyColumns( mLayerProperty.schemaName, mLayerProperty.tableName );
+    if ( !pkColumnsStored.empty() )
+    {
+      // We check whether the primary key columns still exist.
+      auto intersection = pkColumnsStored.toSet().intersect( mLayerProperty.pkCols.toSet() );
+      if ( intersection.size() == pkColumnsStored.size() )
+      {
+        for ( const auto &column : pkColumnsStored )
+          pkColumns << QgsHanaUtils::quotedIdentifier( column );
+      }
+    }
+  }
+
   QgsDataSourceUri uri = settings.toDataSourceUri();
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName,
-                     mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
+                     mLayerProperty.geometryColName, mLayerProperty.sql, pkColumns.join( ',' ) );
   uri.setWkbType( mLayerProperty.type );
   if ( uri.wkbType() != QgsWkbTypes::NoGeometry )
     uri.setSrid( QString::number( mLayerProperty.srid ) );
@@ -269,7 +285,7 @@ QgsHanaSchemaItem::QgsHanaSchemaItem(
   const QString &connectionName,
   const QString &name,
   const QString &path )
-  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "HANA" ) )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
   , mConnectionName( connectionName )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
@@ -291,7 +307,8 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
   const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( mSchemaName,
       settings.allowGeometrylessTables(), settings.userTablesOnly() );
 
-  for ( const QgsHanaLayerProperty &layerInfo :  layers )
+  items.reserve( layers.size() );
+  for ( const QgsHanaLayerProperty &layerInfo : layers )
     items.append( createLayer( layerInfo ) );
 
   setName( mSchemaName );
@@ -345,7 +362,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
 }
 
 QgsHanaRootItem::QgsHanaRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "HANA" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconHana.svg" );
@@ -356,6 +373,7 @@ QVector<QgsDataItem *> QgsHanaRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
   const QStringList connectionNames = QgsHanaSettings::getConnectionNames();
+  connections.reserve( connectionNames.size() );
   for ( const QString &connName : connectionNames )
   {
     connections << new QgsHanaConnectionItem( this, connName, mPath + '/' + connName );
@@ -365,7 +383,7 @@ QVector<QgsDataItem *> QgsHanaRootItem::createChildren()
 
 QWidget *QgsHanaRootItem::paramWidget()
 {
-  QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, nullptr,
+  QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, Qt::WindowFlags(),
       QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsHanaSourceSelect::connectionsChanged, this,
            &QgsHanaRootItem::onConnectionsChanged );
@@ -380,6 +398,6 @@ void QgsHanaRootItem::onConnectionsChanged()
 QgsDataItem *QgsHanaDataItemProvider::createDataItem(
   const QString &pathIn, QgsDataItem *parentItem )
 {
-  Q_UNUSED( pathIn );
+  Q_UNUSED( pathIn )
   return new QgsHanaRootItem( parentItem, QStringLiteral( "SAP HANA" ), QStringLiteral( "hana:" ) );
 }

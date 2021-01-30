@@ -53,7 +53,6 @@ set(UNTWINE_SRCS
 
 set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuPyramid.hpp
-  ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuTypes.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/FileInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/OctantInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PointAccessor.hpp

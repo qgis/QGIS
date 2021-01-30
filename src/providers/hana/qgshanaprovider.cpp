@@ -119,7 +119,7 @@ namespace
   void SetStatementValue(
     PreparedStatementRef &stmt,
     unsigned short paramIndex,
-    const FieldInfo &fieldInfo,
+    FieldInfo fieldInfo,
     const QVariant &value )
   {
     bool isNull = ( value.isNull() || !value.isValid() );
@@ -336,8 +336,6 @@ QgsHanaProvider::QgsHanaProvider(
     mDatabaseVersion = QgsHanaUtils::toHANAVersion( conn->getDatabaseVersion() );
     readGeometryType();
     readAttributeFields();
-    if ( !mIsQuery && mPrimaryKeyType == PktUnknown )
-      return;
     readSrsInformation();
     readMetadata();
 
@@ -650,11 +648,12 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           if ( mPrimaryKeyType == PktInt )
           {
-            feature.setId( QgsHanaPrimaryKeyUtils::intToFid( attrs.at( mPrimaryKeyAttrs[ 0 ] ).toInt() ) );
+            feature.setId( QgsHanaPrimaryKeyUtils::intToFid( attrs.at( mPrimaryKeyAttrs.value( 0 ) ).toInt() ) );
           }
           else
           {
             QVariantList primaryKeyVals;
+            primaryKeyVals.reserve( mPrimaryKeyAttrs.size() );
             for ( int idx : qgis::as_const( mPrimaryKeyAttrs ) )
               primaryKeyVals << attrs.at( idx );
             feature.setId( mPrimaryKeyCntx->lookupFid( primaryKeyVals ) );
@@ -1140,7 +1139,6 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities()
       if ( !objName.isEmpty() && objName != mTableName )
         continue;
 
-      QString objType = rsPrivileges->getString( 2 );
       QString privType = rsPrivileges->getString( 3 );
 
       if ( privType == QLatin1String( "ALL PRIVILEGES" ) || privType == QLatin1String( "CREATE ANY" ) )
@@ -1244,7 +1242,6 @@ void QgsHanaProvider::readAttributeFields()
   mFieldInfos.clear();
   mDefaultValues.clear();
 
-  QString sql = buildQuery( QStringLiteral( "*" ) );
   QgsHanaConnectionRef conn( mUri );
   PreparedStatementRef stmt = conn->prepareStatement( buildQuery( QStringLiteral( "*" ) ) );
   ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
@@ -1403,32 +1400,34 @@ void QgsHanaProvider::readSrsInformation()
 
 void QgsHanaProvider::determinePrimaryKey()
 {
+  QPair<QgsHanaPrimaryKeyType, QList<int>> primaryKey;
   if ( !mIsQuery )
   {
     QgsHanaConnectionRef conn( mUri );
-    QStringList layerPrimaryKey = conn->getLayerPrimaryeKey( mSchemaName, mTableName );
-    auto primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromColumns( layerPrimaryKey, mAttributeFields );
-    mPrimaryKeyType = primaryKey.first;
-    mPrimaryKeyAttrs = primaryKey.second;
+    if ( conn->isTable( mSchemaName, mTableName ) )
+    {
+      QStringList layerPrimaryKey = conn->getLayerPrimaryKey( mSchemaName, mTableName );
+      primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromColumns( layerPrimaryKey, mAttributeFields );
+    }
+    else
+      primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mAttributeFields );
   }
   else
   {
-    auto primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mAttributeFields );
-    mPrimaryKeyType = primaryKey.first;
-    mPrimaryKeyAttrs = primaryKey.second;
+    primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mAttributeFields );
   }
+
+  mPrimaryKeyType = primaryKey.first;
+  mPrimaryKeyAttrs = primaryKey.second;
 
   if ( mPrimaryKeyAttrs.size() == 1 )
   {
     //primary keys are unique, not null
-    QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs[0] ).constraints();
+    QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs.value( 0 ) ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
     mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
   }
-
-  if ( !mIsQuery )
-    mValid =  mPrimaryKeyType != PktUnknown;
 }
 
 long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const
@@ -1512,7 +1511,6 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   }
 
   QString geometryColumn = dsUri.geometryColumn();
-  QString geometryType;
 
   QString primaryKey = dsUri.keyColumn();
   QString primaryKeyType;

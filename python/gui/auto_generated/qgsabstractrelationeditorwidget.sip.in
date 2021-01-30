@@ -48,13 +48,20 @@ Sets the ``relation`` and the ``feature``
 
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 %Docstring
-Set the relation(s) for this widget
+Sets the relation(s) for this widget
 If only one relation is set, it will act as a simple 1:N relation widget
 If both relations are set, it will act as an N:M relation widget
 inserting and deleting entries on the intermediate table as required.
 
 :param relation: Relation referencing the edited table
 :param nmrelation: Optional reference from the referencing table to a 3rd N:M table
+%End
+
+    QgsRelation relation() const;
+%Docstring
+Returns the relation
+
+.. versionadded:: 3.18
 %End
 
     void setFeature( const QgsFeature &feature, bool update = true );
@@ -209,6 +216,44 @@ Deletes the features with ``fids``
 Unlinks the features with ``fids``
 %End
 
+
+    virtual void updateUi();
+%Docstring
+A hook called every time the state of the relation editor widget has changed via calling its `set*` methods or slots,
+e.g. changed relation, added feature, etc.
+Should be used to refresh the UI regarding the new data.
+Check QgsRealationEditorWidget as an example.
+%End
+
+    virtual void setTitle( const QString &title );
+%Docstring
+Sets the title of the widget, if it is wrapped within a :py:class:`QgsCollapsibleGroupBox`
+Check QgsRealationEditorWidget as an example.
+%End
+
+    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
+%Docstring
+A hook called right before :py:func:`~QgsAbstractRelationEditorWidget.setRelationFeature` is executed. Used to update the UI once setting the relation feature is done.
+Check QgsRealationEditorWidget as an example.
+%End
+
+    virtual void afterSetRelationFeature();
+%Docstring
+A hook called right after :py:func:`~QgsAbstractRelationEditorWidget.setRelationFeature` is executed, but before :py:func:`~QgsAbstractRelationEditorWidget.updateUi` is called. Used to update the UI once setting the relation feature is done.
+Check QgsRealationEditorWidget as an example.
+%End
+
+    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation );
+%Docstring
+A hook called right before :py:func:`~QgsAbstractRelationEditorWidget.setRelations` is executed. Used to manipulate UI once setting the relations is done.
+Check QgsRealationEditorWidget as an example.
+%End
+
+    virtual void afterSetRelations();
+%Docstring
+A hook called right after :py:func:`~QgsAbstractRelationEditorWidget.setRelations` is executed, but before :py:func:`~QgsAbstractRelationEditorWidget.updateUi` is called. Used to update the UI once setting the relations is done.
+Check QgsRealationEditorWidget as an example.
+%End
 };
 
 

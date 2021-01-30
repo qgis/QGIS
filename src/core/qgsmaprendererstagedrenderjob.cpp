@@ -117,7 +117,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       job.imageInitialized = true;
     }
 
-    job.renderer->render();
+    job.completed = job.renderer->render();
 
     if ( job.img )
     {

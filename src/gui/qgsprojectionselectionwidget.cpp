@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgshighlightablecombobox.h"
+#include "qgscoordinatereferencesystemregistry.h"
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
@@ -61,6 +62,14 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
   connect( mButton, &QToolButton::clicked, this, &QgsProjectionSelectionWidget::selectCrs );
   connect( mCrsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsProjectionSelectionWidget::comboIndexChanged );
+
+  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [ = ]
+  {
+    mCrs.updateDefinition();
+    mLayerCrs.updateDefinition();
+    mProjectCrs.updateDefinition();
+    mDefaultCrs.updateDefinition();
+  } );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
@@ -181,6 +190,7 @@ void QgsProjectionSelectionWidget::selectCrs()
   {
     dlg.setShowNoProjection( true );
   }
+  dlg.setRequireValidSelection();
 
   if ( dlg.exec() )
   {

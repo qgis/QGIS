@@ -129,7 +129,7 @@ QVariantList QgsHanaPrimaryKeyContext::lookupKey( QgsFeatureId featureId )
 {
   QMutexLocker locker( &mMutex );
 
-  QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.find( featureId );
+  QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.constFind( featureId );
   if ( it != mFidToKey.constEnd() )
     return it.value();
   return QVariantList();
@@ -155,7 +155,7 @@ QPair<QgsHanaPrimaryKeyType, QList<int>> QgsHanaPrimaryKeyUtils::determinePrimar
   if ( !attrs.isEmpty() )
     keyType = ( attrs.size() == 1 ) ? getPrimaryKeyType( fields.at( attrs[0] ) ) : PktFidMap;
   else
-    QgsMessageLog::logMessage( QObject::tr( "Keys for view/query undefined." ), QObject::tr( "SAP HANA" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Keys for view/query undefined. Some functionality might not be available." ), QObject::tr( "SAP HANA" ) );
 
   return qMakePair( keyType, attrs );
 }
@@ -208,6 +208,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFields &fields, QgsHa
     case PktFidMap:
     {
       QList<QString> conditions;
+      conditions.reserve( pkAttrs.size() );
       for ( int idx : pkAttrs )
         conditions << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( fields[idx].name() ) );
       return conditions.join( QLatin1String( " AND " ) );

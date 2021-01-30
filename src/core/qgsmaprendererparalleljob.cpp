@@ -231,7 +231,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   // compose final image for labeling
   if ( mSecondPassLayerJobs.isEmpty() )
   {
-    mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+    mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL layers finished" ), 2 );
@@ -359,7 +359,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 #ifdef SIMULATE_SLOW_RENDERER
     QThread::sleep( 1 );
 #endif
-    job.renderer->render();
+    job.completed = job.renderer->render();
   }
   catch ( QgsException &e )
   {

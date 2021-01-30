@@ -6485,7 +6485,7 @@ void TestQgsProcessingAlgs::fileDownloader()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   // verify that temporary outputs have the URL file extension appended
-  QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().endsWith( QStringLiteral( ".txt" ) ) );
+  QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().endsWith( QLatin1String( ".txt" ) ) );
 }
 
 void TestQgsProcessingAlgs::exportMeshTimeSeries()

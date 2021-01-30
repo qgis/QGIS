@@ -283,6 +283,7 @@ set(QGIS_CORE_SRCS
   qgsconnectionregistry.cpp
   qgscoordinateformatter.cpp
   qgscoordinatereferencesystem.cpp
+  qgscoordinatereferencesystemregistry.cpp
   qgscoordinatetransform.cpp
   qgscoordinatetransform_p.cpp
   qgscoordinatetransformcontext.cpp
@@ -867,6 +868,7 @@ set(QGIS_CORE_HDRS
   qgsconnectionregistry.h
   qgscoordinateformatter.h
   qgscoordinatereferencesystem.h
+  qgscoordinatereferencesystemregistry.h
   qgscoordinatetransform.h
   qgscoordinatetransformcontext.h
   qgscoordinateutils.h
@@ -1631,7 +1633,7 @@ protobuf_generate_cpp(VECTOR_TILE_PROTO_SRCS VECTOR_TILE_PROTO_HDRS vectortile/v
 set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${VECTOR_TILE_PROTO_SRCS})
 set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${VECTOR_TILE_PROTO_HDRS})
 if (MSVC)
-  set_source_files_properties(${VECTOR_TILE_PROTO_SRCS} vectortile/qgsvectortilemvtdecoder.cpp vectortile/qgsvectortilemvtencoder.cpp PROPERTIES COMPILE_DEFINITIONS PROTOBUF_USE_DLLS)
+  set_source_files_properties(${VECTOR_TILE_PROTO_SRCS} vectortile/qgsvectortilemvtdecoder.cpp vectortile/qgsvectortilemvtencoder.cpp vectortile/qgsvectortilewriter.cpp PROPERTIES COMPILE_DEFINITIONS PROTOBUF_USE_DLLS)
 else()
   # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
   set_source_files_properties(${VECTOR_TILE_PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)

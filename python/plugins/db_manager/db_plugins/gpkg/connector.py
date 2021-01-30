@@ -401,9 +401,10 @@ class GPKGDBConnector(DBConnector):
             sql = u"PRAGMA index_info(%s)" % (self.quoteId(name))
 
             idx = [num, name, unique]
-            cols = []
-            for seq, cid, cname in self._fetchAll(sql):
-                cols.append(cid)
+            cols = [
+                cid
+                for seq, cid, cname in self._fetchAll(sql)
+            ]
             idx.append(cols)
             indexes[i] = idx
 

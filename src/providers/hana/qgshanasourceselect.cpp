@@ -457,7 +457,7 @@ void QgsHanaSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString
 
 void QgsHanaSourceSelect::setLayerType( const QgsHanaLayerProperty &layerProperty )
 {
-  mTableModel.addTableEntry( layerProperty );
+  mTableModel.addTableEntry( mConnectionName, layerProperty );
 }
 
 QgsHanaSourceSelect::~QgsHanaSourceSelect()
@@ -495,6 +495,16 @@ void QgsHanaSourceSelect::populateConnectionList()
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
 }
 
+QStringList QgsHanaSourceSelect::selectedTables()
+{
+  return mSelectedTables;
+}
+
+QString QgsHanaSourceSelect::connectionInfo()
+{
+  return mConnectionInfo;
+}
+
 // Slot for performing action when the Add button is clicked
 void QgsHanaSourceSelect::addButtonClicked()
 {
@@ -506,7 +516,7 @@ void QgsHanaSourceSelect::addButtonClicked()
     if ( idx.column() != QgsHanaTableModel::DbtmTable )
       continue;
 
-    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), QgsHanaUtils::connectionInfo( mDataSrcUri ) );
+    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnectionName, mConnectionInfo );
     if ( uri.isNull() )
       continue;
 
@@ -536,10 +546,11 @@ void QgsHanaSourceSelect::btnConnect_clicked()
     return;
   }
 
+  const QString connName = cmbConnections->currentText();
+
   QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
-  const QString connName = cmbConnections->currentText();
   QgsHanaSettings settings( connName, true );
   settings.setAllowGeometrylessTables( cbxAllowGeometrylessTables->isChecked() );
 
@@ -554,12 +565,13 @@ void QgsHanaSourceSelect::btnConnect_clicked()
     return;
   }
 
-  mDataSrcUri = uri;
+  mConnectionName = connName;
+  mConnectionInfo = QgsHanaUtils::connectionInfo( uri );
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( settings.name(), uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
-  mColumnTypeTask = qgis::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( cmbConnections->currentText() ) );
+  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( mConnectionName, uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
+  mColumnTypeTask = qgis::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
   QgsApplication::taskManager()->addTask( mColumnTypeTask.get() );
 
   connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::setLayerType,
@@ -597,16 +609,6 @@ void QgsHanaSourceSelect::columnThreadFinished()
   finishList();
 }
 
-QStringList QgsHanaSourceSelect::selectedTables()
-{
-  return mSelectedTables;
-}
-
-QString QgsHanaSourceSelect::connectionInfo()
-{
-  return QgsHanaUtils::connectionInfo( mDataSrcUri );
-}
-
 void QgsHanaSourceSelect::refresh()
 {
   populateConnectionList();
@@ -621,7 +623,7 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
   }
 
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString uri = mTableModel.layerURI( idx, QgsHanaUtils::connectionInfo( mDataSrcUri ) );
+  QString uri = mTableModel.layerURI( idx, mConnectionName, mConnectionInfo );
   if ( uri.isNull() )
   {
     QgsDebugMsg( "no uri" );
@@ -659,13 +661,13 @@ void QgsHanaSourceSelect::setConnectionListPosition()
 
 void QgsHanaSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsHanaSourceSelect::treeWidgetSelectionChanged(
   const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( deselected );
+  Q_UNUSED( deselected )
   emit enableButtons( !selected.isEmpty() );
 }
 

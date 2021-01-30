@@ -336,7 +336,7 @@ bool QgsRasterLayerRenderer::render()
   QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
   mReadyToCompose = true;
 
-  return true;
+  return !mFeedback->isCanceled();
 }
 
 QgsFeedback *QgsRasterLayerRenderer::feedback() const
