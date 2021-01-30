@@ -66,6 +66,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     virtual QgsChunkNode *createRootNode() const override;
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    virtual int primitivesCount( QgsChunkNode *node ) override;
     const Qgs3DMapSettings &mMap;
     QgsPointCloudIndex *mPointCloudIndex;
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
@@ -123,7 +124,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
+    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, bool showBoundingBoxes,
         double zValueScale, double zValueOffset, int pointBudget );
 
     ~QgsPointCloudLayerChunkedEntity();

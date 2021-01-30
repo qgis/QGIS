@@ -77,6 +77,9 @@ class QgsChunkLoaderFactory  : public QObject
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const = 0;
 
+    //! Returns the primitives count for the chunk \a node
+    virtual int primitivesCount( QgsChunkNode *node ) { return 0; }
+
     //! Creates root node of the hierarchy. Ownership of the returned object is passed to the caller.
     virtual QgsChunkNode *createRootNode() const = 0;
     //! Creates child nodes for the given node. Ownership of the returned objects is passed to the caller.

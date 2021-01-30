@@ -383,15 +383,12 @@ void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt
 
 void Qgs3DMapScene::updateScene()
 {
-  QElapsedTimer t;
-  t.start();
   QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
   }
-  qDebug() << "Time taken to update" << t.elapsed();
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   QgsWindow3DEngine *windowEngine = qobject_cast<QgsWindow3DEngine *>( mEngine );
   if ( windowEngine != nullptr )
