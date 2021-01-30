@@ -293,7 +293,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         self.assertNotEquals(conn.tables('public', QgsAbstractDatabaseProviderConnection.Foreign | QgsAbstractDatabaseProviderConnection.Aspatial), [])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Disabled on Travis')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true' or os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Disabled on Travis')
     def test_foreign_table_server(self):
         """Test foreign table with server"""
 

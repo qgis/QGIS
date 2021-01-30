@@ -1635,7 +1635,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         self.assertTrue('ServerException' in str(r))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true' or os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Can\'t rely on external resources for continuous integration')
     def test_wms_getmap_external(self):
         # 1 bits

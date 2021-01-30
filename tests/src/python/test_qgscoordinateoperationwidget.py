@@ -116,7 +116,7 @@ class TestQgsCoordinateOperationWidget(unittest.TestCase):
         self.assertFalse(w.selectedOperation().allowFallback)
         self.assertEqual(len(spy), 8)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true' or QgsProjUtils.projVersionMajor() >= 6, 'Depends on local environment and grid presence')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true' or os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true') or QgsProjUtils.projVersionMajor() >= 6, 'Depends on local environment and grid presence')
     def testOperationsCruftyProj(self):
         w = QgsCoordinateOperationWidget()
         self.assertFalse(w.hasSelection())

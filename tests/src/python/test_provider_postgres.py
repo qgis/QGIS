@@ -2384,7 +2384,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         feature = next(vl.getFeatures())
         self.assertIsNotNone(feature.id())
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test flaky')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true' or os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test flaky')
     def testDefaultValuesAndClauses(self):
         """Test whether default values like CURRENT_TIMESTAMP or
         now() they are respected. See GH #33383"""
