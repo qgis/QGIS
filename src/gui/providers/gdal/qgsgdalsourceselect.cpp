@@ -268,10 +268,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
     return;
 
   GDALDriverH hDriver;
-  if ( STARTS_WITH_CI( mDataSources[0].toUtf8().toStdString().c_str(), "PG:" ) )
-    hDriver = GDALGetDriverByName( "PostgreSQL" ); // otherwise the PostgisRaster driver gets identified
-  else
-    hDriver = GDALIdentifyDriver( mDataSources[0].toUtf8().toStdString().c_str(), nullptr );
+  hDriver = GDALIdentifyDriver( mDataSources[0].toUtf8().toStdString().c_str(), nullptr );
   if ( hDriver == nullptr )
     return;
 
@@ -289,8 +286,6 @@ void QgsGdalSourceSelect::fillOpenOptions()
     return;
   }
 
-  const bool bIsGPKG = EQUAL( GDALGetDriverShortName( hDriver ), "GPKG" );
-
   for ( auto psItem = psOpenOptionList->psChild; psItem != nullptr; psItem = psItem->psNext )
   {
     if ( psItem->eType != CXT_Element || !EQUAL( psItem->pszValue, "Option" ) )
@@ -303,12 +298,6 @@ void QgsGdalSourceSelect::fillOpenOptions()
     // Exclude options that are not of raster scope
     const char *pszScope = CPLGetXMLValue( psItem, "scope", nullptr );
     if ( pszScope != nullptr && strstr( pszScope, "raster" ) == nullptr )
-      continue;
-
-    // The GPKG driver list a lot of options that are only for rasters
-    if ( bIsGPKG && strstr( pszOpenOptionList, "scope=" ) == nullptr &&
-         !EQUAL( pszOptionName, "LIST_ALL_TABLES" ) &&
-         !EQUAL( pszOptionName, "PRELUDE_STATEMENTS" ) )
       continue;
 
     const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
