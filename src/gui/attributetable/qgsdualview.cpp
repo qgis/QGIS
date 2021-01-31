@@ -965,8 +965,8 @@ void QgsDualView::resizeAllColumns()
 
   bool ok = false;
   int width = QInputDialog::getInt( this, tr( "Set Column Width" ), tr( "Enter column width" ),
-                                      mTableView->columnWidth( col ),
-                                      1, 1000, 10, &ok );
+                                    mTableView->columnWidth( col ),
+                                    1, 1000, 10, &ok );
   if ( ok )
   {
     const int colCount = mTableView->model()->columnCount();
