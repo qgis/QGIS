@@ -559,6 +559,11 @@ Returns whether provider-level resampling is enabled.
       Nearest,
       Bilinear,
       Cubic,
+      CubicSpline,
+      Lanczos,
+      Average,
+      Mode,
+      Gauss
     };
 
     virtual bool setZoomedInResamplingMethod( ResamplingMethod method );

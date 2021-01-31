@@ -18,6 +18,8 @@
 #ifndef QGSRESAMPLINGUTILS_H
 #define QGSRESAMPLINGUTILS_H
 
+#include "qgis_gui.h"
+#include <QObject>
 
 class QgsRasterLayer;
 class QComboBox;
@@ -32,8 +34,10 @@ class QCheckBox;
  * QgsRenderedRasterPropertiesWidget to deal with widgets related to
  * resampling settings.
  */
-class QgsResamplingUtils
+class GUI_EXPORT QgsResamplingUtils : public QObject
 {
+    Q_OBJECT
+
     QgsRasterLayer *mRasterLayer = nullptr;
     QComboBox *mZoomedInResamplingComboBox = nullptr;
     QComboBox *mZoomedOutResamplingComboBox = nullptr;
@@ -59,6 +63,12 @@ class QgsResamplingUtils
 
     //! Synchronize QgsRasterLayer state from widgets
     void refreshLayerFromWidgets();
+
+  private:
+
+    void addExtraEarlyResamplingMethodsToCombos();
+    void removeExtraEarlyResamplingMethodsFromCombos();
+
 };
 
 ///@endcond PRIVATE
