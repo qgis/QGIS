@@ -52,7 +52,13 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
 
   private:
 
+    void computeDataSources();
+    void clearOpenOptions();
+    void fillOpenOptions();
+    std::vector<QWidget *> mOpenOptionsWidgets;
+
     QString mRasterPath;
+    QStringList mDataSources;
 
 };
 
