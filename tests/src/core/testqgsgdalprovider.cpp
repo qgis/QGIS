@@ -117,7 +117,7 @@ void TestQgsGdalProvider::encodeUri()
   QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg" ) );
 
   parts.insert( QStringLiteral( "layerName" ), QStringLiteral( "layername" ) );
-  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "GPKG:/home/user/test.gpkg:layername" ) );
 }
 
 void TestQgsGdalProvider::scaleDataType()
