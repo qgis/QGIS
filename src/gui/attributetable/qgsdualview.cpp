@@ -970,7 +970,7 @@ void QgsDualView::resizeAllColumns()
   if ( ok )
   {
     const int colCount = mTableView->model()->columnCount();
-    if ( colCount > 0)
+    if ( colCount > 0 )
     {
       for ( int i = 0; i < colCount; i++ )
       {
