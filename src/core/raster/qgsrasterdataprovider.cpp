@@ -570,6 +570,26 @@ static QgsRasterDataProvider::ResamplingMethod resamplingMethodFromString( const
   {
     return QgsRasterDataProvider::ResamplingMethod::Cubic;
   }
+  else if ( str == QLatin1String( "cubicSpline" ) )
+  {
+    return QgsRasterDataProvider::ResamplingMethod::CubicSpline;
+  }
+  else if ( str == QLatin1String( "lanczos" ) )
+  {
+    return QgsRasterDataProvider::ResamplingMethod::Lanczos;
+  }
+  else if ( str == QLatin1String( "average" ) )
+  {
+    return QgsRasterDataProvider::ResamplingMethod::Average;
+  }
+  else if ( str == QLatin1String( "mode" ) )
+  {
+    return QgsRasterDataProvider::ResamplingMethod::Mode;
+  }
+  else if ( str == QLatin1String( "gauss" ) )
+  {
+    return QgsRasterDataProvider::ResamplingMethod::Gauss;
+  }
   return  QgsRasterDataProvider::ResamplingMethod::Nearest;
 }
 
@@ -594,9 +614,22 @@ static QString resamplingMethodToString( QgsRasterDataProvider::ResamplingMethod
 {
   switch ( method )
   {
-    case QgsRasterDataProvider::ResamplingMethod::Nearest : return QStringLiteral( "nearestNeighbour" );
-    case QgsRasterDataProvider::ResamplingMethod::Bilinear : return QStringLiteral( "bilinear" );
-    case QgsRasterDataProvider::ResamplingMethod::Cubic : return QStringLiteral( "cubic" );
+    case QgsRasterDataProvider::ResamplingMethod::Nearest:
+      return QStringLiteral( "nearestNeighbour" );
+    case QgsRasterDataProvider::ResamplingMethod::Bilinear:
+      return QStringLiteral( "bilinear" );
+    case QgsRasterDataProvider::ResamplingMethod::Cubic:
+      return QStringLiteral( "cubic" );
+    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
+      return QStringLiteral( "cubicSpline" );
+    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
+      return QStringLiteral( "lanczos" );
+    case QgsRasterDataProvider::ResamplingMethod::Average:
+      return QStringLiteral( "average" );
+    case QgsRasterDataProvider::ResamplingMethod::Mode:
+      return QStringLiteral( "mode" );
+    case QgsRasterDataProvider::ResamplingMethod::Gauss:
+      return QStringLiteral( "gauss" );
   }
   // should not happen
   return QStringLiteral( "nearestNeighbour" );

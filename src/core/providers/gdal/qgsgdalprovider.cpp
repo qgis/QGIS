@@ -802,6 +802,26 @@ static GDALRIOResampleAlg getGDALResamplingAlg( QgsGdalProvider::ResamplingMetho
     case QgsGdalProvider::ResamplingMethod::Cubic:
       eResampleAlg = GRIORA_Cubic;
       break;
+
+    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
+      eResampleAlg = GRIORA_CubicSpline;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
+      eResampleAlg = GRIORA_Lanczos;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Average:
+      eResampleAlg = GRIORA_Average;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Mode:
+      eResampleAlg = GRIORA_Mode;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Gauss:
+      eResampleAlg = GRIORA_Gauss;
+      break;
   }
 
   return eResampleAlg;
