@@ -1971,12 +1971,12 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
       GDALClose( mGdalDataset );
       //mGdalBaseDataset = GDALOpen( QFile::encodeName( dataSourceUri() ).constData(), GA_Update );
 
-      mGdalBaseDataset = gdalOpen( dataSourceUri( true ).toUtf8().constData(), GA_Update );
+      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_UPDATE );
 
       // if the dataset couldn't be opened in read / write mode, tell the user
       if ( !mGdalBaseDataset )
       {
-        mGdalBaseDataset = gdalOpen( dataSourceUri( true ).toUtf8().constData(), GA_ReadOnly );
+        mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_READONLY );
         //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
         mGdalDataset = mGdalBaseDataset;
         return QStringLiteral( "ERROR_WRITE_FORMAT" );
@@ -2085,7 +2085,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
       //something bad happenend
       //QString myString = QString (CPLGetLastError());
       GDALClose( mGdalBaseDataset );
-      mGdalBaseDataset = gdalOpen( dataSourceUri( true ).toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
 
@@ -2137,7 +2137,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
     QgsDebugMsgLevel( QStringLiteral( "Reopening dataset ..." ), 2 );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
-    mGdalBaseDataset = gdalOpen( dataSourceUri( true ).toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+    mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
@@ -2322,40 +2322,12 @@ QStringList QgsGdalProvider::subLayers() const
 
 QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri ) const
 {
-  QString path = uri;
-  QString layerName;
-
-  QString vsiPrefix = qgsVsiPrefix( path );
-  if ( !path.isEmpty() )
-    path = path.mid( vsiPrefix.count() );
-
-  if ( path.indexOf( ':' ) != -1 )
-  {
-    QStringList parts = path.split( ':' );
-    if ( parts[0].toLower() == QLatin1String( "gpkg" ) )
-    {
-      parts.removeFirst();
-      // Handle windows paths - which has an extra colon - and unix paths
-      if ( ( parts[0].length() > 1 && parts.count() > 1 ) || parts.count() > 2 )
-      {
-        layerName = parts[parts.length() - 1];
-        parts.removeLast();
-      }
-      path  = parts.join( ':' );
-    }
-  }
-
-  QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), path );
-  uriComponents.insert( QStringLiteral( "layerName" ), layerName );
-  return uriComponents;
+  return QgsGdalProviderBase::decodeGdalUri( uri );
 }
 
 QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
-  return path + ( !layerName.isEmpty() ? QStringLiteral( "|%1" ).arg( layerName ) : QString() );
+  return  QgsGdalProviderBase::encodeGdalUri( parts );
 }
 
 bool QgsGdalProviderMetadata::uriIsBlocklisted( const QString &uri ) const
@@ -2608,7 +2580,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
 
   //open the file using gdal making sure we have handled locale properly
   //myDataset = GDALOpen( QFile::encodeName( fileNameQString ).constData(), GA_ReadOnly );
-  myDataset.reset( QgsGdalProviderBase::gdalOpen( fileName.toUtf8().constData(), GA_ReadOnly ) );
+  myDataset.reset( QgsGdalProviderBase::gdalOpen( fileName, GDAL_OF_READONLY ) );
   if ( !myDataset )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
@@ -2908,7 +2880,7 @@ bool QgsGdalProvider::initIfNeeded()
   gdalUri = dataSourceUri( true );
 
   CPLErrorReset();
-  mGdalBaseDataset = gdalOpen( gdalUri.toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+  mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
 
   if ( !mGdalBaseDataset )
   {
@@ -3503,7 +3475,7 @@ bool QgsGdalProvider::setEditable( bool enabled )
   mUpdate = enabled;
 
   // reopen the dataset
-  mGdalBaseDataset = gdalOpen( dataSourceUri( true ).toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+  mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
   if ( !mGdalBaseDataset )
   {
     QString msg = QStringLiteral( "Cannot reopen GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
