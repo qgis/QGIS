@@ -969,10 +969,10 @@ void QgsDualView::resizeAllColumns()
                                       1, 1000, 10, &ok );
   if ( ok )
   {
-    int col_count = mTableView->model()->columnCount();
-    if ( col_count > 0)
+    const int colCount = mTableView->model()->columnCount();
+    if ( colCount > 0)
     {
-      for ( int i=0; i<col_count; i++ )
+      for ( int i = 0; i < colCount; i++ )
       {
         config.setColumnWidth( i, width );
       }
