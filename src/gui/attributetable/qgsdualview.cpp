@@ -866,7 +866,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   setWidth->setData( col );
   mHorizontalHeaderMenu->addAction( setWidth );
 
-  QAction *setWidthAllColumns = new QAction( tr( "&Set Width All..." ), mHorizontalHeaderMenu );
+  QAction *setWidthAllColumns = new QAction( tr( "&Set All Column Widths…" ), mHorizontalHeaderMenu );
   connect( setWidthAllColumns, &QAction::triggered, this, &QgsDualView::resizeAllColumns );
   setWidthAllColumns->setData( col );
   mHorizontalHeaderMenu->addAction( setWidthAllColumns );
