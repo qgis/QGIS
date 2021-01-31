@@ -990,7 +990,7 @@ void QgsDualView::autosizeColumn()
 
 void QgsDualView::autosizeAllColumns()
 {
-    mTableView->resizeColumnsToContents();
+  mTableView->resizeColumnsToContents();
 }
 
 bool QgsDualView::modifySort()
