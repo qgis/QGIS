@@ -964,7 +964,7 @@ void QgsDualView::resizeAllColumns()
   QgsAttributeTableConfig config = mConfig;
 
   bool ok = false;
-  int width = QInputDialog::getInt( this, tr( "Set column width" ), tr( "Enter column width" ),
+  int width = QInputDialog::getInt( this, tr( "Set Column Width" ), tr( "Enter column width" ),
                                       mTableView->columnWidth( col ),
                                       1, 1000, 10, &ok );
   if ( ok )
