@@ -304,8 +304,8 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
 void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas )
 {
   const QList<QgsMapLayer *> layers = mView->selectedLayers();
-  if ( layers.isEmpty() )
-    return;
+//  if ( layers.isEmpty() )
+//    return;
 
   zoomToLayers( canvas, layers );
 }
@@ -375,30 +375,41 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
   QgsRectangle extent;
   extent.setMinimal();
 
-  for ( int i = 0; i < layers.size(); ++i )
+  if ( layers.size() >= 1 )
   {
-    QgsMapLayer *layer = layers.at( i );
-    QgsRectangle layerExtent = layer->extent();
-
-    QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vLayer )
+    for ( int i = 0; i < layers.size(); ++i )
     {
-      if ( vLayer->geometryType() == QgsWkbTypes::NullGeometry )
+      QgsMapLayer *layer = layers.at( i );
+      QgsRectangle layerExtent = layer->extent();
+
+      QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( vLayer )
+      {
+        if ( vLayer->geometryType() == QgsWkbTypes::NullGeometry )
+          continue;
+
+        if ( layerExtent.isEmpty() )
+        {
+          vLayer->updateExtents();
+          layerExtent = vLayer->extent();
+        }
+      }
+
+      if ( layerExtent.isNull() )
         continue;
 
-      if ( layerExtent.isEmpty() )
-      {
-        vLayer->updateExtents();
-        layerExtent = vLayer->extent();
-      }
+      //transform extent
+      layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
+
+      extent.combineExtentWith( layerExtent );
     }
+  }
 
-    if ( layerExtent.isNull() )
-      continue;
-
-    //transform extent
-    layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
-
+  // If no layer is selected, use current layer
+  else
+  {
+    QgsRectangle layerExtent = mView->currentLayer()->extent();
+    layerExtent = canvas->mapSettings().layerExtentToOutputExtent( mView->currentLayer(), layerExtent );
     extent.combineExtentWith( layerExtent );
   }
 
