@@ -83,4 +83,7 @@ QtObject {
     property var back: QgsQuick.Utils.getThemeIcon("ic_back")
   }
 
+  property QtObject checkboxComponent: QtObject {
+    property color baseColor: "black"
+  }
 }

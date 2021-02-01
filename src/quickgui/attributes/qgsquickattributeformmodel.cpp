@@ -77,6 +77,11 @@ void QgsQuickAttributeFormModel::forceClean()
   mSourceModel->forceClean();
 }
 
+void QgsQuickAttributeFormModel::setRememberValuesAllowed( bool rememberValuesAllowed )
+{
+  mSourceModel->setRememberValuesAllowed( rememberValuesAllowed );
+}
+
 bool QgsQuickAttributeFormModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   return mSourceModel->data( mSourceModel->index( source_row, 0, source_parent ), CurrentlyVisible ).toBool();

@@ -11,6 +11,7 @@ set(QGIS_QUICK_PLUGIN_SRC
 
 set(QGIS_QUICK_PLUGIN_RESOURCES
   components/qgsquickicontextitem.qml
+  components/qgsquickcheckboxcomponent.qml
   editor/qgsquickeditorwidgetcombobox.qml
   editor/qgsquickcheckbox.qml
   editor/qgsquickdatetime.qml

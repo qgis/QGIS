@@ -194,6 +194,11 @@ Item {
   }
 
   /**
+    * Forward change about remembering values to model
+    */
+  onAllowRememberAttributeChanged: form.model.rememberValuesAllowed = allowRememberAttribute
+
+  /**
    * This is a relay to forward private signals to internal components.
    */
   QtObject {
@@ -415,7 +420,7 @@ Item {
       Item {
         id: placeholder
         height: childrenRect.height
-        anchors { left: parent.left; right: rememberCheckbox.left; top: constraintDescriptionLabel.bottom }
+        anchors { left: parent.left; right: rememberCheckboxContainer.left; top: constraintDescriptionLabel.bottom }
 
         Loader {
           id: attributeEditorLoader
@@ -488,17 +493,35 @@ Item {
         }
       }
 
-      CheckBox {
-        id: rememberCheckbox
-        checked: RememberValue ? true : false
-
+      Item {
+        id: rememberCheckboxContainer
         visible: form.allowRememberAttribute && form.state === "Add" && EditorWidget !== "Hidden"
-        width: visible ? undefined : 0
 
-        anchors { right: parent.right; top: fieldLabel.bottom }
+        implicitWidth: visible ? 40 * QgsQuick.Utils.dp : 0
+        implicitHeight: placeholder.height
 
-        onCheckedChanged: {
-          RememberValue = checked
+        anchors {
+          top: constraintDescriptionLabel.bottom
+          right: parent.right
+        }
+
+        QgsQuick.CheckboxComponent {
+          id: rememberCheckbox
+          visible: rememberCheckboxContainer.visible
+          baseColor: form.style.checkboxComponent.baseColor
+
+          implicitWidth: 40 * QgsQuick.Utils.dp
+          implicitHeight: width
+          x: -5 // hack to get over placeholder spacing
+          y: rememberCheckboxContainer.height/2 - rememberCheckbox.height/2
+
+          onCheckboxClicked: RememberValue = buttonState
+          checked: RememberValue ? true : false
+        }
+
+        MouseArea {
+          anchors.fill: parent
+          onClicked: rememberCheckbox.checkboxClicked( !rememberCheckbox.checkState )
         }
       }
     }

@@ -108,6 +108,9 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     //! Resets the model
     Q_INVOKABLE void forceClean();
 
+    //! Allows or forbids attribute model to reuse last entered values
+    void setRememberValuesAllowed( bool rememberValuesAllowed );
+
   signals:
     //! \copydoc QgsQuickAttributeFormModelBase::attributeModel
     void attributeModelChanged();

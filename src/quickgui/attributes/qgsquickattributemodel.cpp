@@ -25,6 +25,8 @@ QgsQuickAttributeModel::QgsQuickAttributeModel( QObject *parent )
   connect( this, &QgsQuickAttributeModel::modelReset, this, &QgsQuickAttributeModel::featureLayerPairChanged );
   connect( this, &QgsQuickAttributeModel::featureChanged, this, &QgsQuickAttributeModel::featureLayerPairChanged );
   connect( this, &QgsQuickAttributeModel::layerChanged, this, &QgsQuickAttributeModel::featureLayerPairChanged );
+  connect( this, &QgsQuickAttributeModel::featureCreated, this, &QgsQuickAttributeModel::onFeatureCreated );
+  connect( this, &QgsQuickAttributeModel::rememberValuesAllowChanged, this, &QgsQuickAttributeModel::onRememberValuesAllowChanged );
 }
 
 QgsQuickFeatureLayerPair QgsQuickAttributeModel::featureLayerPair() const
@@ -40,10 +42,34 @@ void QgsQuickAttributeModel::setFeatureLayerPair( const QgsQuickFeatureLayerPair
 
 void QgsQuickAttributeModel::forceClean()
 {
-  mRememberedAttributes.clear();
+  mRememberedValues.clear();
   mFeatureLayerPair = QgsQuickFeatureLayerPair();
 }
 
+void QgsQuickAttributeModel::onFeatureCreated( const QgsFeature &feature )
+{
+  if ( mRememberValuesAllowed )
+  {
+    QString layerName = mFeatureLayerPair.layer()->id();
+
+    // save created feature to remember values
+    if ( mRememberedValues.contains( layerName ) )
+    {
+      mRememberedValues[layerName].feature = feature;
+    }
+  }
+}
+
+void QgsQuickAttributeModel::onRememberValuesAllowChanged()
+{
+  if ( mRememberValuesAllowed ) // add current layer
+  {
+    if ( mFeatureLayerPair.layer() )
+      mRememberedValues[mFeatureLayerPair.layer()->id()].attributeFilter.fill( false, mFeatureLayerPair.layer()->fields().size() );
+  }
+  else
+    mRememberedValues.clear();
+}
 
 void QgsQuickAttributeModel::setVectorLayer( QgsVectorLayer *layer )
 {
@@ -53,19 +79,30 @@ void QgsQuickAttributeModel::setVectorLayer( QgsVectorLayer *layer )
   beginResetModel();
   mFeatureLayerPair = QgsQuickFeatureLayerPair( mFeatureLayerPair.feature(), layer );
 
-
-  if ( const QgsVectorLayer *lLayer = mFeatureLayerPair.layer() )
+  if ( mRememberValuesAllowed )
   {
-    mRememberedAttributes.resize( lLayer->fields().size() );
-    mRememberedAttributes.fill( false );
-  }
-  else
-  {
-    mRememberedAttributes.clear();
+    if ( layer && !mRememberedValues.contains( layer->id() ) )
+    {
+      mRememberedValues[layer->id()].attributeFilter.fill( false, layer->fields().size() );
+    }
   }
 
   endResetModel();
   emit layerChanged();
+}
+
+void QgsQuickAttributeModel::prefillRememberedValues()
+{
+  RememberedValues from = mRememberedValues[mFeatureLayerPair.layer()->id()];
+  if ( !from.feature.isValid() )
+    return;
+
+  QgsAttributes fromAttributes = from.feature.attributes();
+  for ( int i = 0; i < fromAttributes.length(); i++ )
+  {
+    if ( from.attributeFilter.at( i ) )
+      mFeatureLayerPair.featureRef().setAttribute( i, fromAttributes.at( i ) );
+  }
 }
 
 void QgsQuickAttributeModel::setFeature( const QgsFeature &feature )
@@ -75,8 +112,11 @@ void QgsQuickAttributeModel::setFeature( const QgsFeature &feature )
 
   beginResetModel();
   mFeatureLayerPair = QgsQuickFeatureLayerPair( feature, mFeatureLayerPair.layer() );
-  endResetModel();
 
+  if ( mRememberValuesAllowed && FID_IS_NULL( mFeatureLayerPair.feature().id() ) ) // this is a new feature
+    prefillRememberedValues();
+
+  endResetModel();
   emit featureChanged();
 }
 
@@ -117,7 +157,10 @@ QVariant QgsQuickAttributeModel::data( const QModelIndex &index, int role ) cons
       break;
 
     case RememberAttribute:
-      return mRememberedAttributes.at( index.row() );
+      if ( mRememberValuesAllowed )
+        return mRememberedValues[mFeatureLayerPair.layer()->id()].attributeFilter.at( index.row() );
+      else
+        return QVariant( false );
       break;
   }
 
@@ -150,8 +193,11 @@ bool QgsQuickAttributeModel::setData( const QModelIndex &index, const QVariant &
 
     case RememberAttribute:
     {
-      mRememberedAttributes[ index.row() ] = value.toBool();
-      emit dataChanged( index, index, QVector<int>() << role );
+      if ( mRememberValuesAllowed )
+      {
+        mRememberedValues[mFeatureLayerPair.layer()->id()].attributeFilter[index.row()] = value.toBool();
+        emit dataChanged( index, index, QVector<int>() << role );
+      }
       break;
     }
   }
@@ -251,7 +297,7 @@ void QgsQuickAttributeModel::resetAttributes()
   beginResetModel();
   for ( int i = 0; i < fields.count(); ++i )
   {
-    if ( !mRememberedAttributes.at( i ) )
+    if ( !mRememberValuesAllowed || !mRememberedValues[mFeatureLayerPair.layer()->id()].attributeFilter.at( i ) )
     {
       if ( !fields.at( i ).defaultValueDefinition().expression().isEmpty() )
       {
@@ -300,6 +346,8 @@ void QgsQuickAttributeModel::create()
                                Qgis::Critical );
   }
   commit();
+
+  emit featureCreated( mFeatureLayerPair.featureRef() );
 }
 
 bool QgsQuickAttributeModel::commit()
@@ -337,7 +385,27 @@ bool QgsQuickAttributeModel::startEditing()
   }
 }
 
-QVector<bool> QgsQuickAttributeModel::rememberedAttributes() const
+void QgsQuickAttributeModel::setRememberValuesAllowed( bool allowed )
 {
-  return mRememberedAttributes;
+  if ( allowed == mRememberValuesAllowed )
+    return;
+
+  mRememberValuesAllowed = allowed;
+  emit rememberValuesAllowChanged();
+}
+
+bool QgsQuickAttributeModel::rememberValuesAllowed() const
+{
+  return mRememberValuesAllowed;
+}
+
+bool QgsQuickAttributeModel::isFieldRemembered( const int fieldIndex ) const
+{
+  if ( !mRememberValuesAllowed || !mFeatureLayerPair.layer() || !mRememberedValues.contains( mFeatureLayerPair.layer()->id() ) )
+    return false;
+
+  if ( fieldIndex < 0 || fieldIndex > mRememberedValues[mFeatureLayerPair.layer()->id()].attributeFilter.size() )
+    return false;
+
+  return mRememberedValues[mFeatureLayerPair.layer()->id()].attributeFilter.at( fieldIndex );
 }
