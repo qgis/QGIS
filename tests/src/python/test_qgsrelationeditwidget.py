@@ -102,6 +102,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
     def tearDown(self):
         self.rollbackTransaction()
         del self.transaction
+        QgsProject.instance().removeAllMapLayers()
 
     def test_delete_feature(self):
         """
