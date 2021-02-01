@@ -744,12 +744,19 @@ class CORE_EXPORT QgsAbstractFeatureSource
   public:
     virtual ~QgsAbstractFeatureSource();
 
+
+    // IMPORTANT -- do NOT remove the /TransferBack/ annotation here -- while it looks completely wrong, it's
+    // required for Python data providers to work correctly! Argh!
+
     /**
      * Gets an iterator for features matching the specified request
      * \param request The request
      * \returns A feature iterator
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0 SIP_TRANSFERBACK;
+
+    // IMPORTANT -- do NOT remove the /TransferBack/ annotation here -- while it looks completely wrong, it's
+    // required for Python data providers to work correctly! Argh!
 
   protected:
     void iteratorOpened( QgsAbstractFeatureIterator *it );
