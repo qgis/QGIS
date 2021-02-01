@@ -437,11 +437,12 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
   }
 
   QString qBox;
+  const QString bboxSrid = mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid;
   if ( mConn->majorVersion() < 2 )
   {
     qBox = QStringLiteral( "setsrid('BOX3D(%1)'::box3d,%2)" )
            .arg( rect.asWktCoordinates(),
-                 mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
+                 bboxSrid );
   }
   else
   {
@@ -450,7 +451,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                  qgsDoubleToString( rect.yMinimum() ),
                  qgsDoubleToString( rect.xMaximum() ),
                  qgsDoubleToString( rect.yMaximum() ),
-                 mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
+                 bboxSrid );
   }
 
   bool castToGeometry = mSource->mSpatialColType == SctGeography ||
@@ -460,6 +461,79 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                         .arg( QgsPostgresConn::quotedIdentifier( mSource->mBoundingBoxColumn ),
                               castToGeometry ? "::geometry" : "",
                               qBox );
+
+  // For geography type, using a && filter with the geography column cast as
+  // geometry prevents the use of a spatial index. So for "small" filtering
+  // bounding boxes, use the filtering in the geography space. But a bbox in
+  // geography uses geodesic arcs, and not rhumb lines, so we must expand a bit the QGIS
+  // bounding box (which assumes rhumb lines) to the south in the northern hemisphere
+  // See https://trac.osgeo.org/postgis/ticket/2495 for some background
+  if ( mConn->majorVersion() >= 2 &&
+       mSource->mSpatialColType == SctGeography &&
+       bboxSrid == QLatin1String( "4326" ) &&
+       std::fabs( rect.yMaximum()  - rect.yMinimum() ) <= 10 &&
+       std::fabs( rect.xMaximum()  - rect.xMinimum() ) <= 10 &&
+       std::fabs( rect.yMaximum() ) <= 70 )
+  {
+    /* The following magic constant has been obtained by running :
+        #include "geodesic.h"
+        #include <math.h>
+        #include <stdio.h>
+
+        int main()
+        {
+            struct geod_geodesic g;
+            struct geod_geodesicline l;
+            int i;
+            geod_init(&g, 6378137, 1/298.257223563);
+            double lat1 = 60;
+            double lon1 = 0;
+            double lat2 = 70;
+            double lon2 = 10;
+            geod_inverseline(&l, &g, lat1, lon1, lat2, lon2, 0);
+            double maxdlat = 0;
+            for (i = 0; i <= 100; ++i)
+            {
+                double lat, lon;
+                geod_position(&l, i * l.s13 * 0.01, &lat, &lon, 0);
+                double alpha = (lon - lon1) / (lon2 - lon1);
+                double lat_rhumb = lat1 + (lat2 - lat1) * alpha;
+                double dlat = lat - lat_rhumb;
+                if( fabs(dlat) > fabs(maxdlat) )
+                    maxdlat = dlat;
+                //printf("%f: %f %f delta=%f\n", lon, lat, lat_rhumb, dlat);
+            }
+            printf("maxdlat = %f\n", maxdlat);
+            return 0;
+        }
+    */
+    // And noticing that the difference between the rhumb line and the geodesics
+    // increases with higher latitude maximum, and differences of longitude and latitude.
+    // We could perhaps get a formula that would give dlat as a function of
+    // delta_lon, delta_lat and max(lat), but those maximum values should be good
+    // enough for now.
+    double dlat = 1.04;
+
+    // For smaller filtering bounding box, use smaller bbox expansion
+    if ( std::fabs( rect.yMaximum()  - rect.yMinimum() ) <= 1 &&
+         std::fabs( rect.xMaximum()  - rect.xMinimum() ) <= 1 )
+    {
+      // Value got by changing lat1 to 69 and lon2 to 1 in the above code snippet
+      dlat = 0.013;
+    }
+    // In the northern hemisphere, extends the geog bbox to the south
+    const double yminGeog = rect.yMinimum() >= 0 ? std::max( 0.0, rect.yMinimum() - dlat ) : rect.yMinimum();
+    const double ymaxGeog = rect.yMaximum() >= 0 ? rect.yMaximum() : std::min( 0.0, rect.yMaximum() + dlat );
+    const QString qBoxGeog = QStringLiteral( "st_makeenvelope(%1,%2,%3,%4,%5)" )
+                             .arg( qgsDoubleToString( rect.xMinimum() ),
+                                   qgsDoubleToString( yminGeog ),
+                                   qgsDoubleToString( rect.xMaximum() ),
+                                   qgsDoubleToString( ymaxGeog ),
+                                   bboxSrid );
+    whereClause += QStringLiteral( " AND %1 && %2" )
+                   .arg( QgsPostgresConn::quotedIdentifier( mSource->mBoundingBoxColumn ),
+                         qBoxGeog );
+  }
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
@@ -488,6 +562,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
     whereClause += QStringLiteral( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, ( QgsWkbTypes::Type )mSource->mRequestedGeomType, castToGeometry ) );
   }
 
+  QgsDebugMsgLevel( QStringLiteral( "whereClause = %1" ).arg( whereClause ), 4 );
   return whereClause;
 }
 
