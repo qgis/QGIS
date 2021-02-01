@@ -102,6 +102,7 @@ jobs:
                      -v $(pwd):/root/QGIS \
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
+                     --env PUSH_TO_CDASH=true \
                      qgis/qgis3-build-deps:${DOCKER_TAG} \
                      /root/QGIS/.docker/docker-qgis-build.sh
           docker commit qgis_container qgis_image
