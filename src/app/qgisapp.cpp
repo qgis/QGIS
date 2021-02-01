@@ -14628,13 +14628,8 @@ bool QgisApp::selectedLayersHaveSelection()
   // If no selected layers, use active layer
   if ( layers.size() == 0 )
   {
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-
-    if ( layer && layer->selectedFeatureCount() == 0 )
-      return false;
-
-    if ( layer && layer->selectedFeatureCount() > 0 )
-      return true;
+    if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( activeLayer() ) )
+      return layer->selectedFeatureCount() > 0;
   }
 
   for ( QgsMapLayer *mapLayer : layers )
@@ -14671,9 +14666,12 @@ bool QgisApp::selectedLayersHaveSpatial()
 
 void QgisApp::activateDeactivateMultipleLayersRelatedActions()
 {
-  mActionZoomToLayers->setEnabled( selectedLayersHaveSpatial() );
-  mActionZoomToSelected->setEnabled( selectedLayersHaveSelection() );
-  mActionPanToSelected->setEnabled( selectedLayersHaveSelection() );
+  const bool hasSpatial = selectedLayersHaveSpatial();
+  const bool hasSelection = selectedLayersHaveSelection();
+
+  mActionZoomToLayers->setEnabled( hasSpatial );
+  mActionZoomToSelected->setEnabled( hasSelection );
+  mActionPanToSelected->setEnabled( hasSpatial );
 }
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
