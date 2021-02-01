@@ -7,9 +7,9 @@ services:
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
 # The following files are added in Dockerfile-postgis
-      - SSL_CERT_FILE=/etc/ssl/certs/postgres_cert.crt
-      - SSL_KEY_FILE=/etc/ssl/private/postgres_key.key
-      - SSL_CA_FILE=/etc/ssl/certs/issuer_ca_cert.pem
+      - SSL_CERT_FILE=/etc/ssl/certs/postgres.crt
+      - SSL_KEY_FILE=/etc/ssl/private/postgres.key
+      - SSL_CA_FILE=/etc/ssl/certs/qgis_ca.crt
 
 #  oracle:
 #    image: oslandia/oracle-for-qgis-tests-configured:18.4.0-xe
@@ -20,6 +20,7 @@ services:
 #      - ORACLE_CHARACTERSET=AL32UTF8
 #    ports:
 #      - 1521:1521
+
 
 # Proving very fragile!
 #  mssql:
