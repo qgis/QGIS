@@ -96,13 +96,19 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         assert(cls.vl_editors.isValid())
         assert(cls.vl_link_books_authors.isValid())
 
-    def setUp(self):
-        self.startTransaction()
+    @classmethod
+    def setUp(cls):
+        cls.startTransaction()
 
-    def tearDown(self):
-        self.rollbackTransaction()
-        del self.transaction
+    @classmethod
+    def tearDown(cls):
+        cls.rollbackTransaction()
+        del cls.transaction
         QgsProject.instance().removeAllMapLayers()
+        cls.vl_books = None
+        cls.vl_authors = None
+        cls.vl_editors = None
+        cls.vl_link_books_authors = None
 
     def test_delete_feature(self):
         """
