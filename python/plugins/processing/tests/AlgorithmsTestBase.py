@@ -254,6 +254,12 @@ class AlgorithmsTest(object):
             if filepath in self.vector_layer_params:
                 return self.vector_layer_params[filepath]
 
+            gmlrex = r'\.gml\b'
+            if re.search(gmlrex, filepath, re.IGNORECASE):
+                # ewwwww - we have to force SRS detection for GML files, otherwise they'll be loaded
+                # with no srs
+                filepath += '|option:FORCE_SRS_DETECTION=YES'
+
             options = QgsVectorLayer.LayerOptions()
             options.loadDefaultStyle = False
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr', options)
@@ -320,7 +326,15 @@ class AlgorithmsTest(object):
                     if isinstance(results[id], QgsMapLayer):
                         result_lyr = results[id]
                     else:
-                        result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                        string = results[id]
+
+                        gmlrex = r'\.gml\b'
+                        if re.search(gmlrex, string, re.IGNORECASE):
+                            # ewwwww - we have to force SRS detection for GML files, otherwise they'll be loaded
+                            # with no srs
+                            string += '|option:FORCE_SRS_DETECTION=YES'
+
+                        result_lyr = QgsProcessingUtils.mapLayerFromString(string, context)
                     self.assertTrue(result_lyr, results[id])
 
                 compare = expected_result.get('compare', {})
