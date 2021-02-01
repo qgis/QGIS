@@ -179,6 +179,6 @@ RUN curl -k https://downloads.kdab.com/clazy/1.6/Clazy-x86_64-1.6.AppImage -o /t
   && ln -s /opt/clazy/squashfs-root/AppRun /usr/bin/clazy \
   && ln -s ../../bin/ccache /usr/lib/ccache/clazy
 
-ENV QT_SELECT=5
-ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"
+
+# environment variables shall be located in .docker/docker-variables.env
