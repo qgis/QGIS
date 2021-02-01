@@ -9,7 +9,7 @@ set -e
 # Prepare HANA database connection
 ##################################
 
-if [ ${HANA_TESTS} == "true" ] ; then
+if [ ${HANA_TESTS:-"false"} == "true" ] ; then
   echo "travis_fold:start:hana"
   echo "${bold}Load HANA database...${endbold}"
 
