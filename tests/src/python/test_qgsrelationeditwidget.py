@@ -96,9 +96,8 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         assert(cls.vl_editors.isValid())
         assert(cls.vl_link_books_authors.isValid())
 
-    @classmethod
-    def setUp(cls):
-        cls.startTransaction()
+    def setUp(self):
+        self.startTransaction()
 
     @classmethod
     def tearDown(cls):
