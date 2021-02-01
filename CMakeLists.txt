@@ -911,6 +911,8 @@ if (DISABLE_DEPRECATED)
   add_definitions(-DQGIS_DISABLE_DEPRECATED)
 endif()
 
+# whether to install required system libs in the output package
+set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required system libs in the output package")
 
 #############################################################
 # Python build dependency
@@ -1073,7 +1075,10 @@ if (WITH_CORE)
   if(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
     set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
   endif()
-  include(InstallRequiredSystemLibraries)
+
+  if(QGIS_INSTALL_SYS_LIBS)
+    include(InstallRequiredSystemLibraries)
+  endif()
 
   set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "QGIS")
   set(CPACK_PACKAGE_VENDOR "Open Source Geospatial Foundation")
