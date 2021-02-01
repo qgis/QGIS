@@ -47,11 +47,16 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
     void initWidget( QWidget *editor ) override;
 
+    //! Change widget resize behaviour
+    void resizeWidget( bool mode );
+
     //! Clears the content and makes new initialization
     void reinitWidget();
 
     //! writes the \a qmlCode into a temporary file
     void setQmlCode( const QString &qmlCode );
+
+    void setResizeFlag( const bool resize );
 
   public slots:
     void setFeature( const QgsFeature &feature ) override;
@@ -62,6 +67,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
   private:
     QTemporaryFile mQmlFile;
+    bool mResizeFlag = true;
     QQuickWidget *mWidget = nullptr;
     QgsFeature mFeature;
 };

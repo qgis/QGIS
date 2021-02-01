@@ -45,6 +45,8 @@ void QgsQmlWidgetWrapper::initWidget( QWidget *editor )
   if ( !mWidget )
     return;
 
+  if (mResizeFlag)
+    mWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
   if ( !mQmlFile.open() )
   {
@@ -57,6 +59,21 @@ void QgsQmlWidgetWrapper::initWidget( QWidget *editor )
   mQmlFile.close();
 }
 
+void QgsQmlWidgetWrapper::resizeWidget( bool mode )
+{
+  if ( !mWidget )
+    return;
+
+  if ( mode )
+    mWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+  else
+    mWidget->setResizeMode(QQuickWidget::SizeViewToRootObject);
+}
+
+void QgsQmlWidgetWrapper::setResizeFlag(const bool resize)
+{
+  mResizeFlag = resize;
+}
 
 void QgsQmlWidgetWrapper::reinitWidget( )
 {

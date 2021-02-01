@@ -50,6 +50,8 @@
 #include "qgstexteditwrapper.h"
 #include "qgsfieldmodel.h"
 
+#include "qgsmessagelog.h"
+
 #include <QDir>
 #include <QTextStream>
 #include <QFileInfo>
@@ -2129,7 +2131,13 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
+      // does not work before: no resize
+      // qmlWrapper->resizeWidget( elementDef->resize() );
+      // QgsMessageLog::logMessage( QStringLiteral( "------jgr----:createWidgetFromDef: %1" ).arg( elementDef->resize() ) );
+
+      qmlWrapper->setResizeFlag( elementDef->resize() );
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
+
       context.setAttributeFormMode( mMode );
       qmlWrapper->setContext( context );
 
@@ -2139,6 +2147,11 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelText = elementDef->name();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
+
+      // does nor work after: expression is invalid
+//      qmlWrapper->resizeWidget( elementDef->resize() );
+//      QgsMessageLog::logMessage( QStringLiteral( "------jgr----:createWidgetFromDef: %1" ).arg( elementDef->resize() ) );
+
       break;
     }
 

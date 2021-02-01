@@ -53,11 +53,26 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
      */
     void setQmlCode( const QString &qmlCode );
 
+    /**
+     * The resize gehaviout of the widget.
+     *
+     * \since QGIS 3.18
+     */
+    bool resize() const;
+
+    /**
+     * Sets the resize gehaviout of the widget.
+     *
+     * \since QGIS 3.18
+     */
+    void setResize( const bool resize );
+
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
     QString typeIdentifier() const override;
     QString mQmlCode;
+    bool mResize;
 };
 
 #endif // QGSATTRIBUTEEDITORQMLELEMENT_H

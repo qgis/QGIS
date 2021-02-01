@@ -21,8 +21,19 @@ QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEdit
 {
   QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( name(), parent );
   element->setQmlCode( mQmlCode );
+  element->setResize( mResize );
 
   return element;
+}
+
+bool QgsAttributeEditorQmlElement::resize() const
+{
+  return mResize;
+}
+
+void QgsAttributeEditorQmlElement::setResize( const bool resize )
+{
+  mResize = resize;
 }
 
 QString QgsAttributeEditorQmlElement::qmlCode() const
@@ -37,7 +48,8 @@ void QgsAttributeEditorQmlElement::setQmlCode( const QString &qmlCode )
 
 void QgsAttributeEditorQmlElement::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
-  QDomText codeElem = doc.createTextNode( mQmlCode );
+  QDomText codeElem = doc.createTextNode( mQmlCode );  
+  elem.setAttribute( QStringLiteral( "resize" ), mResize ? 1 : 0 );
   elem.appendChild( codeElem );
 }
 
@@ -46,7 +58,13 @@ void QgsAttributeEditorQmlElement::loadConfiguration( const QDomElement &element
   Q_UNUSED( layerId )
   Q_UNUSED( context )
   Q_UNUSED( fields )
+  bool ok;
   setQmlCode( element.text() );
+  bool resizable = element.attribute( QStringLiteral( "resize" ) ).toInt( &ok );
+  if ( ok )
+    setResize( resizable );
+  else
+    setResize( false );
 }
 
 QString QgsAttributeEditorQmlElement::typeIdentifier() const
