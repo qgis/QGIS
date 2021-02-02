@@ -1078,14 +1078,23 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
     subsetString += '=' + v;
   }
 
+  QList<int> joinedAttributeIndices;
+
   // maybe user requested just a subset of layer's attributes
   // so we do not have to cache everything
-  QVector<int> subsetIndices;
   if ( joinInfo->hasSubset() )
   {
     const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo );
-    subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, subsetNames );
+    QVector<int> subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, subsetNames );
+    joinedAttributeIndices = qgis::setToList( qgis::listToSet( attributes ).intersect( qgis::listToSet( subsetIndices.toList() ) ) );
   }
+  else
+  {
+    joinedAttributeIndices = attributes;
+  }
+
+  // we don't need the join field, it is already present in the other table
+  joinedAttributeIndices.removeAll( joinField );
 
   // select (no geometry)
   QgsFeatureRequest request;
@@ -1101,22 +1110,9 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   {
     int index = indexOffset;
     QgsAttributes attr = fet.attributes();
-    if ( joinInfo->hasSubset() )
-    {
-      for ( int i = 0; i < subsetIndices.count(); ++i )
-        f.setAttribute( index++, attr.at( subsetIndices.at( i ) ) );
-    }
-    else
-    {
-      // use all fields except for the one used for join (has same value as exiting field in target layer)
-      for ( int i = 0; i < attr.count(); ++i )
-      {
-        if ( i == joinField )
-          continue;
 
-        f.setAttribute( index++, attr.at( i ) );
-      }
-    }
+    for ( int i = 0; i < joinedAttributeIndices.count(); ++i )
+      f.setAttribute( index++, attr.at( joinedAttributeIndices.at( i ) ) );
   }
   else
   {
