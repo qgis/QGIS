@@ -81,7 +81,7 @@ void QgsHanaProviderConnection::setCapabilities()
    * Capability::Tables             | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
    * Capability::Schemas            | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
    * Capability::TableExists        | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
-   * Capability::Spatial,           | Always TRUE
+   * Capability::Spatial            | Always TRUE
    *
    * Note: Everyone has this privilege, but the execution might fail if the user does
    *       not have the necessary privileges for one of the objects in the query.
@@ -94,7 +94,10 @@ void QgsHanaProviderConnection::setCapabilities()
     Capability::RenameVectorTable,
     Capability::ExecuteSql,
     Capability::SqlLayers,
-    Capability::Spatial
+    Capability::Spatial,
+    Capability::AddField,
+    Capability::DeleteField,
+    Capability::DeleteFieldCascade
   };
 
   const QgsDataSourceUri dsUri { uri() };
@@ -318,7 +321,8 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
 
   try
   {
-    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, flags.testFlag( TableFlag::Aspatial ), false );
+    const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
+    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, aspatial, false );
     tables.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo :  layers )
     {
@@ -326,7 +330,7 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
       TableFlags prFlags;
       if ( layerInfo.isView )
         prFlags.setFlag( QgsHanaProviderConnection::TableFlag::View );
-      else if ( !layerInfo.geometryColName.isEmpty() )
+      if ( !layerInfo.geometryColName.isEmpty() )
         prFlags.setFlag( QgsHanaProviderConnection::TableFlag::Vector );
       else
         prFlags.setFlag( QgsHanaProviderConnection::TableFlag::Aspatial );
