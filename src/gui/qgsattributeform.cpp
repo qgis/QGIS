@@ -2138,12 +2138,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       mWidgets.append( qmlWrapper );
 
-      // newWidgetInfo.widget = qmlWrapper->widget();
+      QSizePolicy sizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
       QgsScrollArea *scrollArea = new QgsScrollArea( parent );
       scrollArea->setWidgetResizable( true );
-      scrollArea->setMinimumWidth( 400 );
-      scrollArea->setMinimumHeight( 400 );
+      scrollArea->setSizePolicy( sizePolicy );
       scrollArea->setWidget( qmlWrapper->widget() );
+      // newWidgetInfo.widget = qmlWrapper->widget();
       newWidgetInfo.widget = scrollArea;
       newWidgetInfo.labelText = elementDef->name();
       newWidgetInfo.labelOnTop = true;
