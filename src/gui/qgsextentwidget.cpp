@@ -416,8 +416,8 @@ void QgsExtentWidget::extentDrawn( const QgsRectangle &extent )
 
 QgsRectangle QgsExtentWidget::outputExtent() const
 {
-  return QgsRectangle( QLocale().toDouble( mXMinLineEdit->text() ), QLocale().toDouble( mYMinLineEdit->text() ),
-                       QLocale().toDouble( mXMaxLineEdit->text() ), QLocale().toDouble( mYMaxLineEdit->text() ) );
+  return QgsRectangle( QgsDoubleValidator::toDouble( mXMinLineEdit->text() ), QgsDoubleValidator::toDouble( mYMinLineEdit->text() ),
+                       QgsDoubleValidator::toDouble( mXMaxLineEdit->text() ), QgsDoubleValidator::toDouble( mYMaxLineEdit->text() ) );
 }
 
 void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas )
