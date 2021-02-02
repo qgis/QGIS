@@ -72,25 +72,8 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         cls.relMgr = QgsProject.instance().relationManager()
 
-        cls.rel_a = QgsRelation()
-        cls.rel_a.setReferencingLayer(cls.vl_link_books_authors.id())
-        cls.rel_a.setReferencedLayer(cls.vl_authors.id())
-        cls.rel_a.addFieldPair('fk_author', 'pk')
-        cls.rel_a.setId('rel_a')
-        assert(cls.rel_a.isValid())
-        cls.relMgr.addRelation(cls.rel_a)
-
-        cls.rel_b = QgsRelation()
-        cls.rel_b.setReferencingLayer(cls.vl_link_books_authors.id())
-        cls.rel_b.setReferencedLayer(cls.vl_books.id())
-        cls.rel_b.addFieldPair('fk_book', 'pk')
-        cls.rel_b.setId('rel_b')
-        assert(cls.rel_b.isValid())
-        cls.relMgr.addRelation(cls.rel_b)
-
         # Our mock QgsVectorLayerTools, that allow injecting data where user input is expected
         cls.vltools = VlTools()
-
         cls.layers = {cls.vl_authors, cls.vl_books, cls.vl_link_books_authors}
 
         assert(cls.vl_authors.isValid())
@@ -105,13 +88,31 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.vl_authors = None
         cls.vl_editors = None
         cls.vl_link_books_authors = None
+        cls.layers = None
 
     def setUp(self):
+        self.rel_a = QgsRelation()
+        self.rel_a.setReferencingLayer(self.vl_link_books_authors.id())
+        self.rel_a.setReferencedLayer(self.vl_authors.id())
+        self.rel_a.addFieldPair('fk_author', 'pk')
+        self.rel_a.setId('rel_a')
+        assert(self.rel_a.isValid())
+        self.relMgr.addRelation(self.rel_a)
+
+        self.rel_b = QgsRelation()
+        self.rel_b.setReferencingLayer(self.vl_link_books_authors.id())
+        self.rel_b.setReferencedLayer(self.vl_books.id())
+        self.rel_b.addFieldPair('fk_book', 'pk')
+        self.rel_b.setId('rel_b')
+        assert(self.rel_b.isValid())
+        self.relMgr.addRelation(self.rel_b)
+
         self.startTransaction()
 
     def tearDown(self):
         self.rollbackTransaction()
         del self.transaction
+        self.relMgr.clear()
 
     def startTransaction(self):
         """
