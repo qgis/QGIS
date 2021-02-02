@@ -160,6 +160,15 @@ jobs:
     name: Publish link to CDASH
     needs: build
     runs-on: ubuntu-latest
-    if: failure()
+    if: failure() and github.event_name == 'pull_request'
     steps:
       - run: echo "${{ needs.build.outputs.cdash_url }}"
+
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ steps.token.outputs.token }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Some tests are failing.
+            Tests results: ${{ needs.build.outputs.cdash_url }}
