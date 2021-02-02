@@ -50,8 +50,6 @@
 #include "qgstexteditwrapper.h"
 #include "qgsfieldmodel.h"
 
-#include "qgsmessagelog.h"
-
 #include <QDir>
 #include <QTextStream>
 #include <QFileInfo>

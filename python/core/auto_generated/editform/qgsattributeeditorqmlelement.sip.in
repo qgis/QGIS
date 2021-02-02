@@ -43,6 +43,20 @@ The QML code that will be represented within this widget.
 Sets the QML code that will be represented within this widget to ``qmlCode``.
 %End
 
+    bool resize() const;
+%Docstring
+The resize gehaviout of the widget.
+
+.. versionadded:: 3.18
+%End
+
+    void setResize( const bool resize );
+%Docstring
+Sets the resize behavior of the widget.
+
+.. versionadded:: 3.18
+%End
+
 };
 
 /************************************************************************

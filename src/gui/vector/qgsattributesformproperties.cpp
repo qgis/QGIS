@@ -31,8 +31,6 @@
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorhtmlelement.h"
 
-#include "qgsmessagelog.h"
-
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
@@ -1166,10 +1164,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
       qmlCode->setPlaceholderText( tr( "Insert QML code here…" ) );
 
-      // resize behaviour
+      // resize behavior
       bool resize = itemData.qmlElementEditorConfiguration().resizeFlag ;
-
-      QgsMessageLog::logMessage( QStringLiteral( "------jgr----:resize:onItemDoubleClicked: %1" ).arg( resize ) );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       QgsFeature previewFeature;

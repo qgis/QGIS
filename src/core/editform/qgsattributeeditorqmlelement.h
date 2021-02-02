@@ -61,7 +61,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
     bool resize() const;
 
     /**
-     * Sets the resize gehaviout of the widget.
+     * Sets the resize behavior of the widget.
      *
      * \since QGIS 3.18
      */

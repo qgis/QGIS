@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     struct QmlElementEditorConfiguration
     {
       QString qmlCode;
-      bool resizeFlag;
+      bool resizeFlag = false;
     };
 
     struct HtmlElementEditorConfiguration

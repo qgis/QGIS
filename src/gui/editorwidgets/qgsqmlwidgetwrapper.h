@@ -47,7 +47,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
     void initWidget( QWidget *editor ) override;
 
-    //! Change widget resize behaviour
+    //! Change widget resize behavior
     void resizeWidget( bool mode );
 
     //! Clears the content and makes new initialization
@@ -56,6 +56,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     //! writes the \a qmlCode into a temporary file
     void setQmlCode( const QString &qmlCode );
 
+    //! Sets the behavior when resizing the widget
     void setResizeFlag( const bool resize );
 
   public slots:

@@ -38,6 +38,11 @@ Create a qml widget wrapper
     virtual void initWidget( QWidget *editor );
 
 
+    void resizeWidget( bool mode );
+%Docstring
+Change widget resize behavior
+%End
+
     void reinitWidget();
 %Docstring
 Clears the content and makes new initialization
@@ -46,6 +51,11 @@ Clears the content and makes new initialization
     void setQmlCode( const QString &qmlCode );
 %Docstring
 writes the ``qmlCode`` into a temporary file
+%End
+
+    void setResizeFlag( const bool resize );
+%Docstring
+Sets the behavior when resizing the widget
 %End
 
   public slots:
