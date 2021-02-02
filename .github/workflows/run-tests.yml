@@ -78,12 +78,13 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ github.head_ref }}
+          key: build-ccache-${{ github.head_ref }}-${{ github.sha }}
           # The head_ref or source branch of the pull request in a workflow run.
           # The base_ref or target branch of the pull request in a workflow run.
           restore-keys: |
-            build-ccache-${{ github.base_ref }}
-            build-ccache-master
+            build-ccache-${{ github.head_ref }}-
+            build-ccache-${{ github.base_ref }}-
+            build-ccache-master-
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
@@ -92,9 +93,10 @@ jobs:
         with:
           path: /home/runner/QGIS/.ccache
           # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
-          key: build-ccache-${{ github.ref }}
+          key: build-ccache-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
-            build-ccache-master
+            build-ccache-${{ github.ref }}-
+            build-ccache-master-
 
       - name: Compile QGIS
         run: |
