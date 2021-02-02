@@ -79,6 +79,8 @@ IF(NOT ${NUMWARN} EQUAL 0 OR NOT ${TESTRES} EQUAL 0)
   MESSAGE("")
   MESSAGE("  ${Yellow}Test results submitted to${ColorReset}")
   MESSAGE("  ${BoldYellow}${SHORTURL}${ColorReset}" )
+  # Github workflow output
+  MESSAGE("::set-output name=CDASH_URL::${SHORTURL}$")
   MESSAGE("")
   SET(LEVEL "")
   IF(NOT ${TESTRES} EQUAL 0)
