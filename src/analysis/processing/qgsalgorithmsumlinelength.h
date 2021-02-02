@@ -56,9 +56,10 @@ class QgsSumLineLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   private:
-
+    bool mIsInPlace = false;
     QString mLengthFieldName;
     QString mCountFieldName;
     mutable int mLengthFieldIndex = -1;
