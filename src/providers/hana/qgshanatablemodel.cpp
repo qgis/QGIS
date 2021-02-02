@@ -322,10 +322,11 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
 
   QgsHanaSettings settings( connName, true );
-  settings.setKeyColumns( schemaName, tableName, pkColumnsSelected.toList() );
+  settings.setKeyColumns( schemaName, tableName, qgis::setToList( pkColumnsSelected ) );
   settings.save();
 
   QStringList pkColumns;
+  pkColumns.reserve( pkColumnsSelected.size() );
   for ( const QString &column : pkColumnsSelected )
     pkColumns <<  QgsHanaUtils::quotedIdentifier( column );
 
