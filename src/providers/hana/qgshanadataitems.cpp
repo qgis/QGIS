@@ -230,14 +230,16 @@ QgsHanaLayerItem::QgsHanaLayerItem(
   : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "hana" ) )
   , mLayerProperty( layerProperty )
 {
-  mCapabilities |= Delete;
+  mCapabilities |= Delete | Fertile;
   mUri = createUri();
-  setState( Populated );
+  setState( NotPopulated );
 }
 
-QString QgsHanaLayerItem::comments() const
+QVector<QgsDataItem *> QgsHanaLayerItem::createChildren()
 {
-  return mLayerProperty.tableComment;
+  QVector<QgsDataItem *> items;
+  items.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  return items;
 }
 
 QString QgsHanaLayerItem::createUri() const
@@ -277,6 +279,11 @@ QString QgsHanaLayerItem::createUri() const
     uri.setSrid( QString::number( mLayerProperty.srid ) );
   QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 4 );
   return uri.uri( false );
+}
+
+QString QgsHanaLayerItem::comments() const
+{
+  return mLayerProperty.tableComment;
 }
 
 // ---------------------------------------------------------------------------
