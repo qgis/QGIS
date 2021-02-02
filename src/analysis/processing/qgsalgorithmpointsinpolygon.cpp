@@ -158,6 +158,13 @@ bool QgsPointsInPolygonAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   return true;
 }
 
+QgsProcessingAlgorithm::Flags QgsPointsInPolygonAlgorithm::flags() const
+{
+  Flags f = QgsProcessingFeatureBasedAlgorithm::flags();
+  f &= ~QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
+}
+
 QgsFeatureList QgsPointsInPolygonAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsFeature outputFeature = feature;
@@ -244,8 +251,4 @@ QgsFields QgsPointsInPolygonAlgorithm::outputFields( const QgsFields &inputField
   return outFields;
 }
 
-
 ///@endcond
-
-
-

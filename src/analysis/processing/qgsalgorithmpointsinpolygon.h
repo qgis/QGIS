@@ -48,6 +48,7 @@ class QgsPointsInPolygonAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QList<int> inputLayerTypes() const override;
     QgsProcessing::SourceType outputLayerType() const override;
     QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const override;
+    QgsProcessingAlgorithm::Flags flags() const override;
 
 
   protected:
