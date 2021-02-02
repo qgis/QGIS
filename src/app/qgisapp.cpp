@@ -14623,10 +14623,10 @@ void QgisApp::updateLabelToolButtons()
 
 bool QgisApp::selectedLayersHaveSelection()
 {
-  QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+  const QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
 
   // If no selected layers, use active layer
-  if ( layers.size() == 0 )
+  if ( layers.empty() && activeLayer() )
   {
     if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( activeLayer() ) )
       return layer->selectedFeatureCount() > 0;
@@ -14647,10 +14647,10 @@ bool QgisApp::selectedLayersHaveSelection()
 
 bool QgisApp::selectedLayersHaveSpatial()
 {
-  QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+  const QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
 
   // If no selected layers, use active layer
-  if ( layers.size() == 0 )
+  if ( layers.empty() && activeLayer() )
     return activeLayer()->isSpatial();
 
   for ( QgsMapLayer *mapLayer : layers )
@@ -14666,12 +14666,14 @@ bool QgisApp::selectedLayersHaveSpatial()
 
 void QgisApp::activateDeactivateMultipleLayersRelatedActions()
 {
+  // these actions are enabled whenever ANY selected layer is spatial
   const bool hasSpatial = selectedLayersHaveSpatial();
-  const bool hasSelection = selectedLayersHaveSelection();
-
   mActionZoomToLayers->setEnabled( hasSpatial );
-  mActionZoomToSelected->setEnabled( hasSelection );
   mActionPanToSelected->setEnabled( hasSpatial );
+
+  // this action is enabled whenever ANY selected layer has a selection
+  const bool hasSelection = selectedLayersHaveSelection();
+  mActionZoomToSelected->setEnabled( hasSelection );
 }
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
