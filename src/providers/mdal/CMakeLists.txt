@@ -194,6 +194,7 @@ endif()
 if (HDF5_FOUND)
   target_include_directories(mdalprovider PRIVATE ${HDF5_INCLUDE_DIRS})
   target_link_libraries(mdalprovider ${HDF5_C_LIBRARIES} )
+  target_compile_definitions(mdalprovider PRIVATE ${HDF5_DEFINITIONS})
 endif()
 
 if (GDAL_FOUND)
