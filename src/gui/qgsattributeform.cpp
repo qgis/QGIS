@@ -2131,9 +2131,6 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
-      // does not work before: no resize
-      // qmlWrapper->resizeWidget( elementDef->resize() );
-      // QgsMessageLog::logMessage( QStringLiteral( "------jgr----:createWidgetFromDef: %1" ).arg( elementDef->resize() ) );
 
       qmlWrapper->setResizeFlag( elementDef->resize() );
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
@@ -2143,14 +2140,16 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       mWidgets.append( qmlWrapper );
 
-      newWidgetInfo.widget = qmlWrapper->widget();
+      // newWidgetInfo.widget = qmlWrapper->widget();
+      QgsScrollArea *scrollArea = new QgsScrollArea( parent );
+      scrollArea->setWidgetResizable( true );
+      scrollArea->setMinimumWidth( 400 );
+      scrollArea->setMinimumHeight( 400 );
+      scrollArea->setWidget( qmlWrapper->widget() );
+      newWidgetInfo.widget = scrollArea;
       newWidgetInfo.labelText = elementDef->name();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
-
-      // does nor work after: expression is invalid
-//      qmlWrapper->resizeWidget( elementDef->resize() );
-//      QgsMessageLog::logMessage( QStringLiteral( "------jgr----:createWidgetFromDef: %1" ).arg( elementDef->resize() ) );
 
       break;
     }
