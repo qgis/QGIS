@@ -304,8 +304,6 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
 void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas )
 {
   const QList<QgsMapLayer *> layers = mView->selectedLayers();
-//  if ( layers.isEmpty() )
-//    return;
 
   zoomToLayers( canvas, layers );
 }
@@ -375,7 +373,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
   QgsRectangle extent;
   extent.setMinimal();
 
-  if ( layers.size() >= 1 )
+  if ( !layers.empty() )
   {
     for ( int i = 0; i < layers.size(); ++i )
     {
@@ -406,7 +404,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
   }
 
   // If no layer is selected, use current layer
-  else
+  else if ( mView->currentLayer() )
   {
     QgsRectangle layerExtent = mView->currentLayer()->extent();
     layerExtent = canvas->mapSettings().layerExtentToOutputExtent( mView->currentLayer(), layerExtent );
