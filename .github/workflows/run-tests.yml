@@ -161,4 +161,4 @@ jobs:
     runs-on: ubuntu-latest
     if: failure()
     steps:
-      run: echo "${{ jobs.build.steps.unit-tests.outputs.CDASH_URL }}"
+      - run: echo "${{ jobs.build.steps.unit-tests.outputs.CDASH_URL }}"
