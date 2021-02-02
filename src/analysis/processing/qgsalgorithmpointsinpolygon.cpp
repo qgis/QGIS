@@ -23,16 +23,26 @@
 
 ///@cond PRIVATE
 
-void QgsPointsInPolygonAlgorithm::initParameters( const QVariantMap & )
+void QgsPointsInPolygonAlgorithm::initParameters( const QVariantMap &configuration )
 {
+  mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
+
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "POINTS" ),
                 QObject::tr( "Points" ), QList< int > () << QgsProcessing::TypeVectorPoint ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ),
                 QObject::tr( "Weight field" ), QVariant(), QStringLiteral( "POINTS" ), QgsProcessingParameterField::Any, false, true ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "CLASSFIELD" ),
                 QObject::tr( "Class field" ), QVariant(), QStringLiteral( "POINTS" ), QgsProcessingParameterField::Any, false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD" ),
-                QObject::tr( "Count field name" ), QStringLiteral( "NUMPOINTS" ) ) );
+  if ( mIsInPlace )
+  {
+    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ),
+                  QObject::tr( "Count field" ), QStringLiteral( "NUMPOINTS" ), inputParameterName() ) );
+  }
+  else
+  {
+    addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD" ),
+                  QObject::tr( "Count field name" ), QStringLiteral( "NUMPOINTS" ) ) );
+  }
 }
 
 QString QgsPointsInPolygonAlgorithm::name() const
@@ -235,13 +245,30 @@ QgsFeatureList QgsPointsInPolygonAlgorithm::processFeature( const QgsFeature &fe
 
 QgsFields QgsPointsInPolygonAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields outFields = inputFields;
-  mDestFieldIndex = inputFields.lookupField( mFieldName );
-  if ( mDestFieldIndex < 0 )
-    outFields.append( QgsField( mFieldName, QVariant::Double ) );
+  if ( mIsInPlace )
+  {
+    mDestFieldIndex = inputFields.lookupField( mFieldName );
+    return inputFields;
+  }
+  else
+  {
+    QgsFields outFields = inputFields;
+    mDestFieldIndex = inputFields.lookupField( mFieldName );
+    if ( mDestFieldIndex < 0 )
+      outFields.append( QgsField( mFieldName, QVariant::Double ) );
 
-  mFields = outFields;
-  return outFields;
+    mFields = outFields;
+    return outFields;
+  }
+}
+
+bool QgsPointsInPolygonAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  {
+    return vl->geometryType() == QgsWkbTypes::PolygonGeometry;
+  }
+  return false;
 }
 
 
