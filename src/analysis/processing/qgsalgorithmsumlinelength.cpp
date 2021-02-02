@@ -211,4 +211,11 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
   }
 }
 
+QgsProcessingAlgorithm::Flags QgsSumLineLengthAlgorithm::flags() const
+{
+  Flags f = QgsProcessingFeatureBasedAlgorithm::flags();
+  f &= ~QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
+}
+
 ///@endcond
