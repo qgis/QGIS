@@ -542,6 +542,12 @@ if (ENABLE_TESTS)
     "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
     "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
     IMMEDIATE @ONLY)
+  if (PUSH_TO_CDASH)
+    configure_file(
+      "${CMAKE_SOURCE_DIR}/cmake_templates/CTestConfig.cmake.in"
+      "${CMAKE_BINARY_DIR}/CTestConfig.cmake"
+      IMMEDIATE @ONLY)
+  endif()
   # For server side testing we have no X, we can use xvfb as a fake x
   # sudo apt-get install xvfb
   add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
@@ -1049,7 +1055,6 @@ if (ENABLE_TESTS)
   add_subdirectory(tests)
   set (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
   message (STATUS "Ctest Binary Directory set to: ${CTEST_BINARY_DIRECTORY}")
-  message (STATUS "Ctest drop site: ${CTEST_DROP_SITE}")
 endif()
 
 #############################################################
