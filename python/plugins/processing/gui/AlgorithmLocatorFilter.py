@@ -87,7 +87,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
 
             string = string.lower()
             tagScore = 0
-            tags = [*a.tags(), a.provider().name(), a.group()]
+            tags = [*a.tags(), a.provider().name()]
+            if a.group():
+                tags.append(a.group())
 
             for t in tags:
                 if string in t.lower():
