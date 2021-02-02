@@ -100,8 +100,17 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
         {
           // transform geometry to vlayer crs and add topological point
           QgsGeometry geom( f.geometry() );
-          geom.transform( QgsCoordinateTransform( vlayer->crs(), sm.at( i ).layer()->crs(), sm.at( i ).layer()->transformContext() ) );
-          sm.at( i ).layer()->addTopologicalPoints( geom.vertexAt( i ) );
+          try
+          {
+            geom.transform( QgsCoordinateTransform( vlayer->crs(), sm.at( i ).layer()->crs(), sm.at( i ).layer()->transformContext() ) );
+            sm.at( i ).layer()->addTopologicalPoints( geom.vertexAt( i ) );
+          }
+          catch ( QgsCsException &cse )
+          {
+            Q_UNUSED( cse )
+            QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+          }
+
         }
       }
       vlayer->addTopologicalPoints( f.geometry() );
