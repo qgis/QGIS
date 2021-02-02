@@ -160,7 +160,7 @@ jobs:
     name: Publish link to CDASH
     needs: build
     runs-on: ubuntu-latest
-    if: failure() and github.event_name == 'pull_request'
+    if: failure() && github.event_name == 'pull_request'
     steps:
       - run: echo "${{ needs.build.outputs.cdash_url }}"
 
