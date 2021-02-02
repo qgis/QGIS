@@ -49,7 +49,7 @@ class TestQgsActionManager(unittest.TestCase):
             s.write('open(sys.argv[1], "w").write(" ".join(sys.argv[2:]))\n')
 
     @classmethod
-    def tearDown(cls):
+    def tearDownClass(cls):
         cls.layer = None
         cls.manager = None
 
