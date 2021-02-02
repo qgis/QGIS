@@ -48,7 +48,7 @@ void QgsAttributeEditorQmlElement::setQmlCode( const QString &qmlCode )
 
 void QgsAttributeEditorQmlElement::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
-  QDomText codeElem = doc.createTextNode( mQmlCode );  
+  QDomText codeElem = doc.createTextNode( mQmlCode );
   elem.setAttribute( QStringLiteral( "resize" ), mResize ? 1 : 0 );
   elem.appendChild( codeElem );
 }

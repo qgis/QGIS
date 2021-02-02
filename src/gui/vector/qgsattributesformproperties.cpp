@@ -1272,11 +1272,11 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
         qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->expression().replace( '"', QLatin1String( "\\\"" ) ) ) );
       } );
 
-      QCheckBox *resizeToParent = new QCheckBox( tr( "Resize to parent") );
-      connect(resizeToParent, &QCheckBox::toggled, this, [ = ]( bool active )
+      QCheckBox *resizeToParent = new QCheckBox( tr( "Resize to parent" ) );
+      connect( resizeToParent, &QCheckBox::toggled, this, [ = ]( bool active )
       {
-         qmlWrapper->resizeWidget( active );
-      });
+        qmlWrapper->resizeWidget( active );
+      } );
 
       layout->addWidget( new QLabel( tr( "Title" ) ) );
       layout->addWidget( title );
@@ -1295,7 +1295,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       qmlPreviewBox->setLayout( new QGridLayout );
       qmlPreviewBox->setMinimumWidth( 400 );
       qmlPreviewBox->layout()->addWidget( qmlWrapper->widget() );
-      resizeToParent->setChecked(resize);
+      resizeToParent->setChecked( resize );
       //emit to load preview for the first time
       emit qmlCode->textChanged();
       qmlLayout->addWidget( qmlPreviewBox );
