@@ -108,8 +108,12 @@ jobs:
           docker commit qgis_container qgis_image
 
       - name: run unit tests
+        id: unit-tests
         run: |
           docker-compose -f .docker/docker-compose-testing.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
+
+      - name: CDASH url
+        run: echo "${{ steps.unit-tests.outputs.CDASH_URL }}"
 
       - name: QGIS runners
         run: |

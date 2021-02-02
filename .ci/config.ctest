@@ -66,6 +66,8 @@ IF(NOT IGNORE_BUILD_FAILURES)
     MESSAGE("")
     MESSAGE("  ${Yellow}Test results submitted to${ColorReset}")
     MESSAGE("  ${BoldYellow}${SHORTURL}${ColorReset}")
+    # Github workflow output
+    MESSAGE("::set-output name=CDASH_URL::${SHORTURL}$")
     MESSAGE("")
     MESSAGE( FATAL_ERROR "  ${Red}Build failed. Not running tests.${ColorReset}" )
     MESSAGE("")
