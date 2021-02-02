@@ -20,6 +20,7 @@
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <cpl_conv.h>
+#include <cpl_string.h>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -254,14 +255,29 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
   return extent;
 }
 
-GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
+GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOpenFlags )
 {
+  QVariantMap parts = decodeGdalUri( uri );
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  parts.remove( QStringLiteral( "openOptions" ) );
+
+  char **papszOpenOptions = nullptr;
+  for ( const QString &option : openOptions )
+  {
+    papszOpenOptions = CSLAddString( papszOpenOptions,
+                                     option.toUtf8().constData() );
+  }
+
   bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
   if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
   {
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
   }
-  GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
+
+  GDALDatasetH hDS = GDALOpenEx( encodeGdalUri( parts ).toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
+  CSLDestroy( papszOpenOptions );
+
   if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
   {
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
@@ -302,6 +318,81 @@ int QgsGdalProviderBase::gdalGetOverviewCount( GDALRasterBandH hBand )
 {
   int count = GDALGetOverviewCount( hBand );
   return count;
+}
+
+QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
+{
+  QString path = uri;
+  QString layerName;
+  QStringList openOptions;
+
+  QString vsiPrefix = qgsVsiPrefix( path );
+  if ( !path.isEmpty() )
+    path = path.mid( vsiPrefix.count() );
+
+  if ( path.indexOf( ':' ) != -1 )
+  {
+    QStringList parts = path.split( ':' );
+    if ( parts[0].toLower() == QLatin1String( "gpkg" ) )
+    {
+      parts.removeFirst();
+      // Handle windows paths - which has an extra colon - and unix paths
+      if ( ( parts[0].length() > 1 && parts.count() > 1 ) || parts.count() > 2 )
+      {
+        layerName = parts[parts.length() - 1];
+        parts.removeLast();
+      }
+      path  = parts.join( ':' );
+    }
+  }
+
+  if ( path.contains( '|' ) )
+  {
+    const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
+
+    while ( true )
+    {
+      QRegularExpressionMatch match = openOptionRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        openOptions << match.captured( 1 );
+        path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "path" ), path );
+  uriComponents.insert( QStringLiteral( "layerName" ), layerName );
+  if ( !openOptions.isEmpty() )
+    uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
+  return uriComponents;
+}
+
+QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
+{
+  QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+  QString uri;
+
+  if ( !layerName.isEmpty() && path.endsWith( QStringLiteral( "gpkg" ) ) )
+    uri = QStringLiteral( "GPKG:%1:%2" ).arg( path, layerName );
+  else
+    uri = path + ( !layerName.isEmpty() ? QStringLiteral( "|%1" ).arg( layerName ) : QString() );
+
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+
+  for ( const QString &openOption : openOptions )
+  {
+    uri += QStringLiteral( "|option:" );
+    uri += openOption;
+  }
+
+  return uri;
 }
 
 ///@endcond

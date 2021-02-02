@@ -24,6 +24,7 @@
 #include "ogr/qgsogrhelperfunctions.h"
 
 #include <gdal.h>
+#include <cpl_minixml.h>
 
 QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -54,17 +55,26 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & text )
   {
     if ( radioSrcProtocol->isChecked() )
+    {
       emit enableButtons( !text.isEmpty() );
+      fillOpenOptions();
+    }
   } );
   connect( mBucket, &QLineEdit::textChanged, this, [ = ]( const QString & text )
   {
     if ( radioSrcProtocol->isChecked() )
+    {
       emit enableButtons( !text.isEmpty() && !mKey->text().isEmpty() );
+      fillOpenOptions();
+    }
   } );
   connect( mKey, &QLineEdit::textChanged, this, [ = ]( const QString & text )
   {
     if ( radioSrcProtocol->isChecked() )
+    {
       emit enableButtons( !text.isEmpty() && !mBucket->text().isEmpty() );
+      fillOpenOptions();
+    }
   } );
 
   mFileWidget->setDialogTitle( tr( "Open GDAL Supported Raster Dataset(s)" ) );
@@ -75,7 +85,9 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   {
     mRasterPath = path;
     emit enableButtons( ! mRasterPath.isEmpty() );
+    fillOpenOptions();
   } );
+  mOpenOptionsGroupBox->setVisible( false );
 }
 
 bool QgsGdalSourceSelect::isProtocolCloudType()
@@ -119,8 +131,10 @@ void QgsGdalSourceSelect::radioSrcFile_toggled( bool checked )
   {
     fileGroupBox->show();
     protocolGroupBox->hide();
+    clearOpenOptions();
 
     emit enableButtons( !mFileWidget->filePath().isEmpty() );
+
   }
 }
 
@@ -130,8 +144,8 @@ void QgsGdalSourceSelect::radioSrcProtocol_toggled( bool checked )
   {
     fileGroupBox->hide();
     protocolGroupBox->show();
-
     setProtocolWidgetsVisibility();
+    clearOpenOptions();
 
     emit enableButtons( !protocolURI->text().isEmpty() );
   }
@@ -141,24 +155,61 @@ void QgsGdalSourceSelect::cmbProtocolTypes_currentIndexChanged( const QString &t
 {
   Q_UNUSED( text )
   setProtocolWidgetsVisibility();
+  clearOpenOptions();
 }
 
 void QgsGdalSourceSelect::addButtonClicked()
 {
+  computeDataSources();
+
+  if ( mDataSources.isEmpty() )
+  {
+    QMessageBox::information( this,
+                              tr( "Add raster layer" ),
+                              tr( "No layers selected." ) );
+    return;
+  }
+
+  for ( const QString &dataSource : mDataSources )
+  {
+    if ( QFile::exists( dataSource ) )
+      emit addRasterLayer( dataSource, QFileInfo( dataSource ).completeBaseName(), QStringLiteral( "gdal" ) );
+    else
+      emit addRasterLayer( dataSource, dataSource, QStringLiteral( "gdal" ) );
+  }
+}
+
+void QgsGdalSourceSelect::computeDataSources()
+{
+  mDataSources.clear();
+
+  QStringList openOptions;
+  for ( QWidget *control : mOpenOptionsWidgets )
+  {
+    QString value;
+    if ( QComboBox *cb = qobject_cast<QComboBox *>( control ) )
+    {
+      value = cb->itemData( cb->currentIndex() ).toString();
+    }
+    else if ( QLineEdit *le = qobject_cast<QLineEdit *>( control ) )
+    {
+      value = le->text();
+    }
+    if ( !value.isEmpty() )
+    {
+      openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName() ).arg( value );
+    }
+  }
+
   if ( radioSrcFile->isChecked() )
   {
-    if ( mRasterPath.isEmpty() )
+    for ( const auto &filePath : QgsFileWidget::splitFilePaths( mRasterPath ) )
     {
-      QMessageBox::information( this,
-                                tr( "Add raster layer" ),
-                                tr( "No layers selected." ) );
-      return;
-    }
-
-    const QStringList paths = QgsFileWidget::splitFilePaths( mRasterPath );
-    for ( const QString &path : paths )
-    {
-      emit addRasterLayer( path, QFileInfo( path ).completeBaseName(), QStringLiteral( "gdal" ) );
+      QVariantMap parts;
+      if ( !openOptions.isEmpty() )
+        parts.insert( QStringLiteral( "openOptions" ), openOptions );
+      parts.insert( QStringLiteral( "path" ), filePath );
+      mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
     }
   }
   else if ( radioSrcProtocol->isChecked() )
@@ -166,16 +217,10 @@ void QgsGdalSourceSelect::addButtonClicked()
     bool cloudType = isProtocolCloudType();
     if ( !cloudType && protocolURI->text().isEmpty() )
     {
-      QMessageBox::information( this,
-                                tr( "Add raster layer" ),
-                                tr( "No protocol URI entered." ) );
       return;
     }
     else if ( cloudType && ( mBucket->text().isEmpty() || mKey->text().isEmpty() ) )
     {
-      QMessageBox::information( this,
-                                tr( "Add raster layer" ),
-                                tr( "No protocol bucket and/or key entered." ) );
       return;
     }
 
@@ -189,13 +234,146 @@ void QgsGdalSourceSelect::addButtonClicked()
       uri = protocolURI->text();
     }
 
-    QString dataSource = createProtocolURI( cmbProtocolTypes->currentText(),
-                                            uri,
-                                            mAuthSettingsProtocol->configId(),
-                                            mAuthSettingsProtocol->username(),
-                                            mAuthSettingsProtocol->password() );
-    emit addRasterLayer( dataSource, dataSource, QStringLiteral( "gdal" ) );
+    QVariantMap parts;
+    if ( !openOptions.isEmpty() )
+      parts.insert( QStringLiteral( "openOptions" ), openOptions );
+    parts.insert( QStringLiteral( "path" ),
+                  createProtocolURI( cmbProtocolTypes->currentText(),
+                                     uri,
+                                     mAuthSettingsProtocol->configId(),
+                                     mAuthSettingsProtocol->username(),
+                                     mAuthSettingsProtocol->password() ) );
+    mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
   }
+}
+
+void QgsGdalSourceSelect::clearOpenOptions()
+{
+  mOpenOptionsWidgets.clear();
+  mOpenOptionsGroupBox->setVisible( false );
+  mOpenOptionsLabel->clear();
+  while ( mOpenOptionsLayout->count() )
+  {
+    QLayoutItem *item = mOpenOptionsLayout->takeAt( 0 );
+    delete item->widget();
+    delete item;
+  }
+}
+
+void QgsGdalSourceSelect::fillOpenOptions()
+{
+  clearOpenOptions();
+  computeDataSources();
+  if ( mDataSources.isEmpty() )
+    return;
+
+  GDALDriverH hDriver;
+  hDriver = GDALIdentifyDriver( mDataSources[0].toUtf8().toStdString().c_str(), nullptr );
+  if ( hDriver == nullptr )
+    return;
+
+  const char *pszOpenOptionList = GDALGetMetadataItem( hDriver, GDAL_DMD_OPENOPTIONLIST, nullptr );
+  if ( pszOpenOptionList == nullptr )
+    return;
+
+  CPLXMLNode *psDoc = CPLParseXMLString( pszOpenOptionList );
+  if ( psDoc == nullptr )
+    return;
+  CPLXMLNode *psOpenOptionList = CPLGetXMLNode( psDoc, "=OpenOptionList" );
+  if ( psOpenOptionList == nullptr )
+  {
+    CPLDestroyXMLNode( psDoc );
+    return;
+  }
+
+  for ( auto psItem = psOpenOptionList->psChild; psItem != nullptr; psItem = psItem->psNext )
+  {
+    if ( psItem->eType != CXT_Element || !EQUAL( psItem->pszValue, "Option" ) )
+      continue;
+
+    const char *pszOptionName = CPLGetXMLValue( psItem, "name", nullptr );
+    if ( pszOptionName == nullptr )
+      continue;
+
+    // Exclude options that are not of raster scope
+    const char *pszScope = CPLGetXMLValue( psItem, "scope", nullptr );
+    if ( pszScope != nullptr && strstr( pszScope, "raster" ) == nullptr )
+      continue;
+
+    const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
+    QStringList options;
+    if ( pszType && EQUAL( pszType, "string-select" ) )
+    {
+      for ( auto psOption = psItem->psChild; psOption != nullptr; psOption = psOption->psNext )
+      {
+        if ( psOption->eType != CXT_Element ||
+             !EQUAL( psOption->pszValue, "Value" ) ||
+             psOption->psChild == nullptr )
+        {
+          continue;
+        }
+        options << psOption->psChild->pszValue;
+      }
+    }
+
+    QLabel *label = new QLabel( pszOptionName );
+    QWidget *control = nullptr;
+    if ( pszType && EQUAL( pszType, "boolean" ) )
+    {
+      QComboBox *cb = new QComboBox();
+      cb->addItem( tr( "Yes" ), "YES" );
+      cb->addItem( tr( "No" ), "NO" );
+      cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
+      int idx = cb->findData( QVariant( QVariant::String ) );
+      cb->setCurrentIndex( idx );
+      control = cb;
+    }
+    else if ( !options.isEmpty() )
+    {
+      QComboBox *cb = new QComboBox();
+      for ( const QString &val : qgis::as_const( options ) )
+      {
+        cb->addItem( val, val );
+      }
+      cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
+      int idx = cb->findData( QVariant( QVariant::String ) );
+      cb->setCurrentIndex( idx );
+      control = cb;
+    }
+    else
+    {
+      QLineEdit *le = new QLineEdit( );
+      control = le;
+    }
+    control->setObjectName( pszOptionName );
+    mOpenOptionsWidgets.push_back( control );
+
+    const char *pszDescription = CPLGetXMLValue( psItem, "description", nullptr );
+    if ( pszDescription )
+    {
+      label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( pszDescription ) );
+      control->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( pszDescription ) );
+    }
+    mOpenOptionsLayout->addRow( label, control );
+  }
+
+  CPLDestroyXMLNode( psDoc );
+
+  // Set label to point to driver help page
+  const char *pszHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );
+  if ( pszHelpTopic )
+  {
+    mOpenOptionsLabel->setText( tr( "Consult <a href=\"https://gdal.org/%1\">%2 driver help page</a> for detailed explanations on options" ).arg( pszHelpTopic ).arg( GDALGetDriverShortName( hDriver ) ) );
+    mOpenOptionsLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    mOpenOptionsLabel->setOpenExternalLinks( true );
+    mOpenOptionsLabel->setVisible( true );
+  }
+  else
+  {
+    mOpenOptionsLabel->setVisible( false );
+  }
+
+  mOpenOptionsGroupBox->setVisible( !mOpenOptionsWidgets.empty() );
 }
 
 ///@endcond

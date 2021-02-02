@@ -81,6 +81,36 @@ class PyQgsGdalProvider(unittest.TestCase):
             block = raster_layer.dataProvider().block(1, extent, 3, 1)
             self.checkBlockContents(block, full_content[row * 3:row * 3 + 3])
 
+    def testDecodeEncodeUriGpkg(self):
+        """Test decodeUri/encodeUri geopackage support"""
+
+        uri = '/my/raster.gpkg'
+        parts = QgsProviderRegistry.instance().decodeUri('gdal', uri)
+        self.assertEqual(parts, {'path': '/my/raster.gpkg', 'layerName': None})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
+        self.assertEqual(encodedUri, uri)
+
+        uri = 'GPKG:/my/raster.gpkg'
+        parts = QgsProviderRegistry.instance().decodeUri('gdal', uri)
+        self.assertEqual(parts, {'path': '/my/raster.gpkg', 'layerName': None})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
+        self.assertEqual(encodedUri, '/my/raster.gpkg')
+
+        uri = 'GPKG:/my/raster.gpkg:mylayer'
+        parts = QgsProviderRegistry.instance().decodeUri('gdal', uri)
+        self.assertEqual(parts, {'path': '/my/raster.gpkg', 'layerName': 'mylayer'})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
+        self.assertEqual(encodedUri, uri)
+
+    def testDecodeEncodeUriOptions(self):
+        """Test decodeUri/encodeUri options support"""
+
+        uri = '/my/raster.pdf|option:DPI=300|option:GIVEME=TWO'
+        parts = QgsProviderRegistry.instance().decodeUri('gdal', uri)
+        self.assertEqual(parts, {'path': '/my/raster.pdf', 'layerName': None, 'openOptions': ['DPI=300', 'GIVEME=TWO']})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
+        self.assertEqual(encodedUri, uri)
+
 
 if __name__ == '__main__':
     unittest.main()
