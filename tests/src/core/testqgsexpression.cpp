@@ -3359,6 +3359,10 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "array_contains(\"strings\", 'two')" ).evaluate( &context ), QVariant( true ) );
       QCOMPARE( QgsExpression( "array_contains(\"strings\", 'three')" ).evaluate( &context ), QVariant( false ) );
 
+      QCOMPARE( QgsExpression( "array_count(array(1,2,1), 1)" ).evaluate( &context ), QVariant( 2 ) );
+      QCOMPARE( QgsExpression( "array_count(array(1,2,1), 2)" ).evaluate( &context ), QVariant( 1 ) );
+      QCOMPARE( QgsExpression( "array_count(array(1,2,1), 3)" ).evaluate( &context ), QVariant( 0 ) );
+
       QCOMPARE( QgsExpression( "array_find(\"strings\", 'two')" ).evaluate( &context ), QVariant( 1 ) );
       QCOMPARE( QgsExpression( "array_find(\"strings\", 'three')" ).evaluate( &context ), QVariant( -1 ) );
 
@@ -3386,6 +3390,14 @@ class TestQgsExpression: public QObject
       QStringList removeAllExpected;
       removeAllExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "d" );
       QCOMPARE( QgsExpression( "array_remove_all(array('a', 'b', 'c', 'd', 'c'), 'c')" ).evaluate( &context ), QVariant( removeAllExpected ) );
+
+      QStringList replaceExpected;
+      replaceExpected << QStringLiteral( "a" ) << QStringLiteral( "z" ) << QStringLiteral( "a" ) << QStringLiteral( "z" );
+      QCOMPARE( QgsExpression( "array_replace(array('a', 'b', 'a', 'b'), 'b', 'z')" ).evaluate( &context ), QVariant( replaceExpected ) );
+
+      QVariantList prioritizeExpected;
+      prioritizeExpected << 5 << 2 << 1 << 8;
+      QCOMPARE( QgsExpression( "array_prioritize(array(1, 8, 2, 5), array(5, 4, 2, 1, 3, 8))" ).evaluate( &context ), QVariant( prioritizeExpected ) );
 
       QStringList concatExpected = array;
       concatExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" );
