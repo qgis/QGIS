@@ -33,6 +33,10 @@ jobs:
       GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
 
     runs-on: ubuntu-latest
+
+    outputs:
+      cdash_url: ${{ steps.unit-tests.outputs.CDASH_URL }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -114,9 +118,6 @@ jobs:
         run: |
           docker-compose -f .docker/docker-compose-testing.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
 
-      - name: CDASH url
-        run: echo "${{ steps.unit-tests.outputs.CDASH_URL }}"
-
       - name: QGIS runners
         run: |
           docker run -d --name qgis-testing-environment \
@@ -161,4 +162,4 @@ jobs:
     runs-on: ubuntu-latest
     if: failure()
     steps:
-      - run: echo "${{ jobs.build.steps.unit-tests.outputs.CDASH_URL }}"
+      - run: echo "${{ needs.build.outputs.cdash_url }}"
