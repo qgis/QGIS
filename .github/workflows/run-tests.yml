@@ -155,3 +155,10 @@ jobs:
           set -e # switch back
           docker stop qgis-testing-environment
 
+  cdash-link:
+    name: Publish link to CDASH
+    needs: build
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      run: echo "${{ jobs.build.steps.unit-tests.outputs.CDASH_URL }}"
