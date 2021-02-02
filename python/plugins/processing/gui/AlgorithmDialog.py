@@ -72,7 +72,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().addButton(self.runAsBatchButton,
                                        QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
         else:
-            self.mainWidget().setParameters({'INPUT': self.active_layer})
+            in_place_input_parameter_name = 'INPUT'
+            if hasattr(alg, 'inputParameterName'):
+                in_place_input_parameter_name = alg.inputParameterName()
+
+            self.mainWidget().setParameters({in_place_input_parameter_name: self.active_layer})
 
             self.runAsBatchButton = None
             has_selection = self.active_layer and (self.active_layer.selectedFeatureCount() > 0)

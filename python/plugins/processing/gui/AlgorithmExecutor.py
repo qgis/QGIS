@@ -102,7 +102,11 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
     except AttributeError:
         pass
 
-    active_layer = parameters['INPUT']
+    in_place_input_parameter_name = 'INPUT'
+    if hasattr(alg, 'inputParameterName'):
+        in_place_input_parameter_name = alg.inputParameterName()
+
+    active_layer = parameters[in_place_input_parameter_name]
 
     # Run some checks and prepare the layer for in-place execution by:
     # - getting the active layer and checking that it is a vector
@@ -137,7 +141,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
         active_layer.selectAll()
 
     # Make sure we are working on selected features only
-    parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(active_layer.id(), True)
+    parameters[in_place_input_parameter_name] = QgsProcessingFeatureSourceDefinition(active_layer.id(), True)
     parameters['OUTPUT'] = 'memory:'
 
     req = QgsFeatureRequest(QgsExpression(r"$id < 0"))
@@ -300,14 +304,21 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
     if context is None:
         context = dataobjects.createContext(feedback)
 
-    if 'INPUT' not in parameters or not parameters['INPUT']:
-        parameters['INPUT'] = iface.activeLayer()
+    in_place_input_parameter_name = 'INPUT'
+    if hasattr(alg, 'inputParameterName'):
+        in_place_input_parameter_name = alg.inputParameterName()
+    in_place_input_layer_name = 'INPUT'
+    if hasattr(alg, 'inputParameterDescription'):
+        in_place_input_layer_name = alg.inputParameterDescription()
+
+    if in_place_input_parameter_name not in parameters or not parameters[in_place_input_parameter_name]:
+        parameters[in_place_input_parameter_name] = iface.activeLayer()
     ok, results = execute_in_place_run(alg, parameters, context=context, feedback=feedback)
     if ok:
-        if isinstance(parameters['INPUT'], QgsProcessingFeatureSourceDefinition):
-            layer = alg.parameterAsVectorLayer({'INPUT': parameters['INPUT'].source}, 'INPUT', context)
-        elif isinstance(parameters['INPUT'], QgsVectorLayer):
-            layer = parameters['INPUT']
+        if isinstance(parameters[in_place_input_parameter_name], QgsProcessingFeatureSourceDefinition):
+            layer = alg.parameterAsVectorLayer({in_place_input_parameter_name: parameters[in_place_input_parameter_name].source}, in_place_input_layer_name, context)
+        elif isinstance(parameters[in_place_input_parameter_name], QgsVectorLayer):
+            layer = parameters[in_place_input_parameter_name]
         if layer:
             layer.triggerRepaint()
     return ok, results
