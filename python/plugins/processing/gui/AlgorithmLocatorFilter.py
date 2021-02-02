@@ -188,8 +188,12 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg.exec_()
                 return
 
+            in_place_input_parameter_name = 'INPUT'
+            if hasattr(alg, 'inputParameterName'):
+                in_place_input_parameter_name = alg.inputParameterName()
+
             if [d for d in alg.parameterDefinitions() if
-                    d.name() not in ('INPUT', 'OUTPUT')]:
+                    d.name() not in (in_place_input_parameter_name, 'OUTPUT')]:
                 dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
                 if not dlg:
                     dlg = AlgorithmDialog(alg, True, parent=iface.mainWindow())
