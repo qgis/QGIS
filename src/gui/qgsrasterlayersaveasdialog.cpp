@@ -354,12 +354,12 @@ int QgsRasterLayerSaveAsDialog::nRows() const
 
 double QgsRasterLayerSaveAsDialog::xResolution() const
 {
-  return QLocale().toDouble( mXResolutionLineEdit->text() );
+  return QgsDoubleValidator::toDouble( mXResolutionLineEdit->text() );
 }
 
 double QgsRasterLayerSaveAsDialog::yResolution() const
 {
-  return QLocale().toDouble( mYResolutionLineEdit->text() );
+  return QgsDoubleValidator::toDouble( mYResolutionLineEdit->text() );
 }
 
 int QgsRasterLayerSaveAsDialog::maximumTileSizeX() const
@@ -855,7 +855,7 @@ double QgsRasterLayerSaveAsDialog::noDataCellValue( int row, int column ) const
   {
     return std::numeric_limits<double>::quiet_NaN();
   }
-  return QLocale().toDouble( lineEdit->text() );
+  return QgsDoubleValidator::toDouble( lineEdit->text() );
 }
 
 void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
