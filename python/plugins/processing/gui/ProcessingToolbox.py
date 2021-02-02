@@ -248,7 +248,11 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 dlg.exec_()
                 return
 
-            if self.in_place_mode and not [d for d in alg.parameterDefinitions() if d.name() not in ('INPUT', 'OUTPUT')]:
+            in_place_input_parameter_name = 'INPUT'
+            if hasattr(alg, 'inputParameterName'):
+                in_place_input_parameter_name = alg.inputParameterName()
+
+            if self.in_place_mode and not [d for d in alg.parameterDefinitions() if d.name() not in (in_place_input_parameter_name, 'OUTPUT')]:
                 parameters = {}
                 feedback = MessageBarProgress(algname=alg.displayName())
                 ok, results = execute_in_place(alg, parameters, feedback=feedback)
