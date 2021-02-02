@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
+#include "qgsgui.h"
 #include "qgshanasourceselect.h"
 #include "qgshanaconnection.h"
 #include "qgshananewconnection.h"
@@ -199,6 +200,8 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnConnect_clicked );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsHanaSourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( btnNew, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnNew_clicked );
