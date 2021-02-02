@@ -52,7 +52,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="negXImageSourceLabel">
        <property name="text">
-        <string>Right (-X)</string>
+        <string>Left (-X)</string>
        </property>
       </widget>
      </item>
@@ -82,7 +82,7 @@
      <item row="3" column="0">
       <widget class="QLabel" name="posXImageSourceLabel">
        <property name="text">
-        <string>Left (+X)</string>
+        <string>Right (+X)</string>
        </property>
       </widget>
      </item>
