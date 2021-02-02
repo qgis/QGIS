@@ -177,7 +177,8 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 self.resultFetched.emit(result)
 
     def triggerResult(self, result):
-        alg = QgsApplication.processingRegistry().createAlgorithmById(result.userData)
+        config = {'IN_PLACE': True}
+        alg = QgsApplication.processingRegistry().createAlgorithmById(result.userData, config)
         if alg:
             ok, message = alg.canExecute()
             if not ok:
