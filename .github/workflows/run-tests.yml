@@ -165,9 +165,9 @@ jobs:
       - run: echo "${{ needs.build.outputs.cdash_url }}"
 
       - name: Create comment
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v1.4.4
         with:
-          token: ${{ steps.token.outputs.token }}
+          reactions: confused
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Some tests are failing.
