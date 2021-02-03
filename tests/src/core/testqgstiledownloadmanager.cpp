@@ -18,11 +18,13 @@
 #include <QCoreApplication>
 #include <QTimer>
 #include <QtTest>
+#include <QAbstractNetworkCache>
 #include <iostream>
 #include <memory>
 
 #include "qgsapplication.h"
 #include "qgstiledownloadmanager.h"
+#include "qgsnetworkaccessmanager.h"
 
 const QString url_1 = "https://www.qwant.com/maps/tiles/ozbasemap/0/0/0.pbf";
 const QString url_2 = "https://www.qwant.com/maps/tiles/ozbasemap/1/0/0.pbf";
@@ -51,8 +53,13 @@ class TestQgsTileDownloadManager : public QObject
 
 void TestQgsTileDownloadManager::initTestCase()
 {
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsNetworkAccessManager::instance()->cache()->clear();
 }
 
 void TestQgsTileDownloadManager::cleanupTestCase()
@@ -144,6 +151,7 @@ void TestQgsTileDownloadManager::testOneRequestTwice()
   QSignalSpy spy1( r1.get(), &QgsTileDownloadManagerReply::finished );
   QSignalSpy spy2( r2.get(), &QgsTileDownloadManagerReply::finished );
   spy1.wait();
+  QCoreApplication::processEvents();
   QCOMPARE( spy1.count(), 1 );
   QCOMPARE( spy2.count(), 1 );
   QVERIFY( !r1->data().isEmpty() );
@@ -267,6 +275,8 @@ void TestQgsTileDownloadManager::testShutdownWithPendingRequest()
 {
   // test that if we shut down download manager while there is a pending request,
   // nothing breaks and the request fails as expected
+
+  QgsNetworkAccessManager::instance()->cache()->clear();
 
   QgsTileDownloadManager manager;
 
