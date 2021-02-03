@@ -36,6 +36,7 @@ jobs:
 
     outputs:
       cdash_url: ${{ steps.unit-tests.outputs.CDASH_URL }}
+      tests_pass: ${{ steps.unit-tests.outputs.TESTS_PASS }}
 
     steps:
       - name: Checkout
@@ -156,19 +157,53 @@ jobs:
           set -e # switch back
           docker stop qgis-testing-environment
 
-  cdash-link:
-    name: Publish link to CDASH
+
+
+  tests-report-comment:
+    name: Write tests report in a comment
     needs: build
     runs-on: ubuntu-latest
-    if: failure() && github.event_name == 'pull_request'
+    if: ( needs.build.result == 'failure' || needs.build.result == 'success' ) && github.event_name == 'pull_request'
     steps:
-      - run: echo "${{ needs.build.outputs.cdash_url }}"
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Tests report
 
       - name: Create comment
-        uses: peter-evans/create-or-update-comment@v1.4.4
+        if: ${{ steps.find-comment.outputs.comment-id == 0 }}
+        uses: peter-evans/create-or-update-comment@v1
+        id: create-comment
         with:
-          reactions: confused
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Some tests are failing.
-            Tests results: ${{ needs.build.outputs.cdash_url }}
+            ** Tests report **
+
+      - name: Process
+        id: process-vars
+        env:
+          - COMMENT_FOUND: ${{ steps.find-comment.outputs.comment-id }}
+          - COMMENT_CREATED: ${{ steps.create-comment.outputs.comment-id }}
+          - COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          - CDASH_URL: ${{ needs.build.outputs.cdash_url }}
+          - JOB_RESULT: ${{ needs.build.result }}
+          - TESTS_PASS: ${{ needs.build.outputs.tests_pass }}
+        run: |
+          echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
+          if [[ ${JOB_RESULT} -eq "success" ]]; then
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} unit-tests pass"
+          elif [[ ${TESTS_PASS} -eq "true" ]]; then
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} unit-tests pass but job failed!"
+          else
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} tests are failing: ${CDASH_URL}"
+          fi
+
+      - name: Update comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.process-vars.outputs.COMMENT_ID }}
+          edit-mode: append
+          body: ${{ steps.process-vars.outputs.COMMENT_BODY }}
