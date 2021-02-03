@@ -166,7 +166,7 @@ jobs:
     name: Write tests report in a comment
     needs: build
     runs-on: ubuntu-latest
-    if: always() && github.event_name == 'pull_request'
+    if: always() && ( needs.build.result == 'failure' || needs.build.result == 'success' ) && github.event_name == 'pull_request'
     steps:
       - name: Find Comment
         uses: peter-evans/find-comment@v1
