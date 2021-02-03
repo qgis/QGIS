@@ -183,7 +183,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ** Tests report **
+            **Tests report**
 
       - name: Process
         id: process-vars
@@ -197,11 +197,11 @@ jobs:
           RUNNERS_OUTCOME: ${{ needs.build.outputs.runners_outcome }}
         run: |
           echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
-          if [[ ${COMPILE_OUTCOME} -ne "success" ]]; then
+          if [[ ${COMPILE_OUTCOME} != "success" ]]; then
             echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: compilation failed"
-          elif [[ ${TESTS_PASS} -ne "true" ]]; then
+          elif [[ ${TESTS_PASS} != "true" ]]; then
             echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: some unit-tests are failing ${CDASH_URL}"
-          elif [[ ${RUNNERS_OUTCOME} -ne "success" ]]; then
+          elif [[ ${RUNNERS_OUTCOME} != "success" ]]; then
             echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: QGIS runners test failed"
           else
             echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: unit-tests succeeded"
