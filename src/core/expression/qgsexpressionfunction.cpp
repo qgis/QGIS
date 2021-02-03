@@ -5498,7 +5498,7 @@ static QVariant fcnArrayReplace( const QVariantList &values, const QgsExpression
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   int index = list.indexOf( values.at( 1 ) );
-  while( index >= 0 )
+  while ( index >= 0 )
   {
     list.replace( index, values.at( 2 ) );
     index = list.indexOf( values.at( 1 ) );
