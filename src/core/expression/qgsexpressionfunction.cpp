@@ -5519,7 +5519,7 @@ static QVariant fcnArrayPrioritize( const QVariantList &values, const QgsExpress
     }
   }
 
-  list_new.append(list);
+  list_new.append( list );
 
   return convertToSameType( list_new, values.at( 0 ).type() );
 }
