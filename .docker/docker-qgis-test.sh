@@ -10,7 +10,7 @@ set -e
 ##################################
 
 if [ ${HANA_TESTS:-"false"} == "true" ] ; then
-  echo "travis_fold:start:hana"
+  echo "::group::hana"
   echo "${bold}Load HANA database...${endbold}"
 
   export QGIS_HANA_TEST_DB='driver='/usr/sap/hdbclient/libodbcHDB.so' host='${HANA_HOST}' port='${HANA_PORT}' user='${HANA_USER}' password='${HANA_PASSWORD}' sslEnabled=true sslValidateCertificate=False'
@@ -24,7 +24,7 @@ if [ ${HANA_TESTS:-"false"} == "true" ] ; then
   done
   echo "🌊 done"
 
-  echo "travis_fold:end:hana"
+  echo "::endgroup::"
 fi
 
 ############################
@@ -124,5 +124,5 @@ else
   echo "Flaky tests are run!"
 fi
 echo "List of skipped tests: $EXCLUDE_TESTS"
-python3 /root/QGIS/.ci/ctest2travis.py xvfb-run ctest -V -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config.ctest --output-on-failure
+python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config.ctest --output-on-failure
 

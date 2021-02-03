@@ -147,11 +147,11 @@ jobs:
           # Run tests in the docker
           for i in "${!testrunners[@]}"
           do
-            echo "travis_fold:start:docker_test_runner_${i}"
+            echo "::group::docker_test_runner_${i}"
             echo "test ${i}..."
             docker exec -it qgis-testing-environment sh -c "cd /tests_directory && /usr/bin/test_runner/qgis_testrunner.sh ${i}"
             [[ $? -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
-            echo "travis_fold:end:docker_test_runner_${i}"
+            echo "::endgroup::"
           done
           set -e # switch back
           docker stop qgis-testing-environment

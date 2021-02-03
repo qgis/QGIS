@@ -3,7 +3,7 @@
 
 """
 ***************************************************************************
-    ctest2travis.py
+    ctest2ci.py
     ---------------------
     Date                 : March 2017
     Copyright            : (C) 2017 by Matthias Kuhn
@@ -27,12 +27,10 @@ __revision__ = '$Format:%H$'
 # This script parses output from ctest and injects
 #
 #  - Colors for failing unit tests and test cases
-#
-#  - `travis_fold` control sequences to hide uninteresting output by default
+#  - Group control sequences to hide uninteresting output by default
 
 import sys
 import re
-import shlex
 import subprocess
 from termcolor import colored
 
@@ -40,17 +38,17 @@ fold_stack = list()
 
 
 def start_fold(tag):
-    sys.stdout.write('travis_fold:start:{}\n'.format(tag))
+    sys.stdout.write('::group::{}\n'.format(tag))
     fold_stack.append(tag)
 
 
 def end_fold():
     try:
         tag = fold_stack.pop()
-        sys.stdout.write('travis_fold:end:{}\n'.format(tag))
+        sys.stdout.write('::endgroup::\n')
     except IndexError:
         updated_line = colored("======================", 'magenta')
-        updated_line += colored("ctest2travis error when processing the following line:", 'magenta')
+        updated_line += colored("ctest2ci error when processing the following line:", 'magenta')
         updated_line += colored("----------------------", 'magenta')
         updated_line += colored(updated_line, 'magenta')
         updated_line += colored("----------------------", 'magenta')
