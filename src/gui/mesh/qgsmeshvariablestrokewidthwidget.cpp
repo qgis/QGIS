@@ -19,6 +19,7 @@
 #include <QDialogButtonBox>
 
 #include "qgssettings.h"
+#include "qgsdoublevalidator.h"
 
 QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
   const QgsInterpolatedLineWidth &variableStrokeWidth,
@@ -50,8 +51,8 @@ QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
 
 void QgsMeshVariableStrokeWidthWidget::setVariableStrokeWidth( const QgsInterpolatedLineWidth &variableStrokeWidth )
 {
-  whileBlocking( mValueMinimumLineEdit )->setText( QString::number( variableStrokeWidth.minimumValue() ) );
-  whileBlocking( mValueMaximumLineEdit )->setText( QString::number( variableStrokeWidth.maximumValue() ) );
+  whileBlocking( mValueMinimumLineEdit )->setText( QLocale().toString( variableStrokeWidth.minimumValue() ) );
+  whileBlocking( mValueMaximumLineEdit )->setText( QLocale().toString( variableStrokeWidth.maximumValue() ) );
   whileBlocking( mWidthMinimumSpinBox )->setValue( variableStrokeWidth.minimumWidth() );
   whileBlocking( mWidthMaximumSpinBox )->setValue( variableStrokeWidth.maximumWidth() );
   whileBlocking( mIgnoreOutOfRangecheckBox )->setChecked( variableStrokeWidth.ignoreOutOfRange() );
@@ -78,8 +79,8 @@ QgsInterpolatedLineWidth QgsMeshVariableStrokeWidthWidget::variableStrokeWidth()
 
 void QgsMeshVariableStrokeWidthWidget::defaultMinMax()
 {
-  whileBlocking( mValueMinimumLineEdit )->setText( QString::number( mDefaultMinimumValue ) );
-  whileBlocking( mValueMaximumLineEdit )->setText( QString::number( mDefaultMaximumValue ) );
+  whileBlocking( mValueMinimumLineEdit )->setText( QLocale().toString( mDefaultMinimumValue ) );
+  whileBlocking( mValueMaximumLineEdit )->setText( QLocale().toString( mDefaultMaximumValue ) );
   emit widgetChanged();
 }
 
@@ -148,8 +149,8 @@ void QgsMeshVariableStrokeWidthButton::openWidget()
 void QgsMeshVariableStrokeWidthButton::updateText()
 {
   setText( QString( "%1 - %2" ).
-           arg( QString::number( mVariableStrokeWidth.minimumWidth(), 'g', 3 ) ).
-           arg( QString::number( mVariableStrokeWidth.maximumWidth(), 'g', 3 ) ) );
+           arg( QLocale().toString( mVariableStrokeWidth.minimumWidth(), 'g', 3 ) ).
+           arg( QLocale().toString( mVariableStrokeWidth.maximumWidth(), 'g', 3 ) ) );
 }
 
 double QgsMeshVariableStrokeWidthWidget::lineEditValue( const QLineEdit *lineEdit ) const
@@ -159,6 +160,6 @@ double QgsMeshVariableStrokeWidthWidget::lineEditValue( const QLineEdit *lineEdi
     return std::numeric_limits<double>::quiet_NaN();
   }
 
-  return lineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( lineEdit->text() );
 }
 
