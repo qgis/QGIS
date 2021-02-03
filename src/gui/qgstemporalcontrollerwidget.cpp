@@ -480,7 +480,7 @@ void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &rang
   }
 }
 
-QgsTemporalController *QgsTemporalControllerWidget::temporalController()
+QgsTemporalNavigationObject *QgsTemporalControllerWidget::temporalController()
 {
   return mNavigationObject;
 }

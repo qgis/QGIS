@@ -29,7 +29,7 @@ A widget for controlling playback properties of a :py:class:`QgsTemporalControll
 Constructor for QgsTemporalControllerWidget, with the specified ``parent`` widget.
 %End
 
-    QgsTemporalController *temporalController();
+    QgsTemporalNavigationObject *temporalController();
 %Docstring
 Returns the temporal controller object used by this object in navigation.
 
