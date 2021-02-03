@@ -61,7 +61,7 @@ test_count = 0
 
 def start_test_fold():
     global test_count
-    sys.stdout.write('Running tests')
+    sys.stdout.write('Running tests\n')
     start_fold('test.{}'.format(test_count))
     test_count += 1
 

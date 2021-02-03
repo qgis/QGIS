@@ -28,6 +28,7 @@ mkdir -p build
 pushd build > /dev/null
 
 echo "${bold}Running cmake...${endbold}"
+echo "::group::cmake"
 
 export CC=/usr/lib/ccache/clang
 export CXX=/usr/lib/ccache/clang++
@@ -75,11 +76,15 @@ cmake \
  -DQt53DExtras_DIR="/root/QGIS/external/qt3dextra-headers/cmake/Qt53DExtras" \
  ..
 
+echo "::endgroup::"
+
 #######
 # Build
 #######
 echo "${bold}Building QGIS...${endbold}"
+echo "::group::build"
 ${CTEST_BUILD_COMMAND}
+echo "::group::cmake"
 
 ########################
 # Show ccache statistics
