@@ -101,6 +101,24 @@ class TestQgsWmsProvider: public QObject
                                          "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
+    // regression #41116
+    void queryItemsWithPlusSign()
+    {
+      const QString failingAddress( "layers=plus+sign&styles=&url=http://localhost:8380/mapserv" );
+      const QgsWmsParserSettings config;
+      QgsWmsCapabilities cap;
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll().replace( "<Name>test</Name>",  "<Name>plus+sign</Name>" );
+      QVERIFY( cap.parseResponse( content, config ) );
+      QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), &cap );
+      QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
+      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=0,0,90,90&"
+                                         "CRS=EPSG:2056&WIDTH=100&HEIGHT=100&"
+                                         "LAYERS=plus%2Bsign&STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
+    }
+
+
     void noCrsSpecified()
     {
       QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
