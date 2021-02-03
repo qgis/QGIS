@@ -35,8 +35,10 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      cdash_url: ${{ steps.unit-tests.outputs.CDASH_URL }}
-      tests_pass: ${{ steps.unit-tests.outputs.TESTS_PASS }}
+      cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
+      compile_outcome: ${{ steps.compile.outcome }}
+      tests_pass: ${{ steps.tests.outputs.TESTS_PASS }}
+      runners_outcome: ${{ steps.runners.outcome }}
 
     steps:
       - name: Checkout
@@ -104,6 +106,7 @@ jobs:
             build-ccache-master-
 
       - name: Compile QGIS
+        id: compile
         run: |
           docker run -t --name qgis_container \
                      -v $(pwd):/root/QGIS \
@@ -115,11 +118,11 @@ jobs:
           docker commit qgis_container qgis_image
 
       - name: run unit tests
-        id: unit-tests
-        run: |
-          docker-compose -f .docker/docker-compose-testing.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
+        id: tests
+        run: docker-compose -f .docker/docker-compose-testing.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
 
       - name: QGIS runners
+        id: runners
         run: |
           docker run -d --name qgis-testing-environment \
                      -v $(pwd):/root/QGIS \
@@ -189,18 +192,19 @@ jobs:
           COMMENT_CREATED: ${{ steps.create-comment.outputs.comment-id }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
           CDASH_URL: ${{ needs.build.outputs.cdash_url }}
-          JOB_RESULT: ${{ needs.build.result }}
+          COMPILE_OUTCOME: ${{ needs.build.outputs.compile_outcome }}
           TESTS_PASS: ${{ needs.build.outputs.tests_pass }}
+          RUNNERS_OUTCOME: ${{ needs.build.outputs.runners_outcome }}
         run: |
           echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
-          if [[ ${JOB_RESULT} -eq "success" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: unit-tests pass"
-          elif [[ ${TESTS_PASS} -eq "true" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: unit-tests pass but job failed!"
-          elif [[ -z ${CDASH_URL} ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: build failed"
+          if [[ ${COMPILE_OUTCOME} -ne "success" ]]; then
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: compilation failed"
+          elif [[ ${TESTS_PASS} -ne "true" ]]; then
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: some unit-tests are failing ${CDASH_URL}"
+          elif [[ ${RUNNERS_OUTCOME} -ne "success" ]]; then
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: QGIS runners test failed"
           else
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: tests are failing: ${CDASH_URL}"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: unit-tests succeeded"
           fi
 
       - name: Update comment
