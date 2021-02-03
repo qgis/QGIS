@@ -23,6 +23,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmeshvariablestrokewidthwidget.h"
 #include "qgssettings.h"
+#include "qgsdoublevalidator.h"
 
 QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidget *parent )
   : QWidget( parent )
@@ -112,8 +113,8 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   const double min = settings.classificationMinimum();
   const double max = settings.classificationMaximum();
 
-  whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
-  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
+  whileBlocking( mScalarMinLineEdit )->setText( QLocale().toString( min ) );
+  whileBlocking( mScalarMaxLineEdit )->setText( QLocale().toString( max ) );
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
   whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( min, max );
   whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
@@ -155,7 +156,7 @@ double QgsMeshRendererScalarSettingsWidget::lineEditValue( const QLineEdit *line
     return std::numeric_limits<double>::quiet_NaN();
   }
 
-  return lineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( lineEdit->text() );
 }
 
 void QgsMeshRendererScalarSettingsWidget::minMaxChanged()
@@ -177,8 +178,8 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   double min = metadata.minimum();
   double max = metadata.maximum();
-  whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
-  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
+  whileBlocking( mScalarMinLineEdit )->setText( QLocale().toString( min ) );
+  whileBlocking( mScalarMaxLineEdit )->setText( QLocale().toString( max ) );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
 
