@@ -26,22 +26,22 @@
      </column>
      <column>
       <property name="text">
-       <string>Referencing Layer</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Referencing Field(s)</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
        <string>Referenced Layer</string>
       </property>
      </column>
      <column>
       <property name="text">
        <string>Referenced Field(s)</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Referencing Layer</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Referencing Field(s)</string>
       </property>
      </column>
      <column>
