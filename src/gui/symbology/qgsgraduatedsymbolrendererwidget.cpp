@@ -52,6 +52,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgstemporalcontroller.h"
+#include "qgsdoublevalidator.h"
 
 
 
@@ -698,7 +699,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     mGroupBoxSymmetric->setChecked( method->symmetricModeEnabled() );
     cbxAstride->setChecked( method->symmetryAstride() );
     if ( method->symmetricModeEnabled() )
-      cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QString::number( method->symmetryPoint(), 'f', method->labelPrecision() + 2 ) );
+      cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QLocale().toString( method->symmetryPoint(), 'f', method->labelPrecision() + 2 ) );
 
     txtLegendFormat->setText( method->labelFormat() );
     spinPrecision->setValue( method->labelPrecision() );
@@ -1002,14 +1003,14 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   {
     // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
     // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
-    double currentValue = cboSymmetryPoint->currentText().toDouble();
+    double currentValue = QgsDoubleValidator::toDouble( cboSymmetryPoint->currentText() );
     if ( currentValue < ( minimum + ( maximum - minimum ) / 100. ) || currentValue > ( maximum - ( maximum - minimum ) / 100. ) )
-      cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QString::number( minimum + ( maximum - minimum ) / 2., 'f', method->labelPrecision() + 2 ) );
+      cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QLocale().toString( minimum + ( maximum - minimum ) / 2., 'f', method->labelPrecision() + 2 ) );
   }
 
   if ( mGroupBoxSymmetric->isChecked() )
   {
-    double symmetryPoint = cboSymmetryPoint->currentText().toDouble();
+    double symmetryPoint = QgsDoubleValidator::toDouble( cboSymmetryPoint->currentText() );
     bool astride = cbxAstride->isChecked();
     method->setSymmetricMode( true, symmetryPoint, astride );
   }
