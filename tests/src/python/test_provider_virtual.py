@@ -1328,7 +1328,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     def test_int64(self):
         """
-        Test that 64 bits integer doesn't generate an integer owerflow
+        Test that 64 bits integer doesn't generate an integer overflow
         """
         bigint = 2262000000
 
