@@ -185,12 +185,12 @@ jobs:
       - name: Process
         id: process-vars
         env:
-          - COMMENT_FOUND: ${{ steps.find-comment.outputs.comment-id }}
-          - COMMENT_CREATED: ${{ steps.create-comment.outputs.comment-id }}
-          - COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          - CDASH_URL: ${{ needs.build.outputs.cdash_url }}
-          - JOB_RESULT: ${{ needs.build.result }}
-          - TESTS_PASS: ${{ needs.build.outputs.tests_pass }}
+          COMMENT_FOUND: ${{ steps.find-comment.outputs.comment-id }}
+          COMMENT_CREATED: ${{ steps.create-comment.outputs.comment-id }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          CDASH_URL: ${{ needs.build.outputs.cdash_url }}
+          JOB_RESULT: ${{ needs.build.result }}
+          TESTS_PASS: ${{ needs.build.outputs.tests_pass }}
         run: |
           echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
           if [[ ${JOB_RESULT} -eq "success" ]]; then
