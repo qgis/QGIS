@@ -194,11 +194,13 @@ jobs:
         run: |
           echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
           if [[ ${JOB_RESULT} -eq "success" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} unit-tests pass"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: unit-tests pass"
           elif [[ ${TESTS_PASS} -eq "true" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} unit-tests pass but job failed!"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: unit-tests pass but job failed!"
+          elif [[ -z ${CDASH_URL} ]]; then
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: build failed"
           else
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} tests are failing: ${CDASH_URL}"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: tests are failing: ${CDASH_URL}"
           fi
 
       - name: Update comment
