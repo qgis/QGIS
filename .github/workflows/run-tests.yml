@@ -198,7 +198,7 @@ jobs:
         run: |
           echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
           if [[ ${COMPILE_OUTCOME} != "success" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :poop: compilation failed"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :scream: compilation failed"
           elif [[ ${TESTS_PASS} != "true" ]]; then
             echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :fire: some unit-tests are failing ${CDASH_URL}"
           elif [[ ${RUNNERS_OUTCOME} != "success" ]]; then
