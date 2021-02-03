@@ -198,13 +198,13 @@ jobs:
         run: |
           echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
           if [[ ${COMPILE_OUTCOME} != "success" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: compilation failed"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :poop: compilation failed"
           elif [[ ${TESTS_PASS} != "true" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: some unit-tests are failing ${CDASH_URL}"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :fire: some unit-tests are failing ${CDASH_URL}"
           elif [[ ${RUNNERS_OUTCOME} != "success" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: QGIS runners test failed"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :broken_heart: QGIS runners test failed"
           else
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA}: unit-tests succeeded"
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :sunglasses: unit-tests succeeded"
           fi
 
       - name: Update comment
