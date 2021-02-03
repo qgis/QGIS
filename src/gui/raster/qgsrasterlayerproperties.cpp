@@ -1621,7 +1621,7 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
     // transparency
     // Who needs transparency as floating point?
     lineEdit->setValidator( new QIntValidator( nullptr ) );
-    lineEdit->setText( QString::number( static_cast<int>( value ) ) );
+    lineEdit->setText( QLocale().toString( static_cast<int>( value ) ) );
   }
   else
   {
@@ -1676,7 +1676,7 @@ double QgsRasterLayerProperties::transparencyCellValue( int row, int column )
   {
     return std::numeric_limits<double>::quiet_NaN();
   }
-  return lineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( lineEdit->text() );
 }
 
 void QgsRasterLayerProperties::adjustTransparencyCellWidth( int row, int column )
@@ -1712,10 +1712,10 @@ void QgsRasterLayerProperties::pbnExportTransparentPixelValues_clicked()
         myOutputStream << "#\n#\n# " << tr( "Red" ) << "\t" << tr( "Green" ) << "\t" << tr( "Blue" ) << "\t" << tr( "Percent Transparent" );
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
-          myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
-                         << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
-                         << QString::number( transparencyCellValue( myTableRunner, 2 ) ) << "\t"
-                         << QString::number( transparencyCellValue( myTableRunner, 3 ) );
+          myOutputStream << '\n' << QLocale().toString( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
+                         << QLocale().toString( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
+                         << QLocale().toString( transparencyCellValue( myTableRunner, 2 ) ) << "\t"
+                         << QLocale().toString( transparencyCellValue( myTableRunner, 3 ) );
         }
       }
       else
@@ -1724,9 +1724,9 @@ void QgsRasterLayerProperties::pbnExportTransparentPixelValues_clicked()
 
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
-          myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
-                         << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
-                         << QString::number( transparencyCellValue( myTableRunner, 2 ) );
+          myOutputStream << '\n' << QLocale().toString( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
+                         << QLocale().toString( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
+                         << QLocale().toString( transparencyCellValue( myTableRunner, 2 ) );
         }
       }
     }
