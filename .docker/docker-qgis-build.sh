@@ -84,7 +84,7 @@ echo "::endgroup::"
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
 ${CTEST_BUILD_COMMAND}
-echo "::group::cmake"
+echo "::endgroup::"
 
 ########################
 # Show ccache statistics
