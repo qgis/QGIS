@@ -27,6 +27,7 @@
 #include "qgisapp.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"
+#include "qgsdoublevalidator.h"
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
@@ -87,10 +88,10 @@ void QgsDecorationGridDialog::updateGuiElements()
 
   grpEnable->setChecked( mDeco.enabled() );
 
-  mIntervalXEdit->setText( QString::number( mDeco.gridIntervalX() ) );
-  mIntervalYEdit->setText( QString::number( mDeco.gridIntervalY() ) );
-  mOffsetXEdit->setText( QString::number( mDeco.gridOffsetX() ) );
-  mOffsetYEdit->setText( QString::number( mDeco.gridOffsetY() ) );
+  mIntervalXEdit->setText( QLocale().toString( mDeco.gridIntervalX() ) );
+  mIntervalYEdit->setText( QLocale().toString( mDeco.gridIntervalY() ) );
+  mOffsetXEdit->setText( QLocale().toString( mDeco.gridOffsetX() ) );
+  mOffsetYEdit->setText( QLocale().toString( mDeco.gridOffsetY() ) );
 
   mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findData( mDeco.gridStyle() ) );
   mDrawAnnotationCheckBox->setChecked( mDeco.showGridAnnotation() );
@@ -119,10 +120,10 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   mDeco.setDirty( false );
   mDeco.setEnabled( grpEnable->isChecked() );
 
-  mDeco.setGridIntervalX( mIntervalXEdit->text().toDouble() );
-  mDeco.setGridIntervalY( mIntervalYEdit->text().toDouble() );
-  mDeco.setGridOffsetX( mOffsetXEdit->text().toDouble() );
-  mDeco.setGridOffsetY( mOffsetYEdit->text().toDouble() );
+  mDeco.setGridIntervalX( QgsDoubleValidator::toDouble( mIntervalXEdit->text() ) );
+  mDeco.setGridIntervalY( QgsDoubleValidator::toDouble( mIntervalYEdit->text() ) );
+  mDeco.setGridOffsetX( QgsDoubleValidator::toDouble( mOffsetXEdit->text() ) );
+  mDeco.setGridOffsetY( QgsDoubleValidator::toDouble( mOffsetYEdit->text() ) );
   mDeco.setGridStyle( static_cast< QgsDecorationGrid::GridStyle >( mGridTypeComboBox->currentData().toInt() ) );
 
   mDeco.setTextFormat( mAnnotationFontButton->textFormat() );
@@ -211,10 +212,10 @@ void QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked()
   double values[4];
   if ( mDeco.getIntervalFromCurrentLayer( values ) )
   {
-    mIntervalXEdit->setText( QString::number( values[0] ) );
-    mIntervalYEdit->setText( QString::number( values[1] ) );
-    mOffsetXEdit->setText( QString::number( values[2] ) );
-    mOffsetYEdit->setText( QString::number( values[3] ) );
+    mIntervalXEdit->setText( QLocale().toString( values[0] ) );
+    mIntervalYEdit->setText( QLocale().toString( values[1] ) );
+    mOffsetXEdit->setText( QLocale().toString( values[2] ) );
+    mOffsetYEdit->setText( QLocale().toString( values[3] ) );
     if ( values[0] >= 1 )
       mCoordinatePrecisionSpinBox->setValue( 0 );
     else
@@ -229,10 +230,10 @@ void QgsDecorationGridDialog::updateInterval( bool force )
     double values[4];
     if ( mDeco.getIntervalFromExtent( values, true ) )
     {
-      mIntervalXEdit->setText( QString::number( values[0] ) );
-      mIntervalYEdit->setText( QString::number( values[1] ) );
-      mOffsetXEdit->setText( QString::number( values[2] ) );
-      mOffsetYEdit->setText( QString::number( values[3] ) );
+      mIntervalXEdit->setText( QLocale().toString( values[0] ) );
+      mIntervalYEdit->setText( QLocale().toString( values[1] ) );
+      mOffsetXEdit->setText( QLocale().toString( values[2] ) );
+      mOffsetYEdit->setText( QLocale().toString( values[3] ) );
       // also update coord. precision
       // if interval >= 1, set precision=0 because we have a rounded value
       // else set it to previous default of 3
