@@ -89,6 +89,9 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.vl_editors = None
         cls.vl_link_books_authors = None
         cls.layers = None
+        cls.mapCanvas = None
+        cls.vltools = None
+        cls.relMgr = None
 
     def setUp(self):
         self.rel_a = QgsRelation()
