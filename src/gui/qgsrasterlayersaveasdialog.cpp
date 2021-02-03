@@ -31,6 +31,7 @@
 #include <gdal.h>
 #include "qgsmessagelog.h"
 #include "qgsgui.h"
+#include "qgsdoublevalidator.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -296,8 +297,8 @@ void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
 
 void QgsRasterLayerSaveAsDialog::setValidators()
 {
-  mXResolutionLineEdit->setValidator( new QDoubleValidator( this ) );
-  mYResolutionLineEdit->setValidator( new QDoubleValidator( this ) );
+  mXResolutionLineEdit->setValidator( new QgsDoubleValidator( this ) );
+  mYResolutionLineEdit->setValidator( new QgsDoubleValidator( this ) );
   mColumnsLineEdit->setValidator( new QIntValidator( this ) );
   mRowsLineEdit->setValidator( new QIntValidator( this ) );
   mMaximumSizeXLineEdit->setValidator( new QIntValidator( this ) );
@@ -353,12 +354,12 @@ int QgsRasterLayerSaveAsDialog::nRows() const
 
 double QgsRasterLayerSaveAsDialog::xResolution() const
 {
-  return mXResolutionLineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( mXResolutionLineEdit->text() );
 }
 
 double QgsRasterLayerSaveAsDialog::yResolution() const
 {
-  return mYResolutionLineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( mYResolutionLineEdit->text() );
 }
 
 int QgsRasterLayerSaveAsDialog::maximumTileSizeX() const
@@ -534,8 +535,8 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
     xRes = extent.width();
     yRes = extent.height();
   }
-  mXResolutionLineEdit->setText( QString::number( xRes ) );
-  mYResolutionLineEdit->setText( QString::number( yRes ) );
+  mXResolutionLineEdit->setText( QLocale().toString( xRes ) );
+  mYResolutionLineEdit->setText( QLocale().toString( yRes ) );
 }
 
 void QgsRasterLayerSaveAsDialog::recalcSize()
@@ -560,8 +561,8 @@ void QgsRasterLayerSaveAsDialog::recalcResolution()
   QgsRectangle extent = outputRectangle();
   double xRes = nColumns() != 0 ? extent.width() / nColumns() : 0;
   double yRes = nRows() != 0 ? extent.height() / nRows() : 0;
-  mXResolutionLineEdit->setText( QString::number( xRes ) );
-  mYResolutionLineEdit->setText( QString::number( yRes ) );
+  mXResolutionLineEdit->setText( QLocale().toString( xRes ) );
+  mYResolutionLineEdit->setText( QLocale().toString( yRes ) );
   updateResolutionStateMsg();
 }
 
@@ -702,7 +703,7 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
     {
       case Qgis::Float32:
       case Qgis::Float64:
-        lineEdit->setValidator( new QDoubleValidator( nullptr ) );
+        lineEdit->setValidator( new QgsDoubleValidator( nullptr ) );
         if ( !std::isnan( value ) )
         {
           valueString = QgsRasterBlock::printValue( value );
@@ -712,7 +713,7 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
         lineEdit->setValidator( new QIntValidator( nullptr ) );
         if ( !std::isnan( value ) )
         {
-          valueString = QString::number( static_cast<int>( value ) );
+          valueString = QLocale().toString( static_cast<int>( value ) );
         }
         break;
     }
@@ -854,7 +855,7 @@ double QgsRasterLayerSaveAsDialog::noDataCellValue( int row, int column ) const
   {
     return std::numeric_limits<double>::quiet_NaN();
   }
-  return lineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( lineEdit->text() );
 }
 
 void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )

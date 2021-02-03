@@ -21,10 +21,10 @@
 #include "qgsmaplayermodel.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
+#include "qgsdoublevalidator.h"
 
 #include <QMenu>
 #include <QAction>
-#include <QDoubleValidator>
 #include <QRegularExpression>
 
 QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
@@ -62,10 +62,10 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mCondensedToolButton->setMenu( mMenu );
   mCondensedToolButton->setPopupMode( QToolButton::InstantPopup );
 
-  mXMinLineEdit->setValidator( new QDoubleValidator( this ) );
-  mXMaxLineEdit->setValidator( new QDoubleValidator( this ) );
-  mYMinLineEdit->setValidator( new QDoubleValidator( this ) );
-  mYMaxLineEdit->setValidator( new QDoubleValidator( this ) );
+  mXMinLineEdit->setValidator( new QgsDoubleValidator( this ) );
+  mXMaxLineEdit->setValidator( new QgsDoubleValidator( this ) );
+  mYMinLineEdit->setValidator( new QgsDoubleValidator( this ) );
+  mYMaxLineEdit->setValidator( new QgsDoubleValidator( this ) );
 
   mOriginalExtentButton->setVisible( false );
   mButtonDrawOnCanvas->setVisible( false );
@@ -203,10 +203,10 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
       decimals = 4;
       break;
   }
-  mXMinLineEdit->setText( QString::number( extent.xMinimum(), 'f', decimals ) );
-  mXMaxLineEdit->setText( QString::number( extent.xMaximum(), 'f', decimals ) );
-  mYMinLineEdit->setText( QString::number( extent.yMinimum(), 'f', decimals ) );
-  mYMaxLineEdit->setText( QString::number( extent.yMaximum(), 'f', decimals ) );
+  mXMinLineEdit->setText( QLocale().toString( extent.xMinimum(), 'f', decimals ) );
+  mXMaxLineEdit->setText( QLocale().toString( extent.xMaximum(), 'f', decimals ) );
+  mYMinLineEdit->setText( QLocale().toString( extent.yMinimum(), 'f', decimals ) );
+  mYMaxLineEdit->setText( QLocale().toString( extent.yMaximum(), 'f', decimals ) );
 
   QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( mXMinLineEdit->text(),
                       mXMaxLineEdit->text(),
@@ -416,8 +416,8 @@ void QgsExtentWidget::extentDrawn( const QgsRectangle &extent )
 
 QgsRectangle QgsExtentWidget::outputExtent() const
 {
-  return QgsRectangle( mXMinLineEdit->text().toDouble(), mYMinLineEdit->text().toDouble(),
-                       mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
+  return QgsRectangle( QgsDoubleValidator::toDouble( mXMinLineEdit->text() ), QgsDoubleValidator::toDouble( mYMinLineEdit->text() ),
+                       QgsDoubleValidator::toDouble( mXMaxLineEdit->text() ), QgsDoubleValidator::toDouble( mYMaxLineEdit->text() ) );
 }
 
 void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption )
