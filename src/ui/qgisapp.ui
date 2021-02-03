@@ -124,7 +124,7 @@
     </widget>
     <widget class="QMenu" name="mMenuLayerVisibility">
      <property name="title">
-      <string>Layer visibility</string>
+      <string>Layer Visibility</string>
      </property>
      <addaction name="mActionShowAllLayers"/>
      <addaction name="mActionHideAllLayers"/>
