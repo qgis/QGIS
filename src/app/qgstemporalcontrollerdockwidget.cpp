@@ -51,6 +51,28 @@ QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
   return mControllerWidget->temporalController();
 }
 
+void QgsTemporalControllerDockWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  if ( canvas && canvas->viewport() )
+    canvas->viewport()->installEventFilter( this );
+}
+
+bool QgsTemporalControllerDockWidget::eventFilter( QObject *object, QEvent *event )
+{
+  if ( event->type() == QEvent::Wheel )
+  {
+    QWheelEvent *wheelEvent = dynamic_cast< QWheelEvent * >( event );
+    // handle horizontal wheel events by scrubbing timeline
+    if ( wheelEvent->angleDelta().x() != 0 )
+    {
+      const int step = -wheelEvent->angleDelta().x() / 120.0;
+      mControllerWidget->temporalController()->setCurrentFrameNumber( mControllerWidget->temporalController()->currentFrameNumber() + step );
+      return true;
+    }
+  }
+  return QgsDockWidget::eventFilter( object, event );
+}
+
 void QgsTemporalControllerDockWidget::exportAnimation()
 {
   QgsAnimationExportDialog *dlg = new QgsAnimationExportDialog( this, QgisApp::instance()->mapCanvas(), QgisApp::instance()->activeDecorations() );

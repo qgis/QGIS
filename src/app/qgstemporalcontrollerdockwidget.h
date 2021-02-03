@@ -23,6 +23,7 @@
 
 class QgsTemporalControllerWidget;
 class QgsTemporalController;
+class QgsMapCanvas;
 
 /**
  * \ingroup app
@@ -46,6 +47,12 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
      * The dock widget retains ownership of the returned object.
      */
     QgsTemporalController *temporalController();
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+  protected:
+
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   private slots:
 
