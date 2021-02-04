@@ -170,6 +170,12 @@ class AlgorithmsTest(object):
         try:
             if param['type'] in ('vector', 'raster', 'table'):
                 return self.load_layer(id, param).id()
+            elif param['type'] == 'vrtlayers':
+                vals = []
+                for p in param['params']:
+                    p['layer'] = self.load_layer(None, {'type': 'vector', 'name': p['layer']})
+                    vals.append(p)
+                return vals
             elif param['type'] == 'multi':
                 return [self.load_param(p) for p in param['params']]
             elif param['type'] == 'file':
