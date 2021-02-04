@@ -251,14 +251,14 @@ class AlgorithmsTest(object):
             self.in_place_layers[id] = filepath
 
         if param['type'] in ('vector', 'table'):
-            if filepath in self.vector_layer_params:
-                return self.vector_layer_params[filepath]
-
             gmlrex = r'\.gml\b'
             if re.search(gmlrex, filepath, re.IGNORECASE):
                 # ewwwww - we have to force SRS detection for GML files, otherwise they'll be loaded
                 # with no srs
                 filepath += '|option:FORCE_SRS_DETECTION=YES'
+
+            if filepath in self.vector_layer_params:
+                return self.vector_layer_params[filepath]
 
             options = QgsVectorLayer.LayerOptions()
             options.loadDefaultStyle = False
