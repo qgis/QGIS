@@ -17660,7 +17660,6 @@ void TestQgsGeometry::isSimple_data()
   QTest::newRow( "self-intersection" ) << QStringLiteral( "LINESTRING(0 0, 1 0, 1 1, 0 -1)" ) << false;
   QTest::newRow( "self-tangency" ) << QStringLiteral( "LINESTRING(0 0, 1 0, 1 1, 0.5 0, 0 1)" ) << false;
   QTest::newRow( "points are simple" ) << QStringLiteral( "POINT(1 1)" ) << true;
-  QTest::newRow( "polygons are always simple, even if they are invalid" ) << QStringLiteral( "POLYGON((0 0, 1 1, 1 1, 0 0))" ) << true;
   QTest::newRow( "multipoint" ) << QStringLiteral( "MULTIPOINT((1 1), (2 2))" ) << true;
   QTest::newRow( "must not contain the same point twice" ) << QStringLiteral( "MULTIPOINT((1 1), (1 1))" ) << false;
   QTest::newRow( "multiline string simple" ) << QStringLiteral( "MULTILINESTRING((0 0, 1 0), (0 1, 1 1))" ) << true;
