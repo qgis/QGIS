@@ -551,6 +551,9 @@ tests:
       OUTPUT:
         name: expected/tapered_buffer_line.gml
         type: vector
+        compare:
+          geometry:
+            topo_equal_check: True
 
   - algorithm: native:taperedbuffer
     name: Tapered buffers (multiline)
@@ -583,6 +586,9 @@ tests:
       OUTPUT:
         name: expected/variable_width_buffer_by_m.gml
         type: vector
+        compare:
+          geometry:
+            topo_equal_check: True
 
   - algorithm: native:reclassifybytable
     name: Reclassify by table

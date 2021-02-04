@@ -193,6 +193,9 @@ tests:
       OUTPUT:
         name: expected/polygonize.gml
         type: vector
+        compare:
+          geometry:
+            topo_equal_check: True
 
   - algorithm: qgis:voronoipolygons
     name: Standard voronoi
