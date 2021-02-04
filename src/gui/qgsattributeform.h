@@ -322,7 +322,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Returns true if one of the form widgets needs feature geometry
-     * \since QGIS 3.16
+     * \since QGIS 3.18
      */
     bool needsGeometry() const;
 

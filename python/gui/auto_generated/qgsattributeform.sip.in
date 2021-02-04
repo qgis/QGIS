@@ -311,7 +311,7 @@ have filter expressions that depend on the parent form scope.
 %Docstring
 Returns true if one of the form widgets needs feature geometry
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
 };
