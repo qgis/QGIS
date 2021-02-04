@@ -16,6 +16,7 @@
         <file>qgsquickphotopanel.qml</file>
         <file>qgsquickpositionmarker.qml</file>
         <file>qgsquickicontextitem.qml</file>
+        <file>qgsquickcheckboxcomponent.qml</file>
         <file>qgsquickscalebar.qml</file>
     </qresource>
 </RCC>
