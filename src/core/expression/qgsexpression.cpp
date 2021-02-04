@@ -1146,6 +1146,9 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
 
       if ( const QgsExpressionNodeInOperator *inOp = dynamic_cast<const QgsExpressionNodeInOperator *>( e.rootNode() ) )
       {
+        if ( inOp->isNotIn() )
+          return false;
+
         const QgsExpressionNodeColumnRef *columnRef = dynamic_cast<const QgsExpressionNodeColumnRef *>( inOp->node() );
         if ( !columnRef )
           return false;
