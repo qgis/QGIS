@@ -74,6 +74,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     QgsPointCloudLayer *mLayer = nullptr;
 
     bool mBlockMinMaxChanged = false;
+    bool mBlockSetMinMaxFromLayer = false;
 
     double mProviderMin = std::numeric_limits< double >::quiet_NaN();
     double mProviderMax = std::numeric_limits< double >::quiet_NaN();
