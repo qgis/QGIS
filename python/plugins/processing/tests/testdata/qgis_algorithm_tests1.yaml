@@ -1698,6 +1698,7 @@ tests:
         - c05cd8dbfb00200a3803dcdc74ad177588eb8379867c4046463f73f1
         - 8f59f545b5df01f213b7a2233eb364d05b5801676d1f4285ad1225a1
         - 360a66711d38a77e79c69aa1a42d620090024011582c4518cfd24178
+        - dada50c7bf8aa705bac0bbfc9a295f3c0e2f83cb1877545105279d75
         type: rasterhash
 
   - algorithm: qgis:relief
