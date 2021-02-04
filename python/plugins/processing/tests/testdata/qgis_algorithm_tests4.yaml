@@ -563,8 +563,14 @@ tests:
       START_WIDTH: 0.4
     results:
       OUTPUT:
-        name: expected/tapered_buffer_multiline.gml
+        name:
+        - expected/tapered_buffer_multiline.gml
+        - expected/tapered_buffer_multilinev2.gml
         type: vector
+        compare:
+          geometry:
+            topo_equal_check: True
+
 
   - algorithm: native:bufferbym
     name: Variable width buffer by m
