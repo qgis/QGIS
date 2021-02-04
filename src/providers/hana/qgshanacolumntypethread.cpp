@@ -17,8 +17,8 @@
 #include "qgshanacolumntypethread.h"
 #include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
+#include "qgshanaexception.h"
 #include "qgshanautils.h"
-#include "qgsmessagelog.h"
 #include "qgslogger.h"
 
 QgsHanaColumnTypeThread::QgsHanaColumnTypeThread( const QString &connName, const QgsDataSourceUri &uri, bool allowGeometrylessTables, bool userTablesOnly )
@@ -37,35 +37,43 @@ void QgsHanaColumnTypeThread::run()
   QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
   {
-    QgsDebugMsg( "Connection failed: " + mUri.connectionInfo( false ) );
+    mErrorMessage = tr( "Connection failed: %1" ).arg( mUri.connectionInfo( false ) );
     return;
   }
 
   emit progressMessage( tr( "Retrieving tables of %1." ).arg( mConnectionName ) );
-  QVector<QgsHanaLayerProperty> layerProperties = conn->getLayers(
-        mUri.schema(),
-        mAllowGeometrylessTables,
-        mUserTablesOnly );
 
-  if ( layerProperties.isEmpty() )
-    return;
-
-  const int totalLayers = layerProperties.size();
-
-  emit progress( 0, totalLayers );
-
-  for ( int i = 0; i < totalLayers; ++i )
+  try
   {
-    if ( isInterruptionRequested() )
-      break;
+    QVector<QgsHanaLayerProperty> layerProperties = conn->getLayers(
+          mUri.schema(),
+          mAllowGeometrylessTables,
+          mUserTablesOnly );
 
-    QgsHanaLayerProperty &layerProperty = layerProperties[i];
-    emit progress( i, totalLayers );
-    emit progressMessage( tr( "Scanning column %1.%2.%3…" )
-                          .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ) );
-    conn->readLayerInfo( layerProperty );
+    if ( layerProperties.isEmpty() )
+      return;
 
-    emit setLayerType( layerProperty );
+    const int totalLayers = layerProperties.size();
+
+    emit progress( 0, totalLayers );
+
+    for ( int i = 0; i < totalLayers; ++i )
+    {
+      if ( isInterruptionRequested() )
+        break;
+
+      QgsHanaLayerProperty &layerProperty = layerProperties[i];
+      emit progress( i, totalLayers );
+      emit progressMessage( tr( "Scanning column %1.%2.%3…" )
+                            .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ) );
+      conn->readLayerInfo( layerProperty );
+
+      emit setLayerType( layerProperty );
+    }
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    mErrorMessage = ex.what();
   }
 
   emit progress( 0, 0 );
