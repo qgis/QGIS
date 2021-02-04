@@ -646,7 +646,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'SHAPE_ENCODING': 'blah'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES --config SHAPE_ENCODING "blah" -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES --config SHAPE_ENCODING blah -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
