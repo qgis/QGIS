@@ -340,13 +340,19 @@ class AlgorithmsTest(object):
                 compare = expected_result.get('compare', {})
                 pk = expected_result.get('pk', None)
                 topo_equal_check = expected_result.get('topo_equal_check', False)
+                ignore_part_order = expected_result.get('ignore_part_order', False)
+
+                geom_config = {
+                    'topo_equal_check': topo_equal_check,
+                    'ignore_part_order': ignore_part_order
+                }
 
                 if len(expected_lyrs) == 1:
-                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk, geometry={'topo_equal_check': topo_equal_check})
+                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk, geometry=geom_config)
                 else:
                     res = False
                     for l in expected_lyrs:
-                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk, geometry={'topo_equal_check': topo_equal_check}):
+                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk, geometry=geom_config):
                             res = True
                             break
                     self.assertTrue(res, 'Could not find matching layer in expected results')
