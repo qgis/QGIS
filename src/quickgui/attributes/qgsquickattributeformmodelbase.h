@@ -92,6 +92,9 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     //! \copydoc QgsQuickAttributeFormModelBase::constraintsSoftValid
     bool constraintsSoftValid() const;
 
+    //! Attribute model remembers or not last entered values
+    bool rememberValuesAllowed() const;
+
     /**
      * Gets the value of attribute of the feature in the model
      *

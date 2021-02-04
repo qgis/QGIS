@@ -57,6 +57,11 @@ bool QgsQuickAttributeFormModel::constraintsSoftValid() const
   return mSourceModel->constraintsSoftValid();
 }
 
+bool QgsQuickAttributeFormModel::rememberValuesAllowed() const
+{
+  return mSourceModel->rememberValuesAllowed();
+}
+
 void QgsQuickAttributeFormModel::save()
 {
   mSourceModel->save();

@@ -393,6 +393,11 @@ bool QgsQuickAttributeFormModelBase::constraintsSoftValid() const
   return mConstraintsSoftValid;
 }
 
+bool QgsQuickAttributeFormModelBase::rememberValuesAllowed() const
+{
+  return mAttributeModel->rememberValuesAllowed();
+}
+
 QVariant QgsQuickAttributeFormModelBase::attribute( const QString &name ) const
 {
   if ( !mLayer )

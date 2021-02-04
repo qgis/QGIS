@@ -56,7 +56,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
     Q_PROPERTY( bool constraintsSoftValid READ constraintsSoftValid NOTIFY constraintsSoftValidChanged )
 
     //! Returns TRUE if remembering values is allowed
-    Q_PROPERTY( bool rememberValuesAllowed WRITE setRememberValuesAllowed )
+    Q_PROPERTY( bool rememberValuesAllowed READ rememberValuesAllowed WRITE setRememberValuesAllowed )
 
   public:
 
@@ -102,6 +102,9 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
 
     //! \copydoc QgsQuickAttributeFormModel::constraintsSoftValid
     bool constraintsSoftValid() const;
+
+    //! Whether attribute models remembers or not last entered values
+    bool rememberValuesAllowed() const;
 
     //! Updates QgsFeature based on changes
     Q_INVOKABLE void save();
