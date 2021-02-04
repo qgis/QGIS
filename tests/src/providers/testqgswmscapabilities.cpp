@@ -77,6 +77,8 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl.size(), 1 );
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl[0].onlineResource.xlinkHref,
                 QString( "http://www.example.com/fb.png" ) );
+
+      QCOMPARE( capabilities.supportedLayers()[0].crs, QStringList() << QStringLiteral( "EPSG:2056" ) );
     }
 
     void guessCrs()
