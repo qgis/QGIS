@@ -1539,6 +1539,10 @@ QModelIndex QgsLayerTreeModel::legendNodeIndex( int row, int column, QgsLayerTre
   return QModelIndex(); // have no children
 }
 
+QList<QgsLayerTreeLayer *> QgsLayerTreeModel::filteredLayers() const
+{
+  return mRootNode->findLayers();
+}
 
 QModelIndex QgsLayerTreeModel::legendParent( QgsLayerTreeModelLegendNode *legendNode ) const
 {

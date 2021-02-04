@@ -37,13 +37,27 @@ Alternative constructor.
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
 
+    QVariant evaluateData( const QModelIndex &index, int role ) const;
+%Docstring
+Similar to data but will also evaluate expressions instead of returning the label.
+
+.. versionadded:: 3.20
+%End
+
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
 
 
-    void clearCachedData( QgsLayerTreeNode *node ) const;
+    void clearCachedData( QgsLayerTreeLayer *nodeLayer ) const;
 %Docstring
 Clears any previously cached data for the specified ``node``.
+
+.. versionadded:: 3.14
+%End
+
+    QString evaluateLayerExpressions( QgsLayerTreeLayer *nodeLayer ) const;
+%Docstring
+Evaluate the expression or symbol expressions of a given vector layer.
 
 .. versionadded:: 3.14
 %End

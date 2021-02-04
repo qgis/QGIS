@@ -523,7 +523,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker(
             'composer_legend_symbol_expression', layout)
         checker.setControlPathPrefix("composer_legend")
-        sleep(4)
+        sleep(1)
+        legend.refresh()
         result, message = checker.testLayout()
         self.assertTrue(result, message)
 

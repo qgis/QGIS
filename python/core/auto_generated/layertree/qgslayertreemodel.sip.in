@@ -321,6 +321,13 @@ displays.
 .. versionadded:: 3.6
 %End
 
+    QList<QgsLayerTreeLayer *> filteredLayers() const;
+%Docstring
+Returns a list of filtered layers in the legend.
+
+.. versionadded:: 3.20
+%End
+
   signals:
 
     void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
