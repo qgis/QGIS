@@ -28,7 +28,7 @@ import functools
 import filecmp
 import tempfile
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QDateTime, QDate
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
@@ -305,8 +305,18 @@ class TestCase(_TestCase):
                     attr_result = float(attr_result) if attr_result else None
                     isNumber = True
                 if cmp['cast'] == 'str':
-                    attr_expected = str(attr_expected) if attr_expected else None
-                    attr_result = str(attr_result) if attr_result else None
+                    if isinstance(attr_expected, QDateTime):
+                        attr_expected = attr_expected.toString('yyyy/MM/dd hh:mm:ss')
+                    elif isinstance(attr_expected, QDate):
+                        attr_expected = attr_expected.toString('yyyy/MM/dd')
+                    else:
+                        attr_expected = str(attr_expected) if attr_expected else None
+                    if isinstance(attr_result, QDateTime):
+                        attr_result = attr_result.toString('yyyy/MM/dd hh:mm:ss')
+                    elif isinstance(attr_result, QDate):
+                        attr_result = attr_result.toString('yyyy/MM/dd')
+                    else:
+                        attr_result = str(attr_result) if attr_result else None
 
             # Round field (only numeric so it works with __all__)
             if 'precision' in cmp and (field_expected.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong] or isNumber):
