@@ -2,10 +2,11 @@
   "name": "array_majority",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns an array containing the most common value in an array. The returned array may contain more than one value if multiple values occur equally often.",
+  "description": "Returns the value which has majority in the array. Majority means the count of the value is greather than half the size of the array.",
   "arguments": [ {"arg":"array","description":"an array"} ],
-  "examples": [ 
-    { "expression":"array_majority(array(0,1,42,42,43))", "returns":"[ 42 ]"},
-    { "expression":"array_majority(array(0,0,1,2,2,42))", "returns":"[ 0, 2 ]"}
+  "examples": [
+    { "expression":"array_majority(array(0,1,42,42,43))", "returns":"NULL"},
+    { "expression":"array_majority(array(0,1,42,42,43,42))", "returns":"NULL"},
+    { "expression":"array_majority(array(0,1,42,42,43,42,42))", "returns":"42"}
   ]
 }

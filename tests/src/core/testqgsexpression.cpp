@@ -1640,7 +1640,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "array_last(array('a', 'b', 'c'))" ) << QStringLiteral( "array_last(array('a', 'b', 'c'))" ) << false << QVariant( "c" );
       QTest::newRow( "array_last(array())" ) << QStringLiteral( "array_last(array())" ) << false << QVariant();
 
-      // array_min, array_max, array_mean, array_median, array_majority, array_sum
+      // array_min, array_max, array_mean, array_median,array_mode, array_majority, array_minority, array_sum
       QTest::newRow( "array_min('forty two')" ) << QStringLiteral( "array_min('forty two')" ) << true << QVariant();
       QTest::newRow( "array_min(42)" ) << QStringLiteral( "array_min(42)" ) << true << QVariant();
       QTest::newRow( "array_min(array())" ) << QStringLiteral( "array_min(array())" ) << false << QVariant();
@@ -1661,10 +1661,25 @@ class TestQgsExpression: public QObject
       QTest::newRow( "array_median(array())" ) << QStringLiteral( "array_median(array())" ) << false << QVariant();
       QTest::newRow( "array_median(array(0,1,42,42,43))" ) << QStringLiteral( "array_median(array(0,1,42,42,43))" ) << false << QVariant( 42 );
       QTest::newRow( "array_median(array(0,0,1,2,2,42,'a','b'))" ) << QStringLiteral( "array_median(array(0,0,1,2,2,42,'a','b'))" ) << false << QVariant( 1.5 );
+
+      QTest::newRow( "array_mode('forty two')" ) << QStringLiteral( "array_mode('forty two')" ) << true << QVariant();
+      QTest::newRow( "array_mode(42)" ) << QStringLiteral( "array_mode(42)" ) << true << QVariant();
+      QTest::newRow( "array_mode(array())" ) << QStringLiteral( "array_mode(array())" ) << false << QVariant();
+      QTest::newRow( "array_mode(array(1,2,42,42,'a','b'))" ) << QStringLiteral( "array_mode(array(1,2,42,42,'a','b'))" ) << false << QVariant( QVariantList() << 42 );
+
       QTest::newRow( "array_majority('forty two')" ) << QStringLiteral( "array_majority('forty two')" ) << true << QVariant();
       QTest::newRow( "array_majority(42)" ) << QStringLiteral( "array_majority(42)" ) << true << QVariant();
       QTest::newRow( "array_majority(array())" ) << QStringLiteral( "array_majority(array())" ) << false << QVariant();
-      QTest::newRow( "array_majority(array(1,2,42,42,'a','b'))" ) << QStringLiteral( "array_majority(array(1,2,42,42,'a','b'))" ) << false << QVariant( QVariantList() << 42 );
+      QTest::newRow( "array_majority(array(0,1,42,42,43))" ) << QStringLiteral( "array_majority(array(0,1,42,42,43))" ) << false << QVariant();
+      QTest::newRow( "array_majority(array(0,1,42,42,43,42))" ) << QStringLiteral( "array_majority(array(0,1,42,42,43,42))" ) << false << QVariant();
+      QTest::newRow( "array_majority(array(0,1,42,42,43,42,42))" ) << QStringLiteral( "array_majority(array(0,1,42,42,43,42,42))" ) << false << QVariant( 42 );
+
+      QTest::newRow( "array_minority('forty two')" ) << QStringLiteral( "array_minority('forty two')" ) << true << QVariant();
+      QTest::newRow( "array_minority(42)" ) << QStringLiteral( "array_minority(42)" ) << true << QVariant();
+      QTest::newRow( "array_minority(array())" ) << QStringLiteral( "array_minority(array())" ) << false << QVariant( QVariantList() );
+      QTest::newRow( "array_minority(array(42,43))" ) << QStringLiteral( "array_minority(array(42,43))" ) << false << QVariant( QVariantList() << 42 << 43 );
+      QTest::newRow( "array_minority(array(42,43,42))" ) << QStringLiteral( "array_minority(array(42,43,42))" ) << false << QVariant( QVariantList() << 43 );
+
       QTest::newRow( "array_sum('forty two')" ) << QStringLiteral( "array_sum('forty two')" ) << true << QVariant();
       QTest::newRow( "array_sum(42)" ) << QStringLiteral( "array_sum(42)" ) << true << QVariant();
       QTest::newRow( "array_sum(array())" ) << QStringLiteral( "array_sum(array())" ) << false << QVariant();

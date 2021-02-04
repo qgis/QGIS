@@ -1,0 +1,12 @@
+{
+  "name": "array_minority",
+  "type": "function",
+  "groups": ["Arrays"],
+  "description": "Returns an array containing the minority values in an array. All values are minority exept the majority value if available.",
+  "arguments": [ {"arg":"array","description":"an array"} ],
+  "examples": [
+    { "expression":"array_minority(array(0,1,42,42,43))", "returns":"[ 0, 1, 42, 43 ]"},
+    { "expression":"array_minority(array(0,1,42,42,43,42))", "returns":"[ 0, 1, 42, 43 ]"},
+    { "expression":"array_minority(array(0,1,42,42,43,42,42))", "returns":"[ 0, 1, 43 ]"}
+  ]
+}
