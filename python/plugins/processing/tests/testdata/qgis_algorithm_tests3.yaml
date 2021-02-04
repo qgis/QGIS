@@ -1315,6 +1315,12 @@ tests:
         compare:
           fields:
             fid: skip
+            date:
+              cast: str
+            min:
+              cast: str
+            max:
+              cast: str
 
   - algorithm: native:joinattributesbylocation
     name: Join by location (intersects)
@@ -1812,6 +1818,10 @@ tests:
         compare:
           fields:
             fid: skip
+            date_min:
+              cast: str
+            date_max:
+              cast: str
 
   - algorithm: qgis:joinbylocationsummary
     name: Join by summary polys to points, reprojected

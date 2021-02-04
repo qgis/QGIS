@@ -177,6 +177,8 @@ tests:
           fields:
             photo: skip
             directory: skip
+            timestamp:
+              cast: str
 
   - algorithm: qgis:concavehull
     name: Concave Hull - Points (0.3)
@@ -1492,7 +1494,10 @@ tests:
           fields:
             sum:
               cast: float
-              precision: 5
+              precision: -1
+            mean:
+              cast: float
+              precision: 3
 
   - algorithm: native:antimeridiansplit
     name: Antimeridian split, lines
