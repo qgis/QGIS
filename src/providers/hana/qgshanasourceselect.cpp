@@ -602,9 +602,12 @@ void QgsHanaSourceSelect::finishList()
 
 void QgsHanaSourceSelect::columnThreadFinished()
 {
+  QString errorMsg = mColumnTypeThread->errorMessage();
   mColumnTypeThread.reset( nullptr );
   QgsProxyProgressTask *task = mColumnTypeTask.release();
-  task->finalize( true );
+  task->finalize( errorMsg.isEmpty() );
+  if ( !errorMsg.isEmpty() )
+    pushMessage( tr( "Failed to retrieve tables for %1" ).arg( mConnectionName ), errorMsg, Qgis::MessageLevel::Warning );
 
   btnConnect->setText( tr( "Connect" ) );
 
