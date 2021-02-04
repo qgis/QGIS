@@ -127,7 +127,7 @@ tests:
         compare: False
 
   - algorithm: gdal:extractprojection
-    name: Extract Projection (extractprojection)
+    name: Extract Projection (extractprojection), create prj
     params:
       INPUT:
         name: dem.tif
@@ -138,7 +138,9 @@ tests:
         name: expected/gdal/dem.wld
         type: file
       PRJ_FILE:
-        name: expected/gdal/dem.prj
+        name:
+        - expected/gdal/dem.prj
+        - expected/gdal/demproj6.prj
         type: file
 
   - algorithm: gdal:extractprojection
