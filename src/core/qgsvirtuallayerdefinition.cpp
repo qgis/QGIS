@@ -293,7 +293,10 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   const auto constFields = fields();
   for ( const QgsField &f : constFields )
   {
-    if ( f.type() == QVariant::LongLong )
+    if ( f.type() == QVariant::Int
+         || f.type() == QVariant::UInt
+         || f.type() == QVariant::Bool
+         || f.type() == QVariant::LongLong )
       urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":int" );
     else if ( f.type() == QVariant::Double )
       urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":real" );
