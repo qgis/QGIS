@@ -1930,18 +1930,21 @@ void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
   if ( enabled && !isRefreshOnNotifyEnabled() )
   {
     lDataProvider->setListening( enabled );
-    connect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+    connect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotified );
   }
   else if ( !enabled && isRefreshOnNotifyEnabled() )
   {
     // we don't want to disable provider listening because someone else could need it (e.g. actions)
-    disconnect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+    disconnect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotified );
   }
   mIsRefreshOnNofifyEnabled = enabled;
 }
 
-void QgsMapLayer::onNotifiedTriggerRepaint( const QString &message )
+void QgsMapLayer::onNotified( const QString &message )
 {
   if ( refreshOnNotifyMessage().isEmpty() || refreshOnNotifyMessage() == message )
+  {
     triggerRepaint();
+    emit dataChanged();
+  }
 }
