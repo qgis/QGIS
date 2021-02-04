@@ -1215,7 +1215,8 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
         const QStringList crsList = nodeElement.text().split( QRegExp( "\\s+" ) );
         for ( const QString &srs : crsList )
         {
-          layerProperty.crs.push_back( srs );
+          if ( !layerProperty.crs.contains( srs ) )
+            layerProperty.crs.push_back( srs );
         }
       }
       else if ( tagName == QLatin1String( "LatLonBoundingBox" ) )    // legacy from earlier versions of WMS
