@@ -5470,7 +5470,7 @@ static QVariant fcnArrayMode( const QVariantList &values, const QgsExpressionCon
   }
   else
   {
-    parent->setEvalErrorString( QObject::tr( "No such merge behaviour '%1'" ).arg( merge ) );
+    parent->setEvalErrorString( QObject::tr( "No such merge behavior '%1'" ).arg( merge ) );
     return QVariant();
   }
 }
