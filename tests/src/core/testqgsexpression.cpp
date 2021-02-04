@@ -2709,7 +2709,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geom y" ) << "$y" << QgsGeometry::fromPointXY( point ) << false << QVariant( 456. );
       QTest::newRow( "geom xat" ) << "xat(-1)" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 3. );
       QTest::newRow( "geom yat" ) << "yat(1)" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 2. );
-      QTest::newRow( "null geometry" ) << "$geometry" << QgsGeometry() << false << QVariant( QVariant::UserType );
+      QTest::newRow( "null geometry" ) << "$geometry" << QgsGeometry() << false << QVariant();
     }
 
     void eval_geometry()
