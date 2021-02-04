@@ -1501,7 +1501,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   private slots:
 
-    void onNotifiedTriggerRepaint( const QString &message );
+    void onNotified( const QString &message );
 
   protected:
 
