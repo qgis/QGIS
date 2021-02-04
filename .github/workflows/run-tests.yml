@@ -35,9 +35,9 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
       compile_outcome: ${{ steps.compile.outcome }}
-      tests_pass: ${{ steps.tests.outputs.TESTS_PASS }}
+      tests_failing: ${{ steps.tests.outputs.TESTS_FAILING }}
+      cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
       runners_outcome: ${{ steps.runners.outcome }}
 
     steps:
@@ -193,14 +193,14 @@ jobs:
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
           CDASH_URL: ${{ needs.build.outputs.cdash_url }}
           COMPILE_OUTCOME: ${{ needs.build.outputs.compile_outcome }}
-          TESTS_PASS: ${{ needs.build.outputs.tests_pass }}
+          TESTS_FAILING: ${{ needs.build.outputs.tests_failing }}
           RUNNERS_OUTCOME: ${{ needs.build.outputs.runners_outcome }}
         run: |
           echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
           if [[ ${COMPILE_OUTCOME} != "success" ]]; then
             echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :scream: compilation failed"
-          elif [[ ${TESTS_PASS} != "true" ]]; then
-            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :fire: some unit-tests are failing ${CDASH_URL}"
+          elif [[ ${TESTS_FAILING} != "0" ]]; then
+            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :fire: ${TESTS_FAILING} unit-tests are failing ${CDASH_URL}"
           elif [[ ${RUNNERS_OUTCOME} != "success" ]]; then
             echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :broken_heart: QGIS runners test failed"
           else
