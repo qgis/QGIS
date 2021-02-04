@@ -196,7 +196,7 @@ class TestCase(_TestCase):
 
         return True
 
-    def assertFilesEqual(self, filepath_expected, filepath_result):
+    def checkFilesEqual(self, filepath_expected, filepath_result, use_asserts=False):
         with open(filepath_expected, 'r') as file_expected:
             with open(filepath_result, 'r') as file_result:
                 diff = difflib.unified_diff(
@@ -206,7 +206,14 @@ class TestCase(_TestCase):
                     tofile='result',
                 )
                 diff = list(diff)
-                self.assertEqual(0, len(diff), ''.join(diff))
+                eq = not len(diff)
+                if use_asserts:
+                    self.assertEqual(0, len(diff), ''.join(diff))
+                else:
+                    return eq
+
+    def assertFilesEqual(self, filepath_expected, filepath_result):
+        self.checkFilesEqual(filepath_expected, filepath_result, use_asserts=True)
 
     def assertDirectoriesEqual(self, dirpath_expected, dirpath_result):
         """ Checks whether both directories have the same content (recursively) and raises an assertion error if not. """

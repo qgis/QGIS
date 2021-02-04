@@ -368,8 +368,17 @@ class AlgorithmsTest(object):
                 else:
                     self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:
-                expected_filepath = self.filepath_from_param(expected_result)
                 result_filepath = results[id]
+                if isinstance(expected_result.get('name'), list):
+                    # test to see if any match expected
+                    for path in expected_result['name']:
+                        expected_filepath = self.filepath_from_param({'name': path})
+                        if self.checkFilesEqual(expected_filepath, result_filepath):
+                            break
+                    else:
+                        expected_filepath = self.filepath_from_param({'name': expected_result['name'][0]})
+                else:
+                    expected_filepath = self.filepath_from_param(expected_result)
 
                 self.assertFilesEqual(expected_filepath, result_filepath)
             elif 'directory' == expected_result['type']:
