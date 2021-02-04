@@ -2,7 +2,7 @@
   "name": "array_majority",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns the value which has majority in the array. Majority means the count of the value is greather than half the size of the array.",
+  "description": "Returns the value which has majority in the array. Majority means the count of the value is greather than half the size of the array.</p><p><b>Note</b><br/>For the same behaviour of the majority() function from Aggregates see array_mode().</p>",
   "arguments": [ {"arg":"array","description":"an array"} ],
   "examples": [
     { "expression":"array_majority(array(0,1,42,42,43))", "returns":"NULL"},

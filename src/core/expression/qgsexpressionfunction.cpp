@@ -5441,7 +5441,7 @@ static QVariant convertToSameType( const QVariant &value, QVariant::Type type )
   return result;
 }
 
-static QVariant fcnArrayMode( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnArrayMode( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
 {
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   QHash< QVariant, int > hash;
@@ -5451,7 +5451,28 @@ static QVariant fcnArrayMode( const QVariantList &values, const QgsExpressionCon
   }
   const QList< int > occurrences = hash.values();
   const int maxValue = *std::max_element( occurrences.constBegin(), occurrences.constEnd() );
-  return convertToSameType( list.isEmpty() ? QVariant() : hash.keys( maxValue ), values.at( 0 ).type() );
+
+  if ( hash.keys( maxValue ).isEmpty() )
+    return QVariant();
+
+  const QString merge = values.at( 1 ).toString();
+  if ( merge.compare( QLatin1String( "all" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return convertToSameType( hash.keys( maxValue ), values.at( 0 ).type() );
+  }
+  else if ( merge.compare( QLatin1String( "first" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return QVariant( hash.keys( maxValue ).first() );
+  }
+  else if ( merge.compare( QLatin1String( "median" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return fcnArrayMedian( QVariantList() << convertToSameType( hash.keys( maxValue ), values.at( 0 ).type() ), context, parent, node );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "No such merge behaviour '%1'" ).arg( merge ) );
+    return QVariant();
+  }
 }
 
 static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -7101,7 +7122,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMaximum, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_mean" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMean, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_median" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMedian, QStringLiteral( "Arrays" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "array_mode" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMode, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_mode" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "merge" ), true, QVariant( "all" ) ), fcnArrayMode, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_majority" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMajority, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_minority" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMinority, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_sum" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArraySum, QStringLiteral( "Arrays" ) )
