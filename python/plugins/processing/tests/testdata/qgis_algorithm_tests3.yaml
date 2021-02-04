@@ -284,18 +284,21 @@ tests:
         name: expected/explode_compound_curve.shp
         type: vector
 
-  - algorithm: qgis:findprojection
-    name: Find projection
-    params:
-      INPUT:
-        name: custom/find_projection.gml
-        type: vector
-      TARGET_AREA: 151.1198,151.1368,-33.9118,-33.9003
-      TARGET_AREA_CRS: EPSG:4326
-    results:
-      OUTPUT:
-        name: expected/projection_candidates.gml
-        type: vector
+ # This is VERY slow on proj 6+ builds due to the excessive amount of message log noise it causes to be emitted.
+ # We need a way to disable the default handlers on individual QgsCoordinateTransform objects in order to avoid
+ # this and speed the algorithm back up
+ # - algorithm: qgis:findprojection
+ #   name: Find projection
+ #   params:
+ #     INPUT:
+ #       name: custom/find_projection.gml
+ #       type: vector
+ #     TARGET_AREA: 151.1198,151.1368,-33.9118,-33.9003
+ #     TARGET_AREA_CRS: EPSG:4326
+ #   results:
+ #     OUTPUT:
+ #       name: expected/projection_candidates.gml
+ #       type: vector
 
   - algorithm: native:polygonfromlayerextent
     name: Standard polygon from layer extent
