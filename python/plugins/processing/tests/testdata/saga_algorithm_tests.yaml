@@ -854,7 +854,9 @@ tests:
         - 99823271951ede7de471c1ab82dd372635bc3bfa16ad34a7afebf578
         type: rasterhash
       REGRESSION:
-        hash: b3a725ae64eec2aab8de1197f2306a0905c7c38de0dc89d58aadb3cc
+        hash:
+        - b3a725ae64eec2aab8de1197f2306a0905c7c38de0dc89d58aadb3cc
+        - 3fcb41308d0c0620b93698aba6a5934d62db3c798cffb034b5675b33
         type: rasterhash
       RESIDUALS:
         name: expected/saga/multiple_regression_points_grids_res.shp
