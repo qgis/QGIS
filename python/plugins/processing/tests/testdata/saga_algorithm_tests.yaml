@@ -403,6 +403,22 @@ tests:
               precision: 1
             X001:
               precision: 1
+            X002:
+              precision: 1
+            X003:
+              precision: 1
+            X004:
+              precision: 1
+            X005:
+              precision: 1
+            X006:
+              precision: 1
+            X007:
+              precision: 1
+            X008:
+              precision: 1
+            X009:
+              precision: 1
 
   - algorithm: saga:snappointstolines
     name: Snap points to lines
@@ -481,7 +497,9 @@ tests:
         type: vector
         compare: false # results are not stable across different SAGA versions
       SEGMENTS:
-        hash: f2e71e3374eb229d387db8f87bc24d09b86ffc23d9fca85f324b566b
+        hash:
+        - f2e71e3374eb229d387db8f87bc24d09b86ffc23d9fca85f324b566b
+        - f2b813874f83d83cc8b574ec4babba652aeae3828ff14c84ac665448
         type: rasterhash
 
 # Broken on newer SAGA versions
@@ -708,7 +726,9 @@ tests:
         - b91a5d26e540f6804210a1e3800c49ff123936784c658174bbce5642
         type: rasterhash
       WSHED:
-        hash: d891f15de1c742986647d619788c7b16a21909bf9c06c70579a4797c
+        hash:
+        - d891f15de1c742986647d619788c7b16a21909bf9c06c70579a4797c
+        - 43f9766cca38f3331cb13ba1f7dc51e8d866da23904845d0d5dd0552
         type: rasterhash
 
   - algorithm: saga:fillsinksxxlwangliu
@@ -815,9 +835,9 @@ tests:
         compare:
           fields:
             VALUE:
-              precision: 2
+              precision: 1
             REGCOEFF:
-              precision: 2
+              precision: 1
       INFO_STEPS:
         name: expected/saga/multiple_regression_points_grids_steps.dbf
         type: vector
