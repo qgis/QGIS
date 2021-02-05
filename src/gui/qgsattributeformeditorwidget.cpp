@@ -231,30 +231,59 @@ void QgsAttributeFormEditorWidget::updateWidgets()
   //first update the tool buttons
   bool hasMultiEditButton = ( editPage()->layout()->indexOf( mMultiEditButton ) >= 0 );
 
-  const int fieldIndex = mEditorWidget->fieldIdx();
-
-  bool fieldReadOnly = false;
-  QgsFeature feature;
-  auto it = layer()->getSelectedFeatures();
-  while ( it.nextFeature( feature ) )
+  bool shouldShowMultiEditButton = false;
+  switch ( mode() )
   {
-    fieldReadOnly |= !QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, feature );
+    case QgsAttributeFormWidget::DefaultMode:
+    case QgsAttributeFormWidget::SearchMode:
+    case QgsAttributeFormWidget::AggregateSearchMode:
+      // in these modes we don't show the multi edit button
+      shouldShowMultiEditButton = false;
+      break;
+
+    case QgsAttributeFormWidget::MultiEditMode:
+    {
+      // in multi-edit mode we need to know upfront whether or not to allow add the multiedit buttons
+      // for this field.
+      // if the field is always read only regardless of the feature, no need to dig further. But otherwise
+      // we may need to test editability for the actual selected features...
+      const int fieldIndex = mEditorWidget->fieldIdx();
+      shouldShowMultiEditButton = !QgsVectorLayerUtils::fieldIsReadOnly( layer(), fieldIndex );
+      if ( shouldShowMultiEditButton )
+      {
+        // depending on the field type, the editability of the field may vary feature by feature (e.g. for joined
+        // fields coming from joins without the upsert on edit capabilities).
+        // But this feature-by-feature check is EXPENSIVE!!! (see https://github.com/qgis/QGIS/issues/41366), so
+        // avoid it whenever we can...
+        const bool fieldEditabilityDependsOnFeature = QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( layer(), fieldIndex );
+        if ( fieldEditabilityDependsOnFeature )
+        {
+          QgsFeature feature;
+          QgsFeatureIterator it = layer()->getSelectedFeatures();
+          while ( it.nextFeature( feature ) )
+          {
+            const bool isEditable = QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, feature );
+            if ( !isEditable )
+            {
+              // as soon as we find one read-only feature for the field, we can break early...
+              shouldShowMultiEditButton = false;
+              break;
+            }
+          }
+        }
+      }
+    }
+    break;
   }
 
-  if ( hasMultiEditButton )
+  if ( hasMultiEditButton && !shouldShowMultiEditButton )
   {
-    if ( mode() != MultiEditMode || fieldReadOnly )
-    {
-      editPage()->layout()->removeWidget( mMultiEditButton );
-      mMultiEditButton->setParent( nullptr );
-    }
+    editPage()->layout()->removeWidget( mMultiEditButton );
+    mMultiEditButton->setParent( nullptr );
   }
-  else
+  else if ( !hasMultiEditButton && shouldShowMultiEditButton )
   {
-    if ( mode() == MultiEditMode && !fieldReadOnly )
-    {
-      editPage()->layout()->addWidget( mMultiEditButton );
-    }
+    editPage()->layout()->addWidget( mMultiEditButton );
   }
 
   switch ( mode() )
@@ -263,9 +292,7 @@ void QgsAttributeFormEditorWidget::updateWidgets()
     case MultiEditMode:
     {
       stack()->setCurrentWidget( editPage() );
-
       editPage()->layout()->addWidget( mConstraintResultLabel );
-
       break;
     }
 
