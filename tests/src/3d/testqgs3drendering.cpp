@@ -691,11 +691,6 @@ void TestQgs3DRendering::testMapTheme()
 
 void TestQgs3DRendering::testMesh()
 {
-  if ( QgsTest::isCIRun() )
-  {
-    QSKIP( "Intermittently fails on CI" );
-  }
-
   QgsRectangle fullExtent = mLayerMeshDataset->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
@@ -729,6 +724,11 @@ void TestQgs3DRendering::testMesh()
 
 void TestQgs3DRendering::testMeshSimplified()
 {
+  if ( QgsTest::isCIRun() )
+  {
+    QSKIP( "Intermittently fails on CI" );
+  }
+
   QgsMeshSimplificationSettings simplificationSettings;
   simplificationSettings.setEnabled( true );
   simplificationSettings.setReductionFactor( 3 );
