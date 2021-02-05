@@ -67,7 +67,7 @@ tests:
         type: raster
     results:
       output:
-        name: expected/grass7/v_rast_stats.shp
+        name: expected/grass7/v_rast_stats2.gml
         type: vector
 
   - algorithm: grass7:v.voronoi
