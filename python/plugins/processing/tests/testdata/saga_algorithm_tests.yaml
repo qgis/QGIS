@@ -843,11 +843,11 @@ tests:
             SIG:
               precision: 1
             VAR_F:
-              precision: 1
+              precision: 0
             VAR_SIG:
-              precision: 1
+              precision: 0
             REGCOEFF:
-              precision: 1
+              precision: 0
       REGRESCORR:
         hash: d70078f0151919949c1e55c1a677f1a7cda6f7514667270af6745c0d
         type: rasterhash
