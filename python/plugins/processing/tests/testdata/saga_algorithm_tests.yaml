@@ -839,7 +839,7 @@ tests:
             MSE:
               precision: 1
             F:
-              precision: 1
+              precision: 0
             SIG:
               precision: 1
             VAR_F:
