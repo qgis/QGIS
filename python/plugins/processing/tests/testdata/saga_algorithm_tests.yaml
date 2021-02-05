@@ -400,25 +400,25 @@ tests:
         compare:
           fields:
             X000:
-              precision: 0
+              precision: -1
             X001:
-              precision: 0
+              precision: -1
             X002:
-              precision: 0
+              precision: -1
             X003:
-              precision: 0
+              precision: -1
             X004:
-              precision: 0
+              precision: -1
             X005:
-              precision: 0
+              precision: -1
             X006:
-              precision: 0
+              precision: -1
             X007:
-              precision: 0
+              precision: -1
             X008:
-              precision: 0
+              precision: -1
             X009:
-              precision: 0
+              precision: -1
 
   - algorithm: saga:snappointstolines
     name: Snap points to lines
@@ -852,7 +852,7 @@ tests:
             STD_ERROR:
               precision: 2
             SSR:
-              precision: 2
+              precision: 1
             SSE:
               precision: 2
             MSR:
