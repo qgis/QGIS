@@ -866,6 +866,53 @@ bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFea
          ( ( layer->dataProvider() && layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( feature.id() ) );
 }
 
+bool QgsVectorLayerUtils::fieldIsReadOnly( const QgsVectorLayer *layer, int fieldIndex )
+{
+  if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( fieldIndex, layer->fields(), srcFieldIndex );
+
+    if ( !info || !info->isEditable() || !info->joinLayer() )
+      return true;
+
+    return fieldIsReadOnly( info->joinLayer(), srcFieldIndex );
+  }
+  else
+  {
+    // any of these properties makes the field read only
+    if ( !layer->isEditable() ||
+         layer->editFormConfig().readOnly( fieldIndex ) ||
+         !layer->dataProvider() ||
+         ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues )
+           && !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures ) ) )
+      return true;
+
+    return false;
+  }
+}
+
+bool QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( const QgsVectorLayer *layer, int fieldIndex )
+{
+  // editability will vary feature-by-feature only for joined fields
+  if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( fieldIndex, layer->fields(), srcFieldIndex );
+
+    if ( !info || !info->isEditable() || info->hasUpsertOnEdit() )
+      return false;
+
+    // join does not have upsert capabilities, so the ability to edit the joined field will
+    // vary feature-by-feature, depending on whether the join target feature already exists
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature )
 {
   if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
@@ -889,6 +936,7 @@ bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fiel
   else
     return _fieldIsEditable( layer, fieldIndex, feature );
 }
+
 
 QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> QgsVectorLayerUtils::labelMasks( const QgsVectorLayer *layer )
 {
