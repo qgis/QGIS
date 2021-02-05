@@ -146,7 +146,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         QString fieldType( reField.cap( 2 ) );
         if ( fieldType == QLatin1String( "int" ) )
         {
-          fields.append( QgsField( fieldName, QVariant::Int, fieldType ) );
+          fields.append( QgsField( fieldName, QVariant::LongLong, fieldType ) );
         }
         else if ( fieldType == QLatin1String( "real" ) )
         {
@@ -293,7 +293,10 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   const auto constFields = fields();
   for ( const QgsField &f : constFields )
   {
-    if ( f.type() == QVariant::Int )
+    if ( f.type() == QVariant::Int
+         || f.type() == QVariant::UInt
+         || f.type() == QVariant::Bool
+         || f.type() == QVariant::LongLong )
       urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":int" );
     else if ( f.type() == QVariant::Double )
       urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":real" );

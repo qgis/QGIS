@@ -82,7 +82,7 @@ namespace QgsVirtualLayerQueryParser
       ColumnDef def;
       def.setName( column );
       if ( type == QLatin1String( "int" ) )
-        def.setScalarType( QVariant::Int );
+        def.setScalarType( QVariant::LongLong );
       else if ( type == QLatin1String( "real" ) )
         def.setScalarType( QVariant::Double );
       else if ( type == QLatin1String( "text" ) )
@@ -111,7 +111,7 @@ namespace QgsVirtualLayerQueryParser
     // the type declared by one of the virtual tables
     // or null
     if ( columnType == QLatin1String( "int" ) )
-      d.setScalarType( QVariant::Int );
+      d.setScalarType( QVariant::LongLong );
     else if ( columnType == QLatin1String( "real" ) )
       d.setScalarType( QVariant::Double );
     else if ( columnType == QLatin1String( "text" ) )
@@ -223,7 +223,7 @@ namespace QgsVirtualLayerQueryParser
           switch ( type )
           {
             case SQLITE_INTEGER:
-              tableDef[colIdx].setScalarType( QVariant::Int );
+              tableDef[colIdx].setScalarType( QVariant::LongLong );
               break;
             case SQLITE_FLOAT:
               tableDef[colIdx].setScalarType( QVariant::Double );
