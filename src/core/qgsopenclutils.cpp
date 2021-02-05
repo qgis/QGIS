@@ -83,7 +83,11 @@ void QgsOpenClUtils::init()
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]( )
   {
-    QLibrary openCLLib{ QStringLiteral( "OpenCL" ) };
+#ifdef Q_OS_MAC
+    QLibrary openCLLib { QStringLiteral( "/System/Library/Frameworks/OpenCL.framework/Versions/Current/OpenCL" ) };
+#else
+    QLibrary openCLLib { QStringLiteral( "OpenCL" ) };
+#endif
     openCLLib.setLoadHints( QLibrary::LoadHint::ResolveAllSymbolsHint );
     if ( ! openCLLib.load() )
     {
