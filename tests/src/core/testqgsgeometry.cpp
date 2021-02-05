@@ -617,8 +617,9 @@ void TestQgsGeometry::geos()
   // Empty geometry
   QgsPoint point;
   asGeos = QgsGeos::asGeos( &point );
-  res = QgsGeometry( QgsGeos::fromGeos( asGeos.get() ) );
-  QCOMPARE( res.asWkt(), QgsPoint().asWkt( ) );
+  // should be treated as a null geometry, not an empty point in order to maintain api compatibility with
+  // earlier QGIS 3.x releases
+  QVERIFY( !QgsGeos::fromGeos( asGeos.get() ) );
 }
 
 void TestQgsGeometry::point()
