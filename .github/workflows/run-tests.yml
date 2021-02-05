@@ -121,6 +121,7 @@ jobs:
         env:
           GITHUB_PR_NUMBER: ${{github.event.number}}
         run: |
+          docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
           docker commit qgis_container qgis/qgis-pr-build:PR${GITHUB_PR_NUMBER}
           docker push qgis/qgis-pr-build:PR${GITHUB_PR_NUMBER}
 
