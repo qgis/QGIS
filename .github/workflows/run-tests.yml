@@ -121,8 +121,8 @@ jobs:
         env:
           GITHUB_PR_NUMBER: ${{github.event.number}}
         run: |
-          docker commit qgis_container qgis/qgis-PR-build:PR${GITHUB_PR_NUMBER}
-          docker push qgis/qgis-PR-build:PR${GITHUB_PR_NUMBER}
+          docker commit qgis_container qgis/qgis-pr-build:PR${GITHUB_PR_NUMBER}
+          docker push qgis/qgis-pr-build:PR${GITHUB_PR_NUMBER}
 
       - name: run unit tests
         id: tests
