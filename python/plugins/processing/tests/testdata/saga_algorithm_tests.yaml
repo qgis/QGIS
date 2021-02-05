@@ -400,25 +400,25 @@ tests:
         compare:
           fields:
             X000:
-              precision: 1
+              precision: 0
             X001:
-              precision: 1
+              precision: 0
             X002:
-              precision: 1
+              precision: 0
             X003:
-              precision: 1
+              precision: 0
             X004:
-              precision: 1
+              precision: 0
             X005:
-              precision: 1
+              precision: 0
             X006:
-              precision: 1
+              precision: 0
             X007:
-              precision: 1
+              precision: 0
             X008:
-              precision: 1
+              precision: 0
             X009:
-              precision: 1
+              precision: 0
 
   - algorithm: saga:snappointstolines
     name: Snap points to lines
@@ -835,7 +835,7 @@ tests:
         compare:
           fields:
             VALUE:
-              precision: 1
+              precision: 0
             REGCOEFF:
               precision: 1
       INFO_STEPS:
