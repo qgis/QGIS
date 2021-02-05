@@ -903,6 +903,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
       std::cerr << QStringLiteral( "Could not load the QGIS project \"%1\"\n" ).arg( projectPath ).toLocal8Bit().constData();
       return 1;
     }
+    QgsProject::setInstance( project.get() );
   }
 
   if ( !useJson )
