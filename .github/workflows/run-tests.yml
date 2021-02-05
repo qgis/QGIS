@@ -59,12 +59,12 @@ jobs:
           echo DOCKER_TAG: ${DOCKER_TAG}
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
 
-      - name: Increase Docker base image size
-        # https://stackoverflow.com/questions/50140939/increase-docker-container-size-from-default-10gb-on-rhel7
-        run: |
-          sudo rm /etc/docker/daemon.json
-          echo '{"storage-opt": [ "dm.basesize=50G" ]}' | sudo tee /etc/docker/daemon.json
-          sudo service docker restart
+#      - name: Increase Docker base image size
+#        # https://stackoverflow.com/questions/50140939/increase-docker-container-size-from-default-10gb-on-rhel7
+#        run: |
+#          sudo rm /etc/docker/daemon.json
+#          echo '{"storage-opt": [ "dm.basesize=50G" ]}' | sudo tee /etc/docker/daemon.json
+#          sudo service docker restart
 
       - name: Build deps
         run: |
@@ -115,6 +115,14 @@ jobs:
                      qgis/qgis3-build-deps:${DOCKER_TAG} \
                      /root/QGIS/.docker/docker-qgis-build.sh
           docker commit qgis_container qgis_image
+
+      - name: Push image
+        if: github.event_name == 'pull_request' && contains( github.event.pull_request.labels.*.name, 'Push Docker Image')
+        env:
+          GITHUB_PR_NUMBER: ${{github.event.number}}
+        run: |
+          docker commit qgis_container qgis/qgis-PR-build:PR${GITHUB_PR_NUMBER}
+          docker push qgis/qgis-PR-build:PR${GITHUB_PR_NUMBER}
 
       - name: run unit tests
         id: tests
