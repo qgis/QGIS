@@ -349,6 +349,19 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
 
+    /**
+     * Given a set of \a fields, attempts to pick the "most useful" field
+     * for user-friendly identification of features.
+     *
+     * For instance, if a field called "name" is present, this will be returned.
+     *
+     * Assumes that the user has organized the data with the more "interesting" field
+     * names first. As such, "name" would be selected before "oldname", "othername", etc.
+     *
+     * \since QGIS 3.18
+     */
+    static QString guessFriendlyIdentifierField( const QgsFields &fields );
+
 };
 
 

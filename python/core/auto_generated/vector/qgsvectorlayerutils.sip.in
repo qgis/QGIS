@@ -323,6 +323,19 @@ Optionally, ``sinkFlags`` can be specified to further refine the compatibility l
 .. versionadded:: 3.14
 %End
 
+    static QString guessFriendlyIdentifierField( const QgsFields &fields );
+%Docstring
+Given a set of ``fields``, attempts to pick the "most useful" field
+for user-friendly identification of features.
+
+For instance, if a field called "name" is present, this will be returned.
+
+Assumes that the user has organized the data with the more "interesting" field
+names first. As such, "name" would be selected before "oldname", "othername", etc.
+
+.. versionadded:: 3.18
+%End
+
 };
 
 
