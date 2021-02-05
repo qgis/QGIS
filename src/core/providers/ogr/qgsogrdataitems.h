@@ -132,6 +132,24 @@ class CORE_EXPORT QgsOgrDataCollectionItem final: public QgsDataCollectionItem
 
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::Uri mimeUri() const override;
+
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+
+    /**
+     * Sets GDAL driver name.
+     * \since QGIS 3.18
+     */
+    void setDriverName( const QString &driverName );
+
+    /**
+     * Returns GDAL driver name.
+     * \since QGIS 3.18
+     */
+    QString driverName() const;
+
+  private:
+
+    QString mDriverName;
 };
 
 //! Provider for OGR root data item
