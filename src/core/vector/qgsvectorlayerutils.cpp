@@ -1077,5 +1077,93 @@ bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, c
     }
   }
 
-  return context.layers().count();
+  return !context.layers().isEmpty();
+}
+
+QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fields )
+{
+  if ( fields.isEmpty() )
+    return QString();
+
+  // Check the fields and keep the first one that matches.
+  // We assume that the user has organized the data with the
+  // more "interesting" field names first. As such, name should
+  // be selected before oldname, othername, etc.
+  // This candidates list is a prioritized list of candidates ranked by "interestingness"!
+  // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
+  // but adding hardcoded localized variants of the strings is encouraged.
+  static QStringList sCandidates{ QStringLiteral( "name" ),
+                                  QStringLiteral( "title" ),
+                                  QStringLiteral( "heibt" ),
+                                  QStringLiteral( "desc" ),
+                                  QStringLiteral( "nom" ),
+                                  QStringLiteral( "street" ),
+                                  QStringLiteral( "road" ) };
+
+  // anti-names
+  // this list of strings indicates parts of field names which make the name "less interesting".
+  // For instance, we'd normally like to default to a field called "name" or "id", but if instead we
+  // find one called "typename" or "typeid", then that's most likely a classification of the feature and not the
+  // best choice to default to
+  static QStringList sAntiCandidates{ QStringLiteral( "type" ),
+                                      QStringLiteral( "class" ),
+                                      QStringLiteral( "cat" )
+                                    };
+
+  QString bestCandidateName;
+  QString bestCandidateNameWithAntiCandidate;
+
+  for ( const QString &candidate : sCandidates )
+  {
+    for ( const QgsField &field : fields )
+    {
+      const QString fldName = field.name();
+      if ( fldName.contains( candidate, Qt::CaseInsensitive ) )
+      {
+        bool isAntiCandidate = false;
+        for ( const QString &antiCandidate : sAntiCandidates )
+        {
+          if ( fldName.contains( antiCandidate, Qt::CaseInsensitive ) )
+          {
+            isAntiCandidate = true;
+            break;
+          }
+        }
+
+        if ( isAntiCandidate )
+        {
+          if ( bestCandidateNameWithAntiCandidate.isEmpty() )
+          {
+            bestCandidateNameWithAntiCandidate = fldName;
+          }
+        }
+        else
+        {
+          bestCandidateName = fldName;
+          break;
+        }
+      }
+    }
+
+    if ( !bestCandidateName.isEmpty() )
+      break;
+  }
+
+  const QString candidateName = bestCandidateName.isEmpty() ? bestCandidateNameWithAntiCandidate : bestCandidateName;
+  if ( !candidateName.isEmpty() )
+  {
+    return candidateName;
+  }
+  else
+  {
+    // no good matches found by name, so scan through and look for the first string field
+    for ( const QgsField &field : fields )
+    {
+      if ( field.type() == QVariant::String )
+        return field.name();
+    }
+
+    // no string fields found - just return first field
+    return fields.at( 0 ).name();
+  }
 }

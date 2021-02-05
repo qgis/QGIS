@@ -690,6 +690,58 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         vl.addFeatures(features)
         self.assertTrue(vl.commitChanges())
 
+    def testGuessFriendlyIdentifierField(self):
+        """
+        Test guessing a user friendly identifier field
+        """
+        fields = QgsFields()
+        self.assertFalse(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields))
+
+        fields.append(QgsField('id', QVariant.Int))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'id')
+
+        fields.append(QgsField('name', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
+
+        fields.append(QgsField('title', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
+
+        # regardless of actual field order, we prefer "name" over "title"
+        fields = QgsFields()
+        fields.append(QgsField('title', QVariant.String))
+        fields.append(QgsField('name', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
+
+        # test with an "anti candidate", which is a substring which makes a field containing "name" less preferred...
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('typename', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'typename')
+        fields.append(QgsField('title', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'title')
+
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('classname', QVariant.String))
+        fields.append(QgsField('x', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'classname')
+        fields.append(QgsField('desc', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'desc')
+
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('areatypename', QVariant.String))
+        fields.append(QgsField('areaadminname', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'areaadminname')
+
+        # if no good matches by name found, the first string field should be used
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('date', QVariant.Date))
+        fields.append(QgsField('station', QVariant.String))
+        fields.append(QgsField('org', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'station')
+
 
 if __name__ == '__main__':
     unittest.main()

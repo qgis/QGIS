@@ -101,6 +101,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsfeaturerenderergenerator.h"
+#include "qgsvectorlayerutils.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -3602,46 +3603,14 @@ QString QgsVectorLayer::displayExpression() const
   }
   else
   {
-    QString idxName;
-
-    // Check the fields and keep the first one that matches.
-    // We assume that the user has organized the data with the
-    // more "interesting" field names first. As such, name should
-    // be selected before oldname, othername, etc.
-    // This candidates list is a prioritized list of candidates ranked by "interestingness"!
-    // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
-    // but adding hardcoded localized variants of the strings is encouraged.
-    static QStringList sCandidates{ QStringLiteral( "name" ),
-                                    QStringLiteral( "title" ),
-                                    QStringLiteral( "heibt" ),
-                                    QStringLiteral( "desc" ),
-                                    QStringLiteral( "nom" ),
-                                    QStringLiteral( "street" ),
-                                    QStringLiteral( "road" ),
-                                    QStringLiteral( "id" )};
-    for ( const QString &candidate : sCandidates )
+    const QString candidateName = QgsVectorLayerUtils::guessFriendlyIdentifierField( mFields );
+    if ( !candidateName.isEmpty() )
     {
-      for ( const QgsField &field : qgis::as_const( mFields ) )
-      {
-        QString fldName = field.name();
-        if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
-        {
-          idxName = fldName;
-          break;
-        }
-      }
-
-      if ( !idxName.isEmpty() )
-        break;
-    }
-
-    if ( !idxName.isNull() )
-    {
-      return QgsExpression::quotedColumnRef( idxName );
+      return QgsExpression::quotedColumnRef( candidateName );
     }
     else
     {
-      return QgsExpression::quotedColumnRef( mFields.at( 0 ).name() );
+      return QString();
     }
   }
 }
