@@ -468,6 +468,8 @@ set(QGIS_CORE_SRCS
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
   qgssettings.cpp
+  qgssettingsentry.cpp
+  qgssettingsregistry.cpp
   qgsarchive.cpp
   qgstestutils.cpp
   qgsziputils.cpp
@@ -1026,6 +1028,8 @@ set(QGIS_CORE_HDRS
   qgsscalecalculator.h
   qgsscaleutils.h
   qgssettings.h
+  qgssettingsentry.h
+  qgssettingsregistry.h
   qgssimplifymethod.h
   qgssnappingconfig.h
   qgssnappingutils.h
