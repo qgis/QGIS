@@ -35,7 +35,8 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsCoordinateReferenceSystem,
     NULL,
-    QgsVectorLayer
+    QgsVectorLayer,
+    QgsRenderChecker
 )
 
 import unittest
@@ -226,21 +227,28 @@ class TestCase(_TestCase):
 
         contents_result = list(path_result.iterdir())
         contents_expected = list(path_expected.iterdir())
+        contents_expected = [p for p in contents_expected if p.suffix != '.png' or not p.stem.endswith('_mask')]
         self.assertCountEqual([p.name if p.is_file() else p.stem for p in contents_expected], [p.name if p.is_file() else p.stem for p in contents_result], f'Directory contents mismatch in {dirpath_expected} vs {dirpath_result}')
 
         # compare file contents
-        for expected_file_path in path_expected.iterdir():
+        for expected_file_path in contents_expected:
             if expected_file_path.is_dir():
                 continue
 
             result_file_path = path_result / expected_file_path.name
 
             if expected_file_path.suffix == '.pbf':
+                # vector layer, use assertLayersEqual
                 layer_expected = QgsVectorLayer(str(expected_file_path), 'Expected')
                 self.assertTrue(layer_expected.isValid())
                 layer_result = QgsVectorLayer(str(result_file_path), 'Result')
                 self.assertTrue(layer_result.isValid())
                 self.assertLayersEqual(layer_expected, layer_result)
+            elif expected_file_path.suffix == '.png':
+                # image file, use QgsRenderChecker
+                checker = QgsRenderChecker()
+                res = checker.compareImages(expected_file_path.stem, expected_file_path.as_posix(), result_file_path.as_posix())
+                self.assertTrue(res)
             else:
                 assert False, f"Don't know how to compare {expected_file_path.suffix} files"
 
