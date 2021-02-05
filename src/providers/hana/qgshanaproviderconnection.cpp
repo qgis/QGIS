@@ -140,7 +140,8 @@ void QgsHanaProviderConnection::setCapabilities()
     }
     catch ( const QgsHanaException &ex )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Unable to retrieve user privileges: %1" ).arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ), QObject::tr( "SAP HANA" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Unable to retrieve user privileges: %1" )
+                                 .arg( ex.what() ), QObject::tr( "SAP HANA" ) );
     }
   }
 
