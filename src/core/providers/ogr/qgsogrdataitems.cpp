@@ -505,16 +505,6 @@ QgsAbstractDatabaseProviderConnection *QgsOgrDataCollectionItem::databaseConnect
   return conn;
 }
 
-void QgsOgrDataCollectionItem::setDriverName( const QString &driverName )
-{
-  mDriverName = driverName;
-}
-
-QString QgsOgrDataCollectionItem::driverName() const
-{
-  return mDriverName;
-}
-
 // ---------------------------------------------------------------------------
 
 QString QgsOgrDataItemProvider::name()
@@ -774,7 +764,6 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   else if ( numLayers > 1 || sOgrSupportedDbDriverNames.contains( driverName ) )
   {
     item = new QgsOgrDataCollectionItem( parentItem, name, path );
-    qobject_cast<QgsOgrDataCollectionItem *>( item )->setDriverName( driverName );
   }
   else
   {
