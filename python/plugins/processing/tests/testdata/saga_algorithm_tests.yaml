@@ -849,7 +849,9 @@ tests:
             REGCOEFF:
               precision: 0
       REGRESCORR:
-        hash: d70078f0151919949c1e55c1a677f1a7cda6f7514667270af6745c0d
+        hash:
+        - d70078f0151919949c1e55c1a677f1a7cda6f7514667270af6745c0d
+        - 99823271951ede7de471c1ab82dd372635bc3bfa16ad34a7afebf578
         type: rasterhash
       REGRESSION:
         hash: b3a725ae64eec2aab8de1197f2306a0905c7c38de0dc89d58aadb3cc
