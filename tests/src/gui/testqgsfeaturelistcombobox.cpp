@@ -80,6 +80,7 @@ void TestQgsFeatureListComboBox::init()
 {
   // create layer
   mLayer.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) ) );
+  mLayer->setDisplayExpression( QStringLiteral( "pk" ) );
 
   // add features
   mLayer->startEditing();

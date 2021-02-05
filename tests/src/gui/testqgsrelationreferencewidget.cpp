@@ -100,6 +100,7 @@ void TestQgsRelationReferenceWidget::init()
   QgsProject::instance()->addMapLayer( mLayer1.get(), false, false );
 
   mLayer2.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) ) );
+  mLayer2->setDisplayExpression( QStringLiteral( "pk" ) );
   QgsProject::instance()->addMapLayer( mLayer2.get(), false, false );
 
   // create relation
