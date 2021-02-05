@@ -27,13 +27,15 @@ import difflib
 import functools
 import filecmp
 import tempfile
+from pathlib import Path
 
 from qgis.PyQt.QtCore import QVariant, QDateTime, QDate
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
     QgsCoordinateReferenceSystem,
-    NULL
+    NULL,
+    QgsVectorLayer
 )
 
 import unittest
@@ -215,19 +217,43 @@ class TestCase(_TestCase):
     def assertFilesEqual(self, filepath_expected, filepath_result):
         self.checkFilesEqual(filepath_expected, filepath_result, use_asserts=True)
 
-    def assertDirectoriesEqual(self, dirpath_expected, dirpath_result):
+    def assertDirectoryEqual(self, dirpath_expected: str, dirpath_result: str):
+        """
+        Checks whether both directories have the same content (non-recursively) and raises an assertion error if not.
+        """
+        path_expected = Path(dirpath_expected)
+        path_result = Path(dirpath_result)
+
+        contents_result = list(path_result.iterdir())
+        contents_expected = list(path_expected.iterdir())
+        self.assertCountEqual([p.name if p.is_file() else p.stem for p in contents_expected], [p.name if p.is_file() else p.stem for p in contents_result], f'Directory contents mismatch in {dirpath_expected} vs {dirpath_result}')
+
+        # compare file contents
+        for expected_file_path in path_expected.iterdir():
+            if expected_file_path.is_dir():
+                continue
+
+            result_file_path = path_result / expected_file_path.name
+
+            if expected_file_path.suffix == '.pbf':
+                layer_expected = QgsVectorLayer(str(expected_file_path), 'Expected')
+                self.assertTrue(layer_expected.isValid())
+                layer_result = QgsVectorLayer(str(result_file_path), 'Result')
+                self.assertTrue(layer_result.isValid())
+                self.assertLayersEqual(layer_expected, layer_result)
+            else:
+                assert False, f"Don't know how to compare {expected_file_path.suffix} files"
+
+    def assertDirectoriesEqual(self, dirpath_expected: str, dirpath_result: str):
         """ Checks whether both directories have the same content (recursively) and raises an assertion error if not. """
-        dc = filecmp.dircmp(dirpath_expected, dirpath_result)
-        dc.report_full_closure()
+        self.assertDirectoryEqual(dirpath_expected, dirpath_result)
 
-        def _check_dirs_equal_recursive(dcmp):
-            self.assertEqual(dcmp.left_only, [])
-            self.assertEqual(dcmp.right_only, [])
-            self.assertEqual(dcmp.diff_files, [])
-            for sub_dcmp in dcmp.subdirs.values():
-                _check_dirs_equal_recursive(sub_dcmp)
-
-        _check_dirs_equal_recursive(dc)
+        # recurse through subfolders
+        path_expected = Path(dirpath_expected)
+        path_result = Path(dirpath_result)
+        for p in path_expected.iterdir():
+            if p.is_dir():
+                self.assertDirectoriesEqual(str(p), path_result / p.stem)
 
     def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False, ignore_part_order=False):
         self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check, ignore_part_order=ignore_part_order)
