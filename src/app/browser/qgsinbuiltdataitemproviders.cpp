@@ -878,57 +878,22 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 {
   Q_UNUSED( selectedItems )
 
-  // Small helper to get a connection from either a connection name (if it's stored) or a data item path
-  auto getConnectionFromDataItem = [ ]( QgsDataCollectionItem * collectionItem, bool isSchema ) -> QgsAbstractDatabaseProviderConnection *
-  {
-    // This is super messy: we need the QgsDataProvider key and NOT the QgsDataItemProvider key!
-    const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( collectionItem->providerKey() ) };
-    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
-    if ( ! md )
-      return nullptr;
-
-    const QString connectionName { isSchema ? collectionItem->parent()->name() : collectionItem->name() };
-    QString connectionPath { isSchema ? collectionItem->parent()->path() : collectionItem->path() };
-    // The path is normally prefixed with the data item provider key (which it NOT necessarily the data provider name)
-    // such as "gpkg://<path_to_gpkg>": remove it.
-    connectionPath.remove( QRegularExpression( QStringLiteral( R"re(^[aZ]{2,}://)re" ) ) );
-    try
-    {
-      // If we are coming here from the browser, there is no stored connection
-      if ( md->findConnection( connectionName ) )
-      {
-        return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) );
-      }
-      else
-      {
-        return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionPath, {} ) );
-      }
-    }
-    catch ( QgsProviderConnectionException &ex )
-    {
-      // This is expected and it is not an error in case the provider does not implement the connections API
-    }
-    return nullptr;
-  };
-
   // Add create new table for collection items but not not if it is a root item
   if ( ! qobject_cast<QgsConnectionsRootItem *>( item ) )
   {
     if ( QgsDataCollectionItem * collectionItem { qobject_cast<QgsDataCollectionItem *>( item ) } )
     {
-      // Note: we could have used layerCollection() but casting to QgsDatabaseSchemaItem is more explicit
-      const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( collectionItem ) != nullptr };
-      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( getConnectionFromDataItem( collectionItem, isSchema ) );
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() );
 
       if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
       {
 
         QAction *newTableAction = new QAction( QObject::tr( "New Table…" ), menu );
 
-        QObject::connect( newTableAction, &QAction::triggered, collectionItem, [ &getConnectionFromDataItem, isSchema, collectionItem, context]
+        QObject::connect( newTableAction, &QAction::triggered, collectionItem, [ collectionItem, context]
         {
 
-          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( getConnectionFromDataItem( collectionItem, isSchema ) );
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( collectionItem->databaseConnection() );
           // This should never happen but let's play safe
           if ( ! conn2 )
           {
@@ -938,6 +903,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
           QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
           dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+
+          const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( collectionItem ) != nullptr };
 
           if ( isSchema )
           {

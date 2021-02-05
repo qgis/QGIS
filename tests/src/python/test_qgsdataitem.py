@@ -76,6 +76,11 @@ class TestQgsDataItem(unittest.TestCase):
             self.assertTrue(tabSetDestroyedFlag[0])
             tabSetDestroyedFlag[0] = False
 
+    def test_databaseConnection(self):
+
+        from IPython import embed
+        embed(using=False)
+
 
 if __name__ == '__main__':
     unittest.main()

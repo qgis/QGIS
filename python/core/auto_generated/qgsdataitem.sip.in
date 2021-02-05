@@ -407,6 +407,17 @@ Sets a custom sorting ``key`` for the item.
 Move object and all its descendants to thread
 %End
 
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const /Factory/;
+%Docstring
+For data items that represent a DB connection or one of its children,
+this method returns a connection.
+All other data items will return NULL.
+
+Ownership of the returned objects is transferred to the caller.
+
+.. versionadded:: 3.16
+%End
+
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
 
@@ -618,6 +629,7 @@ Returns icon for vector tile layer
 
 :return: the layer name
 %End
+
 };
 
 
@@ -663,6 +675,9 @@ Returns the standard browser data collection icon.
 .. seealso:: :py:func:`iconDir`
 %End
 
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
+
+
   protected:
 
     static QIcon openDirIcon();
@@ -678,6 +693,7 @@ Shared home directory icon.
 
 .. versionadded:: 3.4
 %End
+
 };
 
 
@@ -708,6 +724,8 @@ The optional ``providerKey`` string can be used to specify the key for the QgsDa
 %End
 
     ~QgsDatabaseSchemaItem();
+
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 
     static QIcon iconDataCollection();
