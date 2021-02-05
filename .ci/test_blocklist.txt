@@ -23,5 +23,7 @@ qgis_layerdefinition
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
 
-# Broken - segfaults on Travis, likely due to a real issue in the server code
-# PyQgsServerWMSGetPrint
+# Oracle image is temporarily disabled in the Github Actions builds
+PyQgsOracleProvider
+
+
