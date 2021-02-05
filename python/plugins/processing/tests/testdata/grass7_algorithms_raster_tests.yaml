@@ -1515,37 +1515,38 @@ tests:
         hash: e1a1fc36d53e2ac801632f9e2271922d2b1340869f2db82d5edaeb0e
         type: rasterhash
 
-  - algorithm: grass7:r.rescale
-    name: Test (grass7:r.rescale)
-    params:
-      GRASS_RASTER_FORMAT_META: ''
-      GRASS_RASTER_FORMAT_OPT: ''
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      from: '1,6'
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-      to: '1,2'
-    results:
-      output:
-        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
-        type: rasterhash
-
-  - algorithm: grass7:r.rescale
-    name: Test (grass7:r.rescale)
-    params:
-      GRASS_RASTER_FORMAT_META: ''
-      GRASS_RASTER_FORMAT_OPT: ''
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      from: None
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-      to: '1,2'
-    results:
-      output:
-        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
-        type: rasterhash
+# GRASS can trigger a segfault on CI when running this tool
+#  - algorithm: grass7:r.rescale
+#    name: Test (grass7:r.rescale)
+#    params:
+#      GRASS_RASTER_FORMAT_META: ''
+#      GRASS_RASTER_FORMAT_OPT: ''
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      from: '1,6'
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#      to: '1,2'
+#    results:
+#      output:
+#        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
+#        type: rasterhash
+#
+#  - algorithm: grass7:r.rescale
+#    name: Test (grass7:r.rescale)
+#    params:
+#      GRASS_RASTER_FORMAT_META: ''
+#      GRASS_RASTER_FORMAT_OPT: ''
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      from: None
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#      to: '1,2'
+#    results:
+#      output:
+#        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
+#        type: rasterhash
 
   - algorithm: grass7:r.transect
     name: GRASS 7 r.transect
