@@ -691,6 +691,11 @@ void TestQgs3DRendering::testMapTheme()
 
 void TestQgs3DRendering::testMesh()
 {
+  if ( QgsTest::isCIRun() )
+  {
+    QSKIP( "Intermittently fails on CI" );
+  }
+
   QgsRectangle fullExtent = mLayerMeshDataset->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
