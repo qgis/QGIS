@@ -81,6 +81,14 @@ namespace QgsWms
           version = mVersion;
         }
 
+        // WMS 1.3.0 specification: If a version lower than any of those known
+        // to the server is requested, then the server shall send the lowest
+        // version it supports.
+        if ( QgsProjectVersion( 1, 1, 1 ) > parameters.versionAsNumber() )
+        {
+          version = "1.1.1";
+        }
+
         // Get the request
         const QString req = parameters.request();
         if ( req.isEmpty() )
