@@ -6116,6 +6116,11 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *&parentLay
   const auto constSelection = chooseSublayersDialog.selection();
   const QString providerType = parentLayer->providerType();
 
+  if ( name.isEmpty() )
+  {
+    name = fileName;
+  }
+
   // We delete the parent layer now, to be sure in the GeoPackage case that
   // when several sublayers are selected, they will use the same GDAL dataset
   // This is critical to make project transactions work, as in
