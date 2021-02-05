@@ -203,6 +203,7 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         self.assertTrue(first_layer.isValid())
         second_layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
                                       "second_layer", "memory")
+        second_layer.setDisplayExpression('pkid')
         self.assertTrue(second_layer.isValid())
         QgsProject.instance().addMapLayers([first_layer, second_layer])
         f = QgsFeature()
@@ -241,10 +242,10 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         second_layer.setDisplayExpression('decoded')
         self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
 
-        # No display expression
+        # No display expression - will default internally to the decoded string
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression(None)
-        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), 'decoded_val')
 
         # Invalid display expression
         config = {'Relation': rel.id()}
