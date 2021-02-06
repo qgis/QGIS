@@ -1,11 +1,8 @@
-# block list
+# black list
 PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup
-
-# crashing on Github actions - temporarily disabled
-PyQgsRelationEditWidget
 
 # code layout tests are run on separate build
 qgis_spelling
