@@ -260,8 +260,7 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
     }
 
-    bool result = vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry );
-    Q_ASSERT( result );
+    vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry );
   }
 }
 
