@@ -161,7 +161,7 @@ jobs:
           do
             echo "::group::docker_test_runner_${i}"
             echo "test ${i}..."
-            docker exec -t qgis-testing-environment sh -c "cd /tests_directory && /usr/bin/test_runner/qgis_testrunner.sh ${i}"
+            docker exec -i qgis-testing-environment sh -c "cd /tests_directory && /usr/bin/test_runner/qgis_testrunner.sh ${i}"
             [[ $? -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
             echo "::endgroup::"
           done
