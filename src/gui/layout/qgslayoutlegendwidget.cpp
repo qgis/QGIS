@@ -1462,14 +1462,30 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   if ( mLegendNode )
   {
     currentLabel = mLegendNode->data( Qt::EditRole ).toString();
+
+    QVariant labelProperty = mLayer->customProperty( "legend/label" + QString::number( originalLegendNodeIndex ) );
+    QVariant labelDisabledProperty = mLayer->customProperty( "legend/label-disabled-" + QString::number( originalLegendNodeIndex ) );
+
+    if ( !labelProperty.isNull() )
+      currentLabel = labelProperty.toString();
+
+    else if ( !labelDisabledProperty.isNull() )
+      currentLabel = labelDisabledProperty.toString();
+
     mColumnBreakBeforeCheckBox->setChecked( mLegendNode->columnBreak() );
   }
   else if ( mLayer )
   {
     currentLabel = mLayer->name();
-    QVariant v = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
-    if ( !v.isNull() )
-      currentLabel = v.toString();
+    QVariant labelProperty = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
+    QVariant labelDisabledProperty = mLayer->customProperty( QStringLiteral( "legend/title-label-disabled" ) );
+
+    if ( !labelProperty.isNull() )
+      currentLabel = labelProperty.toString();
+
+    else if ( !labelDisabledProperty.isNull() )
+      currentLabel = labelDisabledProperty.toString();
+
     mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
 
     mColumnSplitBehaviorComboBox->setCurrentIndex( mColumnSplitBehaviorComboBox->findData( mLayer->legendSplitBehavior() ) );
@@ -1490,15 +1506,29 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   mCustomSymbolCheckBox->setVisible( mLegendNode || mLegend->model()->legendNodeEmbeddedInParent( mLayer ) );
   mColumnSplitLabel->setVisible( mLayer && !mLegendNode );
   mColumnSplitBehaviorComboBox->setVisible( mLayer && !mLegendNode );
+
+  bool customLabelEnabled;
+
   if ( mLegendNode )
   {
+    customLabelEnabled = mNode->customProperty( "legend/custom-label-enabled-" + QString::number( originalLegendNodeIndex ) ) == true;
+    mLabelGroup->setChecked( customLabelEnabled );
     mWidthSpinBox->setValue( mLegendNode->userPatchSize().width() );
     mHeightSpinBox->setValue( mLegendNode->userPatchSize().height() );
   }
+
   else if ( mLayer )
   {
+    customLabelEnabled = mLayer->customProperty( QStringLiteral( "legend/custom-label-enabled" ) ) == true;
     mWidthSpinBox->setValue( mLayer->patchSize().width() );
     mHeightSpinBox->setValue( mLayer->patchSize().height() );
+    mLabelGroup->setChecked( customLabelEnabled );
+  }
+
+  else
+  {
+    mLabelGroup->setCheckable( false );
+    mLabelGroup->setTitle( "Label" );
   }
 
   mCustomSymbolCheckBox->setChecked( false );
@@ -1624,6 +1654,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   connect( mWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
   connect( mHeightSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
 
+  connect( mLabelGroup, &QGroupBox::toggled, this, &QgsLayoutLegendNodeWidget::customLabelChanged );
   connect( mCustomSymbolCheckBox, &QGroupBox::toggled, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
   connect( mCustomSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
 
@@ -1761,6 +1792,55 @@ void QgsLayoutLegendNodeWidget::sizeChanged( double )
       QgsMapLayerLegendUtils::setLegendNodeSymbolSize( mLayer, _originalLegendNodeIndex( node ), size );
     }
     mLegend->model()->refreshLayerLegend( mLayer );
+  }
+
+  mLegend->adjustBoxSize();
+  mLegend->updateFilterByMap();
+  mLegend->endCommand();
+}
+
+void QgsLayoutLegendNodeWidget::customLabelChanged()
+{
+  mLegend->beginCommand( tr( "Edit Legend Item" ) );
+
+  const QString label = mLabelEdit->toPlainText();
+
+  if ( mLabelGroup->isChecked() )
+  {
+    if ( mLegendNode )
+    {
+      mLayer->setCustomProperty( "legend/custom-label-enabled-" + QString::number( mOriginalLegendNodeIndex ), true );
+      mLayer->setCustomProperty( "legend/label-" + QString::number( mOriginalLegendNodeIndex ), label );
+      mLayer->removeCustomProperty( "legend/label-disabled-" + QString::number( mOriginalLegendNodeIndex ) );
+      mLegend->model()->refreshLayerLegend( mLayer );
+    }
+
+    else if ( mLayer )
+    {
+      mLayer->setCustomProperty( QStringLiteral( "legend/custom-label-enabled" ), true );
+      mLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), label );
+      mLayer->removeCustomProperty( QStringLiteral( "legend/title-label-disabled" ) );
+      mLegend->model()->refreshLayerLegend( mLayer );
+    }
+  }
+
+  else
+  {
+    if ( mLegendNode )
+    {
+      mLayer->setCustomProperty( "legend/custom-label-enabled-" + QString::number( mOriginalLegendNodeIndex ), false );
+      mLayer->setCustomProperty( "legend/label-disabled-" + QString::number( mOriginalLegendNodeIndex ), label );
+      mLayer->removeCustomProperty( "legend/label-" + QString::number( mOriginalLegendNodeIndex ) );
+      mLegend->model()->refreshLayerLegend( mLayer );
+    }
+
+    else if ( mLayer )
+    {
+      mLayer->setCustomProperty( QStringLiteral( "legend/custom-label-enabled" ), false );
+      mLayer->setCustomProperty( QStringLiteral( "legend/title-label-disabled" ), label );
+      mLayer->removeCustomProperty( QStringLiteral( "legend/title-label" ) );
+      mLegend->model()->refreshLayerLegend( mLayer );
+    }
   }
 
   mLegend->adjustBoxSize();

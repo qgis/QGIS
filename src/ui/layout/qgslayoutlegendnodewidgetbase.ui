@@ -29,7 +29,10 @@
    <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="mLabelGroup">
      <property name="title">
-      <string>Label</string>
+      <string>Custom Label</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
