@@ -537,6 +537,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     void swapXy() override;
     bool convertTo( QgsWkbTypes::Type type ) override;
 
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+
 #ifndef SIP_RUN
 
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;

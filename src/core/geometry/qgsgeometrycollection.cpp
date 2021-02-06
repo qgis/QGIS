@@ -27,6 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
+#include "qgsfeedback.h"
 
 #include <nlohmann/json.hpp>
 #include <memory>
@@ -976,6 +977,27 @@ QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
     newCollection->addGeometry( geom->toCurveType() );
   }
   return newCollection.release();
+}
+
+bool QgsGeometryCollection::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
+{
+  if ( !transformer )
+    return false;
+
+  bool res = true;
+  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    if ( geom )
+      res = geom->transform( transformer, feedback );
+
+    if ( feedback && feedback->isCanceled() )
+      res = false;
+
+    if ( !res )
+      break;
+  }
+  clearCache();
+  return res;
 }
 
 bool QgsGeometryCollection::wktOmitChildType() const

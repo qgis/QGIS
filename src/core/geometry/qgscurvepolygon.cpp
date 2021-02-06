@@ -24,6 +24,7 @@
 #include "qgspolygon.h"
 #include "qgswkbptr.h"
 #include "qgsmulticurve.h"
+#include "qgsfeedback.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
@@ -1262,6 +1263,35 @@ void QgsCurvePolygon::swapXy()
 QgsCurvePolygon *QgsCurvePolygon::toCurveType() const
 {
   return clone();
+}
+
+bool QgsCurvePolygon::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
+{
+  if ( !transformer )
+    return false;
+
+  bool res = true;
+  if ( mExteriorRing )
+    res = mExteriorRing->transform( transformer, feedback );
+
+  if ( !res || ( feedback && feedback->isCanceled() ) )
+  {
+    clearCache();
+    return false;
+  }
+
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  {
+    res = curve->transform( transformer );
+
+    if ( feedback && feedback->isCanceled() )
+      res = false;
+
+    if ( !res )
+      break;
+  }
+  clearCache();
+  return res;
 }
 
 void QgsCurvePolygon::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )

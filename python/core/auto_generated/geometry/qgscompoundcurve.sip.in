@@ -168,6 +168,9 @@ Appends first point if not already closed.
     virtual double yAt( int index ) const /HoldGIL/;
 
 
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+
 
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
 

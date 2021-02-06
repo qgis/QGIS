@@ -22,6 +22,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+#include "qgsgeometrytransformer.h"
 
 #include <cmath>
 #include <QPainter>
@@ -638,6 +639,16 @@ bool QgsPoint::convertTo( QgsWkbTypes::Type type )
   }
 
   return false;
+}
+
+bool QgsPoint::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback * )
+{
+  if ( !transformer )
+    return false;
+
+  const bool res = transformer->transformPoint( mX, mY, mZ, mM );
+  clearCache();
+  return res;
 }
 
 void QgsPoint::filterVertices( const std::function<bool ( const QgsPoint & )> & )

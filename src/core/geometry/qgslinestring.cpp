@@ -23,6 +23,8 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
+#include "qgsgeometrytransformer.h"
+#include "qgsfeedback.h"
 
 #include <nlohmann/json.hpp>
 #include <cmath>
@@ -1720,6 +1722,50 @@ bool QgsLineString::convertTo( QgsWkbTypes::Type type )
   {
     return QgsCurve::convertTo( type );
   }
+}
+
+bool QgsLineString::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
+{
+  if ( !transformer )
+    return false;
+
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  int size = mX.size();
+
+  double *srcX = mX.data();
+  double *srcY = mY.data();
+  double *srcM = hasM ? mM.data() : nullptr;
+  double *srcZ = hasZ ? mZ.data() : nullptr;
+
+  bool res = true;
+  for ( int i = 0; i < size; ++i )
+  {
+    double x = *srcX;
+    double y = *srcY;
+    double z = hasZ ? *srcZ : std::numeric_limits<double>::quiet_NaN();
+    double m = hasM ? *srcM : std::numeric_limits<double>::quiet_NaN();
+    if ( !transformer->transformPoint( x, y, z, m ) )
+    {
+      res = false;
+      break;
+    }
+
+    *srcX++ = x;
+    *srcY++ = y;
+    if ( hasM )
+      *srcM++ = m;
+    if ( hasZ )
+      *srcZ++ = z;
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      res = false;
+      break;
+    }
+  }
+  clearCache();
+  return res;
 }
 
 void QgsLineString::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )

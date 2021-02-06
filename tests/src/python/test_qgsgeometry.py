@@ -38,7 +38,8 @@ from qgis.core import (
     QgsRenderChecker,
     QgsCoordinateReferenceSystem,
     QgsProject,
-    QgsVertexId
+    QgsVertexId,
+    QgsAbstractGeometryTransformer
 )
 from qgis.PyQt.QtCore import QDir, QPointF, QRectF
 from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF, QTransform
@@ -5958,6 +5959,21 @@ class TestQgsGeometry(unittest.TestCase):
     def testGeosCrash(self):
         # test we don't crash when geos returns a point geometry with no points
         QgsGeometry.fromWkt('Polygon ((0 0, 1 1, 1 0, 0 0))').intersection(QgsGeometry.fromWkt('Point (42 0)')).isNull()
+
+    def testTransformWithClass(self):
+        """
+        Test transforming using a python based class (most of the tests for this are in c++, this is just
+        checking the sip bindings!)
+        """
+        class Transformer(QgsAbstractGeometryTransformer):
+
+            def transformPoint(self, x, y, z, m):
+                return True, x * 2, y + 1, z, m
+
+        transformer = Transformer()
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10)')
+        self.assertTrue(g.get().transform(transformer))
+        self.assertEqual(g.asWkt(0), 'LineString (0 1, 20 1, 20 11)')
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)

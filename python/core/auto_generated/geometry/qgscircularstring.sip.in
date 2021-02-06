@@ -163,6 +163,9 @@ Sets the circular string's points
     virtual double yAt( int index ) const /HoldGIL/;
 
 
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+
 
     virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
 

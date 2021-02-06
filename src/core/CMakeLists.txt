@@ -1183,6 +1183,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsgeometryeditutils.h
   geometry/qgsgeometryengine.h
   geometry/qgsgeometryfactory.h
+  geometry/qgsgeometrytransformer.h
   geometry/qgsgeometryutils.h
   geometry/qgsgeos.h
   geometry/qgsinternalgeometryengine.h

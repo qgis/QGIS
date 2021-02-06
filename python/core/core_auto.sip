@@ -301,6 +301,7 @@
 %Include auto_generated/geometry/qgsgeometry.sip
 %Include auto_generated/geometry/qgsgeometrycollection.sip
 %Include auto_generated/geometry/qgsgeometryengine.sip
+%Include auto_generated/geometry/qgsgeometrytransformer.sip
 %Include auto_generated/geometry/qgsgeometryutils.sip
 %Include auto_generated/geometry/qgslinesegment.sip
 %Include auto_generated/geometry/qgslinestring.sip
