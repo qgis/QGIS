@@ -670,6 +670,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     bool convertTo( QgsWkbTypes::Type type ) override;
 
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
     void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;

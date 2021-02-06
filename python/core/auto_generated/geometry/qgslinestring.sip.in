@@ -543,6 +543,9 @@ of the curve.
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+
 
     virtual QgsLineString *createEmptyWithSameType() const /Factory/;
 

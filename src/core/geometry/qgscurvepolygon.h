@@ -261,6 +261,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
     void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;

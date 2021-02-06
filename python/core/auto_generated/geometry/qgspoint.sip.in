@@ -450,6 +450,9 @@ Angle undefined. Always returns 0.0
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+
 
     virtual QgsPoint *createEmptyWithSameType() const /Factory/;
 

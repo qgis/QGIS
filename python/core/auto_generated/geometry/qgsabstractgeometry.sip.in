@@ -707,6 +707,21 @@ Checks validity of the geometry, and returns ``True`` if the geometry is valid.
 .. versionadded:: 3.8
 %End
 
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 ) = 0;
+%Docstring
+Transforms the vertices from the geometry in place, using the specified geometry ``transformer``
+object.
+
+Depending on the ``transformer`` used, this may result in an invalid geometry.
+
+The optional ``feedback`` argument can be used to cancel the transformation before it completes.
+If this is done, the geometry will be left in a semi-transformed state.
+
+:return: ``True`` if the geometry was successfully transformed.
+
+.. versionadded:: 3.18
+%End
+
 
     QgsGeometryPartIterator parts();
 %Docstring
