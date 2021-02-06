@@ -10109,17 +10109,29 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
     return;
   }
 
-  //dummy feature
-  QgsFeature f( vl->fields() );
   QgsAttributeEditorContext context( createAttributeEditorContext() );
   context.setAllowCustomUi( false );
   context.setVectorLayerTools( mVectorLayerTools );
   context.setCadDockWidget( mAdvancedDigitizingDockWidget );
   context.setMapCanvas( mMapCanvas );
-  context.setAttributeFormMode( QgsAttributeEditorContext::Mode::MultiEditMode );
 
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
-  dialog->setMode( QgsAttributeEditorContext::MultiEditMode );
+  QgsAttributeDialog *dialog = nullptr;
+  if ( vl->selectedFeatureCount() == 1 )
+  {
+    context.setAttributeFormMode( QgsAttributeEditorContext::Mode::SingleEditMode );
+    QgsFeature f = vl->selectedFeatures().at( 0 );
+    dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
+    dialog->setMode( QgsAttributeEditorContext::SingleEditMode );
+  }
+  else
+  {
+    context.setAttributeFormMode( QgsAttributeEditorContext::Mode::MultiEditMode );
+
+    //dummy feature
+    QgsFeature f( vl->fields() );
+    dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
+    dialog->setMode( QgsAttributeEditorContext::MultiEditMode );
+  }
   dialog->setAttribute( Qt::WA_DeleteOnClose );
   dialog->show();
 }
