@@ -24,9 +24,9 @@ QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section settingsSection,
 {}
 
 void QgsSettingsRegistry::registerValue( const QString &settingsName,
-    QVariant::Type type,
-    const QVariant &defaultValue,
-    const QString &description )
+                                         QVariant::Type type,
+                                         const QVariant &defaultValue,
+                                         const QString &description )
 {
   if ( mMapSettingsEntry.contains( settingsName ) == true )
   {
@@ -36,10 +36,10 @@ void QgsSettingsRegistry::registerValue( const QString &settingsName,
 
   mMapSettingsEntry.insert( settingsName,
                             QgsSettingsEntry( settingsName,
-                                mSettingsSection,
-                                defaultValue,
-                                description,
-                                this ) );
+                                              mSettingsSection,
+                                              defaultValue,
+                                              description,
+                                              this ) );
 
 }
 

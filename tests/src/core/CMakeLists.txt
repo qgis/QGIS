@@ -187,6 +187,7 @@ set(TESTS
  testqgsrulebasedrenderer.cpp
  testqgsruntimeprofiler.cpp
  testqgssettings.cpp
+ testqgssettingsregistry.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
  testqgssnappingutils.cpp

@@ -23,8 +23,8 @@ QgsSettingsEntry::QgsSettingsEntry( QString settingsName,
                                     QObject *parent )
   : QObject( parent )
   , mSettingsName( settingsName )
-  , mSettingsSection( settingsSection )
   , mDefaultValue( defaultValue )
+  , mSettingsSection( settingsSection )
   , mDescription( description )
 {
 }
@@ -32,8 +32,8 @@ QgsSettingsEntry::QgsSettingsEntry( QString settingsName,
 QgsSettingsEntry::QgsSettingsEntry( const QgsSettingsEntry &other )
   : QObject( nullptr )
   , mSettingsName( other.mSettingsName )
-  , mSettingsSection( other.mSettingsSection )
   , mDefaultValue( other.mDefaultValue )
+  , mSettingsSection( other.mSettingsSection )
   , mDescription( other.mDescription )
 {
 }
@@ -44,6 +44,7 @@ QgsSettingsEntry &QgsSettingsEntry::operator=( const QgsSettingsEntry &other )
   this->mSettingsSection = other.mSettingsSection;
   this->mDefaultValue = other.mDefaultValue;
   this->mDescription = other.mDescription;
+  return *this;
 }
 
 void QgsSettingsEntry::setValue( const QVariant &value )
