@@ -243,7 +243,6 @@ if (WITH_GEOREFERENCER)
     georeferencer/qgsgeoreftooldeletepoint.cpp
     georeferencer/qgsgeoreftoolmovepoint.cpp
     georeferencer/qgsgeorefvalidators.cpp
-    georeferencer/qgsleastsquares.cpp
     georeferencer/qgsmapcoordsdialog.cpp
     georeferencer/qgsresidualplotitem.cpp
     georeferencer/qgstransformsettingsdialog.cpp

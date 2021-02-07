@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsgcptransformer.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsGcpTransformerInterface /Abstract/
+{
+%Docstring
+An interface for Ground Control Points (GCP) based transformations.
+
+:py:class:`QgsGcpTransformerInterface` implementations are able to transform point locations
+based on a transformation method and a list of GCPs.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsgcptransformer.h"
+%End
+  public:
+
+    QgsGcpTransformerInterface();
+
+    virtual ~QgsGcpTransformerInterface();
+
+
+
+    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates ) = 0;
+%Docstring
+Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and pixel coordinates.
+
+:return: ``True`` on success, ``False`` on failure
+%End
+
+    virtual int minimumGcpCount() const = 0;
+%Docstring
+Returns the minimum number of Ground Control Points (GCPs) required for parameter fitting.
+%End
+
+
+  private:
+    QgsGcpTransformerInterface( const QgsGcpTransformerInterface &other );
+};
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsgcptransformer.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

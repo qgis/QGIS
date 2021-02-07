@@ -3,6 +3,8 @@
 
 set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
+  georeferencing/qgsgcptransformer.cpp
+  georeferencing/qgsleastsquares.cpp
 
   interpolation/qgsgridfilewriter.cpp
   interpolation/qgsidwinterpolator.cpp
@@ -283,6 +285,8 @@ set(QGIS_ANALYSIS_SRCS
 set(QGIS_ANALYSIS_HDRS
   qgsanalysis.h
 
+  georeferencing/qgsgcptransformer.h
+
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h
   interpolation/qgsdualedgetriangulation.h
@@ -391,6 +395,7 @@ find_package(EXIV2 REQUIRED)
 include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
+include_directories(SYSTEM ${GSL_INCLUDE_DIR})
 include_directories(BEFORE raster)
 include_directories(BEFORE mesh)
 
@@ -437,6 +442,7 @@ add_library(qgis_analysis ${LIBRARY_TYPE} ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_
 
 target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis
+  ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/analysis/network
@@ -497,6 +503,7 @@ target_link_libraries(
   qgis_analysis
   qgis_core
   ${EXIV2_LIBRARY}
+  ${GSL_LIBRARIES}
   )
 
 if(HAVE_OPENCL)

@@ -118,7 +118,7 @@ void QgsLeastSquares::helmert( const QVector<QgsPointXY> &mapCoords,
   rotation = std::atan2( gsl_vector_get( x, 1 ), gsl_vector_get( x, 0 ) );
 }
 
-
+#if 0
 void QgsLeastSquares::affine( QVector<QgsPointXY> mapCoords,
                               QVector<QgsPointXY> pixelCoords )
 {
@@ -171,7 +171,7 @@ void QgsLeastSquares::affine( QVector<QgsPointXY> mapCoords,
   gsl_permutation_free( p );
 
 }
-
+#endif
 
 /**
  * Scales the given coordinates so that the center of gravity is at the origin and the mean distance to the origin is sqrt(2).

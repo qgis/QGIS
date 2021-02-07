@@ -59,7 +59,6 @@
 #include "qgsgeoreftoolmovepoint.h"
 #include "qgsgcpcanvasitem.h"
 
-#include "qgsleastsquares.h"
 #include "qgsgcplistwidget.h"
 
 #include "qgsgeorefconfigdialog.h"
@@ -1496,12 +1495,12 @@ bool QgsGeoreferencerMainWindow::calculateMeanError( double &error ) const
     }
   }
 
-  if ( nPointsEnabled == mGeorefTransform.getMinimumGCPCount() )
+  if ( nPointsEnabled == mGeorefTransform.minimumGcpCount() )
   {
     error = 0;
     return true;
   }
-  else if ( nPointsEnabled < mGeorefTransform.getMinimumGCPCount() )
+  else if ( nPointsEnabled < mGeorefTransform.minimumGcpCount() )
   {
     return false;
   }
@@ -1521,7 +1520,7 @@ bool QgsGeoreferencerMainWindow::calculateMeanError( double &error ) const
 
   // Calculate the root mean square error, adjusted for degrees of freedom of the transform
   // Caveat: The number of DoFs is assumed to be even (as each control point fixes two degrees of freedom).
-  error = std::sqrt( ( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.getMinimumGCPCount() ) );
+  error = std::sqrt( ( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.minimumGcpCount() ) );
   return true;
 }
 
@@ -1977,10 +1976,10 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
     return false;
   }
 
-  if ( mPoints.count() < static_cast<int>( mGeorefTransform.getMinimumGCPCount() ) )
+  if ( mPoints.count() < static_cast<int>( mGeorefTransform.minimumGcpCount() ) )
   {
     mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
-                              .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.getMinimumGCPCount() )
+                              .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.minimumGcpCount() )
                               , Qgis::Critical );
     return false;
   }
@@ -2005,7 +2004,7 @@ bool QgsGeoreferencerMainWindow::updateGeorefTransform()
     return false;
 
   // Parametrize the transform with GCPs
-  if ( !mGeorefTransform.updateParametersFromGCPs( mapCoords, pixelCoords ) )
+  if ( !mGeorefTransform.updateParametersFromGcps( mapCoords, pixelCoords ) )
   {
     return false;
   }
@@ -2180,14 +2179,14 @@ bool QgsGeoreferencerMainWindow::equalGCPlists( const QgsGCPList &list1, const Q
 //
 //void QgsGeorefPluginGui::logRequaredGCPs()
 //{
-//  if (mGeorefTransform.getMinimumGCPCount() != 0)
+//  if (mGeorefTransform.minimumGcpCount() != 0)
 //  {
-//    if ((uint)mPoints.size() >= mGeorefTransform.getMinimumGCPCount())
+//    if ((uint)mPoints.size() >= mGeorefTransform.minimumGcpCount())
 //      showMessageInLog(tr("Info"), tr("For georeferencing requared at least %1 GCP points")
-//                       .arg(mGeorefTransform.getMinimumGCPCount()));
+//                       .arg(mGeorefTransform.minimumGcpCount()));
 //    else
 //      showMessageInLog(tr("Critical"), tr("For georeferencing requared at least %1 GCP points")
-//                       .arg(mGeorefTransform.getMinimumGCPCount()));
+//                       .arg(mGeorefTransform.minimumGcpCount()));
 //  }
 //}
 

@@ -16,30 +16,50 @@
 #define QGSLEASTSQUARES_H
 
 #include <QVector>
-#include <cstdarg>
-#include <stdexcept>
 
+#include "qgis_analysis.h"
 #include "qgspointxy.h"
 
+#define SIP_NO_FILE
 
-class QgsLeastSquares
+/**
+ * \ingroup analysis
+ * Utilities for calculation of least squares based transformations.
+ *
+ * \note Not available in Python bindings.
+ * \since QGIS 3.20
+*/
+class ANALYSIS_EXPORT QgsLeastSquares
 {
   public:
+
+    /**
+     * Transforms the point at \a origin in-place, using a linear transformation calculated from the list of map and pixel Ground Control Points (GCPs).
+     */
     static void linear( const QVector<QgsPointXY> &mapCoords,
                         const QVector<QgsPointXY> &pixelCoords,
                         QgsPointXY &origin, double &pixelXSize, double &pixelYSize );
 
+    /**
+     * Transforms the point at \a origin in-place, using a helmert transformation calculated from the list of map and pixel Ground Control Points (GCPs).
+     */
     static void helmert( const QVector<QgsPointXY> &mapCoords,
                          const QVector<QgsPointXY> &pixelCoords,
                          QgsPointXY &origin, double &pixelSize, double &rotation );
 
+#if 0
     static void affine( QVector<QgsPointXY> mapCoords,
                         QVector<QgsPointXY> pixelCoords );
 
+#endif
+
+    /**
+     * Calculates projective parameters from the list of map and pixel Ground Control Points (GCPs).
+     */
     static void projective( QVector<QgsPointXY> mapCoords,
                             QVector<QgsPointXY> pixelCoords,
                             double H[9] );
+
 };
 
-
-#endif
+#endif // QGSLEASTSQUARES_H

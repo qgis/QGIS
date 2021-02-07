@@ -14,36 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS_GEOREF_TRANSFORM_H
-#define QGS_GEOREF_TRANSFORM_H
+#ifndef QGSGEOREFTRANSFORM_H
+#define QGSGEOREFTRANSFORM_H
 
-#include <gdal_alg.h> // just needed for GDALTransformerFunc, forward?
-
+#include <gdal_alg.h>
 #include "qgspoint.h"
-#include <QVector>
-#include <stdexcept>
-
+#include "qgsgcptransformer.h"
 #include "qgsrasterchangecoords.h"
-
-class QgsGeorefTransformInterface
-{
-  public:
-    virtual ~QgsGeorefTransformInterface() = default;
-
-    virtual bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) = 0;
-
-    /**
-     * Returns the minimum number of GCPs required for parameter fitting.
-     */
-    virtual int getMinimumGCPCount() const = 0;
-
-    /**
-     * Returns function pointer to the GDALTransformer function.
-     * Used by GDALwarp.
-     */
-    virtual GDALTransformerFunc  GDALTransformer()     const = 0;
-    virtual void                *GDALTransformerArgs() const = 0;
-};
 
 /**
  * \brief Transform class for different gcp-based transform methods.
@@ -56,7 +33,7 @@ class QgsGeorefTransformInterface
  * Delegates to concrete implementations of \ref QgsGeorefInterface. For exception safety,
  * this is preferred over using the subclasses directly.
  */
-class QgsGeorefTransform : public QgsGeorefTransformInterface
+class QgsGeorefTransform : public QgsGcpTransformerInterface
 {
   public:
     // GCP based transform methods implemented by subclasses
@@ -104,15 +81,8 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     //! \returns whether the parameters of this transform have been initialized by \ref updateParametersFromGCPs
     bool parametersInitialized() const;
 
-    /**
-     * \brief Fits transformation parameters to the supplied ground control points.
-     *
-     * \returns TRUE on success, FALSE on failure
-     */
-    bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
-
-    //! \brief Returns the minimum number of GCPs required for parameter fitting.
-    int getMinimumGCPCount() const override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
+    int minimumGcpCount() const override;
 
     /**
      * Returns function pointer to the GDALTransformer function.
@@ -158,15 +128,15 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     QgsGeorefTransform &operator= ( const QgsGeorefTransform & ) = delete;
 
     //! Factory function which creates an implementation for the given parametrisation.
-    static QgsGeorefTransformInterface *createImplementation( TransformParametrisation parametrisation );
+    static QgsGcpTransformerInterface *createImplementation( TransformParametrisation parametrisation );
 
     // convenience wrapper around GDALTransformerFunc
     bool gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const;
 
-    QgsGeorefTransformInterface *mGeorefTransformImplementation = nullptr;
+    QgsGcpTransformerInterface *mGeorefTransformImplementation = nullptr;
     TransformParametrisation     mTransformParametrisation;
     bool                         mParametersInitialized;
     QgsRasterChangeCoords        mRasterChangeCoords;
 };
 
-#endif
+#endif //QGSGEOREFTRANSFORM_H
