@@ -191,6 +191,5 @@ void QgsPointCloudLayer3DRenderer::setShowBoundingBoxes( bool showBoundingBoxes 
 
 void QgsPointCloudLayer3DRenderer::setPointRenderingBudget( int budget )
 {
-  qDebug() << budget;
   mPointBudget = budget;
 }
