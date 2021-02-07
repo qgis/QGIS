@@ -43,30 +43,10 @@
       </property>
       <item row="1" column="0">
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="2" column="1">
-         <widget class="QSlider" name="mPointBudgetPercentageSlider">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Maximum number of rendered points:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="labelPointBudget">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Point budget percentage</string>
+           <string>Point budget</string>
           </property>
          </widget>
         </item>
@@ -86,10 +66,26 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1" colspan="2">
-         <widget class="QSpinBox" name="mRenderedPointsSpinBox">
+        <item row="2" column="1" colspan="2">
+         <widget class="QSpinBox" name="mPointBudgetSpinBox">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
+          </property>
+          <property name="maximum">
+           <number>99999999</number>
+          </property>
+          <property name="singleStep">
+           <number>10000</number>
+          </property>
+          <property name="value">
+           <number>1000000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Maximum screen space error</string>
           </property>
          </widget>
         </item>
@@ -103,20 +99,6 @@
           </property>
           <property name="text">
            <string>Point size</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QDoubleSpinBox" name="mPointBudgetPercentageSpinBox">
-          <property name="maximum">
-           <double>100.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Maximum screen space error</string>
           </property>
          </widget>
         </item>

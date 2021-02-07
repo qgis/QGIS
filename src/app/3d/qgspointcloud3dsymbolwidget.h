@@ -65,8 +65,6 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void greenAttributeChanged();
     void blueAttributeChanged();
 
-    void pointBudgetSliderChanged( int value );
-    void pointBudgetSpinBoxChanged( double budget );
 
   signals:
     void changed();
@@ -91,7 +89,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void minMaxModified();
     void setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit );
 
-    double mPointBudgetPercentage;
+    int mPointBudget = 1000000;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOLWIDGET_H

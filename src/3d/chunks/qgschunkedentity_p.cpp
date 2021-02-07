@@ -273,7 +273,6 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     if ( renderedCount > mPrimitivesBudget )
       break;
 
-
     // ensure we have child nodes (at least skeletons) available, if any
     if ( node->childCount() == -1 )
     {
