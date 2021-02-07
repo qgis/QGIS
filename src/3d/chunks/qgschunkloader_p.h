@@ -44,22 +44,13 @@ class QgsChunkLoader : public QgsChunkQueueJob
     Q_OBJECT
   public:
     //! Construct chunk loader for a node
-    QgsChunkLoader( QgsChunkNode *node, int primitiveBudget = 1000000 )
-      : QgsChunkQueueJob( node )
-      , mPrimitiveBudget( primitiveBudget )
-    {
-    }
+    QgsChunkLoader( QgsChunkNode *node ) : QgsChunkQueueJob( node ) { }
 
     /**
      * Run in main thread to use loaded data.
      * Returns entity attached to the given parent entity in disabled state
      */
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) = 0;
-
-    virtual int primitiveCount() const { return 0; }
-    virtual int primitiveBudget() const { return mPrimitiveBudget; }
-  protected:
-    int mPrimitiveBudget = 1000000;
 };
 
 

@@ -92,10 +92,8 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
      * Constructs the loader
      * QgsPointCloudLayerChunkLoader takes ownership over symbol
      */
-    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol, double zValueScale, double zValueOffset, int pointBudget, int count );
+    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol, double zValueScale, double zValueOffset );
     ~QgsPointCloudLayerChunkLoader() override;
-
-    int primitiveCount() const override;
 
     virtual void cancel() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
@@ -106,7 +104,6 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     QgsPointCloud3DRenderContext mContext;
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
-    int mPointsCount;
 };
 
 

@@ -250,7 +250,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
   QSet<QgsChunkNode *> nodes;
 
   using slot = std::pair<QgsChunkNode *, float>;
-  auto cmp_funct = []( slot &p1, slot &p2 )
+  auto cmp_funct = []( slot & p1, slot & p2 )
   {
     return p1.second < p2.second;
   };

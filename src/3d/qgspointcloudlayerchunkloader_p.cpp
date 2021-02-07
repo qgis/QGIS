@@ -47,11 +47,10 @@
 ///////////////
 
 QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
-    double zValueScale, double zValueOffset, int pointBudget, int count )
-  : QgsChunkLoader( node, pointBudget )
+    double zValueScale, double zValueOffset )
+  : QgsChunkLoader( node )
   , mFactory( factory )
   , mContext( factory->mMap, std::move( symbol ), zValueScale, zValueOffset )
-  , mPointsCount( count )
 {
   mContext.setIsCanceledCallback( [this] { return mCanceled; } );
 
@@ -126,11 +125,6 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
   return entity;
 }
 
-int QgsPointCloudLayerChunkLoader::primitiveCount() const
-{
-  return mPointsCount;
-}
-
 ///////////////
 
 
@@ -150,8 +144,7 @@ QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChun
   QgsChunkNodeId id = node->tileId();
   IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
   Q_ASSERT( mPointCloudIndex->hasNode( n ) );
-  int pointCount = mPointCloudIndex->nodePointCount( n );
-  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset, mPointBudget, pointCount );
+  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset );
 }
 
 int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) const
