@@ -71,6 +71,16 @@ Creates a new QgsGcpTransformerInterface subclass representing the specified tra
 Caller takes ownership of the returned object.
 %End
 
+    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates ) /Factory/;
+%Docstring
+Creates a new QgsGcpTransformerInterface subclass representing the specified transform ``method``, initialized
+using the given lists of map and pixel coordinates.
+
+If the parameters cannot be fit to a transform ``None`` will be returned.
+
+Caller takes ownership of the returned object.
+%End
+
 
   private:
     QgsGcpTransformerInterface( const QgsGcpTransformerInterface &other );

@@ -88,6 +88,16 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
      */
     static QgsGcpTransformerInterface *create( TransformMethod method ) SIP_FACTORY;
 
+    /**
+     * Creates a new QgsGcpTransformerInterface subclass representing the specified transform \a method, initialized
+     * using the given lists of map and pixel coordinates.
+     *
+     * If the parameters cannot be fit to a transform NULLPTR will be returned.
+     *
+     * Caller takes ownership of the returned object.
+     */
+    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates ) SIP_FACTORY;
+
 #ifndef SIP_RUN
 
     /**
