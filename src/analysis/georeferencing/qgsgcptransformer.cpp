@@ -97,6 +97,13 @@ bool QgsLinearGeorefTransform::getOriginScale( QgsPointXY &origin, double &scale
   return true;
 }
 
+QgsGcpTransformerInterface *QgsLinearGeorefTransform::clone() const
+{
+  std::unique_ptr< QgsLinearGeorefTransform > res = qgis::make_unique< QgsLinearGeorefTransform >();
+  res->mParameters = mParameters;
+  return res.release();
+}
+
 bool QgsLinearGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
 {
   if ( mapCoords.size() < minimumGcpCount() )
@@ -206,6 +213,13 @@ bool QgsHelmertGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, doub
   return true;
 }
 
+QgsGcpTransformerInterface *QgsHelmertGeorefTransform::clone() const
+{
+  std::unique_ptr< QgsHelmertGeorefTransform > res = qgis::make_unique< QgsHelmertGeorefTransform >();
+  res->mHelmertParameters = mHelmertParameters;
+  return res.release();
+}
+
 int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDstToSrc, int nPointCount,
     double *x, double *y, double *z, int *panSuccess )
 {
@@ -267,8 +281,6 @@ QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polyno
   : mPolynomialOrder( std::min( 3u, polynomialOrder ) )
   , mIsTPSTransform( useTPS )
 {
-  mGDALTransformer     = nullptr;
-  mGDALTransformerArgs = nullptr;
 }
 
 QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
@@ -276,8 +288,18 @@ QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
   destroyGdalArgs();
 }
 
+QgsGcpTransformerInterface *QgsGDALGeorefTransform::clone() const
+{
+  std::unique_ptr< QgsGDALGeorefTransform > res = qgis::make_unique< QgsGDALGeorefTransform >( mIsTPSTransform, mPolynomialOrder );
+  res->updateParametersFromGcps( mMapCoords, mLayerCoords );
+  return res.release();
+}
+
 bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
 {
+  mMapCoords = mapCoords;
+  mLayerCoords = layerCoords;
+
   assert( mapCoords.size() == layerCoords.size() );
   if ( mapCoords.size() != layerCoords.size() )
     return false;
@@ -371,6 +393,13 @@ void QgsGDALGeorefTransform::destroyGdalArgs()
 QgsProjectiveGeorefTransform::QgsProjectiveGeorefTransform()
   : mParameters()
 {}
+
+QgsGcpTransformerInterface *QgsProjectiveGeorefTransform::clone() const
+{
+  std::unique_ptr< QgsProjectiveGeorefTransform > res = qgis::make_unique< QgsProjectiveGeorefTransform >();
+  res->mParameters = mParameters;
+  return res.release();
+}
 
 bool QgsProjectiveGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
 {

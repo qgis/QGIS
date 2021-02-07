@@ -42,6 +42,14 @@ based on a transformation method and a list of GCPs.
 
 
 
+    virtual QgsGcpTransformerInterface *clone() const = 0 /Factory/;
+%Docstring
+Clones the transformer, returning a new copy of the transformer with the same
+parameters as this one.
+
+Caller takes ownership of the returned object.
+%End
+
     virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) = 0;
 %Docstring
 Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and layer coordinates.

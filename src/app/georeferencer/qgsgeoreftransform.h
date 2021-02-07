@@ -69,6 +69,7 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
     //! \returns whether the parameters of this transform have been initialized by \ref updateParametersFromGCPs
     bool parametersInitialized() const;
 
+    QgsGcpTransformerInterface *clone() const override;
     bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
     int minimumGcpCount() const override;
     TransformMethod method() const override;
@@ -110,6 +111,9 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
 
     // convenience wrapper around GDALTransformerFunc
     bool gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const;
+
+    QVector<QgsPointXY> mMapCoords;
+    QVector<QgsPointXY> mLayerCoords;
 
     std::unique_ptr< QgsGcpTransformerInterface > mGeorefTransformImplementation;
 
