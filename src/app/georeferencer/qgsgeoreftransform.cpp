@@ -70,8 +70,18 @@ bool QgsGeorefTransform::parametersInitialized() const
   return mParametersInitialized;
 }
 
+QgsGcpTransformerInterface *QgsGeorefTransform::clone() const
+{
+  std::unique_ptr< QgsGeorefTransform > res( new QgsGeorefTransform( *this ) );
+  res->updateParametersFromGcps( mMapCoords, mLayerCoords );
+  return res.release();
+}
+
 bool QgsGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords )
 {
+  mMapCoords = mapCoords;
+  mLayerCoords = pixelCoords;
+
   if ( !mGeorefTransformImplementation )
   {
     return false;

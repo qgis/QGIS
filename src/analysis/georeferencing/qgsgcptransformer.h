@@ -53,11 +53,19 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 
     virtual ~QgsGcpTransformerInterface() = default;
 
-    //! QgsGcpTransformerInterface cannot be copied
+    //! QgsGcpTransformerInterface cannot be copied - use clone() instead.
     QgsGcpTransformerInterface( const QgsGcpTransformerInterface &other ) = delete;
 
-    //! QgsGcpTransformerInterface cannot be copied
+    //! QgsGcpTransformerInterface cannot be copied - use clone() instead.
     QgsGcpTransformerInterface &operator=( const QgsGcpTransformerInterface &other ) = delete;
+
+    /**
+     * Clones the transformer, returning a new copy of the transformer with the same
+     * parameters as this one.
+     *
+     * Caller takes ownership of the returned object.
+     */
+    virtual QgsGcpTransformerInterface *clone() const = 0 SIP_FACTORY;
 
     /**
      * Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and layer coordinates.
@@ -134,6 +142,7 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
      */
     bool getOriginScale( QgsPointXY &origin, double &scaleX, double &scaleY ) const;
 
+    QgsGcpTransformerInterface *clone() const override;
     bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
@@ -168,6 +177,7 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
      */
     bool getOriginScaleRotation( QgsPointXY &origin, double &scale, double &rotation ) const;
 
+    QgsGcpTransformerInterface *clone() const override;
     bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
@@ -201,6 +211,7 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
     QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder );
     ~QgsGDALGeorefTransform() override;
 
+    QgsGcpTransformerInterface *clone() const override;
     bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
@@ -210,10 +221,13 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
   private:
     void destroyGdalArgs();
 
+    QVector<QgsPointXY> mMapCoords;
+    QVector<QgsPointXY> mLayerCoords;
+
     const int mPolynomialOrder;
     const bool mIsTPSTransform;
 
-    GDALTransformerFunc mGDALTransformer;
+    GDALTransformerFunc mGDALTransformer = nullptr;
     void *mGDALTransformerArgs = nullptr;
 
 };
@@ -232,6 +246,7 @@ class ANALYSIS_EXPORT QgsProjectiveGeorefTransform : public QgsGcpTransformerInt
   public:
     QgsProjectiveGeorefTransform();
 
+    QgsGcpTransformerInterface *clone() const override;
     bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
