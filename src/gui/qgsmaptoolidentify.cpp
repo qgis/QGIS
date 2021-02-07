@@ -580,11 +580,10 @@ namespace
   {
     std::pair<bool, std::array<Direction, 4>> ret =
     { false, { Direction::None, Direction::None, Direction::None, Direction::None } };
-    std::array<Direction, 4> &dirs = ret.second;
     // The polygon might start in the middle of a side. Hence, we need a fifth
     // direction to record the beginning of the side when we went around the
     // polygon.
-    Direction extra;
+    std::array<Direction, 5> dirs;
 
     int idx = 0;
     auto last = g.vertices_begin();
@@ -605,16 +604,14 @@ namespace
       {
         if ( idx == 5 )
           return ret;
-        if ( idx < 4 )
-          dirs[idx] = dir;
-        else
-          extra = dir;
+        dirs[idx] = dir;
         ++idx;
       }
       last = curr;
       ++curr;
     }
-    ret.first = ( idx == 5 ) ? ( dirs[0] == extra ) : ( idx == 4 );
+    ret.first = ( idx == 5 ) ? ( dirs[0] == dirs[4] ) : ( idx == 4 );
+    std::copy( dirs.begin(), dirs.begin() + 4, ret.second.begin() );
     return ret;
   }
 
