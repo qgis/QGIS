@@ -26,6 +26,24 @@
 #include <limits>
 
 
+bool QgsGcpTransformerInterface::transform( double &x, double &y, bool inverseTransform ) const
+{
+  GDALTransformerFunc t = GDALTransformer();
+  // Fail if no transformer function was returned
+  if ( !t )
+    return false;
+
+  double z = 0.0;
+  int success = 0;
+
+  // Call GDAL transform function
+  ( *t )( GDALTransformerArgs(), inverseTransform ? 1 : 0, 1,  &x, &y, &z, &success );
+  if ( !success )
+    return false;
+
+  return true;
+}
+
 QString QgsGcpTransformerInterface::methodToString( QgsGcpTransformerInterface::TransformMethod method )
 {
   switch ( method )

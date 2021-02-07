@@ -85,6 +85,15 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
     virtual TransformMethod method() const = 0;
 
     /**
+     * Transforms the point (\a x, \a y) from source to destination coordinates.
+     *
+     * If \a inverseTransform is set to TRUE, the point will be transformed from the destination to the source.
+     *
+     * \returns TRUE if transformation was successful.
+     */
+    bool transform( double &x SIP_INOUT, double &y SIP_INOUT, bool inverseTransform = false ) const;
+
+    /**
      * Returns a translated string representing the specified transform \a method.
      */
     static QString methodToString( TransformMethod method );

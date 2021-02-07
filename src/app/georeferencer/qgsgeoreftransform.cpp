@@ -188,20 +188,11 @@ bool QgsGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &sca
 
 bool QgsGeorefTransform::gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const
 {
-  GDALTransformerFunc t = GDALTransformer();
-  // Fail if no transformer function was returned
-  if ( !t )
-    return false;
-
   // Copy the source coordinate for inplace transform
   double x = src.x();
   double y = src.y();
-  double z = 0.0;
-  int success = 0;
 
-  // Call GDAL transform function
-  ( *t )( GDALTransformerArgs(), dstToSrc, 1,  &x, &y, &z, &success );
-  if ( !success )
+  if ( !QgsGcpTransformerInterface::transform( x, y, dstToSrc == 1 ) )
     return false;
 
   dst.setX( x );

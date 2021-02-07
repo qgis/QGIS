@@ -67,6 +67,15 @@ Returns the minimum number of Ground Control Points (GCPs) required for paramete
 Returns the transformation method.
 %End
 
+    bool transform( double &x /In,Out/, double &y /In,Out/, bool inverseTransform = false ) const;
+%Docstring
+Transforms the point (``x``, ``y``) from source to destination coordinates.
+
+If ``inverseTransform`` is set to ``True``, the point will be transformed from the destination to the source.
+
+:return: ``True`` if transformation was successful.
+%End
+
     static QString methodToString( TransformMethod method );
 %Docstring
 Returns a translated string representing the specified transform ``method``.
