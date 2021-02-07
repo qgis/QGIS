@@ -189,11 +189,6 @@ bool QgsPointCloudLayerRenderer::render()
       canceled = true;
       break;
     }
-    if ( context.pointsRendered() > mRenderer->pointBudget() )
-    {
-      QgsDebugMsgLevel( "point budget exceeded", 2 );
-      break;
-    }
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
 
     if ( !block )
