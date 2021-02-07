@@ -143,6 +143,8 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const Qg
       emit identifyMessage( tr( "No active layer. To identify features, you must choose an active layer." ) );
       return results;
     }
+    if ( !layer->flags().testFlag( QgsMapLayer::Identifiable ) )
+      return results;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
