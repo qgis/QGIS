@@ -60,11 +60,11 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
     QgsGcpTransformerInterface &operator=( const QgsGcpTransformerInterface &other ) = delete;
 
     /**
-     * Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and pixel coordinates.
+     * Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and layer coordinates.
      *
      * \returns TRUE on success, FALSE on failure
      */
-    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates ) = 0;
+    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) = 0;
 
     /**
      * Returns the minimum number of Ground Control Points (GCPs) required for parameter fitting.
@@ -90,13 +90,13 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 
     /**
      * Creates a new QgsGcpTransformerInterface subclass representing the specified transform \a method, initialized
-     * using the given lists of map and pixel coordinates.
+     * using the given lists of map and layer coordinates.
      *
      * If the parameters cannot be fit to a transform NULLPTR will be returned.
      *
      * Caller takes ownership of the returned object.
      */
-    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates ) SIP_FACTORY;
+    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) SIP_FACTORY;
 
 #ifndef SIP_RUN
 
@@ -134,7 +134,7 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
      */
     bool getOriginScale( QgsPointXY &origin, double &scaleX, double &scaleY ) const;
 
-    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
@@ -168,7 +168,7 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
      */
     bool getOriginScaleRotation( QgsPointXY &origin, double &scale, double &rotation ) const;
 
-    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
@@ -201,7 +201,7 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
     QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder );
     ~QgsGDALGeorefTransform() override;
 
-    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
@@ -232,7 +232,7 @@ class ANALYSIS_EXPORT QgsProjectiveGeorefTransform : public QgsGcpTransformerInt
   public:
     QgsProjectiveGeorefTransform();
 
-    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
