@@ -995,6 +995,10 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mCanvas->setCanvasColor( Qt::white );
   mCanvas->setMinimumWidth( 400 );
+  mCanvas->setCachingEnabled( true );
+  mCanvas->setParallelRenderingEnabled( true );
+  mCanvas->setPreviewJobsEnabled( true );
+
   mCentralLayout->addWidget( mCanvas, 0, 0, 2, 1 );
 
   // set up map tools
