@@ -76,6 +76,11 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
      */
     virtual TransformMethod method() const = 0;
 
+    /**
+     * Returns a translated string representing the specified transform \a method.
+     */
+    static QString methodToString( TransformMethod method );
+
 #ifndef SIP_RUN
 
     /**

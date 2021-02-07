@@ -59,6 +59,11 @@ Returns the minimum number of Ground Control Points (GCPs) required for paramete
 Returns the transformation method.
 %End
 
+    static QString methodToString( TransformMethod method );
+%Docstring
+Returns a translated string representing the specified transform ``method``.
+%End
+
 
   private:
     QgsGcpTransformerInterface( const QgsGcpTransformerInterface &other );
