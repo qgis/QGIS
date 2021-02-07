@@ -247,10 +247,10 @@ int QgsChunkedEntity::pendingJobsCount() const
 
 void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
 {
-  QVector<QgsChunkNode *> nodes;
+  QSet<QgsChunkNode *> nodes;
 
   using slot = std::pair<QgsChunkNode *, float>;
-  auto cmp_funct = []( std::pair<QgsChunkNode *, float> p1, std::pair<QgsChunkNode *, float> p2 )
+  auto cmp_funct = []( slot &p1, slot &p2 )
   {
     return p1.second < p2.second;
   };
@@ -275,10 +275,17 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     QgsChunkNode *const *children = node->children();
     for ( int i = 0; i < node->childCount(); ++i )
       pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
+    // We won't render the primitives of the parent unless we are using additive strategy
+    if ( !mAdditiveStrategy && node->parent() )
+    {
+      nodes.remove( node->parent() );
+      renderedCount -= mChunkLoaderFactory->primitivesCount( node->parent() );
+    }
     renderedCount += mChunkLoaderFactory->primitivesCount( node );
-    nodes.push_back( node );
+    nodes.insert( node );
   }
 
+  QVector<std::pair<QgsChunkNode *, float>> residencyRequests;
   for ( QgsChunkNode *node : nodes )
   {
     // ensure we have child nodes (at least skeletons) available, if any
@@ -289,7 +296,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
 
     // make sure all nodes leading to children are always loaded
     // so that zooming out does not create issues
-    requestResidency( node );
+    residencyRequests.push_back( std::make_pair( node, node->bbox().distanceFromPoint( state.cameraPos ) ) );
 
     if ( !node->entity() )
     {
@@ -326,20 +333,16 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
       mActiveNodes << node;
 
       QgsChunkNode *const *children = node->children();
-      // load the closest nodes to the camera first
-      QVector<std::pair<QgsChunkNode *, float>> childrenVector;
       for ( int i = 0; i < node->childCount(); ++i )
-        childrenVector.push_back( std::make_pair( children[i], children[i]->bbox().distanceFromPoint( state.cameraPos ) ) );
-      std::sort( childrenVector.begin(), childrenVector.end(), [&]( std::pair<QgsChunkNode *, float> n1, std::pair<QgsChunkNode *, float> n2 )
-      {
-        return n1.second > n2.second;
-      } );
-      for ( int i = 0; i < node->childCount(); ++i )
-        requestResidency( childrenVector[i].first );
-//      for ( int i = 0; i < node->childCount(); ++i )
-//        requestResidency( children[i] );
+        residencyRequests.push_back( std::make_pair( children[i], children[i]->bbox().distanceFromPoint( state.cameraPos ) ) );
     }
   }
+  std::sort( residencyRequests.begin(), residencyRequests.end(), [&]( std::pair<QgsChunkNode *, float> n1, std::pair<QgsChunkNode *, float> n2 )
+  {
+    return n1.second > n2.second;
+  } );
+  for ( std::pair<QgsChunkNode *, float> n : residencyRequests )
+    requestResidency( n.first );
 }
 
 
