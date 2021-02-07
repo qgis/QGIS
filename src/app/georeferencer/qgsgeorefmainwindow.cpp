@@ -387,7 +387,7 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
   //  logTransformOptions();
   //  logRequaredGCPs();
 
-  if ( QgsGeorefTransform::InvalidTransform != mTransformParam )
+  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
   {
     mActionLinkGeorefToQgis->setEnabled( true );
     mActionLinkQGisToGeoref->setEnabled( true );
@@ -409,10 +409,10 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
 
   switch ( mTransformParam )
   {
-    case QgsGeorefTransform::PolynomialOrder1:
-    case QgsGeorefTransform::PolynomialOrder2:
-    case QgsGeorefTransform::PolynomialOrder3:
-    case QgsGeorefTransform::ThinPlateSpline:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
+    case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
     {
       // CAVEAT: generateGDALwarpCommand() relies on some member variables being set
       // by generateGDALtranslateCommand(), so this method must be called before
@@ -504,7 +504,7 @@ void QgsGeoreferencerMainWindow::linkQGisToGeoref( bool link )
 {
   if ( link )
   {
-    if ( QgsGeorefTransform::InvalidTransform != mTransformParam )
+    if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
     {
       // Indicate that georeferencer canvas extent has changed
       extentsChangedGeorefCanvas();
@@ -520,7 +520,7 @@ void QgsGeoreferencerMainWindow::linkGeorefToQgis( bool link )
 {
   if ( link )
   {
-    if ( QgsGeorefTransform::InvalidTransform != mTransformParam )
+    if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
     {
       // Indicate that qgis main canvas extent has changed
       extentsChangedQGisCanvas();
@@ -1033,7 +1033,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mExtentsChangedRecursionGuard = false;
 
-  mGeorefTransform.selectTransformParametrisation( QgsGeorefTransform::Linear );
+  mGeorefTransform.selectTransformParametrisation( QgsGcpTransformerInterface::TransformMethod::Linear );
   mGCPsDirty = true;
 
   // Connect main canvas and georef canvas signals so we are aware if any of the viewports change
@@ -1228,7 +1228,7 @@ void QgsGeoreferencerMainWindow::writeSettings()
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/uistate" ), saveState() );
 
   // warp options
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/transformparam" ), mTransformParam );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/transformparam" ), static_cast< int >( mTransformParam ) );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/resamplingmethod" ), mResamplingMethod );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/compressionmethod" ), mCompressionMethod );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/usezerofortrans" ), mUseZeroForTrans );
@@ -1363,8 +1363,8 @@ bool QgsGeoreferencerMainWindow::georeference()
   if ( !checkReadyGeoref() )
     return false;
 
-  if ( mModifiedRasterFileName.isEmpty() && ( QgsGeorefTransform::Linear == mGeorefTransform.transformParametrisation() ||
-       QgsGeorefTransform::Helmert == mGeorefTransform.transformParametrisation() ) )
+  if ( mModifiedRasterFileName.isEmpty() && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
+       QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPointXY origin;
     double pixelXSize, pixelYSize, rotation;
@@ -1480,7 +1480,7 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
 
 bool QgsGeoreferencerMainWindow::calculateMeanError( double &error ) const
 {
-  if ( mGeorefTransform.transformParametrisation() == QgsGeorefTransform::InvalidTransform )
+  if ( mGeorefTransform.transformParametrisation() == QgsGcpTransformerInterface::TransformMethod::InvalidTransform )
   {
     return false;
   }
@@ -1961,7 +1961,7 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
     return false;
   }
 
-  if ( QgsGeorefTransform::InvalidTransform == mTransformParam )
+  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform == mTransformParam )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set transformation type." ) );
     getTransformSettings();
@@ -1969,7 +1969,7 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
   }
 
   //MH: helmert transformation without warping disabled until qgis is able to read rotated rasters efficiently
-  if ( mModifiedRasterFileName.isEmpty() && QgsGeorefTransform::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
+  if ( mModifiedRasterFileName.isEmpty() && QgsGcpTransformerInterface::TransformMethod::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output raster name." ) );
     getTransformSettings();
@@ -2061,23 +2061,23 @@ QgsRectangle QgsGeoreferencerMainWindow::transformViewportBoundingBox( const Qgs
   return QgsRectangle( minX, minY, maxX, maxY );
 }
 
-QString QgsGeoreferencerMainWindow::convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform )
+QString QgsGeoreferencerMainWindow::convertTransformEnumToString( QgsGeorefTransform::TransformMethod transform )
 {
   switch ( transform )
   {
-    case QgsGeorefTransform::Linear:
+    case QgsGcpTransformerInterface::TransformMethod::Linear:
       return tr( "Linear" );
-    case QgsGeorefTransform::Helmert:
+    case QgsGcpTransformerInterface::TransformMethod::Helmert:
       return tr( "Helmert" );
-    case QgsGeorefTransform::PolynomialOrder1:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
       return tr( "Polynomial 1" );
-    case QgsGeorefTransform::PolynomialOrder2:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
       return tr( "Polynomial 2" );
-    case QgsGeorefTransform::PolynomialOrder3:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
       return tr( "Polynomial 3" );
-    case QgsGeorefTransform::ThinPlateSpline:
+    case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
       return tr( "Thin plate spline (TPS)" );
-    case QgsGeorefTransform::Projective:
+    case QgsGcpTransformerInterface::TransformMethod::Projective:
       return tr( "Projective" );
     default:
       return tr( "Not set" );
@@ -2102,17 +2102,17 @@ QString QgsGeoreferencerMainWindow::convertResamplingEnumToString( QgsImageWarpe
   return QString();
 }
 
-int QgsGeoreferencerMainWindow::polynomialOrder( QgsGeorefTransform::TransformParametrisation transform )
+int QgsGeoreferencerMainWindow::polynomialOrder( QgsGeorefTransform::TransformMethod transform )
 {
   switch ( transform )
   {
-    case QgsGeorefTransform::PolynomialOrder1:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
       return 1;
-    case QgsGeorefTransform::PolynomialOrder2:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
       return 2;
-    case QgsGeorefTransform::PolynomialOrder3:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
       return 3;
-    case QgsGeorefTransform::ThinPlateSpline:
+    case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
       return -1;
 
     default:

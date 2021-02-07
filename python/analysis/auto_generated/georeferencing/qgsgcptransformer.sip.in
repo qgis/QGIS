@@ -24,6 +24,18 @@ based on a transformation method and a list of GCPs.
 %End
   public:
 
+    enum class TransformMethod
+    {
+      Linear,
+      Helmert,
+      PolynomialOrder1,
+      PolynomialOrder2,
+      PolynomialOrder3,
+      ThinPlateSpline,
+      Projective,
+      InvalidTransform
+    };
+
     QgsGcpTransformerInterface();
 
     virtual ~QgsGcpTransformerInterface();
@@ -40,6 +52,11 @@ Fits transformation parameters using the specified Ground Control Points (GCPs) 
     virtual int minimumGcpCount() const = 0;
 %Docstring
 Returns the minimum number of Ground Control Points (GCPs) required for parameter fitting.
+%End
+
+    virtual TransformMethod method() const = 0;
+%Docstring
+Returns the transformation method.
 %End
 
 

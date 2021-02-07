@@ -179,9 +179,9 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     bool checkReadyGeoref();
     QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t,
         bool rasterToWorld = true, uint numSamples = 4 );
-    QString convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform );
+    QString convertTransformEnumToString( QgsGeorefTransform::TransformMethod transform );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
-    int polynomialOrder( QgsGeorefTransform::TransformParametrisation transform );
+    int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
     QString guessWorldFileName( const QString &rasterFileName );
     bool checkFileExisting( const QString &fileName, const QString &title, const QString &question );
     bool equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 );
@@ -230,7 +230,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QString mSaveGcp;
     double  mUserResX, mUserResY;  // User specified target scale
 
-    QgsGeorefTransform::TransformParametrisation mTransformParam = QgsGeorefTransform::InvalidTransform;
+    QgsGeorefTransform::TransformMethod mTransformParam = QgsGeorefTransform::InvalidTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod;
     QgsGeorefTransform mGeorefTransform;
     QString mCompressionMethod;

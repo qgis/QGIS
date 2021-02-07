@@ -36,27 +36,15 @@
 class QgsGeorefTransform : public QgsGcpTransformerInterface
 {
   public:
-    // GCP based transform methods implemented by subclasses
-    enum TransformParametrisation
-    {
-      Linear,
-      Helmert,
-      PolynomialOrder1,
-      PolynomialOrder2,
-      PolynomialOrder3,
-      ThinPlateSpline,
-      Projective,
-      InvalidTransform = 65535
-    };
 
-    explicit QgsGeorefTransform( TransformParametrisation parametrisation );
+    explicit QgsGeorefTransform( TransformMethod parametrisation );
     QgsGeorefTransform();
     ~QgsGeorefTransform() override;
 
     /**
      * Switches the used transform type to the given parametrisation.
      */
-    void selectTransformParametrisation( TransformParametrisation parametrisation );
+    void selectTransformParametrisation( TransformMethod parametrisation );
 
     /**
      * Setting the mRasterChangeCoords for change type coordinate(map for pixel).
@@ -73,7 +61,7 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
     QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.getBoundingBox( rect, toPixel ); }
 
     //! \brief The transform parametrisation currently in use.
-    TransformParametrisation transformParametrisation() const;
+    TransformMethod transformParametrisation() const;
 
     //! True for linear, Helmert, first order polynomial
     bool providesAccurateInverseTransformation() const;
@@ -83,16 +71,9 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
 
     bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
     int minimumGcpCount() const override;
-
-    /**
-     * Returns function pointer to the GDALTransformer function.
-     *
-     * Used by the transform routines \ref transform, \ref transformRasterToWorld
-     * \ref transformWorldToRaster and by the GDAL warping code
-     * in \ref QgsImageWarper::warpFile.
-     */
-    GDALTransformerFunc  GDALTransformer()     const override;
-    void                *GDALTransformerArgs() const override;
+    TransformMethod method() const override;
+    GDALTransformerFunc GDALTransformer() const override;
+    void *GDALTransformerArgs() const override;
 
     /**
      * \brief Transform from pixel coordinates to georeferenced coordinates.
@@ -128,13 +109,13 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
     QgsGeorefTransform &operator= ( const QgsGeorefTransform & ) = delete;
 
     //! Factory function which creates an implementation for the given parametrisation.
-    static QgsGcpTransformerInterface *createImplementation( TransformParametrisation parametrisation );
+    static QgsGcpTransformerInterface *createImplementation( TransformMethod parametrisation );
 
     // convenience wrapper around GDALTransformerFunc
     bool gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const;
 
     QgsGcpTransformerInterface *mGeorefTransformImplementation = nullptr;
-    TransformParametrisation     mTransformParametrisation;
+    TransformMethod     mTransformParametrisation;
     bool                         mParametersInitialized;
     QgsRasterChangeCoords        mRasterChangeCoords;
 };
