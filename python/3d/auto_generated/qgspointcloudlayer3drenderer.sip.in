@@ -62,6 +62,24 @@ Returns 3D symbol associated with the renderer
     virtual void resolveReferences( const QgsProject &project );
 
 
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum screen error allowed when rendering the point cloud.
+
+Larger values result in a faster render with less points rendered.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+%End
+
+    void setMaximumScreenError( double error );
+%Docstring
+Sets the maximum screen ``error`` allowed when rendering the point cloud.
+
+Larger values result in a faster render with less points rendered.
+
+.. seealso:: :py:func:`maximumScreenError`
+%End
+
     bool showBoundingBoxes() const;
 %Docstring
 Returns whether bounding boxes will be visible when rendering the point cloud.

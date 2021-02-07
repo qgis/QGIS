@@ -121,7 +121,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, bool showBoundingBoxes,
+    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, double maximumScreenSpaceError, bool showBoundingBoxes,
         double zValueScale, double zValueOffset, int pointBudget );
 
     ~QgsPointCloudLayerChunkedEntity();

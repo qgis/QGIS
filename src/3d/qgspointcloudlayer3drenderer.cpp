@@ -108,6 +108,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
     QgsAbstract3DSymbol *symbolClone = mSymbol->clone();
     r->setSymbol( dynamic_cast<QgsPointCloud3DSymbol *>( symbolClone ) );
   }
+  r->setMaximumScreenError( mMaximumScreenError );
   r->setShowBoundingBoxes( mShowBoundingBoxes );
   return r;
 }
@@ -120,7 +121,7 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), showBoundingBoxes(),
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenError, showBoundingBoxes(),
          static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
          static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
 }
@@ -137,6 +138,7 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   QDomDocument doc = elem.ownerDocument();
 
   elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  elem.setAttribute( QStringLiteral( "max-screen-error" ), maximumScreenError() );
   elem.setAttribute( QStringLiteral( "show-bounding-boxes" ), showBoundingBoxes() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "point-budget" ), mPointBudget );
 
@@ -157,6 +159,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 
   const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
   mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
+  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "1.0" ) ).toDouble();
   mPointBudget = elem.attribute( QStringLiteral( "point-budget" ), QStringLiteral( "1000000" ) ).toInt();
 
   if ( symbolType == QLatin1String( "single-color" ) )
@@ -177,6 +180,16 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 void QgsPointCloudLayer3DRenderer::resolveReferences( const QgsProject &project )
 {
   mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
+}
+
+double QgsPointCloudLayer3DRenderer::maximumScreenError() const
+{
+  return mMaximumScreenError;
+}
+
+void QgsPointCloudLayer3DRenderer::setMaximumScreenError( double error )
+{
+  mMaximumScreenError = error;
 }
 
 bool QgsPointCloudLayer3DRenderer::showBoundingBoxes() const

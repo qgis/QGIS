@@ -34,6 +34,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   setupUi( this );
 
   mPointSizeSpinBox->setClearValue( 2.0 );
+  mMaxScreenErrorSpinBox->setClearValue( 1.0 );
 
   mColorRampShaderMinEdit->setShowClearButton( false );
   mColorRampShaderMaxEdit->setShowClearButton( false );
@@ -110,6 +111,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mColorRampShaderMinEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
   connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
 
+  connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
   connect( mPointBudgetPercentageSlider, &QSlider::valueChanged, this, &QgsPointCloud3DSymbolWidget::pointBudgetSliderChanged );
   connect( mPointBudgetPercentageSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::pointBudgetSpinBoxChanged );
   connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, [&]() { emitChangedSignal(); } );
@@ -601,6 +603,16 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
       emitChangedSignal();
     }
   }
+}
+
+void QgsPointCloud3DSymbolWidget::setMaximumScreenError( double maxScreenError )
+{
+  whileBlocking( mMaxScreenErrorSpinBox )->setValue( maxScreenError );
+}
+
+double QgsPointCloud3DSymbolWidget::maximumScreenError() const
+{
+  return mMaxScreenErrorSpinBox->value();
 }
 
 void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
