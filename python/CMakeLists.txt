@@ -245,6 +245,7 @@ if(WITH_ANALYSIS)
   include_directories(BEFORE
 
     ${CMAKE_BINARY_DIR}/src/analysis/processing
+    ${CMAKE_BINARY_DIR}/src/analysis/georeferencing
     ${CMAKE_BINARY_DIR}/src/analysis/vector
     ${CMAKE_BINARY_DIR}/src/analysis/mesh
     ${CMAKE_BINARY_DIR}/src/analysis/raster

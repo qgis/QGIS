@@ -110,6 +110,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/vectortile
       ${CMAKE_SOURCE_DIR}/src/analysis
       ${CMAKE_SOURCE_DIR}/src/analysis/mesh
+      ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
       ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
       ${CMAKE_SOURCE_DIR}/src/analysis/network
       ${CMAKE_SOURCE_DIR}/src/analysis/processing

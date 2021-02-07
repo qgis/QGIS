@@ -266,7 +266,7 @@ bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
 {
   QgsGeorefTransform georefTransform;
   georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformParametrisation )count );
-  minGCPpoints = georefTransform.getMinimumGCPCount();
+  minGCPpoints = georefTransform.minimumGcpCount();
   return ( mCountGCPpoints >= minGCPpoints );
 }
 
