@@ -800,14 +800,14 @@ void TestQgsMapToolIdentifyAction::identifyViaTransformedRectangle()
   // the first selection rectangle, but would be selected if we just used the
   // bounding box of the transformed selection rectangle without postfilter.
   QgsFeature f2( memoryLayer->dataProvider()->fields(), 2 );
-  f2.setAttribute( QStringLiteral("pk"), 2 );
+  f2.setAttribute( QStringLiteral( "pk" ), 2 );
   f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(-68.2 70.0)" ) ) );
 
   // Feature neas the canvas CRS' projection center. It is contained in the
   // second selection rectangle. This rectangle remains nearly a rectangle after
   // transformation and we just use the bounding box of the transformed rectangle.
   QgsFeature f3( memoryLayer->dataProvider()->fields(), 3 );
-  f3.setAttribute( QStringLiteral("pk"), 3 );
+  f3.setAttribute( QStringLiteral( "pk" ), 3 );
   f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(8.0 47.0)" ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 );

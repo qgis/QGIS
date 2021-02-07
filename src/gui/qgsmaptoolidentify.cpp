@@ -532,9 +532,11 @@ QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsP
   return derivedAttributes;
 }
 
-namespace {
+namespace
+{
 
-  enum class Direction {
+  enum class Direction
+  {
     Up,
     Right,
     Down,
@@ -553,7 +555,7 @@ namespace {
     double dy = p2.y() - p1.y();
     if ( ( dx == 0.0 ) && ( dy == 0.0 ) )
       return Direction::None;
-    if ( fabs( dx ) >= fabs ( dy ) )
+    if ( fabs( dx ) >= fabs( dy ) )
     {
       double dev = fabs( dy ) / fabs( dx );
       if ( dev > maxDev )
@@ -577,7 +579,7 @@ namespace {
   std::pair<bool, std::array<Direction, 4>> getEdgeDirections( const QgsGeometry &g, double maxDev )
   {
     std::pair<bool, std::array<Direction, 4>> ret =
-      { false, { Direction::None, Direction::None, Direction::None, Direction::None } };
+    { false, { Direction::None, Direction::None, Direction::None, Direction::None } };
     std::array<Direction, 4> &dirs = ret.second;
     // The polygon might start in the middle of a side. Hence, we need a fifth
     // direction to record the beginning of the side when we went around the
@@ -682,13 +684,13 @@ namespace {
     const double sx = ( x2 - x1 ) / ( extraVertsPerEdge + 1 );
     const double sy = ( y2 - y1 ) / ( extraVertsPerEdge + 1 );
     for ( int i = 0; i <= extraVertsPerEdge; ++i )
-      ring.push_back( QgsPointXY( x1 + i*sx, y1 ) );
+      ring.push_back( QgsPointXY( x1 + i * sx, y1 ) );
     for ( int i = 0; i <= extraVertsPerEdge; ++i )
-      ring.push_back( QgsPointXY( x2, y1 + i*sy ) );
+      ring.push_back( QgsPointXY( x2, y1 + i * sy ) );
     for ( int i = 0; i <= extraVertsPerEdge; ++i )
-      ring.push_back( QgsPointXY( x2 - i*sx, y2 ) );
+      ring.push_back( QgsPointXY( x2 - i * sx, y2 ) );
     for ( int i = 0; i <= extraVertsPerEdge; ++i )
-      ring.push_back( QgsPointXY( x1, y2 - i*sy ) );
+      ring.push_back( QgsPointXY( x1, y2 - i * sy ) );
     ring.push_back( QgsPointXY( x1, y1 ) );
     return QgsGeometry::fromPolygonXY( ret );
   }
@@ -755,7 +757,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
       // we are in the single-click case), we just take its bounding box as
       // filter rect in the feature request. Otherwise, we additionally use the
       // transformed rectangle as postfilter geometry.
-      QgsGeometry interpolatedRect = interpolateRectangle(canvasRect, 4);
+      QgsGeometry interpolatedRect = interpolateRectangle( canvasRect, 4 );
       if ( ct.isValid() )
         interpolatedRect.transform( ct );
       layerFilterRect = interpolatedRect.boundingBox();
@@ -765,12 +767,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     }
     else
     {
-        QgsGeometry selectionGeom = geometry;
-        if ( ct.isValid() )
-          selectionGeom.transform( ct );
-        layerFilterRect = selectionGeom.boundingBox();
-        // use prepared geometry for faster intersection test
-        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+      QgsGeometry selectionGeom = geometry;
+      if ( ct.isValid() )
+        selectionGeom.transform( ct );
+      layerFilterRect = selectionGeom.boundingBox();
+      // use prepared geometry for faster intersection test
+      selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
     }
 
     QgsFeatureRequest featureRequest;
