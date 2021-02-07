@@ -229,6 +229,24 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
     void resolveReferences( const QgsProject &project ) override;
 
     /**
+     * Returns the maximum screen error allowed when rendering the point cloud.
+     *
+     * Larger values result in a faster render with less points rendered.
+     *
+     * \see setMaximumScreenError()
+     */
+    double maximumScreenError() const;
+
+    /**
+     * Sets the maximum screen \a error allowed when rendering the point cloud.
+     *
+     * Larger values result in a faster render with less points rendered.
+     *
+     * \see maximumScreenError()
+     */
+    void setMaximumScreenError( double error );
+
+    /**
      * Returns whether bounding boxes will be visible when rendering the point cloud.
      *
      * \see setShowBoundingBoxes()
@@ -255,6 +273,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
+    double mMaximumScreenError = 1.0;
     bool mShowBoundingBoxes = false;
     int mPointBudget = 1000000;
 

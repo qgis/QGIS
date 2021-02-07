@@ -36,6 +36,9 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
     QgsPointCloud3DSymbol *symbol() const;
 
+    void setMaximumScreenError( double maxScreenError );
+    double maximumScreenError() const;
+
     void setShowBoundingBoxes( bool showBoundingBoxes );
     double showBoundingBoxes() const;
 
