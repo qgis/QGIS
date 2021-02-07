@@ -527,6 +527,11 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
       return QgsLayerItem::iconVectorTile();
     }
 
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      return QgsLayerItem::iconPointCloud();
+    }
+
     case QgsMapLayerType::VectorLayer:
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
@@ -559,6 +564,7 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
         }
       }
     }
+
     default:
     {
       return QIcon();

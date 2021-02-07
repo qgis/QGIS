@@ -106,7 +106,7 @@ QIcon QgsLayerItem::iconVectorTile()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconVectorTileLayer.svg" ) );
 }
 
-QIcon QgsLayerItem::iconPointCloudLayer()
+QIcon QgsLayerItem::iconPointCloud()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointCloudLayer.svg" ) );
 }
