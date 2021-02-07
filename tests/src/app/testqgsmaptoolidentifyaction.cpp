@@ -786,28 +786,52 @@ void TestQgsMapToolIdentifyAction::identifyInvalidPolygons()
 
 void TestQgsMapToolIdentifyAction::identifyViaTransformedRectangle()
 {
-  // create temp layer
   std::unique_ptr< QgsVectorLayer> memoryLayer( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
 
+  // Feature far off the canvas CRS' projection center. It is contained in the
+  // first selection rectangle, but would not be selected if we just transformed
+  // the lower-left and upper-right corner of the selection rectangle.
   QgsFeature f1( memoryLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(-68.2 70.8)" ) ) );
-  memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // Feature far off the canvas CRS' projection center. It is not contained in
+  // the first selection rectangle, but would be selected if we just used the
+  // bounding box of the transformed selection rectangle without postfilter.
+  QgsFeature f2( memoryLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( QStringLiteral("pk"), 2 );
+  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(-68.2 70.0)" ) ) );
+
+  // Feature neas the canvas CRS' projection center. It is contained in the
+  // second selection rectangle. This rectangle remains nearly a rectangle after
+  // transformation and we just use the bounding box of the transformed rectangle.
+  QgsFeature f3( memoryLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( QStringLiteral("pk"), 3 );
+  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(8.0 47.0)" ) ) );
+
+  memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 );
 
   QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:2056" ) );
   canvas->setDestinationCrs( srs );
-  canvas->setExtent( QgsRectangle( -200000, 200000, 5300000, 5700000 ) );
 
-  QList<QgsMapToolIdentify::IdentifyResult> identified;
+  QgsGeometry selectionRect;
+  QList<QgsMapToolIdentify::IdentifyResult> result;
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QgsIdentifyContext identifyContext;
+  QList<QgsMapLayer *> layers;
+  layers << memoryLayer.get();
 
-  QgsGeometry selectionRect = QgsGeometry::fromRect( QgsRectangle( -147172.0, 5471426.0, 32484.0, 5625003.0 ) );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( selectionRect, QgsMapToolIdentify::DefaultQgsSetting, QList<QgsMapLayer *>() << memoryLayer.get(), QgsMapToolIdentify::VectorLayer );
-
+  canvas->setExtent( QgsRectangle( -200000, 5300000, 200000, 5700000 ) );
+  selectionRect = QgsGeometry::fromRect( QgsRectangle( -147172.0, 5471426.0, 32484.0, 5625003.0 ) );
+  result = action->identify( selectionRect, QgsMapToolIdentify::DefaultQgsSetting, layers, QgsMapToolIdentify::VectorLayer );
   QCOMPARE( result.length(), 1 );
   QCOMPARE( result[0].mFeature.attribute( "pk" ), QVariant( 1 ) );
+
+  canvas->setExtent( QgsRectangle( 2600000, 1150000, 2700000, 1250000 ) );
+  selectionRect = QgsGeometry::fromRect( QgsRectangle( 2625000, 1175000, 2675000, 1225000 ) );
+  result = action->identify( selectionRect, QgsMapToolIdentify::DefaultQgsSetting, layers, QgsMapToolIdentify::VectorLayer );
+  QCOMPARE( result.length(), 1 );
+  QCOMPARE( result[0].mFeature.attribute( "pk" ), QVariant( 3 ) );
 }
 
 QGSTEST_MAIN( TestQgsMapToolIdentifyAction )

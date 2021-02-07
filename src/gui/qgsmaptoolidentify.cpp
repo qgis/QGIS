@@ -532,6 +532,169 @@ QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsP
   return derivedAttributes;
 }
 
+namespace {
+
+  enum class Direction {
+    Up,
+    Right,
+    Down,
+    Left,
+    None
+  };
+
+  /**
+   * Determines the direction of an edge from p1 to p2. maxDev is the tangent of
+   * the maximum allowed edge deviation angle. If the edge deviates more than
+   * the allowed angle, Direction::None will be returned.
+   */
+  Direction getEdgeDirection( const QgsPoint &p1, const QgsPoint &p2, double maxDev )
+  {
+    double dx = p2.x() - p1.x();
+    double dy = p2.y() - p1.y();
+    if ( ( dx == 0.0 ) && ( dy == 0.0 ) )
+      return Direction::None;
+    if ( fabs( dx ) >= fabs ( dy ) )
+    {
+      double dev = fabs( dy ) / fabs( dx );
+      if ( dev > maxDev )
+        return Direction::None;
+      return dx > 0.0 ? Direction::Right : Direction::Left;
+    }
+    else
+    {
+      double dev = fabs( dx ) / fabs( dy );
+      if ( dev > maxDev )
+        return Direction::None;
+      return dy > 0.0 ? Direction::Up : Direction::Down;
+    }
+  }
+
+  /**
+   * Checks whether the polygon consists of four nearly axis-parallel sides. All
+   * consecutive edges having the same direction are considered to belong to the
+   * same side.
+   */
+  std::pair<bool, std::array<Direction, 4>> getEdgeDirections( const QgsGeometry &g, double maxDev )
+  {
+    std::pair<bool, std::array<Direction, 4>> ret =
+      { false, { Direction::None, Direction::None, Direction::None, Direction::None } };
+    std::array<Direction, 4> &dirs = ret.second;
+    // The polygon might start in the middle of a side. Hence, we need a fifth
+    // direction to record the beginning of the side when we went around the
+    // polygon.
+    Direction extra;
+
+    int idx = 0;
+    auto last = g.vertices_begin();
+    auto curr = last;
+    ++curr;
+    auto stop = g.vertices_end();
+    while ( curr != stop )
+    {
+      Direction dir = getEdgeDirection( *last, *curr, maxDev );
+      if ( dir == Direction::None )
+        return ret;
+      if ( idx == 0 )
+      {
+        dirs[0] = dir;
+        idx = 1;
+      }
+      else if ( dir != dirs[idx - 1] )
+      {
+        if ( idx == 5 )
+          return ret;
+        if ( idx < 4 )
+          dirs[idx] = dir;
+        else
+          extra = dir;
+        ++idx;
+      }
+      last = curr;
+      ++curr;
+    }
+    ret.first = ( idx == 5 ) ? ( dirs[0] == extra ) : ( idx == 4 );
+    return ret;
+  }
+
+  bool matchesOrientation( const std::array<Direction, 4> &dirs, const std::array<Direction, 4> &oriented )
+  {
+    int idx = std::find( oriented.begin(), oriented.end(), dirs[0] ) - oriented.begin();
+    for ( int i = 1; i < 4; ++i )
+    {
+      if ( dirs[i] != oriented[( idx + i ) % 4] )
+        return false;
+    }
+    return true;
+  }
+
+  /**
+   * Checks whether the 4 directions in dirs make up a clockwise rectangle.
+   */
+  bool isClockwise( const std::array<Direction, 4> &dirs )
+  {
+    const std::array<Direction, 4> cwdirs = { Direction::Up, Direction::Right, Direction::Down, Direction::Left };
+    return matchesOrientation( dirs, cwdirs );
+  }
+
+  /**
+   * Checks whether the 4 directions in dirs make up a counter-clockwise
+   * rectangle.
+   */
+  bool isCounterClockwise( const std::array<Direction, 4> &dirs )
+  {
+    const std::array<Direction, 4> ccwdirs = { Direction::Right, Direction::Up, Direction::Left, Direction::Down };
+    return matchesOrientation( dirs, ccwdirs );
+  }
+
+  /**
+   * Checks whether the passed geometry is a polygon that is almost an axis-
+   * parallel rectangle. maxDev is the tangent of the angle the polygon edges
+   * are allowed to deviate from axis parallel lines.
+   */
+  bool isRectangle( const QgsGeometry &g, double maxDev )
+  {
+    if ( QgsWkbTypes::flatType( g.wkbType() ) != QgsWkbTypes::Polygon )
+      return false;
+    if ( g.constGet()->ringCount() != 1 )
+      return false;
+
+    bool found4Dirs;
+    std::array<Direction, 4> dirs;
+    std::tie( found4Dirs, dirs ) = getEdgeDirections( g, maxDev );
+
+    return found4Dirs && ( isCounterClockwise( dirs ) || isClockwise( dirs ) );
+  }
+
+  /**
+   * Interpolates a rectangle with the given number of extra vertices per edge.
+   */
+  QgsGeometry interpolateRectangle( const QgsRectangle &rect, int extraVertsPerEdge )
+  {
+    QgsPolygonXY ret;
+    ret.resize( 1 );
+    QgsPolylineXY &ring = ret[0];
+    const unsigned totalVerts = 5 + 4 * extraVertsPerEdge;
+    ring.reserve( totalVerts );
+    const double x1 = rect.xMinimum();
+    const double y1 = rect.yMinimum();
+    const double x2 = rect.xMaximum();
+    const double y2 = rect.yMaximum();
+    const double sx = ( x2 - x1 ) / ( extraVertsPerEdge + 1 );
+    const double sy = ( y2 - y1 ) / ( extraVertsPerEdge + 1 );
+    for ( int i = 0; i <= extraVertsPerEdge; ++i )
+      ring.push_back( QgsPointXY( x1 + i*sx, y1 ) );
+    for ( int i = 0; i <= extraVertsPerEdge; ++i )
+      ring.push_back( QgsPointXY( x2, y1 + i*sy ) );
+    for ( int i = 0; i <= extraVertsPerEdge; ++i )
+      ring.push_back( QgsPointXY( x2 - i*sx, y2 ) );
+    for ( int i = 0; i <= extraVertsPerEdge; ++i )
+      ring.push_back( QgsPointXY( x1, y2 - i*sy ) );
+    ring.push_back( QgsPointXY( x1, y1 ) );
+    return QgsGeometry::fromPolygonXY( ret );
+  }
+
+}
+
 bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
   if ( !layer || !layer->isSpatial() )
@@ -557,57 +720,61 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QMap< QString, QString > commonDerivedAttributes;
-
-  QgsGeometry selectionGeom = geometry;
-  bool isPointOrRectangle;
-  QgsPointXY point;
-  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry;
-  if ( isSingleClick )
-  {
-    isPointOrRectangle = true;
-    point = selectionGeom.asPoint();
-
-    commonDerivedAttributes = derivedAttributesForPoint( QgsPoint( point ) );
-  }
-  else
-  {
-    // we have a polygon - maybe it is a rectangle - in such case we can avoid costly insterestion tests later
-    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
-  }
-
-  int featureCount = 0;
-
-  QgsFeatureList featureList;
+  QgsRectangle layerFilterRect;
   std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
 
+  QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
+  const bool isSingleClick = geometry.type() == QgsWkbTypes::PointGeometry;
+  QgsFeatureList featureList;
+  QgsPointXY point;
   // toLayerCoordinates will throw an exception for an 'invalid' point.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
   try
   {
-    QgsRectangle r;
-    if ( isSingleClick )
+    if ( isSingleClick || isRectangle( geometry, 0.0 ) )
     {
-      double sr = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
-      r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
+      QgsRectangle canvasRect;
+      if ( isSingleClick )
+      {
+        point = geometry.asPoint();
+        commonDerivedAttributes = derivedAttributesForPoint( QgsPoint( point ) );
+        double sr = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+        canvasRect = QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr );
+      }
+      else
+      {
+        canvasRect = geometry.boundingBox();
+      }
+      // The canvas rectangle might not be an axis-parallel rectangle in the
+      // layer's CRS. Hence, it is not sufficient to transform the lower-left
+      // and upper-right corner of the canvas rectangle.
+      //
+      // We interpolate the canvas rectangle, transform it to the layer CRS and
+      // check if it is still a nearly axis-parallel rectangle. If it is (or if
+      // we are in the single-click case), we just take its bounding box as
+      // filter rect in the feature request. Otherwise, we additionally use the
+      // transformed rectangle as postfilter geometry.
+      QgsGeometry interpolatedRect = interpolateRectangle(canvasRect, 4);
+      if ( ct.isValid() )
+        interpolatedRect.transform( ct );
+      layerFilterRect = interpolatedRect.boundingBox();
+      const double maxDev = 0.034920769491747731; // = tan( 2.0 * DEG2RAD )
+      if ( !isSingleClick && !isRectangle( interpolatedRect, maxDev ) )
+        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( interpolatedRect.constGet() ) );
     }
     else
     {
-      r = toLayerCoordinates( layer, selectionGeom.boundingBox() );
-
-      if ( !isPointOrRectangle )
-      {
-        QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
+        QgsGeometry selectionGeom = geometry;
         if ( ct.isValid() )
           selectionGeom.transform( ct );
-
+        layerFilterRect = selectionGeom.boundingBox();
         // use prepared geometry for faster intersection test
         selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
-      }
     }
 
     QgsFeatureRequest featureRequest;
-    featureRequest.setFilterRect( r );
+    featureRequest.setFilterRect( layerFilterRect );
     featureRequest.setFlags( QgsFeatureRequest::ExactIntersect );
     if ( !temporalFilter.isEmpty() )
       featureRequest.setFilterExpression( temporalFilter );
@@ -639,6 +806,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
   }
 
+  int featureCount = 0;
   for ( const QgsFeature &feature : qgis::as_const( featureList ) )
   {
     QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
