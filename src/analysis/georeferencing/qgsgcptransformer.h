@@ -81,6 +81,13 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
      */
     static QString methodToString( TransformMethod method );
 
+    /**
+     * Creates a new QgsGcpTransformerInterface subclass representing the specified transform \a method.
+     *
+     * Caller takes ownership of the returned object.
+     */
+    static QgsGcpTransformerInterface *create( TransformMethod method ) SIP_FACTORY;
+
 #ifndef SIP_RUN
 
     /**

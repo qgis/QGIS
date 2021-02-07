@@ -26,29 +26,17 @@
 
 QgsGeorefTransform::QgsGeorefTransform( const QgsGeorefTransform &other )
 {
-  mTransformParametrisation = TransformMethod::InvalidTransform;
-  mGeorefTransformImplementation = nullptr;
   selectTransformParametrisation( other.mTransformParametrisation );
 }
 
 QgsGeorefTransform::QgsGeorefTransform( TransformMethod parametrisation )
 {
-  mTransformParametrisation = TransformMethod::InvalidTransform;
-  mGeorefTransformImplementation = nullptr;
   selectTransformParametrisation( parametrisation );
 }
 
-QgsGeorefTransform::QgsGeorefTransform()
-{
-  mTransformParametrisation = TransformMethod::InvalidTransform;
-  mGeorefTransformImplementation = nullptr;
-  mParametersInitialized = false;
-}
+QgsGeorefTransform::QgsGeorefTransform() = default;
 
-QgsGeorefTransform::~QgsGeorefTransform()
-{
-  delete mGeorefTransformImplementation;
-}
+QgsGeorefTransform::~QgsGeorefTransform() = default;
 
 QgsGeorefTransform::TransformMethod QgsGeorefTransform::transformParametrisation() const
 {
@@ -59,8 +47,7 @@ void QgsGeorefTransform::selectTransformParametrisation( TransformMethod paramet
 {
   if ( parametrisation != mTransformParametrisation )
   {
-    delete mGeorefTransformImplementation;
-    mGeorefTransformImplementation = QgsGeorefTransform::createImplementation( parametrisation );
+    mGeorefTransformImplementation.reset( QgsGcpTransformerInterface::create( parametrisation ) );
     mParametersInitialized = false;
     mTransformParametrisation = parametrisation;
   }
@@ -130,29 +117,6 @@ void *QgsGeorefTransform::GDALTransformerArgs() const
   return mGeorefTransformImplementation ? mGeorefTransformImplementation->GDALTransformerArgs() : nullptr;
 }
 
-QgsGcpTransformerInterface *QgsGeorefTransform::createImplementation( TransformMethod parametrisation )
-{
-  switch ( parametrisation )
-  {
-    case TransformMethod::Linear:
-      return new QgsLinearGeorefTransform;
-    case TransformMethod::Helmert:
-      return new QgsHelmertGeorefTransform;
-    case TransformMethod::PolynomialOrder1:
-      return new QgsGDALGeorefTransform( false, 1 );
-    case TransformMethod::PolynomialOrder2:
-      return new QgsGDALGeorefTransform( false, 2 );
-    case TransformMethod::PolynomialOrder3:
-      return new QgsGDALGeorefTransform( false, 3 );
-    case TransformMethod::ThinPlateSpline:
-      return new QgsGDALGeorefTransform( true, 0 );
-    case TransformMethod::Projective:
-      return new QgsProjectiveGeorefTransform;
-    default:
-      return nullptr;
-  }
-}
-
 bool QgsGeorefTransform::transformRasterToWorld( const QgsPointXY &raster, QgsPointXY &world )
 {
   // flip y coordinate due to different CS orientation
@@ -183,7 +147,7 @@ bool QgsGeorefTransform::getLinearOriginScale( QgsPointXY &origin, double &scale
   {
     return false;
   }
-  QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
+  QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation.get() );
   return transform && transform->getOriginScale( origin, scaleX, scaleY );
 }
 
@@ -193,13 +157,13 @@ bool QgsGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &sca
   if ( mTransformParametrisation == TransformMethod::Linear )
   {
     rotation = 0.0;
-    QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
+    QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation.get() );
     return transform && transform->getOriginScale( origin, scaleX, scaleY );
   }
   else if ( mTransformParametrisation == TransformMethod::Helmert )
   {
     double scale;
-    QgsHelmertGeorefTransform *transform = dynamic_cast<QgsHelmertGeorefTransform *>( mGeorefTransformImplementation );
+    QgsHelmertGeorefTransform *transform = dynamic_cast<QgsHelmertGeorefTransform *>( mGeorefTransformImplementation.get() );
     if ( !transform || ! transform->getOriginScaleRotation( origin, scale, rotation ) )
     {
       return false;

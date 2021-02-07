@@ -49,6 +49,29 @@ QString QgsGcpTransformerInterface::methodToString( QgsGcpTransformerInterface::
   }
 }
 
+QgsGcpTransformerInterface *QgsGcpTransformerInterface::create( QgsGcpTransformerInterface::TransformMethod method )
+{
+  switch ( method )
+  {
+    case TransformMethod::Linear:
+      return new QgsLinearGeorefTransform;
+    case TransformMethod::Helmert:
+      return new QgsHelmertGeorefTransform;
+    case TransformMethod::PolynomialOrder1:
+      return new QgsGDALGeorefTransform( false, 1 );
+    case TransformMethod::PolynomialOrder2:
+      return new QgsGDALGeorefTransform( false, 2 );
+    case TransformMethod::PolynomialOrder3:
+      return new QgsGDALGeorefTransform( false, 3 );
+    case TransformMethod::ThinPlateSpline:
+      return new QgsGDALGeorefTransform( true, 0 );
+    case TransformMethod::Projective:
+      return new QgsProjectiveGeorefTransform;
+    default:
+      return nullptr;
+  }
+}
+
 
 //
 // QgsLinearGeorefTransform
