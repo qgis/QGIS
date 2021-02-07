@@ -108,16 +108,14 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
     QgsGeorefTransform( const QgsGeorefTransform &other );
     QgsGeorefTransform &operator= ( const QgsGeorefTransform & ) = delete;
 
-    //! Factory function which creates an implementation for the given parametrisation.
-    static QgsGcpTransformerInterface *createImplementation( TransformMethod parametrisation );
-
     // convenience wrapper around GDALTransformerFunc
     bool gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const;
 
-    QgsGcpTransformerInterface *mGeorefTransformImplementation = nullptr;
-    TransformMethod     mTransformParametrisation;
-    bool                         mParametersInitialized;
-    QgsRasterChangeCoords        mRasterChangeCoords;
+    std::unique_ptr< QgsGcpTransformerInterface > mGeorefTransformImplementation;
+
+    TransformMethod mTransformParametrisation = TransformMethod::InvalidTransform;
+    bool mParametersInitialized = false;
+    QgsRasterChangeCoords mRasterChangeCoords;
 };
 
 #endif //QGSGEOREFTRANSFORM_H

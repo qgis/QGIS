@@ -64,6 +64,13 @@ Returns the transformation method.
 Returns a translated string representing the specified transform ``method``.
 %End
 
+    static QgsGcpTransformerInterface *create( TransformMethod method ) /Factory/;
+%Docstring
+Creates a new QgsGcpTransformerInterface subclass representing the specified transform ``method``.
+
+Caller takes ownership of the returned object.
+%End
+
 
   private:
     QgsGcpTransformerInterface( const QgsGcpTransformerInterface &other );
