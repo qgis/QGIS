@@ -25,6 +25,31 @@
 #include <cassert>
 #include <limits>
 
+
+QString QgsGcpTransformerInterface::methodToString( QgsGcpTransformerInterface::TransformMethod method )
+{
+  switch ( method )
+  {
+    case QgsGcpTransformerInterface::TransformMethod::Linear:
+      return QObject::tr( "Linear" );
+    case QgsGcpTransformerInterface::TransformMethod::Helmert:
+      return QObject::tr( "Helmert" );
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
+      return QObject::tr( "Polynomial 1" );
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
+      return QObject::tr( "Polynomial 2" );
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
+      return QObject::tr( "Polynomial 3" );
+    case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
+      return QObject::tr( "Thin Plate Spline (TPS)" );
+    case QgsGcpTransformerInterface::TransformMethod::Projective:
+      return QObject::tr( "Projective" );
+    default:
+      return QObject::tr( "Not set" );
+  }
+}
+
+
 //
 // QgsLinearGeorefTransform
 //

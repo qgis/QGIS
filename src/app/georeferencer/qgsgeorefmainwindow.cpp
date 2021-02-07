@@ -377,7 +377,7 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
 
   d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
                           mModifiedRasterFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
-  mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
+  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
   mWorldFileName = guessWorldFileName( mRasterFileName );
@@ -433,7 +433,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
     FALLTHROUGH
     default:
       mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
-                                .arg( convertTransformEnumToString( mTransformParam ) )
+                                .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
                                 , Qgis::Critical );
   }
 }
@@ -1136,7 +1136,7 @@ void QgsGeoreferencerMainWindow::createStatusBar()
   statusBar()->addPermanentWidget( mRotationEdit, 0 );
 
   mTransformParamLabel = createBaseLabelStatus();
-  mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
+  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
   mTransformParamLabel->setToolTip( tr( "Current transform parametrisation" ) );
   statusBar()->addPermanentWidget( mTransformParamLabel, 0 );
 
@@ -1695,7 +1695,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QGraphicsRectItem *previousItem = layoutMap;
   if ( wldTransform )
   {
-    QString parameterTitle = tr( "Transformation parameters" ) + QStringLiteral( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
+    QString parameterTitle = tr( "Transformation parameters" ) + QStringLiteral( " (" ) + QgsGcpTransformerInterface::methodToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
     parameterLabel = new QgsLayoutItemLabel( &layout );
     parameterLabel->setFont( titleFont );
     parameterLabel->setText( parameterTitle );
@@ -1822,7 +1822,7 @@ void QgsGeoreferencerMainWindow::updateTransformParamLabel()
     return;
   }
 
-  QString transformName = convertTransformEnumToString( mGeorefTransform.transformParametrisation() );
+  QString transformName = QgsGcpTransformerInterface::methodToString( mGeorefTransform.transformParametrisation() );
   QString labelString = tr( "Transform: " ) + transformName;
 
   QgsPointXY origin;
@@ -1979,7 +1979,7 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
   if ( mPoints.count() < static_cast<int>( mGeorefTransform.minimumGcpCount() ) )
   {
     mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
-                              .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.minimumGcpCount() )
+                              .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) ).arg( mGeorefTransform.minimumGcpCount() )
                               , Qgis::Critical );
     return false;
   }
@@ -2059,29 +2059,6 @@ QgsRectangle QgsGeoreferencerMainWindow::transformViewportBoundingBox( const Qgs
     }
   }
   return QgsRectangle( minX, minY, maxX, maxY );
-}
-
-QString QgsGeoreferencerMainWindow::convertTransformEnumToString( QgsGeorefTransform::TransformMethod transform )
-{
-  switch ( transform )
-  {
-    case QgsGcpTransformerInterface::TransformMethod::Linear:
-      return tr( "Linear" );
-    case QgsGcpTransformerInterface::TransformMethod::Helmert:
-      return tr( "Helmert" );
-    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
-      return tr( "Polynomial 1" );
-    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
-      return tr( "Polynomial 2" );
-    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
-      return tr( "Polynomial 3" );
-    case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
-      return tr( "Thin plate spline (TPS)" );
-    case QgsGcpTransformerInterface::TransformMethod::Projective:
-      return tr( "Projective" );
-    default:
-      return tr( "Not set" );
-  }
 }
 
 QString QgsGeoreferencerMainWindow::convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling )
