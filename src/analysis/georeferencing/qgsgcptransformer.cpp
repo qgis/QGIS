@@ -72,6 +72,18 @@ QgsGcpTransformerInterface *QgsGcpTransformerInterface::create( QgsGcpTransforme
   }
 }
 
+QgsGcpTransformerInterface *QgsGcpTransformerInterface::createFromParameters( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates )
+{
+  std::unique_ptr< QgsGcpTransformerInterface > transformer( create( method ) );
+  if ( !transformer )
+    return nullptr;
+
+  if ( !transformer->updateParametersFromGcps( mapCoordinates, pixelCoordinates ) )
+    return nullptr;
+
+  return transformer.release();
+}
+
 
 //
 // QgsLinearGeorefTransform
