@@ -72,13 +72,13 @@ QgsGcpTransformerInterface *QgsGcpTransformerInterface::create( QgsGcpTransforme
   }
 }
 
-QgsGcpTransformerInterface *QgsGcpTransformerInterface::createFromParameters( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates )
+QgsGcpTransformerInterface *QgsGcpTransformerInterface::createFromParameters( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates )
 {
   std::unique_ptr< QgsGcpTransformerInterface > transformer( create( method ) );
   if ( !transformer )
     return nullptr;
 
-  if ( !transformer->updateParametersFromGcps( mapCoordinates, pixelCoordinates ) )
+  if ( !transformer->updateParametersFromGcps( mapCoordinates, layerCoordinates ) )
     return nullptr;
 
   return transformer.release();
@@ -97,11 +97,11 @@ bool QgsLinearGeorefTransform::getOriginScale( QgsPointXY &origin, double &scale
   return true;
 }
 
-bool QgsLinearGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords )
+bool QgsLinearGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
 {
   if ( mapCoords.size() < minimumGcpCount() )
     return false;
-  QgsLeastSquares::linear( mapCoords, pixelCoords, mParameters.origin, mParameters.scaleX, mParameters.scaleY );
+  QgsLeastSquares::linear( mapCoords, layerCoords, mParameters.origin, mParameters.scaleX, mParameters.scaleY );
   return true;
 }
 
@@ -168,12 +168,12 @@ int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstTo
 //
 // QgsHelmertGeorefTransform
 //
-bool QgsHelmertGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords )
+bool QgsHelmertGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
 {
   if ( mapCoords.size() < minimumGcpCount() )
     return false;
 
-  QgsLeastSquares::helmert( mapCoords, pixelCoords, mHelmertParameters.origin, mHelmertParameters.scale, mHelmertParameters.angle );
+  QgsLeastSquares::helmert( mapCoords, layerCoords, mHelmertParameters.origin, mHelmertParameters.scale, mHelmertParameters.angle );
   return true;
 }
 
@@ -276,10 +276,10 @@ QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
   destroyGdalArgs();
 }
 
-bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords )
+bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
 {
-  assert( mapCoords.size() == pixelCoords.size() );
-  if ( mapCoords.size() != pixelCoords.size() )
+  assert( mapCoords.size() == layerCoords.size() );
+  if ( mapCoords.size() != layerCoords.size() )
     return false;
   int n = mapCoords.size();
 
@@ -289,8 +289,8 @@ bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY>
     GCPList[i].pszId = new char[20];
     snprintf( GCPList[i].pszId, 19, "gcp%i", i );
     GCPList[i].pszInfo = nullptr;
-    GCPList[i].dfGCPPixel = pixelCoords[i].x();
-    GCPList[i].dfGCPLine  = -pixelCoords[i].y();
+    GCPList[i].dfGCPPixel = layerCoords[i].x();
+    GCPList[i].dfGCPLine  = -layerCoords[i].y();
     GCPList[i].dfGCPX = mapCoords[i].x();
     GCPList[i].dfGCPY = mapCoords[i].y();
     GCPList[i].dfGCPZ = 0;
@@ -372,15 +372,15 @@ QgsProjectiveGeorefTransform::QgsProjectiveGeorefTransform()
   : mParameters()
 {}
 
-bool QgsProjectiveGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords )
+bool QgsProjectiveGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
 {
   if ( mapCoords.size() < minimumGcpCount() )
     return false;
 
   // HACK: flip y coordinates, because georeferencer and gdal use different conventions
   QVector<QgsPointXY> flippedPixelCoords;
-  flippedPixelCoords.reserve( pixelCoords.size() );
-  for ( const QgsPointXY &coord : pixelCoords )
+  flippedPixelCoords.reserve( layerCoords.size() );
+  for ( const QgsPointXY &coord : layerCoords )
   {
     flippedPixelCoords << QgsPointXY( coord.x(), -coord.y() );
   }

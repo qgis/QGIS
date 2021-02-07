@@ -42,9 +42,9 @@ based on a transformation method and a list of GCPs.
 
 
 
-    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates ) = 0;
+    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) = 0;
 %Docstring
-Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and pixel coordinates.
+Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and layer coordinates.
 
 :return: ``True`` on success, ``False`` on failure
 %End
@@ -71,10 +71,10 @@ Creates a new QgsGcpTransformerInterface subclass representing the specified tra
 Caller takes ownership of the returned object.
 %End
 
-    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &pixelCoordinates ) /Factory/;
+    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) /Factory/;
 %Docstring
 Creates a new QgsGcpTransformerInterface subclass representing the specified transform ``method``, initialized
-using the given lists of map and pixel coordinates.
+using the given lists of map and layer coordinates.
 
 If the parameters cannot be fit to a transform ``None`` will be returned.
 
