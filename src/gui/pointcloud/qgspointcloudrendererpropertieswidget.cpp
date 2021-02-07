@@ -98,7 +98,6 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   connect( mPointSizeSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-  connect( mPointBudgetSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   mMaxErrorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -144,7 +143,6 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mPointSizeSpinBox->setValue( mLayer->renderer()->pointSize() );
     mPointSizeUnitWidget->setUnit( mLayer->renderer()->pointSizeUnit() );
     mPointSizeUnitWidget->setMapUnitScale( mLayer->renderer()->pointSizeMapUnitScale() );
-    mPointBudgetSpinBox->setValue( mLayer->renderer()->pointBudget() );
 
     mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( mLayer->renderer()->pointSymbol() ) );
 
@@ -178,7 +176,6 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setPointSize( mPointSizeSpinBox->value() );
   mLayer->renderer()->setPointSizeUnit( mPointSizeUnitWidget->unit() );
   mLayer->renderer()->setPointSizeMapUnitScale( mPointSizeUnitWidget->getMapUnitScale() );
-  mLayer->renderer()->setPointBudget( mPointBudgetSpinBox->value() );
 
   mLayer->renderer()->setPointSymbol( static_cast< QgsPointCloudRenderer::PointSymbol >( mPointStyleComboBox->currentData().toInt() ) );
 
