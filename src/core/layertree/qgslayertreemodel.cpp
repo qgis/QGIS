@@ -213,7 +213,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           break;
 
         case QgsMapLayerType::PointCloudLayer:
-          icon = QgsLayerItem::iconPointCloudLayer();
+          icon = QgsLayerItem::iconPointCloud();
           break;
 
         case QgsMapLayerType::VectorLayer:

@@ -620,7 +620,7 @@ Returns icon for mesh layer type
 %Docstring
 Returns icon for vector tile layer
 %End
-    static QIcon iconPointCloudLayer();
+    static QIcon iconPointCloud();
 %Docstring
 Returns icon for point cloud layer
 %End

@@ -70,7 +70,7 @@ void QgsPointCloudElevationPropertiesWidget::onChanged()
 QgsPointCloudElevationPropertiesWidgetFactory::QgsPointCloudElevationPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mesh/Elevation.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ) );
   setTitle( tr( "Elevation" ) );
 }
 
