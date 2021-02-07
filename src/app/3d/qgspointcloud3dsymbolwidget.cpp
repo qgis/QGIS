@@ -88,16 +88,9 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mRenderingStyleComboBox->setCurrentIndex( 0 );
   mStackedWidget->setCurrentIndex( 0 );
 
-  mPointBudgetPercentageSlider->setMinimum( 0.0 );
-  mPointBudgetPercentageSlider->setMaximum( 100.0 );
-
-  mPointBudgetPercentage = std::min( 100.0, 100.0 * 1000000.0 / mLayer->pointCount() );
-  whileBlocking( mPointBudgetPercentageSlider ) ->setValue( mPointBudgetPercentage );
-  whileBlocking( mPointBudgetPercentageSpinBox ) ->setValue( mPointBudgetPercentage );
-
-  whileBlocking( mRenderedPointsSpinBox )->setMinimum( 0 );
-  whileBlocking( mRenderedPointsSpinBox )->setMaximum( mLayer->pointCount() + 1 );
-  whileBlocking( mRenderedPointsSpinBox )->setValue( 1000000 );
+  whileBlocking( mPointBudgetSpinBox )->setMinimum( 0 );
+  whileBlocking( mPointBudgetSpinBox )->setMaximum( mLayer->pointCount() + 1 );
+  whileBlocking( mPointBudgetSpinBox )->setValue( 1000000 );
 
   if ( symbol )
     setSymbol( symbol );
@@ -112,9 +105,8 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
 
   connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
-  connect( mPointBudgetPercentageSlider, &QSlider::valueChanged, this, &QgsPointCloud3DSymbolWidget::pointBudgetSliderChanged );
-  connect( mPointBudgetPercentageSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::pointBudgetSpinBoxChanged );
   connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, [&]() { emitChangedSignal(); } );
+  connect( mPointBudgetSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [&]() { emitChangedSignal(); } );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
     rampAttributeChanged();
@@ -622,15 +614,12 @@ void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
 
 void QgsPointCloud3DSymbolWidget::setPointBudget( int budget )
 {
-  mPointBudgetPercentage = 100.0 * budget / mLayer->pointCount();
-  whileBlocking( mPointBudgetPercentageSlider )->setValue( mPointBudgetPercentage );
-  whileBlocking( mPointBudgetPercentageSpinBox )->setValue( mPointBudgetPercentage );
-  whileBlocking( mRenderedPointsSpinBox )->setValue( budget );
+  whileBlocking( mPointBudgetSpinBox )->setValue( budget );
 }
 
 int QgsPointCloud3DSymbolWidget::pointBudget() const
 {
-  return mPointBudgetPercentage * mLayer->pointCount() / 100.0f;
+  return mPointBudgetSpinBox->value();
 }
 
 double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
@@ -641,21 +630,5 @@ double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
 void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )
 {
   parent->connectChildPanel( mClassifiedRendererWidget );
-}
-
-void QgsPointCloud3DSymbolWidget::pointBudgetSliderChanged( int value )
-{
-  whileBlocking( mPointBudgetPercentageSpinBox )->setValue( value );
-  mPointBudgetPercentage = value;
-  mRenderedPointsSpinBox->setValue( mPointBudgetPercentage * mLayer->pointCount() / 100.0f );
-  emitChangedSignal();
-}
-
-void QgsPointCloud3DSymbolWidget::pointBudgetSpinBoxChanged( double percentage )
-{
-  mPointBudgetPercentageSlider->setValue( percentage );
-  mPointBudgetPercentage = percentage;
-  mRenderedPointsSpinBox->setValue( mPointBudgetPercentage * mLayer->pointCount() / 100.0f );
-  emitChangedSignal();
 }
 
