@@ -60,6 +60,11 @@ void *QgsLinearGeorefTransform::GDALTransformerArgs() const
   return ( void * )&mParameters;
 }
 
+QgsGcpTransformerInterface::TransformMethod QgsLinearGeorefTransform::method() const
+{
+  return TransformMethod::Linear;
+}
+
 int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
     double *x, double *y, double *z, int *panSuccess )
 {
@@ -126,6 +131,11 @@ GDALTransformerFunc QgsHelmertGeorefTransform::GDALTransformer() const
 void *QgsHelmertGeorefTransform::GDALTransformerArgs() const
 {
   return ( void * )&mHelmertParameters;
+}
+
+QgsGcpTransformerInterface::TransformMethod QgsHelmertGeorefTransform::method() const
+{
+  return TransformMethod::Helmert;
 }
 
 bool QgsHelmertGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &scale, double &rotation ) const
@@ -266,6 +276,23 @@ void *QgsGDALGeorefTransform::GDALTransformerArgs() const
   return mGDALTransformerArgs;
 }
 
+QgsGcpTransformerInterface::TransformMethod QgsGDALGeorefTransform::method() const
+{
+  if ( mIsTPSTransform )
+    return TransformMethod::ThinPlateSpline;
+
+  switch ( mPolynomialOrder )
+  {
+    case 1:
+      return TransformMethod::PolynomialOrder1;
+    case 2:
+      return TransformMethod::PolynomialOrder2;
+    case 3:
+      return TransformMethod::PolynomialOrder3;
+  }
+  return TransformMethod::InvalidTransform;
+}
+
 void QgsGDALGeorefTransform::destroyGdalArgs()
 {
   if ( mGDALTransformerArgs )
@@ -347,6 +374,11 @@ GDALTransformerFunc QgsProjectiveGeorefTransform::GDALTransformer() const
 void *QgsProjectiveGeorefTransform::GDALTransformerArgs() const
 {
   return ( void * )&mParameters;
+}
+
+QgsGcpTransformerInterface::TransformMethod QgsProjectiveGeorefTransform::method() const
+{
+  return TransformMethod::Projective;
 }
 
 int QgsProjectiveGeorefTransform::projectiveTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,

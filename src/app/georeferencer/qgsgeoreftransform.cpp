@@ -26,21 +26,21 @@
 
 QgsGeorefTransform::QgsGeorefTransform( const QgsGeorefTransform &other )
 {
-  mTransformParametrisation = InvalidTransform;
+  mTransformParametrisation = TransformMethod::InvalidTransform;
   mGeorefTransformImplementation = nullptr;
   selectTransformParametrisation( other.mTransformParametrisation );
 }
 
-QgsGeorefTransform::QgsGeorefTransform( TransformParametrisation parametrisation )
+QgsGeorefTransform::QgsGeorefTransform( TransformMethod parametrisation )
 {
-  mTransformParametrisation = InvalidTransform;
+  mTransformParametrisation = TransformMethod::InvalidTransform;
   mGeorefTransformImplementation = nullptr;
   selectTransformParametrisation( parametrisation );
 }
 
 QgsGeorefTransform::QgsGeorefTransform()
 {
-  mTransformParametrisation = InvalidTransform;
+  mTransformParametrisation = TransformMethod::InvalidTransform;
   mGeorefTransformImplementation = nullptr;
   mParametersInitialized = false;
 }
@@ -50,12 +50,12 @@ QgsGeorefTransform::~QgsGeorefTransform()
   delete mGeorefTransformImplementation;
 }
 
-QgsGeorefTransform::TransformParametrisation QgsGeorefTransform::transformParametrisation() const
+QgsGeorefTransform::TransformMethod QgsGeorefTransform::transformParametrisation() const
 {
   return mTransformParametrisation;
 }
 
-void QgsGeorefTransform::selectTransformParametrisation( TransformParametrisation parametrisation )
+void QgsGeorefTransform::selectTransformParametrisation( TransformMethod parametrisation )
 {
   if ( parametrisation != mTransformParametrisation )
   {
@@ -73,9 +73,9 @@ void QgsGeorefTransform::setRasterChangeCoords( const QString &fileRaster )
 
 bool QgsGeorefTransform::providesAccurateInverseTransformation() const
 {
-  return ( mTransformParametrisation == Linear
-           || mTransformParametrisation == Helmert
-           || mTransformParametrisation == PolynomialOrder1 );
+  return ( mTransformParametrisation == TransformMethod::Linear
+           || mTransformParametrisation == TransformMethod::Helmert
+           || mTransformParametrisation == TransformMethod::PolynomialOrder1 );
 }
 
 bool QgsGeorefTransform::parametersInitialized() const
@@ -115,6 +115,11 @@ int QgsGeorefTransform::minimumGcpCount() const
   return mGeorefTransformImplementation ? mGeorefTransformImplementation->minimumGcpCount() : 0;
 }
 
+QgsGcpTransformerInterface::TransformMethod QgsGeorefTransform::method() const
+{
+  return mGeorefTransformImplementation ? mGeorefTransformImplementation->method() : TransformMethod::InvalidTransform;
+}
+
 GDALTransformerFunc QgsGeorefTransform::GDALTransformer() const
 {
   return mGeorefTransformImplementation ? mGeorefTransformImplementation->GDALTransformer() : nullptr;
@@ -125,23 +130,23 @@ void *QgsGeorefTransform::GDALTransformerArgs() const
   return mGeorefTransformImplementation ? mGeorefTransformImplementation->GDALTransformerArgs() : nullptr;
 }
 
-QgsGcpTransformerInterface *QgsGeorefTransform::createImplementation( TransformParametrisation parametrisation )
+QgsGcpTransformerInterface *QgsGeorefTransform::createImplementation( TransformMethod parametrisation )
 {
   switch ( parametrisation )
   {
-    case Linear:
+    case TransformMethod::Linear:
       return new QgsLinearGeorefTransform;
-    case Helmert:
+    case TransformMethod::Helmert:
       return new QgsHelmertGeorefTransform;
-    case PolynomialOrder1:
+    case TransformMethod::PolynomialOrder1:
       return new QgsGDALGeorefTransform( false, 1 );
-    case PolynomialOrder2:
+    case TransformMethod::PolynomialOrder2:
       return new QgsGDALGeorefTransform( false, 2 );
-    case PolynomialOrder3:
+    case TransformMethod::PolynomialOrder3:
       return new QgsGDALGeorefTransform( false, 3 );
-    case ThinPlateSpline:
+    case TransformMethod::ThinPlateSpline:
       return new QgsGDALGeorefTransform( true, 0 );
-    case Projective:
+    case TransformMethod::Projective:
       return new QgsProjectiveGeorefTransform;
     default:
       return nullptr;
@@ -170,7 +175,7 @@ bool QgsGeorefTransform::transform( const QgsPointXY &src, QgsPointXY &dst, bool
 
 bool QgsGeorefTransform::getLinearOriginScale( QgsPointXY &origin, double &scaleX, double &scaleY ) const
 {
-  if ( transformParametrisation() != Linear )
+  if ( transformParametrisation() != TransformMethod::Linear )
   {
     return false;
   }
@@ -185,13 +190,13 @@ bool QgsGeorefTransform::getLinearOriginScale( QgsPointXY &origin, double &scale
 bool QgsGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &scaleX, double &scaleY, double &rotation ) const
 {
 
-  if ( mTransformParametrisation == Linear )
+  if ( mTransformParametrisation == TransformMethod::Linear )
   {
     rotation = 0.0;
     QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
     return transform && transform->getOriginScale( origin, scaleX, scaleY );
   }
-  else if ( mTransformParametrisation == Helmert )
+  else if ( mTransformParametrisation == TransformMethod::Helmert )
   {
     double scale;
     QgsHelmertGeorefTransform *transform = dynamic_cast<QgsHelmertGeorefTransform *>( mGeorefTransformImplementation );

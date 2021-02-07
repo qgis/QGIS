@@ -34,6 +34,21 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 {
   public:
 
+    /**
+     * Available transformation methods.
+     */
+    enum class TransformMethod : int
+    {
+      Linear, //!< Linear transform
+      Helmert, //!< Helmert transform
+      PolynomialOrder1, //!< Polynomial order 1
+      PolynomialOrder2, //!< Polyonmial order 2
+      PolynomialOrder3, //!< Polynomial order
+      ThinPlateSpline, //!< Thin plate splines
+      Projective, //!< Projective
+      InvalidTransform = 65535 //!< Invalid transform
+    };
+
     QgsGcpTransformerInterface() = default;
 
     virtual ~QgsGcpTransformerInterface() = default;
@@ -55,6 +70,11 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
      * Returns the minimum number of Ground Control Points (GCPs) required for parameter fitting.
      */
     virtual int minimumGcpCount() const = 0;
+
+    /**
+     * Returns the transformation method.
+     */
+    virtual TransformMethod method() const = 0;
 
 #ifndef SIP_RUN
 
@@ -96,6 +116,7 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
+    TransformMethod method() const override;
 
   private:
     struct LinearParameters
@@ -129,6 +150,7 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
+    TransformMethod method() const override;
 
   private:
 
@@ -161,14 +183,16 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
+    TransformMethod method() const override;
+
   private:
     void destroyGdalArgs();
 
-    const int  mPolynomialOrder;
+    const int mPolynomialOrder;
     const bool mIsTPSTransform;
 
-    GDALTransformerFunc  mGDALTransformer;
-    void                *mGDALTransformerArgs = nullptr;
+    GDALTransformerFunc mGDALTransformer;
+    void *mGDALTransformerArgs = nullptr;
 
 };
 
@@ -190,6 +214,8 @@ class ANALYSIS_EXPORT QgsProjectiveGeorefTransform : public QgsGcpTransformerInt
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
+    TransformMethod method() const override;
+
   private:
     struct ProjectiveParameters
     {
