@@ -49,7 +49,7 @@ jobs:
           restore-keys: |
             build-mac-ccache-${{ github.head_ref }}-
             build-mac-ccache-${{ github.base_ref }}-
-            build-mac-ccache-master-
+            build-mac-ccache-refs/heads/master-
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
@@ -61,7 +61,7 @@ jobs:
           key: build-mac-ccache-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
             build-mac-ccache-${{ github.ref }}-
-            build-mac-ccache-master-
+            build-mac-ccache-refs/heads/master-
 
       - name: Cache Qt
         id: cache-qt
@@ -78,8 +78,8 @@ jobs:
         id: cache-deps
         uses: pat-s/always-upload-cache@v2.1.3
         with:
-          path: /opt/Qt/${{ env.QGIS_DEPS_VERSION }}
-          key: mac-deps-${{ env.QGIS_DEPS_VERSION }}
+          path: /opt/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}
+          key: mac-qgis-deps-${{ env.QGIS_DEPS_VERSION }}
 
       - name: Download deps
         if: steps.cache-deps.outputs.cache-hit != 'true'
