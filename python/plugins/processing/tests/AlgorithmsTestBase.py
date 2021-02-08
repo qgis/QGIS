@@ -170,6 +170,12 @@ class AlgorithmsTest(object):
         try:
             if param['type'] in ('vector', 'raster', 'table'):
                 return self.load_layer(id, param).id()
+            elif param['type'] == 'vrtlayers':
+                vals = []
+                for p in param['params']:
+                    p['layer'] = self.load_layer(None, {'type': 'vector', 'name': p['layer']})
+                    vals.append(p)
+                return vals
             elif param['type'] == 'multi':
                 return [self.load_param(p) for p in param['params']]
             elif param['type'] == 'file':
@@ -251,6 +257,12 @@ class AlgorithmsTest(object):
             self.in_place_layers[id] = filepath
 
         if param['type'] in ('vector', 'table'):
+            gmlrex = r'\.gml\b'
+            if re.search(gmlrex, filepath, re.IGNORECASE):
+                # ewwwww - we have to force SRS detection for GML files, otherwise they'll be loaded
+                # with no srs
+                filepath += '|option:FORCE_SRS_DETECTION=YES'
+
             if filepath in self.vector_layer_params:
                 return self.vector_layer_params[filepath]
 
@@ -320,19 +332,26 @@ class AlgorithmsTest(object):
                     if isinstance(results[id], QgsMapLayer):
                         result_lyr = results[id]
                     else:
-                        result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                        string = results[id]
+
+                        gmlrex = r'\.gml\b'
+                        if re.search(gmlrex, string, re.IGNORECASE):
+                            # ewwwww - we have to force SRS detection for GML files, otherwise they'll be loaded
+                            # with no srs
+                            string += '|option:FORCE_SRS_DETECTION=YES'
+
+                        result_lyr = QgsProcessingUtils.mapLayerFromString(string, context)
                     self.assertTrue(result_lyr, results[id])
 
                 compare = expected_result.get('compare', {})
                 pk = expected_result.get('pk', None)
-                topo_equal_check = expected_result.get('topo_equal_check', False)
 
                 if len(expected_lyrs) == 1:
-                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk, geometry={'topo_equal_check': topo_equal_check})
+                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk)
                 else:
                     res = False
                     for l in expected_lyrs:
-                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk, geometry={'topo_equal_check': topo_equal_check}):
+                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk):
                             res = True
                             break
                     self.assertTrue(res, 'Could not find matching layer in expected results')
@@ -349,8 +368,17 @@ class AlgorithmsTest(object):
                 else:
                     self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:
-                expected_filepath = self.filepath_from_param(expected_result)
                 result_filepath = results[id]
+                if isinstance(expected_result.get('name'), list):
+                    # test to see if any match expected
+                    for path in expected_result['name']:
+                        expected_filepath = self.filepath_from_param({'name': path})
+                        if self.checkFilesEqual(expected_filepath, result_filepath):
+                            break
+                    else:
+                        expected_filepath = self.filepath_from_param({'name': expected_result['name'][0]})
+                else:
+                    expected_filepath = self.filepath_from_param(expected_result)
 
                 self.assertFilesEqual(expected_filepath, result_filepath)
             elif 'directory' == expected_result['type']:

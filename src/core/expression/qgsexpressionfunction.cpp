@@ -3160,7 +3160,7 @@ static QVariant fcnGeometry( const QVariantList &, const QgsExpressionContext *c
   if ( !geom.isNull() )
     return  QVariant::fromValue( geom );
   else
-    return QVariant( QVariant::UserType );
+    return QVariant();
 }
 
 static QVariant fcnGeomFromWKT( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

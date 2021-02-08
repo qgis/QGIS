@@ -298,8 +298,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        print(' ### Tear Down Spatialite Provider Test Class')
-
+        del(cls.vl)
+        del(cls.vl_poly)
         # for the time being, keep the file to check with qgis
         # if os.path.exists(cls.dbname) :
         #    os.remove(cls.dbname)

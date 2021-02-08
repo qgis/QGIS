@@ -426,6 +426,12 @@ void TestQgsAuthManager::doSync()
 void TestQgsAuthManager::testPasswordHelper()
 {
 
+  if ( QgsTest::isCIRun() )
+  {
+    {
+      QSKIP( "QtKeyChain not working on CI (requires dbus)" );
+    }
+  }
   QgsAuthManager *authm = QgsApplication::authManager();
   authm->clearMasterPassword();
 

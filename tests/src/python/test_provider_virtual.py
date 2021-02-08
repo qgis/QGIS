@@ -72,7 +72,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        pass
+        del(cls.vl)
+        del(cls.poly_vl)
 
     def treat_datetime_as_string(self):
         return True

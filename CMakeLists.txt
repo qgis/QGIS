@@ -487,18 +487,25 @@ set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML director
 # whether unit tests should be build
 set (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 if (ENABLE_TESTS)
-set( QT_USE_QTTEST  TRUE )
-enable_testing()
-# Adds some testing specific build targets e.g. make Experimental
-include(Dart)
-# Additional test configuration options e.g. max upload size of test report
-configure_file(
-  "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
-  "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
-  IMMEDIATE @ONLY)
-# For server side testing we have no X, we can use xvfb as a fake x
-# sudo apt-get install xvfb
-add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
+  set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
+  set(QT_USE_QTTEST TRUE)
+  enable_testing()
+  # Adds some testing specific build targets e.g. make Experimental
+  include(Dart)
+  # Additional test configuration options e.g. max upload size of test report
+  configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
+    "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
+    IMMEDIATE @ONLY)
+  if (PUSH_TO_CDASH)
+    configure_file(
+      "${CMAKE_SOURCE_DIR}/cmake_templates/CTestConfig.cmake.in"
+      "${CMAKE_BINARY_DIR}/CTestConfig.cmake"
+      IMMEDIATE @ONLY)
+  endif()
+  # For server side testing we have no X, we can use xvfb as a fake x
+  # sudo apt-get install xvfb
+  add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
 endif()
 
 if (WITH_CORE)

@@ -193,6 +193,9 @@ tests:
       OUTPUT:
         name: expected/polygonize.gml
         type: vector
+        compare:
+          geometry:
+            topo_equal_check: True
 
   - algorithm: qgis:voronoipolygons
     name: Standard voronoi
@@ -284,18 +287,21 @@ tests:
         name: expected/explode_compound_curve.shp
         type: vector
 
-  - algorithm: qgis:findprojection
-    name: Find projection
-    params:
-      INPUT:
-        name: custom/find_projection.gml
-        type: vector
-      TARGET_AREA: 151.1198,151.1368,-33.9118,-33.9003
-      TARGET_AREA_CRS: EPSG:4326
-    results:
-      OUTPUT:
-        name: expected/projection_candidates.gml
-        type: vector
+ # This is VERY slow on proj 6+ builds due to the excessive amount of message log noise it causes to be emitted.
+ # We need a way to disable the default handlers on individual QgsCoordinateTransform objects in order to avoid
+ # this and speed the algorithm back up
+ # - algorithm: qgis:findprojection
+ #   name: Find projection
+ #   params:
+ #     INPUT:
+ #       name: custom/find_projection.gml
+ #       type: vector
+ #     TARGET_AREA: 151.1198,151.1368,-33.9118,-33.9003
+ #     TARGET_AREA_CRS: EPSG:4326
+ #   results:
+ #     OUTPUT:
+ #       name: expected/projection_candidates.gml
+ #       type: vector
 
   - algorithm: native:polygonfromlayerextent
     name: Standard polygon from layer extent
@@ -1315,6 +1321,12 @@ tests:
         compare:
           fields:
             fid: skip
+            date:
+              cast: str
+            min:
+              cast: str
+            max:
+              cast: str
 
   - algorithm: native:joinattributesbylocation
     name: Join by location (intersects)
@@ -1812,6 +1824,10 @@ tests:
         compare:
           fields:
             fid: skip
+            date_min:
+              cast: str
+            date_max:
+              cast: str
 
   - algorithm: qgis:joinbylocationsummary
     name: Join by summary polys to points, reprojected

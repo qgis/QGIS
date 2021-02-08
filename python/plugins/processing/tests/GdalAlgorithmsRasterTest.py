@@ -30,7 +30,9 @@ from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
                        QgsRectangle,
                        QgsRasterLayer,
-                       QgsProject)
+                       QgsProject,
+                       QgsProjUtils,
+                       QgsCoordinateReferenceSystem)
 
 from qgis.testing import (start_app,
                           unittest)
@@ -94,6 +96,15 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
     def test_definition_file(self):
         return 'gdal_algorithm_raster_tests.yaml'
 
+    @staticmethod
+    def get_param_value_and_expected_string_for_custom_crs(proj_def):
+        crs = QgsCoordinateReferenceSystem.fromProj(proj_def)
+        custom_crs = f'proj4: {proj_def}'
+        if QgsProjUtils.projVersionMajor() >= 6:
+            return custom_crs, crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL).replace('"', '"""')
+        else:
+            return custom_crs, proj_def
+
     def testAssignProjection(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -119,12 +130,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
              source])
 
         # with target using custom projection
-        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs(
+            '+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
                                     'CRS': custom_crs}, context, feedback),
             ['gdal_edit.py',
-             '-a_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+             f'-a_srs "{expected_crs_string}" ' +
              source])
 
         # with non-EPSG crs code
@@ -250,13 +262,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  outdir + '/check.jpg'])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             self.assertEqual(
                 translate_alg.getConsoleCommands({'INPUT': source,
                                                   'TARGET_CRS': custom_crs,
                                                   'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-a_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+                 f'-a_srs "{expected_crs_string}" ' +
                  '-of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
@@ -601,13 +613,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  outdir + '/'])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'SOURCE_CRS': custom_crs,
                                         'OUTPUT': outdir + '/'}, context, feedback),
                 ['gdal2tiles.py',
-                 '-p mercator -w all -r average -s "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+                 f'-p mercator -w all -r average -s "{expected_crs_string}" ' +
                  source + ' ' +
                  outdir + '/'])
 
@@ -780,13 +792,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             self.assertIn('--optfile ', commands[1])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             commands = alg.getConsoleCommands({'LAYERS': [source],
                                                'TARGET_CRS': custom_crs,
                                                'OUTPUT': outdir + '/test.shp'}, context, feedback)
             self.assertEqual(len(commands), 2)
             self.assertEqual(commands[0], 'gdaltindex')
-            self.assertIn('-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn(f'-tileindex location -t_srs "{expected_crs_string}" -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
             self.assertIn('--optfile ', commands[1])
 
             # with non-EPSG crs code
@@ -1677,13 +1689,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  ])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': [source],
                                         'SOURCE_CRS': custom_crs,
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -s_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
+                 f'-ps 256 256 -overlap 0 -levels 1 -s_srs "{expected_crs_string}" -r near -ot Float32 -targetDir {outdir} {source}'
                  ])
 
             # with non-EPSG crs code
@@ -1787,19 +1799,19 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  outdir + '/check.jpg'])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'SOURCE_CRS': custom_crs,
                                         'TARGET_CRS': custom_crs,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -r near -of JPEG ' +
+                 f'-s_srs "{expected_crs_string}" -t_srs "{expected_crs_string}" -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
             # with target using custom projection and user-defined extent
-            custom_crs2 = 'proj4: +proj=longlat +a=6378388 +b=6356912 +no_defs'
+            custom_crs2, expected_crs_string2 = self.get_param_value_and_expected_string_for_custom_crs('+proj=longlat +a=6378388 +b=6356912 +no_defs')
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'SOURCE_CRS': custom_crs2,
@@ -1808,7 +1820,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_EXTENT_CRS': custom_crs2,
                                         'OUTPUT': outdir + '/check.tif'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -t_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -r near -te 18.67 45.78 18.7 45.81 -te_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -of GTiff ' +
+                 f'-s_srs "{expected_crs_string2}" -t_srs "{expected_crs_string2}" -r near -te 18.67 45.78 18.7 45.81 -te_srs "{expected_crs_string2}" -of GTiff ' +
                  source + ' ' +
                  outdir + '/check.tif'])
 

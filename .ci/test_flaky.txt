@@ -1,0 +1,9 @@
+# flaky
+qgis_filedownloader
+qgis_wcsprovidertest
+PyQgsWFSProviderGUI
+qgis_ziplayertest
+
+# Flaky, the ms odbc driver crashes a lot on the ubuntu docker image. Retest when
+# the docker base image is upgraded
+PyQgsMssqlProvider

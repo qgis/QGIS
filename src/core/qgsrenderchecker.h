@@ -133,6 +133,13 @@ class CORE_EXPORT QgsRenderChecker
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
 
     /**
+     * Test using two arbitrary images at the specified paths for equality.
+     *
+     * \since QGIS 3.18
+     */
+    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0 );
+
+    /**
      * Gets a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
      * mismatch), but where the output was still acceptable. If the render

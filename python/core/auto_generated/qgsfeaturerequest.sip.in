@@ -764,7 +764,9 @@ Base class that can be used for any class that is capable of returning features
   public:
     virtual ~QgsAbstractFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
+
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0 /TransferBack/;
 %Docstring
 Gets an iterator for features matching the specified request
 
@@ -772,6 +774,7 @@ Gets an iterator for features matching the specified request
 
 :return: A feature iterator
 %End
+
 
   protected:
     void iteratorOpened( QgsAbstractFeatureIterator *it );

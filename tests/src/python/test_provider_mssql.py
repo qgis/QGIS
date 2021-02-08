@@ -60,7 +60,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_provider = cls.poly_vl.dataProvider()
 
         # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             del cls.getEditableLayer
 
         # Use connections API
@@ -212,22 +212,22 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         return filters
 
     def testGetFeaturesUncompiled(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testGetFeaturesUncompiled()
 
     def testGetFeaturesExp(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testGetFeaturesExp()
 
     def testOrderBy(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testOrderBy()
 
     def testOrderByCompiled(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testOrderByCompiled()
 
@@ -287,7 +287,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertIsInstance(f.attributes()[dec_idx], float)
         self.assertEqual(f.attributes()[dec_idx], 1.123)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCreateLayer(self):
         layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
@@ -323,7 +323,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['Point (1 2)', '', 'Point (3 2)', 'Point (4 3)'])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCreateLayerMultiPoint(self):
         layer = QgsVectorLayer("MultiPoint?crs=epsg:3111&field=id:integer&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
@@ -356,7 +356,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['MultiPoint ((1 2),(3 4))', '', 'MultiPoint ((7 8))'])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCurveGeometries(self):
         geomtypes = ['CompoundCurveM', 'CurvePolygonM', 'CircularStringM', 'CompoundCurveZM', 'CurvePolygonZM',
                      'CircularStringZM', 'CompoundCurveZ', 'CurvePolygonZ', 'CircularStringZ', 'CompoundCurve',

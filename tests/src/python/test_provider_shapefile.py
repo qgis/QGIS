@@ -84,6 +84,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        del(cls.vl)
+        del(cls.vl_poly)
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 

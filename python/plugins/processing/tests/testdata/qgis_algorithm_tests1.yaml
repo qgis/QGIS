@@ -75,6 +75,9 @@ tests:
       OUTPUT:
         name: expected/aggregate_all.gml
         type: vector
+        compare:
+          geometry:
+            ignore_part_order: True
 
   - name: Aggregate using field
     algorithm: qgis:aggregate
@@ -121,6 +124,9 @@ tests:
       OUTPUT:
         name: expected/aggregate_field.gml
         type: vector
+        compare:
+          geometry:
+            ignore_part_order: True
 
   - algorithm: qgis:aggregate
     name: Aggregate using two fields
@@ -167,6 +173,9 @@ tests:
       OUTPUT:
         name: expected/aggregate_two_fields.gml
         type: vector
+        compare:
+          geometry:
+            ignore_part_order: True
 
   - name: Aggregate points
     algorithm: qgis:aggregate
@@ -227,6 +236,9 @@ tests:
       OUTPUT:
         name: expected/aggregate_lines.gml
         type: vector
+        compare:
+          geometry:
+            ignore_part_order: True
 
   - name: Delete Holes
     algorithm: native:deleteholes
@@ -542,6 +554,10 @@ tests:
       OUTPUT:
         name: expected/dissolve_field.gml
         type: vector
+        compare:
+          geometry:
+            precision: 4
+            ignore_part_order: True
 
   - algorithm: native:dissolve
     name: Dissolve using two fields
@@ -554,6 +570,10 @@ tests:
       OUTPUT:
         name: expected/dissolve_two_fields.gml
         type: vector
+        compare:
+          geometry:
+            precision: 4
+            ignore_part_order: True
 
   - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
     algorithm: native:dissolve
@@ -1150,6 +1170,9 @@ tests:
       OUTPUT:
         name: expected/buffer_polys_miter.gml
         type: vector
+        compare:
+          geometry:
+            precision: 5
 
   - algorithm: native:buffer
     name: Buffer lines
@@ -1675,6 +1698,7 @@ tests:
         - c05cd8dbfb00200a3803dcdc74ad177588eb8379867c4046463f73f1
         - 8f59f545b5df01f213b7a2233eb364d05b5801676d1f4285ad1225a1
         - 360a66711d38a77e79c69aa1a42d620090024011582c4518cfd24178
+        - dada50c7bf8aa705bac0bbfc9a295f3c0e2f83cb1877545105279d75
         type: rasterhash
 
   - algorithm: qgis:relief
@@ -1819,6 +1843,9 @@ tests:
       OUTPUT:
         name: expected/sum_line_length_projected_crs.gml
         type: vector
+        compare:
+          geometry:
+            precision: 3
 
   - algorithm: qgis:delaunaytriangulation
     name: Delaunay triangulation (multipoint data)
