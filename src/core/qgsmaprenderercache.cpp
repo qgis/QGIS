@@ -235,6 +235,11 @@ QImage QgsMapRendererCache::transformedCacheImage( const QString &cacheKey, cons
   }
   else
   {
+    // no not use cache when the canvas rotation just changed
+    // https://github.com/qgis/QGIS/issues/41360
+    if ( !qgsDoubleNear( mtp.mapRotation(), params.cachedMtp.mapRotation() ) )
+      return QImage();
+
     QgsRectangle intersection = mExtent.intersect( params.cachedExtent );
     if ( intersection.isNull() )
       return QImage();
