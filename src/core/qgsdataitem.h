@@ -415,6 +415,17 @@ class CORE_EXPORT QgsDataItem : public QObject
     //! Move object and all its descendants to thread
     void moveToThread( QThread *targetThread );
 
+    /**
+     * For data items that represent a DB connection or one of its children,
+     * this method returns a connection.
+     * All other data items will return NULL.
+     *
+     * Ownership of the returned objects is transferred to the caller.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const SIP_FACTORY;
+
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
 
@@ -648,6 +659,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconPointCloud();
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
+
 };
 
 
@@ -689,6 +701,8 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
      */
     static QIcon iconDataCollection();
 
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+
   protected:
 
     /**
@@ -702,6 +716,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
      * \since QGIS 3.4
      */
     static QIcon homeDirIcon();
+
 };
 
 
@@ -730,6 +745,7 @@ class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
 
     ~QgsDatabaseSchemaItem() override;
 
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
     /**
      * Returns the standard browser data collection icon.

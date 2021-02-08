@@ -132,6 +132,9 @@ class CORE_EXPORT QgsOgrDataCollectionItem final: public QgsDataCollectionItem
 
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::Uri mimeUri() const override;
+
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+
 };
 
 //! Provider for OGR root data item
