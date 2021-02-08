@@ -38,30 +38,29 @@ class TestQgsSettingsRegistry : public QObject
 
 void TestQgsSettingsRegistry::variantValue()
 {
-  QgsSettingsRegistry settingsRegistry(QgsSettings::NoSection,
-                                       this);
+  QgsSettingsRegistry settingsRegistry( QgsSettings::NoSection,
+                                        this );
 
   QString settingsName( "qgis/testing/settings_registry/my_variant_value" );
-  QVariant defaultValue( 42 );
+  int defaultValue( 42 );
   QString settingsDescription( "Variant value for testing of 'QgsSettingsRegistry'" );
   settingsRegistry.registerValue( settingsName,
-                                  defaultValue.type(),
                                   defaultValue,
                                   settingsDescription );
 
   // Check default value
-  QCOMPARE( settingsRegistry.value(settingsName), defaultValue );
+  QCOMPARE( settingsRegistry.value<int>( settingsName ), defaultValue );
 
   // Set new value
-  QVariant newValue( 1234 );
+  int newValue( 1234 );
   settingsRegistry.setValue( settingsName,
                              newValue );
 
   // Check new value with QgsSettings
-  QCOMPARE( QgsSettings().value( settingsName, defaultValue ), newValue );
+  QCOMPARE( QgsSettings().value( settingsName, defaultValue ).toInt(), newValue );
 
   // Check new value with QgsSettingsRegistry
-  QCOMPARE( settingsRegistry.value( settingsName ), newValue);
+  QCOMPARE( settingsRegistry.value<int>( settingsName ), newValue );
 
   // Check set on unregistered settings name
   settingsRegistry.unregister( settingsName );

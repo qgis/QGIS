@@ -42,12 +42,52 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
                       QString description = QString(),
                       QObject *parent = nullptr );
 
+    QgsSettingsEntry( const QString &settingsName,
+                      QgsSettings::Section settingsSection,
+                      const QString &defaultValue,
+                      const QString &description = QString(),
+                      int minLength = 0,
+                      int maxLength = 1 << 30,
+                      QObject *parent = nullptr );
+
     QgsSettingsEntry( const QgsSettingsEntry &other );
 
     QgsSettingsEntry &operator=( const QgsSettingsEntry &other );
 
     void setValue( const QVariant &value );
+
+#ifdef SIP_RUN
     QVariant value() const;
+#else
+    template <class T>
+    T value() const
+    {
+      QVariant variantValue = QgsSettings().value( mSettingsName,
+                              mDefaultValue,
+                              mSettingsSection );
+      if ( variantValue.canConvert<T>() == false )
+        QgsDebugMsg( QObject::tr( "Can't convert setting '%1' to type '%2'" ).arg( mSettingsName )
+                     .arg( type_name<T>() ) );
+
+      return variantValue.value<T>();
+    }
+#endif
+
+#ifdef SIP_RUN
+    QVariant defaultValue() const;
+#else
+    template <class T>
+    T defaultValue() const
+    {
+      if ( mDefaultValue.canConvert<T>() == false )
+        QgsDebugMsg( QObject::tr( "Can't convert default value of setting '%1' to type '%2'" ).arg( mSettingsName )
+                     .arg( type_name<T>() ) );
+
+      return mDefaultValue.value<T>();
+    }
+#endif
+
+    QString description() const;
 
   private:
 
@@ -55,6 +95,9 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     QVariant mDefaultValue;
     QgsSettings::Section mSettingsSection;
     QString mDescription;
+
+    int mValueStringMinLength;
+    int mValueStringMaxLength;
 };
 
 #endif // QGSSETTINGSENTRY_H

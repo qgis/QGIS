@@ -24,11 +24,10 @@ QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section settingsSection,
 {}
 
 void QgsSettingsRegistry::registerValue( const QString &settingsName,
-                                         QVariant::Type type,
-                                         const QVariant &defaultValue,
-                                         const QString &description )
+    const QVariant &defaultValue,
+    const QString &description )
 {
-  if ( mMapSettingsEntry.contains( settingsName ) == true )
+  if ( isRegistered( settingsName ) == true )
   {
     QgsDebugMsg( QObject::tr( "Settings name '%1' already registered" ).arg( settingsName ) );
     return;
@@ -36,16 +35,42 @@ void QgsSettingsRegistry::registerValue( const QString &settingsName,
 
   mMapSettingsEntry.insert( settingsName,
                             QgsSettingsEntry( settingsName,
-                                              mSettingsSection,
-                                              defaultValue,
-                                              description,
-                                              this ) );
+                                mSettingsSection,
+                                defaultValue,
+                                description,
+                                this ) );
+}
 
+void QgsSettingsRegistry::registerValueString( const QString &settingsName,
+    const QString &defaultValue,
+    const QString &description,
+    int minLength,
+    int maxLength )
+{
+  if ( isRegistered( settingsName ) == true )
+  {
+    QgsDebugMsg( QObject::tr( "Settings name '%1' already registered" ).arg( settingsName ) );
+    return;
+  }
+
+  mMapSettingsEntry.insert( settingsName,
+                            QgsSettingsEntry( settingsName,
+                                mSettingsSection,
+                                defaultValue,
+                                description,
+                                minLength,
+                                maxLength,
+                                this ) );
+}
+
+bool QgsSettingsRegistry::isRegistered( const QString &settingsName ) const
+{
+  return mMapSettingsEntry.contains( settingsName );
 }
 
 void QgsSettingsRegistry::unregister( const QString &settingsName )
 {
-  if ( mMapSettingsEntry.contains( settingsName ) == false )
+  if ( isRegistered( settingsName ) == false )
   {
     QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
     return;
@@ -57,7 +82,7 @@ void QgsSettingsRegistry::unregister( const QString &settingsName )
 bool QgsSettingsRegistry::setValue( const QString &settingsName,
                                     const QVariant &value )
 {
-  if ( mMapSettingsEntry.contains( settingsName ) == false )
+  if ( isRegistered( settingsName ) == false )
   {
     QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
     return false;
@@ -67,13 +92,39 @@ bool QgsSettingsRegistry::setValue( const QString &settingsName,
   return true;
 }
 
+#ifdef SIP_RUN
 QVariant QgsSettingsRegistry::value( const QString &settingsName ) const
 {
-  if ( mMapSettingsEntry.contains( settingsName ) == false )
+  if ( isRegistered( settingsName ) == false )
   {
     QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
     return QVariant();
   }
 
   return mMapSettingsEntry.value( settingsName ).value();
+}
+#endif
+
+#ifdef SIP_RUN
+QVariant QgsSettingsRegistry::defaultValue( const QString &settingsName ) const
+{
+  if ( isRegistered( settingsName ) == false )
+  {
+    QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+    return QVariant();
+  }
+
+  return mMapSettingsEntry.value( settingsName ).defaultValue();
+}
+#endif
+
+QString QgsSettingsRegistry::description( const QString &settingsName ) const
+{
+  if ( isRegistered( settingsName ) == false )
+  {
+    QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+    return QString();
+  }
+
+  return mMapSettingsEntry.value( settingsName ).description();
 }
