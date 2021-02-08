@@ -76,7 +76,7 @@ jobs:
           path: /opt/Qt/${{ env.QGIS_DEPS_VERSION }}
           key: mac-deps-${{ env.QGIS_DEPS_VERSION }}
 
-      - name: Download Qt
+      - name: Download deps
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.tar.gz
 
