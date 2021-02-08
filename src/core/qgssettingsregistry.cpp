@@ -16,16 +16,16 @@
 #include "qgssettingsregistry.h"
 #include "qgslogger.h"
 
-QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section settingsSection,
-    QObject *parent )
+QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section settingsSection, QObject *parent )
   : QObject( parent )
   , mSettingsSection( settingsSection )
   , mMapSettingsEntry()
 {}
 
-void QgsSettingsRegistry::registerValue( const QString &settingsName,
-    const QVariant &defaultValue,
-    const QString &description )
+void QgsSettingsRegistry::registerSettings(
+  const QString &settingsName,
+  const QVariant &defaultValue,
+  const QString &description )
 {
   if ( isRegistered( settingsName ) == true )
   {
@@ -34,18 +34,20 @@ void QgsSettingsRegistry::registerValue( const QString &settingsName,
   }
 
   mMapSettingsEntry.insert( settingsName,
-                            QgsSettingsEntry( settingsName,
-                                mSettingsSection,
-                                defaultValue,
-                                description,
-                                this ) );
+                            QgsSettingsEntry(
+                              settingsName,
+                              mSettingsSection,
+                              defaultValue,
+                              description,
+                              this ) );
 }
 
-void QgsSettingsRegistry::registerValueString( const QString &settingsName,
-    const QString &defaultValue,
-    const QString &description,
-    int minLength,
-    int maxLength )
+void QgsSettingsRegistry::registerSettingsString(
+  const QString &settingsName,
+  const QString &defaultValue,
+  const QString &description,
+  int minLength,
+  int maxLength )
 {
   if ( isRegistered( settingsName ) == true )
   {
@@ -54,13 +56,14 @@ void QgsSettingsRegistry::registerValueString( const QString &settingsName,
   }
 
   mMapSettingsEntry.insert( settingsName,
-                            QgsSettingsEntry( settingsName,
-                                mSettingsSection,
-                                defaultValue,
-                                description,
-                                minLength,
-                                maxLength,
-                                this ) );
+                            QgsSettingsEntry(
+                              settingsName,
+                              mSettingsSection,
+                              defaultValue,
+                              description,
+                              minLength,
+                              maxLength,
+                              this ) );
 }
 
 bool QgsSettingsRegistry::isRegistered( const QString &settingsName ) const

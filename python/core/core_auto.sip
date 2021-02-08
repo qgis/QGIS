@@ -174,6 +174,7 @@
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
 %Include auto_generated/qgssettings.sip
+%Include auto_generated/qgssettingsregistry.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgssnappingutils.sip
