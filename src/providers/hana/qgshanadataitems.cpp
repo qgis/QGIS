@@ -262,7 +262,7 @@ QString QgsHanaLayerItem::createUri() const
     if ( !pkColumnsStored.empty() )
     {
       // We check whether the primary key columns still exist.
-      auto intersection = pkColumnsStored.toSet().intersect( mLayerProperty.pkCols.toSet() );
+      auto intersection = qgis::listToSet( pkColumnsStored ).intersect( qgis::listToSet( mLayerProperty.pkCols ) );
       if ( intersection.size() == pkColumnsStored.size() )
       {
         for ( const auto &column : pkColumnsStored )
