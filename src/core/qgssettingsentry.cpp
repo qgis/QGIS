@@ -26,6 +26,25 @@ QgsSettingsEntry::QgsSettingsEntry( QString settingsName,
   , mDefaultValue( defaultValue )
   , mSettingsSection( settingsSection )
   , mDescription( description )
+  , mValueStringMinLength( 0 )
+  , mValueStringMaxLength( 1 << 30 )
+{
+}
+
+QgsSettingsEntry::QgsSettingsEntry( const QString &settingsName,
+                                    QgsSettings::Section settingsSection,
+                                    const QString &defaultValue,
+                                    const QString &description,
+                                    int minLength,
+                                    int maxLength,
+                                    QObject *parent )
+  : QObject( parent )
+  , mSettingsName( settingsName )
+  , mDefaultValue( defaultValue )
+  , mSettingsSection( settingsSection )
+  , mDescription( description )
+  , mValueStringMinLength( minLength )
+  , mValueStringMaxLength( maxLength )
 {
 }
 
@@ -35,6 +54,8 @@ QgsSettingsEntry::QgsSettingsEntry( const QgsSettingsEntry &other )
   , mDefaultValue( other.mDefaultValue )
   , mSettingsSection( other.mSettingsSection )
   , mDescription( other.mDescription )
+  , mValueStringMinLength( 0 )
+  , mValueStringMaxLength( 1 << 30 )
 {
 }
 
@@ -44,6 +65,8 @@ QgsSettingsEntry &QgsSettingsEntry::operator=( const QgsSettingsEntry &other )
   this->mSettingsSection = other.mSettingsSection;
   this->mDefaultValue = other.mDefaultValue;
   this->mDescription = other.mDescription;
+  this->mValueStringMinLength = other.mValueStringMinLength;
+  this->mValueStringMaxLength = other.mValueStringMaxLength;
   return *this;
 }
 
@@ -54,9 +77,23 @@ void QgsSettingsEntry::setValue( const QVariant &value )
                           mSettingsSection );
 }
 
+#ifdef SIP_RUN
 QVariant QgsSettingsEntry::value() const
 {
   return QgsSettings().value( mSettingsName,
                               mDefaultValue,
                               mSettingsSection );
+}
+#endif
+
+#ifdef SIP_RUN
+QVariant QgsSettingsEntry::defaultValue() const
+{
+  return mDefaultValue;
+}
+#endif
+
+QString QgsSettingsEntry::description() const
+{
+  return mDescription;
 }

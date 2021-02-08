@@ -42,16 +42,55 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
                          QObject *parent = nullptr );
 
     void registerValue( const QString &settingsName,
-                        QVariant::Type type,
                         const QVariant &defaultValue = QVariant(),
                         const QString &description = QString() );
+
+    void registerValueString( const QString &settingsName,
+                              const QString &defaultValue = QString(),
+                              const QString &description = QString(),
+                              int minLength = 0,
+                              int maxLength = 1 << 30 );
+
+    bool isRegistered( const QString &settingsName ) const;
 
     void unregister( const QString &settingsName );
 
     bool setValue( const QString &settingsName,
                    const QVariant &value );
 
+#ifdef SIP_RUN
     QVariant value( const QString &settingsName ) const;
+#else
+    template <class T>
+    T value( const QString &settingsName ) const
+    {
+      if ( isRegistered( settingsName ) == false )
+      {
+        QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+        return T();
+      }
+
+      return mMapSettingsEntry.value( settingsName ).value <T> ();
+    }
+#endif
+
+#ifdef SIP_RUN
+    QVariant defaultValue( const QString &settingsName ) const;
+#else
+    template <class T>
+    T defaultValue( const QString &settingsName ) const
+    {
+      if ( isRegistered( settingsName ) == false )
+      {
+        QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+        return T();
+      }
+
+      return mMapSettingsEntry.value( settingsName ).defaultValue <T> ();
+    }
+#endif
+
+    QString description( const QString &settingsName ) const;
 
   private:
 
