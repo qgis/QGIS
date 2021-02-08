@@ -416,6 +416,13 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['text'], '2-3')
 
+        frame = QgsDateTimeRange(QDateTime(QDate(2020, 8, 26), QTime(1, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(4, 0, 0)), False, False)
+        # timestep frame on exact one data range frame: 1:00-4:00
+        featureRequest = QgsFeatureRequest().combineFilterExpression(props.createFilterString(context, frame))
+        result = list(layer.dataProvider().getFeatures(featureRequest))
+        self.assertEqual(len(result), 3)
+
+        frame = QgsDateTimeRange(QDateTime(QDate(2020, 8, 26), QTime(2, 0, 0)), QDateTime(QDate(2020, 8, 26), QTime(3, 0, 0)), False, False)
         # layer definition end_field value is NULL
         # should return all features which were started before (?not including?) the endfield, that is why 2 features (start of third one does not count)
         props.setEndField(None)
@@ -431,7 +438,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         result = list(layer.dataProvider().getFeatures(featureRequest))
         self.assertEqual(len(result), 2)
 
-        # now setting to one field an fixed duration
+        # now setting to one field and a fixed duration
         props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
         props.setStartField('start_field')
         props.setFixedDuration(1)
