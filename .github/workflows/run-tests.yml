@@ -8,6 +8,7 @@ on:
     paths:
     - 'src/**'
     - 'external/**'
+    - 'python/**'
     - 'tests/**'
     - 'CMakeLists.txt'
     - '.github/workflows/**'
@@ -20,6 +21,7 @@ on:
     paths:
     - 'src/**'
     - 'external/**'
+    - 'python/**'
     - 'tests/**'
     - 'CMakeLists.txt'
     - '.github/workflows/**'
