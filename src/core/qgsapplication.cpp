@@ -1378,7 +1378,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "body{"
                             "  background: white;"
                             "  color: black;"
-                            "  font-family: 'Lato', 'Ubuntu', 'Lucida Grande', 'Segoe UI', 'Arial', sans-serif;"
+                            "  font-family: 'Lato', 'Open Sans', 'Lucida Grande', 'Segoe UI', 'Arial', sans-serif;"
                             "  width: 100%;"
                             "}"
                             "h1{  background-color: #F6F6F6;"
