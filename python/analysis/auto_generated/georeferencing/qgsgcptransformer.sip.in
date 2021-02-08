@@ -37,6 +37,9 @@ based on a transformation method and a list of GCPs.
     };
 
     QgsGcpTransformerInterface();
+%Docstring
+Constructor for QgsGcpTransformerInterface
+%End
 
     virtual ~QgsGcpTransformerInterface();
 
@@ -50,9 +53,12 @@ parameters as this one.
 Caller takes ownership of the returned object.
 %End
 
-    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) = 0;
+    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) = 0;
 %Docstring
-Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and layer coordinates.
+Fits transformation parameters using the specified Ground Control Points (GCPs) lists of source and destination coordinates.
+
+If ``invertYAxis`` is set to ``True`` then the y-axis of source coordinates will be inverted, e.g. to allow for transformation of raster layers
+with ascending top-to-bottom vertical axis coordinates.
 
 :return: ``True`` on success, ``False`` on failure
 %End
@@ -88,10 +94,10 @@ Creates a new QgsGcpTransformerInterface subclass representing the specified tra
 Caller takes ownership of the returned object.
 %End
 
-    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) /Factory/;
+    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates ) /Factory/;
 %Docstring
 Creates a new QgsGcpTransformerInterface subclass representing the specified transform ``method``, initialized
-using the given lists of map and layer coordinates.
+using the given lists of source and destination coordinates.
 
 If the parameters cannot be fit to a transform ``None`` will be returned.
 

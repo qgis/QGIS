@@ -46,6 +46,7 @@ endmacro (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 set(TESTS
+ testqgsgcptransformer.cpp
  testqgsgeometrysnapper.cpp
  testqgsinterpolator.cpp
  testqgsprocessing.cpp

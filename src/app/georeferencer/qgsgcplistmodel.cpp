@@ -89,7 +89,7 @@ void QgsGCPListModel::updateModel()
 
   if ( mGeorefTransform )
   {
-    bTransformUpdated = mGeorefTransform->updateParametersFromGcps( mapCoords, pixelCoords );
+    bTransformUpdated = mGeorefTransform->updateParametersFromGcps( pixelCoords, mapCoords, true );
     mapUnitsPossible = mGeorefTransform->providesAccurateInverseTransformation();
   }
 
