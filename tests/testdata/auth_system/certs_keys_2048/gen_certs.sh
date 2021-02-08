@@ -1,5 +1,5 @@
 
-rm -rf *.pem *.cer *.key *.crt *.csr *.srl
+rm -rf ./*.pem ./*.cer ./*.key ./*.crt ./*.csr ./*.srl
 # Generate the CA/root private key
 openssl genrsa -des3 -out qgis_ca.key -passout pass:1234 2048
 
