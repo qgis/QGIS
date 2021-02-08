@@ -24,7 +24,8 @@ on:
 env:
   QT_VERSION: 5.14.2
   QGIS_DEPS_VERSION: 0.6.0
-  CCACHE_DIR: /ccache
+  CCACHE_DIR: /Users/runner/work/ccache
+  BUILD_DIR: /Users/runner/work/QGIS/build-QGIS
 
 jobs:
   mac_os_build:
@@ -95,9 +96,8 @@ jobs:
 
       - name: create build system
         run: |
-          QGIS_DIR=`pwd`
-          mkdir -p ../build-QGIS
-          cd ../build-QGIS
+          mkdir -p ${BUILD_DIR}
+          cd ${BUILD_DIR}
 
           # FIXME: PDAL disable because of #39971
           PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH \
@@ -107,9 +107,9 @@ jobs:
                -DWITH_3D=TRUE \
                -DWITH_PDAL=FALSE \
                -DWITH_EPT=TRUE \
-               $QGIS_DIR
+               ../QGIS
 
       - name: build QGIS
         run: |
-          cd ../build-QGIS
+          cd ${BUILD_DIR}
           make -j $(sysctl -n hw.ncpu)
