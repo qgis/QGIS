@@ -770,7 +770,7 @@ namespace QgsWfs
       // See: https://docs.geoserver.org/latest/en/user/services/wfs/axis_order.html#wfs-basics-axis
       QgsCoordinateReferenceSystem extentCrs;
       extentCrs.createFromUserInput( extentSrsName );
-      if ( extentCrs.isValid() && extentCrs.hasAxisInverted() && ! extentSrsName.startsWith( QStringLiteral( "EPSG:" ) ) )
+      if ( extentCrs.isValid() && extentCrs.hasAxisInverted() && ! extentSrsName.startsWith( QLatin1String( "EPSG:" ) ) )
       {
         QgsGeometry geom { QgsGeometry::fromRect( extent ) };
         geom.get()->swapXy();

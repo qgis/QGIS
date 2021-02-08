@@ -379,7 +379,7 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
   QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
   QString uri;
 
-  if ( !layerName.isEmpty() && path.endsWith( QStringLiteral( "gpkg" ) ) )
+  if ( !layerName.isEmpty() && path.endsWith( QLatin1String( "gpkg" ) ) )
     uri = QStringLiteral( "GPKG:%1:%2" ).arg( path, layerName );
   else
     uri = path + ( !layerName.isEmpty() ? QStringLiteral( "|%1" ).arg( layerName ) : QString() );
@@ -388,7 +388,7 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
 
   for ( const QString &openOption : openOptions )
   {
-    uri += QStringLiteral( "|option:" );
+    uri += QLatin1String( "|option:" );
     uri += openOption;
   }
 
