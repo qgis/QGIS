@@ -82,7 +82,7 @@ jobs:
           UBUNTU_BASE: ${{ matrix.ubuntu-base }}
         run: |
           pushd .docker
-          docker pull qgis/qgis3-build-deps:${DOCKER_TAG}
+          docker pull qgis/qgis3-build-deps:${DOCKER_TAG} || true
           docker build --build-arg UBUNTU_BASE=${UBUNTU_BASE} --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps:${DOCKER_TAG} -f qgis3-build-deps.dockerfile .
           popd
 
