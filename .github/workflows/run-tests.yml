@@ -34,14 +34,14 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
-      DEFAULT_UBUNTU_BASE: 20.04
+      DEFAULT_UBUNTU_BASE: '20.04'
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
-        ubuntu-base: [20.04, 20.10]
+        ubuntu-base: ['20.04', '20.10']
 
     outputs:
       compile_outcome: ${{ steps.compile.outcome }}
