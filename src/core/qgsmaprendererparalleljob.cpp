@@ -209,7 +209,12 @@ QgsLabelingResults *QgsMapRendererParallelJob::takeLabelingResults()
 
 QImage QgsMapRendererParallelJob::renderedImage()
 {
-  if ( mStatus == RenderingLayers )
+  // if status == Idle we are either waiting for the render to start, OR have finished the render completely.
+  // We can differentiate between those states by checking whether mFinalImage is null -- at the "waiting for
+  // render to start" state mFinalImage has not yet been created.
+  const bool jobIsComplete = mStatus == Idle && !mFinalImage.isNull();
+
+  if ( !jobIsComplete )
     return composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   else
     return mFinalImage; // when rendering labels or idle
