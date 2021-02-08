@@ -168,14 +168,8 @@ void QgsGCPCanvasItem::updatePosition()
   if ( mDataPoint->canvasCoords().isEmpty() )
   {
     QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
-    QgsPointXY mapCoords;
-    if ( mapCrs.toWkt() == mDataPoint->crs().toWkt() )
-      mapCoords = mDataPoint->mapCoords();
-    else
-    {
-      QgsCoordinateTransform transf( mDataPoint->crs(), mapCrs, QgsProject::instance() );
-      mapCoords = transf.transform( mDataPoint->mapCoords() );
-    }
+    QgsCoordinateTransform transf( mDataPoint->crs(), mapCrs, QgsProject::instance() );
+    QgsPointXY mapCoords  = transf.transform( mDataPoint->mapCoords() );
     mDataPoint->setCanvasCoords( mapCoords );
   }
   setPos( toCanvasCoordinates( mDataPoint->canvasCoords() ) );

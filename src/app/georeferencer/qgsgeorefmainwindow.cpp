@@ -542,7 +542,7 @@ void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &pixelCoords, const 
 {
   QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(), pixelCoords, mapCoords, crs, enable );
   mPoints.append( pnt );
-  if ( !mLastGCPProjection.isValid() || mLastGCPProjection.toWkt() != crs.toWkt() )
+  if ( !mLastGCPProjection.isValid() || mLastGCPProjection != crs )
     mLastGCPProjection = QgsCoordinateReferenceSystem( crs );
   mGCPsDirty = true;
   if ( finalize )
