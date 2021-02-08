@@ -38,7 +38,7 @@ class TestQgsActionManager(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddate:datetime",
-                                    "test_layer", "memory")
+                                   "test_layer", "memory")
         cls.manager = QgsActionManager(cls.layer)
 
         # make a little script to aid in recording action outputs
