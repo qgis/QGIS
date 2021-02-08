@@ -9,6 +9,8 @@ on:
     - 'external/**'
     - 'tests/**'
     - 'mac/**'
+    - '.docker/**'
+    - '.ci/**'
     - 'CMakeLists.txt'
   pull_request:
     branches:
@@ -19,6 +21,8 @@ on:
     - 'external/**'
     - 'tests/**'
     - 'mac/**'
+    - '.docker/**'
+    - '.ci/**'
     - 'CMakeLists.txt'
 
 env:
