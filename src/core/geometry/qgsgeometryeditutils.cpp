@@ -265,7 +265,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
       if ( !f.hasGeometry() )
         continue;
 
-      nearGeometries << f.geometry();
+      nearGeometries << f.geometry().makeValid();
     }
   }
 
