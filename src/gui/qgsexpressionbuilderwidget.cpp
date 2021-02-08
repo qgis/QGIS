@@ -286,9 +286,16 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
   if ( mLayer )
   {
     mExpressionContext << QgsExpressionContextUtils::layerScope( mLayer );
-
+    expressionContextUpdated();
     txtExpressionString->setFields( mLayer->fields() );
   }
+}
+
+void QgsExpressionBuilderWidget::expressionContextUpdated()
+{
+  txtExpressionString->setExpressionContext( mExpressionContext );
+  mExpressionTreeView->setExpressionContext( mExpressionContext );
+  mExpressionPreviewWidget->setExpressionContext( mExpressionContext );
 }
 
 QgsVectorLayer *QgsExpressionBuilderWidget::layer() const
@@ -627,9 +634,7 @@ void QgsExpressionBuilderWidget::setExpectedOutputFormat( const QString &expecte
 void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContext &context )
 {
   mExpressionContext = context;
-  txtExpressionString->setExpressionContext( mExpressionContext );
-  mExpressionTreeView->setExpressionContext( context );
-  mExpressionPreviewWidget->setExpressionContext( context );
+  expressionContextUpdated();
 }
 
 void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
