@@ -95,7 +95,7 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
     if ( !pkColumnsStored.empty() )
     {
       // We check whether the primary key columns still exist.
-      auto intersection = pkColumnsStored.toSet().intersect( layerProperty.pkCols.toSet() );
+      auto intersection = qgis::listToSet( pkColumnsStored ).intersect( qgis::listToSet( layerProperty.pkCols ) );
       if ( intersection.size() == pkColumnsStored.size() )
         pkColumns = pkColumnsStored;
     }
