@@ -2602,12 +2602,13 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     return 1;
   }
 
-  std::unique_ptr< QgsAbstractGeometry > diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, ignoreFeatures );
+  bool haveGeometryError = false;
+  std::unique_ptr< QgsAbstractGeometry > diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, haveGeometryError, ignoreFeatures );
   if ( diffGeom )
   {
     reset( std::move( diffGeom ) );
   }
-  return 0;
+  return haveGeometryError ? 3 : 0;
 }
 
 
