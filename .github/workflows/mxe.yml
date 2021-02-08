@@ -8,6 +8,7 @@ on:
     paths:
     - 'src/**'
     - 'external/**'
+    - 'python/**'
     - 'tests/**'
     - 'ms-windows/**'
     - 'CMakeLists.txt'
@@ -18,6 +19,7 @@ on:
     paths:
     - 'src/**'
     - 'external/**'
+    - 'python/**'
     - 'tests/**'
     - 'ms-windows/**'
     - 'CMakeLists.txt'
