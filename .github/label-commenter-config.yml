@@ -1,0 +1,16 @@
+comment:
+  header: Hi, there.
+  footer: Thanks
+
+labels:
+  - name: "Won't fix"
+    labeled:
+      issue:
+        body: >
+          Please read the provided text when opening the issue.
+
+          A issue related to a QGIS plugin can't be fixed by QGIS itself, but only by the plugin author.
+          Please report the issue to the plugin issue tracker.
+
+          For any questions, please use dedicated tools such as gis.stackexchange.com or mailing lists.
+        action: close
