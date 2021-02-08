@@ -24,6 +24,7 @@ on:
 env:
   QT_VERSION: 5.14.2
   QGIS_DEPS_VERSION: 0.6.0
+  CCACHE_DIR:/ccache
 
 jobs:
   mac_os_build:
@@ -36,7 +37,7 @@ jobs:
         uses: pat-s/always-upload-cache@v2.1.3
         if: github.event_name == 'pull_request'
         with:
-          path: /home/runner/QGIS/build
+          path: /ccache
           key: build-mac-ccache-${{ github.head_ref }}-${{ github.sha }}
           # The head_ref or source branch of the pull request in a workflow run.
           # The base_ref or target branch of the pull request in a workflow run.
@@ -50,7 +51,7 @@ jobs:
         uses: pat-s/always-upload-cache@v2.1.3
         if: github.event_name != 'pull_request'
         with:
-          path: /home/runner/QGIS/.ccache
+          path: /ccache
           # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
           key: build-mac-ccache-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
@@ -86,13 +87,16 @@ jobs:
           sudo ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
 
       - name: Install ccache
-        run: brew install ccache
+        run: |
+          brew install ccache
+          ccache --set-config=max_size=2.0G
+          ccache -s
 
       - name: create build system
         run: |
           QGIS_DIR=`pwd`
-          mkdir -p /home/runner/QGIS/build
-          cd /home/runner/QGIS/build
+          mkdir -p ../build-QGIS
+          cd ../build-QGIS
 
           # FIXME: PDAL disable because of #39971
           PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH \
@@ -106,5 +110,5 @@ jobs:
 
       - name: build QGIS
         run: |
-          cd /home/runner/QGIS/build
+          cd ../build-QGIS
           make -j $(sysctl -n hw.ncpu)
