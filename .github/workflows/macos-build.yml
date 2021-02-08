@@ -70,7 +70,7 @@ jobs:
 
       - name: Cache qgis-deps
         id: cache-deps
-        uses: pat-s/always-upload-cache@v2
+        uses: pat-s/always-upload-cache@v2.1.3
         with:
           path: /opt/Qt/${{ env.QGIS_DEPS_VERSION }}
           key: mac-deps-${{ env.QGIS_DEPS_VERSION }}
