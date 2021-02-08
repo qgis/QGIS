@@ -34,6 +34,7 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
+      DEFAULT_UBUNTU_BASE: 20.04
 
     runs-on: ubuntu-latest
 
@@ -59,7 +60,7 @@ jobs:
           GITHUB_PR_NUMBER: ${{github.event.number}}
           UBUNTU_BASE: ${{ matrix.ubuntu-base }}
         run: |
-          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != "20.04" ]] && echo "_${UBUNTU_BASE}" )
+          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" )
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
@@ -141,14 +142,12 @@ jobs:
 
       - name: Run unit tests
         id: tests
-        exclude:
-          - ubuntu-base: 20.10
+        if: ${{ matrix.ubuntu-base = env.DEFAULT_UBUNTU_BASE }}
         run: docker-compose -f .docker/docker-compose-testing.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
 
 #      - name: Test QGIS runners
 #        id: runners
-#        exclude:
-#          - ubuntu-base: 20.10
+#        if: ${{ matrix.ubuntu-base = env.DEFAULT_UBUNTU_BASE }}
 #        run: |
 #          docker run -d --name qgis-testing-environment \
 #                     -v $(pwd):/root/QGIS \
