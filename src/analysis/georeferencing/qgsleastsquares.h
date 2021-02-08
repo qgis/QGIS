@@ -34,17 +34,17 @@ class ANALYSIS_EXPORT QgsLeastSquares
   public:
 
     /**
-     * Transforms the point at \a origin in-place, using a linear transformation calculated from the list of map and pixel Ground Control Points (GCPs).
+     * Transforms the point at \a origin in-place, using a linear transformation calculated from the list of source and destination Ground Control Points (GCPs).
      */
-    static void linear( const QVector<QgsPointXY> &mapCoords,
-                        const QVector<QgsPointXY> &pixelCoords,
+    static void linear( const QVector<QgsPointXY> &sourceCoordinates,
+                        const QVector<QgsPointXY> &destinationCoordinates,
                         QgsPointXY &origin, double &pixelXSize, double &pixelYSize );
 
     /**
-     * Transforms the point at \a origin in-place, using a helmert transformation calculated from the list of map and pixel Ground Control Points (GCPs).
+     * Transforms the point at \a origin in-place, using a helmert transformation calculated from the list of source and destination Ground Control Points (GCPs).
      */
-    static void helmert( const QVector<QgsPointXY> &mapCoords,
-                         const QVector<QgsPointXY> &pixelCoords,
+    static void helmert( const QVector<QgsPointXY> &sourceCoordinates,
+                         const QVector<QgsPointXY> &destinationCoordinates,
                          QgsPointXY &origin, double &pixelSize, double &rotation );
 
 #if 0
@@ -54,10 +54,10 @@ class ANALYSIS_EXPORT QgsLeastSquares
 #endif
 
     /**
-     * Calculates projective parameters from the list of map and pixel Ground Control Points (GCPs).
+     * Calculates projective parameters from the list of source and destination Ground Control Points (GCPs).
      */
-    static void projective( QVector<QgsPointXY> mapCoords,
-                            QVector<QgsPointXY> pixelCoords,
+    static void projective( const QVector<QgsPointXY> &sourceCoordinates,
+                            const QVector<QgsPointXY> &destinationCoordinates,
                             double H[9] );
 
 };

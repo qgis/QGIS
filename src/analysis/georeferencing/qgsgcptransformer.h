@@ -49,6 +49,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
       InvalidTransform = 65535 //!< Invalid transform
     };
 
+    //! Constructor for QgsGcpTransformerInterface
     QgsGcpTransformerInterface() = default;
 
     virtual ~QgsGcpTransformerInterface() = default;
@@ -68,11 +69,14 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
     virtual QgsGcpTransformerInterface *clone() const = 0 SIP_FACTORY;
 
     /**
-     * Fits transformation parameters using the specified Ground Control Points (GCPs) lists of map coordinates and layer coordinates.
+     * Fits transformation parameters using the specified Ground Control Points (GCPs) lists of source and destination coordinates.
+     *
+     * If \a invertYAxis is set to TRUE then the y-axis of source coordinates will be inverted, e.g. to allow for transformation of raster layers
+     * with ascending top-to-bottom vertical axis coordinates.
      *
      * \returns TRUE on success, FALSE on failure
      */
-    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) = 0;
+    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) = 0;
 
     /**
      * Returns the minimum number of Ground Control Points (GCPs) required for parameter fitting.
@@ -107,13 +111,13 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 
     /**
      * Creates a new QgsGcpTransformerInterface subclass representing the specified transform \a method, initialized
-     * using the given lists of map and layer coordinates.
+     * using the given lists of source and destination coordinates.
      *
      * If the parameters cannot be fit to a transform NULLPTR will be returned.
      *
      * Caller takes ownership of the returned object.
      */
-    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates ) SIP_FACTORY;
+    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates ) SIP_FACTORY;
 
 #ifndef SIP_RUN
 
@@ -144,6 +148,8 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
 {
   public:
+
+    //! Constructor for QgsLinearGeorefTransform
     QgsLinearGeorefTransform() = default;
 
     /**
@@ -152,7 +158,7 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
     bool getOriginScale( QgsPointXY &origin, double &scaleX, double &scaleY ) const;
 
     QgsGcpTransformerInterface *clone() const override;
-    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
@@ -162,7 +168,9 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
     struct LinearParameters
     {
       QgsPointXY origin;
-      double scaleX, scaleY;
+      double scaleX = 1;
+      double scaleY = 1;
+      bool invertYAxis = false;
     } mParameters;
 
     static int linearTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
@@ -179,6 +187,8 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
 class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
 {
   public:
+
+    //! Constructor for QgsHelmertGeorefTransform
     QgsHelmertGeorefTransform() = default;
 
     /**
@@ -187,7 +197,7 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
     bool getOriginScaleRotation( QgsPointXY &origin, double &scale, double &rotation ) const;
 
     QgsGcpTransformerInterface *clone() const override;
-    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
@@ -200,11 +210,12 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
       QgsPointXY origin;
       double scale;
       double angle;
+      bool invertYAxis = false;
     };
     HelmertParameters mHelmertParameters;
 
-    static int helmert_transform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-                                  double *x, double *y, double *z, int *panSuccess );
+    static int helmertTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
+                                 double *x, double *y, double *z, int *panSuccess );
 
 };
 
@@ -217,11 +228,13 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
 class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
 {
   public:
+
+    //! Constructor for QgsGDALGeorefTransform
     QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder );
     ~QgsGDALGeorefTransform() override;
 
     QgsGcpTransformerInterface *clone() const override;
-    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;
@@ -230,13 +243,13 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
   private:
     void destroyGdalArgs();
 
-    QVector<QgsPointXY> mMapCoords;
-    QVector<QgsPointXY> mLayerCoords;
+    QVector<QgsPointXY> mSourceCoords;
+    QVector<QgsPointXY> mDestCoordinates;
+    bool mInvertYAxis = false;
 
     const int mPolynomialOrder;
     const bool mIsTPSTransform;
 
-    GDALTransformerFunc mGDALTransformer = nullptr;
     void *mGDALTransformerArgs = nullptr;
 
 };
@@ -253,10 +266,12 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
 class ANALYSIS_EXPORT QgsProjectiveGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
 {
   public:
+
+    //! Constructor for QgsProjectiveGeorefTransform
     QgsProjectiveGeorefTransform();
 
     QgsGcpTransformerInterface *clone() const override;
-    bool updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords ) override;
+    bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) override;
     int minimumGcpCount() const override;
     GDALTransformerFunc GDALTransformer() const override;
     void *GDALTransformerArgs() const override;

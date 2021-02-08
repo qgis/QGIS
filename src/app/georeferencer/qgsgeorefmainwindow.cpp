@@ -2004,7 +2004,7 @@ bool QgsGeoreferencerMainWindow::updateGeorefTransform()
     return false;
 
   // Parametrize the transform with GCPs
-  if ( !mGeorefTransform.updateParametersFromGcps( mapCoords, pixelCoords ) )
+  if ( !mGeorefTransform.updateParametersFromGcps( pixelCoords, mapCoords, true ) )
   {
     return false;
   }

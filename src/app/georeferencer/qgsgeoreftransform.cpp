@@ -73,36 +73,36 @@ bool QgsGeorefTransform::parametersInitialized() const
 QgsGcpTransformerInterface *QgsGeorefTransform::clone() const
 {
   std::unique_ptr< QgsGeorefTransform > res( new QgsGeorefTransform( *this ) );
-  res->updateParametersFromGcps( mMapCoords, mLayerCoords );
+  res->updateParametersFromGcps( mSourceCoordinates, mDestinationCoordinates, mInvertYAxis );
   return res.release();
 }
 
-bool QgsGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords )
+bool QgsGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis )
 {
-  mMapCoords = mapCoords;
-  mLayerCoords = pixelCoords;
+  mSourceCoordinates = sourceCoordinates;
+  mDestinationCoordinates = destinationCoordinates;
+  mInvertYAxis = invertYAxis;
 
   if ( !mGeorefTransformImplementation )
   {
     return false;
   }
-  if ( mapCoords.size() != pixelCoords.size() ) // Defensive sanity check
+  if ( sourceCoordinates.size() != destinationCoordinates.size() ) // Defensive sanity check
   {
     throw ( std::domain_error( "Internal error: GCP mapping is not one-to-one" ) );
   }
-  if ( mapCoords.size() < minimumGcpCount() )
+  if ( sourceCoordinates.size() < minimumGcpCount() )
   {
     return false;
   }
   if ( mRasterChangeCoords.hasCrs() )
   {
-    QVector<QgsPointXY> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( pixelCoords );
-    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGcps( mapCoords, pixelCoordsCorrect );
-    pixelCoordsCorrect.clear();
+    QVector<QgsPointXY> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( sourceCoordinates );
+    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGcps( sourceCoordinates, pixelCoordsCorrect, invertYAxis );
   }
   else
   {
-    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGcps( mapCoords, pixelCoords );
+    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGcps( sourceCoordinates, destinationCoordinates, invertYAxis );
   }
   return mParametersInitialized;
 }

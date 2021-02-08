@@ -23,11 +23,11 @@
 #include "qgsleastsquares.h"
 
 
-void QgsLeastSquares::linear( const QVector<QgsPointXY> &mapCoords,
-                              const QVector<QgsPointXY> &pixelCoords,
+void QgsLeastSquares::linear( const QVector<QgsPointXY> &sourceCoordinates,
+                              const QVector<QgsPointXY> &destinationCoordinates,
                               QgsPointXY &origin, double &pixelXSize, double &pixelYSize )
 {
-  int n = mapCoords.size();
+  int n = destinationCoordinates.size();
   if ( n < 2 )
   {
     throw std::domain_error( QObject::tr( "Fit to a linear transform requires at least 2 points." ).toLocal8Bit().constData() );
@@ -36,14 +36,14 @@ void QgsLeastSquares::linear( const QVector<QgsPointXY> &mapCoords,
   double sumPx( 0 ), sumPy( 0 ), sumPx2( 0 ), sumPy2( 0 ), sumPxMx( 0 ), sumPyMy( 0 ), sumMx( 0 ), sumMy( 0 );
   for ( int i = 0; i < n; ++i )
   {
-    sumPx += pixelCoords.at( i ).x();
-    sumPy += pixelCoords.at( i ).y();
-    sumPx2 += std::pow( pixelCoords.at( i ).x(), 2 );
-    sumPy2 += std::pow( pixelCoords.at( i ).y(), 2 );
-    sumPxMx += pixelCoords.at( i ).x() * mapCoords.at( i ).x();
-    sumPyMy += pixelCoords.at( i ).y() * mapCoords.at( i ).y();
-    sumMx += mapCoords.at( i ).x();
-    sumMy += mapCoords.at( i ).y();
+    sumPx += sourceCoordinates.at( i ).x();
+    sumPy += sourceCoordinates.at( i ).y();
+    sumPx2 += std::pow( sourceCoordinates.at( i ).x(), 2 );
+    sumPy2 += std::pow( sourceCoordinates.at( i ).y(), 2 );
+    sumPxMx += sourceCoordinates.at( i ).x() * destinationCoordinates.at( i ).x();
+    sumPyMy += sourceCoordinates.at( i ).y() * destinationCoordinates.at( i ).y();
+    sumMx += destinationCoordinates.at( i ).x();
+    sumMy += destinationCoordinates.at( i ).y();
   }
 
   double deltaX = n * sumPx2 - std::pow( sumPx, 2 );
@@ -62,30 +62,39 @@ void QgsLeastSquares::linear( const QVector<QgsPointXY> &mapCoords,
 }
 
 
-void QgsLeastSquares::helmert( const QVector<QgsPointXY> &mapCoords,
-                               const QVector<QgsPointXY> &pixelCoords,
+void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
+                               const QVector<QgsPointXY> &destinationCoordinates,
                                QgsPointXY &origin, double &pixelSize,
                                double &rotation )
 {
-  int n = mapCoords.size();
+  int n = destinationCoordinates.size();
   if ( n < 2 )
   {
     throw std::domain_error( QObject::tr( "Fit to a Helmert transform requires at least 2 points." ).toLocal8Bit().constData() );
   }
 
-  double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0, G = 0, H = 0, I = 0, J = 0;
+  double A = 0;
+  double B = 0;
+  double C = 0;
+  double D = 0;
+  double E = 0;
+  double F = 0;
+  double G = 0;
+  double H = 0;
+  double I = 0;
+  double J = 0;
   for ( int i = 0; i < n; ++i )
   {
-    A += pixelCoords.at( i ).x();
-    B += pixelCoords.at( i ).y();
-    C += mapCoords.at( i ).x();
-    D += mapCoords.at( i ).y();
-    E += mapCoords.at( i ).x() * pixelCoords.at( i ).x();
-    F += mapCoords.at( i ).y() * pixelCoords.at( i ).y();
-    G += std::pow( pixelCoords.at( i ).x(), 2 );
-    H += std::pow( pixelCoords.at( i ).y(), 2 );
-    I += mapCoords.at( i ).x() * pixelCoords.at( i ).y();
-    J += pixelCoords.at( i ).x() * mapCoords.at( i ).y();
+    A += sourceCoordinates.at( i ).x();
+    B += sourceCoordinates.at( i ).y();
+    C += destinationCoordinates.at( i ).x();
+    D += destinationCoordinates.at( i ).y();
+    E += destinationCoordinates.at( i ).x() * sourceCoordinates.at( i ).x();
+    F += destinationCoordinates.at( i ).y() * sourceCoordinates.at( i ).y();
+    G += std::pow( sourceCoordinates.at( i ).x(), 2 );
+    H += std::pow( sourceCoordinates.at( i ).y(), 2 );
+    I += destinationCoordinates.at( i ).x() * sourceCoordinates.at( i ).y();
+    J += sourceCoordinates.at( i ).x() * destinationCoordinates.at( i ).y();
   }
 
   /* The least squares fit for the parameters { a, b, x0, y0 } is the solution
@@ -232,61 +241,59 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
 
 // Fits a homography to the given corresponding points, and
 // return it in H (row-major format).
-void QgsLeastSquares::projective( QVector<QgsPointXY> mapCoords,
-                                  QVector<QgsPointXY> pixelCoords,
+void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
+                                  const QVector<QgsPointXY> &destinationCoordinates,
                                   double H[9] )
 {
-  Q_ASSERT( mapCoords.size() == pixelCoords.size() );
+  Q_ASSERT( sourceCoordinates.size() == destinationCoordinates.size() );
 
-  if ( mapCoords.size() < 4 )
+  if ( destinationCoordinates.size() < 4 )
   {
     throw std::domain_error( QObject::tr( "Fitting a projective transform requires at least 4 corresponding points." ).toLocal8Bit().constData() );
   }
 
-  QVector<QgsPointXY> mapCoordsNormalized;
-  QVector<QgsPointXY> pixelCoordsNormalized;
+  QVector<QgsPointXY> sourceCoordinatesNormalized;
+  QVector<QgsPointXY> destinationCoordinatesNormalized;
 
-  double normMap[9], denormMap[9];
-  double normPixel[9], denormPixel[9];
-  normalizeCoordinates( mapCoords, mapCoordsNormalized, normMap, denormMap );
-  normalizeCoordinates( pixelCoords, pixelCoordsNormalized, normPixel, denormPixel );
-  mapCoords = mapCoordsNormalized;
-  pixelCoords = pixelCoordsNormalized;
+  double normSource[9], denormSource[9];
+  double normDest[9], denormDest[9];
+  normalizeCoordinates( sourceCoordinates, sourceCoordinatesNormalized, normSource, denormSource );
+  normalizeCoordinates( destinationCoordinates, destinationCoordinatesNormalized, normDest, denormDest );
 
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
-  uint m = std::max( 9u, ( uint )mapCoords.size() * 2u );
+  uint m = std::max( 9u, ( uint )destinationCoordinatesNormalized.size() * 2u );
   uint n = 9;
   gsl_matrix *S = gsl_matrix_alloc( m, n );
 
-  for ( int i = 0; i < mapCoords.size(); i++ )
+  for ( int i = 0; i < destinationCoordinatesNormalized.size(); i++ )
   {
-    gsl_matrix_set( S, i * 2, 0, pixelCoords[i].x() );
-    gsl_matrix_set( S, i * 2, 1, pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2, 0, sourceCoordinatesNormalized[i].x() );
+    gsl_matrix_set( S, i * 2, 1, sourceCoordinatesNormalized[i].y() );
     gsl_matrix_set( S, i * 2, 2, 1.0 );
 
     gsl_matrix_set( S, i * 2, 3, 0.0 );
     gsl_matrix_set( S, i * 2, 4, 0.0 );
     gsl_matrix_set( S, i * 2, 5, 0.0 );
 
-    gsl_matrix_set( S, i * 2, 6, -mapCoords[i].x()*pixelCoords[i].x() );
-    gsl_matrix_set( S, i * 2, 7, -mapCoords[i].x()*pixelCoords[i].y() );
-    gsl_matrix_set( S, i * 2, 8, -mapCoords[i].x() * 1.0 );
+    gsl_matrix_set( S, i * 2, 6, -destinationCoordinatesNormalized[i].x()*sourceCoordinatesNormalized[i].x() );
+    gsl_matrix_set( S, i * 2, 7, -destinationCoordinatesNormalized[i].x()*sourceCoordinatesNormalized[i].y() );
+    gsl_matrix_set( S, i * 2, 8, -destinationCoordinatesNormalized[i].x() * 1.0 );
 
     gsl_matrix_set( S, i * 2 + 1, 0, 0.0 );
     gsl_matrix_set( S, i * 2 + 1, 1, 0.0 );
     gsl_matrix_set( S, i * 2 + 1, 2, 0.0 );
 
-    gsl_matrix_set( S, i * 2 + 1, 3, pixelCoords[i].x() );
-    gsl_matrix_set( S, i * 2 + 1, 4, pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2 + 1, 3, sourceCoordinatesNormalized[i].x() );
+    gsl_matrix_set( S, i * 2 + 1, 4, sourceCoordinatesNormalized[i].y() );
     gsl_matrix_set( S, i * 2 + 1, 5, 1.0 );
 
-    gsl_matrix_set( S, i * 2 + 1, 6, -mapCoords[i].y()*pixelCoords[i].x() );
-    gsl_matrix_set( S, i * 2 + 1, 7, -mapCoords[i].y()*pixelCoords[i].y() );
-    gsl_matrix_set( S, i * 2 + 1, 8, -mapCoords[i].y() * 1.0 );
+    gsl_matrix_set( S, i * 2 + 1, 6, -destinationCoordinatesNormalized[i].y()*sourceCoordinatesNormalized[i].x() );
+    gsl_matrix_set( S, i * 2 + 1, 7, -destinationCoordinatesNormalized[i].y()*sourceCoordinatesNormalized[i].y() );
+    gsl_matrix_set( S, i * 2 + 1, 8, -destinationCoordinatesNormalized[i].y() * 1.0 );
   }
 
-  if ( mapCoords.size() == 4 )
+  if ( destinationCoordinatesNormalized.size() == 4 )
   {
     // The GSL SVD routine only supports matrices with rows >= columns (m >= n)
     // Unfortunately, we can't use the SVD of the transpose (i.e. S^T = (U D V^T)^T = V D U^T)
@@ -321,13 +328,13 @@ void QgsLeastSquares::projective( QVector<QgsPointXY> mapCoords,
   gsl_matrix *prodMatrix = gsl_matrix_alloc( 3, 3 );
 
   gsl_matrix_view Hmatrix = gsl_matrix_view_array( H, 3, 3 );
-  gsl_matrix_view normPixelMatrix = gsl_matrix_view_array( normPixel, 3, 3 );
-  gsl_matrix_view denormMapMatrix = gsl_matrix_view_array( denormMap, 3, 3 );
+  gsl_matrix_view normSourceMatrix = gsl_matrix_view_array( normSource, 3, 3 );
+  gsl_matrix_view denormDestMatrix = gsl_matrix_view_array( denormDest, 3, 3 );
 
-  // Change coordinate frame of image and pre-image from normalized to map and pixel coordinates.
+  // Change coordinate frame of image and pre-image from normalized to destination and source coordinates.
   // H' = denormalizeMapCoords*H*normalizePixelCoords
-  gsl_blas_dgemm( CblasNoTrans, CblasNoTrans, 1.0, &Hmatrix.matrix, &normPixelMatrix.matrix, 0.0, prodMatrix );
-  gsl_blas_dgemm( CblasNoTrans, CblasNoTrans, 1.0, &denormMapMatrix.matrix, prodMatrix, 0.0, &Hmatrix.matrix );
+  gsl_blas_dgemm( CblasNoTrans, CblasNoTrans, 1.0, &Hmatrix.matrix, &normSourceMatrix.matrix, 0.0, prodMatrix );
+  gsl_blas_dgemm( CblasNoTrans, CblasNoTrans, 1.0, &denormDestMatrix.matrix, prodMatrix, 0.0, &Hmatrix.matrix );
 
   gsl_matrix_free( prodMatrix );
   gsl_matrix_free( S );

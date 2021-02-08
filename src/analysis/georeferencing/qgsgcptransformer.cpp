@@ -90,13 +90,13 @@ QgsGcpTransformerInterface *QgsGcpTransformerInterface::create( QgsGcpTransforme
   }
 }
 
-QgsGcpTransformerInterface *QgsGcpTransformerInterface::createFromParameters( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &mapCoordinates, const QVector<QgsPointXY> &layerCoordinates )
+QgsGcpTransformerInterface *QgsGcpTransformerInterface::createFromParameters( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates )
 {
   std::unique_ptr< QgsGcpTransformerInterface > transformer( create( method ) );
   if ( !transformer )
     return nullptr;
 
-  if ( !transformer->updateParametersFromGcps( mapCoordinates, layerCoordinates ) )
+  if ( !transformer->updateParametersFromGcps( sourceCoordinates, destinationCoordinates ) )
     return nullptr;
 
   return transformer.release();
@@ -122,11 +122,13 @@ QgsGcpTransformerInterface *QgsLinearGeorefTransform::clone() const
   return res.release();
 }
 
-bool QgsLinearGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
+bool QgsLinearGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis )
 {
-  if ( mapCoords.size() < minimumGcpCount() )
+  if ( destinationCoordinates.size() < minimumGcpCount() )
     return false;
-  QgsLeastSquares::linear( mapCoords, layerCoords, mParameters.origin, mParameters.scaleX, mParameters.scaleY );
+
+  mParameters.invertYAxis = invertYAxis;
+  QgsLeastSquares::linear( sourceCoordinates, destinationCoordinates, mParameters.origin, mParameters.scaleX, mParameters.scaleY );
   return true;
 }
 
@@ -163,7 +165,7 @@ int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstTo
     for ( int i = 0; i < nPointCount; ++i )
     {
       x[i] = x[i] * t->scaleX + t->origin.x();
-      y[i] = -y[i] * t->scaleY + t->origin.y();
+      y[i] = ( t->invertYAxis ? -1 : 1 ) * y[i] * t->scaleY + t->origin.y();
       panSuccess[i] = true;
     }
   }
@@ -182,7 +184,7 @@ int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstTo
     for ( int i = 0; i < nPointCount; ++i )
     {
       x[i] = ( x[i] - t->origin.x() ) / t->scaleX;
-      y[i] = ( y[i] - t->origin.y() ) / ( -t->scaleY );
+      y[i] = ( y[i] - t->origin.y() ) / ( ( t->invertYAxis ? -1 : 1 ) * t->scaleY );
       panSuccess[i] = true;
     }
   }
@@ -193,12 +195,13 @@ int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstTo
 //
 // QgsHelmertGeorefTransform
 //
-bool QgsHelmertGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
+bool QgsHelmertGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis )
 {
-  if ( mapCoords.size() < minimumGcpCount() )
+  if ( destinationCoordinates.size() < minimumGcpCount() )
     return false;
 
-  QgsLeastSquares::helmert( mapCoords, layerCoords, mHelmertParameters.origin, mHelmertParameters.scale, mHelmertParameters.angle );
+  mHelmertParameters.invertYAxis = invertYAxis;
+  QgsLeastSquares::helmert( sourceCoordinates, destinationCoordinates, mHelmertParameters.origin, mHelmertParameters.scale, mHelmertParameters.angle );
   return true;
 }
 
@@ -207,10 +210,9 @@ int QgsHelmertGeorefTransform::minimumGcpCount() const
   return 2;
 }
 
-
 GDALTransformerFunc QgsHelmertGeorefTransform::GDALTransformer() const
 {
-  return QgsHelmertGeorefTransform::helmert_transform;
+  return QgsHelmertGeorefTransform::helmertTransform;
 }
 
 void *QgsHelmertGeorefTransform::GDALTransformerArgs() const
@@ -238,28 +240,42 @@ QgsGcpTransformerInterface *QgsHelmertGeorefTransform::clone() const
   return res.release();
 }
 
-int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDstToSrc, int nPointCount,
+int QgsHelmertGeorefTransform::helmertTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
     double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z )
-  HelmertParameters *t = static_cast<HelmertParameters *>( pTransformerArg );
+  const HelmertParameters *t = static_cast< const HelmertParameters *>( pTransformerArg );
   if ( !t )
     return false;
 
-  double a = std::cos( t->angle ), b = std::sin( t->angle ), x0 = t->origin.x(), y0 = t->origin.y(), s = t->scale;
+  double a = std::cos( t->angle );
+  double b = std::sin( t->angle );
+  const double x0 = t->origin.x();
+  const double y0 = t->origin.y();
+  const double s = t->scale;
   if ( !bDstToSrc )
   {
     a *= s;
     b *= s;
     for ( int i = 0; i < nPointCount; ++i )
     {
-      double xT = x[i], yT = y[i];
-      // Because rotation parameters where estimated in a CS with negative y-axis ^= down.
-      // we need to apply the rotation matrix and a change of base:
-      // |cos a,-sin a| |1, 0|   | std::cos a,  std::sin a|
-      // |sin a, std::cos a| |0,-1| = | std::sin a, -cos a|
-      x[i] = x0 + ( a * xT + b * yT );
-      y[i] = y0 + ( b * xT - a * yT );
+      const double xT = x[i];
+      const double yT = y[i];
+
+      if ( t->invertYAxis )
+      {
+        // Because rotation parameters where estimated in a CS with negative y-axis ^= down.
+        // we need to apply the rotation matrix and a change of base:
+        // |cos a, -sin a | |1, 0|   | cos a,  sin a|
+        // |sin a,  cos a | |0,-1| = | sin a, -cos a|
+        x[i] = x0 + ( a * xT + b * yT );
+        y[i] = y0 + ( b * xT - a * yT );
+      }
+      else
+      {
+        x[i] = x0 + ( a * xT - b * yT );
+        y[i] = y0 + ( b * xT + a * yT );
+      }
       panSuccess[i] = true;
     }
   }
@@ -278,13 +294,20 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
     b /= s;
     for ( int i = 0; i < nPointCount; ++i )
     {
-      double xT = x[i], yT = y[i];
-      xT -= x0;
-      yT -= y0;
-      // | std::cos a,  std::sin a |^-1   |cos a,  std::sin a|
-      // | std::sin a, -cos a |    = |sin a, -cos a|
-      x[i] = a * xT + b * yT;
-      y[i] = b * xT - a * yT;
+      const double xT = x[i] - x0;
+      const double yT = y[i] - y0;
+      if ( t->invertYAxis )
+      {
+        // | cos a,  sin a |^-1   |cos a,  sin a|
+        // | sin a, -cos a |    = |sin a, -cos a|
+        x[i] = a * xT + b * yT;
+        y[i] = b * xT - a * yT;
+      }
+      else
+      {
+        x[i] = a * xT + b * yT;
+        y[i] = -b * xT + a * yT;
+      }
       panSuccess[i] = true;
     }
   }
@@ -309,19 +332,20 @@ QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
 QgsGcpTransformerInterface *QgsGDALGeorefTransform::clone() const
 {
   std::unique_ptr< QgsGDALGeorefTransform > res = qgis::make_unique< QgsGDALGeorefTransform >( mIsTPSTransform, mPolynomialOrder );
-  res->updateParametersFromGcps( mMapCoords, mLayerCoords );
+  res->updateParametersFromGcps( mSourceCoords, mDestCoordinates, mInvertYAxis );
   return res.release();
 }
 
-bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
+bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis )
 {
-  mMapCoords = mapCoords;
-  mLayerCoords = layerCoords;
+  mSourceCoords = sourceCoordinates;
+  mDestCoordinates = destinationCoordinates;
+  mInvertYAxis = invertYAxis;
 
-  assert( mapCoords.size() == layerCoords.size() );
-  if ( mapCoords.size() != layerCoords.size() )
+  assert( sourceCoordinates.size() == destinationCoordinates.size() );
+  if ( sourceCoordinates.size() != destinationCoordinates.size() )
     return false;
-  int n = mapCoords.size();
+  int n = sourceCoordinates.size();
 
   GDAL_GCP *GCPList = new GDAL_GCP[n];
   for ( int i = 0; i < n; i++ )
@@ -329,10 +353,10 @@ bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY>
     GCPList[i].pszId = new char[20];
     snprintf( GCPList[i].pszId, 19, "gcp%i", i );
     GCPList[i].pszInfo = nullptr;
-    GCPList[i].dfGCPPixel = layerCoords[i].x();
-    GCPList[i].dfGCPLine  = -layerCoords[i].y();
-    GCPList[i].dfGCPX = mapCoords[i].x();
-    GCPList[i].dfGCPY = mapCoords[i].y();
+    GCPList[i].dfGCPPixel = sourceCoordinates[i].x();
+    GCPList[i].dfGCPLine  = ( mInvertYAxis ? -1 : 1 ) * sourceCoordinates[i].y();
+    GCPList[i].dfGCPX = destinationCoordinates[i].x();
+    GCPList[i].dfGCPY = destinationCoordinates[i].y();
     GCPList[i].dfGCPZ = 0;
   }
   destroyGdalArgs();
@@ -419,20 +443,27 @@ QgsGcpTransformerInterface *QgsProjectiveGeorefTransform::clone() const
   return res.release();
 }
 
-bool QgsProjectiveGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &layerCoords )
+bool QgsProjectiveGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis )
 {
-  if ( mapCoords.size() < minimumGcpCount() )
+  if ( destinationCoordinates.size() < minimumGcpCount() )
     return false;
 
-  // HACK: flip y coordinates, because georeferencer and gdal use different conventions
-  QVector<QgsPointXY> flippedPixelCoords;
-  flippedPixelCoords.reserve( layerCoords.size() );
-  for ( const QgsPointXY &coord : layerCoords )
+  if ( invertYAxis )
   {
-    flippedPixelCoords << QgsPointXY( coord.x(), -coord.y() );
-  }
+    // HACK: flip y coordinates, because georeferencer and gdal use different conventions
+    QVector<QgsPointXY> flippedPixelCoords;
+    flippedPixelCoords.reserve( sourceCoordinates.size() );
+    for ( const QgsPointXY &coord : sourceCoordinates )
+    {
+      flippedPixelCoords << QgsPointXY( coord.x(), -coord.y() );
+    }
 
-  QgsLeastSquares::projective( mapCoords, flippedPixelCoords, mParameters.H );
+    QgsLeastSquares::projective( flippedPixelCoords, destinationCoordinates, mParameters.H );
+  }
+  else
+  {
+    QgsLeastSquares::projective( sourceCoordinates, destinationCoordinates, mParameters.H );
+  }
 
   // Invert the homography matrix using adjoint matrix
   double *H = mParameters.H;
