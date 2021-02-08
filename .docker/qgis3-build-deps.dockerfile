@@ -1,3 +1,6 @@
+
+ARG UBUNTU_BASE=20.04
+
 FROM      ubuntu:20.04
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
