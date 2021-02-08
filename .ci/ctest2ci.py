@@ -33,8 +33,10 @@ import sys
 import re
 import subprocess
 from termcolor import colored
+import string
 
 fold_stack = list()
+printable = set(string.printable)
 
 
 def start_fold(tag):
@@ -73,6 +75,8 @@ p = subprocess.Popen(sys.argv[1:], stdout=subprocess.PIPE)
 
 for line in p.stdout:
     updated_line = line.decode('utf-8')
+    # remove non printable characters https://stackoverflow.com/a/8689826/1548052
+    filter(lambda x: x in printable, updated_line)
     if re.match('Run dashboard with model Experimental', updated_line):
         start_fold('build')
         updated_line = '{title}\n{line}'.format(title=colored('Running tests...', 'yellow', attrs=['bold']),
