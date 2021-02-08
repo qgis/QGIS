@@ -1,0 +1,63 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettingsregistry.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSettingsRegistry : QObject
+{
+%Docstring
+
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsregistry.h"
+%End
+  public:
+
+    QgsSettingsRegistry( QgsSettings::Section settingsSection,
+                         QObject *parent = 0 );
+%Docstring
+Constructor for QgsSettingsRegistry.
+%End
+
+    void registerSettings( const QString &settingsName,
+                           const QVariant &defaultValue = QVariant(),
+                           const QString &description = QString() );
+
+    void registerSettingsString( const QString &settingsName,
+                                 const QString &defaultValue = QString(),
+                                 const QString &description = QString(),
+                                 int minLength = 0,
+                                 int maxLength = -1 );
+
+    bool isRegistered( const QString &settingsName ) const;
+
+    void unregister( const QString &settingsName );
+
+    bool setValue( const QString &settingsName,
+                   const QVariant &value );
+
+    QVariant value( const QString &settingsName ) const;
+
+    QVariant defaultValue( const QString &settingsName ) const;
+
+    QString description( const QString &settingsName ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettingsregistry.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

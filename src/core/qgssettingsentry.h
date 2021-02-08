@@ -66,8 +66,9 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
                               mDefaultValue,
                               mSettingsSection );
       if ( variantValue.canConvert<T>() == false )
-        QgsDebugMsg( QObject::tr( "Can't convert setting '%1' to type '%2'" ).arg( mSettingsName )
-                     .arg( type_name<T>() ) );
+        QgsDebugMsg( QObject::tr( "Can't convert setting '%1' to type '%2'" )
+                     .arg( mSettingsName )
+                     .arg( typeid( T ).name() ) );
 
       return variantValue.value<T>();
     }
@@ -80,8 +81,9 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     T defaultValue() const
     {
       if ( mDefaultValue.canConvert<T>() == false )
-        QgsDebugMsg( QObject::tr( "Can't convert default value of setting '%1' to type '%2'" ).arg( mSettingsName )
-                     .arg( type_name<T>() ) );
+        QgsDebugMsg( QObject::tr( "Can't convert default value of setting '%1' to type '%2'" )
+                     .arg( mSettingsName )
+                     .arg( typeid( T ).name() ) );
 
       return mDefaultValue.value<T>();
     }

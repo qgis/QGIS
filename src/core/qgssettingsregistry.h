@@ -41,15 +41,15 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
     QgsSettingsRegistry( QgsSettings::Section settingsSection,
                          QObject *parent = nullptr );
 
-    void registerValue( const QString &settingsName,
-                        const QVariant &defaultValue = QVariant(),
-                        const QString &description = QString() );
+    void registerSettings( const QString &settingsName,
+                           const QVariant &defaultValue = QVariant(),
+                           const QString &description = QString() );
 
-    void registerValueString( const QString &settingsName,
-                              const QString &defaultValue = QString(),
-                              const QString &description = QString(),
-                              int minLength = 0,
-                              int maxLength = 1 << 30 );
+    void registerSettingsString( const QString &settingsName,
+                                 const QString &defaultValue = QString(),
+                                 const QString &description = QString(),
+                                 int minLength = 0,
+                                 int maxLength = -1 );
 
     bool isRegistered( const QString &settingsName ) const;
 

@@ -44,12 +44,12 @@ void TestQgsSettingsRegistry::variantValue()
   QString settingsName( "qgis/testing/settings_registry/my_variant_value" );
   int defaultValue( 42 );
   QString settingsDescription( "Variant value for testing of 'QgsSettingsRegistry'" );
-  settingsRegistry.registerValue( settingsName,
-                                  defaultValue,
-                                  settingsDescription );
+  settingsRegistry.registerSettings( settingsName,
+                                     defaultValue,
+                                     settingsDescription );
 
   // Check default value
-  QCOMPARE( settingsRegistry.value<int>( settingsName ), defaultValue );
+  QCOMPARE( settingsRegistry.defaultValue<int>( settingsName ), defaultValue );
 
   // Set new value
   int newValue( 1234 );
