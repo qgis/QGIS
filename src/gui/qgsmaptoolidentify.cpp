@@ -1042,7 +1042,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         }
 
         // list of feature stores for a single sublayer
-        const QgsFeatureStoreList featureStoreList = it.value().value<QgsFeatureStoreList>();
+        const QgsFeatureStoreList featureStoreList = value.value<QgsFeatureStoreList>();
 
         for ( const QgsFeatureStore &featureStore : featureStoreList )
         {
