@@ -40,9 +40,9 @@ bool QgsVectorLayerFeatureCounter::run()
 
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    mSymbolFeatureCountMap.insert( symbolIt->label(), 0 );
+    mSymbolFeatureCountMap.insert( symbolIt->ruleKey(), 0 );
     if ( mWithFids )
-      mSymbolFeatureIdMap.insert( symbolIt->label(), QgsFeatureIds() );
+      mSymbolFeatureIdMap.insert( symbolIt->ruleKey(), QgsFeatureIds() );
   }
 
   // If there are no features to be counted, we can spare us the trouble
