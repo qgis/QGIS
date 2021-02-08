@@ -60,6 +60,8 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->dataProvider() );
 
+  mReadyToCompose = false;
+
   // copy native mesh
   mNativeMesh = *( layer->nativeMesh() );
   mLayerExtent = layer->extent();
@@ -287,6 +289,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
+  mReadyToCompose = false;
   QgsScopedQPainterState painterState( renderContext()->painter() );
   if ( !mClippingRegions.empty() )
   {
@@ -297,6 +300,7 @@ bool QgsMeshLayerRenderer::render()
   }
 
   renderScalarDataset();
+  mReadyToCompose = true;
   renderMesh();
   renderVectorDataset();
 
