@@ -461,6 +461,50 @@ QgsMimeDataUtils::Uri QgsOgrDataCollectionItem::mimeUri() const
   return u;
 }
 
+QgsAbstractDatabaseProviderConnection *QgsOgrDataCollectionItem::databaseConnection() const
+{
+
+  QgsAbstractDatabaseProviderConnection *conn { QgsDataCollectionItem::databaseConnection() };
+
+  // There is a chance that this is a spatialite file, but spatialite is not handled by OGR and
+  // it's not even in core.
+  if ( ! conn )
+  {
+
+    // test that file is valid with OGR
+    if ( OGRGetDriverCount() == 0 )
+    {
+      OGRRegisterAll();
+    }
+    // do not print errors, but write to debug
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    CPLErrorReset();
+    gdal::dataset_unique_ptr hDS( GDALOpenEx( path().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+    CPLPopErrorHandler();
+
+    if ( ! hDS )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "GDALOpen error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
+      return nullptr;
+    }
+
+    GDALDriverH hDriver = GDALGetDatasetDriver( hDS.get() );
+    QString driverName = GDALGetDriverShortName( hDriver );
+
+    if ( driverName == QLatin1String( "SQLite" ) )
+    {
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) };
+      if ( md )
+      {
+        QgsDataSourceUri uri;
+        uri.setDatabase( path( ) );
+        conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri.uri(), {} ) );
+      }
+    }
+  }
+  return conn;
+}
+
 // ---------------------------------------------------------------------------
 
 QString QgsOgrDataItemProvider::name()

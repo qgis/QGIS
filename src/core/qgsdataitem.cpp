@@ -106,6 +106,44 @@ QIcon QgsDataCollectionItem::homeDirIcon()
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderHome.svg" ) );
 }
 
+QgsAbstractDatabaseProviderConnection *QgsDataCollectionItem::databaseConnection() const
+{
+  const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( providerKey() ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
+
+  if ( ! md )
+  {
+    return nullptr;
+  }
+
+  const QString connectionName { name() };
+
+  try
+  {
+    // First try to retrieve the connection by name if this is a stored connection
+    if ( md->findConnection( connectionName ) )
+    {
+      return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) );
+    }
+
+    // If that fails, try to create a connection from the path, in case this is a
+    // filesystem-based DB (gpkg or spatialite)
+    // The name is useless, we need to get the file path from the data item path
+    const QString databaseFilePath { path().remove( QRegularExpression( R"re([\aZ]{2,}://)re" ) ) };
+
+    if ( QFile::exists( databaseFilePath ) )
+    {
+      return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( databaseFilePath, {} ) );
+    }
+  }
+  catch ( QgsProviderConnectionException &ex )
+  {
+    // This is expected and it is not an error in case the provider does not implement
+    // the connections API
+  }
+  return nullptr;
+}
+
 QIcon QgsDataCollectionItem::iconDir()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
@@ -396,6 +434,11 @@ void QgsDataItem::moveToThread( QThread *targetThread )
     child->moveToThread( targetThread );
   }
   QObject::moveToThread( targetThread );
+}
+
+QgsAbstractDatabaseProviderConnection *QgsDataItem::databaseConnection() const
+{
+  return nullptr;
 }
 
 QIcon QgsDataItem::icon()
@@ -1810,6 +1853,27 @@ QgsDatabaseSchemaItem::~QgsDatabaseSchemaItem()
 QIcon QgsDatabaseSchemaItem::iconDataCollection()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
+}
+
+QgsAbstractDatabaseProviderConnection *QgsDatabaseSchemaItem::databaseConnection() const
+{
+  const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( providerKey() ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
+  if ( ! md )
+  {
+    return nullptr;
+  }
+  const QString connectionName { parent()->name() };
+  try
+  {
+    return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) );
+  }
+  catch ( QgsProviderConnectionException &ex )
+  {
+    // This is expected and it is not an error in case the provider does not implement
+    // the connections API
+  }
+  return nullptr;
 }
 
 
