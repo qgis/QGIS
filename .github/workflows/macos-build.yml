@@ -24,7 +24,7 @@ on:
 env:
   QT_VERSION: 5.14.2
   QGIS_DEPS_VERSION: 0.6.0
-  CCACHE_DIR:/ccache
+  CCACHE_DIR: /ccache
 
 jobs:
   mac_os_build:
