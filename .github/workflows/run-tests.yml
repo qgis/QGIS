@@ -12,6 +12,7 @@ on:
     - 'CMakeLists.txt'
     - '.github/workflows/**'
     - '.docker/**'
+    - '.ci/**'
   pull_request:
     branches:
       - master
@@ -23,6 +24,7 @@ on:
     - 'CMakeLists.txt'
     - '.github/workflows/**'
     - '.docker/**'
+    - '.ci/**'
 
 jobs:
   build:
