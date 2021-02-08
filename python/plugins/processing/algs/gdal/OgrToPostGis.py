@@ -260,7 +260,7 @@ class OgrToPostGis(GdalAlgorithm):
         if len(shapeEncoding) > 0:
             arguments.append('--config')
             arguments.append('SHAPE_ENCODING')
-            arguments.append('"' + shapeEncoding + '"')
+            arguments.append(shapeEncoding)
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:' + self.getConnectionString(parameters, context))

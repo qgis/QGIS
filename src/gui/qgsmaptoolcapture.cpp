@@ -68,6 +68,14 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 
 QgsMapToolCapture::~QgsMapToolCapture()
 {
+  // during tear down we have to clean up mExtraSnapLayer first, before
+  // we call stop capturing. Otherwise stopCapturing tries to access members
+  // from the mapcanvas, which is likely already being destroyed and triggering
+  // the deletion of this object...
+  mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
+  mExtraSnapLayer->deleteLater();
+  mExtraSnapLayer = nullptr;
+
   stopCapturing();
 
   if ( mValidator )
@@ -75,9 +83,6 @@ QgsMapToolCapture::~QgsMapToolCapture()
     mValidator->deleteLater();
     mValidator = nullptr;
   }
-  mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
-  mExtraSnapLayer->deleteLater();
-  mExtraSnapLayer = nullptr;
 }
 
 QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
@@ -984,6 +989,9 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsMapMouseEvent &e ) const
 
 void QgsMapToolCapture::updateExtraSnapLayer()
 {
+  if ( !mExtraSnapLayer )
+    return;
+
   if ( canvas()->snappingUtils()->config().selfSnapping() && mCanvas->currentLayer() && mCaptureCurve.numPoints() >= 2 )
   {
     // the current layer may have changed

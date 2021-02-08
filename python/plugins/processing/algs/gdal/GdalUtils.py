@@ -217,7 +217,7 @@ class GdalUtils:
 
     @staticmethod
     def escapeAndJoin(strList):
-        escChars = [' ', '&', '(', ')']
+        escChars = [' ', '&', '(', ')', '"']
         joined = ''
         for s in strList:
             if not isinstance(s, str):

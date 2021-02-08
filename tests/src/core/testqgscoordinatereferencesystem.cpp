@@ -1399,6 +1399,9 @@ void TestQgsCoordinateReferenceSystem::validSrsIds()
 
   int validCount = 0;
 
+  if ( QgsTest::isCIRun() )
+    return; // the next part is too time consuming to run on the CI infrastructure
+
   // check that all returns ids are valid
   for ( long id : ids )
   {

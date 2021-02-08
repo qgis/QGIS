@@ -400,6 +400,18 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
         metadata = QgsProviderMetadata(PyProvider.providerKey(), PyProvider.description(), PyProvider.createProvider)
         self.assertFalse(r.registerProvider(metadata))
 
+    def testGetFeaturesFromProvider(self):
+        """
+        Regardless of whether we get features direct from the provider or through the layer, the
+        result should be the same...
+        """
+        layer = self.createLayer()
+        provider_features = {f.id(): f.attributes() for f in layer.dataProvider().getFeatures()}
+        self.assertTrue(provider_features)
+        layer_features = {f.id(): f.attributes() for f in layer.dataProvider().getFeatures()}
+        self.assertTrue(layer_features)
+        self.assertEqual(provider_features, layer_features)
+
 
 if __name__ == '__main__':
     unittest.main()

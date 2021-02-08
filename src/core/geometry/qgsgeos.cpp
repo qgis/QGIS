@@ -596,7 +596,7 @@ double QgsGeos::area( QString *errorMsg ) const
     if ( GEOSArea_r( geosinit()->ctxt, mGeos.get(), &area ) != 1 )
       return -1.0;
   }
-  CATCH_GEOS_WITH_ERRMSG( -1.0 );
+  CATCH_GEOS_WITH_ERRMSG( -1.0 )
   return area;
 }
 
@@ -1100,6 +1100,9 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   {
     case GEOS_POINT:                 // a point
     {
+      if ( GEOSisEmpty_r( geosinit()->ctxt, geos ) )
+        return nullptr;
+
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, geos );
       unsigned int nPoints = 0;
       GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
@@ -1354,7 +1357,6 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
         case QgsWkbTypes::UnknownGeometry:
         case QgsWkbTypes::NullGeometry:
           return nullptr;
-          break;
       }
     }
 
@@ -1377,20 +1379,16 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     {
       case QgsWkbTypes::PointGeometry:
         return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision );
-        break;
 
       case QgsWkbTypes::LineGeometry:
         return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision );
-        break;
 
       case QgsWkbTypes::PolygonGeometry:
         return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision );
-        break;
 
       case QgsWkbTypes::UnknownGeometry:
       case QgsWkbTypes::NullGeometry:
         return nullptr;
-        break;
     }
   }
   return nullptr;
@@ -1417,9 +1415,11 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
       case OverlayIntersection:
         opGeom.reset( GEOSIntersection_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         break;
+
       case OverlayDifference:
         opGeom.reset( GEOSDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         break;
+
       case OverlayUnion:
       {
         geos::unique_ptr unionGeometry( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
@@ -1436,11 +1436,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
         opGeom = std::move( unionGeometry );
       }
       break;
+
       case OverlaySymDifference:
         opGeom.reset( GEOSSymDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         break;
-      default:    //unknown op
-        return nullptr;
     }
     return fromGeos( opGeom.get() );
   }
@@ -1496,8 +1495,6 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
         case RelationOverlaps:
           result = ( GEOSPreparedOverlaps_r( geosinit()->ctxt, mGeosPrepared.get(), geosGeom.get() ) == 1 );
           break;
-        default:
-          return false;
       }
       return result;
     }
@@ -1525,8 +1522,6 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
       case RelationOverlaps:
         result = ( GEOSOverlaps_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) == 1 );
         break;
-      default:
-        return false;
     }
   }
   catch ( GEOSException &e )
@@ -1554,7 +1549,7 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, QString *er
   {
     geos.reset( GEOSBuffer_r( geosinit()->ctxt, mGeos.get(), distance, segments ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
 }
 
@@ -1570,7 +1565,7 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapS
   {
     geos.reset( GEOSBufferWithStyle_r( geosinit()->ctxt, mGeos.get(), distance, segments, endCapStyle, joinStyle, miterLimit ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
 }
 
@@ -1585,7 +1580,7 @@ QgsAbstractGeometry *QgsGeos::simplify( double tolerance, QString *errorMsg ) co
   {
     geos.reset( GEOSTopologyPreserveSimplify_r( geosinit()->ctxt, mGeos.get(), tolerance ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
 }
 
@@ -1600,7 +1595,7 @@ QgsAbstractGeometry *QgsGeos::interpolate( double distance, QString *errorMsg ) 
   {
     geos.reset( GEOSInterpolate_r( geosinit()->ctxt, mGeos.get(), distance ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
 }
 
@@ -1625,7 +1620,7 @@ QgsPoint *QgsGeos::centroid( QString *errorMsg ) const
     GEOSGeomGetX_r( geosinit()->ctxt, geos.get(), &x );
     GEOSGeomGetY_r( geosinit()->ctxt, geos.get(), &y );
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
 
   return new QgsPoint( x, y );
 }
@@ -1641,7 +1636,7 @@ QgsAbstractGeometry *QgsGeos::envelope( QString *errorMsg ) const
   {
     geos.reset( GEOSEnvelope_r( geosinit()->ctxt, mGeos.get() ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
 }
 
@@ -1668,7 +1663,7 @@ QgsPoint *QgsGeos::pointOnSurface( QString *errorMsg ) const
     GEOSGeomGetX_r( geosinit()->ctxt, geos.get(), &x );
     GEOSGeomGetY_r( geosinit()->ctxt, geos.get(), &y );
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
 
   return new QgsPoint( x, y );
 }
@@ -1686,7 +1681,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
     std::unique_ptr< QgsAbstractGeometry > cHullGeom = fromGeos( cHull.get() );
     return cHullGeom.release();
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
 bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc ) const
@@ -1744,7 +1739,7 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
     }
     return !invalid;
   }
-  CATCH_GEOS_WITH_ERRMSG( false );
+  CATCH_GEOS_WITH_ERRMSG( false )
 }
 
 bool QgsGeos::isEqual( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -1764,7 +1759,7 @@ bool QgsGeos::isEqual( const QgsAbstractGeometry *geom, QString *errorMsg ) cons
     bool equal = GEOSEquals_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() );
     return equal;
   }
-  CATCH_GEOS_WITH_ERRMSG( false );
+  CATCH_GEOS_WITH_ERRMSG( false )
 }
 
 bool QgsGeos::isEmpty( QString *errorMsg ) const
@@ -1778,7 +1773,7 @@ bool QgsGeos::isEmpty( QString *errorMsg ) const
   {
     return GEOSisEmpty_r( geosinit()->ctxt, mGeos.get() );
   }
-  CATCH_GEOS_WITH_ERRMSG( false );
+  CATCH_GEOS_WITH_ERRMSG( false )
 }
 
 bool QgsGeos::isSimple( QString *errorMsg ) const
@@ -1792,7 +1787,7 @@ bool QgsGeos::isSimple( QString *errorMsg ) const
   {
     return GEOSisSimple_r( geosinit()->ctxt, mGeos.get() );
   }
-  CATCH_GEOS_WITH_ERRMSG( false );
+  CATCH_GEOS_WITH_ERRMSG( false )
 }
 
 GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose )
@@ -2080,7 +2075,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance
     }
     geos.reset( GEOSBufferWithParams_r( geosinit()->ctxt, mGeos.get(), bp.get(), distance ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
 }
 
@@ -2215,7 +2210,7 @@ QgsGeometry QgsGeos::mergeLines( QString *errorMsg ) const
   {
     geos.reset( GEOSLineMerge_r( geosinit()->ctxt, mGeos.get() ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() )
   return QgsGeometry( fromGeos( geos.get() ) );
 }
 
@@ -2395,7 +2390,7 @@ QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry *extent, double t
 
     return QgsGeometry( fromGeos( geos.get() ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() )
 }
 
 QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString *errorMsg ) const
@@ -2417,7 +2412,7 @@ QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QS
 
     return QgsGeometry( fromGeos( geos.get() ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() )
 }
 
 
@@ -2786,6 +2781,7 @@ geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEO
     GEOSGeometry *outerRingPoly = GEOSGeom_createPolygon_r( geosinit()->ctxt, GEOSGeom_clone_r( geosinit()->ctxt, newOuterRing ), nullptr, 0 );
     if ( outerRingPoly )
     {
+      ringList.reserve( nRings );
       GEOSGeometry *currentRing = nullptr;
       for ( int i = 0; i < nRings; ++i )
       {

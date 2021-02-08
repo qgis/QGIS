@@ -77,10 +77,11 @@ Returns the library directory where plugins are found.
 Sets library directory where to search for plugins
 %End
 
+
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
                                      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
+                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /TransferBack/;
 %Docstring
 Creates a new instance of a provider.
 

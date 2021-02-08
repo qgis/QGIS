@@ -31,7 +31,7 @@
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
-  mProviderFeatureSource = layer->dataProvider()->featureSource();
+  mProviderFeatureSource.reset( layer->dataProvider()->featureSource() );
   mFields = layer->fields();
   mId = layer->id();
 
@@ -39,9 +39,9 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   if ( layer->mJoinBuffer->containsJoins() )
     layer->mJoinBuffer->createJoinCaches();
 
-  mJoinBuffer = layer->mJoinBuffer->clone();
+  mJoinBuffer.reset( layer->mJoinBuffer->clone() );
 
-  mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
+  mExpressionFieldBuffer.reset( new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer ) );
   mCrs = layer->crs();
 
   mHasEditBuffer = layer->editBuffer();
@@ -86,12 +86,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   mLayerScope = *layerScope;
 }
 
-QgsVectorLayerFeatureSource::~QgsVectorLayerFeatureSource()
-{
-  delete mJoinBuffer;
-  delete mExpressionFieldBuffer;
-  delete mProviderFeatureSource;
-}
+QgsVectorLayerFeatureSource::~QgsVectorLayerFeatureSource() = default;
 
 QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

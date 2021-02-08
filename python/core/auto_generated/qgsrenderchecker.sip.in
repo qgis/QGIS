@@ -125,6 +125,13 @@ Test using two arbitrary images (map renderer will not be used)
 \note: make sure to call setExpectedImage and setRenderedImage first.
 %End
 
+    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0 );
+%Docstring
+Test using two arbitrary images at the specified paths for equality.
+
+.. versionadded:: 3.18
+%End
+
     bool isKnownAnomaly( const QString &diffImageFile );
 %Docstring
 Gets a list of all the anomalies. An anomaly is a rendered difference

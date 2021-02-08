@@ -211,7 +211,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         time_idx = created_layer.fields().lookupField('time_f')
         # shapefiles do not support time types
         self.assertIsInstance(f.attributes()[time_idx], str)
-        self.assertEqual(f.attributes()[time_idx], '13:45:22')
+        self.assertTrue(f.attributes()[time_idx].startswith('13:45:22'))
         # shapefiles do not support datetime types
         datetime_idx = created_layer.fields().lookupField('dt_f')
         self.assertIsInstance(f.attributes()[datetime_idx], str)

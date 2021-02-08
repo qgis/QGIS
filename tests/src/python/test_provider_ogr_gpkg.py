@@ -96,6 +96,10 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        del(cls.vl)
+        del(cls.vl_poly)
+        del(cls.check_constraint)
+        del(cls.unique_not_null_constraints)
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 

@@ -187,31 +187,6 @@ def dumpEditBuffer(layer):
         print(("%d | %s" % (f.id(), f.geometry().asWkt())))
 
 
-class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
-
-    """
-    Tests a vector layer against the feature source tests, using a real layer source (not a memory layer)
-    """
-    @classmethod
-    def getSource(cls):
-        vl = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp'), 'test')
-        assert (vl.isValid())
-        return vl
-
-    @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        QgsGui.editorWidgetRegistry().initEditors()
-        # Create test layer for FeatureSourceTestCase
-        cls.source = cls.getSource()
-
-    def treat_time_as_string(self):
-        return True
-
-    def treat_datetime_as_string(self):
-        return True
-
-
 class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
     @classmethod
