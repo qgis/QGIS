@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    Grass7AlgorithmsRasterTest.py
+    Grass7AlgorithmsRasterTestPt2.py
     -----------------------------
     Date                 : May 2016
     Copyright            : (C) 2016 by Médéric Ribreux
@@ -52,7 +52,7 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
             shutil.rmtree(path)
 
     def test_definition_file(self):
-        return 'grass7_algorithms_raster_tests.yaml'
+        return 'grass7_algorithms_raster_tests2.yaml'
 
 
 if __name__ == '__main__':
