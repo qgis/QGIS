@@ -114,7 +114,6 @@ class CORE_EXPORT QgsGoogleMapsGeocoder : public QgsGeocoderInterface
     QString mEndpoint;
 
     static QReadWriteLock sMutex;
-    static QMap< QUrl, QList< QgsGeocoderResult > > sCachedResults;
 
 };
 

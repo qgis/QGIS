@@ -436,7 +436,7 @@ void TestQgsProcessingAlgs::packageAlg()
 
 void TestQgsProcessingAlgs::exportToSpreadsheetXlsx()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
   {
     QSKIP( "XLSX driver not working on Travis" );
   }

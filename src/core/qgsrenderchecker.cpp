@@ -251,6 +251,12 @@ bool QgsRenderChecker::compareImages( const QString &testName,
               "Image File not set.</td></tr></table>\n";
     return false;
   }
+
+  return compareImages( testName, mExpectedImageFile, renderedImageFile, mismatchCount );
+}
+
+bool QgsRenderChecker::compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount )
+{
   if ( ! renderedImageFile.isEmpty() )
   {
     mRenderedImageFile = renderedImageFile;
@@ -272,7 +278,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   //
   // Load /create the images
   //
-  QImage myExpectedImage( mExpectedImageFile );
+  QImage myExpectedImage( referenceImageFile );
   QImage myResultImage( mRenderedImageFile );
   if ( myResultImage.isNull() )
   {
@@ -290,7 +296,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
   //check for mask
-  QString maskImagePath = mExpectedImageFile;
+  QString maskImagePath = referenceImageFile;
   maskImagePath.chop( 4 ); //remove .png extension
   maskImagePath += QLatin1String( "_mask.png" );
   const QImage maskImage( maskImagePath );
@@ -343,7 +349,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
                            .arg( testName,
                                  myDiffImageFile,
                                  mRenderedImageFile,
-                                 mExpectedImageFile )
+                                 referenceImageFile )
                            .arg( imgWidth ).arg( imgHeight )
                            .arg( QUuid::createUuid().toString().mid( 1, 6 ) );
 
@@ -356,7 +362,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   // To get the images into CDash
   //
   emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
-  emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, mExpectedImageFile );
+  emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
 
   //
   // Put the same info to debug too
@@ -524,7 +530,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
                    "you can do something like this\n"
                    "cp '" + myDiffImageFile + "' " + controlImagePath() + mControlName +
                    "/\nIf it should be included in the mask run\n"
-                   "scripts/generate_test_mask_image.py '" + mExpectedImageFile + "' '" + mRenderedImageFile + "'\n" );
+                   "scripts/generate_test_mask_image.py '" + referenceImageFile + "' '" + mRenderedImageFile + "'\n" );
 
   mReport += QLatin1String( "<tr><td colspan = 3>\n" );
   mReport += "<font color=red>Test image and result image for " + testName + " are mismatched</font><br>";

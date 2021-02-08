@@ -33,6 +33,7 @@ Constructor for QgsVectorLayerFeatureSource.
 :param layer: source layer
 %End
 
+
     ~QgsVectorLayerFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() );
@@ -70,7 +71,8 @@ Returns the layer id of the source layer.
 
 
 
-
+  private:
+    QgsVectorLayerFeatureSource( const QgsVectorLayerFeatureSource &other );
 };
 
 
@@ -181,6 +183,7 @@ The currently selected feature IDs are stored, so change to the layer selection 
 the QgsVectorLayerSelectedFeatureSource will not be reflected.
 %End
 
+
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
@@ -198,6 +201,8 @@ the QgsVectorLayerSelectedFeatureSource will not be reflected.
     virtual SpatialIndexPresence hasSpatialIndex() const;
 
 
+  private:
+    QgsVectorLayerSelectedFeatureSource( const QgsVectorLayerSelectedFeatureSource &other );
 };
 
 

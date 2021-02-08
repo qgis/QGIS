@@ -6,7 +6,7 @@ QgsProcessingParameterRasterLayer|soilheatflux|Name of instantaneous soil heat f
 QgsProcessingParameterRasterLayer|aerodynresistance|Name of aerodynamic resistance to heat momentum raster map [s/m]|None|False
 QgsProcessingParameterRasterLayer|temperaturemeansealevel|Name of altitude corrected surface temperature raster map [K]|None|False
 QgsProcessingParameterNumber|frictionvelocitystar|Value of the height independent friction velocity (u*) [m/s]|QgsProcessingParameterNumber.Double|0.32407|False|0.0|None
-QgsProcessingParameterNumber|vapourpressureactual|Value of the actual vapour pressure (e_act) [KPa]|QgsProcessingParameterNumber.Double|1.511|False|0.0|None
+QgsProcessingParameterRasterLayer|vapourpressureactual|Name of the actual vapour pressure (e_act) map [KPa]|None|False
 QgsProcessingParameterNumber|row_wet_pixel|Row value of the wet pixel|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|column_wet_pixel|Column value of the wet pixel|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|row_dry_pixel|Row value of the dry pixel|QgsProcessingParameterNumber.Double|None|True|None|None

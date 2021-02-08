@@ -30,7 +30,7 @@ start_app()
 
 class TestQgsLabelLineSettings(unittest.TestCase):
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Python version too old for enum classes to work')
     def test_line_settings(self):
         """
@@ -128,7 +128,7 @@ class TestQgsLabelLineSettings(unittest.TestCase):
         self.assertTrue(pal_settings.lineSettings().overrunDistanceMapUnitScale().minScale, 1)
         self.assertTrue(pal_settings.lineSettings().overrunDistanceMapUnitScale().maxScale, 2)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Python version too old for enum classes to work')
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelLineSettings()

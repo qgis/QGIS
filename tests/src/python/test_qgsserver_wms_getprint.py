@@ -329,7 +329,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_TwoMaps")
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Can\'t rely on external resources for continuous integration')
     def test_wms_getprint_external(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({

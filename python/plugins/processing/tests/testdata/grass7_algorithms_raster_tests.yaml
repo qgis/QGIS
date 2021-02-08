@@ -15,7 +15,9 @@ tests:
       type: 1
     results:
       output:
-        hash: a9326678c39b6f925e7f22f6e79a48217100071cc8af85d675f28462
+        hash:
+        - a9326678c39b6f925e7f22f6e79a48217100071cc8af85d675f28462
+        - 1a1780290ccd77cdcd2a22fcebfa8ed02d98aeadce9d6d7cdaab05fd
         type: rasterhash
 
   - algorithm: grass7:r.buffer
@@ -347,7 +349,9 @@ tests:
         type: raster
     results:
       output:
-        hash: 6b4dcffae16a630e655a57e346a1a8a58d2f22760dcf2deb28ede7b5
+        hash:
+        - 6b4dcffae16a630e655a57e346a1a8a58d2f22760dcf2deb28ede7b5
+        - 319dbe26d612fa00b8a2de54439ebb9df5deb18e82c24882b5233e91
         type: rasterhash
 
   - algorithm: grass7:r.thin
@@ -960,10 +964,14 @@ tests:
         hash: 5edf01dbbe2d08fd89a52f662373bbe6acfa4bbc86f002697ecd9dcc
         type: rasterhash
       direction:
-        hash: 093995e21463d59ccd17b9e432a3a10cd2c1c25e8e415d3770578384
+        hash:
+        - 093995e21463d59ccd17b9e432a3a10cd2c1c25e8e415d3770578384
+        - b520141a25df8fcc84c682fe7b7c4b5e7ee68d1589d573bd19f85b0b
         type: rasterhash
       output:
-        hash: c9b138bce89dbb17dfc3995c8338380e480ac5a1736981c73f146160
+        hash:
+        - c9b138bce89dbb17dfc3995c8338380e480ac5a1736981c73f146160
+        - 47adbab553eded8dac2a222974a590007e32e83900b415402a595c86
         type: rasterhash
 
   - algorithm: grass7:r.fillnulls
@@ -1135,6 +1143,7 @@ tests:
         hash:
         - 418f93ebf06c0b5ae3c7a126513fe4384a3aaa6f8fb570f3d39e2877
         - d447a4dfb85ed7f4d819e68b32eb1303bd2040ca72077892d3e3cec7
+        - 7596586771ae5836b141a05e109569c14290906f8215ecd6677e8769
         type: rasterhash
 
   - algorithm: grass7:r.info
@@ -1448,7 +1457,9 @@ tests:
         hash: 431a0c8359b7662169ef8a9adf469da47a282a70981de5bee24e3528
         type: rasterhash
       length_slope:
-        hash: 69b5b31ac93a25f01b85e4f7867e5b8720183732d29d50c24204a7b9
+        hash:
+        - 69b5b31ac93a25f01b85e4f7867e5b8720183732d29d50c24204a7b9
+        - 3d8f405232e958d8b9c75f2c5a63badee178ee7910d7b1ccef78ea9e
         type: rasterhash
       slope_steepness:
         hash: cafb759a5701e78928a43d87e58e552f9186358b1de40c375047f81e
@@ -1460,6 +1471,7 @@ tests:
         hash:
         - 6b213bddf1223f392c01ab26e84485c01d652dfcae40aecd186f3295
         - e58737ab4169e79243dd7e50dc87555a2180a7e5f6ba00fe18b10fff
+        - 48a718679318750a35eff0c76fb506753bf4897c7b18a4df23397f9c
         type: rasterhash
 
   - algorithm: grass7:r.stream.extract
@@ -1503,37 +1515,38 @@ tests:
         hash: e1a1fc36d53e2ac801632f9e2271922d2b1340869f2db82d5edaeb0e
         type: rasterhash
 
-  - algorithm: grass7:r.rescale
-    name: Test (grass7:r.rescale)
-    params:
-      GRASS_RASTER_FORMAT_META: ''
-      GRASS_RASTER_FORMAT_OPT: ''
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      from: '1,6'
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-      to: '1,2'
-    results:
-      output:
-        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
-        type: rasterhash
-
-  - algorithm: grass7:r.rescale
-    name: Test (grass7:r.rescale)
-    params:
-      GRASS_RASTER_FORMAT_META: ''
-      GRASS_RASTER_FORMAT_OPT: ''
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      from: None
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-      to: '1,2'
-    results:
-      output:
-        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
-        type: rasterhash
+# GRASS can trigger a segfault on CI when running this tool
+#  - algorithm: grass7:r.rescale
+#    name: Test (grass7:r.rescale)
+#    params:
+#      GRASS_RASTER_FORMAT_META: ''
+#      GRASS_RASTER_FORMAT_OPT: ''
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      from: '1,6'
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#      to: '1,2'
+#    results:
+#      output:
+#        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
+#        type: rasterhash
+#
+#  - algorithm: grass7:r.rescale
+#    name: Test (grass7:r.rescale)
+#    params:
+#      GRASS_RASTER_FORMAT_META: ''
+#      GRASS_RASTER_FORMAT_OPT: ''
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      from: None
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#      to: '1,2'
+#    results:
+#      output:
+#        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
+#        type: rasterhash
 
   - algorithm: grass7:r.transect
     name: GRASS 7 r.transect

@@ -79,10 +79,10 @@
 namespace QgsTest
 {
 
-  //! Returns TRUE if test is running on Travis infrastructure
-  bool isTravis()
+  //! Returns TRUE if test is running on a CI infrastructure
+  bool isCIRun()
   {
-    return qgetenv( "TRAVIS" ) == QStringLiteral( "true" );
+    return qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" );
   }
 
   bool runFlakyTests()

@@ -866,7 +866,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'test_project_use_layer_ids.qgs',
                                  normalizeJson=True)
 
-        @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+        @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                          "This test cannot run in TRAVIS because it relies on cascading external services")
         def testGetFeatureInfoCascadingLayers(self):
             """Test that we can get feature info on cascading WMS layers"""
