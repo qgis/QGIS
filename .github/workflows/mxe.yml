@@ -1,14 +1,26 @@
 name: Windows cross build with MXE
 
-on: [push, pull_request]
-
-#on:
-# push:
-#   branches-ignore:
-#     - '**'
-# pull_request:
-#   branches-ignore:
-#     - '**'
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+  pull_request:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
 
 jobs:
   build:
