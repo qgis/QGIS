@@ -389,7 +389,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         for fv in [fv1, fv2, fv3]:
             f = QgsFeature()
             f.setAttributes(fv[2:])
-            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(fv[0], fv[0])))
+            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(fv[0], fv[1])))
             self.assertTrue(f.isValid())
             layer.addFeature(f)
         layer.commitChanges()
@@ -461,7 +461,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         for fv in [fv4, fv5, fv6]:
             f = QgsFeature()
             f.setAttributes(fv[2:])
-            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(fv[0], fv[0])))
+            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(fv[0], fv[1])))
             self.assertTrue(f.isValid())
             layer.addFeature(f)
         layer.commitChanges()
