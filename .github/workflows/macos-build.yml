@@ -6,8 +6,11 @@ on:
       - release-**
     paths:
     - 'src/**'
+    - 'external/**'
     - 'tests/**'
     - 'mac/**'
+    - '.docker/**'
+    - '.ci/**'
     - 'CMakeLists.txt'
   pull_request:
     branches:
@@ -15,13 +18,18 @@ on:
       - release-**
     paths:
     - 'src/**'
+    - 'external/**'
     - 'tests/**'
     - 'mac/**'
+    - '.docker/**'
+    - '.ci/**'
     - 'CMakeLists.txt'
 
 env:
   QT_VERSION: 5.14.2
-  QGIS_DEPS_VERSION: 0.5.4
+  QGIS_DEPS_VERSION: 0.6.0
+  CCACHE_DIR: /Users/runner/work/ccache
+  BUILD_DIR: /Users/runner/work/QGIS/build-QGIS
 
 jobs:
   mac_os_build:
@@ -30,31 +38,79 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: download qgis-deps
-        run: |
-          wget https://qgis.org/downloads/macos/deps/qt-${QT_VERSION}.tar.gz
-          wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.tar.gz
-          wget https://qgis.org/downloads/macos/deps/install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+      - name: Prepare build cache for pull request
+        uses: pat-s/always-upload-cache@v2.1.3
+        if: github.event_name == 'pull_request'
+        with:
+          path: /ccache
+          key: build-mac-ccache-${{ github.head_ref }}-${{ github.sha }}
+          # The head_ref or source branch of the pull request in a workflow run.
+          # The base_ref or target branch of the pull request in a workflow run.
+          restore-keys: |
+            build-mac-ccache-${{ github.head_ref }}-
+            build-mac-ccache-${{ github.base_ref }}-
+            build-mac-ccache-refs/heads/master-
 
-      - name: install qgis-deps
+      - name: Prepare build cache for branch/tag
+        # use a fork of actions/cache@v2 to upload cache even when the build or test failed
+        uses: pat-s/always-upload-cache@v2.1.3
+        if: github.event_name != 'pull_request'
+        with:
+          path: /ccache
+          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
+          key: build-mac-ccache-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            build-mac-ccache-${{ github.ref }}-
+            build-mac-ccache-refs/heads/master-
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: pat-s/always-upload-cache@v2.1.3
+        with:
+          path: /opt/Qt/${{ env.QT_VERSION }}
+          key: mac-qt-${{ env.QT_VERSION }}
+
+      - name: Download Qt
+        if: steps.cache-qt.outputs.cache-hit != 'true'
+        run: wget https://qgis.org/downloads/macos/deps/qt-${QT_VERSION}.tar.gz
+
+      - name: Cache qgis-deps
+        id: cache-deps
+        uses: pat-s/always-upload-cache@v2.1.3
+        with:
+          path: /opt/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}
+          key: mac-qgis-deps-${{ env.QGIS_DEPS_VERSION }}
+
+      - name: Download deps
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.tar.gz
+
+      - name: Install Qt and deps
         run: |
+          wget https://qgis.org/downloads/macos/deps/install_qgis_deps-${QGIS_DEPS_VERSION}.bash
           chmod +x ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
           sudo ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
 
+      - name: Install ccache
+        run: |
+          mkdir -p ${CCACHE_DIR}
+          brew install ccache
+          ccache --set-config=max_size=2.0G
+          ccache -s
+
       - name: create build system
         run: |
-          QGIS_DIR=`pwd`
-          mkdir -p ../build-QGIS
-          cd ../build-QGIS
+          mkdir -p ${BUILD_DIR}
+          cd ${BUILD_DIR}
 
           PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH \
           cmake -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
                -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
                -DWITH_BINDINGS=TRUE \
                -DWITH_3D=TRUE \
-               $QGIS_DIR
+               ../QGIS
 
       - name: build QGIS
         run: |
-          cd ../build-QGIS
+          cd ${BUILD_DIR}
           make -j $(sysctl -n hw.ncpu)
