@@ -5394,6 +5394,7 @@ void QgsVectorLayer::onAfterCommitChangesDependency()
 {
   mDataChangedFired = true;
   reload();
+  mDataChangedFired = false;
 }
 
 bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
