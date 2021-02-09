@@ -70,6 +70,8 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
            this, &QgsMesh3dSymbolWidget::changed );
 
   connect( mArrowsFixedSizeCheckBox, &QCheckBox::clicked, this, &QgsMesh3dSymbolWidget::changed );
+
+  connect( mGroupBoxTextureSettings, &QgsCollapsibleGroupBox::collapsedStateChanged, this,  &QgsMesh3dSymbolWidget::onTextureSettingsCollapseStateChanged );
 }
 
 void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
@@ -240,6 +242,14 @@ void QgsMesh3dSymbolWidget::onColoringTypeChanged()
 {
   mGroupBoxColorRampShader->setVisible( mComboBoxTextureType->currentData() == QgsMesh3DSymbol::ColorRamp );
   mMeshSingleColorWidget->setVisible( mComboBoxTextureType->currentData()  == QgsMesh3DSymbol::SingleColor );
+}
+
+void QgsMesh3dSymbolWidget::onTextureSettingsCollapseStateChanged( bool collapsed )
+{
+  if ( !collapsed )
+  {
+    onColoringTypeChanged();
+  }
 }
 
 void QgsMesh3dSymbolWidget::setColorRampMinMax( double min, double max )
