@@ -5,7 +5,7 @@
   "description": "Return the most common values in an array.",
   "arguments": [
     {"arg":"array","description":"an array"},
-    {"arg":"option='all'", "optional":true, "description":"a string specifying the return values handling. Valid options are:<br /><ul><li>all: Default, all most common values are returned in an array</li><li>first: Return the first of the most common values</li><li>median: Return the median of the most common values</li><li>real_majority: Return the value wich occur more than half the size of the array</li></ul>"}
+    {"arg":"option='all'", "optional":true, "description":"a string specifying the return values handling. Valid options are:<br /><ul><li>all: Default, all most common values are returned in an array</li><li>first: Return the first of the most common values</li><li>median: Return the median of the most common values</li><li>real_majority: Return the value which occur more than half the size of the array</li></ul>"}
   ],
   "examples": [
     { "expression":"array_majority(array(0,1,42,42,43), 'all')", "returns":"[ 42 ]"},
