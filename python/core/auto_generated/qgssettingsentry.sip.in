@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettingsentry.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsSettingsEntry : QObject
+{
+%Docstring
+
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntry( QString settingsName = QString(),
+                      QgsSettings::Section settingsSection = QgsSettings::NoSection,
+                      QVariant defaultValue = QVariant(),
+                      QString description = QString(),
+                      QObject *parent = 0 );
+%Docstring
+Constructor for QgsSettingsEntry.
+%End
+
+    QgsSettingsEntry( const QString &settingsName,
+                      QgsSettings::Section settingsSection,
+                      const QString &defaultValue,
+                      const QString &description = QString(),
+                      int minLength = 0,
+                      int maxLength = -1,
+                      QObject *parent = 0 );
+
+    QgsSettingsEntry( const QgsSettingsEntry &other );
+
+
+    void setValue( const QVariant &value );
+
+    QVariant value() const;
+
+    QVariant defaultValue() const;
+
+    QString description() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettingsentry.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
