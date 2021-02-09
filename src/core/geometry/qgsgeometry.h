@@ -2016,7 +2016,8 @@ class CORE_EXPORT QgsGeometry
      * \returns 0 in case of success,
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
-     *          3 other error during intersection removal
+     *          3 other error during intersection removal,
+     *          4 in case of success but at least one geometry intersected was invalid and fixed to perform the operation
      * \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
