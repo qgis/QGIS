@@ -129,7 +129,7 @@ jobs:
           ccache --set-config=max_size=2.0G
           ccache -s
 
-      - name: create build system
+      - name: Run cmake
         run: |
           mkdir -p ${BUILD_DIR}
           cd ${BUILD_DIR}
@@ -144,7 +144,7 @@ jobs:
                -DWITH_EPT=TRUE \
                ../QGIS
 
-      - name: build QGIS
+      - name: Build QGIS
         run: |
           cd ${BUILD_DIR}
           make -j $(sysctl -n hw.ncpu)
