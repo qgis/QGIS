@@ -38,7 +38,7 @@ if [ ${HANA_TESTS} == "true" ] ; then
   HANA_TESTS_ENABLED=ON
 fi
 
-if [ PATCH_QT_3D == "true" ] ; then
+if [[ ${PATCH_QT_3D} == "true" ]]; then
   CMAKE_EXTRA_FLAGS='
   -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so"
   -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers"
