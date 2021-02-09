@@ -593,6 +593,12 @@ Returns the native Add Point Cloud Layer action.
 %Docstring
 Returns the native Add ArcGIS REST Server action.
 %End
+
+    virtual QAction *actionAddAmsLayer() = 0;
+%Docstring
+Returns the native Add ArcGIS REST Server action.
+%End
+
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;

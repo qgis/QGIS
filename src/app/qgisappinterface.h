@@ -250,6 +250,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionAddVectorTileLayer() override;
     QAction *actionAddPointCloudLayer() override;
     QAction *actionAddAfsLayer() override;
+    QAction *actionAddAmsLayer() override;
     QAction *actionCopyLayerStyle() override;
     QAction *actionPasteLayerStyle() override;
     QAction *actionOpenTable() override;

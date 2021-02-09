@@ -533,6 +533,10 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Returns the native Add ArcGIS REST Server action.
     virtual QAction *actionAddAfsLayer() = 0;
+
+    //! Returns the native Add ArcGIS REST Server action.
+    virtual QAction *actionAddAmsLayer() = 0;
+
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
