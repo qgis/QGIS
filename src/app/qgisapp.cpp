@@ -4433,16 +4433,16 @@ void QgisApp::createCanvasTools()
   mMapTools.mTrimExtendFeature = new QgsMapToolTrimExtendFeature( mMapCanvas );
   mMapTools.mTrimExtendFeature->setAction( mActionTrimExtendFeature );
 
-  mMapTools.mPinLabels = new QgsMapToolPinLabels( mMapCanvas );
+  mMapTools.mPinLabels = new QgsMapToolPinLabels( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mPinLabels->setAction( mActionPinLabels );
-  mMapTools.mShowHideLabels = new QgsMapToolShowHideLabels( mMapCanvas );
+  mMapTools.mShowHideLabels = new QgsMapToolShowHideLabels( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mShowHideLabels->setAction( mActionShowHideLabels );
-  mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas );
+  mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mMoveLabel->setAction( mActionMoveLabel );
 
-  mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas );
+  mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mRotateLabel->setAction( mActionRotateLabel );
-  mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas );
+  mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mChangeLabelProperties->setAction( mActionChangeLabelProperties );
 //ensure that non edit tool is initialized or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;

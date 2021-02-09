@@ -24,7 +24,8 @@
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
 
-QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas ): QgsMapToolLabel( canvas )
+QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolLabel( canvas, cadDock )
 {
   mPalProperties << QgsPalLayerSettings::PositionX;
   mPalProperties << QgsPalLayerSettings::PositionY;

@@ -30,7 +30,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     Q_OBJECT
 
   public:
-    QgsMapToolPinLabels( QgsMapCanvas *canvas );
+    QgsMapToolPinLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolPinLabels() override;
 
     //! Overridden mouse move event
