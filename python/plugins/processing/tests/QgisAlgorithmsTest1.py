@@ -67,12 +67,9 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         start_app()
         from processing.core.Processing import Processing
         Processing.initialize()
-        ProcessingConfig.setSettingValue(ModelerUtils.MODELS_FOLDER, os.path.join(os.path.dirname(__file__), 'models'))
-        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.cleanup_paths = []
         cls.in_place_layers = {}
         cls.vector_layer_params = {}
-        cls._original_models_folder = ProcessingConfig.getSetting(ModelerUtils.MODELS_FOLDER)
 
     @classmethod
     def tearDownClass(cls):
@@ -80,7 +77,6 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
-        ProcessingConfig.setSettingValue(ModelerUtils.MODELS_FOLDER, cls._original_models_folder)
 
     def test_definition_file(self):
         return 'qgis_algorithm_tests1.yaml'
