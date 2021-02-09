@@ -120,13 +120,19 @@ jobs:
             build-ccache-refs/heads/master-
 
       - name: Compile QGIS
+        env:
+          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
         id: compile
         run: |
+          if [ $UBUNTU_BASE == "20.04" ]
+            PATCH_QT_3D=true
+          fi
           docker run -t --name qgis_container \
                      -v $(pwd):/root/QGIS \
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
+                     --env PATCH_QT_3D=$PATCH_QT_3D \
                      qgis/qgis3-build-deps:${DOCKER_TAG} \
                      /root/QGIS/.docker/docker-qgis-build.sh
           docker commit qgis_container qgis_image
