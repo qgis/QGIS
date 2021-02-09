@@ -47,7 +47,7 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
                       const QString &defaultValue,
                       const QString &description = QString(),
                       int minLength = 0,
-                      int maxLength = 1 << 30,
+                      int maxLength = -1,
                       QObject *parent = nullptr );
 
     QgsSettingsEntry( const QgsSettingsEntry &other );
