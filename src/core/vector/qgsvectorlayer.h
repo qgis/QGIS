@@ -2387,40 +2387,36 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Controls, if the layer is allowed to commit changes. If this is set to FALSE
      * it will not be possible to commit changes on this layer. This can be used to
-     * define checks on a layer that need to be pass before the layer can be saved.
+     * define checks on a layer that need to pass before the layer can be saved.
      * If you use this API, make sure that:
      *
      * - the user is visibly informed that his changes were not saved and what he needs
      *   to do in order to be able to save the changes.
-     * - to set the property back to TRUE, once the user has fixed his data.
      *
-     * When calling \see commitChanges() this flag is checked just after the
-     * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
+     * When calling \see commitChanges() this flag is initially set to TRUE and then checked
+     * just after the \see beforeCommitChanges() signal is emitted, so it's possible to adjust
+     * it from there.
      *
-     * \note Not available in Python bindings
-     *
-     * \since QGIS 3.4
+     * \since QGIS 3.18
      */
-    bool allowCommit() const SIP_SKIP;
+    bool allowCommit() const;
 
     /**
      * Controls, if the layer is allowed to commit changes. If this is set to FALSE
      * it will not be possible to commit changes on this layer. This can be used to
-     * define checks on a layer that need to be pass before the layer can be saved.
+     * define checks on a layer that need to pass before the layer can be saved.
      * If you use this API, make sure that:
      *
      * - the user is visibly informed that his changes were not saved and what he needs
      *   to do in order to be able to save the changes.
-     * - to set the property back to TRUE, once the user has fixed his data.
      *
-     * When calling \see commitChanges() this flag is checked just after the
-     * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
+     * When calling \see commitChanges() this flag is initially set to TRUE and then checked
+     * just after the \see beforeCommitChanges() signal is emitted, so it's possible to adjust
+     * it from there.
      *
-     * \note Not available in Python bindings
-     *
-     * \since QGIS 3.4
+     * \since QGIS 3.18
      */
-    void setAllowCommit( bool allowCommit ) SIP_SKIP;
+    void setAllowCommit( bool allowCommit );
 
     /**
      * Returns the manager of the stored expressions for this layer.

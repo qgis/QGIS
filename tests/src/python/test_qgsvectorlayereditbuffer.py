@@ -10,6 +10,7 @@ __author__ = 'Nyall Dawson'
 __date__ = '15/07/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
+from functools import partial
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import QVariant
@@ -390,6 +391,53 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         # test contents of buffer
         self.assertEqual(layer.editBuffer().addedAttributes()[0].name(), 'new1')
         self.assertEqual(layer.editBuffer().addedAttributes()[1].name(), 'new2')
+
+    def testAllowEdit(self):
+        """Test validators"""
+
+        def _validate_gis_application(layer):
+            """Evaluate a decent GIS application"""
+
+            ok = True
+            buffer = layer.editBuffer()
+            if buffer:
+                for fid, f in buffer.addedFeatures().items():
+                    try:
+                        if not f.attribute('gis_app').upper().startswith("QGIS"):
+                            ok = False
+                    except KeyError:
+                        pass
+
+            layer.setAllowCommit(ok)
+
+        layer = QgsVectorLayer("Point?srid=EPSG:4326&field=gis_app:string",
+                               "gis_apps", "memory")
+        self.assertTrue(layer.isValid())
+        layer.beforeCommitChanges.connect(partial(_validate_gis_application, layer))
+
+        self.assertTrue(layer.startEditing())
+        f = QgsFeature(layer.fields())
+        g = QgsGeometry.fromWkt('point(9 45)')
+        f.setGeometry(g)
+        f.setAttributes(['QGIS'])
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertTrue(layer.commitChanges())
+
+        self.assertTrue(layer.startEditing())
+        f = QgsFeature(layer.fields())
+        g = QgsGeometry.fromWkt('point(9 45)')
+        f.setGeometry(g)
+        f.setAttributes(['ArcGIS'])
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertFalse(layer.commitChanges())
+
+        buffer = layer.editBuffer()
+        fid = list(buffer.addedFeatures().values())[0].id()
+        self.assertTrue(layer.changeAttributeValue(fid, 0, 'QGIS is better than ArcGIS'))
+        self.assertTrue(layer.commitChanges())
+
+        # Verify
+        self.assertEqual([f.attribute('gis_app') for f in layer.getFeatures()], ['QGIS', 'QGIS is better than ArcGIS'])
 
 
 if __name__ == '__main__':

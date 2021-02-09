@@ -3389,6 +3389,8 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
 {
   mCommitErrors.clear();
 
+  setAllowCommit( true );
+
   if ( !mDataProvider )
   {
     mCommitErrors << tr( "ERROR: no provider" );
