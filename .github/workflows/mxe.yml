@@ -12,6 +12,7 @@ on:
     - 'tests/**'
     - 'ms-windows/**'
     - 'CMakeLists.txt'
+    - '.github/workflows/mxe.yml'
   pull_request:
     branches:
       - master
@@ -23,6 +24,7 @@ on:
     - 'tests/**'
     - 'ms-windows/**'
     - 'CMakeLists.txt'
+    - '.github/workflows/mxe.yml'
 
 jobs:
   build:
