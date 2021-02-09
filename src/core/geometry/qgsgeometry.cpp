@@ -2602,6 +2602,8 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     return 1;
   }
 
+  QgsWkbTypes::Type geomTypeBeforeModification = wkbType();
+
   bool haveGeometryError = false;
   bool hadInvalidGeometry = false;
   std::unique_ptr< QgsAbstractGeometry > diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, hadInvalidGeometry, haveGeometryError, ignoreFeatures );
@@ -2610,6 +2612,8 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     reset( std::move( diffGeom ) );
   }
 
+  if ( geomTypeBeforeModification != wkbType() )
+    return 2;
   if ( haveGeometryError )
     return 3;
   if ( hadInvalidGeometry )
