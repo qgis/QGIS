@@ -349,7 +349,7 @@ QVariant QgsQuickFeaturesListModel::convertMultivalueFormat( const QVariant &mul
   QStringList list = QgsValueRelationFieldFormatter::valueToStringList( multivalue );
   QList<QVariant> retList;
 
-  for ( const QVariant &i : list )
+  for ( const QString &i : list )
   {
     QVariant var = attributeFromValue( KeyColumn, i, role );
     if ( !var.isNull() )
