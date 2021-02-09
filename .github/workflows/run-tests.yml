@@ -130,7 +130,7 @@ jobs:
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
-                     --env PATCH_QT_3D=$PATCH_QT_3D \
+                     --env PATCH_QT_3D=${PATCH_QT_3D} \
                      qgis/qgis3-build-deps:${DOCKER_TAG} \
                      /root/QGIS/.docker/docker-qgis-build.sh
           docker commit qgis_container qgis_image

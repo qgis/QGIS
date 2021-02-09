@@ -34,16 +34,17 @@ export CC=/usr/lib/ccache/clang
 export CXX=/usr/lib/ccache/clang++
 
 HANA_TESTS_ENABLED=OFF
-if [ ${HANA_TESTS} == "true" ] ; then
+if [[ ${HANA_TESTS} == "true" ]]; then
   HANA_TESTS_ENABLED=ON
 fi
 
 if [[ ${PATCH_QT_3D} == "true" ]]; then
-  CMAKE_EXTRA_FLAGS='
-  -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so"
-  -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers"
-  -DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake"
-  -DQt53DExtras_DIR="/root/QGIS/external/qt3dextra-headers/cmake/Qt53DExtras"'
+  CMAKE_EXTRA_FLAGS=(
+    '-DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so"'
+    '-DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers"'
+    '-DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake"'
+    '-DQt53DExtras_DIR="/root/QGIS/external/qt3dextra-headers/cmake/Qt53DExtras"'
+  )
 fi
 
 cmake \
