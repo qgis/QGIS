@@ -2899,6 +2899,22 @@ void TestQgsProcessing::parameterMapLayer()
   QgsProcessingOutputLayerDefinition val2( sink_name );
   params.insert( "non_optional", QVariant::fromValue( val2 ) );
   QVERIFY( !QgsProcessingParameters::parameterAsLayer( def.get(), params, context ) );
+
+  // check if it can manage QgsProcessingFeatureSourceDefinition
+
+  // all ok
+  def.reset( new QgsProcessingParameterMapLayer( "non_optional", QString() ) );
+  QString sourceName( r1->id() );
+  params.insert( "non_optional", QVariant::fromValue( QgsProcessingFeatureSourceDefinition( sourceName ) ) );
+  QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( def.get(), params, context );
+  QVERIFY( layer );
+  QCOMPARE( layer->id(), r1->id() );
+
+  // not ok, e.g. source name is not a layer and it's not possible to generate a layer from it source
+  def.reset( new QgsProcessingParameterMapLayer( "non_optional", QString() ) );
+  sourceName = QString( "i'm not a layer, and nothing you can do will make me one" );
+  params.insert( "non_optional", QVariant::fromValue( QgsProcessingFeatureSourceDefinition( sourceName ) ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def.get(), params, context ) );
 }
 
 void TestQgsProcessing::parameterExtent()
