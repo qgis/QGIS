@@ -54,7 +54,6 @@ class TestQgsProcessingCheckValidity(unittest.TestCase):
             "QGIS_TestPyQgsProcessingCheckValidity")
         QgsSettings().clear()
         Processing.initialize()
-        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()
 
     def _make_layer(self, layer_wkb_name):

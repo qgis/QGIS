@@ -42,8 +42,13 @@ class TestQgisAlgorithms4(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         start_app()
         from processing.core.Processing import Processing
         Processing.initialize()
+
+        # change the model provider folder so that it looks in the test directory for models
         ProcessingConfig.setSettingValue(ModelerUtils.MODELS_FOLDER, os.path.join(os.path.dirname(__file__), 'models'))
-        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+        for p in QgsApplication.processingRegistry().providers():
+            if p.id() == "model":
+                p.refreshAlgorithms()
+
         cls.cleanup_paths = []
         cls.in_place_layers = {}
         cls.vector_layer_params = {}

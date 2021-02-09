@@ -404,7 +404,6 @@ class GenericAlgorithmsTest(unittest.TestCase):
         start_app()
         from processing.core.Processing import Processing
         Processing.initialize()
-        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.cleanup_paths = []
 
     @classmethod
