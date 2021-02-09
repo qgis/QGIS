@@ -341,9 +341,14 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           QgsGeometry featGeom = f->geometry();
           int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
           f->setGeometry( featGeom );
-          if ( avoidIntersectionsReturn == 3 )
+          switch ( avoidIntersectionsReturn )
           {
-            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid and cannot be fixed automaticaly. The geometry added may overlap another geometry. You should fix geometries." ), Qgis::Warning );
+            case 3:
+              emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid and cannot be fixed automaticaly. The geometry added may overlap another geometry. You should fix geometries." ), Qgis::Warning );
+              break;
+            case 4:
+              emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid and has been modified to perform the operation. You should fix geometries." ), Qgis::Warning );
+              break;
           }
           if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
           {
