@@ -5441,7 +5441,7 @@ static QVariant convertToSameType( const QVariant &value, QVariant::Type type )
   return result;
 }
 
-static QVariant fcnArrayMode( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
+static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
 {
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   QHash< QVariant, int > hash;
@@ -5452,30 +5452,37 @@ static QVariant fcnArrayMode( const QVariantList &values, const QgsExpressionCon
   const QList< int > occurrences = hash.values();
   const int maxValue = *std::max_element( occurrences.constBegin(), occurrences.constEnd() );
 
-  if ( hash.keys( maxValue ).isEmpty() )
-    return QVariant();
-
-  const QString merge = values.at( 1 ).toString();
-  if ( merge.compare( QLatin1String( "all" ), Qt::CaseInsensitive ) == 0 )
+  const QString option = values.at( 1 ).toString();
+  if ( option.compare( QStringLiteral( "all" ), Qt::CaseInsensitive ) == 0 )
   {
     return convertToSameType( hash.keys( maxValue ), values.at( 0 ).type() );
   }
-  else if ( merge.compare( QLatin1String( "first" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QStringLiteral( "first" ), Qt::CaseInsensitive ) == 0 )
   {
+    if ( hash.keys().isEmpty() )
+      return QVariant();
+
     return QVariant( hash.keys( maxValue ).first() );
   }
-  else if ( merge.compare( QLatin1String( "median" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QStringLiteral( "median" ), Qt::CaseInsensitive ) == 0 )
   {
     return fcnArrayMedian( QVariantList() << convertToSameType( hash.keys( maxValue ), values.at( 0 ).type() ), context, parent, node );
   }
+  else if ( option.compare( QStringLiteral( "real_majority" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( maxValue * 2 <= list.size() )
+      return QVariant();
+
+    return QVariant( hash.keys( maxValue ).first() );
+  }
   else
   {
-    parent->setEvalErrorString( QObject::tr( "No such merge behavior '%1'" ).arg( merge ) );
+    parent->setEvalErrorString( QObject::tr( "No such option '%1'" ).arg( option ) );
     return QVariant();
   }
 }
 
-static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
 {
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   QHash< QVariant, int > hash;
@@ -5484,40 +5491,41 @@ static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressio
     ++hash[item];
   }
   const QList< int > occurrences = hash.values();
-  const int maxValue = *std::max_element( occurrences.constBegin(), occurrences.constEnd() );
+  const int minValue = *std::min_element( occurrences.constBegin(), occurrences.constEnd() );
 
-  QList< QVariant > keysMaxValue = hash.keys( maxValue );
-
-  if ( keysMaxValue.size() != 1 )
-    return QVariant();
-
-  if ( hash.value( keysMaxValue.first() ) * 2 <= list.size() )
-    return QVariant();
-
-  return keysMaxValue.first();
-}
-
-static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  QHash< QVariant, int > hash;
-  for ( const auto &item : list )
+  const QString option = values.at( 1 ).toString();
+  if ( option.compare( QStringLiteral( "all" ), Qt::CaseInsensitive ) == 0 )
   {
-    ++hash[item];
+    return convertToSameType( hash.keys( minValue ), values.at( 0 ).type() );
   }
-  const QList< int > occurrences = hash.values();
-  const int maxValue = *std::max_element( occurrences.constBegin(), occurrences.constEnd() );
-
-  QList< QVariant > keysMaxValue = hash.keys( maxValue );
-
-  // Remove the majority, all others are minority
-  if ( keysMaxValue.size() == 1
-       && hash.value( keysMaxValue.first() ) * 2 > list.size() )
+  else if ( option.compare( QStringLiteral( "first" ), Qt::CaseInsensitive ) == 0 )
   {
-    hash.remove( keysMaxValue.first() );
-  }
+    if ( hash.keys().isEmpty() )
+      return QVariant();
 
-  return convertToSameType( hash.keys(), values.at( 0 ).type() );
+    return QVariant( hash.keys( minValue ).first() );
+  }
+  else if ( option.compare( QStringLiteral( "median" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return fcnArrayMedian( QVariantList() << convertToSameType( hash.keys( minValue ), values.at( 0 ).type() ), context, parent, node );
+  }
+  else if ( option.compare( QStringLiteral( "real_minority" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( hash.keys().isEmpty() )
+      return QVariant();
+
+    // Remove the majority, all others are minority
+    const int maxValue = *std::max_element( occurrences.constBegin(), occurrences.constEnd() );
+    if ( maxValue * 2 > list.size() )
+      hash.remove( hash.key( maxValue ) );
+
+    return convertToSameType( hash.keys(), values.at( 0 ).type() );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "No such option '%1'" ).arg( option ) );
+    return QVariant();
+  }
 }
 
 static QVariant fcnArrayAppend( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -7122,9 +7130,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMaximum, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_mean" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMean, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_median" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMedian, QStringLiteral( "Arrays" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "array_mode" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "merge" ), true, QVariant( "all" ) ), fcnArrayMode, QStringLiteral( "Arrays" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "array_majority" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMajority, QStringLiteral( "Arrays" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "array_minority" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMinority, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_majority" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "option" ), true, QVariant( "all" ) ), fcnArrayMajority, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_minority" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "option" ), true, QVariant( "all" ) ), fcnArrayMinority, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_sum" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArraySum, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_append" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayAppend, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_prepend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayPrepend, QStringLiteral( "Arrays" ) )

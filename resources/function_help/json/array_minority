@@ -2,11 +2,18 @@
   "name": "array_minority",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns an array containing the minority values of a given array. All values are minority except the majority value, if available.",
-  "arguments": [ {"arg":"array","description":"an array"} ],
+  "description": "Return the less common values in an array.",
+  "arguments": [
+    {"arg":"array","description":"an array"},
+    {"arg":"option='all'", "optional":true, "description":"a string specifying the return values handling. Valid options are:<br /><ul><li>all: Default, all less common values are returned in an array</li><li>first: Return the first of the less common values</li><li>median: Return the median of the less common values</li><li>real_minority: Return all values except the real majority if thre is one</li></ul>"}
+  ],
   "examples": [
-    { "expression":"array_minority(array(0,1,42,42,43))", "returns":"[ 0, 1, 42, 43 ]"},
-    { "expression":"array_minority(array(0,1,42,42,43,42))", "returns":"[ 0, 1, 42, 43 ]"},
-    { "expression":"array_minority(array(0,1,42,42,43,42,42))", "returns":"[ 0, 1, 43 ]"}
+    { "expression":"array_minority(array(0,42,42), 'all')", "returns":"[ 0 ]"},
+    { "expression":"array_minority(array(0,1,42,42), 'all')", "returns":"[ 0, 1 ]"},
+    { "expression":"array_minority(array(0,1,42,42,43,1), 'first')", "returns":"43"},
+    { "expression":"array_minority(array(1,2,3,3), 'median')", "returns":"1.5"},
+    { "expression":"array_minority(array(0,1,42,42,43), 'real_minority')", "returns":"[ 42, 43, 0, 1 ]"},
+    { "expression":"array_minority(array(0,1,42,42,43,42), 'real_minority')", "returns":"[ 42, 43, 0, 1 ]"},
+    { "expression":"array_minority(array(0,1,42,42,43,42,42), 'real_minority')", "returns":"[ 43, 0, 1 ]"}
   ]
 }
