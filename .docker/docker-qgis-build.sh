@@ -80,9 +80,8 @@ if [[ ${PATCH_QT_3D} == "true" ]]; then
   )
 fi
 
-echo "Running cmake ${CMAKE_ARGS} .."
-cmake ${CMAKE_ARGS} ..
-
+echo "Running cmake ${CMAKE_ARGS[*]} .."
+cmake "${CMAKE_ARGS[*]}" ..
 echo "::endgroup::"
 
 #######
