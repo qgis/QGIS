@@ -101,7 +101,7 @@ void QgsPdalProvider::generateIndex()
 
   const QString outputDir = _outdir( dataSourceUri() );
 
-  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri(), outputDir );
+  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri(), outputDir, QStringLiteral( "( " ) + QFileInfo( dataSourceUri() ).fileName() + QStringLiteral( " )" ) );
 
   connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
   connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
