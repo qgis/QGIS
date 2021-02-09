@@ -417,6 +417,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;
 
+    // To be called whenever expression context has been updated
+    void expressionContextUpdated();
+
     // Will hold items with
     // * a display string that matches the represented field values
     // * custom data in Qt::UserRole + 1 that contains a ready to use expression literal ('quoted string' or NULL or a plain number )
