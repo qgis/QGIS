@@ -10,7 +10,7 @@ on:
     - 'python/**'
     - 'tests/**'
     - 'mac/**'
-    - '.docker/**'
+    - '.github/workflows/macos-build.yml'
     - '.ci/**'
     - 'CMakeLists.txt'
   pull_request:
@@ -23,7 +23,7 @@ on:
     - 'python/**'
     - 'tests/**'
     - 'mac/**'
-    - '.docker/**'
+    - '.github/workflows/macos-build.yml'
     - '.ci/**'
     - 'CMakeLists.txt'
 
