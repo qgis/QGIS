@@ -248,59 +248,55 @@ int QgsChunkedEntity::pendingJobsCount() const
 void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
 {
   QSet<QgsChunkNode *> nodes;
-  QVector<std::pair<QgsChunkNode *, float>> residencyRequests;
+  QVector<std::tuple<QgsChunkNode *, float, int>> residencyRequests;
 
   using slot = std::pair<QgsChunkNode *, float>;
   auto cmp_funct = []( slot & p1, slot & p2 )
   {
-    return p1.second < p2.second;
+    return p1.second <= p2.second;
   };
   int renderedCount = 0;
   std::priority_queue<slot, std::vector<slot>, decltype( cmp_funct )> pq( cmp_funct );
   pq.push( std::make_pair( root, screenSpaceError( root, state ) ) );
-  while ( !pq.empty() )
+  while ( !pq.empty() && renderedCount <= mPrimitivesBudget )
   {
     slot s = pq.top();
     pq.pop();
     QgsChunkNode *node = s.first;
+
     if ( Qgs3DUtils::isCullable( node->bbox(), state.viewProjectionMatrix ) )
     {
       ++mFrustumCulled;
       continue;
     }
-    // use this instead of renderedCount + mChunkLoaderFactory->primitivesCount( node ) > mPrimitivesBudget to avoid
-    // showing nothing when the user supplies a small value
-    if ( renderedCount > mPrimitivesBudget )
-      break;
 
     // ensure we have child nodes (at least skeletons) available, if any
     if ( node->childCount() == -1 )
-    {
       node->populateChildren( mChunkLoaderFactory->createChildren( node ) );
-    }
 
     // make sure all nodes leading to children are always loaded
     // so that zooming out does not create issues
-    residencyRequests.push_back( std::make_pair( node, node->bbox().distanceFromPoint( state.cameraPos ) ) );
+    double dist = node->bbox().center().distanceToPoint( state.cameraPos );
+    residencyRequests.push_back( std::make_tuple( node, dist, node->level() ) );
 
     if ( !node->entity() )
     {
       // this happens initially when root node is not ready yet
       continue;
     }
-    bool toBeAdded = false;
+    bool becomesActive = false;
 
     //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
     if ( node->childCount() == 0 )
     {
       // there's no children available for this node, so regardless of whether it has an acceptable error
       // or not, it's the best we'll ever get...
-      mActiveNodes << node;
+      becomesActive = true;
     }
     else if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
     {
       // acceptable error for the current chunk - let's render it
-      mActiveNodes << node;
+      becomesActive = true;
     }
     else if ( node->allChildChunksResident( mCurrentTime ) )
     {
@@ -310,41 +306,46 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
         // With additive strategy enabled, also all parent nodes are added to active nodes.
         // This is desired when child nodes add more detailed data rather than just replace
         // coarser data in parents. We use this e.g. with point cloud data.
-        mActiveNodes << node;
+        becomesActive = true;
       }
-
-      toBeAdded = true;
+      QgsChunkNode *const *children = node->children();
+      for ( int i = 0; i < node->childCount(); ++i )
+        pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
     }
     else
     {
       // error is not acceptable but children are not ready either - still use parent but request children
-      mActiveNodes << node;
+      becomesActive = true;
 
       QgsChunkNode *const *children = node->children();
       for ( int i = 0; i < node->childCount(); ++i )
-        residencyRequests.push_back( std::make_pair( children[i], children[i]->bbox().distanceFromPoint( state.cameraPos ) ) );
+      {
+        double dist = children[i]->bbox().center().distanceToPoint( state.cameraPos );
+        residencyRequests.push_back( std::make_tuple( children[i], dist, children[i]->level() ) );
+      }
     }
-    if ( toBeAdded )
+    if ( becomesActive )
     {
-      QgsChunkNode *const *children = node->children();
-      for ( int i = 0; i < node->childCount(); ++i )
-        pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
-      // We won't render the primitives of the parent unless we are using additive strategy
-      if ( !mAdditiveStrategy && node->parent() )
+      mActiveNodes << node;
+      // if we are not using additive strategy we need to make sure the parent primitives are not counted
+      if ( !mAdditiveStrategy && node->parent() && nodes.contains( node->parent() ) )
       {
         nodes.remove( node->parent() );
         renderedCount -= mChunkLoaderFactory->primitivesCount( node->parent() );
       }
       renderedCount += mChunkLoaderFactory->primitivesCount( node );
+      nodes.insert( node );
     }
   }
-
-  std::sort( residencyRequests.begin(), residencyRequests.end(), [&]( std::pair<QgsChunkNode *, float> n1, std::pair<QgsChunkNode *, float> n2 )
+  // sort nodes by their level and their distance from the camera
+  std::sort( residencyRequests.begin(), residencyRequests.end(), [&]( std::tuple<QgsChunkNode *, float, int> &n1, std::tuple<QgsChunkNode *, float, int> &n2 )
   {
-    return n1.second > n2.second;
+    if ( std::get<2>( n1 ) == std::get<2>( n2 ) )
+      return std::get<1>( n1 ) >= std::get<1>( n1 );
+    return std::get<2>( n1 ) >= std::get<2>( n2 );
   } );
-  for ( std::pair<QgsChunkNode *, float> n : residencyRequests )
-    requestResidency( n.first );
+  for ( std::tuple<QgsChunkNode *, float, int> n : residencyRequests )
+    requestResidency( std::get<0>( n ) );
 }
 
 void QgsChunkedEntity::requestResidency( QgsChunkNode *node )
