@@ -212,6 +212,8 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
         items = m.findItems("layer_name", Qt.MatchRecursive)
         self.assertEqual(len(items), 1)
 
+        p.removeMapLayer(layer)
+
 
 if __name__ == '__main__':
     unittest.main()
