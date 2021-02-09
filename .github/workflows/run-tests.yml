@@ -62,13 +62,16 @@ jobs:
         run: |
           DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" || echo "" )
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
+          [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
+          echo "PATCH_QT_3D=${PATCH_QT_3D}" >> $GITHUB_ENV
 
       - name: Print vars
         run: |
           echo DOCKER_TAG: ${DOCKER_TAG}
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
+          echo PATCH_QT_3D: ${PATCH_QT_3D}
 
 #      - name: Increase Docker base image size
 #        # https://stackoverflow.com/questions/50140939/increase-docker-container-size-from-default-10gb-on-rhel7
@@ -120,17 +123,13 @@ jobs:
             build-ccache-refs/heads/master-
 
       - name: Compile QGIS
-        env:
-          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
         id: compile
         run: |
-          [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
           docker run -t --name qgis_container \
                      -v $(pwd):/root/QGIS \
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
-                     --env PATCH_QT_3D=${PATCH_QT_3D} \
                      qgis/qgis3-build-deps:${DOCKER_TAG} \
                      /root/QGIS/.docker/docker-qgis-build.sh
           docker commit qgis_container qgis_image
