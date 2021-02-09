@@ -78,7 +78,7 @@ cmake \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
  -DADD_CLAZY_CHECKS=ON \
- $PATCH_3D_HEADERS \
+ ${CMAKE_EXTRA_FLAGS} \
  ..
 
 echo "::endgroup::"
