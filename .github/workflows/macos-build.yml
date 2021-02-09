@@ -48,11 +48,11 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: build-mac-ccache-${{ github.repository_owner }}-${{ github.head_ref }}-${{ github.sha }}
+          key: build-mac-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
           # The head_ref or source branch of the pull request in a workflow run.
           # The base_ref or target branch of the pull request in a workflow run.
           restore-keys: |
-            build-mac-ccache-${{ github.repository_owner }}-${{ github.head_ref }}-
+            build-mac-ccache-${{ github.actor }}-${{ github.head_ref }}-
             build-mac-ccache-${{ github.base_ref }}-
             build-mac-ccache-refs/heads/master-
 
