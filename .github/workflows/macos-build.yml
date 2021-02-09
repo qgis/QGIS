@@ -82,7 +82,7 @@ jobs:
         run: |
           mkdir -p /opt
           mkdir -p /opt/Qt
-          sudo cp ${DEPS_CACHE_DIR}/Qt/${QT_VERSION} /opt/Qt/${QT_VERSION}
+          sudo cp -r ${DEPS_CACHE_DIR}/Qt/${QT_VERSION} /opt/Qt/${QT_VERSION}
 
       - name: Download Qt
         if: steps.cache-qt.outputs.cache-hit != 'true'
@@ -102,7 +102,7 @@ jobs:
         run: |
           mkdir -p /opt
           mkdir -p /opt/QGIS
-          sudo cp ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}
+          sudo cp -r ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}
 
       - name: Download qgis-deps
         if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -116,9 +116,11 @@ jobs:
         run: |
           wget https://qgis.org/downloads/macos/deps/install_qgis_deps-${QGIS_DEPS_VERSION}.bash
           chmod +x ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+          echo ::group::Install deps
           sudo ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
-          [[ ${QT_ALREADY_CACHED} != "true" ]] && cp /opt/Qt/${QT_VERSION} ${DEPS_CACHE_DIR}/Qt/${QT_VERSION} || true
-          [[ ${QGIS_DEPS_ALREADY_CACHED} != "true" ]] && cp /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION} ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} || true
+          echo ::endgroup::
+          [[ ${QT_ALREADY_CACHED} != "true" ]] && cp -r /opt/Qt/${QT_VERSION} ${DEPS_CACHE_DIR}/Qt/${QT_VERSION} || true
+          [[ ${QGIS_DEPS_ALREADY_CACHED} != "true" ]] && cp -r /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION} ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} || true
 
       - name: Install ccache
         run: |
