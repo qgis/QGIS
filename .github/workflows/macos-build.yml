@@ -80,8 +80,8 @@ jobs:
       - name: Restore Qt
         if: steps.cache-qt.outputs.cache-hit == 'true'
         run: |
-          mkdir -p /opt
-          mkdir -p /opt/Qt
+          sudo mkdir -p /opt
+          sudo mkdir -p /opt/Qt
           sudo cp -r ${DEPS_CACHE_DIR}/Qt/${QT_VERSION} /opt/Qt/${QT_VERSION}
 
       - name: Download Qt
@@ -100,8 +100,8 @@ jobs:
       - name: Restore qgis-deps
         if: steps.cache-deps.outputs.cache-hit == 'true'
         run: |
-          mkdir -p /opt
-          mkdir -p /opt/QGIS
+          sudo mkdir -p /opt
+          sudo mkdir -p /opt/QGIS
           sudo cp -r ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}
 
       - name: Download qgis-deps
