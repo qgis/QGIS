@@ -23,7 +23,5 @@ qgis_layerdefinition
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
 
-# Oracle image is temporarily disabled in the Github Actions builds
-PyQgsOracleProvider
 
 
