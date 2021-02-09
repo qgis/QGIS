@@ -21,6 +21,7 @@
 #include "qgspythonrunner.h"
 #include "qgspythonutils.h"
 #include "qgsunittypes.h"
+#include "qgsprocessingcontext.h"
 #include <QElapsedTimer>
 
 class QgsApplication;
@@ -81,6 +82,7 @@ class QgsProcessingExec
                  const QString &ellipsoid,
                  QgsUnitTypes::DistanceUnit distanceUnit,
                  QgsUnitTypes::AreaUnit areaUnit,
+                 QgsProcessingContext::LogLevel logLevel,
                  bool useJson,
                  const QString &projectPath = QString() );
 

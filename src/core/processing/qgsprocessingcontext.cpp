@@ -128,6 +128,16 @@ QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id )
   return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
 }
 
+QgsProcessingContext::LogLevel QgsProcessingContext::logLevel() const
+{
+  return mLogLevel;
+}
+
+void QgsProcessingContext::setLogLevel( LogLevel level )
+{
+  mLogLevel = level;
+}
+
 QgsDateTimeRange QgsProcessingContext::currentTimeRange() const
 {
   return mCurrentTimeRange;

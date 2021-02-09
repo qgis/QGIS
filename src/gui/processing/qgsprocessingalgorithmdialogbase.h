@@ -163,6 +163,22 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     void saveLogToFile( const QString &path, LogFormat format = FormatPlainText );
 
+    /**
+     * Returns the logging level to use when running algorithms from the dialog.
+     *
+     * \see setLogLevel()
+     * \since QGIS 3.20
+     */
+    QgsProcessingContext::LogLevel logLevel() const;
+
+    /**
+     * Sets the logging \a level to use when running algorithms from the dialog.
+     *
+     * \see logLevel()
+     * \since QGIS 3.20
+     */
+    void setLogLevel( QgsProcessingContext::LogLevel level );
+
   public slots:
 
     /**
@@ -398,6 +414,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
 
     bool mHelpCollapsed = false;
+
+    QgsProcessingContext::LogLevel mLogLevel = QgsProcessingContext::DefaultLevel;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
     void scrollToBottomOfLog();

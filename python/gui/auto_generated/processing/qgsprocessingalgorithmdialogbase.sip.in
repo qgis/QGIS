@@ -109,6 +109,24 @@ the given ``format``.
 .. versionadded:: 3.2
 %End
 
+    QgsProcessingContext::LogLevel logLevel() const;
+%Docstring
+Returns the logging level to use when running algorithms from the dialog.
+
+.. seealso:: :py:func:`setLogLevel`
+
+.. versionadded:: 3.20
+%End
+
+    void setLogLevel( QgsProcessingContext::LogLevel level );
+%Docstring
+Sets the logging ``level`` to use when running algorithms from the dialog.
+
+.. seealso:: :py:func:`logLevel`
+
+.. versionadded:: 3.20
+%End
+
   public slots:
 
     void reportError( const QString &error, bool fatalError );

@@ -41,6 +41,7 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsProcessingModelParameter,
                        QgsSettings,
+                       QgsProcessingContext
                        )
 from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
@@ -152,6 +153,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.setLastRunChildAlgorithmInputs(dlg.results().get('CHILD_INPUTS', {}))
 
         dlg = AlgorithmDialog(self.model().create(), parent=self)
+        dlg.setLogLevel(QgsProcessingContext.Verbose)
         dlg.setParameters(self.model().designerParameterValues())
         dlg.algorithmFinished.connect(on_finished)
         dlg.exec_()

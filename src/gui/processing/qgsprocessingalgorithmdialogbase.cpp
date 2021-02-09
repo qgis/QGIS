@@ -399,6 +399,16 @@ void QgsProcessingAlgorithmDialogBase::closeClicked()
   close();
 }
 
+QgsProcessingContext::LogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
+{
+  return mLogLevel;
+}
+
+void QgsProcessingAlgorithmDialogBase::setLogLevel( QgsProcessingContext::LogLevel level )
+{
+  mLogLevel = level;
+}
+
 void QgsProcessingAlgorithmDialogBase::reportError( const QString &error, bool fatalError )
 {
   setInfo( error, true );

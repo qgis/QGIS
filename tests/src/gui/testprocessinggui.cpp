@@ -377,7 +377,6 @@ void TestProcessingGui::testModelUndo()
   // the last used parameter values setting should not be affected by undo stack changes
   QVariantMap params;
   params.insert( QStringLiteral( "a" ), 1 );
-  params.insert( QStringLiteral( "VERBOSE_LOG" ), true );
   model.setDesignerParameterValues( params );
   command.undo();
   QCOMPARE( model.designerParameterValues(), params );
