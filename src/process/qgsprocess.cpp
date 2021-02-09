@@ -240,6 +240,14 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     args.removeAt( jsonIndex );
   }
 
+  const int verboseIndex = args.indexOf( QLatin1String( "--verbose" ) );
+  QgsProcessingContext::LogLevel logLevel = QgsProcessingContext::DefaultLevel;
+  if ( verboseIndex >= 0 )
+  {
+    logLevel = QgsProcessingContext::Verbose;
+    args.removeAt( verboseIndex );
+  }
+
   if ( args.size() == 1 )
   {
     showUsage( args.at( 0 ) );
@@ -418,7 +426,7 @@ int QgsProcessingExec::run( const QStringList &constArgs )
       }
     }
 
-    return execute( algId, params, ellipsoid, distanceUnit, areaUnit, useJson, projectPath );
+    return execute( algId, params, ellipsoid, distanceUnit, areaUnit, logLevel, useJson, projectPath );
   }
   else
   {
@@ -433,9 +441,10 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [--json] [command] [algorithm id or path to model file] [parameters]\n"
+      << "Usage: " << appName <<  " [--json] [--verbose] [command] [algorithm id or path to model file] [parameters]\n"
       << "\nOptions:\n"
       << "\t--json\t\tOutput results as JSON objects\n"
+      << "\t--verbose\tOutput verbose logs\n"
       << "\nAvailable commands:\n"
       << "\tplugins\t\tlist available and active plugins\n"
       << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
@@ -822,7 +831,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, bool useJson, const QString &projectPath )
+int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
 {
   QVariantMap json;
   if ( useJson )
@@ -952,6 +961,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
   context.setDistanceUnit( distanceUnit );
   context.setAreaUnit( areaUnit );
   context.setProject( project.get() );
+  context.setLogLevel( logLevel );
 
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   QList< const QgsProcessingParameterDefinition * > missingParams;

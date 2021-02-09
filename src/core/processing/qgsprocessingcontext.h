@@ -52,6 +52,17 @@ class CORE_EXPORT QgsProcessingContext
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
+     * Logging level for algorithms to use when pushing feedback messages.
+     *
+     * \since QGIS 3.20
+     */
+    enum LogLevel
+    {
+      DefaultLevel = 0, //!< Default logging level
+      Verbose, //!< Verbose logging
+    };
+
+    /**
      * Constructor for QgsProcessingContext.
      */
     QgsProcessingContext();
@@ -84,6 +95,7 @@ class CORE_EXPORT QgsProcessingContext
       mEllipsoid = other.mEllipsoid;
       mDistanceUnit = other.mDistanceUnit;
       mAreaUnit = other.mAreaUnit;
+      mLogLevel = other.mLogLevel;
     }
 
     /**
@@ -625,6 +637,22 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setPreferredRasterFormat( const QString &format ) { mPreferredRasterFormat = format; }
 
+    /**
+     * Returns the logging level for algorithms to use when pushing feedback messages to users.
+     *
+     * \see setLogLevel()
+     * \since QGIS 3.20
+     */
+    LogLevel logLevel() const;
+
+    /**
+     * Sets the logging \a level for algorithms to use when pushing feedback messages to users.
+     *
+     * \see logLevel()
+     * \since QGIS 3.20
+     */
+    void setLogLevel( LogLevel level );
+
   private:
 
     QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
@@ -653,6 +681,8 @@ class CORE_EXPORT QgsProcessingContext
 
     QString mPreferredVectorFormat;
     QString mPreferredRasterFormat;
+
+    LogLevel mLogLevel = DefaultLevel;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

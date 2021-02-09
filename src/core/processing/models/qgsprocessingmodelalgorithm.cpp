@@ -42,9 +42,6 @@ QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, c
 
 void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterBoolean > verboseLog = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "VERBOSE_LOG" ), QObject::tr( "Verbose logging" ), false, true );
-  verboseLog->setFlags( verboseLog->flags() | QgsProcessingParameterDefinition::FlagHidden );
-  addParameter( verboseLog.release() );
 }
 
 QString QgsProcessingModelAlgorithm::name() const
@@ -288,7 +285,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap childResults;
   QVariantMap childInputs;
 
-  const bool verboseLog = parameterAsBool( parameters, QStringLiteral( "VERBOSE_LOG" ), context );
+  const bool verboseLog = context.logLevel() == QgsProcessingContext::Verbose;
 
   QVariantMap finalResults;
   QSet< QString > executed;
@@ -1348,9 +1345,6 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   QVariantMap paramDefMap;
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( def->name() == QLatin1String( "VERBOSE_LOG" ) )
-      continue;
-
     paramDefMap.insert( def->name(), def->toVariantMap() );
   }
   map.insert( QStringLiteral( "parameterDefinitions" ), paramDefMap );
@@ -1948,10 +1942,7 @@ void QgsProcessingModelAlgorithm::setVariables( const QVariantMap &variables )
 
 QVariantMap QgsProcessingModelAlgorithm::designerParameterValues() const
 {
-  QVariantMap res = mDesignerParameterValues;
-  // when running through the designer, we show a detailed verbose log to aid in model debugging
-  res.insert( QStringLiteral( "VERBOSE_LOG" ), true );
-  return res;
+  return mDesignerParameterValues;
 }
 
 ///@endcond
