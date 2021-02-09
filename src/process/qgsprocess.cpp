@@ -805,9 +805,13 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
     algorithmDetails.insert( QStringLiteral( "id" ), alg->id() );
     addAlgorithmInformation( algorithmDetails, alg );
     json.insert( QStringLiteral( "algorithm_details" ), algorithmDetails );
-    QVariantMap providerJson;
-    addProviderInformation( providerJson, alg->provider() );
-    json.insert( QStringLiteral( "provider_details" ), providerJson );
+
+    if ( alg->provider() )
+    {
+      QVariantMap providerJson;
+      addProviderInformation( providerJson, alg->provider() );
+      json.insert( QStringLiteral( "provider_details" ), providerJson );
+    }
   }
 
   std::unique_ptr< QgsProject > project;

@@ -249,6 +249,23 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('results', output.lower())
         self.assertTrue(os.path.exists(output_file))
 
+    def testModelRunJson(self):
+        output_file = self.TMP_DIR + '/model_output2.shp'
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertIn('gdal_version', res)
+        self.assertIn('geos_version', res)
+        self.assertIn('proj_version', res)
+        self.assertIn('qt_version', res)
+        self.assertIn('qgis_version', res)
+        self.assertEqual(res['algorithm_details']['id'], 'Test model')
+        self.assertTrue(os.path.exists(output_file))
+
 
 if __name__ == '__main__':
     # look for qgis bin path
