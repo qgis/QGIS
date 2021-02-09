@@ -34,8 +34,15 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
+      DEFAULT_UBUNTU_BASE: '20.04'
 
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
+        ubuntu-base: ['20.04', '20.10']
+      fail-fast: false
 
     outputs:
       compile_outcome: ${{ steps.compile.outcome }}
@@ -52,16 +59,20 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_PR_NUMBER: ${{github.event.number}}
+          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
         run: |
-          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')
+          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" || echo "" )
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
+          [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
+          echo "PATCH_QT_3D=${PATCH_QT_3D}" >> $GITHUB_ENV
 
       - name: Print vars
         run: |
           echo DOCKER_TAG: ${DOCKER_TAG}
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
+          echo PATCH_QT_3D: ${PATCH_QT_3D}
 
 #      - name: Increase Docker base image size
 #        # https://stackoverflow.com/questions/50140939/increase-docker-container-size-from-default-10gb-on-rhel7
@@ -71,10 +82,12 @@ jobs:
 #          sudo service docker restart
 
       - name: Build deps
+        env:
+          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
         run: |
           pushd .docker
-          docker pull qgis/qgis3-build-deps:${DOCKER_TAG}
-          docker build --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps:${DOCKER_TAG} -f qgis3-build-deps.dockerfile .
+          docker pull qgis/qgis3-build-deps:${DOCKER_TAG} || true
+          docker build --build-arg UBUNTU_BASE=${UBUNTU_BASE} --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps:${DOCKER_TAG} -f qgis3-build-deps.dockerfile .
           popd
 
       - name: Push deps image
@@ -88,13 +101,13 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ github.head_ref }}-${{ github.sha }}
+          key: build-ccache-${{ matrix.ubuntu-base }}-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
           # The head_ref or source branch of the pull request in a workflow run.
           # The base_ref or target branch of the pull request in a workflow run.
           restore-keys: |
-            build-ccache-${{ github.head_ref }}-
-            build-ccache-${{ github.base_ref }}-
-            build-ccache-refs/heads/master-
+            build-ccache-${{ matrix.ubuntu-base }}-${{ github.actor }}-${{ github.head_ref }}-
+            build-ccache-${{ matrix.ubuntu-base }}-${{ github.base_ref }}-
+            build-ccache-${{ matrix.ubuntu-base }}-refs/heads/master-
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
@@ -103,10 +116,10 @@ jobs:
         with:
           path: /home/runner/QGIS/.ccache
           # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
-          key: build-ccache-${{ github.ref }}-${{ github.sha }}
+          key: build-ccache-${{ matrix.ubuntu-base }}-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
-            build-ccache-${{ github.ref }}-
-            build-ccache-refs/heads/master-
+            build-ccache-${{ matrix.ubuntu-base }}-${{ github.ref }}-
+            build-ccache-${{ matrix.ubuntu-base }}-refs/heads/master-
 
       - name: Compile QGIS
         id: compile
@@ -131,10 +144,12 @@ jobs:
 
       - name: Run unit tests
         id: tests
+        if: ${{ matrix.ubuntu-base == env.DEFAULT_UBUNTU_BASE }}
         run: docker-compose -f .docker/docker-compose-testing.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
 
 #      - name: Test QGIS runners
 #        id: runners
+#        if: ${{ matrix.ubuntu-base == env.DEFAULT_UBUNTU_BASE }}
 #        run: |
 #          docker run -d --name qgis-testing-environment \
 #                     -v $(pwd):/root/QGIS \
@@ -171,7 +186,6 @@ jobs:
 #          done
 #          set -e # switch back
 #          docker stop qgis-testing-environment
-
 
 
 #  tests-report-comment:

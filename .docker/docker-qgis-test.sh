@@ -9,7 +9,7 @@ set -e
 # Prepare HANA database connection
 ##################################
 
-if [ ${HANA_TESTS:-"false"} == "true" ] ; then
+if [ ${HANA_TESTS_ENABLED:-"OFF"} == "ON" ] ; then
   echo "::group::hana"
   echo "${bold}Load HANA database...${endbold}"
 
