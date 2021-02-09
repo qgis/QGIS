@@ -124,9 +124,7 @@ jobs:
           UBUNTU_BASE: ${{ matrix.ubuntu-base }}
         id: compile
         run: |
-          if [ $UBUNTU_BASE == "20.04" ]
-            PATCH_QT_3D=true
-          fi
+          [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
           docker run -t --name qgis_container \
                      -v $(pwd):/root/QGIS \
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
