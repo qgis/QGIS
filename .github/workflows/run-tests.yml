@@ -101,14 +101,14 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.ubuntu-base }}-${{ github.head_ref }}-${{ github.sha }}
+          key: build-ccache-${{ matrix.ubuntu-base }}-${{ github.repository_owner }}-${{ github.head_ref }}-${{ github.sha }}
           # The head_ref or source branch of the pull request in a workflow run.
           # The base_ref or target branch of the pull request in a workflow run.
           restore-keys: |
+            build-ccache-${{ matrix.ubuntu-base }}-${{ github.repository_owner }}-${{ github.head_ref }}-
             build-ccache-${{ matrix.ubuntu-base }}-${{ github.head_ref }}-
             build-ccache-${{ matrix.ubuntu-base }}-${{ github.base_ref }}-
             build-ccache-${{ matrix.ubuntu-base }}-refs/heads/master-
-            build-ccache-refs/heads/master-
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
@@ -121,7 +121,6 @@ jobs:
           restore-keys: |
             build-ccache-${{ matrix.ubuntu-base }}-${{ github.ref }}-
             build-ccache-${{ matrix.ubuntu-base }}-refs/heads/master-
-            build-ccache-refs/heads/master-
 
       - name: Compile QGIS
         id: compile
