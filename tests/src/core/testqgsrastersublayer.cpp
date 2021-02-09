@@ -128,17 +128,22 @@ void TestQgsRasterSubLayer::subLayersList()
     // Layer with sublayers is not valid
     //QVERIFY( mpRasterLayer->isValid() );
     QStringList expected;
-    // Sublayer format: NETCDF:"/path/to/landsat2.nc":Band1
-    //                  NETCDF:"c:/path/to/landsat2.nc":Band1
-    // File path is delicate on Windows -> compare only sublayers
-    expected << QStringLiteral( "Band1" );
-    expected << QStringLiteral( "Band2" );
+    // Sublayer format: NETCDF:"/path/to/landsat2.nc":Band1!!::!![200x200] Band1 (8-bit integer)
+    //                  NETCDF:"c:/path/to/landsat2.nc":Band1!!::!![200x200] Band1 (8-bit integer)
+    // File path is delicate on Windows -> compare only end of string
+
+    expected << QStringLiteral( ":Band1!!::!![200x200] Band1 (8-bit integer)" );
+    expected << QStringLiteral( ":Band2!!::!![200x200] Band2 (8-bit integer)" );
 
     QStringList sublayers;
     Q_FOREACH ( const QString &s, mpRasterLayer->subLayers() )
     {
       qDebug() << "sublayer: " << s;
-      sublayers << s.split( ':' ).last();
+      int pos = s.indexOf( QLatin1String( ":Band" ) );
+      if ( pos > 0 )
+        sublayers << s.mid( pos );
+      else
+        sublayers << s;
     }
     qDebug() << "sublayers: " << sublayers.join( QLatin1Char( ',' ) );
     mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QLatin1String( "<br>" ) ) );
@@ -156,6 +161,7 @@ void TestQgsRasterSubLayer::checkStats()
     QString sublayerUri = mpRasterLayer->subLayers().value( 0 );
     mReport += "sublayer: " + sublayerUri + "<br>\n";
 
+    sublayerUri = sublayerUri.split( QgsDataProvider::sublayerSeparator() )[0];
     QgsRasterLayer *sublayer = new QgsRasterLayer( sublayerUri, QStringLiteral( "Sublayer 1" ) );
 
     QgsRasterBandStats myStatistics = sublayer->dataProvider()->bandStatistics( 1,

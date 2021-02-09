@@ -6011,49 +6011,13 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   layers.reserve( sublayers.size() );
   for ( int i = 0; i < sublayers.size(); i++ )
   {
-    // simplify raster sublayer name - should add a function in gdal provider for this?
-    // code is copied from QgsGdalLayerItem::createChildren
-    QString name = sublayers[i];
-    QString path = layer->source();
-    // if netcdf/hdf use all text after filename
-    // for hdf4 it would be best to get description, because the subdataset_index is not very practical
-    if ( name.startsWith( QLatin1String( "netcdf" ), Qt::CaseInsensitive ) ||
-         name.startsWith( QLatin1String( "hdf" ), Qt::CaseInsensitive ) )
-    {
-      name = name.mid( name.indexOf( path ) + path.length() + 1 );
-    }
-    else if ( name.startsWith( QLatin1String( "GPKG" ), Qt::CaseInsensitive ) )
-    {
-      const auto parts { name.split( ':' ) };
-      if ( parts.count() >= 3 )
-      {
-        name = parts.at( parts.count( ) - 1 );
-      }
-    }
-    else
-    {
-      // remove driver name and file name
-      name.remove( name.split( QgsDataProvider::sublayerSeparator() )[0] );
-      name.remove( path );
-    }
-    // remove any : or " left over
-    if ( name.startsWith( ':' ) )
-      name.remove( 0, 1 );
-
-    if ( name.startsWith( '\"' ) )
-      name.remove( 0, 1 );
-
-    if ( name.endsWith( ':' ) )
-      name.chop( 1 );
-
-    if ( name.endsWith( '\"' ) )
-      name.chop( 1 );
-
-    names << name;
+    const QStringList parts = sublayers[i].split( QgsDataProvider::sublayerSeparator() );
+    const QString desc = parts[1];
+    names << desc;
 
     QgsSublayersDialog::LayerDefinition def;
     def.layerId = i;
-    def.layerName = name;
+    def.layerName = desc;
     layers << def;
   }
 
@@ -6063,7 +6027,6 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   {
     // create more informative layer names, containing filename as well as sublayer name
     QRegExp rx( "\"(.*)\"" );
-    QString uri, name;
 
     QgsLayerTreeGroup *group = nullptr;
     bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
@@ -6077,10 +6040,13 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
     {
       int i = def.layerId;
-      if ( rx.indexIn( sublayers[i] ) != -1 )
+
+      const QStringList parts = sublayers[i].split( QgsDataProvider::sublayerSeparator() );
+      const QString path = parts[0];
+      QString name = path;
+      if ( rx.indexIn( name ) != -1 )
       {
-        uri = rx.cap( 1 );
-        name = sublayers[i];
+        const QString uri = rx.cap( 1 );
         name.replace( uri, QFileInfo( uri ).completeBaseName() );
       }
       else
@@ -6088,7 +6054,7 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
         name = names[i];
       }
 
-      QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], name );
+      QgsRasterLayer *rlayer = new QgsRasterLayer( path, name );
       if ( rlayer && rlayer->isValid() )
       {
         if ( addToGroup )
