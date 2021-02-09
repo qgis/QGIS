@@ -28,8 +28,8 @@
 #include "qgslogger.h"
 
 
-QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas )
-  : QgsMapToolLabel( canvas )
+QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolLabel( canvas, cadDock )
   , mDragging( false )
   , mShowPinned( false )
 

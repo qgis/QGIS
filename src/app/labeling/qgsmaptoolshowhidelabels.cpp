@@ -28,8 +28,8 @@
 #include "qgslogger.h"
 
 
-QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas *canvas )
-  : QgsMapToolLabel( canvas )
+QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolLabel( canvas, cadDock )
   , mDragging( false )
 {
   mToolName = tr( "Show/hide labels" );
