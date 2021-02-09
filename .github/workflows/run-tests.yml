@@ -42,7 +42,7 @@ jobs:
       matrix:
         # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
         ubuntu-base: ['20.04', '20.10']
-      fails-fast: false
+      fail-fast: false
 
     outputs:
       compile_outcome: ${{ steps.compile.outcome }}
