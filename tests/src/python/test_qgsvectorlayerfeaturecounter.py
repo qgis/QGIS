@@ -17,6 +17,7 @@ import os
 from qgis.PyQt.QtCore import QVariant, Qt, QDateTime, QDate, QTime
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (QgsWkbTypes,
                        QgsVectorLayer,
@@ -72,23 +73,25 @@ class TestQgsVectorLayerFeatureCounter(unittest.TestCase):
 
     def testFeaturesCount(self):
 
-        def onSymbolFeatureCountMapChanged():
-            assert self.vl.featureCount(self.vl.renderer().legendSymbolItems()[0].ruleKey()) == 4
+        self.assertTrue(self.vl.renderer().legendSymbolItems())
 
-        assert self.vl.renderer().legendSymbolItems()
-
-        self.vl.symbolFeatureCountMapChanged.connect(onSymbolFeatureCountMapChanged)
+        signal_spy = QSignalSpy(self.vl.symbolFeatureCountMapChanged)
         self.vl.countSymbolFeatures()
+        signal_spy.wait()
+
+        self.assertEqual(len(signal_spy), 1)
+        self.assertEqual(self.vl.featureCount(self.vl.renderer().legendSymbolItems()[0].ruleKey()), 5)
 
     def testFeaturesCountOnEmptyLayer(self):
 
-        def onSymbolFeatureCountMapChanged():
-            assert self.vl2.featureCount(self.vl2.renderer().legendSymbolItems()[0].ruleKey()) == 0
+        self.assertTrue(self.vl2.renderer().legendSymbolItems())
 
-        assert self.vl2.renderer().legendSymbolItems()
-
-        self.vl2.symbolFeatureCountMapChanged.connect(onSymbolFeatureCountMapChanged)
+        signal_spy = QSignalSpy(self.vl2.symbolFeatureCountMapChanged)
         self.vl2.countSymbolFeatures()
+        signal_spy.wait()
+
+        self.assertEqual(len(signal_spy), 1)
+        self.assertEqual(self.vl2.featureCount(self.vl2.renderer().legendSymbolItems()[0].ruleKey()), 0)
 
 
 if __name__ == '__main__':
