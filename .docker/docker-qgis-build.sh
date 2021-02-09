@@ -36,7 +36,7 @@ export CXX=/usr/lib/ccache/clang++
 CMAKE_ARGS=(
  "-GNinja"
  "-DUSE_CCACHE=OFF"
- "-DWITH_QUICK=OFF"
+ "-DWITH_QUICK=ON"
  "-DWITH_3D=ON"
  "-DWITH_STAGED_PLUGINS=ON"
  "-DWITH_GRASS=OFF"
