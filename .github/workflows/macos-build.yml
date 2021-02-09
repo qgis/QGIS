@@ -75,7 +75,7 @@ jobs:
         uses: pat-s/always-upload-cache@v2.1.3
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/Qt/${{ env.QT_VERSION }}
-          key: mac-qt-v3-${{ env.QT_VERSION }}
+          key: mac-qt-v4-${{ env.QT_VERSION }}
 
       - name: Restore Qt
         if: steps.cache-qt.outputs.cache-hit == 'true'
@@ -86,7 +86,11 @@ jobs:
 
       - name: Download Qt
         if: steps.cache-qt.outputs.cache-hit != 'true'
-        run: wget https://qgis.org/downloads/macos/deps/qt-${QT_VERSION}.tar.gz
+        run: |
+          wget https://qgis.org/downloads/macos/deps/qt-${QT_VERSION}.tar.gz
+          mkdir -p ${DEPS_CACHE_DIR}
+          mkdir -p ${DEPS_CACHE_DIR}/Qt
+
 
 
       # QGIS-deps caching
@@ -95,7 +99,7 @@ jobs:
         uses: pat-s/always-upload-cache@v2.1.3
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}
-          key: mac-qgis-deps-v3-${{ env.QGIS_DEPS_VERSION }}
+          key: mac-qgis-deps-v4-${{ env.QGIS_DEPS_VERSION }}
 
       - name: Restore qgis-deps
         if: steps.cache-deps.outputs.cache-hit == 'true'
@@ -106,7 +110,11 @@ jobs:
 
       - name: Download qgis-deps
         if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.tar.gz
+        run: |
+          wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.tar.gz
+          mkdir -p ${DEPS_CACHE_DIR}
+          mkdir -p ${DEPS_CACHE_DIR}/QGIS
+
 
 
       - name: Install Qt and deps
