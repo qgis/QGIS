@@ -75,7 +75,7 @@ jobs:
         uses: pat-s/always-upload-cache@v2.1.3
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/Qt/${{ env.QT_VERSION }}
-          key: mac-qt-v2-${{ env.QT_VERSION }}
+          key: mac-qt-v3-${{ env.QT_VERSION }}
 
       - name: Restore Qt
         if: steps.cache-qt.outputs.cache-hit == 'true'
@@ -95,7 +95,7 @@ jobs:
         uses: pat-s/always-upload-cache@v2.1.3
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}
-          key: mac-qgis-deps-v2-${{ env.QGIS_DEPS_VERSION }}
+          key: mac-qgis-deps-v3-${{ env.QGIS_DEPS_VERSION }}
 
       - name: Restore qgis-deps
         if: steps.cache-deps.outputs.cache-hit == 'true'
