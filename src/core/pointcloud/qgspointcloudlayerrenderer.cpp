@@ -168,12 +168,7 @@ bool QgsPointCloudLayerRenderer::render()
     return false;
   }
   double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
-  QVector<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
-
-  std::sort( nodes.begin(), nodes.end(), []( IndexedPointCloudNode & n1, IndexedPointCloudNode & n2 )
-  {
-    return n1.d() < n2.d();
-  } );
+  const QVector<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
 
   QgsPointCloudRequest request;
   request.setAttributes( mAttributes );
