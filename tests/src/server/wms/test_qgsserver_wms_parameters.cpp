@@ -30,7 +30,7 @@ class TestQgsServerWmsParameters : public QObject
 
     void external_layers();
     void percent_encoding();
-    void version_negociation();
+    void version_negotiation();
 };
 
 void TestQgsServerWmsParameters::initTestCase()
@@ -85,7 +85,7 @@ void TestQgsServerWmsParameters::percent_encoding()
   QCOMPARE( wmsParams.value( "MYPARAM" ), QString( "my+value" ) );
 }
 
-void TestQgsServerWmsParameters::version_negociation()
+void TestQgsServerWmsParameters::version_negotiation()
 {
   QUrlQuery query;
 
