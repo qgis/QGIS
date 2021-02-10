@@ -1,0 +1,53 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "leaflet": "^1.6.0",
+    "leaflet-wms": "^0.1.0",
+    "reproject": "^1.2.5",
+    "vue": "^2.6.11",
+    "vue-router": "^3.4.1",
+    "vue2-leaflet": "^2.5.2",
+    "vuetify": "^2.3.7",
+    "vuex": "^3.5.1"
+  },
+  "devDependencies": {
+    "@vue/cli": "^4.4.6",
+    "@vue/cli-plugin-babel": "^4.4.6",
+    "@vue/cli-plugin-eslint": "^4.4.6",
+    "@vue/cli-service": "^4.4.6",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.6.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "sass": "^1.26.10",
+    "sass-loader": "^9.0.3",
+    "vue-cli-plugin-vuetify": "^2.0.7",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.6.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
