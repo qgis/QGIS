@@ -26,8 +26,8 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
 {
   Q_UNUSED( pos )
 
-  QRegExp rx( "-?\\d*" );
-  if ( rx.exactMatch( input ) )
+  QRegularExpression rx( "-?\\d*" );
+  if ( rx.macth( input ).hasMatch() )
   {
     return Acceptable;
   }

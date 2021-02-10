@@ -37,7 +37,7 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 
 
@@ -137,14 +137,14 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   databaseChanged();
 
   // LOCATION
-  QRegExp rx( "[A-Za-z0-9_.]+" );
-  mLocationLineEdit->setValidator( new QRegExpValidator( rx, mLocationLineEdit ) );
+  QRegularExpression rx( "[A-Za-z0-9_.]+" );
+  mLocationLineEdit->setValidator( new QRegularExpressionValidator( rx, mLocationLineEdit ) );
 
   // CRS
 
   // MAPSET
   mMapsetsListView->clear();
-  mMapsetLineEdit->setValidator( new QRegExpValidator( rx, mMapsetLineEdit ) );
+  mMapsetLineEdit->setValidator( new QRegularExpressionValidator( rx, mMapsetLineEdit ) );
 
   mMapsetsListView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 

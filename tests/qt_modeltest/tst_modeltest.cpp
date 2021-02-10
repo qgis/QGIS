@@ -111,7 +111,7 @@ void tst_ModelTest::stringListModel()
   model.setStringList( QStringList() << "a" << "e" << "plop" << "b" << "c" );
 
   proxy.setDynamicSortFilter( true );
-  proxy.setFilterRegExp( QRegExp( "[^b]" ) );
+  proxy.setFilterRegExp( QRegularExpression( "[^b]" ) );
 }
 
 void tst_ModelTest::treeWidgetModel()

@@ -324,7 +324,7 @@ void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &s
 {
   QString current = action->toolTip();
   // Remove the old shortcut.
-  QRegExp rx( "\\(.*\\)" );
+  QRegularExpression rx( "\\(.*\\)" );
   current.replace( rx, QString() );
 
   if ( !sequence.isEmpty() )

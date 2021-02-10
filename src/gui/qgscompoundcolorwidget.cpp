@@ -451,7 +451,7 @@ QgsUserColorScheme *QgsCompoundColorWidget::createNewUserPalette( QWidget *paren
 
 //generate file name for new palette
   QDir palettePath( gplFilePath() );
-  QRegExp badChars( "[,^@={}\\[\\]~!?:&*\"|#%<>$\"'();`' /\\\\]" );
+  QRegularExpression badChars( "[,^@={}\\[\\]~!?:&*\"|#%<>$\"'();`' /\\\\]" );
   QString filename = name.simplified().toLower().replace( badChars, QStringLiteral( "_" ) );
   if ( filename.isEmpty() )
   {
