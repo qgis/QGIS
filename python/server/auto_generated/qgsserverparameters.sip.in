@@ -324,7 +324,7 @@ defined.
 :return: service
 %End
 
-    QString request() const;
+    virtual QString request() const;
 %Docstring
 Returns REQUEST parameter as a string or an empty string if not
 defined.

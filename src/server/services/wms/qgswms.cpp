@@ -99,9 +99,7 @@ namespace QgsWms
                                      QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
         }
 
-        if ( ( mVersion.compare( QLatin1String( "1.1.1" ) ) == 0 \
-               && QSTR_COMPARE( req, "capabilities" ) )
-             || QSTR_COMPARE( req, "GetCapabilities" ) )
+        if ( QSTR_COMPARE( req, "GetCapabilities" ) )
         {
           writeGetCapabilities( mServerIface, project, version, request, response, false );
         }

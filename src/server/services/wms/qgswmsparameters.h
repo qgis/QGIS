@@ -1329,6 +1329,8 @@ namespace QgsWms
 
       QString version() const override;
 
+      QString request() const override;
+
     private:
       static bool isExternalLayer( const QString &name );
 

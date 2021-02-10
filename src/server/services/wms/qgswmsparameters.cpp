@@ -757,7 +757,7 @@ namespace QgsWms
   {
     QString version = QgsServerParameters::version();
 
-    if ( request().compare( QLatin1String( "GetProjectSettings" ), Qt::CaseInsensitive ) == 0 )
+    if ( QgsServerParameters::request().compare( QLatin1String( "GetProjectSettings" ), Qt::CaseInsensitive ) == 0 )
     {
       version = QStringLiteral( "1.3.0" );
     }
@@ -788,6 +788,19 @@ namespace QgsWms
     }
 
     return version;
+  }
+
+  QString QgsWmsParameters::request() const
+  {
+    QString req = QgsServerParameters::request();
+
+    if ( version().compare( QLatin1String( "1.1.1" ) ) == 0
+         && req.compare( QLatin1String( "capabilities" ), Qt::CaseInsensitive ) == 0 )
+    {
+      req = QStringLiteral( "GetCapabilities" );
+    }
+
+    return req;
   }
 
   QgsProjectVersion QgsWmsParameters::versionAsNumber() const

@@ -302,7 +302,7 @@ class SERVER_EXPORT QgsServerParameters
      * defined.
      * \returns request
      */
-    QString request() const;
+    virtual QString request() const;
 
     /**
      * Returns MAP parameter as a string or an empty string if not
