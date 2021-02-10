@@ -101,7 +101,7 @@ namespace QgsWms
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          writeGetCapabilities( mServerIface, project, version, request, response, false );
+          writeGetCapabilities( mServerIface, project, version, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetProjectSettings" ) )
         {
@@ -109,8 +109,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetMap" ) )
         {
-          QString format = parameters.formatAsString();
-          if QSTR_COMPARE( format, "application/dxf" )
+          if QSTR_COMPARE( parameters.formatAsString(), "application/dxf" )
           {
             writeAsDxf( mServerIface, project, version, request, response );
           }
