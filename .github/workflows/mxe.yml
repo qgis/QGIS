@@ -40,7 +40,7 @@ jobs:
     - name: Build Dockerfile
       run: |
         cd ms-windows/mxe
-        docker build -f mxe.Dockerfile --tag mxe-qt5-builder:latest
+        docker build -f mxe.Dockerfile --tag mxe-qt5-builder:latest .
 
     - name: Prepare build cache for pull request
       uses: pat-s/always-upload-cache@v2.1.3
