@@ -88,7 +88,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   if ( mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
   {
     mSchemaCbo->addItems( mConnection->schemas() );
-    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, [ = ]( const QString &schema )
+    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, [ = ]( const QString & schema )
     {
       updateTableNames( schema );
     } );
