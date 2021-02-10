@@ -91,6 +91,8 @@ namespace QgsWms
 
         // Get the request
         const QString req = parameters.request();
+        const QString version = parameters.version();
+
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
@@ -106,8 +108,7 @@ namespace QgsWms
         else if ( QSTR_COMPARE( req, "GetProjectSettings" ) )
         {
           //getProjectSettings extends WMS 1.3.0 capabilities
-          version = QStringLiteral( "1.3.0" );
-          writeGetCapabilities( mServerIface, project, version, request, response, true );
+          writeGetCapabilities( mServerIface, project, QStringLiteral( "1.3.0" ), request, response, true );
         }
         else if ( QSTR_COMPARE( req, "GetMap" ) )
         {
