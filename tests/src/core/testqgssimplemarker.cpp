@@ -69,6 +69,8 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void decodeShape_data();
+    void decodeShape();
     void simpleMarkerSymbol();
     void simpleMarkerSymbolRotation();
     void simpleMarkerSymbolPreviewRotation();
@@ -76,6 +78,9 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void simpleMarkerSymbolBevelJoin();
     void simpleMarkerSymbolMiterJoin();
     void simpleMarkerSymbolRoundJoin();
+    void simpleMarkerOctagon();
+    void simpleMarkerSquareWithCorners();
+    void simpleMarkerAsterisk();
     void bounds();
     void boundsWithOffset();
     void boundsWithRotation();
@@ -149,6 +154,61 @@ void TestQgsSimpleMarkerSymbol::cleanupTestCase()
   }
 
   QgsApplication::exitQgis();
+}
+
+void TestQgsSimpleMarkerSymbol::decodeShape_data()
+{
+  QTest::addColumn<QString>( "string" );
+  QTest::addColumn<int>( "shape" );
+  QTest::addColumn<bool>( "ok" );
+
+  QTest::newRow( "empty string" ) << "" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Circle ) << false;
+  QTest::newRow( "invalid character" ) << "@" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Circle ) << false;
+  QTest::newRow( "square" ) << "square" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Square ) << true;
+  QTest::newRow( "square case" ) << "SQUARE" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Square ) << true;
+  QTest::newRow( "square case spaces" ) << "  SQUARE  " << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Square ) << true;
+  QTest::newRow( "square_with_corners" ) << "square_with_corners" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::SquareWithCorners ) << true;
+  QTest::newRow( "rectangle" ) << "rectangle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Square ) << true;
+  QTest::newRow( "diamond" ) << "diamond" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Diamond ) << true;
+  QTest::newRow( "pentagon" ) << "pentagon" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Pentagon ) << true;
+  QTest::newRow( "hexagon" ) << "hexagon" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Hexagon ) << true;
+  QTest::newRow( "octagon" ) << "octagon" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Octagon ) << true;
+  QTest::newRow( "triangle" ) << "triangle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Triangle ) << true;
+  QTest::newRow( "equilateral_triangle" ) << "equilateral_triangle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::EquilateralTriangle ) << true;
+  QTest::newRow( "star" ) << "star" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Star ) << true;
+  QTest::newRow( "regular_star" ) << "regular_star" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Star ) << true;
+  QTest::newRow( "arrow" ) << "arrow" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Arrow ) << true;
+  QTest::newRow( "circle" ) << "circle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Circle ) << true;
+  QTest::newRow( "cross" ) << "cross" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Cross ) << true;
+  QTest::newRow( "cross_fill" ) << "cross_fill" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::CrossFill ) << true;
+  QTest::newRow( "cross2" ) << "cross2" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Cross2 ) << true;
+  QTest::newRow( "x" ) << "x" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Cross2 ) << true;
+  QTest::newRow( "line" ) << "line" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::Line ) << true;
+  QTest::newRow( "arrowhead" ) << "arrowhead" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::ArrowHead ) << true;
+  QTest::newRow( "filled_arrowhead" ) << "filled_arrowhead" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::ArrowHeadFilled ) << true;
+  QTest::newRow( "semi_circle" ) << "semi_circle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::SemiCircle ) << true;
+  QTest::newRow( "third_circle" ) << "third_circle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::ThirdCircle ) << true;
+  QTest::newRow( "quarter_circle" ) << "quarter_circle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::QuarterCircle ) << true;
+  QTest::newRow( "quarter_square" ) << "quarter_square" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::QuarterSquare ) << true;
+  QTest::newRow( "half_square" ) << "half_square" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::HalfSquare ) << true;
+  QTest::newRow( "diagonal_half_square" ) << "diagonal_half_square" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::DiagonalHalfSquare ) << true;
+  QTest::newRow( "right_half_triangle" ) << "right_half_triangle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::RightHalfTriangle ) << true;
+  QTest::newRow( "left_half_triangle" ) << "left_half_triangle" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::LeftHalfTriangle ) << true;
+  QTest::newRow( "asterisk_fill" ) << "asterisk_fill" << static_cast< int >( QgsSimpleMarkerSymbolLayerBase::AsteriskFill ) << true;
+}
+
+void TestQgsSimpleMarkerSymbol::decodeShape()
+{
+  QFETCH( QString, string );
+  QFETCH( int, shape );
+  QFETCH( bool, ok );
+
+  bool res = false;
+  QCOMPARE( static_cast< int >( QgsSimpleMarkerSymbolLayerBase::decodeShape( string, &res ) ), shape );
+  QCOMPARE( res, ok );
+
+  // round trip through encode
+  QCOMPARE( static_cast< int >( QgsSimpleMarkerSymbolLayerBase::decodeShape( QgsSimpleMarkerSymbolLayerBase::encodeShape( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape>( shape ) ) ) ), shape );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbol()
@@ -246,6 +306,45 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRoundJoin()
   mSimpleMarkerLayer->setStrokeWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
   QVERIFY( imageCheck( "simplemarker_roundjoin" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerOctagon()
+{
+  mReport += QLatin1String( "<h2>Simple marker octagon</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Octagon );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_octagon" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSquareWithCorners()
+{
+  mReport += QLatin1String( "<h2>Simple marker square with corners</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::SquareWithCorners );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_square_with_corners" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerAsterisk()
+{
+  mReport += QLatin1String( "<h2>Simple marker asterisk</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::AsteriskFill );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_asterisk" ) );
 }
 
 void TestQgsSimpleMarkerSymbol::bounds()
