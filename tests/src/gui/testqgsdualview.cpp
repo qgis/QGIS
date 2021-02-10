@@ -19,6 +19,7 @@
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <attributetable/qgsattributetableview.h>
 #include <attributetable/qgsdualview.h>
+#include <editform/qgsattributeeditorhtmlelement.h>
 #include "qgsattributeform.h"
 #include <qgsapplication.h>
 #include "qgsfeatureiterator.h"
