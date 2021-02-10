@@ -70,7 +70,9 @@ jobs:
     - name: Cross build with MXE
       run: |
         cd ${GITHUB_WORKSPACE}
-        docker  run  \
+        echo ${GITHUB_WORKSPACE}
+        echo $(pwd)
+        docker run \
             -v $(pwd):/root/QGIS \
             -w /root/QGIS --rm  \
             --user $(id -u):$(id -g) \
