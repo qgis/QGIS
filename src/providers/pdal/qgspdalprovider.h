@@ -66,7 +66,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QVariantMap mOriginalMetadata;
     std::unique_ptr<QgsEptPointCloudIndex> mIndex;
     QgsPdalEptGenerationTask *mRunningIndexingTask = nullptr;
-    static QQueue<QgsPdalProvider *> mIndexingQueue;
+    static QQueue<QgsPdalProvider *> sIndexingQueue;
 };
 
 class QgsPdalProviderMetadata : public QgsProviderMetadata
