@@ -30,6 +30,7 @@ class TestQgsServerWmsParameters : public QObject
 
     void external_layers();
     void percent_encoding();
+    void version_negociation();
 };
 
 void TestQgsServerWmsParameters::initTestCase()
@@ -82,6 +83,35 @@ void TestQgsServerWmsParameters::percent_encoding()
 
   QgsWms::QgsWmsParameters wmsParams( params );
   QCOMPARE( wmsParams.value( "MYPARAM" ), QString( "my+value" ) );
+}
+
+void TestQgsServerWmsParameters::version_negociation()
+{
+  QUrlQuery query;
+
+  query.addQueryItem( "VERSION", "1.3.0" );
+  QgsWms::QgsWmsParameters parameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.1" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.0" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "33.33.33" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )
