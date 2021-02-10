@@ -26,7 +26,7 @@ from builtins import range
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from qgis.PyQt.QtCore import Qt, QRegExp, QCoreApplication
+from qgis.PyQt.QtCore import Qt, QRegularExpression, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 from qgis.core import Qgis, QgsApplication, QgsSettings
@@ -394,10 +394,10 @@ class PGTableField(TableField):
 
         # get modifier (e.g. "precision,scale") from formatted type string
         trimmedTypeStr = typeStr.strip()
-        regex = QRegExp("\\((.+)\\)$")
-        startpos = regex.indexIn(trimmedTypeStr)
-        if startpos >= 0:
-            self.modifier = regex.cap(1).strip()
+        regex = QRegularExpression("\\((.+)\\)$")
+        matches = regex.match(trimmedTypeStr)
+        if matches.captutredStart() >= 0:
+            self.modifier = matches.captured(1).strip()
         else:
             self.modifier = None
 
