@@ -75,6 +75,7 @@ if [[ "$COMMAND" != *"package"* ]]; then
     ${MXE}/usr/bin/${TARGET}-cmake .. \
         -DCMAKE_BUILD_TYPE=RelWithDebugInfo \
         -DCMAKE_INSTALL_PREFIX=${RELEASE_DIR} \
+        -DUSE_CCACHE=ON \
         -DENABLE_TESTS=OFF \
         -DWITH_QSPATIALITE=ON \
         -DWITH_APIDOC=OFF \
@@ -91,8 +92,8 @@ if [[ "$COMMAND" != *"package"* ]]; then
 
     echo "::endgroup::"
 
-    echo "ccache statistics"
-    ccache -s
+    #echo "ccache statistics"
+    #ccache -s
 
 fi
 
