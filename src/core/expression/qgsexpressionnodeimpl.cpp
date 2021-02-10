@@ -553,7 +553,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
           }
           thread_local QRegularExpression rx3( QStringLiteral( "[^\\\\](_)" ) );
           pos = 0;
-          while ( ( pos = rx3.match( esc_regexp, pos ).capturedStart() ) != -1 )
+          while ( ( pos = rx3.match( esc_regexp.mid( pos ) ).capturedStart() ) != -1 )
           {
             esc_regexp.replace( pos + 1, 1, '.' );
             pos += 1;

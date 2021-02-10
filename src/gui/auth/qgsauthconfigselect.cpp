@@ -380,8 +380,7 @@ void QgsAuthConfigUriEdit::authCfgRemoved( const QString &authcfg )
 
 int QgsAuthConfigUriEdit::authCfgIndex()
 {
-  QRegExp rx( QgsApplication::authManager()->configIdRegex() );
-  return rx.indexIn( mDataUri );
+  return QRegularExpression( QgsApplication::authManager()->configIdRegex() ).match( mDataUri ).capturedStart();
 }
 
 QString QgsAuthConfigUriEdit::authCfgFromUri()

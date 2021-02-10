@@ -278,7 +278,7 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer( const QString &uri, const 
   // Allow any character, except |, which could create confusion, due to it being
   // the URI componenent separator. And ideally we should remove that restriction
   // by using proper escaping of |
-  const QRegExp checkRe( QStringLiteral( R"re([^|]+)re" ) );
+  const QRegularExpression checkRe( QStringLiteral( R"re([^|]+)re" ) );
   QgsNewNameDialog dlg( uri, layerName, QStringList(), tableNames, checkRe );
   dlg.setOverwriteEnabled( false );
 
