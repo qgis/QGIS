@@ -96,7 +96,7 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
   if ( !isSupportedType( QgsVariantDelegate::type( originalValue ) ) )
     return nullptr;
 
-  QRegExp regExp;
+  QRegularExpression regExp;
   switch ( QgsVariantDelegate::type( originalValue ) )
   {
     case QVariant::ByteArray:
@@ -350,7 +350,7 @@ QVariant::Type QgsVariantDelegate::type( const QVariant &value )
   if ( value.type() == QVariant::String )
   {
     QString str = value.toString();
-    QRegExp regExp;
+    QRegularExpression regExp;
     bool ok;
 
     // is this a bool (true,false)

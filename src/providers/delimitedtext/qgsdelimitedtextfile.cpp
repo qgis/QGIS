@@ -26,7 +26,7 @@
 #include <QFileSystemWatcher>
 #include <QTextCodec>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
 

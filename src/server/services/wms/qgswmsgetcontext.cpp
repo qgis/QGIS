@@ -312,7 +312,7 @@ namespace QgsWms
           // layer wms name
           layerElem.setAttribute( QStringLiteral( "name" ), wmsName );
           // define an id based on layer wms name
-          layerElem.setAttribute( QStringLiteral( "id" ), wmsName.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) ) );
+          layerElem.setAttribute( QStringLiteral( "id" ), wmsName.replace( QRegularExpression( "[\\W]" ), QStringLiteral( "_" ) ) );
 
           // layer title
           QDomElement titleElem = doc.createElement( QStringLiteral( "ows:Title" ) );

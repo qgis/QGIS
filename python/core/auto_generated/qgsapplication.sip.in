@@ -378,7 +378,7 @@ colors are specified then the ``size`` argument also must be set.
 Returns the path to user's style.
 %End
 
-    static QRegExp shortNameRegExp();
+    static QRegularExpression shortNameRegExp();
 %Docstring
 Returns the short name regular expression for line edit validator
 %End

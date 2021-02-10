@@ -66,7 +66,7 @@ pattern_startswith_qsl = re.compile(r'(.*)\.(startsWith|endsWith|indexOf|lastInd
 # .replace( 'a' or simple_expr or qsl, QStringLiteral( "foo" ) )
 replace_char_qsl = re.compile(r"""(.*)\.replace\( {char_literal}, {qsl} \)(.*)""".format(char_literal=char_literal, qsl=qsl))
 replace_str_qsl = re.compile(r"""(.*)\.replace\( {string_literal}, {qsl} \)(.*)""".format(string_literal=string_literal, qsl=qsl))
-# Do not use that: if simple_expr is a QRegExp, there is no QString::replace(QRegExp, QLatin1String)
+# Do not use that: if simple_expr is a QRegularExpression, there is no QString::replace(QRegularExpression, QLatin1String)
 # replace_simple_expr_qsl = re.compile(r"""(.*)\.replace\( {simple_expr}, {qsl} \)(.*)""".format(simple_expr=simple_expr, qsl=qsl))
 
 # .replace( QStringLiteral( "foo" ), QStringLiteral( "foo" ) )

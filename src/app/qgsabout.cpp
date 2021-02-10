@@ -311,7 +311,7 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
       result = result + QString( c );
     }
   }
-  result.replace( QRegExp( "[^a-z0-9A-Z]" ), QStringLiteral( "_" ) );
+  result.replace( QRegularExpression( "[^a-z0-9A-Z]" ), QStringLiteral( "_" ) );
   QgsDebugMsg( result );
 
   return result;

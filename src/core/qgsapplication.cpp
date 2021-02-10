@@ -1121,9 +1121,9 @@ QString QgsApplication::userStylePath()
   return qgisSettingsDirPath() + QStringLiteral( "symbology-style.db" );
 }
 
-QRegExp QgsApplication::shortNameRegExp()
+QRegularExpression QgsApplication::shortNameRegExp()
 {
-  const thread_local QRegExp regexp( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) );
+  const thread_local QRegularExpression regexp( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) );
   return regexp;
 }
 

@@ -94,7 +94,7 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   browseLayerTree( project->layerTreeRoot(), owsNames, encodingMessages );
 
   QStringList duplicateNames, regExpMessages;
-  QRegExp snRegExp = QgsApplication::shortNameRegExp();
+  QRegularExpression snRegExp = QgsApplication::shortNameRegExp();
   const auto constOwsNames = owsNames;
   for ( const QString &name : constOwsNames )
   {

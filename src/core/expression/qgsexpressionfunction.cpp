@@ -1516,9 +1516,9 @@ static QVariant fcnUuid( const QVariantList &values, const QgsExpressionContext 
   QString uuid = QUuid::createUuid().toString();
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   if ( values.at( 0 ).toString().compare( QStringLiteral( "WithoutBraces" ), Qt::CaseInsensitive ) == 0 )
-    uuid.remove( QRegExp( "[{}]" ) );
+    uuid.remove( QRegularExpression( "[{}]" ) );
   else if ( values.at( 0 ).toString().compare( QStringLiteral( "Id128" ), Qt::CaseInsensitive ) == 0 )
-    uuid.remove( QRegExp( "[{}-]" ) );
+    uuid.remove( QRegularExpression( "[{}-]" ) );
 #else
   if ( values.at( 0 ).toString().compare( QStringLiteral( "WithoutBraces" ), Qt::CaseInsensitive ) == 0 )
     uuid = QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces );

@@ -157,7 +157,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
 
   // add uri parameters
   QString userparam = "user='" + commonName + "'";
-  int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
+  int userindx = connectionItems.indexOf( QRegularExpression( "^user='.*" ) );
   if ( userindx != -1 )
   {
     connectionItems.replace( userindx, userparam );
@@ -168,7 +168,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   }
 
   QString certparam = "sslcert='" + certFilePath + "'";
-  int sslcertindx = connectionItems.indexOf( QRegExp( "^sslcert='.*" ) );
+  int sslcertindx = connectionItems.indexOf( QRegularExpression( "^sslcert='.*" ) );
   if ( sslcertindx != -1 )
   {
     connectionItems.replace( sslcertindx, certparam );
@@ -179,7 +179,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   }
 
   QString keyparam = "sslkey='" + keyFilePath + "'";
-  int sslkeyindx = connectionItems.indexOf( QRegExp( "^sslkey='.*" ) );
+  int sslkeyindx = connectionItems.indexOf( QRegularExpression( "^sslkey='.*" ) );
   if ( sslkeyindx != -1 )
   {
     connectionItems.replace( sslkeyindx, keyparam );
@@ -190,7 +190,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   }
 
   QString caparam = "sslrootcert='" + caFilePath + "'";
-  int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+  int sslcaindx = connectionItems.indexOf( QRegularExpression( "^sslrootcert='.*" ) );
   if ( sslcaindx != -1 )
   {
     connectionItems.replace( sslcaindx, caparam );

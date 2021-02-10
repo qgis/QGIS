@@ -47,7 +47,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      */
     QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
                       const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
-                      const QRegExp &regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
+                      const QRegularExpression &regexp = QRegularExpression(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
                       QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 
     /**
@@ -154,7 +154,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QLabel *mNamesLabel = nullptr;
     QLabel *mErrorLabel = nullptr;
     QString mOkString;
-    QRegExp mRegexp;
+    QRegularExpression mRegexp;
     bool mOverwriteEnabled = true;
     bool mAllowEmptyName = false;
     QString mConflictingNameWarning;

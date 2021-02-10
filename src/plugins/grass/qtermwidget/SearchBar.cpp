@@ -18,7 +18,7 @@
 */
 #include <QMenu>
 #include <QAction>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QDebug>
 
 #include "SearchBar.h"
