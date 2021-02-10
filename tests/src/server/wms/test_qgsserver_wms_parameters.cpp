@@ -112,6 +112,28 @@ void TestQgsServerWmsParameters::version_negotiation()
   query.addQueryItem( "VERSION", "33.33.33" );
   parameters = QgsWms::QgsWmsParameters( query );
   QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.1" );
+  query.addQueryItem( "REQUEST", "GetProjectSettings" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "REQUEST", "GetProjectSettings" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "WMTVER", "1.1.1" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+
+  query.clear();
+  query.addQueryItem( "WMTVER", "1.1.1" );
+  query.addQueryItem( "VERSION", "1.3.0" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )
