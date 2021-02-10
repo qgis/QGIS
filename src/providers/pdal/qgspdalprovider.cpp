@@ -35,7 +35,7 @@
 #define PROVIDER_KEY QStringLiteral( "pdal" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "PDAL point cloud data provider" )
 
-QQueue<QgsPdalProvider *> QgsPdalProvider::mIndexingQueue;
+QQueue<QgsPdalProvider *> QgsPdalProvider::sIndexingQueue;
 
 QgsPdalProvider::QgsPdalProvider(
   const QString &uri,
@@ -94,8 +94,7 @@ void QgsPdalProvider::generateIndex()
 
   if ( anyIndexingTaskExists() )
   {
-    QgsMessageLog::logMessage( tr( "EPT generation task is already running" ), QObject::tr( "Point clouds" ), Qgis::Info );
-    mIndexingQueue.push_back( this );
+    sIndexingQueue.push_back( this );
     return;
   }
 
@@ -149,8 +148,8 @@ void QgsPdalProvider::onGenerateIndexFinished()
     mRunningIndexingTask = nullptr;
     emit indexGenerationStateChanged( PointCloudIndexGenerationState::Indexed );
   }
-  if ( !mIndexingQueue.empty() )
-    mIndexingQueue.takeFirst()->generateIndex();
+  if ( !sIndexingQueue.empty() )
+    sIndexingQueue.takeFirst()->generateIndex();
 }
 
 void QgsPdalProvider::onGenerateIndexFailed()
@@ -162,8 +161,8 @@ void QgsPdalProvider::onGenerateIndexFailed()
     mRunningIndexingTask = nullptr;
     emit indexGenerationStateChanged( PointCloudIndexGenerationState::NotIndexed );
   }
-  if ( !mIndexingQueue.empty() )
-    mIndexingQueue.takeFirst()->generateIndex();
+  if ( !sIndexingQueue.empty() )
+    sIndexingQueue.takeFirst()->generateIndex();
 }
 
 bool QgsPdalProvider::anyIndexingTaskExists()
