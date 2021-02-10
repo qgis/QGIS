@@ -117,6 +117,5 @@ void QgsAuthConfigIdEdit::leAuthCfg_textChanged( const QString &txt )
 
 bool QgsAuthConfigIdEdit::isAlphaNumeric( const QString &authcfg )
 {
-  QRegExp rx( "([a-z]|[A-Z]|[0-9]){7}" );
-  return rx.indexIn( authcfg ) != -1;
+  return QRegularExpression( "([a-z]|[A-Z]|[0-9]){7}" ).match( authcfg ).capturedStart() != -1;
 }

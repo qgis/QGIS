@@ -469,7 +469,7 @@ ColorScheme *KDE3ColorSchemeReader::read()
 
   ColorScheme *scheme = new ColorScheme();
 
-  QRegExp comment( "#.*$" );
+  QRegularExpression comment( "#.*$" );
   while ( !_device->atEnd() )
   {
     QString line( _device->readLine() );
