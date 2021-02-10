@@ -1291,8 +1291,8 @@ bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
 
     QgsPointXY mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
     QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-    QgsCoordinateReferenceSystem proj( ls.at( 8 ) );
-    if ( ls.count() == 5 || ls.count() == 9 )
+    QgsCoordinateReferenceSystem proj( ls.count() == 9 ? ls.at( 8 ) : QString() );
+    if ( ls.count() >= 5 )
     {
       bool enable = ls.at( 4 ).toInt();
       addPoint( pixelCoords, mapCoords, proj, enable, false );
