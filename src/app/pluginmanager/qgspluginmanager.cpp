@@ -24,7 +24,7 @@
 #include <QLibrary>
 #include <QStandardItem>
 #include <QPushButton>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSortFilterProxyModel>
 #include <QActionGroup>
 #include <QTextStream>
@@ -1476,9 +1476,9 @@ void QgsPluginManager::leFilter_textChanged( QString text )
     QgsDebugMsg( "PluginManager filter changed to :" + text );
   }
 
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
+  QRegularExpression::PatternSyntax mySyntax = QRegularExpression::PatternSyntax( QRegularExpression::RegExp );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
+  QRegularExpression myRegExp( text, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
 }
 
