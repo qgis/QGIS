@@ -755,37 +755,39 @@ namespace QgsWms
 
   QString QgsWmsParameters::version() const
   {
-    QString vStr = QgsServerParameters::version();
+    QString version = QgsServerParameters::version();
 
-    QgsProjectVersion version;
-
-    if ( vStr.isEmpty() )
+    if ( request().compare( QLatin1String( "GetProjectSettings" ), Qt::CaseInsensitive ) == 0 )
+    {
+      version = QStringLiteral( "1.3.0" );
+    }
+    else if ( version.isEmpty() )
     {
       if ( ! wmtver().isEmpty() )
       {
-        vStr = wmtver();
+        version = wmtver();
       }
       else
       {
-        vStr = QStringLiteral( "1.3.0" );
+        version = QStringLiteral( "1.3.0" );
       }
     }
-    else if ( !mVersions.contains( QgsProjectVersion( vStr ) ) )
+    else if ( !mVersions.contains( QgsProjectVersion( version ) ) )
     {
       // WMS 1.3.0 specification: If a version lower than any of those
       // known to the server is requested, then the server shall send the
       // lowest version it supports.
-      if ( QgsProjectVersion( 1, 1, 1 ) > QgsProjectVersion( vStr ) )
+      if ( QgsProjectVersion( 1, 1, 1 ) > QgsProjectVersion( version ) )
       {
-        vStr = QStringLiteral( "1.1.1" );
+        version = QStringLiteral( "1.1.1" );
       }
       else
       {
-        vStr = QStringLiteral( "1.3.0" );
+        version = QStringLiteral( "1.3.0" );
       }
     }
 
-    return vStr;
+    return version;
   }
 
   QgsProjectVersion QgsWmsParameters::versionAsNumber() const

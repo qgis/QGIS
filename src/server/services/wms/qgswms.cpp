@@ -107,8 +107,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetProjectSettings" ) )
         {
-          //getProjectSettings extends WMS 1.3.0 capabilities
-          writeGetCapabilities( mServerIface, project, QStringLiteral( "1.3.0" ), request, response, true );
+          writeGetCapabilities( mServerIface, project, version, request, response, true );
         }
         else if ( QSTR_COMPARE( req, "GetMap" ) )
         {
