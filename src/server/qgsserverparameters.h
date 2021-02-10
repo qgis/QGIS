@@ -323,7 +323,7 @@ class SERVER_EXPORT QgsServerParameters
      * defined.
      * \returns version
      */
-    QString version() const;
+    virtual QString version() const;
 
   protected:
 

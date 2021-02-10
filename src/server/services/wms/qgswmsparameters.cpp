@@ -753,22 +753,44 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::DPI ].toDouble();
   }
 
-  QgsProjectVersion QgsWmsParameters::versionAsNumber() const
+  QString QgsWmsParameters::version() const
   {
-    const QString vStr = version();
+    QString vStr = QgsServerParameters::version();
 
     QgsProjectVersion version;
 
     if ( vStr.isEmpty() )
     {
-      version = QgsProjectVersion( 1, 3, 0 ); // default value
+      if ( ! wmtver().isEmpty() )
+      {
+        vStr = wmtver();
+      }
+      else
+      {
+        vStr = QStringLiteral( "1.3.0" );
+      }
     }
-    else if ( mVersions.contains( QgsProjectVersion( vStr ) ) )
+    else if ( !mVersions.contains( QgsProjectVersion( vStr ) ) )
     {
-      version = QgsProjectVersion( vStr );
+      // WMS 1.3.0 specification: If a version lower than any of those
+      // known to the server is requested, then the server shall send the
+      // lowest version it supports.
+      if ( QgsProjectVersion( 1, 1, 1 ) > QgsProjectVersion( vStr ) )
+      {
+        vStr = QStringLiteral( "1.1.1" );
+      }
+      else
+      {
+        vStr = QStringLiteral( "1.3.0" );
+      }
     }
 
-    return version;
+    return vStr;
+  }
+
+  QgsProjectVersion QgsWmsParameters::versionAsNumber() const
+  {
+    return QgsProjectVersion( version() );
   }
 
   bool QgsWmsParameters::versionIsValid( const QString version ) const
