@@ -68,9 +68,6 @@ cd ${BUILD_DIR}
 
 # Build
 
-# temporary install of ccache
-sudo apt-get install ccache
-
 if [[ "$COMMAND" != *"package"* ]]; then
 
     echo "::group::compile QGIS"

@@ -10,7 +10,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     software-properties-common \
     lsb-release \
     gpg-agent \
-    python3-distutils
+    python3-distutils \
+    ccache
 
 RUN apt-key adv \
     --keyserver keyserver.ubuntu.com \
