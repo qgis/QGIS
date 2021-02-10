@@ -42,6 +42,7 @@
  */
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 {
+
   public:
 
     //! Marker symbol shapes
@@ -70,6 +71,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
       DiagonalHalfSquare, //!< Diagonal half square (bottom left half)
       RightHalfTriangle, //!< Right half of triangle
       LeftHalfTriangle, //!< Left half of triangle
+      Octagon, //!< Octagon (since QGIS 3.18)
+      SquareWithCorners, //!< A square with diagonal corners (since QGIS 3.18)
+      AsteriskFill, //!< A filled asterisk shape (since QGIS 3.18)
     };
 
     //! Returns a list of all available shape types.
