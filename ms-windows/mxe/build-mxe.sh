@@ -69,7 +69,7 @@ cd ${BUILD_DIR}
 # Build
 
 # temporary install of ccache
-apt-get install ccache
+sudo apt-get install ccache
 
 if [[ "$COMMAND" != *"package"* ]]; then
 
