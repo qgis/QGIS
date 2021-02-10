@@ -21,7 +21,7 @@
 
 #include <QNetworkReply>
 #include <QObject>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 #include <QStringList>
 
@@ -51,9 +51,9 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     QString contentType = mReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
 
-    QRegExp re( ".*boundary=\"?([^\"]+)\"?\\s?", Qt::CaseInsensitive );
+    QRegularExpression re( ".*boundary=\"?([^\"]+)\"?\\s?", Qt::CaseInsensitive );
 
-    if ( !( re.indexIn( contentType ) == 0 ) )
+    if ( !( re.match( contentType ).capturedStart() == 0 ) )
     {
       mError = tr( "Cannot find boundary in multipart content type" );
       return;
@@ -118,7 +118,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QByteArray headers = part.left( pos );
       QgsDebugMsg( "headers:\n" + headers );
 
-      QStringList headerRows = QString( headers ).split( QRegExp( "[\n\r]+" ) );
+      QStringList headerRows = QString( headers ).split( QRegularExpression( "[\n\r]+" ) );
       const auto constHeaderRows = headerRows;
       for ( const QString &row : constHeaderRows )
       {

@@ -84,8 +84,8 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        QRegExp rx( QStringLiteral( "*%1*" ).arg( f.trimmed() ) );
-        rx.setPatternSyntax( QRegExp::Wildcard );
+        QRegularExpression rx( QStringLiteral( "*%1*" ).arg( f.trimmed() ) );
+        rx.setPatternSyntax( QRegularExpression::Wildcard );
         rx.setCaseSensitivity( mCaseSensitivity );
         mREList.append( rx );
       }
@@ -96,8 +96,8 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        QRegExp rx( f.trimmed() );
-        rx.setPatternSyntax( QRegExp::Wildcard );
+        QRegularExpression rx( f.trimmed() );
+        rx.setPatternSyntax( QRegularExpression::Wildcard );
         rx.setCaseSensitivity( mCaseSensitivity );
         mREList.append( rx );
       }
@@ -105,8 +105,8 @@ void QgsBrowserProxyModel::updateFilter()
     }
     case RegularExpression:
     {
-      QRegExp rx( mFilter.trimmed() );
-      rx.setPatternSyntax( QRegExp::RegExp );
+      QRegularExpression rx( mFilter.trimmed() );
+      rx.setPatternSyntax( QRegularExpression::RegExp );
       rx.setCaseSensitivity( mCaseSensitivity );
       mREList.append( rx );
       break;
@@ -122,9 +122,9 @@ bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
     case Normal:
     case Wildcards:
     {
-      for ( const QRegExp &rx : mREList )
+      for ( const QRegularExpression &rx : mREList )
       {
-        if ( rx.exactMatch( value ) )
+        if ( rx.match( value ).hasMatch() )
           return true;
       }
       break;
@@ -132,9 +132,9 @@ bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
 
     case RegularExpression:
     {
-      for ( const QRegExp &rx : mREList )
+      for ( const QRegularExpression &rx : mREList )
       {
-        if ( rx.indexIn( value ) != -1 )
+        if ( rx.match( value ).capturedStart() != -1 )
           return true;
       }
       break;

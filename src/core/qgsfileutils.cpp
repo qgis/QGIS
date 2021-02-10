@@ -87,9 +87,9 @@ bool QgsFileUtils::fileMatchesFilter( const QString &fileName, const QString &fi
       if ( globRx.match( name ).hasMatch() )
         return true;
 #else
-      QRegExp rx( glob );
-      rx.setPatternSyntax( QRegExp::Wildcard );
-      if ( rx.indexIn( name ) != -1 )
+      QRegularExpression rx( glob );
+      rx.setPatternSyntax( QRegularExpression::Wildcard );
+      if ( rx.match( name ).capturedStart() != -1 )
         return true;
 #endif
     }

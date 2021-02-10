@@ -304,10 +304,10 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
     }
     if ( !in.atEnd() )
     {
-      QRegExp rx( "Name:\\s*(\\S.*)$" );
-      if ( rx.indexIn( line ) != -1 )
+      QRegularExpressionMatch rx = QRegularExpression( "Name:\\s*(\\S.*)$" ).match( line );
+      if ( rx.capturedStart() != -1 )
       {
-        mName = rx.cap( 1 );
+        mName = rx.captured( 1 );
       }
     }
   }
