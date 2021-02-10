@@ -68,6 +68,9 @@ cd ${BUILD_DIR}
 
 # Build
 
+# temporary install of ccache
+apt-get install ccache
+
 if [[ "$COMMAND" != *"package"* ]]; then
 
     echo "::group::compile QGIS"
@@ -93,7 +96,7 @@ if [[ "$COMMAND" != *"package"* ]]; then
     echo "::endgroup::"
 
     #echo "ccache statistics"
-    #ccache -s
+    ccache -s
 
 fi
 
