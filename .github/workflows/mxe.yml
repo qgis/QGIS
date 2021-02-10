@@ -70,14 +70,7 @@ jobs:
     - name: Cross build with MXE
       run: |
         cd ${GITHUB_WORKSPACE}
-        echo ${GITHUB_WORKSPACE}
-        echo $(pwd)
-        docker run \
-            -v $(pwd):/root/QGIS \
-            -w /root/QGIS --rm  \
-            --user $(id -u):$(id -g) \
-            mxe-qt5-builder:latest \
-            /root/QGIS/ms-windows/mxe/build-mxe.sh
+        ms-windows/mxe/build.sh
 
     - name: Rename artifact
       run: |
