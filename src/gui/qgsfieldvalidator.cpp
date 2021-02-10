@@ -20,7 +20,7 @@
 #include "qgsfieldvalidator.h"
 
 #include <QValidator>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 #include <QDate>
 #include <QVariant>
 
@@ -43,7 +43,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
       if ( mField.length() > 0 )
       {
         QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
-        mValidator = new QRegExpValidator( QRegExp( re ), parent );
+        mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else
       {
@@ -66,12 +66,12 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
         {
           re = QStringLiteral( "-?\\d{0,%1}([\\.,]\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
         }
-        mValidator = new QRegExpValidator( QRegExp( re ), parent );
+        mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else if ( mField.length() > 0 && mField.precision() == 0 )
       {
         QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
-        mValidator = new QRegExpValidator( QRegExp( re ), parent );
+        mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else if ( mField.precision() > 0 )
       {
@@ -85,7 +85,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
         {
           re = QStringLiteral( "-?\\d*([\\.]\\d{0,%1})?" ).arg( mField.precision() );
         }
-        mValidator = new QRegExpValidator( QRegExp( re ), parent );
+        mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else
       {

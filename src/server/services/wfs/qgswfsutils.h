@@ -74,7 +74,7 @@ namespace QgsWfs
   const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" );
 
   // Define clean tagName regExp
-  const QRegExp cleanTagNameRegExp( "(?![\\w\\d\\.-])." );
+  const QRegularExpression cleanTagNameRegExp( "(?![\\w\\d\\.-])." );
 
 } // namespace QgsWfs
 

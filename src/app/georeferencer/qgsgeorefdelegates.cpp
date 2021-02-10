@@ -100,8 +100,8 @@ QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionView
     const QModelIndex &/*index*/ ) const
 {
   QLineEdit *editor = new QLineEdit( parent );
-  QRegExp re( "-?\\d*(\\.\\d+)?" );
-  QRegExpValidator *validator = new QRegExpValidator( re, editor );
+  QRegularExpression re( "-?\\d*(\\.\\d+)?" );
+  QRegularExpressionValidator *validator = new QRegularExpressionValidator( re, editor );
   editor->setValidator( validator );
 
   return editor;
