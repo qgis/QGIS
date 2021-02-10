@@ -31,6 +31,7 @@ class TestQgsServerWmsParameters : public QObject
     void external_layers();
     void percent_encoding();
     void version_negotiation();
+    void get_capabilities_version();
 };
 
 void TestQgsServerWmsParameters::initTestCase()
@@ -134,6 +135,28 @@ void TestQgsServerWmsParameters::version_negotiation()
   query.addQueryItem( "VERSION", "1.3.0" );
   parameters = QgsWms::QgsWmsParameters( query );
   QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+}
+
+void TestQgsServerWmsParameters::get_capabilities_version()
+{
+  QUrlQuery query;
+
+  query.addQueryItem( "VERSION", "1.3.0" );
+  query.addQueryItem( "REQUEST", "capabilities" );
+  QgsWms::QgsWmsParameters parameters( query );
+  QCOMPARE( parameters.request(), QStringLiteral( "capabilities" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.1" );
+  query.addQueryItem( "REQUEST", "capabilities" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.request(), QStringLiteral( "GetCapabilities" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.0" );
+  query.addQueryItem( "REQUEST", "capabilities" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.request(), QStringLiteral( "GetCapabilities" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )
