@@ -321,7 +321,7 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
   // because of the 'fluidity' of the DateTime units (notable months and years), there seems to be a theoretical chance
   // to overshoot. So in that case fail and return to startFrame (so max number of loops is just 10)
   long long roughFrameStart = std::floor( ( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() );
-  for ( long long i = roughFrameStart; i < roughFrameStart + 10; ++i )
+  for ( long long i = roughFrameStart; i < roughFrameStart + 100; ++i )
   {
     QgsDateTimeRange range = dateTimeRangeForFrameNumber( i );
     if ( range.overlaps( testFrame ) )
