@@ -7,6 +7,6 @@ docker  run  \
     -v $(pwd):$(pwd) \
     -w $(pwd) --rm  \
     --user $(id -u):$(id -g) \
-    --env CCACHE_DIR=${CCACHE_DIR}
+    --env CCACHE_DIR=${CCACHE_DIR} \
     elpaso/mxe-qt5-builder \
     ${DIR}/build-mxe.sh
