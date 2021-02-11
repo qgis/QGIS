@@ -55,7 +55,7 @@ static void _initRendererWidgetFunctions()
   if ( sInitialized )
     return;
 
-  _initRenderer( QStringLiteral( "extent" ), QgsPointCloudExtentRendererWidget::create, QString( ) );
+  _initRenderer( QStringLiteral( "extent" ), QgsPointCloudExtentRendererWidget::create, QStringLiteral( "styleicons/pointcloudextent.svg" ) );
   _initRenderer( QStringLiteral( "rgb" ), QgsPointCloudRgbRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
   _initRenderer( QStringLiteral( "ramp" ), QgsPointCloudAttributeByRampRendererWidget::create, QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) );
   _initRenderer( QStringLiteral( "classified" ), QgsPointCloudClassifiedRendererWidget::create, QStringLiteral( "styleicons/paletted.svg" ) );

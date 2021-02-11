@@ -74,7 +74,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( QStringLiteral( "pointDisplacement" ), QgsPointDisplacementRendererWidget::create, QStringLiteral( "rendererPointDisplacementSymbol.svg" ) );
   _initRenderer( QStringLiteral( "pointCluster" ), QgsPointClusterRendererWidget::create, QStringLiteral( "rendererPointClusterSymbol.svg" ) );
   _initRenderer( QStringLiteral( "invertedPolygonRenderer" ), QgsInvertedPolygonRendererWidget::create, QStringLiteral( "rendererInvertedSymbol.svg" ) );
-  _initRenderer( QStringLiteral( "mergedFeatureRenderer" ), QgsMergedFeatureRendererWidget::create, QStringLiteral( "rendererInvertedSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "mergedFeatureRenderer" ), QgsMergedFeatureRendererWidget::create, QStringLiteral( "rendererMergedFeatures.svg" ) );
   _initRenderer( QStringLiteral( "heatmapRenderer" ), QgsHeatmapRendererWidget::create, QStringLiteral( "rendererHeatmapSymbol.svg" ) );
   _initRenderer( QStringLiteral( "25dRenderer" ), Qgs25DRendererWidget::create, QStringLiteral( "renderer25dSymbol.svg" ) );
   _initRenderer( QStringLiteral( "nullSymbol" ), QgsNullSymbolRendererWidget::create, QStringLiteral( "rendererNullSymbol.svg" ) );
