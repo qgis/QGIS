@@ -13,6 +13,11 @@ if [ ${HANA_TESTS_ENABLED:-"OFF"} == "ON" ] ; then
   echo "::group::hana"
   echo "${bold}Load HANA database...${endbold}"
 
+  export HANA_HOST=917df316-4e01-4a10-be54-eac1b6ab15fb.hana.prod-us10.hanacloud.ondemand.com
+  export HANA_PORT=443
+  export HANA_USER=QGIS_CI
+  export HANA_PASSWORD="3w8dkX:NDrs&"
+
   export QGIS_HANA_TEST_DB='driver='/usr/sap/hdbclient/libodbcHDB.so' host='${HANA_HOST}' port='${HANA_PORT}' user='${HANA_USER}' password='${HANA_PASSWORD}' sslEnabled=true sslValidateCertificate=False'
 
   # wait for the DB to be available
