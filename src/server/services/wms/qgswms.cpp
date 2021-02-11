@@ -32,6 +32,7 @@
 #include "qgswmsdescribelayer.h"
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsparameters.h"
+#include "qgswmsrequest.h"
 
 #define QSTR_COMPARE( str, lit )\
   (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
@@ -90,6 +91,7 @@ namespace QgsWms
         }
 
         // Get the request
+        const QgsWmsRequest wmsRequest( request );
         const QString req = parameters.request();
         const QString version = parameters.version();
 
@@ -101,11 +103,11 @@ namespace QgsWms
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          writeGetCapabilities( mServerIface, project, version, request, response );
+          writeGetCapabilities( mServerIface, project, wmsRequest, response );
         }
         else if ( QSTR_COMPARE( req, "GetProjectSettings" ) )
         {
-          writeGetCapabilities( mServerIface, project, version, request, response, true );
+          writeGetCapabilities( mServerIface, project, request, response, true );
         }
         else if ( QSTR_COMPARE( req, "GetMap" ) )
         {
