@@ -16,11 +16,17 @@
 #include "qgssettingsregistry.h"
 #include "qgslogger.h"
 
-QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section settingsSection, QObject *parent )
+QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section section, QObject *parent )
   : QObject( parent )
-  , mSettingsSection( settingsSection )
+  , mSection( section )
   , mMapSettingsEntry()
 {}
+
+QgsSettingsRegistry::~QgsSettingsRegistry()
+{
+  qDeleteAll( mMapSettingsEntry );
+  mMapSettingsEntry.clear();
+}
 
 void QgsSettingsRegistry::registerSettings(
   const QString &key,
@@ -34,9 +40,9 @@ void QgsSettingsRegistry::registerSettings(
   }
 
   mMapSettingsEntry.insert( key,
-                            QgsSettingsEntry(
+                            new QgsSettingsEntry(
                               key,
-                              mSettingsSection,
+                              mSection,
                               defaultValue,
                               description,
                               this ) );
@@ -55,9 +61,9 @@ void QgsSettingsRegistry::registerSettingsString( const QString &key,
   }
 
   mMapSettingsEntry.insert( key,
-                            QgsSettingsEntry(
+                            new QgsSettingsEntryString(
                               key,
-                              mSettingsSection,
+                              mSection,
                               defaultValue,
                               description,
                               minLength,
@@ -78,7 +84,10 @@ void QgsSettingsRegistry::unregister( const QString &key )
     return;
   }
 
-  mMapSettingsEntry.remove( key );
+  QgsSettingsEntry *settingsEntry = mMapSettingsEntry.take( key );
+
+  settingsEntry->remove();
+  delete settingsEntry;
 }
 
 bool QgsSettingsRegistry::setValue( const QString &key,
@@ -90,8 +99,7 @@ bool QgsSettingsRegistry::setValue( const QString &key,
     return false;
   }
 
-  mMapSettingsEntry[key].setValue( value );
-  return true;
+  return mMapSettingsEntry.value( key )->setValue( value );
 }
 
 QVariant QgsSettingsRegistry::valueFromPython( const QString &key ) const
@@ -112,5 +120,5 @@ QString QgsSettingsRegistry::description( const QString &key ) const
     return QString();
   }
 
-  return mMapSettingsEntry.value( key ).description();
+  return mMapSettingsEntry.value( key )->description();
 }

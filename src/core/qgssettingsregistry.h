@@ -38,8 +38,9 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
     /**
      * Constructor for QgsSettingsRegistry.
      */
-    QgsSettingsRegistry( QgsSettings::Section settingsSection,
+    QgsSettingsRegistry( QgsSettings::Section section,
                          QObject *parent = nullptr );
+    ~QgsSettingsRegistry() override;
 
     void registerSettings( const QString &key,
                            const QVariant &defaultValue = QVariant(),
@@ -70,7 +71,7 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
         return T();
       }
 
-      return mMapSettingsEntry.value( key ).value <T> ();
+      return mMapSettingsEntry.value( key )->value <T> ();
     }
 #endif
 
@@ -86,7 +87,7 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
         return T();
       }
 
-      return mMapSettingsEntry.value( key ).defaultValue <T> ();
+      return mMapSettingsEntry.value( key )->defaultValue <T> ();
     }
 #endif
 
@@ -94,9 +95,9 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
 
   private:
 
-    QgsSettings::Section mSettingsSection;
+    QgsSettings::Section mSection;
 
-    QMap<QString, QgsSettingsEntry> mMapSettingsEntry;
+    QMap<QString, QgsSettingsEntry * > mMapSettingsEntry;
 };
 
 #endif // QGSSETTINGSREGISTRY_H

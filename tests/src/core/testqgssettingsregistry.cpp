@@ -32,6 +32,7 @@ class TestQgsSettingsRegistry : public QObject
 
   private slots:
     void variantValue();
+    void stringValue();
     void enumValue();
     void flagValue();
 };
@@ -57,14 +58,76 @@ void TestQgsSettingsRegistry::variantValue()
                              newValue );
 
   // Check new value with QgsSettings
-  QCOMPARE( QgsSettings().value( key, defaultValue ).toInt(), newValue );
+  QCOMPARE( QgsSettings().value( key, defaultValue, QgsSettings::NoSection ).toInt(), newValue );
 
   // Check new value with QgsSettingsRegistry
   QCOMPARE( settingsRegistry.value<int>( key ), newValue );
 
-  // Check set on unregistered settings name
   settingsRegistry.unregister( key );
+
+  // Check if settings is removed
+  QCOMPARE( QgsSettings().contains( key, QgsSettings::NoSection ), false );
+
+  // Check set on unregistered settings name
   QCOMPARE( settingsRegistry.setValue( key, QVariant() ), false );
+}
+
+void TestQgsSettingsRegistry::stringValue()
+{
+  QgsSettingsRegistry settingsRegistry( QgsSettings::NoSection,
+                                        this );
+
+  QString key( "qgis/testing/settings_registry/my_string_value" );
+  QString defaultValue( "myString" );
+  QString settingsDescription( "String value for testing of 'QgsSettingsRegistry'" );
+  settingsRegistry.registerSettingsString( key,
+      defaultValue,
+      settingsDescription,
+      4,
+      10 );
+
+  // Check default value
+  QCOMPARE( settingsRegistry.defaultValue<QString>( key ), defaultValue );
+
+  // Set invalid short new string
+  QString shortString( "my" );
+  settingsRegistry.setValue( key,
+                             shortString );
+  // Check value not changed from default
+  QCOMPARE( settingsRegistry.value<QString>( key ), defaultValue );
+
+  // Set invalid long new string
+  QString longString( "myLongString" );
+  settingsRegistry.setValue( key,
+                             longString );
+  // Check value not changed from default
+  QCOMPARE( settingsRegistry.value<QString>( key ), defaultValue );
+
+  // Set new string
+  QString newString( "newString" );
+  settingsRegistry.setValue( key,
+                             newString );
+  QCOMPARE( settingsRegistry.value<QString>( key ), newString );
+
+  // Unregister
+  settingsRegistry.unregister( key );
+
+  // Check string max length turned off
+  QString keyMaxLengthOff( "qgis/testing/settings_registry/my_string_value_without_limit" );
+  settingsRegistry.registerSettingsString( keyMaxLengthOff,
+      defaultValue,
+      settingsDescription,
+      0,
+      -1 );
+
+  // Set new string
+  QString newLongerString( "This is a longer string" );
+  settingsRegistry.setValue( keyMaxLengthOff,
+                             newLongerString );
+  QCOMPARE( settingsRegistry.value<QString>( keyMaxLengthOff ), newLongerString );
+
+  // Unregister
+  settingsRegistry.unregister( keyMaxLengthOff );
 }
 
 void TestQgsSettingsRegistry::enumValue()

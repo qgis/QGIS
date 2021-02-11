@@ -23,11 +23,12 @@ class QgsSettingsRegistry : QObject
 %End
   public:
 
-    QgsSettingsRegistry( QgsSettings::Section settingsSection,
+    QgsSettingsRegistry( QgsSettings::Section section,
                          QObject *parent = 0 );
 %Docstring
 Constructor for QgsSettingsRegistry.
 %End
+    ~QgsSettingsRegistry();
 
     void registerSettings( const QString &key,
                            const QVariant &defaultValue = QVariant(),
