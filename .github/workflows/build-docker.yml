@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Cache
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: ~/.ccache
           key: docker-build-${{ matrix.branch }}
