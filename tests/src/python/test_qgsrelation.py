@@ -147,6 +147,21 @@ class TestQgsRelation(unittest.TestCase):
         assert f.isValid()
         assert f[0] == 'foo'
 
+        # try mixing up the field pair field name cases -- we should be tolerant to this
+        rel2 = QgsRelation()
+        rel2.setId('rel1')
+        rel2.setName('Relation Number One')
+        rel2.setReferencingLayer(self.referencingLayer.id())
+        rel2.setReferencedLayer(self.referencedLayer.id())
+        rel2.addFieldPair('ForeignKey', 'Y')
+
+        feat = next(self.referencingLayer.getFeatures())
+
+        f = rel2.getReferencedFeature(feat)
+
+        assert f.isValid()
+        assert f[0] == 'foo'
+
     def test_fieldPairs(self):
         rel = QgsRelation()
 
