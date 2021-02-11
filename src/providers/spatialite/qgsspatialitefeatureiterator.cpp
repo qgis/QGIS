@@ -123,7 +123,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       mFetchGeometry = true;
     }
 
-    QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
+    QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
@@ -157,7 +157,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     const auto constOrderBy = request.orderBy();
     for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
     {
-      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
+      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
       QgsExpression expression = clause.expression();
       if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
       {

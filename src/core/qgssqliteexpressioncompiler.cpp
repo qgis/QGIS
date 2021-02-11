@@ -22,13 +22,17 @@
 #include "qgsexpression.h"
 #include "qgssqliteutils.h"
 
-QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields &fields )
-  : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields &fields, bool ignoreStaticNodes )
+  : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
 {
 }
 
 QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntBinaryOperator:

@@ -199,7 +199,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   bool useFallback = false;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsOracleExpressionCompiler compiler( mSource );
+    QgsOracleExpressionCompiler compiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsSqlExpressionCompiler::Result result = compiler.compile( mRequest.filterExpression() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {

@@ -63,7 +63,8 @@ Examples:
       NoFlags,
       NoGeometry,
       SubsetOfAttributes,
-      ExactIntersect
+      ExactIntersect,
+      IgnoreStaticNodesDuringExpressionCompilation,
     };
     typedef QFlags<QgsFeatureRequest::Flag> Flags;
 

@@ -242,6 +242,24 @@ work like for example resolving a column name to an attribute index.
 
     int parserLastColumn;
 
+    bool hasCachedStaticValue() const;
+%Docstring
+Returns ``True`` if the node can be replaced by a static cached value.
+
+.. seealso:: :py:func:`cachedStaticValue`
+
+.. versionadded:: 3.18
+%End
+
+    QVariant cachedStaticValue() const;
+%Docstring
+Returns the node's static cached value. Only valid if :py:func:`~QgsExpressionNode.hasCachedStaticValue` is ``True``.
+
+.. seealso:: :py:func:`hasCachedStaticValue`
+
+.. versionadded:: 3.18
+%End
+
   protected:
 
 
