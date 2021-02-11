@@ -168,6 +168,8 @@ class FeatureSourceTestCase(object):
         self.assert_query(source, '"name" NOT ILIKE \'QGIS\'', [1, 2, 3, 4])
         self.assert_query(source, '"name" NOT ILIKE \'pEAR\'', [1, 2, 4])
         self.assert_query(source, 'name = \'Apple\'', [2])
+        # field names themselves are NOT case sensitive -- QGIS expressions don't care about this
+        self.assert_query(source, '\"NaMe\" = \'Apple\'', [2])
         self.assert_query(source, 'name <> \'Apple\'', [1, 3, 4])
         self.assert_query(source, 'name = \'apple\'', [])
         self.assert_query(source, '"name" <> \'apple\'', [1, 2, 3, 4])
