@@ -29,18 +29,18 @@ QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   const auto constKeywordPatterns = keywordPatterns;
   for ( const QString &pattern : constKeywordPatterns )
   {
-    rule.pattern = QRegExp( pattern, Qt::CaseInsensitive );
+    rule.pattern = QRegularExpression( pattern, Qt::CaseInsensitive );
     rule.format = keywordFormat;
     highlightingRules.append( rule );
   }
 
   quotationFormat.setForeground( Qt::darkGreen );
-  rule.pattern = QRegExp( "\'[^\'\r\n]*\'" );
+  rule.pattern = QRegularExpression( "\'[^\'\r\n]*\'" );
   rule.format = quotationFormat;
   highlightingRules.append( rule );
 
   columnNameFormat.setForeground( Qt::darkRed );
-  rule.pattern = QRegExp( "\"[^\"\r\n]*\"" );
+  rule.pattern = QRegularExpression( "\"[^\"\r\n]*\"" );
   rule.format = columnNameFormat;
   highlightingRules.append( rule );
 }
@@ -54,7 +54,7 @@ void QgsExpressionHighlighter::addFields( const QStringList &fieldList )
   {
     if ( field.isEmpty() ) // this really happened :)
       continue;
-    rule.pattern = QRegExp( "\\b" + field + "\\b" );
+    rule.pattern = QRegularExpression( "\\b" + field + "\\b" );
     rule.format = columnNameFormat;
     highlightingRules.append( rule );
   }
@@ -65,11 +65,11 @@ void QgsExpressionHighlighter::highlightBlock( const QString &text )
   const auto constHighlightingRules = highlightingRules;
   for ( const HighlightingRule &rule : constHighlightingRules )
   {
-    QRegExp expression( rule.pattern );
-    int index = expression.indexIn( text );
+    QRegularExpressionMatch matches = QRegularExpression( rule.pattern ).match( text );
+    int index = matches.capturedStart();
     while ( index >= 0 )
     {
-      int length = expression.matchedLength();
+      int length = matches.capturedLength();
       if ( length == 0 )
         break; // avoid infinite loops
       setFormat( index, length, rule.format );

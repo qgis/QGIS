@@ -314,10 +314,10 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   QTextStream s( &f );
   s.setAutoDetectUnicode( true );
 
-  QRegExp re0( "^([^;]*);(.*)$" );
-  re0.setMinimal( true );
-  QRegExp re1( "^([^,]*),(.*)$" );
-  re1.setMinimal( true );
+  QRegularExpression re0( "^([^;]*);(.*)$", QRegularExpression::InvertedGreedinessOption );
+  QRegularExpressionMatch matches0;
+  QRegularExpression re1( "^([^,]*),(.*)$", QRegularExpression::InvertedGreedinessOption );
+  QRegularExpressionMatch matches1;
 
   QList<QPair<QString, QVariant>> map;
 
@@ -325,18 +325,20 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   {
     QString l = s.readLine().trimmed();
 
+    matches0 = re0.match( l );
+    matches1 = re1.match( l );
     QString key;
     QString val;
 
-    if ( re0.indexIn( l ) >= 0 && re0.captureCount() == 2 )
+    if ( matches0.capturedStart() >= 0 && matches0.capturedTexts().length() == 2 )
     {
-      key = re0.cap( 1 ).trimmed();
-      val = re0.cap( 2 ).trimmed();
+      key = matches0.captured( 1 ).trimmed();
+      val = matches0.captured( 2 ).trimmed();
     }
-    else if ( re1.indexIn( l ) >= 0 && re1.captureCount() == 2 )
+    else if ( matches1.capturedStart() >= 0 && matches1.capturedTexts().length() == 2 )
     {
-      key = re1.cap( 1 ).trimmed();
-      val = re1.cap( 2 ).trimmed();
+      key = matches1.captured( 1 ).trimmed();
+      val = matches1.captured( 2 ).trimmed();
     }
     else
       continue;

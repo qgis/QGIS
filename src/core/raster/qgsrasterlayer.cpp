@@ -78,7 +78,7 @@ email                : tim at linfiniti.com
 #include <QMessageBox>
 #include <QPainter>
 #include <QPixmap>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSlider>
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
@@ -2201,13 +2201,13 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
     {
       // NETCDF:filename:variable
       // filename can be quoted with " as it can contain colons
-      QRegExp r( "NETCDF:(.+):([^:]+)" );
-      if ( r.exactMatch( src ) )
+      QRegularExpressionMatch matches = QRegularExpression( "NETCDF:(.+):([^:]+)" ).match( src );
+      if ( matches.hasMatch() )
       {
-        QString filename = r.cap( 1 );
+        QString filename = matches.captured( 1 );
         if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
           filename = filename.mid( 1, filename.length() - 2 );
-        src = "NETCDF:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
+        src = "NETCDF:\"" + context.pathResolver().writePath( filename ) + "\":" + matches.captured( 2 );
         handled = true;
       }
     }
@@ -2226,13 +2226,13 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
     {
       // HDF4_SDS:subdataset_type:file_name:subdataset_index
       // filename can be quoted with " as it can contain colons
-      QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
-      if ( r.exactMatch( src ) )
+      QRegularExpressionMatch matches = QRegularExpression( "HDF4_SDS:([^:]+):(.+):([^:]+)" ).match( src );
+      if ( matches.hasMatch() )
       {
-        QString filename = r.cap( 2 );
+        QString filename = matches.captured( 2 );
         if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
           filename = filename.mid( 1, filename.length() - 2 );
-        src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 3 );
+        src = "HDF4_SDS:" + matches.captured( 1 ) + ":\"" + context.pathResolver().writePath( filename ) + "\":" + matches.captured( 3 );
         handled = true;
       }
     }
@@ -2240,24 +2240,24 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
     {
       // HDF5:file_name:subdataset
       // filename can be quoted with " as it can contain colons
-      QRegExp r( "HDF5:(.+):([^:]+)" );
-      if ( r.exactMatch( src ) )
+      QRegularExpressionMatch matches = QRegularExpression( "HDF5:(.+):([^:]+)" ).match( src );
+      if ( matches.hasMatch() )
       {
-        QString filename = r.cap( 1 );
+        QString filename = matches.captured( 1 );
         if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
           filename = filename.mid( 1, filename.length() - 2 );
-        src = "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
+        src = "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + matches.captured( 2 );
         handled = true;
       }
     }
-    else if ( src.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+    else if ( src.contains( QRegularExpression( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
     {
       // NITF_IM:0:filename
       // RADARSAT_2_CALIB:?:filename
-      QRegExp r( "([^:]+):([^:]+):(.+)" );
-      if ( r.exactMatch( src ) )
+      QRegularExpressionMatch matches = QRegularExpression( "([^:]+):([^:]+):(.+)" ).match( src );
+      if ( matches.hasMatch() )
       {
-        src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().writePath( r.cap( 3 ) );
+        src = matches.captured( 1 ) + ':' + matches.captured( 2 ) + ':' + context.pathResolver().writePath( matches.captured( 3 ) );
         handled = true;
       }
     }
@@ -2390,13 +2390,13 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
       {
         // NETCDF:filename:variable
         // filename can be quoted with " as it can contain colons
-        QRegExp r( "NETCDF:(.+):([^:]+)" );
-        if ( r.exactMatch( src ) )
+        QRegularExpressionMatch matches = QRegularExpression( "NETCDF:(.+):([^:]+)" ).match( src );
+        if ( matches.hasMatch() )
         {
-          QString filename = r.cap( 1 );
+          QString filename = matches.captured( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          src = "NETCDF:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
+          src = "NETCDF:\"" + context.pathResolver().readPath( filename ) + "\":" + matches.captured( 2 );
           handled = true;
         }
       }
@@ -2415,13 +2415,13 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
       {
         // HDF4_SDS:subdataset_type:file_name:subdataset_index
         // filename can be quoted with " as it can contain colons
-        QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
-        if ( r.exactMatch( src ) )
+        QRegularExpressionMatch matches = QRegularExpression( "HDF4_SDS:([^:]+):(.+):([^:]+)" ).match( src );
+        if ( matches.hasMatch() )
         {
-          QString filename = r.cap( 2 );
+          QString filename = matches.captured( 2 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 3 );
+          src = "HDF4_SDS:" + matches.captured( 1 ) + ":\"" + context.pathResolver().readPath( filename ) + "\":" + matches.captured( 3 );
           handled = true;
         }
       }
@@ -2429,24 +2429,24 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
       {
         // HDF5:file_name:subdataset
         // filename can be quoted with " as it can contain colons
-        QRegExp r( "HDF5:(.+):([^:]+)" );
-        if ( r.exactMatch( src ) )
+        QRegularExpressionMatch matches = QRegularExpression( "HDF5:(.+):([^:]+)" ).match( src );
+        if ( matches.hasMatch() )
         {
-          QString filename = r.cap( 1 );
+          QString filename = matches.captured( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          src = "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
+          src = "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + matches.captured( 2 );
           handled = true;
         }
       }
-      else if ( src.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+      else if ( src.contains( QRegularExpression( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
       {
         // NITF_IM:0:filename
         // RADARSAT_2_CALIB:?:filename
-        QRegExp r( "([^:]+):([^:]+):(.+)" );
-        if ( r.exactMatch( src ) )
+        QRegularExpressionMatch matches = QRegularExpression( "([^:]+):([^:]+):(.+)" ).match( src );
+        if ( matches.hasMatch() )
         {
-          src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().readPath( r.cap( 3 ) );
+          src = matches.captured( 1 ) + ':' + matches.captured( 2 ) + ':' + context.pathResolver().readPath( matches.captured( 3 ) );
           handled = true;
         }
       }
