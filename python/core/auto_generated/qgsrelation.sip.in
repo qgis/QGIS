@@ -321,7 +321,7 @@ Will be called internally whenever a member is changed.
 .. versionadded:: 3.6
 %End
 
-    void setPolymorphicRelationId( const QString polymorphicRelationId );
+    void setPolymorphicRelationId( const QString &polymorphicRelationId );
 %Docstring
 Sets the parent polymorphic relation id.
 

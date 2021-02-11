@@ -398,7 +398,7 @@ class CORE_EXPORT QgsRelation
      * Sets the parent polymorphic relation id.
      * \since QGIS 3.18
      */
-    void setPolymorphicRelationId( const QString polymorphicRelationId );
+    void setPolymorphicRelationId( const QString &polymorphicRelationId );
 
     /**
      * Returns the parent polymorphic relation id. If the relation is a normal relation, a null string is returned.
