@@ -320,9 +320,7 @@ void QgsGeoNodeSourceSelect::loadGeonodeConnection()
 
 void QgsGeoNodeSourceSelect::filterChanged( const QString &text )
 {
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
-  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
+  QRegularExpression myRegExp( text, QRegularExpression );
   mModelProxy->setFilterRegExp( myRegExp );
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
