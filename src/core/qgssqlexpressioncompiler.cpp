@@ -325,11 +325,14 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
     {
       const QgsExpressionNodeColumnRef *n = static_cast<const QgsExpressionNodeColumnRef *>( node );
 
-      if ( mFields.indexFromName( n->name() ) == -1 )
+      // QGIS expressions don't care about case sensitive field naming, so we match case insensitively here to the
+      // layer's fields and then retrieve the actual case of the field name for use in the compilation
+      const int fieldIndex = mFields.lookupField( n->name() );
+      if ( fieldIndex == -1 )
         // Not a provider field
         return Fail;
 
-      result = quotedIdentifier( n->name() );
+      result = quotedIdentifier( mFields.at( fieldIndex ).name() );
 
       return Complete;
     }
