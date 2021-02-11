@@ -38,6 +38,8 @@ modified.
  * GeoTiff
  * Tiff with world file
  * WMS, WCS
+ * PostgreSQL/PostGIS
+ * GeoPackage
 
 ## Supported vector formats include:
 
