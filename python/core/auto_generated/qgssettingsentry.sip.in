@@ -31,28 +31,73 @@ class QgsSettingsEntry : QObject
 Constructor for QgsSettingsEntry.
 %End
 
-    QgsSettingsEntry( const QString &key,
-                      QgsSettings::Section settingsSection,
-                      const QString &defaultValue,
-                      const QString &description = QString(),
-                      int minLength = 0,
-                      int maxLength = -1,
-                      QObject *parent = 0 );
-
     QgsSettingsEntry( const QgsSettingsEntry &other );
 
 
-    void setValue( const QVariant &value );
+    virtual bool setValue( const QVariant &value );
+%Docstring
+Set settings value.
+%End
 
     QVariant valueFromPython() const /PyName=value/;
+%Docstring
+Get settings value.
+%End
 
 
     QVariant defaultValueFromPython() const /PyName=defaultValue/;
+%Docstring
+Get settings default value.
+%End
 
 
     QString description() const;
 
+    void remove();
+
 };
+
+class QgsSettingsEntryString : QgsSettingsEntry
+{
+%Docstring
+A string settings entry.
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryString( const QString &key,
+                            QgsSettings::Section section,
+                            const QString &defaultValue,
+                            const QString &description = QString(),
+                            int minLength = 0,
+                            int maxLength = -1,
+                            QObject *parent = 0 );
+%Docstring
+Constructor for QgsSettingsEntryString.
+%End
+
+    virtual bool setValue( const QVariant &value );
+
+
+    int minLength();
+%Docstring
+Returns the string minimum length.
+%End
+
+    int maxLength();
+%Docstring
+Returns the string maximum length. By -1 there is no limitation.
+%End
+
+};
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -42,20 +42,21 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
                       QString description = QString(),
                       QObject *parent = nullptr );
 
-    QgsSettingsEntry( const QString &key,
-                      QgsSettings::Section settingsSection,
-                      const QString &defaultValue,
-                      const QString &description = QString(),
-                      int minLength = 0,
-                      int maxLength = -1,
-                      QObject *parent = nullptr );
-
     QgsSettingsEntry( const QgsSettingsEntry &other );
 
+    /**
+     * Copy constructor for QgsSettingsEntry.
+     */
     QgsSettingsEntry &operator=( const QgsSettingsEntry &other );
 
-    void setValue( const QVariant &value );
+    /**
+     * Set settings value.
+     */
+    virtual bool setValue( const QVariant &value );
 
+    /**
+     * Get settings value.
+     */
     QVariant valueFromPython() const SIP_PYNAME( value );
 
 #ifndef SIP_RUN
@@ -64,7 +65,7 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     {
       QVariant variantValue = QgsSettings().value( mKey,
                               mDefaultValue,
-                              mSettingsSection );
+                              mSection );
       if ( variantValue.canConvert<T>() == false )
         QgsDebugMsg( QObject::tr( "Can't convert setting '%1' to type '%2'" )
                      .arg( mKey )
@@ -74,6 +75,9 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     }
 #endif
 
+    /**
+     * Get settings default value.
+     */
     QVariant defaultValueFromPython() const SIP_PYNAME( defaultValue );
 
 #ifndef SIP_RUN
@@ -91,15 +95,58 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
 
     QString description() const;
 
+    void remove();
+
   private:
 
     QString mKey;
     QVariant mDefaultValue;
-    QgsSettings::Section mSettingsSection;
+    QgsSettings::Section mSection;
     QString mDescription;
 
-    int mValueStringMinLength;
-    int mValueStringMaxLength;
 };
+
+/**
+ * \class QgsSettingsEntryString
+ * \ingroup core
+ * A string settings entry.
+  * \since QGIS 3.17
+ */
+class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryString.
+     */
+    QgsSettingsEntryString( const QString &key,
+                            QgsSettings::Section section,
+                            const QString &defaultValue,
+                            const QString &description = QString(),
+                            int minLength = 0,
+                            int maxLength = -1,
+                            QObject *parent = nullptr );
+
+    bool setValue( const QVariant &value ) override;
+
+    /**
+     * Returns the string minimum length.
+     */
+    int minLength();
+
+    /**
+     * Returns the string maximum length. By -1 there is no limitation.
+     */
+    int maxLength();
+
+  private:
+
+    int mMinLength;
+    int mMaxLength;
+
+};
+
+
+
 
 #endif // QGSSETTINGSENTRY_H

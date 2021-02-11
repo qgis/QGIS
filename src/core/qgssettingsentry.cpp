@@ -24,27 +24,8 @@ QgsSettingsEntry::QgsSettingsEntry( QString key,
   : QObject( parent )
   , mKey( key )
   , mDefaultValue( defaultValue )
-  , mSettingsSection( settingsSection )
+  , mSection( settingsSection )
   , mDescription( description )
-  , mValueStringMinLength( 0 )
-  , mValueStringMaxLength( 1 << 30 )
-{
-}
-
-QgsSettingsEntry::QgsSettingsEntry( const QString &key,
-                                    QgsSettings::Section settingsSection,
-                                    const QString &defaultValue,
-                                    const QString &description,
-                                    int minLength,
-                                    int maxLength,
-                                    QObject *parent )
-  : QObject( parent )
-  , mKey( key )
-  , mDefaultValue( defaultValue )
-  , mSettingsSection( settingsSection )
-  , mDescription( description )
-  , mValueStringMinLength( minLength )
-  , mValueStringMaxLength( maxLength )
 {
 }
 
@@ -52,29 +33,26 @@ QgsSettingsEntry::QgsSettingsEntry( const QgsSettingsEntry &other )
   : QObject( nullptr )
   , mKey( other.mKey )
   , mDefaultValue( other.mDefaultValue )
-  , mSettingsSection( other.mSettingsSection )
+  , mSection( other.mSection )
   , mDescription( other.mDescription )
-  , mValueStringMinLength( 0 )
-  , mValueStringMaxLength( 1 << 30 )
 {
 }
 
 QgsSettingsEntry &QgsSettingsEntry::operator=( const QgsSettingsEntry &other )
 {
   this->mKey = other.mKey;
-  this->mSettingsSection = other.mSettingsSection;
+  this->mSection = other.mSection;
   this->mDefaultValue = other.mDefaultValue;
   this->mDescription = other.mDescription;
-  this->mValueStringMinLength = other.mValueStringMinLength;
-  this->mValueStringMaxLength = other.mValueStringMaxLength;
   return *this;
 }
 
-void QgsSettingsEntry::setValue( const QVariant &value )
+bool QgsSettingsEntry::setValue( const QVariant &value )
 {
   QgsSettings().setValue( mKey,
                           value,
-                          mSettingsSection );
+                          mSection );
+  return true;
 }
 
 QVariant QgsSettingsEntry::valueFromPython() const
@@ -90,4 +68,72 @@ QVariant QgsSettingsEntry::defaultValueFromPython() const
 QString QgsSettingsEntry::description() const
 {
   return mDescription;
+}
+
+void QgsSettingsEntry::remove()
+{
+  QgsSettings().remove( mKey,
+                        mSection );
+}
+
+QgsSettingsEntryString::QgsSettingsEntryString(
+  const QString &key,
+  QgsSettings::Section section,
+  const QString &defaultValue,
+  const QString &description,
+  int minLength,
+  int maxLength,
+  QObject *parent )
+  : QgsSettingsEntry( key,
+                      section,
+                      defaultValue,
+                      description,
+                      parent )
+  , mMinLength( minLength )
+  , mMaxLength( maxLength )
+{
+
+}
+
+bool QgsSettingsEntryString::setValue( const QVariant &value )
+{
+  if ( value.canConvert<QString>() == false )
+  {
+    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to string for settings with key '%2'" )
+                 .arg( value ).arg( key ) );
+    return false;
+  }
+
+  QString valueString = value.toString();
+  if ( valueString.length() < mMinLength )
+  {
+    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is shorter than minimum length '%3'." )
+                 .arg( key )
+                 .arg( valueString.length() )
+                 .arg( mMinLength ) );
+    return false;
+  }
+
+  if ( mMaxLength >= 0
+       && valueString.length() > mMaxLength )
+  {
+    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is longer than maximum length '%3'." )
+                 .arg( key )
+                 .arg( valueString.length() )
+                 .arg( mMinLength ) );
+    return false;
+  }
+
+  QgsSettingsEntry::setValue( value );
+  return true;
+}
+
+int QgsSettingsEntryString::minLength()
+{
+  return mMinLength;
+}
+
+int QgsSettingsEntryString::maxLength()
+{
+  return mMaxLength;
 }
