@@ -23,7 +23,7 @@ services:
 
 
   mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: microsoft/mssql-server-linux:2019-latest
     environment:
       ACCEPT_EULA: Y
       SA_PASSWORD: <YourStrong!Passw0rd>
