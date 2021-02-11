@@ -301,7 +301,7 @@ QList<QgsRelation::FieldPair> QgsRelation::fieldPairs() const
 QgsAttributeList QgsRelation::referencedFields() const
 {
   QgsAttributeList attrs;
-
+  attrs.reserve( d->mFieldPairs.size() );
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
     attrs << d->mReferencedLayer->fields().lookupField( pair.second );
