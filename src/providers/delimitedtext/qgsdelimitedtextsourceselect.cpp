@@ -27,7 +27,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QTextCodec>
 #include <QUrl>
@@ -122,7 +122,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   }
   if ( delimiterRegexp->isChecked() )
   {
-    QRegExp re( txtDelimiterRegexp->text() );
+    QRegularExpression re( txtDelimiterRegexp->text() );
     if ( ! re.isValid() )
     {
       QMessageBox::warning( this, tr( "Invalid regular expression" ), tr( "Please enter a valid regular expression as the delimiter, or choose a different delimiter type" ) );
@@ -255,7 +255,7 @@ void QgsDelimitedTextSourceSelect::setSelectedChars( const QString &delimiters )
   cbxDelimTab->setChecked( chars.contains( '\t' ) );
   cbxDelimColon->setChecked( chars.contains( ':' ) );
   cbxDelimSemicolon->setChecked( chars.contains( ';' ) );
-  chars = chars.remove( QRegExp( "[ ,:;\t]" ) );
+  chars = chars.remove( QRegularExpression( "[ ,:;\t]" ) );
   chars = QgsDelimitedTextFile::encodeChars( chars );
   txtDelimiterOther->setText( chars );
 }
@@ -452,7 +452,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   int counter = 0;
   mBadRowCount = 0;
   QStringList values;
-  QRegExp wktre( "^\\s*(?:MULTI)?(?:POINT|LINESTRING|POLYGON)\\s*Z?\\s*M?\\(", Qt::CaseInsensitive );
+  QRegularExpression wktre( "^\\s*(?:MULTI)?(?:POINT|LINESTRING|POLYGON)\\s*Z?\\s*M?\\(", QRegularExpression::CaseInsensitive );
 
   while ( counter < mExampleRowCount )
   {
@@ -716,7 +716,7 @@ bool QgsDelimitedTextSourceSelect::validate()
 
   if ( message.isEmpty() && delimiterRegexp->isChecked() )
   {
-    QRegExp re( txtDelimiterRegexp->text() );
+    QRegularExpression re( txtDelimiterRegexp->text() );
     if ( ! re.isValid() )
     {
       message = tr( "Regular expression is not valid" );
