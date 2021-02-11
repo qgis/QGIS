@@ -113,7 +113,7 @@ namespace QgsWms
         {
           if QSTR_COMPARE( parameters.formatAsString(), "application/dxf" )
           {
-            writeAsDxf( mServerIface, project, version, request, response );
+            writeAsDxf( mServerIface, project, request, response );
           }
           else
           {
