@@ -560,18 +560,20 @@ namespace QgsWfs
       }
 
       QMap<QString, QStringList>::const_iterator fidsMapIt = fidsMap.constBegin();
+      QRegularExpression rx( "([^()]+)\\(([^()]+)\\)" );
+      QRegularExpressionMatch matches;
       while ( fidsMapIt != fidsMap.constEnd() )
       {
         QString key = fidsMapIt.key();
 
         //Extract TypeName and PropertyName from key
-        QRegExp rx( "([^()]+)\\(([^()]+)\\)" );
-        if ( rx.indexIn( key, 0 ) == -1 )
+        matches = rx.match( key.mid( 0 ) );
+        if ( matches.capturedStart() == -1 )
         {
           throw QgsRequestNotWellFormedException( QStringLiteral( "Error getting properties for FEATUREID" ) );
         }
-        QString typeName = rx.cap( 1 );
-        QString propertyName = rx.cap( 2 );
+        QString typeName = matches.captured( 1 );
+        QString propertyName = matches.captured( 2 );
 
         getFeatureQuery query;
         query.typeName = typeName;

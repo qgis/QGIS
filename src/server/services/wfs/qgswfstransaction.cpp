@@ -958,18 +958,22 @@ namespace QgsWfs
     {
       QString expFilterName = parameters.value( QStringLiteral( "EXP_FILTER" ) );
       QStringList expFilterList;
-      QRegExp rx( "\\(([^()]+)\\)" );
-      if ( rx.indexIn( expFilterName, 0 ) == -1 )
+      QRegularExpression rx( "\\(([^()]+)\\)" );
+      QRegularExpressionMatch matches = rx.match( expFilterName.mid( 0 ) );
+      if ( matches.capturedStart() == -1 )
       {
         expFilterList << expFilterName;
       }
       else
       {
         int pos = 0;
-        while ( ( pos = rx.indexIn( expFilterName, pos ) ) != -1 )
+        QString cap1;
+        while ( ( matches.capturedStart() != -1 )
         {
-          expFilterList << rx.cap( 1 );
-          pos += rx.matchedLength();
+          cap1 = maches.captured( 1 );
+          expFilterList << cap1;
+          pos += cap1.length();
+          matches = rx.match( expFilterName.mid( pos ) );
         }
       }
 
@@ -1056,18 +1060,22 @@ namespace QgsWfs
     {
       QString filterName = parameters.value( QStringLiteral( "FILTER" ) );
       QStringList filterList;
-      QRegExp rx( "\\(([^()]+)\\)" );
-      if ( rx.indexIn( filterName, 0 ) == -1 )
+      QRegularExpression rx( "\\(([^()]+)\\)" );
+      QRegularExpressionMatch matches = rx.match( filterName.mid( 0 ) );
+      if ( matches.capturedStart() == -1 )
       {
         filterList << filterName;
       }
       else
       {
         int pos = 0;
-        while ( ( pos = rx.indexIn( filterName, pos ) ) != -1 )
+        QString cap1;
+        while ( ( matches.capturedStart() != -1 )
         {
-          filterList << rx.cap( 1 );
-          pos += rx.matchedLength();
+          cap1 = maches.captured( 1 );
+          filterList << cap1;
+          pos += cap1.length();
+          matches = rx.match( filterName.mid( pos ) );
         }
       }
 
