@@ -198,8 +198,6 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
   mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalFrameDurationChanged( mFrameDuration );
 
-  // temporarily disable the updateTemporalRange signal, as we'll emit it ourselves at the end of this function...
-
   // forcing an update of our views
   QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
 
@@ -315,13 +313,23 @@ QgsTemporalNavigationObject::AnimationState QgsTemporalNavigationObject::animati
 long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const
 {
   long long bestFrame = 0;
-  QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creating an 'instant' Range here
-  // earlier we looped from frame 0 till totalFrameCount() here, but this loop grew gigantic if you switched to for example milliseconds
-  // that is why now we calculate a rough framestart here, by taking the old frameStart and calculate a rough frameNumber here:
-  // because of the 'fluidity' of the DateTime units (notable months and years), there seems to be a theoretical chance
-  // to overshoot. So in that case fail and return to startFrame (so max number of loops is just 10)
-  long long roughFrameStart = std::floor( ( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() );
-  for ( long long i = roughFrameStart; i < roughFrameStart + 100; ++i )
+  QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creating an 'instant' Range
+  // Earlier we looped from frame 0 till totalFrameCount() here, but this loop grew potentially gigantic
+  long long roughFrameStart = 0;
+  long long roughFrameEnd = totalFrameCount();
+  // For the smaller step frames we calculate an educated guess, to prevent the loop becoming too
+  // large, freezing the ui (eg having a mTemporalExtents of several months and the user selects milliseconds)
+  if ( mFrameDuration.seconds() < QgsInterval::MONTHS )
+  {
+    // Only if we receive a valid frameStart, that is within current mTemporalExtents
+    // We tend to receive a framestart of 'now()' upon startup for example
+    if ( mTemporalExtents.contains( frameStart ) )
+    {
+      roughFrameStart = std::floor( ( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() );
+    }
+    roughFrameEnd = roughFrameStart + 100; // just in case we miss the guess
+  }
+  for ( long long i = roughFrameStart; i < roughFrameEnd; ++i )
   {
     QgsDateTimeRange range = dateTimeRangeForFrameNumber( i );
     if ( range.overlaps( testFrame ) )
