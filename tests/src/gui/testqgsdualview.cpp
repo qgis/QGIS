@@ -106,6 +106,7 @@ void TestQgsDualView::cleanup()
 
 void TestQgsDualView::testColumnCount()
 {
+  QCOMPARE( mDualView->attributeTableConfig().columns().count(), mPointsLayer->fields().count() );
   QCOMPARE( mDualView->tableView()->model()->columnCount(), mPointsLayer->fields().count() );
 }
 
