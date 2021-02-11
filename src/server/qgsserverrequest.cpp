@@ -34,6 +34,15 @@ QgsServerRequest::QgsServerRequest( const QUrl &url, Method method, const Header
   mParams.load( QUrlQuery( url ) );
 }
 
+QgsServerRequest::QgsServerRequest( const QgsServerRequest &other )
+  : mUrl( other.mUrl )
+  , mOriginalUrl( other.mOriginalUrl )
+  , mMethod( other.mMethod )
+  , mHeaders( other.mHeaders )
+  , mParams( other.mParams )
+{
+}
+
 QString QgsServerRequest::methodToString( const QgsServerRequest::Method &method )
 {
   static QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerRequest::Method>();

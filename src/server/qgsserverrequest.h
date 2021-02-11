@@ -82,6 +82,8 @@ class SERVER_EXPORT QgsServerRequest
      */
     QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
+    QgsServerRequest( const QgsServerRequest &other );
+
     //! destructor
     virtual ~QgsServerRequest() = default;
 
@@ -119,7 +121,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Set a parameter
      */
-    void setParameter( const QString &key, const QString &value );
+    virtual void setParameter( const QString &key, const QString &value );
 
     /**
      * Gets a parameter value
@@ -129,7 +131,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Remove a parameter
      */
-    void removeParameter( const QString &key );
+    virtual void removeParameter( const QString &key );
 
     /**
      * Returns the header value
@@ -167,7 +169,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Set the request url
      */
-    void setUrl( const QUrl &url );
+    virtual void setUrl( const QUrl &url );
 
     /**
      * Returns the request url as seen by the web server,

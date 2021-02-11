@@ -58,6 +58,8 @@ Constructor
 :param headers:
 %End
 
+    QgsServerRequest( const QgsServerRequest &other );
+
     virtual ~QgsServerRequest();
 
     static QString methodToString( const Method &method );
@@ -94,7 +96,7 @@ to uppercase
 Returns parameters
 %End
 
-    void setParameter( const QString &key, const QString &value );
+    virtual void setParameter( const QString &key, const QString &value );
 %Docstring
 Set a parameter
 %End
@@ -104,7 +106,7 @@ Set a parameter
 Gets a parameter value
 %End
 
-    void removeParameter( const QString &key );
+    virtual void removeParameter( const QString &key );
 %Docstring
 Remove a parameter
 %End
@@ -147,7 +149,7 @@ Check for QByteArray.isNull() to check if data
 is available.
 %End
 
-    void setUrl( const QUrl &url );
+    virtual void setUrl( const QUrl &url );
 %Docstring
 Set the request url
 %End
