@@ -1,7 +1,12 @@
 name: Code Layout
 
-on: [push, pull_request]
-
+on:
+  push:
+    branches:
+      - master
+      - release-**
+  pull_request:
+  
 jobs:
   documentation_checks:
     runs-on: ubuntu-latest
