@@ -26,7 +26,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       ACCEPT_EULA: Y
-      SA_PASSWORD: <YourStrong!Passw0rd>
+      SA_PASSWORD: sa
 
   qgis-deps:
     tty: true
