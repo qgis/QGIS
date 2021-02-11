@@ -22,7 +22,7 @@ class QgsSettingsEntry : QObject
 %End
   public:
 
-    QgsSettingsEntry( QString settingsName = QString(),
+    QgsSettingsEntry( QString key = QString(),
                       QgsSettings::Section settingsSection = QgsSettings::NoSection,
                       QVariant defaultValue = QVariant(),
                       QString description = QString(),
@@ -31,7 +31,7 @@ class QgsSettingsEntry : QObject
 Constructor for QgsSettingsEntry.
 %End
 
-    QgsSettingsEntry( const QString &settingsName,
+    QgsSettingsEntry( const QString &key,
                       QgsSettings::Section settingsSection,
                       const QString &defaultValue,
                       const QString &description = QString(),
@@ -44,9 +44,11 @@ Constructor for QgsSettingsEntry.
 
     void setValue( const QVariant &value );
 
-    QVariant value() const;
+    QVariant valueFromPython() const /PyName=value/;
 
-    QVariant defaultValue() const;
+
+    QVariant defaultValueFromPython() const /PyName=defaultValue/;
+
 
     QString description() const;
 
