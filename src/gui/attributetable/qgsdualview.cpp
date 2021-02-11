@@ -124,7 +124,6 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
     return;
 
   mLayer = layer;
-  mConfig.update( mLayer->fields() );
   mEditorContext = context;
 
   initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
