@@ -99,7 +99,7 @@ jobs:
           # The base_ref or target branch of the pull request in a workflow run.
           restore-keys: |
             build-ccache-${{ matrix.ubuntu-base }}-${{ github.actor }}-${{ github.head_ref }}-
-            build-ccache-${{ matrix.ubuntu-base }}-${{ github.base_ref }}-
+            build-ccache-${{ matrix.ubuntu-base }}-refs/heads/${{ github.base_ref }}-
             build-ccache-${{ matrix.ubuntu-base }}-refs/heads/master-
 
       - name: Prepare build cache for branch/tag
