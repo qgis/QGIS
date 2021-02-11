@@ -476,7 +476,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     for ( QgsFeatureId fid : constSelectedFeatures )
     {
       QgsVectorLayer *referencingLayer = mRelation.referencingLayer();
-      if ( mRelation.type() == QgsRelation::Normal )
+      if ( mRelation.type() == QgsRelation::Generated )
       {
         QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 
