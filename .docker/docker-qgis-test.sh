@@ -91,7 +91,7 @@ echo "Importing SQL Server test data..."
 export SQLUSER=sa
 export SQLHOST=mssql
 export SQLPORT=1433
-export SQLPASSWORD='<YourStrong!Passw0rd>'
+export SQLPASSWORD=sa
 export SQLDATABASE=qgis_test
 
 export PATH=$PATH:/opt/mssql-tools/bin
