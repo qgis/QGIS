@@ -124,7 +124,6 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
     return;
 
   mLayer = layer;
-  mConfig.update( mLayer->fields() );
   mEditorContext = context;
 
   initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
@@ -148,6 +147,8 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   {
     mAttributeEditor->layout()->addWidget( mAttributeForm );
   }
+
+  setAttributeTableConfig( mConfig );
 
   connect( mAttributeForm, &QgsAttributeForm::widgetValueChanged, this, &QgsDualView::featureFormAttributeChanged );
   connect( mAttributeForm, &QgsAttributeForm::modeChanged, this, &QgsDualView::formModeChanged );
