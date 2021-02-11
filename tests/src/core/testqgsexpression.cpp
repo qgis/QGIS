@@ -4135,6 +4135,66 @@ class TestQgsExpression: public QObject
       }
     }
 
+    void testPrecomputedNodesWithIntrospectionFunctions()
+    {
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "first_field" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "second_field" ), QVariant::Int ) );
+
+      QgsExpression exp( QStringLiteral( "attribute(@static_feature, concat('second','_',@field_name_part_var)) + x(geometry( @static_feature ))" ) );
+      // initially this expression requires all attributes -- we can't determine the referenced columns in advance
+      QCOMPARE( exp.referencedColumns(), QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+      QCOMPARE( exp.referencedAttributeIndexes( fields ), QSet< int >() << 0 << 1 );
+      QCOMPARE( exp.referencedFunctions(), QSet<QString>() << QStringLiteral( "attribute" ) << QStringLiteral( "concat" ) << QStringLiteral( "geometry" ) << QStringLiteral( "x" ) << QStringLiteral( "var" ) );
+      QCOMPARE( exp.referencedVariables(), QSet<QString>() << QStringLiteral( "field_name_part_var" ) << QStringLiteral( "static_feature" ) );
+
+      // prepare the expression using static variables
+      QgsExpressionContext context;
+      std::unique_ptr< QgsExpressionContextScope > scope = qgis::make_unique< QgsExpressionContextScope >();
+      scope->setVariable( QStringLiteral( "field_name_part_var" ), QStringLiteral( "field" ), true );
+
+      // this feature gets added as a static variable, to emulate eg the @atlas_feature variable
+      QgsFeature feature( fields );
+      feature.setAttributes( QgsAttributes() << 5 << 10 );
+      feature.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 27, 42 ) ) );
+      scope->setVariable( QStringLiteral( "static_feature" ), feature, true );
+
+      context.appendScope( scope.release() );
+
+      QVERIFY( exp.prepare( & context ) );
+      // because all parts of the expression are static, the root node should have a cached static value!
+      QVERIFY( exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->cachedStaticValue().toInt(), 37 );
+
+      // referenced columns should be empty -- we don't need ANY columns to evaluate this expression
+      QVERIFY( exp.referencedColumns().empty() );
+      QVERIFY( exp.referencedAttributeIndexes( fields ).empty() );
+      // in contrast, referencedFunctions() and referencedVariables() should NOT be affected by pre-compiled nodes
+      // as these methods are used for introspection purposes only...
+      QCOMPARE( exp.referencedFunctions(), QSet<QString>() << QStringLiteral( "attribute" ) << QStringLiteral( "concat" ) << QStringLiteral( "geometry" ) << QStringLiteral( "x" ) << QStringLiteral( "var" ) );
+      QCOMPARE( exp.referencedVariables(), QSet<QString>() << QStringLiteral( "field_name_part_var" ) << QStringLiteral( "static_feature" ) );
+
+      // secondary test - this one uses a mix of pre-computable nodes and non-pre-computable nodes
+      QgsExpression exp2( QStringLiteral( "(attribute(@static_feature, concat('second','_',@field_name_part_var)) + x(geometry( @static_feature ))) > \"another_field\"" ) );
+      QCOMPARE( exp2.referencedColumns(), QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES << QStringLiteral( "another_field" ) );
+      QCOMPARE( exp2.referencedFunctions(), QSet<QString>() << QStringLiteral( "attribute" ) << QStringLiteral( "concat" ) << QStringLiteral( "geometry" ) << QStringLiteral( "x" ) << QStringLiteral( "var" ) );
+      QCOMPARE( exp2.referencedVariables(), QSet<QString>() << QStringLiteral( "field_name_part_var" ) << QStringLiteral( "static_feature" ) );
+
+      QgsFields fields2;
+      fields2.append( QgsField( QStringLiteral( "another_field" ), QVariant::Int ) );
+      context.setFields( fields2 );
+
+      QVERIFY( exp2.prepare( & context ) );
+      // because NOT all parts of the expression are static, the root node should NOT have a cached static value!
+      QVERIFY( !exp2.rootNode()->hasCachedStaticValue() );
+
+      // but the only referenced column should be "another_field", because the first half of the expression with the "attribute" function is static and has been precomputed
+      QCOMPARE( exp2.referencedColumns(), QSet<QString>() << QStringLiteral( "another_field" ) );
+      QCOMPARE( exp2.referencedAttributeIndexes( fields2 ), QSet< int >() << 0 );
+      QCOMPARE( exp2.referencedFunctions(), QSet<QString>() << QStringLiteral( "attribute" ) << QStringLiteral( "concat" ) << QStringLiteral( "geometry" ) << QStringLiteral( "x" ) << QStringLiteral( "var" ) );
+      QCOMPARE( exp2.referencedVariables(), QSet<QString>() << QStringLiteral( "field_name_part_var" ) << QStringLiteral( "static_feature" ) );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsExpression )

@@ -219,17 +219,31 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * evaluate this node and in addition recursively collect all the columns required
      * to evaluate child nodes.
      *
+     * \warning If the expression has been prepared via a call to QgsExpression::prepare(),
+     * or a call to QgsExpressionNode::prepare() for a node has been made, then some nodes in
+     * the expression may have been determined to evaluate to a static pre-calculatable value.
+     * In this case the results will omit attribute indices which are used by these
+     * pre-calculated nodes, regardless of their actual referenced columns.
+     * If you are seeking to use these functions to introspect an expression you must
+     * take care to do this with an unprepared expression node.
+     *
      * \returns A list of columns required to evaluate this expression
      */
     virtual QSet<QString> referencedColumns() const = 0;
 
     /**
      * Returns a set of all variables which are used in this expression.
+     *
+     * \note In contrast to the referencedColumns() function this method
+     * is not affected by any previous calls to QgsExpressionNode::prepare().
      */
     virtual QSet<QString> referencedVariables() const = 0;
 
     /**
      * Returns a set of all functions which are used in this expression.
+     *
+     * \note In contrast to the referencedColumns() function this method
+     * is not affected by any previous calls to QgsExpressionNode::prepare().
      */
     virtual QSet<QString> referencedFunctions() const = 0;
 

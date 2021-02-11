@@ -149,6 +149,9 @@ QString QgsExpressionNodeUnaryOperator::dump() const
 
 QSet<QString> QgsExpressionNodeUnaryOperator::referencedColumns() const
 {
+  if ( hasCachedStaticValue() )
+    return QSet< QString >();
+
   return mOperand->referencedColumns();
 }
 
@@ -797,6 +800,9 @@ QString QgsExpressionNodeBinaryOperator::dump() const
 
 QSet<QString> QgsExpressionNodeBinaryOperator::referencedColumns() const
 {
+  if ( hasCachedStaticValue() )
+    return QSet< QString >();
+
   return mOpLeft->referencedColumns() + mOpRight->referencedColumns();
 }
 
@@ -1031,6 +1037,9 @@ QString QgsExpressionNodeFunction::dump() const
 
 QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
 {
+  if ( hasCachedStaticValue() )
+    return QSet< QString >();
+
   QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
   QSet<QString> functionColumns = fd->referencedColumns( this );
 
@@ -1486,6 +1495,9 @@ QString QgsExpressionNodeCondition::dump() const
 
 QSet<QString> QgsExpressionNodeCondition::referencedColumns() const
 {
+  if ( hasCachedStaticValue() )
+    return QSet< QString >();
+
   QSet<QString> lst;
   for ( WhenThen *cond : mConditions )
   {
@@ -1580,6 +1592,9 @@ bool QgsExpressionNodeCondition::isStatic( QgsExpression *parent, const QgsExpre
 
 QSet<QString> QgsExpressionNodeInOperator::referencedColumns() const
 {
+  if ( hasCachedStaticValue() )
+    return QSet< QString >();
+
   QSet<QString> lst( mNode->referencedColumns() );
   const QList< QgsExpressionNode * > nodeList = mList->list();
   for ( const QgsExpressionNode *n : nodeList )
@@ -1694,6 +1709,9 @@ QString QgsExpressionNodeIndexOperator::dump() const
 
 QSet<QString> QgsExpressionNodeIndexOperator::referencedColumns() const
 {
+  if ( hasCachedStaticValue() )
+    return QSet< QString >();
+
   return mContainer->referencedColumns() + mIndex->referencedColumns();
 }
 
