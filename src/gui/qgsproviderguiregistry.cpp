@@ -125,7 +125,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
   QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
-  QRegExp fileRegexp;
+  QRegularExpression fileRegexp;
   if ( !filePattern.isEmpty() )
   {
     fileRegexp.setPattern( filePattern );
@@ -134,9 +134,9 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
   const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
   for ( const QFileInfo &fi : constEntryInfoList )
   {
-    if ( !fileRegexp.isEmpty() )
+    if ( !fileRegexp.pattern().isEmpty() )
     {
-      if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
+      if ( fileRegexp..match( fi.fileName() ).capturedStart() == -1 )
       {
         QgsDebugMsg( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
         continue;
