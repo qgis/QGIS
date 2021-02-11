@@ -36,13 +36,13 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     /**
      * Constructor for QgsSettingsEntry.
      */
-    QgsSettingsEntry( QString settingsName = QString(),
+    QgsSettingsEntry( QString key = QString(),
                       QgsSettings::Section settingsSection = QgsSettings::NoSection,
                       QVariant defaultValue = QVariant(),
                       QString description = QString(),
                       QObject *parent = nullptr );
 
-    QgsSettingsEntry( const QString &settingsName,
+    QgsSettingsEntry( const QString &key,
                       QgsSettings::Section settingsSection,
                       const QString &defaultValue,
                       const QString &description = QString(),
@@ -56,33 +56,33 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
 
     void setValue( const QVariant &value );
 
-#ifdef SIP_RUN
-    QVariant value() const;
-#else
+    QVariant valueFromPython() const SIP_PYNAME( value );
+
+#ifndef SIP_RUN
     template <class T>
     T value() const
     {
-      QVariant variantValue = QgsSettings().value( mSettingsName,
+      QVariant variantValue = QgsSettings().value( mKey,
                               mDefaultValue,
                               mSettingsSection );
       if ( variantValue.canConvert<T>() == false )
         QgsDebugMsg( QObject::tr( "Can't convert setting '%1' to type '%2'" )
-                     .arg( mSettingsName )
+                     .arg( mKey )
                      .arg( typeid( T ).name() ) );
 
       return variantValue.value<T>();
     }
 #endif
 
-#ifdef SIP_RUN
-    QVariant defaultValue() const;
-#else
+    QVariant defaultValueFromPython() const SIP_PYNAME( defaultValue );
+
+#ifndef SIP_RUN
     template <class T>
     T defaultValue() const
     {
       if ( mDefaultValue.canConvert<T>() == false )
         QgsDebugMsg( QObject::tr( "Can't convert default value of setting '%1' to type '%2'" )
-                     .arg( mSettingsName )
+                     .arg( mKey )
                      .arg( typeid( T ).name() ) );
 
       return mDefaultValue.value<T>();
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
 
   private:
 
-    QString mSettingsName;
+    QString mKey;
     QVariant mDefaultValue;
     QgsSettings::Section mSettingsSection;
     QString mDescription;

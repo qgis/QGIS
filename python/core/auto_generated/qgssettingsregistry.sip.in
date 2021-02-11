@@ -29,28 +29,30 @@ class QgsSettingsRegistry : QObject
 Constructor for QgsSettingsRegistry.
 %End
 
-    void registerSettings( const QString &settingsName,
+    void registerSettings( const QString &key,
                            const QVariant &defaultValue = QVariant(),
                            const QString &description = QString() );
 
-    void registerSettingsString( const QString &settingsName,
+    void registerSettingsString( const QString &key,
                                  const QString &defaultValue = QString(),
                                  const QString &description = QString(),
                                  int minLength = 0,
                                  int maxLength = -1 );
 
-    bool isRegistered( const QString &settingsName ) const;
+    bool isRegistered( const QString &key ) const;
 
-    void unregister( const QString &settingsName );
+    void unregister( const QString &key );
 
-    bool setValue( const QString &settingsName,
+    bool setValue( const QString &key,
                    const QVariant &value );
 
-    QVariant value( const QString &settingsName ) const;
+    QVariant valueFromPython( const QString &key ) const /PyName=value/;
 
-    QVariant defaultValue( const QString &settingsName ) const;
 
-    QString description( const QString &settingsName ) const;
+    QVariant defaultValueFromPython( const QString &key ) const /PyName=defaultValue/;
+
+
+    QString description( const QString &key ) const;
 
 };
 

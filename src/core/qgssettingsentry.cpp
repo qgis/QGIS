@@ -16,13 +16,13 @@
 #include "qgssettingsentry.h"
 #include "qgslogger.h"
 
-QgsSettingsEntry::QgsSettingsEntry( QString settingsName,
+QgsSettingsEntry::QgsSettingsEntry( QString key,
                                     QgsSettings::Section settingsSection,
                                     QVariant defaultValue,
                                     QString description,
                                     QObject *parent )
   : QObject( parent )
-  , mSettingsName( settingsName )
+  , mKey( key )
   , mDefaultValue( defaultValue )
   , mSettingsSection( settingsSection )
   , mDescription( description )
@@ -31,7 +31,7 @@ QgsSettingsEntry::QgsSettingsEntry( QString settingsName,
 {
 }
 
-QgsSettingsEntry::QgsSettingsEntry( const QString &settingsName,
+QgsSettingsEntry::QgsSettingsEntry( const QString &key,
                                     QgsSettings::Section settingsSection,
                                     const QString &defaultValue,
                                     const QString &description,
@@ -39,7 +39,7 @@ QgsSettingsEntry::QgsSettingsEntry( const QString &settingsName,
                                     int maxLength,
                                     QObject *parent )
   : QObject( parent )
-  , mSettingsName( settingsName )
+  , mKey( key )
   , mDefaultValue( defaultValue )
   , mSettingsSection( settingsSection )
   , mDescription( description )
@@ -50,7 +50,7 @@ QgsSettingsEntry::QgsSettingsEntry( const QString &settingsName,
 
 QgsSettingsEntry::QgsSettingsEntry( const QgsSettingsEntry &other )
   : QObject( nullptr )
-  , mSettingsName( other.mSettingsName )
+  , mKey( other.mKey )
   , mDefaultValue( other.mDefaultValue )
   , mSettingsSection( other.mSettingsSection )
   , mDescription( other.mDescription )
@@ -61,7 +61,7 @@ QgsSettingsEntry::QgsSettingsEntry( const QgsSettingsEntry &other )
 
 QgsSettingsEntry &QgsSettingsEntry::operator=( const QgsSettingsEntry &other )
 {
-  this->mSettingsName = other.mSettingsName;
+  this->mKey = other.mKey;
   this->mSettingsSection = other.mSettingsSection;
   this->mDefaultValue = other.mDefaultValue;
   this->mDescription = other.mDescription;
@@ -72,26 +72,20 @@ QgsSettingsEntry &QgsSettingsEntry::operator=( const QgsSettingsEntry &other )
 
 void QgsSettingsEntry::setValue( const QVariant &value )
 {
-  QgsSettings().setValue( mSettingsName,
+  QgsSettings().setValue( mKey,
                           value,
                           mSettingsSection );
 }
 
-#ifdef SIP_RUN
-QVariant QgsSettingsEntry::value() const
+QVariant QgsSettingsEntry::valueFromPython() const
 {
-  return QgsSettings().value( mSettingsName,
-                              mDefaultValue,
-                              mSettingsSection );
+  return value<QVariant>();
 }
-#endif
 
-#ifdef SIP_RUN
-QVariant QgsSettingsEntry::defaultValue() const
+QVariant QgsSettingsEntry::defaultValueFromPython() const
 {
-  return mDefaultValue;
+  return defaultValue<QVariant>();
 }
-#endif
 
 QString QgsSettingsEntry::description() const
 {

@@ -23,41 +23,40 @@ QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section settingsSection, 
 {}
 
 void QgsSettingsRegistry::registerSettings(
-  const QString &settingsName,
+  const QString &key,
   const QVariant &defaultValue,
   const QString &description )
 {
-  if ( isRegistered( settingsName ) == true )
+  if ( isRegistered( key ) == true )
   {
-    QgsDebugMsg( QObject::tr( "Settings name '%1' already registered" ).arg( settingsName ) );
+    QgsDebugMsg( QObject::tr( "Settings key '%1' already registered" ).arg( key ) );
     return;
   }
 
-  mMapSettingsEntry.insert( settingsName,
+  mMapSettingsEntry.insert( key,
                             QgsSettingsEntry(
-                              settingsName,
+                              key,
                               mSettingsSection,
                               defaultValue,
                               description,
                               this ) );
 }
 
-void QgsSettingsRegistry::registerSettingsString(
-  const QString &settingsName,
-  const QString &defaultValue,
-  const QString &description,
-  int minLength,
-  int maxLength )
+void QgsSettingsRegistry::registerSettingsString( const QString &key,
+    const QString &defaultValue,
+    const QString &description,
+    int minLength,
+    int maxLength )
 {
-  if ( isRegistered( settingsName ) == true )
+  if ( isRegistered( key ) == true )
   {
-    QgsDebugMsg( QObject::tr( "Settings name '%1' already registered" ).arg( settingsName ) );
+    QgsDebugMsg( QObject::tr( "Settings key '%1' already registered" ).arg( key ) );
     return;
   }
 
-  mMapSettingsEntry.insert( settingsName,
+  mMapSettingsEntry.insert( key,
                             QgsSettingsEntry(
-                              settingsName,
+                              key,
                               mSettingsSection,
                               defaultValue,
                               description,
@@ -66,68 +65,52 @@ void QgsSettingsRegistry::registerSettingsString(
                               this ) );
 }
 
-bool QgsSettingsRegistry::isRegistered( const QString &settingsName ) const
+bool QgsSettingsRegistry::isRegistered( const QString &key ) const
 {
-  return mMapSettingsEntry.contains( settingsName );
+  return mMapSettingsEntry.contains( key );
 }
 
-void QgsSettingsRegistry::unregister( const QString &settingsName )
+void QgsSettingsRegistry::unregister( const QString &key )
 {
-  if ( isRegistered( settingsName ) == false )
+  if ( isRegistered( key ) == false )
   {
-    QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+    QgsDebugMsg( QObject::tr( "No such settings key found in registry '%1'" ).arg( key ) );
     return;
   }
 
-  mMapSettingsEntry.remove( settingsName );
+  mMapSettingsEntry.remove( key );
 }
 
-bool QgsSettingsRegistry::setValue( const QString &settingsName,
+bool QgsSettingsRegistry::setValue( const QString &key,
                                     const QVariant &value )
 {
-  if ( isRegistered( settingsName ) == false )
+  if ( isRegistered( key ) == false )
   {
-    QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+    QgsDebugMsg( QObject::tr( "No such settings key found in registry '%1'" ).arg( key ) );
     return false;
   }
 
-  mMapSettingsEntry[settingsName].setValue( value );
+  mMapSettingsEntry[key].setValue( value );
   return true;
 }
 
-#ifdef SIP_RUN
-QVariant QgsSettingsRegistry::value( const QString &settingsName ) const
+QVariant QgsSettingsRegistry::valueFromPython( const QString &key ) const
 {
-  if ( isRegistered( settingsName ) == false )
-  {
-    QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
-    return QVariant();
-  }
-
-  return mMapSettingsEntry.value( settingsName ).value();
+  return value<QVariant>( key );
 }
-#endif
 
-#ifdef SIP_RUN
-QVariant QgsSettingsRegistry::defaultValue( const QString &settingsName ) const
+QVariant QgsSettingsRegistry::defaultValueFromPython( const QString &key ) const
 {
-  if ( isRegistered( settingsName ) == false )
-  {
-    QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
-    return QVariant();
-  }
-
-  return mMapSettingsEntry.value( settingsName ).defaultValue();
+  return defaultValue<QVariant>( key );
 }
-#endif
 
-QString QgsSettingsRegistry::description( const QString &settingsName ) const
+QString QgsSettingsRegistry::description( const QString &key ) const
 {
-  if ( isRegistered( settingsName ) == false )
+  if ( isRegistered( key ) == false )
   {
-    QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+    QgsDebugMsg( QObject::tr( "No such settings key found in registry '%1'" ).arg( key ) );
     return QString();
   }
 
-  return mMapSettingsEntry.value( settingsName ).description();
+  return mMapSettingsEntry.value( key ).description();
 }

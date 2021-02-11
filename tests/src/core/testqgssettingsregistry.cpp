@@ -41,30 +41,30 @@ void TestQgsSettingsRegistry::variantValue()
   QgsSettingsRegistry settingsRegistry( QgsSettings::NoSection,
                                         this );
 
-  QString settingsName( "qgis/testing/settings_registry/my_variant_value" );
+  QString key( "qgis/testing/settings_registry/my_variant_value" );
   int defaultValue( 42 );
   QString settingsDescription( "Variant value for testing of 'QgsSettingsRegistry'" );
-  settingsRegistry.registerSettings( settingsName,
+  settingsRegistry.registerSettings( key,
                                      defaultValue,
                                      settingsDescription );
 
   // Check default value
-//  QCOMPARE( settingsRegistry.defaultValue<int>( settingsName ), defaultValue );
+  QCOMPARE( settingsRegistry.defaultValue<int>( key ), defaultValue );
 
   // Set new value
   int newValue( 1234 );
-  settingsRegistry.setValue( settingsName,
+  settingsRegistry.setValue( key,
                              newValue );
 
   // Check new value with QgsSettings
-  QCOMPARE( QgsSettings().value( settingsName, defaultValue ).toInt(), newValue );
+  QCOMPARE( QgsSettings().value( key, defaultValue ).toInt(), newValue );
 
   // Check new value with QgsSettingsRegistry
-//  QCOMPARE( settingsRegistry.value<int>( settingsName ), newValue );
+  QCOMPARE( settingsRegistry.value<int>( key ), newValue );
 
   // Check set on unregistered settings name
-  settingsRegistry.unregister( settingsName );
-  QCOMPARE( settingsRegistry.setValue( settingsName, QVariant() ), false );
+  settingsRegistry.unregister( key );
+  QCOMPARE( settingsRegistry.setValue( key, QVariant() ), false );
 }
 
 void TestQgsSettingsRegistry::enumValue()

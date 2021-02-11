@@ -41,56 +41,56 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
     QgsSettingsRegistry( QgsSettings::Section settingsSection,
                          QObject *parent = nullptr );
 
-    void registerSettings( const QString &settingsName,
+    void registerSettings( const QString &key,
                            const QVariant &defaultValue = QVariant(),
                            const QString &description = QString() );
 
-    void registerSettingsString( const QString &settingsName,
+    void registerSettingsString( const QString &key,
                                  const QString &defaultValue = QString(),
                                  const QString &description = QString(),
                                  int minLength = 0,
                                  int maxLength = -1 );
 
-    bool isRegistered( const QString &settingsName ) const;
+    bool isRegistered( const QString &key ) const;
 
-    void unregister( const QString &settingsName );
+    void unregister( const QString &key );
 
-    bool setValue( const QString &settingsName,
+    bool setValue( const QString &key,
                    const QVariant &value );
 
-#ifdef SIP_RUN
-    QVariant value( const QString &settingsName ) const;
-#else
+    QVariant valueFromPython( const QString &key ) const SIP_PYNAME( value );
+
+#ifndef SIP_RUN
     template <class T>
-    T value( const QString &settingsName ) const
+    T value( const QString &key ) const
     {
-      if ( isRegistered( settingsName ) == false )
+      if ( isRegistered( key ) == false )
       {
-        QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+        QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( key ) );
         return T();
       }
 
-      return mMapSettingsEntry.value( settingsName ).value <T> ();
+      return mMapSettingsEntry.value( key ).value <T> ();
     }
 #endif
 
-#ifdef SIP_RUN
-    QVariant defaultValue( const QString &settingsName ) const;
-#else
+    QVariant defaultValueFromPython( const QString &key ) const SIP_PYNAME( defaultValue );
+
+#ifndef SIP_RUN
     template <class T>
-    T defaultValue( const QString &settingsName ) const
+    T defaultValue( const QString &key ) const
     {
-      if ( isRegistered( settingsName ) == false )
+      if ( isRegistered( key ) == false )
       {
-        QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( settingsName ) );
+        QgsDebugMsg( QObject::tr( "No such settings name found in registry '%1'" ).arg( key ) );
         return T();
       }
 
-      return mMapSettingsEntry.value( settingsName ).defaultValue <T> ();
+      return mMapSettingsEntry.value( key ).defaultValue <T> ();
     }
 #endif
 
-    QString description( const QString &settingsName ) const;
+    QString description( const QString &key ) const;
 
   private:
 
