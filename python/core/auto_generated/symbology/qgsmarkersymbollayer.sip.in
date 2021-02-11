@@ -49,6 +49,9 @@ leaves the actual drawing of the symbols to subclasses.
       DiagonalHalfSquare,
       RightHalfTriangle,
       LeftHalfTriangle,
+      Octagon,
+      SquareWithCorners,
+      AsteriskFill,
     };
 
     static QList< QgsSimpleMarkerSymbolLayerBase::Shape > availableShapes();
