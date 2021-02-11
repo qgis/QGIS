@@ -233,7 +233,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
-    int referencingIdx = referencingLayer()->fields().indexFromName( pair.referencingField() );
+    int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
     conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ) );
   }
 
