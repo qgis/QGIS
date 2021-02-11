@@ -719,6 +719,7 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
 
   // store field source index - we'll need it when fetching from provider
   mFetchJoinInfo[ joinInfo ].attributes.push_back( sourceLayerIndex );
+  mFetchJoinInfo[ joinInfo ].attributesSourceToDestLayerMap[sourceLayerIndex] = fieldIdx;
 }
 
 
@@ -786,7 +787,9 @@ void QgsVectorLayerFeatureIterator::prepareFields()
 
   mExpressionContext.reset();
 
-  mFieldsToPrepare = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
+  mFieldsToPrepare = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+                     ? mRequest.subsetOfAttributes()
+                     : mSource->mFields.allAttributesList();
 
   while ( !mFieldsToPrepare.isEmpty() )
   {
@@ -1099,20 +1102,27 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   // select (no geometry)
   QgsFeatureRequest request;
   request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( attributes );
+  request.setSubsetOfAttributes( joinedAttributeIndices );
   request.setFilterExpression( subsetString );
   request.setLimit( 1 );
   QgsFeatureIterator fi = joinLayer->getFeatures( request );
 
   // get first feature
+  const QList<int> sourceAttrIndexes = attributesSourceToDestLayerMap.keys();
   QgsFeature fet;
   if ( fi.nextFeature( fet ) )
   {
-    int index = indexOffset;
     QgsAttributes attr = fet.attributes();
 
-    for ( int i = 0; i < joinedAttributeIndices.count(); ++i )
-      f.setAttribute( index++, attr.at( joinedAttributeIndices.at( i ) ) );
+    for ( const int sourceAttrIndex : sourceAttrIndexes )
+    {
+      if ( sourceAttrIndex == joinField )
+        continue;
+
+      int destAttrIndex = attributesSourceToDestLayerMap.value( sourceAttrIndex );
+
+      f.setAttribute( destAttrIndex, attr.at( sourceAttrIndex ) );
+    }
   }
   else
   {
