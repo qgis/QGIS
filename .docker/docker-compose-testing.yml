@@ -22,12 +22,11 @@ services:
 #      - 1521:1521
 
 
-# Proving very fragile!
-#  mssql:
-#    image: microsoft/mssql-server-linux:2017-latest
-#    environment:
-#      ACCEPT_EULA: Y
-#      SA_PASSWORD: <YourStrong!Passw0rd>
+  mssql:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: <YourStrong!Passw0rd>
 
   qgis-deps:
     tty: true
@@ -37,6 +36,6 @@ services:
     links:
       - postgres
     #  - oracle
-    #  - mssql
+      - mssql
     env_file:
       - docker-variables.env
