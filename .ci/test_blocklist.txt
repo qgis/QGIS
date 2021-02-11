@@ -20,4 +20,8 @@ qgis_openclutilstest
 # Relies on a broken/unreliable 3rd party service
 qgis_layerdefinition
 
+# MSSQL requires the MSSQL docker
+PyQgsProviderConnectionMssql
+
+
 
