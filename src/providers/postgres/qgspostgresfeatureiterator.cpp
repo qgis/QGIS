@@ -114,7 +114,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     mFilterRequiresGeometry = request.filterExpression()->needsGeometry();
 
     //IMPORTANT - this MUST be the last clause added!
-    QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
+    QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
 
     if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
     {

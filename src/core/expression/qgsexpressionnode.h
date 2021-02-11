@@ -299,6 +299,22 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      */
     int parserLastColumn = 0;
 
+    /**
+     * Returns TRUE if the node can be replaced by a static cached value.
+     *
+     * \see cachedStaticValue()
+     * \since QGIS 3.18
+     */
+    bool hasCachedStaticValue() const { return mHasCachedValue; }
+
+    /**
+     * Returns the node's static cached value. Only valid if hasCachedStaticValue() is TRUE.
+     *
+     * \see hasCachedStaticValue()
+     * \since QGIS 3.18
+     */
+    QVariant cachedStaticValue() const { return mCachedStaticValue; }
+
   protected:
 
     /**

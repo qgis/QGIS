@@ -18,10 +18,11 @@
 #include "qgsexpressionfunction.h"
 #include "qgsexpression.h"
 
-QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields &fields, Flags flags )
+QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields &fields, Flags flags, bool ignoreStaticNodes )
   : mResult( None )
   , mFields( fields )
   , mFlags( flags )
+  , mIgnoreStaticNodes( ignoreStaticNodes )
 {
 }
 
@@ -88,6 +89,10 @@ QString QgsSqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 
 QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntUnaryOperator:
@@ -438,6 +443,30 @@ QString QgsSqlExpressionCompiler::castToInt( const QString &value ) const
 {
   Q_UNUSED( value )
   return QString();
+}
+
+QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::replaceNodeByStaticCachedValueIfPossible( const QgsExpressionNode *node, QString &result )
+{
+  if ( mIgnoreStaticNodes )
+    return Fail;
+
+  if ( node->hasCachedStaticValue() )
+  {
+    bool ok = false;
+    if ( mFlags.testFlag( CaseInsensitiveStringMatch ) && node->cachedStaticValue().type() == QVariant::String )
+    {
+      // provider uses case insensitive matching, so if literal was a string then we only have a Partial compilation and need to
+      // double check results using QGIS' expression engine
+      result = quotedValue( node->cachedStaticValue(), ok );
+      return ok ? Partial : Fail;
+    }
+    else
+    {
+      result = quotedValue( node->cachedStaticValue(), ok );
+      return ok ? Complete : Fail;
+    }
+  }
+  return Fail;
 }
 
 bool QgsSqlExpressionCompiler::nodeIsNullLiteral( const QgsExpressionNode *node ) const

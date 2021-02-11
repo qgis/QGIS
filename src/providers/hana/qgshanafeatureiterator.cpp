@@ -398,7 +398,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   {
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
-      QgsHanaExpressionCompiler compiler = QgsHanaExpressionCompiler( mSource );
+      QgsHanaExpressionCompiler compiler = QgsHanaExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
       switch ( result )
       {

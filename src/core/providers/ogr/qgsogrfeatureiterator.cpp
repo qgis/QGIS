@@ -201,11 +201,11 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     QgsSqlExpressionCompiler *compiler = nullptr;
     if ( source->mDriverName == QLatin1String( "SQLite" ) || source->mDriverName == QLatin1String( "GPKG" ) )
     {
-      compiler = new QgsSQLiteExpressionCompiler( source->mFields );
+      compiler = new QgsSQLiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     }
     else
     {
-      compiler = new QgsOgrExpressionCompiler( source );
+      compiler = new QgsOgrExpressionCompiler( source, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     }
 
     QgsSqlExpressionCompiler::Result result = compiler->compile( request.filterExpression() );
