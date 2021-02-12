@@ -21,6 +21,7 @@
 
 
 #include "qgswmsutils.h"
+#include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsgetstyles.h"
 #include "qgswmsrendercontext.h"
@@ -42,7 +43,7 @@ namespace QgsWms
   }
 
   void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project,
-                       const QgsServerRequest &request, QgsServerResponse &response )
+                       const QgsWmsRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = getStyles( serverIface, project, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
@@ -57,10 +58,10 @@ namespace QgsWms
 
   namespace
   {
-    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request )
+    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project,   const QgsWmsRequest &request )
     {
       // init WMS parameters and context
-      const QgsWmsParameters parameters( request.serverParameters() );
+      const QgsWmsParameters parameters = request.wmsParameters();
 
       QgsWmsRenderContext context( project, serverIface );
       context.setFlag( QgsWmsRenderContext::SetAccessControl );
