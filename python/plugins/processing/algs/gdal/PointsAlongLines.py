@@ -100,13 +100,13 @@ class PointsAlongLines(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        other_fields = [
-            f'"{f.name()}"'
-            for f in fields
+        other_fields_exist = any(
+            f for f in fields
             if f.name() != geometry
-        ]
+        )
 
-        other_fields = ',*' if other_fields else ''
+        other_fields = ',*' if other_fields_exist else ''
+
         arguments = [
             output,
             ogrLayer,
