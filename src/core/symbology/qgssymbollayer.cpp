@@ -234,6 +234,11 @@ bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
   return symbol->type() == mType;
 }
 
+bool QgsSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return false;
+}
+
 bool QgsSymbolLayer::usesMapUnits() const
 {
   return false;

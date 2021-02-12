@@ -1351,6 +1351,24 @@ QVariantMap QgsTemplatedLineSymbolLayerBase::properties() const
   return map;
 }
 
+bool QgsTemplatedLineSymbolLayerBase::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  switch ( mPlacement )
+  {
+    case QgsTemplatedLineSymbolLayerBase::Interval:
+    case QgsTemplatedLineSymbolLayerBase::CentralPoint:
+    case QgsTemplatedLineSymbolLayerBase::SegmentCenter:
+      return true;
+
+    case QgsTemplatedLineSymbolLayerBase::Vertex:
+    case QgsTemplatedLineSymbolLayerBase::CurvePoint:
+    case QgsTemplatedLineSymbolLayerBase::LastVertex:
+    case QgsTemplatedLineSymbolLayerBase::FirstVertex:
+      return false;
+  }
+  return false;
+}
+
 void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const
 {
   destLayer->setSubSymbol( const_cast< QgsTemplatedLineSymbolLayerBase * >( this )->subSymbol()->clone() );

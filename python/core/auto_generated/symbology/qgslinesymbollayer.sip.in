@@ -660,6 +660,8 @@ calculating individual symbol angles.
 
     virtual QVariantMap properties() const;
 
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
+
 
   protected:
 
