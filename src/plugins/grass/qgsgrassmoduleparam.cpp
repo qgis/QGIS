@@ -530,7 +530,7 @@ void QgsGrassModuleOption::addRow()
   }
   else if ( mIsOutput )
   {
-    QRegExp rx;
+    QRegularExpression rx;
     if ( mOutputType == Vector )
     {
       rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
@@ -539,7 +539,7 @@ void QgsGrassModuleOption::addRow()
     {
       rx.setPattern( QStringLiteral( "[A-Za-z0-9_.]+" ) );
     }
-    mValidator = new QRegExpValidator( rx, this );
+    mValidator = new QRegularExpressionValidator( rx, this );
 
     lineEdit->setValidator( mValidator );
   }
@@ -666,22 +666,26 @@ bool QgsGrassModuleOption::checkVersion( const QString &version_min, const QStri
 
   bool minOk = true;
   bool maxOk = true;
-  QRegExp rxVersionMajor( "(\\d+)" );
-  QRegExp rxVersion( "(\\d+)\\.(\\d+)" );
+  QRegularExpression rxVersionMajor( QRegularExpression::anchoredPattern( "(\\d+)" ) );
+  QRegularExpression rxVersion( QRegularExpression::anchoredPattern( "(\\d+)\\.(\\d+)" ) );
+  QRegularExpressionMatch vMatches;
+  QRegularExpressionMatch vmMatches;
   if ( !version_min.isEmpty() )
   {
-    if ( rxVersion.exactMatch( version_min ) )
+    vMatches = rxVersion.match( version_min );
+    vmMatches = rxVersionMajor.match( version_min );
+    if ( vMatches.hasMatch() )
     {
-      int versionMajorMin = rxVersion.cap( 1 ).toInt();
-      int versionMinorMin = rxVersion.cap( 2 ).toInt();
+      int versionMajorMin = vMatches.captured( 1 ).toInt();
+      int versionMinorMin = vMatches.captured( 2 ).toInt();
       if ( QgsGrass::versionMajor() < versionMajorMin || ( QgsGrass::versionMajor() == versionMajorMin && QgsGrass::versionMinor() < versionMinorMin ) )
       {
         minOk = false;
       }
     }
-    else if ( rxVersionMajor.exactMatch( version_min ) )
+    else if ( vmMatches.hasMatch() )
     {
-      int versionMajorMin = rxVersionMajor.cap( 1 ).toInt();
+      int versionMajorMin = vmMatches.captured( 1 ).toInt();
       if ( QgsGrass::versionMajor() < versionMajorMin )
       {
         minOk = false;
@@ -695,18 +699,20 @@ bool QgsGrassModuleOption::checkVersion( const QString &version_min, const QStri
 
   if ( !version_max.isEmpty() )
   {
-    if ( rxVersion.exactMatch( version_max ) )
+    vMatches = rxVersion.match( version_max );
+    vmMatches = rxVersionMajor.match( version_max );
+    if ( vMatches.hasMatch() )
     {
-      int versionMajorMax = rxVersion.cap( 1 ).toInt();
-      int versionMinorMax = rxVersion.cap( 2 ).toInt();
+      int versionMajorMax = vMatches.captured( 1 ).toInt();
+      int versionMinorMax = vMatches.captured( 2 ).toInt();
       if ( QgsGrass::versionMajor() > versionMajorMax || ( QgsGrass::versionMajor() == versionMajorMax && QgsGrass::versionMinor() > versionMinorMax ) )
       {
         maxOk = false;
       }
     }
-    else if ( rxVersionMajor.exactMatch( version_max ) )
+    else if ( vmMatches.hasMatch() )
     {
-      int versionMajorMax = rxVersionMajor.cap( 1 ).toInt();
+      int versionMajorMax = vmMatches.captured( 1 ).toInt();
       if ( QgsGrass::versionMajor() > versionMajorMax )
       {
         maxOk = false;
@@ -1029,10 +1035,10 @@ QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
 {
   // Validator is disabled to also allow entering of expressions
 #if 0
-  QRegExp rx( "^[a-zA-Z_][a-zA-Z0-9_]*$" );
+  QRegularExpression rx( "^[a-zA-Z_][a-zA-Z0-9_]*$" );
   Q_FOREACH ( QLineEdit *lineEdit, mLineEdits )
   {
-    lineEdit->setValidator( new QRegExpValidator( rx, this ) );
+    lineEdit->setValidator( new QRegularExpressionValidator( rx, this ) );
   }
 #endif
 }
