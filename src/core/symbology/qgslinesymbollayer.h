@@ -599,6 +599,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) FINAL;
     QgsMapUnitScale mapUnitScale() const FINAL;
     QVariantMap properties() const override;
+    bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
   protected:
 

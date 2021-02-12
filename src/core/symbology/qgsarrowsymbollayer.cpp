@@ -830,3 +830,8 @@ QColor QgsArrowSymbolLayer::color() const
   return mSymbol.get() ? mSymbol->color() : mColor;
 }
 
+bool QgsArrowSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
+}
+

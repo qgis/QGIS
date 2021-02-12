@@ -988,6 +988,11 @@ double QgsGradientFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &con
   return offsetBleed;
 }
 
+bool QgsGradientFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
+}
+
 void QgsGradientFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mOffsetUnit = unit;
@@ -1616,6 +1621,11 @@ double QgsShapeburstFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &c
 {
   double offsetBleed = context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
+}
+
+bool QgsShapeburstFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
 }
 
 void QgsShapeburstFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
@@ -4049,6 +4059,11 @@ bool QgsCentroidFillSymbolLayer::hasDataDefinedProperties() const
   return false;
 }
 
+bool QgsCentroidFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
+}
+
 void QgsCentroidFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   if ( mMarker )
@@ -4614,6 +4629,11 @@ QgsRandomMarkerFillSymbolLayer *QgsRandomMarkerFillSymbolLayer::clone() const
   copyDataDefinedProperties( res.get() );
   copyPaintEffect( res.get() );
   return res.release();
+}
+
+bool QgsRandomMarkerFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
 }
 
 QgsSymbol *QgsRandomMarkerFillSymbolLayer::subSymbol()
