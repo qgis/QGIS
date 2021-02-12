@@ -196,7 +196,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           }
           if ( res == 3 )
           {
-            emit messageEmitted( tr( "At least one geometry intersected is invalid. You should fix geometries." ), Qgis::Warning );
+            emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
           }
         }
 

@@ -343,7 +343,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           f->setGeometry( featGeom );
           if ( avoidIntersectionsReturn == 3 )
           {
-            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. You should fix geometries." ), Qgis::Warning );
+            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
           }
           if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
           {
