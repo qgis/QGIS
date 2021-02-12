@@ -122,7 +122,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetFeatureInfo" ) )
         {
-          writeGetFeatureInfo( mServerIface, project, version, request, response );
+          writeGetFeatureInfo( mServerIface, project, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetContext" ) )
         {
