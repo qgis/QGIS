@@ -104,12 +104,12 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         algs = []
         try:
             folder = OtbUtils.otbFolder()
-            alg_names = []
             algs_txt = self.algsFile(folder)
             with open(algs_txt) as lines:
                 line = lines.readline().strip('\n').strip()
                 if line != '' and line.startswith('#'):
                     line = lines.readline().strip('\n').strip()
+                alg_names = []
                 while line != '' and not line.startswith('#'):
                     data = line.split('|')
                     descriptionFile = self.descrFile(folder, str(data[1]) + '.txt')
@@ -237,11 +237,11 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         return os.path.join(self.descrFolder(d), f)
 
     def appDirs(self, v):
-        app_dirs = []
-        for f in v.split(';'):
-            if f is not None and os.path.exists(f):
-                app_dirs.append(self.normalize_path(f))
-        return app_dirs
+        return [
+            self.normalize_path(f)
+            for f in v.split(';')
+            if f is not None and os.path.exists(f)
+        ]
 
     def name(self):
         return 'OTB'

@@ -116,13 +116,13 @@ class CheckValidity(QgisAlgorithm):
         if method_param == 0:
             settings = QgsSettings()
             method = int(settings.value(settings_method_key, 0)) - 1
-            if method < 0:
-                method = 0
+            method = max(method, 0)
         else:
             method = method_param - 1
 
-        results = self.doCheck(method, parameters, context, feedback, ignore_ring_self_intersection)
-        return results
+        return self.doCheck(
+            method, parameters, context, feedback, ignore_ring_self_intersection
+        )
 
     def doCheck(self, method, parameters, context, feedback, ignore_ring_self_intersection):
         flags = QgsGeometry.FlagAllowSelfTouchingHoles if ignore_ring_self_intersection else QgsGeometry.ValidityFlags()
