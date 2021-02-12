@@ -128,6 +128,7 @@ class Buffer(GdalAlgorithm):
             'sqlite',
             '-sql'
         ]
+
         if dissolve or fieldName:
             sql = 'SELECT ST_Union(ST_Buffer({}, {})) AS {}{} FROM "{}"'.format(geometry, distance, geometry, other_fields, layerName)
         else:
