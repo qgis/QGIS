@@ -133,10 +133,12 @@ class OneSideBuffer(GdalAlgorithm):
             '-sql'
         ]
 
-        other_fields = ',*' if any(
-            f for f in fields
+        other_fields_exist = any(
+            True for f in fields
             if f.name() != geometry
-        ) else ''
+        )
+
+        other_fields = ',*' if other_fields_exist else ''
 
         if dissolve or fieldName:
             sql = 'SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}{} FROM "{}"'.format(geometry, distance, side, geometry, other_fields, layerName)
