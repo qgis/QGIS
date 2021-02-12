@@ -242,7 +242,7 @@ cat $installprefix/origins.txt | sort | uniq > $installprefix/origins.new && mv 
 
 # Create package
 DISTROOT=build_mingw64/dist/usr/x86_64-w64-mingw32/sys-root/mingw
-DEBUGROOT=dist_DEBUG
+DEBUGROOT=dist_debug
 for file in $(find $DISTROOT -name '*.DEBUG' \( -type l -or -type f \)); do
     dest=${file/$DISTROOT/$DEBUGROOT}
     mkdir -p "$(dirname $dest)"
