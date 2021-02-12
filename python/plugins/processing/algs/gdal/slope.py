@@ -108,25 +108,24 @@ class slope(GdalAlgorithm):
         return 'gdaldem'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = ['slope']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        arguments.append(inLayer.source())
-
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
-        arguments.append(out)
 
-        arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
-
-        arguments.append('-b')
-        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
-
-        arguments.append('-s')
-        arguments.append(str(self.parameterAsDouble(parameters, self.SCALE, context)))
+        arguments = [
+            'slope',
+            inLayer.source(),
+            out,
+            '-of',
+            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]),
+            '-b',
+            str(self.parameterAsInt(parameters, self.BAND, context)),
+            '-s',
+            str(self.parameterAsDouble(parameters, self.SCALE, context)),
+        ]
 
         if self.parameterAsBoolean(parameters, self.AS_PERCENT, context):
             arguments.append('-p')

@@ -423,8 +423,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 getattr(self, fullName)(parameters, context, feedback)
 
         # Run GRASS
-        loglines = []
-        loglines.append(self.tr('GRASS GIS 7 execution commands'))
+        loglines = [self.tr('GRASS GIS 7 execution commands')]
         for line in self.commands:
             feedback.pushCommandInfo(line)
             loglines.append(line)
@@ -790,9 +789,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param createOpt: creation options for format.
         :param metaOpt: metadata options for export.
         """
-        if not createOpt:
-            if outFormat in Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS:
-                createOpt = Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS[outFormat]
+        createOpt = createOpt or Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS.get(outFormat)
 
         for cmd in [self.commands, self.outputCommands]:
             # Adjust region to layer before exporting
