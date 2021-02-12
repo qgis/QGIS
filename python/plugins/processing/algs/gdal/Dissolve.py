@@ -124,17 +124,12 @@ class Dissolve(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        other_fields = []
-        for f in fields:
-            if f.name() == geometry:
-                continue
+        other_fields_exist = any(
+            True for f in fields
+            if f.name() != geometry
+        )
 
-            other_fields.append('"{}"'.format(f.name()))
-
-        if other_fields:
-            other_fields = ',*'
-        else:
-            other_fields = ''
+        other_fields = ',*' if other_fields_exist else ''
 
         arguments = [
             output,
