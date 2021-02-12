@@ -10,15 +10,18 @@ __author__ = 'Nyall Dawson'
 __date__ = '15/07/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
+import os
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QTemporaryDir
 
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
+                       QgsProject,
                        QgsGeometry,
                        QgsPointXY,
-                       QgsField)
+                       QgsField,
+                       QgsVectorFileWriter,
+                       QgsCoordinateTransformContext)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -390,6 +393,56 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         # test contents of buffer
         self.assertEqual(layer.editBuffer().addedAttributes()[0].name(), 'new1')
         self.assertEqual(layer.editBuffer().addedAttributes()[1].name(), 'new2')
+
+    def testTransactionGroup(self):
+        """Test that the buffer works as expected when in transaction"""
+
+        ml = QgsVectorLayer('Point?field=int:integer&crs=epsg:4326', 'test', 'memory')
+        self.assertTrue(ml.isValid())
+
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'layer_a'
+        err, _ = QgsVectorFileWriter.writeAsVectorFormatV2(ml, os.path.join(d.path(), 'transaction_test.gpkg'), QgsCoordinateTransformContext(), options)
+
+        self.assertEqual(err, QgsVectorFileWriter.NoError)
+        self.assertTrue(os.path.isfile(os.path.join(d.path(), 'transaction_test.gpkg')))
+
+        options.layerName = 'layer_b'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        err, _ = QgsVectorFileWriter.writeAsVectorFormatV2(ml, os.path.join(d.path(), 'transaction_test.gpkg'), QgsCoordinateTransformContext(), options)
+
+        def _test(autoTransaction):
+
+            layer_a = QgsVectorLayer(os.path.join(d.path(), 'transaction_test.gpkg|layername=layer_a'))
+            layer_b = QgsVectorLayer(os.path.join(d.path(), 'transaction_test.gpkg|layername=layer_b'))
+
+            self.assertTrue(layer_a.isValid())
+            self.assertTrue(layer_b.isValid())
+
+            project = QgsProject()
+            project.setAutoTransaction(autoTransaction)
+            project.addMapLayers([layer_a, layer_b])
+
+            self.assertFalse(layer_b.isEditable())
+            self.assertTrue(layer_a.startEditing())
+
+            if not autoTransaction:
+                self.assertTrue(layer_b.startEditing())
+
+            self.assertTrue(layer_b.isEditable())
+
+            f = QgsFeature(layer_a.fields())
+            f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+
+            self.assertTrue(layer_a.addFeatures([f]))
+
+            buffer = layer_a.editBuffer()
+            self.assertTrue(len(buffer.addedFeatures()) > 0)
+
+        _test(False)
+        _test(True)
 
 
 if __name__ == '__main__':

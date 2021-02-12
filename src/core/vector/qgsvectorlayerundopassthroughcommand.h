@@ -200,9 +200,10 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttribute: public Qg
 
   private:
     QgsFeatureId mFid;
-    const int mField;
+    const int mFieldIndex;
     const QVariant mNewValue;
-    const QVariant mOldValue;
+    QVariant mOldValue;
+    bool mFirstChange;
 };
 
 /**

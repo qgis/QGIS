@@ -218,7 +218,10 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
     return QString();
 
   if ( !mLastSavePointIsDirty && !mSavepoints.isEmpty() )
+  {
+    qDebug() << "Returning TOP >>>>> " << mSavepoints.top();
     return mSavepoints.top();
+  }
 
   const QString name( QStringLiteral( "qgis" ) + ( QUuid::createUuid().toString().mid( 1, 24 ).replace( '-', QString() ) ) );
 

@@ -32,7 +32,7 @@ bool QgsVectorLayerEditPassthrough::isModified() const
 
 bool QgsVectorLayerEditPassthrough::modify( QgsVectorLayerUndoPassthroughCommand *cmd )
 {
-  L->undoStack()->push( cmd ); // push takes owneship -> no need for cmd to be a smart ptr
+  L->undoStack()->push( cmd ); // push takes ownership -> no need for cmd to be a smart ptr
   if ( cmd->hasError() )
     return false;
 
@@ -109,6 +109,11 @@ bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString &ne
 bool QgsVectorLayerEditPassthrough::commitChanges( QStringList & /*commitErrors*/ )
 {
   mModified = false;
+  for ( int i = 0; i < L->undoStack()->count(); ++i )
+  {
+    const QgsVectorLayerUndoPassthroughCommand *cmdPrt = static_cast<const QgsVectorLayerUndoPassthroughCommand *>( L->undoStack()->command( i ) );
+    qDebug() << cmdPrt->text();
+  }
   return true;
 }
 
