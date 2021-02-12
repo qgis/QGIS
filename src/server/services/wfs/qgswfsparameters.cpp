@@ -88,15 +88,7 @@ namespace QgsWfs
       }
       else
       {
-        int pos = 0;
-        QString cap1;
-        while ( ( matches.capturedStart() != -1 )
-        {
-          cap1 = maches.captured( 1 );
-          theList << cap1;
-          pos += cap1.length();
-          matches = rx.match( val.mid( pos ) );
-        }
+      theList = maches.capturedTexts();
       }
     }
 

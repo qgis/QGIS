@@ -966,15 +966,7 @@ namespace QgsWfs
       }
       else
       {
-        int pos = 0;
-        QString cap1;
-        while ( ( matches.capturedStart() != -1 )
-        {
-          cap1 = maches.captured( 1 );
-          expFilterList << cap1;
-          pos += cap1.length();
-          matches = rx.match( expFilterName.mid( pos ) );
-        }
+      expFilterList = maches.capturedTexts();
       }
 
       // Verifying the 1:1 mapping between TYPENAME and EXP_FILTER but without exception
@@ -1068,15 +1060,7 @@ namespace QgsWfs
       }
       else
       {
-        int pos = 0;
-        QString cap1;
-        while ( ( matches.capturedStart() != -1 )
-        {
-          cap1 = maches.captured( 1 );
-          filterList << cap1;
-          pos += cap1.length();
-          matches = rx.match( filterName.mid( pos ) );
-        }
+      filterList = matches.capturedTexts();
       }
 
       // Verifying the 1:1 mapping between TYPENAME and FILTER

@@ -209,15 +209,8 @@ void QgsInterval::setSeconds( double seconds )
 QgsInterval QgsInterval::fromString( const QString &string )
 {
   double seconds = 0;
-  QRegExp rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
-  QStringList list;
-  int pos = 0;
+  
 
-  while ( ( pos = rx.indexIn( string, pos ) ) != -1 )
-  {
-    list << rx.cap( 1 );
-    pos += rx.matchedLength();
-  }
 
   QMap<int, QStringList> map;
   map.insert( 1, QStringList() << QStringLiteral( "second" ) << QStringLiteral( "seconds" ) << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( '|' ) );
@@ -228,10 +221,10 @@ QgsInterval QgsInterval::fromString( const QString &string )
   map.insert( 0 + MONTHS, QStringList() << QStringLiteral( "month" ) << QStringLiteral( "months" ) << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
   map.insert( 0 + YEARS, QStringList() << QStringLiteral( "year" ) << QStringLiteral( "years" ) << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
 
-  const auto constList = list;
+  const auto constList = QRegularExpression( "([-+]?\\d*\\.?\\d+\\s+\\S+)", QRegularExpression::CaseInsensitive ).match( string ).capturedTexts;
   for ( const QString &match : constList )
   {
-    QStringList split = match.split( QRegExp( "\\s+" ) );
+    QStringList split = match.split( QRegularExpression( "\\s+" ) );
     bool ok;
     double value = split.at( 0 ).toDouble( &ok );
     if ( !ok )
