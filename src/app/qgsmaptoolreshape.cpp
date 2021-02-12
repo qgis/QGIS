@@ -179,7 +179,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           if ( avoidIntersectionsLayers.size() > 0 )
           {
             res = geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures );
-            if ( res == 1 || res == 3 )
+            if ( res == 1 )
             {
               emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::Critical );
               vlayer->destroyEditCommand();
@@ -194,7 +194,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
             vlayer->destroyEditCommand();
             return;
           }
-          if ( res == 2 || res == 4 )
+          if ( res == 3 )
           {
             emit messageEmitted( tr( "At least one geometry intersected is invalid. You should fix geometries." ), Qgis::Warning );
           }

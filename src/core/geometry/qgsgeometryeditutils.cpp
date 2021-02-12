@@ -224,14 +224,12 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
     const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-    bool &hadInvalidGeometry,
-    bool &haveGeometryError,
+    bool &haveInvalidGeometry,
     const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures
                                                                              )
 {
 
-  haveGeometryError = false;
-  hadInvalidGeometry = false;
+  haveInvalidGeometry = false;
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( !geomEngine )
   {
@@ -272,14 +270,9 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
         continue;
 
       if ( !f.geometry().isGeosValid() )
-        hadInvalidGeometry = true;
+        haveInvalidGeometry = true;
 
-      QgsGeometry geomValid = f.geometry().makeValid();
-      if ( geomValid.isNull() )
-        haveGeometryError = true;
-
-      nearGeometries << geomValid;
-
+      nearGeometries << f.geometry();
     }
   }
 
