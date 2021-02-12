@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script to build QGIS inside the qgis-build-deps-mingw.dockerfile Docker container
-# Run from QGIS root dirctory with:
+# Run from QGIS root directory with:
 # docker run --rm -w /QGIS -v $(pwd):/QGIS elpaso/qgis-deps-mingw:latest /QGIS/ms-windows/mingw/build.sh
 
 
