@@ -77,48 +77,44 @@ class TestQgsSettingsRegistry(unittest.TestCase):
         self.assertEqual(settingsEntryString.minLength(), 4)
         self.assertEqual(settingsEntryString.maxLength(), 10)
 
-#      // Check default value
-#      QCOMPARE( settingsRegistry.defaultValue<QString>( key ), defaultValue );
+        # Check default value
+        self.assertEqual(self.settingsRegistry.defaultValue(key), defaultValue)
 
-#      // Set invalid short new string
-#      QString shortString( "my" );
-#      settingsRegistry.setValue( key,
-#                                 shortString );
-#      // Check value not changed from default
-#      QCOMPARE( settingsRegistry.value<QString>( key ), defaultValue );
+        # Set invalid short new string
+        shortString = "my"
+        self.settingsRegistry.setValue(key,
+                                       shortString)
+        # Check value not changed from default
+        self.assertEqual(self.settingsRegistry.value(key), defaultValue)
 
-#      // Set invalid long new string
-#      QString longString( "myLongString" );
-#      settingsRegistry.setValue( key,
-#                                 longString );
-#      // Check value not changed from default
-#      QCOMPARE( settingsRegistry.value<QString>( key ), defaultValue );
+        # Set invalid long new string
+        longString = "myLongString"
+        self.settingsRegistry.setValue(key,
+                                       longString)
+        # Check value not changed from default
+        self.assertEqual(self.settingsRegistry.value(key), defaultValue)
 
-#      // Set new string
-#      QString newString( "newString" );
-#      settingsRegistry.setValue( key,
-#                                 newString );
-#      QCOMPARE( settingsRegistry.value<QString>( key ), newString );
+        # Set new string
+        newString = "newString"
+        self.settingsRegistry.setValue(key,
+                                       newString)
+        self.assertEqual(self.settingsRegistry.value(key), newString)
 
-#      // Unregister
-#      settingsRegistry.unregister( key );
+        # Unregister
+        self.settingsRegistry.unregister(key)
 
-#      // Check string max length turned off
-#      QString keyMaxLengthOff( "qgis/testing/settings_registry/my_string_value_without_limit" );
-#      settingsRegistry.registerSettingsString( keyMaxLengthOff,
-#          defaultValue,
-#          settingsDescription,
-#          0,
-#          -1 );
+        # Check string max length turned off
+        keyMaxLengthOff = "qgis/testing/settings_registry/my_string_value_without_limit"
+        self.settingsRegistry.registerSettingsString(keyMaxLengthOff, defaultValue, "Settings description", 0, -1)
 
-#      // Set new string
-#      QString newLongerString( "This is a longer string" );
-#      settingsRegistry.setValue( keyMaxLengthOff,
-#                                 newLongerString );
-#      QCOMPARE( settingsRegistry.value<QString>( keyMaxLengthOff ), newLongerString );
+        # Set new string
+        newLongerString = "This is a longer string"
+        self.settingsRegistry.setValue(keyMaxLengthOff,
+                                       newLongerString)
+        self.assertEqual(self.settingsRegistry.value(keyMaxLengthOff), newLongerString)
 
-#      // Unregister
-#      settingsRegistry.unregister( keyMaxLengthOff );
+        # Unregister
+        self.settingsRegistry.unregister(keyMaxLengthOff)
 
     def test_section_getters_setters(self):
 
