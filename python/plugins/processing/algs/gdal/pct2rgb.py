@@ -77,22 +77,21 @@ class pct2rgb(GdalAlgorithm):
         return 'pct2rgb'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        arguments.append(inLayer.source())
-
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
-        arguments.append(out)
 
-        arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
-
-        arguments.append('-b')
-        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+        arguments = [
+            inLayer.source(),
+            out,
+            '-of',
+            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]),
+            '-b',
+            str(self.parameterAsInt(parameters, self.BAND, context)),
+        ]
 
         if self.parameterAsBoolean(parameters, self.RGBA, context):
             arguments.append('-rgba')
