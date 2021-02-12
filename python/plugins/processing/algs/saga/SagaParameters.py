@@ -80,15 +80,14 @@ class Parameters:
         """
         Creates a parameter from a definition line.
         """
-        if line.startswith('SagaImageOutput'):
-            tokens = line.split("|")
-            params = [t if str(t) != str(None) else None for t in tokens[1:]]
-            if len(params) > 3:
-                params[3] = True if params[3].lower() == 'true' else False
-            if len(params) > 4:
-                params[4] = True if params[4].lower() == 'true' else False
-            param = SagaImageOutputParam(*params)
-            param.setDescription(QCoreApplication.translate("SAGAAlgorithm", param.description()))
-            return param
-        else:
+        if not line.startswith('SagaImageOutput'):
             return getParameterFromString(line, "SAGAAlgorithm")
+        tokens = line.split("|")
+        params = [t if str(t) != str(None) else None for t in tokens[1:]]
+        if len(params) > 3:
+            params[3] = params[3].lower() == 'true'
+        if len(params) > 4:
+            params[4] = params[4].lower() == 'true'
+        param = SagaImageOutputParam(*params)
+        param.setDescription(QCoreApplication.translate("SAGAAlgorithm", param.description()))
+        return param

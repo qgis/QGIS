@@ -191,7 +191,10 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             # - metadata without a 'group_key'
             # - metadata with 'group_key' and 'group_key' is not in list of parameters. see ParameterGroup in OTB
             # - metadata with 'group_key' and 'group_key' is a valid parameter and it's value == metadata()['group_value']
-            if 'group_key' in param.metadata() and not param.metadata()['group_key'] in parameters:
+            if (
+                'group_key' in param.metadata()
+                and param.metadata()['group_key'] not in parameters
+            ):
                 valid_params[k] = v
             elif 'group_key' not in param.metadata() or parameters[param.metadata()['group_key']] == param.metadata()[
                     'group_value']:
@@ -219,9 +222,14 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             if isinstance(param, QgsProcessingParameterEnum) and param.name() == "outputpixeltype":
                 value = self.parameterAsEnum(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterEnum):
-                value = " ".join([param.options()[i]
-                                  for i in self.parameterAsEnums(parameters, param.name(), context)
-                                  if i >= 0 and i < len(param.options())])
+                value = " ".join(
+                    param.options()[i]
+                    for i in self.parameterAsEnums(
+                        parameters, param.name(), context
+                    )
+                    if i >= 0 and i < len(param.options())
+                )
+
             elif isinstance(param, QgsProcessingParameterField):
                 value = " ".join(self.parameterAsFields(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterBoolean):
@@ -242,7 +250,11 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 layers = self.parameterAsLayerList(parameters, param.name(), context)
                 if layers is None or len(layers) == 0:
                     continue
-                value = ' '.join(['"{}"'.format(self.getLayerSource(param.name(), layer)) for layer in layers])
+                value = ' '.join(
+                    '"{}"'.format(self.getLayerSource(param.name(), layer))
+                    for layer in layers
+                )
+
             elif isinstance(param, QgsProcessingParameterNumber):
                 if param.dataType() == QgsProcessingParameterNumber.Integer:
                     value = self.parameterAsInt(parameters, param.name(), context)
@@ -253,8 +265,13 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             elif isinstance(param, QgsProcessingParameterString):
                 value = '"{}"'.format(self.parameterAsString(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterBand):
-                value = ' '.join(['"Channel{}"'.format(index) for index in
-                                  self.parameterAsInts(parameters, param.name(), context)])
+                value = ' '.join(
+                    '"Channel{}"'.format(index)
+                    for index in self.parameterAsInts(
+                        parameters, param.name(), context
+                    )
+                )
+
             else:
                 # Use whatever is given
                 value = '"{}"'.format(parameters[param.name()])
@@ -276,11 +293,11 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
         OtbUtils.executeOtb(command, feedback)
 
-        result = {}
-        for o in self.outputDefinitions():
-            if o.name() in output_files:
-                result[o.name()] = output_files[o.name()]
-        return result
+        return {
+            o.name(): output_files[o.name()]
+            for o in self.outputDefinitions()
+            if o.name() in output_files
+        }
 
     def getLayerSource(self, name, layer):
         providerName = layer.dataProvider().name()
