@@ -71,6 +71,54 @@ void QgsSettingsRegistry::registerSettingsString( const QString &key,
                               this ) );
 }
 
+void QgsSettingsRegistry::registerSettingsInteger( const QString &key,
+    qlonglong defaultValue,
+    const QString &description,
+    qlonglong minValue,
+    qlonglong maxValue )
+{
+  if ( isRegistered( key ) == true )
+  {
+    QgsDebugMsg( QObject::tr( "Settings key '%1' already registered" ).arg( key ) );
+    return;
+  }
+
+  mMapSettingsEntry.insert( key,
+                            new QgsSettingsEntryInteger(
+                              key,
+                              mSection,
+                              defaultValue,
+                              description,
+                              minValue,
+                              maxValue,
+                              this ) );
+}
+
+void QgsSettingsRegistry::registerSettingsDouble( const QString &key,
+    double defaultValue,
+    const QString &description,
+    double minValue,
+    double maxValue,
+    double displayDecimals )
+{
+  if ( isRegistered( key ) == true )
+  {
+    QgsDebugMsg( QObject::tr( "Settings key '%1' already registered" ).arg( key ) );
+    return;
+  }
+
+  mMapSettingsEntry.insert( key,
+                            new QgsSettingsEntryDouble(
+                              key,
+                              mSection,
+                              defaultValue,
+                              description,
+                              minValue,
+                              maxValue,
+                              displayDecimals,
+                              this ) );
+}
+
 bool QgsSettingsRegistry::isRegistered( const QString &key ) const
 {
   return mMapSettingsEntry.contains( key );
@@ -88,6 +136,17 @@ void QgsSettingsRegistry::unregister( const QString &key )
 
   settingsEntry->remove();
   delete settingsEntry;
+}
+
+QgsSettingsEntry *QgsSettingsRegistry::settingsEntry( const QString &key ) const
+{
+  if ( isRegistered( key ) == false )
+  {
+    QgsDebugMsg( QObject::tr( "No such settings key found in registry '%1'" ).arg( key ) );
+    return nullptr;
+  }
+
+  return mMapSettingsEntry.value( key );
 }
 
 bool QgsSettingsRegistry::setValue( const QString &key,
@@ -122,3 +181,4 @@ QString QgsSettingsRegistry::description( const QString &key ) const
 
   return mMapSettingsEntry.value( key )->description();
 }
+

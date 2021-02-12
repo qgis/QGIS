@@ -22,6 +22,15 @@ class QgsSettingsEntry : QObject
 %End
   public:
 
+    enum SettingsType
+    {
+      Variant,
+      String,
+      Integer,
+      Double,
+      Enum
+    };
+
     QgsSettingsEntry( QString key = QString(),
                       QgsSettings::Section settingsSection = QgsSettings::NoSection,
                       QVariant defaultValue = QVariant(),
@@ -30,9 +39,6 @@ class QgsSettingsEntry : QObject
 %Docstring
 Constructor for QgsSettingsEntry.
 %End
-
-    QgsSettingsEntry( const QgsSettingsEntry &other );
-
 
     virtual bool setValue( const QVariant &value );
 %Docstring
@@ -50,6 +56,8 @@ Get settings value.
 Get settings default value.
 %End
 
+
+    virtual SettingsType settingsType() const;
 
     QString description() const;
 
@@ -84,6 +92,8 @@ Constructor for QgsSettingsEntryString.
     virtual bool setValue( const QVariant &value );
 
 
+    virtual SettingsType settingsType() const;
+
     int minLength();
 %Docstring
 Returns the string minimum length.
@@ -92,6 +102,94 @@ Returns the string minimum length.
     int maxLength();
 %Docstring
 Returns the string maximum length. By -1 there is no limitation.
+%End
+
+};
+
+class QgsSettingsEntryInteger : QgsSettingsEntry
+{
+%Docstring
+An integer settings entry.
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryInteger( const QString &key,
+                             QgsSettings::Section section,
+                             qlonglong defaultValue,
+                             const QString &description = QString(),
+                             qlonglong minValue = -__LONG_LONG_MAX__ + 1,
+                             qlonglong maxValue = __LONG_LONG_MAX__,
+                             QObject *parent = 0 );
+%Docstring
+Constructor for QgsSettingsEntryInteger.
+%End
+
+    virtual bool setValue( const QVariant &value );
+
+
+    virtual SettingsType settingsType() const;
+
+    qlonglong minValue();
+%Docstring
+Returns the minimum value.
+%End
+
+    qlonglong maxValue();
+%Docstring
+Returns the maximum value.
+%End
+
+};
+
+class QgsSettingsEntryDouble : QgsSettingsEntry
+{
+%Docstring
+A double settings entry.
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryDouble( const QString &key,
+                            QgsSettings::Section section,
+                            double defaultValue,
+                            const QString &description = QString(),
+                            double minValue = __DBL_MIN__,
+                            double maxValue = __DBL_MAX__,
+                            double displayDecimals = 1,
+                            QObject *parent = 0 );
+%Docstring
+Constructor for QgsSettingsEntryDouble.
+%End
+
+    virtual bool setValue( const QVariant &value );
+
+
+    virtual SettingsType settingsType() const;
+
+    double minValue() const;
+%Docstring
+Returns the minimum value.
+%End
+
+    double maxValue() const;
+%Docstring
+Returns the maximum value.
+%End
+
+    int displayHintDecimals() const;
+%Docstring
+Returns how much decimals should be shown in the Gui.
 %End
 
 };

@@ -17,6 +17,7 @@
 #define QGSSETTINGSENTRY_H
 
 #include <QString>
+#include <limits>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -33,6 +34,15 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     Q_OBJECT
   public:
 
+    enum SettingsType
+    {
+      Variant,
+      String,
+      Integer,
+      Double,
+      Enum
+    };
+
     /**
      * Constructor for QgsSettingsEntry.
      */
@@ -41,13 +51,6 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
                       QVariant defaultValue = QVariant(),
                       QString description = QString(),
                       QObject *parent = nullptr );
-
-    QgsSettingsEntry( const QgsSettingsEntry &other );
-
-    /**
-     * Copy constructor for QgsSettingsEntry.
-     */
-    QgsSettingsEntry &operator=( const QgsSettingsEntry &other );
 
     /**
      * Set settings value.
@@ -93,6 +96,8 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     }
 #endif
 
+    virtual SettingsType settingsType() const;
+
     QString description() const;
 
     void remove();
@@ -129,6 +134,8 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 
     bool setValue( const QVariant &value ) override;
 
+    virtual SettingsType settingsType() const;
+
     /**
      * Returns the string minimum length.
      */
@@ -146,6 +153,143 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 
 };
 
+/**
+ * \class QgsSettingsEntryInteger
+ * \ingroup core
+ * An integer settings entry.
+  * \since QGIS 3.17
+ */
+class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryInteger.
+     */
+    QgsSettingsEntryInteger( const QString &key,
+                             QgsSettings::Section section,
+                             qlonglong defaultValue,
+                             const QString &description = QString(),
+                             qlonglong minValue = -__LONG_LONG_MAX__ + 1,
+                             qlonglong maxValue = __LONG_LONG_MAX__,
+                             QObject *parent = nullptr );
+
+    bool setValue( const QVariant &value ) override;
+
+    virtual SettingsType settingsType() const;
+
+    /**
+     * Returns the minimum value.
+     */
+    qlonglong minValue();
+
+    /**
+     * Returns the maximum value.
+     */
+    qlonglong maxValue();
+
+  private:
+
+    qlonglong mMinValue;
+    qlonglong mMaxValue;
+
+};
+
+/**
+ * \class QgsSettingsEntryDouble
+ * \ingroup core
+ * A double settings entry.
+  * \since QGIS 3.17
+ */
+class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryDouble.
+     */
+    QgsSettingsEntryDouble( const QString &key,
+                            QgsSettings::Section section,
+                            double defaultValue,
+                            const QString &description = QString(),
+                            double minValue = __DBL_MIN__,
+                            double maxValue = __DBL_MAX__,
+                            double displayDecimals = 1,
+                            QObject *parent = nullptr );
+
+    bool setValue( const QVariant &value ) override;
+
+    virtual SettingsType settingsType() const;
+
+    /**
+     * Returns the minimum value.
+     */
+    double minValue() const;
+
+    /**
+     * Returns the maximum value.
+     */
+    double maxValue() const;
+
+    /**
+     * Returns how much decimals should be shown in the Gui.
+     */
+    int displayHintDecimals() const;
+
+  private:
+
+    double mMinValue;
+    double mMaxValue;
+
+    int mDisplayHintDecimals;
+
+};
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsSettingsEntryEnum
+ * \ingroup core
+ * An enum settings entry.
+  * \since QGIS 3.17
+ */
+class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryEnum.
+     */
+    template <class T>
+    QgsSettingsEntryEnum( const QString &key,
+                          QgsSettings::Section section,
+                          const T &defaultValue,
+                          const QString &description = QString(),
+                          QObject *parent = nullptr )
+      : QgsSettingsEntry( key,
+                          section,
+                          defaultValue,
+                          description,
+                          parent )
+    {
+      mMetaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( mMetaEnum.isValid() );
+      if ( !mMetaEnum.isValid() )
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+      }
+    }
+
+    bool setValue( const QVariant &value ) override;
+
+    virtual SettingsType settingsType() const;
+
+  private:
+
+    QMetaEnum mMetaEnum;
+
+};
+#endif
 
 
 
