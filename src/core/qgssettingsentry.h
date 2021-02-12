@@ -29,7 +29,7 @@
  *
  * \since QGIS 3.17
  */
-class CORE_EXPORT QgsSettingsEntry : public QObject
+class CORE_EXPORT QgsSettingsEntry
 {
 
 #ifdef SIP_RUN
@@ -45,7 +45,6 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     SIP_END
 #endif
 
-    Q_OBJECT
   public:
 
     enum SettingsType
@@ -63,8 +62,8 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
     QgsSettingsEntry( QString key = QString(),
                       QgsSettings::Section settingsSection = QgsSettings::NoSection,
                       QVariant defaultValue = QVariant(),
-                      QString description = QString(),
-                      QObject *parent = nullptr );
+                      QString description = QString() );
+    virtual ~QgsSettingsEntry();
 
     /**
      * Set settings value.
@@ -133,7 +132,6 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
  */
 class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 {
-    Q_OBJECT
   public:
 
     /**
@@ -144,8 +142,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
                             const QString &defaultValue,
                             const QString &description = QString(),
                             int minLength = 0,
-                            int maxLength = -1,
-                            QObject *parent = nullptr );
+                            int maxLength = -1 );
 
     bool setValue( const QVariant &value ) override;
 
@@ -176,7 +173,6 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
  */
 class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
 {
-    Q_OBJECT
   public:
 
     /**
@@ -187,8 +183,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
                              qlonglong defaultValue,
                              const QString &description = QString(),
                              qlonglong minValue = -__LONG_LONG_MAX__ + 1,
-                             qlonglong maxValue = __LONG_LONG_MAX__,
-                             QObject *parent = nullptr );
+                             qlonglong maxValue = __LONG_LONG_MAX__ );
 
     bool setValue( const QVariant &value ) override;
 
@@ -219,7 +214,6 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
  */
 class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
 {
-    Q_OBJECT
   public:
 
     /**
@@ -231,8 +225,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
                             const QString &description = QString(),
                             double minValue = __DBL_MIN__,
                             double maxValue = __DBL_MAX__,
-                            double displayDecimals = 1,
-                            QObject *parent = nullptr );
+                            double displayDecimals = 1 );
 
     bool setValue( const QVariant &value ) override;
 
@@ -272,7 +265,6 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
  */
 class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
 {
-    Q_OBJECT
   public:
 
     /**
@@ -282,13 +274,11 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
     QgsSettingsEntryEnum( const QString &key,
                           QgsSettings::Section section,
                           const T &defaultValue,
-                          const QString &description = QString(),
-                          QObject *parent = nullptr )
+                          const QString &description = QString() )
       : QgsSettingsEntry( key,
                           section,
                           defaultValue,
-                          description,
-                          parent )
+                          description )
     {
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );

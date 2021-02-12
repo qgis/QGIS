@@ -32,14 +32,12 @@
  */
 class CORE_EXPORT QgsSettingsRegistry : public QObject
 {
-    Q_OBJECT
   public:
 
     /**
      * Constructor for QgsSettingsRegistry.
      */
-    QgsSettingsRegistry( QgsSettings::Section section,
-                         QObject *parent = nullptr );
+    QgsSettingsRegistry( QgsSettings::Section section );
     ~QgsSettingsRegistry() override;
 
     void registerSettings( const QString &key,
@@ -82,8 +80,7 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
                                   key,
                                   mSection,
                                   defaultValue,
-                                  description,
-                                  this ) );
+                                  description ) );
     }
 #endif
 

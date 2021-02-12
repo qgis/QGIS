@@ -16,9 +16,8 @@
 #include "qgssettingsregistry.h"
 #include "qgslogger.h"
 
-QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section section, QObject *parent )
-  : QObject( parent )
-  , mSection( section )
+QgsSettingsRegistry::QgsSettingsRegistry( QgsSettings::Section section )
+  : mSection( section )
   , mMapSettingsEntry()
 {}
 
@@ -44,8 +43,7 @@ void QgsSettingsRegistry::registerSettings(
                               key,
                               mSection,
                               defaultValue,
-                              description,
-                              this ) );
+                              description ) );
 }
 
 void QgsSettingsRegistry::registerSettingsString( const QString &key,
@@ -67,8 +65,7 @@ void QgsSettingsRegistry::registerSettingsString( const QString &key,
                               defaultValue,
                               description,
                               minLength,
-                              maxLength,
-                              this ) );
+                              maxLength ) );
 }
 
 void QgsSettingsRegistry::registerSettingsInteger( const QString &key,
@@ -90,8 +87,7 @@ void QgsSettingsRegistry::registerSettingsInteger( const QString &key,
                               defaultValue,
                               description,
                               minValue,
-                              maxValue,
-                              this ) );
+                              maxValue ) );
 }
 
 void QgsSettingsRegistry::registerSettingsDouble( const QString &key,
@@ -115,8 +111,7 @@ void QgsSettingsRegistry::registerSettingsDouble( const QString &key,
                               description,
                               minValue,
                               maxValue,
-                              displayDecimals,
-                              this ) );
+                              displayDecimals ) );
 }
 
 bool QgsSettingsRegistry::isRegistered( const QString &key ) const

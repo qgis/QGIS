@@ -9,7 +9,7 @@
 
 
 
-class QgsSettingsEntry : QObject
+class QgsSettingsEntry
 {
 %Docstring
 
@@ -44,11 +44,11 @@ class QgsSettingsEntry : QObject
     QgsSettingsEntry( QString key = QString(),
                       QgsSettings::Section settingsSection = QgsSettings::NoSection,
                       QVariant defaultValue = QVariant(),
-                      QString description = QString(),
-                      QObject *parent = 0 );
+                      QString description = QString() );
 %Docstring
 Constructor for QgsSettingsEntry.
 %End
+    virtual ~QgsSettingsEntry();
 
     virtual bool setValue( const QVariant &value );
 %Docstring
@@ -93,8 +93,7 @@ A string settings entry.
                             const QString &defaultValue,
                             const QString &description = QString(),
                             int minLength = 0,
-                            int maxLength = -1,
-                            QObject *parent = 0 );
+                            int maxLength = -1 );
 %Docstring
 Constructor for QgsSettingsEntryString.
 %End
@@ -134,8 +133,7 @@ An integer settings entry.
                              qlonglong defaultValue,
                              const QString &description = QString(),
                              qlonglong minValue = -__LONG_LONG_MAX__ + 1,
-                             qlonglong maxValue = __LONG_LONG_MAX__,
-                             QObject *parent = 0 );
+                             qlonglong maxValue = __LONG_LONG_MAX__ );
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 %End
@@ -176,8 +174,7 @@ A double settings entry.
                             const QString &description = QString(),
                             double minValue = __DBL_MIN__,
                             double maxValue = __DBL_MAX__,
-                            double displayDecimals = 1,
-                            QObject *parent = 0 );
+                            double displayDecimals = 1 );
 %Docstring
 Constructor for QgsSettingsEntryDouble.
 %End
