@@ -813,10 +813,19 @@ bool QgsSymbol::hasDataDefinedProperties() const
   if ( mDataDefinedProperties.hasActiveProperties() )
     return true;
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+  for ( QgsSymbolLayer *layer : mLayers )
   {
     if ( layer->hasDataDefinedProperties() )
+      return true;
+  }
+  return false;
+}
+
+bool QgsSymbol::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  for ( QgsSymbolLayer *layer : mLayers )
+  {
+    if ( layer->canCauseArtifactsBetweenAdjacentTiles() )
       return true;
   }
   return false;
