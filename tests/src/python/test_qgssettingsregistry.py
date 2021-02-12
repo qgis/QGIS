@@ -12,7 +12,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
-from qgis.core import QgsSettingsRegistry, QgsSettings, QgsTolerance, QgsMapLayerProxyModel
+from qgis.core import QgsSettingsRegistry, QgsSettings, QgsSettingsEntry, QgsSettingsEntryString, QgsTolerance, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QSettings, QVariant
 from pathlib import Path
@@ -63,6 +63,62 @@ class TestQgsSettingsRegistry(unittest.TestCase):
         self.settingsRegistry.setValue('testqgissettings/names/namèé↓1', 'qgisrocks↓-1')
         self.assertEqual(self.settingsRegistry.value('testqgissettings/names/namèé↓1'), 'qgisrocks↓-1')
         self.settingsRegistry.unregister('testqgissettings/names/namèé↓1')
+
+    def test_string(self):
+        key = "qgis/testing/settings_registry/my_string_value"
+        defaultValue = "myString"
+
+        self.settingsRegistry.registerSettingsString(key, defaultValue, "String value for testing of 'QgsSettingsRegistry'", 4, 10)
+
+        # Check settings entry
+        settingsEntryString = self.settingsRegistry.settingsEntry(key)
+
+        self.assertEqual(settingsEntryString.settingsType(), QgsSettingsEntry.String)
+        self.assertEqual(settingsEntryString.minLength(), 4)
+        self.assertEqual(settingsEntryString.maxLength(), 10)
+
+#      // Check default value
+#      QCOMPARE( settingsRegistry.defaultValue<QString>( key ), defaultValue );
+
+#      // Set invalid short new string
+#      QString shortString( "my" );
+#      settingsRegistry.setValue( key,
+#                                 shortString );
+#      // Check value not changed from default
+#      QCOMPARE( settingsRegistry.value<QString>( key ), defaultValue );
+
+#      // Set invalid long new string
+#      QString longString( "myLongString" );
+#      settingsRegistry.setValue( key,
+#                                 longString );
+#      // Check value not changed from default
+#      QCOMPARE( settingsRegistry.value<QString>( key ), defaultValue );
+
+#      // Set new string
+#      QString newString( "newString" );
+#      settingsRegistry.setValue( key,
+#                                 newString );
+#      QCOMPARE( settingsRegistry.value<QString>( key ), newString );
+
+#      // Unregister
+#      settingsRegistry.unregister( key );
+
+#      // Check string max length turned off
+#      QString keyMaxLengthOff( "qgis/testing/settings_registry/my_string_value_without_limit" );
+#      settingsRegistry.registerSettingsString( keyMaxLengthOff,
+#          defaultValue,
+#          settingsDescription,
+#          0,
+#          -1 );
+
+#      // Set new string
+#      QString newLongerString( "This is a longer string" );
+#      settingsRegistry.setValue( keyMaxLengthOff,
+#                                 newLongerString );
+#      QCOMPARE( settingsRegistry.value<QString>( keyMaxLengthOff ), newLongerString );
+
+#      // Unregister
+#      settingsRegistry.unregister( keyMaxLengthOff );
 
     def test_section_getters_setters(self):
 
