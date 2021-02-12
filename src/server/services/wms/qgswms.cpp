@@ -142,7 +142,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetLegendGraphic" ) || QSTR_COMPARE( req, "GetLegendGraphics" ) )
         {
-          writeGetLegendGraphics( mServerIface, project, version, request, response );
+          writeGetLegendGraphics( mServerIface, project, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetPrint" ) )
         {
