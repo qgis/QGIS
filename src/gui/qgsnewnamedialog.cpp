@@ -25,7 +25,7 @@
 
 QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initial,
                                     const QStringList &extensions, const QStringList &existing,
-                                    const QRegularExpression &regexp, Qt::CaseSensitivity cs,
+                                     const QRegularExpression &regexp, QRegularExpression::PatternOption cs,
                                     QWidget *parent, Qt::WindowFlags flags )
   : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
   , mExiting( existing )
@@ -190,7 +190,7 @@ QStringList QgsNewNameDialog::fullNames( const QString &name, const QStringList 
 }
 
 QStringList QgsNewNameDialog::matching( const QStringList &newNames, const QStringList &existingNames,
-                                        Qt::CaseSensitivity cs )
+                                        QRegularExpression::PatternOption cs )
 {
   QStringList list;
 
@@ -210,7 +210,7 @@ QStringList QgsNewNameDialog::matching( const QStringList &newNames, const QStri
 }
 
 bool QgsNewNameDialog::exists( const QString &name, const QStringList &extensions,
-                               const QStringList &existing, Qt::CaseSensitivity cs )
+                               const QStringList &existing, QRegularExpression::PatternOption cs )
 {
   QStringList newNames = fullNames( name, extensions );
   QStringList conflicts = matching( newNames, existing, cs );

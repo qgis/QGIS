@@ -567,7 +567,7 @@ namespace QgsWms
   {
     bool loaded = false;
 
-    const QRegularExpression composerParamRegExp( QStringLiteral( "^MAP\\d+:" ), Qt::CaseInsensitive );
+    const QRegularExpression composerParamRegExp( QStringLiteral( "^MAP\\d+:" ), QRegularExpression::CaseInsensitive );
     if ( key.contains( composerParamRegExp ) )
     {
       const int mapId = key.midRef( 3, key.indexOf( ':' ) - 3 ).toInt();
@@ -792,30 +792,30 @@ namespace QgsWms
     const QString fStr = formatAsString();
 
     Format f = Format::NONE;
-    if ( fStr.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 ||
-         fStr.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
+    if ( fStr.compare( QLatin1String( "image/png" ), QRegularExpression::CaseInsensitive ) == 0 ||
+         fStr.compare( QLatin1String( "png" ), QRegularExpression::CaseInsensitive ) == 0 )
     {
       f = Format::PNG;
     }
-    else if ( fStr.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
-              || fStr.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
-              || fStr.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( QLatin1String( "jpg" ), QRegularExpression::CaseInsensitive ) == 0
+              || fStr.compare( QLatin1String( "jpeg" ), QRegularExpression::CaseInsensitive ) == 0
+              || fStr.compare( QLatin1String( "image/jpeg" ), QRegularExpression::CaseInsensitive ) == 0 )
     {
       f = Format::JPG;
     }
-    else if ( fStr.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
-              fStr.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
-              fStr.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( QLatin1String( "image/svg" ), QRegularExpression::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "image/svg+xml" ), QRegularExpression::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "svg" ), QRegularExpression::CaseInsensitive ) == 0 )
     {
       f = Format::SVG;
     }
-    else if ( fStr.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
-              fStr.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( QLatin1String( "application/pdf" ), QRegularExpression::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "pdf" ), QRegularExpression::CaseInsensitive ) == 0 )
     {
       f = Format::PDF;
     }
-    else if ( fStr.compare( QLatin1String( "application/json" ), Qt::CaseInsensitive ) == 0 ||
-              fStr.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( QLatin1String( "application/json" ), QRegularExpression::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "json" ), QRegularExpression::CaseInsensitive ) == 0 )
     {
       f = Format::JSON;
     }
@@ -840,16 +840,16 @@ namespace QgsWms
     if ( fStr.isEmpty() )
       return f;
 
-    if ( fStr.startsWith( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) )
+    if ( fStr.startsWith( QLatin1String( "text/xml" ), QRegularExpression::CaseInsensitive ) )
       f = Format::XML;
-    else if ( fStr.startsWith( QLatin1String( "text/html" ), Qt::CaseInsensitive ) )
+    else if ( fStr.startsWith( QLatin1String( "text/html" ), QRegularExpression::CaseInsensitive ) )
       f = Format::HTML;
-    else if ( fStr.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
+    else if ( fStr.startsWith( QLatin1String( "text/plain" ), QRegularExpression::CaseInsensitive ) )
       f = Format::TEXT;
-    else if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml" ), Qt::CaseInsensitive ) )
+    else if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml" ), QRegularExpression::CaseInsensitive ) )
       f = Format::GML;
-    else if ( fStr.startsWith( QLatin1String( "application/json" ), Qt::CaseInsensitive )
-              || fStr.startsWith( QLatin1String( "application/geo+json" ), Qt::CaseInsensitive ) )
+    else if ( fStr.startsWith( QLatin1String( "application/json" ), QRegularExpression::CaseInsensitive )
+              || fStr.startsWith( QLatin1String( "application/geo+json" ), QRegularExpression::CaseInsensitive ) )
       f = Format::JSON;
     else
       f = Format::NONE;
@@ -863,7 +863,7 @@ namespace QgsWms
       return -1;
 
     QString fStr = infoFormatAsString();
-    if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ), Qt::CaseInsensitive ) )
+    if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ), QRegularExpression::CaseInsensitive ) )
       return 3;
     else
       return 2;
@@ -2012,11 +2012,11 @@ namespace QgsWms
     }
 
     const QString mode = options[ DxfFormatOption::MODE ];
-    if ( mode.compare( QLatin1String( "SymbolLayerSymbology" ), Qt::CaseInsensitive ) == 0 )
+    if ( mode.compare( QLatin1String( "SymbolLayerSymbology" ), QRegularExpression::CaseInsensitive ) == 0 )
     {
       symbol = QgsDxfExport::SymbolLayerSymbology;
     }
-    else if ( mode.compare( QLatin1String( "FeatureSymbology" ), Qt::CaseInsensitive ) == 0 )
+    else if ( mode.compare( QLatin1String( "FeatureSymbology" ), QRegularExpression::CaseInsensitive ) == 0 )
     {
       symbol = QgsDxfExport::FeatureSymbology;
     }

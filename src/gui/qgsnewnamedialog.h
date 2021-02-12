@@ -47,7 +47,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      */
     QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
                       const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
-                      const QRegularExpression &regexp = QRegularExpression(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
+                      const QRegularExpression &regexp = QRegularExpression(), QRegularExpression::PatternOption cs = QRegularExpression::CaseSensitive,
                       QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 
     /**
@@ -163,7 +163,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     static QStringList fullNames( const QString &name, const QStringList &extensions );
     // get list of existing names
     static QStringList matching( const QStringList &newNames, const QStringList &existingNames,
-                                 Qt::CaseSensitivity cs = Qt::CaseSensitive );
+                                 QRegularExpression::PatternOption cs = QRegularExpression::CaseSensitive );
 };
 
 #endif // QGSNEWNAMEDIALOG_H
