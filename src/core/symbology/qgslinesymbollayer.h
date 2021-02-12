@@ -84,6 +84,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
     double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
     QColor dxfColor( QgsSymbolRenderContext &context ) const override;
+    bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     /**
      * Returns the pen style used to render the line (e.g. solid, dashed, etc).
