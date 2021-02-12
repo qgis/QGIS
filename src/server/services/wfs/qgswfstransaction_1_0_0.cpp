@@ -935,19 +935,14 @@ namespace QgsWfs
       {
         QString expFilterName = parameters.value( QStringLiteral( "EXP_FILTER" ) );
         QStringList expFilterList;
-        QRegExp rx( "\\(([^()]+)\\)" );
-        if ( rx.indexIn( expFilterName, 0 ) == -1 )
+        QRegularExpressionMatch match = QRegularExpression( "\\(([^()]+)\\)" ).match( expFilterName );
+        if ( match.capturedStart() == -1 )
         {
           expFilterList << expFilterName;
         }
         else
         {
-          int pos = 0;
-          while ( ( pos = rx.indexIn( expFilterName, pos ) ) != -1 )
-          {
-            expFilterList << rx.cap( 1 );
-            pos += rx.matchedLength();
-          }
+          expFilterList = match.capturedTexts();
         }
 
         // Verifying the 1:1 mapping between TYPENAME and EXP_FILTER but without exception
@@ -1033,19 +1028,14 @@ namespace QgsWfs
       {
         QString filterName = parameters.value( QStringLiteral( "FILTER" ) );
         QStringList filterList;
-        QRegExp rx( "\\(([^()]+)\\)" );
+        QRegularExpressionMatch match = QRegularExpression( "\\(([^()]+)\\)" ).match( filterName );
         if ( rx.indexIn( filterName, 0 ) == -1 )
         {
           filterList << filterName;
         }
         else
         {
-          int pos = 0;
-          while ( ( pos = rx.indexIn( filterName, pos ) ) != -1 )
-          {
-            filterList << rx.cap( 1 );
-            pos += rx.matchedLength();
-          }
+          filterList = match.capturedTexts();
         }
 
         // Verifying the 1:1 mapping between TYPENAME and FILTER
