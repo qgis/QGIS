@@ -966,7 +966,11 @@ namespace QgsWfs
       }
       else
       {
-      expFilterList = maches.capturedTexts();
+        QRegularExpressionMatchIterator i = rx.globalMatch( expFilterName );
+        while ( i.hasNext() )
+        {
+          expFilterList << i.next().captured( 1 );
+        }
       }
 
       // Verifying the 1:1 mapping between TYPENAME and EXP_FILTER but without exception
@@ -1060,7 +1064,11 @@ namespace QgsWfs
       }
       else
       {
-      filterList = matches.capturedTexts();
+        QRegularExpressionMatchIterator i = rx.globalMatch( filterName );
+        while ( i.hasNext() )
+        {
+          filterList << i.next().captured( 1 );
+        }
       }
 
       // Verifying the 1:1 mapping between TYPENAME and FILTER

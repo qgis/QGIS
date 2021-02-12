@@ -88,7 +88,11 @@ namespace QgsWfs
       }
       else
       {
-      theList = maches.capturedTexts();
+        QRegularExpressionMatchIterator i = rx.globalMatch( val );
+        while ( i.hasNext() )
+        {
+          theList << i.next().captured( 1 );
+        }
       }
     }
 

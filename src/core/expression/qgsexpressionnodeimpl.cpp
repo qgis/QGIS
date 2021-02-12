@@ -539,11 +539,10 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             esc_regexp.replace( 0, 1, QStringLiteral( ".*" ) );
           }
           thread_local QRegularExpression rx1( QStringLiteral( "[^\\\\](%)" ) );
-          int pos = 0;
-          while ( ( pos = rx1.match( esc_regexp, pos ).capturedStart() ) != -1 )
+          QRegularExpressionMatchIterator i = rx1.globalMatch( esc_regexp );
+          while ( i.hasNext() )
           {
-            esc_regexp.replace( pos + 1, 1, QStringLiteral( ".*" ) );
-            pos += 1;
+            esc_regexp.replace( i.next().capturedStart(), 1, QStringLiteral( ".*" ) );
           }
           thread_local QRegularExpression rx2( QStringLiteral( "\\\\%" ) );
           esc_regexp.replace( rx2, QStringLiteral( "%" ) );
@@ -552,11 +551,10 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             esc_regexp.replace( 0, 1, QStringLiteral( "." ) );
           }
           thread_local QRegularExpression rx3( QStringLiteral( "[^\\\\](_)" ) );
-          pos = 0;
-          while ( ( pos = rx3.match( esc_regexp.mid( pos ) ).capturedStart() ) != -1 )
+          i = rx3.globalMatch( esc_regexp );
+          while ( i.hasNext() )
           {
-            esc_regexp.replace( pos + 1, 1, '.' );
-            pos += 1;
+            esc_regexp.replace( i.next().capturedStart() + 1, 1, '.' );
           }
           esc_regexp.replace( QLatin1String( "\\\\_" ), QLatin1String( "_" ) );
 

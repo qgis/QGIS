@@ -209,8 +209,15 @@ void QgsInterval::setSeconds( double seconds )
 QgsInterval QgsInterval::fromString( const QString &string )
 {
   double seconds = 0;
-  
 
+  QRegularExpression rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", QRegularExpression::CaseInsensitive );
+  QStringList list;
+
+  QRegularExpressionMatchIterator i = rx.globalMatch( string );
+  while ( i.hasNext() )
+  {
+    list << i.next().captured( 1 );
+  }
 
   QMap<int, QStringList> map;
   map.insert( 1, QStringList() << QStringLiteral( "second" ) << QStringLiteral( "seconds" ) << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( '|' ) );
