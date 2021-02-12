@@ -138,7 +138,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "DescribeLayer" ) )
         {
-          writeDescribeLayer( mServerIface, project, version, request, response );
+          writeDescribeLayer( mServerIface, project, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetLegendGraphic" ) || QSTR_COMPARE( req, "GetLegendGraphics" ) )
         {
