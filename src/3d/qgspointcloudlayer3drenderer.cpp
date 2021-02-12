@@ -121,7 +121,9 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenError, showBoundingBoxes(),
+  QgsCoordinateTransform coordTrans( pcl->crs(), map.crs(), QgsProject::instance() );
+
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordTrans, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
          static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
          static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
 }

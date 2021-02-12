@@ -135,6 +135,9 @@ class _3D_EXPORT Qgs3DUtils
     //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
+    //! Applies coordinates transform \a coordTrans to the 3D point \a coords
+    static QgsVector3D transformCoordinates( const QgsVector3D &coords, QgsCoordinateTransform coordTrans );
+
     /**
      * Converts extent (in map layer's CRS) to axis aligned bounding box in 3D world coordinates
      * \since QGIS 3.12
