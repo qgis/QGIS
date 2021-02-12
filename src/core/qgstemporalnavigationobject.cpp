@@ -319,7 +319,7 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
   long long roughFrameEnd = totalFrameCount();
   // For the smaller step frames we calculate an educated guess, to prevent the loop becoming too
   // large, freezing the ui (eg having a mTemporalExtents of several months and the user selects milliseconds)
-  if ( mFrameDuration.seconds() < QgsInterval::MONTHS )
+  if ( mFrameDuration.originalUnit() != QgsUnitTypes::TemporalMonths && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalYears && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalDecades && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalCenturies )
   {
     // Only if we receive a valid frameStart, that is within current mTemporalExtents
     // We tend to receive a framestart of 'now()' upon startup for example
