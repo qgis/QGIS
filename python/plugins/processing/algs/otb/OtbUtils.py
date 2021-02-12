@@ -142,10 +142,8 @@ class OtbUtils:
                             if 'PROJ_LIB=' in line:
                                 proj_dir = line.split("PROJ_LIB=")[1]
             except BaseException as exc:
-                errmsg = "Cannot find gdal and geotiff data directory." + str(exc)
+                errmsg = 'Cannot find gdal and geotiff data directory.' + str(exc)
                 QgsMessageLog.logMessage(errmsg, OtbUtils.tr('Processing'), Qgis.Info)
-                pass
-
         return gdal_data_dir, gtiff_csv_dir, proj_dir
 
     @staticmethod
@@ -167,21 +165,20 @@ class OtbUtils:
         if max_ram_hint and int(max_ram_hint) > 256:
             otb_env['OTB_MAX_RAM_HINT'] = max_ram_hint
 
-        kw = {}
-        kw['env'] = otb_env
+        kw = {'env': otb_env}
         if os.name == 'nt' and sys.version_info >= (3, 6):
             kw['encoding'] = "cp{}".format(OtbUtils.getWindowsCodePage())
 
         QgsMessageLog.logMessage("{}".format(kw), OtbUtils.tr('Processing'), Qgis.Info)
         QgsMessageLog.logMessage("cmd={}".format(commands), OtbUtils.tr('Processing'), Qgis.Info)
         with subprocess.Popen(
-                commands,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stdin=subprocess.DEVNULL,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-                **kw
+            commands,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+            **kw
         ) as proc:
 
             for line in iter(proc.stdout.readline, ''):
@@ -200,9 +197,9 @@ class OtbUtils:
                     if feedback is None:
                         QgsMessageLog.logMessage(line, OtbUtils.tr('Processing'), Qgis.Info)
                     else:
-                        if any([l in line for l in ['(WARNING)', 'WARNING:']]):
+                        if any(l in line for l in ['(WARNING)', 'WARNING:']):
                             feedback.reportError(line, False)
-                        elif any([l in line for l in ['(FATAL)', 'ERROR:', 'ERROR']]):
+                        elif any(l in line for l in ['(FATAL)', 'ERROR:', 'ERROR']):
                             feedback.reportError(line, True)
                         else:
                             feedback.pushConsoleInfo(line.strip())
