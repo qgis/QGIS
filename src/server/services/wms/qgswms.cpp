@@ -117,7 +117,7 @@ namespace QgsWms
           }
           else
           {
-            writeGetMap( mServerIface, project, version, request, response );
+            writeGetMap( mServerIface, project, request, response );
           }
         }
         else if ( QSTR_COMPARE( req, "GetFeatureInfo" ) )
