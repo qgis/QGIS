@@ -66,34 +66,9 @@ namespace QgsWms
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {
-        const QgsWmsParameters parameters( request.serverParameters() );
-
-        QString version = parameters.version();
-        if ( version.isEmpty() )
-        {
-          // WMTVER needs to be supported by WMS 1.1.1 for backwards
-          // compatibility with WMS 1.0.0
-          version = parameters.wmtver();
-        }
-
-        // Set the default version
-        if ( version.isEmpty() || !parameters.versionIsValid( version ) )
-        {
-          version = mVersion;
-        }
-
-        // WMS 1.3.0 specification: If a version lower than any of those known
-        // to the server is requested, then the server shall send the lowest
-        // version it supports.
-        if ( QgsProjectVersion( 1, 1, 1 ) > parameters.versionAsNumber() )
-        {
-          version = "1.1.1";
-        }
-
         // Get the request
         const QgsWmsRequest wmsRequest( request );
-        const QString req = parameters.request();
-        const QString version = parameters.version();
+        const QString req = wmsRequest.wmsParameters().request();
 
         if ( req.isEmpty() )
         {
@@ -111,7 +86,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetMap" ) )
         {
-          if QSTR_COMPARE( parameters.formatAsString(), "application/dxf" )
+          if QSTR_COMPARE( wmsRequest.wmsParameters().formatAsString(), "application/dxf" )
           {
             writeAsDxf( mServerIface, project, request, response );
           }
@@ -153,7 +128,7 @@ namespace QgsWms
             throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
                                        QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
           }
-          writeGetPrint( mServerIface, project, version, request, response );
+          writeGetPrint( mServerIface, project, request, response );
         }
         else
         {
