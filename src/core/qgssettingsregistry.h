@@ -52,9 +52,46 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
                                  int minLength = 0,
                                  int maxLength = -1 );
 
+    void registerSettingsInteger( const QString &key,
+                                  qlonglong defaultValue = 0,
+                                  const QString &description = QString(),
+                                  qlonglong minValue = -__LONG_LONG_MAX__ + 1,
+                                  qlonglong maxValue = __LONG_LONG_MAX__ );
+
+    void registerSettingsDouble( const QString &key,
+                                 double defaultValue = 0.0,
+                                 const QString &description = QString(),
+                                 double minValue = __DBL_MIN__,
+                                 double maxValue = __DBL_MAX__,
+                                 double displayDecimals = 1 );
+
+#ifndef SIP_RUN
+    template <class T>
+    void registerSettingsEnum( const QString &key,
+                               const T &defaultValue,
+                               const QString &description = QString() )
+    {
+      if ( isRegistered( key ) == true )
+      {
+        QgsDebugMsg( QObject::tr( "Settings key '%1' already registered" ).arg( key ) );
+        return;
+      }
+
+      mMapSettingsEntry.insert( key,
+                                new QgsSettingsEntryEnum(
+                                  key,
+                                  mSection,
+                                  defaultValue,
+                                  description,
+                                  this ) );
+    }
+#endif
+
     bool isRegistered( const QString &key ) const;
 
     void unregister( const QString &key );
+
+    QgsSettingsEntry *settingsEntry( const QString &key ) const;
 
     bool setValue( const QString &key,
                    const QVariant &value );
