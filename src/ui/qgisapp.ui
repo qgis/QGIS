@@ -1976,7 +1976,7 @@
     <string>Move Label and Diagram</string>
    </property>
    <property name="toolTip">
-    <string>Moves a Label or Diagram
+    <string>Move a Label or Diagram
 Acts on all layers.</string>
    </property>
   </action>
@@ -1992,7 +1992,7 @@ Acts on all layers.</string>
     <string>Rotate Label</string>
    </property>
    <property name="toolTip">
-    <string>Rotates a Label
+    <string>Rotate a Label
 Holding Ctrl (Cmd) while rotating increments by 15 deg.
 Acts on all layers.</string>
    </property>
@@ -2280,7 +2280,7 @@ Acts on all layers.</string>
    <property name="toolTip">
     <string>Pin/Unpin Labels and Diagrams
 Click or marquee on label/diagram to pin.
-Shift clicking or marqueeing unpins labels, while Ctrl (Cmd) toggles label state.
+Shift clicking or marqueeing unpins labels and diagrams, while Ctrl (Cmd) toggles their state.
 Acts on all layers.</string>
    </property>
   </action>
@@ -2297,7 +2297,7 @@ Acts on all layers.</string>
    </property>
    <property name="toolTip">
     <string>Highlight Pinned Labels and Diagrams
-Shows highlight rectangles around labels which are fixed in place, e.g. due to manual placement.</string>
+Shows highlight rectangles around labels and diagrams which are fixed in place, e.g. due to manual placement.</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -3349,7 +3349,7 @@ Acts on the currently active layer only.</string>
     <string>Show Unplaced Labels</string>
    </property>
    <property name="toolTip">
-    <string>Toggles Display of Unplaced Labels
+    <string>Toggle Display of Unplaced Labels
 Shows placeholders for labels which could not be placed, e.g. due to overlaps with other map labels.</string>
    </property>
   </action>
