@@ -1,0 +1,59 @@
+name: MinGW64 Windows Build
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/mingw64.yml'
+  pull_request:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/mingw64.yml'
+
+
+jobs:
+  build:
+    name: MinGW64 Windows Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v1
+      - name: Build Docker Container with Build Environment
+        run: docker build -t qgis3-mingw-buildenv -f ms-windows/mingw/qgis3-build-deps-mingw.dockerfile .
+
+      - name: Build QGIS Application
+        run: docker run -w /QGIS -v $PWD:/QGIS qgis3-mingw-buildenv ms-windows/mingw/build.sh x86_64 nodebug 4
+      - name: Create Portable zip
+        run: |
+          distroot=build_mingw64/dist/usr/x86_64-w64-mingw32/sys-root/mingw
+          debugroot=dist_debug
+          for file in $(find $distroot -name '*.debug' \( -type l -or -type f \)); do
+              dest=${file/$distroot/$debugroot}
+              mkdir -p "$(dirname $dest)"
+              sudo mv "$file" "$dest"
+          done
+          sudo mv $distroot QGIS-Portable
+          zip -r qgis-portable-win64.zip QGIS-Portable
+          (cd $debugroot && zip -r - *) > qgis-portable-win64-debugsym.zip
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: QGIS for Windows 64bit
+          path: qgis-windows-64bit.zip
