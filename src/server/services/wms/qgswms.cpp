@@ -126,7 +126,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetContext" ) )
         {
-          writeGetContext( mServerIface, project, version, request, response );
+          writeGetContext( mServerIface, project, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetSchemaExtension" ) )
         {
