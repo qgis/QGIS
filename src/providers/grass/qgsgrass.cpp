@@ -122,13 +122,13 @@ bool QgsGrassObject::setFromUri( const QString &uri )
     QString path = fi.canonicalFilePath();
     QgsDebugMsg( "path = " + path );
     // /gisdbase_path/location/mapset/cellhd/raster_map
-    QRegExp rx( "(.*)/([^/]*)/([^/]*)/cellhd/([^/]*)", Qt::CaseInsensitive );
-    if ( rx.indexIn( path ) > -1 )
+    QRegularExpressionMatch match = QRegularExpression( "(.*)/([^/]*)/([^/]*)/cellhd/([^/]*)", QRegularExpression::CaseInsensitive ).match( path );
+    if ( match.hasMatch() > -1 )
     {
-      mGisdbase = rx.cap( 1 );
-      mLocation = rx.cap( 2 );
-      mMapset = rx.cap( 3 );
-      mName = rx.cap( 4 );
+      mGisdbase = match.captured( 1 );
+      mLocation = match.captured( 2 );
+      mMapset = match.captured( 3 );
+      mName = match.captured( 4 );
       mType = Raster;
       return QgsGrass::isLocation( mGisdbase + "/" + mLocation );
     }
@@ -142,12 +142,13 @@ bool QgsGrassObject::setFromUri( const QString &uri )
     if ( dir.cdUp() ) // .../mapset/
     {
       QString path = dir.canonicalPath();
-      QRegExp rx( "(.*)/([^/]*)/([^/]*)" );
-      if ( rx.indexIn( path ) > -1 )
+      QRegularExpression rx( "(.*)/([^/]*)/([^/]*)" );
+      QRegularExpressionMatch match = QRegularExpression( "(.*)/([^/]*)/([^/]*)" ).match( path );
+      if ( match.hasMatch() > -1 )
       {
-        mGisdbase = rx.cap( 1 );
-        mLocation = rx.cap( 2 );
-        mMapset = rx.cap( 3 );
+        mGisdbase = match.captured( 1 );
+        mLocation = match.captured( 2 );
+        mMapset = match.captured( 3 );
         mName = fi.dir().dirName();
         mType = Vector;
         QgsDebugMsg( "parsed : " + toString() );
@@ -242,9 +243,9 @@ bool QgsGrassObject::mapsetIdentical( const QgsGrassObject &other ) const
   return fi == otherFi;
 }
 
-QRegExp QgsGrassObject::newNameRegExp( Type type )
+QRegularExpression QgsGrassObject::newNameRegExp( Type type )
 {
-  QRegExp rx;
+  QRegularExpression rx;
   if ( type == QgsGrassObject::Vector )
   {
     rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
@@ -2589,12 +2590,12 @@ QString QgsGrass::versionString()
   return QStringLiteral( GRASS_VERSION_STRING );
 }
 
-Qt::CaseSensitivity QgsGrass::caseSensitivity()
+QRegularExpression::PatternOption QgsGrass::caseSensitivity()
 {
 #ifdef Q_OS_WIN
-  return Qt::CaseInsensitive;
+  return QRegularExpression::CaseInsensitive;
 #else
-  return Qt::CaseSensitive;
+  return QRegularExpression::NoPatternOption;
 #endif
 }
 
@@ -2894,15 +2895,15 @@ QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString &input, QStrin
   QgsDebugMsg( "ascii = " + ascii );
 #endif
 
-  QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
-  QRegExp rxmessage( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxwarning( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
+  QRegularExpression rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
+  QRegularExpression rxmessage( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
+  QRegularExpression rxwarning( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
+  QRegularExpression rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
+  QRegularExpression rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
   // GRASS added G_progress() which does not support GRASS_MESSAGE_FORMAT=gui
   // and it is printing fprintf(stderr, "%10ld\b\b\b\b\b\b\b\b\b\b", n);
   // Ticket created https://trac.osgeo.org/grass/ticket/2751
-  QRegExp rxprogress( " +(\\d+)\\b\\b\\b\\b\\b\\b\\b\\b\\b\\b" );
+  QRegularExpression rxprogress( " +(\\d+)\\b\\b\\b\\b\\b\\b\\b\\b\\b\\b" );
 
   // We return simple messages in html non formatted, monospace text should be set on widget
   // where it is used because output may be formatted assuming fixed width font

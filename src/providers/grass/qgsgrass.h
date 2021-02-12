@@ -556,7 +556,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QString versionString();
 
     // files case sensitivity (insensitive on windows)
-    static Qt::CaseSensitivity caseSensitivity();
+    static QRegularExpression::PatternOption caseSensitivity();
     // set environment variable
     static void putEnv( const QString &name, const QString &value );
 
