@@ -126,7 +126,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
 
     def longName(self):
         version = GdalUtils.readableVersion()
-        return f'GDAL ({version})'
+        return 'GDAL ({})'.format(version)
 
     def id(self):
         return 'gdal'
