@@ -31,6 +31,20 @@
  */
 class CORE_EXPORT QgsSettingsEntry : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryString;
+    else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryInteger;
+    else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryDouble;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
 
@@ -119,6 +133,7 @@ class CORE_EXPORT QgsSettingsEntry : public QObject
  */
 class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 {
+    Q_OBJECT
   public:
 
     /**
@@ -161,6 +176,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
  */
 class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
 {
+    Q_OBJECT
   public:
 
     /**
@@ -203,6 +219,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
  */
 class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
 {
+    Q_OBJECT
   public:
 
     /**
@@ -255,6 +272,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
  */
 class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
 {
+    Q_OBJECT
   public:
 
     /**

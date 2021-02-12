@@ -31,6 +31,7 @@ class TestQgsSettingsRegistry : public QObject
     Q_OBJECT
 
   private slots:
+
     void variantValue();
     void stringValue();
     void enumValue();
@@ -85,6 +86,13 @@ void TestQgsSettingsRegistry::stringValue()
       settingsDescription,
       4,
       10 );
+
+  // Check settings entry
+  QgsSettingsEntryString *settingsEntryString = dynamic_cast<QgsSettingsEntryString *>( settingsRegistry.settingsEntry( key ) );
+  QVERIFY( settingsEntryString != nullptr );
+  QCOMPARE( settingsEntryString->settingsType(), QgsSettingsEntry::String );
+  QCOMPARE( settingsEntryString->minLength(), 4 );
+  QCOMPARE( settingsEntryString->maxLength(), 10 );
 
   // Check default value
   QCOMPARE( settingsRegistry.defaultValue<QString>( key ), defaultValue );

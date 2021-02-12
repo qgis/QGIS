@@ -20,6 +20,16 @@ class QgsSettingsEntry : QObject
 %TypeHeaderCode
 #include "qgssettingsentry.h"
 %End
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryString;
+    else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryInteger;
+    else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryDouble;
+    else
+      sipType = NULL;
+%End
   public:
 
     enum SettingsType
