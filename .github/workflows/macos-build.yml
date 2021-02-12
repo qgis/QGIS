@@ -29,7 +29,7 @@ on:
 
 env:
   QT_VERSION: 5.14.2
-  QGIS_DEPS_VERSION: 0.6.0
+  QGIS_DEPS_VERSION: 0.7.0
   CCACHE_DIR: /Users/runner/work/ccache
   BUILD_DIR: /Users/runner/work/QGIS/build-QGIS
   # apparently we cannot cache /opt directory as it fails to restore
