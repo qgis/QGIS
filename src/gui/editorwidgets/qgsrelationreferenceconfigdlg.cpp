@@ -113,6 +113,7 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
   mCbxMapIdentification->setChecked( config.value( QStringLiteral( "MapIdentification" ), false ).toBool() );
   mCbxAllowAddFeatures->setChecked( config.value( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
   mCbxReadOnly->setChecked( config.value( QStringLiteral( "ReadOnly" ), false ).toBool() );
+  mExpressionWidget->setExpression( config.value( QStringLiteral( "DisplayExpression" ) ).toString() );
   mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
 
   if ( config.contains( QStringLiteral( "FilterFields" ) ) )
@@ -173,6 +174,7 @@ QVariantMap QgsRelationReferenceConfigDlg::config()
   myConfig.insert( QStringLiteral( "MapIdentification" ), mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
   myConfig.insert( QStringLiteral( "ReadOnly" ), mCbxReadOnly->isChecked() );
   myConfig.insert( QStringLiteral( "Relation" ), mComboRelation->currentData() );
+  myConfig.insert( QStringLiteral( "DisplayExpression" ), mExpressionWidget->currentText() );
   myConfig.insert( QStringLiteral( "AllowAddFeatures" ), mCbxAllowAddFeatures->isChecked() );
 
   if ( mFilterGroupBox->isChecked() )
