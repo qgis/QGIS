@@ -999,6 +999,11 @@ QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) con
   return mColor;
 }
 
+bool QgsSimpleLineSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return mPenStyle != Qt::SolidLine || mUseCustomDashPattern;
+}
+
 bool QgsSimpleLineSymbolLayer::alignDashPattern() const
 {
   return mAlignDashPattern;
