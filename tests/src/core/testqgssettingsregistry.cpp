@@ -40,8 +40,7 @@ class TestQgsSettingsRegistry : public QObject
 
 void TestQgsSettingsRegistry::variantValue()
 {
-  QgsSettingsRegistry settingsRegistry( QgsSettings::NoSection,
-                                        this );
+  QgsSettingsRegistry settingsRegistry( QgsSettings::NoSection );
 
   QString key( "qgis/testing/settings_registry/my_variant_value" );
   int defaultValue( 42 );
@@ -75,8 +74,7 @@ void TestQgsSettingsRegistry::variantValue()
 
 void TestQgsSettingsRegistry::stringValue()
 {
-  QgsSettingsRegistry settingsRegistry( QgsSettings::NoSection,
-                                        this );
+  QgsSettingsRegistry settingsRegistry( QgsSettings::NoSection );
 
   QString key( "qgis/testing/settings_registry/my_string_value" );
   QString defaultValue( "myString" );

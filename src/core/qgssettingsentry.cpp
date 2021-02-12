@@ -19,13 +19,15 @@
 QgsSettingsEntry::QgsSettingsEntry( QString key,
                                     QgsSettings::Section settingsSection,
                                     QVariant defaultValue,
-                                    QString description,
-                                    QObject *parent )
-  : QObject( parent )
-  , mKey( key )
+                                    QString description )
+  : mKey( key )
   , mDefaultValue( defaultValue )
   , mSection( settingsSection )
   , mDescription( description )
+{
+}
+
+QgsSettingsEntry::~QgsSettingsEntry()
 {
 }
 
@@ -63,19 +65,16 @@ void QgsSettingsEntry::remove()
                         mSection );
 }
 
-QgsSettingsEntryString::QgsSettingsEntryString(
-  const QString &key,
-  QgsSettings::Section section,
-  const QString &defaultValue,
-  const QString &description,
-  int minLength,
-  int maxLength,
-  QObject *parent )
+QgsSettingsEntryString::QgsSettingsEntryString( const QString &key,
+    QgsSettings::Section section,
+    const QString &defaultValue,
+    const QString &description,
+    int minLength,
+    int maxLength )
   : QgsSettingsEntry( key,
                       section,
                       defaultValue,
-                      description,
-                      parent )
+                      description )
   , mMinLength( minLength )
   , mMaxLength( maxLength )
 {
@@ -136,13 +135,11 @@ QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key,
     qlonglong defaultValue,
     const QString &description,
     qlonglong minValue,
-    qlonglong maxValue,
-    QObject *parent )
+    qlonglong maxValue )
   : QgsSettingsEntry( key,
                       section,
                       defaultValue,
-                      description,
-                      parent )
+                      description )
   , mMinValue( minValue )
   , mMaxValue( maxValue )
 {
@@ -203,13 +200,11 @@ QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key,
     const QString &description,
     double minValue,
     double maxValue,
-    double displayDecimals,
-    QObject *parent )
+    double displayDecimals )
   : QgsSettingsEntry( key,
                       section,
                       defaultValue,
-                      description,
-                      parent )
+                      description )
   , mMinValue( minValue )
   , mMaxValue( maxValue )
   , mDisplayHintDecimals( displayDecimals )

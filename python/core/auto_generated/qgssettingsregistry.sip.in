@@ -23,8 +23,7 @@ class QgsSettingsRegistry : QObject
 %End
   public:
 
-    QgsSettingsRegistry( QgsSettings::Section section,
-                         QObject *parent = 0 );
+    QgsSettingsRegistry( QgsSettings::Section section );
 %Docstring
 Constructor for QgsSettingsRegistry.
 %End
