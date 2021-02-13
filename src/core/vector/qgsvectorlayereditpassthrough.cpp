@@ -109,11 +109,6 @@ bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString &ne
 bool QgsVectorLayerEditPassthrough::commitChanges( QStringList & /*commitErrors*/ )
 {
   mModified = false;
-  for ( int i = 0; i < L->undoStack()->count(); ++i )
-  {
-    const QgsVectorLayerUndoPassthroughCommand *cmdPrt = static_cast<const QgsVectorLayerUndoPassthroughCommand *>( L->undoStack()->command( i ) );
-    qDebug() << cmdPrt->text();
-  }
   return true;
 }
 
