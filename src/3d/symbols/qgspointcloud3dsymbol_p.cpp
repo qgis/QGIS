@@ -305,8 +305,6 @@ bool QgsColorRampPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRender
 
 void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans )
 {
-  qDebug() << __PRETTY_FUNCTION__;
-
   QgsPointCloudAttributeCollection attributes;
   const int xOffset = 0;
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
