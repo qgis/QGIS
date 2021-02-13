@@ -28,10 +28,9 @@
 #include <QDomNode>
 #include <QDomElement>
 #include <QFileInfo>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QFile>
-#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -408,20 +407,20 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   QString wmsCrs = crs;
 
-  thread_local const QRegExp re_uri( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ), Qt::CaseInsensitive );
-  thread_local const QRegExp re_urn( QStringLiteral( "urn:ogc:def:crs:([^:]+).+([^:]+)" ), Qt::CaseInsensitive );
-  if ( re_uri.exactMatch( wmsCrs ) )
+  thread_local const QRegularExpressionMatch re_uri = QRegularExpression( QRegularExpression::anchoredPattern( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ), Qt::CaseInsensitive ).match( wmsCrs );
+  thread_local const QRegularExpressionMatch re_urn = QRegularExpression( QRegularExpression::anchoredPattern( "urn:ogc:def:crs:([^:]+).+([^:]+)" ), Qt::CaseInsensitive ).match( wmsCrs );
+  if ( re_uri.hasMatch() )
   {
-    wmsCrs = re_uri.cap( 1 ) + ':' + re_uri.cap( 2 );
+    wmsCrs = re_uri.tured( 1 ) + ':' + re_uri.captured( 2 );
   }
-  else if ( re_urn.exactMatch( wmsCrs ) )
+  else if ( re_urn.hasMatch() )
   {
-    wmsCrs = re_urn.cap( 1 ) + ':' + re_urn.cap( 2 );
+    wmsCrs = re_urn.captured( 1 ) + ':' + re_urn.captured( 2 );
   }
   else
   {
-    thread_local const QRegExp re_urn_custom( QStringLiteral( "(user|custom|qgis):(\\d+)" ), Qt::CaseInsensitive );
-    if ( re_urn_custom.exactMatch( wmsCrs ) && createFromSrsId( re_urn_custom.cap( 2 ).toInt() ) )
+    thread_local const QRegularExpressionMatch re_urn_custom = QRegularExpression( QRegularExpression::anchoredPattern( "(user|custom|qgis):(\\d+)" ), Qt::CaseInsensitive ).match( wmsCrs );
+    if ( re_urn_custom.hasMatch() && createFromSrsId( re_urn_custom.captured( 2 ).toInt() ) )
     {
       locker.changeMode( QgsReadWriteLocker::Write );
       if ( !sDisableOgcCache )
@@ -1031,7 +1030,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
 #else
   Q_UNUSED( identify )
 
-  QRegExp projRegExp( QStringLiteral( "\\+proj=(\\S+)" ) );
+  QRegularExpression projRegExp( QStringLiteral( "\\+proj=(\\S+)" ) );
   int myStart = projRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
@@ -1044,7 +1043,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
 
   d->mProjectionAcronym = projRegExp.cap( 1 );
 
-  QRegExp myEllipseRegExp( QStringLiteral( "\\+ellps=(\\S+)" ) );
+  QRegularExpression myEllipseRegExp( QStringLiteral( "\\+ellps=(\\S+)" ) );
   myStart = myEllipseRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
@@ -1055,7 +1054,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     d->mEllipsoidAcronym = myEllipseRegExp.cap( 1 );
   }
 
-  QRegExp myAxisRegExp( QStringLiteral( "\\+a=(\\S+)" ) );
+  QRegularExpression myAxisRegExp( QStringLiteral( "\\+a=(\\S+)" ) );
   myStart = myAxisRegExp.indexIn( myProj4String );
 
   long mySrsId = 0;
@@ -1071,22 +1070,16 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     // Ticket #722 - aaronr
     // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match...
     // First we check for lat_1 and lat_2
-    QRegExp myLat1RegExp( QStringLiteral( "\\+lat_1=\\S+" ) );
-    QRegExp myLat2RegExp( QStringLiteral( "\\+lat_2=\\S+" ) );
-    int myStart1 = 0;
-    int myLength1 = 0;
-    int myStart2 = 0;
-    int myLength2 = 0;
+    QRegularExpression myLat1RegExp( QStringLiteral( "\\+lat_1=\\S+" ) );
+    QRegularExpression myLat2RegExp( QStringLiteral( "\\+lat_2=\\S+" ) );
+    QRegularExpressionMatch match1 = myLat1RegExp.match( myProj4String );
+    QRegularExpressionMatch match2 = myLat2RegExp.match( myProj4String );
     QString lat1Str;
     QString lat2Str;
-    myStart1 = myLat1RegExp.indexIn( myProj4String, myStart1 );
-    myStart2 = myLat2RegExp.indexIn( myProj4String, myStart2 );
-    if ( myStart1 != -1 && myStart2 != -1 )
+    if ( match1.capturedStart() != -1 && match2.capturedStart() != -1 )
     {
-      myLength1 = myLat1RegExp.matchedLength();
-      myLength2 = myLat2RegExp.matchedLength();
-      lat1Str = myProj4String.mid( myStart1 + LAT_PREFIX_LEN, myLength1 - LAT_PREFIX_LEN );
-      lat2Str = myProj4String.mid( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN );
+      lat1Str = myProj4String.mid( match1.capturedStart() + LAT_PREFIX_LEN, match1.capturedLength() - LAT_PREFIX_LEN );
+      lat2Str = myProj4String.mid( match2.capturedStart() + LAT_PREFIX_LEN, match2.capturedLength() - LAT_PREFIX_LEN );
     }
     // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
     if ( !lat1Str.isEmpty() && !lat2Str.isEmpty() )
@@ -1094,11 +1087,9 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
       // Make our new string to check...
       QString proj4StringModified = myProj4String;
       // First just swap in the lat_2 value for lat_1 value
-      proj4StringModified.replace( myStart1 + LAT_PREFIX_LEN, myLength1 - LAT_PREFIX_LEN, lat2Str );
+      proj4StringModified.replace( match1.capturedStart() + LAT_PREFIX_LEN, match1.capturedLength() - LAT_PREFIX_LEN, lat2Str );
       // Now we have to find the lat_2 location again since it has potentially moved...
-      myStart2 = 0;
-      myStart2 = myLat2RegExp.indexIn( projString, myStart2 );
-      proj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
+      proj4StringModified.replace(  myLat2RegExp.match( projString.mid( match2.capturedStart() ) ).caturedStart() + LAT_PREFIX_LEN, match2.capturedLength() - LAT_PREFIX_LEN, lat1Str );
       QgsDebugMsgLevel( QStringLiteral( "trying proj4string match with swapped lat_1,lat_2" ), 4 );
       myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( proj4StringModified.trimmed() ) + " order by deprecated" );
     }
@@ -3068,14 +3059,14 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     }
     else
     {
-      QRegExp projRegExp( "\\+proj=(\\S+)" );
+      QRegularExpression projRegExp( "\\+proj=(\\S+)" );
       if ( projRegExp.indexIn( proj4 ) < 0 )
       {
         QgsDebugMsgLevel( QStringLiteral( "EPSG %1: no +proj argument found [%2]" ).arg( it.key() ).arg( proj4 ), 4 );
         continue;
       }
 
-      QRegExp ellipseRegExp( "\\+ellps=(\\S+)" );
+      QRegularExpression ellipseRegExp( "\\+ellps=(\\S+)" );
       QString ellps;
       if ( ellipseRegExp.indexIn( proj4 ) >= 0 )
       {
