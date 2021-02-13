@@ -476,7 +476,9 @@ void QgsExpressionTreeView::loadRecent( const QString &collection )
   for ( const QString &expression : expressions )
   {
     QString help = formatRecentExpressionHelp( expression, expression );
-    registerItem( name, expression, expression, help, QgsExpressionItem::ExpressionNode, false, i );
+    QString label = expression;
+    label.replace( '\n', ' ' );
+    registerItem( name, label, expression, help, QgsExpressionItem::ExpressionNode, false, i );
     i++;
   }
 }
