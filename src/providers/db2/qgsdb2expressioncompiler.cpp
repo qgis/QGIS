@@ -20,9 +20,8 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgslogger.h"
 
-QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource *source )
-  : QgsSqlExpressionCompiler( source->mFields
-                            )
+QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource *source, bool ignoreStaticNodes )
+  : QgsSqlExpressionCompiler( source->mFields, Flags(), ignoreStaticNodes )
 {
 
 }
@@ -54,6 +53,10 @@ QString resultType( QgsSqlExpressionCompiler::Result result )
 
 QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   QgsDebugMsg( QStringLiteral( "nodeType: %1" ).arg( nodeType( node ) ) );
   if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
   {

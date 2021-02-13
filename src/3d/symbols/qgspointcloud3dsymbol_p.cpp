@@ -170,7 +170,6 @@ QgsPointCloud3DSymbolHandler::QgsPointCloud3DSymbolHandler()
 void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context, QgsPointCloud3DSymbolHandler::PointData &out, bool selected )
 {
   Q_UNUSED( selected )
-  Q_UNUSED( context )
 
   if ( out.positions.empty() )
     return;
@@ -651,9 +650,11 @@ void QgsClassificationPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *pa
   makeEntity( parent, context, outNormal, false );
 }
 
+
 Qt3DRender::QGeometry *QgsClassificationPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
 {
   return new QgsColorRampPointCloud3DGeometry( parent, data, byteStride );
 }
+
 
 /// @endcond

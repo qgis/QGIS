@@ -125,16 +125,16 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
   return entity;
 }
 
-
 ///////////////
 
 
 QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
-    double zValueScale, double zValueOffset )
+    double zValueScale, double zValueOffset, int pointBudget )
   : mMap( map )
   , mPointCloudIndex( pc )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
+  , mPointBudget( pointBudget )
 {
   mSymbol.reset( symbol );
 }
@@ -142,8 +142,17 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
 QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
   QgsChunkNodeId id = node->tileId();
-  Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
+  IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
+  Q_ASSERT( mPointCloudIndex->hasNode( n ) );
   return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset );
+}
+
+int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) const
+{
+  QgsChunkNodeId id = node->tileId();
+  IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
+  Q_ASSERT( mPointCloudIndex->hasNode( n ) );
+  return mPointCloudIndex->nodePointCount( n );
 }
 
 QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, double zValueOffset );
@@ -202,9 +211,9 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
-  : QgsChunkedEntity( maxScreenError,
-                      new QgsPointCloudLayerChunkLoaderFactory( map, pc, symbol, zValueScale, zValueOffset ), true )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, double maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
+  : QgsChunkedEntity( maximumScreenSpaceError,
+                      new QgsPointCloudLayerChunkLoaderFactory( map, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {
   setUsingAdditiveStrategy( true );
   setShowBoundingBoxes( showBoundingBoxes );

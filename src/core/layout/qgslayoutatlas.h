@@ -366,8 +366,8 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     bool mEnabled = false;
     bool mHideCoverage = false;
     QString mFilenameExpressionString;
+    QString mFilenameExpressionError;
 
-    QgsExpression mFilenameExpression;
     QgsVectorLayerRef mCoverageLayer;
 
     QString mCurrentFilename;

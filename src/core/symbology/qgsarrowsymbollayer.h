@@ -145,6 +145,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     void setColor( const QColor &c ) override;
     QColor color() const override;
+    bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
   private:
 #ifdef SIP_RUN

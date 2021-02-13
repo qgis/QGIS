@@ -157,6 +157,17 @@ namespace QgsWms
       int tileBuffer() const;
 
       /**
+       * Returns TRUE if WMS requests should use the QgsMapSettings::RenderMapTile flag,
+       * so that no visible artifacts are visible between adjacent tiles.
+       *
+       * This flag can slow down rendering considerably, so it is only used if the corresponding
+       * if explicitly opted in.
+       *
+       * \since QGIS 3.18
+       */
+      bool renderMapTiles() const;
+
+      /**
        * Returns the precision to use according to the current configuration.
        */
       int precision() const;

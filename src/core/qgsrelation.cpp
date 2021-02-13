@@ -233,7 +233,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
-    int referencingIdx = referencingLayer()->fields().indexFromName( pair.referencingField() );
+    int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
     conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ) );
   }
 
@@ -317,7 +317,7 @@ QList<QgsRelation::FieldPair> QgsRelation::fieldPairs() const
 QgsAttributeList QgsRelation::referencedFields() const
 {
   QgsAttributeList attrs;
-
+  attrs.reserve( d->mFieldPairs.size() );
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
     attrs << d->mReferencedLayer->fields().lookupField( pair.second );
@@ -421,7 +421,7 @@ void QgsRelation::updateRelationStatus()
   }
 }
 
-void QgsRelation::setPolymorphicRelationId( const QString polymorphicRelationId )
+void QgsRelation::setPolymorphicRelationId( const QString &polymorphicRelationId )
 {
   d.detach();
   d->mPolymorphicRelationId = polymorphicRelationId;

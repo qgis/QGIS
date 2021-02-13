@@ -1421,7 +1421,7 @@ static QVariant fcnRegexpReplace( const QVariantList &values, const QgsExpressio
   QString regexp = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   QString after = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
 
-  QRegularExpression re( regexp );
+  QRegularExpression re( regexp, QRegularExpression::UseUnicodePropertiesOption );
   if ( !re.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
@@ -1435,7 +1435,7 @@ static QVariant fcnRegexpMatch( const QVariantList &values, const QgsExpressionC
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString regexp = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
 
-  QRegularExpression re( regexp );
+  QRegularExpression re( regexp, QRegularExpression::UseUnicodePropertiesOption );
   if ( !re.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
@@ -1450,7 +1450,7 @@ static QVariant fcnRegexpMatches( const QVariantList &values, const QgsExpressio
   QString regexp = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   QString empty = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
 
-  QRegularExpression re( regexp );
+  QRegularExpression re( regexp, QRegularExpression::UseUnicodePropertiesOption );
   if ( !re.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
@@ -1482,7 +1482,7 @@ static QVariant fcnRegexpSubstr( const QVariantList &values, const QgsExpression
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString regexp = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
 
-  QRegularExpression re( regexp );
+  QRegularExpression re( regexp, QRegularExpression::UseUnicodePropertiesOption );
   if ( !re.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );

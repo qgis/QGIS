@@ -222,6 +222,11 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      */
     int span() const;
 
+    /**
+     * Returns the number of poiny of indexed point cloud node \a n
+     */
+    int nodePointCount( const IndexedPointCloudNode &n );
+
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );

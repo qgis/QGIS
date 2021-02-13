@@ -60,17 +60,19 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
      * The factory takes ownership over the passed \a symbol
      */
     QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
-                                          double zValueScale, double zValueOffset );
+                                          double zValueScale, double zValueOffset, int pointBudget );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     virtual QgsChunkNode *createRootNode() const override;
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    virtual int primitivesCount( QgsChunkNode *node ) const override;
     const Qgs3DMapSettings &mMap;
     QgsPointCloudIndex *mPointCloudIndex;
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mZValueScale = 1.0;
     double mZValueOffset = 0;
+    int mPointBudget = 1000000;
 };
 
 
@@ -119,8 +121,8 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
-        double zValueScale, double zValueOffset );
+    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, double maximumScreenSpaceError, bool showBoundingBoxes,
+        double zValueScale, double zValueOffset, int pointBudget );
 
     ~QgsPointCloudLayerChunkedEntity();
 };

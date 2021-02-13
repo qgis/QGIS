@@ -18,7 +18,7 @@
 #ifndef QGSMAPTOOLLABEL_H
 #define QGSMAPTOOLLABEL_H
 
-#include "qgsmaptool.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgspallabeling.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
@@ -30,12 +30,12 @@ typedef QMap<QgsPalLayerSettings::Property, int> QgsPalIndexes;
 typedef QMap<QgsDiagramLayerSettings::Property, int> QgsDiagramIndexes;
 
 //! Base class for map tools that modify label properties
-class APP_EXPORT QgsMapToolLabel: public QgsMapTool
+class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
 
   public:
-    QgsMapToolLabel( QgsMapCanvas *canvas );
+    QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolLabel() override;
 
     /**

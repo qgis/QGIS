@@ -172,6 +172,20 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT int wmsTileBuffer( const QgsProject &project );
 
   /**
+   * Returns TRUE if WMS requests should use the QgsMapSettings::RenderMapTile flag,
+   * so that no visible artifacts are visible between adjacent tiles.
+   *
+   * This flag can slow down rendering considerably, so it is only used if the corresponding
+   * setting is enabled in the project.
+   *
+   * \param project the QGIS project
+   * \returns TRUE if the flag should be used, or FALSE if not.
+   *
+   * \since QGIS 3.18
+   */
+  SERVER_EXPORT bool wmsRenderMapTiles( const QgsProject &project );
+
+  /**
    * Returns the maximum number of atlas features which can be printed in a request
    * \param project the QGIS project
    * \return the number of atlas features

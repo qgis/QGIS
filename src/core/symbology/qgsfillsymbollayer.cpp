@@ -988,6 +988,11 @@ double QgsGradientFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &con
   return offsetBleed;
 }
 
+bool QgsGradientFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
+}
+
 void QgsGradientFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mOffsetUnit = unit;
@@ -1618,6 +1623,11 @@ double QgsShapeburstFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &c
   return offsetBleed;
 }
 
+bool QgsShapeburstFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
+}
+
 void QgsShapeburstFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mDistanceUnit = unit;
@@ -1679,14 +1689,6 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
   if ( applyBrushTransformFromContext() && !context.renderContext().textureOrigin().isNull() )
   {
     QPointF leftCorner = context.renderContext().textureOrigin();
-    QTransform t = mBrush.transform();
-    t.translate( leftCorner.x(), leftCorner.y() );
-    mBrush.setTransform( t );
-  }
-  else if ( context.renderContext().testFlag( QgsRenderContext::RenderMapTile ) )
-  {
-    //transform brush to upper left corner of geometry bbox
-    QPointF leftCorner = points.boundingRect().topLeft();
     QTransform t = mBrush.transform();
     t.translate( leftCorner.x(), leftCorner.y() );
     mBrush.setTransform( t );
@@ -4049,6 +4051,11 @@ bool QgsCentroidFillSymbolLayer::hasDataDefinedProperties() const
   return false;
 }
 
+bool QgsCentroidFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
+}
+
 void QgsCentroidFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   if ( mMarker )
@@ -4614,6 +4621,11 @@ QgsRandomMarkerFillSymbolLayer *QgsRandomMarkerFillSymbolLayer::clone() const
   copyDataDefinedProperties( res.get() );
   copyPaintEffect( res.get() );
   return res.release();
+}
+
+bool QgsRandomMarkerFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
 }
 
 QgsSymbol *QgsRandomMarkerFillSymbolLayer::subSymbol()

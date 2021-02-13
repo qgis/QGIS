@@ -983,12 +983,21 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
     if ( !child->algorithm() )
-      return 0;
+      return QString();
 
     switch ( edge )
     {
       case Qt::BottomEdge:
       {
+        if ( index >= child->algorithm()->outputDefinitions().length() )
+        {
+          // something goes wrong and tried to link to an not existing output
+          QgsMessageLog::logMessage(
+            tr( "Cannot link output for child: %1" ).arg( child->algorithm()->name() ),
+            "QgsModelChildAlgorithmGraphicItem", Qgis::Warning, true );
+          return QString();
+        }
+
         const QgsProcessingOutputDefinition *output = child->algorithm()->outputDefinitions().at( index );
         QString title = output->description();
         if ( mResults.contains( output->name() ) )
@@ -1006,6 +1015,14 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
           return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
         } ), params.end() );
 
+        if ( index >= params.length() )
+        {
+          // something goes wrong and tried to link to an not existing source parameter
+          QgsMessageLog::logMessage(
+            tr( "Cannot link source for child: %1" ).arg( child->algorithm()->name() ),
+            "QgsModelChildAlgorithmGraphicItem", Qgis::Warning, true );
+          return QString();
+        }
 
         QString title = params.at( index )->description();
         if ( !mInputs.value( params.at( index )->name() ).toString().isEmpty() )

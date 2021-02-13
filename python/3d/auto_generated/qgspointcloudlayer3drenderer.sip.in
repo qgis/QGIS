@@ -94,6 +94,15 @@ Sets whether bounding boxes will be visible when rendering the point cloud.
 .. seealso:: :py:func:`showBoundingBoxes`
 %End
 
+    int pointRenderingBudget() const;
+%Docstring
+Returns the maximum number of points that will be rendered to the scene
+%End
+    void setPointRenderingBudget( int budget );
+%Docstring
+Sets the maximum number of points to be rendered in the scene
+%End
+
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );
     QgsPointCloudLayer3DRenderer &operator=( const QgsPointCloudLayer3DRenderer & );

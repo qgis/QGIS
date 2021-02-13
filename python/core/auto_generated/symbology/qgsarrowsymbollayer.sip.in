@@ -212,6 +212,8 @@ Sets the arrow type
 
     virtual QColor color() const;
 
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
+
 
   private:
     QgsArrowSymbolLayer( const QgsArrowSymbolLayer & );

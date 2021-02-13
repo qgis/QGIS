@@ -558,6 +558,17 @@ Returns whether the symbol utilizes any data defined properties.
 .. versionadded:: 2.12
 %End
 
+    bool canCauseArtifactsBetweenAdjacentTiles() const;
+%Docstring
+Returns ``True`` if the symbol rendering can cause visible artifacts across a single feature
+when the feature is rendered as a series of adjacent map tiles each containing a portion of the feature's geometry.
+
+Internally this calls :py:func:`QgsSymbolLayer.canCauseArtifactsBetweenAdjacentTiles()` for all symbol layers in the symbol
+and returns ``True`` if any of the layers returned ``True``.
+
+.. versionadded:: 3.18
+%End
+
  void setLayer( const QgsVectorLayer *layer ) /Deprecated/;
 %Docstring
 

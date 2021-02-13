@@ -260,11 +260,22 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
      */
     void setShowBoundingBoxes( bool showBoundingBoxes );
 
+    /**
+     * Returns the maximum number of points that will be rendered to the scene
+     */
+    int pointRenderingBudget() const { return mPointBudget; };
+
+    /**
+     * Sets the maximum number of points to be rendered in the scene
+     */
+    void setPointRenderingBudget( int budget );
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mMaximumScreenError = 1.0;
     bool mShowBoundingBoxes = false;
+    int mPointBudget = 1000000;
 
   private:
 #ifdef SIP_RUN

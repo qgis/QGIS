@@ -188,7 +188,7 @@ Sets whether the animation should ``loop`` after hitting the end or start frame.
 .. seealso:: :py:func:`isLooping`
 %End
 
-    long findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const;
+    long long findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const;
 %Docstring
 Returns the best suited frame number for the specified datetime, based on the start of the corresponding temporal range.
 %End

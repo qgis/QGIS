@@ -1,7 +1,12 @@
 name: Code Layout
 
-on: [push, pull_request]
-
+on:
+  push:
+    branches:
+      - master
+      - release-**
+  pull_request:
+  
 jobs:
   documentation_checks:
     runs-on: ubuntu-latest
@@ -9,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.7
       - name: Install Requirements
@@ -138,7 +143,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.7
       - name: Install Requirements

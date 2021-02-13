@@ -73,6 +73,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testTopologicalEditingZ();
     void testCloseLine();
     void testSelfSnapping();
+    void testDifferentCrs();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -89,6 +90,8 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLine2D = nullptr;
     QgsVectorLayer *mLayerCloseLine = nullptr;
     QgsVectorLayer *mLayerSelfSnapLine = nullptr;
+    QgsVectorLayer *mLayerCRS3946Line = nullptr;
+    QgsVectorLayer *mLayerCRS3945Line = nullptr;
     QgsFeatureId mFidLineF1 = 0;
     QgsFeatureId mFidCurvedF1 = 0;
 };
@@ -235,8 +238,19 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerSelfSnapLine );
   mLayerSelfSnapLine->startEditing();
 
+  // make layers with different CRS
+  mLayerCRS3946Line = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerCRS3946Line ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3946Line );
+  mLayerCRS3946Line->startEditing();
+
+  mLayerCRS3945Line = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3945" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerCRS3945Line ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3945Line );
+  mLayerCRS3945Line->startEditing();
+
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine << mLayerCRS3946Line << mLayerCRS3945Line );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -784,6 +798,77 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
   QCOMPARE( mLayerSelfSnapLine->getFeature( newFid2 ).geometry(), QgsGeometry::fromWkt( targetWkt ) );
   mLayerSelfSnapLine->undoStack()->undo();
 
+}
+
+void TestQgsMapToolAddFeatureLine::testDifferentCrs()
+{
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+
+  // Prepare geometries
+  QgsPolylineXY line1;
+  line1 << QgsPointXY( 0, 0 ) << QgsPointXY( 0, 10 );
+  QgsFeature lineF1;
+  lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
+
+  mLayerCRS3946Line->startEditing();
+  mLayerCRS3946Line->addFeature( lineF1 );
+  QgsFeatureId mFidLine3946 = lineF1.id();
+  QCOMPARE( mLayerCRS3946Line->featureCount(), ( long )1 );
+  // just one added feature
+  QCOMPARE( mLayerCRS3946Line->undoStack()->index(), 1 );
+
+  // Draw the line to avoid some error with the projections
+  mLayerCRS3945Line->startEditing();
+  mCanvas->setCurrentLayer( mLayerCRS3945Line );
+  utils.mouseClick( 8, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 8, 8, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 8, 8, Qt::RightButton );
+  QgsFeatureId mFidLine3945 = utils.newFeatureId( oldFids );
+  QCOMPARE( mLayerCRS3945Line->featureCount(), ( long )1 );
+  // just one added feature
+  QCOMPARE( mLayerCRS3945Line->undoStack()->index(), 1 );
+
+
+  mCanvas->setCurrentLayer( mLayerCRS3946Line );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( true );
+  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setTypeFlag( QgsSnappingConfig::SegmentFlag );
+  cfg.setTolerance( 50 );
+  cfg.setUnits( QgsTolerance::Pixels );
+
+  bool topologicalEditing = cfg.project()->topologicalEditing();
+  cfg.project()->setTopologicalEditing( true );
+
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  utils.mouseClick( -2, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 0, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 2, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 2, 4, Qt::RightButton );
+
+  QString new3946Wkt = "LineString (0 0, 0 4, 0 10)";
+
+  QCOMPARE( mLayerCRS3946Line->getFeature( mFidLine3946 ).geometry().asWkt( 0 ), new3946Wkt ); // use wkt to avoid float rounding errors
+  mLayerCRS3946Line->undoStack()->undo();
+
+  // same test with a layer with a different CRS
+  mCanvas->setCurrentLayer( mLayerCRS3945Line );
+  utils.mouseClick( 0, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 8, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 8, 4, Qt::RightButton );
+
+  // (2 2, 8 2, 8 4, 8 8) transformed from 3946 to 3945
+  QString new3945Wkt = "LineString (17441.5859966475982219 -862119.21677098423242569, 17441.58100318093784153 -862117.23846332356333733, 17441.57101624645292759 -862113.28184797242283821)";
+  QCOMPARE( mLayerCRS3945Line->getFeature( mFidLine3945 ).geometry().asWkt( 2 ), QgsGeometry::fromWkt( new3945Wkt ).asWkt( 2 ) );
+  mLayerCRS3945Line->undoStack()->undo();
+
+  cfg.project()->setTopologicalEditing( topologicalEditing );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )

@@ -341,9 +341,9 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           QgsGeometry featGeom = f->geometry();
           int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
           f->setGeometry( featGeom );
-          if ( avoidIntersectionsReturn == 1 )
+          if ( avoidIntersectionsReturn == 3 )
           {
-            //not a polygon type. Impossible to get there
+            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
           }
           if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
           {

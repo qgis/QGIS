@@ -74,13 +74,6 @@ jobs:
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
           echo PATCH_QT_3D: ${PATCH_QT_3D}
 
-#      - name: Increase Docker base image size
-#        # https://stackoverflow.com/questions/50140939/increase-docker-container-size-from-default-10gb-on-rhel7
-#        run: |
-#          sudo rm /etc/docker/daemon.json
-#          echo '{"storage-opt": [ "dm.basesize=50G" ]}' | sudo tee /etc/docker/daemon.json
-#          sudo service docker restart
-
       - name: Build deps
         env:
           UBUNTU_BASE: ${{ matrix.ubuntu-base }}
@@ -106,7 +99,7 @@ jobs:
           # The base_ref or target branch of the pull request in a workflow run.
           restore-keys: |
             build-ccache-${{ matrix.ubuntu-base }}-${{ github.actor }}-${{ github.head_ref }}-
-            build-ccache-${{ matrix.ubuntu-base }}-${{ github.base_ref }}-
+            build-ccache-${{ matrix.ubuntu-base }}-refs/heads/${{ github.base_ref }}-
             build-ccache-${{ matrix.ubuntu-base }}-refs/heads/master-
 
       - name: Prepare build cache for branch/tag

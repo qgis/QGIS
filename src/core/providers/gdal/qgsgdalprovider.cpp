@@ -1681,13 +1681,21 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
 
   if ( metadata )
   {
-    for ( int i = 0; metadata[i]; i++ )
+    const int subdatasetCount = CSLCount( metadata ) / 2;
+    for ( int i = 1; i <= subdatasetCount; i++ )
     {
-      QString layer = QString::fromUtf8( metadata[i] );
-      int pos = layer.indexOf( QLatin1String( "_NAME=" ) );
-      if ( pos >= 0 )
+      const char *name = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_NAME", i ) );
+      const char *desc = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_DESC", i ) );
+      if ( name && desc )
       {
-        subLayers << layer.mid( pos + 6 );
+        // For GeoPackage, desc is often "table - identifier" where table=identifier
+        // In that case, just keep one.
+        const char *sepPtr = strstr( desc, " - " );
+        if ( sepPtr && strncmp( desc, sepPtr + 3, strlen( sepPtr + 3 ) ) == 0 )
+        {
+          desc = sepPtr + 3;
+        }
+        subLayers << QString::fromUtf8( name ) + QgsDataProvider::sublayerSeparator() + QString::fromUtf8( desc );
       }
     }
   }

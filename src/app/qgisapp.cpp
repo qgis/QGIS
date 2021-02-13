@@ -4434,16 +4434,16 @@ void QgisApp::createCanvasTools()
   mMapTools.mTrimExtendFeature = new QgsMapToolTrimExtendFeature( mMapCanvas );
   mMapTools.mTrimExtendFeature->setAction( mActionTrimExtendFeature );
 
-  mMapTools.mPinLabels = new QgsMapToolPinLabels( mMapCanvas );
+  mMapTools.mPinLabels = new QgsMapToolPinLabels( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mPinLabels->setAction( mActionPinLabels );
-  mMapTools.mShowHideLabels = new QgsMapToolShowHideLabels( mMapCanvas );
+  mMapTools.mShowHideLabels = new QgsMapToolShowHideLabels( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mShowHideLabels->setAction( mActionShowHideLabels );
-  mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas );
+  mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mMoveLabel->setAction( mActionMoveLabel );
 
-  mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas );
+  mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mRotateLabel->setAction( mActionRotateLabel );
-  mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas );
+  mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mChangeLabelProperties->setAction( mActionChangeLabelProperties );
 //ensure that non edit tool is initialized or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
@@ -5969,49 +5969,13 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   layers.reserve( sublayers.size() );
   for ( int i = 0; i < sublayers.size(); i++ )
   {
-    // simplify raster sublayer name - should add a function in gdal provider for this?
-    // code is copied from QgsGdalLayerItem::createChildren
-    QString name = sublayers[i];
-    QString path = layer->source();
-    // if netcdf/hdf use all text after filename
-    // for hdf4 it would be best to get description, because the subdataset_index is not very practical
-    if ( name.startsWith( QLatin1String( "netcdf" ), Qt::CaseInsensitive ) ||
-         name.startsWith( QLatin1String( "hdf" ), Qt::CaseInsensitive ) )
-    {
-      name = name.mid( name.indexOf( path ) + path.length() + 1 );
-    }
-    else if ( name.startsWith( QLatin1String( "GPKG" ), Qt::CaseInsensitive ) )
-    {
-      const auto parts { name.split( ':' ) };
-      if ( parts.count() >= 3 )
-      {
-        name = parts.at( parts.count( ) - 1 );
-      }
-    }
-    else
-    {
-      // remove driver name and file name
-      name.remove( name.split( QgsDataProvider::sublayerSeparator() )[0] );
-      name.remove( path );
-    }
-    // remove any : or " left over
-    if ( name.startsWith( ':' ) )
-      name.remove( 0, 1 );
-
-    if ( name.startsWith( '\"' ) )
-      name.remove( 0, 1 );
-
-    if ( name.endsWith( ':' ) )
-      name.chop( 1 );
-
-    if ( name.endsWith( '\"' ) )
-      name.chop( 1 );
-
-    names << name;
+    const QStringList parts = sublayers[i].split( QgsDataProvider::sublayerSeparator() );
+    const QString desc = parts[1];
+    names << desc;
 
     QgsSublayersDialog::LayerDefinition def;
     def.layerId = i;
-    def.layerName = name;
+    def.layerName = desc;
     layers << def;
   }
 
@@ -6035,12 +5999,13 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     const auto constSelection = chooseSublayersDialog.selection();
     for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
     {
-      int i = def.layerId;
-      matches = rx.match(sublayers[i]);
-      if ( matches.capturedStart != -1 )
+      const QStringList parts = sublayers[i].split( QgsDataProvider::sublayerSeparator() );
+      const QString path = parts[0];
+      name = path;
+      matches = rx.match( name );
+      if ( matches.capturedStart() != -1 )
       {
         uri = matches.captured( 1 );
-        name = sublayers[i];
         name.replace( uri, QFileInfo( uri ).completeBaseName() );
       }
       else
@@ -6048,7 +6013,7 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
         name = names[i];
       }
 
-      QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], name );
+      QgsRasterLayer *rlayer = new QgsRasterLayer( path, name );
       if ( rlayer && rlayer->isValid() )
       {
         if ( addToGroup )

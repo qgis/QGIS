@@ -54,6 +54,7 @@ from qgis.core import (QgsGeometry,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
                        QgsMarkerLineSymbolLayer,
+                       QgsArrowSymbolLayer,
                        QgsSymbol
                        )
 
@@ -147,6 +148,20 @@ class TestQgsSymbol(unittest.TestCase):
         del markerSymbol[1]
         layers = [l.color().name() for l in markerSymbol]
         self.assertEqual(layers, ['#ff0000'])
+
+    def testCanCauseArtifactsBetweenAdjacentTiles(self):
+        """
+        Test canCauseArtifactsBetweenAdjacentTiles()
+        """
+
+        # start with a symbol which won't cause artifacts -- a simple line symbol
+        symbol = QgsLineSymbol.createSimple({})
+        self.assertFalse(symbol.canCauseArtifactsBetweenAdjacentTiles())
+        # add a second layer which CAN cause artifacts
+        symbol.appendSymbolLayer(QgsArrowSymbolLayer())
+        self.assertTrue(symbol.canCauseArtifactsBetweenAdjacentTiles())
+        symbol.deleteSymbolLayer(0)
+        self.assertTrue(symbol.canCauseArtifactsBetweenAdjacentTiles())
 
     def testGeometryRendering(self):
         '''Tests rendering a bunch of different geometries, including bad/odd geometries.'''

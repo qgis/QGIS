@@ -1322,7 +1322,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         }
         else if ( avoidIntersectionsReturn == 3 )
         {
-          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "An error was reported during intersection removal." ) );
+          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ) );
           connectGpsSlot();
           return;
         }

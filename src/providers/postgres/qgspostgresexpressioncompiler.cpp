@@ -17,8 +17,8 @@
 #include "qgssqlexpressioncompiler.h"
 #include "qgsexpressionnodeimpl.h"
 
-QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source )
-  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source, bool ignoreStaticNodes )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
   , mGeometryColumn( source->mGeometryColumn )
   , mSpatialColType( source->mSpatialColType )
   , mDetectedGeomType( source->mDetectedGeomType )
@@ -166,6 +166,10 @@ QString QgsPostgresExpressionCompiler::castToText( const QString &value ) const
 
 QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntFunction:

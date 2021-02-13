@@ -88,6 +88,10 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mRenderingStyleComboBox->setCurrentIndex( 0 );
   mStackedWidget->setCurrentIndex( 0 );
 
+  whileBlocking( mPointBudgetSpinBox )->setMinimum( 0 );
+  whileBlocking( mPointBudgetSpinBox )->setMaximum( mLayer->pointCount() + 1 );
+  whileBlocking( mPointBudgetSpinBox )->setValue( 1000000 );
+
   if ( symbol )
     setSymbol( symbol );
 
@@ -102,6 +106,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 
   connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
   connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, [&]() { emitChangedSignal(); } );
+  connect( mPointBudgetSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [&]() { emitChangedSignal(); } );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
     rampAttributeChanged();
@@ -607,6 +612,16 @@ void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
   whileBlocking( mShowBoundingBoxesCheckBox )->setChecked( showBoundingBoxes );
 }
 
+void QgsPointCloud3DSymbolWidget::setPointBudget( int budget )
+{
+  whileBlocking( mPointBudgetSpinBox )->setValue( budget );
+}
+
+int QgsPointCloud3DSymbolWidget::pointBudget() const
+{
+  return mPointBudgetSpinBox->value();
+}
+
 double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
 {
   return mShowBoundingBoxesCheckBox->isChecked();
@@ -616,3 +631,4 @@ void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )
 {
   parent->connectChildPanel( mClassifiedRendererWidget );
 }
+

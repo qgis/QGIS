@@ -22,9 +22,10 @@
 #include "qgsmapmouseevent.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
-QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
-  : QgsMapToolLabel( canvas )
+QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolLabel( canvas, cadDock )
 {
   mToolName = tr( "Move label" );
 
@@ -35,13 +36,13 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
 }
 
-void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
+void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
-    QgsPointXY pointCanvasCoords = toMapCoordinates( e->pos() );
-    double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
-    double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
+    QgsPointXY pointMapCoords = e->mapPoint();
+    double offsetX = pointMapCoords.x() - mStartPointMapCoords.x();
+    double offsetY = pointMapCoords.y() - mStartPointMapCoords.y();
     mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
     mLabelRubberBand->updatePosition();
     mLabelRubberBand->update();
@@ -51,7 +52,7 @@ void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
+void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( !mLabelRubberBand )
   {
@@ -122,7 +123,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
         }
       }
 
-      mStartPointMapCoords = toMapCoordinates( e->pos() );
+      mStartPointMapCoords = e->mapPoint();
       QgsPointXY referencePoint;
       if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
       {
@@ -155,7 +156,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
           return;
         }
 
-        QgsPointXY releaseCoords = toMapCoordinates( e->pos() );
+        QgsPointXY releaseCoords = e->mapPoint();
         double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
         double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
 
@@ -238,6 +239,15 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
       default:
         break;
     }
+  }
+}
+
+void QgsMapToolMoveLabel::cadCanvasReleaseEvent( QgsMapMouseEvent * )
+{
+  if ( !mLabelRubberBand )
+  {
+    // this tool doesn't collect points -- we want the angle constraints to be reset whenever we drop a label
+    cadDockWidget()->clearPoints();
   }
 }
 

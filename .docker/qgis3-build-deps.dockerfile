@@ -35,6 +35,7 @@ RUN  apt-get update \
     libgdal-dev \
     libgeos-dev \
     libgsl-dev \
+    libpdal-dev \
     libpq-dev \
     libproj-dev \
     libprotobuf-dev \
@@ -65,6 +66,7 @@ RUN  apt-get update \
     lighttpd \
     locales \
     ninja-build \
+    pdal \
     pkg-config \
     poppler-utils \
     postgresql-client \

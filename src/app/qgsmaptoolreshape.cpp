@@ -175,9 +175,11 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
             case QgsProject::AvoidIntersectionsMode::AllowIntersections:
               break;
           }
+          int res = -1;
           if ( avoidIntersectionsLayers.size() > 0 )
           {
-            if ( geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )
+            res = geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures );
+            if ( res == 1 )
             {
               emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::Critical );
               vlayer->destroyEditCommand();
@@ -191,6 +193,10 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
             emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), Qgis::Critical );
             vlayer->destroyEditCommand();
             return;
+          }
+          if ( res == 3 )
+          {
+            emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
           }
         }
 

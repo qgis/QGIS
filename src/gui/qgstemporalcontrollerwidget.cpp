@@ -301,6 +301,7 @@ void QgsTemporalControllerWidget::updateFrameDuration()
     mSlider->setValue( mNavigationObject->currentFrameNumber() );
   }
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
+  mSlider->setValue( mNavigationObject->currentFrameNumber() );
 }
 
 void QgsTemporalControllerWidget::setWidgetStateFromProject()

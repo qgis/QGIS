@@ -45,6 +45,7 @@ void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3D
   if ( renderer != nullptr )
   {
     mWidgetPointCloudSymbol->setSymbol( const_cast<QgsPointCloud3DSymbol *>( renderer->symbol() ) );
+    mWidgetPointCloudSymbol->setPointBudget( renderer->pointRenderingBudget() );
     mWidgetPointCloudSymbol->setMaximumScreenError( renderer->maximumScreenError() );
     mWidgetPointCloudSymbol->setShowBoundingBoxes( renderer->showBoundingBoxes() );
   }
@@ -56,6 +57,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
   QgsPointCloud3DSymbol *sym = mWidgetPointCloudSymbol->symbol();
   renderer->setSymbol( sym );
   renderer->setLayer( qobject_cast<QgsPointCloudLayer *>( mLayer ) );
+  renderer->setPointRenderingBudget( mWidgetPointCloudSymbol->pointBudget() );
   renderer->setMaximumScreenError( mWidgetPointCloudSymbol->maximumScreenError() );
   renderer->setShowBoundingBoxes( mWidgetPointCloudSymbol->showBoundingBoxes() );
   return renderer;
@@ -66,7 +68,9 @@ void QgsPointCloudLayer3DRendererWidget::apply()
   QgsPointCloudLayer3DRenderer *r = nullptr;
   r = renderer();
   if ( r )
+  {
     r->setSymbol( mWidgetPointCloudSymbol->symbol() );
+  }
   mLayer->setRenderer3D( r );
 }
 

@@ -33,6 +33,8 @@ class QgsFeature;
 class QgsField;
 class QDomDocument;
 
+class QgsHanaConnection;
+class QgsHanaConnectionRef;
 class QgsHanaFeatureIterator;
 
 struct FieldInfo
@@ -113,18 +115,17 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     );
 
   private:
+    QgsHanaConnectionRef createConnection() const;
     QString buildQuery( const QString &columns, const QString &where, const QString &orderBy, int limit ) const;
     QString buildQuery( const QString &columns, const QString &where ) const;
     QString buildQuery( const QString &columns ) const;
-    bool checkPermissionsAndSetCapabilities();
+    bool checkPermissionsAndSetCapabilities( QgsHanaConnection &conn );
     QgsRectangle estimateExtent() const;
-    bool isSrsRoundEarth( int srsID ) const;
-    int readSrid();
-    void readAttributeFields();
-    void readGeometryType();
-    void readMetadata();
-    void readSrsInformation();
-    void determinePrimaryKey();
+    void readAttributeFields( QgsHanaConnection &conn );
+    void readGeometryType( QgsHanaConnection &conn );
+    void readMetadata( QgsHanaConnection &conn );
+    void readSrsInformation( QgsHanaConnection &conn );
+    void determinePrimaryKey( QgsHanaConnection &conn );
     long getFeatureCount( const QString &whereClause ) const;
     void updateFeatureIdMap( QgsFeatureId fid, const QgsAttributeMap &attributes );
 

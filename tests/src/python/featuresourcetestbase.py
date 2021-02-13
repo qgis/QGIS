@@ -141,7 +141,7 @@ class FeatureSourceTestCase(object):
                 self.assertFalse(geometries[pk], 'Expected null geometry for {}'.format(pk))
 
     def assert_query(self, source, expression, expected):
-        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.NoGeometry)
+        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.NoGeometry | QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
         result = set([f['pk'] for f in source.getFeatures(request)])
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected),
                                                                                                      result, expression)
@@ -149,13 +149,13 @@ class FeatureSourceTestCase(object):
 
         # Also check that filter works when referenced fields are not being retrieved by request
         result = set([f['pk'] for f in source.getFeatures(
-            QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()))])
+            QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation))])
         assert set(
             expected) == result, 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(
             set(expected), result, expression)
 
         # test that results match QgsFeatureRequest.acceptFeature
-        request = QgsFeatureRequest().setFilterExpression(expression)
+        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
         for f in source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
@@ -168,6 +168,8 @@ class FeatureSourceTestCase(object):
         self.assert_query(source, '"name" NOT ILIKE \'QGIS\'', [1, 2, 3, 4])
         self.assert_query(source, '"name" NOT ILIKE \'pEAR\'', [1, 2, 4])
         self.assert_query(source, 'name = \'Apple\'', [2])
+        # field names themselves are NOT case sensitive -- QGIS expressions don't care about this
+        self.assert_query(source, '\"NaMe\" = \'Apple\'', [2])
         self.assert_query(source, 'name <> \'Apple\'', [1, 3, 4])
         self.assert_query(source, 'name = \'apple\'', [])
         self.assert_query(source, '"name" <> \'apple\'', [1, 2, 3, 4])
@@ -614,14 +616,14 @@ class FeatureSourceTestCase(object):
         """
         request = QgsFeatureRequest().setFilterExpression(
             'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setSubsetOfAttributes([]).setFlags(
-            QgsFeatureRequest.NoGeometry)
+            QgsFeatureRequest.NoGeometry | QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
         result = set([f['pk'] for f in self.source.getFeatures(request)])
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.assertEqual(result, {4})
         self.assertTrue(all_valid)
 
         request = QgsFeatureRequest().setFilterExpression(
-            'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60')
+            'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
         result = set([f['pk'] for f in self.source.getFeatures(request)])
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.assertEqual(result, {4})

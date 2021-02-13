@@ -93,7 +93,7 @@ void TestQgsSQLiteExpressionCompiler::testMakeExpression()
 
 void TestQgsSQLiteExpressionCompiler::testCompiler()
 {
-  QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( mPointsLayer->fields() );
+  QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( mPointsLayer->fields(), true );
   QgsExpression exp( makeExpression( 1 ) );
   QCOMPARE( compiler.compile( &exp ), QgsSqlExpressionCompiler::Result::Complete );
   QCOMPARE( compiler.result(), QString( exp ) );

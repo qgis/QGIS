@@ -150,6 +150,11 @@ int QgsWmsRenderContext::tileBuffer() const
   return tileBuffer;
 }
 
+bool QgsWmsRenderContext::renderMapTiles() const
+{
+  return QgsServerProjectUtils::wmsRenderMapTiles( *mProject );
+}
+
 int QgsWmsRenderContext::precision() const
 {
   int precision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );

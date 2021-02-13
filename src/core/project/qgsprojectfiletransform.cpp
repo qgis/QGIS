@@ -635,7 +635,7 @@ void transform1800to1900( QgsProjectFileTransform *pft )
     }
   }
 
-  QgsDebugMsg( pft->dom().toString() );
+  QgsDebugMsgLevel( pft->dom().toString(), 2 );
 }
 
 void transform2200to2300( QgsProjectFileTransform *pft )

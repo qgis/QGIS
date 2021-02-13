@@ -999,6 +999,11 @@ QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) con
   return mColor;
 }
 
+bool QgsSimpleLineSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return mPenStyle != Qt::SolidLine || mUseCustomDashPattern;
+}
+
 bool QgsSimpleLineSymbolLayer::alignDashPattern() const
 {
   return mAlignDashPattern;
@@ -1349,6 +1354,24 @@ QVariantMap QgsTemplatedLineSymbolLayerBase::properties() const
 
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
   return map;
+}
+
+bool QgsTemplatedLineSymbolLayerBase::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  switch ( mPlacement )
+  {
+    case QgsTemplatedLineSymbolLayerBase::Interval:
+    case QgsTemplatedLineSymbolLayerBase::CentralPoint:
+    case QgsTemplatedLineSymbolLayerBase::SegmentCenter:
+      return true;
+
+    case QgsTemplatedLineSymbolLayerBase::Vertex:
+    case QgsTemplatedLineSymbolLayerBase::CurvePoint:
+    case QgsTemplatedLineSymbolLayerBase::LastVertex:
+    case QgsTemplatedLineSymbolLayerBase::FirstVertex:
+      return false;
+  }
+  return false;
 }
 
 void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const

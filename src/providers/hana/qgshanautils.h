@@ -71,7 +71,7 @@ class QgsHanaUtils
     static int toPlanarSRID( int srid );
     static bool convertField( QgsField &field );
     static int countFieldsWithFirstLetterInUppercase( const QgsFields &fields );
-    static QString formatErrorMessage( const char *message, bool withPrefix = true );
+    static QString formatErrorMessage( const char *message, bool withPrefix = false );
 };
 
 #endif // QGSHANAUTILS_H

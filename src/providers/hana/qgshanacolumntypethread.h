@@ -34,6 +34,8 @@ class QgsHanaColumnTypeThread : public QThread
     // by emitting the setLayerType() signal.
     void run() override;
 
+    const QString &errorMessage() const { return mErrorMessage; }
+
   signals:
     void setLayerType( QgsHanaLayerProperty layerProperty );
     void progress( int layerIndex, int layersCount );
@@ -44,6 +46,7 @@ class QgsHanaColumnTypeThread : public QThread
     const QgsDataSourceUri mUri;
     const bool mAllowGeometrylessTables;
     const bool mUserTablesOnly;
+    QString mErrorMessage;
 };
 
 #endif  // QGSHANACOLUMNTYPETHREAD_H

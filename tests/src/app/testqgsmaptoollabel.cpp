@@ -27,6 +27,7 @@
 #include "qgsfontutils.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 class TestQgsMapToolLabel : public QObject
 {
@@ -78,6 +79,7 @@ class TestQgsMapToolLabel : public QObject
       std::unique_ptr< QgsMapCanvas > canvas = qgis::make_unique< QgsMapCanvas >();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() );
+      std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = qgis::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 500, 500 ) );
@@ -94,7 +96,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( canvas->mapSettings().outputSize(), QSize( 500, 500 ) );
       QCOMPARE( canvas->mapSettings().visibleExtent(), QgsRectangle( -1, -1, 4, 4 ) );
 
-      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get() ) );
+      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
 
       // no labels yet
       QgsPointXY pt;
@@ -241,6 +243,7 @@ class TestQgsMapToolLabel : public QObject
       std::unique_ptr< QgsMapCanvas > canvas = qgis::make_unique< QgsMapCanvas >();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
+      std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = qgis::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 500, 500 ) );
@@ -257,7 +260,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( canvas->mapSettings().outputSize(), QSize( 500, 500 ) );
       QCOMPARE( canvas->mapSettings().visibleExtent(), QgsRectangle( -1, -1, 4, 4 ) );
 
-      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get() ) );
+      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
 
       // add some labels
       QgsPalLayerSettings pls1;

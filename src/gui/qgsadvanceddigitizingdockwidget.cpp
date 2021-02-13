@@ -364,6 +364,19 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
     mYConstraint->setLockMode( CadConstraint::NoLock );
     emit lockYChanged( false );
   }
+
+  if ( !mCadPointList.empty() )
+  {
+    if ( !mXConstraint->isLocked() && !mXConstraint->relative() )
+    {
+      mXConstraint->setValue( mCadPointList.constLast().x(), true );
+    }
+    if ( !mYConstraint->isLocked() && !mYConstraint->relative() )
+    {
+      mYConstraint->setValue( mCadPointList.constLast().y(), true );
+    }
+  }
+
 }
 
 #if 0

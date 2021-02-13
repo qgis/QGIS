@@ -30,12 +30,14 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsgui.h"
 #include "qgstextrenderer.h"
-
+#include "qgisapp.h"
+#include "qgsmapmouseevent.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QMouseEvent>
 
-QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas )
-  : QgsMapTool( canvas )
+QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolAdvancedDigitizing( canvas, cadDock )
 
 {
 }
@@ -181,8 +183,9 @@ void QgsMapToolLabel::deleteRubberBands()
   mFeatureRubberBand = nullptr;
   delete mFixPointRubberBand;
   mFixPointRubberBand = nullptr;
+  cadDockWidget()->clear();
+  cadDockWidget()->clearPoints();
 }
-
 
 QString QgsMapToolLabel::currentLabelText( int trunc )
 {

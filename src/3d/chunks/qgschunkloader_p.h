@@ -44,17 +44,13 @@ class QgsChunkLoader : public QgsChunkQueueJob
     Q_OBJECT
   public:
     //! Construct chunk loader for a node
-    QgsChunkLoader( QgsChunkNode *node )
-      : QgsChunkQueueJob( node )
-    {
-    }
+    QgsChunkLoader( QgsChunkNode *node ) : QgsChunkQueueJob( node ) { }
 
     /**
      * Run in main thread to use loaded data.
      * Returns entity attached to the given parent entity in disabled state
      */
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) = 0;
-
 };
 
 
@@ -71,6 +67,13 @@ class QgsChunkLoaderFactory  : public QObject
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const = 0;
+
+    //! Returns the primitives count for the chunk \a node
+    virtual int primitivesCount( QgsChunkNode *node ) const
+    {
+      Q_UNUSED( node );
+      return 0;
+    }
 
     //! Creates root node of the hierarchy. Ownership of the returned object is passed to the caller.
     virtual QgsChunkNode *createRootNode() const = 0;

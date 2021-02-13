@@ -191,7 +191,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
+    QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsDebugMsg( "expression dump: " + request.filterExpression()->dump() );
     QgsDebugMsg( "expression expression: " + request.filterExpression()->expression() );
     QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
@@ -232,7 +232,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
         break;
       }
 
-      QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
+      QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
       QgsExpression expression = clause.expression();
       QgsDebugMsg( "expression: " + expression.dump() );
       if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )

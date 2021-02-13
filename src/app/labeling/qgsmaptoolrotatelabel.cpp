@@ -27,8 +27,8 @@
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
 
-QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas )
-  : QgsMapToolLabel( canvas )
+QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolLabel( canvas, cadDock )
   , mStartRotation( 0.0 )
   , mCurrentRotation( 0.0 )
   , mCurrentMouseAzimuth( 0.0 )

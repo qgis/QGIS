@@ -62,7 +62,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="negYImageSourceLabel">
        <property name="text">
-        <string>Down (-Y)</string>
+        <string>Back (-Y)</string>
        </property>
       </widget>
      </item>
@@ -72,7 +72,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="negZImageSourceLabel">
        <property name="text">
-        <string>Back (-Z)</string>
+        <string>Down (-Z)</string>
        </property>
       </widget>
      </item>

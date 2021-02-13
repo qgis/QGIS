@@ -133,6 +133,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         filters = set([
             'name ILIKE \'QGIS\'',
             'name = \'Apple\'',
+            '\"NaMe\" = \'Apple\'',
             'name = \'apple\'',
             'name LIKE \'Apple\'',
             'name LIKE \'aPple\'',

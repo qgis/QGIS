@@ -83,7 +83,7 @@ void TestQgsFontMarkerSymbol::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) << QStringLiteral( "Oblique" ) );
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
@@ -144,7 +144,6 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbolStyle()
 {
   mReport += QLatin1String( "<h2>Font marker symbol style layer test</h2>\n" );
 
-  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) << QStringLiteral( "Oblique" ) );
   mFontMarkerLayer->setColor( Qt::blue );
   QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   mFontMarkerLayer->setFontFamily( font.family() );
@@ -152,18 +151,11 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbolStyle()
   mFontMarkerLayer->setCharacter( QChar( 'A' ) );
   mFontMarkerLayer->setSize( 12 );
   QVERIFY( imageCheck( "fontmarker_style" ) );
-
-  // Loading both Bold and Oblique in the initTestCase() function creates inconsistent results on windows and linux, this is a workaround
-  QFontDatabase fontDb;
-  fontDb.removeAllApplicationFonts();
-  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
 void TestQgsFontMarkerSymbol::fontMarkerSymbolDataDefinedProperties()
 {
   mReport += QLatin1String( "<h2>Font marker symbol data defined properties layer test</h2>\n" );
-
-  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) << QStringLiteral( "Oblique" ) );
   mFontMarkerLayer->setColor( Qt::blue );
   QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   mFontMarkerLayer->setFontFamily( font.family() );
@@ -176,17 +168,13 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbolDataDefinedProperties()
   QVERIFY( imageCheck( "fontmarker_datadefinedproperties" ) );
 
   mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
-
-  // Loading both Bold and Oblique in the initTestCase() function creates inconsistent results on windows and linux, this is a workaround
-  QFontDatabase fontDb;
-  fontDb.removeAllApplicationFonts();
-  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
 void TestQgsFontMarkerSymbol::fontMarkerSymbolStroke()
 {
   mFontMarkerLayer->setColor( Qt::blue );
   QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  mFontMarkerLayer->setFontStyle( QStringLiteral( "Bold" ) );
   mFontMarkerLayer->setFontFamily( font.family() );
   mFontMarkerLayer->setCharacter( QChar( 'A' ) );
   mFontMarkerLayer->setSize( 30 );

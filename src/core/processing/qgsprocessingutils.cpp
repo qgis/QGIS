@@ -846,9 +846,11 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
 
         // use destination string as layer name (eg "postgis:..." )
         if ( !layerName.isEmpty() )
+        {
           uri += QStringLiteral( "|layername=%1" ).arg( layerName );
-        // update destination to generated URI
-        destination = uri;
+          // update destination to generated URI
+          destination = uri;
+        }
 
         return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
       }
