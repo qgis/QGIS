@@ -219,7 +219,6 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
 
   if ( !mLastSavePointIsDirty && !mSavepoints.isEmpty() )
   {
-    qDebug() << "Returning TOP >>>>> " << mSavepoints.top();
     return mSavepoints.top();
   }
 
@@ -263,7 +262,10 @@ bool QgsTransaction::rollbackToSavepoint( const QString &name, QString &error SI
     return false;
 
   mSavepoints.resize( idx );
-  mLastSavePointIsDirty = false;
+  // Rolling back always dirties the previous savepoint because
+  // the status of the DB has changed between the previous savepoint and the
+  // one we are rolling back to.
+  mLastSavePointIsDirty = true;
   return executeSql( QStringLiteral( "ROLLBACK TO SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error );
 }
 
