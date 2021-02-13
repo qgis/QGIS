@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 #include <QDir>
 #include <QString>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QList>
 
 #include "qgslogger.h"
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsRenderChecker
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )
 {
   QgsDebugMsg( QStringLiteral( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
-  QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
+  QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
   a0.replace( re, QStringLiteral( "#" ) );
@@ -268,14 +268,15 @@ inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0
 
   QList<double> al, bl;
 
-  int pos;
-  for ( pos = 0; ( pos = re.indexIn( a, pos ) ) != -1; pos += re.matchedLength() )
+  QRegularExpressionMatchIterator mitr = re.globalMatch( a );
+  while ( mitr.hasNext() )
   {
-    al << re.cap( 0 ).toDouble();
+    al << mirt.next().captured( 0 ).toDouble();
   }
-  for ( pos = 0; ( pos = re.indexIn( b, pos ) ) != -1; pos += re.matchedLength() )
+  QRegularExpressionMatchIterator mitr = re.globalMatch( b );
+  while ( mitr.hasNext() )
   {
-    bl << re.cap( 0 ).toDouble();
+    bl << mirt.next().captured( 0 ).toDouble();
   }
 
   if ( al.size() != bl.size() )

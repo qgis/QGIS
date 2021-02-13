@@ -1526,8 +1526,9 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     // attribute ref
     QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
 
-    QRegExp gmlPT( "gml:(.*)PropertyType" );
-    QRegExp gmlRefProperty( "gml:(.*)Property" );
+    QRegularExpression gmlPT( "gml:(.*)PropertyType" );
+    QRegularExpression gmlRefProperty( "gml:(.*)Property" );
+    QRegularExpressionMatch match;
 
     // gmgml: is Geomedia Web Server
     if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
@@ -1551,7 +1552,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     }
     //is it a geometry attribute?
     // the GeometryAssociationType has been seen in #11785
-    else if ( ! foundGeometryAttribute && ( type.indexOf( gmlPT ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) ) )
+    else if ( ! foundGeometryAttribute && ( type.indexOf( gmlPT, &match ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
@@ -1559,15 +1560,15 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
         geomType = QgsWkbTypes::Unknown;
       else
-        geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
+        geomType = geomTypeFromPropertyType( geometryAttribute, match.captured( 1 ) );
     }
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty"
     //Note: this was deprecated with GML3.
-    else if ( ! foundGeometryAttribute &&  ref.indexOf( gmlRefProperty ) == 0 )
+    else if ( ! foundGeometryAttribute &&  ref.indexOf( gmlRefProperty, &match ) == 0 )
     {
       foundGeometryAttribute = true;
       geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
-      QString propertyType( gmlRefProperty.cap( 1 ) );
+      QString propertyType( match.captured( 1 ) );
       // Set the first character in upper case
       propertyType = propertyType.at( 0 ).toUpper() + propertyType.mid( 1 );
       geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
