@@ -565,12 +565,15 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             field = QgsField('attr1', QVariant.String)
             self.assertTrue(layer_a.addAttribute(field))
             self.assertNotEqual(layer_a.fields().lookupField(field.name()), -1)
+            self.assertEqual(buffer.addedAttributes(), [field])
 
             layer_a.undoStack().undo()
             self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
+            self.assertEqual(buffer.addedAttributes(), [])
 
             layer_a.undoStack().redo()
             self.assertNotEqual(layer_a.fields().lookupField(field.name()), -1)
+            self.assertEqual(buffer.addedAttributes(), [field])
 
             self.assertTrue(layer_a.commitChanges())
 
@@ -578,17 +581,21 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             # Remove attribute
 
             self.assertTrue(layer_a.startEditing())
+            buffer = layer_a.editBuffer()
 
             attr_idx = layer_a.fields().lookupField(field.name())
             self.assertNotEqual(attr_idx, -1)
 
             self.assertTrue(layer_a.deleteAttribute(attr_idx))
+            self.assertEqual(buffer.deletedAttributeIds(), [2])
             self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
 
             layer_a.undoStack().undo()
+            self.assertEqual(buffer.deletedAttributeIds(), [])
             self.assertEqual(layer_a.fields().lookupField(field.name()), attr_idx)
 
             layer_a.undoStack().redo()
+            self.assertEqual(buffer.deletedAttributeIds(), [2])
             self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
 
             self.assertTrue(layer_a.rollBack())
