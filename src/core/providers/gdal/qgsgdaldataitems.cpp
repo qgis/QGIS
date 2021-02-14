@@ -221,7 +221,7 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     const auto constSWildcards = sWildcards;
     for ( const QString &wildcard : constSWildcards )
     {
-      QRegularExpression rx( wildcard, Qt::CaseInsensitive, QRegularExpression::Wildcard );
+      QRegularExpression rx( wildcard, QRegularExpression::CaseInsensitiveOption );// QRegularExpression::Wildcard
       if ( rx.match( info.fileName() ).hasMatch() )
       {
         matches = true;

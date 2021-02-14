@@ -558,7 +558,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
           }
           esc_regexp.replace( QLatin1String( "\\\\_" ), QLatin1String( "_" ) );
 
-          matches = QRegularExpression( esc_regexp, mOp == boLike || mOp == boNotLike ? QRegularExpression::CaseSensitive : QRegularExpression::CaseInsensitive ).match( str ).hasMatch();
+          matches = QRegularExpression( esc_regexp, mOp == boLike || mOp == boNotLike ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption ).match( str ).hasMatch();
         }
         else
         {

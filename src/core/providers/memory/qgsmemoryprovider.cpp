@@ -119,7 +119,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                         "(?:\\((\\-?\\d+)"                // length
                         "(?:\\,(\\-?\\d+))?"                  // precision
                         "\\))?(\\[\\])?"                  // array
-                        "$", Qt::CaseInsensitive );
+                        "$", QRegularExpression::CaseInsensitiveOption );
     QStringList fields = query.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {

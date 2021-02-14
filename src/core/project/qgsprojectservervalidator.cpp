@@ -94,11 +94,11 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   browseLayerTree( project->layerTreeRoot(), owsNames, encodingMessages );
 
   QStringList duplicateNames, regExpMessages;
-  QRegularExpression snRegExp = QgsApplication::shortNameRegExp();
+  QRegularExpression snRegExp( QRegularExpression::anchoredPattern( QgsApplication::shortNameRegExp().pattern() ) );
   const auto constOwsNames = owsNames;
   for ( const QString &name : constOwsNames )
   {
-    if ( !snRegExp.exactMatch( name ) )
+    if ( !snRegExp.match( name ).hasMatch() )
     {
       regExpMessages << name;
     }
@@ -146,7 +146,7 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
       results << ValidationResult( QgsProjectServerValidator::ProjectRootNameConflict, rootLayerName );
     }
 
-    if ( !snRegExp.exactMatch( rootLayerName ) )
+    if ( !snRegExp.match( rootLayerName ).hasMatch() )
     {
       result = false;
       results << ValidationResult( QgsProjectServerValidator::ProjectShortName, rootLayerName );

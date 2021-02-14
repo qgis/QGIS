@@ -17,6 +17,7 @@
 #include "qgsmessagelog.h"
 #include <QDebug>
 #include <nlohmann/json.hpp>
+#include <QRegularExpression>
 
 using namespace nlohmann;
 

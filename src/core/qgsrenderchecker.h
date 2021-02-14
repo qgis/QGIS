@@ -271,12 +271,12 @@ inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0
   QRegularExpressionMatchIterator mitr = re.globalMatch( a );
   while ( mitr.hasNext() )
   {
-    al << mirt.next().captured( 0 ).toDouble();
+    al << mitr.next().captured( 0 ).toDouble();
   }
-  QRegularExpressionMatchIterator mitr = re.globalMatch( b );
+  mitr = re.globalMatch( b );
   while ( mitr.hasNext() )
   {
-    bl << mirt.next().captured( 0 ).toDouble();
+    bl << mitr.next().captured( 0 ).toDouble();
   }
 
   if ( al.size() != bl.size() )

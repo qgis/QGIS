@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <limits>
+#include <QRegularExpression>
 
 
 // from parser

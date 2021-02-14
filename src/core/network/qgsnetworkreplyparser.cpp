@@ -51,15 +51,15 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     QString contentType = mReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
 
-    QRegularExpression re( ".*boundary=\"?([^\"]+)\"?\\s?", Qt::CaseInsensitive );
+    QRegularExpressionMatch match = QRegularExpression( ".*boundary=\"?([^\"]+)\"?\\s?", QRegularExpression::CaseInsensitiveOption ).match( contentType );
 
-    if ( !( re.match( contentType ).capturedStart() == 0 ) )
+    if ( match.capturedStart() != 0 )
     {
       mError = tr( "Cannot find boundary in multipart content type" );
       return;
     }
 
-    QString boundary = re.cap( 1 );
+    QString boundary = match.captured( 1 );
     QgsDebugMsg( QStringLiteral( "boundary = %1 size = %2" ).arg( boundary ).arg( boundary.size() ) );
     boundary = "--" + boundary;
 

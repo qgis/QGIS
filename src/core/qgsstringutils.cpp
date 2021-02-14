@@ -523,31 +523,31 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available, but we need one which works within the limitation of QRegularExpression
-  static QRegularExpressionMatchIterator urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" ).globalMatch( converted );
+  static QRegularExpressionMatchIterator urlRegEx = QRegularExpression( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" ).globalMatch( converted );
   static QRegularExpression protoRegEx( "^(?:f|ht)tps?://|file://" );
-  static QRegularExpressionMatchIterator emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" ).globalMatch( converted );
+  static QRegularExpressionMatchIterator emailRegEx = QRegularExpression( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" ).globalMatch( converted );
 
-  int offset = 0;
   bool found = false;
   QString url;
   QRegularExpressionMatch match;
   while ( urlRegEx.hasNext() )
   {
     found = true;
-    match = urlRegEx.next()
+    match = urlRegEx.next();
     url = match.captured( 1 );
     QString protoUrl = url;
-    if ( protoRegEx.indexIn( protoUrl ) == -1 )
+    if ( protoRegEx.match( protoUrl ).capturedStart() == -1 )
     {
       protoUrl.prepend( "http://" );
     }
     QString anchor = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( protoUrl.toHtmlEscaped(), url.toHtmlEscaped() );
     converted.replace( match.capturedStart( 1 ), url.length(), anchor );
   }
+  QString email;
   while ( emailRegEx.hasNext() )
   {
     found = true;
-    match = emailRegEx.next()
+    match = emailRegEx.next();
     email = match.captured( 1 );
     QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped() );
     converted.replace( match.capturedStart( 1 ), email.length(), anchor );
@@ -567,18 +567,17 @@ QString QgsStringUtils::htmlToMarkdown( const QString &html )
   converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
   converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
 
-  const QRegularExpression rege( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" )
+  const QRegularExpression rege( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
   static QRegularExpressionMatchIterator hrefRegEx = rege.globalMatch( converted );
   QRegularExpressionMatch match;
   while ( hrefRegEx.hasNext() )
   {
-    match = hrefRegEx.next()
+    match = hrefRegEx.next();
     QString url = match.captured( 1 ).replace( QLatin1String( "\"" ), QString() );
     url.replace( '\'', QString() );
     QString name = match.captured( 2 );
     QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
     converted.replace( rege, anchor );
-    offset = match.capturedStart( 1 ) + anchor.length();
   }
 
   return converted;
@@ -595,7 +594,7 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
 
   if ( !customDelimiter.isEmpty() )
   {
-    rx.setPatternSyntax( QRegularExpression::FixedString );
+    //rx.setPatternSyntax( QRegularExpression::FixedString );
     rx.setPattern( customDelimiter );
     delimiterLength = customDelimiter.length();
   }
@@ -686,7 +685,7 @@ QgsStringReplacement::QgsStringReplacement( const QString &match, const QString 
   {
     mRx = QRegularExpression( QString( "\\b%1\\b" ).arg( mMatch ) );
     if ( mCaseSensitive )
-      mRx.setPatternOptions( QRegularExpressionQt::CaseInsensitive );
+      mRx.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
   }
 
 }

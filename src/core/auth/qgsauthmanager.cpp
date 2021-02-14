@@ -31,6 +31,7 @@
 #include <QTimer>
 #include <QVariant>
 #include <QSqlDriver>
+#include <QRegularExpression>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
@@ -911,7 +912,7 @@ bool QgsAuthManager::configIdUnique( const QString &id ) const
 bool QgsAuthManager::hasConfigId( const QString &txt ) const
 {
   QRegularExpression rx( AUTH_CFG_REGEX );
-  return rx.natch( txt ).capturedStart() != -1;
+  return rx.match( txt ).capturedStart() != -1;
 }
 
 QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString &dataprovider )

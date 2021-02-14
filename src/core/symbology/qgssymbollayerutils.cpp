@@ -3615,9 +3615,9 @@ QgsNamedColorList QgsSymbolLayerUtils::importColorsFromGpl( QFile &file, bool &o
 
     //try to read color name
     QString label;
-    if ( rx.captureCount() > 3 )
+    if ( match.capturedTexts().length() > 3 )
     {
-      label = rx.cap( 4 ).simplified();
+      label = match.captured( 4 ).simplified();
     }
     else
     {
@@ -3642,7 +3642,7 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
 {
   QColor parsedColor;
 
-  match = QRegularExpression( "^\\s*#?([0-9a-fA-F]{6})([0-9a-fA-F]{2})\\s*$" ).match( colorStr );
+  QRegularExpressionMatch match = QRegularExpression( "^\\s*#?([0-9a-fA-F]{6})([0-9a-fA-F]{2})\\s*$" ).match( colorStr );
   int hexColorIndex = match.capturedStart();
 
   //color in hex format "#aabbcc", but not #aabbccdd
@@ -3677,7 +3677,7 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   {
     //color in hex format, without #
     match = QRegularExpression( "^\\s*(?:[0-9a-fA-F]{3}){1,2}\\s*$" ).match( colorStr );
-    if ( match.caturedStart() != -1 )
+    if ( match.capturedStart() != -1 )
     {
       //add "#" and parse
       parsedColor.setNamedColor( QStringLiteral( "#" ) + colorStr );
@@ -3691,11 +3691,11 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
 
   //color in (rrr,ggg,bbb) format, brackets and rgb prefix optional
   match = QRegularExpression( "^\\s*(?:rgb)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*\\)?\\s*;?\\s*$" ).match( colorStr );
-  if ( match.caturedStart() != -1 )
+  if ( match.capturedStart() != -1 )
   {
-    int r = match.catured( 1 ).toInt();
-    int g = match.catured( 2 ).toInt();
-    int b = match.catured( 3 ).toInt();
+    int r = match.captured( 1 ).toInt();
+    int g = match.captured( 2 ).toInt();
+    int b = match.captured( 3 ).toInt();
     parsedColor.setRgb( r, g, b );
     if ( parsedColor.isValid() )
     {
@@ -3724,9 +3724,9 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   match = QRegularExpression( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*\\)?\\s*;?\\s*$" ).match( colorStr );
   if ( match.hasMatch() )
   {
-    int r = std::round( match.catured( 1 ).toDouble() * 2.55 );
-    int g = std::round( match.catured( 2 ).toDouble() * 2.55 );
-    int b = std::round( match.catured( 3 ).toDouble() * 2.55 );
+    int r = std::round( match.captured( 1 ).toDouble() * 2.55 );
+    int g = std::round( match.captured( 2 ).toDouble() * 2.55 );
+    int b = std::round( match.captured( 3 ).toDouble() * 2.55 );
     parsedColor.setRgb( r, g, b );
     if ( parsedColor.isValid() )
     {
@@ -3739,10 +3739,10 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   match = QRegularExpression( "^\\s*(?:rgba)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" ).match( colorStr );
   if ( match.hasMatch() )
   {
-    int r = match.catured( 1 ).toInt();
-    int g = match.catured( 2 ).toInt();
-    int b = match.catured( 3 ).toInt();
-    int a = std::round( match.catured( 4 ).toDouble() * 255.0 );
+    int r = match.captured( 1 ).toInt();
+    int g = match.captured( 2 ).toInt();
+    int b = match.captured( 3 ).toInt();
+    int a = std::round( match.captured( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
     if ( parsedColor.isValid() )
     {
@@ -3755,10 +3755,10 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   match = QRegularExpression( "^\\s*(?:rgba)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" ).match( colorStr );
   if ( match.hasMatch() )
   {
-    int r = std::round( match.catured( 1 ).toDouble() * 2.55 );
-    int g = std::round( match.catured( 2 ).toDouble() * 2.55 );
-    int b = std::round( match.catured( 3 ).toDouble() * 2.55 );
-    int a = std::round( match.catured( 4 ).toDouble() * 255.0 );
+    int r = std::round( match.captured( 1 ).toDouble() * 2.55 );
+    int g = std::round( match.captured( 2 ).toDouble() * 2.55 );
+    int b = std::round( match.captured( 3 ).toDouble() * 2.55 );
+    int a = std::round( match.captured( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
     if ( parsedColor.isValid() )
     {

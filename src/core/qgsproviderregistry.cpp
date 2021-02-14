@@ -192,7 +192,7 @@ void QgsProviderRegistry::init()
   const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
   for ( const QFileInfo &fi : constEntryInfoList )
   {
-    if ( !fileRegexp.isEmpty() )
+    if ( !fileRegexp.pattern().isEmpty() )
     {
       if ( fileRegexp.match( fi.fileName() ).capturedStart() == -1 )
       {

@@ -19,6 +19,7 @@
 #include <QString>
 #include <QDir>
 #include <QLibrary>
+#include <QRegularExpression>
 
 #include "qgis.h"
 #include "qgsauthconfig.h"
@@ -90,7 +91,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
   {
     QFileInfo fi( it.next() );
 
-    if ( !fileRegexp.isEmpty() )
+    if ( !fileRegexp.pattern().isEmpty() )
     {
       if ( fileRegexp.match( fi.fileName() ).capturedStart() == -1 )
       {

@@ -3300,7 +3300,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
         }
         QRegularExpression rx( "[^" + QRegularExpression::escape( escape ) + "](" + QRegularExpression::escape( wildCard ) + ")" );
         int pos = 0;
-        while ( ( pos = rx.match( oprValue.mid( pos ).capturedStart() ) != -1 )
+        while ( ( pos = rx.match( oprValue.mid( pos ) ).capturedStart() ) != -1 )
         {
           oprValue.replace( pos + 1, 1, QStringLiteral( "%" ) );
           pos += 1;
@@ -3316,7 +3316,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
         }
         QRegularExpression rx( "[^" + QRegularExpression::escape( escape ) + "](" + QRegularExpression::escape( singleChar ) + ")" );
         int pos = 0;
-        while ( ( pos = rx.match( oprValue.mid( pos ).capturedStart() ) != -1 )
+        while ( ( pos = rx.match( oprValue.mid( pos ) ).capturedStart() ) != -1 )
         {
           oprValue.replace( pos + 1, 1, QStringLiteral( "_" ) );
           pos += 1;
