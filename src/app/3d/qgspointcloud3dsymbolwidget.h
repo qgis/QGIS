@@ -45,6 +45,8 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setPointBudget( int budget );
     int pointBudget() const;
 
+    void setPointCloudSize( int size );
+
     void connectChildPanels( QgsPanelWidget *parent );
 
   private slots:
