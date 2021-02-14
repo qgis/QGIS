@@ -287,7 +287,7 @@ void TestQgsProcessingAlgs::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool overwrite, bool *ok )
+QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool overwrite, bool selectedFeaturesOnly, bool *ok )
 {
   const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:package" ) ) );
 
@@ -300,6 +300,7 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
   parameters.insert( QStringLiteral( "LAYERS" ), layers );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
   parameters.insert( QStringLiteral( "OVERWRITE" ), overwrite );
+  parameters.insert( QStringLiteral( "SELECTED_FEATURES_ONLY" ), selectedFeaturesOnly );
   return package->run( parameters, *context, &feedback, ok );
 }
 
@@ -386,7 +387,7 @@ void TestQgsProcessingAlgs::packageAlg()
   QVariantMap parameters;
   QStringList layers = QStringList() << mPointsLayer->id() << mPolygonLayer->id();
   bool ok = false;
-  QVariantMap results = pkgAlg( layers, outputGpkg, true, &ok );
+  QVariantMap results = pkgAlg( layers, outputGpkg, true, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -406,7 +407,7 @@ void TestQgsProcessingAlgs::packageAlg()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << rectangles.get() );
 
   // Test adding an additional layer (overwrite disabled)
-  QVariantMap results2 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, false, &ok );
+  QVariantMap results2 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, false, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -421,7 +422,7 @@ void TestQgsProcessingAlgs::packageAlg()
   pointLayer.reset();
 
   // And finally, test with overwrite enabled
-  QVariantMap results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, &ok );
+  QVariantMap results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -432,6 +433,28 @@ void TestQgsProcessingAlgs::packageAlg()
 
   pointLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=points", "points", "ogr" );
   QVERIFY( !pointLayer->isValid() ); // It's gone -- the gpkg was recreated with a single layer
+
+  // Test saving of selected features only
+  mPolygonLayer->selectByIds( QgsFeatureIds() << 1 << 2 << 3 );
+  QVariantMap results4 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results4.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  std::unique_ptr< QgsVectorLayer > selectedPolygonsPackagedLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=polygons", "polygons", "ogr" );
+  QVERIFY( selectedPolygonsPackagedLayer->isValid() );
+  QCOMPARE( selectedPolygonsPackagedLayer->wkbType(), mPolygonLayer->wkbType() );
+  QCOMPARE( selectedPolygonsPackagedLayer->featureCount(), 3 );
+  selectedPolygonsPackagedLayer.reset();
+
+  mPolygonLayer->removeSelection();
+  QVariantMap results5 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results5.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  selectedPolygonsPackagedLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=polygons", "polygons", "ogr" );
+  QVERIFY( selectedPolygonsPackagedLayer->isValid() );
+  QCOMPARE( selectedPolygonsPackagedLayer->wkbType(), mPolygonLayer->wkbType() );
+  QCOMPARE( selectedPolygonsPackagedLayer->featureCount(), 10 ); // With enabled SELECTED_FEATURES_ONLY all features should be saved when there is no selection
 }
 
 void TestQgsProcessingAlgs::exportToSpreadsheetXlsx()
