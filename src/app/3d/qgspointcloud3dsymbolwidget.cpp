@@ -622,6 +622,11 @@ int QgsPointCloud3DSymbolWidget::pointBudget() const
   return mPointBudgetSpinBox->value();
 }
 
+void QgsPointCloud3DSymbolWidget::setPointCloudSize( int size )
+{
+  mPointCloudSizeLabel->setText( QStringLiteral( "%1 points" ).arg( size ) );
+}
+
 double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
 {
   return mShowBoundingBoxesCheckBox->isChecked();
