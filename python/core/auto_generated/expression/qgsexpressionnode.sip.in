@@ -283,6 +283,7 @@ Returns the node's static cached value. Only valid if :py:func:`~QgsExpressionNo
   protected:
 
 
+
 };
 
 
