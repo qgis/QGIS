@@ -1,7 +1,7 @@
 name: Ping PR author about documentation
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - labeled
