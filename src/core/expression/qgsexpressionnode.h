@@ -342,6 +342,23 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      */
     void cloneTo( QgsExpressionNode *target ) const SIP_SKIP;
 
+#ifndef SIP_RUN
+
+    /**
+     * TRUE if the node has a static, precalculated value.
+     *
+     * \since QGIS 3.20
+     */
+    mutable bool mHasCachedValue = false;
+
+    /**
+     * Contains the static, precalculated value for the node if mHasCachedValue is TRUE.
+     *
+     * \since QGIS 3.20
+     */
+    mutable QVariant mCachedStaticValue;
+#endif
+
   private:
 
     /**
@@ -358,8 +375,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      */
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 
-    bool mHasCachedValue = false;
-    QVariant mCachedStaticValue;
 };
 
 Q_DECLARE_METATYPE( QgsExpressionNode * )
