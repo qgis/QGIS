@@ -125,6 +125,13 @@ class OneSideBuffer(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
+        other_fields_exist = any(
+            True for f in fields
+            if f.name() != geometry
+        )
+
+        other_fields = ',*' if other_fields_exist else ''
+
         arguments = [
             output,
             ogrLayer,
@@ -132,13 +139,6 @@ class OneSideBuffer(GdalAlgorithm):
             'sqlite',
             '-sql'
         ]
-
-        other_fields_exist = any(
-            True for f in fields
-            if f.name() != geometry
-        )
-
-        other_fields = ',*' if other_fields_exist else ''
 
         if dissolve or fieldName:
             sql = 'SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}{} FROM "{}"'.format(geometry, distance, side, geometry, other_fields, layerName)
