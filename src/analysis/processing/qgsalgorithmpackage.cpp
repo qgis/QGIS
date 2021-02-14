@@ -154,8 +154,9 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
     {
       case QgsMapLayerType::VectorLayer:
       {
-        if ( !packageVectorLayer( qobject_cast< QgsVectorLayer * >( layer.get() ), packagePath,
-                                  context, &multiStepFeedback, saveStyles, selectedFeaturesOnly ) )
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer.get() );
+        bool onlySaveSelected = vectorLayer->selectedFeatureCount() > 0 && selectedFeaturesOnly;
+        if ( !packageVectorLayer( vectorLayer, packagePath, context, &multiStepFeedback, saveStyles, onlySaveSelected ) )
           errored = true;
         else
           outputLayers.append( QStringLiteral( "%1|layername=%2" ).arg( packagePath, layer->name() ) );
