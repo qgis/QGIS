@@ -21,6 +21,12 @@ Field formatter for a checkbox field.
 %End
   public:
 
+    enum TextDisplayMethod
+    {
+      ShowTrueFalse,
+      ShowStoredValues,
+    };
+
     QgsCheckBoxFieldFormatter();
 %Docstring
 Constructor for QgsCheckBoxFieldFormatter.

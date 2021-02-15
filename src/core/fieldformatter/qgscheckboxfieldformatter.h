@@ -31,6 +31,17 @@ class CORE_EXPORT QgsCheckBoxFieldFormatter : public QgsFieldFormatter
   public:
 
     /**
+     * Method to use when displaying the checkbox values as plain text.
+     *
+     * \since QGIS 3.18
+     */
+    enum TextDisplayMethod
+    {
+      ShowTrueFalse, //!< Shows "True" or "False" strings
+      ShowStoredValues, //!< Shows actual stored field value
+    };
+
+    /**
      * Constructor for QgsCheckBoxFieldFormatter.
      */
     QgsCheckBoxFieldFormatter() = default;
