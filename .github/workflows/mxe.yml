@@ -70,7 +70,7 @@ jobs:
     - name: Cross build with MXE
       run: |
         docker run -v ${GITHUB_WORKSPACE}:/root/QGIS \
-            -w /root/QGIS --rm  \
+            -w /root/QGIS  \
             --env CCACHE_DIR=/root/QGIS/.ccache \
             mxe-qt5-builder:current \
             /root/QGIS/ms-windows/mxe/build-mxe.sh
