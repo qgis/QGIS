@@ -107,6 +107,20 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidG
 
     case QgsFeatureRequest::GeometryNoCheck:
       return nullptr;
+
+    case QgsFeatureRequest::GeometryFixInvalidAbortOnFailure:
+    case QgsFeatureRequest::GeometryFixInvalidSkipOnFailure:
+    {
+      auto callback = [ = ]( const QgsFeature & feature )
+      {
+        if ( mFeedback )
+          mFeedback->reportError( QObject::tr( "Warning: Feature (%1) has invalid geometry, trying to fix geometry..." ).arg( feature.id() ) );
+      };
+      return callback;
+    }
+
+    default:
+      break;
   }
   return nullptr;
 }

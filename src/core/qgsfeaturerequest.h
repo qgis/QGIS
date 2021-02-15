@@ -101,6 +101,16 @@ class CORE_EXPORT QgsFeatureRequest
       GeometryNoCheck = 0, //!< No invalid geometry checking
       GeometrySkipInvalid = 1, //!< Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
       GeometryAbortOnInvalid = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
+      GeometryFixInvalidSkipOnFailure = 3, //!< Try to fix encountered invalid geometry, otherwise skip feature. Since QGIS 3.18
+      GeometryFixInvalidAbortOnFailure = 4, //!< Try to fix encountered invalid geometry, otherwise skip feature. Since QGIS 3.18
+    };
+
+    //! Control the loss of information tolerated in the fixing pipeline
+    enum AutoFixIntensity
+    {
+      MinimalFixes = 0, //! Preserve all information
+      KeepGeometryType = 4, //! Allow loss of Z and M values in the cleanup
+      FixAtAllCosts = 10, //! Use every fixing method at all cost
     };
 
     /**
@@ -395,6 +405,22 @@ class CORE_EXPORT QgsFeatureRequest
      * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
+
+    /**
+     * Set the flag used to control the tolerace or change for the autofixing process.
+     * Is only needed if the GeometryCheck is set to GeometryFixInvalidSkipOnFailure or GeometryFixInvalidAbortOnFailure.
+     * \see autofixFlag()
+     * \since QGIS 3.18
+     */
+    QgsFeatureRequest &setAutofixFlag( AutoFixIntensity flag );
+
+    /**
+     * Returns the flag used to control the tolerace or change for the autofixing process.
+     * Is only needed if the GeometryCheck is set to GeometryFixInvalidSkipOnFailure or GeometryFixInvalidAbortOnFailure.
+     * \see setAutofixFlag()
+     * \since QGIS 3.18
+     */
+    AutoFixIntensity autofixFlag() const { return mAutofixFlag; }
 
     /**
      * Set the filter expression. {\see QgsExpression}
@@ -725,6 +751,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     int mTimeout = -1;
+    AutoFixIntensity mAutofixFlag = FixAtAllCosts;
     int mRequestMayBeNested = false;
 };
 

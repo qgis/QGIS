@@ -862,13 +862,13 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
 
 bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
 {
-  bool result = checkGeometryValidity( feature );
+  bool result = handleGeometryValidity( feature );
   if ( result )
     geometryToDestinationCrs( feature, mTransform );
   return result;
 }
 
-bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &feature )
+bool QgsVectorLayerFeatureIterator::handleGeometryValidity( QgsFeature &feature )
 {
   if ( !feature.hasGeometry() )
     return true;
@@ -902,6 +902,72 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
           mRequest.invalidGeometryCallback()( feature );
         }
         return false;
+      }
+      break;
+
+    case QgsFeatureRequest::GeometryFixInvalidAbortOnFailure:
+    case QgsFeatureRequest::GeometryFixInvalidSkipOnFailure:
+      int flag = static_cast<int>( mRequest.autofixFlag() );
+
+      if ( !feature.geometry().isGeosValid() && flag )
+      {
+        QgsGeometry outputGeometry = feature.geometry().makeValid();
+        if ( outputGeometry.isNull() )
+        {
+          if ( mRequest.invalidGeometryCheck() == QgsFeatureRequest::GeometryFixInvalidAbortOnFailure )
+          {
+            QgsMessageLog::logMessage( QObject::tr( "Geometry error: could not fix the provided geometry, aborting." ), QString(), Qgis::Critical );
+            close();
+            if ( mRequest.invalidGeometryCallback() )
+              mRequest.invalidGeometryCallback()( feature );
+          }
+          return  false;
+        }
+
+        if ( flag < 5 )
+        {
+          if ( outputGeometry.isGeosValid() )
+            goto setGeom;
+          else
+            return false;
+        }
+
+        if ( outputGeometry.wkbType() == QgsWkbTypes::Unknown ||
+             QgsWkbTypes::flatType( outputGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
+        {
+          // keep only the parts of the geometry collection with correct type
+          const QVector< QgsGeometry > tmpGeometries = outputGeometry.asGeometryCollection();
+          QVector< QgsGeometry > matchingParts;
+          for ( const QgsGeometry &g : tmpGeometries )
+          {
+            if ( g.type() == feature.geometry().type() )
+              matchingParts << g;
+          }
+          if ( !matchingParts.empty() )
+            outputGeometry = QgsGeometry::collectGeometry( matchingParts );
+          else
+            outputGeometry = QgsGeometry();
+        }
+        if ( feature.geometry().isMultiPart() )
+          outputGeometry.convertToMultiType();
+        if ( QgsWkbTypes::geometryType( outputGeometry.wkbType() ) != QgsWkbTypes::geometryType( feature.geometry().wkbType() ) )
+        {
+          if ( mRequest.invalidGeometryCheck() == QgsFeatureRequest::GeometryFixInvalidAbortOnFailure )
+          {
+            QgsMessageLog::logMessage( QObject::tr( "Geometry error: could not fix the provided geometry, aborting." ), QString(), Qgis::Critical );
+            close();
+            if ( mRequest.invalidGeometryCallback() )
+              mRequest.invalidGeometryCallback()( feature );
+          }
+          return  false;
+        }
+        else
+          goto setGeom;
+
+      setGeom:
+        feature.setGeometry( outputGeometry );
+        return true;
+
       }
       break;
   }

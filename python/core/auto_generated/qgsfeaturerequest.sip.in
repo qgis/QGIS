@@ -81,6 +81,15 @@ Examples:
       GeometryNoCheck,
       GeometrySkipInvalid,
       GeometryAbortOnInvalid,
+      GeometryFixInvalidSkipOnFailure,
+      GeometryFixInvalidAbortOnFailure,
+    };
+
+    enum AutoFixIntensity
+    {
+      MinimalFixes,
+      KeepGeometryType,
+      FixAtAllCosts,
     };
 
     class OrderByClause
@@ -393,6 +402,26 @@ called using the feature with invalid geometry as a parameter.
     Py_END_ALLOW_THREADS
 %End
 
+
+    QgsFeatureRequest &setAutofixFlag( AutoFixIntensity flag );
+%Docstring
+Set the flag used to control the tolerace or change for the autofixing process.
+Is only needed if the GeometryCheck is set to GeometryFixInvalidSkipOnFailure or GeometryFixInvalidAbortOnFailure.
+
+.. seealso:: :py:func:`autofixFlag`
+
+.. versionadded:: 3.18
+%End
+
+    AutoFixIntensity autofixFlag() const;
+%Docstring
+Returns the flag used to control the tolerace or change for the autofixing process.
+Is only needed if the GeometryCheck is set to GeometryFixInvalidSkipOnFailure or GeometryFixInvalidAbortOnFailure.
+
+.. seealso:: :py:func:`setAutofixFlag`
+
+.. versionadded:: 3.18
+%End
 
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 %Docstring

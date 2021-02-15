@@ -286,9 +286,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     bool postProcessFeature( QgsFeature &feature );
 
     /**
-     * Checks a feature's geometry for validity, if requested in feature request.
+     * Checks a feature's geometry for validity, can try to fix it, if requested in the feature request.
      */
-    bool checkGeometryValidity( const QgsFeature &feature );
+    bool handleGeometryValidity( QgsFeature &feature );
 
     bool mDelegatedOrderByToProvider = false;
 };
