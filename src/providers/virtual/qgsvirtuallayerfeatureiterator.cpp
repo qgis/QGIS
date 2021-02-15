@@ -118,8 +118,8 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         else // never return a feature if the id is negative
           offset = QStringLiteral( " LIMIT 0" );
       }
-      else if ( !mFilterRect.isNull() &&
-                mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      if ( !mFilterRect.isNull() &&
+           mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // if an exact intersection is requested, prepare the geometry to intersect
         QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );
@@ -327,7 +327,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
 
     // if the FilterRect has not been applied on the query
     // apply it here by skipping features until they intersect
-    if ( mSource->mDefinition.uid().isNull() && mRequest.filterType() != QgsFeatureRequest::FilterFid && feature.hasGeometry() && mSource->mDefinition.hasDefinedGeometry() && !mFilterRect.isNull() )
+    if ( mSource->mDefinition.uid().isNull() && feature.hasGeometry() && mSource->mDefinition.hasDefinedGeometry() && !mFilterRect.isNull() )
     {
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
