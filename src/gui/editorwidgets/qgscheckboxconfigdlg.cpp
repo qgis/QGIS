@@ -14,14 +14,21 @@
  ***************************************************************************/
 
 #include "qgscheckboxconfigdlg.h"
+#include "qgscheckboxwidgetwrapper.h"
+#include "qgscheckboxfieldformatter.h"
 
 QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
+  mDisplayAsTextComboBox->addItem( tr( "\"True\" or \"False\"" ), QgsCheckBoxFieldFormatter::ShowTrueFalse );
+  mDisplayAsTextComboBox->addItem( tr( "Stored Values" ), QgsCheckBoxFieldFormatter::ShowStoredValues );
+  mDisplayAsTextComboBox->setCurrentIndex( 0 );
+
   connect( leCheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
   connect( leUncheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
+  connect( mDisplayAsTextComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
 
   if ( vl->fields().at( fieldIdx ).type() == QVariant::Bool )
   {
@@ -39,6 +46,7 @@ QVariantMap QgsCheckBoxConfigDlg::config()
 
   cfg.insert( QStringLiteral( "CheckedState" ), leCheckedState->text() );
   cfg.insert( QStringLiteral( "UncheckedState" ), leUncheckedState->text() );
+  cfg.insert( QStringLiteral( "TextDisplayMethod" ), mDisplayAsTextComboBox->currentData().toInt() );
 
   return cfg;
 }
@@ -50,4 +58,5 @@ void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
     leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
     leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
   }
+  mDisplayAsTextComboBox->setCurrentIndex( mDisplayAsTextComboBox->findData( config.value( QStringLiteral( "TextDisplayMethod" ), QString::number( static_cast< int >( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() ) );
 }
