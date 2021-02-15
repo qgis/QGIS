@@ -99,6 +99,8 @@ if [[ "$COMMAND" != *"package"* ]]; then
 
 fi
 
+echo "::group::package"
+
 # Collect deps
 
 $PYDEPLOY --build=${RELEASE_DIR} --objdump=${MXE}/usr/bin/${TARGET}-objdump ${RELEASE_DIR}/qgis.exe
@@ -125,6 +127,8 @@ zip -r -m ${ZIP_NAME} $(basename ${RELEASE_DIR})
 
 # Second cleanup
 rm -rf ${RELEASE_DIR}
+
+echo "::endgroup::"
 
 popd
 
