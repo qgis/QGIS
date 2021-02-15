@@ -1312,6 +1312,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "replace (unbalanced array, before > after)" ) << "replace('12345', array('1','2','3'), array('6','7'))" << true << QVariant();
       QTest::newRow( "replace (unbalanced array, before < after)" ) << "replace('12345', array('1','2'), array('6','7','8'))" << true << QVariant();
       QTest::newRow( "replace (map)" ) << "replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))" << false << QVariant( "QGIS DOES ROCK" );
+      QTest::newRow( "replace array" ) << "replace(array('H','e','L','L','o'), 'L', 'x')" << false << QVariant( QVariantList() << "H" << "e" << "x" << "x" << "o" );
+      QTest::newRow( "replace array (array replaced by array)" ) << "replace(array(3,2,1), array(1,2,3), array(7,8,9))" << false << QVariant( QVariantList() << 9 << 8 << 7 );
+      QTest::newRow( "replace array (array replaced by string)" ) << "replace(array(1,2,3,4,5), array(2,4), '')" << false << QVariant( QVariantList() << 1 << "" << 3 << "" << 5 );
+      QTest::newRow( "replace array (unbalanced array, before > after)" ) << "replace(array(1,2,3,4,5), array(1,2,3), array(6,7))" << true << QVariant();
+      QTest::newRow( "replace array (unbalanced array, before < after)" ) << "replace(array(1,2,3,4,5), array(1,2), array(6,7,8))" << true << QVariant();
+      QTest::newRow( "replace array (map)" ) << "replace(array('APP','SHOULD','ROCK'),map('APP','QGIS','SHOULD','DOES'))" << false << QVariant( QVariantList() << "QGIS" << "DOES" << "ROCK" );
       QTest::newRow( "regexp_replace" ) << "regexp_replace('HeLLo','[eL]+', '-')" << false << QVariant( "H-o" );
       QTest::newRow( "regexp_replace greedy" ) << "regexp_replace('HeLLo','(?<=H).*L', '-')" << false << QVariant( "H-o" );
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
@@ -3390,10 +3396,6 @@ class TestQgsExpression: public QObject
       QStringList removeAllExpected;
       removeAllExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "d" );
       QCOMPARE( QgsExpression( "array_remove_all(array('a', 'b', 'c', 'd', 'c'), 'c')" ).evaluate( &context ), QVariant( removeAllExpected ) );
-
-      QStringList replaceExpected;
-      replaceExpected << QStringLiteral( "a" ) << QStringLiteral( "z" ) << QStringLiteral( "a" ) << QStringLiteral( "z" );
-      QCOMPARE( QgsExpression( "array_replace(array('a', 'b', 'a', 'b'), 'b', 'z')" ).evaluate( &context ), QVariant( replaceExpected ) );
 
       QVariantList prioritizeExpected;
       prioritizeExpected << 5 << 2 << 1 << 8;

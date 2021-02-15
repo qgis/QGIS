@@ -372,6 +372,28 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
     }
 
     /**
+     * Static function for evaluation against a QgsExpressionContext, using an unnamed list of parameter values and list
+     * of groups.
+     */
+    QgsStaticExpressionFunction( const QString &fnname,
+                                 int params,
+                                 FcnEval fcn,
+                                 const QStringList &groups,
+                                 const QString &helpText = QString(),
+                                 bool usesGeometry = false,
+                                 const QSet<QString> &referencedColumns = QSet<QString>(),
+                                 bool lazyEval = false,
+                                 const QStringList &aliases = QStringList(),
+                                 bool handlesNull = false )
+      : QgsExpressionFunction( fnname, params, groups, helpText, lazyEval, handlesNull )
+      , mFnc( fcn )
+      , mAliases( aliases )
+      , mUsesGeometry( usesGeometry )
+      , mReferencedColumns( referencedColumns )
+    {
+    }
+
+    /**
      * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
      */
     QgsStaticExpressionFunction( const QString &fnname,

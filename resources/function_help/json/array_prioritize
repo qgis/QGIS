@@ -3,7 +3,6 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns an array sorted by another. Missing values are added to the end.",
-  "variableLenArguments": true,
   "arguments": [
     {"arg":"array", "description":"an array"},
     {"arg":"array_prioritize", "description":"an array with values ordered by priority" }],
