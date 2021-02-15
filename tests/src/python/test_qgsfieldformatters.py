@@ -401,17 +401,40 @@ class TestQgsCheckBoxFieldFormatter(unittest.TestCase):
 
         # test with integer
         # normal case
-        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 1), 'true')
-        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 0), 'false')
-        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 10), "(10)")
+
+        config = {'UncheckedState': 0, 'CheckedState': 1}
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 0), 'false')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
+
+        # displaying stored values
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), '1')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 0), '0')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
+
         # invert true/false
-        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 1, 'CheckedState': 0}, None, 0), 'true')
-        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 1, 'CheckedState': 0}, None, 1), 'false')
+        config = {'UncheckedState': 1, 'CheckedState': 0}
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 0), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), 'false')
+
+        # displaying stored values
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), '1')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 0), '0')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
 
         # test with string
-        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'yeah'), 'true')
-        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'nooh'), 'false')
-        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'oops'), "(oops)")
+        config = {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}
+        self.assertEqual(field_formatter.representValue(layer, 1, config, None, 'yeah'), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 1, config, None, 'nooh'), 'false')
+        self.assertEqual(field_formatter.representValue(layer, 1, config, None, 'oops'), "(oops)")
+
+        # displaying stored values
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'yeah'), 'yeah')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'nooh'), 'nooh')
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'oops'), "(oops)")
 
 
 class TestQgsFallbackFieldFormatter(unittest.TestCase):
