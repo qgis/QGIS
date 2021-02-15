@@ -71,7 +71,6 @@ jobs:
       run: |
         docker run -v ${GITHUB_WORKSPACE}:/root/QGIS \
             -w /root/QGIS --rm  \
-            --user $(id -u):$(id -g) \
             --env CCACHE_DIR=/root/QGIS/MXECC \
             mxe-qt5-builder:current \
             /root/QGIS/ms-windows/mxe/build-mxe.sh
