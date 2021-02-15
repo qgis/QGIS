@@ -325,7 +325,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
   mIsSettingFeature = false;
 }
 
-bool QgsAttributeForm::saveEdits()
+bool QgsAttributeForm::saveEdits( QString *error )
 {
   bool success = true;
   bool changedLayer = false;
@@ -349,9 +349,11 @@ bool QgsAttributeForm::saveEdits()
       if ( eww )
       {
         // check for invalid JSON values
-        QgsTextEditWrapper *text_edit = qobject_cast<QgsTextEditWrapper *>( eww );
-        if ( text_edit && text_edit->isInvalidJSON() )
+        QgsTextEditWrapper *textEdit = qobject_cast<QgsTextEditWrapper *>( eww );
+        if ( textEdit && textEdit->isInvalidJSON() )
         {
+          if ( error )
+            *error = tr( "JSON value for %1 is invalid and has not been saved" ).arg( eww->field().name() );
           return false;
         }
         QVariantList dstVars = QVariantList() << dst.at( eww->fieldIdx() );
@@ -739,6 +741,14 @@ bool QgsAttributeForm::saveMultiEdits()
 
 bool QgsAttributeForm::save()
 {
+  return saveWithDetails( nullptr );
+}
+
+bool QgsAttributeForm::saveWithDetails( QString *error )
+{
+  if ( error )
+    error->clear();
+
   if ( mIsSaving )
     return true;
 
@@ -784,7 +794,7 @@ bool QgsAttributeForm::save()
     case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
-      success = saveEdits();
+      success = saveEdits( error );
       break;
 
     case QgsAttributeEditorContext::MultiEditMode:
@@ -798,6 +808,7 @@ bool QgsAttributeForm::save()
 
   return success;
 }
+
 
 void QgsAttributeForm::resetValues()
 {
