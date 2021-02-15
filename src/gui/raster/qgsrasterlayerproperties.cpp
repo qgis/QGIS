@@ -63,6 +63,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsdoublevalidator.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsprojecttimesettings.h"
@@ -545,6 +546,23 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#server-properties" ) );
 }
 
+void QgsRasterLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+{
+  if ( !factory->supportsLayer( mRasterLayer ) || !factory->supportLayerPropertiesDialog() )
+  {
+    return;
+  }
+
+  QgsMapLayerConfigWidget *page = factory->createWidget( mRasterLayer, nullptr, false, this );
+  mLayerPropertiesPages << page;
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+}
+
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
 {
   tableTransparency->clear();
@@ -930,6 +948,13 @@ void QgsRasterLayerProperties::sync()
   mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
 
   mTemporalWidget->syncToLayer();
+
+  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
+  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
+  {
+    page->syncToLayer( mRasterLayer );
+  }
+
 }
 
 void QgsRasterLayerProperties::apply()
