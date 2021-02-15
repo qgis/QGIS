@@ -25,7 +25,7 @@ jobs:
 
     strategy:
       matrix:
-        branch: [master, release-3_10, release-3_16]
+        branch: [master, release-3_16]
 
     steps:
       - name: Cache
