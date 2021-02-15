@@ -59,15 +59,15 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaNewConnection::showHelp );
 
   txtDriver->setText( QgsHanaDriver::instance()->driver() );
-#if defined(Q_OS_WIN)
-  txtDriver->setToolTip( tr( "The name of the SAP HANA ODBC driver.\r\n\r\n"
-                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\r\n"
+#ifdef Q_OS_WIN
+  txtDriver->setToolTip( tr( "The name of the SAP HANA ODBC driver.\n\n"
+                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\n"
                              "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
 #else
-  txtDriver->setToolTip( tr( "The name or path to the SAP HANA ODBC driver.\r\n\r\n"
-                             "If the driver is registered in odbcinst.ini, enter the driver's name.\r\n"
-                             "Otherwise, enter the path to the driver (libodbcHDB.so).\r\n\r\n"
-                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\r\n"
+  txtDriver->setToolTip( tr( "The name or path to the SAP HANA ODBC driver.\n\n"
+                             "If the driver is registered in odbcinst.ini, enter the driver's name.\n"
+                             "Otherwise, enter the path to the driver (libodbcHDB.so).\n\n"
+                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\n"
                              "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
 #endif
 
@@ -137,7 +137,7 @@ void QgsHanaNewConnection::accept()
                               tr( "WARNING: You have opted to save your password. It will be stored in unsecured "
                                   "plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). "
                                   "If you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection "
-                                  "settings  — it will be requested interactively when needed;\nb) Use the Configuration tab to add your "
+                                  "settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your "
                                   "credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
