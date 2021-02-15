@@ -948,7 +948,7 @@ bool QgsVectorLayerFeatureIterator::handleGeometryValidity( QgsFeature &feature 
           else
             outputGeometry = QgsGeometry();
         }
-        if ( feature.geometry().isMultiPart() )
+        if ( feature.geometry().isMultipart() )
           outputGeometry.convertToMultiType();
         if ( QgsWkbTypes::geometryType( outputGeometry.wkbType() ) != QgsWkbTypes::geometryType( feature.geometry().wkbType() ) )
         {
