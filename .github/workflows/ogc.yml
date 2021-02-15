@@ -5,10 +5,22 @@ on:
     branches:
       - master
       - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/ogc.yml'
   pull_request:
     branches:
       - master
       - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/ogc.yml'
 
 jobs:
   build:
