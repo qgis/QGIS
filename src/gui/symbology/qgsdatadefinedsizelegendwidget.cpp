@@ -39,6 +39,8 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   setupUi( this );
   setPanelTitle( tr( "Data-defined Size Legend" ) );
 
+  mLineSymbolButton->setSymbolType( QgsSymbol::Line );
+
   QgsMarkerSymbol *symbol = nullptr;
 
   if ( !ddsLegend )
@@ -56,6 +58,9 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
       cboAlignSymbols->setCurrentIndex( 0 );
     else
       cboAlignSymbols->setCurrentIndex( 1 );
+
+    if ( ddsLegend->lineSymbol() )
+      mLineSymbolButton->setSymbol( ddsLegend->lineSymbol()->clone() );
 
     symbol = ddsLegend->symbol() ? ddsLegend->symbol()->clone() : nullptr;  // may be null (undefined)
   }
@@ -120,6 +125,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( btnChangeSymbol, &QPushButton::clicked, this, &QgsDataDefinedSizeLegendWidget::changeSymbol );
   connect( editTitle, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mLineSymbolButton, &QgsSymbolButton::changed, this, &QgsPanelWidget::widgetChanged );
   connect( this, &QgsPanelWidget::widgetChanged, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
   updatePreview();
 }
@@ -157,6 +163,8 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendWidget::dataDefinedSizeLegend(
     }
     ddsLegend->setClasses( classes );
   }
+
+  ddsLegend->setLineSymbol( mLineSymbolButton->clonedSymbol< QgsLineSymbol >() );
   return ddsLegend;
 }
 
