@@ -5453,22 +5453,22 @@ static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressio
   const int maxValue = *std::max_element( occurrences.constBegin(), occurrences.constEnd() );
 
   const QString option = values.at( 1 ).toString();
-  if ( option.compare( QStringLiteral( "all" ), Qt::CaseInsensitive ) == 0 )
+  if ( option.compare( QLatin1String( "all" ), Qt::CaseInsensitive ) == 0 )
   {
     return convertToSameType( hash.keys( maxValue ), values.at( 0 ).type() );
   }
-  else if ( option.compare( QStringLiteral( "first" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QLatin1String( "first" ), Qt::CaseInsensitive ) == 0 )
   {
-    if ( hash.keys().isEmpty() )
+    if ( hash.isEmpty() )
       return QVariant();
 
     return QVariant( hash.keys( maxValue ).first() );
   }
-  else if ( option.compare( QStringLiteral( "median" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QLatin1String( "median" ), Qt::CaseInsensitive ) == 0 )
   {
     return fcnArrayMedian( QVariantList() << convertToSameType( hash.keys( maxValue ), values.at( 0 ).type() ), context, parent, node );
   }
-  else if ( option.compare( QStringLiteral( "real_majority" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QLatin1String( "real_majority" ), Qt::CaseInsensitive ) == 0 )
   {
     if ( maxValue * 2 <= list.size() )
       return QVariant();
@@ -5494,22 +5494,22 @@ static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressio
   const int minValue = *std::min_element( occurrences.constBegin(), occurrences.constEnd() );
 
   const QString option = values.at( 1 ).toString();
-  if ( option.compare( QStringLiteral( "all" ), Qt::CaseInsensitive ) == 0 )
+  if ( option.compare( QLatin1String( "all" ), Qt::CaseInsensitive ) == 0 )
   {
     return convertToSameType( hash.keys( minValue ), values.at( 0 ).type() );
   }
-  else if ( option.compare( QStringLiteral( "first" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QLatin1String( "first" ), Qt::CaseInsensitive ) == 0 )
   {
-    if ( hash.keys().isEmpty() )
+    if ( hash.isEmpty() )
       return QVariant();
 
     return QVariant( hash.keys( minValue ).first() );
   }
-  else if ( option.compare( QStringLiteral( "median" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QLatin1String( "median" ), Qt::CaseInsensitive ) == 0 )
   {
     return fcnArrayMedian( QVariantList() << convertToSameType( hash.keys( minValue ), values.at( 0 ).type() ), context, parent, node );
   }
-  else if ( option.compare( QStringLiteral( "real_minority" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QLatin1String( "real_minority" ), Qt::CaseInsensitive ) == 0 )
   {
     if ( hash.keys().isEmpty() )
       return QVariant();
