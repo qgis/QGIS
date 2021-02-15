@@ -16230,6 +16230,12 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     case QgsMapLayerType::RasterLayer:
     {
       QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
+
+      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      {
+        rasterLayerPropertiesDialog->addPropertiesPageFactory( factory );
+      }
+
       if ( !page.isEmpty() )
         rasterLayerPropertiesDialog->setCurrentPage( page );
 
