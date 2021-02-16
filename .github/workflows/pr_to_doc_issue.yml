@@ -2,7 +2,7 @@
 name: Documentation issue for labeled PR
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - closed
       - labeled
@@ -12,15 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     steps:
-
-      # obfuscate the github token so it can be used on jobs triggered from forks
-      - name: Clear GH Token
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
-        id: token
-        uses: opengisch/clear-token@v1.0.12
-        with:
-          bot_token_encrypted: ddbdec32940df79f1adf2369b4b10f10b5a66f65
-          bot_token_xor_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
 
       # transform the milestone (e.g. 3.10.4) to a doc label (3.10)
       - name: QGIS milestone to Doc label
@@ -39,8 +30,6 @@ jobs:
         if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         id: get_pr_info
         uses: octokit/request-action@v2.x
-        env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
         with:
           route: GET /repos/qgis/QGIS/pulls/:pull_number
           pull_number: ${{ github.event.pull_request.number }}
@@ -59,8 +48,6 @@ jobs:
         if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         uses: octokit/request-action@v2.x
         id: get_pr_commits
-        env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
         with:
           route: GET /repos/qgis/QGIS/pulls/:pull_number/commits
           pull_number: ${{ github.event.pull_request.number }}
@@ -81,7 +68,7 @@ jobs:
         id: doc_issue
         uses: maxkomarychev/oction-create-issue@v0.7.1
         with:
-          token: ${{ steps.token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           owner: qgis
           repo: QGIS-Documentation
           title: ${{ format('{0} (Request in QGIS)', github.event.pull_request.title) }}
@@ -107,7 +94,7 @@ jobs:
         if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         uses: peter-evans/create-or-update-comment@v1
         with:
-          token: ${{ steps.token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             @${{ github.event.pull_request.user.login }}
