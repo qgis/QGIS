@@ -69,6 +69,7 @@ jobs:
 
     - name: Cross build with MXE
       run: |
+        mkdir -p ${CCACHE_DIR}
         docker run -v ${GITHUB_WORKSPACE}:/root/QGIS \
             -w /root/QGIS  \
             --env CCACHE_DIR=/root/QGIS/.ccache \
