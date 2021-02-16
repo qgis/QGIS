@@ -15,7 +15,7 @@ jobs:
   ping-author-message:
     if: github.event.action != 'closed' && github.event.label.name == 'Needs Documentation'
     runs-on: ubuntu-latest
-    name Write comment to ping author about the future creation of an issue in docs
+    name: Write comment to ping author about the future creation of an issue in docs
     steps:
 
       # write comment to ping the PR author
