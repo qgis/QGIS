@@ -1,7 +1,7 @@
 name: Ping PR author about documentation
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - labeled
@@ -10,19 +10,12 @@ jobs:
     if: github.event.label.name == 'Needs Documentation'
     runs-on: ubuntu-latest
     steps:
-      # obfuscate the github token so it can be used on jobs triggered from forks
-      - name: Clear GH Token
-        id: token
-        uses: opengisch/clear-token@v1.0.12
-        with:
-          bot_token_encrypted: ddbdec32940df79f1adf2369b4b10f10b5a66f65
-          bot_token_xor_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
 
       # write comment to ping the PR author
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v1
         with:
-          token: ${{ steps.token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             @${{ github.event.pull_request.user.login }}
