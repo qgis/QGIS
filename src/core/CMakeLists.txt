@@ -470,6 +470,7 @@ set(QGIS_CORE_SRCS
   qgssettings.cpp
   qgssettingsentry.cpp
   qgssettingsregistry.cpp
+  qgssettingsregistrycore.cpp
   qgsarchive.cpp
   qgstestutils.cpp
   qgsziputils.cpp
@@ -1030,6 +1031,7 @@ set(QGIS_CORE_HDRS
   qgssettings.h
   qgssettingsentry.h
   qgssettingsregistry.h
+  qgssettingsregistrycore.h
   qgssimplifymethod.h
   qgssnappingconfig.h
   qgssnappingutils.h

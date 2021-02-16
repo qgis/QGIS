@@ -25,6 +25,7 @@ class QgsSettingsRegistry : QObject
 
     QgsSettingsRegistry( QgsSettings::Section section );
 %Docstring
+Xxx
 Constructor for QgsSettingsRegistry.
 %End
     ~QgsSettingsRegistry();

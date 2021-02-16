@@ -71,8 +71,6 @@ Get settings default value.
 
     QString description() const;
 
-    void remove();
-
 };
 
 class QgsSettingsEntryString : QgsSettingsEntry

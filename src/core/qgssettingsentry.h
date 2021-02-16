@@ -113,8 +113,6 @@ class CORE_EXPORT QgsSettingsEntry
 
     QString description() const;
 
-    void remove();
-
   private:
 
     QString mKey;

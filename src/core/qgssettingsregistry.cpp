@@ -128,9 +128,10 @@ void QgsSettingsRegistry::unregister( const QString &key )
   }
 
   QgsSettingsEntry *settingsEntry = mMapSettingsEntry.take( key );
-
-  settingsEntry->remove();
   delete settingsEntry;
+
+  QgsSettings().remove( key,
+                        mSection );
 }
 
 QgsSettingsEntry *QgsSettingsRegistry::settingsEntry( const QString &key ) const

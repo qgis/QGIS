@@ -59,12 +59,6 @@ QString QgsSettingsEntry::description() const
   return mDescription;
 }
 
-void QgsSettingsEntry::remove()
-{
-  QgsSettings().remove( mKey,
-                        mSection );
-}
-
 QgsSettingsEntryString::QgsSettingsEntryString( const QString &key,
     QgsSettings::Section section,
     const QString &defaultValue,
