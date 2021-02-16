@@ -79,7 +79,10 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    //! Adds a properties page factory to the raster layer properties dialog.
+    /**
+     * Adds a properties page factory to the raster layer properties dialog.
+     * \since QGIS 3.18
+     */
     void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
 
   protected slots:
