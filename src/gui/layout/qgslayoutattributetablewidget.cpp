@@ -73,6 +73,9 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   mContentFontToolButton->setMode( QgsFontButton::ModeTextRenderer );
   mHeaderFontToolButton->setMode( QgsFontButton::ModeTextRenderer );
 
+  mContentFontToolButton->registerExpressionContextGenerator( this );
+  mHeaderFontToolButton->registerExpressionContextGenerator( this );
+
   blockAllSignals( true );
 
   mResizeModeComboBox->addItem( tr( "Use Existing Frames" ), QgsLayoutMultiFrame::UseExistingFrames );
@@ -165,6 +168,27 @@ void QgsLayoutAttributeTableWidget::setMasterLayout( QgsMasterLayoutInterface *m
 {
   if ( mItemPropertiesWidget )
     mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
+QgsExpressionContext QgsLayoutAttributeTableWidget::createExpressionContext() const
+{
+  QgsExpressionContext context;
+
+  // frames include their parent multiframe's context, so prefer that if possible
+  if ( mFrame )
+    context = mFrame->createExpressionContext();
+  else if ( mTable )
+    context = mTable->createExpressionContext();
+
+  std::unique_ptr< QgsExpressionContextScope > cellScope = qgis::make_unique< QgsExpressionContextScope >();
+  cellScope->setVariable( QStringLiteral( "row_number" ), 1, true );
+  cellScope->setVariable( QStringLiteral( "column_number" ), 1, true );
+  context.appendScope( cellScope.release() );
+
+  context.setHighlightedVariables( { QStringLiteral( "row_number" ),
+                                     QStringLiteral( "column_number" )} );
+
+  return context;
 }
 
 bool QgsLayoutAttributeTableWidget::setNewItem( QgsLayoutItem *item )
