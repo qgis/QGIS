@@ -195,7 +195,6 @@ bool QgsTextEditWrapper::valid() const
 
 void QgsTextEditWrapper::showIndeterminateState()
 {
-  //note - this is deliberately a zero length string, not a null string!
   if ( mTextEdit )
     mTextEdit->blockSignals( true );
   if ( mPlainTextEdit )
@@ -208,7 +207,8 @@ void QgsTextEditWrapper::showIndeterminateState()
     mLineEdit->setPlaceholderText( QString() );
   }
 
-  setWidgetValue( QString() );
+  //note - this is deliberately a zero length string, not a null string!
+  setWidgetValue( QStringLiteral( "" ) );  // skip-keyword-check
 
   if ( mTextEdit )
     mTextEdit->blockSignals( false );
