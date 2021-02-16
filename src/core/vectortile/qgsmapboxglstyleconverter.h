@@ -294,7 +294,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      *
-     * \param jsonLayer cicle layer to parse
+     * \param jsonLayer circle layer to parse
      * \param style generated QGIS vector tile style
      * \param context conversion context
      * \returns TRUE if the layer was successfully parsed.

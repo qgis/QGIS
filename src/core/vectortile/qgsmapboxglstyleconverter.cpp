@@ -672,7 +672,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   }
 
   // circle radius
-  double cicleRadius = 5.0;
+  double circleRadius = 5.0;
   if ( jsonPaint.contains( QStringLiteral( "circle-radius" ) ) )
   {
     const QVariant jsonCircleRadius = jsonPaint.value( QStringLiteral( "circle-radius" ) );
@@ -680,21 +680,21 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     {
       case QVariant::Int:
       case QVariant::Double:
-        cicleRadius = jsonCircleRadius.toDouble() * context.pixelSizeConversionFactor();
+        circleRadius = jsonCircleRadius.toDouble() * context.pixelSizeConversionFactor();
         break;
 
       case QVariant::Map:
-        cicleRadius = -1;
-        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseInterpolateByZoom( jsonCircleRadius.toMap(), context, context.pixelSizeConversionFactor(), &cicleRadius ) );
+        circleRadius = -1;
+        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseInterpolateByZoom( jsonCircleRadius.toMap(), context, context.pixelSizeConversionFactor(), &circleRadius ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &cicleRadius ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &circleRadius ) );
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported cicle-radius type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleRadius.type() ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-radius type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleRadius.type() ) ) );
         break;
     }
   }
@@ -752,7 +752,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   }
 
   // circle stroke width
-  double cicleStrokeWidth = -1.0;
+  double circleStrokeWidth = -1.0;
   if ( jsonPaint.contains( QStringLiteral( "circle-stroke-width" ) ) )
   {
     const QVariant circleStrokeWidthJson = jsonPaint.value( QStringLiteral( "circle-stroke-width" ) );
@@ -760,17 +760,17 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     {
       case QVariant::Int:
       case QVariant::Double:
-        cicleStrokeWidth = circleStrokeWidthJson.toDouble() * context.pixelSizeConversionFactor();
+        circleStrokeWidth = circleStrokeWidthJson.toDouble() * context.pixelSizeConversionFactor();
         break;
 
       case QVariant::Map:
-        cicleStrokeWidth = -1.0;
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateByZoom( circleStrokeWidthJson.toMap(), context, context.pixelSizeConversionFactor(), &cicleStrokeWidth ) );
+        circleStrokeWidth = -1.0;
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateByZoom( circleStrokeWidthJson.toMap(), context, context.pixelSizeConversionFactor(), &circleStrokeWidth ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseValueList( circleStrokeWidthJson.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &cicleStrokeWidth ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseValueList( circleStrokeWidthJson.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &circleStrokeWidth ) );
         break;
 
       default:
@@ -830,17 +830,17 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   {
     markerSymbolLayer->setFillColor( circleFillColor );
   }
-  if ( cicleRadius != -1 )
+  if ( circleRadius != -1 )
   {
-    markerSymbolLayer->setSize( cicleRadius );
+    markerSymbolLayer->setSize( circleRadius );
   }
   if ( circleStrokeColor.isValid() )
   {
     markerSymbolLayer->setStrokeColor( circleStrokeColor );
   }
-  if ( cicleStrokeWidth != -1 )
+  if ( circleStrokeWidth != -1 )
   {
-    markerSymbolLayer->setStrokeWidth( cicleStrokeWidth );
+    markerSymbolLayer->setStrokeWidth( circleStrokeWidth );
   }
 
   style.setGeometryType( QgsWkbTypes::PointGeometry );
