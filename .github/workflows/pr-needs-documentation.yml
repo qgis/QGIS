@@ -1,21 +1,50 @@
 
-name: Documentation issue for labeled PR
+name: PR needs documentation
+
+# a message will be added to the PR to ping the author about her/his responsibility to handle the documentation issue
+# an issue is automatically created in the QGIS-Documentation repository when the PR gets merged
 
 on:
   pull_request_target:
     types:
+      - opened
       - closed
       - labeled
 
 jobs:
-  pr2docissue:
+  ping-author-message:
+    if: github.event.action != 'closed' && github.event.label.name == 'Needs Documentation'
+    runs-on: ubuntu-latest
+    name: Write comment to ping author about the future creation of an issue in docs
+    steps:
+
+      # write comment to ping the PR author
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            @${{ github.event.pull_request.user.login }}
+            This pull request has been tagged as **requiring documentation**.
+
+            A documentation ticket will be opened at https://github.com/qgis/QGIS-Documentation **when this PR is merged**.
+
+            **Please update the description** (not the comments) with helpful description and screenshot to help the work from documentors.
+            Also, any commit having [needs-doc] or [Needs Documentation] in will see its message pushed to the issue, so please be as verbose as you can.
+
+            Thank you!
+          reactions: 'rocket'
+
+
+  create-doc-issue:
+    if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     steps:
 
       # transform the milestone (e.g. 3.10.4) to a doc label (3.10)
       - name: QGIS milestone to Doc label
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         id: milestone2label
         env:
           MILESTONE: ${{ github.event.pull_request.milestone.title }}
@@ -27,7 +56,6 @@ jobs:
 
       # get the PR body
       - name: Get PR body as JSON
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         id: get_pr_info
         uses: octokit/request-action@v2.x
         with:
@@ -36,7 +64,6 @@ jobs:
 
       # extract body from json output
       - name: Get PR body as text
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         id: get_pr_body
         uses: gr2m/get-json-paths-action@v1.x
         with:
@@ -45,7 +72,6 @@ jobs:
 
       # get commits from the PR
       - name: Get PR commits
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         uses: octokit/request-action@v2.x
         id: get_pr_commits
         with:
@@ -64,7 +90,6 @@ jobs:
 
       # create the documentation issue
       - name: Create Documentation issue
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         id: doc_issue
         uses: maxkomarychev/oction-create-issue@v0.7.1
         with:
@@ -91,7 +116,6 @@ jobs:
 
       # write comment to ping the PR author
       - name: Create comment
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         uses: peter-evans/create-or-update-comment@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -101,4 +125,4 @@ jobs:
             A documentation ticket has been opened at https://github.com/qgis/QGIS-Documentation/issues/${{ steps.doc_issue.outputs.number }}
             It is **your** responsibility to visit this ticket and add as much detail as possible for the documentation team to correctly document this change.
             Thank you!
-          reaction-type: 'rocket'
+          reactions: 'rocket'
