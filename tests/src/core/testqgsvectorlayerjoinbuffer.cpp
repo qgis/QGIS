@@ -66,6 +66,7 @@ class TestVectorLayerJoinBuffer : public QObject
     void testRemoveJoinOnLayerDelete();
     void testResolveReferences();
     void testSignals();
+    void testChangeAttributeValues();
 
   private:
     QgsProject mProject;
@@ -734,6 +735,109 @@ void TestVectorLayerJoinBuffer::testSignals()
   QCOMPARE( fA2.attribute( "id_a" ).toInt(), 2 );
   QCOMPARE( fA2.attribute( "B_value_b" ).toInt(), 222 );
   QCOMPARE( spy.count(), 3 );
+}
+
+void TestVectorLayerJoinBuffer::testChangeAttributeValues()
+{
+  // change attribute values in a vector layer which includes joins
+  mProject.clear();
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer&field=value_a1:string&field=value_a2:string" ), QStringLiteral( "cacheA" ), QStringLiteral( "memory" ) );
+  QVERIFY( vlA->isValid() );
+  QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point?field=id_b:integer&field=value_b1:string&field=value_b2:string" ), QStringLiteral( "cacheB" ), QStringLiteral( "memory" ) );
+  QVERIFY( vlB->isValid() );
+  mProject.addMapLayer( vlA );
+  mProject.addMapLayer( vlB );
+
+  QgsFeature fA1( vlA->dataProvider()->fields(), 1 );
+  fA1.setAttribute( QStringLiteral( "id_a" ), 1 );
+  fA1.setAttribute( QStringLiteral( "value_a1" ), QStringLiteral( "a_1_1" ) );
+  fA1.setAttribute( QStringLiteral( "value_a2" ), QStringLiteral( "a_1_2" ) );
+  QgsFeature fA2( vlA->dataProvider()->fields(), 2 );
+  fA2.setAttribute( QStringLiteral( "id_a" ), 2 );
+  fA2.setAttribute( QStringLiteral( "value_a1" ), QStringLiteral( "a_2_1" ) );
+  fA2.setAttribute( QStringLiteral( "value_a2" ), QStringLiteral( "a_2_2" ) );
+
+  QVERIFY( vlA->dataProvider()->addFeatures( QgsFeatureList() << fA1 << fA2 ) );
+
+  QCOMPARE( vlA->getFeature( 1 ).attributes().size(), 3 );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 1 ).toString(), QStringLiteral( "a_1_1" ) );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 2 ).toString(), QStringLiteral( "a_1_2" ) );
+
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayer( vlB );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setPrefix( QStringLiteral( "B_" ) );
+  joinInfo.setEditable( true );
+  joinInfo.setUpsertOnEdit( true );
+  vlA->addJoin( joinInfo );
+
+  QVERIFY( vlA->startEditing() );
+  QVERIFY( vlB->startEditing() );
+
+  QCOMPARE( vlA->getFeature( 1 ).attributes().size(), 5 );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 1 ).toString(), QStringLiteral( "a_1_1" ) );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 2 ).toString(), QStringLiteral( "a_1_2" ) );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 3 ).toString(), QString() );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 4 ).toString(), QString() );
+
+  // change a provider field
+  QVERIFY( vlA->changeAttributeValue( 1, 1, QStringLiteral( "new_a_1_1" ) ) );
+  // change a join field
+  QVERIFY( vlA->changeAttributeValue( 1, 3, QStringLiteral( "new_b_1_1" ) ) );
+
+  QCOMPARE( vlA->getFeature( 1 ).attributes().size(), 5 );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 1 ).toString(), QStringLiteral( "new_a_1_1" ) );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 2 ).toString(), QStringLiteral( "a_1_2" ) );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 3 ).toString(), QStringLiteral( "new_b_1_1" ) );
+  QCOMPARE( vlA->getFeature( 1 ).attributes().at( 4 ).toString(), QString() );
+
+  QgsFeature joinFeature;
+  vlB->getFeatures().nextFeature( joinFeature );
+  QVERIFY( joinFeature.isValid() );
+  QCOMPARE( joinFeature.attributes().size(), 3 );
+  QCOMPARE( joinFeature.attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( joinFeature.attributes().at( 1 ).toString(), QStringLiteral( "new_b_1_1" ) );
+  QCOMPARE( joinFeature.attributes().at( 2 ).toString(), QString() );
+
+  // change a combination of provider and joined fields at once
+  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap{ { 1, QStringLiteral( "new_a_2_1" ) },
+    { 2, QStringLiteral( "new_a_2_2" ) },
+    { 3, QStringLiteral( "new_b_2_1" ) },
+    { 4, QStringLiteral( "new_b_2_2" ) }} ) );
+
+  QCOMPARE( vlA->getFeature( 2 ).attributes().size(), 5 );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 0 ).toInt(), 2 );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 1 ).toString(), QStringLiteral( "new_a_2_1" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 2 ).toString(), QStringLiteral( "new_a_2_2" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 3 ).toString(), QStringLiteral( "new_b_2_1" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 4 ).toString(), QStringLiteral( "new_b_2_2" ) );
+
+  // change only provider fields
+  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap{ { 1, QStringLiteral( "new_a_2_1b" ) },
+    { 2, QStringLiteral( "new_a_2_2b" ) }} ) );
+
+  QCOMPARE( vlA->getFeature( 2 ).attributes().size(), 5 );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 0 ).toInt(), 2 );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 1 ).toString(), QStringLiteral( "new_a_2_1b" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 2 ).toString(), QStringLiteral( "new_a_2_2b" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 3 ).toString(), QStringLiteral( "new_b_2_1" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 4 ).toString(), QStringLiteral( "new_b_2_2" ) );
+
+  // change only joined fields
+  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap{ { 3, QStringLiteral( "new_b_2_1b" ) },
+    { 4, QStringLiteral( "new_b_2_2b" ) }} ) );
+
+  QCOMPARE( vlA->getFeature( 2 ).attributes().size(), 5 );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 0 ).toInt(), 2 );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 1 ).toString(), QStringLiteral( "new_a_2_1b" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 2 ).toString(), QStringLiteral( "new_a_2_2b" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 3 ).toString(), QStringLiteral( "new_b_2_1b" ) );
+  QCOMPARE( vlA->getFeature( 2 ).attributes().at( 4 ).toString(), QStringLiteral( "new_b_2_2b" ) );
+
 }
 
 
