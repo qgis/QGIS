@@ -54,7 +54,7 @@ Sets the group's id.
 
     QString generateId( QString name ) const;
 %Docstring
-Generate the group's id, according to the groups's name (based on QgsMapLayer.generateId)
+Generate the group's id, according to the groups's name (based on :py:class:`QgsMapLayer`.generateId)
 %End
 
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
@@ -227,6 +227,7 @@ of -1 will determine automatically (either first one currently checked or none)
 %Docstring
 Set check state of children - if mutually exclusive
 %End
+
 
 
 
