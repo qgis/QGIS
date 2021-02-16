@@ -433,6 +433,10 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
     int col = 0;
     for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
     {
+      std::unique_ptr< QgsExpressionContextScope > headerCellScope = qgis::make_unique< QgsExpressionContextScope >();
+      headerCellScope->setVariable( QStringLiteral( "column_number" ), col + 1, true );
+      QgsExpressionContextScopePopper popper( context.renderContext().expressionContext(), headerCellScope.release() );
+
       const QgsTextFormat headerFormat = textFormatForHeader( col );
       //draw background
       p->save();
@@ -1095,6 +1099,10 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
     }
     else if ( mHeaderMode != QgsLayoutTable::NoHeaders )
     {
+      std::unique_ptr< QgsExpressionContextScope > headerCellScope = qgis::make_unique< QgsExpressionContextScope >();
+      headerCellScope->setVariable( QStringLiteral( "column_number" ), i + 1, true );
+      QgsExpressionContextScopePopper popper( context.expressionContext(), headerCellScope.release() );
+
       //column width set to automatic, so check content size
       const QStringList multiLineSplit = col.heading().split( '\n' );
       currentCellTextWidth = QgsTextRenderer::textWidth( context, textFormatForHeader( i ), multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
@@ -1168,6 +1176,10 @@ bool QgsLayoutTable::calculateMaxRowHeights()
   int i = 0;
   for ( const QgsLayoutTableColumn &col : qgis::as_const( mColumns ) )
   {
+    std::unique_ptr< QgsExpressionContextScope > headerCellScope = qgis::make_unique< QgsExpressionContextScope >();
+    headerCellScope->setVariable( QStringLiteral( "column_number" ), i + 1, true );
+    QgsExpressionContextScopePopper popper( context.expressionContext(), headerCellScope.release() );
+
     const QgsTextFormat cellFormat = textFormatForHeader( i );
     const double headerDescentMm = QgsTextRenderer::fontMetrics( context, cellFormat, QgsTextRenderer::FONT_WORKAROUND_SCALE ).descent() / QgsTextRenderer::FONT_WORKAROUND_SCALE  / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
     //height
