@@ -1312,12 +1312,6 @@ class TestQgsExpression: public QObject
       QTest::newRow( "replace (unbalanced array, before > after)" ) << "replace('12345', array('1','2','3'), array('6','7'))" << true << QVariant();
       QTest::newRow( "replace (unbalanced array, before < after)" ) << "replace('12345', array('1','2'), array('6','7','8'))" << true << QVariant();
       QTest::newRow( "replace (map)" ) << "replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))" << false << QVariant( "QGIS DOES ROCK" );
-      QTest::newRow( "replace array" ) << "replace(array('H','e','L','L','o'), 'L', 'x')" << false << QVariant( QVariantList() << "H" << "e" << "x" << "x" << "o" );
-      QTest::newRow( "replace array (array replaced by array)" ) << "replace(array(3,2,1), array(1,2,3), array(7,8,9))" << false << QVariant( QVariantList() << 9 << 8 << 7 );
-      QTest::newRow( "replace array (array replaced by string)" ) << "replace(array(1,2,3,4,5), array(2,4), '')" << false << QVariant( QVariantList() << 1 << "" << 3 << "" << 5 );
-      QTest::newRow( "replace array (unbalanced array, before > after)" ) << "replace(array(1,2,3,4,5), array(1,2,3), array(6,7))" << true << QVariant();
-      QTest::newRow( "replace array (unbalanced array, before < after)" ) << "replace(array(1,2,3,4,5), array(1,2), array(6,7,8))" << true << QVariant();
-      QTest::newRow( "replace array (map)" ) << "replace(array('APP','SHOULD','ROCK'),map('APP','QGIS','SHOULD','DOES'))" << false << QVariant( QVariantList() << "QGIS" << "DOES" << "ROCK" );
       QTest::newRow( "regexp_replace" ) << "regexp_replace('HeLLo','[eL]+', '-')" << false << QVariant( "H-o" );
       QTest::newRow( "regexp_replace greedy" ) << "regexp_replace('HeLLo','(?<=H).*L', '-')" << false << QVariant( "H-o" );
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
@@ -1374,6 +1368,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "array_to_string fail passing non-array" ) << "array_to_string('non-array',',')" << true << QVariant();
       QTest::newRow( "array_unique" ) << "array_to_string(array_distinct(array('hello','world','world','hello')))" << false << QVariant( "hello,world" );
       QTest::newRow( "array_unique fail passing non-array" ) << "array_distinct('non-array')" << true << QVariant();
+      QTest::newRow( "array_replace" ) << "array_replace(array('H','e','L','L','o'), 'L', 'x')" << false << QVariant( QVariantList() << "H" << "e" << "x" << "x" << "o" );
+      QTest::newRow( "array_replace (array replaced by array)" ) << "array_replace(array(3,2,1), array(1,2,3), array(7,8,9))" << false << QVariant( QVariantList() << 9 << 8 << 7 );
+      QTest::newRow( "array_replace (arrayreplaced by string)" ) << "array_replace(array(1,2,3,4,5), array(2,4), '')" << false << QVariant( QVariantList() << 1 << "" << 3 << "" << 5 );
+      QTest::newRow( "array_replace (unbalanced array, before > after)" ) << "array_replace(array(1,2,3,4,5), array(1,2,3), array(6,7))" << true << QVariant();
+      QTest::newRow( "array_replace (unbalanced array, before < after)" ) << "array_replace(array(1,2,3,4,5), array(1,2), array(6,7,8))" << true << QVariant();
+      QTest::newRow( "array_replace (map)" ) << "array_replace(array('APP','SHOULD','ROCK'),map('APP','QGIS','SHOULD','DOES'))" << false << QVariant( QVariantList() << "QGIS" << "DOES" << "ROCK" );
 
       //fuzzy matching
       QTest::newRow( "levenshtein" ) << "levenshtein('kitten','sitting')" << false << QVariant( 3 );

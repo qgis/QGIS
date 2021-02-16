@@ -2,7 +2,7 @@
   "name": "replace",
   "type": "function",
   "groups": ["String"],
-  "description": "Returns a string or array with the supplied string, value, array, map of strings or map of values replaced.",
+  "description": "Returns a string with the supplied string, array, or map of strings replaced.",
   "variants": [
   { "variant": "String & array variant",
       "variant_description": "Returns a string with the supplied string or array of strings replaced by a string or an array of strings.",
@@ -16,19 +16,6 @@
       "variant_description": "Returns a string with the supplied map keys replaced by paired values.",
       "arguments": [ {"arg":"string","description":"the input string"},
                      {"arg":"map","description":"the map containing keys and values"} ],
-      "examples": [ { "expression":"replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))", "returns":"'QGIS DOES ROCK'"} ] },
-  { "variant": "Value & array variant for array input",
-      "variant_description": "Returns an array with the supplied value or array of valuess replaced by a value or an array of values.",
-      "arguments": [ {"arg":"array","description":"the input array"},
-                     {"arg":"before","description":"the value or array of values to replace"},
-                     {"arg":"after","description":"the value or array of values to use as a replacement"}],
-      "examples": [ { "expression":"replace(array('QGIS','SHOULD','ROCK'),'SHOULD','DOES')", "returns":"[ 'QGIS', 'DOES', 'ROCK' ]"},
-                    { "expression":"replace(array(3,2,1),array(1,2,3),array(7,8,9))", "returns":"[ 9, 8, 7 ]"},
-                    { "expression":"replace(array('Q','G','I','S'),array('Q','S'),'-')", "returns":"[ '-', 'G', 'I', '-' ]"} ] },
-  { "variant": "Map variant for array input",
-      "variant_description": "Returns an array with the supplied map keys replaced by paired values.",
-      "arguments": [ {"arg":"array","description":"the input array"},
-                     {"arg":"map","description":"the map containing keys and values"} ],
-      "examples": [ { "expression":"replace(array('APP', 'SHOULD', 'ROCK'),map('APP','QGIS','SHOULD','DOES'))", "returns":"[ 'QGIS', 'DOES', 'ROCK' ]"} ]
+      "examples": [ { "expression":"replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))", "returns":"'QGIS DOES ROCK'"} ]
   }]
 }
