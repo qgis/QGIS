@@ -93,6 +93,22 @@ class TestQgsTextEditWidget(unittest.TestCase):
 
         QgsProject.instance().removeAllMapLayers()
 
+    def test_indeterminate_state(self):
+        """
+        Test the indeterminate state for the wrapper
+        """
+        layer = QgsVectorLayer("none?field=fld:string", "layer", "memory")
+        reg = QgsGui.editorWidgetRegistry()
+        configWdg = reg.createConfigWidget('TextEdit', layer, 0, None)
+        config = configWdg.config()
+        editwidget = reg.create('TextEdit', layer, 0, config, None, None)
+
+        editwidget.setValue('value')
+        self.assertEqual(editwidget.value(), 'value')
+        editwidget.showIndeterminateState()
+        self.assertFalse(editwidget.value())
+        self.assertFalse(editwidget.widget().toPlainText())
+
 
 class TestQgsValueRelationWidget(unittest.TestCase):
 
