@@ -78,7 +78,7 @@
      <item>
       <widget class="QToolButton" name="mFieldsMappingRemoveButton">
        <property name="toolTip">
-        <string>Remove the select or last pair of fields</string>
+        <string>Remove the selected or last pair of fields</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
