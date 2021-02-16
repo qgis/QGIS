@@ -96,7 +96,7 @@ jobs:
         id: doc_issue
         uses: maxkomarychev/oction-create-issue@v0.7.1
         with:
-          token: ${{ secrets.GH_TOKEN_GEONINJA }}
+          token: ${{ secrets.GH_TOKEN_BOT }}
           owner: qgis
           repo: QGIS-Documentation
           title: ${{ format('{0} (Request in QGIS)', github.event.pull_request.title) }}
