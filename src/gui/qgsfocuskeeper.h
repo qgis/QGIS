@@ -21,6 +21,7 @@
 #define SIP_NO_FILE
 
 #include <QObject>
+#include <QPointer>
 
 class QWidget;
 
@@ -35,7 +36,7 @@ class GUI_EXPORT QgsFocusKeeper : public QObject
 {
     Q_OBJECT
 
-    QWidget *mWidgetToKeepFocused = nullptr;
+    QPointer<QWidget> mWidgetToKeepFocused;
 
   public:
     QgsFocusKeeper();
