@@ -58,6 +58,8 @@ jobs:
       - name: Get PR body as JSON
         id: get_pr_info
         uses: octokit/request-action@v2.x
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           route: GET /repos/qgis/QGIS/pulls/:pull_number
           pull_number: ${{ github.event.pull_request.number }}
@@ -74,13 +76,14 @@ jobs:
       - name: Get PR commits
         uses: octokit/request-action@v2.x
         id: get_pr_commits
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           route: GET /repos/qgis/QGIS/pulls/:pull_number/commits
           pull_number: ${{ github.event.pull_request.number }}
 
       # extracts the matching commits
       - name: Filter commits with \[needs?.doc(umentation)?s?\]
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         id: filtered_commits
         env:
           JSON_DATA: ${{ steps.get_pr_commits.outputs.data }}
