@@ -3049,7 +3049,7 @@ bool QgsVectorLayer::changeAttributeValues( QgsFeatureId fid, const QgsAttribute
 
   if ( ! newValuesNotJoin.isEmpty() && mEditBuffer && mDataProvider )
   {
-    result &= mEditBuffer->changeAttributeValues( fid, newValues, oldValues );
+    result &= mEditBuffer->changeAttributeValues( fid, newValuesNotJoin, oldValues );
   }
 
   if ( result && !skipDefaultValues && !mDefaultValueOnUpdateFields.isEmpty() )
