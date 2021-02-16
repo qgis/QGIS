@@ -52,6 +52,7 @@
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgstiledownloadmanager.h"
 #include "qgsunittypes.h"
 #include "qgsuserprofile.h"
@@ -2352,10 +2353,10 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
+  mSettingsRegistryCore = new QgsSettingsRegistryCore();
   mLocalizedDataPathRegistry = new QgsLocalizedDataPathRegistry();
   mMessageLog = new QgsMessageLog();
   QgsRuntimeProfiler *profiler = QgsRuntimeProfiler::threadLocalInstance();
-
   {
     profiler->start( tr( "Setup coordinate reference system registry" ) );
     mCrsRegistry = new QgsCoordinateReferenceSystemRegistry();
@@ -2553,6 +2554,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mConnectionRegistry;
   delete mLocalizedDataPathRegistry;
   delete mCrsRegistry;
+  delete mSettingsRegistryCore;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

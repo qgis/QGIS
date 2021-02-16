@@ -25,6 +25,7 @@
 #include "qgsconfig.h"
 #include "qgstranslationcontext.h"
 
+class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsAnnotationItemRegistry;
@@ -994,6 +995,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     struct ApplicationMembers
     {
+      QgsSettingsRegistryCore *mSettingsRegistryCore = nullptr;
       QgsCoordinateReferenceSystemRegistry *mCrsRegistry = nullptr;
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
       Qgs3DSymbolRegistry *m3DSymbolRegistry = nullptr;
