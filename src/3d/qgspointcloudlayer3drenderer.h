@@ -160,7 +160,14 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      */
     bool isCanceled() const { return mIsCanceledCallback(); }
 
+    /**
+     * Sets the coordinate transform used to transform points from layer CRS to the map CRS
+     */
     void setCoordinateTransform( const QgsCoordinateTransform &coordTrans );
+
+    /**
+     * Returns the coordinate transform used to transform points from layer CRS to the map CRS
+     */
     QgsCoordinateTransform coordinateTransform() const { return mCoordTrans; }
 
   private:
