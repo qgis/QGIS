@@ -1528,7 +1528,7 @@ class TestQgsGcpTransformer : public QObject
 
 
     // geometry transformer
-    void testGeometryTransfomer()
+    void testGeometryTransformer()
     {
       QgsGcpGeometryTransformer transformer( QgsGcpTransformerInterface::TransformMethod::Projective,
                                              QVector< QgsPointXY >() << QgsPointXY( 288, 1126 )
