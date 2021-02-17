@@ -261,7 +261,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
-  QgsCoordinateTransform coordTrans = context.coordinateTransform();
+  QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   for ( int i = 0; i < count; ++i )
@@ -278,7 +278,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
     double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
     try
     {
-      coordTrans.transformInPlace( x, y, z );
+      coordinateTransform.transformInPlace( x, y, z );
     }
     catch ( QgsCsException &e )
     {
@@ -334,7 +334,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
   int attributeOffset = 0;
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
-  QgsCoordinateTransform coordTrans = context.coordinateTransform();
+  QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   QgsColorRampPointCloud3DSymbol *symbol = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( context.symbol() );
@@ -398,7 +398,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
     try
     {
-      coordTrans.transformInPlace( x, y, z );
+      coordinateTransform.transformInPlace( x, y, z );
     }
     catch ( QgsCsException &e )
     {
@@ -490,7 +490,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
-  QgsCoordinateTransform coordTrans = context.coordinateTransform();
+  QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   QgsContrastEnhancement *redContrastEnhancement = symbol->redContrastEnhancement();
@@ -517,7 +517,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
     try
     {
-      coordTrans.transformInPlace( x, y, z );
+      coordinateTransform.transformInPlace( x, y, z );
     }
     catch ( QgsCsException &e )
     {
@@ -653,7 +653,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
-  QgsCoordinateTransform coordTrans = context.coordinateTransform();
+  QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   QSet<int> filteredOutValues = context.getFilteredOutValues();
@@ -671,7 +671,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
     try
     {
-      coordTrans.transformInPlace( x, y, z );
+      coordinateTransform.transformInPlace( x, y, z );
     }
     catch ( QgsCsException &e )
     {

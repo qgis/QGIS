@@ -52,8 +52,8 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
      */
-    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
-                                  QgsCoordinateTransform coordTrans, double zValueScale, double zValueFixedOffset );
+    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
+                                  double zValueScale, double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloud3DRenderContext( const QgsPointCloud3DRenderContext &rh ) = delete;
@@ -163,12 +163,12 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     /**
      * Sets the coordinate transform used to transform points from layer CRS to the map CRS
      */
-    void setCoordinateTransform( const QgsCoordinateTransform &coordTrans );
+    void setCoordinateTransform( const QgsCoordinateTransform &coordinateTransform );
 
     /**
      * Returns the coordinate transform used to transform points from layer CRS to the map CRS
      */
-    QgsCoordinateTransform coordinateTransform() const { return mCoordTrans; }
+    QgsCoordinateTransform coordinateTransform() const { return mCoordinateTransform; }
 
   private:
 #ifdef SIP_RUN
@@ -179,7 +179,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudCategoryList mFilteredOutCategories;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
-    QgsCoordinateTransform mCoordTrans;
+    QgsCoordinateTransform mCoordinateTransform;
 
     std::function< bool() > mIsCanceledCallback;
 

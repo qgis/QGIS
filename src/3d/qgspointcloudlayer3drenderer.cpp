@@ -29,12 +29,12 @@
 
 #include "qgis.h"
 
-QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr<QgsPointCloud3DSymbol> symbol, QgsCoordinateTransform coordTrans, double zValueScale, double zValueFixedOffset )
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
   : Qgs3DRenderContext( map )
   , mSymbol( std::move( symbol ) )
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
-  , mCoordTrans( coordTrans )
+  , mCoordinateTransform( coordinateTransform )
 {
   auto callback = []()->bool
   {
@@ -66,9 +66,9 @@ QSet<int> QgsPointCloud3DRenderContext::getFilteredOutValues() const
   return filteredOut;
 }
 
-void QgsPointCloud3DRenderContext::setCoordinateTransform( const QgsCoordinateTransform &coordTrans )
+void QgsPointCloud3DRenderContext::setCoordinateTransform( const QgsCoordinateTransform &coordinateTransform )
 {
-  mCoordTrans = coordTrans;
+  mCoordinateTransform = coordinateTransform;
 }
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
@@ -127,9 +127,9 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  QgsCoordinateTransform coordTrans( pcl->crs(), map.crs(), map.transformContext() );
+  QgsCoordinateTransform coordinateTransform( pcl->crs(), map.crs(), map.transformContext() );
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordTrans, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
          static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
          static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
 }
