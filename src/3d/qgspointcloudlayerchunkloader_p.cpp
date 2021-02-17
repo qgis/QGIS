@@ -204,8 +204,15 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 {
   QgsVector3D extentMin3D( nodeBounds.xMin() * scale.x() + offset.x(), nodeBounds.yMin() * scale.y() + offset.y(), nodeBounds.zMin() * scale.z() + offset.z() + zValueOffset );
   QgsVector3D extentMax3D( nodeBounds.xMax() * scale.x() + offset.x(), nodeBounds.yMax() * scale.y() + offset.y(), nodeBounds.zMax() * scale.z() + offset.z() + zValueOffset );
-  extentMin3D = coordinateTransform.transform( extentMin3D );
-  extentMax3D = coordinateTransform.transform( extentMax3D );
+  try
+  {
+    extentMin3D = coordinateTransform.transform( extentMin3D );
+    extentMax3D = coordinateTransform.transform( extentMax3D );
+  }
+  catch ( QgsCsException &e )
+  {
+    QgsDebugMsg( QStringLiteral( "Error transforming node bounds coordinate" ) );
+  }
   QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
   QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );
   QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
