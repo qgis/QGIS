@@ -23,6 +23,8 @@
 #include "qgsgcptransformer.h"
 #include <memory>
 
+class QgsGeometry;
+
 /**
  * \class QgsGcpGeometryTransformer
  * \ingroup analysis
@@ -57,6 +59,18 @@ class ANALYSIS_EXPORT QgsGcpGeometryTransformer : public QgsAbstractGeometryTran
     QgsGcpGeometryTransformer &operator=( const QgsGcpGeometryTransformer &other ) = delete;
 
     bool transformPoint( double &x SIP_INOUT, double &y SIP_INOUT, double &z SIP_INOUT, double &m SIP_INOUT ) override;
+
+    /**
+     * Transforms the specified input \a geometry using the GCP based transform.
+     *
+     * \param geometry Input geometry to transform
+     * \param ok will be set to TRUE if geometry was successfully transformed, or FALSE if an error occurred
+     * \param feedback This optional argument can be used to cancel the transformation before it completes.
+     * If this is done, the geometry will be left in a semi-transformed state.
+     *
+     * \returns transformed geometry
+     */
+    QgsGeometry transform( const QgsGeometry &geometry, bool &ok SIP_OUT, QgsFeedback *feedback = nullptr );
 
     /**
      * Returns the underlying GCP transformer used to transform geometries.

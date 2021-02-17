@@ -9,6 +9,7 @@
 
 
 
+
 class QgsGcpGeometryTransformer : QgsAbstractGeometryTransformer
 {
 %Docstring
@@ -44,6 +45,18 @@ list of source and destination coordinates to transform geometries.
 
 %Docstring
 QgsGcpGeometryTransformer cannot be copied
+%End
+
+    QgsGeometry transform( const QgsGeometry &geometry, bool &ok /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Transforms the specified input ``geometry`` using the GCP based transform.
+
+:param geometry: Input geometry to transform
+:param feedback: This optional argument can be used to cancel the transformation before it completes.
+                 If this is done, the geometry will be left in a semi-transformed state.
+
+:return: - transformed geometry
+         - ok: will be set to ``True`` if geometry was successfully transformed, or ``False`` if an error occurred
 %End
 
     QgsGcpTransformerInterface *gcpTransformer() const;
