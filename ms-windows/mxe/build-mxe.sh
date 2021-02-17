@@ -117,7 +117,6 @@ __TXT__
 
 # First cleanup
 rm -rf ${BUILD_DIR}
-rm -rf ${CCACHE_DIR}
 
 # Make the zip
 
