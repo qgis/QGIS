@@ -1082,6 +1082,8 @@ void QgsGeoreferencerMainWindow::removeOldLayer()
 void QgsGeoreferencerMainWindow::addRaster( const QString &file )
 {
   QgsRasterLayer::LayerOptions options;
+  // never prompt for a crs selection for the input raster!
+  options.skipCrsValidation = true;
   mLayer = qgis::make_unique< QgsRasterLayer >( file, QStringLiteral( "Raster" ), QStringLiteral( "gdal" ), options );
 
   // add layer to map canvas
