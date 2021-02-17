@@ -81,12 +81,6 @@ jobs:
         cd $GITHUB_WORKSPACE
         mv qgis-mxe-release-*.zip qgis-mxe-release.zip
 
-    - name: Debug
-      run: |
-        echo ${CCACHE_DIR}
-        echo ${{ github.workspace }}/.ccache
-        ls ${{ github.workspace }}/.ccache
-
     - name: Upload build
       uses: actions/upload-artifact@v1
       with:
