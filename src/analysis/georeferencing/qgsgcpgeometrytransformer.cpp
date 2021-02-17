@@ -42,8 +42,12 @@ bool QgsGcpGeometryTransformer::transformPoint( double &x, double &y, double &, 
 
 QgsGeometry QgsGcpGeometryTransformer::transform( const QgsGeometry &geometry, bool &ok, QgsFeedback *feedback )
 {
+  ok = false;
   if ( geometry.isNull() )
+  {
+    ok = true;
     return QgsGeometry();
+  }
 
   std::unique_ptr< QgsAbstractGeometry > res( geometry.constGet()->clone() );
 
