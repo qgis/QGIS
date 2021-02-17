@@ -5457,7 +5457,7 @@ static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressio
   {
     return convertToSameType( hash.keys( maxValue ), values.at( 0 ).type() );
   }
-  else if ( option.compare( QLatin1String( "first" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QLatin1String( "any" ), Qt::CaseInsensitive ) == 0 )
   {
     if ( hash.isEmpty() )
       return QVariant();
@@ -5498,7 +5498,7 @@ static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressio
   {
     return convertToSameType( hash.keys( minValue ), values.at( 0 ).type() );
   }
-  else if ( option.compare( QLatin1String( "first" ), Qt::CaseInsensitive ) == 0 )
+  else if ( option.compare( QLatin1String( "any" ), Qt::CaseInsensitive ) == 0 )
   {
     if ( hash.isEmpty() )
       return QVariant();
