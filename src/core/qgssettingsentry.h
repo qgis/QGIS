@@ -36,6 +36,8 @@ class CORE_EXPORT QgsSettingsEntry
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryString;
+    if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryStringList;
     else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryInteger;
     else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
@@ -51,6 +53,8 @@ class CORE_EXPORT QgsSettingsEntry
     {
       Variant,
       String,
+      StringList,
+      Bool,
       Integer,
       Double,
       Enum
@@ -64,6 +68,11 @@ class CORE_EXPORT QgsSettingsEntry
                       QVariant defaultValue = QVariant(),
                       QString description = QString() );
     virtual ~QgsSettingsEntry();
+
+    /**
+     * Get settings key.
+     */
+    QString key() const;
 
     /**
      * Set settings value.
@@ -144,7 +153,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 
     bool setValue( const QVariant &value ) override;
 
-    virtual SettingsType settingsType() const;
+    virtual SettingsType settingsType() const override;
 
     /**
      * Returns the string minimum length.
@@ -160,6 +169,54 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 
     int mMinLength;
     int mMaxLength;
+
+};
+
+/**
+ * \class QgsSettingsEntryStringList
+ * \ingroup core
+ * A string list settings entry.
+  * \since QGIS 3.17
+ */
+class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryStringList.
+     */
+    QgsSettingsEntryStringList( const QString &key,
+                                QgsSettings::Section section,
+                                const QStringList &defaultValue,
+                                const QString &description = QString() );
+
+    bool setValue( const QVariant &value ) override;
+
+    virtual SettingsType settingsType() const override;
+
+};
+
+/**
+ * \class QgsSettingsEntryBool
+ * \ingroup core
+ * A boolean settings entry.
+  * \since QGIS 3.17
+ */
+class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryBool.
+     */
+    QgsSettingsEntryBool( const QString &key,
+                          QgsSettings::Section section,
+                          qlonglong defaultValue,
+                          const QString &description = QString() );
+
+    bool setValue( const QVariant &value ) override;
+
+    virtual SettingsType settingsType() const override;
 
 };
 
@@ -185,7 +242,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
 
     bool setValue( const QVariant &value ) override;
 
-    virtual SettingsType settingsType() const;
+    virtual SettingsType settingsType() const override;
 
     /**
      * Returns the minimum value.
@@ -227,7 +284,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
 
     bool setValue( const QVariant &value ) override;
 
-    virtual SettingsType settingsType() const;
+    virtual SettingsType settingsType() const override;
 
     /**
      * Returns the minimum value.
@@ -288,7 +345,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
 
     bool setValue( const QVariant &value ) override;
 
-    virtual SettingsType settingsType() const;
+    virtual SettingsType settingsType() const override;
 
   private:
 

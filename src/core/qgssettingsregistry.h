@@ -50,6 +50,14 @@ class CORE_EXPORT QgsSettingsRegistry : public QObject
                                  int minLength = 0,
                                  int maxLength = -1 );
 
+    QgsSettingsEntryStringList *registerSettingsStringList( const QString &key,
+        const QStringList &defaultValue = QStringList(),
+        const QString &description = QString() );
+
+    QgsSettingsEntryBool *registerSettingsBool( const QString &key,
+        bool defaultValue,
+        const QString &description = QString() );
+
     void registerSettingsInteger( const QString &key,
                                   qlonglong defaultValue = 0,
                                   const QString &description = QString(),

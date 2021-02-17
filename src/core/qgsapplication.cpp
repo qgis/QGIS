@@ -1101,10 +1101,7 @@ QStringList QgsApplication::layoutTemplatePaths()
 {
   //local directories to search when looking for an template with a given basename
   //defined by user in options dialog
-  QgsSettings settings;
-  QStringList pathList = settings.value( QStringLiteral( "Layout/searchPathsForTemplates" ), QVariant(), QgsSettings::Core ).toStringList();
-
-  return pathList;
+  return settingsRegistryCore()->value<QStringList>( "Layout/searchPathsForTemplates" );
 }
 
 QMap<QString, QString> QgsApplication::systemEnvVars()
@@ -2162,6 +2159,11 @@ void QgsApplication::setMaxThreads( int maxThreads )
 QgsTaskManager *QgsApplication::taskManager()
 {
   return members()->mTaskManager;
+}
+
+QgsSettingsRegistryCore *QgsApplication::settingsRegistryCore()
+{
+  return members()->mSettingsRegistryCore;
 }
 
 QgsColorSchemeRegistry *QgsApplication::colorSchemeRegistry()

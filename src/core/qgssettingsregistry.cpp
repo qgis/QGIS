@@ -46,11 +46,12 @@ void QgsSettingsRegistry::registerSettings(
                               description ) );
 }
 
-void QgsSettingsRegistry::registerSettingsString( const QString &key,
-    const QString &defaultValue,
-    const QString &description,
-    int minLength,
-    int maxLength )
+void QgsSettingsRegistry::registerSettingsString(
+  const QString &key,
+  const QString &defaultValue,
+  const QString &description,
+  int minLength,
+  int maxLength )
 {
   if ( isRegistered( key ) == true )
   {
@@ -68,11 +69,54 @@ void QgsSettingsRegistry::registerSettingsString( const QString &key,
                               maxLength ) );
 }
 
-void QgsSettingsRegistry::registerSettingsInteger( const QString &key,
-    qlonglong defaultValue,
-    const QString &description,
-    qlonglong minValue,
-    qlonglong maxValue )
+QgsSettingsEntryStringList *QgsSettingsRegistry::registerSettingsStringList(
+  const QString &key,
+  const QStringList &defaultValue,
+  const QString &description )
+{
+  if ( isRegistered( key ) == true )
+  {
+    QgsDebugMsg( QObject::tr( "Settings key '%1' already registered" ).arg( key ) );
+    return dynamic_cast<QgsSettingsEntryStringList *>( mMapSettingsEntry.value( key ) );
+  }
+
+  QgsSettingsEntryStringList *settingsEntryStringList = new QgsSettingsEntryStringList(
+    key,
+    mSection,
+    defaultValue,
+    description );
+  mMapSettingsEntry.insert( key,
+                            settingsEntryStringList );
+  return settingsEntryStringList;
+}
+
+QgsSettingsEntryBool *QgsSettingsRegistry::registerSettingsBool(
+  const QString &key,
+  bool defaultValue,
+  const QString &description )
+{
+  if ( isRegistered( key ) == true )
+  {
+    QgsDebugMsg( QObject::tr( "Settings key '%1' already registered" ).arg( key ) );
+    return dynamic_cast<QgsSettingsEntryBool *>( mMapSettingsEntry.value( key ) );
+  }
+
+  QgsSettingsEntryBool *settingsEntryBool = new QgsSettingsEntryBool(
+    key,
+    mSection,
+    defaultValue,
+    description );
+  mMapSettingsEntry.insert( key,
+                            settingsEntryBool );
+  return settingsEntryBool;
+}
+
+void QgsSettingsRegistry::registerSettingsInteger(
+  const QString &key,
+  qlonglong defaultValue,
+  const QString &description,
+  qlonglong minValue,
+  qlonglong maxValue )
 {
   if ( isRegistered( key ) == true )
   {

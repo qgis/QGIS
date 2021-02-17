@@ -619,6 +619,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsTaskManager *taskManager();
 
     /**
+     * Returns the application's settings registry, used for managing application settings.
+     * \since QGIS 3.17
+     */
+    static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's color scheme registry, used for managing color schemes.
      * \since QGIS 3.0
      */

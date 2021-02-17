@@ -176,6 +176,7 @@
 %Include auto_generated/qgssettings.sip
 %Include auto_generated/qgssettingsentry.sip
 %Include auto_generated/qgssettingsregistry.sip
+%Include auto_generated/qgssettingsregistrycore.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgssnappingutils.sip
