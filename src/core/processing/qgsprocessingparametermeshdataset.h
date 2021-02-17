@@ -98,7 +98,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 
     QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "Mesh dataset groups" );
+      return QCoreApplication::translate( "Processing", "Mesh Dataset Groups" );
     }
 
     QString id() const override
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
 
     QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "Mesh dataset time" );
+      return QCoreApplication::translate( "Processing", "Mesh Dataset Time" );
     }
 
     QString id() const override
