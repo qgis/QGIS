@@ -179,7 +179,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                 str_hours = [self.tr("hour"), self.tr("hours")][hours > 1]
                 str_minutes = [self.tr("minute"), self.tr("minutes")][minutes > 1]
-                str_seconds = [self.tr("second"), self.tr("seconds"])[seconds != 1]
+                str_seconds = [self.tr("second"), self.tr("seconds")][seconds != 1]
 
                 if hours > 0:
                     elapsed = '{0} {1:0.2f} {2} ({3} {4} {5} {6} {7:0.0f} {2})'.format(
