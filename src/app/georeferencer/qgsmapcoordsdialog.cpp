@@ -24,6 +24,7 @@
 #include "qgsapplication.h"
 #include "qgsprojectionselectionwidget.h"
 #include "qgsproject.h"
+#include "qgsgcpcanvasitem.h"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
@@ -72,6 +73,9 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
 {
   delete mToolEmitPoint;
 
+  delete mNewlyAddedPointItem;
+  mNewlyAddedPointItem = nullptr;
+
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), mMinimizeWindowCheckBox->isChecked() );
 }
@@ -114,6 +118,14 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPointXY &xy, Qt::MouseButton butto
     leYCoord->clear();
     leXCoord->setText( qgsDoubleToString( mapCoordPoint.x() ) );
     leYCoord->setText( qgsDoubleToString( mapCoordPoint.y() ) );
+
+    delete mNewlyAddedPointItem;
+    mNewlyAddedPointItem = nullptr;
+
+    // show a temporary marker at the clicked source point
+    mNewlyAddedPointItem = new QgsGCPCanvasItem( mQgisCanvas, nullptr, true );
+    mNewlyAddedPointItem->setPointColor( QColor( 0, 200, 0 ) );
+    mNewlyAddedPointItem->setPos( mNewlyAddedPointItem->toCanvasCoordinates( mapCoordPoint ) );
   }
 
   // only restore window if it was minimized

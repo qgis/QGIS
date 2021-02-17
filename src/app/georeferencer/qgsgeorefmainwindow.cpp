@@ -57,6 +57,7 @@
 #include "qgsgeoreftooladdpoint.h"
 #include "qgsgeoreftooldeletepoint.h"
 #include "qgsgeoreftoolmovepoint.h"
+#include "qgsgcpcanvasitem.h"
 
 #include "qgsleastsquares.h"
 #include "qgsgcplistwidget.h"
@@ -631,6 +632,13 @@ void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
 
 void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords )
 {
+  delete mNewlyAddedPointItem;
+  mNewlyAddedPointItem = nullptr;
+
+  // show a temporary marker at the clicked source point on the raster while we show the coordinate dialog.
+  mNewlyAddedPointItem = new QgsGCPCanvasItem( mCanvas, nullptr, true );
+  mNewlyAddedPointItem->setPointColor( QColor( 0, 200, 0 ) );
+  mNewlyAddedPointItem->setPos( mNewlyAddedPointItem->toCanvasCoordinates( pixelCoords ) );
 
   QgsCoordinateReferenceSystem lastProjection = mLastGCPProjection.isValid() ? mLastGCPProjection : mProjection;
   if ( mLayer && !mMapCoordsDialog )
@@ -639,6 +647,11 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords 
     connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & b, const QgsCoordinateReferenceSystem & crs )
     {
       addPoint( a, b, crs );
+    } );
+    connect( mMapCoordsDialog, &QObject::destroyed, this, [ = ]
+    {
+      delete mNewlyAddedPointItem;
+      mNewlyAddedPointItem = nullptr;
     } );
     mMapCoordsDialog->show();
   }
@@ -2226,6 +2239,9 @@ void QgsGeoreferencerMainWindow::clearGCPData()
   qDeleteAll( mPoints );
   mPoints.clear();
   mGCPListWidget->updateGCPList();
+
+  delete mNewlyAddedPointItem;
+  mNewlyAddedPointItem = nullptr;
 
   QgisApp::instance()->mapCanvas()->refresh();
 }

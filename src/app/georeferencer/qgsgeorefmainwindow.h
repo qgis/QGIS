@@ -42,6 +42,7 @@ class QgsGeorefToolAddPoint;
 class QgsGeorefToolDeletePoint;
 class QgsGeorefToolMovePoint;
 class QgsGeorefToolMovePoint;
+class QgsGCPCanvasItem;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -251,6 +252,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsGeorefToolDeletePoint *mToolDeletePoint = nullptr;
     QgsGeorefToolMovePoint *mToolMovePoint = nullptr;
     QgsGeorefToolMovePoint *mToolMovePointQgis = nullptr;
+
+    QgsGCPCanvasItem *mNewlyAddedPointItem = nullptr;
 
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
