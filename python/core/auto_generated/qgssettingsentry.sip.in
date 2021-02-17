@@ -23,6 +23,8 @@ class QgsSettingsEntry
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryString;
+    if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryStringList;
     else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryInteger;
     else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
@@ -36,6 +38,8 @@ class QgsSettingsEntry
     {
       Variant,
       String,
+      StringList,
+      Bool,
       Integer,
       Double,
       Enum
@@ -49,6 +53,11 @@ class QgsSettingsEntry
 Constructor for QgsSettingsEntry.
 %End
     virtual ~QgsSettingsEntry();
+
+    QString key() const;
+%Docstring
+Get settings key.
+%End
 
     virtual bool setValue( const QVariant &value );
 %Docstring
@@ -110,6 +119,62 @@ Returns the string minimum length.
 %Docstring
 Returns the string maximum length. By -1 there is no limitation.
 %End
+
+};
+
+class QgsSettingsEntryStringList : QgsSettingsEntry
+{
+%Docstring
+A string list settings entry.
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryStringList( const QString &key,
+                                QgsSettings::Section section,
+                                const QStringList &defaultValue,
+                                const QString &description = QString() );
+%Docstring
+Constructor for QgsSettingsEntryStringList.
+%End
+
+    virtual bool setValue( const QVariant &value );
+
+
+    virtual SettingsType settingsType() const;
+
+};
+
+class QgsSettingsEntryBool : QgsSettingsEntry
+{
+%Docstring
+A boolean settings entry.
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryBool( const QString &key,
+                          QgsSettings::Section section,
+                          qlonglong defaultValue,
+                          const QString &description = QString() );
+%Docstring
+Constructor for QgsSettingsEntryBool.
+%End
+
+    virtual bool setValue( const QVariant &value );
+
+
+    virtual SettingsType settingsType() const;
 
 };
 

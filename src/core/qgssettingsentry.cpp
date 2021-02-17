@@ -31,6 +31,11 @@ QgsSettingsEntry::~QgsSettingsEntry()
 {
 }
 
+QString QgsSettingsEntry::key() const
+{
+  return mKey;
+}
+
 bool QgsSettingsEntry::setValue( const QVariant &value )
 {
   QgsSettings().setValue( mKey,
@@ -59,12 +64,13 @@ QString QgsSettingsEntry::description() const
   return mDescription;
 }
 
-QgsSettingsEntryString::QgsSettingsEntryString( const QString &key,
-    QgsSettings::Section section,
-    const QString &defaultValue,
-    const QString &description,
-    int minLength,
-    int maxLength )
+QgsSettingsEntryString::QgsSettingsEntryString(
+  const QString &key,
+  QgsSettings::Section section,
+  const QString &defaultValue,
+  const QString &description,
+  int minLength,
+  int maxLength )
   : QgsSettingsEntry( key,
                       section,
                       defaultValue,
@@ -80,8 +86,8 @@ bool QgsSettingsEntryString::setValue( const QVariant &value )
   if ( value.canConvert<QString>() == false )
   {
     QgsDebugMsg( QObject::tr( "Can't convert value '%1' to string for settings with key '%2'" )
-                 .arg( value )
-                 .arg( key ) );
+                 .arg( value.toString() )
+                 .arg( QgsSettingsEntry::key() ) );
     return false;
   }
 
@@ -89,7 +95,7 @@ bool QgsSettingsEntryString::setValue( const QVariant &value )
   if ( valueString.length() < mMinLength )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is shorter than minimum length '%3'." )
-                 .arg( key )
+                 .arg( QgsSettingsEntry::key() )
                  .arg( valueString.length() )
                  .arg( mMinLength ) );
     return false;
@@ -99,7 +105,7 @@ bool QgsSettingsEntryString::setValue( const QVariant &value )
        && valueString.length() > mMaxLength )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is longer than maximum length '%3'." )
-                 .arg( key )
+                 .arg( QgsSettingsEntry::key() )
                  .arg( valueString.length() )
                  .arg( mMinLength ) );
     return false;
@@ -124,12 +130,77 @@ int QgsSettingsEntryString::maxLength()
   return mMaxLength;
 }
 
-QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key,
-    QgsSettings::Section section,
-    qlonglong defaultValue,
-    const QString &description,
-    qlonglong minValue,
-    qlonglong maxValue )
+QgsSettingsEntryStringList::QgsSettingsEntryStringList(
+  const QString &key,
+  QgsSettings::Section section,
+  const QStringList &defaultValue,
+  const QString &description )
+  : QgsSettingsEntry( key,
+                      section,
+                      defaultValue,
+                      description )
+{
+
+}
+
+bool QgsSettingsEntryStringList::setValue( const QVariant &value )
+{
+  if ( value.canConvert<QStringList>() == false )
+  {
+    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to string list for settings with key '%2'" )
+                 .arg( value.toString() )
+                 .arg( QgsSettingsEntry::key() ) );
+    return false;
+  }
+
+  QgsSettingsEntry::setValue( value );
+  return true;
+}
+
+QgsSettingsEntry::SettingsType QgsSettingsEntryStringList::settingsType() const
+{
+  return QgsSettingsEntry::StringList;
+}
+
+QgsSettingsEntryBool::QgsSettingsEntryBool(
+  const QString &key,
+  QgsSettings::Section section,
+  qlonglong defaultValue,
+  const QString &description )
+  : QgsSettingsEntry( key,
+                      section,
+                      defaultValue,
+                      description )
+{
+
+}
+
+bool QgsSettingsEntryBool::setValue( const QVariant &value )
+{
+  if ( value.canConvert<bool>() == false )
+  {
+    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to bool for settings with key '%2'" )
+                 .arg( value.toString() )
+                 .arg( QgsSettingsEntry::key() ) );
+    return false;
+  }
+
+  QgsSettingsEntry::setValue( value );
+  return true;
+}
+
+QgsSettingsEntry::SettingsType QgsSettingsEntryBool::settingsType() const
+{
+  return QgsSettingsEntry::Bool;
+}
+
+QgsSettingsEntryInteger::QgsSettingsEntryInteger(
+  const QString &key,
+  QgsSettings::Section section,
+  qlonglong defaultValue,
+  const QString &description,
+  qlonglong minValue,
+  qlonglong maxValue )
   : QgsSettingsEntry( key,
                       section,
                       defaultValue,
@@ -145,8 +216,8 @@ bool QgsSettingsEntryInteger::setValue( const QVariant &value )
   if ( value.canConvert<qlonglong>() == false )
   {
     QgsDebugMsg( QObject::tr( "Can't convert value '%1' to qlonglong for settings with key '%2'" )
-                 .arg( value )
-                 .arg( key ) );
+                 .arg( value.toString() )
+                 .arg( QgsSettingsEntry::key() ) );
     return false;
   }
 
@@ -154,7 +225,7 @@ bool QgsSettingsEntryInteger::setValue( const QVariant &value )
   if ( valueLongLong < mMinValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
-                 .arg( key )
+                 .arg( QgsSettingsEntry::key() )
                  .arg( valueLongLong )
                  .arg( mMinValue ) );
     return false;
@@ -163,7 +234,7 @@ bool QgsSettingsEntryInteger::setValue( const QVariant &value )
   if ( valueLongLong > mMaxValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
-                 .arg( key )
+                 .arg( QgsSettingsEntry::key() )
                  .arg( valueLongLong )
                  .arg( mMinValue ) );
     return false;
@@ -211,8 +282,8 @@ bool QgsSettingsEntryDouble::setValue( const QVariant &value )
   if ( value.canConvert<double>() == false )
   {
     QgsDebugMsg( QObject::tr( "Can't convert value '%1' to double for settings with key '%2'" )
-                 .arg( value )
-                 .arg( key ) );
+                 .arg( value.toString() )
+                 .arg( QgsSettingsEntry::key() ) );
     return false;
   }
 
@@ -220,7 +291,7 @@ bool QgsSettingsEntryDouble::setValue( const QVariant &value )
   if ( valueDouble < mMinValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
-                 .arg( key )
+                 .arg( QgsSettingsEntry::key() )
                  .arg( valueDouble )
                  .arg( mMinValue ) );
     return false;
@@ -229,7 +300,7 @@ bool QgsSettingsEntryDouble::setValue( const QVariant &value )
   if ( valueDouble > mMaxValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
-                 .arg( key )
+                 .arg( QgsSettingsEntry::key() )
                  .arg( valueDouble )
                  .arg( mMinValue ) );
     return false;

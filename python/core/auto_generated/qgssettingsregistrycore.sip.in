@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettingsregistrycore.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSettingsRegistryCore : QgsSettingsRegistry
+{
+%Docstring
+
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsregistrycore.h"
+%End
+  public:
+
+    QgsSettingsRegistryCore();
+%Docstring
+Constructor for QgsSettingsRegistryCore.
+%End
+    ~QgsSettingsRegistryCore();
+
+    struct SettingsEntries
+    {
+      struct Layout
+      {
+        QgsSettingsEntryStringList *searchPathForTemplates;
+      };
+      Layout layout;
+
+      struct Measure
+      {
+        QgsSettingsEntryBool *planimetric;
+      };
+      Measure measure;
+    };
+
+    SettingsEntries settingsEntries() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettingsregistrycore.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

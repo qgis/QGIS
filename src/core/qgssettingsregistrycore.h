@@ -21,6 +21,8 @@
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 
+class QgsSettingsEntryStringList;
+
 /**
  * \ingroup core
  * \class QgsSettingsRegistryCore
@@ -37,6 +39,26 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     QgsSettingsRegistryCore();
     ~QgsSettingsRegistryCore() override;
 
+    struct SettingsEntries
+    {
+      struct Layout
+      {
+        QgsSettingsEntryStringList *searchPathForTemplates;
+      };
+      Layout layout;
+
+      struct Measure
+      {
+        QgsSettingsEntryBool *planimetric;
+      };
+      Measure measure;
+    };
+
+    SettingsEntries settingsEntries() const;
+
+  private:
+
+    SettingsEntries mSettingsEntries;
 };
 
 #endif // QGSSETTINGSREGISTRYCORE_H
