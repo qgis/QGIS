@@ -171,12 +171,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.feedback.pushInfo('')
             start_time = time.time()
 
-            # Formating elapsed time
             def elapsed_time(start_time, result):
                 delta_t = time.time() - start_time
                 hours = int(delta_t / 3600)
                 minutes = int((delta_t % 3600) / 60)
-                seconds = delta_t - hours*3600 - minutes*60
+                seconds = delta_t - hours * 3600 - minutes * 60
 
                 str_hours = [self.tr("hour"), self.tr("hours")][hours > 1]
                 str_minutes = [self.tr("minute"), self.tr("minutes")][minutes > 1]
@@ -184,15 +183,15 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                 if hours > 0:
                     elapsed = '{0} {1:0.2f} {2} ({3} {4} {5} {6} {7:0.0f} {2})'.format(
-                        result, delta_t, str_seconds, hours, str_hours, minutes, str_minutes, seconds) 
+                        result, delta_t, str_seconds, hours, str_hours, minutes, str_minutes, seconds)
                 elif minutes > 0:
                     elapsed = '{0} {1:0.2f} {2} ({3} {4} {5:0.0f} {2})'.format(
-                        result, delta_t, str_seconds, minutes, str_minutes, seconds) 
+                        result, delta_t, str_seconds, minutes, str_minutes, seconds)
                 else:
-                    elapsed = '{0} {1:0.2f} {2}'.format(result, delta_t, str_seconds) 
+                    elapsed = '{0} {1:0.2f} {2}'.format(
+                        result, delta_t, str_seconds)
 
                 return(elapsed)
-
 
             if self.iterateParam:
                 # Make sure the Log tab is visible before executing the algorithm
