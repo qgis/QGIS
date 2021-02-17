@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgcpgeometrytransformer.h"
-
+#include "qgsgeometry.h"
 
 QgsGcpGeometryTransformer::QgsGcpGeometryTransformer( QgsGcpTransformerInterface *gcpTransformer )
   : mGcpTransformer( gcpTransformer )
@@ -34,7 +34,22 @@ QgsGcpGeometryTransformer::~QgsGcpGeometryTransformer() = default;
 
 bool QgsGcpGeometryTransformer::transformPoint( double &x, double &y, double &, double & )
 {
+  if ( !mGcpTransformer )
+    return false;
+
   return mGcpTransformer->transform( x, y );
+}
+
+QgsGeometry QgsGcpGeometryTransformer::transform( const QgsGeometry &geometry, bool &ok, QgsFeedback *feedback )
+{
+  if ( geometry.isNull() )
+    return QgsGeometry();
+
+  std::unique_ptr< QgsAbstractGeometry > res( geometry.constGet()->clone() );
+
+  ok = res->transform( this, feedback );
+
+  return QgsGeometry( std::move( res ) );
 }
 
 QgsGcpTransformerInterface *QgsGcpGeometryTransformer::gcpTransformer() const
