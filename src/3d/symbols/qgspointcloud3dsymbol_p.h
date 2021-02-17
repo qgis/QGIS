@@ -88,7 +88,7 @@ class QgsColorRampPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandle
     QgsColorRampPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:

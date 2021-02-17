@@ -282,11 +282,11 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
     }
     catch ( QgsCsException &e )
     {
-       if ( !alreadyPrintedDebug )
-       {
-         QgsDebugMsg( QStringLiteral("Error transforming point coordinate") );
-         alreadyPrintedDebug = true;
-       }
+      if ( !alreadyPrintedDebug )
+      {
+        QgsDebugMsg( QStringLiteral( "Error transforming point coordinate" ) );
+        alreadyPrintedDebug = true;
+      }
     }
     QgsVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
@@ -402,11 +402,11 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     }
     catch ( QgsCsException &e )
     {
-       if ( !alreadyPrintedDebug )
-       {
-         QgsDebugMsg( QStringLiteral("Error transforming point coordinate") );
-         alreadyPrintedDebug = true;
-       }
+      if ( !alreadyPrintedDebug )
+      {
+        QgsDebugMsg( QStringLiteral( "Error transforming point coordinate" ) );
+        alreadyPrintedDebug = true;
+      }
     }
     QgsVector3D point( x, y, z );
     point = context.map().mapToWorldCoordinates( point );
@@ -521,11 +521,11 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     }
     catch ( QgsCsException &e )
     {
-       if ( !alreadyPrintedDebug )
-       {
-         QgsDebugMsg( QStringLiteral("Error transforming point coordinate") );
-         alreadyPrintedDebug = true;
-       }
+      if ( !alreadyPrintedDebug )
+      {
+        QgsDebugMsg( QStringLiteral( "Error transforming point coordinate" ) );
+        alreadyPrintedDebug = true;
+      }
     }
     QgsVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
@@ -589,7 +589,7 @@ bool QgsClassificationPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DR
   return true;
 }
 
-void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context)
+void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
 {
   QgsPointCloudAttributeCollection attributes;
   const int xOffset = 0;
@@ -675,11 +675,11 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     }
     catch ( QgsCsException &e )
     {
-       if ( !alreadyPrintedDebug )
-       {
-         QgsDebugMsg( QStringLiteral("Error transforming point coordinate") );
-         alreadyPrintedDebug = true;
-       }
+      if ( !alreadyPrintedDebug )
+      {
+        QgsDebugMsg( QStringLiteral( "Error transforming point coordinate" ) );
+        alreadyPrintedDebug = true;
+      }
     }
     QgsVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );

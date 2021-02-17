@@ -202,7 +202,6 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
 
 QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, double zValueOffset, QgsCoordinateTransform coordTrans )
 {
-  // TODO: reprojection from layer to map coordinates if needed
   QgsVector3D extentMin3D( nodeBounds.xMin() * scale.x() + offset.x(), nodeBounds.yMin() * scale.y() + offset.y(), nodeBounds.zMin() * scale.z() + offset.z() + zValueOffset );
   QgsVector3D extentMax3D( nodeBounds.xMax() * scale.x() + offset.x(), nodeBounds.yMax() * scale.y() + offset.y(), nodeBounds.zMax() * scale.z() + offset.z() + zValueOffset );
   extentMin3D = coordTrans.transform( extentMin3D );
