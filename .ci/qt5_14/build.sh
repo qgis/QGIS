@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir /usr/src/qgis/build
-cd /usr/src/qgis/build || exit -1
+cd /usr/src/qgis/build || exit 1
 
 CLANG_WARNINGS="-Wrange-loop-construct"
 
