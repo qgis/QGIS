@@ -918,7 +918,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                                                 geometryType != QgsWkbTypes::Unknown };
                 const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
                 // This flag tells to the provider that field types do not need conversion
-                QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
+                // also prevents  GDAL to create a spatial index by default for GPKG, we are
+                // going to create it afterwards in a unified manner for all providers.
+                QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true },
+                  { QStringLiteral( "layerOptions" ), QStringLiteral( "SPATIAL_INDEX=NO" ) } };
 
                 if ( ! geometryColumn.isEmpty() )
                 {
