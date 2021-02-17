@@ -50,8 +50,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
     double zValueScale, double zValueOffset, QgsCoordinateTransform coordTrans )
   : QgsChunkLoader( node )
   , mFactory( factory )
-  , mContext( factory->mMap, std::move( symbol ), zValueScale, zValueOffset )
-  , mCoordTrans( coordTrans )
+  , mContext( factory->mMap, std::move( symbol ), coordTrans, zValueScale, zValueOffset )
 {
   mContext.setIsCanceledCallback( [this] { return mCanceled; } );
 
@@ -90,7 +89,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
       QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       return;
     }
-    mHandler->processNode( pc, pcNode, mContext, mCoordTrans );
+    mHandler->processNode( pc, pcNode, mContext );
   } );
 
   // emit finished() as soon as the handler is populated with features
@@ -129,7 +128,7 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
 ///////////////
 
 
-QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsCoordinateTransform &coordTrans, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
+QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordTrans, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
     double zValueScale, double zValueOffset, int pointBudget )
   : mMap( map )
   , mPointCloudIndex( pc )
@@ -216,7 +215,7 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsCoordinateTransform &coordTrans, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordTrans, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
   : QgsChunkedEntity( maximumScreenSpaceError,
                       new QgsPointCloudLayerChunkLoaderFactory( map, coordTrans, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {

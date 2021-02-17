@@ -44,7 +44,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     virtual ~QgsPointCloud3DSymbolHandler() = default;
 
     virtual bool prepare( const QgsPointCloud3DRenderContext &context ) = 0;// override;
-    virtual void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans ) = 0; // override;
+    virtual void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) = 0; // override;
     virtual void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) = 0;// override;
 
     float zMinimum() const { return mZMin; }
@@ -75,7 +75,7 @@ class QgsSingleColorPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHand
     QgsSingleColorPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -88,7 +88,7 @@ class QgsColorRampPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandle
     QgsColorRampPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -101,7 +101,7 @@ class QgsRGBPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandler
     QgsRGBPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -114,7 +114,7 @@ class QgsClassificationPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolH
     QgsClassificationPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:

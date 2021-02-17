@@ -240,7 +240,7 @@ bool QgsSingleColorPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRend
   return true;
 }
 
-void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans )
+void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
 {
   QgsPointCloudAttributeCollection attributes;
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
@@ -261,6 +261,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
+  QgsCoordinateTransform coordTrans = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   for ( int i = 0; i < count; ++i )
@@ -315,7 +316,7 @@ bool QgsColorRampPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRender
   return true;
 }
 
-void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans )
+void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
 {
   QgsPointCloudAttributeCollection attributes;
   const int xOffset = 0;
@@ -333,6 +334,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
   int attributeOffset = 0;
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
+  QgsCoordinateTransform coordTrans = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   QgsColorRampPointCloud3DSymbol *symbol = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( context.symbol() );
@@ -447,7 +449,7 @@ bool QgsRGBPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContex
   return true;
 }
 
-void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans )
+void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
 {
   QgsPointCloudAttributeCollection attributes;
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
@@ -488,6 +490,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
+  QgsCoordinateTransform coordTrans = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   QgsContrastEnhancement *redContrastEnhancement = symbol->redContrastEnhancement();
@@ -586,7 +589,7 @@ bool QgsClassificationPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DR
   return true;
 }
 
-void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, QgsCoordinateTransform &coordTrans )
+void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context)
 {
   QgsPointCloudAttributeCollection attributes;
   const int xOffset = 0;
@@ -650,6 +653,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
+  QgsCoordinateTransform coordTrans = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   QSet<int> filteredOutValues = context.getFilteredOutValues();

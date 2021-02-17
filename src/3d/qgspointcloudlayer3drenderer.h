@@ -53,7 +53,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * taken from the point cloud index.
      */
     QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
-                                  double zValueScale, double zValueFixedOffset );
+                                  QgsCoordinateTransform coordTrans, double zValueScale, double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloud3DRenderContext( const QgsPointCloud3DRenderContext &rh ) = delete;
@@ -160,6 +160,9 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      */
     bool isCanceled() const { return mIsCanceledCallback(); }
 
+    void setCoordinateTransform( const QgsCoordinateTransform &coordTrans );
+    QgsCoordinateTransform coordinateTransform() const { return mCoordTrans; }
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -169,6 +172,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudCategoryList mFilteredOutCategories;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
+    QgsCoordinateTransform mCoordTrans;
 
     std::function< bool() > mIsCanceledCallback;
 

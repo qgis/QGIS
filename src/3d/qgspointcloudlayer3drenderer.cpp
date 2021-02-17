@@ -29,11 +29,12 @@
 
 #include "qgis.h"
 
-QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr<QgsPointCloud3DSymbol> symbol, QgsCoordinateTransform coordTrans, double zValueScale, double zValueFixedOffset )
   : Qgs3DRenderContext( map )
   , mSymbol( std::move( symbol ) )
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
+  , mCoordTrans( coordTrans )
 {
   auto callback = []()->bool
   {
@@ -63,6 +64,11 @@ QSet<int> QgsPointCloud3DRenderContext::getFilteredOutValues() const
   for ( QgsPointCloudCategory category : mFilteredOutCategories )
     filteredOut.insert( category.value() );
   return filteredOut;
+}
+
+void QgsPointCloud3DRenderContext::setCoordinateTransform( const QgsCoordinateTransform &coordTrans )
+{
+  mCoordTrans = coordTrans;
 }
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
@@ -208,3 +214,5 @@ void QgsPointCloudLayer3DRenderer::setPointRenderingBudget( int budget )
 {
   mPointBudget = budget;
 }
+
+

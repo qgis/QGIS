@@ -59,7 +59,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
      * Constructs the factory
      * The factory takes ownership over the passed \a symbol
      */
-    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsCoordinateTransform &coordTrans, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
+    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordTrans, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
                                           double zValueScale, double zValueOffset, int pointBudget );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
@@ -106,7 +106,6 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     QgsPointCloud3DRenderContext mContext;
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
-    QgsCoordinateTransform mCoordTrans;
 };
 
 
@@ -124,7 +123,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsCoordinateTransform &coordTrans, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
+    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordTrans, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
         double zValueScale, double zValueOffset, int pointBudget );
 
     ~QgsPointCloudLayerChunkedEntity();
