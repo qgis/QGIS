@@ -672,7 +672,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   }
 
   // circle radius
-  double circleRadius = 5.0;
+  double circleDiameter = 10.0;
   if ( jsonPaint.contains( QStringLiteral( "circle-radius" ) ) )
   {
     const QVariant jsonCircleRadius = jsonPaint.value( QStringLiteral( "circle-radius" ) );
@@ -680,17 +680,17 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     {
       case QVariant::Int:
       case QVariant::Double:
-        circleRadius = jsonCircleRadius.toDouble() * context.pixelSizeConversionFactor();
+        circleDiameter = jsonCircleRadius.toDouble() * context.pixelSizeConversionFactor() * 2;
         break;
 
       case QVariant::Map:
-        circleRadius = -1;
-        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseInterpolateByZoom( jsonCircleRadius.toMap(), context, context.pixelSizeConversionFactor(), &circleRadius ) );
+        circleDiameter = -1;
+        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseInterpolateByZoom( jsonCircleRadius.toMap(), context, context.pixelSizeConversionFactor() * 2, &circleDiameter ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &circleRadius ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * 2, 255, nullptr, &circleDiameter ) );
         break;
 
       default:
@@ -855,9 +855,9 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   {
     markerSymbolLayer->setFillColor( circleFillColor );
   }
-  if ( circleRadius != -1 )
+  if ( circleDiameter != -1 )
   {
-    markerSymbolLayer->setSize( 2 * circleRadius ); // diameter
+    markerSymbolLayer->setSize( circleDiameter );
     markerSymbolLayer->setSizeUnit( context.targetUnit() );
   }
   if ( circleStrokeColor.isValid() )
