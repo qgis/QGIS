@@ -261,6 +261,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
+  bool alreadyPrintedDebug = false;
 
   for ( int i = 0; i < count; ++i )
   {
@@ -274,7 +275,18 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
-    coordTrans.transformInPlace( x, y, z );
+    try
+    {
+      coordTrans.transformInPlace( x, y, z );
+    }
+    catch ( QgsCsException &e )
+    {
+       if ( !alreadyPrintedDebug )
+       {
+         QgsDebugMsg( QStringLiteral("Error transforming point coordinate") );
+         alreadyPrintedDebug = true;
+       }
+    }
     QgsVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
@@ -321,6 +333,8 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
   int attributeOffset = 0;
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
+  bool alreadyPrintedDebug = false;
+
   QgsColorRampPointCloud3DSymbol *symbol = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( context.symbol() );
   if ( symbol )
   {
@@ -380,7 +394,18 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
-    coordTrans.transformInPlace( x, y, z );
+    try
+    {
+      coordTrans.transformInPlace( x, y, z );
+    }
+    catch ( QgsCsException &e )
+    {
+       if ( !alreadyPrintedDebug )
+       {
+         QgsDebugMsg( QStringLiteral("Error transforming point coordinate") );
+         alreadyPrintedDebug = true;
+       }
+    }
     QgsVector3D point( x, y, z );
     point = context.map().mapToWorldCoordinates( point );
     outNormal.positions.push_back( QVector3D( point.x(), point.y(), point.z() ) );
@@ -463,6 +488,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
+  bool alreadyPrintedDebug = false;
 
   QgsContrastEnhancement *redContrastEnhancement = symbol->redContrastEnhancement();
   QgsContrastEnhancement *greenContrastEnhancement = symbol->greenContrastEnhancement();
@@ -486,7 +512,18 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
-    coordTrans.transformInPlace( x, y, z );
+    try
+    {
+      coordTrans.transformInPlace( x, y, z );
+    }
+    catch ( QgsCsException &e )
+    {
+       if ( !alreadyPrintedDebug )
+       {
+         QgsDebugMsg( QStringLiteral("Error transforming point coordinate") );
+         alreadyPrintedDebug = true;
+       }
+    }
     QgsVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
 
@@ -613,6 +650,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   const QgsVector3D offset = pc->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
+  bool alreadyPrintedDebug = false;
 
   QSet<int> filteredOutValues = context.getFilteredOutValues();
   for ( int i = 0; i < count; ++i )
@@ -627,7 +665,18 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
-    coordTrans.transformInPlace( x, y, z );
+    try
+    {
+      coordTrans.transformInPlace( x, y, z );
+    }
+    catch ( QgsCsException &e )
+    {
+       if ( !alreadyPrintedDebug )
+       {
+         QgsDebugMsg( QStringLiteral("Error transforming point coordinate") );
+         alreadyPrintedDebug = true;
+       }
+    }
     QgsVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     float iParam = 0.0f;
