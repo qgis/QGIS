@@ -724,6 +724,10 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
     }
   }
+  if ( ( circleOpacity != -1 ) && circleFillColor.isValid() )
+  {
+    circleFillColor.setAlphaF( circleOpacity );
+  }
 
   // circle stroke color
   QColor circleStrokeColor;
@@ -804,6 +808,34 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
     }
   }
+  if ( ( circleStrokeOpacity != -1 ) && circleStrokeColor.isValid() )
+  {
+    circleStrokeColor.setAlphaF( circleStrokeOpacity );
+  }
+
+  // translate
+  QPointF circleTranslate;
+  if ( jsonPaint.contains( QStringLiteral( "circle-translate" ) ) )
+  {
+    const QVariant jsonCircleTranslate = jsonPaint.value( QStringLiteral( "circle-translate" ) );
+    switch ( jsonCircleTranslate.type() )
+    {
+
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyOffset, parseInterpolatePointByZoom( jsonCircleTranslate.toMap(), context, context.pixelSizeConversionFactor(), &circleTranslate ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        circleTranslate = QPointF( jsonCircleTranslate.toList().value( 0 ).toDouble() * context.pixelSizeConversionFactor(),
+                                   jsonCircleTranslate.toList().value( 1 ).toDouble() * context.pixelSizeConversionFactor() );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-translate type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleTranslate.type() ) ) );
+        break;
+    }
+  }
 
   std::unique_ptr< QgsSymbol > symbol( qgis::make_unique< QgsMarkerSymbol >() );
   QgsSimpleMarkerSymbolLayer *markerSymbolLayer = dynamic_cast< QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) );
@@ -813,26 +845,20 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   symbol->setOutputUnit( context.targetUnit() );
   symbol->setDataDefinedProperties( ddProperties );
 
-  if ( circleOpacity != -1 )
+  if ( !circleTranslate.isNull() )
   {
-    symbol->setOpacity( circleOpacity );
+    markerSymbolLayer->setOffset( circleTranslate );
+    markerSymbolLayer->setOffsetUnit( context.targetUnit() );
+  }
 
-    if ( circleStrokeOpacity != -1 )
-    {
-      context.pushWarning( QObject::tr( "%1: Could not set opacity of layer, opacity already defined in fill color" ).arg( context.layerId() ) );
-    }
-  }
-  else if ( circleStrokeOpacity != -1 )
-  {
-    symbol->setOpacity( circleStrokeOpacity );
-  }
   if ( circleFillColor.isValid() )
   {
     markerSymbolLayer->setFillColor( circleFillColor );
   }
   if ( circleRadius != -1 )
   {
-    markerSymbolLayer->setSize( circleRadius );
+    markerSymbolLayer->setSize( 2 * circleRadius ); // diameter
+    markerSymbolLayer->setSizeUnit( context.targetUnit() );
   }
   if ( circleStrokeColor.isValid() )
   {
@@ -841,6 +867,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   if ( circleStrokeWidth != -1 )
   {
     markerSymbolLayer->setStrokeWidth( circleStrokeWidth );
+    markerSymbolLayer->setStrokeWidthUnit( context.targetUnit() );
   }
 
   style.setGeometryType( QgsWkbTypes::PointGeometry );
