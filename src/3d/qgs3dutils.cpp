@@ -442,15 +442,6 @@ QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, c
                       worldCoords.y() + origin.z() );
 }
 
-QgsVector3D Qgs3DUtils::transformCoordinates( const QgsVector3D &coords, QgsCoordinateTransform coordTrans )
-{
-  double x = coords.x();
-  double y = coords.y();
-  double z = coords.z();
-  coordTrans.transformInPlace( x, y, z );
-  return QgsVector3D( x, y, z );
-}
-
 static QgsRectangle _tryReprojectExtent2D( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs1, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
 {
   QgsRectangle extentMapCrs( extent );

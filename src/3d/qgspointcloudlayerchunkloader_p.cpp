@@ -206,8 +206,8 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
   // TODO: reprojection from layer to map coordinates if needed
   QgsVector3D extentMin3D( nodeBounds.xMin() * scale.x() + offset.x(), nodeBounds.yMin() * scale.y() + offset.y(), nodeBounds.zMin() * scale.z() + offset.z() + zValueOffset );
   QgsVector3D extentMax3D( nodeBounds.xMax() * scale.x() + offset.x(), nodeBounds.yMax() * scale.y() + offset.y(), nodeBounds.zMax() * scale.z() + offset.z() + zValueOffset );
-  extentMin3D = Qgs3DUtils::transformCoordinates( extentMin3D, coordTrans );
-  extentMax3D = Qgs3DUtils::transformCoordinates( extentMax3D, coordTrans );
+  extentMin3D = coordTrans.transform( extentMin3D );
+  extentMax3D = coordTrans.transform( extentMax3D );
   QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
   QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );
   QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),

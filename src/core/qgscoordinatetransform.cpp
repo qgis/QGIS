@@ -24,6 +24,7 @@
 #include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsreadwritelocker.h"
+#include "qgsvector3d.h"
 
 //qt includes
 #include <QDomNode>
@@ -308,6 +309,24 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, Transf
   QgsDebugMsg( QStringLiteral( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ) );
 #endif
   return QgsRectangle( x1, y1, x2, y2 );
+}
+
+QgsVector3D QgsCoordinateTransform::transform( const QgsVector3D &point, TransformDirection direction ) const
+{
+  double x = point.x();
+  double y = point.y();
+  double z = point.z();
+  try
+  {
+    transformCoords( 1, &x, &y, &z, direction );
+  }
+  catch ( const QgsCsException & )
+  {
+    // rethrow the exception
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    throw;
+  }
+  return QgsVector3D( x, y, z );
 }
 
 void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
