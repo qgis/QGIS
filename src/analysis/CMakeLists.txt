@@ -3,6 +3,8 @@
 
 set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
+
+  georeferencing/qgsgcpgeometrytransformer.cpp
   georeferencing/qgsgcptransformer.cpp
   georeferencing/qgsleastsquares.cpp
 
@@ -285,6 +287,7 @@ set(QGIS_ANALYSIS_SRCS
 set(QGIS_ANALYSIS_HDRS
   qgsanalysis.h
 
+  georeferencing/qgsgcpgeometrytransformer.h
   georeferencing/qgsgcptransformer.h
 
   interpolation/Bezier3D.h
