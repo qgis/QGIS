@@ -43,13 +43,34 @@ class QgsEmbeddedLayerTreeModel : public QgsLayerTreeModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 };
 
-//! A dialog to select layers and groups from a qgs project
+/**
+ *  A dialog to select layers and groups from a QGIS project.
+ *
+ *  The dialog can be used in two different ways by using the corresponding
+ *  constructor:
+ *
+ * - use a QGIS project selected from the file system
+ * - use an already loaded QGIS project object passed in the constructor
+ *
+ * In the second case, the file selection dialog is hidden.
+ */
 class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
 {
     Q_OBJECT
   public:
+
     //! Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden
     QgsProjectLayerGroupDialog( QWidget *parent = nullptr, const QString &projectFile = QString(), Qt::WindowFlags f = Qt::WindowFlags() );
+
+    /**
+     * Constructs a QgsProjectLayerGroupDialog from an existing \a project and an optional \a parent.
+     *
+     * \warning The project must not be NULL and it must contain a valid layer tree root.
+     * \since QGIS 3.18
+     */
+    QgsProjectLayerGroupDialog( const QgsProject *project, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+
+
     ~QgsProjectLayerGroupDialog() override;
 
     QStringList selectedGroups() const;
