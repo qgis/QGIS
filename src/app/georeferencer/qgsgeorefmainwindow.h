@@ -19,6 +19,8 @@
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
 
+#include <memory>
+
 #include <QPointer>
 
 class QAction;
@@ -118,11 +120,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void localHistogramStretch();
     void fullHistogramStretch();
 
-
-    // when one Layer is removed
-    void layerWillBeRemoved( const QString &layerId );
-    void extentsChanged(); // Use for need add again Raster (case above)
-
     bool updateGeorefTransform();
     void invalidateCanvasCoords();
 
@@ -218,7 +215,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QLabel *mEPSG = nullptr;
     QLabel *mRotationLabel = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
-    unsigned int mMousePrecisionDecimalPlaces;
+    unsigned int mMousePrecisionDecimalPlaces = 0;
 
     QString mRasterFileName;
     QString mModifiedRasterFileName;
@@ -232,7 +229,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QString mSaveGcp;
     double  mUserResX, mUserResY;  // User specified target scale
 
-    QgsGeorefTransform::TransformParametrisation mTransformParam;
+    QgsGeorefTransform::TransformParametrisation mTransformParam = QgsGeorefTransform::InvalidTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod;
     QgsGeorefTransform mGeorefTransform;
     QString mCompressionMethod;
@@ -240,8 +237,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsGCPList mPoints;
     QgsGCPList mInitialPoints;
     QgsMapCanvas *mCanvas = nullptr;
-    QgsRasterLayer *mLayer = nullptr;
-    bool mAgainAddRaster;
+    std::unique_ptr< QgsRasterLayer > mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
@@ -256,10 +252,10 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
-    bool mUseZeroForTrans;
+    bool mUseZeroForTrans = false;
     bool mExtentsChangedRecursionGuard;
     bool mGCPsDirty;
-    bool mLoadInQgis;
+    bool mLoadInQgis = false;
 
 
     QgsDockWidget *mDock = nullptr;
