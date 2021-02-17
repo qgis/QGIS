@@ -178,9 +178,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 minutes = int((delta_t % 3600) / 60)
                 seconds = delta_t - hours*3600 - minutes*60
 
-                str_hours = ["hour", "hours"][hours > 1]
-                str_minutes = ["minute", "minutes"][minutes > 1]
-                str_seconds = ["second", "seconds"][seconds != 1]
+                str_hours = [self.tr("hour"), self.tr("hours")][hours > 1]
+                str_minutes = [self.tr("minute"), self.tr("minutes")][minutes > 1]
+                str_seconds = [self.tr("second"), self.tr("seconds"])[seconds != 1]
 
                 if hours > 0:
                     elapsed = '{0} {1:0.2f} {2} ({3} {4} {5} {6} {7:0.0f} {2})'.format(
