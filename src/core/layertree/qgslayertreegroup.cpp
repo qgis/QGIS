@@ -298,7 +298,7 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsRe
     return nullptr;
 
   QString name =  context.projectTranslator()->translate( QStringLiteral( "project:layergroups" ), element.attribute( QStringLiteral( "name" ) ) );
-  QString id =  element.attribute( QStringLiteral( "id" ) );
+  QString id = ( element.attribute( QStringLiteral( "id" ) ).isNull() ) ? name : element.attribute( QStringLiteral( "id" ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
   bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked;
   bool isMutuallyExclusive = element.attribute( QStringLiteral( "mutually-exclusive" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );

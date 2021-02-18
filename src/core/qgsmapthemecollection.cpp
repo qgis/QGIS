@@ -71,7 +71,7 @@ static QString _groupId( QgsLayerTreeNode *node )
   QStringList lst;
   while ( node->parent() )
   {
-    lst.prepend( node->name() );
+    lst.prepend( QgsLayerTree::toGroup( node )->id() );
     node = node->parent();
   }
   return lst.join( '/' );
