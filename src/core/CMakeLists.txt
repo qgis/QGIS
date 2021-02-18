@@ -469,6 +469,8 @@ set(QGIS_CORE_SRCS
   qgsxmlutils.cpp
   qgssettings.cpp
   qgssettingsentry.cpp
+  qgssettingsgroup.cpp
+  qgssettingsmap.cpp
   qgssettingsregistry.cpp
   qgssettingsregistrycore.cpp
   qgsarchive.cpp
@@ -1031,6 +1033,8 @@ set(QGIS_CORE_HDRS
   qgsscaleutils.h
   qgssettings.h
   qgssettingsentry.h
+  qgssettingsgroup.h
+  qgssettingsmap.h
   qgssettingsregistry.h
   qgssettingsregistrycore.h
   qgssimplifymethod.h

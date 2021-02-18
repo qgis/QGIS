@@ -17,14 +17,16 @@
 #include "qgslogger.h"
 
 QgsSettingsEntry::QgsSettingsEntry( QString key,
-                                    QgsSettings::Section settingsSection,
+                                    QgsSettingsGroup *settingsGroupParent,
                                     QVariant defaultValue,
                                     QString description )
   : mKey( key )
+  , mSettingsGroupParent( settingsGroupParent )
   , mDefaultValue( defaultValue )
-  , mSection( settingsSection )
+  , mSection( QgsSettings::Core )
   , mDescription( description )
 {
+
 }
 
 QgsSettingsEntry::~QgsSettingsEntry()
@@ -66,13 +68,13 @@ QString QgsSettingsEntry::description() const
 
 QgsSettingsEntryString::QgsSettingsEntryString(
   const QString &key,
-  QgsSettings::Section section,
+  QgsSettingsGroup *settingsGroupParent,
   const QString &defaultValue,
   const QString &description,
   int minLength,
   int maxLength )
   : QgsSettingsEntry( key,
-                      section,
+                      settingsGroupParent,
                       defaultValue,
                       description )
   , mMinLength( minLength )
@@ -130,13 +132,12 @@ int QgsSettingsEntryString::maxLength()
   return mMaxLength;
 }
 
-QgsSettingsEntryStringList::QgsSettingsEntryStringList(
-  const QString &key,
-  QgsSettings::Section section,
-  const QStringList &defaultValue,
-  const QString &description )
+QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key,
+    QgsSettingsGroup *settingsGroupParent,
+    const QStringList &defaultValue,
+    const QString &description )
   : QgsSettingsEntry( key,
-                      section,
+                      settingsGroupParent,
                       defaultValue,
                       description )
 {
@@ -162,13 +163,12 @@ QgsSettingsEntry::SettingsType QgsSettingsEntryStringList::settingsType() const
   return QgsSettingsEntry::StringList;
 }
 
-QgsSettingsEntryBool::QgsSettingsEntryBool(
-  const QString &key,
-  QgsSettings::Section section,
-  qlonglong defaultValue,
-  const QString &description )
+QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key,
+    QgsSettingsGroup *settingsGroupParent,
+    bool defaultValue,
+    const QString &description )
   : QgsSettingsEntry( key,
-                      section,
+                      settingsGroupParent,
                       defaultValue,
                       description )
 {
@@ -196,13 +196,13 @@ QgsSettingsEntry::SettingsType QgsSettingsEntryBool::settingsType() const
 
 QgsSettingsEntryInteger::QgsSettingsEntryInteger(
   const QString &key,
-  QgsSettings::Section section,
+  QgsSettingsGroup *settingsGroupParent,
   qlonglong defaultValue,
   const QString &description,
   qlonglong minValue,
   qlonglong maxValue )
   : QgsSettingsEntry( key,
-                      section,
+                      settingsGroupParent,
                       defaultValue,
                       description )
   , mMinValue( minValue )
@@ -259,15 +259,16 @@ qlonglong QgsSettingsEntryInteger::maxValue()
   return mMaxValue;
 }
 
-QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key,
-    QgsSettings::Section section,
-    double defaultValue,
-    const QString &description,
-    double minValue,
-    double maxValue,
-    double displayDecimals )
+QgsSettingsEntryDouble::QgsSettingsEntryDouble(
+  const QString &key,
+  QgsSettingsGroup *settingsGroupParent,
+  double defaultValue,
+  const QString &description,
+  double minValue,
+  double maxValue,
+  double displayDecimals )
   : QgsSettingsEntry( key,
-                      section,
+                      settingsGroupParent,
                       defaultValue,
                       description )
   , mMinValue( minValue )
