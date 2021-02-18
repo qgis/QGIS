@@ -629,7 +629,7 @@ void TestQgsLayerTree::testEmbeddedGroup()
   //
 
   QgsProject projectMaster;
-  QgsLayerTreeGroup *embeddedGroup = projectMaster.createEmbeddedGroup( grp->name(), projectFilename, QStringList(), QStringList() );
+  QgsLayerTreeGroup *embeddedGroup = projectMaster.createEmbeddedGroup( grp->name(), projectFilename, QStringList() );
   QVERIFY( embeddedGroup );
   QCOMPARE( embeddedGroup->children().size(), 5 );
 
