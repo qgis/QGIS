@@ -14,9 +14,6 @@ on:
     - 'CMakeLists.txt'
     - '.github/workflows/mingw64.yml'
   pull_request:
-    branches:
-      - master
-      - release-**
     paths:
     - 'src/**'
     - 'external/**'
