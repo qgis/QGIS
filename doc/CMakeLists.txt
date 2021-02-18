@@ -149,6 +149,9 @@ if(WITH_APIDOC)
 
     string(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT}")
 
+    # Doxyfile requires comma separated list of patterns for FILE_PATTERNS option
+    string(REPLACE ";" "," DOXYGEN_FILE_PATTERNS "${DOXYGEN_FILE_PATTERNS}")
+
     if(WERROR)
       set (DOXYGEN_WARN_AS_ERROR "YES")
     else()
