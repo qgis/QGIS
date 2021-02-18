@@ -944,8 +944,8 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mRelationLabel->setVisible( false );
       mMaximumRowsSpinBox->setEnabled( true );
       mMaxNumFeaturesLabel->setEnabled( true );
-      mShowOnlyVisibleFeaturesCheckBox->setEnabled( mTable->vectorLayer()->geometryType() != QgsWkbTypes::NullGeometry );
-      mShowOnlyVisibleFeaturesCheckBox->setChecked( mTable->vectorLayer()->geometryType() != QgsWkbTypes::NullGeometry &&  mTable->displayOnlyVisibleFeatures() );
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( mTable->vectorLayer() && mTable->vectorLayer()->geometryType() != QgsWkbTypes::NullGeometry );
+      mShowOnlyVisibleFeaturesCheckBox->setChecked( mTable->vectorLayer() && mTable->vectorLayer()->geometryType() != QgsWkbTypes::NullGeometry && mTable->displayOnlyVisibleFeatures() );
       mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
       mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
       break;
