@@ -27,7 +27,7 @@ class QgsRelationManager;
 
 /**
  * \ingroup core
- * This is an abstract base class for any elements of a drag and drop form.
+ * \brief This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
  * as a tab widget or a collapsible group box. Or it can be a field which will
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
 /**
  * \ingroup core
- * This is a container for attribute editors, used to group them visually in the
+ * \brief This is a container for attribute editors, used to group them visually in the
  * attribute form if it is set to the drag and drop designer.
  */
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 
 /**
  * \ingroup core
- * This element will load a field's widget onto the form.
+ * \brief This element will load a field's widget onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 
 /**
  * \ingroup core
- * This element will load a relation editor onto the form.
+ * \brief This element will load a relation editor onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
@@ -523,7 +523,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )
 
 /**
  * \ingroup core
- * An attribute editor widget that will represent arbitrary QML code.
+ * \brief An attribute editor widget that will represent arbitrary QML code.
  *
  * \since QGIS 3.4
  */
@@ -564,7 +564,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
 
 /**
  * \ingroup core
- * An attribute editor widget that will represent arbitrary HTML code.
+ * \brief An attribute editor widget that will represent arbitrary HTML code.
  *
  * \since QGIS 3.8
  */
