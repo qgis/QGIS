@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 #include "qgswebpage.h"
+#include "qgstextformat.h"
 #include <QFont>
 #include <QUrl>
 
@@ -196,13 +197,13 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
      * Sets the label font \a color.
      * \see fontColor()
      */
-    void setFontColor( const QColor &color ) { mFontColor = color; }
+    void setFontColor( const QColor &color ) SIP_DEPRECATED { mFormat.setColor( color ); }
 
     /**
      * Returns the label font color.
      * \see setFontColor()
      */
-    QColor fontColor() const { return mFontColor; }
+    QColor fontColor() const SIP_DEPRECATED { return mFormat.color(); }
 
     // In case of negative margins, the bounding rect may be larger than the
     // label's frame
@@ -213,6 +214,21 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 
     // Reimplemented to call prepareGeometryChange after changing stroke width
     void setFrameStrokeWidth( QgsLayoutMeasurement strokeWidth ) override;
+
+
+    /**
+     * Returns the text format used for drawing text in the scalebar.
+     * \see setTextFormat()
+     * \since QGIS 3.20
+     */
+    QgsTextFormat textFormat() const;
+
+    /**
+     * Sets the text \a format used for drawing text in the scalebar.
+     * \see textFormat()
+     * \since QGIS 3.20
+     */
+    void setTextFormat( const QgsTextFormat &format );
 
   public slots:
 
@@ -255,16 +271,13 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     //! Called when the content is changed to handle HTML loading
     void contentChanged();
 
-    //! Font
-    QFont mFont;
+    //! Format
+    QgsTextFormat mFormat;
 
     //! Horizontal margin between contents and frame (in mm)
     double mMarginX = 0.0;
     //! Vertical margin between contents and frame (in mm)
     double mMarginY = 0.0;
-
-    //! Font color
-    QColor mFontColor = QColor( 0, 0, 0 );
 
     //! Horizontal Alignment
     Qt::AlignmentFlag mHAlignment = Qt::AlignJustify;
