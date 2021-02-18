@@ -308,12 +308,12 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
       loop.quit();
     }, Qt::DirectConnection );
 
-    connect( &p, &QProcess::readyReadStandardOutput, this, [&p, this]
+    connect( &p, &QProcess::readyReadStandardOutput, &p, [&p, this]
     {
       QByteArray ba = p.readAllStandardOutput();
       mStdoutHandler( ba );
     } );
-    connect( &p, &QProcess::readyReadStandardError, this, [&p, this]
+    connect( &p, &QProcess::readyReadStandardError, &p, [&p, this]
     {
       QByteArray ba = p.readAllStandardError();
       mStderrHandler( ba );
