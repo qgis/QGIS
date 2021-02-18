@@ -83,7 +83,7 @@ Gets invisible layers
 
     static QStringList uncheckedGroupList( QgsLayerTreeNode *node );
 %Docstring
-Gets unchecked groups
+Returns the IDs of all unchecked groups
 %End
 
     static void setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled = true );

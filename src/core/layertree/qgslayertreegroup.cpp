@@ -23,10 +23,10 @@
 #include <QStringList>
 
 
-QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
+QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked, const QString &id )
   : QgsLayerTreeNode( NodeGroup, checked )
   , mName( name )
-  , mId( generateId( mName ) )
+  , mId( ( id.isNull() ) ? generateId( name ) : id )
 {
   connect( this, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeGroup::nodeVisibilityChanged );
 }
@@ -59,11 +59,6 @@ void QgsLayerTreeGroup::setName( const QString &n )
 QString QgsLayerTreeGroup::id() const
 {
   return mId;
-}
-
-void QgsLayerTreeGroup::setId( const QString &id )
-{
-  mId = id;
 }
 
 QString QgsLayerTreeGroup::generateId( QString groupName ) const
@@ -303,14 +298,13 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsRe
     return nullptr;
 
   QString name =  context.projectTranslator()->translate( QStringLiteral( "project:layergroups" ), element.attribute( QStringLiteral( "name" ) ) );
-  QString id =  context.projectTranslator()->translate( QStringLiteral( "project:layergroups" ), element.attribute( QStringLiteral( "id" ) ) );
+  QString id =  element.attribute( QStringLiteral( "id" ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
   bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked;
   bool isMutuallyExclusive = element.attribute( QStringLiteral( "mutually-exclusive" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
   int mutuallyExclusiveChildIndex = element.attribute( QStringLiteral( "mutually-exclusive-child" ), QStringLiteral( "-1" ) ).toInt();
 
-  QgsLayerTreeGroup *groupNode = new QgsLayerTreeGroup( name, checked );
-  groupNode->setId( id );
+  QgsLayerTreeGroup *groupNode = new QgsLayerTreeGroup( name, checked, id );
 
   groupNode->setExpanded( isExpanded );
 

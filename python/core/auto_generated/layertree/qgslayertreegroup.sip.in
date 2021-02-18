@@ -24,7 +24,7 @@ Group names do not need to be unique within one tree nor within one parent.
 %End
   public:
 
-    QgsLayerTreeGroup( const QString &name = QString(), bool checked = true );
+    QgsLayerTreeGroup( const QString &name = QString(), bool checked = true, const QString &id = QString() );
 %Docstring
 Constructor
 %End
@@ -45,16 +45,6 @@ Sets the group's name.
     QString id() const;
 %Docstring
 Returns the group's id.
-%End
-
-    void setId( const QString &id );
-%Docstring
-Sets the group's id.
-%End
-
-    QString generateId( QString name ) const;
-%Docstring
-Generate the group's id, according to the groups's name (based on :py:class:`QgsMapLayer`.generateId)
 %End
 
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
@@ -226,6 +216,11 @@ of -1 will determine automatically (either first one currently checked or none)
     void updateChildVisibilityMutuallyExclusive();
 %Docstring
 Set check state of children - if mutually exclusive
+%End
+
+    QString generateId( QString name ) const;
+%Docstring
+Generate the group's id, according to the groups's name (based on :py:class:`QgsMapLayer`.generateId)
 %End
 
 

@@ -506,7 +506,7 @@ void TestQgsProject::testEmbeddedLayerGroupFromQgz()
 
   QgsProject p1;
   p1.createEmbeddedLayer( points->id(), p0.fileName(), brokenNodes );
-  p1.createEmbeddedGroup( "group1", p0.fileName(), QStringList(), QStringList() );
+  p1.createEmbeddedGroup( "group1", p0.fileName(), QStringList() );
 
   QCOMPARE( p1.layerIsEmbedded( points->id() ), path );
   QCOMPARE( p1.layerIsEmbedded( polys->id() ), path );

@@ -671,7 +671,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 2.4
      */
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, const QStringList &uncheckedGroups, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags(),  const QStringList &uncheckedGroups = QStringList() );
 
     //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
