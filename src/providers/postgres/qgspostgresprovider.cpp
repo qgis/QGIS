@@ -1006,11 +1006,11 @@ bool QgsPostgresProvider::loadFields()
         }
         else
         {
-          QRegExp re( "numeric\\((\\d+),(\\d+)\\)" );
-          if ( re.exactMatch( formattedFieldType ) )
+          QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "numeric\\((\\d+),(\\d+)\\)" ) ).match( formattedFieldType );
+          if ( match.hasMatch() )
           {
-            fieldSize = re.cap( 1 ).toInt();
-            fieldPrec = re.cap( 2 ).toInt();
+            fieldSize = match.captured( 1 ).toInt();
+            fieldPrec = match.captured( 2 ).toInt();
           }
           else if ( formattedFieldType != QLatin1String( "numeric" ) )
           {
@@ -1027,10 +1027,10 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        QRegExp re( "character varying\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "character varying\\((\\d+)\\)" ) ).match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1079,10 +1079,10 @@ bool QgsPostgresProvider::loadFields()
 
         fieldType = QVariant::String;
 
-        QRegExp re( "character\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "character\\((\\d+)\\)" ) ).match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1097,10 +1097,10 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        QRegExp re( "char\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "char\\((\\d+)\\)" ) ).match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1447,11 +1447,11 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     // get a new alias for the subquery
     int index = 0;
     QString alias;
-    QRegExp regex;
+    QRegularExpression regex;
     do
     {
       alias = QStringLiteral( "subQuery_%1" ).arg( QString::number( index++ ) );
-      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) );
+      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegularExpression::escape( alias ) );
       regex.setPattern( pattern );
       regex.setCaseSensitivity( Qt::CaseInsensitive );
     }
@@ -2042,7 +2042,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
       //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))
       //normally, PostgreSQL creates that if the constraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
 
-      int anyPos = checkDefinition.indexOf( QRegExp( "VALUE\\s*=\\s*ANY\\s*\\(\\s*ARRAY\\s*\\[" ) );
+      int anyPos = checkDefinition.indexOf( QRegularExpression( "VALUE\\s*=\\s*ANY\\s*\\(\\s*ARRAY\\s*\\[" ) );
       int arrayPosition = checkDefinition.lastIndexOf( QLatin1String( "ARRAY[" ) );
       int closingBracketPos = checkDefinition.indexOf( ']', arrayPosition + 6 );
 
@@ -3745,7 +3745,7 @@ QgsRectangle QgsPostgresProvider::extent() const
     {
       QgsDebugMsgLevel( "Got extents using: " + sql, 2 );
 
-      QRegExp rx( "\\((.+) (.+),(.+) (.+)\\)" );
+      QRegularExpression rx( "\\((.+) (.+),(.+) (.+)\\)" );
       if ( ext.contains( rx ) )
       {
         QStringList ex = rx.capturedTexts();
@@ -4731,13 +4731,13 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
   jumpSpace( txt, i );
   if ( i < txt.length() && txt.at( i ) == '"' )
   {
-    QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
-    if ( !stringRe.exactMatch( txt.mid( i ) ) )
+    QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( ( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) ).match( txt.mid( i ) );
+    if ( !match.hasMatch() )
     {
       QgsMessageLog::logMessage( tr( "Cannot find end of double quoted string: %1" ).arg( txt ), tr( "PostGIS" ) );
       return QString();
     }
-    i += stringRe.cap( 1 ).length() + 2;
+    i += match.captured( 1 ).length() + 2;
     jumpSpace( txt, i );
     if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
     {
@@ -4745,7 +4745,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
       return QString();
     }
     i += sep.length();
-    return stringRe.cap( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
+    return match.captured( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
   }
   else
   {

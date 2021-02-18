@@ -544,9 +544,9 @@ void QgsGrassTools::mFilterInput_textChanged( QString text )
 
   // using simple wildcard filter which is probably what users is expecting, at least until
   // there is a filter type switch in UI
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::Wildcard );
-  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
+
+  QRegularExpression::PatternOption myCaseSensitivity = QRegularExpression::CaseInsensitiveOption;
+  QRegularExpression myRegExp( QRegularExpression::wildcardToRegularExpression( text ), myCaseSensitivity );
   mModelProxy->setFilterRegExp( myRegExp );
 }
 
@@ -676,8 +676,7 @@ QgsGrassToolsTreeFilterProxyModel::QgsGrassToolsTreeFilterProxyModel( QObject *p
   : QSortFilterProxyModel( parent )
 {
   setDynamicSortFilter( true );
-  mRegExp.setPatternSyntax( QRegExp::Wildcard );
-  mRegExp.setCaseSensitivity( Qt::CaseInsensitive );
+  mRegExp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
 }
 
 void QgsGrassToolsTreeFilterProxyModel::setSourceModel( QAbstractItemModel *sourceModel )

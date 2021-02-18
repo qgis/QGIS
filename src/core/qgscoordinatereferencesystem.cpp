@@ -28,10 +28,9 @@
 #include <QDomNode>
 #include <QDomElement>
 #include <QFileInfo>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QFile>
-#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -386,20 +385,20 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   QString wmsCrs = crs;
 
-  thread_local const QRegExp re_uri( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ), Qt::CaseInsensitive );
-  thread_local const QRegExp re_urn( QStringLiteral( "urn:ogc:def:crs:([^:]+).+([^:]+)" ), Qt::CaseInsensitive );
-  if ( re_uri.exactMatch( wmsCrs ) )
+  thread_local const QRegularExpressionMatch re_uri = QRegularExpression( QRegularExpression::anchoredPattern( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ), QRegularExpression::CaseInsensitiveOption ).match( wmsCrs );
+  thread_local const QRegularExpressionMatch re_urn = QRegularExpression( QRegularExpression::anchoredPattern( "urn:ogc:def:crs:([^:]+).+([^:]+)" ), QRegularExpression::CaseInsensitiveOption ).match( wmsCrs );
+  if ( re_uri.hasMatch() )
   {
-    wmsCrs = re_uri.cap( 1 ) + ':' + re_uri.cap( 2 );
+    wmsCrs = re_uri.captured( 1 ) + ':' + re_uri.captured( 2 );
   }
-  else if ( re_urn.exactMatch( wmsCrs ) )
+  else if ( re_urn.hasMatch() )
   {
-    wmsCrs = re_urn.cap( 1 ) + ':' + re_urn.cap( 2 );
+    wmsCrs = re_urn.captured( 1 ) + ':' + re_urn.captured( 2 );
   }
   else
   {
-    thread_local const QRegExp re_urn_custom( QStringLiteral( "(user|custom|qgis):(\\d+)" ), Qt::CaseInsensitive );
-    if ( re_urn_custom.exactMatch( wmsCrs ) && createFromSrsId( re_urn_custom.cap( 2 ).toInt() ) )
+    thread_local const QRegularExpressionMatch re_urn_custom = QRegularExpression( QRegularExpression::anchoredPattern( "(user|custom|qgis):(\\d+)" ), QRegularExpression::CaseInsensitiveOption ).match( wmsCrs );
+    if ( re_urn_custom.hasMatch() && createFromSrsId( re_urn_custom.captured( 2 ).toInt() ) )
     {
       locker.changeMode( QgsReadWriteLocker::Write );
       if ( !sDisableOgcCache )

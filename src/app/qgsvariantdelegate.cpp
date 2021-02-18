@@ -48,14 +48,14 @@ QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
   : QItemDelegate( parent )
 {
   mBoolExp.setPattern( QStringLiteral( "true|false" ) );
-  mBoolExp.setCaseSensitivity( Qt::CaseInsensitive );
+  mBoolExp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
 
   mByteArrayExp.setPattern( QStringLiteral( "[\\x00-\\xff]*" ) );
   mCharExp.setPattern( QStringLiteral( "." ) );
-  mColorExp.setPattern( QStringLiteral( "\\(([0-9]*),([0-9]*),([0-9]*),([0-9]*)\\)" ) );
+  mColorExp.setPattern( QRegularExpression::anchoredPattern( "\\(([0-9]*),([0-9]*),([0-9]*),([0-9]*)\\)" ) );
   mDoubleExp.setPattern( QString() );
-  mPointExp.setPattern( QStringLiteral( "\\((-?[0-9]*),(-?[0-9]*)\\)" ) );
-  mRectExp.setPattern( QStringLiteral( "\\((-?[0-9]*),(-?[0-9]*),(-?[0-9]*),(-?[0-9]*)\\)" ) );
+  mPointExp.setPattern( QRegularExpression::anchoredPattern( "\\((-?[0-9]*),(-?[0-9]*)\\)" ) );
+  mRectExp.setPattern( QRegularExpression::anchoredPattern( "\\((-?[0-9]*),(-?[0-9]*),(-?[0-9]*),(-?[0-9]*)\\)" ) );
   mSignedIntegerExp.setPattern( QStringLiteral( "-?[0-9]*" ) );
   mSizeExp = mPointExp;
   mUnsignedIntegerExp.setPattern( QStringLiteral( "[0-9]*" ) );
@@ -96,7 +96,7 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
   if ( !isSupportedType( QgsVariantDelegate::type( originalValue ) ) )
     return nullptr;
 
-  QRegExp regExp;
+  QRegularExpression regExp;
   switch ( QgsVariantDelegate::type( originalValue ) )
   {
     case QVariant::ByteArray:
@@ -154,7 +154,7 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
     lineEdit->setFrame( false );
     if ( !regExp.isEmpty() )
     {
-      QValidator *validator = new QRegExpValidator( regExp, lineEdit );
+      QValidator *validator = new QRegularExpressionValidator( regExp, lineEdit );
       lineEdit->setValidator( validator );
     }
     return lineEdit;
@@ -199,18 +199,18 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
       if ( validator->validate( text, pos ) != QValidator::Acceptable )
         return;
     }
-
+    QRegularExpressionMatch match;
     switch ( QgsVariantDelegate::type( originalValue ) )
     {
       case QVariant::Char:
         value = text.at( 0 );
         break;
       case QVariant::Color:
-        ( void )mColorExp.exactMatch( text );
-        value = QColor( std::min( mColorExp.cap( 1 ).toInt(), 255 ),
-                        std::min( mColorExp.cap( 2 ).toInt(), 255 ),
-                        std::min( mColorExp.cap( 3 ).toInt(), 255 ),
-                        std::min( mColorExp.cap( 4 ).toInt(), 255 ) );
+        match = mColorExp.match( text );
+        value = QColor( std::min( match.captured( 1 ).toInt(), 255 ),
+                        std::min( match.captured( 2 ).toInt(), 255 ),
+                        std::min( match.captured( 3 ).toInt(), 255 ),
+                        std::min( match.captured( 4 ).toInt(), 255 ) );
         break;
       case QVariant::Date:
       {
@@ -229,17 +229,17 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
       }
       break;
       case QVariant::Point:
-        ( void )mPointExp.exactMatch( text );
-        value = QPoint( mPointExp.cap( 1 ).toInt(), mPointExp.cap( 2 ).toInt() );
+        match = mPointExp.match( text );
+        value = QPoint( match.captured( 1 ).toInt(), match.captured( 2 ).toInt() );
         break;
       case QVariant::Rect:
-        ( void )mRectExp.exactMatch( text );
-        value = QRect( mRectExp.cap( 1 ).toInt(), mRectExp.cap( 2 ).toInt(),
-                       mRectExp.cap( 3 ).toInt(), mRectExp.cap( 4 ).toInt() );
+        match = mRectExp.match( text );
+        value = QRect( match.captured( 1 ).toInt(), match.captured( 2 ).toInt(),
+                       match.captured( 3 ).toInt(), match.captured( 4 ).toInt() );
         break;
       case QVariant::Size:
-        ( void )mSizeExp.exactMatch( text );
-        value = QSize( mSizeExp.cap( 1 ).toInt(), mSizeExp.cap( 2 ).toInt() );
+        match = mSizeExp.match( text );
+        value = QSize( match.captured( 1 ).toInt(), match.captured( 2 ).toInt() );
         break;
       case QVariant::StringList:
         value = text.split( ',' );
@@ -350,13 +350,13 @@ QVariant::Type QgsVariantDelegate::type( const QVariant &value )
   if ( value.type() == QVariant::String )
   {
     QString str = value.toString();
-    QRegExp regExp;
+    QRegularExpression regExp;
     bool ok;
 
     // is this a bool (true,false)
     regExp.setPattern( QStringLiteral( "true|false" ) );
-    regExp.setCaseSensitivity( Qt::CaseInsensitive );
-    if ( regExp.indexIn( str ) != -1 )
+    regExp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
+    if ( regExp.match( str ).hasMatch() )
       return QVariant::Bool;
 
     // is this an int?

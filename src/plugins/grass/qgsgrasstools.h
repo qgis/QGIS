@@ -153,7 +153,7 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 
     QAbstractItemModel *mModel = nullptr;
     QString mFilter; // filter string provided
-    QRegExp mRegExp; // regular expression constructed from filter string
+    QRegularExpression mRegExp; // regular expression constructed from filter string
 
     bool filterAcceptsString( const QString &value ) const;
 

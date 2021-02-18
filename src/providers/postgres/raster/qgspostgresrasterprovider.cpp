@@ -1652,11 +1652,11 @@ bool QgsPostgresRasterProvider::loadFields()
         }
         else
         {
-          QRegExp re( "numeric\\((\\d+),(\\d+)\\)" );
-          if ( re.exactMatch( formattedFieldType ) )
+          QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "numeric\\((\\d+),(\\d+)\\)" ) ).match( formattedFieldType );
+          if ( match.hasMatch() )
           {
-            fieldSize = re.cap( 1 ).toInt();
-            fieldPrec = re.cap( 2 ).toInt();
+            fieldSize = match.captured( 1 ).toInt();
+            field Prec = match.captured( 2 ).toInt();
           }
           else if ( formattedFieldType != QLatin1String( "numeric" ) )
           {
@@ -1673,10 +1673,10 @@ bool QgsPostgresRasterProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        QRegExp re( "character varying\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "character varying\\((\\d+)\\)" ) ).match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1724,10 +1724,10 @@ bool QgsPostgresRasterProvider::loadFields()
 
         fieldType = QVariant::String;
 
-        QRegExp re( "character\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "character\\((\\d+)\\)" ) ).match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1742,10 +1742,10 @@ bool QgsPostgresRasterProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        QRegExp re( "char\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "char\\((\\d+)\\)" ) ).match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {

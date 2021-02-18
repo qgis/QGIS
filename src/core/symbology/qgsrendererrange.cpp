@@ -163,13 +163,13 @@ const int QgsRendererRangeLabelFormat::MIN_PRECISION = -6;
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
   : mFormat( QStringLiteral( "%1 - %2" ) )
   , mReTrailingZeroes( "[.,]?0*$" )
-  , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
+  , mReNegativeZero( QRegularExpression::anchoredPattern( "^\\-0(?:[.,]0*)?$" ) )
 {
 }
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat( const QString &format, int precision, bool trimTrailingZeroes )
   : mReTrailingZeroes( "[.,]?0*$" )
-  , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
+  , mReNegativeZero( QRegularExpression::anchoredPattern( "^\\-0(?:[.,]0*)?$" ) )
 {
   setFormat( format );
   setPrecision( precision );
@@ -217,7 +217,7 @@ QString QgsRendererRangeLabelFormat::formatNumber( double value ) const
     QString valueStr = QLocale().toString( value, 'f', mPrecision );
     if ( mTrimTrailingZeroes )
       valueStr = valueStr.remove( mReTrailingZeroes );
-    if ( mReNegativeZero.exactMatch( valueStr ) )
+    if ( mReNegativeZero.match( valueStr ).hasMatch() )
       valueStr = valueStr.mid( 1 );
     return valueStr;
   }
