@@ -2295,7 +2295,38 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
     for ( ; it2 != layerEdits.end(); ++it2 )
     {
-      layer->changeGeometry( it2.key(), it2.value() );
+      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      switch ( QgsProject::instance()->avoidIntersectionsMode() )
+      {
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+          avoidIntersectionsLayers.append( layer );
+          break;
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+          avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+          break;
+        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+          break;
+      }
+      QgsGeometry featGeom = it2.value();
+      layer->changeGeometry( it2.key(), featGeom );
+      if ( avoidIntersectionsLayers.size() > 0 )
+      {
+        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+        QSet<QgsFeatureId> id;
+        id.insert( it2.key() );
+        ignoreFeatures.insert( layer, id );
+        int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
+        switch ( avoidIntersectionsReturn )
+        {
+          case 3:
+            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid and cannot be fixed automatically. The geometry added may overlap another geometry. You should fix geometries." ), Qgis::Warning );
+            break;
+          case 4:
+            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid and has been modified to perform the operation. You should fix geometries." ), Qgis::Warning );
+            break;
+        }
+      }
+      layer->changeGeometry( it2.key(), featGeom );
     }
     layer->endEditCommand();
     layer->triggerRepaint();
