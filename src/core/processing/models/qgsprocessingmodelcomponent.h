@@ -29,7 +29,7 @@ class QgsProcessingModelComment;
 ///@cond NOT_STABLE
 
 /**
- * Represents a component of a model algorithm.
+ * \brief Represents a component of a model algorithm.
  * \ingroup core
  * \since QGIS 3.0
  */

@@ -18,6 +18,7 @@
 class QgsQtLocationConnection: QgsGpsConnection
 {
 %Docstring
+A GPS connection subclass based on the Qt Location libraries.
 
 .. note::
 

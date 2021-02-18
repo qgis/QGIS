@@ -29,7 +29,7 @@ class QgsExpressionContext;
 /**
  * \ingroup core
  *
- * Abstract base class for all nodes that can appear in an expression.
+ * \brief Abstract base class for all nodes that can appear in an expression.
  */
 class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 {
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
 
     /**
-     * Named node
+     * \brief Named node
      * \ingroup core
      * \since QGIS 2.16
      */
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     };
 
     /**
-     * A list of expression nodes.
+     * \brief A list of expression nodes.
      * \ingroup core
      */
     class CORE_EXPORT NodeList

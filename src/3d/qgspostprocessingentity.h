@@ -28,8 +28,9 @@ class QgsShadowRenderingFrameGraph;
 
 /**
  * \ingroup 3d
- * An entity that is responsible for applying post processing effect
- * Now it is used to make shadows
+ * \brief An entity that is responsible for applying post processing effect.
+ *
+ * Now it is used to make shadows.
  *
  * \note Not available in Python bindings
  *

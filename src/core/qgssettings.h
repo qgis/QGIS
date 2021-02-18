@@ -28,7 +28,7 @@
  * \ingroup core
  * \class QgsSettings
  *
- * This class is a composition of two QSettings instances:
+ * \brief This class is a composition of two QSettings instances:
  *
  * - the main QSettings instance is the standard User Settings and
  * - the second one (Global Settings) is meant to provide read-only

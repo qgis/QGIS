@@ -27,7 +27,7 @@ class QgsGeocoderInterface;
 /**
  * \ingroup analysis
  *
- * A base class for batch geocoder algorithms, which takes a QgsGeocoderInterface object and exposes it as
+ * \brief A base class for batch geocoder algorithms, which takes a QgsGeocoderInterface object and exposes it as
  * a Processing algorithm for batch geocoding operations.
  *
  * ### Example

@@ -33,7 +33,7 @@
 
 /**
  * \ingroup 3d
- * Base class for jobs that load chunks
+ * \brief Base class for jobs that load chunks
  *
  * \note Not available in Python bindings
  *
@@ -56,7 +56,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
 
 /**
  * \ingroup 3d
- * Factory for chunk loaders for a particular type of entity
+ * \brief Factory for chunk loaders for a particular type of entity
  * \since QGIS 3.0
  */
 class QgsChunkLoaderFactory  : public QObject
@@ -86,7 +86,7 @@ class QgsChunkLoaderFactory  : public QObject
 
 /**
  * \ingroup 3d
- * Base class for factories where the hierarchy is a quadtree where all leaves
+ * \brief Base class for factories where the hierarchy is a quadtree where all leaves
  * are in the same depth.
  *
  * \since QGIS 3.18

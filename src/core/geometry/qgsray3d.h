@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * A representation of a ray in 3D.
+ * \brief A representation of a ray in 3D.
  *
  * A ray is composed of an origin point (the start of the ray) and a direction vector.
  *

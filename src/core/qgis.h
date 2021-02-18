@@ -40,7 +40,7 @@ int QgisEvent = QEvent::User + 1;
 
 /**
  * \ingroup core
- * The Qgis class provides global constants for use throughout the application.
+ * \brief The Qgis class provides global constants for use throughout the application.
  */
 class CORE_EXPORT Qgis
 {
@@ -211,7 +211,7 @@ class CORE_EXPORT Qgis
 
 /**
  * \ingroup core
- * RAII signal blocking class. Used for temporarily blocking signals from a QObject
+ * \brief RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
  * \see whileBlocking()
  * \note not available in Python bindings

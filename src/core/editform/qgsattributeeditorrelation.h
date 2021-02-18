@@ -27,7 +27,7 @@ class QgsRelationManager;
 
 /**
  * \ingroup core
- * This element will load a relation editor onto the form.
+ * \brief This element will load a relation editor onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {

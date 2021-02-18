@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * A legend node which renders a color ramp.
+ * \brief A legend node which renders a color ramp.
  *
  * \since QGIS 3.18
  */

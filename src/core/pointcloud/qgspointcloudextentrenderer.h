@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * A renderer for 2d visualisation of point clouds which shows the dataset's extents using a fill symbol.
+ * \brief A renderer for 2d visualisation of point clouds which shows the dataset's extents using a fill symbol.
  *
  * \since QGIS 3.18
  */

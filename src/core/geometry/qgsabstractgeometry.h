@@ -737,7 +737,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * The part_iterator class provides STL-style iterator for geometry parts.
+     * \brief The part_iterator class provides STL-style iterator for geometry parts.
      * \since QGIS 3.6
      */
     class CORE_EXPORT part_iterator
@@ -807,7 +807,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * The part_iterator class provides STL-style iterator for const references to geometry parts.
+     * \brief The part_iterator class provides STL-style iterator for const references to geometry parts.
      * \since QGIS 3.6
      */
     class CORE_EXPORT const_part_iterator
@@ -867,7 +867,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * The vertex_iterator class provides STL-style iterator for vertices.
+     * \brief The vertex_iterator class provides STL-style iterator for vertices.
      * \since QGIS 3.0
      */
     class CORE_EXPORT vertex_iterator

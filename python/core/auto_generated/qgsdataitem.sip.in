@@ -15,6 +15,7 @@ class QgsDataItem : QObject
 {
 %Docstring
 Base class for all items in the model.
+
 Parent/children hierarchy is not based on QObject.
 %End
 

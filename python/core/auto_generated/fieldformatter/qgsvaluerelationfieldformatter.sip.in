@@ -13,6 +13,7 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
 {
 %Docstring
 Field formatter for a value relation field.
+
 A value relation field formatter looks up the values from
 features on another layer.
 

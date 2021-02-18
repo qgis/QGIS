@@ -11,7 +11,8 @@
 class QgsProcessingParameterTinInputLayers: QgsProcessingParameterDefinition
 {
 %Docstring
-A parameter for processing algorithms that need a list of input vector layers to construct a TIN
+A parameter for processing algorithms that need a list of input vector layers to construct a TIN.
+
 A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
 {
 'source':  string that represents identification of the vector layer,

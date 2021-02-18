@@ -32,7 +32,7 @@
 /**
  * \ingroup core
  * \class QgsRuntimeProfilerNode
- * A node representing an entry in a QgsRuntimeProfiler.
+ * \brief A node representing an entry in a QgsRuntimeProfiler.
  *
  * \since QGIS 3.16
  */
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
  * \ingroup core
  * \class QgsRuntimeProfiler
  *
- * Provides a method of recording run time profiles of operations, allowing
+ * \brief Provides a method of recording run time profiles of operations, allowing
  * easy recording of their overall run time.
  *
  * QgsRuntimeProfiler is not usually instantied manually, but rather accessed
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
 /**
  * \ingroup core
  *
- * Scoped object for logging of the runtime for a single operation or group of operations.
+ * \brief Scoped object for logging of the runtime for a single operation or group of operations.
  *
  * This class automatically takes care of registering an operation in the QgsApplication::profiler()
  * registry upon construction, and recording of the elapsed runtime upon destruction.

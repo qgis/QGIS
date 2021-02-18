@@ -26,7 +26,7 @@
 /**
  * \class QgsFeatureSink
  * \ingroup core
- * An interface for objects which accept features via addFeature(s) methods.
+ * \brief An interface for objects which accept features via addFeature(s) methods.
  *
  * \since QGIS 3.0
  */

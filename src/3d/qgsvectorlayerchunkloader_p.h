@@ -50,7 +50,7 @@ namespace Qt3DCore
 
 /**
  * \ingroup 3d
- * This loader factory is responsible for creation of loaders for individual tiles
+ * \brief This loader factory is responsible for creation of loaders for individual tiles
  * of QgsVectorLayerChunkedEntity whenever a new tile is requested by the entity.
  *
  * \since QGIS 3.12
@@ -73,7 +73,7 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
 /**
  * \ingroup 3d
- * This loader class is responsible for async loading of data for a single tile
+ * \brief This loader class is responsible for async loading of data for a single tile
  * of QgsVectorLayerChunkedEntity and creation of final 3D entity from the data
  * previously prepared in a worker thread.
  *
@@ -101,7 +101,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
 
 /**
  * \ingroup 3d
- * 3D entity used for rendering of vector layers with a single 3D symbol for all features.
+ * \brief 3D entity used for rendering of vector layers with a single 3D symbol for all features.
  *
  * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses
  * QgsVectorLayerChunkLoaderFactory and QgsVectorLayerChunkLoader to do the actual work

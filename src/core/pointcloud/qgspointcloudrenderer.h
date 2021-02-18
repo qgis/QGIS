@@ -34,7 +34,7 @@ class QgsPointCloudLayer;
  * \ingroup core
  * \class QgsPointCloudRenderContext
  *
- * Encapsulates the render context for a 2D point cloud rendering operation.
+ * \brief Encapsulates the render context for a 2D point cloud rendering operation.
  *
  * \since QGIS 3.18
  */
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
  * \ingroup core
  * \class QgsPointCloudRenderer
  *
- * Abstract base class for 2d point cloud renderers.
+ * \brief Abstract base class for 2d point cloud renderers.
  *
  * \since QGIS 3.18
  */

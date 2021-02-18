@@ -69,7 +69,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
 
 /**
  * \ingroup core
- * This class represents a coordinate reference system (CRS).
+ * \brief This class represents a coordinate reference system (CRS).
  *
  * Coordinate reference system object defines a specific map projection, as well as transformations
  * between different coordinate reference systems. There are various ways how a CRS can be defined:

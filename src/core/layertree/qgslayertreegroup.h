@@ -25,7 +25,7 @@ class QgsLayerTreeLayer;
 
 /**
  * \ingroup core
- * Layer tree group node serves as a container for layers and further groups.
+ * \brief Layer tree group node serves as a container for layers and further groups.
  *
  * Group names do not need to be unique within one tree nor within one parent.
  *

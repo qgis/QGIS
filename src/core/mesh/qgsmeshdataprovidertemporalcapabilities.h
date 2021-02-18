@@ -27,7 +27,7 @@
 /**
  * \class QgsMeshDataProviderTemporalCapabilities
  * \ingroup core
- * Class for handling properties relating to a mesh data provider's temporal capabilities.
+ * \brief Class for handling properties relating to a mesh data provider's temporal capabilities.
  *
  * \since QGIS 3.14
  */

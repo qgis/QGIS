@@ -29,7 +29,7 @@ class QgsLayoutNorthArrowHandler;
 
 /**
  * \ingroup core
- * A layout item subclass that displays SVG files or raster format images (jpg, png, ...).
+ * \brief A layout item subclass that displays SVG files or raster format images (jpg, png, ...).
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem

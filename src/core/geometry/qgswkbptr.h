@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * Custom exception class for Wkb related exceptions.
+ * \brief Custom exception class for Wkb related exceptions.
  * \note not available in Python bindings
  */
 #ifndef SIP_RUN
@@ -38,6 +38,7 @@ class CORE_EXPORT QgsWkbException : public QgsException
 /**
  * \ingroup core
  * \class QgsWkbPtr
+ * \brief WKB pointer handler.
  */
 class CORE_EXPORT QgsWkbPtr
 {
@@ -122,6 +123,7 @@ class CORE_EXPORT QgsWkbPtr
 /**
  * \ingroup core
  * \class QgsConstWkbPtr
+ * \brief A const WKB pointer.
  */
 
 class CORE_EXPORT QgsConstWkbPtr

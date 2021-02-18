@@ -14,7 +14,7 @@
 class QgsPluginLayerType
 {
 %Docstring
-class for creating plugin specific layers
+Class for creating plugin specific layers
 %End
 
 %TypeHeaderCode

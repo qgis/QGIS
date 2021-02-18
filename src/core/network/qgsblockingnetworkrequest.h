@@ -27,7 +27,7 @@ class QNetworkRequest;
 class QNetworkReply;
 
 /**
- * A thread safe class for performing blocking (sync) network requests, with full support for QGIS proxy
+ * \brief A thread safe class for performing blocking (sync) network requests, with full support for QGIS proxy
  * and authentication settings.
  *
  * This class should be used whenever a blocking network request is required. Unlike implementations

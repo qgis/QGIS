@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * Abstract base class for map renderer jobs which use custom painters.
+ * \brief Abstract base class for map renderer jobs which use custom painters.
  *
  * \since QGIS 3.10
  */
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRenderer
 
 /**
  * \ingroup core
- * Job implementation that renders everything sequentially using a custom painter.
+ * \brief Job implementation that renders everything sequentially using a custom painter.
  *
  * Also supports synchronous rendering in main thread for cases when rendering in background
  * is not an option because of some technical limitations (e.g. printing to printer on some

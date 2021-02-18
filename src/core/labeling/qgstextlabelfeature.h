@@ -24,7 +24,7 @@ class QgsTextCharacterFormat;
 
 /**
  * \ingroup core
- * Class that adds extra information to QgsLabelFeature for text labels
+ * \brief Class that adds extra information to QgsLabelFeature for text labels
  *
  * \note not part of public API
  */

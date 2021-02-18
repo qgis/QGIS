@@ -46,7 +46,7 @@ class QgsRenderedFeatureHandlerInterface;
  * \class QgsLabelBlockingRegion
  * \ingroup core
  *
- * Label blocking region (in map coordinates and CRS).
+ * \brief Label blocking region (in map coordinates and CRS).
  *
  * \since QGIS 3.6
 */
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
 
 /**
  * \ingroup core
- * The QgsMapSettings class contains configuration for rendering of the map.
+ * \brief The QgsMapSettings class contains configuration for rendering of the map.
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *
  * In order to set up QgsMapSettings instance, it is necessary to set at least

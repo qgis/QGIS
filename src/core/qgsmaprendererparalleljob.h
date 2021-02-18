@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * Job implementation that renders all layers in parallel.
+ * \brief Job implementation that renders all layers in parallel.
  *
  * The resulting map image can be retrieved with renderedImage() function.
  * It is safe to call that function while rendering is active to see preview of the map.

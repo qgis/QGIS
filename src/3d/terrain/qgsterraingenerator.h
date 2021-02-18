@@ -35,7 +35,9 @@ class QgsProject;
 
 /**
  * \ingroup 3d
- * Base class for generators of terrain. All terrain generators are tile based
+ * \brief Base class for generators of terrain.
+ *
+ * All terrain generators are tile based
  * to support hierarchical level of detail. Tiling scheme of a generator is defined
  * by the generator itself. Terrain generators are asked to produce new terrain tiles
  * whenever that is deemed necessary by the terrain controller (that caches generated tiles).

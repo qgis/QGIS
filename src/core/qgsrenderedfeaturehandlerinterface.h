@@ -29,7 +29,7 @@ class QgsVectorLayer;
 /**
  * \ingroup core
  *
- * An interface for classes which provider custom handlers for features rendered
+ * \brief An interface for classes which provider custom handlers for features rendered
  * as part of a map render job.
  *
  * QgsRenderedFeatureHandlerInterface objects are registered in the QgsMapSettings

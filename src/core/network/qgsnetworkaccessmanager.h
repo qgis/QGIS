@@ -45,7 +45,7 @@ constexpr int sFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 
 /**
  * \class QgsNetworkRequestParameters
  * \ingroup core
- * Encapsulates parameters and properties of a network request.
+ * \brief Encapsulates parameters and properties of a network request.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsNetworkRequestParameters
