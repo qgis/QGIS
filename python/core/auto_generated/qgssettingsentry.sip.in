@@ -9,6 +9,7 @@
 
 
 
+
 class QgsSettingsEntry
 {
 %Docstring
@@ -46,12 +47,13 @@ class QgsSettingsEntry
     };
 
     QgsSettingsEntry( QString key = QString(),
-                      QgsSettings::Section settingsSection = QgsSettings::NoSection,
+                      QgsSettingsGroup *settingsGroupParent = 0,
                       QVariant defaultValue = QVariant(),
                       QString description = QString() );
 %Docstring
 Constructor for QgsSettingsEntry.
 %End
+
     virtual ~QgsSettingsEntry();
 
     QString key() const;
@@ -95,9 +97,9 @@ A string settings entry.
 %End
   public:
 
-    QgsSettingsEntryString( const QString &key,
-                            QgsSettings::Section section,
-                            const QString &defaultValue,
+    QgsSettingsEntryString( const QString &key = QString(),
+                            QgsSettingsGroup *settingsGroupParent = 0,
+                            const QString &defaultValue = QString(),
                             const QString &description = QString(),
                             int minLength = 0,
                             int maxLength = -1 );
@@ -135,9 +137,9 @@ A string list settings entry.
 %End
   public:
 
-    QgsSettingsEntryStringList( const QString &key,
-                                QgsSettings::Section section,
-                                const QStringList &defaultValue,
+    QgsSettingsEntryStringList( const QString &key = QString(),
+                                QgsSettingsGroup *settingsGroupParent = 0,
+                                const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryStringList.
@@ -163,9 +165,9 @@ A boolean settings entry.
 %End
   public:
 
-    QgsSettingsEntryBool( const QString &key,
-                          QgsSettings::Section section,
-                          qlonglong defaultValue,
+    QgsSettingsEntryBool( const QString &key = QString(),
+                          QgsSettingsGroup *settingsGroupParent = 0,
+                          bool defaultValue = false,
                           const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryBool.
@@ -191,9 +193,9 @@ An integer settings entry.
 %End
   public:
 
-    QgsSettingsEntryInteger( const QString &key,
-                             QgsSettings::Section section,
-                             qlonglong defaultValue,
+    QgsSettingsEntryInteger( const QString &key = QString(),
+                             QgsSettingsGroup *settingsGroupParent = 0,
+                             qlonglong defaultValue = 0,
                              const QString &description = QString(),
                              qlonglong minValue = -__LONG_LONG_MAX__ + 1,
                              qlonglong maxValue = __LONG_LONG_MAX__ );
@@ -231,9 +233,9 @@ A double settings entry.
 %End
   public:
 
-    QgsSettingsEntryDouble( const QString &key,
-                            QgsSettings::Section section,
-                            double defaultValue,
+    QgsSettingsEntryDouble( const QString &key = QString(),
+                            QgsSettingsGroup *settingsGroupParent = 0,
+                            double defaultValue = 0.0,
                             const QString &description = QString(),
                             double minValue = __DBL_MIN__,
                             double maxValue = __DBL_MAX__,

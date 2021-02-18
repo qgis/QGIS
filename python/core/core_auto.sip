@@ -175,6 +175,8 @@
 %Include auto_generated/qgsscaleutils.sip
 %Include auto_generated/qgssettings.sip
 %Include auto_generated/qgssettingsentry.sip
+%Include auto_generated/qgssettingsgroup.sip
+%Include auto_generated/qgssettingsmap.sip
 %Include auto_generated/qgssettingsregistry.sip
 %Include auto_generated/qgssettingsregistrycore.sip
 %Include auto_generated/qgssimplifymethod.sip

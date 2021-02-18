@@ -41,7 +41,7 @@ void QgsSettingsRegistry::registerSettings(
   mMapSettingsEntry.insert( key,
                             new QgsSettingsEntry(
                               key,
-                              mSection,
+                              nullptr,
                               defaultValue,
                               description ) );
 }
@@ -62,7 +62,7 @@ void QgsSettingsRegistry::registerSettingsString(
   mMapSettingsEntry.insert( key,
                             new QgsSettingsEntryString(
                               key,
-                              mSection,
+                              nullptr,
                               defaultValue,
                               description,
                               minLength,
@@ -82,7 +82,7 @@ QgsSettingsEntryStringList *QgsSettingsRegistry::registerSettingsStringList(
 
   QgsSettingsEntryStringList *settingsEntryStringList = new QgsSettingsEntryStringList(
     key,
-    mSection,
+    nullptr,
     defaultValue,
     description );
   mMapSettingsEntry.insert( key,
@@ -103,7 +103,7 @@ QgsSettingsEntryBool *QgsSettingsRegistry::registerSettingsBool(
 
   QgsSettingsEntryBool *settingsEntryBool = new QgsSettingsEntryBool(
     key,
-    mSection,
+    nullptr,
     defaultValue,
     description );
   mMapSettingsEntry.insert( key,
@@ -127,7 +127,7 @@ void QgsSettingsRegistry::registerSettingsInteger(
   mMapSettingsEntry.insert( key,
                             new QgsSettingsEntryInteger(
                               key,
-                              mSection,
+                              nullptr,
                               defaultValue,
                               description,
                               minValue,
@@ -150,7 +150,7 @@ void QgsSettingsRegistry::registerSettingsDouble( const QString &key,
   mMapSettingsEntry.insert( key,
                             new QgsSettingsEntryDouble(
                               key,
-                              mSection,
+                              nullptr,
                               defaultValue,
                               description,
                               minValue,

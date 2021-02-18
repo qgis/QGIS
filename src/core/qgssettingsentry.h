@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 #include "qgssettings.h"
 
+class QgsSettingsGroup;
+
 /**
  * \ingroup core
  * \class QgsSettingsEntry
@@ -64,9 +66,13 @@ class CORE_EXPORT QgsSettingsEntry
      * Constructor for QgsSettingsEntry.
      */
     QgsSettingsEntry( QString key = QString(),
-                      QgsSettings::Section settingsSection = QgsSettings::NoSection,
+                      QgsSettingsGroup *settingsGroupParent = nullptr,
                       QVariant defaultValue = QVariant(),
                       QString description = QString() );
+
+    /**
+     * Destructor for QgsSettingsEntry.
+     */
     virtual ~QgsSettingsEntry();
 
     /**
@@ -125,6 +131,7 @@ class CORE_EXPORT QgsSettingsEntry
   private:
 
     QString mKey;
+    QgsSettingsGroup *mSettingsGroupParent;
     QVariant mDefaultValue;
     QgsSettings::Section mSection;
     QString mDescription;
@@ -144,9 +151,9 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
     /**
      * Constructor for QgsSettingsEntryString.
      */
-    QgsSettingsEntryString( const QString &key,
-                            QgsSettings::Section section,
-                            const QString &defaultValue,
+    QgsSettingsEntryString( const QString &key = QString(),
+                            QgsSettingsGroup *settingsGroupParent = nullptr,
+                            const QString &defaultValue = QString(),
                             const QString &description = QString(),
                             int minLength = 0,
                             int maxLength = -1 );
@@ -185,9 +192,9 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
     /**
      * Constructor for QgsSettingsEntryStringList.
      */
-    QgsSettingsEntryStringList( const QString &key,
-                                QgsSettings::Section section,
-                                const QStringList &defaultValue,
+    QgsSettingsEntryStringList( const QString &key = QString(),
+                                QgsSettingsGroup *settingsGroupParent = nullptr,
+                                const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString() );
 
     bool setValue( const QVariant &value ) override;
@@ -209,9 +216,9 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
     /**
      * Constructor for QgsSettingsEntryBool.
      */
-    QgsSettingsEntryBool( const QString &key,
-                          QgsSettings::Section section,
-                          qlonglong defaultValue,
+    QgsSettingsEntryBool( const QString &key = QString(),
+                          QgsSettingsGroup *settingsGroupParent = nullptr,
+                          bool defaultValue = false,
                           const QString &description = QString() );
 
     bool setValue( const QVariant &value ) override;
@@ -233,9 +240,9 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
     /**
      * Constructor for QgsSettingsEntryInteger.
      */
-    QgsSettingsEntryInteger( const QString &key,
-                             QgsSettings::Section section,
-                             qlonglong defaultValue,
+    QgsSettingsEntryInteger( const QString &key = QString(),
+                             QgsSettingsGroup *settingsGroupParent = nullptr,
+                             qlonglong defaultValue = 0,
                              const QString &description = QString(),
                              qlonglong minValue = -__LONG_LONG_MAX__ + 1,
                              qlonglong maxValue = __LONG_LONG_MAX__ );
@@ -274,9 +281,9 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
     /**
      * Constructor for QgsSettingsEntryDouble.
      */
-    QgsSettingsEntryDouble( const QString &key,
-                            QgsSettings::Section section,
-                            double defaultValue,
+    QgsSettingsEntryDouble( const QString &key = QString(),
+                            QgsSettingsGroup *settingsGroupParent = nullptr,
+                            double defaultValue = 0.0,
                             const QString &description = QString(),
                             double minValue = __DBL_MIN__,
                             double maxValue = __DBL_MAX__,
@@ -327,11 +334,11 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
      */
     template <class T>
     QgsSettingsEntryEnum( const QString &key,
-                          QgsSettings::Section section,
+                          QgsSettingsGroup *settingsGroupParent,
                           const T &defaultValue,
                           const QString &description = QString() )
       : QgsSettingsEntry( key,
-                          section,
+                          settingsGroupParent,
                           defaultValue,
                           description )
     {

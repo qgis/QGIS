@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettingsgroup.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsSettingsGroup
+{
+%Docstring
+
+
+.. versionadded:: 3.17
+%End
+
+%TypeHeaderCode
+#include "qgssettingsgroup.h"
+%End
+  public:
+
+    QgsSettingsGroup( QString key = QString(),
+                      QgsSettingsGroup *parentGroup = 0,
+                      QString description = QString() );
+%Docstring
+Constructor for QgsSettingsGroup.
+%End
+    virtual ~QgsSettingsGroup();
+
+    void initialize( QString key,
+                     QgsSettingsGroup *parentGroup = 0,
+                     QString description = QString() );
+
+    void setKey( const QString &key );
+
+    QString key() const;
+%Docstring
+Get settings group key.
+%End
+
+    QString description() const;
+%Docstring
+Get settings group description.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettingsgroup.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

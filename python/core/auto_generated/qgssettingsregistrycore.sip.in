@@ -31,17 +31,36 @@ Constructor for QgsSettingsRegistryCore.
 
     struct SettingsEntries
     {
-      struct Layout
-      {
-        QgsSettingsEntryStringList *searchPathForTemplates;
-      };
-      Layout layout;
+        struct Layout : public QgsSettingsGroup
+        {
+            struct SubLayout : public QgsSettingsGroup
+            {
+              QgsSettingsEntryStringList searchPathForTemplatesInSub;
+            };
+            SubLayout subLayout;
 
-      struct Measure
-      {
-        QgsSettingsEntryBool *planimetric;
-      };
-      Measure measure;
+            QgsSettingsEntryStringList searchPathForTemplates;
+            QgsSettingsEntryInteger anotherNumericSettings;
+        };
+        Layout layout;
+
+        struct Measure : public QgsSettingsGroup
+        {
+          QgsSettingsEntryBool planimetric;
+        };
+        Measure measure;
+
+        struct LocatorFilter : public QgsSettingsGroup
+        {
+          LocatorFilter();
+
+          QgsSettingsEntryBool enabled;
+          QgsSettingsEntryBool byDefault;
+          QgsSettingsEntryString prefix;
+        };
+
+        QgsSettingsMap<LocatorFilter> locatorFilters;
+
     };
 
     SettingsEntries settingsEntries() const;

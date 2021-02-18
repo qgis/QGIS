@@ -20,6 +20,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
+#include "qgssettingsentry.h"
+#include "qgssettingsgroup.h"
+#include "qgssettingsmap.h"
 
 class QgsSettingsEntryStringList;
 
@@ -41,17 +44,40 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     struct SettingsEntries
     {
-      struct Layout
-      {
-        QgsSettingsEntryStringList *searchPathForTemplates;
-      };
-      Layout layout;
+        struct Layout : public QgsSettingsGroup
+        {
+            struct SubLayout : public QgsSettingsGroup
+            {
+              QgsSettingsEntryStringList searchPathForTemplatesInSub;
+            };
+            SubLayout subLayout;
 
-      struct Measure
-      {
-        QgsSettingsEntryBool *planimetric;
-      };
-      Measure measure;
+            QgsSettingsEntryStringList searchPathForTemplates;
+            QgsSettingsEntryInteger anotherNumericSettings;
+        };
+        Layout layout;
+
+        struct Measure : public QgsSettingsGroup
+        {
+          QgsSettingsEntryBool planimetric;
+        };
+        Measure measure;
+
+        struct LocatorFilter : public QgsSettingsGroup
+        {
+          LocatorFilter()
+            : enabled( "enabled", this, true, "" )
+            , byDefault( "default", this, false, "" )
+            , prefix( "prefix", this, QString(), "" )
+          {}
+
+          QgsSettingsEntryBool enabled;
+          QgsSettingsEntryBool byDefault;
+          QgsSettingsEntryString prefix;
+        };
+
+        QgsSettingsMap<LocatorFilter> locatorFilters;
+
     };
 
     SettingsEntries settingsEntries() const;
