@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>573</width>
-    <height>464</height>
+    <height>491</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -78,6 +78,9 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="minimum">
+           <number>100000</number>
+          </property>
           <property name="maximum">
            <number>99999999</number>
           </property>
@@ -115,7 +118,7 @@
         <item row="3" column="0">
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>Point cloud size:</string>
+           <string>Point cloud size</string>
           </property>
          </widget>
         </item>
