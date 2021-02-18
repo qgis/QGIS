@@ -78,6 +78,8 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private U
     void setGuiElementValues();
     void fontChanged();
     void justifyClicked();
+    void connectUpdateSignal();
+    void disconnectUpdateSignal();
 
   private:
     QPointer< QgsLayoutItemLabel > mLabel = nullptr;

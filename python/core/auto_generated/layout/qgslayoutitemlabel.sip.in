@@ -204,14 +204,14 @@ contents, in layout units.
 .. seealso:: :py:func:`setMarginX`
 %End
 
-    void setFontColor( const QColor &color );
+    void setFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the label font ``color``.
 
 .. seealso:: :py:func:`fontColor`
 %End
 
-    QColor fontColor() const;
+    QColor fontColor() const /Deprecated/;
 %Docstring
 Returns the label font color.
 
@@ -226,6 +226,25 @@ Returns the label font color.
 
     virtual void setFrameStrokeWidth( QgsLayoutMeasurement strokeWidth );
 
+
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used for drawing text in the scalebar.
+
+.. seealso:: :py:func:`setTextFormat`
+
+.. versionadded:: 3.20
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for drawing text in the scalebar.
+
+.. seealso:: :py:func:`textFormat`
+
+.. versionadded:: 3.20
+%End
 
   public slots:
 
