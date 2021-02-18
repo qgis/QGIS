@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * Render job implementation that renders maps in stages, allowing different stages (e.g. individual map
+ * \brief Render job implementation that renders maps in stages, allowing different stages (e.g. individual map
  * layers) to be rendered to different paint devices.
  *
  * \since QGIS 3.10

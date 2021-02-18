@@ -31,6 +31,7 @@ class QgsRasterMatrix;
 /**
  * \ingroup analysis
  * \class QgsRasterCalcNode
+ * \brief Represents a node in a raster calculator.
  */
 class ANALYSIS_EXPORT QgsRasterCalcNode
 {

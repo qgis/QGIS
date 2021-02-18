@@ -20,7 +20,8 @@
 #include "qgsprocessingparametertype.h"
 
 /**
- * A parameter for processing algorithms that need a list of input vector layers to construct a TIN
+ * \brief A parameter for processing algorithms that need a list of input vector layers to construct a TIN.
+ *
  * A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
  * {
  *   'source':  string that represents identification of the vector layer,
@@ -66,7 +67,7 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
 };
 
 /**
- * Parameter type definition for QgsProcessingParameterTinInputLayers.
+ * \brief Parameter type definition for QgsProcessingParameterTinInputLayers.
  *
  * \ingroup core
  * \since QGIS 3.16

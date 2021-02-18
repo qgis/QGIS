@@ -28,7 +28,9 @@
 
 /**
  * \ingroup core
- * Item representing a grid. This is drawn separately to the underlying page item since the grid needs to be
+ * \brief Item representing a grid.
+ *
+ * This is drawn separately to the underlying page item since the grid needs to be
  * drawn above all other layout items, while the paper item is drawn below all others.
  * \since QGIS 3.0
  */

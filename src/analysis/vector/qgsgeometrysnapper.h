@@ -31,7 +31,7 @@ class QgsVectorLayer;
 /**
  * \class QgsGeometrySnapper
  * \ingroup analysis
- * QgsGeometrySnapper allows a geometry to be snapped to the geometries within a
+ * \brief QgsGeometrySnapper allows a geometry to be snapped to the geometries within a
  * different reference layer. Vertices in the geometries will be modified to
  * match the reference layer features within a specified snap tolerance.
  * \since QGIS 3.0
@@ -118,7 +118,7 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
 /**
  * \class QgsInternalGeometrySnapper
  * \ingroup analysis
- * QgsInternalGeometrySnapper allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
+ * \brief QgsInternalGeometrySnapper allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
  *
  * To use QgsInternalGeometrySnapper, first construct the snapper using the desired snap parameters. Then,
  * features are fed to to the snapper one-by-one by calling snapFeature(). Each feature passed by calling

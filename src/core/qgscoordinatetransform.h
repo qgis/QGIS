@@ -33,7 +33,7 @@ class QgsProject;
 
 /**
  * \ingroup core
-* Class for doing transforms between two map coordinate systems.
+* \brief Class for doing transforms between two map coordinate systems.
 *
 * This class can convert map coordinates to a different coordinate reference system.
 * It is normally associated with a map layer and is used to transform between the

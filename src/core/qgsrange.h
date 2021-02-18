@@ -27,7 +27,7 @@
 /**
  * \class QgsRange
  * \ingroup core
- * A template based class for storing ranges (lower to upper values).
+ * \brief A template based class for storing ranges (lower to upper values).
  *
  * QgsRange classes represent a range of values of some element type. For instance,
  * ranges of int might be used to represent integer ranges.
@@ -190,7 +190,8 @@ typedef QgsRange< double > QgsDoubleRange;
 
 
 /**
- * QgsRange which stores a range of integer values.
+ * \brief QgsRange which stores a range of integer values.
+ * \ingroup core
  * \see QgsDoubleRange
  * \see QgsDateRange
  * \see QgsDateTimeRange
@@ -202,7 +203,7 @@ typedef QgsRange< int > QgsIntRange;
 /**
  * \class QgsTemporalRange
  * \ingroup core
- * A template based class for storing temporal ranges (beginning to end values).
+ * \brief A template based class for storing temporal ranges (beginning to end values).
  *
  * QgsTemporalRange classes represent a range of values of some temporal type. For instance,
  * ranges of QDateTime might be used to represent datetime ranges.

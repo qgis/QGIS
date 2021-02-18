@@ -26,7 +26,8 @@ class QgsCurvePolygon;
 /**
  * \ingroup analysis
  *
- * A geometry check error for a missing vertex.
+ * \brief A geometry check error for a missing vertex.
+ *
  * Includes additional details about the bounding box of the error,
  * centered on the missing error location and scaled by taking neighbouring
  * vertices into account.
@@ -76,7 +77,8 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryChe
 /**
  * \ingroup analysis
  *
- * A topology check for missing vertices.
+ * \brief A topology check for missing vertices.
+ *
  * Any vertex which is on the border of another polygon but no corresponding vertex
  * can be found on the other polygon will be reported as an error.
  *

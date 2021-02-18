@@ -84,7 +84,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
 
 /**
  * \ingroup core
- * Implementation of threaded rendering for mesh layers.
+ * \brief Implementation of threaded rendering for mesh layers.
  *
  * \note not available in Python bindings
  * \since QGIS 3.2

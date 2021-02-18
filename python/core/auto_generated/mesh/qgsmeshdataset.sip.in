@@ -54,9 +54,9 @@ class QgsMeshDatasetValue
 {
 %Docstring
 
-QgsMeshDatasetValue represents single dataset value
+QgsMeshDatasetValue represents single dataset value.
 
-could be scalar or vector. Nodata values are represented by NaNs.
+Values may be scalar or vector. Nodata values are represented by NaNs.
 
 .. note::
 
@@ -249,7 +249,7 @@ class QgsMesh3dDataBlock
 QgsMesh3dDataBlock is a block of 3d stacked mesh data related N
 faces defined on base mesh frame.
 
-data are implicitly shared, so the class can be quickly copied
+Data are implicitly shared, so the class can be quickly copied
 std.numeric_limits<double>.quiet_NaN() represents NODATA value
 
 .. note::

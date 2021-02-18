@@ -33,7 +33,7 @@ typedef struct PJconsts PJ;
 #endif
 
 /**
- * Contains methods and classes relating the datum transformations.
+ * \brief Contains methods and classes relating the datum transformations.
  * \ingroup core
  *
  * \see QgsCoordinateTransformContext

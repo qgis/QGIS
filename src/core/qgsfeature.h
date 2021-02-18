@@ -48,7 +48,7 @@ class QgsAbstractGeometry;
 
 /**
  * \ingroup core
- * The feature class encapsulates a single feature including its id,
+ * \brief The feature class encapsulates a single feature including its id,
  * geometry and a list of field/values attributes.
  * \note QgsFeature objects are implicitly shared.
  */

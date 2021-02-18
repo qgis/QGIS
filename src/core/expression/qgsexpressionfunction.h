@@ -35,8 +35,8 @@ class QgsExpressionContextScope;
 
 /**
  * \ingroup core
-  * A abstract base class for defining QgsExpression functions.
-  */
+ * \brief A abstract base class for defining QgsExpression functions.
+ */
 class CORE_EXPORT QgsExpressionFunction
 {
   public:
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsExpressionFunction
 
     /**
      * \ingroup core
-      * Represents a single parameter passed to a function.
+      * \brief Represents a single parameter passed to a function.
       * \since QGIS 2.16
       */
     class CORE_EXPORT Parameter
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsExpressionFunction
 
 /**
  * \ingroup core
-  * c++ helper class for defining QgsExpression functions.
+  * \brief c++ helper class for defining QgsExpression functions.
   * \note not available in Python bindings
   */
 #ifndef SIP_RUN
@@ -500,7 +500,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
 };
 
 /**
- * Handles the ``array_foreach(array, expression)`` expression function.
+ * \brief Handles the ``array_foreach(array, expression)`` expression function.
  * It temporarily appends a new scope to the expression context.
  *
  * \ingroup core
@@ -523,7 +523,7 @@ class QgsArrayForeachExpressionFunction : public QgsExpressionFunction
 };
 
 /**
- * Handles the ``array_filter(array, expression)`` expression function.
+ * \brief Handles the ``array_filter(array, expression)`` expression function.
  * It temporarily appends a new scope to the expression context.
  *
  * \ingroup core
@@ -546,7 +546,7 @@ class QgsArrayFilterExpressionFunction : public QgsExpressionFunction
 };
 
 /**
- * Handles the ``with_variable(name, value, node)`` expression function.
+ * \brief Handles the ``with_variable(name, value, node)`` expression function.
  * It temporarily appends a new scope to the expression context for all nested
  * nodes.
  *

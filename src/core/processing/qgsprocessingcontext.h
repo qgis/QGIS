@@ -33,7 +33,7 @@ class QgsProcessingLayerPostProcessorInterface;
 /**
  * \class QgsProcessingContext
  * \ingroup core
- * Contains information about the context in which a processing algorithm is executed.
+ * \brief Contains information about the context in which a processing algorithm is executed.
  *
  * Contextual information includes settings such as the associated project, and
  * expression context.
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsProcessingContext
     QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
 
     /**
-     * Details for layers to load into projects.
+     * \brief Details for layers to load into projects.
      * \ingroup core
      * \since QGIS 3.0
      */
@@ -645,7 +645,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 
 
 /**
- * An interface for layer post-processing handlers for execution following a processing algorithm operation.
+ * \brief An interface for layer post-processing handlers for execution following a processing algorithm operation.
  *
  * Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project
  * on algorithm completion. See QgsProcessingContext::layersToLoadOnCompletion().

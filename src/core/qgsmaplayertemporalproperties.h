@@ -32,7 +32,7 @@ class QgsDataProviderTemporalCapabilities;
 /**
  * \class QgsMapLayerTemporalProperties
  * \ingroup core
- * Base class for storage of map layer temporal properties.
+ * \brief Base class for storage of map layer temporal properties.
  *
  * QgsMapLayerTemporalProperties exposes user-configurable settings for controlling
  * how an individual QgsMapLayer behaves in a temporal context, e.g. while animating a map object.

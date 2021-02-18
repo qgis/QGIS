@@ -46,7 +46,7 @@ class QDomElement;
 
 /**
  * \ingroup 3d
- * Definition of the world
+ * \brief Definition of the world.
  *
  * \since QGIS 3.0
  */

@@ -27,7 +27,7 @@ class QgsProcessingProvider;
 /**
  * \class QgsProcessingFeedback
  * \ingroup core
- * Base class for providing feedback from a processing algorithm.
+ * \brief Base class for providing feedback from a processing algorithm.
  *
  * This base class implementation silently ignores all feedback reported by algorithms.
  * Subclasses of QgsProcessingFeedback can be used to log this feedback or report
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
  * \class QgsProcessingMultiStepFeedback
  * \ingroup core
  *
- * Processing feedback object for multi-step operations.
+ * \brief Processing feedback object for multi-step operations.
  *
  * A processing feedback object which proxies its calls to an underlying
  * feedback object, but scales overall progress reports to account

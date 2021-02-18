@@ -31,7 +31,7 @@ class QgsFillSymbol;
 
 /**
  * \ingroup core
- * Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
+ * \brief Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
  *
  * \since QGIS 3.16
  */

@@ -197,6 +197,7 @@ class QgsMapRendererQImageJob : QgsMapRendererJob
 {
 %Docstring
 Intermediate base class adding functionality that allows client to query the rendered image.
+
 The image can be queried even while the rendering is still in progress to get intermediate result
 
 .. versionadded:: 2.4

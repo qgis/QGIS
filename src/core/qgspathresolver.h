@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * Resolves relative paths into absolute paths and vice versa. Used for writing
+ * \brief Resolves relative paths into absolute paths and vice versa. Used for writing
  *
  * \since QGIS 3.0
  */

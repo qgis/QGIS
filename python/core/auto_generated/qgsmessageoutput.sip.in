@@ -16,6 +16,7 @@ class QgsMessageOutput
 {
 %Docstring
 Interface for showing messages from QGIS in GUI independent way.
+
 This class provides abstraction of a dialog for showing output to the user.
 By default QgsMessageConsoleOutput will be used if not overridden with other
 message output creator function.

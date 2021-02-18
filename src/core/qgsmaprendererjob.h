@@ -41,7 +41,7 @@ class QgsFeatureFilterProvider;
 
 /**
  * \ingroup core
- * Structure keeping low-level rendering job information.
+ * \brief Structure keeping low-level rendering job information.
  */
 struct LayerRenderJob
 {
@@ -111,7 +111,7 @@ typedef QList<LayerRenderJob> LayerRenderJobs;
 
 /**
  * \ingroup core
- * Structure keeping low-level label rendering job information.
+ * \brief Structure keeping low-level label rendering job information.
  */
 struct LabelRenderJob
 {
@@ -158,7 +158,7 @@ struct LabelRenderJob
 
 /**
  * \ingroup core
- * Abstract base class for map rendering implementations.
+ * \brief Abstract base class for map rendering implementations.
  *
  * The API is designed in a way that rendering is done asynchronously, therefore
  * the caller is not blocked while the rendering is in progress. Non-blocking
@@ -431,8 +431,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
 /**
  * \ingroup core
- * Intermediate base class adding functionality that allows client to query the rendered image.
- *  The image can be queried even while the rendering is still in progress to get intermediate result
+ * \brief Intermediate base class adding functionality that allows client to query the rendered image.
+ *
+ * The image can be queried even while the rendering is still in progress to get intermediate result
  *
  * \since QGIS 2.4
  */

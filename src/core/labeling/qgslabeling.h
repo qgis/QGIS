@@ -24,7 +24,7 @@
  * \ingroup core
  * \class QgsLabeling
  *
- * Contains constants and enums relating to labeling.
+ * \brief Contains constants and enums relating to labeling.
  *
  * \since QGIS 3.12
  */

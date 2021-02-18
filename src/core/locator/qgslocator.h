@@ -34,7 +34,7 @@
 /**
  * \class QgsLocator
  * \ingroup core
- * Handles the management of QgsLocatorFilter objects and async collection of search results from them.
+ * \brief Handles the management of QgsLocatorFilter objects and async collection of search results from them.
  *
  * QgsLocator acts as both a registry for QgsLocatorFilter objects and a means of firing up
  * asynchronous queries against these filter objects.

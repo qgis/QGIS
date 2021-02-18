@@ -50,7 +50,7 @@ typedef QMap<int, QgsField> QgsFieldMap;
 
 /**
  * \ingroup core
- * A vector of attributes. Mostly equal to QVector<QVariant>.
+ * \brief A vector of attributes. Mostly equal to QVector<QVariant>.
  * \note QgsAttributes is implemented as a Python list of Python objects.
  */
 #ifndef SIP_RUN

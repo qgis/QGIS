@@ -24,6 +24,8 @@
  * \ingroup core
  * \class QgsMaskIdProvider
  *
+ * \brief This class allows the creation of mask ids based on the different label layers and to give a mask id from a label layer.
+ *
  * Some rendering operations may need multiple mask images. This is the case for label rendering in which we can
  * have different mask images: one different for each labeling rule for instance.
  * Some label layers may need to share their mask images, some other need to have distinct mask images.
@@ -31,7 +33,6 @@
  *
  * A "mask id" is then associated to each label layer. They are contiguous integer numbers starting at 0.
  *
- * This class allows the creation of mask ids based on the different label layers and to give a mask id from a label layer.
  * \since QGIS 3.12
  */
 class CORE_EXPORT QgsMaskIdProvider

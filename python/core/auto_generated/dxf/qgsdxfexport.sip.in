@@ -16,6 +16,9 @@
 
 class QgsDxfExport
 {
+%Docstring
+Exports QGIS layers to the DXF format.
+%End
 
 %TypeHeaderCode
 #include "qgsdxfexport.h"

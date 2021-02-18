@@ -15,15 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * \ingroup core
- * Class to convert from older project file versions to newer.
- * This class provides possibility to store a project file as a QDomDocument,
- * and provides the ability to specify version of the project file, and
- * perform upgrades to a more recent version
- */
-
-
 #ifndef QGSPROJECTFILETRANSFORM_H
 #define QGSPROJECTFILETRANSFORM_H
 
@@ -37,6 +28,11 @@ class QgsRasterLayer;
 
 /**
  * \ingroup core
+ * \brief Class to convert from older project file versions to newer.
+ *
+ * This class provides possibility to store a project file as a QDomDocument,
+ * and provides the ability to specify version of the project file, and
+ * perform upgrades to a more recent version
  */
 class CORE_EXPORT QgsProjectFileTransform
 {

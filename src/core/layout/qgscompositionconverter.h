@@ -46,7 +46,7 @@ class QgsLayoutItemAttributeTable;
 class QgsLayoutAtlas;
 
 /**
- * QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout
+ * \brief QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout
  * \note Not available in Python bindings.
  * \ingroup core
  * \since QGIS 3.0
