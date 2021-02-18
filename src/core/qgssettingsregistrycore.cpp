@@ -20,7 +20,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   , mSettingsEntries()
 {
   // Register settings for core here:
-  mSettingsEntries.layout.searchPathForTemplates = QgsSettingsRegistryCore::registerSettingsStringList( QStringLiteral( "Layout/searchPathsForTemplates" ),
+  mSettingsEntries.layout.searchPathForTemplates = QgsSettingsRegistryCore::registerSettingsStringList( QStringLiteral( "layout/searchPathsForTemplates" ),
       QStringList(),
       QObject::tr( "Search path for templates" ) );
   mSettingsEntries.measure.planimetric = QgsSettingsRegistry::registerSettingsBool( QStringLiteral( "measure/planimetric" ),
