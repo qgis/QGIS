@@ -82,6 +82,9 @@ class SERVER_EXPORT QgsServerRequest
      */
     QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
+    /**
+     * Copy constructor.
+     */
     QgsServerRequest( const QgsServerRequest &other );
 
     //! destructor

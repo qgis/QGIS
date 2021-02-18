@@ -41,7 +41,7 @@ namespace QgsWms
     public:
 
       /**
-       * Copy onstructor
+       * Copy constructor
        */
       QgsWmsRequest( const QgsServerRequest &other );
 
@@ -50,6 +50,9 @@ namespace QgsWms
        */
       ~QgsWmsRequest() override = default;
 
+      /**
+       * Returns the parameters interpreted for the WMS service.
+       */
       const QgsWmsParameters &wmsParameters() const;
 
       void setParameter( const QString &key, const QString &value ) override;

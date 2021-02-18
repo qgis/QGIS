@@ -59,6 +59,9 @@ Constructor
 %End
 
     QgsServerRequest( const QgsServerRequest &other );
+%Docstring
+Copy constructor.
+%End
 
     virtual ~QgsServerRequest();
 
