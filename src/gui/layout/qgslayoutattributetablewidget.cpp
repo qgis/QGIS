@@ -944,9 +944,10 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mRelationLabel->setVisible( false );
       mMaximumRowsSpinBox->setEnabled( true );
       mMaxNumFeaturesLabel->setEnabled( true );
-      mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
-      mComposerMapComboBox->setEnabled( mTable->displayOnlyVisibleFeatures() );
-      mComposerMapLabel->setEnabled( mTable->displayOnlyVisibleFeatures() );
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( mTable->vectorLayer()->geometryType() != QgsWkbTypes::NullGeometry );
+      mShowOnlyVisibleFeaturesCheckBox->setChecked( mTable->vectorLayer()->geometryType() != QgsWkbTypes::NullGeometry &&  mTable->displayOnlyVisibleFeatures() );
+      mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
+      mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
       break;
     case QgsLayoutItemAttributeTable::AtlasFeature:
       mLayerComboBox->setEnabled( false );
@@ -974,8 +975,8 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mMaximumRowsSpinBox->setEnabled( true );
       mMaxNumFeaturesLabel->setEnabled( true );
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
-      mComposerMapComboBox->setEnabled( mTable->displayOnlyVisibleFeatures() );
-      mComposerMapLabel->setEnabled( mTable->displayOnlyVisibleFeatures() );
+      mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
+      mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
       break;
   }
 }
