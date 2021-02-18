@@ -6,6 +6,7 @@
 
 #!/bin/sh
 
+# shellcheck disable=SC2086,SC2035,SC2035,SC2046,SC2044,SC2012,SC2155
 
 arch=${1:-x86_64}
 DEBUG=false
@@ -70,19 +71,20 @@ installprefix="$installroot/usr/$arch-w64-mingw32/sys-root/mingw"
 rm -rf "$installroot"
 
 # Build
-mkdir -p $BUILDDIR
+mkdir -p "$BUILDDIR"
 (
-  cd $BUILDDIR
-  qsci_ver=$(grep -Eo '\s*([0-9]+\.[0-9]+\.[0-9]+)' $MINGWROOT/include/qt5/Qsci/qsciglobal.h)
+  CRSSYNC_BIN=$(readlink -f "$SRCDIR")/build/output/bin/crssync
+  cd "$BUILDDIR"
+  QSCI_VER=$(grep -Eo '\s*([0-9]+\.[0-9]+\.[0-9]+)' "$MINGWROOT/include/qt5/Qsci/qsciglobal.h")
   mingw$bits-cmake \
     -DCMAKE_CROSS_COMPILING=1 \
     -DCMAKE_BUILD_TYPE=$buildtype \
-    -DNATIVE_CRSSYNC_BIN=$(readlink -f $SRCDIR)/build/output/bin/crssync \
-    -DQSCINTILLA_VERSION_STR=$qsci_ver \
-    -DQSCINTILLA_LIBRARY=$MINGWROOT/lib/libqscintilla2_qt5.dll.a \
-    -DQSCI_MOD_VERSION_STR=$qsci_ver \
-    -DQWT_INCLUDE_DIR=$MINGWROOT/include/qt5/qwt \
-    -DQSCI_SIP_DIR=$MINGWROOT/share/sip/PyQt5/Qsci/ \
+    -DNATIVE_CRSSYNC_BIN="$CRSSYNC_BIN" \
+    -DQSCINTILLA_VERSION_STR="$QSCI_VER" \
+    -DQSCINTILLA_LIBRARY="$MINGWROOT/lib/libqscintilla2_qt5.dll.a" \
+    -DQSCI_MOD_VERSION_STR="$QSCI_VER" \
+    -DQWT_INCLUDE_DIR="$MINGWROOT/include/qt5/qwt" \
+    -DQSCI_SIP_DIR="$MINGWROOT/share/sip/PyQt5/Qsci/" \
     -DBUILD_TESTING=OFF \
     -DENABLE_TESTS=OFF \
     -DQGIS_BIN_SUBDIR=bin \
@@ -112,31 +114,31 @@ mkdir -p $BUILDDIR
 # Xvfb :99 &
 # export DISPLAY=:99
 
-mingw$bits-make -C$BUILDDIR -j$njobs DESTDIR="${installroot}" install VERBOSE=1
+mingw$bits-make -C"$BUILDDIR" -j"$njobs" DESTDIR="${installroot}" install VERBOSE=1
 
 # Remove plugins with missing dependencies
-rm -rf ${installroot}/share/qgis/python/plugins/{MetaSearch,processing}
+rm -rf "${installroot}/share/qgis/python/plugins/{MetaSearch,processing}"
 
 # Strip debuginfo
-binaries=$(find $installprefix -name '*.exe' -or -name '*.dll' -or -name '*.pyd')
+binaries=$(find "$installprefix" -name '*.exe' -or -name '*.dll' -or -name '*.pyd')
 for f in $binaries
 do
-    case $(mingw-objdump -h $f 2>/dev/null | egrep -o '(debug[\.a-z_]*|gnu.version)') in
+    case $(mingw-objdump -h "$f" 2>/dev/null | grep -E -o '(debug[\.a-z_]*|gnu.version)') in
         *debuglink*) continue ;;
         *debug*) ;;
         *gnu.version*)
-        echo "WARNING: $(basename $f) is already stripped!"
+        echo "WARNING: $(basename "$f") is already stripped!"
         continue
         ;;
         *) continue ;;
     esac
 
-    echo extracting debug info from $f
-    mingw-objcopy --only-keep-debug $f $f.debug || :
-    pushd $(dirname $f)
-    keep_symbols=`mktemp`
+    echo extracting debug info from "$f"
+    mingw-objcopy --only-keep-debug "$f" "$f.debug" || :
+    pushd $(dirname "$f")
+    keep_symbols=$(mktemp)
     mingw-nm $f.debug --format=sysv --defined-only | awk -F \| '{ if ($4 ~ "Function") print $1 }' | sort > "$keep_symbols"
-    mingw-objcopy --add-gnu-debuglink=`basename $f.debug` --strip-unneeded `basename $f` --keep-symbols="$keep_symbols" || :
+    mingw-objcopy --add-gnu-debuglink=$(basename "$f.debug") --strip-unneeded $(basename "$f") --keep-symbols="$keep_symbols" || :
     rm -f "$keep_symbols"
     popd
 done
@@ -162,7 +164,7 @@ function linkDep {
     lnk "$MINGWROOT/$1" "$destdir/$name" || return 1
     echo "${2:-bin}/$name: $(rpm -qf "$MINGWROOT/$1")" >> $installprefix/origins.txt
     autoLinkDeps "$destdir/$name" "${indent}  " || return 1
-    [ -e "$MINGWROOT/$1.debug" ] && lnk "$MINGWROOT/$1.debug" "$destdir/$name.debug" || ($debug && echo "Warning: missing $name.debug" || :)
+    ([ -e "$MINGWROOT/$1.debug" ] && lnk "$MINGWROOT/$1.debug" "$destdir/$name.debug") || ( ($DEBUG && echo "Warning: missing $name.debug") || :)
     return 0
 }
 
@@ -191,7 +193,7 @@ IFS=$SAVEIFS
 )
 
 echo "Linking dependencies..."
-binaries=$(find $installprefix -name '*.exe' -or -name '*.dll' -or -name '*.pyd')
+binaries=$(find "$installprefix" -name '*.exe' -or -name '*.dll' -or -name '*.pyd')
 for binary in $binaries; do
     autoLinkDeps $binary
 done
@@ -199,8 +201,8 @@ linkDep bin/gdb.exe
 linkDep bin/python3.exe
 linkDep bin/python3w.exe
 
-linkDep $(ls $MINGWROOT/bin/libssl-*.dll | sed "s|$MINGWROOT/||")
-linkDep $(ls $MINGWROOT/bin/libcrypto-*.dll | sed "s|$MINGWROOT/||")
+linkDep $(ls "$MINGWROOT/bin/libssl-"*.dll | sed "s|$MINGWROOT/||")
+linkDep $(ls "$MINGWROOT/bin/libcrypto-"*.dll | sed "s|$MINGWROOT/||")
 linkDep lib/mod_spatialite.dll bin
 
 # Additional dependencies
@@ -230,28 +232,14 @@ linkDep lib/qt5/plugins/crypto/libqca-softstore.dll bin/crypto
 linkDep lib/qt5/plugins/crypto/libqca-gnupg.dll bin/crypto
 linkDep lib/qt5/plugins/crypto/libqca-ossl.dll bin/crypto
 
-mkdir -p $installprefix/share/qt5/translations/
-cp -a $MINGWROOT/share/qt5/translations/qt_*.qm  $installprefix/share/qt5/translations
-cp -a $MINGWROOT/share/qt5/translations/qtbase_*.qm  $installprefix/share/qt5/translations
+mkdir -p "$installprefix/share/qt5/translations/"
+cp -a "$MINGWROOT/share/qt5/translations/qt_"*.qm  "$installprefix/share/qt5/translations"
+cp -a "$MINGWROOT/share/qt5/translations/qtbase_"*.qm  "$installprefix/share/qt5/translations"
 
 # Data files
-mkdir -p $installprefix/share/
-cp -a /usr/share/gdal $installprefix/share/gdal
-cp -a /usr/share/proj $installprefix/share/proj
+mkdir -p "$installprefix/share/"
+cp -a /usr/share/gdal "$installprefix/share/gdal"
+cp -a /usr/share/proj "$installprefix/share/proj"
 
 # Sort origins file
-cat $installprefix/origins.txt | sort | uniq > $installprefix/origins.new && mv $installprefix/origins.new $installprefix/origins.txt
-
-# Create package
-DISTROOT=build_mingw64/dist/usr/x86_64-w64-mingw32/sys-root/mingw
-DEBUGROOT=dist_debug
-for file in $(find $DISTROOT -name '*.debug' \( -type l -or -type f \)); do
-    dest=${file/$DISTROOT/$DEBUGROOT}
-    mkdir -p "$(dirname $dest)"
-    sudo mv "$file" "$dest"
-done
-
-sudo mv $DISTROOT QGIS-Portable
-zip -r qgis-portable-win64.zip QGIS-Portable
-(cd $DEBUGROOT && zip -r - *) > qgis-portable-win64-debugsym.zip
-
+sort "$installprefix/origins.txt" | uniq > "$installprefix/origins.new" && mv "$installprefix/origins.new" "$installprefix/origins.txt"
