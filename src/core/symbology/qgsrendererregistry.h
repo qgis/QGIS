@@ -33,7 +33,7 @@ class QgsRendererWidget SIP_EXTERNAL;
 
 /**
  * \ingroup core
- * Stores metadata about one renderer class.
+ * \brief Stores metadata about one renderer class.
  *
  * \note It's necessary to implement createRenderer() function.
  *   In C++ you can use QgsRendererMetadata convenience class.
@@ -137,7 +137,7 @@ typedef QgsFeatureRenderer *( *QgsRendererCreateFromSldFunc )( QDomElement &, Qg
 
 /**
  * \ingroup core
- Convenience metadata class that uses static functions to create renderer and its widget.
+ * \brief Convenience metadata class that uses static functions to create renderer and its widget.
  */
 class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 {

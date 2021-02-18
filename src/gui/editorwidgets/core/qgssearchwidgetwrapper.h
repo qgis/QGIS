@@ -80,7 +80,7 @@ class QgsField;
 /**
  * \ingroup gui
  *
- * Shows a search widget on a filter form.
+ * \brief Shows a search widget on a filter form.
  */
 class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 {

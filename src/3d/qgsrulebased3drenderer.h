@@ -68,7 +68,6 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
 
     /**
      * \ingroup 3d
-     * \class QgsRuleBased3DRenderer::Rule
      * \brief A child rule for a QgsRuleBased3DRenderer
      * \since QGIS 3.6
      */

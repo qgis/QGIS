@@ -32,7 +32,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
-  Base class for renderer settings widgets
+ * \brief Base class for renderer settings widgets.
 
 WORKFLOW:
 - open renderer dialog with some RENDERER  (never null!)
@@ -187,8 +187,8 @@ class QgsFields;
 
 /**
  * \ingroup gui
-Utility classes for "en masse" size definition
-*/
+ * \brief Utility classes for "en masse" size definition.
+ */
 class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueBaseDialog, private QgsExpressionContextGenerator
 {
 

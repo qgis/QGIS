@@ -29,7 +29,7 @@
 
 /**
  * \ingroup gui
- * The QgsNewDatabaseTableNameWidget class embeds the browser view to
+ * \brief The QgsNewDatabaseTableNameWidget class embeds the browser view to
  * select a DB schema and a new table name.
  *
  * The table name is validated for uniqueness and the selected
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
 
 /**
  * \ingroup gui
- * QgsNewDatabaseTableNameDialog is a dialog which allows selection of a DB schema and a new table name.
+ * \brief QgsNewDatabaseTableNameDialog is a dialog which allows selection of a DB schema and a new table name.
  *
  * The table name is validated for uniqueness and the selected
  * data item provider, schema and table names can be retrieved with

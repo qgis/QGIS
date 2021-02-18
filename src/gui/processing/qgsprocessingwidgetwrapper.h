@@ -43,8 +43,7 @@ class QgsBrowserGuiModel;
 
 /**
  * \class QgsProcessingContextGenerator
- *
- * An interface for objects which can create Processing contexts.
+ * \brief An interface for objects which can create Processing contexts.
  *
  * \ingroup gui
  * \since QGIS 3.4
@@ -68,7 +67,7 @@ class GUI_EXPORT QgsProcessingContextGenerator
 /**
  * \class QgsProcessingParametersGenerator
  *
- * An interface for objects which can create sets of parameter values for processing algorithms.
+ * \brief An interface for objects which can create sets of parameter values for processing algorithms.
  *
  * \ingroup gui
  * \since QGIS 3.14
@@ -90,7 +89,7 @@ class GUI_EXPORT QgsProcessingParametersGenerator
 /**
  * \ingroup gui
  * \class QgsProcessingParameterWidgetContext
- * Contains settings which reflect the context in which a Processing parameter widget is shown, e.g., the
+ * \brief Contains settings which reflect the context in which a Processing parameter widget is shown, e.g., the
  * parent model algorithm, a linked map canvas, and other relevant information which allows the widget
  * to fine-tune its behavior.
  *
@@ -247,7 +246,7 @@ class GUI_EXPORT QgsProcessingGuiUtils
 /**
  * \class QgsAbstractProcessingParameterWidgetWrapper
  *
- * A widget wrapper for Processing parameter value widgets.
+ * \brief A widget wrapper for Processing parameter value widgets.
  *
  * Widget wrappers are used to create widgets for individual Processing parameters, and
  * handle retrieving and setting the current value for those parameters.
@@ -501,7 +500,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
 /**
  * \class QgsProcessingParameterWidgetFactoryInterface
  *
- * An interface for Processing widget wrapper factories.
+ * \brief An interface for Processing widget wrapper factories.
  *
  * Widget wrapper factories allow creation of QgsAbstractProcessingParameterWidgetWrapper objects.
  * They are centrally managed by QgsProcessingGuiRegistry. Usually, individual factories
@@ -649,7 +648,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
 /**
  * \class QgsProcessingHiddenWidgetWrapper
  *
- * An widget wrapper for hidden widgets.
+ * \brief An widget wrapper for hidden widgets.
  *
  * The hidden widget wrapper allows for creation of a widget wrapper which does not provide
  * a graphical widget, yet still implements the QgsAbstractProcessingParameterWidgetWrapper

@@ -26,7 +26,7 @@ class QgsRasterLayer;
 /**
  * \ingroup gui
  * \class QgsRasterLayerTemporalPropertiesWidget
- * A widget for configuring the temporal properties for a raster layer.
+ * \brief A widget for configuring the temporal properties for a raster layer.
  *
  * \since QGIS 3.14
  */

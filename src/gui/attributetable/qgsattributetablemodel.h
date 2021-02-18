@@ -37,7 +37,7 @@ class QgsFieldFormatter;
 
 /**
  * \ingroup gui
- * A model backed by a QgsVectorLayerCache which is able to provide
+ * \brief A model backed by a QgsVectorLayerCache which is able to provide
  * feature/attribute information to a QAbstractItemView.
  *
  * \brief

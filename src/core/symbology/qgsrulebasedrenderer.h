@@ -31,8 +31,10 @@ class QgsGraduatedSymbolRenderer;
 
 /**
  * \ingroup core
-When drawing a vector layer with rule-based renderer, it goes through
-the rules and draws features with symbols from rules that match.
+ * \brief Rule based renderer.
+ *
+ * When drawing a vector layer with rule-based renderer, it goes through
+ * the rules and draws features with symbols from rules that match.
  */
 class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 {
@@ -126,12 +128,13 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /**
      * \ingroup core
-      This class keeps data about a rules for rule-based renderer.
-      A rule consists of a symbol, filter expression and range of scales.
-      If filter is empty, it matches all features.
-      If scale range has both values zero, it matches all scales.
-      If one of the min/max scale denominators is zero, there is no lower/upper bound for scales.
-      A rule matches if both filter and scale range match.
+     * \brief  This class keeps data about a rules for rule-based renderer.
+     *
+     * A rule consists of a symbol, filter expression and range of scales.
+     * If filter is empty, it matches all features.
+     * If scale range has both values zero, it matches all scales.
+     * If one of the min/max scale denominators is zero, there is no lower/upper bound for scales.
+     * A rule matches if both filter and scale range match.
      */
     class CORE_EXPORT Rule
     {

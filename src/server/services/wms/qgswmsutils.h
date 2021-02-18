@@ -29,7 +29,7 @@ class QgsRectangle;
 
 /**
  * \ingroup server
- * WMS implementation
+ * \brief WMS implementation
  */
 
 //! WMS implementation

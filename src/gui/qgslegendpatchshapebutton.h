@@ -29,7 +29,7 @@ class QgsMessageBar;
 /**
  * \ingroup gui
  * \class QgsLegendPatchShapeButton
- * A button for creating and modifying QgsLegendPatchShape settings.
+ * \brief A button for creating and modifying QgsLegendPatchShape settings.
  *
  * \since QGIS 3.14
  */

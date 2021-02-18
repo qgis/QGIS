@@ -31,7 +31,7 @@ SIP_NO_FILE
 
 /**
  * \ingroup gui
- * Wraps a file name widget. Will offer a file browser to choose files.
+ * \brief Wraps a file name widget. Will offer a file browser to choose files.
  * \note not available in Python bindings
  */
 

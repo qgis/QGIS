@@ -27,7 +27,7 @@
 
 /**
  * \ingroup gui
- * Wrapper widget to manage available certificate editors
+ * \brief Wrapper widget to manage available certificate editors
  */
 class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertManager
 {
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
 
 /**
  * \ingroup gui
- * Dialog wrapper for widget to manage available certificate editors
+ * \brief Dialog wrapper for widget to manage available certificate editors
  */
 class GUI_EXPORT QgsAuthCertManager : public QDialog
 {

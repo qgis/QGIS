@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * Class that adds extra information to QgsLabelFeature for labeling of diagrams
+ * \brief Class that adds extra information to QgsLabelFeature for labeling of diagrams
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings

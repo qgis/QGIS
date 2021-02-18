@@ -34,7 +34,7 @@ class QgsVectorLayer;
 /**
  * \ingroup quick
  *
- * Convenient set of tools to identify features
+ * \brief Convenient set of tools to identify features
  *
  * - get a list of features in a defined radius from a point.
  * - get a feature with the closest distance to the point

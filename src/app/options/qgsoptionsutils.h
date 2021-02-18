@@ -21,7 +21,7 @@ class QgsOptionsWidgetFactory;
 /**
  * \ingroup app
  *
- * Manages lifetime of a QgsOptionsWidgetFactory, automatically
+ * \brief Manages lifetime of a QgsOptionsWidgetFactory, automatically
  * registering and unregistering it as required.
  *
  * \since QGIS 3.16

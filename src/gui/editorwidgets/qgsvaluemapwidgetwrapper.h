@@ -26,7 +26,7 @@ SIP_NO_FILE
 
 /**
  * \ingroup gui
- * Wraps a value map widget.
+ * \brief Wraps a value map widget.
  *
  * Options:
  * <ul>

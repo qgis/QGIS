@@ -19,7 +19,7 @@
 
 /**
  * \ingroup gui
- * Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.
+ * \brief Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.
  *
  * \note not available in Python bindings
  * \since QGIS 3.0
@@ -57,7 +57,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 
 /**
  * \ingroup gui
- * Widget auto conf plugin that reads the widget setup to use from what the data provider says.
+ * \brief Widget auto conf plugin that reads the widget setup to use from what the data provider says.
  *
  * \note not available in Python bindings
  * \since QGIS 3.0

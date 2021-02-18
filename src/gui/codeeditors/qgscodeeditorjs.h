@@ -25,7 +25,7 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 /**
  * \ingroup gui
- * A Javascript editor based on QScintilla2. Adds syntax highlighting and
+ * \brief A Javascript editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \since QGIS 3.14
  */

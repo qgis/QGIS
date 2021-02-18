@@ -26,7 +26,7 @@ class QgsExpression;
 
 /**
  * \ingroup core
- * A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
+ * \brief A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
 */
 class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 {

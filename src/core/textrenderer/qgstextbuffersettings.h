@@ -35,7 +35,7 @@ class QgsPropertyCollection;
 /**
  * \class QgsTextBufferSettings
   * \ingroup core
-  * Container for settings relating to a text buffer.
+  * \brief Container for settings relating to a text buffer.
   * \note QgsTextBufferSettings objects are implicitly shared.
   * \since QGIS 3.0
  */

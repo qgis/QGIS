@@ -33,7 +33,7 @@
 /**
  * \class QgsTemporalController
  * \ingroup core
- * A controller base class for temporal objects, contains a signal for notifying
+ * \brief A controller base class for temporal objects, contains a signal for notifying
  * updates of the objects temporal range.
  *
  * \since QGIS 3.14

@@ -31,7 +31,7 @@ class QgsRasterMinMaxWidget;
  * \ingroup gui
  * \class QgsSingleBandPseudoColorRendererWidget
  *
- * Single band pseudo color renderer widget consists of a color ramp shader widget,
+ * \brief Single band pseudo color renderer widget consists of a color ramp shader widget,
  * a raster min max widget and a band selector.
  *
  */

@@ -39,7 +39,7 @@ class QgsFeatureRequest;
 
 /**
  * \ingroup server
- * The QgsServerFeatureId namespace provides a way to use primary keys for
+ * \brief The QgsServerFeatureId namespace provides a way to use primary keys for
  * feature id.
  * \since QGIS 3.4.9
  */

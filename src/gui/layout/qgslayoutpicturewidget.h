@@ -29,7 +29,7 @@ class QgsLayoutItemPicture;
 
 /**
  * \ingroup gui
- * A widget for configuring layout picture items.
+ * \brief A widget for configuring layout picture items.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

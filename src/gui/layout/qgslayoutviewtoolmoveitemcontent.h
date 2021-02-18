@@ -22,7 +22,7 @@
 
 /**
  * \ingroup gui
- * Layout view tool for moving and zooming item content.
+ * \brief Layout view tool for moving and zooming item content.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolMoveItemContent : public QgsLayoutViewTool

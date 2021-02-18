@@ -159,7 +159,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
 
 /**
  * \ingroup core
- * Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
+ * \brief Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
  * settings.
  *
  * Conversions are performed by calling convert() with either a JSON map or JSON

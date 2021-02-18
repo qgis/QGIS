@@ -31,7 +31,7 @@ class QListView;
 
 /**
  * \ingroup gui
- * The QgsCustomLayerOrderWidget class provides a list box where the user can define
+ * \brief The QgsCustomLayerOrderWidget class provides a list box where the user can define
  * custom order for drawing of layers. It also features a checkbox for enabling
  * or disabling the custom order. Any changes made by the user are automatically
  * propagated to the assigned QgsLayerTreeMapCanvasBridge. Also, any updates

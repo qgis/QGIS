@@ -26,7 +26,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup quick
- * Pair of QgsFeature and QgsVectorLayer
+ * \brief Pair of QgsFeature and QgsVectorLayer
  *
  * Vector layer is commonly used to gather geometry type or CRS
  * for the feature.

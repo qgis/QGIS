@@ -33,7 +33,7 @@ class QgsSymbol;
  * \ingroup core
  * \class QgsAbstractStyleEntityIconGenerator
  *
- * An abstract base class for icon generators for a QgsStyleModel.
+ * \brief An abstract base class for icon generators for a QgsStyleModel.
  *
  * This base class allows for creation of specialized icon generators for
  * entities in a style database, and allows for deferred icon generation.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
  * \ingroup core
  * \class QgsStyleModel
  *
- * A QAbstractItemModel subclass for showing symbol and color ramp entities contained
+ * \brief A QAbstractItemModel subclass for showing symbol and color ramp entities contained
  * within a QgsStyle database.
  *
  * If you are creating a style model for the default application style (see QgsStyle::defaultStyle()),
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
  * \ingroup core
  * \class QgsStyleProxyModel
  *
- * A QSortFilterProxyModel subclass for showing filtered symbol and color ramps entries from a QgsStyle database.
+ * \brief A QSortFilterProxyModel subclass for showing filtered symbol and color ramps entries from a QgsStyle database.
  *
  * \see QgsStyleModel
  *

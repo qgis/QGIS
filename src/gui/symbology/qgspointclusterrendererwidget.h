@@ -29,7 +29,7 @@ class QgsPointClusterRenderer;
 /**
  * \class QgsPointClusterRendererWidget
  * \ingroup gui
- * A widget which allows configuration of the properties for a QgsPointClusterRenderer.
+ * \brief A widget which allows configuration of the properties for a QgsPointClusterRenderer.
  * \since QGIS 3.0
  */
 

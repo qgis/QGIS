@@ -29,7 +29,7 @@ class QDialogButtonBox;
 
 /**
  * \ingroup gui
- * A widget for properties relating to a QgsColorRampLegendNode (QgsColorRampLegendNodeSettings).
+ * \brief A widget for properties relating to a QgsColorRampLegendNode (QgsColorRampLegendNodeSettings).
  *
  * The current settings are set by a call to setSettings(), and the settings defined by the
  * widget are retrieved by calling settings().

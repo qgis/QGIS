@@ -23,7 +23,7 @@ class QgsLineString;
 
 /**
  * \ingroup core
- * Assorted utility functions used during MVT decoding and encoding.
+ * \brief Assorted utility functions used during MVT decoding and encoding.
  *
  * \since QGIS 3.14
  */

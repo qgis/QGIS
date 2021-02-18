@@ -27,7 +27,7 @@
 /**
  * \ingroup core
  *
- * Closes a spatialite database.
+ * \brief Closes a spatialite database.
  *
  * \since QGIS 3.0
  */
@@ -48,7 +48,7 @@ struct CORE_EXPORT QgsSpatialiteCloser
 /**
  * \ingroup core
  *
- * Unique pointer for spatialite databases, which automatically closes
+ * \brief Unique pointer for spatialite databases, which automatically closes
  * the database when the pointer goes out of scope or is reset.
  *
  * \since QGIS 3.0

@@ -28,7 +28,7 @@ class QWidget;
 /**
  * \ingroup gui
  * \class QgsFocusKeeper
- * Trick to keep a widget focused and avoid QT crashes
+ * \brief Trick to keep a widget focused and avoid QT crashes
  * \note not available in Python bindings
  * \since QGIS 3.14
  */

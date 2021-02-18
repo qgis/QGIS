@@ -28,7 +28,7 @@
 
 /**
  * \ingroup server
- * Median cut implementation
+ * \brief Median cut implementation
  */
 
 namespace QgsWms

@@ -33,7 +33,7 @@ class QToolBar;
 /**
  * \ingroup gui
  * \class QgsLayoutDesignerInterface
- * A common interface for layout designer dialogs and widgets.
+ * \brief A common interface for layout designer dialogs and widgets.
  *
  * Provides a common interface and stable API for layout designer dialogs and widgets.
  * This interface can be used by plugins and scripts to interact with

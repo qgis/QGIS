@@ -62,7 +62,7 @@ class QgsCheckableStyleModel: public QgsStyleProxyModel
  * \ingroup gui
  * \class QgsStyleManagerDialog
  *
- * A dialog allowing users to customize and populate a QgsStyle.
+ * \brief A dialog allowing users to customize and populate a QgsStyle.
  */
 class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleManagerDialogBase
 {

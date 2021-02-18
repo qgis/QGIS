@@ -26,7 +26,7 @@ class QToolButton;
 /**
  * \ingroup gui
  * \class QgsSvgSourceLineEdit
- * A line edit widget with toolbutton for setting an SVG image path.
+ * \brief A line edit widget with toolbutton for setting an SVG image path.
  * \since QGIS 3.4
  */
 class GUI_EXPORT QgsSvgSourceLineEdit : public QWidget

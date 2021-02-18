@@ -25,7 +25,7 @@
 /**
  * \ingroup gui
  * \class QgsCoordinateOperationWidget
- * A widget for selecting the coordinate operation to use when transforming between
+ * \brief A widget for selecting the coordinate operation to use when transforming between
  * a source and destination coordinate reference system.
  *
  * \since QGIS 3.12

@@ -31,7 +31,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * Class to select destination file, type and CRS for ogr layers
+ * \brief Class to select destination file, type and CRS for ogr layers
  * \note not available in Python bindings
  * \since QGIS 1.0
  */

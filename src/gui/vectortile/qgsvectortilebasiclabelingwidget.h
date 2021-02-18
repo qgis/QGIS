@@ -37,7 +37,7 @@ class QgsVectorTileBasicLabelingProxyModel;
 
 /**
  * \ingroup gui
- * Styling widget for basic labling of vector tile layer
+ * \brief Styling widget for basic labling of vector tile layer
  *
  * \since QGIS 3.14
  */
@@ -80,7 +80,7 @@ class QgsLabelingGui;
 
 /**
  * \ingroup gui
- * Helper widget class that wraps QgsLabelingGui into a QgsPanelWidget
+ * \brief Helper widget class that wraps QgsLabelingGui into a QgsPanelWidget
  *
  * \since QGIS 3.14
  */

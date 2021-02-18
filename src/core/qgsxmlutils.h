@@ -30,7 +30,7 @@ class QgsRectangle;
 
 /**
  * \ingroup core
- * Assorted helper methods for reading and writing chunks of XML
+ * \brief Assorted helper methods for reading and writing chunks of XML
  */
 class CORE_EXPORT QgsXmlUtils
 {
