@@ -40,7 +40,9 @@ namespace Qt3DCore
 
 /**
  * \ingroup 3d
- * Base class for chunk queue jobs. Job implementations start their work when they are created
+ * \brief  Base class for chunk queue jobs.
+ *
+ * Job implementations start their work when they are created
  * and all work is done asynchronously, i.e. constructor should exit as soon as possible and
  * all work should be done in a worker thread. Once the job is done, finished() signal is emitted
  * and will be processed by the parent chunked entity.
@@ -84,8 +86,9 @@ class QgsChunkQueueJob : public QObject
 
 /**
  * \ingroup 3d
- * Base class for factories of chunk queue jobs. Derived classes need to implement createJob()
- * method that will create a specific job for given chunk node.
+ * \brief Base class for factories of chunk queue jobs.
+ *
+ * Derived classes need to implement createJob() method that will create a specific job for given chunk node.
  * \since QGIS 3.0
  */
 class QgsChunkQueueJobFactory

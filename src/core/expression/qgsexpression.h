@@ -46,8 +46,8 @@ class QgsExpressionFunction;
 
 /**
  * \ingroup core
-Class for parsing and evaluation of expressions (formerly called "search strings").
-The expressions try to follow both syntax and semantics of SQL expressions.
+ * \brief Class for parsing and evaluation of expressions (formerly called "search strings").
+ * The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
 \code{.py}

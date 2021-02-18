@@ -28,7 +28,7 @@ class QgsWebPage;
 /**
  * \class QgsHtmlAnnotation
  * \ingroup core
- * An annotation item that embeds HTML content.
+ * \brief An annotation item that embeds HTML content.
  * \since QGIS 3.0
 */
 

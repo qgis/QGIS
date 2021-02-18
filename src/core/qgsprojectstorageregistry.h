@@ -25,7 +25,8 @@ class QgsProjectStorage;
 
 /**
  * \ingroup core
- * Registry of storage backends that QgsProject may use.
+ * \brief Registry of storage backends that QgsProject may use.
+ *
  * This is a singleton that should be accessed through QgsApplication::projectStorageRegistry().
  *
  * \since QGIS 3.2

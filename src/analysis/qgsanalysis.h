@@ -27,7 +27,7 @@ class QgsGeometryCheckRegistry;
 
 /**
  * \ingroup analysis
- * QgsAnalysis is a singleton class containing various registry and other global members
+ * \brief QgsAnalysis is a singleton class containing various registry and other global members
  * related to analysis classes.
  * \since QGIS 3.4
  */

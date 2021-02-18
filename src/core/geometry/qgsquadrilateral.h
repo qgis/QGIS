@@ -28,6 +28,7 @@
  * \ingroup core
  * \class QgsQuadrilateral
  * \brief Quadrilateral geometry type.
+ *
  * A quadrilateral is a polygon with four edges (or sides) and four vertices or corners.
  * This class allows the creation of simple quadrilateral (which does not self-intersect).
  * \since QGIS 3.6

@@ -35,7 +35,7 @@ class QgsProject;
  *
  * \ingroup core
  *
- * Class allowing to manage the auxiliary storage for a vector layer.
+ * \brief Class allowing to manage the auxiliary storage for a vector layer.
  *
  * Such auxiliary data are data used mostly for the needs of QGIS (symbology)
  * and have no real interest in being stored with the native raw geospatial

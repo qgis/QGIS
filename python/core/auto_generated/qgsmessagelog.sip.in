@@ -13,6 +13,7 @@ class QgsMessageLog : QObject
 {
 %Docstring
 Interface for logging messages from QGIS in GUI independent way.
+
 This class provides abstraction of a tabbed window for showing messages to the user.
 By default QgsMessageLogOutput will be used if not overridden with another
 message log creator function.

@@ -20,7 +20,7 @@
 
 /**
  * \ingroup core
- * Abstract interface for generating an expression context.
+ * \brief Abstract interface for generating an expression context.
  *
  * You need to implement this interface in a class and register this class with
  * QgsFieldExpressionWidget::registerExpressionGenerator().

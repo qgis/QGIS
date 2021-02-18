@@ -25,7 +25,7 @@
 /**
  * \class QgsTextAnnotation
  * \ingroup core
- * An annotation item that displays formatted text from a QTextDocument document.
+ * \brief An annotation item that displays formatted text from a QTextDocument document.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation

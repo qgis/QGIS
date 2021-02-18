@@ -97,7 +97,7 @@ namespace geos
 
 /**
  * \ingroup core
- * Does vector analysis using the geos library and handles import, export, exception handling*
+ * \brief Does vector analysis using the geos library and handles import, export, exception handling*
  * \note not available in Python bindings
  */
 class CORE_EXPORT QgsGeos: public QgsGeometryEngine

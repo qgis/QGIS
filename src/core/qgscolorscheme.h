@@ -28,7 +28,7 @@
 
 /**
  * \ingroup core
- * List of colors paired with a friendly display name identifying the color
+ * \brief List of colors paired with a friendly display name identifying the color
  * \since QGIS 2.5
 */
 typedef QList< QPair< QColor, QString > > QgsNamedColorList;

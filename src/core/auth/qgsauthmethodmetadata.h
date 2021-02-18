@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * Holds data auth method key, description, and associated shared library file information.
+ * \brief Holds data auth method key, description, and associated shared library file information.
 
    The metadata class is used in a lazy load implementation in
    QgsAuthMethodRegistry.  To save memory, auth methods are only actually

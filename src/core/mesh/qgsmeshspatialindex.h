@@ -34,7 +34,7 @@ class QgsMeshSpatialIndexData;
  * \ingroup core
  * \class QgsMeshSpatialIndex
  *
- * A spatial index for QgsMeshFace or QgsMeshEdge objects.
+ * \brief A spatial index for QgsMeshFace or QgsMeshEdge objects.
  *
  * QgsMeshSpatialIndex objects are implicitly shared and can be inexpensively copied.
  *

@@ -25,7 +25,7 @@
 /**
  * \class QgsFieldConstraints
  * \ingroup core
- * Stores information about constraints which may be present on a field.
+ * \brief Stores information about constraints which may be present on a field.
  * \since QGIS 3.0
  */
 

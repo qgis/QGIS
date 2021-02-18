@@ -33,7 +33,7 @@ class QgsAuthMethodMetadata;
 
 /**
  * \ingroup core
- * A registry / canonical manager of authentication methods.
+ * \brief A registry / canonical manager of authentication methods.
  *
  * This is a Singleton class that manages authentication method plugin access.
  *

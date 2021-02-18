@@ -42,7 +42,7 @@ class QgsRendererRange;
 
 /**
  * \ingroup core
- * QgsClassificationRange contains the information about a classification range
+ * \brief QgsClassificationRange contains the information about a classification range
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationRange
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsClassificationRange
 
 /**
  * \ingroup core
- * QgsClassificationMethod is an abstract class for implementations of classification methods
+ * \brief QgsClassificationMethod is an abstract class for implementations of classification methods
  * \see QgsClassificationMethodRegistry
  * \since QGIS 3.10
  */

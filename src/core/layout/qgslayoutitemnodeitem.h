@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * An abstract layout item that provides generic methods for node based
+ * \brief An abstract layout item that provides generic methods for node based
  * shapes such as polygon or polylines.
  * \since QGIS 3.0
  */

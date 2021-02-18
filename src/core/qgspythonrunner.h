@@ -22,13 +22,12 @@
 
 /**
  * \ingroup core
-  Utility class for running Python commands from various parts of QGIS.
-  There is no direct Python support in the core library, so it is expected
-  that application with Python support creates a subclass that implements
-  pure virtual function(s) during the initialization. The static methods
-  will then work as expected.
-
-  Added in QGIS v?
+ * \brief Utility class for running Python commands from various parts of QGIS.
+ *
+ * There is no direct Python support in the core library, so it is expected
+ * that application with Python support creates a subclass that implements
+ * pure virtual function(s) during the initialization. The static methods
+ * will then work as expected.
  */
 class CORE_EXPORT QgsPythonRunner
 {

@@ -32,7 +32,7 @@ class QgsPoint;
 
 /**
  * \ingroup core
- * A class to represent a 2D point.
+ * \brief A class to represent a 2D point.
  *
  * A QgsPointXY represents a position with X and Y coordinates.
  * In most scenarios it is preferable to use a QgsPoint instead which also

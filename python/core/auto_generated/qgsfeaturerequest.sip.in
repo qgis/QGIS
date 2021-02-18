@@ -14,6 +14,7 @@ class QgsFeatureRequest
 {
 %Docstring
 This class wraps a request for features to a vector layer (or directly its vector data provider).
+
 The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
 
 - no filter - all features are returned

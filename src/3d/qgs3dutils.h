@@ -42,7 +42,7 @@ namespace Qt3DExtras
 
 /**
  * \ingroup 3d
- * Miscellaneous utility functions used from 3D code.
+ * \brief Miscellaneous utility functions used from 3D code.
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */

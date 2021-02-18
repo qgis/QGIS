@@ -17,7 +17,7 @@
 class QgsVectorLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
 %Docstring
-Metadata for vector layer 3D renderer to allow creation of its instances from XML
+Metadata for vector layer 3D renderer to allow creation of its instances from XML.
 
 .. warning::
 

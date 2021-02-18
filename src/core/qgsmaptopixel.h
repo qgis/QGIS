@@ -30,7 +30,7 @@ class QPoint;
 
 /**
  * \ingroup core
-  * Perform transforms between map coordinates and device coordinates.
+  * \brief Perform transforms between map coordinates and device coordinates.
   *
   * This class can convert device coordinates to map coordinates and vice versa.
   */

@@ -30,7 +30,7 @@ class QgsExpressionContext;
  * \ingroup core
  * \class QgsLabelLineSettings
  *
- * Contains settings related to how the label engine places and formats
+ * \brief Contains settings related to how the label engine places and formats
  * labels for line features (or polygon features which are labeled in
  * a "perimeter" style mode).
  *

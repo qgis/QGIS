@@ -36,7 +36,7 @@ class QgsGeoPdfRenderedFeatureHandler;
  * \class QgsAbstractGeoPdfExporter
  * \ingroup core
  *
- * Abstract base class for GeoPDF exporters.
+ * \brief Abstract base class for GeoPDF exporters.
  *
  * The base class handles generic GeoPDF export setup, cleanup and processing steps.
  *
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     };
 
     /**
-     * Contains details of a particular input component to be used during PDF composition.
+     * \brief Contains details of a particular input component to be used during PDF composition.
      * \ingroup core
      * \since QGIS 3.10
      */
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     };
 
     /**
-     * Contains details of a control point used during georeferencing GeoPDF outputs.
+     * \brief Contains details of a control point used during georeferencing GeoPDF outputs.
      * \ingroup core
      * \since QGIS 3.10
      */

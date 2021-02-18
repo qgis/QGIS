@@ -54,6 +54,7 @@ namespace pal // SIP_SKIP
 /**
  * \ingroup core
  * \class QgsDxfExport
+ * \brief Exports QGIS layers to the DXF format.
  */
 #ifdef SIP_RUN
 class CORE_EXPORT QgsDxfExport

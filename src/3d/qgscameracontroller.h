@@ -52,7 +52,7 @@ class QgsVector3D;
 
 /**
  * \ingroup 3d
- * Object that controls camera movement based on user input
+ * \brief Object that controls camera movement based on user input
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */

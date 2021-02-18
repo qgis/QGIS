@@ -11,6 +11,7 @@ class QgsRelationReferenceFieldFormatter : QgsFieldFormatter
 {
 %Docstring
 Field formatter for a relation reference field.
+
 A value relation field formatter looks up the values from
 features on another layer.
 

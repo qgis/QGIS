@@ -29,7 +29,7 @@
 
 /**
  * \ingroup core
-  * Defines a QGIS exception class.
+ * \brief Defines a QGIS exception class.
  */
 class CORE_EXPORT QgsException
 {
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsException
 
 /**
  * \ingroup core
- * Custom exception class for Coordinate Reference System related exceptions.
+ * \brief Custom exception class for Coordinate Reference System related exceptions.
  */
 class CORE_EXPORT QgsCsException : public QgsException
 {
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsCsException : public QgsException
 /**
  * \class QgsProcessingException
  * \ingroup core
- * Custom exception class for processing related exceptions.
+ * \brief Custom exception class for processing related exceptions.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingException : public QgsException
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsProcessingException : public QgsException
 /**
  * \class QgsProviderConnectionException
  * \ingroup core
- * Custom exception class for provider connection related exceptions.
+ * \brief Custom exception class for provider connection related exceptions.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsProviderConnectionException: public QgsException

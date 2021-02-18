@@ -38,7 +38,7 @@ static bool _palIsCanceled( void *ctx )
 /**
  * \ingroup core
  * \class QgsLabelSorter
- * Helper class for sorting labels into correct draw order
+ * \brief Helper class for sorting labels into correct draw order
  */
 class QgsLabelSorter
 {

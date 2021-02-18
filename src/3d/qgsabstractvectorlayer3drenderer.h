@@ -26,7 +26,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup 3d
- * This class defines configuration of how a vector layer gets tiled for 3D rendering.
+ * \brief This class defines configuration of how a vector layer gets tiled for 3D rendering.
  *
  * Zoom levels count tells how deep will be the quadtree and thus how many tiles will
  * be generated ( 4 ^ (count-1) ). So for example, for count=1 there will be just
@@ -70,7 +70,7 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
 
 /**
  * \ingroup 3d
- * Base class for 3D renderers that are based on vector layers.
+ * \brief Base class for 3D renderers that are based on vector layers.
  *
  * \since QGIS 3.12
  */

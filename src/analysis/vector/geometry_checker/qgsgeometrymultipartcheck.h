@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A multipark check.
  */
 class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
 {

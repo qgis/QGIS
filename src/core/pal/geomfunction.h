@@ -42,6 +42,7 @@ namespace pal
 
   /**
    * \ingroup core
+   * \brief Pal labeling engine geometry functions.
    * \class pal::GeomFunction
    * \note not available in Python bindings
    */

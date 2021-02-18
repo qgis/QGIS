@@ -24,7 +24,8 @@
 
 /**
  * \ingroup core
- * Interface for logging messages from QGIS in GUI independent way.
+ * \brief Interface for logging messages from QGIS in GUI independent way.
+ *
  * This class provides abstraction of a tabbed window for showing messages to the user.
  * By default QgsMessageLogOutput will be used if not overridden with another
  * message log creator function.
@@ -88,7 +89,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
 };
 
 /**
- * Temporarily blocks the application QgsMessageLog (see QgsApplication::messageLog()) from emitting the messageReceived( bool )
+ * \brief Temporarily blocks the application QgsMessageLog (see QgsApplication::messageLog()) from emitting the messageReceived( bool )
  * signal for the lifetime of the object.
  *
  * Using this blocker allows messages to be logged without causing user interface hints flagging message log
