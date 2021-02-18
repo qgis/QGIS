@@ -105,8 +105,8 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
 
   connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
-  connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, [&]() { emitChangedSignal(); } );
-  connect( mPointBudgetSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [&]() { emitChangedSignal(); } );
+  connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
+  connect( mPointBudgetSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
     rampAttributeChanged();
