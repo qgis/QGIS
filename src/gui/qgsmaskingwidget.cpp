@@ -281,11 +281,11 @@ bool QgsMaskingWidget::hasBeenPopulated()
   return !mMustPopulate;
 }
 
-SymbolLayerVisitor::SymbolLayerVisitor(SymbolLayerVisitor::SymbolLayerCallback callback) :
+SymbolLayerVisitor::SymbolLayerVisitor( SymbolLayerVisitor::SymbolLayerCallback callback ) :
   mCallback( callback )
 {}
 
-bool SymbolLayerVisitor::visitEnter(const QgsStyleEntityVisitorInterface::Node& node)
+bool SymbolLayerVisitor::visitEnter( const QgsStyleEntityVisitorInterface::Node &node )
 {
   if ( node.type != QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
     return false;
@@ -294,7 +294,7 @@ bool SymbolLayerVisitor::visitEnter(const QgsStyleEntityVisitorInterface::Node& 
   return true;
 }
 
-void SymbolLayerVisitor::visitSymbol(const QgsSymbol* symbol, const QString& leafIdentifier, QVector<int> rootPath)
+void SymbolLayerVisitor::visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath )
 {
   for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
   {
@@ -312,7 +312,7 @@ void SymbolLayerVisitor::visitSymbol(const QgsSymbol* symbol, const QString& lea
   }
 }
 
-bool SymbolLayerVisitor::visit(const QgsStyleEntityVisitorInterface::StyleLeaf& leaf)
+bool SymbolLayerVisitor::visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf )
 {
   if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
   {
