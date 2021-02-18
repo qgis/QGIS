@@ -12,6 +12,7 @@ class QgsFeaturePickerModelBase : QAbstractItemModel /Abstract/
 {
 %Docstring
 Provides a list of features based on filter conditions.
+
 Features are fetched asynchronously.
 
 .. versionadded:: 3.14

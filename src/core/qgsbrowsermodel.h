@@ -54,7 +54,7 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
  * \ingroup core
  * \class QgsBrowserModel
  *
- * A model for showing available data sources and other items in a structured
+ * \brief A model for showing available data sources and other items in a structured
  * tree.
  *
  * QgsBrowserModel is the foundation for the QGIS browser panel, and includes

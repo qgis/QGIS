@@ -206,7 +206,7 @@ class CORE_EXPORT QgsCallout
     virtual DrawOrder drawOrder() const;
 
     /**
-     * Contains additional contextual information about the context in which a callout is
+     * \brief Contains additional contextual information about the context in which a callout is
      * being rendered.
      * \ingroup core
      * \since QGIS 3.10

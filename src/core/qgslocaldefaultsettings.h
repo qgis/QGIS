@@ -21,7 +21,7 @@
 class QgsBearingNumericFormat;
 
 /**
- * Contains local default settings which should be respected when creating new objects
+ * \brief Contains local default settings which should be respected when creating new objects
  * such as QgsProjects.
  *
  * This class contains a variety of default setting values. These values are local, profile

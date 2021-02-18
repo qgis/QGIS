@@ -65,6 +65,7 @@ namespace pal
 
   /**
    * \class pal::PointSet
+   * \brief The underlying raw pal geometry class.
    * \note not available in Python bindings
    * \ingroup core
    */

@@ -30,7 +30,7 @@ class QDomElement;
 
 /**
  * \ingroup core
- * Settings for a color ramp legend node.
+ * \brief Settings for a color ramp legend node.
  *
  * \since QGIS 3.18
  */

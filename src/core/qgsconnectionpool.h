@@ -36,7 +36,7 @@
 
 /**
  * \ingroup core
- * Template that stores data related to a connection to a single server or datasource.
+ * \brief Template that stores data related to a connection to a single server or datasource.
  *
  * It is assumed that following functions exist:
  *
@@ -250,7 +250,8 @@ class QgsConnectionPoolGroup
 
 /**
  * \ingroup core
- * Template class responsible for keeping a pool of open connections.
+ * \brief Template class responsible for keeping a pool of open connections.
+ *
  * This is desired to avoid the overhead of creation of new connection every time.
  *
  * The methods are thread safe.

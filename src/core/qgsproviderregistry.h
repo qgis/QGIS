@@ -39,7 +39,7 @@ class QgsRasterDataProvider;
 
 /**
  * \ingroup core
-  * A registry / canonical manager of data providers.
+  * \brief A registry / canonical manager of data providers.
   *
   * This is a Singleton class that manages data provider access.
   *
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsProviderRegistry
     /**
      * \ingroup core
      *
-     * Contains information pertaining to a candidate provider.
+     * \brief Contains information pertaining to a candidate provider.
      *
      * \since QGIS 3.18
      */

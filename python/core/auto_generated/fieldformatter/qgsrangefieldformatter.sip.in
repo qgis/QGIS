@@ -10,7 +10,7 @@
 class QgsRangeFieldFormatter : QgsFieldFormatter
 {
 %Docstring
-Field formatter for a range (double) field with precision and locale
+Field formatter for a range (double) field with precision and locale.
 
 .. versionadded:: 3.0
 %End

@@ -23,7 +23,7 @@ email                : nyall dot dawson at gmail dot com
 
 /**
  * \ingroup core
- * Represents a patch shape for use in map legends.
+ * \brief Represents a patch shape for use in map legends.
  *
  * \since QGIS 3.14
  */

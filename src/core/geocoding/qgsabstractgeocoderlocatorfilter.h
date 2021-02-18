@@ -24,7 +24,7 @@ class QgsGeocoderResult;
 
 /**
  * \ingroup core
- * An abstract base class which implements a locator filter populated from a QgsGeocoderInterface.
+ * \brief An abstract base class which implements a locator filter populated from a QgsGeocoderInterface.
  *
  * This base class implements the required logic to bridge a class which implements the
  * QgsGeocoderInterface interface to a QgsLocatorFilter. It allows easy creation of a locator

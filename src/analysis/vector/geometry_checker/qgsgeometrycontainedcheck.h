@@ -24,6 +24,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A contained check error.
  */
 class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
@@ -51,6 +52,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
 
 /**
  * \ingroup analysis
+ * \brief A contained check.
  */
 class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
 {

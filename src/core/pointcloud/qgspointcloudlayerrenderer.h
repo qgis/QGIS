@@ -45,7 +45,7 @@ class QgsPointCloudRenderContext;
 /**
  * \ingroup core
  *
- * Implementation of threaded rendering for point cloud layers.
+ * \brief Implementation of threaded rendering for point cloud layers.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  * \note Not available in Python bindings

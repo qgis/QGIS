@@ -28,7 +28,7 @@ class QgsLayout;
 
 /**
  * \ingroup core
- * Base class for commands to undo/redo layout and layout object changes.
+ * \brief Base class for commands to undo/redo layout and layout object changes.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
 
 /**
  * \ingroup core
- * Interface for layout objects which support undo/redo commands.
+ * \brief Interface for layout objects which support undo/redo commands.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutUndoObjectInterface

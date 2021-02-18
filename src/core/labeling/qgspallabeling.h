@@ -82,6 +82,7 @@ class QgsCallout;
 /**
  * \ingroup core
  * \class QgsLabelPosition
+ * \brief Represents the calculated placement of a map label.
  */
 class CORE_EXPORT QgsLabelPosition
 {
@@ -202,6 +203,7 @@ class CORE_EXPORT QgsLabelPosition
 /**
  * \ingroup core
  * \class QgsPalLayerSettings
+ * \brief Contains settings for how a map layer will be labeled.
  */
 class CORE_EXPORT QgsPalLayerSettings
 {
@@ -1202,6 +1204,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
 /**
  * \ingroup core
+ * \brief Represents a label candidate.
  */
 class CORE_EXPORT QgsLabelCandidate
 {
@@ -1217,7 +1220,7 @@ class CORE_EXPORT QgsLabelCandidate
 
 /**
  * \ingroup core
- * Class that stores computed placement from labeling engine.
+ * \brief Class that stores computed placement from labeling engine.
  * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLabelingResults
@@ -1257,6 +1260,7 @@ class CORE_EXPORT QgsLabelingResults
 /**
  * \ingroup core
  * \class QgsPalLabeling
+ * \brief PAL labeling utilities.
  */
 class CORE_EXPORT QgsPalLabeling
 {

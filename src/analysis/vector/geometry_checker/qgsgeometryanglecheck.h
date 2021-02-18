@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief Angle check.
  */
 class ANALYSIS_EXPORT QgsGeometryAngleCheck : public QgsGeometryCheck
 {

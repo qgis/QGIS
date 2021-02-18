@@ -28,7 +28,7 @@ class QgsAnnotationItem;
 /**
  * \ingroup core
  *
- * Represents a map layer containing a set of georeferenced annotations, e.g. markers, lines, polygons or
+ * \brief Represents a map layer containing a set of georeferenced annotations, e.g. markers, lines, polygons or
  * text items.
  *
  * Annotation layers store a set of QgsAnnotationItem items, which are rendered according to the item's

@@ -26,8 +26,10 @@ class QgsRenderContext;
 
 /**
  * \ingroup core
- * Base class for utility classes that encapsulate information necessary
- * for rendering of map layers. The rendering is typically done in a background
+ * \brief Base class for utility classes that encapsulate information necessary
+ * for rendering of map layers.
+ *
+ * The rendering is typically done in a background
  * thread, so it is necessary to keep all structures required for rendering away
  * from the original map layer because it may change any time.
  *

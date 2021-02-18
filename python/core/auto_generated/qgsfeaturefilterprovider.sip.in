@@ -17,6 +17,7 @@ class QgsFeatureFilterProvider
 {
 %Docstring
 Abstract interface for use by classes that filter the features of a layer.
+
 A :py:class:`QgsFeatureFilterProvider` provides a method for modifying a :py:class:`QgsFeatureRequest` in place to apply
 additional filters to the request.
 

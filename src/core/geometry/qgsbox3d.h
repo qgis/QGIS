@@ -27,7 +27,7 @@ class QgsPoint;
 
 /**
  * \ingroup core
- * A 3-dimensional box composed of x, y, z coordinates.
+ * \brief A 3-dimensional box composed of x, y, z coordinates.
  *
  * A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
  * extent of a geometry or collection of geometries.

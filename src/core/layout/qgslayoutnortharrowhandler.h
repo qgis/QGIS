@@ -26,7 +26,7 @@ class QgsLayoutItemMap;
 
 /**
  * \ingroup core
- * An object which handles north-arrow type behavior for layout items.
+ * \brief An object which handles north-arrow type behavior for layout items.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsLayoutNorthArrowHandler: public QObject

@@ -31,7 +31,7 @@ class QgsAuthMethodConfig;
 
 /**
  * \ingroup core
- * Abstract base class for authentication method plugins
+ * \brief Abstract base class for authentication method plugins
  */
 class CORE_EXPORT QgsAuthMethod : public QObject
 {

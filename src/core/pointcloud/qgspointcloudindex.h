@@ -40,7 +40,7 @@ class QgsPointCloudAttributeCollection;
 /**
  * \ingroup core
  *
- * Represents a indexed point cloud node in octree
+ * \brief Represents a indexed point cloud node in octree
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -93,7 +93,7 @@ CORE_EXPORT uint qHash( IndexedPointCloudNode id );
 /**
  * \ingroup core
  *
- * Represents packaged data bounds
+ * \brief Represents packaged data bounds
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsPointCloudDataBounds
 /**
  * \ingroup core
  *
- * Represents a indexed point clouds data in octree
+ * \brief Represents a indexed point clouds data in octree
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

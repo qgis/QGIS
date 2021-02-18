@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * Implementation of a logarithmic scale method
+ * \brief Implementation of a logarithmic scale method
  *
  * \since QGIS 3.10
  */

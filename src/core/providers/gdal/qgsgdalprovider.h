@@ -45,7 +45,7 @@ class QgsRasterPyramid;
 
 /**
  * \ingroup core
- * A call back function for showing progress of gdal operations.
+ * \brief A call back function for showing progress of gdal operations.
  */
 int CPL_STDCALL progressCallback( double dfComplete,
                                   const char *pszMessage,

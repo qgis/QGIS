@@ -50,7 +50,7 @@ typedef QPair<int, int> QgsMeshEdge;
 /**
  * \ingroup core
  *
- *  Mesh - vertices, edges and faces
+ * \brief Mesh - vertices, edges and faces
  *
  * \since QGIS 3.6
  */
@@ -116,7 +116,7 @@ struct CORE_EXPORT QgsMesh
 /**
  * \ingroup core
  *
- * Interface for mesh data sources
+ * \brief Interface for mesh data sources
  *
  * Mesh is a collection of vertices, edges and faces in 2D or 3D space
  *
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
 
 /**
  * \ingroup core
- * Interface for mesh datasets and dataset groups
+ * \brief Interface for mesh datasets and dataset groups
  *
  *  Dataset is a  collection of vector or scalar values on vertices or faces of the mesh.
  *  Based on the underlying data provider/format, whole dataset is either stored in memory
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
 
 /**
  * \ingroup core
- * Base class for providing data for QgsMeshLayer
+ * \brief Base class for providing data for QgsMeshLayer
  *
  * Responsible for reading native mesh data
  *

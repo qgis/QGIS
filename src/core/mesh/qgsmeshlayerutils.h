@@ -40,7 +40,7 @@ class QgsMeshLayer;
 
 /**
  * \ingroup core
- * Misc utility functions used for mesh layer/data provider support
+ * \brief Misc utility functions used for mesh layer/data provider support
  *
  * \note not available in Python bindings
  * \since QGIS 3.4

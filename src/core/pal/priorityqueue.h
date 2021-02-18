@@ -45,6 +45,7 @@ namespace pal
 
   /**
    * \ingroup core
+   * \brief Custom priority queue for use in pal labeling engine.
    * \class pal::PriorityQueue
    * \note not available in Python bindings
    */

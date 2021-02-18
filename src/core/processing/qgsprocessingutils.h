@@ -44,7 +44,7 @@ class QgsVectorTileLayer;
 /**
  * \class QgsProcessingUtils
  * \ingroup core
- * Utility functions for use with processing classes.
+ * \brief Utility functions for use with processing classes.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingUtils
@@ -463,7 +463,7 @@ class CORE_EXPORT QgsProcessingUtils
 /**
  * \class QgsProcessingFeatureSource
  * \ingroup core
- * QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
+ * \brief QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
  * results according to the settings in a QgsProcessingContext.
  * \since QGIS 3.0
  */
@@ -547,7 +547,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 /**
  * \class QgsProcessingFeatureSink
  * \ingroup core
- * QgsProxyFeatureSink subclass which reports feature addition errors to a QgsProcessingContext.
+ * \brief QgsProxyFeatureSink subclass which reports feature addition errors to a QgsProcessingContext.
  * \note Not available in Python bindings.
  * \since QGIS 3.0
  */

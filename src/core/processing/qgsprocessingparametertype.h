@@ -25,7 +25,7 @@
 #include <QObject>
 
 /**
- * Makes metadata of processing parameters available.
+ * \brief Makes metadata of processing parameters available.
  *
  * \ingroup core
  * \since QGIS 3.2

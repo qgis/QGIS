@@ -55,7 +55,7 @@ typedef void *projCtx;
 /**
  * \class QgsProjContextStore
  * \ingroup core
- * Used to create and store a proj projCtx object, correctly freeing the context upon destruction.
+ * \brief Used to create and store a proj projCtx object, correctly freeing the context upon destruction.
  */
 class QgsProjContextStore
 {

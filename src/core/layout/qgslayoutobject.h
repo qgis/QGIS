@@ -33,7 +33,7 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * A base class for objects which belong to a layout.
+ * \brief A base class for objects which belong to a layout.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGenerator

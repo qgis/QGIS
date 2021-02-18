@@ -24,7 +24,7 @@
 /**
  * \class QgsCoordinateReferenceSystemRegistry
  * \ingroup core
- * A registry for known coordinate reference system (CRS) definitions, including
+ * \brief A registry for known coordinate reference system (CRS) definitions, including
  * any user-defined CRSes.
  *
  * QgsCoordinateReferenceSystemRegistry is not usually directly created, but rather accessed through
@@ -43,7 +43,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = nullptr );
 
     /**
-     * Contains details of a custom (user defined) CRS.
+     * \brief Contains details of a custom (user defined) CRS.
      * \ingroup core
      * \since QGIS 3.18
      */

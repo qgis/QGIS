@@ -35,7 +35,7 @@ class QgsPointCloudLayer;
  * \ingroup core
  * \class QgsPointCloud3DRenderContext
  *
- * Encapsulates the render context for a 3D point cloud rendering operation.
+ * \brief Encapsulates the render context for a 3D point cloud rendering operation.
  *
  * \since QGIS 3.18
  */
@@ -177,7 +177,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 
 /**
  * \ingroup core
- * Metadata for point cloud layer 3D renderer to allow creation of its instances from XML
+ * \brief Metadata for point cloud layer 3D renderer to allow creation of its instances from XML
  *
  * \note Not available in Python bindings
  *
@@ -196,7 +196,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
 
 /**
  * \ingroup core
- * 3D renderer that renders all points from a point cloud layer
+ * \brief 3D renderer that renders all points from a point cloud layer
  *
  * \since QGIS 3.18
  */

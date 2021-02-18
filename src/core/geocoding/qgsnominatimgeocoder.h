@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * A geocoder which uses the Nominatim geocoding API to retrieve results.
+ * \brief A geocoder which uses the Nominatim geocoding API to retrieve results.
  *
  * This geocoder utilizes the Nominatim geocoding API in order to geocode
  * strings.

@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * Temporarily used structure to cache order by information
+ * \brief Temporarily used structure to cache order by information
  * \note not available in Python bindings
  */
 class QgsIndexedFeature

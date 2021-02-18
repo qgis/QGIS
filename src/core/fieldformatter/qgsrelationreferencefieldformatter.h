@@ -21,7 +21,8 @@
 
 /**
  * \ingroup core
- * Field formatter for a relation reference field.
+ * \brief Field formatter for a relation reference field.
+ *
  * A value relation field formatter looks up the values from
  * features on another layer.
  *

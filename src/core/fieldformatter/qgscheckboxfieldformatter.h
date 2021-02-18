@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * Field formatter for a checkbox field.
+ * \brief Field formatter for a checkbox field.
  *
  * \since QGIS 3.10
  */
