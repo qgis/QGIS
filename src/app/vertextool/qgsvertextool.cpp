@@ -2316,15 +2316,8 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
         id.insert( it2.key() );
         ignoreFeatures.insert( layer, id );
         int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
-        switch ( avoidIntersectionsReturn )
-        {
-          case 3:
-            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid and cannot be fixed automatically. The geometry added may overlap another geometry. You should fix geometries." ), Qgis::Warning );
-            break;
-          case 4:
-            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid and has been modified to perform the operation. You should fix geometries." ), Qgis::Warning );
-            break;
-        }
+        if ( avoidIntersectionsReturn == 3 )
+          emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
       }
       layer->changeGeometry( it2.key(), featGeom );
     }
