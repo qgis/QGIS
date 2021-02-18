@@ -30,7 +30,7 @@
 /**
  * \class QgsSymbolLevelsWidget
  * \ingroup gui
- * A widget which allows the user to modify the rendering order of symbol layers.
+ * \brief A widget which allows the user to modify the rendering order of symbol layers.
  * \see QgsSymbolLevelsDialog
  * \since QGIS 3.0
  */
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
 /**
  * \class QgsSymbolLevelsDialog
  * \ingroup gui
- * A dialog which allows the user to modify the rendering order of symbol layers.
+ * \brief A dialog which allows the user to modify the rendering order of symbol layers.
  * \see QgsSymbolLevelsWidget
 */
 class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog

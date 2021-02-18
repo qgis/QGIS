@@ -36,7 +36,7 @@ class QgsProjectStorageGuiProvider;
 
 /**
  * \ingroup gui
- * A registry / canonical manager of GUI parts of data providers.
+ * \brief A registry / canonical manager of GUI parts of data providers.
  *
  * QgsProviderGuiRegistry is not usually directly created, but rather accessed through
  * QgsGui::providerGuiRegistry().

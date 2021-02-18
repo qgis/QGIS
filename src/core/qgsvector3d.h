@@ -23,7 +23,7 @@
 
 /**
  * \ingroup 3d
- * Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
+ * \brief Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
  * instead of single precision floating point numbers.
  *
  * \since QGIS 3.0

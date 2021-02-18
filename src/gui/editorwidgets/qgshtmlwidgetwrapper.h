@@ -23,7 +23,7 @@
 
 /**
  * \ingroup gui
- * Wraps a QQuickWidget to display HTML code
+ * \brief Wraps a QQuickWidget to display HTML code
  * \since QGIS 3.4
  */
 class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
 
 /**
  * \ingroup gui
- * To pass the QgsExpression functionality and it's context to the context of the QWebView
+ * \brief To pass the QgsExpression functionality and it's context to the context of the QWebView
  * \since QGIS 3.8
  */
 class HtmlExpression : public QObject

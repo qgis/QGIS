@@ -242,7 +242,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
 
 /**
  * \ingroup gui
- * A simple graphics item rendered as an 'x'.
+ * \brief A simple graphics item rendered as an 'x'.
  */
 class GUI_EXPORT QgsModelViewSnapMarker : public QGraphicsRectItem
 {

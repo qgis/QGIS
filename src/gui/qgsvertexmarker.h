@@ -31,7 +31,7 @@ class QPainter;
 
 /**
  * \ingroup gui
- * A class for marking vertices of features using e.g. circles or 'x'.
+ * \brief A class for marking vertices of features using e.g. circles or 'x'.
  */
 class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 {

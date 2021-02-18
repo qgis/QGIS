@@ -30,7 +30,7 @@
 /**
  * \ingroup gui
  * \class QgsSearchWidgetToolButton
- * A tool button widget which is displayed next to search widgets in forms, and
+ * \brief A tool button widget which is displayed next to search widgets in forms, and
  * allows for controlling how the widget behaves and how the filtering/searching
  * operates.
  * \since QGIS 2.16

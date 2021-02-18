@@ -29,7 +29,7 @@ class QFont;
 /**
  * \ingroup gui
  * \namespace QgsGuiUtils
- * The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
+ * \brief The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
  * \note not available in Python bindings
  */
 namespace QgsGuiUtils

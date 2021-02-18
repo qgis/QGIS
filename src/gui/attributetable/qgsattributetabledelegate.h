@@ -28,7 +28,7 @@ class QToolButton;
 
 /**
  * \ingroup gui
- * A delegate item class for QgsAttributeTable (see Qt documentation for
+ * \brief A delegate item class for QgsAttributeTable (see Qt documentation for
  * QItemDelegate).
  */
 

@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * Widget for editing the trust policy associated with a Certificate (Intermediate) Authority
+ * \brief Widget for editing the trust policy associated with a Certificate (Intermediate) Authority
  */
 class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
 {

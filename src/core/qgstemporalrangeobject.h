@@ -26,7 +26,7 @@
 /**
  * \class QgsTemporalRangeObject
  * \ingroup core
- * Base class for objects with an associated (optional) temporal range.
+ * \brief Base class for objects with an associated (optional) temporal range.
  *
  * \since QGIS 3.14
  */

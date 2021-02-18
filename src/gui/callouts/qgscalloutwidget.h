@@ -28,7 +28,7 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsCalloutWidget
- * Base class for widgets which allow control over the properties of callouts.
+ * \brief Base class for widgets which allow control over the properties of callouts.
  * \since QGIS 3.10
  */
 class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionContextGenerator

@@ -45,7 +45,7 @@ class QgsLayoutTableColumn;
 
 /**
  * \ingroup gui
- * A base model to hold the displaying or sortings columns used in a QgsLayoutAttributeTable
+ * \brief A base model to hold the displaying or sortings columns used in a QgsLayoutAttributeTable
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModelBase: public QAbstractTableMo
 
 /**
  * \ingroup gui
- * A model for displaying columns shown in a QgsLayoutAttributeTable
+ * \brief A model for displaying columns shown in a QgsLayoutAttributeTable
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QgsLayoutAttributeTa
 
 /**
  * \ingroup gui
- * Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted
+ * \brief Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -183,7 +183,7 @@ class GUI_EXPORT QgsLayoutTableSortModel: public QgsLayoutAttributeTableColumnMo
 
 /**
  * \ingroup gui
- * A delegate for showing column alignment as a combo box
+ * \brief A delegate for showing column alignment as a combo box
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -203,7 +203,7 @@ class GUI_EXPORT QgsLayoutColumnAlignmentDelegate : public QItemDelegate
 
 /**
  * \ingroup gui
- * A delegate for showing column attribute source as a QgsFieldExpressionWidget
+ * \brief A delegate for showing column attribute source as a QgsFieldExpressionWidget
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -229,7 +229,7 @@ class GUI_EXPORT QgsLayoutColumnSourceDelegate : public QItemDelegate, private Q
 
 /**
  * \ingroup gui
- * A delegate for showing column width as a spin box
+ * \brief A delegate for showing column width as a spin box
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -250,7 +250,7 @@ class GUI_EXPORT QgsLayoutColumnWidthDelegate : public QItemDelegate
 
 /**
  * \ingroup gui
- * A delegate for showing column sort order as a combo box
+ * \brief A delegate for showing column sort order as a combo box
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -272,7 +272,7 @@ class GUI_EXPORT QgsLayoutColumnSortOrderDelegate : public QItemDelegate
 
 /**
  * \ingroup gui
- * A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order
+ * \brief A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

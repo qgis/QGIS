@@ -27,7 +27,7 @@
  * \class QgsHighlightableComboBox
  * \ingroup gui
  *
- * A QComboBox subclass with the ability to "highlight" the edges of the widget.
+ * \brief A QComboBox subclass with the ability to "highlight" the edges of the widget.
  *
  * \since QGIS 3.12
  */

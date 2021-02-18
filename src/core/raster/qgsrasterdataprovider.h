@@ -83,7 +83,7 @@ class CORE_EXPORT QgsImageFetcher : public QObject
 
 /**
  * \ingroup core
- * Base class for raster data providers.
+ * \brief Base class for raster data providers.
  */
 class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRasterInterface
 {

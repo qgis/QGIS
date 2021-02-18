@@ -30,7 +30,7 @@
 
 /**
  * \ingroup server
- * WCS implementation
+ * \brief WCS implementation
  */
 
 //! WCS implementation

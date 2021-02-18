@@ -26,7 +26,7 @@
 
 /**
  * \ingroup server
- * QgsServerRequest
+ * \brief QgsServerRequest
  * Class defining request interface passed to services QgsService::executeRequest() method
  *
  * \since QGIS 3.0

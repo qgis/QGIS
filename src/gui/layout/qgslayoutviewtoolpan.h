@@ -22,7 +22,7 @@
 
 /**
  * \ingroup gui
- * Layout view tool for panning the layout.
+ * \brief Layout view tool for panning the layout.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolPan : public QgsLayoutViewTool

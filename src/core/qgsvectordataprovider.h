@@ -48,7 +48,7 @@ class QgsAbstractVectorLayerLabeling;
 
 /**
  * \ingroup core
- * This is the base class for vector data providers.
+ * \brief This is the base class for vector data providers.
  *
  * Data providers abstract the retrieval and writing (where supported)
  * of feature and attribute information from a spatial datasource.

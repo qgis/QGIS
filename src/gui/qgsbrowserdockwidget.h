@@ -37,7 +37,7 @@ class QgsDataItemGuiContext;
 
 /**
  * \ingroup gui
- * The QgsBrowserDockWidget class
+ * \brief The QgsBrowserDockWidget class
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBrowserDockWidgetBase

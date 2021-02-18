@@ -93,7 +93,9 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
 
 /**
  * \ingroup core
- * A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
+ * \brief A cache for images / pictures derived from svg files.
+ *
+ * This class supports parameter replacement in svg files
 according to the svg params specification (http://www.w3.org/TR/2009/WD-SVGParamPrimer-20090616/). Supported are
 the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
  *

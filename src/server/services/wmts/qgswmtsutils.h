@@ -27,7 +27,7 @@
 
 /**
  * \ingroup server
- * WMTS implementation
+ * \brief WMTS implementation
  * \since QGIS 3.4
  */
 

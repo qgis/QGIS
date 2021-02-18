@@ -26,7 +26,7 @@
  * \class QgsTextBlock
  * \ingroup core
  *
- * Represents a block of text consisting of one or more QgsTextFragment objects.
+ * \brief Represents a block of text consisting of one or more QgsTextFragment objects.
  *
  * \warning This API is not considered stable and may change in future QGIS versions.
  *

@@ -25,7 +25,7 @@
 /**
  * \class QgsTextRendererUtils
   * \ingroup core
-  * Utility functions for text rendering.
+  * \brief Utility functions for text rendering.
   * \since QGIS 3.10
  */
 class CORE_EXPORT QgsTextRendererUtils

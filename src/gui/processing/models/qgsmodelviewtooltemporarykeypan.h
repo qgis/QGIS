@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * Model designer view tool for temporarily panning a layout while a key is depressed.
+ * \brief Model designer view tool for temporarily panning a layout while a key is depressed.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelViewToolTemporaryKeyPan : public QgsModelViewTool

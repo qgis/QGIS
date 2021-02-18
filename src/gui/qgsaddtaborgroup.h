@@ -32,7 +32,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * Dialog to add a tab or group of attributes
+ * \brief Dialog to add a tab or group of attributes
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14

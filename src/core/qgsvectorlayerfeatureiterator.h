@@ -46,7 +46,7 @@ class QgsVectorLayerFeatureIterator;
 
 /**
  * \ingroup core
- * Partial snapshot of vector layer's state (only the members necessary for access to features)
+ * \brief Partial snapshot of vector layer's state (only the members necessary for access to features)
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 /**
  * \class QgsVectorLayerSelectedFeatureSource
  * \ingroup core
- * QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
+ * \brief QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource, public QgsExpressionContextScopeGenerator

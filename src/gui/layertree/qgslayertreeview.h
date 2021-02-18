@@ -34,7 +34,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * The QgsLayerTreeView class extends QTreeView and provides some additional functionality
+ * \brief The QgsLayerTreeView class extends QTreeView and provides some additional functionality
  * when working with a layer tree.
  *
  * The view updates expanded state of layer tree nodes and also listens to changes
@@ -275,7 +275,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
 /**
  * \ingroup gui
- * Implementation of this interface can be implemented to allow QgsLayerTreeView
+ * \brief Implementation of this interface can be implemented to allow QgsLayerTreeView
  * instance to provide custom context menus (opened upon right-click).
  *
  * \see QgsLayerTreeView

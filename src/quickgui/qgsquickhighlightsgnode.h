@@ -29,7 +29,7 @@ class QgsPolygon;
 /**
  * \ingroup quick
  *
- * This is used to transform (render) QgsGeometry to node for QtQuick scene graph.
+ * \brief This is used to transform (render) QgsGeometry to node for QtQuick scene graph.
  *
  * \note QML Type: not exported
  *

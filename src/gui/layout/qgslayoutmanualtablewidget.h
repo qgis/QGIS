@@ -31,7 +31,7 @@ class QgsLayoutFrame;
 
 /**
  * \ingroup gui
- * A widget for configuring layout manual table items.
+ * \brief A widget for configuring layout manual table items.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

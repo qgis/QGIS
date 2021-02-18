@@ -40,7 +40,7 @@ class QVariant;
 
 /**
  * \ingroup quick
- * This is an internal (implementation) class used as the source model for QgsQuickAttributeFormModel.
+ * \brief This is an internal (implementation) class used as the source model for QgsQuickAttributeFormModel.
  *
  * \sa QgsQuickAttributeFormModel
  *
