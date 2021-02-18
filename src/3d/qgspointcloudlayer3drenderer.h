@@ -52,7 +52,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
      */
-    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
+    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
                                   double zValueScale, double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
@@ -160,6 +160,16 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      */
     bool isCanceled() const { return mIsCanceledCallback(); }
 
+    /**
+     * Sets the coordinate transform used to transform points from layer CRS to the map CRS
+     */
+    void setCoordinateTransform( const QgsCoordinateTransform &coordinateTransform );
+
+    /**
+     * Returns the coordinate transform used to transform points from layer CRS to the map CRS
+     */
+    QgsCoordinateTransform coordinateTransform() const { return mCoordinateTransform; }
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -169,6 +179,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudCategoryList mFilteredOutCategories;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
+    QgsCoordinateTransform mCoordinateTransform;
 
     std::function< bool() > mIsCanceledCallback;
 
