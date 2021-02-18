@@ -28,7 +28,7 @@
 /**
  * \class QgsRange
  * \ingroup core
- * A template based class for storing ranges (lower to upper values).
+ * \brief A template based class for storing ranges (lower to upper values).
  *
  * QgsRange classes represent a range of values of some element type. For instance,
  * ranges of int might be used to represent integer ranges.
@@ -192,7 +192,7 @@ class QgsRange
 
 
 /**
- * QgsRange which stores a range of double values.
+ * \brief QgsRange which stores a range of double values.
  * \ingroup core
  * \see QgsIntRange
  * \see QgsDateRange
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
 
 
 /**
- * QgsRange which stores a range of integer values.
+ * \brief QgsRange which stores a range of integer values.
  * \ingroup core
  * \see QgsDoubleRange
  * \see QgsDateRange
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
 /**
  * \class QgsTemporalRange
  * \ingroup core
- * A template based class for storing temporal ranges (beginning to end values).
+ * \brief A template based class for storing temporal ranges (beginning to end values).
  *
  * QgsTemporalRange classes represent a range of values of some temporal type. For instance,
  * ranges of QDateTime might be used to represent datetime ranges.

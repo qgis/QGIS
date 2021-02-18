@@ -11,6 +11,7 @@ class QgsListFieldFormatter : QgsFieldFormatter
 {
 %Docstring
 Field formatter for a list field.
+
 This represents a list type value.
 Values will be represented as a comma-separated list.
 

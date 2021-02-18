@@ -27,7 +27,7 @@ class QgsExpressionContext;
  * \ingroup core
  * \class QgsLabelObstacleSettings
  *
- * Contains settings related to how the label engine treats features as obstacles
+ * \brief Contains settings related to how the label engine treats features as obstacles
  *
  * \since QGIS 3.10.2
  */

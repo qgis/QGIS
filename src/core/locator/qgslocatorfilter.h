@@ -33,7 +33,7 @@ class QgsLocatorFilter;
 /**
  * \class QgsLocatorResult
  * \ingroup core
- * Encapsulates properties of an individual matching result found by a QgsLocatorFilter.
+ * \brief Encapsulates properties of an individual matching result found by a QgsLocatorFilter.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLocatorResult
@@ -144,7 +144,7 @@ Q_DECLARE_METATYPE( QgsLocatorResult::ResultAction )
 /**
  * \class QgsLocatorFilter
  * \ingroup core
- * Abstract base class for filters which collect locator results.
+ * \brief Abstract base class for filters which collect locator results.
  *
  * \note If the configuration of the filter is changed outside of the main application settings,
  * one needs to invalidate current results of the locator widget: \see QgisInterface::invalidateLocatorResults

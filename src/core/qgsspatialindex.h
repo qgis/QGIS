@@ -53,7 +53,7 @@ class QgsFeatureSource;
  * \ingroup core
  * \class QgsSpatialIndex
  *
- * A spatial index for QgsFeature objects.
+ * \brief A spatial index for QgsFeature objects.
  *
  * QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
  *

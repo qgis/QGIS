@@ -25,7 +25,7 @@ class QgsProject;
 /**
  * \ingroup core
  * \class QgsRelationContext
- * Context for relations. Used to resolve layers from projects.
+ * \brief Context for relations. Used to resolve layers from projects.
  * \since QGIS 3.11
  */
 class CORE_EXPORT QgsRelationContext

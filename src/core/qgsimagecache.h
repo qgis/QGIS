@@ -33,7 +33,7 @@
 /**
  * \ingroup core
  * \class QgsImageCacheEntry
- * An entry for a QgsImageCache, representing a single raster rendered at a specific width and height.
+ * \brief An entry for a QgsImageCache, representing a single raster rendered at a specific width and height.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
 /**
  * \class QgsImageCache
  * \ingroup core
- * A cache for images derived from raster files.
+ * \brief A cache for images derived from raster files.
  *
  * QgsImageCache stores pre-rendered resampled versions of raster image files, allowing efficient
  * reuse without incurring the cost of resampling on every render.

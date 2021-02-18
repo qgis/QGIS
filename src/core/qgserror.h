@@ -27,7 +27,7 @@
 
 /**
  * \ingroup core
- * QgsErrorMessage represents single error message.
+ * \brief QgsErrorMessage represents single error message.
 */
 class CORE_EXPORT QgsErrorMessage
 {
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsErrorMessage
 
 /**
  * \ingroup core
- * QgsError is container for error messages (report). It may contain chain
+ * \brief QgsError is container for error messages (report). It may contain chain
  * (sort of traceback) of error messages (e.g. GDAL - provider - layer).
  * Higher level messages are appended at the end.
 */

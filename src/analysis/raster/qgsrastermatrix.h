@@ -24,6 +24,7 @@
 /**
  * \ingroup analysis
  * \class QgsRasterMatrix
+ * \brief Represents a matrix in a raster calculator operation.
  */
 class ANALYSIS_EXPORT QgsRasterMatrix
 {

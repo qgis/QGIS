@@ -21,7 +21,7 @@
 
 /**
  * \ingroup analysis
- * This class implements a resolution for problems detected in geometry checks.
+ * \brief This class implements a resolution for problems detected in geometry checks.
  *
  * \since QGIS 3.12
  */

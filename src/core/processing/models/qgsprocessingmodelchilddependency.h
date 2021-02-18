@@ -27,7 +27,7 @@
 /**
  * \class QgsProcessingModelChildDependency
  * \ingroup core
- * Contains details of a child algorithm dependency.
+ * \brief Contains details of a child algorithm dependency.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsProcessingModelChildDependency

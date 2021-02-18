@@ -62,7 +62,7 @@ class QPainter;
 
 /**
  * \ingroup core
- * Types of layers that can be added to a map
+ * \brief Types of layers that can be added to a map
  * \since QGIS 3.8
  */
 enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
@@ -78,7 +78,7 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
 
 /**
  * \ingroup core
- * Base class for all map layer types.
+ * \brief Base class for all map layer types.
  * This is the base class for all map layer types (vector, raster).
  */
 class CORE_EXPORT QgsMapLayer : public QObject

@@ -656,7 +656,7 @@ class CORE_EXPORT QgsDiagramSettings
 /**
  * \ingroup core
  * \class QgsDiagramInterpolationSettings
- * Additional diagram settings for interpolated size rendering.
+ * \brief Additional diagram settings for interpolated size rendering.
  */
 class CORE_EXPORT QgsDiagramInterpolationSettings
 {
@@ -814,7 +814,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
 /**
  * \ingroup core
- * Renders the diagrams for all features with the same settings
+ * \brief Renders the diagrams for all features with the same settings
 */
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {

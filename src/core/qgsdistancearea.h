@@ -29,7 +29,7 @@ class QgsCurve;
 
 /**
  * \ingroup core
- * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+ * \brief A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
  *
  * Measurements can either be performed on existing QgsGeometry objects, or using
  * lists of points.

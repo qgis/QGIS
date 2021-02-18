@@ -47,7 +47,7 @@ class QgsPreviewQuad;
 
 /**
  * \ingroup 3d
- * Container class that holds different objects related to shadow rendering
+ * \brief Container class that holds different objects related to shadow rendering
  *
  * \note Not available in Python bindings
  *

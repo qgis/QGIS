@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A line intersection check.
  */
 class ANALYSIS_EXPORT QgsGeometryLineIntersectionCheck : public QgsGeometryCheck
 {

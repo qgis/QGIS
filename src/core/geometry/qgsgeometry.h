@@ -102,7 +102,7 @@ struct QgsGeometryPrivate;
 
 /**
  * \ingroup core
- * A geometry is the spatial representation of a feature.
+ * \brief A geometry is the spatial representation of a feature.
  *
  * QgsGeometry acts as a generic container for geometry objects. QgsGeometry objects are implicitly shared,
  * so making copies of geometries is inexpensive. The geometry container class can also be stored inside
@@ -2053,6 +2053,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * \ingroup core
+     * \brief A geometry error.
      */
     class CORE_EXPORT Error
     {

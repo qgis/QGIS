@@ -26,7 +26,7 @@ class QgsExpressionContext;
  * \ingroup core
  * \class QgsLabelThinningSettings
  *
- * Contains settings related to how the label engine removes candidate label positions and reduces the number
+ * \brief Contains settings related to how the label engine removes candidate label positions and reduces the number
  * of displayed labels.
  *
  * \since QGIS 3.12

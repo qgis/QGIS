@@ -34,7 +34,7 @@ class QgsProject;
 
 /**
  * \ingroup core
- * Assorted functions for dealing with layer trees.
+ * \brief Assorted functions for dealing with layer trees.
  *
  * \since QGIS 2.4
  */

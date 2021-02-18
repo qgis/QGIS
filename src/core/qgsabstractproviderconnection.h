@@ -25,7 +25,7 @@
 #include "qgsexception.h"
 
 /**
- * The QgsAbstractProviderConnection provides an interface for data provider connections.
+ * \brief The QgsAbstractProviderConnection provides an interface for data provider connections.
  *
  * Connections objects can be constructed loading them from the connections stored
  * in the settings by passing the connection name.

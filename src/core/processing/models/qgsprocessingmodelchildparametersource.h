@@ -27,7 +27,7 @@ class QgsProcessingModelAlgorithm;
 ///@cond NOT_STABLE
 
 /**
- * Source for the value of a parameter for a child algorithm within a model.
+ * \brief Source for the value of a parameter for a child algorithm within a model.
  * \ingroup core
  * \since QGIS 3.0
  */

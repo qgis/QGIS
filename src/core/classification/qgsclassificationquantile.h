@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * QgsClassificationQuantile is an implementation of QgsClassificationMethod
+ * \brief QgsClassificationQuantile is an implementation of QgsClassificationMethod
  * based on quantiles
  * \since QGIS 3.10
  */

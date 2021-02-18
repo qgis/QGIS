@@ -32,7 +32,7 @@ class QgsFieldsPrivate;
 /**
  * \class QgsFields
  * \ingroup core
- * Container of fields for a vector layer.
+ * \brief Container of fields for a vector layer.
  *
  * In addition to storing a list of QgsField instances, it also:
  *

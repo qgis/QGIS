@@ -25,7 +25,7 @@
 #include <QVariantMap>
 
 /**
- * Contains utilities for working with EXIF tags in images.
+ * \brief Contains utilities for working with EXIF tags in images.
  * \ingroup analysis
  * \since QGIS 3.6
  */
@@ -59,7 +59,7 @@ class ANALYSIS_EXPORT QgsExifTools
     Q_INVOKABLE static bool hasGeoTag( const QString &imagePath );
 
     /**
-     * Extended image geotag details.
+     * \brief Extended image geotag details.
      * \ingroup analysis
      * \since QGIS 3.6
      */

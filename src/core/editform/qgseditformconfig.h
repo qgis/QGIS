@@ -34,6 +34,7 @@ class QgsAttributeEditorContainer;
 /**
  * \ingroup core
  * \class QgsEditFormConfig
+ * \brief Contains configuration settings for an editor form.
  */
 class CORE_EXPORT QgsEditFormConfig
 {

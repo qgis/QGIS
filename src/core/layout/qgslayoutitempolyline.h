@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * Layout item for node based polyline shapes.
+ * \brief Layout item for node based polyline shapes.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem

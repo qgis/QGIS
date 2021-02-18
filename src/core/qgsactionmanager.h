@@ -42,7 +42,7 @@ class QgsExpressionContext;
 /**
  * \ingroup core
  * \class QgsActionManager
- * Storage and management of actions associated with a layer.
+ * \brief Storage and management of actions associated with a layer.
  *
  * Actions can trigger custom code or applications to be executed
  * based on attributes of a given feature.

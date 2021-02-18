@@ -62,7 +62,7 @@ static const double POINT_LOC_EPSILON = 1e-12;
 
 /**
  * \ingroup core
- * Helper class for bulk loading of R-trees.
+ * \brief Helper class for bulk loading of R-trees.
  * \note not available in Python bindings
 */
 class QgsPointLocator_Stream : public IDataStream
@@ -90,7 +90,7 @@ class QgsPointLocator_Stream : public IDataStream
 
 /**
  * \ingroup core
- * Helper class used when traversing the index looking for vertices - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for vertices - builds a list of matches.
  * \note not available in Python bindings
 */
 class QgsPointLocator_VisitorNearestVertex : public IVisitor
@@ -137,7 +137,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 
 /**
  * \ingroup core
- * Helper class used when traversing the index looking for centroid - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for centroid - builds a list of matches.
  * \note not available in Python bindings
  * \since QGIS 3.12
 */
@@ -147,7 +147,7 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 
     /**
      * \ingroup core
-     * Helper class used when traversing the index looking for centroid - builds a list of matches.
+     * \brief Helper class used when traversing the index looking for centroid - builds a list of matches.
      * \note not available in Python bindings
      * \since QGIS 3.12
     */
@@ -189,7 +189,7 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 
 /**
  * \ingroup core
- * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for middle segment - builds a list of matches.
  * \note not available in Python bindings
  * \since QGIS 3.12
 */
@@ -199,7 +199,7 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
 
     /**
      * \ingroup core
-     * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+     * \brief Helper class used when traversing the index looking for middle segment - builds a list of matches.
      * \note not available in Python bindings
      * \since QGIS 3.12
     */
@@ -250,7 +250,7 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
 
 /**
  * \ingroup core
- * Helper class used when traversing the index looking for edges - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for edges - builds a list of matches.
  * \note not available in Python bindings
 */
 class QgsPointLocator_VisitorNearestEdge : public IVisitor
@@ -300,7 +300,7 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
 
 /**
  * \ingroup core
- * Helper class used when traversing the index with areas - builds a list of matches.
+ * \brief Helper class used when traversing the index with areas - builds a list of matches.
  * \note not available in Python bindings
 */
 class QgsPointLocator_VisitorArea : public IVisitor
@@ -496,7 +496,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
 
 /**
  * \ingroup core
- * Helper class used when traversing the index looking for edges - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for edges - builds a list of matches.
  * \note not available in Python bindings
 */
 class QgsPointLocator_VisitorEdgesInRect : public IVisitor
@@ -539,7 +539,7 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
 
 /**
  * \ingroup core
- * Helper class used when traversing the index looking for vertices - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for vertices - builds a list of matches.
  * \note not available in Python bindings
  * \since QGIS 3.6
 */
@@ -586,7 +586,7 @@ class QgsPointLocator_VisitorVerticesInRect : public IVisitor
 
 /**
  * \ingroup core
- * Helper class used when traversing the index looking for centroid - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for centroid - builds a list of matches.
  * \note not available in Python bindings
  * \since QGIS 3.10
 */
@@ -628,7 +628,7 @@ class QgsPointLocator_VisitorCentroidsInRect : public IVisitor
 
 /**
  * \ingroup core
- * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for middle segment - builds a list of matches.
  * \note not available in Python bindings
  * \since QGIS 3.10
 */
@@ -685,7 +685,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
 
 /**
  * \ingroup core
- * Helper class to dump the R-index nodes and their content
+ * \brief Helper class to dump the R-index nodes and their content
  * \note not available in Python bindings
 */
 class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy

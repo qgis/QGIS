@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * An annotation item which renders a text string at a point location.
+ * \brief An annotation item which renders a text string at a point location.
  *
  * \since QGIS 3.16
  */

@@ -101,6 +101,7 @@ class QgisMeshVisitor : public SpatialIndex::IVisitor
 /**
  * \ingroup core
  * \class QgsMeshSpatialIndexCopyVisitor
+ * \brief A copy visitor for populating a spatial index.
  * \note not available in Python bindings
  */
 class QgsMeshSpatialIndexCopyVisitor : public SpatialIndex::IVisitor

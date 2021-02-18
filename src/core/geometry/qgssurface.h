@@ -28,6 +28,7 @@ class QgsPolygon;
 /**
  * \ingroup core
  * \class QgsSurface
+ * \brief Surface geometry type.
  */
 class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
 {

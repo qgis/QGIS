@@ -30,7 +30,7 @@ enum class QgsMaterialSettingsRenderingTechnique;
 
 /**
  * \ingroup core
- * Stores metadata about one 3D material settings class.
+ * \brief Stores metadata about one 3D material settings class.
  *
  * \note It's necessary to implement createMaterialSettings() function.
  * In C++ you can use QgsMaterialSettingsMetadata convenience class.
@@ -112,7 +112,7 @@ typedef bool ( *QgsMaterialSettingsSupportsTechniqueFunc )( QgsMaterialSettingsR
 
 /**
  * \ingroup core
- * Convenience metadata class that uses static functions to create a 3D material settings object and its widget.
+ * \brief Convenience metadata class that uses static functions to create a 3D material settings object and its widget.
  *
  * \note Not available in Python bindings.
  *
@@ -175,7 +175,7 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
 
 /**
  * \ingroup core
- * Registry of available 3d material settings classes.
+ * \brief Registry of available 3d material settings classes.
  *
  * QgsMaterialRegistry is not usually directly created, but rather accessed through
  * Qgs3D::materialRegistry().

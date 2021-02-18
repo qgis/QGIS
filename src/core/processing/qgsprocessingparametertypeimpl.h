@@ -26,7 +26,7 @@
 #define SIP_NO_FILE
 
 /**
- * A raster layer parameter for processing algorithms.
+ * \brief A raster layer parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('raster')
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
 };
 
 /**
- * A mesh layer parameter for processing algorithms.
+ * \brief A mesh layer parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('mesh')
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
 };
 
 /**
- * A generic map layer parameter for processing algorithms.
+ * \brief A generic map layer parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('maplayer')
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
 };
 
 /**
- * A boolean parameter for processing algorithms.
+ * \brief A boolean parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('boolean')
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
 };
 
 /**
- * An expression parameter for processing algorithms.
+ * \brief An expression parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('expression')
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingPar
 };
 
 /**
- * A crs parameter for processing algorithms.
+ * \brief A crs parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('crs')
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
 };
 
 /**
- * A numeric range parameter for processing algorithms.
+ * \brief A numeric range parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('range')
@@ -465,7 +465,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
 };
 
 /**
- * A point parameter for processing algorithms.
+ * \brief A point parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('point')
@@ -519,7 +519,7 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
 };
 
 /**
- * A geometry parameter for processing algorithms.
+ * \brief A geometry parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('geometry')
@@ -571,7 +571,7 @@ class CORE_EXPORT QgsProcessingParameterTypeGeometry : public QgsProcessingParam
 };
 
 /**
- * An enum based parameter for processing algorithms, allowing for selection from predefined values.
+ * \brief An enum based parameter for processing algorithms, allowing for selection from predefined values.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('enum')
@@ -624,7 +624,7 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
 };
 
 /**
- * A rectangular map extent parameter for processing algorithms.
+ * \brief A rectangular map extent parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('extent')
@@ -684,7 +684,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
 };
 
 /**
- * A table (matrix) parameter for processing algorithms.
+ * \brief A table (matrix) parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('matrix')
@@ -736,7 +736,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
 };
 
 /**
- * An input file or folder parameter for processing algorithms.
+ * \brief An input file or folder parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('file')
@@ -787,7 +787,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
 };
 
 /**
- * A vector layer or feature source field parameter for processing algorithms.
+ * \brief A vector layer or feature source field parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('field')
@@ -839,7 +839,7 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
 };
 
 /**
- * A vector layer destination parameter, for specifying the destination path for a vector layer
+ * \brief A vector layer destination parameter, for specifying the destination path for a vector layer
  * created by the algorithm.
  *
  * \ingroup core
@@ -900,7 +900,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
 };
 
 /**
- * A generic file based destination parameter, for specifying the destination path for a file (non-map layer)
+ * \brief A generic file based destination parameter, for specifying the destination path for a file (non-map layer)
  * created by the algorithm.
  *
  * \ingroup core
@@ -960,7 +960,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
 };
 
 /**
- * A folder destination parameter, for specifying the destination path for a folder created
+ * \brief A folder destination parameter, for specifying the destination path for a folder created
  * by the algorithm or used for creating new files within the algorithm.
  * A folder output parameter.
  *
@@ -1021,7 +1021,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
 };
 
 /**
- * A raster layer destination parameter, for specifying the destination path for a raster layer
+ * \brief A raster layer destination parameter, for specifying the destination path for a raster layer
  * created by the algorithm.
  *
  * \ingroup core
@@ -1082,7 +1082,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
 };
 
 /**
- * A string parameter for processing algorithms.
+ * \brief A string parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('string')
@@ -1134,7 +1134,7 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
 };
 
 /**
- * A authentication configuration parameter for processing algorithms.
+ * \brief A authentication configuration parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('authcfg')
@@ -1185,7 +1185,7 @@ class CORE_EXPORT QgsProcessingParameterTypeAuthConfig : public QgsProcessingPar
 };
 
 /**
- * A parameter for processing algorithms which accepts multiple map layers.
+ * \brief A parameter for processing algorithms which accepts multiple map layers.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('multilayer')
@@ -1234,7 +1234,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
 };
 
 /**
- * An input feature source (such as vector layers) parameter for processing algorithms.
+ * \brief An input feature source (such as vector layers) parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('source')
@@ -1290,7 +1290,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
 };
 
 /**
- * A numeric parameter for processing algorithms.
+ * \brief A numeric parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('number')
@@ -1343,7 +1343,7 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
 };
 
 /**
- * A distance parameter for processing algorithms.
+ * \brief A distance parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('distance')
@@ -1398,7 +1398,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
 
 
 /**
- * A scale parameter for processing algorithms.
+ * \brief A scale parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('scale')
@@ -1452,7 +1452,7 @@ class CORE_EXPORT QgsProcessingParameterTypeScale : public QgsProcessingParamete
 };
 
 /**
- * A raster band parameter for Processing algorithms.
+ * \brief A raster band parameter for Processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('band')
@@ -1505,7 +1505,7 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
 };
 
 /**
- * A feature sink parameter for Processing algorithms.
+ * \brief A feature sink parameter for Processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('band')
@@ -1569,7 +1569,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
 
 
 /**
- * A print layout parameter for Processing algorithms.
+ * \brief A print layout parameter for Processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('layout')
@@ -1624,7 +1624,7 @@ class CORE_EXPORT QgsProcessingParameterTypeLayout : public QgsProcessingParamet
 
 
 /**
- * A print layout item parameter for Processing algorithms.
+ * \brief A print layout item parameter for Processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('layoutitem')
@@ -1679,7 +1679,7 @@ class CORE_EXPORT QgsProcessingParameterTypeLayoutItem : public QgsProcessingPar
 
 
 /**
- * A color parameter for Processing algorithms.
+ * \brief A color parameter for Processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('color')
@@ -1733,7 +1733,7 @@ class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParamete
 };
 
 /**
- * A coordinate operation parameter for Processing algorithms.
+ * \brief A coordinate operation parameter for Processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('coordinateoperation')
@@ -1786,7 +1786,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCoordinateOperation : public QgsProc
 
 
 /**
- * A map theme parameter for Processing algorithms.
+ * \brief A map theme parameter for Processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('maptheme')
@@ -1838,7 +1838,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMapTheme: public QgsProcessingParame
 };
 
 /**
- * A datetime parameter for processing algorithms.
+ * \brief A datetime parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('datetime')
@@ -1894,7 +1894,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDateTime : public QgsProcessingParam
 
 
 /**
- * A provider connection name parameter for processing algorithms.
+ * \brief A provider connection name parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('providerconnection')
@@ -1946,7 +1946,7 @@ class CORE_EXPORT QgsProcessingParameterTypeProviderConnection : public QgsProce
 };
 
 /**
- * A database schema name parameter for processing algorithms.
+ * \brief A database schema name parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('databaseschema')
@@ -1999,7 +1999,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseSchema : public QgsProcessin
 
 
 /**
- * A database table name parameter for processing algorithms.
+ * \brief A database table name parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('databasetable')

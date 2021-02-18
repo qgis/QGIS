@@ -38,7 +38,7 @@ class QgsStyleEntityVisitorInterface;
 /**
  * \ingroup core
  * \class QgsLayoutItemRenderContext
- * Contains settings and helpers relating to a render of a QgsLayoutItem.
+ * \brief Contains settings and helpers relating to a render of a QgsLayoutItem.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemRenderContext
@@ -483,7 +483,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual bool nextExportPart();
 
     /**
-     * Contains details of a particular export layer relating to a layout item.
+     * \brief Contains details of a particular export layer relating to a layout item.
      * \ingroup core
      * \since QGIS 3.10
      */

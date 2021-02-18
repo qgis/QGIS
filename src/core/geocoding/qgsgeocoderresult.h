@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * Represents a matching result from a geocoder search.
+ * \brief Represents a matching result from a geocoder search.
  *
  * QgsGeocoderResult objects may represent valid matches, or an invalid
  * error result. This can be checked by testing isValid(). An invalid

@@ -69,7 +69,7 @@ class QgsCoordinateReferenceSystemRegistry;
 
 /**
  * \ingroup core
- * Extends QApplication to provide access to QGIS specific resources such
+ * \brief Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
  *
  * This is a subclass of QApplication and should be instantiated in place of

@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * This is an abstract base class for any elements of a drag and drop form.
+ * \brief This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
  * as a tab widget or a collapsible group box. Or it can be a field which will

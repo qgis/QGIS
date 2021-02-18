@@ -26,7 +26,7 @@
 /**
  * \class QgsPointCloudLayerElevationProperties
  * \ingroup core
- * Point cloud layer specific subclass of QgsMapLayerElevationProperties.
+ * \brief Point cloud layer specific subclass of QgsMapLayerElevationProperties.
  *
  * \since QGIS 3.18
  */

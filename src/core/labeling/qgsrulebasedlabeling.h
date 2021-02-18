@@ -35,6 +35,7 @@ class QgsRuleBasedLabelProvider;
 /**
  * \ingroup core
  * \class QgsRuleBasedLabeling
+ * \brief Rule based labeling for a vector layer.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
@@ -47,6 +48,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     /**
      * \ingroup core
      * \class QgsRuleBasedLabeling::Rule
+     * \brief A child rule for QgsRuleBasedLabeling.
      * \since QGIS 3.0
      */
     class CORE_EXPORT Rule
@@ -395,6 +397,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 /**
  * \ingroup core
  * \class QgsRuleBasedLabelProvider
+ * \brief Label provider for rule based labeling.
  * \note not available in Python bindings
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */

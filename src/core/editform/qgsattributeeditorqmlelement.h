@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * An attribute editor widget that will represent arbitrary QML code.
+ * \brief An attribute editor widget that will represent arbitrary QML code.
  *
  * \since QGIS 3.4
  */

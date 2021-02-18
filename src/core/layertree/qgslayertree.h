@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * Namespace with helper functions for layer tree operations.
+ * \brief Namespace with helper functions for layer tree operations.
  *
  * Only generally useful routines should be here. Miscellaneous utility functions for work
  * with the layer tree are in QgsLayerTreeUtils class.

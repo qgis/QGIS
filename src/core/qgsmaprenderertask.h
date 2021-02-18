@@ -39,7 +39,7 @@ class QgsAbstractGeoPdfExporter;
 /**
  * \class QgsMapRendererTask
  * \ingroup core
- * QgsTask task which draws a map to an image file or a painter as a background
+ * \brief QgsTask task which draws a map to an image file or a painter as a background
  * task. This can be used to draw maps without blocking the QGIS interface.
  * \since QGIS 3.0
  */
