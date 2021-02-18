@@ -6,20 +6,22 @@
 
 #!/bin/sh
 
-ARCH=${1:-x86_64}
+
+arch=${1:-x86_64}
 DEBUG=false
-if [ "$2" == "DEBUG" ]; then
+if [ "$2" == "debug" ]; then
   DEBUG=true
 fi
-NJOBS=${3:-$(($(grep -c ^processor /proc/cpuinfo) * 3 / 2))}
+
+njobs=${3:-$(($(grep -c ^processor /proc/cpuinfo) * 3 / 2))}
 
 
-if [ "$ARCH" == "i686" ]; then
+if [ "$arch" == "i686" ]; then
     bits=32
-elif [ "$ARCH" == "x86_64" ]; then
+elif [ "$arch" == "x86_64" ]; then
     bits=64
 else
-    echo "Error: unrecognized ARCHitecture $ARCH"
+    echo "Error: unrecognized architecture $arch"
     exit 1
 fi
 
@@ -35,33 +37,34 @@ else
 fi
 
 # Note: This script is written to be used with the Fedora mingw environment
-MINGWROOT=/usr/$ARCH-w64-mingw32/sys-root/mingw
+MINGWROOT=/usr/$arch-w64-mingw32/sys-root/mingw
 
 if $DEBUG; then
-  OPTFLAGS="-O0 -g1 -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4 -fno-omit-frame-pointer"
-  buildtype="DEBUG"
+  optflags="-O0 -g1 -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4 -fno-omit-frame-pointer"
+  buildtype="Debug"
 else
-  OPTFLAGS="-O2 -g1 -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4 -fno-omit-frame-pointer"
-  buildtype="RelWithDEBUGInfo"
+  optflags="-O2 -g1 -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4 -fno-omit-frame-pointer"
+  buildtype="RelWithDebugInfo"
 fi
 pyver=$(mingw${bits}-python3 -c "import sys; print('.'.join(list(map(str, sys.version_info))[0:2]))")
 
 # Halt on errors
 set -e
 
-export MINGW32_CFLAGS="$OPTFLAGS"
-export MINGW32_CXXFLAGS="$OPTFLAGS"
-export MINGW64_CFLAGS="$OPTFLAGS"
-export MINGW64_CXXFLAGS="$OPTFLAGS"
+export MINGW32_CFLAGS="$optflags"
+export MINGW32_CXXFLAGS="$optflags"
+export MINGW64_CFLAGS="$optflags"
+export MINGW64_CXXFLAGS="$optflags"
 
 SRCDIR="$(readlink -f "$(dirname "$(readlink -f "$0")")/../..")"
+
 if $DEBUG; then
-  BUILDDIR="$SRCDIR/build_mingw${bits}_DEBUG"
+  BUILDDIR="$SRCDIR/build_mingw${bits}_debug"
 else
   BUILDDIR="$SRCDIR/build_mingw${bits}"
 fi
 installroot="$BUILDDIR/dist"
-installprefix="$installroot/usr/$ARCH-w64-mingw32/sys-root/mingw"
+installprefix="$installroot/usr/$arch-w64-mingw32/sys-root/mingw"
 
 # Cleanup
 rm -rf "$installroot"
@@ -81,7 +84,6 @@ mkdir -p $BUILDDIR
     -DQWT_INCLUDE_DIR=$MINGWROOT/include/qt5/qwt \
     -DQSCI_SIP_DIR=$MINGWROOT/share/sip/PyQt5/Qsci/ \
     -DBUILD_TESTING=OFF \
-    -DZSTD_INCLUDE_DIR=/usr/x86_64-w64-mingw32/sys-root/mingw/include/zstd/ \
     -DENABLE_TESTS=OFF \
     -DQGIS_BIN_SUBDIR=bin \
     -DQGIS_CGIBIN_SUBDIR=bin \
@@ -104,24 +106,24 @@ mkdir -p $BUILDDIR
 # cd $BUILDDIR/native_crssync
 # echo "Building native crssync..."
 # moc-qt5 $SRCDIR/src/core/qgsapplication.h > moc_qgsapplication.cpp
-# g++ $OPTFLAGS -fPIC -o crssync $SRCDIR/src/crssync/main.cpp $SRCDIR/src/crssync/qgscrssync.cpp moc_qgsapplication.cpp $SRCDIR/src/core/qgsapplication.cpp -DCORE_EXPORT= -DCOMPILING_CRSSYNC -I$SRCDIR/src/core/ -I$SRCDIR/src/core/geometry -I$BUILDDIR $(pkg-config --cflags --libs Qt5Widgets gdal sqlite3 proj)
+# g++ $optflags -fPIC -o crssync $SRCDIR/src/crssync/main.cpp $SRCDIR/src/crssync/qgscrssync.cpp moc_qgsapplication.cpp $SRCDIR/src/core/qgsapplication.cpp -DCORE_EXPORT= -DCOMPILING_CRSSYNC -I$SRCDIR/src/core/ -I$SRCDIR/src/core/geometry -I$BUILDDIR $(pkg-config --cflags --libs Qt5Widgets gdal sqlite3 proj)
 # )
 # crssync needs X at runtime
 # Xvfb :99 &
 # export DISPLAY=:99
 
-mingw$bits-make -C$BUILDDIR -j$NJOBS DESTDIR="${installroot}" install VERBOSE=1
+mingw$bits-make -C$BUILDDIR -j$njobs DESTDIR="${installroot}" install VERBOSE=1
 
 # Remove plugins with missing dependencies
-rm -rf ${installroot}/share/qgis/python/plugins/{MetaSeARCH,processing}
+rm -rf ${installroot}/share/qgis/python/plugins/{MetaSearch,processing}
 
-# Strip DEBUGinfo
+# Strip debuginfo
 binaries=$(find $installprefix -name '*.exe' -or -name '*.dll' -or -name '*.pyd')
 for f in $binaries
 do
-    case $(mingw-objdump -h $f 2>/dev/null | egrep -o '(DEBUG[\.a-z_]*|gnu.version)') in
-        *DEBUGlink*) continue ;;
-        *DEBUG*) ;;
+    case $(mingw-objdump -h $f 2>/dev/null | egrep -o '(debug[\.a-z_]*|gnu.version)') in
+        *debuglink*) continue ;;
+        *debug*) ;;
         *gnu.version*)
         echo "WARNING: $(basename $f) is already stripped!"
         continue
@@ -129,12 +131,12 @@ do
         *) continue ;;
     esac
 
-    echo extracting DEBUG info from $f
-    mingw-objcopy --only-keep-DEBUG $f $f.DEBUG || :
+    echo extracting debug info from $f
+    mingw-objcopy --only-keep-debug $f $f.debug || :
     pushd $(dirname $f)
     keep_symbols=`mktemp`
-    mingw-nm $f.DEBUG --format=sysv --defined-only | awk -F \| '{ if ($4 ~ "Function") print $1 }' | sort > "$keep_symbols"
-    mingw-objcopy --add-gnu-DEBUGlink=`basename $f.DEBUG` --strip-unneeded `basename $f` --keep-symbols="$keep_symbols" || :
+    mingw-nm $f.debug --format=sysv --defined-only | awk -F \| '{ if ($4 ~ "Function") print $1 }' | sort > "$keep_symbols"
+    mingw-objcopy --add-gnu-debuglink=`basename $f.debug` --strip-unneeded `basename $f` --keep-symbols="$keep_symbols" || :
     rm -f "$keep_symbols"
     popd
 done
@@ -160,7 +162,7 @@ function linkDep {
     lnk "$MINGWROOT/$1" "$destdir/$name" || return 1
     echo "${2:-bin}/$name: $(rpm -qf "$MINGWROOT/$1")" >> $installprefix/origins.txt
     autoLinkDeps "$destdir/$name" "${indent}  " || return 1
-    [ -e "$MINGWROOT/$1.DEBUG" ] && lnk "$MINGWROOT/$1.DEBUG" "$destdir/$name.DEBUG" || ($DEBUG && echo "Warning: missing $name.DEBUG" || :)
+    [ -e "$MINGWROOT/$1.debug" ] && lnk "$MINGWROOT/$1.debug" "$destdir/$name.debug" || ($debug && echo "Warning: missing $name.debug" || :)
     return 0
 }
 
@@ -243,7 +245,7 @@ cat $installprefix/origins.txt | sort | uniq > $installprefix/origins.new && mv 
 # Create package
 DISTROOT=build_mingw64/dist/usr/x86_64-w64-mingw32/sys-root/mingw
 DEBUGROOT=dist_debug
-for file in $(find $DISTROOT -name '*.DEBUG' \( -type l -or -type f \)); do
+for file in $(find $DISTROOT -name '*.debug' \( -type l -or -type f \)); do
     dest=${file/$DISTROOT/$DEBUGROOT}
     mkdir -p "$(dirname $dest)"
     sudo mv "$file" "$dest"
