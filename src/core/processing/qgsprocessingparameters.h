@@ -3106,7 +3106,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
 /**
  * \class QgsProcessingParameterRasterDestination
  * \ingroup core
- * A raster layer destination parameter, for specifying the destination path for a raster layer
+ * \brief A raster layer destination parameter, for specifying the destination path for a raster layer
  * created by the algorithm.
   * \since QGIS 3.0
  */

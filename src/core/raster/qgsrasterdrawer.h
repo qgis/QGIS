@@ -32,7 +32,7 @@ class QgsRasterIterator;
 
 /**
  * \ingroup core
- * The drawing pipe for raster layers.
+ * \brief The drawing pipe for raster layers.
  */
 class CORE_EXPORT QgsRasterDrawer
 {

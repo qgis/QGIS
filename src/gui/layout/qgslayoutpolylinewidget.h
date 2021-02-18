@@ -27,7 +27,7 @@
 
 /**
  * \ingroup gui
- * Input widget for QgsLayoutItemPolyline
+ * \brief Input widget for QgsLayoutItemPolyline
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

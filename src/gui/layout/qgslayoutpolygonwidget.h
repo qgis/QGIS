@@ -27,7 +27,7 @@
 
 /**
  * \ingroup gui
- * Input widget for QgsLayoutItemPolygon
+ * \brief Input widget for QgsLayoutItemPolygon
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

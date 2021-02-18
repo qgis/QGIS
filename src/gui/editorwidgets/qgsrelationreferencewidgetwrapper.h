@@ -26,7 +26,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * Wraps a relation reference widget.
+ * \brief Wraps a relation reference widget.
  *
  * Options:
  * <ul>

@@ -13,7 +13,7 @@
 class QgsCubicRasterResampler: QgsRasterResamplerV2
 {
 %Docstring
-Cubic Raster Resampler
+Cubic Raster Resampler.
 %End
 
 %TypeHeaderCode

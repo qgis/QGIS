@@ -27,7 +27,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * Renderer for multiband images with the color components
+  * \brief Renderer for multiband images with the color components
 */
 class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 {

@@ -29,7 +29,7 @@ class QgsMapLayerStyleCategoriesModel;
 
 /**
  * \ingroup gui
- * A reusable dialog which allows users to select stored layer styles and categories to load
+ * \brief A reusable dialog which allows users to select stored layer styles and categories to load
  * for a map layer.
  *
  * Currently supports

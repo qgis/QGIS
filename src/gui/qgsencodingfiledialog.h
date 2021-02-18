@@ -25,7 +25,7 @@ class QPushButton;
 
 /**
  * \ingroup gui
- * A file dialog which lets the user select the preferred encoding type for a data provider.
+ * \brief A file dialog which lets the user select the preferred encoding type for a data provider.
  **/
 class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 {
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 
 /**
  * \ingroup gui
- * A dialog which presents the user with a choice of file encodings.
+ * \brief A dialog which presents the user with a choice of file encodings.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsEncodingSelectionDialog: public QDialog

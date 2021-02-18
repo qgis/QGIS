@@ -30,7 +30,7 @@ class QgsSearchWidgetToolButton;
 /**
  * \ingroup gui
  *
- * Base class for all widgets shown on a QgsAttributeForm.
+ * \brief Base class for all widgets shown on a QgsAttributeForm.
  * Consists of the widget which is visible in edit mode as well as the widget visible in search mode.
  *
  * \since QGIS 3.0

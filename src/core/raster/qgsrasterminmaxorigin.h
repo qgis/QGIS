@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * This class describes the origin of min/max values. It does not store by
+ * \brief This class describes the origin of min/max values. It does not store by
  * itself the min/max values.
  * \since QGIS 3.0
  */

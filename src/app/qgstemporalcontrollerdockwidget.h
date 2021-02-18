@@ -26,7 +26,7 @@ class QgsTemporalController;
 
 /**
  * \ingroup app
- * The QgsTemporalControllerDockWidget class
+ * \brief The QgsTemporalControllerDockWidget class
  *
  * \since QGIS 3.14
  */

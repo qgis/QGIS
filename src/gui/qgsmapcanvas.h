@@ -78,7 +78,7 @@ class QgsMapMouseEvent;
 
 /**
  * \ingroup gui
- * Map canvas is a class for displaying all GIS data types on a canvas.
+ * \brief Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView

@@ -37,7 +37,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * The QgsDataSourceManagerDialog class embeds the browser panel and all
+ * \brief The QgsDataSourceManagerDialog class embeds the browser panel and all
  * the provider dialogs.
  * The dialog does not handle layer addition directly but emits signals that
  * need to be forwarded to the QGIS application to be handled.

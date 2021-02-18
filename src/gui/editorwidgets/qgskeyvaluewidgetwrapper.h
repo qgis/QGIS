@@ -25,7 +25,7 @@ class QgsKeyValueWidget;
 
 /**
  * \ingroup gui
- * Wraps a key/value widget.
+ * \brief Wraps a key/value widget.
  * \note not available in Python bindings
  * \since QGIS 3.0
  */

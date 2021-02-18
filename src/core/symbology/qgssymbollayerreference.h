@@ -111,7 +111,7 @@ class CORE_EXPORT QgsSymbolLayerId
  * \ingroup core
  * \class QgsSymbolLayerReference
  *
- * Type used to refer to a specific symbol layer in a symbol of a layer.
+ * \brief Type used to refer to a specific symbol layer in a symbol of a layer.
  * \since QGIS 3.12
  */
 class CORE_EXPORT QgsSymbolLayerReference

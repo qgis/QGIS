@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * A class to represent a vector.
+ * \brief A class to represent a vector.
  * Currently no Z axis / 2.5D support is implemented.
  */
 

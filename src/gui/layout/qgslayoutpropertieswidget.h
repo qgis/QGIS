@@ -29,7 +29,7 @@ class QgsMasterLayoutInterface;
 
 /**
  * \ingroup gui
- * Widget for configuring the properties of a layout.
+ * \brief Widget for configuring the properties of a layout.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

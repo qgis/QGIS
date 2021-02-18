@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * A combobox which lets the user select map scale from predefined list
+ * \brief A combobox which lets the user select map scale from predefined list
  * and highlights nearest to current scale value
  **/
 class GUI_EXPORT QgsScaleComboBox : public QComboBox

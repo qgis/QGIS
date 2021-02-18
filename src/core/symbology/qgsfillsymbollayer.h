@@ -711,7 +711,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
 /**
  * \ingroup core
- * Base class for polygon renderers generating texture images
+ * \brief Base class for polygon renderers generating texture images
 */
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 {
@@ -1023,7 +1023,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
 /**
  * \ingroup core
- * A class for filling symbols with a repeated SVG file.
+ * \brief A class for filling symbols with a repeated SVG file.
 */
 class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1291,7 +1291,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsLinePatternFillSymbolLayer
- * A symbol fill consisting of repeated parallel lines.
+ * \brief A symbol fill consisting of repeated parallel lines.
  */
 class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1810,7 +1810,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
  * \ingroup core
  * \class QgsRandomMarkerFillSymbolLayer
  *
- * A fill symbol layer which places markers at random locations within polygons.
+ * \brief A fill symbol layer which places markers at random locations within polygons.
  *
  * \since QGIS 3.12
  */

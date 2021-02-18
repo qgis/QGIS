@@ -27,7 +27,7 @@ class QgsMessageBar;
 /**
  * \ingroup gui
  * \class QgsSymbolWidgetContext
- * Contains settings which reflect the context in which a symbol (or renderer) widget is shown, e.g., the
+ * \brief Contains settings which reflect the context in which a symbol (or renderer) widget is shown, e.g., the
  * map canvas and relevant expression contexts.
  *
  * \since QGIS 3.0

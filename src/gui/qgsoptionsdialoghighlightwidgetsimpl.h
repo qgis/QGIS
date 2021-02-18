@@ -36,7 +36,7 @@ class QTreeWidgetItem;
 /**
  * \ingroup gui
  * \class QgsOptionsDialogHighlightLabel
- * A highlight widget for labels.
+ * \brief A highlight widget for labels.
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * \since QGIS 3.0
  */
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightLabel : public QgsOptionsDialogHighlig
 /**
  * \ingroup gui
  * \class QgsOptionsDialogHighlightCheckBox
- * A highlight widget for checkboxes.
+ * \brief A highlight widget for checkboxes.
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * \since QGIS 3.0
  */
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightCheckBox : public QgsOptionsDialogHigh
 /**
  * \ingroup gui
  * \class QgsOptionsDialogHighlightButton
- * A highlight widget for buttons.
+ * \brief A highlight widget for buttons.
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * \since QGIS 3.0
  */
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightButton : public QgsOptionsDialogHighli
 /**
  * \ingroup gui
  * \class QgsOptionsDialogHighlightGroupBox
- * A highlight widget for group boxes.
+ * \brief A highlight widget for group boxes.
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * \since QGIS 3.0
  */
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightGroupBox : public QgsOptionsDialogHigh
 /**
  * \ingroup gui
  * \class QgsOptionsDialogHighlightTree
- * A highlight widget for trees.
+ * \brief A highlight widget for trees.
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * Highlighting is only available for tree widgets only while searching can be performed
  * in any tree view or inherited class.

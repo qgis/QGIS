@@ -40,7 +40,7 @@ class QgsMessageBarItem;
 
 /**
  * \ingroup gui
- * A bar for displaying non-blocking messages to the user.
+ * \brief A bar for displaying non-blocking messages to the user.
  *
  * QgsMessageBar is a reusable widget which allows for providing feedback to users in
  * a non-intrusive way. Messages are shown in a horizontal bar widget, which is styled
