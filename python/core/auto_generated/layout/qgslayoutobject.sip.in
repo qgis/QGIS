@@ -187,6 +187,18 @@ A base class for objects which belong to a layout.
 Returns the layout object property definitions.
 %End
 
+    static bool propertyAssociatesWithParentMultiframe( DataDefinedProperty property );
+%Docstring
+Returns ``True`` if the specified ``property`` key is normally associated with the parent
+QgsLayoutMultiFrame object instead of a child QgsLayoutFrame object.
+
+While some properties like QgsLayoutObject.DataDefinedProperty.PositionX and QgsLayoutObject.DataDefinedProperty.ItemWidth
+are typically associated with a direct QgsLayoutItem subclass (including QgsLayoutFrame objects), other properties
+are instead associated with a QgsLayoutMultiFrame object (such as QgsLayoutObject.DataDefinedProperty.SourceUrl or QgsLayoutObject.DataDefinedProperty.AttributeTableSourceLayer).
+
+.. versionadded:: 3.18.1
+%End
+
     explicit QgsLayoutObject( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutObject, with the specified parent ``layout``.

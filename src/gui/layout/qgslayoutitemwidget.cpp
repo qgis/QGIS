@@ -26,6 +26,7 @@
 #include "qgsfontbutton.h"
 #include "qgslayoutdesignerinterface.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutmultiframe.h"
 #include <QButtonGroup>
 
 //
@@ -65,8 +66,26 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
     return;
   }
 
+  const bool propertyAssociatesWithMultiFrame = QgsLayoutObject::propertyAssociatesWithParentMultiframe( key );
+
   //set the data defined property and refresh the item
-  if ( mLayoutObject )
+  if ( propertyAssociatesWithMultiFrame )
+  {
+    if ( QgsLayoutFrame *frame = dynamic_cast< QgsLayoutFrame * >( mLayoutObject.data() ) )
+    {
+      if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
+      {
+        multiFrame->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
+        multiFrame->refresh();
+      }
+    }
+    else if ( QgsLayoutMultiFrame *multiFrame = dynamic_cast< QgsLayoutMultiFrame * >( mLayoutObject.data() ) )
+    {
+      multiFrame->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
+      multiFrame->refresh();
+    }
+  }
+  else if ( mLayoutObject )
   {
     mLayoutObject->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
     mLayoutObject->refresh();
