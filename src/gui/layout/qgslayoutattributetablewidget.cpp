@@ -402,10 +402,14 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
       //layer has no geometry, so uncheck & disable controls which require geometry
       mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
+      mComposerMapComboBox->setEnabled( false );
+      mComposerMapLabel->setEnabled( false );
     }
     else
     {
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
+      mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
+      mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
     }
   }
 
@@ -779,10 +783,14 @@ void QgsLayoutAttributeTableWidget::changeLayer( QgsMapLayer *layer )
     //layer has no geometry, so uncheck & disable controls which require geometry
     mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
     mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
+    mComposerMapComboBox->setEnabled( false );
+    mComposerMapLabel->setEnabled( false );
   }
   else
   {
     mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
+    mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
+    mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
   }
 }
 
@@ -966,8 +974,8 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mMaximumRowsSpinBox->setEnabled( true );
       mMaxNumFeaturesLabel->setEnabled( true );
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
-      mComposerMapComboBox->setEnabled( true );
-      mComposerMapLabel->setEnabled( true );
+      mComposerMapComboBox->setEnabled( mTable->displayOnlyVisibleFeatures() );
+      mComposerMapLabel->setEnabled( mTable->displayOnlyVisibleFeatures() );
       break;
   }
 }
