@@ -65,6 +65,7 @@ Similar to rule-based 2D renderer and rule-based labeling, it allows specificati
     class Rule
 {
 %Docstring
+A child rule for a QgsRuleBased3DRenderer
 
 .. versionadded:: 3.6
 %End

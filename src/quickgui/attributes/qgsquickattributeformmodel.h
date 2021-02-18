@@ -26,7 +26,7 @@ class QVariant;
 
 /**
  * \ingroup quick
- * This is a model implementation for attribute form of a feature from a vector layer.
+ * \brief This is a model implementation for attribute form of a feature from a vector layer.
  *
  * The model is based on vector layer's edit form config (QgsEditFormConfig). It supports
  * auto-generated editor layouts and "tab" layout (layout defined with groups and tabs).

@@ -27,7 +27,7 @@
 /**
  * \class QgsFormAnnotation
  * \ingroup gui
- * An annotation item that embeds a designer form showing the feature attribute
+ * \brief An annotation item that embeds a designer form showing the feature attribute
  * \since QGIS 3.0
 */
 class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation

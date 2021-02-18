@@ -53,7 +53,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 /**
  * \ingroup core
  *
- * Represents a raster layer.
+ * \brief Represents a raster layer.
  *
  * A QgsRasterLayer is instantiated by specifying the name of a data provider,
  * such as "gdal" or "wms", and a url defining the specific data set to connect to.

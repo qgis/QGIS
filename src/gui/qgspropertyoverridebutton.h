@@ -34,7 +34,7 @@ class QgsSymbol;
 /**
  * \ingroup gui
  * \class QgsPropertyOverrideButton
- * A button for controlling property overrides which may apply to a widget.
+ * \brief A button for controlling property overrides which may apply to a widget.
  *
  * QgsPropertyOverrideButton is designed to be used alongside the QGIS
  * properties framework (QgsProperty, QgsPropertyDefinition

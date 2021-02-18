@@ -29,7 +29,7 @@
 /**
  * \ingroup gui
  *
- * QgsDoubleValidator is a QLineEdit Validator that combines QDoubleValidator
+ * \brief QgsDoubleValidator is a QLineEdit Validator that combines QDoubleValidator
  * and QRegularExpressionValidator to allow users to enter doubles with both
  * local and C interpretation as a fallback.
  *

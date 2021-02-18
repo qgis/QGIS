@@ -23,7 +23,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
- * Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.
+ * \brief Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.
  *
  * Implementations have three approaches they can use to handle drops.
  *

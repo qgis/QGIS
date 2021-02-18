@@ -30,7 +30,7 @@ class QWindow;
 /**
  * \class QgsNative
  * \ingroup native
- * Base class for implementing methods for native system calls that
+ * \brief Base class for implementing methods for native system calls that
  * are implemented in subclasses to provide platform abstraction.
  * \since QGIS 3.0
  */

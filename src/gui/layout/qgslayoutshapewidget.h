@@ -28,7 +28,7 @@
 
 /**
  * \ingroup gui
- * A widget for configuring layout shape items.
+ * \brief A widget for configuring layout shape items.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

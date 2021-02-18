@@ -27,7 +27,7 @@
 /**
  * \ingroup core
  *
- * Class defining color to render mesh datasets. The color can vary depending on the dataset value.
+ * \brief Class defining color to render mesh datasets. The color can vary depending on the dataset value.
  *
  * \since QGIS 3.14
  */
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsInterpolatedLineColor
  * \ingroup core
  *
  * \class QgsInterpolatedLineWidth
- * Represents a width than can vary depending on values
+ * \brief Represents a width than can vary depending on values
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsInterpolatedLineWidth
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsInterpolatedLineWidth
 /**
  * \ingroup core
  * \class QgsInterpolatedLineRenderer
- * Represents a line with width and color varying depending on values.
+ * \brief Represents a line with width and color varying depending on values.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsInterpolatedLineRenderer

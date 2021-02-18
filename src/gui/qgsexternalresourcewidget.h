@@ -40,7 +40,7 @@ class QgsPixmapLabel;
 
 /**
  * \ingroup gui
- * Widget to display file path with a push button for an "open file" dialog
+ * \brief Widget to display file path with a push button for an "open file" dialog
  * It can also be used to display a picture or a web page.
  **/
 class GUI_EXPORT QgsExternalResourceWidget : public QWidget

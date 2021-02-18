@@ -13,6 +13,9 @@
 
 class QgsEditFormConfig
 {
+%Docstring
+Contains configuration settings for an editor form.
+%End
 
 %TypeHeaderCode
 #include "qgseditformconfig.h"

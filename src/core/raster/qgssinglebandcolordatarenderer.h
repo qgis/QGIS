@@ -26,7 +26,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * Raster renderer pipe for single band color.
+  * \brief Raster renderer pipe for single band color.
   */
 class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 {

@@ -37,7 +37,7 @@ class QgsWFSSharedData;
 /**
  * \ingroup WFSProvider
  *
- * A provider reading/write features from/into a WFS server.
+ * \brief A provider reading/write features from/into a WFS server.
  *
  * Below quick design notes on the whole provider.
  *

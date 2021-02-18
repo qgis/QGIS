@@ -32,7 +32,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * Implements a temporal controller based on a frame by frame navigation and animation.
+ * \brief Implements a temporal controller based on a frame by frame navigation and animation.
  *
  * \since QGIS 3.14
  */

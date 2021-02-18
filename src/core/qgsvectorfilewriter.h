@@ -37,7 +37,7 @@ class QgsFeatureIterator;
 
 /**
  * \ingroup core
-  * A convenience class for writing vector files to disk.
+  * \brief A convenience class for writing vector files to disk.
  There are two possibilities how to use this class:
  1. static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
-     * Interface to convert raw field values to their user-friendly value.
+     * \brief Interface to convert raw field values to their user-friendly value.
      * \since QGIS 2.16
      */
     class CORE_EXPORT FieldValueConverter
@@ -449,7 +449,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
-     * Options to pass to writeAsVectorFormat()
+     * \brief Options to pass to writeAsVectorFormat()
      * \since QGIS 3.0
      */
     class CORE_EXPORT SaveVectorOptions

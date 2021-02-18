@@ -24,7 +24,7 @@
 /**
  * \ingroup gui
  * \class QgsOptionsPageWidget
- * Base class for widgets for pages included in the options dialog.
+ * \brief Base class for widgets for pages included in the options dialog.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsOptionsPageWidget : public QWidget
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
 /**
  * \ingroup gui
  * \class QgsOptionsWidgetFactory
- * A factory class for creating custom options pages.
+ * \brief A factory class for creating custom options pages.
  * \since QGIS 3.0
  */
 // NOTE - this is a QObject so we can detect its destruction and avoid

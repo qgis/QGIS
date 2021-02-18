@@ -32,7 +32,7 @@ class QgsInterval;
 
 /**
  * \ingroup gui
- * A widget for controlling playback properties of a QgsTemporalController.
+ * \brief A widget for controlling playback properties of a QgsTemporalController.
  *
  * \since QGIS 3.14
  */

@@ -31,7 +31,7 @@ class QgsRectangle;
 
 /**
  * \ingroup core
- * Raster data container.
+ * \brief Raster data container.
  */
 class CORE_EXPORT QgsRasterBlock
 {

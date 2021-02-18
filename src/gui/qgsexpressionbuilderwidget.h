@@ -36,7 +36,7 @@ class QgsRelation;
 
 /**
  * \ingroup gui
- * A reusable widget that can be used to build a expression string.
+ * \brief A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for example of usage.
   */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase

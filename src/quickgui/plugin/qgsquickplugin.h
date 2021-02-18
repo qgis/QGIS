@@ -21,7 +21,7 @@
 /**
  * \ingroup quick
  *
- * QGIS Qml Extension Plugin responsible for exposing C++ QGIS classes to QML
+ * \brief QGIS Qml Extension Plugin responsible for exposing C++ QGIS classes to QML
  *
  * \since QGIS 3.2
  */

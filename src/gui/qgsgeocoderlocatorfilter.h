@@ -23,7 +23,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
- * An adapter class which implements a locator filter populated from a QgsGeocoderInterface.
+ * \brief An adapter class which implements a locator filter populated from a QgsGeocoderInterface.
  *
  * This class implements the required logic to bridge a class which implements the
  * QgsGeocoderInterface interface to a QgsLocatorFilter. It allows easy creation of a locator

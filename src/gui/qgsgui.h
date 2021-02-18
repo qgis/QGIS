@@ -46,7 +46,7 @@ class QgsRelationWidgetRegistry;
 
 /**
  * \ingroup gui
- * QgsGui is a singleton class containing various registry and other global members
+ * \brief QgsGui is a singleton class containing various registry and other global members
  * related to GUI classes.
  * \since QGIS 3.0
  */

@@ -32,7 +32,7 @@ class QgsTextSettingsPrivate;
 /**
  * \class QgsTextFormat
   * \ingroup core
-  * Container for all settings relating to text rendering.
+  * \brief Container for all settings relating to text rendering.
   * \note QgsTextFormat objects are implicitly shared.
   * \since QGIS 3.0
  */

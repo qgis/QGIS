@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * Defines left outer join from our vector layer to some other vector layer.
+ * \brief Defines left outer join from our vector layer to some other vector layer.
  * The join is done based on [our layer].targetField = [join layer].joinField
  *
  * \since QGIS 3.0

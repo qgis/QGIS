@@ -45,7 +45,7 @@ class QgsReadOnlyStyleModel : public QgsStyleProxyModel
 /**
  * \ingroup gui
  * \class QgsStyleItemsListWidget
- * A reusable widget for showing a filtered list of entities from a QgsStyle database.
+ * \brief A reusable widget for showing a filtered list of entities from a QgsStyle database.
  * \since QGIS 3.10
  */
 class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleItemsListWidgetBase

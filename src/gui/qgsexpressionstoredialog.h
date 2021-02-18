@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * A generic dialog for editing expression text, label and help text.
+ * \brief A generic dialog for editing expression text, label and help text.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpressionStoreDialogBase

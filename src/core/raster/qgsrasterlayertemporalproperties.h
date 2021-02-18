@@ -28,7 +28,7 @@
 /**
  * \class QgsRasterLayerTemporalProperties
  * \ingroup core
- * Implementation of map layer temporal properties for raster layers.
+ * \brief Implementation of map layer temporal properties for raster layers.
  *
  * \since QGIS 3.14
  */

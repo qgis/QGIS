@@ -31,7 +31,7 @@ class QgsColorButton;
 
 /**
  * \ingroup gui
- * A dialog for customization of the cell background colors for a QgsLayoutTable
+ * \brief A dialog for customization of the cell background colors for a QgsLayoutTable
  *
  * \note This class is not a part of public API
  * \since QGIS 3.0

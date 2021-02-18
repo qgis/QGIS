@@ -28,7 +28,7 @@
 /**
  * \ingroup quick
  *
- * This model will connect to the QgsMessageLog singleton and store any
+ * \brief This model will connect to the QgsMessageLog singleton and store any
  * messages received. Can be used as a model for QListView,
  * for example QgsQuick.MessageLog (QML only)
  *

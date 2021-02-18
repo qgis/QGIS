@@ -28,7 +28,7 @@
 
 /**
  * \ingroup core
- * Provides threading utilities for QGIS.
+ * \brief Provides threading utilities for QGIS.
  *
  * \since QGIS 3.4
  */

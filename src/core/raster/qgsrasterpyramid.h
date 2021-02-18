@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
-  * This struct is used to store pyramid info for the raster layer.
+  * \brief This struct is used to store pyramid info for the raster layer.
   */
 class CORE_EXPORT QgsRasterPyramid
 {

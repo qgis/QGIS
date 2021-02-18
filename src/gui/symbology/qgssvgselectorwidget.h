@@ -51,7 +51,7 @@ class QgsExpressionContextGenerator;
 /**
  * \ingroup gui
  * \class QgsSvgParametersModel
- * A model to hold dynamic SVG parameters
+ * \brief A model to hold dynamic SVG parameters
  * \since QGIS 3.18
  */
 class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
@@ -118,7 +118,7 @@ class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
 /**
  * \ingroup gui
  * \class QgsSvgParameterValueDelegate
- * A delegate which will show a field expression widget to set the value of the SVG parameter
+ * \brief A delegate which will show a field expression widget to set the value of the SVG parameter
  * \since QGIS 3.18
  */
 class GUI_EXPORT QgsSvgParameterValueDelegate : public QStyledItemDelegate
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsSvgParameterValueDelegate : public QStyledItemDelegate
 /**
  * \ingroup gui
  * \class QgsSvgSelectorLoader
- * Recursively loads SVG images from a path in a background thread.
+ * \brief Recursively loads SVG images from a path in a background thread.
  * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgSelectorLoader : public QThread
@@ -207,7 +207,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 /**
  * \ingroup gui
  * \class QgsSvgGroupLoader
- * Recursively loads SVG paths in a background thread.
+ * \brief Recursively loads SVG paths in a background thread.
  * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgGroupLoader : public QThread
@@ -270,7 +270,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 /**
  * \ingroup gui
  * \class QgsSvgSelectorListModel
- * A model for displaying SVG files with a preview icon. Population of the model is performed in
+ * \brief A model for displaying SVG files with a preview icon. Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
  * not block the GUI.
  */
@@ -322,7 +322,7 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 /**
  * \ingroup gui
  * \class QgsSvgSelectorGroupsModel
- * A model for displaying SVG search paths. Population of the model is performed in
+ * \brief A model for displaying SVG search paths. Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
  * not block the GUI.
  */

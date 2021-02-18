@@ -59,7 +59,7 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
  * \ingroup core
  * \class QgsSymbol
  *
- * Abstract base class for all rendered symbols.
+ * \brief Abstract base class for all rendered symbols.
  */
 class CORE_EXPORT QgsSymbol
 {
@@ -998,7 +998,7 @@ class CORE_EXPORT QgsSymbolRenderContext
  * \ingroup core
  * \class QgsMarkerSymbol
  *
- * A marker symbol type, for rendering Point and MultiPoint geometries.
+ * \brief A marker symbol type, for rendering Point and MultiPoint geometries.
  */
 class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 {
@@ -1198,7 +1198,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
  * \ingroup core
  * \class QgsLineSymbol
  *
- * A line symbol type, for rendering LineString and MultiLineString geometries.
+ * \brief A line symbol type, for rendering LineString and MultiLineString geometries.
  */
 class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 {
@@ -1301,7 +1301,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
  * \ingroup core
  * \class QgsFillSymbol
  *
- * A fill symbol type, for rendering Polygon and MultiPolygon geometries.
+ * \brief A fill symbol type, for rendering Polygon and MultiPolygon geometries.
  */
 class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 {

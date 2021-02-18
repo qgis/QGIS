@@ -26,7 +26,7 @@ class QgsLayoutItem;
 
 /**
  * \ingroup gui
- * A QgsLayoutViewMouseEvent is the result of a user interaction with the mouse on a QgsLayoutView.
+ * \brief A QgsLayoutViewMouseEvent is the result of a user interaction with the mouse on a QgsLayoutView.
  *
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  * In addition to the coordinates in pixel space it also knows the coordinates the layout space.

@@ -31,7 +31,7 @@ class QgsActionManager;
 
 /**
  * \ingroup gui
- * This class is a menu that is populated automatically with the actions defined for a given layer.
+ * \brief This class is a menu that is populated automatically with the actions defined for a given layer.
  */
 
 class GUI_EXPORT QgsActionMenu : public QMenu

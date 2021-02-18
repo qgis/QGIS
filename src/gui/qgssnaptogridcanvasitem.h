@@ -33,7 +33,7 @@
 /**
  * \ingroup gui
  *
- * Shows a grid on the map canvas given a spatial resolution.
+ * \brief Shows a grid on the map canvas given a spatial resolution.
  *
  * \since QGIS 3.4
  */
