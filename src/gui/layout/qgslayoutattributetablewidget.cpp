@@ -950,6 +950,7 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mRelationLabel->setVisible( false );
       mMaximumRowsSpinBox->setEnabled( false );
       mMaxNumFeaturesLabel->setEnabled( false );
+      mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
       mComposerMapComboBox->setEnabled( false );
       mComposerMapLabel->setEnabled( false );
