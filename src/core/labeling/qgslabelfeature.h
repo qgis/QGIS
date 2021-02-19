@@ -514,6 +514,22 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setObstacleSettings( const QgsLabelObstacleSettings &settings );
 
+    /**
+     * Returns the original layer CRS of the feature associated with the label.
+     *
+     * \see setOriginalFeatureCrs()
+     * \since QGIS 3.20
+     */
+    QgsCoordinateReferenceSystem originalFeatureCrs() const;
+
+    /**
+     * Sets the original layer \a crs of the feature associated with the label.
+     *
+     * \see originalFeatureCrs()
+     * \since QGIS 3.20
+     */
+    void setOriginalFeatureCrs( const QgsCoordinateReferenceSystem &crs );
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -593,6 +609,8 @@ class CORE_EXPORT QgsLabelFeature
 
     double mLineAnchorPercent = 0.5;
     QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
+
+    QgsCoordinateReferenceSystem mOriginalFeatureCrs;
 };
 
 #endif // QGSLABELFEATURE_H
