@@ -99,6 +99,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * - "vector": vector layers
        * - "raster": raster layers
+       * - "vector+raster": OGR/GDAL layer collections (GPKG, SpatiaLite etc.) may contain both types
        * - "mesh": mesh layers
        * - "plugin": plugin layers
        * - "custom": custom types

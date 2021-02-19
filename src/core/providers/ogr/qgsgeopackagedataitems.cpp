@@ -400,6 +400,6 @@ QgsMimeDataUtils::Uri QgsGeoPackageCollectionItem::mimeUri() const
   QgsMimeDataUtils::Uri u;
   u.providerKey = QStringLiteral( "ogr" );
   u.uri = path();
-  u.layerType = QStringLiteral( "vector" );
+  u.layerType = QStringLiteral( "vector+raster" );
   return u;
 }

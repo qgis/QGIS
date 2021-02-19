@@ -2105,7 +2105,12 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
     QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
 
-    if ( u.layerType == QLatin1String( "vector" ) )
+    if ( u.layerType == QLatin1String( "vector+raster" ) )
+    {
+      addVectorLayer( uri, u.name, u.providerKey );
+      addRasterLayer( uri, u.name, u.providerKey == QLatin1String( "ogr" ) ? QLatin1String( "gdal" ) : u.providerKey );
+    }
+    else if ( u.layerType == QLatin1String( "vector" ) )
     {
       addVectorLayer( uri, u.name, u.providerKey );
     }
