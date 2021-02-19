@@ -63,6 +63,7 @@ Constructor
 Copy constructor.
 %End
 
+
     virtual ~QgsServerRequest();
 
     static QString methodToString( const Method &method );
