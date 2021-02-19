@@ -27,13 +27,10 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * QgsWmsServerRequest
-   * Class defining request interface passed to WMS service
-   * QgsService::executeRequest() method.
-   *
+   * \class QgsWmsRequest
+   * \brief Class defining request interface passed to WMS service
    * \since QGIS 3.20
    */
-
   class QgsWmsRequest : public QgsServerRequest
   {
       Q_GADGET
