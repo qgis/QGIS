@@ -992,6 +992,67 @@ void QgsRasterLayer::computeMinMax( int band,
   if ( limits == QgsRasterMinMaxOrigin::MinMax )
   {
     QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, QgsRasterBandStats::Min | QgsRasterBandStats::Max, extent, sampleSize );
+    // Check if statistics were actually gathered, None means a failure
+    if ( myRasterBandStats.statsGathered == QgsRasterBandStats::Stats::None )
+    {
+      // Best guess we can do
+      switch ( mDataProvider->dataType( band ) )
+      {
+        case Qgis::DataType::Byte:
+        {
+          myRasterBandStats.minimumValue = 0;
+          myRasterBandStats.maximumValue = 255;
+          break;
+        }
+        case Qgis::DataType::UInt16:
+        {
+          myRasterBandStats.minimumValue = 0;
+          myRasterBandStats.maximumValue = std::numeric_limits<uint16_t>::max();
+          break;
+        }
+        case Qgis::DataType::UInt32:
+        {
+          myRasterBandStats.minimumValue = 0;
+          myRasterBandStats.maximumValue = std::numeric_limits<uint32_t>::max();
+          break;
+        }
+        case Qgis::DataType::Int16:
+        case Qgis::DataType::CInt16:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<int16_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<int16_t>::max();
+          break;
+        }
+        case Qgis::DataType::Int32:
+        case Qgis::DataType::CInt32:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<int32_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<int32_t>::max();
+          break;
+        }
+        case Qgis::DataType::Float32:
+        case Qgis::DataType::CFloat32:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<float_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<float_t>::max();
+          break;
+        }
+        case Qgis::DataType::Float64:
+        case Qgis::DataType::CFloat64:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<double_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<double_t>::max();
+          break;
+        }
+        case Qgis::DataType::ARGB32:
+        case Qgis::DataType::ARGB32_Premultiplied:
+        case Qgis::DataType::UnknownDataType:
+        {
+          // Nothing to guess
+          break;
+        }
+      }
+    }
     min = myRasterBandStats.minimumValue;
     max = myRasterBandStats.maximumValue;
   }
