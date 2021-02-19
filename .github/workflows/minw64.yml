@@ -1,29 +1,5 @@
 name: MingW64 Windows 64bit Build
 
-on:
-  push:
-    branches:
-      - master
-      - release-**
-    paths:
-    - 'src/**'
-    - 'external/**'
-    - 'python/**'
-    - 'tests/**'
-    - 'ms-windows/**'
-    - 'CMakeLists.txt'
-    - '.github/workflows/mingw64.yml'
-  pull_request:
-    paths:
-    - 'src/**'
-    - 'external/**'
-    - 'python/**'
-    - 'tests/**'
-    - 'ms-windows/**'
-    - 'CMakeLists.txt'
-    - '.github/workflows/mingw64.yml'
-
-
 jobs:
   build:
     env:
