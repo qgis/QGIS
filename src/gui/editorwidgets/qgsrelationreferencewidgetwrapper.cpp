@@ -220,7 +220,7 @@ void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
 
 void QgsRelationReferenceWidgetWrapper::foreignKeysChanged( const QVariantList &values )
 {
-  if ( mBlockChanges ) // initial value is being set, we can ignore this signal
+  if ( mBlockChanges != 0  ) // initial value is being set, we can ignore this signal
     return;
 
   QVariant mainValue = QVariant( field().type() );
