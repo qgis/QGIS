@@ -3,7 +3,6 @@ Building QGIS from source - step by step
 <!-- Table of contents generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
 # Table of Contents
-- [Table of Contents](#table-of-contents)
 - [1. Introduction](#1-introduction)
 - [2. Overview](#2-overview)
 - [3. Building on GNU/Linux](#3-building-on-gnulinux)
