@@ -4195,6 +4195,17 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp2.referencedVariables(), QSet<QString>() << QStringLiteral( "field_name_part_var" ) << QStringLiteral( "static_feature" ) );
     }
 
+    void testOperationOrder()
+    {
+      QgsExpression exp1( QStringLiteral( " 'lead' || 5.22 * 0.9 ^ 5" ) );
+      QVariant v1 = exp1.evaluate();
+      QVERIFY( !exp1.hasEvalError() );
+      QVERIFY( v1.toString() == "lead3.0823578" );
+      QgsExpression exp2( QStringLiteral( " 5.22 / 0.9 ^ 5 - 4" ) );
+      QVariant v2 = exp2.evaluate();
+      QVERIFY( !exp2.hasEvalError() );
+      QVERIFY( v2.toDouble() >= 4.83 && v2.toDouble() <= 4.85 );
+    }
 };
 
 QGSTEST_MAIN( TestQgsExpression )

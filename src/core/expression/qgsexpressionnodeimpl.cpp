@@ -706,21 +706,22 @@ int QgsExpressionNodeBinaryOperator::precedence() const
     case boIsNot:
       return 3;
 
+    case boConcat:
+      return 4;
+
     case boPlus:
     case boMinus:
-      return 4;
+      return 5;
 
     case boMul:
     case boDiv:
     case boIntDiv:
     case boMod:
-      return 5;
-
-    case boPow:
       return 6;
 
-    case boConcat:
+    case boPow:
       return 7;
+
   }
   Q_ASSERT( false && "unexpected binary operator" );
   return -1;
