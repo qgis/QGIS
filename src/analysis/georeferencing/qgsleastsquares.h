@@ -24,7 +24,7 @@
 
 /**
  * \ingroup analysis
- * Utilities for calculation of least squares based transformations.
+ * \brief Utilities for calculation of least squares based transformations.
  *
  * \note Not available in Python bindings.
  * \since QGIS 3.20
