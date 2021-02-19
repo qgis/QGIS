@@ -3723,7 +3723,15 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
 {
   bool useContextualWMSLegend = mSettings.mEnableContextualLegend;
 
-  QString lurl = getLegendGraphicUrl();
+  QString lurl;
+  if ( mSettings.mIgnoreGetMapUrl )
+  {
+    lurl = mSettings.mBaseUrl;
+  }
+  else
+  {
+    lurl = getLegendGraphicUrl();
+  }
 
   if ( lurl.isEmpty() )
   {
