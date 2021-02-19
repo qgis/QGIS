@@ -211,10 +211,30 @@ class CORE_EXPORT QgsCallout
      * \ingroup core
      * \since QGIS 3.10
      */
-    struct CORE_EXPORT QgsCalloutContext
+    class CORE_EXPORT QgsCalloutContext
     {
-      //! TRUE if all parts of associated feature were labeled
-      bool allFeaturePartsLabeled = false;
+      public:
+        //! TRUE if all parts of associated feature were labeled
+        bool allFeaturePartsLabeled = false;
+
+        /**
+         * Contains the CRS of the original feature associated with this callout.
+         *
+         * \since QGIS 3.18
+         */
+        QgsCoordinateReferenceSystem originalFeatureCrs;
+
+        /**
+         * Returns the coordinate transform to convert from the original layer associated with
+         * the callout to the destination map CRS.
+         *
+         * \since QGIS 3.20
+         */
+        QgsCoordinateTransform originalFeatureToMapTransform( const QgsRenderContext &renderContext ) const;
+
+      private:
+        //! Lazy initialized coordinate transform from original feature CRS to map CRS
+        mutable QgsCoordinateTransform mOriginalFeatureToMapTransform;
     };
 
     /**

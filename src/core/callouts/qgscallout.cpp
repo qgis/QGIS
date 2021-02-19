@@ -694,3 +694,13 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
       drawCalloutLine( part );
   }
 }
+
+QgsCoordinateTransform QgsCallout::QgsCalloutContext::originalFeatureToMapTransform( const QgsRenderContext &renderContext ) const
+{
+  if ( !mOriginalFeatureToMapTransform.isValid() )
+  {
+    // lazy initialization, only create if needed...
+    mOriginalFeatureToMapTransform = QgsCoordinateTransform( originalFeatureCrs, renderContext.coordinateTransform().destinationCrs(), renderContext.transformContext() );
+  }
+  return mOriginalFeatureToMapTransform;
+}

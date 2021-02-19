@@ -330,6 +330,7 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
     g.transform( xform.transform() );
     QgsCallout::QgsCalloutContext calloutContext;
     calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->labelAllParts();
+    calloutContext.originalFeatureCrs = label->getFeaturePart()->feature()->originalFeatureCrs();
     mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
   }
 }

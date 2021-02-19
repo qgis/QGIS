@@ -183,9 +183,31 @@ Returns the desired drawing order (stacking) to use while rendering this callout
 The default order is QgsCallout.OrderBelowIndividualLabels.
 %End
 
-    struct QgsCalloutContext
-    {
-      bool allFeaturePartsLabeled;
+    class QgsCalloutContext
+{
+%Docstring
+Contains additional contextual information about the context in which a callout is
+being rendered.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscallout.h"
+%End
+      public:
+        bool allFeaturePartsLabeled;
+
+        QgsCoordinateReferenceSystem originalFeatureCrs;
+
+        QgsCoordinateTransform originalFeatureToMapTransform( const QgsRenderContext &renderContext ) const;
+%Docstring
+Returns the coordinate transform to convert from the original layer associated with
+the callout to the destination map CRS.
+
+.. versionadded:: 3.20
+%End
+
     };
 
     void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
