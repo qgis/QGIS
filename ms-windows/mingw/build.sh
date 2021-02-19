@@ -98,6 +98,8 @@ mkdir -p "$BUILDDIR"
     -DQGIS_QML_SUBDIR=lib/qt5/qml \
     -DBINDINGS_GLOBAL_INSTALL=ON \
     -DWITH_SERVER=OFF \
+    -DZSTD_INCLUDE_DIR="$MINGWROOT/include/zstd" \
+    -DZSTD_LIBRARY="$MINGWROOT/lib/libzstd.dll.a" \
     -DTXT2TAGS_EXECUTABLE= \
     ..
 )
