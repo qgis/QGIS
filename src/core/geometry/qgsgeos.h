@@ -283,6 +283,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
     /**
+     * Returns the shortest line joining this geometry to the other geometry.
+     * \see closestPoint()
+     * \since QGIS 3.20
+     */
+    QgsGeometry shortestLine( const QgsAbstractGeometry *other, QString *errorMsg = nullptr ) const;
+
+    /**
      * Returns a distance representing the location along this linestring of the closest point
      * on this linestring geometry to the specified point. Ie, the returned value indicates
      * how far along this linestring you need to traverse to get to the closest location
