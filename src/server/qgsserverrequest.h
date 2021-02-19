@@ -86,6 +86,7 @@ class SERVER_EXPORT QgsServerRequest
      * Copy constructor.
      */
     QgsServerRequest( const QgsServerRequest &other );
+    QgsServerRequest &operator=( const QgsServerRequest & ) = delete;
 
     //! destructor
     virtual ~QgsServerRequest() = default;
