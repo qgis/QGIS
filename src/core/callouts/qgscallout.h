@@ -74,6 +74,10 @@ class CORE_EXPORT QgsCallout
       DrawCalloutToAllParts, //!< Whether callout lines should be drawn to all feature parts
       AnchorPointPosition, //!< Feature's anchor point position
       LabelAnchorPointPosition, //!< Label's anchor point position
+      OriginX, //!< X-coordinate of callout origin (label anchor) (since QGIS 3.20)
+      OriginY, //!< Y-coordinate of callout origin (label anchor) (since QGIS 3.20)
+      DestinationX, //!< X-coordinate of callout destination (feature anchor) (since QGIS 3.20)
+      DestinationY, //!< Y-coordinate of callout destination (feature anchor) (since QGIS 3.20)
     };
 
     //! Options for draw order (stacking) of callouts
@@ -392,9 +396,25 @@ class CORE_EXPORT QgsCallout
 
     /**
      * Returns the anchor point geometry for a label with the given bounding box and \a anchor point mode.
-     * \since QGIS 3.14
+     * \deprecated QGIS 3.20 use calloutLabelPoint() instead
      */
-    QgsGeometry labelAnchorGeometry( QRectF bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const;
+    Q_DECL_DEPRECATED QgsGeometry labelAnchorGeometry( QRectF bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const SIP_DEPRECATED;
+
+    /**
+     * Returns the anchor point geometry for a label with the given bounding box and \a anchor point mode.
+     * \since QGIS 3.20
+     */
+    QgsGeometry calloutLabelPoint( QRectF bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext ) const;
+
+    /**
+     * Calculates the direct line from a label geometry to an anchor geometry part, respecting the various
+     * callout settings which influence how the callout end should be placed in the anchor geometry.
+     *
+     * Returns a null geometry if the callout line cannot be calculated.
+     *
+     * \since QGIS 3.20
+     */
+    QgsGeometry calloutLineToPart( const QgsGeometry &labelGeometry, const QgsAbstractGeometry *partGeometry, QgsRenderContext &context, const QgsCalloutContext &calloutContext ) const;
 
   private:
 

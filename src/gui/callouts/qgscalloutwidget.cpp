@@ -222,6 +222,11 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
   registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::DrawCalloutToAllParts );
   registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
   registerDataDefinedButton( mLabelAnchorPointDDBtn, QgsCallout::LabelAnchorPointPosition );
+
+  registerDataDefinedButton( mOriginXDDBtn, QgsCallout::OriginX );
+  registerDataDefinedButton( mOriginYDDBtn, QgsCallout::OriginY );
+  registerDataDefinedButton( mDestXDDBtn, QgsCallout::DestinationX );
+  registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
 }
 
 void QgsSimpleLineCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
