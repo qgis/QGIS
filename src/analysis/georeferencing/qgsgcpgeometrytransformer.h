@@ -28,7 +28,7 @@ class QgsGeometry;
 /**
  * \class QgsGcpGeometryTransformer
  * \ingroup analysis
- * A geometry transformer which uses an underlying Ground Control Points (GCP) based transformation to modify geometries.
+ * \brief A geometry transformer which uses an underlying Ground Control Points (GCP) based transformation to modify geometries.
  *
  * \since QGIS 3.18
  */
