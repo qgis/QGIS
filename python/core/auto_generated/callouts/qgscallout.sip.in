@@ -49,6 +49,10 @@ relevant symbology elements to render them.
       DrawCalloutToAllParts,
       AnchorPointPosition,
       LabelAnchorPointPosition,
+      OriginX,
+      OriginY,
+      DestinationX,
+      DestinationY,
     };
 
     enum DrawOrder
@@ -376,11 +380,29 @@ The ``calloutContext`` argument is used to specify additional contextual informa
 how a callout is being rendered.
 %End
 
-    QgsGeometry labelAnchorGeometry( QRectF bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const;
+ QgsGeometry labelAnchorGeometry( QRectF bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const /Deprecated/;
 %Docstring
 Returns the anchor point geometry for a label with the given bounding box and ``anchor`` point mode.
 
-.. versionadded:: 3.14
+.. deprecated::
+   QGIS 3.20 use :py:func:`~QgsCallout.calloutLabelPoint` instead
+%End
+
+    QgsGeometry calloutLabelPoint( QRectF bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext ) const;
+%Docstring
+Returns the anchor point geometry for a label with the given bounding box and ``anchor`` point mode.
+
+.. versionadded:: 3.20
+%End
+
+    QgsGeometry calloutLineToPart( const QgsGeometry &labelGeometry, const QgsAbstractGeometry *partGeometry, QgsRenderContext &context, const QgsCalloutContext &calloutContext ) const;
+%Docstring
+Calculates the direct line from a label geometry to an anchor geometry part, respecting the various
+callout settings which influence how the callout end should be placed in the anchor geometry.
+
+Returns a null geometry if the callout line cannot be calculated.
+
+.. versionadded:: 3.20
 %End
 
 };
