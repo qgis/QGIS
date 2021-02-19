@@ -2882,6 +2882,10 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
     QgsDebugMsgLevel( QStringLiteral( "STDDEV %1" ).arg( myRasterBandStats.stdDev ), 2 );
 #endif
   }
+  else
+  {
+    myRasterBandStats.statsGathered = QgsRasterBandStats::Stats::None;
+  }
 
   mStatistics.append( myRasterBandStats );
   return myRasterBandStats;

@@ -992,8 +992,8 @@ void QgsRasterLayer::computeMinMax( int band,
   if ( limits == QgsRasterMinMaxOrigin::MinMax )
   {
     QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, QgsRasterBandStats::Min | QgsRasterBandStats::Max, extent, sampleSize );
-    // Check if statistics were actually gathered, 0 means a failure
-    if ( myRasterBandStats.elementCount == 0 )
+    // Check if statistics were actually gathered, None means a failure
+    if ( myRasterBandStats.statsGathered == QgsRasterBandStats::Stats::None )
     {
       // Best guess we can do
       switch ( mDataProvider->dataType( band ) )
