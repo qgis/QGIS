@@ -110,6 +110,16 @@ void QgsLabelFeature::setObstacleSettings( const QgsLabelObstacleSettings &setti
   mObstacleSettings = settings;
 }
 
+QgsCoordinateReferenceSystem QgsLabelFeature::originalFeatureCrs() const
+{
+  return mOriginalFeatureCrs;
+}
+
+void QgsLabelFeature::setOriginalFeatureCrs( const QgsCoordinateReferenceSystem &originalFeatureCrs )
+{
+  mOriginalFeatureCrs = originalFeatureCrs;
+}
+
 void QgsLabelFeature::setAnchorPosition( const QgsPointXY &anchorPosition )
 {
   mAnchorPosition = anchorPosition;

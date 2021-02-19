@@ -2497,6 +2497,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setLineAnchorPercent( lineSettings.lineAnchorPercent() );
   ( *labelFeature )->setLineAnchorType( lineSettings.anchorType() );
   ( *labelFeature )->setLabelAllParts( labelAll );
+  ( *labelFeature )->setOriginalFeatureCrs( context.coordinateTransform().sourceCrs() );
   if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
   {
     //register symbol size
