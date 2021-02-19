@@ -7,7 +7,7 @@ MAINTAINER Sandro Mani <manisandro@gmail.com>
 RUN \
 echo all > /etc/rpm/macros.image-language-conf && \
 rm -f /etc/yum.repos.d/*modular* && \
-dnf install -y 'dnf-command(config-manager)' && \
+dnf install -y --nogpgcheck 'dnf-command(config-manager)' && \
 dnf config-manager --add-repo https://copr.fedorainfracloud.org/coprs/smani/mingw-extras/repo/fedora-rawhide/smani-mingw-extras-fedora-rawhide.repo && \
 dnf install -y --nogpgcheck \
   mingw64-dlfcn \
