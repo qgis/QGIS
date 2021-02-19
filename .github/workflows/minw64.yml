@@ -1,5 +1,28 @@
 name: MingW64 Windows 64bit Build
 
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/mingw64.yml'
+  pull_request:
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/mingw64.yml'
+
 jobs:
   build:
     env:
@@ -14,17 +37,17 @@ jobs:
         run: docker build -t qgis3-mingw-buildenv -f ms-windows/mingw/qgis3-build-deps-mingw.dockerfile .
 
       - name: Prepare build cache for pull request
-          uses: pat-s/always-upload-cache@v2.1.3
-          if: github.event_name == 'pull_request'
-          with:
-            path: ${{ github.workspace }}/.ccache
-            key: mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
-            # The head_ref or source branch of the pull request in a workflow run.
-            # The base_ref or target branch of the pull request in a workflow run.
-            restore-keys: |
-              mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-
-              mingw64-ccache-${{ github.base_ref }}-
-              mingw64-ccache-refs/heads/master-
+        uses: pat-s/always-upload-cache@v2.1.3
+        if: github.event_name == 'pull_request'
+        with:
+          path: ${{ github.workspace }}/.ccache
+          key: mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
+          # The head_ref or source branch of the pull request in a workflow run.
+          # The base_ref or target branch of the pull request in a workflow run.
+          restore-keys: |
+            mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-
+            mingw64-ccache-${{ github.base_ref }}-
+            mingw64-ccache-refs/heads/master-
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
