@@ -158,10 +158,10 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %left AND
 %right NOT
 %left EQ NE LE GE LT GT REGEXP LIKE IS IN
+%left CONCAT
 %left PLUS MINUS
 %left MUL DIV INTDIV MOD
 %right POW
-%left CONCAT
 
 %right UMINUS  // fictitious symbol (for unary minus)
 
@@ -200,6 +200,7 @@ expression:
     | expression REGEXP expression    { $$ = BINOP($2, $1, $3); }
     | expression LIKE expression      { $$ = BINOP($2, $1, $3); }
     | expression IS expression        { $$ = BINOP($2, $1, $3); }
+    | expression CONCAT expression    { $$ = BINOP($2, $1, $3); }
     | expression PLUS expression      { $$ = BINOP($2, $1, $3); }
     | expression MINUS expression     { $$ = BINOP($2, $1, $3); }
     | expression MUL expression       { $$ = BINOP($2, $1, $3); }
@@ -207,7 +208,6 @@ expression:
     | expression DIV expression       { $$ = BINOP($2, $1, $3); }
     | expression MOD expression       { $$ = BINOP($2, $1, $3); }
     | expression POW expression       { $$ = BINOP($2, $1, $3); }
-    | expression CONCAT expression    { $$ = BINOP($2, $1, $3); }
     | NOT expression                  { $$ = new QgsExpressionNodeUnaryOperator($1, $2); }
     | '(' expression ')'              { $$ = $2; }
     | NAME '(' exp_list ')'
