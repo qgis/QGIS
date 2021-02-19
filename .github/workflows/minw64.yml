@@ -24,7 +24,7 @@ on:
     - '.github/workflows/mingw64.yml'
 
 jobs:
-  build:
+  mingw64-build:
     env:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
     name: MinGW64 Windows Build
