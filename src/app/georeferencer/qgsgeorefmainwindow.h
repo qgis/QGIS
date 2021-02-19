@@ -229,7 +229,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QString mSaveGcp;
     double  mUserResX, mUserResY;  // User specified target scale
 
-    QgsGeorefTransform::TransformMethod mTransformParam = QgsGeorefTransform::InvalidTransform;
+    QgsGcpTransformerInterface::TransformMethod mTransformParam = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod;
     QgsGeorefTransform mGeorefTransform;
     QString mCompressionMethod;

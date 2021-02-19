@@ -23,7 +23,7 @@
 
 /**
  * \ingroup analysis
- * An interface for Ground Control Points (GCP) based transformations.
+ * \brief An interface for Ground Control Points (GCP) based transformations.
  *
  * QgsGcpTransformerInterface implementations are able to transform point locations
  * based on a transformation method and a list of GCPs.
@@ -140,7 +140,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 };
 
 /**
- * A simple transform which is parametrized by a translation and anistotropic scale.
+ * \brief A simple transform which is parametrized by a translation and anistotropic scale.
  * \ingroup analysis
  * \note Not available in Python bindings
  * \since QGIS 3.20
@@ -179,7 +179,7 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
 };
 
 /**
- * 2-dimensional helmert transform, parametrised by isotropic scale, rotation angle and translation.
+ * \brief 2-dimensional helmert transform, parametrised by isotropic scale, rotation angle and translation.
  * \ingroup analysis
  * \note Not available in Python bindings
  * \since QGIS 3.20
@@ -220,7 +220,7 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
 };
 
 /**
- * Interface to gdal thin plate splines and 1st/2nd/3rd order polynomials.
+ * \brief Interface to gdal thin plate splines and 1st/2nd/3rd order polynomials.
  * \ingroup analysis
  * \note Not available in Python bindings
  * \since QGIS 3.20
@@ -255,7 +255,7 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
 };
 
 /**
- * A planar projective transform, expressed by a homography.
+ * \brief A planar projective transform, expressed by a homography.
  *
  * Implements model fitting which minimizes algebraic error using total least squares.
  *
