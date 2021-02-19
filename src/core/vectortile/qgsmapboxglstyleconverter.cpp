@@ -110,6 +110,10 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     {
       hasRendererStyle = parseLineLayer( jsonLayer, rendererStyle, *context );
     }
+    else if ( layerType == QLatin1String( "circle" ) )
+    {
+      hasRendererStyle = parseCircleLayer( jsonLayer, rendererStyle, *context );
+    }
     else if ( layerType == QLatin1String( "symbol" ) )
     {
       parseSymbolLayer( jsonLayer, rendererStyle, hasRendererStyle, labelingStyle, hasLabelingStyle, *context );
@@ -621,6 +625,252 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   }
 
   style.setGeometryType( QgsWkbTypes::LineGeometry );
+  style.setSymbol( symbol.release() );
+  return true;
+}
+
+bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context )
+{
+  if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
+  {
+    context.pushWarning( QObject::tr( "%1: Style has no paint property, skipping" ).arg( context.layerId() ) );
+    return false;
+  }
+
+  const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
+  QgsPropertyCollection ddProperties;
+
+  // circle color
+  QColor circleFillColor;
+  if ( jsonPaint.contains( QStringLiteral( "circle-color" ) ) )
+  {
+    const QVariant jsonCircleColor = jsonPaint.value( QStringLiteral( "circle-color" ) );
+    switch ( jsonCircleColor.type() )
+    {
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateColorByZoom( jsonCircleColor.toMap(), context, &circleFillColor ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseValueList( jsonCircleColor.toList(), PropertyType::Color, context, 1, 255, &circleFillColor ) );
+        break;
+
+      case QVariant::String:
+        circleFillColor = parseColor( jsonCircleColor.toString(), context );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleColor.type() ) ) );
+        break;
+    }
+  }
+  else
+  {
+    // defaults to #000000
+    circleFillColor = QColor( 0, 0, 0 );
+  }
+
+  // circle radius
+  double circleDiameter = 10.0;
+  if ( jsonPaint.contains( QStringLiteral( "circle-radius" ) ) )
+  {
+    const QVariant jsonCircleRadius = jsonPaint.value( QStringLiteral( "circle-radius" ) );
+    switch ( jsonCircleRadius.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        circleDiameter = jsonCircleRadius.toDouble() * context.pixelSizeConversionFactor() * 2;
+        break;
+
+      case QVariant::Map:
+        circleDiameter = -1;
+        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseInterpolateByZoom( jsonCircleRadius.toMap(), context, context.pixelSizeConversionFactor() * 2, &circleDiameter ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * 2, 255, nullptr, &circleDiameter ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-radius type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleRadius.type() ) ) );
+        break;
+    }
+  }
+
+  double circleOpacity = -1.0;
+  if ( jsonPaint.contains( QStringLiteral( "circle-opacity" ) ) )
+  {
+    const QVariant jsonCircleOpacity = jsonPaint.value( QStringLiteral( "circle-opacity" ) );
+    switch ( jsonCircleOpacity.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        circleOpacity = jsonCircleOpacity.toDouble();
+        break;
+
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateOpacityByZoom( jsonCircleOpacity.toMap(), circleFillColor.isValid() ? circleFillColor.alpha() : 255 ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseValueList( jsonCircleOpacity.toList(), PropertyType::Opacity, context, 1, circleFillColor.isValid() ? circleFillColor.alpha() : 255 ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleOpacity.type() ) ) );
+        break;
+    }
+  }
+  if ( ( circleOpacity != -1 ) && circleFillColor.isValid() )
+  {
+    circleFillColor.setAlphaF( circleOpacity );
+  }
+
+  // circle stroke color
+  QColor circleStrokeColor;
+  if ( jsonPaint.contains( QStringLiteral( "circle-stroke-color" ) ) )
+  {
+    const QVariant jsonCircleStrokeColor = jsonPaint.value( QStringLiteral( "circle-stroke-color" ) );
+    switch ( jsonCircleStrokeColor.type() )
+    {
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateColorByZoom( jsonCircleStrokeColor.toMap(), context, &circleStrokeColor ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseValueList( jsonCircleStrokeColor.toList(), PropertyType::Color, context, 1, 255, &circleStrokeColor ) );
+        break;
+
+      case QVariant::String:
+        circleStrokeColor = parseColor( jsonCircleStrokeColor.toString(), context );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleStrokeColor.type() ) ) );
+        break;
+    }
+  }
+
+  // circle stroke width
+  double circleStrokeWidth = -1.0;
+  if ( jsonPaint.contains( QStringLiteral( "circle-stroke-width" ) ) )
+  {
+    const QVariant circleStrokeWidthJson = jsonPaint.value( QStringLiteral( "circle-stroke-width" ) );
+    switch ( circleStrokeWidthJson.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        circleStrokeWidth = circleStrokeWidthJson.toDouble() * context.pixelSizeConversionFactor();
+        break;
+
+      case QVariant::Map:
+        circleStrokeWidth = -1.0;
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateByZoom( circleStrokeWidthJson.toMap(), context, context.pixelSizeConversionFactor(), &circleStrokeWidth ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseValueList( circleStrokeWidthJson.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &circleStrokeWidth ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( circleStrokeWidthJson.type() ) ) );
+        break;
+    }
+  }
+
+  double circleStrokeOpacity = -1.0;
+  if ( jsonPaint.contains( QStringLiteral( "circle-stroke-opacity" ) ) )
+  {
+    const QVariant jsonCircleStrokeOpacity = jsonPaint.value( QStringLiteral( "circle-stroke-opacity" ) );
+    switch ( jsonCircleStrokeOpacity.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        circleStrokeOpacity = jsonCircleStrokeOpacity.toDouble();
+        break;
+
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateOpacityByZoom( jsonCircleStrokeOpacity.toMap(), circleStrokeColor.isValid() ? circleStrokeColor.alpha() : 255 ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseValueList( jsonCircleStrokeOpacity.toList(), PropertyType::Opacity, context, 1, circleStrokeColor.isValid() ? circleStrokeColor.alpha() : 255 ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleStrokeOpacity.type() ) ) );
+        break;
+    }
+  }
+  if ( ( circleStrokeOpacity != -1 ) && circleStrokeColor.isValid() )
+  {
+    circleStrokeColor.setAlphaF( circleStrokeOpacity );
+  }
+
+  // translate
+  QPointF circleTranslate;
+  if ( jsonPaint.contains( QStringLiteral( "circle-translate" ) ) )
+  {
+    const QVariant jsonCircleTranslate = jsonPaint.value( QStringLiteral( "circle-translate" ) );
+    switch ( jsonCircleTranslate.type() )
+    {
+
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyOffset, parseInterpolatePointByZoom( jsonCircleTranslate.toMap(), context, context.pixelSizeConversionFactor(), &circleTranslate ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        circleTranslate = QPointF( jsonCircleTranslate.toList().value( 0 ).toDouble() * context.pixelSizeConversionFactor(),
+                                   jsonCircleTranslate.toList().value( 1 ).toDouble() * context.pixelSizeConversionFactor() );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-translate type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleTranslate.type() ) ) );
+        break;
+    }
+  }
+
+  std::unique_ptr< QgsSymbol > symbol( qgis::make_unique< QgsMarkerSymbol >() );
+  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = dynamic_cast< QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) );
+  Q_ASSERT( markerSymbolLayer );
+
+  // set render units
+  symbol->setOutputUnit( context.targetUnit() );
+  symbol->setDataDefinedProperties( ddProperties );
+
+  if ( !circleTranslate.isNull() )
+  {
+    markerSymbolLayer->setOffset( circleTranslate );
+    markerSymbolLayer->setOffsetUnit( context.targetUnit() );
+  }
+
+  if ( circleFillColor.isValid() )
+  {
+    markerSymbolLayer->setFillColor( circleFillColor );
+  }
+  if ( circleDiameter != -1 )
+  {
+    markerSymbolLayer->setSize( circleDiameter );
+    markerSymbolLayer->setSizeUnit( context.targetUnit() );
+  }
+  if ( circleStrokeColor.isValid() )
+  {
+    markerSymbolLayer->setStrokeColor( circleStrokeColor );
+  }
+  if ( circleStrokeWidth != -1 )
+  {
+    markerSymbolLayer->setStrokeWidth( circleStrokeWidth );
+    markerSymbolLayer->setStrokeWidthUnit( context.targetUnit() );
+  }
+
+  style.setGeometryType( QgsWkbTypes::PointGeometry );
   style.setSymbol( symbol.release() );
   return true;
 }
