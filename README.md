@@ -64,14 +64,15 @@ Supported mesh formats include NetCDF, GRIB, 2DM, and [other MDAL supported form
 
 ## Installing and using QGIS
 
-(Fill this in)
-
+Precompiled binaries for QGIS are available at [the QGIS.org download page](https://www.qgis.org/en/site/forusers/download.html).
 Please follow the installation instructions carefully.
-After extracting the distribution, please check the
-[documentation](https://qgis.org/en/docs/index.html)
 
-## Help us
-Please submit bug reports using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
+A range of 
+[documentation](https://qgis.org/en/docs/index.html) is availables, including a full manual as well as a gentle introduction to GIS.
+
+The [building guide](INSTALL.md) can be used to get started with building QGIS from source.
+
+Please **help us by submiting bug reports** using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
 
 ## Support
 You can get support in the following ways:
@@ -97,7 +98,3 @@ repository, and then [create a pull request](https://help.github.com/articles/cr
 If you commit a new feature, add [FEATURE] to your commit message AND give a clear description of the new feature. A webhook will automatically create an issue on the QGIS-Documentation repo to tell people to write documentation about it.
 
 If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](http://qgis.org/en/site/getinvolved/index.html).
-
-### Building from source
-
-The [building guide](INSTALL.md) can be used to get started with building QGIS from source.
