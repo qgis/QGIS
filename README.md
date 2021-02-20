@@ -10,40 +10,41 @@ information system (GIS) that runs on most Unix platforms, Windows, and MacOS.
 
 Features include
 
-<img align="right" src="image1.png" width="200" height="150">
+<img align="right" src="image1.png" width="200" height="150" alt="example image"><div style="min-height:180;">
 
 **1. Flexible visualization and editing of geospatial data**
-* Raster, vector, mesh layers in range of formats
-* Local files as well as remote (webserver, database/PostGIS, tiled)
-* Variety of rendering options and reprojection on the fly
-* Numerical and visual digitizing and editing
+* Raster, vector, mesh layers in a range of industry-standard formats
+* Local files, webserver, database/PostGIS, tiled...
+* Large variety of rendering options; 2D and 3D
+* Reprojection between coordinate reference systems (CSR) on the fly
+* Visual and numerical and digitizing and editing
 * Temporal support
-* 3D visualization
 
-<img align="right" src="image2.png" width="200" height="150">
+</div><img align="right" src="image2.png" width="200" height="150" alt="example image"><div style="min-height:180;">
 
 **2. Beautiful cartography**
-* Fine control over symbology, labeling, legends and additional graphical elements for visually beautiful maps
-* Saved map layouts to recreate maps of specified scale, extent, and style
-* Atlases to generate range of maps with same layout
+* Fine control over symbology, labeling, legends and additional graphical elements
+* Saved map layouts creation and recreation of maps of specified scale, extent, and style
+* Atlases to generate a group of maps with same style and layout
 * Flexible output as image (raster), PDF, SVG; camera-ready or suitable for further customization 
 
-<img align="right" src="image3.png" width="200" height="150">
+</div><img align="right" src="image3.png" width="200" height="150" alt="example image"><div style="min-height:180;">
 
 **3. Advanced GIS analysis**
-* Geospatial database engine that is as close to datasource- and format-independent as possible (joins, relations, forms, etc.)
+* Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
 * 150+ geoprocessing algorithms
-* Graphical modeler
-* Access to additional algorithms via GDAL, GRASS, SAGA
+* Graphical modeler and scripting
+* Access to additional algorithms via GDAL, GRASS, SAGA, etc.
 
-<img align="right" src="image4.png" width="200" height="150">
+</div><img align="right" src="image4.png" width="200" height="150" alt="example image"><div style="min-height:180;">
 
 **4. Wide customization**
-* Scripting via Python
+* Fully customizable user interface
+* Powerful expression engine, plus scripting via Python
 * Rich ecosystem of plugins, data connectors, advanced analysis and charting tools, in-the-field data capture
 * Python and C++ API for standalone applications
 
-<img align="right" src="image5.png" width="200" height="150">
+</div><img align="right" src="image5.png" width="200" height="150" alt="example image"><div style="min-height:180;">
 
 **5. Server**
 * Serve up geospatial data as well as rendered, beautiful QGIS maps
@@ -51,10 +52,14 @@ Features include
 * Works with any web server software
 * Fully customizable, Python scripting
 
+</div>
+
 ## Under the hood
 
-QGIS is developed using the [Qt toolkit](https://qt.io) and C++ since 2002.  It has a pleasing, easy to use graphical
-user interface with multilingual support. It is maintained by an active developer team and supported by vibrant community of GIS professionals and enthusiasts as well as geospatial data publishers and endusers. Releases follow a time-based schedule, with a new release every four months, interim bug-fix releases monthly, and a stable long-term release (LTR) once a year.
+QGIS is developed using the [Qt toolkit](https://qt.io) and C++, since 2002, and has a pleasing, easy to use graphical
+user interface with multilingual support. It is maintained by an active developer team and supported by vibrant 
+community of GIS professionals and enthusiasts as well as geospatial data publishers and endusers. Releases follow 
+a time-based schedule, with a new release every four months, interim bug-fix releases monthly, and a stable long-term release (LTR) once a year.
 
 QGIS is released under the GNU Public License (GPL) Version 2 or above.
 Developing QGIS under this license means that you can (if you want to) inspect
@@ -66,7 +71,7 @@ QGIS is part of the Open-Source Geospatial Foundation ([OSGeo](https://www.osgeo
 
 ## Supported formats
 
-Supported raster formats include GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, and [all other formats supported by GDAL](https://gdal.org/drivers/raster/index.html).
+Supported raster formats include GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, MBTiles, and [other GDAL supported formats](https://gdal.org/drivers/raster/index.html).
 
 Supported vector formats include GeoPackage, ESRI Shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, and [other OGR supported formats](http://www.gdal.org/ogr_formats.html).
 
@@ -78,7 +83,7 @@ Precompiled binaries for QGIS are available at [the QGIS.org download page](http
 Please follow the installation instructions carefully.
 
 A range of 
-[documentation](https://qgis.org/en/docs/index.html) is availables, including a full manual as well as a gentle introduction to GIS.
+[documentation](https://qgis.org/en/docs/index.html) is available, including a full manual as well as a gentle introduction to GIS.
 
 The [building guide](INSTALL.md) can be used to get started with building QGIS from source.
 
