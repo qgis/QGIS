@@ -7,16 +7,44 @@
 
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical 
 information system (GIS) that runs on most Unix platforms, Windows, and MacOS.
-QGIS is developed using the [Qt toolkit](https://qt.io) and C++.  This
-means that QGIS feels snappy to use and has a pleasing, easy to use graphical
-user interface.
 
-QGIS aims to be an easy to use GIS, providing common functions and
-features. The initial goal was to provide a GIS data viewer. QGIS has
-reached that point in its evolution and is being used by many for their
-daily GIS data viewing and editing needs. QGIS supports a number of raster
-, vector and mesh data formats, with new support easily added using the plugin
-architecture.
+Features include
+
+**1. Flexible visualization and editing of geospatial data**
+* Raster, vector, mesh layers in range of formats
+* Local files as well as remote (webserver, database/PostGIS, tiled)
+* Variety of rendering options and reprojection on the fly
+* Numerical and visual digitizing and editing
+* Temporal support
+* 3D visualization
+
+**2. Beautiful cartography**
+* Fine control over symbology, labeling, legends and additional graphical elements for visually beautiful maps
+* Saved map layouts to recreate maps of specified scale, extent, and style
+* Atlases to generate range of maps with same layout
+* Flexible output as image (raster), PDF, SVG; camera-ready or suitable for further customization 
+
+**3. Advanced GIS analysis**
+* Geospatial database engine that is as close to datasource- and format-independent as possible (joins, relations, forms, etc.)
+* 150+ geoprocessing algorithms
+* Graphical modeler
+* Access to additional algorithms via GDAL, GRASS, SAGA
+
+**4. Wide customization**
+* Scripting via Python
+* Rich ecosystem of plugins, data connectors, advanced analysis and charting tools, in-the-field data capture
+* Python and C++ API for standalone applications
+
+**5. Server**
+* Serve up geospatial data as well as rendered, beautiful QGIS maps
+* Industry-standard protocols (WMS, WFS, OGC) allow plug-n-play with any client GIS/visualization software
+* Works with any web server software
+* Fully customizable, Python scripting
+
+## Under the hood
+
+QGIS is developed using the [Qt toolkit](https://qt.io) and C++ since 2002.  It has a pleasing, easy to use graphical
+user interface with multilingual support. It is maintained by an active developer team and supported by vibrant community of GIS professionals and enthusiasts as well as geospatial data publishers and endusers. Releases follow a time-based schedule, with a new release every four months, interim bug-fix releases monthly, and a stable long-term release (LTR) once a year.
 
 QGIS is released under the GNU Public License (GPL) Version 2 or above.
 Developing QGIS under this license means that you can (if you want to) inspect
@@ -24,40 +52,19 @@ and modify the source code and guarantees that you, our happy user will always
 have access to a GIS program that is free of cost and can be freely
 modified.
 
-## Supported raster formats include:
+QGIS is part of the Open-Source Geospatial Foundation ([OSGeo](https://www.osgeo.org/)), offering a range of complementary open-source GIS software projects.
 
- * GRASS
- * USGS DEM
- * ArcInfo binary grid
- * ArcInfo ASCII grid
- * ERDAS Imagine
- * SDTS
- * GeoTiff
- * Tiff with world file
- * WMS, WCS
- * PostgreSQL/PostGIS
- * GeoPackage
+## Supported formats
 
-## Supported vector formats include:
+Supported raster formats include GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, and [all other formats supported by GDAL](https://gdal.org/drivers/raster/index.html).
 
- * ESRI Shapefiles
- * PostgreSQL/PostGIS
- * GRASS
- * GeoPackage
- * SpatiaLite
- * [Other OGR supported formats](http://www.gdal.org/ogr_formats.html)
- * MSSQL
- * Oracle
- * WFS
+Supported vector formats include GeoPackage, ESRI Shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, and [other OGR supported formats](http://www.gdal.org/ogr_formats.html).
 
-## Supported mesh formats include:
+Supported mesh formats include NetCDF, GRIB, 2DM, and [other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats).
 
- * NetCDF
- * GRIB
- * 2DM
- * [Other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats)
+## Installing and using QGIS
 
-## Note
+(Fill this in)
 
 Please follow the installation instructions carefully.
 After extracting the distribution, please check the
