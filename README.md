@@ -10,6 +10,8 @@ information system (GIS) that runs on most Unix platforms, Windows, and MacOS.
 
 Features include
 
+<img align="right" src="image1.png" width="200" height="150">
+
 **1. Flexible visualization and editing of geospatial data**
 * Raster, vector, mesh layers in range of formats
 * Local files as well as remote (webserver, database/PostGIS, tiled)
@@ -18,11 +20,15 @@ Features include
 * Temporal support
 * 3D visualization
 
+<img align="right" src="image2.png" width="200" height="150">
+
 **2. Beautiful cartography**
 * Fine control over symbology, labeling, legends and additional graphical elements for visually beautiful maps
 * Saved map layouts to recreate maps of specified scale, extent, and style
 * Atlases to generate range of maps with same layout
 * Flexible output as image (raster), PDF, SVG; camera-ready or suitable for further customization 
+
+<img align="right" src="image3.png" width="200" height="150">
 
 **3. Advanced GIS analysis**
 * Geospatial database engine that is as close to datasource- and format-independent as possible (joins, relations, forms, etc.)
@@ -30,10 +36,14 @@ Features include
 * Graphical modeler
 * Access to additional algorithms via GDAL, GRASS, SAGA
 
+<img align="right" src="image4.png" width="200" height="150">
+
 **4. Wide customization**
 * Scripting via Python
 * Rich ecosystem of plugins, data connectors, advanced analysis and charting tools, in-the-field data capture
 * Python and C++ API for standalone applications
+
+<img align="right" src="image5.png" width="200" height="150">
 
 **5. Server**
 * Serve up geospatial data as well as rendered, beautiful QGIS maps
@@ -72,7 +82,7 @@ A range of
 
 The [building guide](INSTALL.md) can be used to get started with building QGIS from source.
 
-Please **help us by submiting bug reports** using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
+Please **help us by submitting bug reports** using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
 
 ## Support
 You can get support in the following ways:
