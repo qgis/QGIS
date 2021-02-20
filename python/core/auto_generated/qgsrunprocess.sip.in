@@ -131,6 +131,13 @@ After execution completes, the process' result code will be returned.
 After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' exit status.
 %End
 
+    QProcess::ProcessError processError() const;
+%Docstring
+After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' reported error.
+
+Returns QProcess.UnknownError if no error occurred.
+%End
+
 };
 
 
