@@ -272,8 +272,9 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
 
   int result = 0;
   QProcess::ExitStatus exitStatus = QProcess::NormalExit;
+  QProcess::ProcessError error = QProcess::UnknownError;
 
-  std::function<void()> runFunction = [ this, &result, &exitStatus, feedback]()
+  std::function<void()> runFunction = [ this, &result, &exitStatus, &error, feedback]()
   {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
@@ -319,8 +320,16 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
       mStderrHandler( ba );
     } );
     p.start( mProcess, mArguments, QProcess::Unbuffered | QProcess::ReadWrite );
-
-    loop.exec();
+    if ( !p.waitForStarted() )
+    {
+      result = 1;
+      exitStatus = QProcess::NormalExit;
+      error = p.error();
+    }
+    else
+    {
+      loop.exec();
+    }
 
     mStdoutHandler( p.readAllStandardOutput() );
     mStderrHandler( p.readAllStandardError() );
@@ -339,11 +348,17 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
   }
 
   mExitStatus = exitStatus;
+  mProcessError = error;
   return result;
 }
 
 QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
 {
   return mExitStatus;
+};
+
+QProcess::ProcessError QgsBlockingProcess::processError() const
+{
+  return mProcessError;
 };
 #endif // QT_CONFIG(process)

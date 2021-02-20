@@ -185,6 +185,13 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
      */
     QProcess::ExitStatus exitStatus() const;
 
+    /**
+     * After a call to run(), returns the process' reported error.
+     *
+     * Returns QProcess::UnknownError if no error occurred.
+     */
+    QProcess::ProcessError processError() const;
+
   private:
 
     QString mProcess;
@@ -193,6 +200,7 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
     std::function< void( const QByteArray & ) > mStderrHandler;
 
     QProcess::ExitStatus mExitStatus = QProcess::NormalExit;
+    QProcess::ProcessError mProcessError = QProcess::UnknownError;
 };
 
 #endif // QT_CONFIG(process)
