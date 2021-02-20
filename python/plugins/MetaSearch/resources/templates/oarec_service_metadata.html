@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+    <head>
+        <meta charset="utf-8"/>
+        <title>{{ gettext('Service Metadata') }}</title>
+        <style type="text/css">
+            body,h3, h4 {
+                background-color: #ffffff;
+                font-family: arial, verdana, sans-serif;
+                text-align: left;
+                float: left;
+            }
+            header {
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h3>{{ gettext('Service Metadata') }} {{ obj.url }}</h3>
+        </header>
+
+        <h4>Conformance</h4><br/>
+        {% for i in obj.conformance()['conformsTo'] %}
+        <a href="{{ i }}">{{ i }}</a><br/>
+        {% endfor %}
+
+        <h4>Collections</h4><br/>
+        {% for i in obj.collections()['collections'] %}
+        <p><b>{{ i.title }}</b><br/>{{ i.description }}</p>
+        {% endfor %}
+
+        {% if obj.links %}
+            <h4>Links</h4><br/>
+            {% for i in obj.links %}
+                <a href="{{ i.href }}">{{ i.title or i.href }}</a><br/>
+            {% endfor %}
+        {% endif %}
+
+    </body>
+</html>

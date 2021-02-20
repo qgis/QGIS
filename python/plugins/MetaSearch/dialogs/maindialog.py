@@ -40,7 +40,8 @@ from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
-                       QgsProviderRegistry, QgsSettings, QgsProject)
+                       QgsProviderRegistry, QgsSettings, QgsProject,
+                       QgsRectangle)
 from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
 
@@ -48,6 +49,7 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=ResourceWarning)
     warnings.filterwarnings("ignore", category=ImportWarning)
     from owslib.csw import CatalogueServiceWeb  # spellok
+    from owslib.ogcapi.records import Records  # spellok
 
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
@@ -82,6 +84,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.iface = iface
         self.map = iface.mapCanvas()
         self.settings = QgsSettings()
+        self.type = None
+        self.msg = ""
         self.catalog = None
         self.catalog_url = None
         self.catalog_username = None
@@ -272,14 +276,21 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.catalog_password = self.settings.value('%s/password' % key)
 
         # connect to the server
-        if not self._get_csw():
+        self.msg = ""
+        if not (self._get_csw() or self._get_oarec()):
+            QMessageBox.warning(self, self.tr('Connection error'), self.msg)
             return
 
         if self.catalog:  # display service metadata
             self.btnCapabilities.setEnabled(True)
-            metadata = render_template('en', self.context,
-                                       self.catalog,
-                                       'service_metadata.html')
+            if (self.type == 'oarec'):
+                metadata = render_template('en', self.context,
+                                           self.catalog,
+                                           'oarec_service_metadata.html')
+            else:
+                metadata = render_template('en', self.context,
+                                           self.catalog,
+                                           'service_metadata.html')
             style = QgsApplication.reportStyleSheet()
             self.textMetadata.clear()
             self.textMetadata.document().setDefaultStyleSheet(style)
@@ -479,15 +490,29 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.constraints = [self.constraints]
 
         # build request
-        if not self._get_csw():
+        self.msg = ""
+        if not (self._get_csw() or self._get_oarec()):
+            QMessageBox.warning(self, self.tr('Connection error'), self.msg)
             return
 
         # TODO: allow users to select resources types
         # to find ('service', 'dataset', etc.)
         try:
             with OverrideCursor(Qt.WaitCursor):
-                self.catalog.getrecords2(constraints=self.constraints,
-                                         maxrecords=self.maxrecords, esn='full')
+                if (self.type == 'csw'):
+                    self.catalog.getrecords2(constraints=self.constraints,
+                                             maxrecords=self.maxrecords, esn='full')
+                elif (self.type == 'oarec'):
+                    cat = self.catalog.records()[0]
+                    if self.leKeywords.text():
+                        myqry = self.catalog.collection_items(cat, q=self.leKeywords.text())
+                    else:
+                        myqry = self.catalog.collection_items(cat)
+                    self.catalog.oarecords = myqry['features']
+                    self.catalog.results = {
+                        'matches': myqry['numberMatched'],
+                        'returned': myqry['numberReturned']
+                    }
         except ExceptionReport as err:
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: {0}').format(err))
@@ -515,19 +540,27 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                                                               position)
 
         self.lblResults.setText(msg)
-
-        for rec in self.catalog.records:
-            item = QTreeWidgetItem(self.treeRecords)
-            if self.catalog.records[rec].type:
-                item.setText(0, normalize_text(self.catalog.records[rec].type))
-            else:
-                item.setText(0, 'unknown')
-            if self.catalog.records[rec].title:
-                item.setText(1,
-                             normalize_text(self.catalog.records[rec].title))
-            if self.catalog.records[rec].identifier:
-                set_item_data(item, 'identifier',
-                              self.catalog.records[rec].identifier)
+        if (self.type == 'oarec'):
+            for rec in self.catalog.oarecords:
+                item = QTreeWidgetItem(self.treeRecords)
+                if ('type' in rec['properties']):
+                    item.setText(0, normalize_text(rec['properties']['type']))
+                if ('title' in rec['properties']):
+                    item.setText(1, normalize_text(rec['properties']['title']))
+                set_item_data(item, 'identifier', rec['id'])
+        elif (self.type == 'csw'):
+            for rec in self.catalog.records:
+                item = QTreeWidgetItem(self.treeRecords)
+                if self.catalog.records[rec].type:
+                    item.setText(0, normalize_text(self.catalog.records[rec].type))
+                else:
+                    item.setText(0, 'unknown')
+                if self.catalog.records[rec].title:
+                    item.setText(1,
+                                 normalize_text(self.catalog.records[rec].title))
+                if self.catalog.records[rec].identifier:
+                    set_item_data(item, 'identifier',
+                                  self.catalog.records[rec].identifier)
 
         self.btnShowXml.setEnabled(True)
 
@@ -565,7 +598,14 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         identifier = get_item_data(item, 'identifier')
         try:
-            record = self.catalog.records[identifier]
+            if self.type == 'csw':
+                record = self.catalog.records[identifier]
+            else:
+                for rec in self.catalog.oarecords:
+                    if rec['id'] == identifier:
+                        record = rec
+                        break
+
         except KeyError as err:
             QMessageBox.warning(self,
                                 self.tr('Record parsing error'),
@@ -573,22 +613,29 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             return
 
         # if the record has a bbox, show a footprint on the map
-        if record.bbox is not None:
-            points = bbox_to_polygon(record.bbox)
-            if points is not None:
-                src = QgsCoordinateReferenceSystem("EPSG:4326")
-                dst = self.map.mapSettings().destinationCrs()
-                geom = QgsGeometry.fromWkt(points)
-                if src.postgisSrid() != dst.postgisSrid():
-                    ctr = QgsCoordinateTransform(src, dst, QgsProject.instance())
-                    try:
-                        geom.transform(ctr)
-                    except Exception as err:
-                        QMessageBox.warning(
-                            self,
-                            self.tr('Coordinate Transformation Error'),
-                            str(err))
-                self.rubber_band.setToGeometry(geom, None)
+        if self.type == 'csw' and record.bbox is not None:
+            b = record.bbox
+            g2 = QgsRectangle(float(b.minx), float(b.miny), float(b.maxx), float(b.maxy))
+            points = g2.asWktPolygon()
+        elif record['geometry']:
+            cs = record['geometry']['coordinates'][0]
+            g2 = QgsRectangle(cs[0][0], cs[0][1], cs[3][0], cs[3][1])
+            points = g2.asWktPolygon()
+
+        if points is not None:
+            src = QgsCoordinateReferenceSystem("EPSG:4326")
+            dst = self.map.mapSettings().destinationCrs()
+            geom = QgsGeometry.fromWkt(points)
+            if src.postgisSrid() != dst.postgisSrid():
+                ctr = QgsCoordinateTransform(src, dst, QgsProject.instance())
+                try:
+                    geom.transform(ctr)
+                except Exception as err:
+                    QMessageBox.warning(
+                        self,
+                        self.tr('Coordinate Transformation Error'),
+                        str(err))
+            self.rubber_band.setToGeometry(geom, None)
 
         # figure out if the data is interactive and can be operated on
         self.find_services(record, item)
@@ -596,7 +643,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def find_services(self, record, item):
         """scan record for WMS/WMTS|WFS|WCS endpoints"""
 
-        links = record.uris + record.references
+        links = []
+        if self.type == 'csw':
+            links = record.uris + record.references
+        elif 'associations' in record:
+            links = record['associations']
 
         services = {}
         for link in links:
@@ -853,51 +904,69 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 auth = Authentication(verify=False)
             except NameError:
                 pass
+        if self.type == 'csw':
+            try:
+                with OverrideCursor(Qt.WaitCursor):
+                    cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
+                                              username=self.catalog_username,
+                                              password=self.catalog_password,
+                                              auth=auth)
+                    cat.getrecordbyid([self.catalog.records[identifier].identifier])
+            except ExceptionReport as err:
+                QMessageBox.warning(self, self.tr('GetRecords error'),
+                                    self.tr('Error getting response: {0}').format(err))
+                return
+            except KeyError as err:
+                QMessageBox.warning(self,
+                                    self.tr('Record parsing error'),
+                                    self.tr('Unable to locate record identifier'))
+                return
 
-        try:
-            with OverrideCursor(Qt.WaitCursor):
-                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
-                                          username=self.catalog_username,
-                                          password=self.catalog_password,
-                                          auth=auth)
-                cat.getrecordbyid(
-                    [self.catalog.records[identifier].identifier])
-        except ExceptionReport as err:
-            QMessageBox.warning(self, self.tr('GetRecords error'),
-                                self.tr('Error getting response: {0}').format(err))
-            return
-        except KeyError as err:
-            QMessageBox.warning(self,
-                                self.tr('Record parsing error'),
-                                self.tr('Unable to locate record identifier'))
-            return
+            record = cat.records[identifier]
+            record.xml_url = cat.request
 
-        record = cat.records[identifier]
-        record.xml_url = cat.request
+            crd = RecordDialog()
+            metadata = render_template('en', self.context,
+                                       record, 'record_metadata_dc.html')
 
-        crd = RecordDialog()
-        metadata = render_template('en', self.context,
-                                   record, 'record_metadata_dc.html')
+            style = QgsApplication.reportStyleSheet()
+            crd.textMetadata.document().setDefaultStyleSheet(style)
+            crd.textMetadata.setHtml(metadata)
+            crd.exec_()
+        else:
+            for rec in self.catalog.oarecords:
+                if rec['id'] == identifier:
+                    record = rec
+                    break
 
-        style = QgsApplication.reportStyleSheet()
-        crd.textMetadata.document().setDefaultStyleSheet(style)
-        crd.textMetadata.setHtml(metadata)
-        crd.exec_()
+            if record is not None:
+                crd = RecordDialog()
+                metadata = render_template('en', self.context,
+                                           record, 'record_metadata_oarec.html')
+
+                style = QgsApplication.reportStyleSheet()
+                crd.textMetadata.document().setDefaultStyleSheet(style)
+                crd.textMetadata.setHtml(metadata)
+                crd.exec_()
 
     def show_xml(self):
         """show XML request / response"""
 
-        crd = XMLDialog()
-        request_html = highlight_xml(self.context, self.catalog.request)
-        response_html = highlight_xml(self.context, self.catalog.response)
-        style = QgsApplication.reportStyleSheet()
-        crd.txtbrXMLRequest.clear()
-        crd.txtbrXMLResponse.clear()
-        crd.txtbrXMLRequest.document().setDefaultStyleSheet(style)
-        crd.txtbrXMLResponse.document().setDefaultStyleSheet(style)
-        crd.txtbrXMLRequest.setHtml(request_html)
-        crd.txtbrXMLResponse.setHtml(response_html)
-        crd.exec_()
+        if self.type == 'csw':
+            crd = XMLDialog()
+            request_html = highlight_xml(self.context, self.catalog.request)
+            response_html = highlight_xml(self.context, self.catalog.response)
+            style = QgsApplication.reportStyleSheet()
+            crd.txtbrXMLRequest.clear()
+            crd.txtbrXMLResponse.clear()
+            crd.txtbrXMLRequest.document().setDefaultStyleSheet(style)
+            crd.txtbrXMLResponse.document().setDefaultStyleSheet(style)
+            crd.txtbrXMLRequest.setHtml(request_html)
+            crd.txtbrXMLResponse.setHtml(response_html)
+            crd.exec_()
+        else:
+            """not implemented"""
+            return
 
     def reset_buttons(self, services=True, xml=True, navigation=True):
         """Convenience function to disable WMS/WMTS|WFS|WCS buttons"""
@@ -931,6 +1000,23 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         QDialog.reject(self)
         self.rubber_band.reset()
 
+    def _get_oarec(self):
+        """convenience function to init owslib.ogcapi.records"""  # spellok
+        # connect to the server
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.catalog = Records(self.catalog_url)  # spellok
+                self.type = "oarec"
+                return True
+            except ExceptionReport as err:
+                self.msg = self.tr('Error connecting to service: {0}').format(err)
+            except ValueError as err:
+                self.msg = self.tr('Value Error: {0}').format(err)
+            except Exception as err:
+                self.msg = self.tr('Unknown OARec Error: {0}').format(err)
+
+        return False
+
     def _get_csw(self):
         """convenience function to init owslib.csw.CatalogueServiceWeb"""  # spellok
 
@@ -951,15 +1037,15 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                                                    username=self.catalog_username,
                                                    password=self.catalog_password,
                                                    auth=auth)
+                self.type = "csw"
                 return True
             except ExceptionReport as err:
-                msg = self.tr('Error connecting to service: {0}').format(err)
+                self.msg = self.tr('Error connecting to service: {0}').format(err)
             except ValueError as err:
-                msg = self.tr('Value Error: {0}').format(err)
+                self.msg = self.tr('Value Error: {0}').format(err)
             except Exception as err:
-                msg = self.tr('Unknown Error: {0}').format(err)
+                self.msg = self.tr('Unknown CSW Error: {0}').format(err)
 
-        QMessageBox.warning(self, self.tr('CSW Connection error'), msg)
         return False
 
     def install_proxy(self):
@@ -1019,20 +1105,3 @@ def _get_field_value(field):
         value = 1
 
     return value
-
-
-def bbox_to_polygon(bbox):
-    """converts OWSLib bbox object to list of QgsPointXY objects"""
-
-    if all([bbox.minx is not None,
-            bbox.maxx is not None,
-            bbox.miny is not None,
-            bbox.maxy is not None]):
-        minx = float(bbox.minx)
-        miny = float(bbox.miny)
-        maxx = float(bbox.maxx)
-        maxy = float(bbox.maxy)
-
-        return 'POLYGON((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))' % (minx, miny, minx, maxy, maxx, maxy, maxx, miny, minx, miny)  # noqa
-    else:
-        return None
