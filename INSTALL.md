@@ -2,57 +2,58 @@ Building QGIS from source - step by step
 
 <!-- Table of contents generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
-* [1. Introduction](#1-introduction)
-* [2. Overview](#2-overview)
-* [3. Building on GNU/Linux](#3-building-on-gnulinux)
-   * [3.1. Building QGIS with Qt 5.x](#31-building-qgis-with-qt-5x)
-   * [3.2. Prepare apt](#32-prepare-apt)
-   * [3.3. Install build dependencies](#33-install-build-dependencies)
-   * [3.4. Setup ccache (Optional, but recommended)](#34-setup-ccache-optional-but-recommended)
-   * [3.5. Prepare your development environment](#35-prepare-your-development-environment)
-   * [3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
-   * [3.7. Starting the compile](#37-starting-the-compile)
-   * [3.8. Compiling with 3D](#38-compiling-with-3d)
-       * [3.8.1. Compiling with 3D on Debian based distributions](#381-compiling-with-3d-on-debian-based-distributions)
-   * [3.9. Building different branches](#39-building-different-branches)
-   * [3.10. Building Debian packages](#310-building-debian-packages)
-   * [3.11. On Fedora Linux](#311-on-fedora-linux)
-       * [3.11.1. Install build dependencies](#3111-install-build-dependencies)
-       * [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
-* [4. Building on Windows](#4-building-on-windows)
-   * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
-       * [4.1.1. Visual Studio 2015 Community Edition](#411-visual-studio-2015-community-edition)
-       * [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
-       * [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
-       * [4.1.4. Configure and build with CMake from command line](#414-configure-and-build-with-cmake-from-command-line)
-           * [4.1.4.1 Using configonly.bat to create the MSVC solution file](#4141-using-configonlybat-to-create-the-msvc-solution-file)
-           * [4.1.4.2 Compiling QGIS with MSVC](#4142-compiling-qgis-with-msvc)
-       * [4.1.5 Old alternative method that might still work using cmake-gui](#415-old-alternative-method-that-might-still-work-using-cmake-gui)
-       * [4.1.6. Packaging](#416-packaging)
-       * [4.1.7. Packaging your own build of QGIS](#417-packaging-your-own-build-of-qgis)
-       * [4.1.8. Osgeo4w packaging](#418-osgeo4w-packaging)
-   * [4.2. Building on Linux with mxe](#42-building-on-linux-with-mxe)
-       * [4.2.1. Building with Docker](#421-building-with-docker)
-           * [4.2.1.1. Initial setup](#4211-initial-setup)
-           * [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
-           * [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
-       * [4.2.2. Testing QGIS](#422-testing-qgis)
-* [5. Building on MacOS X](#5-building-on-macos-x)
-   * [5.1. Install Developer Tools](#51-install-developer-tools)
-   * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
-   * [5.3. Install Qt5 and QGIS-Deps](#53-install-qt5-and-qgis-deps)
-   * [5.4. QGIS source](#54-qgis-source)
-   * [5.5. Configure the build](#55-configure-the-build)
-   * [5.6. Building](#56-building)
-* [6. Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
-   * [6.1. Preparation](#61-preparation)
-   * [6.2. Setup mapserver](#62-setup-mapserver)
-   * [6.3. Create a home page](#63-create-a-home-page)
-   * [6.4. Now deploy it](#64-now-deploy-it)
-   * [6.5. Debugging](#65-debugging)
-* [7. Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
-* [8. Debug output and running tests](#8-debug-output-and-running-tests)
-* [9. Authors and Acknowledgments](#9-authors-and-acknowledgments)
+# Table of Contents
+- [1. Introduction](#1-introduction)
+- [2. Overview](#2-overview)
+- [3. Building on GNU/Linux](#3-building-on-gnulinux)
+  - [3.1. Building QGIS with Qt 5.x](#31-building-qgis-with-qt-5x)
+  - [3.2. Prepare apt](#32-prepare-apt)
+  - [3.3. Install build dependencies](#33-install-build-dependencies)
+  - [3.4. Setup ccache (Optional, but recommended)](#34-setup-ccache-optional-but-recommended)
+  - [3.5. Prepare your development environment](#35-prepare-your-development-environment)
+  - [3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
+  - [3.7. Starting the compile](#37-starting-the-compile)
+  - [3.8. Compiling with 3D](#38-compiling-with-3d)
+    - [3.8.1. Compiling with 3D on Debian based distributions](#381-compiling-with-3d-on-debian-based-distributions)
+  - [3.9. Building different branches](#39-building-different-branches)
+  - [3.10. Building Debian packages](#310-building-debian-packages)
+  - [3.11. On Fedora Linux](#311-on-fedora-linux)
+    - [3.11.1. Install build dependencies](#3111-install-build-dependencies)
+    - [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
+- [4. Building on Windows](#4-building-on-windows)
+  - [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
+    - [4.1.1. Visual Studio 2015 Community Edition](#411-visual-studio-2015-community-edition)
+    - [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
+    - [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
+    - [4.1.4. Configure and build with CMake from command line](#414-configure-and-build-with-cmake-from-command-line)
+      - [4.1.4.1 Using configonly.bat to create the MSVC solution file](#4141-using-configonlybat-to-create-the-msvc-solution-file)
+      - [4.1.4.2 Compiling QGIS with MSVC](#4142-compiling-qgis-with-msvc)
+    - [4.1.5 Old alternative method that might still work using cmake-gui](#415-old-alternative-method-that-might-still-work-using-cmake-gui)
+    - [4.1.6. Packaging](#416-packaging)
+    - [4.1.7. Packaging your own build of QGIS](#417-packaging-your-own-build-of-qgis)
+    - [4.1.8. Osgeo4w packaging](#418-osgeo4w-packaging)
+  - [4.2. Building on Linux with mingw64](#42-building-on-linux-with-mingw64)
+    - [4.2.1. Building with Docker](#421-building-with-docker)
+      - [4.2.1.1. Initial setup](#4211-initial-setup)
+      - [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
+      - [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
+    - [4.2.2. Testing QGIS](#422-testing-qgis)
+- [5. Building on MacOS X](#5-building-on-macos-x)
+  - [5.1. Install Developer Tools](#51-install-developer-tools)
+  - [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
+  - [5.3. Install Qt5 and QGIS-Deps](#53-install-qt5-and-qgis-deps)
+  - [5.4. QGIS source](#54-qgis-source)
+  - [5.5. Configure the build](#55-configure-the-build)
+  - [5.6. Building](#56-building)
+- [6. Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
+  - [6.1. Preparation](#61-preparation)
+  - [6.2. Setup mapserver](#62-setup-mapserver)
+  - [6.3. Create a home page](#63-create-a-home-page)
+  - [6.4. Now deploy it](#64-now-deploy-it)
+  - [6.5. Debugging](#65-debugging)
+- [7. Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
+- [8. Debug output and running tests](#8-debug-output-and-running-tests)
+- [9. Authors and Acknowledgments](#9-authors-and-acknowledgments)
 
 # 1. Introduction
 
@@ -692,12 +693,26 @@ The actual packaging process is currently not documented, for now please take a
 look at `ms-windows/osgeo4w/package.cmd`.
 
 
-## 4.2. Building on Linux with mxe
+## 4.2. Building on Linux with mingw64
 
-With this approach you can cross build a Windows binary on Linux using MXE (M cross environment).
-You can find the build script and a README.md file in the ms-windows/mxe directory.
+With this approach you can cross build a Windows binary on Linux using mingw64
+in a Docker container.
 
-For now, Python buildings cannot be built with mxe.
+To build on Linux from your QGIS sources directory, launch:
+
+```cmd
+    ms-windows/mingw/build.sh
+```
+
+After a successful build, you will find two packages in the QGIS sources
+directory:
+
+- qgis-portable-win64.zip (QGIS for Windows 64bit)
+- qgis-portable-win64-debugsym.zip (debug symbols)
+
+This method is also used in the continuous integrations process. After each pull
+request the two packages mentioned above are stored as GitHub actions artifacts
+and are available for download making it possible to quickly test changes on Windows.
 
 ### 4.2.1. Building with Docker
 
@@ -1192,3 +1207,6 @@ The following people have contributed to this document:
 
 * Debug Output/Tests Section
   * Larry Shaffer 2012, by way of 'Test Friday' Tim Sutton
+
+* MXE/Mingw64 section
+  * Alessandro Pasotti (2018-2021)
