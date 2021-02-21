@@ -100,6 +100,36 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
   return true;
 }
 
+bool QgsLabelSearchTree::insertCallout( const QgsCalloutPosition &position )
+{
+  const QPointF origin = position.origin();
+  const QPointF destination = position.destination();
+
+  std::unique_ptr< QgsCalloutPosition > newEntry = qgis::make_unique< QgsCalloutPosition >( position );
+
+  mCalloutIndex.insert( newEntry.get(), QgsRectangle( origin.x(), origin.y(), origin.x(), origin.y() ) );
+  mCalloutIndex.insert( newEntry.get(), QgsRectangle( destination.x(), destination.y(), destination.x(), destination.y() ) );
+
+  mOwnedCalloutPositions.emplace_back( std::move( newEntry ) );
+
+  return true;
+}
+
+QList<const QgsCalloutPosition *> QgsLabelSearchTree::calloutsInRectangle( const QgsRectangle &rectangle ) const
+{
+  QList<const QgsCalloutPosition *> searchResults;
+  mCalloutIndex.intersects( rectangle, [&searchResults]( const QgsCalloutPosition * pos )->bool
+  {
+    searchResults.push_back( pos );
+    return true;
+  } );
+
+  std::sort( searchResults.begin(), searchResults.end() );
+  searchResults.erase( std::unique( searchResults.begin(), searchResults.end() ), searchResults.end() );
+
+  return searchResults;
+}
+
 void QgsLabelSearchTree::setMapSettings( const QgsMapSettings &settings )
 {
   mMapSettings = settings;

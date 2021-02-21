@@ -212,6 +212,27 @@ the callout to the destination map CRS.
 .. versionadded:: 3.20
 %End
 
+        void addCalloutPosition( const QgsCalloutPosition &position );
+%Docstring
+Adds a rendered callout position.
+
+The position details such as the callout line origin and destination should be populated by the
+callout subclass during rendering operations.
+
+.. note::
+
+   the feature ID, layer ID and provider ID of the :py:class:`QgsCalloutPosition` will be automatically populated.
+
+.. versionadded:: 3.20
+%End
+
+        QList< QgsCalloutPosition > positions() const;
+%Docstring
+Returns the list of rendered callout positions.
+
+.. versionadded:: 3.20
+%End
+
     };
 
     void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );

@@ -19,7 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslabelposition.h"
-
+#include "qgscalloutposition.h"
 #include <memory>
 
 class QgsLabelSearchTree;
@@ -49,6 +49,15 @@ class CORE_EXPORT QgsLabelingResults
      * Returns the details of any labels placed within the specifed rectangle (in map coordinates).
      */
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
+
+    /**
+     * Returns a list of callouts with origins or destinations inside the given \a rectangle.
+     *
+     * The \a rectangle is specified in map coordinates.
+     *
+     * \since QGIS 3.20
+     */
+    QList<QgsCalloutPosition> calloutsWithinRectangle( const QgsRectangle &rectangle ) const;
 
     /**
      * Sets the map \a settings associated with the labeling run.

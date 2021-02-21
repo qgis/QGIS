@@ -1212,6 +1212,7 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
 
+  labeling/qgscalloutposition.h
   labeling/qgslabelfeature.h
   labeling/qgslabeling.h
   labeling/qgslabelingengine.h
