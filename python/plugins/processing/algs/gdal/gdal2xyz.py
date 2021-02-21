@@ -69,7 +69,7 @@ class gdal2xyz(GdalAlgorithm):
         return 'rasterconversion'
 
     def commandName(self):
-        return 'gdal2xyz'
+        return 'gdal2xyz.bat' if isWindows() else 'gdal2xyz.py'
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
@@ -89,11 +89,4 @@ class gdal2xyz(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

@@ -94,7 +94,7 @@ class sieve(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'sieve.png'))
 
     def commandName(self):
-        return 'gdal_sieve'
+        return 'gdal_sieve.bat' if isWindows() else 'gdal_sieve.py'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
@@ -130,11 +130,4 @@ class sieve(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(out)
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
