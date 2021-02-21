@@ -46,7 +46,7 @@ Features include
 
 </div><img align="right" src="image5.png" width="200" height="150" alt="example image"><div style="min-height:180;">
 
-**5. Plug'n'play server**
+**5. QGIS server**
 * Headless map server, running on Windows, Mac OSX, Linux or in a docker container, that shares the same code base as QGIS
 * Industry-standard protocols (WMS, WFS, WFS3/OGC API for Features and WCS) allow plug-n-play with any software stack
 * Works with any web server (Apache, nginx, etc) or standalone
