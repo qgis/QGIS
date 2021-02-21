@@ -325,6 +325,7 @@
 %Include auto_generated/gps/qgsgpsdconnection.sip
 %Include auto_generated/gps/qgsgpsdetector.sip
 %Include auto_generated/gps/qgsnmeaconnection.sip
+%Include auto_generated/labeling/qgscalloutposition.sip
 %Include auto_generated/labeling/qgslabeling.sip
 %Include auto_generated/labeling/qgslabelingenginesettings.sip
 %Include auto_generated/labeling/qgslabelingresults.sip
@@ -630,5 +631,4 @@
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/symbology/qgsmasksymbollayer.sip
-%Include auto_generated/labeling/qgslabelthinningsettings.sip
 %Include auto_generated/qgsuserprofile.sip

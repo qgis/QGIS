@@ -34,6 +34,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsstatusbar.h"
+#include "qgslabelingresults.h"
 
 #include <QMouseEvent>
 

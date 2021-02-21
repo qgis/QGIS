@@ -333,6 +333,16 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
     calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->labelAllParts();
     calloutContext.originalFeatureCrs = label->getFeaturePart()->feature()->originalFeatureCrs();
     mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
+
+    const QList< QgsCalloutPosition > renderedPositions = calloutContext.positions();
+
+    for ( QgsCalloutPosition position : renderedPositions )
+    {
+      position.layerID = mLayerId;
+      position.featureId = label->getFeaturePart()->featureId();
+      position.providerID = mProviderId;
+      mEngine->results()->mLabelSearchTree->insertCallout( position );
+    }
   }
 }
 

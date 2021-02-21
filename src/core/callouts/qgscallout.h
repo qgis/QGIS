@@ -23,6 +23,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgspropertycollection.h"
 #include "qgsmapunitscale.h"
+#include "qgscalloutposition.h"
 #include <QString>
 #include <QRectF>
 #include <memory>
@@ -236,9 +237,30 @@ class CORE_EXPORT QgsCallout
          */
         QgsCoordinateTransform originalFeatureToMapTransform( const QgsRenderContext &renderContext ) const;
 
+        /**
+         * Adds a rendered callout position.
+         *
+         * The position details such as the callout line origin and destination should be populated by the
+         * callout subclass during rendering operations.
+         *
+         * \note the feature ID, layer ID and provider ID of the QgsCalloutPosition will be automatically populated.
+         *
+         * \since QGIS 3.20
+         */
+        void addCalloutPosition( const QgsCalloutPosition &position ) { return mPositions.push_back( position ); }
+
+        /**
+         * Returns the list of rendered callout positions.
+         *
+         * \since QGIS 3.20
+         */
+        QList< QgsCalloutPosition > positions() const { return mPositions; }
+
       private:
         //! Lazy initialized coordinate transform from original feature CRS to map CRS
         mutable QgsCoordinateTransform mOriginalFeatureToMapTransform;
+
+        QList< QgsCalloutPosition > mPositions;
     };
 
     /**

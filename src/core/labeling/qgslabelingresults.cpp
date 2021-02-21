@@ -59,6 +59,22 @@ QList<QgsLabelPosition> QgsLabelingResults::labelsWithinRect( const QgsRectangle
   return positions;
 }
 
+QList<QgsCalloutPosition> QgsLabelingResults::calloutsWithinRectangle( const QgsRectangle &rectangle ) const
+{
+  QList<QgsCalloutPosition> positions;
+
+  if ( mLabelSearchTree )
+  {
+    const QList<const QgsCalloutPosition *>positionPointers  = mLabelSearchTree->calloutsInRectangle( rectangle );
+    for ( const QgsCalloutPosition *pos : positionPointers )
+    {
+      positions.push_back( QgsCalloutPosition( *pos ) );
+    }
+  }
+
+  return positions;
+}
+
 void QgsLabelingResults::setMapSettings( const QgsMapSettings &settings )
 {
   mLabelSearchTree->setMapSettings( settings );

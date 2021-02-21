@@ -31,6 +31,8 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
 #include "pointset.h"
+#include "qgslabelingresults.h"
+#include "qgscallout.h"
 
 class TestQgsLabelingEngine : public QObject
 {
@@ -71,6 +73,7 @@ class TestQgsLabelingEngine : public QObject
     void testLabelRotationWithReprojection();
     void drawUnplaced();
     void labelingResults();
+    void labelingResultsWithCallouts();
     void pointsetExtend();
     void curvedOverrun();
     void parallelOverrun();
@@ -1984,6 +1987,204 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.at( 0 ).rotation, 60.0 );
   labels = results->labelsAtPosition( QgsPointXY( -2463392, 6708478 ) );
   QCOMPARE( labels.count(), 0 );
+}
+
+void TestQgsLabelingEngine::labelingResultsWithCallouts()
+{
+  // test retrieval of rendered callout properties from labeling results
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "\"id\"" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  QgsPropertyCollection labelProps;
+  labelProps.setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  labelProps.setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.setDataDefinedProperties( labelProps );
+
+  settings.setCallout( new QgsSimpleLineCallout() );
+  settings.callout()->setEnabled( true );
+  QgsPropertyCollection calloutProps;
+  calloutProps.setProperty( QgsCallout::OriginX, QgsProperty::fromField( QStringLiteral( "calloutoriginx" ) ) );
+  calloutProps.setProperty( QgsCallout::OriginY, QgsProperty::fromField( QStringLiteral( "calloutoriginy" ) ) );
+  calloutProps.setProperty( QgsCallout::DestinationX, QgsProperty::fromField( QStringLiteral( "calloutdestx" ) ) );
+  calloutProps.setProperty( QgsCallout::DestinationY, QgsProperty::fromField( QStringLiteral( "calloutdesty" ) ) );
+
+  settings.callout()->setDataDefinedProperties( calloutProps );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer&field=labelx:double&field=labely:double&field=calloutoriginx:double&field=calloutoriginy:double&field=calloutdestx:double&field=calloutdesty:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << -20.173 << 58.624 << -11.160 << 58.001 << -3.814 << 56.046 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -6.250851540391068, 53.335006994584944 ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  vl2->updateExtents();
+
+  settings.setCallout( new QgsManhattanLineCallout() );
+  settings.callout()->setEnabled( true );
+  settings.callout()->setDataDefinedProperties( calloutProps );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // another layer
+  std::unique_ptr< QgsVectorLayer> vl3( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3857&field=id:integer&field=labelx:double&field=labely:double&field=calloutoriginx:double&field=calloutoriginy:double&field=calloutdestx:double&field=calloutdesty:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+
+  f.setAttributes( QgsAttributes() << 2 << -3424024 << 7849709 << -2713442 << 7628322 << -2567040 << 6974872 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -2995532, 7242679 ) ) );
+  QVERIFY( vl3->dataProvider()->addFeature( f ) );
+  vl3->updateExtents();
+
+  vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl3->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  QgsCoordinateReferenceSystem tgtCrs( QStringLiteral( "EPSG:3857" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( -4137976.6, 6557092.6, 1585557.4, 9656515.0 ) );
+  // mapSettings.setRotation( 60 );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() << vl3.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  //engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  //engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  job.renderedImage().save( QStringLiteral( "/tmp/renderer.png" ) );
+
+  std::unique_ptr< QgsLabelingResults > results( job.takeLabelingResults() );
+  QVERIFY( results );
+
+  // retrieve some callouts
+  QList<QgsCalloutPosition> callouts = results->calloutsWithinRectangle( QgsRectangle( -2713542, 7628122, -2713142, 7628822 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -2713442.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7628322.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -2567040.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 6974872.0, 10 );
+
+  callouts = results->calloutsWithinRectangle( QgsRectangle( -2567340, 6974572, -2566740, 6975172 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -2713442.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7628322.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -2567040.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 6974872.0, 10 );
+
+  callouts = results->calloutsWithinRectangle( QgsRectangle( -1242625, 7967227, -1242025, 7967827 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl2->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -1242325.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7967527.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -424572.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 7567578.0, 10 );
+
+  callouts = results->calloutsWithinRectangle( QgsRectangle( -424872, 7567278, -424272, 7567878 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl2->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -1242325.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7967527.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -424572.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 7567578.0, 10 );
+
+  callouts = results->calloutsWithinRectangle( mapSettings.visibleExtent() );
+  QCOMPARE( callouts.count(), 2 );
+  bool callout1IsFirstLayer = callouts.at( 0 ).layerID == vl2->id();
+  QCOMPARE( callouts.at( callout1IsFirstLayer ? 0 : 1 ).featureId, 1 );
+  QCOMPARE( callouts.at( callout1IsFirstLayer ? 0 : 1 ).layerID, vl2->id() );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).origin().x(), -1242325.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).origin().y(), 7967527.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).destination().x(), -424572.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).destination().y(), 7567578.0, 10 );
+  QCOMPARE( callouts.at( callout1IsFirstLayer ? 1 : 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( callout1IsFirstLayer ? 1 : 0 ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).origin().x(), -2713442.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).origin().y(), 7628322.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).destination().x(), -2567040.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).destination().y(), 6974872.0, 10 );
+
+  // with rotation
+  mapSettings.setRotation( 60 );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  results.reset( job2.takeLabelingResults() );
+  QVERIFY( results );
+
+  callouts = results->calloutsWithinRectangle( QgsRectangle( -2713542, 7628122, -2713142, 7628822 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -2713442.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7628322.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -2567040.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 6974872.0, 10 );
+
+  callouts = results->calloutsWithinRectangle( QgsRectangle( -2567340, 6974572, -2566740, 6975172 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -2713442.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7628322.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -2567040.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 6974872.0, 10 );
+
+  callouts = results->calloutsWithinRectangle( QgsRectangle( -1242625, 7967227, -1242025, 7967827 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl2->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -1242325.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7967527.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -424572.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 7567578.0, 10 );
+
+  callouts = results->calloutsWithinRectangle( QgsRectangle( -424872, 7567278, -424272, 7567878 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl2->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -1242325.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7967527.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -424572.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 7567578.0, 10 );
+
+  callouts = results->calloutsWithinRectangle( mapSettings.visibleExtent() );
+  QCOMPARE( callouts.count(), 2 );
+  callout1IsFirstLayer = callouts.at( 0 ).layerID == vl2->id();
+  QCOMPARE( callouts.at( callout1IsFirstLayer ? 0 : 1 ).featureId, 1 );
+  QCOMPARE( callouts.at( callout1IsFirstLayer ? 0 : 1 ).layerID, vl2->id() );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).origin().x(), -1242325.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).origin().y(), 7967527.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).destination().x(), -424572.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).destination().y(), 7567578.0, 10 );
+  QCOMPARE( callouts.at( callout1IsFirstLayer ? 1 : 0 ).featureId, 1 );
+  QCOMPARE( callouts.at( callout1IsFirstLayer ? 1 : 0 ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).origin().x(), -2713442.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).origin().y(), 7628322.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).destination().x(), -2567040.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).destination().y(), 6974872.0, 10 );
 }
 
 void TestQgsLabelingEngine::pointsetExtend()

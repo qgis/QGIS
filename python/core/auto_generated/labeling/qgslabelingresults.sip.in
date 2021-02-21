@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLabelingResults
 {
 %Docstring
@@ -32,6 +33,15 @@ Returns the details of any labels placed at the specifed point (in map coordinat
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 %Docstring
 Returns the details of any labels placed within the specifed rectangle (in map coordinates).
+%End
+
+    QList<QgsCalloutPosition> calloutsWithinRectangle( const QgsRectangle &rectangle ) const;
+%Docstring
+Returns a list of callouts with origins or destinations inside the given ``rectangle``.
+
+The ``rectangle`` is specified in map coordinates.
+
+.. versionadded:: 3.20
 %End
 
     void setMapSettings( const QgsMapSettings &settings );

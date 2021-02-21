@@ -650,7 +650,14 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
       }
     }
 
-    mLineSymbol->renderPolyline( line.asQPolygonF(), nullptr, context );
+    const QPolygonF points = line.asQPolygonF();
+
+    QgsCalloutPosition position;
+    position.setOrigin( context.mapToPixel().toMapCoordinates( points.at( 0 ).x(), points.at( 0 ).y() ).toQPointF() );
+    position.setDestination( context.mapToPixel().toMapCoordinates( points.constLast().x(), points.constLast().y() ).toQPointF() );
+    calloutContext.addCalloutPosition( position );
+
+    mLineSymbol->renderPolyline( points, nullptr, context );
   };
 
   bool toAllParts = mDrawCalloutToAllParts;
@@ -762,7 +769,14 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
       }
     }
 
-    lineSymbol()->renderPolyline( line.asQPolygonF(), nullptr, context );
+    const QPolygonF points = line.asQPolygonF();
+
+    QgsCalloutPosition position;
+    position.setOrigin( context.mapToPixel().toMapCoordinates( points.at( 0 ).x(), points.at( 0 ).y() ).toQPointF() );
+    position.setDestination( context.mapToPixel().toMapCoordinates( points.constLast().x(), points.constLast().y() ).toQPointF() );
+    calloutContext.addCalloutPosition( position );
+
+    lineSymbol()->renderPolyline( points, nullptr, context );
   };
 
   bool toAllParts = drawCalloutToAllParts();
