@@ -46,11 +46,12 @@ Features include
 
 </div><img align="right" src="image5.png" width="200" height="150" alt="example image"><div style="min-height:180;">
 
-**5. Server**
-* Serve up geospatial data as well as rendered, beautiful QGIS maps
-* Industry-standard protocols (WMS, WFS, OGC) allow plug-n-play with any client GIS/visualization software
-* Works with any web server software
-* Fully customizable, Python scripting
+**5. Plug'n'play server**
+* Headless map server, running on Windows, Mac OSX, Linux or in a docker container, that shares the same code base as QGIS
+* Industry-standard protocols (WMS, WFS, WFS3/OGC API for Features and WCS) allow plug-n-play with any software stack
+* Works with any web server (Apache, nginx, etc) or standalone
+* All QGIS beautiful cartography is supported. Best in class support for printing
+* Fully customizable, Python scripting support
 
 </div>
 
