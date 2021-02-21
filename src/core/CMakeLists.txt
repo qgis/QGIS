@@ -1217,6 +1217,7 @@ set(QGIS_CORE_HDRS
   labeling/qgslabelingenginesettings.h
   labeling/qgslabellinesettings.h
   labeling/qgslabelobstaclesettings.h
+  labeling/qgslabelposition.h
   labeling/qgslabelsearchtree.h
   labeling/qgslabelthinningsettings.h
   labeling/qgspallabeling.h
