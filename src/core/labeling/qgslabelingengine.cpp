@@ -28,6 +28,7 @@
 #include "qgssymbol.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerlabelprovider.h"
+#include "qgslabelingresults.h"
 
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )

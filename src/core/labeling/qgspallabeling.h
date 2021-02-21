@@ -1095,48 +1095,6 @@ class CORE_EXPORT QgsLabelCandidate
     double cost;
 };
 
-
-
-
-/**
- * \ingroup core
- * \brief Class that stores computed placement from labeling engine.
- * \since QGIS 2.4
- */
-class CORE_EXPORT QgsLabelingResults
-{
-  public:
-    QgsLabelingResults();
-    ~QgsLabelingResults();
-
-    //! QgsLabelingResults cannot be copied.
-    QgsLabelingResults( const QgsLabelingResults & ) = delete;
-    //! QgsLabelingResults cannot be copied.
-    QgsLabelingResults &operator=( const QgsLabelingResults &rh ) = delete;
-
-    //! Returns infos about labels at a given (map) position
-    QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
-    //! Returns infos about labels within a given (map) rectangle
-    QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
-
-    /**
-     * Sets the map \a settings associated with the labeling run.
-     * \since QGIS 3.4.8
-     */
-    void setMapSettings( const QgsMapSettings &settings );
-
-  private:
-#ifdef SIP_RUN
-    QgsLabelingResults( const QgsLabelingResults & );
-#endif
-
-    std::unique_ptr< QgsLabelSearchTree > mLabelSearchTree;
-
-    friend class QgsPalLabeling;
-    friend class QgsVectorLayerLabelProvider;
-    friend class QgsVectorLayerDiagramProvider;
-};
-
 /**
  * \ingroup core
  * \class QgsPalLabeling

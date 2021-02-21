@@ -675,45 +675,6 @@ Represents a label candidate.
     double cost;
 };
 
-
-
-
-class QgsLabelingResults
-{
-%Docstring
-Class that stores computed placement from labeling engine.
-
-.. versionadded:: 2.4
-%End
-
-%TypeHeaderCode
-#include "qgspallabeling.h"
-%End
-  public:
-    QgsLabelingResults();
-    ~QgsLabelingResults();
-
-
-    QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
-%Docstring
-Returns infos about labels at a given (map) position
-%End
-    QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
-%Docstring
-Returns infos about labels within a given (map) rectangle
-%End
-
-    void setMapSettings( const QgsMapSettings &settings );
-%Docstring
-Sets the map ``settings`` associated with the labeling run.
-
-.. versionadded:: 3.4.8
-%End
-
-  private:
-    QgsLabelingResults( const QgsLabelingResults & );
-};
-
 class QgsPalLabeling
 {
 %Docstring

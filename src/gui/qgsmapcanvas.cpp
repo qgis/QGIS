@@ -86,6 +86,7 @@ email                : sherman at mrcc.com
 #include "qgsannotationlayer.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgscoordinatereferencesystemregistry.h"
+#include "qgslabelingresults.h"
 
 /**
  * \ingroup gui
@@ -280,7 +281,6 @@ QgsMapCanvas::~QgsMapCanvas()
   mScene->deleteLater();  // crashes in python tests on windows
 
   delete mCache;
-  delete mLabelingResults;
 }
 
 void QgsMapCanvas::setMagnificationFactor( double factor, const QgsPointXY *center )
@@ -469,7 +469,7 @@ void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
 
 const QgsLabelingResults *QgsMapCanvas::labelingResults() const
 {
-  return mLabelingResults;
+  return mLabelingResults.get();
 }
 
 void QgsMapCanvas::setCachingEnabled( bool enabled )
@@ -688,8 +688,7 @@ void QgsMapCanvas::rendererJobFinished()
     // connected to signal work with correct results
     if ( !mJob->usedCachedLabels() )
     {
-      delete mLabelingResults;
-      mLabelingResults = mJob->takeLabelingResults();
+      mLabelingResults.reset( mJob->takeLabelingResults() );
     }
 
     QImage img = mJob->renderedImage();

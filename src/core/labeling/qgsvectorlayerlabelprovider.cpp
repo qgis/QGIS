@@ -30,6 +30,7 @@
 #include "qgsmaskidprovider.h"
 #include "qgstextcharacterformat.h"
 #include "qgstextfragment.h"
+#include "qgslabelingresults.h"
 
 #include "feature.h"
 #include "labelposition.h"

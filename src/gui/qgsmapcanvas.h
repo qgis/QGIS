@@ -1244,7 +1244,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mJobCanceled = false;
 
     //! Labeling results from the recently rendered map
-    QgsLabelingResults *mLabelingResults = nullptr;
+    std::unique_ptr< QgsLabelingResults > mLabelingResults;
 
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering = false;

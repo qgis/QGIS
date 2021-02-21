@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgspallabeling.h"
+#include "qgslabelingresults.h"
 
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
