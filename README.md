@@ -88,6 +88,8 @@ A range of
 
 The [building guide](INSTALL.md) can be used to get started with building QGIS from source.
 
+For installation of QGIS Server, see its [getting started documentation](https://docs.qgis.org/testing/en/docs/server_manual/getting_started.html).
+
 Please **help us by submitting bug reports** using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
 
 ## Support
