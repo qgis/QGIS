@@ -23,7 +23,7 @@
 #include "qgis_sip.h"
 #include <QList>
 #include <QVector>
-#include "qgspallabeling.h"
+#include "qgslabelposition.h"
 #include "qgsgenericspatialindex.h"
 #include "qgsmapsettings.h"
 

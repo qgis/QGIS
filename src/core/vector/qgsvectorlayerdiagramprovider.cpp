@@ -21,6 +21,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
 #include "qgsgeos.h"
+#include "qgslabelingresults.h"
 
 #include "feature.h"
 #include "labelposition.h"

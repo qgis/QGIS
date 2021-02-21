@@ -26,6 +26,7 @@
 #include "qgslabeling.h"
 
 class QgsLabelingEngine;
+class QgsLabelingResults;
 
 namespace pal
 {

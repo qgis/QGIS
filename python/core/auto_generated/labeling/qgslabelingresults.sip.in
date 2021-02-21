@@ -1,0 +1,54 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelingresults.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLabelingResults
+{
+%Docstring
+Class that stores computed placement from labeling engine.
+
+.. versionadded:: 2.4
+%End
+
+%TypeHeaderCode
+#include "qgslabelingresults.h"
+%End
+  public:
+    QgsLabelingResults();
+    ~QgsLabelingResults();
+
+
+    QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
+%Docstring
+Returns the details of any labels placed at the specifed point (in map coordinates).
+%End
+
+    QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
+%Docstring
+Returns the details of any labels placed within the specifed rectangle (in map coordinates).
+%End
+
+    void setMapSettings( const QgsMapSettings &settings );
+%Docstring
+Sets the map ``settings`` associated with the labeling run.
+
+.. versionadded:: 3.4.8
+%End
+
+  private:
+    QgsLabelingResults( const QgsLabelingResults & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelingresults.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
