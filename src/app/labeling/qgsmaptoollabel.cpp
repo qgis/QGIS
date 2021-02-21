@@ -33,6 +33,7 @@
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsstatusbar.h"
 
 #include <QMouseEvent>
 
@@ -45,8 +46,15 @@ QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDoc
 QgsMapToolLabel::~QgsMapToolLabel()
 {
   delete mLabelRubberBand;
+  delete mHoverRubberBand;
   delete mFeatureRubberBand;
   delete mFixPointRubberBand;
+}
+
+void QgsMapToolLabel::deactivate()
+{
+  clearHoveredLabel();
+  QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
@@ -875,4 +883,61 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     emit vlayer->styleChanged();
 
   return newAuxiliaryLayer;
+}
+
+void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
+{
+  if ( !mHoverRubberBand )
+  {
+    mHoverRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
+    mHoverRubberBand->setWidth( 2 );
+    mHoverRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
+    mHoverRubberBand->setColor( QColor( 200, 0, 120, 255 ) );
+  }
+  QgsLabelPosition labelPos;
+  if ( !labelAtPosition( e, labelPos ) )
+  {
+    mHoverRubberBand->hide();
+    mCurrentHoverLabel = LabelDetails();
+    return;
+  }
+
+  LabelDetails newHoverLabel( labelPos );
+
+  if ( mCurrentHoverLabel.valid &&
+       newHoverLabel.layer == mCurrentHoverLabel.layer &&
+       newHoverLabel.pos.featureId == mCurrentHoverLabel.pos.featureId &&
+       newHoverLabel.pos.providerID == mCurrentHoverLabel.pos.providerID
+     )
+    return;
+
+  if ( !canModifyLabel( newHoverLabel ) )
+  {
+    mHoverRubberBand->hide();
+    mCurrentHoverLabel = LabelDetails();
+    return;
+  }
+
+  mCurrentHoverLabel = newHoverLabel;
+
+  mHoverRubberBand->show();
+  mHoverRubberBand->reset( QgsWkbTypes::LineGeometry );
+  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 0 ) );
+  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 1 ) );
+  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 2 ) );
+  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 3 ) );
+  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 0 ) );
+  QgisApp::instance()->statusBarIface()->showMessage( tr( "Label “%1” in %2" ).arg( labelPos.labelText, mCurrentHoverLabel.layer->name() ), 2000 );
+}
+
+void QgsMapToolLabel::clearHoveredLabel()
+{
+  if ( mHoverRubberBand )
+    mHoverRubberBand->hide();
+  mCurrentHoverLabel = LabelDetails();
+}
+
+bool QgsMapToolLabel::canModifyLabel( const QgsMapToolLabel::LabelDetails & )
+{
+  return true;
 }

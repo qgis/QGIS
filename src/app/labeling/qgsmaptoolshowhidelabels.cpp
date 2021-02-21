@@ -48,6 +48,8 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e )
 
+  clearHoveredLabel();
+
   QgsMapLayer *layer = mCanvas->currentLayer();
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
@@ -74,8 +76,13 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolShowHideLabels::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( e->buttons() != Qt::LeftButton )
+  {
+    if ( !mDragging )
+      updateHoveredLabel( e );
     return;
+  }
 
+  clearHoveredLabel();
   if ( !mDragging )
   {
     mDragging = true;

@@ -24,6 +24,7 @@
 #include "qgsmessagebar.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 
+
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
 {
@@ -50,6 +51,10 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     mFixPointRubberBand->updatePosition();
     mFixPointRubberBand->update();
   }
+  else
+  {
+    updateHoveredLabel( e );
+  }
 }
 
 void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
@@ -68,6 +73,8 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       mCurrentLabel = LabelDetails();
       return;
     }
+
+    clearHoveredLabel();
 
     mCurrentLabel = LabelDetails( labelPos );
 
