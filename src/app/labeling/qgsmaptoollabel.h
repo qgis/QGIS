@@ -38,6 +38,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolLabel() override;
 
+    void deactivate() override;
+
     /**
      * Returns TRUE if label move can be applied to a layer
      * \param xCol out: index of the attribute for data defined x coordinate
@@ -84,6 +86,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
 
   protected:
+    QgsRubberBand *mHoverRubberBand = nullptr;
     QgsRubberBand *mLabelRubberBand = nullptr;
     QgsRubberBand *mFeatureRubberBand = nullptr;
     //! Shows label fixpoint (left/bottom by default)
@@ -102,6 +105,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     //! Currently dragged label position
     LabelDetails mCurrentLabel;
 
+    //! Currently hovered label position
+    LabelDetails mCurrentHoverLabel;
 
     /**
      * Returns label position for mouse click location
@@ -202,6 +207,10 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes, bool overwriteExpression = true ) const;
     bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
     bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
+
+    void updateHoveredLabel( QgsMapMouseEvent *e );
+    void clearHoveredLabel();
+    virtual bool canModifyLabel( const LabelDetails &label );
 
     QList<QgsPalLayerSettings::Property> mPalProperties;
     QList<QgsDiagramLayerSettings::Property> mDiagramProperties;

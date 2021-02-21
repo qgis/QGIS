@@ -124,6 +124,11 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
+void QgsMapToolChangeLabelProperties::cadCanvasMoveEvent( QgsMapMouseEvent *e )
+{
+  updateHoveredLabel( e );
+}
+
 void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &changes )
 {
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
