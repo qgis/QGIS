@@ -74,7 +74,7 @@ class pct2rgb(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '8-to-24-bits.png'))
 
     def commandName(self):
-        return 'pct2rgb'
+        return 'pct2rgb.bat' if isWindows() else 'pct2rgb.py'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -96,11 +96,4 @@ class pct2rgb(GdalAlgorithm):
         if self.parameterAsBoolean(parameters, self.RGBA, context):
             arguments.append('-rgba')
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

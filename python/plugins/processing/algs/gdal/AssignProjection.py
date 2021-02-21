@@ -71,7 +71,7 @@ class AssignProjection(GdalAlgorithm):
         return 'rasterprojections'
 
     def commandName(self):
-        return 'gdal_edit'
+        return 'gdal_edit.bat' if isWindows() else 'gdal_edit.py'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -89,16 +89,9 @@ class AssignProjection(GdalAlgorithm):
             fileName
         ]
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
         self.setOutputValue(self.OUTPUT, fileName)
 
-        return commands
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def postProcessAlgorithm(self, context, feedback):
         # get output value

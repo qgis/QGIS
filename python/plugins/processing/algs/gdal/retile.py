@@ -161,7 +161,7 @@ class retile(GdalAlgorithm):
         return 'rastermiscellaneous'
 
     def commandName(self):
-        return "gdal_retile"
+        return "gdal_retile.bat" if isWindows() else "gdal_retile.py"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = [
@@ -216,11 +216,4 @@ class retile(GdalAlgorithm):
         layers = [l.source() for l in self.parameterAsLayerList(parameters, self.INPUT, context)]
         arguments.extend(layers)
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

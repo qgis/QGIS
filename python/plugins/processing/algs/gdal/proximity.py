@@ -139,7 +139,7 @@ class proximity(GdalAlgorithm):
         return 'rasteranalysis'
 
     def commandName(self):
-        return 'gdal_proximity'
+        return 'gdal_proximity.bat' if isWindows() else 'gdal_proximity.py'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -197,11 +197,4 @@ class proximity(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

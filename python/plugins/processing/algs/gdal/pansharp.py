@@ -104,7 +104,7 @@ class pansharp(GdalAlgorithm):
         return 'rastermiscellaneous'
 
     def commandName(self):
-        return 'gdal_pansharpen'
+        return 'gdal_pansharpen.bat' if isWindows() else 'gdal_pansharpen.py'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         spectral = self.parameterAsRasterLayer(parameters, self.SPECTRAL, context)
@@ -136,11 +136,4 @@ class pansharp(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        if isWindows():
-            commands = ['python3', '-m', self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
