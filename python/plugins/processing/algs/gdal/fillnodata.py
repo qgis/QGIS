@@ -109,7 +109,7 @@ class fillnodata(GdalAlgorithm):
         return 'rasteranalysis'
 
     def commandName(self):
-        return 'gdal_fillnodata'
+        return 'gdal_fillnodata.bat' if isWindows() else 'gdal_fillnodata.py'
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
@@ -155,11 +155,4 @@ class fillnodata(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(out)
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
