@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgssettingsentry.h                                          *
+ * src/core/settings/qgssettingsentry.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -15,7 +15,7 @@ class QgsSettingsEntry
 %Docstring
 
 
-.. versionadded:: 3.17
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -89,7 +89,7 @@ class QgsSettingsEntryString : QgsSettingsEntry
 %Docstring
 A string settings entry.
 
-.. versionadded:: 3.17
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -129,7 +129,7 @@ class QgsSettingsEntryStringList : QgsSettingsEntry
 %Docstring
 A string list settings entry.
 
-.. versionadded:: 3.17
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -157,7 +157,7 @@ class QgsSettingsEntryBool : QgsSettingsEntry
 %Docstring
 A boolean settings entry.
 
-.. versionadded:: 3.17
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -185,7 +185,7 @@ class QgsSettingsEntryInteger : QgsSettingsEntry
 %Docstring
 An integer settings entry.
 
-.. versionadded:: 3.17
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -225,7 +225,7 @@ class QgsSettingsEntryDouble : QgsSettingsEntry
 %Docstring
 A double settings entry.
 
-.. versionadded:: 3.17
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -272,7 +272,7 @@ Returns how much decimals should be shown in the Gui.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgssettingsentry.h                                          *
+ * src/core/settings/qgssettingsentry.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

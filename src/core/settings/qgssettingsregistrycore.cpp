@@ -15,19 +15,10 @@
 
 #include "qgssettingsregistrycore.h"
 
-
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
-  : QgsSettingsRegistry( QgsSettings::Core )
-  , mSettingsEntries()
 {
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 {
 }
-
-QgsSettingsRegistryCore::SettingsEntries QgsSettingsRegistryCore::settingsEntries() const
-{
-  return mSettingsEntries;
-}
-

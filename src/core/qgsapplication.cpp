@@ -1106,7 +1106,7 @@ QStringList QgsApplication::layoutTemplatePaths()
 {
   //local directories to search when looking for an template with a given basename
   //defined by user in options dialog
-  return settingsRegistryCore()->settingsEntries().layout.searchPathForTemplates.value<QStringList>();
+  return settingsRegistryCore()->layout.searchPathForTemplates.value<QStringList>();
 }
 
 QMap<QString, QString> QgsApplication::systemEnvVars()

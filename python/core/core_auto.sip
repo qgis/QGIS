@@ -174,11 +174,6 @@
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
 %Include auto_generated/qgssettings.sip
-%Include auto_generated/qgssettingsentry.sip
-%Include auto_generated/qgssettingsgroup.sip
-%Include auto_generated/qgssettingsmap.sip
-%Include auto_generated/qgssettingsregistry.sip
-%Include auto_generated/qgssettingsregistrycore.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgssnappingutils.sip
@@ -602,6 +597,11 @@
 %Include auto_generated/textrenderer/qgstextrenderer.sip
 %Include auto_generated/textrenderer/qgstextrendererutils.sip
 %Include auto_generated/textrenderer/qgstextshadowsettings.sip
+%Include auto_generated/settings/qgssettingsentry.sip
+%Include auto_generated/settings/qgssettingsgroup.sip
+%Include auto_generated/settings/qgssettingsgroupmap.sip
+%Include auto_generated/settings/qgssettingsregistry.sip
+%Include auto_generated/settings/qgssettingsregistrycore.sip
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip

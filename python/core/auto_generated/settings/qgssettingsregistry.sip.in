@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgssettingsregistry.h                                       *
+ * src/core/settings/qgssettingsregistry.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -15,7 +15,7 @@ class QgsSettingsRegistry : QObject
 %Docstring
 
 
-.. versionadded:: 3.17
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -83,7 +83,7 @@ Constructor for QgsSettingsRegistry.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgssettingsregistry.h                                       *
+ * src/core/settings/qgssettingsregistry.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
