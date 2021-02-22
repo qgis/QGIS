@@ -277,13 +277,15 @@ if (HAVE_GEOREFERENCER)
     georeferencer/qgsgeorefvalidators.cpp
     georeferencer/qgsmapcoordsdialog.cpp
     georeferencer/qgsresidualplotitem.cpp
-    georeferencer/qgstransformsettingsdialog.cpp
+    georeferencer/qgsrastertransformsettingsdialog.cpp
+    georeferencer/qgsvectortransformsettingsdialog.cpp
     georeferencer/qgsgcplist.cpp
     georeferencer/qgsgcplistmodel.cpp
     georeferencer/qgsimagewarper.cpp
     georeferencer/qgsgeoreftransform.cpp
     georeferencer/qgsgcplistwidget.cpp
     georeferencer/qgsrasterchangecoords.cpp
+    georeferencer/qgsvectorwarper.cpp
   )
 endif()
 

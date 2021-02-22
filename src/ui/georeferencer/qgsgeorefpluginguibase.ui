@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>872</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -91,6 +91,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionOpenRaster"/>
+   <addaction name="mActionOpenVector"/>
    <addaction name="separator"/>
    <addaction name="mActionStartGeoref"/>
    <addaction name="mActionGDALScript"/>
@@ -154,7 +155,7 @@
     <string>GCP table</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>8</number>
+   <number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
@@ -340,9 +341,9 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="mActionRasterProperties">
+  <action name="mActionLayerProperties">
    <property name="text">
-    <string>Raster Properties…</string>
+    <string>Layer Properties…</string>
    </property>
   </action>
   <action name="mActionMoveGCPPoint">
@@ -380,6 +381,24 @@
    </property>
    <property name="text">
     <string>Reset Georeferencer</string>
+   </property>
+  </action>
+  <action name="mActionOpenVector">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddOgrLayer.svg</normaloff>:/images/themes/default/mActionAddOgrLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Vector…</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Vector…</string>
+   </property>
+   <property name="statusTip">
+    <string>Open raster</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
  </widget>

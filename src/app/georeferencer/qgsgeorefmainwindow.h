@@ -38,6 +38,7 @@ class QgsMapCanvas;
 class QgsMapCoordsDialog;
 class QgsPointXY;
 class QgsRasterLayer;
+class QgsVectorLayer;
 class QgsRectangle;
 class QgsMessageBar;
 class QgsGeorefToolAddPoint;
@@ -70,6 +71,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     // file
     void reset();
     void openRaster( const QString &fileName = QString() );
+    void openVector( const QString &fileName = QString() );
     void doGeoreference();
     void generateGDALScript();
     bool getTransformSettings();
@@ -104,7 +106,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void saveGCPsDialog();
 
     // settings
-    void showRasterPropertiesDialog();
+    void showLayerPropertiesDialog();
     void showGeorefConfigDialog();
 
     // comfort
@@ -133,6 +135,12 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
       GCPCANCEL
     };
 
+    enum DataType
+    {
+      RASTER,
+      VECTOR
+    };
+
     // gui
     void createActions();
     void createActionGroups();
@@ -146,6 +154,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
     // Mapcanvas Plugin
     void addRaster( const QString &file );
+    void addVector( const QString &file );
 
     // settings
     void readSettings();
@@ -175,13 +184,20 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QString generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order,
                                      double targetResX, double targetResY );
 
+    /**
+     * Generate command-line for gdalwarp based on current GCPs and given parameters.
+     * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
+     * a value of -1 indicates that thin plate spline interpolation should be used for warping.
+    */
+    QString generateGDALogr2ogrCommand( int order );
+
     // utils
     bool checkReadyGeoref();
     QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t,
         bool rasterToWorld = true, uint numSamples = 4 );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
-    int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
-    QString guessWorldFileName( const QString &rasterFileName );
+    int polynomialOrder( QgsGeorefTransform::TransformParametrisation transform );
+    QString guessWorldFileName( const QString &fileName );
     bool checkFileExisting( const QString &fileName, const QString &title, const QString &question );
     bool equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 );
     void logTransformOptions();
@@ -217,10 +233,10 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsDoubleSpinBox *mRotationEdit = nullptr;
     unsigned int mMousePrecisionDecimalPlaces = 0;
 
-    QString mRasterFileName;
-    QString mModifiedRasterFileName;
+    QString mFileName;
+    QString mModifiedFileName;
     QString mWorldFileName;
-    QString mTranslatedRasterFileName;
+    QString mTranslatedFileName;
     QString mGCPpointsFileName;
     QgsCoordinateReferenceSystem mProjection;
     QgsCoordinateReferenceSystem mLastGCPProjection;
@@ -237,7 +253,9 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsGCPList mPoints;
     QgsGCPList mInitialPoints;
     QgsMapCanvas *mCanvas = nullptr;
-    std::unique_ptr< QgsRasterLayer > mLayer;
+    QgsRasterLayer *mRLayer = nullptr;
+    QgsVectorLayer *mVLayer = nullptr;
+    bool mAgainAddLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
@@ -258,6 +276,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     bool mExtentsChangedRecursionGuard;
     bool mGCPsDirty;
     bool mLoadInQgis = false;
+
+    DataType mDataType;
 
 
     QgsDockWidget *mDock = nullptr;

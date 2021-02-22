@@ -1,5 +1,5 @@
 /***************************************************************************
-     qgstransformsettingsdialog.h
+     QgsVectorTransformSettingsDialog.h
      --------------------------------------
     Date                 : 14-Feb-2010
     Copyright            : (C) 2010 by Jack R, Maxim Dubinin (GIS-Lab)
@@ -13,26 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTRANSFORMSETTINGSDIALOG_H
-#define QGSTRANSFORMSETTINGSDIALOG_H
+#ifndef QGSVECTORTRANSFORMSETTINGSDIALOG_H
+#define QGSVECTORTRANSFORMSETTINGSDIALOG_H
 
 #include <QDialog>
 
 #include "qgsgeorefmainwindow.h"
 
-#include "ui_qgstransformsettingsdialogbase.h"
+#include "ui_qgsvectortransformsettingsdialogbase.h"
 
-class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSettingsDialog
+class QgsVectorTransformSettingsDialog : public QDialog, private Ui::QgsVectorTransformSettingsDialog
 {
     Q_OBJECT
 
   public:
-    QgsTransformSettingsDialog( const QString &raster, const QString &output,
-                                int countGCPpoints, QWidget *parent = nullptr );
+    QgsVectorTransformSettingsDialog( const QString &input, const QString &output,
+                                      int countGCPpoints, const QString &outputFilters,
+                                      QWidget *parent = nullptr );
 
     void getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
-                               QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                               QString &raster, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
+                               QString &output, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile,
+                               QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
                                double &resX, double &resY );
     static void resetSettings();
 
@@ -48,13 +49,12 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
 
   private:
     bool checkGCPpoints( int count, int &minGCPpoints );
-    QString generateModifiedRasterFileName( const QString &raster );
+    QString generateModifiedOutputFileName( const QString &output );
 
-    QString mSourceRasterFile;
+    QString mSourceFile;
 
     int mCountGCPpoints;
 
-    QStringList mListCompression;
 };
 
-#endif // QGSTRANSFORMSETTINGSDIALOG_H
+#endif // QGSVECTORTRANSFORMSETTINGSDIALOG_H

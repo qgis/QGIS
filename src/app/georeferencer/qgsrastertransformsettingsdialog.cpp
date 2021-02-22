@@ -1,5 +1,5 @@
 /***************************************************************************
-     qgstransformsettingsdialog.cpp
+     qgsrastertransformsettingsdialog.cpp
      --------------------------------------
     Date                 : 14-Feb-2010
     Copyright            : (C) 2010 by Jack R, Maxim Dubinin (GIS-Lab)
@@ -22,12 +22,12 @@
 #include "qgsapplication.h"
 #include "qgsfilewidget.h"
 #include "qgsrasterlayer.h"
-#include "qgstransformsettingsdialog.h"
+#include "qgsrastertransformsettingsdialog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 
-QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
+QgsRasterTransformSettingsDialog::QgsRasterTransformSettingsDialog( const QString &raster, const QString &output,
     int countGCPpoints, QWidget *parent )
   : QDialog( parent )
   , mSourceRasterFile( raster )
@@ -79,8 +79,8 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
     settings.setValue( QStringLiteral( "Plugin-GeoReferencer/lastPDFReportDir" ), tmplFileInfo.absolutePath() );
   } );
 
-  connect( cmbTransformType, &QComboBox::currentTextChanged, this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
-  connect( mWorldFileCheckBox, &QCheckBox::stateChanged, this, &QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged );
+  connect( cmbTransformType, &QComboBox::currentTextChanged, this, &QgsRasterTransformSettingsDialog::cmbTransformType_currentIndexChanged );
+  connect( mWorldFileCheckBox, &QCheckBox::stateChanged, this, &QgsRasterTransformSettingsDialog::mWorldFileCheckBox_stateChanged );
 
   cmbTransformType->addItem( tr( "Linear" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::Linear ) );
   cmbTransformType->addItem( tr( "Helmert" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::Helmert ) );
@@ -125,10 +125,10 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   cbxLoadInQgisWhenDone->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/loadinqgis" ), false ).toBool() );
   saveGcpCheckBox->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/save_gcp_points" ), false ).toBool() );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsTransformSettingsDialog::showHelp );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterTransformSettingsDialog::showHelp );
 }
 
-void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
+void QgsRasterTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
     QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
@@ -167,7 +167,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
   }
 }
 
-void QgsTransformSettingsDialog::resetSettings()
+void QgsRasterTransformSettingsDialog::resetSettings()
 {
   QgsSettings s;
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lasttransformation" ), -1 );
@@ -184,7 +184,7 @@ void QgsTransformSettingsDialog::resetSettings()
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() );
 }
 
-void QgsTransformSettingsDialog::changeEvent( QEvent *e )
+void QgsRasterTransformSettingsDialog::changeEvent( QEvent *e )
 {
   QDialog::changeEvent( e );
   switch ( e->type() )
@@ -197,7 +197,7 @@ void QgsTransformSettingsDialog::changeEvent( QEvent *e )
   }
 }
 
-void QgsTransformSettingsDialog::accept()
+void QgsRasterTransformSettingsDialog::accept()
 {
   if ( !mOutputRaster->filePath().isEmpty() )
   {
@@ -237,7 +237,7 @@ void QgsTransformSettingsDialog::accept()
   QDialog::accept();
 }
 
-void QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QString &text )
+void QgsRasterTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "Linear" ) )
   {
@@ -251,7 +251,7 @@ void QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QSt
   }
 }
 
-void QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged( int state )
+void QgsRasterTransformSettingsDialog::mWorldFileCheckBox_stateChanged( int state )
 {
   bool enableOutputRaster = true;
   if ( state == Qt::Checked )
@@ -262,7 +262,7 @@ void QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged( int state )
   mOutputRaster->setEnabled( enableOutputRaster );
 }
 
-bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
+bool QgsRasterTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
 {
   QgsGeorefTransform georefTransform;
   georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformMethod )count );
@@ -270,7 +270,7 @@ bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
   return ( mCountGCPpoints >= minGCPpoints );
 }
 
-QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QString &raster )
+QString QgsRasterTransformSettingsDialog::generateModifiedRasterFileName( const QString &raster )
 {
   if ( raster.isEmpty() )
     return QString();
@@ -288,7 +288,7 @@ QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QStrin
 
 // Note this code is duplicated from qgisapp.cpp because
 // I didn't want to make plugins on qgsapplication [TS]
-QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &name )
+QIcon QgsRasterTransformSettingsDialog::getThemeIcon( const QString &name )
 {
   if ( QFile::exists( QgsApplication::activeThemePath() + name ) )
   {
@@ -313,7 +313,7 @@ QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &name )
   }
 }
 
-void QgsTransformSettingsDialog::showHelp()
+void QgsRasterTransformSettingsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_raster/georeferencer.html#defining-the-transformation-settings" ) );
 }
