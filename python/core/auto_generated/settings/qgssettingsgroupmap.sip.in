@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsgroupmap.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+template<T>
+class QgsSettingsGroupMap : QgsSettingsGroup
+{
+%Docstring
+
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgssettingsgroupmap.h"
+%End
+  public:
+
+    QgsSettingsGroupMap( QString key = QString(),
+                         QgsSettingsGroup *parentGroup = 0,
+                         QString description = QString() );
+%Docstring
+Constructor for QgsSettingsGroupMap.
+%End
+
+    QgsSettingsGroupMap( QString key = QString(),
+                         QgsSettingsGroup *parentGroup = 0,
+                         QString description = QString() );
+%Docstring
+Constructor for QgsSettingsGroupMap.
+%End
+
+    virtual ~QgsSettingsGroupMap();
+
+    T &operator[]( const QString &key );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsgroupmap.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

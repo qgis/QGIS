@@ -40,8 +40,18 @@ class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
      * Constructor for QgsSettingsGroupMap.
      */
     QgsSettingsGroupMap( QString key = QString(),
-                    QgsSettingsGroup *parentGroup = nullptr,
-                    QString description = QString() )
+                         QgsSettingsGroup *parentGroup = nullptr,
+                         QString description = QString() )
+      : QgsSettingsGroup( key, parentGroup, description )
+    {
+    }
+
+    /**
+     * Constructor for QgsSettingsGroupMap.
+     */
+    QgsSettingsGroupMap( QString key = QString(),
+                         QgsSettingsGroup *parentGroup = nullptr,
+                         QString description = QString() )
       : QgsSettingsGroup( key, parentGroup, description )
     {
     }
