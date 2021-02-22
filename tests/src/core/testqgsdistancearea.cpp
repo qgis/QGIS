@@ -321,12 +321,12 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   units = da.areaUnits();
   QgsDebugMsg( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
   // should always be in Meters Squared
-  QGSCOMPARENEAR( area, 36918093794.1, 0.1 );
+  QGSCOMPARENEAR( area, 36922805935.961571, 0.1 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareMeters );
 
   // test converting the resultant area
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareMiles );
-  QGSCOMPARENEAR( area, 14254.155703, 0.001 );
+  QGSCOMPARENEAR( area, 14255.975071, 0.001 );
 
   // now try with a source CRS which is in feet
   ring.clear();
@@ -363,13 +363,13 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   area = da.measureArea( polygon );
   units = da.areaUnits();
   QgsDebugMsg( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
-  QGSCOMPARENEAR( area, 185818.590966, 1.0 );
+  QGSCOMPARENEAR( area, 185825.206903, 1.0 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareMeters );
 
   // test converting the resultant area
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareYards );
   QgsDebugMsg( QStringLiteral( "measured %1 in sq yrds" ).arg( area ) );
-  QGSCOMPARENEAR( area, 222237.185213, 1.0 );
+  QGSCOMPARENEAR( area, 222245.097808, 1.0 );
 }
 
 void TestQgsDistanceArea::emptyPolygon()
@@ -389,8 +389,7 @@ void TestQgsDistanceArea::regression14675()
   calc.setEllipsoid( QStringLiteral( "GRS80" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ), QgsProject::instance()->transformContext() );
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) ).release() );
-  //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
-  QGSCOMPARENEAR( calc.measureArea( geom ), 0.833010, 0.03 );
+  QGSCOMPARENEAR( calc.measureArea( geom ), 0.861747, 0.001 );
 }
 
 void TestQgsDistanceArea::regression16820()
@@ -399,8 +398,7 @@ void TestQgsDistanceArea::regression16820()
   calc.setEllipsoid( QStringLiteral( "WGS84" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32634" ) ), QgsProject::instance()->transformContext() );
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))" ) ).release() );
-  //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
-  QGSCOMPARENEAR( calc.measureArea( geom ), 43.3280029296875, 0.2 );
+  QGSCOMPARENEAR( calc.measureArea( geom ), 43.201092, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsDistanceArea )
