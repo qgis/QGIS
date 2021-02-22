@@ -25,7 +25,7 @@
 
 #include <QWidget>
 #include <QThread>
-
+#include <QtConcurrent>
 
 ///@cond private
 
@@ -157,6 +157,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     bool mWasCanceled = false;
     QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
     bool mFirstRowFetched = false;
+    QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult> mQueryResultWatcher;
 
     /**
      * Updates buttons status
@@ -165,6 +166,10 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
 
     void updateSqlLayerColumns();
 
+    /**
+     * Starts the model population after initial query run
+     */
+    void startFetching();
 
     friend class TestQgsQueryResultWidget;
 

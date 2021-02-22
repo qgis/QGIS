@@ -22,6 +22,7 @@
 #include <QStandardItem>
 
 
+
 QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabaseProviderConnection *connection )
   : QWidget::QWidget( parent )
 {
@@ -77,6 +78,14 @@ void QgsQueryResultWidget::executeQuery()
   mQueryResultsTableView->show();
   mSqlErrorText->hide();
   mFirstRowFetched = false;
+
+  // Wait for other threads
+  if ( mFeedback )
+  {
+    mFeedback->cancel();
+  }
+  mQueryResultWatcher.waitForFinished();
+
   if ( mConnection )
   {
     const auto sql = mSqlEditor->text( );
@@ -84,42 +93,26 @@ void QgsQueryResultWidget::executeQuery()
     {
       mWasCanceled = false;
       mFeedback = qgis::make_unique<QgsFeedback>();
-      connect( mStopButton, &QPushButton::pressed, mFeedback.get(), &QgsFeedback::cancel );
-
-      mModel = qgis::make_unique<QgsQueryResultModel>( mConnection->execSql( sql, mFeedback.get() ) );
-      connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
-      {
-        mModel->cancel();
-        mWasCanceled = true;
-      } );
-
+      mStopButton->setEnabled( true );
       mStatusLabel->show();
       mStatusLabel->setText( tr( "Running⋯" ) );
 
-      connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [ = ]( const QModelIndex &, int, int )
+      connect( mStopButton, &QPushButton::pressed, mFeedback.get(), [ = ]
       {
-        if ( ! mFirstRowFetched )
-        {
-          mFirstRowFetched = true;
-          updateButtons();
-          updateSqlLayerColumns( );
-        }
-        mStatusLabel->setText( tr( "Fetched rows: %1 %2" )
-                               .arg( mModel->rowCount( mModel->index( -1, -1 ) ) )
-                               .arg( mWasCanceled ? QStringLiteral( "(stopped)" ) : QString() ) );
+        mStatusLabel->setText( tr( "Stopped" ) );
+        mFeedback->cancel();
+        mWasCanceled = true;
       } );
-      mQueryResultsTableView->setModel( mModel.get() );
-      mQueryResultsTableView->show();
 
-      mStopButton->setEnabled( true );
-      connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [ = ]
+      // Create model when result is ready
+      connect( &mQueryResultWatcher, &QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult>::finished, this, &QgsQueryResultWidget::startFetching, Qt::ConnectionType::UniqueConnection );
+
+      QFuture<QgsAbstractDatabaseProviderConnection::QueryResult> future = QtConcurrent::run( [ = ]() -> QgsAbstractDatabaseProviderConnection::QueryResult
       {
-        mStopButton->setEnabled( false );
-        if ( ! mWasCanceled )
-        {
-          mStatusLabel->setText( "Query executed successfully." );
-        }
+        return mConnection->execSql( sql, mFeedback.get() );
       } );
+      mQueryResultWatcher.setFuture( future );
+
     }
     catch ( QgsProviderConnectionException &ex )
     {
@@ -141,6 +134,9 @@ void QgsQueryResultWidget::updateButtons()
 
 void QgsQueryResultWidget::updateSqlLayerColumns( )
 {
+  // Precondition
+  Q_ASSERT( mModel );
+
   mFilterToolButton->setEnabled( true );
   mPkColumnsComboBox->clear();
   mGeometryColumnComboBox->clear();
@@ -160,6 +156,50 @@ void QgsQueryResultWidget::updateSqlLayerColumns( )
   {
     mGeometryColumnComboBox->setCurrentText( mSqlVectorLayerOptions.geometryColumn );
   }
+}
+
+void QgsQueryResultWidget::startFetching()
+{
+  if ( ! mWasCanceled )
+  {
+    QgsAbstractDatabaseProviderConnection::QueryResult result { mQueryResultWatcher.result() };
+    mModel = qgis::make_unique<QgsQueryResultModel>( result );
+    connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
+    {
+      mModel->cancel();
+      mWasCanceled = true;
+    } );
+
+    connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [ = ]( const QModelIndex &, int, int )
+    {
+      if ( ! mFirstRowFetched )
+      {
+        emit columnNamesReady();
+        mFirstRowFetched = true;
+        updateButtons();
+        updateSqlLayerColumns( );
+      }
+      mStatusLabel->setText( tr( "Fetched rows: %1 %2" )
+                             .arg( mModel->rowCount( mModel->index( -1, -1 ) ) )
+                             .arg( mWasCanceled ? tr( "(stopped)" ) : QString() ) );
+    } );
+    mQueryResultsTableView->setModel( mModel.get() );
+    mQueryResultsTableView->show();
+
+    connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [ = ]
+    {
+      mStopButton->setEnabled( false );
+      if ( ! mWasCanceled )
+      {
+        mStatusLabel->setText( "Query executed successfully." );
+      }
+    } );
+  }
+  else
+  {
+    mStatusLabel->setText( tr( "SQL command aborted" ) );
+  }
+
 }
 
 void QgsQueryResultWidget::showError( const QString &title, const QString &message )

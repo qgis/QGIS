@@ -288,6 +288,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> 
   return mGeometryColumnTypes;
 }
 
+
 QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, const QString &tableName ) const
 {
   QgsVectorLayer::LayerOptions options { false, true };

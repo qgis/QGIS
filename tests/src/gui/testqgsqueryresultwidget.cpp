@@ -35,11 +35,10 @@ class TestQgsQueryResultWidget: public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
-  public slots:
-    void testWidgetCrash();
-    void testWidget();
-    void testWidgetInvalid();
   private slots:
+    void testWidget();
+    void testWidgetCrash();
+    void testWidgetInvalid();
     void testCodeEditorApis();
 
   private:
@@ -120,12 +119,8 @@ void TestQgsQueryResultWidget::testWidget()
   // For interactive testing
   //d->exec();
   w->executeQuery();
-  QTimer::singleShot( 1, d.get(), [ = ]
-  {
-    QTest::mousePress( w->mStopButton, Qt::MouseButton::LeftButton );
-  } );
   bool exited = false;
-  connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, d.get(), [ & ] { exited = true; } );
+  connect( w, &QgsQueryResultWidget::columnNamesReady, d.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
   const auto rowCount { w->mModel->rowCount( w->mModel->index( -1, -1 ) ) };
@@ -148,6 +143,16 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
   QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "qgis_test" ) ) );
   QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "random_big_data" ) ) );
   QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "descr" ) ) );
+
+  // Test feedback interrupt
+  w = qgis::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
+  QTimer::singleShot( 0, w.get(), [ & ]
+  {
+    QTest::mousePress( w->mStopButton, Qt::MouseButton::LeftButton );
+  } );
+  connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
+  while ( ! exited )
+    QgsApplication::processEvents();
 }
 
 
