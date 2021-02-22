@@ -33,19 +33,25 @@ Constructor for QgsSettingsRegistryCore.
     {
         struct Layout : public QgsSettingsGroup
         {
-            struct SubLayout : public QgsSettingsGroup
-            {
-              QgsSettingsEntryStringList searchPathForTemplatesInSub;
-            };
-            SubLayout subLayout;
+            Layout();
 
             QgsSettingsEntryStringList searchPathForTemplates;
             QgsSettingsEntryInteger anotherNumericSettings;
+
+            struct SubLayout : public QgsSettingsGroup
+            {
+              SubLayout( QgsSettingsGroup *parent );
+
+              QgsSettingsEntryStringList searchPathForTemplatesInSub;
+            };
+            SubLayout subLayout;
         };
         Layout layout;
 
         struct Measure : public QgsSettingsGroup
         {
+          Measure();
+
           QgsSettingsEntryBool planimetric;
         };
         Measure measure;
@@ -59,7 +65,11 @@ Constructor for QgsSettingsRegistryCore.
           QgsSettingsEntryString prefix;
         };
 
-        QgsSettingsMap<LocatorFilter> locatorFilters;
+        struct LocatorFilters : public QgsSettingsMap<LocatorFilter>
+        {
+          LocatorFilters();
+        };
+        LocatorFilters locatorFilters;
 
     };
 

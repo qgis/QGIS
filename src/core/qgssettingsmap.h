@@ -21,6 +21,8 @@
 #include <limits>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include "qgssettingsgroup.h"
 
 /**
@@ -29,8 +31,8 @@
  *
  * \since QGIS 3.17
  */
-template<class T>
-class CORE_EXPORT QgsSettingsMap //: public QMap
+template<typename T>
+class CORE_EXPORT QgsSettingsMap
 {
   public:
 
