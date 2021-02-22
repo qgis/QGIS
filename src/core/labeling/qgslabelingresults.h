@@ -41,12 +41,12 @@ class CORE_EXPORT QgsLabelingResults
     QgsLabelingResults &operator=( const QgsLabelingResults &rh ) = delete;
 
     /**
-     * Returns the details of any labels placed at the specifed point (in map coordinates).
+     * Returns the details of any labels placed at the specified point (in map coordinates).
      */
     QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
 
     /**
-     * Returns the details of any labels placed within the specifed rectangle (in map coordinates).
+     * Returns the details of any labels placed within the specified rectangle (in map coordinates).
      */
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 
