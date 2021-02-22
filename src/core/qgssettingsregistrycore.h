@@ -46,19 +46,36 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     {
         struct Layout : public QgsSettingsGroup
         {
-            struct SubLayout : public QgsSettingsGroup
-            {
-              QgsSettingsEntryStringList searchPathForTemplatesInSub;
-            };
-            SubLayout subLayout;
+            Layout()
+              : QgsSettingsGroup( "layout", nullptr, QObject::tr( "Layout group description" ) )
+              , searchPathForTemplates( "searchPathsForTemplates", this, QStringList(), QObject::tr( "Search path for templates" ) )
+              , anotherNumericSettings( "anotherNumericSettings", this, 1234, "Example settings", 100, 9999 )
+              , subLayout( this )
+            {}
 
             QgsSettingsEntryStringList searchPathForTemplates;
             QgsSettingsEntryInteger anotherNumericSettings;
+
+            struct SubLayout : public QgsSettingsGroup
+            {
+              SubLayout( QgsSettingsGroup *parent )
+                : QgsSettingsGroup( "sub_layout", parent, "Description..." )
+                , searchPathForTemplatesInSub( "anotherValue", this, QStringList() )
+              {}
+
+              QgsSettingsEntryStringList searchPathForTemplatesInSub;
+            };
+            SubLayout subLayout;
         };
         Layout layout;
 
         struct Measure : public QgsSettingsGroup
         {
+          Measure()
+            : QgsSettingsGroup( "measure", nullptr, QObject::tr( "Measure group description" ) )
+            , planimetric( "planimetric", this, false, QObject::tr( "Planimetric description" ) )
+          {}
+
           QgsSettingsEntryBool planimetric;
         };
         Measure measure;
@@ -66,9 +83,10 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
         struct LocatorFilter : public QgsSettingsGroup
         {
           LocatorFilter()
-            : enabled( "enabled", this, true, "" )
-            , byDefault( "default", this, false, "" )
-            , prefix( "prefix", this, QString(), "" )
+            : QgsSettingsGroup( "", nullptr )
+            , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
+            , byDefault( "default", this, false, QObject::tr( "Default value" ) )
+            , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )
           {}
 
           QgsSettingsEntryBool enabled;
@@ -76,7 +94,13 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
           QgsSettingsEntryString prefix;
         };
 
-        QgsSettingsMap<LocatorFilter> locatorFilters;
+        struct LocatorFilters : public QgsSettingsMap<LocatorFilter>
+        {
+          LocatorFilters()
+            : QgsSettingsMap( "locator_filters" )
+          {}
+        };
+        LocatorFilters locatorFilters;
 
     };
 
