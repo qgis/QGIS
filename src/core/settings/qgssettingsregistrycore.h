@@ -22,7 +22,6 @@
 #include "qgssettingsregistry.h"
 #include "qgssettingsentry.h"
 #include "qgssettingsgroup.h"
-#include "qgssettingsmap.h"
 
 class QgsSettingsEntryStringList;
 
@@ -58,8 +57,8 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
             struct SubLayout : public QgsSettingsGroup
             {
-              SubLayout( QgsSettingsGroup *parent )
-                : QgsSettingsGroup( "sub_layout", parent, "Description..." )
+              SubLayout( QgsSettingsGroup *parentGroup )
+                : QgsSettingsGroup( "sub_layout", parentGroup, "Description..." )
                 , searchPathForTemplatesInSub( "anotherValue", this, QStringList() )
               {}
 
@@ -79,28 +78,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
           QgsSettingsEntryBool planimetric;
         };
         Measure measure;
-
-        struct LocatorFilter : public QgsSettingsGroup
-        {
-          LocatorFilter()
-            : QgsSettingsGroup( "", nullptr )
-            , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
-            , byDefault( "default", this, false, QObject::tr( "Default value" ) )
-            , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )
-          {}
-
-          QgsSettingsEntryBool enabled;
-          QgsSettingsEntryBool byDefault;
-          QgsSettingsEntryString prefix;
-        };
-
-        struct LocatorFilters : public QgsSettingsMap<LocatorFilter>
-        {
-          LocatorFilters()
-            : QgsSettingsMap( "locator_filters" )
-          {}
-        };
-        LocatorFilters locatorFilters;
 
     };
 
