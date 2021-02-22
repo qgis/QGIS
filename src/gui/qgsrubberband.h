@@ -324,11 +324,15 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * of the rubberband explicitly by calling reset() or setToGeometry() with appropriate arguments.
      * setToGeometry() is also to be preferred for backwards-compatibility.
      *
+     * If additional geometries are to be added then set \a doUpdate to FALSE to defer costly repaint and bounding rectangle calculations for better performance.
+     * After adding the final geometry updatePosition() should be called.
+     *
      *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
      *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
+     *  \param doUpdate set to FALSE to defer updates of the rubber band.
      */
-    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
+    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate = true );
 
     /**
      * Adds a \a geometry to the rubberband.
@@ -336,9 +340,12 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * If \a crs is specified, the geometry will be automatically reprojected from \a crs
      * to the canvas CRS.
      *
+     * If additional geometries are to be added then set \a doUpdate to FALSE to defer costly repaint and bounding rectangle calculations for better performance.
+     * After adding the final geometry updatePosition() should be called.
+     *
      * \since QGIS 3.0
      */
-    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), bool doUpdate = true );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)

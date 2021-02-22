@@ -266,9 +266,11 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeatureIterator it = vlayer->getSelectedFeatures();
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mRubberBand->addGeometry( feat.geometry(), vlayer, false );
         mOriginalGeometries << feat.geometry();
       }
+      mRubberBand->updatePosition();
+      mRubberBand->update();
     }
 
     mScalingActive = true;
