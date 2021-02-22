@@ -29,13 +29,6 @@ QgsSettingsGroup::~QgsSettingsGroup()
 {
 }
 
-void QgsSettingsGroup::initialize( QString key, QgsSettingsGroup *parentGroup, QString description )
-{
-  mKey = key;
-  mSettingsGroupParent = parentGroup;
-  mDescription = description;
-}
-
 void QgsSettingsGroup::setKey( const QString &key )
 {
   mKey = key;

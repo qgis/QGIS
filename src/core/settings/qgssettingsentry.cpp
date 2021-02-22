@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgssettingsentry.h"
+
+#include "qgssettingsgroup.h"
 #include "qgslogger.h"
 
 QgsSettingsEntry::QgsSettingsEntry( QString key,
@@ -35,7 +37,12 @@ QgsSettingsEntry::~QgsSettingsEntry()
 
 QString QgsSettingsEntry::key() const
 {
-  return mKey;
+  if ( mSettingsGroupParent == nullptr )
+    return mKey;
+
+  return QString( "%1/%2" )
+         .arg( mSettingsGroupParent->key() )
+         .arg( mKey );
 }
 
 bool QgsSettingsEntry::setValue( const QVariant &value )

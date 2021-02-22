@@ -40,12 +40,15 @@ class CORE_EXPORT QgsSettingsGroup
     QgsSettingsGroup( QString key = QString(),
                       QgsSettingsGroup *parentGroup = nullptr,
                       QString description = QString() );
+
+    /**
+     * Destructor for QgsSettingsGroup.
+     */
     virtual ~QgsSettingsGroup();
 
-    void initialize( QString key,
-                     QgsSettingsGroup *parentGroup = nullptr,
-                     QString description = QString() );
-
+    /**
+     * Set settings group key.
+     */
     void setKey( const QString &key );
 
     /**

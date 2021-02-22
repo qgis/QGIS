@@ -324,8 +324,6 @@ QVariant QgsLocatorFiltersModel::headerData( int section, Qt::Orientation orient
 
 void QgsLocatorFiltersModel::commitChanges()
 {
-  QgsSettings settings;
-
   QHash< QgsLocatorFilter *, QString >::const_iterator itp = mPrefixes.constBegin();
   for ( ; itp != mPrefixes.constEnd(); ++itp )
   {
@@ -334,12 +332,12 @@ void QgsLocatorFiltersModel::commitChanges()
     if ( !activePrefix.isEmpty() && activePrefix != filter->prefix() )
     {
       filter->setActivePrefix( activePrefix );
-      settings.setValue( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), activePrefix, QgsSettings::Section::Gui );
+      QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].prefix.setValue( activePrefix );
     }
     else
     {
       filter->setActivePrefix( QString() );
-      settings.remove( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), QgsSettings::Section::Gui );
+      QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].prefix.setValue( QString() );
     }
   }
   QHash< QgsLocatorFilter *, bool >::const_iterator it = mEnabledChanges.constBegin();
@@ -347,14 +345,13 @@ void QgsLocatorFiltersModel::commitChanges()
   {
     QgsLocatorFilter *filter = it.key();
     QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].enabled.setValue( it.value() );
-    settings.setValue( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), it.value(), QgsSettings::Section::Gui );
     filter->setEnabled( it.value() );
   }
   it = mDefaultChanges.constBegin();
   for ( ; it != mDefaultChanges.constEnd(); ++it )
   {
     QgsLocatorFilter *filter = it.key();
-    settings.setValue( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), it.value(), QgsSettings::Section::Gui );
+    QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].byDefault.setValue( it.value() );
     filter->setUseWithoutPrefix( it.value() );
   }
 }

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSETTINGSMAP_H
-#define QGSSETTINGSMAP_H
+#ifndef QGSSETTINGSGROUPMAP_H
+#define QGSSETTINGSGROUPMAP_H
 
 #include <QString>
 #include <QMap>
@@ -27,32 +27,38 @@
 
 /**
  * \ingroup core
- * \class QgsSettingsMap
+ * \class QgsSettingsGroupMap
  *
  * \since QGIS 3.18
  */
 template<typename T>
-class CORE_EXPORT QgsSettingsMap : public QgsSettingsGroup
+class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
 {
   public:
 
     /**
-     * Constructor for QgsSettingsMap.
+     * Constructor for QgsSettingsGroupMap.
      */
-    QgsSettingsMap( QString key = QString(),
+    QgsSettingsGroupMap( QString key = QString(),
                     QgsSettingsGroup *parentGroup = nullptr,
-                    QString description = QString(),
-                    bool createElementsOnAccess = true )
+                    QString description = QString() )
       : QgsSettingsGroup( key, parentGroup, description )
     {
     }
 
-    virtual ~QgsSettingsMap()
+    virtual ~QgsSettingsGroupMap()
     {
     }
 
     T &operator[]( const QString &key )
     {
+      if ( mMapKeySettingsGroup.contains( key ) == false )
+      {
+        T group( this );
+        group.setKey( key );
+        mMapKeySettingsGroup.insert( key, group );
+      }
+
       return mMapKeySettingsGroup[ key ];
     }
 
@@ -60,8 +66,6 @@ class CORE_EXPORT QgsSettingsMap : public QgsSettingsGroup
 
     QMap<QString, T> mMapKeySettingsGroup;
 
-    bool mCreateElementsOnAccess;
-
 };
 
-#endif // QGSSETTINGSMAP_H
+#endif // QGSSETTINGSGROUPMAP_H

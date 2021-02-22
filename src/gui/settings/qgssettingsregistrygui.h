@@ -21,8 +21,7 @@
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 #include "qgssettingsentry.h"
-#include "qgssettingsgroup.h"
-#include "qgssettingsmap.h"
+#include "qgssettingsgroupmap.h"
 
 class QgsSettingsEntryStringList;
 
@@ -44,46 +43,10 @@ class CORE_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
     struct SettingsEntries
     {
-        struct Layout : public QgsSettingsGroup
-        {
-            Layout()
-              : QgsSettingsGroup( "layout", nullptr, QObject::tr( "Layout group description" ) )
-              , searchPathForTemplates( "searchPathsForTemplates", this, QStringList(), QObject::tr( "Search path for templates" ) )
-              , anotherNumericSettings( "anotherNumericSettings", this, 1234, "Example settings", 100, 9999 )
-              , subLayout( this )
-            {}
-
-            QgsSettingsEntryStringList searchPathForTemplates;
-            QgsSettingsEntryInteger anotherNumericSettings;
-
-            struct SubLayout : public QgsSettingsGroup
-            {
-              SubLayout( QgsSettingsGroup *parent )
-                : QgsSettingsGroup( "sub_layout", parent, "Description..." )
-                , searchPathForTemplatesInSub( "anotherValue", this, QStringList() )
-              {}
-
-              QgsSettingsEntryStringList searchPathForTemplatesInSub;
-            };
-            SubLayout subLayout;
-        };
-        Layout layout;
-
-        struct Measure : public QgsSettingsGroup
-        {
-          Measure()
-            : QgsSettingsGroup( "measure", nullptr, QObject::tr( "Measure group description" ) )
-            , planimetric( "planimetric", this, false, QObject::tr( "Planimetric description" ) )
-          {}
-
-          QgsSettingsEntryBool planimetric;
-        };
-        Measure measure;
-
         struct LocatorFilter : public QgsSettingsGroup
         {
-          LocatorFilter()
-            : QgsSettingsGroup( "", nullptr )
+          LocatorFilter( QgsSettingsGroup *parentGroup = nullptr )
+            : QgsSettingsGroup( "", parentGroup )
             , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
             , byDefault( "default", this, false, QObject::tr( "Default value" ) )
             , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )
@@ -94,10 +57,10 @@ class CORE_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
           QgsSettingsEntryString prefix;
         };
 
-        struct LocatorFilters : public QgsSettingsMap<LocatorFilter>
+        struct LocatorFilters : public QgsSettingsGroupMap<LocatorFilter>
         {
-          LocatorFilters()
-            : QgsSettingsMap( "locator_filters" )
+          LocatorFilters( QgsSettingsGroup *parentGroup = nullptr )
+            : QgsSettingsGroupMap( "locator_filters", parentGroup )
           {}
         };
         LocatorFilters locatorFilters;
