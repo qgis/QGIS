@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSETTINGSMAP_H
-#define QGSSETTINGSMAP_H
+#ifndef QGSSETTINGSGROUP_H
+#define QGSSETTINGSGROUP_H
 
 #include <QString>
 #include <QMap>
@@ -22,55 +22,41 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgssettingsgroup.h"
 
 /**
  * \ingroup core
- * \class QgsSettingsMap
+ * \class QgsSettingsGroup
  *
- * \since QGIS 3.17
+ * \since QGIS 3.18
  */
-template<typename T>
-class CORE_EXPORT QgsSettingsMap
+class CORE_EXPORT QgsSettingsGroup
 {
   public:
 
     /**
-     * Constructor for QgsSettingsMap.
+     * Constructor for QgsSettingsGroup.
      */
-    QgsSettingsMap( QString key = QString(),
-                    QgsSettingsGroup *parentGroup = nullptr,
-                    QString description = QString() )
-      : mKey( key )
-      , mSettingsGroupParent( parentGroup )
-      , mDescription( description )
-    {
-    }
-    virtual ~QgsSettingsMap()
-    {
-    }
+    QgsSettingsGroup( QString key = QString(),
+                      QgsSettingsGroup *parentGroup = nullptr,
+                      QString description = QString() );
+    virtual ~QgsSettingsGroup();
+
+    void initialize( QString key,
+                     QgsSettingsGroup *parentGroup = nullptr,
+                     QString description = QString() );
+
+    void setKey( const QString &key );
 
     /**
      * Get settings group key.
      */
-    QString key() const
-    {
-      if ( mSettingsGroupParent == nullptr )
-        return mKey;
-
-      return QString( "%1/%2" )
-             .arg( mSettingsGroupParent->key() )
-             .arg( mKey );
-    }
+    QString key() const;
 
     /**
      * Get settings group description.
      */
-    QString description() const
-    {
-      return mDescription;
-    }
+    QString description() const;
 
   private:
 
@@ -80,4 +66,4 @@ class CORE_EXPORT QgsSettingsMap
 
 };
 
-#endif // QGSSETTINGSMAP_H
+#endif // QGSSETTINGSGROUP_H

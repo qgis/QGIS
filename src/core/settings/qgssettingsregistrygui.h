@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgssettingsregistrycore.h
+  qgssettingsregistrygui.h
   --------------------------------------
   Date                 : February 2021
   Copyright            : (C) 2021 by Damiano Lombardi
@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 
-#ifndef QGSSETTINGSREGISTRYCORE_H
-#define QGSSETTINGSREGISTRYCORE_H
+#ifndef QGSSETTINGSREGISTRYGUI_H
+#define QGSSETTINGSREGISTRYGUI_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -28,19 +28,19 @@ class QgsSettingsEntryStringList;
 
 /**
  * \ingroup core
- * \class QgsSettingsRegistryCore
+ * \class QgsSettingsRegistryGui
  *
- * \since QGIS 3.17
+ * \since QGIS 3.18
  */
-class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
+class CORE_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 {
   public:
 
     /**
-     * Constructor for QgsSettingsRegistryCore.
+     * Constructor for QgsSettingsRegistryGui.
      */
-    QgsSettingsRegistryCore();
-    ~QgsSettingsRegistryCore() override;
+    QgsSettingsRegistryGui();
+    ~QgsSettingsRegistryGui() override;
 
     struct SettingsEntries
     {
@@ -111,4 +111,4 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     SettingsEntries mSettingsEntries;
 };
 
-#endif // QGSSETTINGSREGISTRYCORE_H
+#endif // QGSSETTINGSREGISTRYGUI_H

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSETTINGSGROUP_H
-#define QGSSETTINGSGROUP_H
+#ifndef QGSSETTINGSMAP_H
+#define QGSSETTINGSMAP_H
 
 #include <QString>
 #include <QMap>
@@ -22,48 +22,46 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include "qgssettingsgroup.h"
 
 /**
  * \ingroup core
- * \class QgsSettingsGroup
+ * \class QgsSettingsMap
  *
- * \since QGIS 3.17
+ * \since QGIS 3.18
  */
-class CORE_EXPORT QgsSettingsGroup
+template<typename T>
+class CORE_EXPORT QgsSettingsMap : public QgsSettingsGroup
 {
   public:
 
     /**
-     * Constructor for QgsSettingsGroup.
+     * Constructor for QgsSettingsMap.
      */
-    QgsSettingsGroup( QString key = QString(),
-                      QgsSettingsGroup *parentGroup = nullptr,
-                      QString description = QString() );
-    virtual ~QgsSettingsGroup();
+    QgsSettingsMap( QString key = QString(),
+                    QgsSettingsGroup *parentGroup = nullptr,
+                    QString description = QString(),
+                    bool createElementsOnAccess = true )
+      : QgsSettingsGroup( key, parentGroup, description )
+    {
+    }
 
-    void initialize( QString key,
-                     QgsSettingsGroup *parentGroup = nullptr,
-                     QString description = QString() );
+    virtual ~QgsSettingsMap()
+    {
+    }
 
-    void setKey( const QString &key );
-
-    /**
-     * Get settings group key.
-     */
-    QString key() const;
-
-    /**
-     * Get settings group description.
-     */
-    QString description() const;
+    T &operator[]( const QString &key )
+    {
+      return mMapKeySettingsGroup[ key ];
+    }
 
   private:
 
-    QString mKey;
-    QgsSettingsGroup *mSettingsGroupParent;
-    QString mDescription;
+    QMap<QString, T> mMapKeySettingsGroup;
+
+    bool mCreateElementsOnAccess;
 
 };
 
-#endif // QGSSETTINGSGROUP_H
+#endif // QGSSETTINGSMAP_H

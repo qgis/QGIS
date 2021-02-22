@@ -25,6 +25,8 @@
 #include "qgsapplication.h"
 #include "qgslocatorwidget.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgssettingsregistrygui.h"
 
 
 QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent )
@@ -344,6 +346,7 @@ void QgsLocatorFiltersModel::commitChanges()
   for ( ; it != mEnabledChanges.constEnd(); ++it )
   {
     QgsLocatorFilter *filter = it.key();
+    QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].enabled.setValue( it.value() );
     settings.setValue( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), it.value(), QgsSettings::Section::Gui );
     filter->setEnabled( it.value() );
   }
