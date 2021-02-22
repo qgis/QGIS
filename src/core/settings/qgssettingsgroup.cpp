@@ -20,7 +20,18 @@ QgsSettingsGroup::QgsSettingsGroup( QString key,
                                     QgsSettingsGroup *parentGroup,
                                     QString description )
   : mKey( key )
+  , mSection( QgsSettings::NoSection )
   , mSettingsGroupParent( parentGroup )
+  , mDescription( description )
+{
+}
+
+QgsSettingsGroup::QgsSettingsGroup( QString key,
+                                    QgsSettings::Section section,
+                                    QString description )
+  : mKey( key )
+  , mSection( section )
+  , mSettingsGroupParent( nullptr )
   , mDescription( description )
 {
 }

@@ -29,6 +29,13 @@ class QgsSettingsGroup
 Constructor for QgsSettingsGroup.
 %End
 
+    QgsSettingsGroup( QString key,
+                      QgsSettings::Section section,
+                      QString description = QString() );
+%Docstring
+Constructor for QgsSettingsGroup.
+%End
+
     virtual ~QgsSettingsGroup();
 
     void setKey( const QString &key );

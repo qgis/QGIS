@@ -49,10 +49,10 @@ class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
     /**
      * Constructor for QgsSettingsGroupMap.
      */
-    QgsSettingsGroupMap( QString key = QString(),
-                         QgsSettingsGroup *parentGroup = nullptr,
+    QgsSettingsGroupMap( QString key,
+                         QgsSettings::Section section,
                          QString description = QString() )
-      : QgsSettingsGroup( key, parentGroup, description )
+      : QgsSettingsGroup( key, section, description )
     {
     }
 
