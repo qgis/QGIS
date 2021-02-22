@@ -71,6 +71,7 @@ installprefix="$installroot/usr/$arch-w64-mingw32/sys-root/mingw"
 rm -rf "$installroot"
 
 # Build
+echo "::group::cmake"
 mkdir -p "$BUILDDIR"
 (
   CRSSYNC_BIN=$(readlink -f "$SRCDIR")/build/output/bin/crssync
@@ -104,6 +105,8 @@ mkdir -p "$BUILDDIR"
     -DTXT2TAGS_EXECUTABLE= \
     ..
 )
+echo "::endgroup::"
+
 
 # Compile native crssync
 # mkdir -p $BUILDDIR/native_crssync
