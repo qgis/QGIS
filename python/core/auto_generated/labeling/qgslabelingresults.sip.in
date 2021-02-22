@@ -27,12 +27,12 @@ Class that stores computed placement from labeling engine.
 
     QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
 %Docstring
-Returns the details of any labels placed at the specifed point (in map coordinates).
+Returns the details of any labels placed at the specified point (in map coordinates).
 %End
 
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 %Docstring
-Returns the details of any labels placed within the specifed rectangle (in map coordinates).
+Returns the details of any labels placed within the specified rectangle (in map coordinates).
 %End
 
     QList<QgsCalloutPosition> calloutsWithinRectangle( const QgsRectangle &rectangle ) const;
