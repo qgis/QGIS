@@ -81,6 +81,11 @@ class CORE_EXPORT QgsSettingsEntry
     QString key() const;
 
     /**
+     * Get settings section.
+     */
+    QgsSettings::Section section();
+
+    /**
      * Set settings value.
      */
     virtual bool setValue( const QVariant &value );

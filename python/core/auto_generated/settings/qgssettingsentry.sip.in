@@ -61,6 +61,11 @@ Constructor for QgsSettingsEntry.
 Get settings key.
 %End
 
+    QgsSettings::Section section();
+%Docstring
+Get settings section.
+%End
+
     virtual bool setValue( const QVariant &value );
 %Docstring
 Set settings value.
