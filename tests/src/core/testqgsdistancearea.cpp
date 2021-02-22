@@ -235,9 +235,21 @@ void TestQgsDistanceArea::collections()
   QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
 
   //collection of polygons
+
+  QgsGeometry poly1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53))" ) );
+  result = myDa.measureArea( poly1 );
+  QGSCOMPARENEAR( result, 439881520607.079712, 1 );
+  result = myDa.measureLength( poly1 );
+  QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
+  QgsGeometry poly2 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((10 20, 15 20, 15 10, 10 20))" ) );
+  result = myDa.measureArea( poly2 );
+  QGSCOMPARENEAR( result, 290350317025.906982, 1 );
+  result = myDa.measureLength( poly2 );
+  QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
+
   QgsGeometry polys( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
   result = myDa.measureArea( polys );
-  QGSCOMPARENEAR( result, 663136985074LL, 1 );
+  QGSCOMPARENEAR( result, 730231837632.98669, 1 );
   result = myDa.measureLength( polys );
   QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
 
@@ -245,7 +257,7 @@ void TestQgsDistanceArea::collections()
   QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
   //measure area specifically
   result = myDa.measureArea( mixed );
-  QGSCOMPARENEAR( result, 663136985075LL, 1 );
+  QGSCOMPARENEAR( result, 730231837632.98669, 1 );
   //measure length
   result = myDa.measureLength( mixed );
   QGSCOMPARENEAR( result, 12006159, 1 );
