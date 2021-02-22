@@ -76,7 +76,7 @@ jobs:
             --env CCACHE_DIR=/QGIS/.ccache \
             -w /QGIS \
             -v ${GITHUB_WORKSPACE}:/QGIS \
-            qgis3-mingw-buildenv \
+            qgis3-mingw-buildenv:latest \
             ms-windows/mingw/build.sh x86_64 nodebug 4
 
       - name: Create Portable zip
