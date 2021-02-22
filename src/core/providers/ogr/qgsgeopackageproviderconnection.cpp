@@ -358,6 +358,7 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::DeleteField,
     Capability::AddField,
     Capability::DropRasterTable
+    Capability::SqlLayers
   };
   mGeometryColumnCapabilities =
   {

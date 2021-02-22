@@ -82,7 +82,6 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     //! Use GDAL to execute SQL
     QueryResult executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
 
-
 };
 
 

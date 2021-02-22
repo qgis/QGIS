@@ -390,7 +390,8 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     Capability::CreateSpatialIndex,
     Capability::SpatialIndexExists,
     Capability::DeleteField,
-    Capability::AddField
+    Capability::AddField,
+    Capability::SqlLayers
   };
   mGeometryColumnCapabilities =
   {

@@ -121,6 +121,14 @@ Returns the number of fetched rows.
 
     };
 
+    struct SqlVectorLayerOptions
+    {
+      QString sql; //! The SQL expression that defines the SQL (query) layer
+      QString filter; //! Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerFilters capability
+      QString layerName; //! Optional name for the new layer
+      QStringList primaryKeyColumns; //! List of primary key column names
+      QString geometryColumn; //! Name of the geometry column
+    };
 
     struct TableProperty
     {
@@ -294,6 +302,11 @@ This information is calculated from the geometry columns types.
 
     };
 
+    struct SpatialIndexOptions
+    {
+      QString geometryColumnName;
+    };
+
     enum Capability
     {
       CreateVectorTable,
@@ -317,6 +330,7 @@ This information is calculated from the geometry columns types.
       DeleteField,
       DeleteFieldCascade,
       AddField,
+      SqlLayerFilters,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -486,7 +500,6 @@ Adds a field.
 .. versionadded:: 3.16
 %End
 
-
     virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
 Renames a schema with the specified ``name``.
@@ -508,6 +521,16 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
+    virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const throw( QgsProviderConnectionException ) /Factory/;
+%Docstring
+Creates and returns a vector layer based on the ``sql`` statement and optional ``options``.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered or if SQL layer creation is not supported.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.20
+%End
+
     virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
 %Docstring
 Executes raw ``sql`` and returns the (possibly empty) query results, optionally ``feedback`` can be provided.
@@ -525,11 +548,6 @@ Vacuum the database table with given ``schema`` and ``name`` (schema is ignored 
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
-
-    struct SpatialIndexOptions
-    {
-      QString geometryColumnName;
-    };
 
     virtual void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const throw( QgsProviderConnectionException );
 %Docstring

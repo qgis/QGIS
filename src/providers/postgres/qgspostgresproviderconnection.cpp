@@ -746,6 +746,30 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTy
   return types;
 }
 
+QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const
+{
+  // Precondition
+  if ( options.sql.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
+  }
+
+  QgsDataSourceUri tUri( uri( ) );
+  tUri.setKeyColumn( QStringLiteral( "_uid_" ) );
+  tUri.setSql( options.filter );
+
+  if ( ! options.primaryKeyColumns.isEmpty() )
+  {
+    tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
+    tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
+  }
+  else
+  {
+    tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS _uid_, * FROM (%1\n) AS _subq_1_\n)" ).arg( options.sql ) );
+  }
+
+  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "sql_layer" ) : options.layerName, mProviderKey };
+}
 
 QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName ) const
 {
@@ -763,6 +787,7 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
     try
     {
       QgsDataSourceUri tUri { tableUri( schema, tableName ) };
+
       if ( tableInfo.geometryColumnTypes().count( ) > 1 )
       {
         const auto geomColTypes( tableInfo.geometryColumnTypes() );
@@ -771,15 +796,19 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
         tUri.setWkbType( geomCol.wkbType );
         tUri.setSrid( QString::number( geomCol.crs.postgisSrid() ) );
       }
+
       if ( tableInfo.primaryKeyColumns().count() > 0 )
       {
         const auto constPkCols( tableInfo.primaryKeyColumns() );
         tUri.setKeyColumn( constPkCols.first() );
       }
+
       tUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QLatin1String( "0" ) );
       QgsVectorLayer::LayerOptions options { false, true };
       options.skipCrsValidation = true;
+
       QgsVectorLayer vl { tUri.uri(), QStringLiteral( "temp_layer" ), mProviderKey, options };
+
       if ( vl.isValid() )
       {
         return vl.fields();

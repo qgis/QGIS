@@ -44,6 +44,11 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
 
+    QStringList columns() const;
+%Docstring
+Returns the column names
+%End
+
   public slots:
 
     void rowsReady( const QList<QList<QVariant> > &rows );

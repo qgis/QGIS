@@ -48,6 +48,11 @@ void QgsQueryResultModel::cancel()
   }
 }
 
+QStringList QgsQueryResultModel::columns() const
+{
+  return mColumns;
+}
+
 QgsQueryResultModel::~QgsQueryResultModel()
 {
   if ( mWorker )

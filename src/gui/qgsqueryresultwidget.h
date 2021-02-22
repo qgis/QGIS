@@ -32,7 +32,7 @@
 #ifndef SIP_RUN
 
 /**
- * The QgsConnectionsApiFetcher class fetches tokens (table and field names) of a connection from a separate thread.
+ * \brief The QgsConnectionsApiFetcher class fetches tokens (table and field names) of a connection from a separate thread.
  */
 class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 {
@@ -71,12 +71,11 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 ///@endcond private
 
 /**
- * The QgsQueryResultWidget class allow users to enter and run an SQL query on a
+ * \brief The QgsQueryResultWidget class allow users to enter and run an SQL query on a
  * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
  *
  * Query results are displayed in a table view.
- * Query execution and result
- * fetching can be interrupted by pressing the "Stop" push button.
+ * Query execution and result fetching can be interrupted by pressing the "Stop" push button.
  *
  * \note the ownership of the connection is transferred to the widget.
  *
@@ -98,12 +97,22 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     /**
      * Set the connection to \a connection, ownership is transferred to the widget.
      */
-    void setConnection( QgsAbstractDatabaseProviderConnection *connection );
+    void setConnection( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER );
 
     /**
-     * Convenience method to set the SQL editor test to \a sql.
+     * Convenience method to set the SQL editor text to \a sql.
      */
     void setQuery( const QString &sql );
+
+    /**
+     * Set the SQL layer \a options. This method automatically populates and shows the "Load as new layer" panel.
+     */
+    void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
+
+    /**
+     * Returns the sqlVectorLayerOptions
+     */
+    QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions sqlVectorLayerOptions() const;
 
   public slots:
 
@@ -113,19 +122,30 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     void executeQuery();
 
     /**
-     * Updates buttons status
-     */
-    void updateButtons();
-
-    /**
-     * Hides the result table and shows the error \a title and \a message in the message bar.
-     */
+      * Hides the result table and shows the error \a title and \a message in the message bar.
+      */
     void showError( const QString &title, const QString &message );
 
     /**
      * Triggered when the threaded API fetcher has new \a tokens to add.
      */
     void tokensReady( const QStringList &tokens );
+
+  private slots:
+
+    void syncSqlOptions();
+
+  signals:
+
+    /**
+     * Emitted when a new vector SQL (query) layer must be created.
+     * \param providerKey name of the data provider
+     * \param connectionUri the connection URI as returned by QgsAbstractProviderConnection::uri()
+     * \param options
+     */
+    void createSqlVectorLayer( const QString &providerKey, const QString &connectionUri, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
+
+    void columnNamesReady();
 
   private:
 
@@ -135,6 +155,16 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     QgsConnectionsApiFetcher *mApiFetcher = nullptr;
     QThread mWorkerThread;
     bool mWasCanceled = false;
+    QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
+    bool mFirstRowFetched = false;
+
+    /**
+     * Updates buttons status
+     */
+    void updateButtons();
+
+    void updateSqlLayerColumns();
+
 
     friend class TestQgsQueryResultWidget;
 

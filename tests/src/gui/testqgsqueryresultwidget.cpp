@@ -145,9 +145,9 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
   connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
-  QVERIFY( w->mCodeEditor->fieldNames().contains( QStringLiteral( "qgis_test" ) ) );
-  QVERIFY( w->mCodeEditor->fieldNames().contains( QStringLiteral( "random_big_data" ) ) );
-  QVERIFY( w->mCodeEditor->fieldNames().contains( QStringLiteral( "descr" ) ) );
+  QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "qgis_test" ) ) );
+  QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "random_big_data" ) ) );
+  QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "descr" ) ) );
 }
 
 

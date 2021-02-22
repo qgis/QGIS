@@ -78,6 +78,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void remove( const QString &name ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
 
   private:
 
