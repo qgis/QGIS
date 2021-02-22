@@ -34,6 +34,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build Docker Container with Build Environment
+        id: docker-build
         uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ github.actor }}
@@ -76,8 +77,10 @@ jobs:
             --env CCACHE_DIR=/QGIS/.ccache \
             -w /QGIS \
             -v ${GITHUB_WORKSPACE}:/QGIS \
-            qgis3-mingw-buildenv:latest \
+            ${DOCKER_IMAGE} \
             ms-windows/mingw/build.sh x86_64 nodebug 4
+        env:
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
 
       - name: Create Portable zip
         run: |
