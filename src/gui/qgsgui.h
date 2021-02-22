@@ -23,7 +23,6 @@
 #include <QWidget>
 #include <memory>
 
-class QgsSettingsRegistryGui;
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
 class QgsLayerTreeEmbeddedWidgetRegistry;
@@ -153,12 +152,6 @@ class GUI_EXPORT QgsGui : public QObject
     static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
-     * Returns the registry of GUI-related settings
-     * \since QGIS 3.18
-     */
-    static QgsSettingsRegistryGui *settingsRegisterGui() SIP_KEEPREFERENCE;
-
-    /**
      * Returns the registry of GUI-related components of data providers
      * \since QGIS 3.10
      */
@@ -268,7 +261,6 @@ class GUI_EXPORT QgsGui : public QObject
 
     QgsGui();
 
-    QgsSettingsRegistryGui *mSettingsRegistryGui = nullptr;
     QgsProviderGuiRegistry *mProviderGuiRegistry = nullptr;
     QgsWidgetStateHelper *mWidgetStateHelper = nullptr;
     QgsNative *mNative = nullptr;

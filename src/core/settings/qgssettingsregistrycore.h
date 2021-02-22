@@ -21,7 +21,7 @@
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 #include "qgssettingsentry.h"
-#include "qgssettingsgroup.h"
+#include "qgssettingsgroupmap.h"
 
 class QgsSettingsEntryStringList;
 
@@ -78,6 +78,28 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
           QgsSettingsEntryBool planimetric;
         };
         Measure measure;
+
+        struct LocatorFilter : public QgsSettingsGroup
+        {
+          LocatorFilter( QgsSettingsGroup *parentGroup = nullptr )
+            : QgsSettingsGroup( "", parentGroup )
+            , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
+            , byDefault( "default", this, false, QObject::tr( "Default value" ) )
+            , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )
+          {}
+
+          QgsSettingsEntryBool enabled;
+          QgsSettingsEntryBool byDefault;
+          QgsSettingsEntryString prefix;
+        };
+
+        struct LocatorFilters : public QgsSettingsGroupMap<LocatorFilter>
+        {
+          LocatorFilters( QgsSettingsGroup *parentGroup = nullptr )
+            : QgsSettingsGroupMap( "locator_filters", parentGroup )
+          {}
+        };
+        LocatorFilters locatorFilters;
 
     };
 

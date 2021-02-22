@@ -48,7 +48,6 @@
 #include "qgsprocessingrecentalgorithmlog.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgssettings.h"
-#include "qgssettingsregistrygui.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsgdalguiprovider.h"
 #include "qgsogrguiprovider.h"
@@ -149,11 +148,6 @@ QgsProjectStorageGuiRegistry *QgsGui::projectStorageGuiRegistry()
   return instance()->mProjectStorageGuiRegistry;
 }
 
-QgsSettingsRegistryGui *QgsGui::settingsRegisterGui()
-{
-  return instance()->mSettingsRegistryGui;
-}
-
 QgsProviderGuiRegistry *QgsGui::providerGuiRegistry()
 {
   return instance()->mProviderGuiRegistry;
@@ -211,7 +205,6 @@ QgsGui::~QgsGui()
   delete mSubsetStringEditorProviderRegistry;
   delete mProviderSourceWidgetProviderRegistry;
   delete mRelationEditorRegistry;
-  delete mSettingsRegistryGui;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -241,8 +234,6 @@ QScreen *QgsGui::findScreenAt( QPoint point )
 
 QgsGui::QgsGui()
 {
-  mSettingsRegistryGui = new QgsSettingsRegistryGui();
-
 #ifdef Q_OS_MAC
   QgsMacNative *macNative = new QgsMacNative();
   macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );

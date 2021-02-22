@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgslocator.h"
-#include "qgssettings.h"
+#include "qgsapplication.h"
+#include "qgssettingsregistrycore.h"
 #include <QtConcurrent>
 #include <functional>
 
@@ -94,10 +95,9 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   filter->setParent( this );
 
   // restore settings
-  QgsSettings settings;
-  bool enabled = settings.value( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), true, QgsSettings::Section::Gui ).toBool();
-  bool byDefault = settings.value( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), filter->useWithoutPrefix(), QgsSettings::Section::Gui ).toBool();
-  QString prefix = settings.value( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), filter->prefix(), QgsSettings::Section::Gui ).toString();
+  bool enabled = QgsApplication::settingsRegistryCore()->settingsEntries().locatorFilters[ filter->name() ].enabled.value<bool>();
+  bool byDefault = QgsApplication::settingsRegistryCore()->settingsEntries().locatorFilters[ filter->name() ].byDefault.value<bool>();
+  QString prefix = QgsApplication::settingsRegistryCore()->settingsEntries().locatorFilters[ filter->name() ].prefix.value<QString>();
   if ( prefix.isEmpty() )
   {
     prefix = filter->prefix();
