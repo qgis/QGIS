@@ -179,6 +179,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
             iterator_req.setInvalidGeometryCheck(context.invalidGeometryCheck())
             feature_iterator = active_layer.getFeatures(iterator_req)
             step = 100 / len(active_layer.selectedFeatureIds()) if active_layer.selectedFeatureIds() else 1
+            current = 0
             for current, f in enumerate(feature_iterator):
                 if feedback.isCanceled():
                     break
