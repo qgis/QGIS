@@ -24,9 +24,7 @@
 
 #include "qgsapplication.h"
 #include "qgslocatorwidget.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgssettingsregistrygui.h"
+#include "qgssettingsregistrycore.h"
 
 
 QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent )
@@ -332,26 +330,26 @@ void QgsLocatorFiltersModel::commitChanges()
     if ( !activePrefix.isEmpty() && activePrefix != filter->prefix() )
     {
       filter->setActivePrefix( activePrefix );
-      QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].prefix.setValue( activePrefix );
+      QgsApplication::settingsRegistryCore()->settingsEntries().locatorFilters[ filter->name() ].prefix.setValue( activePrefix );
     }
     else
     {
       filter->setActivePrefix( QString() );
-      QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].prefix.setValue( QString() );
+      QgsApplication::settingsRegistryCore()->settingsEntries().locatorFilters[ filter->name() ].prefix.setValue( QString() );
     }
   }
   QHash< QgsLocatorFilter *, bool >::const_iterator it = mEnabledChanges.constBegin();
   for ( ; it != mEnabledChanges.constEnd(); ++it )
   {
     QgsLocatorFilter *filter = it.key();
-    QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].enabled.setValue( it.value() );
+    QgsApplication::settingsRegistryCore()->settingsEntries().locatorFilters[ filter->name() ].enabled.setValue( it.value() );
     filter->setEnabled( it.value() );
   }
   it = mDefaultChanges.constBegin();
   for ( ; it != mDefaultChanges.constEnd(); ++it )
   {
     QgsLocatorFilter *filter = it.key();
-    QgsGui::settingsRegisterGui()->settingsEntries().locatorFilters[ filter->name() ].byDefault.setValue( it.value() );
+    QgsApplication::settingsRegistryCore()->settingsEntries().locatorFilters[ filter->name() ].byDefault.setValue( it.value() );
     filter->setUseWithoutPrefix( it.value() );
   }
 }

@@ -111,13 +111,6 @@ Returns the global GUI-related project storage registry
 .. versionadded:: 3.10
 %End
 
-    static QgsSettingsRegistryGui *settingsRegisterGui() /KeepReference/;
-%Docstring
-Returns the registry of GUI-related settings
-
-.. versionadded:: 3.18
-%End
-
     static QgsProviderGuiRegistry *providerGuiRegistry() /KeepReference/;
 %Docstring
 Returns the registry of GUI-related components of data providers
