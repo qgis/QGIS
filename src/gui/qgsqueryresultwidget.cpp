@@ -60,6 +60,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   mStatusLabel->hide();
   mSqlErrorText->hide();
+  mLoadAsNewLayerGroupBox->setCollapsed( true );
   setConnection( connection );
 }
 
@@ -79,12 +80,17 @@ void QgsQueryResultWidget::executeQuery()
   mSqlErrorText->hide();
   mFirstRowFetched = false;
 
-  // Wait for other threads
+  // Cancel other threads
   if ( mFeedback )
   {
     mFeedback->cancel();
   }
-  mQueryResultWatcher.waitForFinished();
+
+  // ... and wait
+  if ( mQueryResultWatcher.isRunning() )
+  {
+    mQueryResultWatcher.waitForFinished();
+  }
 
   if ( mConnection )
   {
