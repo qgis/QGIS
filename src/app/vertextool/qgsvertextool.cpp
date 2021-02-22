@@ -2184,10 +2184,21 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     {
       if ( layer->crs() == mapPointMatch->layer()->crs() )
       {
-        if ( !layerPoint.is3D() )
-          layerPoint.addZValue( defaultZValue() );
-        layer->addTopologicalPoints( layerPoint );
-        mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+        const auto editGeom = edits[layer].values();
+        for ( QgsGeometry g : editGeom )
+        {
+          if ( !layerPoint.is3D() )
+            layerPoint.addZValue( defaultZValue() );
+          if ( QgsGeometry( layerPoint.clone() ).touches( g ) )
+          {
+            layer->addTopologicalPoints( layerPoint );
+            mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+          }
+          /*
+          * layer->addTopologicalPoints( g );
+           * mapPointMatch->layer()->addTopologicalPoints( g );
+          */
+        }
       }
     }
   }
@@ -2320,6 +2331,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
           emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
       }
       layer->changeGeometry( it2.key(), featGeom );
+      edits[layer][it2.key()] = featGeom;
     }
     layer->endEditCommand();
     layer->triggerRepaint();
