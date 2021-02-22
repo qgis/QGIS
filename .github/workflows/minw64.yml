@@ -34,6 +34,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build Docker Container with Build Environment
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          image_name: qgis3-mingw-buildenv
+          dockerfile: ms-windows/mingw/qgis3-build-deps-mingw.dockerfile
+          push_git_tag: true
+          push_image_and_stages: on:push
+
         run: docker build -t qgis3-mingw-buildenv -f ms-windows/mingw/qgis3-build-deps-mingw.dockerfile .
 
       - name: Prepare build cache for pull request
