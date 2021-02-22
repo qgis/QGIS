@@ -1973,10 +1973,10 @@
      <normaloff>:/images/themes/default/mActionMoveLabel.svg</normaloff>:/images/themes/default/mActionMoveLabel.svg</iconset>
    </property>
    <property name="text">
-    <string>Move Label and Diagram</string>
+    <string>Move Label, Diagram or Callout</string>
    </property>
    <property name="toolTip">
-    <string>Move a Label or Diagram
+    <string>Move a Label, Diagram or Callout
 Acts on all layers.</string>
    </property>
   </action>
