@@ -716,7 +716,6 @@ set(QGIS_CORE_SRCS
   settings/qgssettingsmap.cpp
   settings/qgssettingsregistry.cpp
   settings/qgssettingsregistrycore.cpp
-  settings/qgssettingsregistrygui.cpp
 
   validity/qgsabstractvaliditycheck.cpp
   validity/qgsvaliditycheckcontext.cpp
@@ -1556,7 +1555,6 @@ set(QGIS_CORE_HDRS
   settings/qgssettingsmap.h
   settings/qgssettingsregistry.h
   settings/qgssettingsregistrycore.h
-  settings/qgssettingsregistrygui.h
 
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
