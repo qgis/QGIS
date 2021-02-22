@@ -930,7 +930,7 @@ double QgsDistanceArea::computePolygonArea( const QVector<QgsPointXY> &points ) 
   double perimeter = 0;
   geod_polygon_compute( mGeod.get(), &p, 0, 1, &area, &perimeter );
 
-  return area;
+  return std::fabs( area );
 }
 
 double QgsDistanceArea::computePolygonFlatArea( const QVector<QgsPointXY> &points ) const
