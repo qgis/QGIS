@@ -123,7 +123,7 @@ mingw$bits-make -C"$BUILDDIR" -j"$njobs" DESTDIR="${installroot}" install VERBOS
 echo "::endgroup::"
 
 #echo "ccache statistics"
-mingw$bits-ccache -s
+ccache -s
 
 # Remove plugins with missing dependencies
 rm -rf "${installroot}/share/qgis/python/plugins/{MetaSearch,processing}"
