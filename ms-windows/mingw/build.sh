@@ -71,6 +71,7 @@ installprefix="$installroot/usr/$arch-w64-mingw32/sys-root/mingw"
 rm -rf "$installroot"
 
 # Build
+echo "::group::cmake"
 mkdir -p "$BUILDDIR"
 (
   CRSSYNC_BIN=$(readlink -f "$SRCDIR")/build/output/bin/crssync
@@ -78,6 +79,7 @@ mkdir -p "$BUILDDIR"
   QSCI_VER=$(grep -Eo '\s*([0-9]+\.[0-9]+\.[0-9]+)' "$MINGWROOT/include/qt5/Qsci/qsciglobal.h")
   mingw$bits-cmake \
     -DCMAKE_CROSS_COMPILING=1 \
+    -DUSE_CCACHE=ON \
     -DCMAKE_BUILD_TYPE=$buildtype \
     -DNATIVE_CRSSYNC_BIN="$CRSSYNC_BIN" \
     -DQSCINTILLA_VERSION_STR="$QSCI_VER" \
@@ -103,6 +105,8 @@ mkdir -p "$BUILDDIR"
     -DTXT2TAGS_EXECUTABLE= \
     ..
 )
+echo "::endgroup::"
+
 
 # Compile native crssync
 # mkdir -p $BUILDDIR/native_crssync
@@ -116,7 +120,12 @@ mkdir -p "$BUILDDIR"
 # Xvfb :99 &
 # export DISPLAY=:99
 
+echo "::group::compile QGIS"
 mingw$bits-make -C"$BUILDDIR" -j"$njobs" DESTDIR="${installroot}" install VERBOSE=1
+echo "::endgroup::"
+
+#echo "ccache statistics"
+ccache -s
 
 # Remove plugins with missing dependencies
 rm -rf "${installroot}/share/qgis/python/plugins/{MetaSearch,processing}"
