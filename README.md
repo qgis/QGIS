@@ -20,13 +20,14 @@ Features include
 * Visual and numerical and digitizing and editing
 * Temporal support
 
-</div><img align="right" src="https://live.staticflickr.com/65535/50870685936_e1ae8c29bd_k.jpg" width="250" alt="example image"><div style="min-height:270;">
+</div><img align="right" src="https://live.staticflickr.com/65535/50870685936_e1ae8c29bd_k.jpg" width="200" height="200" style="margin:0 25px 0 25px;" alt="example image"><div style="min-height:300;">
+<!-- Having trouble clipping the image, and also the div min-height seems to be ignored by github --> 
   
 **2. Beautiful cartography**
-* Fine control over symbology, labeling, legends and additional graphical elements
-* Saved map layouts creation and recreation of maps of specified scale, extent, and style
-* Atlases to generate a group of maps with same style and layout
-* Flexible output as image (raster), PDF, SVG; camera-ready or suitable for further customization 
+* Fine control over symbology, labeling, legends and additional graphical elements for beautifully rendered maps
+* Create and update maps with specified scale, extent, style, and decorations via saved layouts
+* Generate a group of maps with same style and layout via atlases
+* Flexible output direct to printer, or as image (raster), PDF, or SVG for further customization 
 
 </div><img align="right" src="https://docs.qgis.org/3.16/en/_images/models_model.png" width="250" alt="example modeler"><div style="min-height:180;">
 
