@@ -131,6 +131,11 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       mCalloutMoveRubberBand->setWidth( 3 );
       mCalloutMoveRubberBand->show();
 
+      // set initial cad point as the other side of the callout -- NOTE we have to add two points here!
+      cadDockWidget()->addPoint( mCurrentCalloutMoveOrigin ? mCurrentCallout.destination() : mCurrentCallout.origin() );
+      cadDockWidget()->addPoint( e->mapPoint() );
+      cadDockWidget()->releaseLocks( false );
+
       return;
     }
     else
@@ -346,6 +351,14 @@ void QgsMapToolMoveLabel::cadCanvasReleaseEvent( QgsMapMouseEvent * )
     // this tool doesn't collect points -- we want the angle constraints to be reset whenever we drop a label
     cadDockWidget()->clearPoints();
   }
+}
+
+void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  if ( mCalloutMoveRubberBand )
+    return; // don't allow cad dock widget points to be cleared after starting to move a callout endpoint
+
+  QgsMapToolLabel::canvasReleaseEvent( e );
 }
 
 void QgsMapToolMoveLabel::keyPressEvent( QKeyEvent *e )

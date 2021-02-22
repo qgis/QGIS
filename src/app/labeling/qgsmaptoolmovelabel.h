@@ -35,6 +35,7 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
 
