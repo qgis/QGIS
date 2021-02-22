@@ -48,6 +48,7 @@ QgsMapToolLabel::~QgsMapToolLabel()
 {
   delete mLabelRubberBand;
   delete mHoverRubberBand;
+  delete mCalloutOtherPointsRubberBand;
   delete mFeatureRubberBand;
   delete mFixPointRubberBand;
 }
@@ -115,6 +116,41 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
     // only one candidate
     p = labelPosList.at( 0 );
   }
+
+  return true;
+}
+
+bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, bool &isOrigin )
+{
+  QgsPointXY pt = toMapCoordinates( e->pos() );
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
+  if ( !labelingResults )
+    return false;
+
+  const double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
+
+  QList<QgsCalloutPosition> calloutPosList = labelingResults->calloutsWithinRectangle( QgsRectangle::fromCenterAndSize( pt, tol * 2, tol * 2 ) );
+  if ( calloutPosList.empty() )
+    return false;
+
+  // prioritize callouts in the current selected layer, in case of overlaps
+  QList<QgsCalloutPosition> activeLayerCallouts;
+  if ( const QgsVectorLayer *currentLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() ) )
+  {
+    for ( const QgsCalloutPosition &pos : qgis::as_const( calloutPosList ) )
+    {
+      if ( pos.layerID == currentLayer->id() )
+      {
+        activeLayerCallouts.append( pos );
+      }
+    }
+  }
+  if ( !activeLayerCallouts.empty() )
+    calloutPosList = activeLayerCallouts;
+
+  p = calloutPosList.at( 0 );
+
+  isOrigin = QgsPointXY( p.origin() ).sqrDist( pt ) < QgsPointXY( p.destination() ).sqrDist( pt );
 
   return true;
 }
@@ -894,7 +930,53 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
     mHoverRubberBand->setWidth( 2 );
     mHoverRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
     mHoverRubberBand->setColor( QColor( 200, 0, 120, 255 ) );
+    mHoverRubberBand->setIcon( QgsRubberBand::ICON_BOX );
+
+    double scaleFactor = mCanvas->fontMetrics().xHeight();
+    mHoverRubberBand->setIconSize( scaleFactor );
   }
+
+  QgsCalloutPosition calloutPosition;
+  bool isOrigin = false;
+  int xCol = 0;
+  int yCol = 0;
+  if ( calloutAtPosition( e, calloutPosition, isOrigin ) && canModifyCallout( calloutPosition, isOrigin, xCol, yCol ) )
+  {
+    if ( !mCalloutOtherPointsRubberBand )
+    {
+      mCalloutOtherPointsRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PointGeometry );
+      mCalloutOtherPointsRubberBand->setWidth( 2 );
+      mCalloutOtherPointsRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
+      mCalloutOtherPointsRubberBand->setColor( QColor( 200, 0, 120, 255 ) );
+      mCalloutOtherPointsRubberBand->setIcon( QgsRubberBand::ICON_X );
+      double scaleFactor = mCanvas->fontMetrics().xHeight();
+      mCalloutOtherPointsRubberBand->setIconSize( scaleFactor );
+    }
+
+    // callouts are a smaller target, so they take precedence over labels
+    mCurrentHoverLabel = LabelDetails();
+
+    mHoverRubberBand->show();
+    mHoverRubberBand->reset( QgsWkbTypes::PointGeometry );
+    mCalloutOtherPointsRubberBand->show();
+    mCalloutOtherPointsRubberBand->reset( QgsWkbTypes::PointGeometry );
+
+    if ( isOrigin )
+    {
+      mHoverRubberBand->addPoint( calloutPosition.origin() );
+      mCalloutOtherPointsRubberBand->addPoint( calloutPosition.destination() );
+    }
+    else
+    {
+      mHoverRubberBand->addPoint( calloutPosition.destination() );
+      mCalloutOtherPointsRubberBand->addPoint( calloutPosition.origin() );
+    }
+    return;
+  }
+
+  if ( mCalloutOtherPointsRubberBand )
+    mCalloutOtherPointsRubberBand->hide();
+
   QgsLabelPosition labelPos;
   if ( !labelAtPosition( e, labelPos ) )
   {
@@ -935,10 +1017,18 @@ void QgsMapToolLabel::clearHoveredLabel()
 {
   if ( mHoverRubberBand )
     mHoverRubberBand->hide();
+  if ( mCalloutOtherPointsRubberBand )
+    mCalloutOtherPointsRubberBand->hide();
+
   mCurrentHoverLabel = LabelDetails();
 }
 
 bool QgsMapToolLabel::canModifyLabel( const QgsMapToolLabel::LabelDetails & )
 {
   return true;
+}
+
+bool QgsMapToolLabel::canModifyCallout( const QgsCalloutPosition &, bool, int &, int & )
+{
+  return false;
 }

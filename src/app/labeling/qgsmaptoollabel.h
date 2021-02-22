@@ -22,6 +22,7 @@
 #include "qgspallabeling.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgscalloutposition.h"
 #include "qgis_app.h"
 
 class QgsRubberBand;
@@ -37,6 +38,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
   public:
     QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolLabel() override;
+
+
 
     void deactivate() override;
 
@@ -87,6 +90,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
 
   protected:
     QgsRubberBand *mHoverRubberBand = nullptr;
+    QgsRubberBand *mCalloutOtherPointsRubberBand = nullptr;
     QgsRubberBand *mLabelRubberBand = nullptr;
     QgsRubberBand *mFeatureRubberBand = nullptr;
     //! Shows label fixpoint (left/bottom by default)
@@ -117,6 +121,15 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool labelAtPosition( QMouseEvent *e, QgsLabelPosition &p );
 
     /**
+     * Returns callout position for a mouse event.
+     * \param e mouse event
+     * \param p out: callout position
+     * \param isOrigin set to TRUE if the origin is at the position, or FALSE if the callout destination is at the position
+     * \returns TRUE in case of success, FALSE if no callout at this location
+    */
+    bool calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, bool &isOrigin );
+
+    /**
      * Finds out rotation point of current label position
      * \param ignoreUpsideDown treat label as right-side-up
      * \returns TRUE in case of success
@@ -127,7 +140,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     void createRubberBands();
 
     //! Removes label / feature / fixpoint rubber bands
-    void deleteRubberBands();
+    virtual void deleteRubberBands();
 
     /**
      * Returns current label's text
@@ -211,6 +224,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     void updateHoveredLabel( QgsMapMouseEvent *e );
     void clearHoveredLabel();
     virtual bool canModifyLabel( const LabelDetails &label );
+    virtual bool canModifyCallout( const QgsCalloutPosition &callout, bool isOrigin, int &xCol, int &yCol );
 
     QList<QgsPalLayerSettings::Property> mPalProperties;
     QList<QgsDiagramLayerSettings::Property> mDiagramProperties;
