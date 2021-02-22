@@ -276,7 +276,7 @@ void QgsRubberBand::setToGeometry( const QgsGeometry &geom, const QgsCoordinateR
   addGeometry( geom, crs );
 }
 
-void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer )
+void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate )
 {
   QgsGeometry geom = geometry;
   if ( layer )
@@ -292,10 +292,10 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *la
     }
   }
 
-  addGeometry( geom );
+  addGeometry( geom, QgsCoordinateReferenceSystem(), doUpdate );
 }
 
-void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs )
+void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs, bool doUpdate )
 {
   if ( geometry.isEmpty() )
   {
@@ -402,8 +402,11 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   }
 
   setVisible( true );
-  updateRect();
-  update();
+  if ( doUpdate )
+  {
+    updateRect();
+    update();
+  }
 }
 
 void QgsRubberBand::setToCanvasRectangle( QRect rect )
