@@ -20,7 +20,7 @@ Features include
 * Visual and numerical and digitizing and editing
 * Temporal support
 
-</div><img align="right" src="https://live.staticflickr.com/65535/50870685936_e1ae8c29bd_k.jpg" width="200" height="200" style="margin:0 25px 0 25px;" alt="example image"><div style="min-height:300;">
+</div><img align="right" src="https://live.staticflickr.com/65535/50870685936_e1ae8c29bd_k.jpg" width="180" height="180" style="margin:0 25px 0 25px;" alt="example image"><div style="min-height:300;">
 <!-- Having trouble clipping the image, and also the div min-height seems to be ignored by github --> 
   
 **2. Beautiful cartography**
