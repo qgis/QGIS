@@ -16,6 +16,8 @@ set(QGIS_GUI_SRCS
   raster/qgshillshaderendererwidget.cpp
   raster/qgsresamplingutils.cpp
 
+  settings/qgssettingsregistrygui.cpp
+
   vector/qgsattributeactiondialog.cpp
   vector/qgsattributeactionpropertiesdialog.cpp
   vector/qgsattributesforminitcode.cpp
@@ -1171,6 +1173,8 @@ set(QGIS_GUI_HDRS
   raster/qgsrasterlayertemporalpropertieswidget.h
   raster/qgsresamplingutils.h
 
+  settings/qgssettingsregistrygui.h
+
   vector/qgsattributeactiondialog.h
   vector/qgsattributeactionpropertiesdialog.h
   vector/qgsattributesforminitcode.h
@@ -1401,6 +1405,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/settings
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
