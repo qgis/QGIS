@@ -490,11 +490,7 @@ void TestQgsLayoutMap::dataDefinedCrs()
   //test proj string variable
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "PROJ4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) ) );
   map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs" ) );
-#else
-  QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) );
-#endif
 }
 
 void TestQgsLayoutMap::dataDefinedTemporalRange()
@@ -718,11 +714,7 @@ void TestQgsLayoutMap::expressionContext()
 
   QgsExpression e9( QStringLiteral( "@map_crs_ellipsoid" ) );
   r = e9.evaluate( &c );
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( r.toString(), QString( "EPSG:7030" ) );
-#else
-  QCOMPARE( r.toString(), QString( "WGS84" ) );
-#endif
 
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );

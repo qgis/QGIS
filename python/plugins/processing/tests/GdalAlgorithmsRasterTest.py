@@ -100,10 +100,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
     def get_param_value_and_expected_string_for_custom_crs(proj_def):
         crs = QgsCoordinateReferenceSystem.fromProj(proj_def)
         custom_crs = f'proj4: {proj_def}'
-        if QgsProjUtils.projVersionMajor() >= 6:
-            return custom_crs, crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL).replace('"', '"""')
-        else:
-            return custom_crs, proj_def
+        return custom_crs, crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL).replace('"', '"""')
 
     def testAssignProjection(self):
         context = QgsProcessingContext()

@@ -446,17 +446,16 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(layer.crs().authid(), 'EPSG:3111')
 
         # custom CRS
-        if QgsProjUtils.projVersionMajor() >= 6:
-            crs = QgsCoordinateReferenceSystem.fromProj('+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs')
-            layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, crs)
-            self.assertTrue(layer.isValid())
-            self.assertTrue(layer.crs().isValid())
-            self.assertEqual(layer.crs().toProj(), '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
+        crs = QgsCoordinateReferenceSystem.fromProj('+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs')
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, crs)
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.crs().isValid())
+        self.assertEqual(layer.crs().toProj(), '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
 
-            # clone it, just to check
-            layer2 = layer.clone()
-            self.assertEqual(layer2.crs().toProj(),
-                             '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
+        # clone it, just to check
+        layer2 = layer.clone()
+        self.assertEqual(layer2.crs().toProj(),
+                         '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
 
         # fields
         fields = QgsFields()

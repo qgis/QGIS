@@ -194,11 +194,8 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      */
     QString formatScope( const QString &scope );
 
-#if PROJ_VERSION_MAJOR>=6
     QList< QgsDatumTransform::TransformDetails > mDatumTransforms;
-#else
-    QList< QgsDatumTransform::TransformPair > mDatumTransforms;
-#endif
+
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
     OperationDetails mPreviousOp;

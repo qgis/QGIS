@@ -31,13 +31,9 @@
 
 #include "qgscoordinatereferencesystem.h"
 
-#if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
 #include "qgsprojutils.h"
 #include "qgsreadwritelocker.h"
-#else
-#include <ogr_srs_api.h>
-#endif
 
 #ifdef DEBUG
 typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
@@ -50,9 +46,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
   public:
 
     explicit QgsCoordinateReferenceSystemPrivate()
-#if PROJ_VERSION_MAJOR<6
-      : mCRS( OSRNewSpatialReference( nullptr ) )
-#endif
     {
     }
 
@@ -67,43 +60,23 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mSRID( other.mSRID )
       , mAuthId( other.mAuthId )
       , mIsValid( other.mIsValid )
-#if PROJ_VERSION_MAJOR >= 6
       , mPj()
-#else
-      , mCRS( nullptr )
-#endif
       , mProj4( other.mProj4 )
       , mWktPreferred( other.mWktPreferred )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
-#if PROJ_VERSION_MAJOR >= 6
       , mProjObjects()
-#endif
     {
-#if PROJ_VERSION_MAJOR<6
-      if ( mIsValid )
-      {
-        mCRS = OSRClone( other.mCRS );
-      }
-      else
-      {
-        mCRS = OSRNewSpatialReference( nullptr );
-      }
-#endif
     }
 
     ~QgsCoordinateReferenceSystemPrivate()
     {
-#if PROJ_VERSION_MAJOR>=6
       QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
       if ( !mProjObjects.empty() || mPj )
       {
         locker.changeMode( QgsReadWriteLocker::Write );
         cleanPjObjects();
       }
-#else
-      OSRDestroySpatialReference( mCRS );
-#endif
     }
 
     //! The internal sqlite3 srs.db primary key for this CRS
@@ -132,8 +105,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     //! Whether this CRS is properly defined and valid
     bool mIsValid = false;
-
-#if PROJ_VERSION_MAJOR>=6
 
     // this is the "master" proj object, to be used as a template for new proj objects created on different threads ONLY.
     // Always use threadLocalProjObject() instead of this.
@@ -182,10 +153,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       return static_cast< bool >( mPj );
     }
 
-#else
-    OGRSpatialReferenceH mCRS = nullptr;
-#endif
-
     mutable QString mProj4;
 
     mutable QString mWktPreferred;
@@ -196,7 +163,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     //! Whether this is a coordinate system has inverted axis
     mutable bool mAxisInverted = false;
 
-#if PROJ_VERSION_MAJOR>=6
   private:
     mutable QReadWriteLock mProjLock{};
     mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects{};
@@ -245,7 +211,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
       return mProjObjects.isEmpty();
     }
-#endif
 
   private:
     QgsCoordinateReferenceSystemPrivate &operator= ( const QgsCoordinateReferenceSystemPrivate & ) = delete;

@@ -40,7 +40,6 @@ class QDomNode;
 class QDomDocument;
 class QgsCoordinateReferenceSystemPrivate;
 
-#if PROJ_VERSION_MAJOR>=6
 #ifndef SIP_RUN
 struct PJconsts;
 typedef struct PJconsts PJ;
@@ -51,7 +50,6 @@ typedef struct pj_ctx PJ_CONTEXT;
 #else
 struct projCtx_t;
 typedef struct projCtx_t PJ_CONTEXT;
-#endif
 #endif
 #endif
 
@@ -819,7 +817,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #endif
 
 #ifndef SIP_RUN
-#if PROJ_VERSION_MAJOR>=6
 
     /**
      * Returns the underlying PROJ PJ object corresponding to the CRS, or NULLPTR
@@ -831,7 +828,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.8
      */
     PJ *projObject() const;
-#endif
 #endif
 
     /**
@@ -900,7 +896,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Set the WKT string
      */
-    bool setWktString( const QString &wkt, bool allowProjFallback = true );
+    bool setWktString( const QString &wkt );
 
     /**
      * Print the description if debugging
@@ -931,7 +927,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for getting number of user CRS already in db
     static long getRecordCount();
 
-#if PROJ_VERSION_MAJOR>=6
     bool loadFromAuthCode( const QString &auth, const QString &code );
 
     /**
@@ -947,7 +942,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * criteria).
      */
     long matchToUserCrs() const;
-#endif
 
     /**
      * Initialize the CRS object by looking up CRS database in path given in db argument,
@@ -957,24 +951,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     bool createFromWktInternal( const QString &wkt, const QString &description );
 
-#if PROJ_VERSION_MAJOR<6 // not used for proj >= 6.0
-    static bool loadIds( QHash<int, QString> &wkts );
-    static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
-
-    //! Update datum shift definitions from GDAL data. Used by syncDb()
-    static bool syncDatumTransform( const QString &dbPath );
-#endif
-
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
     QString mValidationHint;
 
-#if PROJ_VERSION_MAJOR>=6
     friend class QgsProjContext;
 
     // Only meant to be called by QgsProjContext::~QgsProjContext()
     static void removeFromCacheObjectsBelongingToCurrentThread( PJ_CONTEXT *pj_context );
-#endif
 
     //! Function for CRS validation. May be NULLPTR.
     static CUSTOM_CRS_VALIDATION sCustomSrsValidation;

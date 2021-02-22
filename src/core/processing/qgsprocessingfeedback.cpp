@@ -20,11 +20,7 @@
 #include "qgsprocessingprovider.h"
 #include <ogr_api.h>
 #include <gdal_version.h>
-#if PROJ_VERSION_MAJOR > 4
 #include <proj.h>
-#else
-#include <proj_api.h>
-#endif
 
 #ifdef HAVE_PDAL
 #include <pdal/pdal.hpp>
@@ -105,12 +101,8 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
   pushDebugInfo( tr( "GDAL version: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
   pushDebugInfo( tr( "GEOS version: %1" ).arg( GEOSversion() ) );
 
-#if PROJ_VERSION_MAJOR > 4
   PJ_INFO info = proj_info();
   pushDebugInfo( tr( "PROJ version: %1" ).arg( info.release ) );
-#else
-  pushDebugInfo( tr( "PROJ version: %1" ).arg( PJ_VERSION ) );
-#endif
 
 #ifdef HAVE_PDAL
 #if PDAL_VERSION_MAJOR_INT > 1 || (PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7)
