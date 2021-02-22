@@ -2133,7 +2133,7 @@ void TestQgsProcessingAlgs::lineDensity()
       {
         double expectedValue = expectedRasterBlock->value( row, column );
         double outputValue = outputRasterBlock->value( row, column );
-        QGSCOMPARENEAR( outputValue, expectedValue, 0.000000000015 );
+        QGSCOMPARENEAR( outputValue, expectedValue, 0.0000000002 );
       }
     }
   }
