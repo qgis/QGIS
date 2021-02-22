@@ -10,7 +10,7 @@ information system (GIS) that runs on most Unix platforms, Windows, and MacOS.
 
 Features include
 
-<img align="right" src="image1.png" width="200" height="150" alt="example image"><div style="min-height:180;">
+<img align="right" src="https://www.qgis.org/en/_images/qgisdesktopscreenshot.jpg" width="250" alt="example layer display"><div style="min-height:240;">
 
 **1. Flexible visualization and editing of geospatial data**
 * Raster, vector, mesh layers in a range of industry-standard formats
@@ -20,15 +20,15 @@ Features include
 * Visual and numerical and digitizing and editing
 * Temporal support
 
-</div><img align="right" src="image2.png" width="200" height="150" alt="example image"><div style="min-height:180;">
-
+</div><img align="right" src="https://live.staticflickr.com/65535/50870685936_e1ae8c29bd_k.jpg" width="250" alt="example image"><div style="min-height:270;">
+  
 **2. Beautiful cartography**
 * Fine control over symbology, labeling, legends and additional graphical elements
 * Saved map layouts creation and recreation of maps of specified scale, extent, and style
 * Atlases to generate a group of maps with same style and layout
 * Flexible output as image (raster), PDF, SVG; camera-ready or suitable for further customization 
 
-</div><img align="right" src="image3.png" width="200" height="150" alt="example image"><div style="min-height:180;">
+</div><img align="right" src="https://docs.qgis.org/3.16/en/_images/models_model.png" width="250" alt="example modeler"><div style="min-height:180;">
 
 **3. Advanced GIS analysis**
 * Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
@@ -36,7 +36,7 @@ Features include
 * Graphical modeler and scripting
 * Access to additional algorithms via GDAL, GRASS, SAGA, etc.
 
-</div><img align="right" src="image4.png" width="200" height="150" alt="example image"><div style="min-height:180;">
+</div><img align="right" src="https://docs.qgis.org/3.16/en/_images/python_console_editor.png" width="250" alt="example image"><div style="min-height:220;">
 
 **4. Wide customization**
 * Fully customizable user interface
@@ -44,7 +44,7 @@ Features include
 * Rich ecosystem of plugins, data connectors, advanced analysis and charting tools, in-the-field data capture
 * Python and C++ API for standalone applications
 
-</div><img align="right" src="image5.png" width="200" height="150" alt="example image"><div style="min-height:180;">
+</div><img align="right" src="https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png" width="250" alt="server image"><div style="min-height:160;">
 
 **5. QGIS server**
 * Headless map server, running on Windows, Mac OSX, Linux or in a docker container, that shares the same code base as QGIS
