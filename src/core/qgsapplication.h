@@ -620,7 +620,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's settings registry, used for managing application settings.
-     * \since QGIS 3.17
+     * \since QGIS 3.18
      */
     static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE;
 

@@ -663,7 +663,7 @@ wide background task handling.
 %Docstring
 Returns the application's settings registry, used for managing application settings.
 
-.. versionadded:: 3.17
+.. versionadded:: 3.18
 %End
 
     static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
