@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #ifndef QGSRASTERTRANSFORMSETTINGSDIALOG_H
-#define QGSRASTER TRANSFORMSETTINGSDIALOG_H
+#define QGSRASTERTRANSFORMSETTINGSDIALOG_H
 
 #include <QDialog>
 
 #include "qgsgeorefmainwindow.h"
 
-#include "ui_qgSrastertransformsettingsdialogbase.h"
+#include "ui_qgsrastertransformsettingsdialogbase.h"
 
 class QgsRasterTransformSettingsDialog : public QDialog, private Ui::QgsRasterTransformSettingsDialog
 {

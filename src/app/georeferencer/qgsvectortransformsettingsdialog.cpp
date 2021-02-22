@@ -114,7 +114,7 @@ void QgsVectorTransformSettingsDialog::getTransformSettings( QgsGeorefTransform:
   if ( cmbTransformType->currentIndex() == -1 )
     tp = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
   else
-    tp = static_cast< QgsGcpTransformerInterface::TransformMethod >( QgsGeorefTransform::TransformMethod )cmbTransformType->currentData().toInt() );
+    tp = static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() );
 
   if ( mWorldFileCheckBox->isChecked() )
   {

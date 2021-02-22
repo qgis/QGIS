@@ -486,16 +486,9 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
     {
       return false;
     }
-
-    //  showMessageInLog(tr("Output raster"), mModifiedFileName.isEmpty() ? tr("Non set") : mModifiedFileName);
-    //  showMessageInLog(tr("Target projection"), mProjection.isEmpty() ? tr("Non set") : mProjection);
-    //  logTransformOptions();
-    //  logRequaredGCPs();
-
-  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
-  {
-    mActionLinkGeorefToQgis->setEnabled( true );
-    mActionLinkQGisToGeoref->setEnabled( true );
+    d.getTransformSettings( mTransformParam, mModifiedFileName, mProjection,
+                            mPdfOutputMapFile, mPdfOutputFile, mSaveGcp,
+                            mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
   }
   else
   {
@@ -507,30 +500,30 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
 
     d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
                             mModifiedFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
-    mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
-    mGeorefTransform.selectTransformParametrisation( mTransformParam );
-    mGCPListWidget->setGeorefTransform( &mGeorefTransform );
-    mWorldFileName = guessWorldFileName( mFileName );
-
-    //  showMessageInLog(tr("Output raster"), mModifiedFileName.isEmpty() ? tr("Non set") : mModifiedFileName);
-    //  showMessageInLog(tr("Target projection"), mProjection.isEmpty() ? tr("Non set") : mProjection);
-    //  logTransformOptions();
-    //  logRequaredGCPs();
-
-    if ( QgsGeorefTransform::InvalidTransform != mTransformParam )
-    {
-      mActionLinkGeorefToQgis->setEnabled( true );
-      mActionLinkQGisToGeoref->setEnabled( true );
-    }
-    else
-    {
-      mActionLinkGeorefToQgis->setEnabled( false );
-      mActionLinkQGisToGeoref->setEnabled( false );
-    }
-
-    updateTransformParamLabel();
-    return true;
   }
+  mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
+  mGeorefTransform.selectTransformParametrisation( mTransformParam );
+  mGCPListWidget->setGeorefTransform( &mGeorefTransform );
+  mWorldFileName = guessWorldFileName( mFileName );
+
+  //  showMessageInLog(tr("Output raster"), mModifiedFileName.isEmpty() ? tr("Non set") : mModifiedFileName);
+  //  showMessageInLog(tr("Target projection"), mProjection.isEmpty() ? tr("Non set") : mProjection);
+  //  logTransformOptions();
+  //  logRequaredGCPs();
+
+  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
+  {
+    mActionLinkGeorefToQgis->setEnabled( true );
+    mActionLinkQGisToGeoref->setEnabled( true );
+  }
+  else
+  {
+    mActionLinkGeorefToQgis->setEnabled( false );
+    mActionLinkQGisToGeoref->setEnabled( false );
+  }
+
+  updateTransformParamLabel();
+  return true;
 }
 
 void QgsGeoreferencerMainWindow::generateGDALScript()
@@ -540,11 +533,19 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
 
   if ( mDataType == QgsGeoreferencerMainWindow::VECTOR )
   {
+    switch ( mTransformParam )
+    {
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
     case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
     QString vectorCommand = generateGDALogr2ogrCommand( mTransformParam - 1 );
+    FALLTHROUGH
+    default:
+      mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
+                                .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
+                                , Qgis::Critical );
+    }
   }
   else
   {
@@ -1591,11 +1592,14 @@ bool QgsGeoreferencerMainWindow::georeference()
     return false;
 
 
-  if ( mDataType == QgsGeoreferencerMainWindow::VECTOR )
+  if ( mDataType == QgsGeoreferencerMainWindow::VECTOR && mVLayer )
   {
-    QString command = generateGDALogr2ogrCommand( mTransformParam - 1 );
-    QgsVectorWarper warper = QgsVectorWarper();
-    bool success = warper.executeGDALCommand( command );
+    bool success;
+    QgsVectorWarper warper = QgsVectorWarper( mTransformParam, mPoints, mProjection, );
+    if ( mModifiedFileName.isEmpty() )
+      success = warper.executeTransformInplace( mVLayer );
+    else
+      success = warper.executeTransform( mVLayer, mModifiedFileName );
 
     if ( !mPdfOutputFile.isEmpty() )
     {
@@ -1614,7 +1618,7 @@ bool QgsGeoreferencerMainWindow::georeference()
   }
 
   if ( mModifiedFileName.isEmpty() && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
-       QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
+                                        QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPointXY origin;
     double pixelXSize, pixelYSize, rotation;

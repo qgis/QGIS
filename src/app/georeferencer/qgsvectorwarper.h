@@ -20,25 +20,44 @@
 
 #include <vector>
 
+class QgsGcpGeometryTransformer;
+class QgsCoordinateReferenceSystem;
+class QgsGCPList;
 class QWidget;
 
 /**
  * Base implementation of QgsVectorWarper.
- * Creates the process to perform the ogr2ogr call.
+ * \param method QgsGcpTransofmer method, based on gdal transformation methods
+ * \param points data points used in the georeferencer
+ * \param destCrs destination projection of the vector layer
  * \since QGIS 3.20
  */
 class QgsVectorWarper
 {
   public:
-    explicit QgsVectorWarper();
+    explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QgsGCPList points,
+                              const QgsCoordinateReferenceSystem destCrs );
 
     /**
-     * Functions that creates a QgsBlockingProcess to call ogr2ogr.
-     * \param command command string to use for the process.
+     * Functions to reproject features of the vector layer
+     * \param layer source vector layer
      * \return True if operation finished properly, otherwise false.
      * \since QGIS 3.20
      */
-    bool executeGDALCommand( const QString &fused_command );
+    bool executeTransformInplace( QgsVectorLayer *layer );
+
+    /**
+     * Functions to reproject features of the vector layer to a new source
+     * \param layer source vector layer
+     * \return True if operation finished properly, otherwise false.
+     * \since QGIS 3.20
+     */
+    bool executeTransform( const QgsVectorLayer *layer, const QString outputName );
+
+  private:
+    QgsGcpGeometryTransformer mTransformer;
+    const QgsCoordinateReferenceSystem mSrcCRS;
+    const QgsCoordinateReferenceSystem mDestCRS;
 
 };
 
