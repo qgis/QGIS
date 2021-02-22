@@ -12,7 +12,7 @@ dnf config-manager --add-repo https://copr.fedorainfracloud.org/coprs/smani/ming
 dnf install -y --nogpgcheck \
   mingw64-dlfcn \
   mingw64-exiv2 \
-  mingw64-ccache \
+  ccache \
   mingw64-gcc-c++ \
   mingw64-gdal \
   mingw64-gdb \
