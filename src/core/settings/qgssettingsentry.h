@@ -29,7 +29,7 @@ class QgsSettingsGroup;
  * \ingroup core
  * \class QgsSettingsEntry
  *
- * \since QGIS 3.17
+ * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsEntry
 {
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsSettingsEntry
  * \class QgsSettingsEntryString
  * \ingroup core
  * A string settings entry.
-  * \since QGIS 3.17
+  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 {
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
  * \class QgsSettingsEntryStringList
  * \ingroup core
  * A string list settings entry.
-  * \since QGIS 3.17
+  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
 {
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
  * \class QgsSettingsEntryBool
  * \ingroup core
  * A boolean settings entry.
-  * \since QGIS 3.17
+  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
 {
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
  * \class QgsSettingsEntryInteger
  * \ingroup core
  * An integer settings entry.
-  * \since QGIS 3.17
+  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
 {
@@ -272,7 +272,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
  * \class QgsSettingsEntryDouble
  * \ingroup core
  * A double settings entry.
-  * \since QGIS 3.17
+  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
 {
@@ -323,7 +323,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
  * \class QgsSettingsEntryEnum
  * \ingroup core
  * An enum settings entry.
-  * \since QGIS 3.17
+  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
 {

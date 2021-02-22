@@ -468,11 +468,6 @@ set(QGIS_CORE_SRCS
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
   qgssettings.cpp
-  qgssettingsentry.cpp
-  qgssettingsgroup.cpp
-  qgssettingsmap.cpp
-  qgssettingsregistry.cpp
-  qgssettingsregistrycore.cpp
   qgsarchive.cpp
   qgstestutils.cpp
   qgsziputils.cpp
@@ -715,6 +710,13 @@ set(QGIS_CORE_SRCS
 
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
+
+  settings/qgssettingsentry.cpp
+  settings/qgssettingsgroup.cpp
+  settings/qgssettingsmap.cpp
+  settings/qgssettingsregistry.cpp
+  settings/qgssettingsregistrycore.cpp
+  settings/qgssettingsregistrygui.cpp
 
   validity/qgsabstractvaliditycheck.cpp
   validity/qgsvaliditycheckcontext.cpp
@@ -1031,11 +1033,6 @@ set(QGIS_CORE_HDRS
   qgsscalecalculator.h
   qgsscaleutils.h
   qgssettings.h
-  qgssettingsentry.h
-  qgssettingsgroup.h
-  qgssettingsmap.h
-  qgssettingsregistry.h
-  qgssettingsregistrycore.h
   qgssimplifymethod.h
   qgssnappingconfig.h
   qgssnappingutils.h
@@ -1554,6 +1551,13 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  settings/qgssettingsentry.h
+  settings/qgssettingsgroup.h
+  settings/qgssettingsmap.h
+  settings/qgssettingsregistry.h
+  settings/qgssettingsregistrycore.h
+  settings/qgssettingsregistrygui.h
+
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
@@ -1791,6 +1795,7 @@ target_include_directories(qgis_core PUBLIC
   raster
   renderer
   scalebar
+  settings
   symbology
   textrenderer
   validity

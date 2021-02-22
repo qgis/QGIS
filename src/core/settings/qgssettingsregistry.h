@@ -28,7 +28,7 @@
  * \ingroup core
  * \class QgsSettingsRegistry
  *
- * \since QGIS 3.17
+ * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsRegistry : public QObject
 {
