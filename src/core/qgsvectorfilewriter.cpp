@@ -548,21 +548,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       QString layerName = vectorFileName.left( vectorFileName.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
-#if PROJ_VERSION_MAJOR<6
-      if ( prjFile.open( QIODevice::WriteOnly  | QIODevice::Truncate ) )
-      {
-        QTextStream prjStream( &prjFile );
-        prjStream << srs.toWkt().toLocal8Bit().constData() << endl;
-        prjFile.close();
-      }
-      else
-      {
-        QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
-      }
-#else
       if ( prjFile.exists() )
         prjFile.remove();
-#endif
     }
   }
 

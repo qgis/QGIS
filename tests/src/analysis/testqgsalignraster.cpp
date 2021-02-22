@@ -235,25 +235,6 @@ class TestAlignRaster : public QObject
       QCOMPARE( out.identify( 1308405, -746611 ), 10. );
     }
 
-    void testInvalidReprojection()
-    {
-#if PROJ_VERSION_MAJOR<6 // the projection works on proj 6 builds
-      QString tmpFile( _tempFile( QStringLiteral( "reproject-invalid" ) ) );
-
-      // reprojection to British National Grid with raster in Jakarta area clearly cannot work
-      QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:27700" ) );
-      QVERIFY( destCRS.isValid() );
-
-      QgsAlignRaster align;
-      QgsAlignRaster::List rasters;
-      rasters << QgsAlignRaster::Item( SRC_FILE, tmpFile );
-      align.setRasters( rasters );
-      align.setParametersFromRaster( SRC_FILE, destCRS.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
-      bool res = align.run();
-      QVERIFY( !res );
-#endif
-    }
-
     void testSuggestedReferenceLayer()
     {
       QgsAlignRaster align;

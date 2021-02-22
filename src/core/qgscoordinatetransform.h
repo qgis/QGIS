@@ -670,13 +670,11 @@ class CORE_EXPORT QgsCoordinateTransform
 #endif
 
 #ifndef SIP_RUN
-#if PROJ_VERSION_MAJOR>=6
   protected:
     friend class QgsProjContext;
 
     // Only meant to be called by QgsProjContext::~QgsProjContext()
     static void removeFromCacheObjectsBelongingToCurrentThread( void *pj_context );
-#endif
 #endif
   private:
 
@@ -694,16 +692,10 @@ class CORE_EXPORT QgsCoordinateTransform
     bool mDisableFallbackHandler = false;
     mutable bool mFallbackOperationOccurred = false;
 
-#if PROJ_VERSION_MAJOR>=6
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
                        const QgsCoordinateReferenceSystem &dest,
                        const QString &coordinateOperationProj, bool allowFallback );
-#else
-    bool setFromCache( const QgsCoordinateReferenceSystem &src,
-                       const QgsCoordinateReferenceSystem &dest,
-                       int srcDatumTransform,
-                       int destDatumTransform );
-#endif
+
     void addToCache();
 
     // cache

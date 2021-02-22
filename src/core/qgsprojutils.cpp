@@ -22,12 +22,7 @@
 #include <QSet>
 #include <QRegularExpression>
 
-#if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
-#else
-#include <proj_api.h>
-#endif
-
 
 #if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
 thread_local QgsProjContext QgsProjContext::sProjContext;
@@ -37,24 +32,16 @@ QThreadStorage< QgsProjContext * > QgsProjContext::sProjContext;
 
 QgsProjContext::QgsProjContext()
 {
-#if PROJ_VERSION_MAJOR>=6
   mContext = proj_context_create();
-#else
-  mContext = pj_ctx_alloc();
-#endif
 }
 
 QgsProjContext::~QgsProjContext()
 {
-#if PROJ_VERSION_MAJOR>=6
   // Call removeFromCacheObjectsBelongingToCurrentThread() before
   // destroying the context
   QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( mContext );
   QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread( mContext );
   proj_context_destroy( mContext );
-#else
-  pj_ctx_free( mContext );
-#endif
 }
 
 PJ_CONTEXT *QgsProjContext::get()
@@ -76,7 +63,6 @@ PJ_CONTEXT *QgsProjContext::get()
 #endif
 }
 
-#if PROJ_VERSION_MAJOR>=6
 void QgsProjUtils::ProjPJDeleter::operator()( PJ *object )
 {
   proj_destroy( object );
@@ -308,11 +294,8 @@ QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
 }
 #endif
 
-#endif
-
 QStringList QgsProjUtils::searchPaths()
 {
-#if PROJ_VERSION_MAJOR>=6
   const QString path( proj_info().searchpath );
   QStringList paths;
 #ifdef Q_OS_WIN
@@ -334,7 +317,4 @@ QStringList QgsProjUtils::searchPaths()
     res << p;
   }
   return res;
-#else
-  return QStringList();
-#endif
 }

@@ -412,11 +412,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 //
 #include <ogr_api.h>
 #include <gdal_version.h>
-#if PROJ_VERSION_MAJOR > 4
 #include <proj.h>
-#else
-#include <proj_api.h>
-#endif
 
 #ifdef HAVE_PDAL
 #include <pdal/pdal.hpp>
@@ -5335,13 +5331,9 @@ void QgisApp::about()
 
     versionString += QLatin1String( "</tr><tr>" );
 
-#if PROJ_VERSION_MAJOR > 4
     PJ_INFO info = proj_info();
     versionString += QStringLiteral( "<td>%1</td><td>%2.%3.%4</td>" ).arg( tr( "Compiled against PROJ" ) ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH );
     versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PROJ" ) ).arg( info.release );
-#else
-    versionString += QStringLiteral( "<td>%1</td><td colspan=3>%2</td>" ).arg( tr( "PROJ.4 Version" ), QString::number( PJ_VERSION ) );
-#endif
 
     versionString += QLatin1String( "</tr><tr>" );
 

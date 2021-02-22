@@ -471,12 +471,7 @@ class GdalUtils:
         if crs.authid().upper().startswith('EPSG:') or crs.authid().upper().startswith('IGNF:') or crs.authid().upper().startswith('ESRI:'):
             return crs.authid()
 
-        if QgsProjUtils.projVersionMajor() >= 6:
-            # use WKT
-            return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
-
-        # fallback to proj4 string, stripping out newline characters
-        return crs.toProj().replace('\n', ' ').replace('\r', ' ')
+        return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
 
     @classmethod
     def tr(cls, string, context=''):

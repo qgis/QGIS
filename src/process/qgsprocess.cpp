@@ -39,11 +39,7 @@
 
 #include <ogr_api.h>
 #include <gdal_version.h>
-#if PROJ_VERSION_MAJOR > 4
 #include <proj.h>
-#else
-#include <proj_api.h>
-#endif
 #include <json.hpp>
 
 ConsoleFeedback::ConsoleFeedback( bool useJson )
@@ -1082,12 +1078,8 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
   json.insert( QStringLiteral( "gdal_version" ), GDALVersionInfo( "RELEASE_NAME" ) );
   json.insert( QStringLiteral( "geos_version" ), GEOSversion() );
 
-#if PROJ_VERSION_MAJOR > 4
   PJ_INFO info = proj_info();
   json.insert( QStringLiteral( "proj_version" ), info.release );
-#else
-  json.insert( QStringLiteral( "proj_version" ), PJ_VERSION );
-#endif
 }
 
 void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, const QgsProcessingAlgorithm *algorithm )

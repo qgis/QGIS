@@ -17,12 +17,8 @@
 #include "qgshanacrsutils.h"
 #include "qgshanaexception.h"
 
-#if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
 #include "qgsprojutils.h"
-#else
-#include <ogr_srs_api.h>
-#endif
 
 double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs )
 {
@@ -31,7 +27,6 @@ double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs
     throw QgsHanaException( "Unable to retrieve angular units from a spatial reference system" );
   };
 
-#if PROJ_VERSION_MAJOR>=6
   PJ *pjCrs = crs.projObject();
   if ( !pjCrs )
     throwUnableToGetAngularUnits();
@@ -56,21 +51,6 @@ double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs
   if ( !ret )
     throwUnableToGetAngularUnits();
   return factor;
-#else
-  OGRSpatialReferenceH hCRS = OSRNewSpatialReference( nullptr );
-  int errcode = OSRImportFromProj4( hCRS, crs.toProj().toUtf8() );
-  if ( errcode != OGRERR_NONE )
-  {
-    if ( hCRS )
-      OSRRelease( hCRS );
-    throwUnableToGetAngularUnits();
-  }
-
-  char *angularUnits = nullptr;
-  double factor = OSRGetAngularUnits( hCRS, &angularUnits );
-  OSRRelease( hCRS );
-  return factor;
-#endif
 }
 
 bool QgsHanaCrsUtils::identifyCrs( const QgsCoordinateReferenceSystem &crs, QString &name, long &srid )

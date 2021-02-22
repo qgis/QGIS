@@ -33,44 +33,12 @@
 
 #include <QSharedData>
 
-#if PROJ_VERSION_MAJOR<6
-typedef void *projPJ;
-#ifndef USE_THREAD_LOCAL
-#include <QThreadStorage>
-#endif
-typedef QPair< projPJ, projPJ > ProjData;
-#else
 struct PJconsts;
 typedef struct PJconsts PJ;
 typedef PJ *ProjData;
-#endif
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
-
-#if PROJ_VERSION_MAJOR<6
-
-typedef void *projCtx;
-
-/**
- * \class QgsProjContextStore
- * \ingroup core
- * \brief Used to create and store a proj projCtx object, correctly freeing the context upon destruction.
- */
-class QgsProjContextStore
-{
-  public:
-
-    QgsProjContextStore();
-    ~QgsProjContextStore();
-
-    projCtx get() { return context; }
-
-  private:
-    projCtx context;
-};
-
-#endif
 
 class QgsCoordinateTransformPrivate : public QSharedData
 {
@@ -102,13 +70,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     ProjData threadLocalProjData();
 
-#if PROJ_VERSION_MAJOR>=6
     int mAvailableOpCount = -1;
     ProjData threadLocalFallbackProjData();
 
     // Only meant to be called by QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread()
     bool removeObjectsBelongingToCurrentThread( void *pj_context );
-#endif
 
     /**
      * Flag to indicate whether the transform is valid (ie has a valid
@@ -139,20 +105,6 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     //! True if the proj transform corresponds to the reverse direction, and must be flipped when transforming...
     bool mIsReversed = false;
-
-#if PROJ_VERSION_MAJOR<6
-
-    /**
-     * Thread local proj context storage. A new proj context will be created
-     * for every thread.
-     */
-#ifdef USE_THREAD_LOCAL
-    static thread_local QgsProjContextStore mProjContext;
-#else
-    static QThreadStorage< QgsProjContextStore * > mProjContext;
-#endif
-#endif
-
 
     QReadWriteLock mProjLock;
     QMap < uintptr_t, ProjData > mProjProjections;
@@ -208,14 +160,6 @@ class QgsCoordinateTransformPrivate : public QSharedData
         const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
 
   private:
-
-#if PROJ_VERSION_MAJOR<6
-    //! Removes +nadgrids and +towgs84 from proj4 string
-    Q_DECL_DEPRECATED  QString stripDatumTransform( const QString &proj4 ) const;
-
-    //! In certain situations, null grid shifts have to be added to src / dst proj string
-    Q_DECL_DEPRECATED void addNullGridShifts( QString &srcProjString, QString &destProjString, int sourceDatumTransform, int destinationDatumTransform ) const;
-#endif
 
     void freeProj();
 

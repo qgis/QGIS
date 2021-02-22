@@ -5406,7 +5406,6 @@ void TestProcessingGui::testColorWrapper()
 
 void TestProcessingGui::testCoordinateOperationWrapper()
 {
-#if PROJ_VERSION_MAJOR>=6
   auto testWrapper = []( QgsProcessingGui::WidgetType type )
   {
     QgsProcessingParameterCoordinateOperation param( QStringLiteral( "op" ), QStringLiteral( "op" ) );
@@ -5513,7 +5512,6 @@ void TestProcessingGui::testCoordinateOperationWrapper()
   QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
-#endif
 }
 
 void TestProcessingGui::mapLayerComboBox()

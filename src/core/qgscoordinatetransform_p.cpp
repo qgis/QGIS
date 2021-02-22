@@ -21,13 +21,9 @@
 #include "qgsreadwritelocker.h"
 #include "qgsmessagelog.h"
 
-#if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
 #include <proj.h>
 #include <proj_experimental.h>
-#else
-#include <proj_api.h>
-#endif
 
 #include <sqlite3.h>
 
@@ -51,25 +47,6 @@ std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
 std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                      const QgsCoordinateReferenceSystem &destinationCrs,
                      const QgsDatumTransform::TransformDetails &desiredOperation )> QgsCoordinateTransformPrivate::sMissingGridUsedByContextHandler = nullptr;
-
-#if PROJ_VERSION_MAJOR<6
-#ifdef USE_THREAD_LOCAL
-thread_local QgsProjContextStore QgsCoordinateTransformPrivate::mProjContext;
-#else
-QThreadStorage< QgsProjContextStore * > QgsCoordinateTransformPrivate::mProjContext;
-#endif
-
-QgsProjContextStore::QgsProjContextStore()
-{
-  context = pj_ctx_alloc();
-}
-
-QgsProjContextStore::~QgsProjContextStore()
-{
-  pj_ctx_free( context );
-}
-
-#endif
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
@@ -100,9 +77,7 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )
   : QSharedData( other )
-#if PROJ_VERSION_MAJOR >= 6
   , mAvailableOpCount( other.mAvailableOpCount )
-#endif
   , mIsValid( other.mIsValid )
   , mShortCircuit( other.mShortCircuit )
   , mSourceCRS( other.mSourceCRS )
@@ -117,10 +92,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mProjProjections()
   , mProjFallbackProjections()
 {
-#if PROJ_VERSION_MAJOR < 6
-  //must reinitialize to setup mSourceProjection and mDestinationProjection
-  initialize();
-#endif
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -146,9 +117,7 @@ void QgsCoordinateTransformPrivate::invalidate()
 {
   mShortCircuit = true;
   mIsValid = false;
-#if PROJ_VERSION_MAJOR >= 6
   mAvailableOpCount = -1;
-#endif
 }
 
 bool QgsCoordinateTransformPrivate::initialize()
@@ -184,39 +153,6 @@ bool QgsCoordinateTransformPrivate::initialize()
   // init the projections (destination and source)
   freeProj();
 
-#if PROJ_VERSION_MAJOR < 6
-  Q_NOWARN_DEPRECATED_PUSH
-  int sourceDatumTransform = mSourceDatumTransform;
-  int destDatumTransform = mDestinationDatumTransform;
-  bool useDefaultDatumTransform = ( sourceDatumTransform == - 1 && destDatumTransform == -1 );
-
-  mSourceProjString = mSourceCRS.toProj();
-  if ( !useDefaultDatumTransform )
-  {
-    mSourceProjString = stripDatumTransform( mSourceProjString );
-  }
-  if ( sourceDatumTransform != -1 )
-  {
-    mSourceProjString += ( ' ' + QgsDatumTransform::datumTransformToProj( sourceDatumTransform ) );
-  }
-
-  mDestProjString = mDestCRS.toProj();
-  if ( !useDefaultDatumTransform )
-  {
-    mDestProjString = stripDatumTransform( mDestProjString );
-  }
-  if ( destDatumTransform != -1 )
-  {
-    mDestProjString += ( ' ' +  QgsDatumTransform::datumTransformToProj( destDatumTransform ) );
-  }
-
-  if ( !useDefaultDatumTransform )
-  {
-    addNullGridShifts( mSourceProjString, mDestProjString, sourceDatumTransform, destDatumTransform );
-  }
-  Q_NOWARN_DEPRECATED_POP
-#endif
-
   // create proj projections for current thread
   ProjData res = threadLocalProjData();
 
@@ -225,15 +161,8 @@ bool QgsCoordinateTransformPrivate::initialize()
   QgsDebugMsg( "To proj   : " + mDestCRS.toProj() );
 #endif
 
-#if PROJ_VERSION_MAJOR>=6
   if ( !res )
     mIsValid = false;
-#else
-  if ( !res.first || !res.second )
-  {
-    mIsValid = false;
-  }
-#endif
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   if ( mIsValid )
@@ -266,7 +195,6 @@ bool QgsCoordinateTransformPrivate::initialize()
 void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTransformContext &context )
 {
   // recalculate datum transforms from context
-#if PROJ_VERSION_MAJOR >= 6
   if ( mSourceCRS.isValid() && mDestCRS.isValid() )
   {
     mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
@@ -279,16 +207,8 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
     mShouldReverseCoordinateOperation = false;
     mAllowFallbackTransforms = false;
   }
-#else
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
-  mSourceDatumTransform = transforms.sourceTransformId;
-  mDestinationDatumTransform = transforms.destinationTransformId;
-  Q_NOWARN_DEPRECATED_POP
-#endif
 }
 
-#if PROJ_VERSION_MAJOR>=6
 static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
 {
   QStringList *dest = reinterpret_cast< QStringList * >( user_data );
@@ -309,32 +229,13 @@ static void proj_logger( void *, int level, const char *message )
     QgsDebugMsgLevel( QString( message ), 3 );
   }
 }
-#endif
 
 ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
 
-#if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *context = QgsProjContext::get();
   QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( context ) );
-#else
-#ifdef USE_THREAD_LOCAL
-  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( mProjContext.get() ) );
-#else
-  projCtx pContext = nullptr;
-  if ( mProjContext.hasLocalData() )
-  {
-    pContext = mProjContext.localData()->get();
-  }
-  else
-  {
-    mProjContext.setLocalData( new QgsProjContextStore() );
-    pContext = mProjContext.localData()->get();
-  }
-  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( pContext ) );
-#endif
-#endif
 
   if ( it != mProjProjections.constEnd() )
   {
@@ -345,7 +246,6 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   // proj projections don't exist yet, so we need to create
   locker.changeMode( QgsReadWriteLocker::Write );
 
-#if PROJ_VERSION_MAJOR>=6
   // use a temporary proj error collector
   QStringList projErrors;
   proj_log_func( context, &projErrors, proj_collecting_logger );
@@ -585,23 +485,9 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 
   ProjData res = transform.release();
   mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
-#else
-#ifdef USE_THREAD_LOCAL
-  Q_NOWARN_DEPRECATED_PUSH
-  QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
-                                         pj_init_plus_ctx( mProjContext.get(), mDestProjString.toUtf8() ) );
-  Q_NOWARN_DEPRECATED_POP
-  mProjProjections.insert( reinterpret_cast< uintptr_t>( mProjContext.get() ), res );
-#else
-  QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( pContext, mSourceProjString.toUtf8() ),
-                                         pj_init_plus_ctx( pContext, mDestProjString.toUtf8() ) );
-  mProjProjections.insert( reinterpret_cast< uintptr_t>( pContext ), res );
-#endif
-#endif
   return res;
 }
 
-#if PROJ_VERSION_MAJOR>=6
 ProjData QgsCoordinateTransformPrivate::threadLocalFallbackProjData()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
@@ -626,7 +512,6 @@ ProjData QgsCoordinateTransformPrivate::threadLocalFallbackProjData()
   mProjFallbackProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
   return res;
 }
-#endif
 
 void QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
 {
@@ -648,62 +533,13 @@ void QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( co
   sMissingGridUsedByContextHandler = handler;
 }
 
-#if PROJ_VERSION_MAJOR<6
-QString QgsCoordinateTransformPrivate::stripDatumTransform( const QString &proj4 ) const
-{
-  QStringList parameterSplit = proj4.split( '+', QString::SkipEmptyParts );
-  QString currentParameter;
-  QString newProjString;
-
-  for ( int i = 0; i < parameterSplit.size(); ++i )
-  {
-    currentParameter = parameterSplit.at( i );
-    if ( !currentParameter.startsWith( QLatin1String( "towgs84" ), Qt::CaseInsensitive )
-         && !currentParameter.startsWith( QLatin1String( "nadgrids" ), Qt::CaseInsensitive ) )
-    {
-      newProjString.append( '+' );
-      newProjString.append( currentParameter );
-      newProjString.append( ' ' );
-    }
-  }
-  return newProjString;
-}
-
-void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, QString &destProjString,
-    int sourceDatumTransform, int destinationDatumTransform ) const
-{
-  //if one transformation uses ntv2, the other one needs to be null grid shift
-  if ( destinationDatumTransform == -1 && srcProjString.contains( QLatin1String( "+nadgrids" ) ) ) //add null grid if source transformation is ntv2
-  {
-    destProjString += QLatin1String( " +nadgrids=@null" );
-    return;
-  }
-  if ( sourceDatumTransform == -1 && destProjString.contains( QLatin1String( "+nadgrids" ) ) )
-  {
-    srcProjString += QLatin1String( " +nadgrids=@null" );
-    return;
-  }
-
-  //add null shift grid for google mercator
-  //(see e.g. http://trac.osgeo.org/proj/wiki/FAQ#ChangingEllipsoidWhycantIconvertfromWGS84toGoogleEarthVirtualGlobeMercator)
-  if ( mSourceCRS.authid().compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) == 0 && sourceDatumTransform == -1 )
-  {
-    srcProjString += QLatin1String( " +nadgrids=@null" );
-  }
-  if ( mDestCRS.authid().compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) == 0 && destinationDatumTransform == -1 )
-  {
-    destProjString += QLatin1String( " +nadgrids=@null" );
-  }
-}
-#endif
-
 void QgsCoordinateTransformPrivate::freeProj()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
   if ( mProjProjections.isEmpty() && mProjFallbackProjections.isEmpty() )
     return;
   QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constBegin();
-#if PROJ_VERSION_MAJOR>=6
+
   // During destruction of PJ* objects, the errno is set in the underlying
   // context. Consequently the context attached to the PJ* must still exist !
   // Which is not necessarily the case currently unfortunately. So
@@ -724,22 +560,10 @@ void QgsCoordinateTransformPrivate::freeProj()
   }
 
   proj_context_destroy( tmpContext );
-#else
-  projCtx tmpContext = pj_ctx_alloc();
-  for ( ; it != mProjProjections.constEnd(); ++it )
-  {
-    pj_set_ctx( it.value().first, tmpContext );
-    pj_free( it.value().first );
-    pj_set_ctx( it.value().second, tmpContext );
-    pj_free( it.value().second );
-  }
-  pj_ctx_free( tmpContext );
-#endif
   mProjProjections.clear();
   mProjFallbackProjections.clear();
 }
 
-#if PROJ_VERSION_MAJOR>=6
 bool QgsCoordinateTransformPrivate::removeObjectsBelongingToCurrentThread( void *pj_context )
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
@@ -760,6 +584,5 @@ bool QgsCoordinateTransformPrivate::removeObjectsBelongingToCurrentThread( void 
 
   return mProjProjections.isEmpty();
 }
-#endif
 
 ///@endcond

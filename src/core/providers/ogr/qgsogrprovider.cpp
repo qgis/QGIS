@@ -3969,21 +3969,8 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     {
       QString layerName = uri.left( index );
       QFile prjFile( layerName + ".qpj" );
-#if PROJ_VERSION_MAJOR<6
-      if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-      {
-        QTextStream prjStream( &prjFile );
-        prjStream << myWkt.toLocal8Bit().data() << endl;
-        prjFile.close();
-      }
-      else
-      {
-        QgsMessageLog::logMessage( QObject::tr( "Couldn't create file %1.qpj" ).arg( layerName ), QObject::tr( "OGR" ) );
-      }
-#else
       if ( prjFile.exists() )
         prjFile.remove();
-#endif
     }
   }
 
@@ -4008,33 +3995,6 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   QgsCoordinateReferenceSystem srs;
   if ( !mValid || ( mOGRGeomType == wkbNone ) )
     return srs;
-
-#if PROJ_VERSION_MAJOR<6
-  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
-  {
-    int index = mFilePath.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive );
-    if ( index > 0 )
-    {
-      QString layerName = mFilePath.left( index );
-      QFile prjFile( layerName + ".qpj" );
-      if ( prjFile.open( QIODevice::ReadOnly ) )
-      {
-        QTextStream prjStream( &prjFile );
-        QString myWktString = prjStream.readLine();
-        prjFile.close();
-
-        srs = QgsCoordinateReferenceSystem::fromWkt( myWktString.toUtf8().constData() );
-        if ( srs.isValid() )
-          return srs;
-      }
-    }
-  }
-
-  // add towgs84 parameter
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsCoordinateReferenceSystem::setupESRIWktFix();
-  Q_NOWARN_DEPRECATED_POP
-#endif
 
   if ( OGRSpatialReferenceH spatialRefSys = mOgrLayer->GetSpatialRef() )
   {
