@@ -63,6 +63,7 @@ jobs:
 
       - name: Build QGIS Application
         run: |
+          mkdir -p ${GITHUB_WORKSPACE}/.ccache
           docker run \
             --env CCACHE_DIR=/QGIS/.ccache \
             -w /QGIS \
