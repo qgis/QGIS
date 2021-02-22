@@ -6,10 +6,10 @@ on:
       - master
       - release-**
     paths:
-    - 'src/core'
-    - 'src/auth'
-    - 'src/providers'
-    - 'src/server'
+    - 'src/core/**'
+    - 'src/auth/**'
+    - 'src/providers/**'
+    - 'src/server/**'
     - 'src/CMakeLists.txt'
     - 'external/**'
     - 'CMakeLists.txt'
@@ -19,10 +19,10 @@ on:
       - master
       - release-**
     paths:
-    - 'src/core'
-    - 'src/auth'
-    - 'src/providers'
-    - 'src/server'
+    - 'src/core/**'
+    - 'src/auth/**'
+    - 'src/providers/**'
+    - 'src/server/**'
     - 'src/CMakeLists.txt'
     - 'external/**'
     - 'CMakeLists.txt'
