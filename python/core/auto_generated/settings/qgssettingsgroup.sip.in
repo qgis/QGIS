@@ -48,6 +48,11 @@ Set settings group key.
 Get settings group key.
 %End
 
+    QgsSettings::Section section();
+%Docstring
+Get settings group section.
+%End
+
     QString description() const;
 %Docstring
 Get settings group description.

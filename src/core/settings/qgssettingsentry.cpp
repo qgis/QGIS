@@ -25,10 +25,9 @@ QgsSettingsEntry::QgsSettingsEntry( QString key,
   : mKey( key )
   , mSettingsGroupParent( settingsGroupParent )
   , mDefaultValue( defaultValue )
-  , mSection( QgsSettings::Core )
+  , mSection()
   , mDescription( description )
 {
-
 }
 
 QgsSettingsEntry::~QgsSettingsEntry()
@@ -45,11 +44,19 @@ QString QgsSettingsEntry::key() const
          .arg( mKey );
 }
 
+QgsSettings::Section QgsSettingsEntry::section()
+{
+  if ( mSettingsGroupParent == nullptr )
+    return mSection;
+
+  return mSettingsGroupParent->section();
+}
+
 bool QgsSettingsEntry::setValue( const QVariant &value )
 {
   QgsSettings().setValue( mKey,
                           value,
-                          mSection );
+                          section() );
   return true;
 }
 

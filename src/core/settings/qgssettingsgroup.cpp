@@ -55,6 +55,14 @@ QString QgsSettingsGroup::key() const
          .arg( mKey );
 }
 
+QgsSettings::Section QgsSettingsGroup::section()
+{
+  if ( mSettingsGroupParent == nullptr )
+    return mSection;
+
+  return mSettingsGroupParent->section();
+}
+
 QString QgsSettingsGroup::description() const
 {
   return mDescription;

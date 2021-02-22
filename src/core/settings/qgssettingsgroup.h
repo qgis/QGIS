@@ -64,6 +64,11 @@ class CORE_EXPORT QgsSettingsGroup
     QString key() const;
 
     /**
+     * Get settings group section.
+     */
+    QgsSettings::Section section();
+
+    /**
      * Get settings group description.
      */
     QString description() const;
