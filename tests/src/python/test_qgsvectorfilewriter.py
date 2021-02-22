@@ -1095,7 +1095,6 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f.geometry().asWkt(), 'Point (10 10)')
 
-    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0), "GDAL 2.4.0 required")
     def testWriteWithStringListField(self):
         """
         Test writing with a string list field

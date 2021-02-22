@@ -222,8 +222,6 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                        'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)',
                        'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)'
                        ])
-        if int(osgeo.gdal.VersionInfo()[:1]) < 2:
-            filters.insert('not null')
         return filters
 
     def partiallyCompiledFilters(self):
@@ -543,12 +541,6 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
     def testRepackUnderFileLocks(self):
         ''' Test fix for #15570 and #15393 '''
-
-        # This requires a GDAL fix done per https://trac.osgeo.org/gdal/ticket/6672
-        # but on non-Windows version the test would succeed
-        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2):
-            return
-
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
@@ -587,12 +579,6 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
     def testRepackAtFirstSave(self):
         ''' Test fix for #15407 '''
-
-        # This requires a GDAL fix done per https://trac.osgeo.org/gdal/ticket/6672
-        # but on non-Windows version the test would succeed
-        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2):
-            return
-
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')

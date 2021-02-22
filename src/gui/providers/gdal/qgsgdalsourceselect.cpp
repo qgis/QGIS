@@ -40,9 +40,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   protocolGroupBox->hide();
 
   QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl;AWS S3,vsis3;Google Cloud Storage,vsigs" ).split( ';' );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   protocolTypes += QStringLiteral( "Microsoft Azure Blob,vsiaz;Alibaba Cloud OSS,vsioss;OpenStack Swift Object Storage,vsiswift" ).split( ';' );
-#endif
   for ( int i = 0; i < protocolTypes.count(); i++ )
   {
     QString protocol = protocolTypes.at( i );

@@ -213,11 +213,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   // finalize and test collation
   QgsAbstractGeoPdfExporter::ExportDetails details;
   details.pageSizeMm = QSizeF( 297, 210 );
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
-  bool expected = false;
-#else
   bool expected = true;
-#endif
   QCOMPARE( geoPdfExporter.finalize( QList<QgsAbstractGeoPdfExporter::ComponentLayerDetail>(), outputFile, details ), expected );
   QVERIFY( geoPdfExporter.errorMessage().isEmpty() );
 

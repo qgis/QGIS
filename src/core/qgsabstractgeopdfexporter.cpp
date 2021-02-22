@@ -35,10 +35,6 @@
 
 bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
 {
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
-  return false;
-#else
-
   // test if GDAL has read support in PDF driver
   GDALDriverH hDriverMem = GDALGetDriverByName( "PDF" );
   if ( !hDriverMem )
@@ -55,14 +51,10 @@ bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
     return true;
 
   return false;
-#endif
 }
 
 QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
 {
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
-  return QObject::tr( "GeoPDF creation requires GDAL version 3.0 or later." );
-#else
   // test if GDAL has read support in PDF driver
   GDALDriverH hDriverMem = GDALGetDriverByName( "PDF" );
   if ( !hDriverMem )
@@ -79,7 +71,6 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
     return QString();
 
   return QObject::tr( "GDAL PDF driver was not built with PDF read support. A build with PDF read support is required for GeoPDF creation." );
-#endif
 }
 
 bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
@@ -87,11 +78,6 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   if ( details.includeFeatures && !saveTemporaryLayers() )
     return false;
 
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
-  Q_UNUSED( components )
-  Q_UNUSED( destinationFile )
-  return false;
-#else
   const QString composition = createCompositionXml( components, details );
   QgsDebugMsg( composition );
   if ( composition.isEmpty() )
@@ -129,7 +115,6 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   CSLDestroy( papszOptions );
 
   return res;
-#endif
 }
 
 QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &filename ) const

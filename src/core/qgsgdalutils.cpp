@@ -289,52 +289,6 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOp
   return QString();
 }
 
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,3,0)
-// GDAL < 2.3 does not come with GDALWarpInitDefaultBandMapping and GDALWarpInitNoDataReal
-// in the public API so we define them here for rpcAwareAutoCreateWarpedVrt()
-
-static void GDALWarpInitDefaultBandMapping( GDALWarpOptions *psOptionsIn, int nBandCount )
-{
-  if ( psOptionsIn->nBandCount != 0 ) { return; }
-
-  psOptionsIn->nBandCount = nBandCount;
-
-  psOptionsIn->panSrcBands = static_cast<int *>(
-                               CPLMalloc( sizeof( int ) * psOptionsIn->nBandCount ) );
-  psOptionsIn->panDstBands = static_cast<int *>(
-                               CPLMalloc( sizeof( int ) * psOptionsIn->nBandCount ) );
-
-  for ( int i = 0; i < psOptionsIn->nBandCount; i++ )
-  {
-    psOptionsIn->panSrcBands[i] = i + 1;
-    psOptionsIn->panDstBands[i] = i + 1;
-  }
-}
-
-static void InitNoData( int nBandCount, double **ppdNoDataReal, double dDataReal )
-{
-  if ( nBandCount <= 0 ) { return; }
-  if ( *ppdNoDataReal != nullptr ) { return; }
-
-  *ppdNoDataReal = static_cast<double *>(
-                     CPLMalloc( sizeof( double ) * nBandCount ) );
-
-  for ( int i = 0; i < nBandCount; ++i )
-  {
-    ( *ppdNoDataReal )[i] = dDataReal;
-  }
-}
-
-static void GDALWarpInitNoDataReal( GDALWarpOptions *psOptionsIn, double  dNoDataReal )
-{
-  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfDstNoDataReal, dNoDataReal );
-  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfSrcNoDataReal, dNoDataReal );
-  // older GDAL also requires imaginary values to be set
-  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfDstNoDataImag, 0 );
-  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfSrcNoDataImag, 0 );
-}
-#endif
-
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,2,0)
 
 GDALDatasetH GDALAutoCreateWarpedVRTEx( GDALDatasetH hSrcDS, const char *pszSrcWKT, const char *pszDstWKT, GDALResampleAlg eResampleAlg,
