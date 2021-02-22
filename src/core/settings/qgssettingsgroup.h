@@ -22,7 +22,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsgroup.h"
+#include "qgssettings.h"
 
 /**
  * \ingroup core
@@ -39,6 +39,13 @@ class CORE_EXPORT QgsSettingsGroup
      */
     QgsSettingsGroup( QString key = QString(),
                       QgsSettingsGroup *parentGroup = nullptr,
+                      QString description = QString() );
+
+    /**
+     * Constructor for QgsSettingsGroup.
+     */
+    QgsSettingsGroup( QString key,
+                      QgsSettings::Section section,
                       QString description = QString() );
 
     /**
@@ -64,6 +71,7 @@ class CORE_EXPORT QgsSettingsGroup
   private:
 
     QString mKey;
+    QgsSettings::Section mSection;
     QgsSettingsGroup *mSettingsGroupParent;
     QString mDescription;
 

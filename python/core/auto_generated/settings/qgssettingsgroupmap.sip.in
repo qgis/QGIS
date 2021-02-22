@@ -31,8 +31,8 @@ class QgsSettingsGroupMap : QgsSettingsGroup
 Constructor for QgsSettingsGroupMap.
 %End
 
-    QgsSettingsGroupMap( QString key = QString(),
-                         QgsSettingsGroup *parentGroup = 0,
+    QgsSettingsGroupMap( QString key,
+                         QgsSettings::Section section,
                          QString description = QString() );
 %Docstring
 Constructor for QgsSettingsGroupMap.
