@@ -206,7 +206,6 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         conn.executeSql('GRANT SELECT ON raster_columns TO qgis_test_user')
 
     # error: ERROR: relation "qgis_test.raster1" does not exist
-    @unittest.skipIf(gdal.VersionInfo() < '2040000', 'This test requires GDAL >= 2.4.0')
     def test_postgis_raster_rename(self):
         """Test raster rename"""
 

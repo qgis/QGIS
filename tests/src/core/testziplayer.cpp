@@ -450,25 +450,16 @@ void TestZipLayer::testTarItemAll()
 #if 0
 void TestZipLayer::testZipItemVectorTransparency()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QVERIFY( testZipItemTransparency( mDataDir + "points2.zip", "ogr", 250 ) );
 }
 
 void TestZipLayer::testTarItemVectorTransparency()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QVERIFY( testZipItemTransparency( mDataDir + "points2.tar", "ogr", 250 ) );
 }
 
 void TestZipLayer::testGzipItemVectorTransparency()
 {
-#if GDAL_VERSION_NUM < 1700
-  QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
-#endif
   QVERIFY( testZipItemTransparency( mDataDir + "points3.geojson.gz", "ogr", 250 ) );
 }
 #endif

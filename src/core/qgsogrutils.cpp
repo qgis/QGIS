@@ -161,13 +161,11 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
         varType = QVariant::DateTime;
         break;
       case OFTString:
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
         if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
           varType = QVariant::Map;
         else
           varType = QVariant::String;
         break;
-#endif
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -735,14 +733,10 @@ QString QgsOgrUtils::OGRSpatialReferenceToWkt( OGRSpatialReferenceH srs )
     return QString();
 
   char *pszWkt = nullptr;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,0,0)
   const QByteArray multiLineOption = QStringLiteral( "MULTILINE=NO" ).toLocal8Bit();
   const QByteArray formatOption = QStringLiteral( "FORMAT=WKT2" ).toLocal8Bit();
   const char *const options[] = {multiLineOption.constData(), formatOption.constData(), nullptr};
   OSRExportToWktEx( srs, &pszWkt, options );
-#else
-  OSRExportToWkt( srs, &pszWkt );
-#endif
 
   const QString res( pszWkt );
   CPLFree( pszWkt );

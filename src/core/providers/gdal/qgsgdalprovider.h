@@ -246,11 +246,6 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     // update mode
     bool mUpdate;
 
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
-    // initialize CRS from wkt
-    bool crsFromWkt( const char *wkt );
-#endif
-
     //! Do some initialization on the dataset (e.g. handling of south-up datasets)
     void initBaseDataset();
 

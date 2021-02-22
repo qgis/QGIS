@@ -542,7 +542,6 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertIsInstance(features[2]['DATA'], QByteArray)
         self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
 
-    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0), "GDAL 2.4 required")
     def testStringListField(self):
         source = os.path.join(TEST_DATA_DIR, 'stringlist.gml')
         vl = QgsVectorLayer(source)

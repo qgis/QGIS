@@ -270,7 +270,6 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
   feature.setValid( false );
   gdal::ogr_feature_unique_ptr fet;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
   if ( mAllowResetReading && !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
   {
     OGRLayerH nextFeatureBelongingLayer;
@@ -306,7 +305,6 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
     }
   }
   else
-#endif
   {
     fet.reset( OGR_L_GetFeature( mOgrLayer, FID_TO_NUMBER( id ) ) );
   }
@@ -379,8 +377,6 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 
   // OSM layers (especially large ones) need the GDALDataset::GetNextFeature() call rather than OGRLayer::GetNextFeature()
   // see more details here: https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
   if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
   {
     OGRLayerH nextFeatureBelongingLayer;
@@ -393,7 +389,6 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
     }
   }
   else
-#endif
   {
 
     while ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
@@ -415,13 +410,11 @@ void QgsOgrFeatureIterator::resetReading()
   {
     return;
   }
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
   if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
   {
     GDALDatasetResetReading( mConn->ds );
   }
   else
-#endif
   {
     OGR_L_ResetReading( mOgrLayer );
   }

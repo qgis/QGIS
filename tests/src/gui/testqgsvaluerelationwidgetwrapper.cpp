@@ -511,7 +511,6 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
 
 void TestQgsValueRelationWidgetWrapper::testWithJsonInGPKG()
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   // create ogr gpkg layers
   QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTempDirName = tempDir.path();
@@ -634,7 +633,6 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInGPKG()
   QVariant attribute = f.attribute( QStringLiteral( "json_content" ) );
   QList<QVariant> value = attribute.toList();
   QCOMPARE( value, expected_vl );
-#endif
 }
 
 // Same test procedure like in testWithJsonInGPKG to check the non-json way of storing multi-selections into formatted strings
@@ -1220,7 +1218,6 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
 
 void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   const auto fk_field { QStringLiteral( "json_content" ) };
   // create ogr gpkg layers
   QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
@@ -1358,7 +1355,6 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->checkState(), Qt::Unchecked );
-#endif
 }
 
 

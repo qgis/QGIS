@@ -412,7 +412,6 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def testBug15351_commit_closeIter_closeProvider(self):
         self.internalTestBug15351('commit_closeIter_closeProvider')
 
-    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2), 'GDAL 2.1.2 required')
     def testGeopackageExtentUpdate(self):
         ''' test https://github.com/qgis/QGIS/issues/23209 '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageExtentUpdate.gpkg')
@@ -1495,9 +1494,6 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         del vl2_external
 
     def testJson(self):
-        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0):
-            return
-
         tmpfile = os.path.join(self.basetestpath, 'test_json.gpkg')
         testdata_path = unitTestDataPath('provider')
         shutil.copy(os.path.join(unitTestDataPath('provider'), 'test_json.gpkg'), tmpfile)
@@ -1794,7 +1790,6 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertFalse(vl1_1.isEditable())
         self.assertFalse(vl1_2.isEditable())
 
-    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 3, 0), "GDAL 2.3 required")
     def testTransactionGroupIterator(self):
         """Test issue GH #39178: the bug is that this test hangs
         forever in an endless loop"""

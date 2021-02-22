@@ -161,7 +161,6 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTDateTime;
       break;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
     case QVariant::List:
       if ( field.subType() == QVariant::String )
       {
@@ -173,14 +172,12 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
         return false;
       }
       break;
-#endif
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
     case QVariant::Map:
       ogrType = OFTString;
       ogrSubType = OFSTJSON;
       break;
-#endif
+
     default:
       return false;
   }
@@ -554,9 +551,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
     supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
     supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
     supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
-#endif
     CSLDestroy( papszTokens );
   }
 
@@ -612,25 +607,12 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
       mLayerMetadata.setAbstract( abstract );
   }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   if ( mOgrOrigLayer )
   {
     const char *pszDataSubTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
     if ( pszDataSubTypes && strstr( pszDataSubTypes, "Boolean" ) )
       supportsBoolean = true;
   }
-#else
-  if ( mGDALDriverName == QLatin1String( "GeoJSON" ) ||
-       mGDALDriverName == QLatin1String( "GML" ) ||
-       mGDALDriverName == QLatin1String( "CSV" ) ||
-       mGDALDriverName == QLatin1String( "PostgreSQL" ) ||
-       mGDALDriverName == QLatin1String( "PGDump" ) ||
-       mGDALDriverName == QLatin1String( "SQLite" ) ||
-       mGDALDriverName == QLatin1String( "GPKG" ) )
-  {
-    supportsBoolean = true;
-  }
-#endif
 
   if ( supportsBoolean )
   {
@@ -1207,7 +1189,6 @@ void QgsOgrProvider::loadFields()
         break;
 
       case OFTString:
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
         if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
         {
           ogrSubType = OFSTJSON;
@@ -1219,14 +1200,11 @@ void QgsOgrProvider::loadFields()
           varType = QVariant::String;
         }
         break;
-#endif
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
       case OFTStringList:
         varType = QVariant::List;
         varSubType = QVariant::String;
         break;
-#endif
 
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
@@ -1409,7 +1387,6 @@ QgsRectangle QgsOgrProvider::extent() const
     // get the extent_ (envelope) of the layer
     QgsDebugMsgLevel( QStringLiteral( "Starting get extent" ), 3 );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,2)
     if ( mForceRecomputeExtent && mValid && mGDALDriverName == QLatin1String( "GPKG" ) && mOgrOrigLayer )
     {
       // works with unquoted layerName
@@ -1417,7 +1394,6 @@ QgsRectangle QgsOgrProvider::extent() const
       QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( QString::fromUtf8( sql ) ), 2 );
       mOgrOrigLayer->ExecuteSQLNoReturn( sql );
     }
-#endif
 
     mExtent->MinX = std::numeric_limits<double>::max();
     mExtent->MinY = std::numeric_limits<double>::max();
@@ -1823,16 +1799,12 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
         {
           QString stringValue;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
           if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
             stringValue = jsonStringValue( attrVal );
           else
           {
             stringValue = attrVal.toString();
           }
-#else
-          stringValue = attrVal.toString();
-#endif
           QgsDebugMsgLevel( QStringLiteral( "Writing string attribute %1 with %2, encoding %3" )
                             .arg( qgisAttributeId )
                             .arg( attrVal.toString(),
@@ -1847,7 +1819,6 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
         }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
         case OFTStringList:
         {
           QStringList list = attrVal.toStringList();
@@ -1866,7 +1837,6 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           OGR_F_SetFieldStringList( feature.get(), ogrAttributeId, lst );
           break;
         }
-#endif
 
         default:
           QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( qgisAttributeId ), tr( "OGR" ) );
@@ -1994,7 +1964,6 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::Map:
       type = OFTString;
       break;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
     case QVariant::List:
       // only string list supported at the moment, fall through to default for other types
       if ( field.subType() == QVariant::String )
@@ -2004,7 +1973,7 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
       }
       //intentional fall-through
       FALLTHROUGH
-#endif
+
     default:
       pushError( tr( "type %1 for field %2 not found" ).arg( field.typeName(), field.name() ) );
       ignoreErrorOut = true;
@@ -2024,11 +1993,9 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::Bool:
       OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
       break;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
     case QVariant::Map:
       OGR_Fld_SetSubType( fielddefn.get(), OFSTJSON );
       break;
-#endif
     default:
       break;
   }
@@ -2392,12 +2359,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   {
     mayNeedResetReadingAfterGetFeature = false;
   }
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
   {
     mayNeedResetReadingAfterGetFeature = false;
   }
-#endif
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -2507,14 +2472,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           case OFTString:
           {
             QString stringValue;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
               stringValue = jsonStringValue( it2.value() );
             else
               stringValue = it2->toString();
-#else
-            stringValue = it2->toString();
-#endif
             OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
             break;
           }
@@ -2526,7 +2487,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             break;
           }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
           case OFTStringList:
           {
             QStringList list = it2->toStringList();
@@ -2545,7 +2505,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             OGR_F_SetFieldStringList( of.get(), f, lst );
             break;
           }
-#endif
 
           default:
             pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
@@ -2600,12 +2559,10 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   {
     mayNeedResetReadingAfterGetFeature = false;
   }
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
   {
     mayNeedResetReadingAfterGetFeature = false;
   }
-#endif
 
   bool returnvalue = true;
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
@@ -4301,30 +4258,6 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
 
   char **papszOpenOptions = CSLDuplicate( papszOpenOptionsIn );
 
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,3,0)
-  {
-    // Workaround for a bug in the GML driver that was fixed in 2.3.0 (and 2.2.X)
-    // See https://trac.osgeo.org/gdal/ticket/7046
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
-    const char *apszAllowedDrivers[] = { "GML", nullptr };
-    GDALDriverH hIdentifiedDriver =
-      GDALIdentifyDriverEx( pszPath, GDAL_OF_VECTOR, apszAllowedDrivers, nullptr );
-#else
-    GDALDriverH hIdentifiedDriver =
-      GDALIdentifyDriver( pszPath, nullptr );
-#endif
-    if ( hIdentifiedDriver &&
-         strcmp( GDALGetDriverShortName( hIdentifiedDriver ), "GML" ) == 0 )
-    {
-      VSIStatBufL sStat;
-      if ( VSIStatL( CPLResetExtension( pszPath, "gfs" ), &sStat ) != 0 )
-      {
-        papszOpenOptions = CSLSetNameValue( papszOpenOptions, "FORCE_SRS_DETECTION", "YES" );
-      }
-    }
-  }
-#endif
-
   QString filePath( QString::fromUtf8( pszPath ) );
 
   bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
@@ -4621,17 +4554,6 @@ bool QgsOgrProvider::syncToDisc()
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
-
-  // Repack is done automatically on OGR_L_SyncToDisk with gdal-2.2.0+
-#if !defined(GDAL_VERSION_NUM) || GDAL_VERSION_NUM < 2020000
-  if ( !mDeferRepack )
-  {
-    if ( mShapefileMayBeCorrupted )
-      repack();
-
-    mShapefileMayBeCorrupted = false;
-  }
-#endif
 
   QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   if ( shapeIndex )
@@ -6197,105 +6119,9 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   return OGR_L_GetFeatureCount( hLayer, TRUE );
 }
 
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,4,0)
-static bool findMinOrMax( GDALDatasetH hDS, const QByteArray &rtreeName,
-                          const char *varName, bool isMin, double &val )
-{
-  // We proceed by dichotomic search since unfortunately SELECT MIN(minx)
-  // in a RTree is a slow operation
-  double minval = -1e10;
-  double maxval = 1e10;
-  val = 0.0;
-  double oldval = 0.0;
-  for ( int i = 0; i < 100 && maxval - minval > 1e-15; i++ )
-  {
-    val = ( minval + maxval ) / 2;
-    if ( i > 0 && val == oldval )
-    {
-      break;
-    }
-    oldval = val;
-    QByteArray sql = "SELECT 1 FROM ";
-    sql += rtreeName;
-    sql += " WHERE ";
-    sql += varName;
-    sql += isMin ? " < " : " > ";
-    sql += CPLSPrintf( "%.18g", val );
-    sql += " LIMIT 1";
-    auto hSqlLayer = GDALDatasetExecuteSQL(
-                       hDS, sql, nullptr, nullptr );
-    GIntBig count = -1;
-    if ( hSqlLayer )
-    {
-      count = OGR_L_GetFeatureCount( hSqlLayer, true );
-      GDALDatasetReleaseResultSet( hDS, hSqlLayer );
-    }
-    if ( count < 0 )
-    {
-      return false;
-    }
-    if ( ( isMin && count == 0 ) || ( !isMin && count == 1 ) )
-    {
-      minval = val;
-    }
-    else
-    {
-      maxval = val;
-    }
-  }
-  return true;
-}
-#endif
-
 OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
 {
   QMutexLocker locker( &ds->mutex );
-
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,4,0)
-  // OGR_L_GetExtent() can be super slow on huge geopackage files
-  // so implement some approximation strategy that has reasonable runtime.
-  // Actually this should return a rather accurante answer.
-  QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
-  if ( driverName == QLatin1String( "GPKG" ) )
-  {
-    QByteArray layerName = OGR_L_GetName( hLayer );
-    QByteArray rtreeName =
-      QgsOgrProviderUtils::quotedIdentifier( "rtree_" + layerName + "_" + OGR_L_GetGeometryColumn( hLayer ), driverName );
-
-    // Check if there is a non-empty RTree
-    QByteArray sql( "SELECT 1 FROM " );
-    sql += rtreeName;
-    sql += " LIMIT 1";
-    CPLPushErrorHandler( CPLQuietErrorHandler );
-    OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
-                            ds->hDS, sql, nullptr, nullptr );
-    CPLPopErrorHandler();
-    if ( !hSqlLayer )
-    {
-      return OGR_L_GetExtent( hLayer, psExtent, bForce );
-    }
-    bool hasFeatures = OGR_L_GetFeatureCount( hSqlLayer, true ) > 0;
-    GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-    if ( !hasFeatures )
-    {
-      return OGRERR_FAILURE;
-    }
-
-    double minx, miny, maxx, maxy;
-    if ( findMinOrMax( ds->hDS, rtreeName, "MINX", true, minx ) &&
-         findMinOrMax( ds->hDS, rtreeName, "MINY", true, miny ) &&
-         findMinOrMax( ds->hDS, rtreeName, "MAXX", false, maxx ) &&
-         findMinOrMax( ds->hDS, rtreeName, "MAXY", false, maxy ) )
-    {
-      psExtent->MinX = minx;
-      psExtent->MinY = miny;
-      psExtent->MaxX = maxx;
-      psExtent->MaxY = maxy;
-      return OGRERR_NONE;
-    }
-  }
-#endif
-
   return OGR_L_GetExtent( hLayer, psExtent, bForce );
 }
 
