@@ -103,7 +103,7 @@ void QgsOffscreen3DEngine::setClearColor( const QColor &color )
 
 void QgsOffscreen3DEngine::setFrustumCullingEnabled( bool enabled )
 {
-  mFrameGraph->setFrustumCullingEnabled( false );
+  mFrameGraph->setFrustumCullingEnabled( enabled );
 }
 
 void QgsOffscreen3DEngine::setRootEntity( Qt3DCore::QEntity *root )

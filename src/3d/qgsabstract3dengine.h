@@ -96,6 +96,11 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      */
     virtual QSurface *surface() const = 0;
 
+    /**
+     * Returns the shadow rendering frame graph object used to render the scene
+     *
+     * \since QGIS 3.18
+     */
     virtual QgsShadowRenderingFrameGraph *frameGraph() = 0;
 
   signals:
