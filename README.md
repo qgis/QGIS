@@ -25,6 +25,7 @@ Features include
   
 **2. Beautiful cartography**
 * Fine control over symbology, labeling, legends and additional graphical elements for beautifully rendered maps
+* Geometry generator symbol layers (modify geometries or even create new geometries while rendering)
 * Create and update maps with specified scale, extent, style, and decorations via saved layouts
 * Generate a group of maps with same style and layout via atlases
 * Flexible output direct to printer, or as image (raster), PDF, or SVG for further customization 
@@ -33,6 +34,7 @@ Features include
 
 **3. Advanced GIS analysis**
 * Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
+* Immediate visualization of geospatial queries results
 * 150+ geoprocessing algorithms
 * Graphical modeler and scripting
 * Access to additional algorithms via GDAL, GRASS, SAGA, etc.
