@@ -29,6 +29,7 @@ dnf install -y --nogpgcheck \
   mingw64-python3 \
   mingw64-python3-affine \
   mingw64-python3-chardet \
+  mingw64-python3-dateutil \
   mingw64-python3-flask \
   mingw64-python3-gdal \
   mingw64-python3-GeographicLib \
