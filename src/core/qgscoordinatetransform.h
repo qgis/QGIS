@@ -669,14 +669,14 @@ class CORE_EXPORT QgsCoordinateTransform
 
 #endif
 
+  private:
+
 #ifndef SIP_RUN
-  protected:
     friend class QgsProjContext;
 
     // Only meant to be called by QgsProjContext::~QgsProjContext()
     static void removeFromCacheObjectsBelongingToCurrentThread( void *pj_context );
 #endif
-  private:
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
 
