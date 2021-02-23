@@ -453,21 +453,19 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   double xmax = -std::numeric_limits<double>::max();
   double ymax = -std::numeric_limits<double>::max();
 
-  for ( double x : mX )
+  const int nb = mX.size();
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  for ( int i = 0; i < nb; ++i )
   {
-    if ( x < xmin )
-      xmin = x;
-    if ( x > xmax )
-      xmax = x;
+    const double px = *x++;
+    xmin = std::min( xmin, px );
+    xmax = std::max( xmax, px );
+    const double py = *y++;
+    ymin = std::min( ymin, py );
+    ymax = std::max( ymax, py );
   }
-  for ( double y : mY )
-  {
-    if ( y < ymin )
-      ymin = y;
-    if ( y > ymax )
-      ymax = y;
-  }
-  return QgsRectangle( xmin, ymin, xmax, ymax );
+  return QgsRectangle( xmin, ymin, xmax, ymax, false );
 }
 
 /***************************************************************************
