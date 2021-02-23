@@ -45,23 +45,38 @@ class CORE_EXPORT QgsRectangle
     //! Constructor for a null rectangle
     QgsRectangle() = default; // optimised constructor for null rectangle - no need to call normalize here
 
-    //! Constructor
-    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0 ) SIP_HOLDGIL
+    /**
+     * Constructs a QgsRectangle from a set of x and y minimum and maximum coordinates.
+     *
+     * The rectangle will be normalized after creation. Since QGIS 3.20, if \a normalize is FALSE then
+     * the normalization step will not be applied automatically.
+     */
+    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) SIP_HOLDGIL
   : mXmin( xMin )
     , mYmin( yMin )
     , mXmax( xMax )
     , mYmax( yMax )
     {
-      normalize();
+      if ( normalize )
+        QgsRectangle::normalize();
     }
 
-    //! Construct a rectangle from two points. The rectangle is normalized after construction.
-    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 ) SIP_HOLDGIL
+    /**
+     * Construct a rectangle from two points.
+     *
+     * The rectangle is normalized after construction. Since QGIS 3.20, if \a normalize is FALSE then
+     * the normalization step will not be applied automatically.
+     */
+    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true ) SIP_HOLDGIL
     {
-      set( p1, p2 );
+      set( p1, p2, normalize );
     }
 
-    //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
+    /**
+     * Construct a rectangle from a QRectF.
+     *
+     * The rectangle is NOT normalized after construction.
+     */
     QgsRectangle( const QRectF &qRectF ) SIP_HOLDGIL
     {
       mXmin = qRectF.topLeft().x();
@@ -99,29 +114,35 @@ class CORE_EXPORT QgsRectangle
     static QgsRectangle fromCenterAndSize( QgsPointXY center, double width, double height );
 
     /**
-     * Sets the rectangle from two QgsPoints. The rectangle is
-     * normalised after construction.
+     * Sets the rectangle from two QgsPoints.
+     *
+     * The rectangle is normalised after construction. Since QGIS 3.20, if \a normalize is FALSE then
+     * the normalization step will not be applied automatically.
      */
-    void set( const QgsPointXY &p1, const QgsPointXY &p2 )
+    void set( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true )
     {
       mXmin = p1.x();
       mXmax = p2.x();
       mYmin = p1.y();
       mYmax = p2.y();
-      normalize();
+      if ( normalize )
+        QgsRectangle::normalize();
     }
 
     /**
-     * Sets the rectangle from four points. The rectangle is
-     * normalised after construction.
+     * Sets the rectangle from four points.
+     *
+     * The rectangle is normalised after construction. Since QGIS 3.20, if \a normalize is FALSE then
+     * the normalization step will not be applied automatically.
      */
-    void set( double xMin, double yMin, double xMax, double yMax )
+    void set( double xMin, double yMin, double xMax, double yMax, bool normalize = true )
     {
       mXmin = xMin;
       mYmin = yMin;
       mXmax = xMax;
       mYmax = yMax;
-      normalize();
+      if ( normalize )
+        QgsRectangle::normalize();
     }
 
     /**
