@@ -6,7 +6,7 @@
 [![Windows cross build](https://github.com/qgis/QGIS/workflows/MingW64%20Windows%2064bit%20Build/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
 
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical 
-information system (GIS) that runs on most Unix platforms, Windows, and MacOS.
+information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 
 Features include
 
