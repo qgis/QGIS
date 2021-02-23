@@ -120,7 +120,7 @@ void TestQgsQueryResultWidget::testWidget()
   //d->exec();
   w->executeQuery();
   bool exited = false;
-  connect( w, &QgsQueryResultWidget::columnNamesReady, d.get(), [ & ] { exited = true; } );
+  connect( w, &QgsQueryResultWidget::firstResultBatchFetched, d.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
   const auto rowCount { w->mModel->rowCount( w->mModel->index( -1, -1 ) ) };

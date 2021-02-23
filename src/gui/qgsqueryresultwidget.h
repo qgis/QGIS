@@ -122,9 +122,10 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     void executeQuery();
 
     /**
-      * Hides the result table and shows the error \a title and \a message in the message bar.
+      * Hides the result table and shows the error \a title and \a message in the message bar or
+      * in the SQL error panel is \a isSqlError is set.
       */
-    void showError( const QString &title, const QString &message );
+    void showError( const QString &title, const QString &message, bool isSqlError = false );
 
     /**
      * Triggered when the threaded API fetcher has new \a tokens to add.
@@ -145,7 +146,11 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void createSqlVectorLayer( const QString &providerKey, const QString &connectionUri, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
 
-    void columnNamesReady();
+    /**
+     * Emitted when the first batch of results has been fetched.
+     * \note If the query returns no results this signal is not emitted.
+     */
+    void firstResultBatchFetched();
 
   private:
 
@@ -158,13 +163,23 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
     bool mFirstRowFetched = false;
     QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult> mQueryResultWatcher;
+    QString mSqlErrorMessage;
 
     /**
      * Updates buttons status
      */
     void updateButtons();
 
+    /**
+     * Updates SQL layer columns
+     */
     void updateSqlLayerColumns();
+
+    /**
+     * Cancel and wait for finish.
+     */
+    void cancelRunningQuery();
+
 
     /**
      * Starts the model population after initial query run

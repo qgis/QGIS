@@ -66,9 +66,10 @@ Returns the sqlVectorLayerOptions
 Executes the query
 %End
 
-    void showError( const QString &title, const QString &message );
+    void showError( const QString &title, const QString &message, bool isSqlError = false );
 %Docstring
-Hides the result table and shows the error ``title`` and ``message`` in the message bar.
+Hides the result table and shows the error ``title`` and ``message`` in the message bar or
+in the SQL error panel is ``isSqlError`` is set.
 %End
 
     void tokensReady( const QStringList &tokens );
@@ -87,7 +88,14 @@ Emitted when a new vector SQL (query) layer must be created.
 :param options:
 %End
 
-    void columnNamesReady();
+    void firstResultBatchFetched();
+%Docstring
+Emitted when the first batch of results has been fetched.
+
+.. note::
+
+   If the query returns no results this signal is not emitted.
+%End
 
 };
 

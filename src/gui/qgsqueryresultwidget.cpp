@@ -72,58 +72,51 @@ QgsQueryResultWidget::~QgsQueryResultWidget()
     mWorkerThread.quit();
     mWorkerThread.wait();
   }
+  cancelRunningQuery();
 }
 
 void QgsQueryResultWidget::executeQuery()
 {
-  mQueryResultsTableView->show();
+  mQueryResultsTableView->hide();
   mSqlErrorText->hide();
   mFirstRowFetched = false;
 
-  // Cancel other threads
-  if ( mFeedback )
-  {
-    mFeedback->cancel();
-  }
-
-  // ... and wait
-  if ( mQueryResultWatcher.isRunning() )
-  {
-    mQueryResultWatcher.waitForFinished();
-  }
+  cancelRunningQuery();
 
   if ( mConnection )
   {
     const auto sql = mSqlEditor->text( );
-    try
+
+    mWasCanceled = false;
+    mFeedback = qgis::make_unique<QgsFeedback>();
+    mStopButton->setEnabled( true );
+    mStatusLabel->show();
+    mStatusLabel->setText( tr( "Running⋯" ) );
+    mSqlErrorMessage.clear();
+
+    connect( mStopButton, &QPushButton::pressed, mFeedback.get(), [ = ]
     {
-      mWasCanceled = false;
-      mFeedback = qgis::make_unique<QgsFeedback>();
-      mStopButton->setEnabled( true );
-      mStatusLabel->show();
-      mStatusLabel->setText( tr( "Running⋯" ) );
+      mStatusLabel->setText( tr( "Stopped" ) );
+      mFeedback->cancel();
+      mWasCanceled = true;
+    } );
 
-      connect( mStopButton, &QPushButton::pressed, mFeedback.get(), [ = ]
-      {
-        mStatusLabel->setText( tr( "Stopped" ) );
-        mFeedback->cancel();
-        mWasCanceled = true;
-      } );
+    // Create model when result is ready
+    connect( &mQueryResultWatcher, &QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult>::finished, this, &QgsQueryResultWidget::startFetching, Qt::ConnectionType::UniqueConnection );
 
-      // Create model when result is ready
-      connect( &mQueryResultWatcher, &QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult>::finished, this, &QgsQueryResultWidget::startFetching, Qt::ConnectionType::UniqueConnection );
-
-      QFuture<QgsAbstractDatabaseProviderConnection::QueryResult> future = QtConcurrent::run( [ = ]() -> QgsAbstractDatabaseProviderConnection::QueryResult
+    QFuture<QgsAbstractDatabaseProviderConnection::QueryResult> future = QtConcurrent::run( [ = ]() -> QgsAbstractDatabaseProviderConnection::QueryResult
+    {
+      try
       {
         return mConnection->execSql( sql, mFeedback.get() );
-      } );
-      mQueryResultWatcher.setFuture( future );
-
-    }
-    catch ( QgsProviderConnectionException &ex )
-    {
-      showError( tr( "SQL error" ), ex.what() );
-    }
+      }
+      catch ( QgsProviderConnectionException &ex )
+      {
+        mSqlErrorMessage = ex.what();
+        return QgsAbstractDatabaseProviderConnection::QueryResult();
+      }
+    } );
+    mQueryResultWatcher.setFuture( future );
   }
   else
   {
@@ -135,7 +128,7 @@ void QgsQueryResultWidget::updateButtons()
 {
   mFilterToolButton->setEnabled( false );
   mExecuteButton->setEnabled( ! mSqlEditor->text().isEmpty() );
-  mLoadAsNewLayerGroupBox->setVisible( ! mSqlEditor->text().isEmpty() && mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
+  mLoadAsNewLayerGroupBox->setEnabled( mFirstRowFetched && ! mSqlEditor->text().isEmpty() && mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
 }
 
 void QgsQueryResultWidget::updateSqlLayerColumns( )
@@ -153,8 +146,13 @@ void QgsQueryResultWidget::updateSqlLayerColumns( )
   for ( const auto &c : constCols )
   {
     const bool pkCheckedState = hasPkInformation ? mSqlVectorLayerOptions.primaryKeyColumns.contains( c ) : c.contains( QStringLiteral( "id" ), Qt::CaseSensitivity::CaseInsensitive );
-    mPkColumnsComboBox->addItemWithCheckState( c, pkCheckedState ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+    // Only check first match
+    mPkColumnsComboBox->addItemWithCheckState( c, pkCheckedState && mPkColumnsComboBox->checkedItems().isEmpty() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
     mGeometryColumnComboBox->addItem( c );
+    if ( ! hasGeomColInformation && geomColCandidates.contains( c, Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      mGeometryColumnComboBox->setCurrentText( c );
+    }
   }
   mPkColumnsCheckBox->setChecked( hasPkInformation );
   mGeometryColumnCheckBox->setChecked( hasGeomColInformation );
@@ -164,58 +162,87 @@ void QgsQueryResultWidget::updateSqlLayerColumns( )
   }
 }
 
+void QgsQueryResultWidget::cancelRunningQuery()
+{
+  // Cancel other threads
+  if ( mFeedback )
+  {
+    mFeedback->cancel();
+  }
+
+  // ... and wait
+  if ( mQueryResultWatcher.isRunning() )
+  {
+    mQueryResultWatcher.waitForFinished();
+  }
+}
+
 void QgsQueryResultWidget::startFetching()
 {
   if ( ! mWasCanceled )
   {
-    QgsAbstractDatabaseProviderConnection::QueryResult result { mQueryResultWatcher.result() };
-    mModel = qgis::make_unique<QgsQueryResultModel>( result );
-    connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
+    if ( ! mSqlErrorMessage.isEmpty() )
     {
-      mModel->cancel();
-      mWasCanceled = true;
-    } );
-
-    connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [ = ]( const QModelIndex &, int, int )
+      showError( tr( "SQL error" ), mSqlErrorMessage, true );
+    }
+    else
     {
-      if ( ! mFirstRowFetched )
+      QgsAbstractDatabaseProviderConnection::QueryResult result { mQueryResultWatcher.result() };
+      mModel = qgis::make_unique<QgsQueryResultModel>( result );
+      connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
       {
-        emit columnNamesReady();
-        mFirstRowFetched = true;
-        updateButtons();
-        updateSqlLayerColumns( );
-      }
-      mStatusLabel->setText( tr( "Fetched rows: %1 %2" )
-                             .arg( mModel->rowCount( mModel->index( -1, -1 ) ) )
-                             .arg( mWasCanceled ? tr( "(stopped)" ) : QString() ) );
-    } );
-    mQueryResultsTableView->setModel( mModel.get() );
-    mQueryResultsTableView->show();
+        mModel->cancel();
+        mWasCanceled = true;
+      } );
 
-    connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [ = ]
-    {
-      mStopButton->setEnabled( false );
-      if ( ! mWasCanceled )
+      connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [ = ]( const QModelIndex &, int, int )
       {
-        mStatusLabel->setText( "Query executed successfully." );
-      }
-    } );
+        if ( ! mFirstRowFetched )
+        {
+          emit firstResultBatchFetched();
+          mFirstRowFetched = true;
+          mQueryResultsTableView->show();
+          updateButtons();
+          updateSqlLayerColumns( );
+        }
+        mStatusLabel->setText( tr( "Fetched rows: %1 %2" )
+                               .arg( mModel->rowCount( mModel->index( -1, -1 ) ) )
+                               .arg( mWasCanceled ? tr( "(stopped)" ) : QString() ) );
+      } );
+
+      mQueryResultsTableView->setModel( mModel.get() );
+      mQueryResultsTableView->show();
+
+      connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [ = ]
+      {
+        mStopButton->setEnabled( false );
+        if ( ! mWasCanceled )
+        {
+          mStatusLabel->setText( "Query executed successfully." );
+        }
+      } );
+    }
   }
   else
   {
     mStatusLabel->setText( tr( "SQL command aborted" ) );
   }
-
 }
 
-void QgsQueryResultWidget::showError( const QString &title, const QString &message )
+void QgsQueryResultWidget::showError( const QString &title, const QString &message, bool isSqlError )
 {
   mStatusLabel->show();
   mStatusLabel->setText( tr( "There was an error executing the query." ) );
   mQueryResultsTableView->hide();
-  mSqlErrorText->show();
-  mSqlErrorText->setText( message );
-  mMessageBar->pushCritical( title, message );
+  if ( isSqlError )
+  {
+    mSqlErrorText->show();
+    mSqlErrorText->setText( message );
+  }
+  else
+  {
+    mMessageBar->pushCritical( title, message );
+  }
 }
 
 void QgsQueryResultWidget::tokensReady( const QStringList &tokens )

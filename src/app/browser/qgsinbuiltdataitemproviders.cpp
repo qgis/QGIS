@@ -1076,9 +1076,13 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             return;
           }
           QgsDialog dialog;
+          dialog.setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
+          dialog.setWindowTitle( tr( "Run SQL Commands" ) );
+          QgsGui::enableAutoGeometryRestore( &dialog );
           QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
           widget->layout()->setMargin( 0 );
           dialog.layout()->addWidget( widget );
+
           connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [collectionItem]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
           {
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( collectionItem->databaseConnection() );
@@ -1087,7 +1091,6 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           dialog.exec();
         } );
         menu->addAction( sqlAction );
-
       }
     }
   }
