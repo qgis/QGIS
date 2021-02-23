@@ -419,24 +419,24 @@ namespace QgsWmts
           QDomElement lowerCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
           if (invert)
           {
-            QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.yMinimum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.xMinimum(), precision ), precision ));
+            QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.yMinimum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.xMinimum(), precision ), precision ) );
             lowerCornerElement.appendChild( lowerCornerText );
           }
           else
           {
-            QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.xMinimum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.yMinimum(), precision ), precision ));
+            QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.xMinimum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.yMinimum(), precision ), precision ) );
             lowerCornerElement.appendChild( lowerCornerText );
           }
           bboxElement.appendChild( lowerCornerElement );
           QDomElement upperCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
           if (invert)
           {
-            QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.yMaximum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.xMaximum(), precision ), precision ));
+            QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.yMaximum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.xMaximum(), precision ), precision ) );
             upperCornerElement.appendChild( upperCornerText );
           }
           else
           {
-            QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.xMaximum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.yMaximum(), precision ), precision ));
+            QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.xMaximum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.yMaximum(), precision ), precision ) );
             upperCornerElement.appendChild( upperCornerText );
           }
           bboxElement.appendChild( upperCornerElement );
