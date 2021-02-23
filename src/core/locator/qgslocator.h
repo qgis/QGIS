@@ -26,9 +26,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentry.h"
+#include "qgssettingsgroupmap.h"
 
 
 /**
@@ -151,6 +155,28 @@ class CORE_EXPORT QgsLocator : public QObject
      * \since QGIS 3.16
      */
     QStringList completionList() const {return mAutocompletionList;}
+
+    struct LocatorFilter : public QgsSettingsGroup
+    {
+      LocatorFilter( QgsSettingsGroup *parentGroup = nullptr )
+        : QgsSettingsGroup( "", parentGroup )
+        , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
+        , byDefault( "default", this, false, QObject::tr( "Default value" ) )
+        , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )
+      {}
+
+      QgsSettingsEntryBool enabled;
+      QgsSettingsEntryBool byDefault;
+      QgsSettingsEntryString prefix;
+    };
+
+    struct LocatorFilters : public QgsSettingsGroupMap<LocatorFilter>
+    {
+      LocatorFilters()
+        : QgsSettingsGroupMap( "locator_filters", QgsApplication::settingsRegistryCore(), QObject::tr( "Locator filters settings" ) )
+      {}
+    };
+    LocatorFilters locatorFilters;
 
   signals:
 

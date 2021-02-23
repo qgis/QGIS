@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssettingsgroup.h"
+#include "qgssettingsentry.h"
 #include "qgslogger.h"
 
 QgsSettingsGroup::QgsSettingsGroup( QString key,
@@ -24,12 +25,13 @@ QgsSettingsGroup::QgsSettingsGroup( QString key,
   , mSettingsGroupParent( parentGroup )
   , mDescription( description )
 {
+  if ( mSettingsGroupParent != nullptr )
+    mSettingsGroupParent->registerChildSettingsGroup( this );
 }
 
-QgsSettingsGroup::QgsSettingsGroup( QString key,
-                                    QgsSettings::Section section,
+QgsSettingsGroup::QgsSettingsGroup( QgsSettings::Section section,
                                     QString description )
-  : mKey( key )
+  : mKey()
   , mSection( section )
   , mSettingsGroupParent( nullptr )
   , mDescription( description )
@@ -62,6 +64,28 @@ QgsSettings::Section QgsSettingsGroup::section()
 QString QgsSettingsGroup::description() const
 {
   return mDescription;
+}
+
+void QgsSettingsGroup::registerChildSettingsGroup( QgsSettingsGroup *childSettingsGroup )
+{
+  if ( mChildSettingsGroups.contains( childSettingsGroup ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Settings group '%1' already contains child group '%2'" ).arg( key() ).arg( childSettingsGroup->key() ) );
+    return;
+  }
+
+  mChildSettingsGroups.append( childSettingsGroup );
+}
+
+void QgsSettingsGroup::registerChildSettingsEntry( QgsSettingsEntry *childSettingsEntry )
+{
+  if ( mChildSettingsEntries.contains( childSettingsEntry ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Settings group '%1' already contains child entry '%2'" ).arg( key() ).arg( childSettingsEntry->key() ) );
+    return;
+  }
+
+  mChildSettingsEntries.append( childSettingsEntry );
 }
 
 

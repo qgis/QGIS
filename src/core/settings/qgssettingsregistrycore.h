@@ -30,69 +30,49 @@ class QgsSettingsEntryStringList;
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsSettingsRegistryCore
+class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsGroup
 {
   public:
 
-    struct Layout : public QgsSettingsGroup
-    {
-        Layout()
-          : QgsSettingsGroup( "layout", QgsSettings::Core, QObject::tr( "Layout group description" ) )
-          , searchPathForTemplates( "searchPathsForTemplates", this, QStringList(), QObject::tr( "Search path for templates" ) )
-          , anotherNumericSettings( "anotherNumericSettings", this, 1234, "Example settings", 100, 9999 )
-          , subLayout( this )
-        {}
+    QgsSettingsRegistryCore()
+      : QgsSettingsGroup( QgsSettings::Core, QObject::tr( "Settings of section core" ) )
+    {}
 
-        QgsSettingsEntryStringList searchPathForTemplates;
-        QgsSettingsEntryInteger anotherNumericSettings;
+//    struct Layout : public QgsSettingsGroup
+//    {
+//        Layout(QgsSettingsGroup *parent)
+//          : QgsSettingsGroup( "layout", parent, QObject::tr( "Layout group description" ) )
+//          , searchPathForTemplates( "searchPathsForTemplates", this, QStringList(), QObject::tr( "Search path for templates" ) )
+//          , anotherNumericSettings( "anotherNumericSettings", this, 1234, "Example settings", 100, 9999 )
+//          , subLayout( this )
+//        {}
 
-        struct SubLayout : public QgsSettingsGroup
-        {
-          SubLayout( QgsSettingsGroup *parentGroup )
-            : QgsSettingsGroup( "sub_layout", parentGroup, "Description..." )
-            , searchPathForTemplatesInSub( "anotherValue", this, QStringList() )
-          {}
+//        QgsSettingsEntryStringList searchPathForTemplates;
+//        QgsSettingsEntryInteger anotherNumericSettings;
 
-          QgsSettingsEntryStringList searchPathForTemplatesInSub;
-        };
-        SubLayout subLayout;
-    };
-    Layout layout;
+//        struct SubLayout : public QgsSettingsGroup
+//        {
+//          SubLayout( QgsSettingsGroup *parentGroup )
+//            : QgsSettingsGroup( "sub_layout", parentGroup, "Description..." )
+//            , searchPathForTemplatesInSub( "anotherValue", this, QStringList() )
+//          {}
 
-    struct Measure : public QgsSettingsGroup
-    {
-      Measure()
-        : QgsSettingsGroup( "measure", QgsSettings::Core, QObject::tr( "Measure group description" ) )
-        , planimetric( "planimetric", this, false, QObject::tr( "Planimetric description" ) )
-      {}
+//          QgsSettingsEntryStringList searchPathForTemplatesInSub;
+//        };
+//        SubLayout subLayout;
+//    };
+//    Layout layout;
 
-      QgsSettingsEntryBool planimetric;
-    };
-    Measure measure;
+//    struct Measure : public QgsSettingsGroup
+//    {
+//      Measure(QgsSettingsGroup *parent)
+//        : QgsSettingsGroup( "measure", parent, QObject::tr( "Measure group description" ) )
+//        , planimetric( "planimetric", this, false, QObject::tr( "Planimetric description" ) )
+//      {}
 
-    struct LocatorFilter : public QgsSettingsGroup
-    {
-      LocatorFilter( QgsSettingsGroup *parentGroup = nullptr )
-        : QgsSettingsGroup( "", parentGroup )
-        , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
-        , byDefault( "default", this, false, QObject::tr( "Default value" ) )
-        , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )
-      {}
-
-      QgsSettingsEntryBool enabled;
-      QgsSettingsEntryBool byDefault;
-      QgsSettingsEntryString prefix;
-    };
-
-#ifndef SIP_RUN
-    struct LocatorFilters : public QgsSettingsGroupMap<LocatorFilter>
-    {
-      LocatorFilters()
-        : QgsSettingsGroupMap( "locator_filters", QgsSettings::Core )
-      {}
-    };
-    LocatorFilters locatorFilters;
-#endif
+//      QgsSettingsEntryBool planimetric;
+//    };
+//    Measure measure;
 };
 
 #endif // QGSSETTINGSREGISTRYCORE_H

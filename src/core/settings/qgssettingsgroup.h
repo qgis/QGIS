@@ -24,6 +24,8 @@
 #include "qgis_sip.h"
 #include "qgssettings.h"
 
+class QgsSettingsEntry;
+
 /**
  * \ingroup core
  * \class QgsSettingsGroup
@@ -57,8 +59,7 @@ class CORE_EXPORT QgsSettingsGroup
      * and settings entries.
      * The \a description argument specifies a description for the settings group.
      */
-    QgsSettingsGroup( QString key,
-                      QgsSettings::Section section,
+    QgsSettingsGroup( QgsSettings::Section section,
                       QString description = QString() );
 
     /**
@@ -81,12 +82,25 @@ class CORE_EXPORT QgsSettingsGroup
      */
     QString description() const;
 
+    /**
+     * Register \a childSettingsGroup to this settings group to enable instrospection capabilities.
+     */
+    void registerChildSettingsGroup( QgsSettingsGroup *childSettingsGroup );
+
+    /**
+     * Register \a childSettingsEntry to this settings group to enable instrospection capabilities.
+     */
+    void registerChildSettingsEntry( QgsSettingsEntry *childSettingsEntry );
+
   private:
 
     QString mKey;
     QgsSettings::Section mSection;
     QgsSettingsGroup *mSettingsGroupParent;
     QString mDescription;
+
+    QList<QgsSettingsGroup *> mChildSettingsGroups;
+    QList<QgsSettingsEntry *> mChildSettingsEntries;
 
 };
 
