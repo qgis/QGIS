@@ -71,7 +71,6 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   mOffscreenSurface->create();
 
   mFrameGraph = new QgsShadowRenderingFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );
-  mFrameGraph->renderSurfaceSelector()->setExternalRenderTargetSize( mSize );
   mFrameGraph->setShadowRenderingEnabled( false );
   // Set this frame graph to be in use.
   // the render settings also sets itself as the parent of mSurfaceSelector

@@ -62,8 +62,6 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Returns the root of the frame graph object
     Qt3DRender::QFrameGraphNode *frameGraphRoot() { return mRenderSurfaceSelector; }
 
-    Qt3DRender::QRenderSurfaceSelector *renderSurfaceSelector() { return mRenderSurfaceSelector; }
-
     //! Returns the color texture of the forward rendering pass
     Qt3DRender::QTexture2D *forwardRenderColorTexture() { return mForwardColorTexture; }
     //! Returns the depth texture of the forward rendering pass

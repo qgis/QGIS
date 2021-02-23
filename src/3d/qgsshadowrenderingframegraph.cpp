@@ -81,9 +81,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
 
   mFrustumCulling = new Qt3DRender::QFrustumCulling( mForwardClearBuffers );
 
-  // mMainCameraSelector = new Qt3DRender::QCameraSelector( mForwardRenderTargetSelector );
-  // mMainCameraSelector->setCamera( mMainCamera );
-
   return mForwardRenderLayerFilter;
 }
 
@@ -133,47 +130,43 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   mPostprocessClearBuffers = new Qt3DRender::QClearBuffers( mPostprocessPassLayerFilter );
   mPostprocessClearBuffers->setClearColor( QColor::fromRgbF( 0.0f, 0.0f, 0.0f ) );
 
-  //
-  {
-    mRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mPostprocessPassLayerFilter );
+  mRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mPostprocessPassLayerFilter );
 
-    Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( mRenderCaptureTargetSelector );
+  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( mRenderCaptureTargetSelector );
 
-    // The lifetime of the objects created here is managed
-    // automatically, as they become children of this object.
+  // The lifetime of the objects created here is managed
+  // automatically, as they become children of this object.
 
-    // Create a render target output for rendering color.
-    Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
-    colorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
+  // Create a render target output for rendering color.
+  Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
+  colorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
 
-    // Create a texture to render into.
-    mRenderCaptureColorTexture = new Qt3DRender::QTexture2D( colorOutput );
-    mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
-    mRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
-    mRenderCaptureColorTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-    mRenderCaptureColorTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  // Create a texture to render into.
+  mRenderCaptureColorTexture = new Qt3DRender::QTexture2D( colorOutput );
+  mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
+  mRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
+  mRenderCaptureColorTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mRenderCaptureColorTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
 
-    // Hook the texture up to our output, and the output up to this object.
-    colorOutput->setTexture( mRenderCaptureColorTexture );
-    renderTarget->addOutput( colorOutput );
+  // Hook the texture up to our output, and the output up to this object.
+  colorOutput->setTexture( mRenderCaptureColorTexture );
+  renderTarget->addOutput( colorOutput );
 
-    Qt3DRender::QRenderTargetOutput *depthOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
+  Qt3DRender::QRenderTargetOutput *depthOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
 
-    depthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
-    mRenderCaptureDepthTexture = new Qt3DRender::QTexture2D( depthOutput );
-    mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
-    mRenderCaptureDepthTexture->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
-    mRenderCaptureDepthTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-    mRenderCaptureDepthTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
-    mRenderCaptureDepthTexture->setComparisonFunction( Qt3DRender::QAbstractTexture::CompareLessEqual );
-    mRenderCaptureDepthTexture->setComparisonMode( Qt3DRender::QAbstractTexture::CompareRefToTexture );
+  depthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
+  mRenderCaptureDepthTexture = new Qt3DRender::QTexture2D( depthOutput );
+  mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
+  mRenderCaptureDepthTexture->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
+  mRenderCaptureDepthTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mRenderCaptureDepthTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mRenderCaptureDepthTexture->setComparisonFunction( Qt3DRender::QAbstractTexture::CompareLessEqual );
+  mRenderCaptureDepthTexture->setComparisonMode( Qt3DRender::QAbstractTexture::CompareRefToTexture );
 
-    depthOutput->setTexture( mRenderCaptureDepthTexture );
-    renderTarget->addOutput( depthOutput );
+  depthOutput->setTexture( mRenderCaptureDepthTexture );
+  renderTarget->addOutput( depthOutput );
 
-    mRenderCaptureTargetSelector->setTarget( renderTarget );
-  }
-  //
+  mRenderCaptureTargetSelector->setTarget( renderTarget );
 
   mRenderCapture = new Qt3DRender::QRenderCapture( mRenderCaptureTargetSelector );
 
@@ -182,9 +175,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
 
 QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
   : Qt3DCore::QEntity( root )
+  , mSize( s )
 {
-  mSize = s;
-
   mRootEntity = root;
   mMainCamera = mainCamera;
   mLightCamera = new Qt3DRender::QCamera;
@@ -205,6 +197,7 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   Q_ASSERT( surfaceObj );
 
   mRenderSurfaceSelector->setSurface( surfaceObj );
+  mRenderSurfaceSelector->setExternalRenderTargetSize( mSize );
 
   mMainViewPort = new Qt3DRender::QViewport( mRenderSurfaceSelector );
   mMainViewPort->setNormalizedRect( QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
