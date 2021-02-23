@@ -919,11 +919,13 @@ double QgsDistanceArea::computePolygonArea( const QVector<QgsPointXY> &points ) 
   struct geod_polygon p;
   geod_polygon_init( &p, 0 );
 
+  const bool isClosed = points.constFirst() == points.constLast();
+
   /* GeographicLib does not need a closed ring,
    * see example for geod_polygonarea() in geodesic.h */
   /* add points in reverse order */
   int i = points.size();
-  while ( --i )
+  while ( ( isClosed && --i ) || ( !isClosed && --i >= 0 ) )
     geod_polygon_addpoint( mGeod.get(), &p, points.at( i ).y(), points.at( i ).x() );
 
   double area = 0;
