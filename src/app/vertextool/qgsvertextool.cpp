@@ -2187,10 +2187,11 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         const auto editGeom = edits[layer].values();
         for ( QgsGeometry g : editGeom )
         {
-          if ( !layerPoint.is3D() )
-            layerPoint.addZValue( defaultZValue() );
-          if ( QgsGeometry( layerPoint.clone() ).touches( g ) )
+          QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
+          if ( g.contains( p ) )
           {
+            if ( !layerPoint.is3D() )
+              layerPoint.addZValue( defaultZValue() );
             layer->addTopologicalPoints( layerPoint );
             mapPointMatch->layer()->addTopologicalPoints( layerPoint );
           }
