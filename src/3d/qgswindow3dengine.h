@@ -60,7 +60,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     QWindow *window();
 
     //! Returns the frame graph object
-    QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph() { return mShadowRenderingFrameGraph; }
+    QgsShadowRenderingFrameGraph *frameGraph() override { return mShadowRenderingFrameGraph; }
 
     void requestCaptureImage() override;
 

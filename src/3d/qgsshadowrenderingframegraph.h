@@ -57,10 +57,12 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 {
   public:
     //! Constructor
-    QgsShadowRenderingFrameGraph( QWindow *window, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
+    QgsShadowRenderingFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
 
     //! Returns the root of the frame graph object
-    Qt3DRender::QFrameGraphNode *getFrameGraphRoot() { return mRenderSurfaceSelector; }
+    Qt3DRender::QFrameGraphNode *frameGraphRoot() { return mRenderSurfaceSelector; }
+
+    Qt3DRender::QRenderSurfaceSelector *renderSurfaceSelector() { return mRenderSurfaceSelector; }
 
     //! Returns the color texture of the forward rendering pass
     Qt3DRender::QTexture2D *forwardRenderColorTexture() { return mForwardColorTexture; }
@@ -157,6 +159,11 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QClearBuffers *mShadowClearBuffers = nullptr;
     Qt3DRender::QCamera *mLightCamera = nullptr;
     Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
+
+    Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
+    Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
+    Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
+
     bool mShadowRenderingEnabled = false;
     float mShadowBias = 0.00001f;
     int mShadowMapResolution = 2048;
