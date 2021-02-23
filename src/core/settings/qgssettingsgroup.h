@@ -28,6 +28,9 @@
  * \ingroup core
  * \class QgsSettingsGroup
  *
+ * Represent a group of settings and can be the parent of other settings groups or settings
+ * entries.
+ *
  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsSettingsGroup
@@ -36,6 +39,11 @@ class CORE_EXPORT QgsSettingsGroup
 
     /**
      * Constructor for QgsSettingsGroup.
+     *
+     * The \a key argument specifies a part of the settings key.
+     * The \a parentGroup argument specifies a parent group which is used to rebuild
+     * the entiere settings key and to determine the settings section.
+     * The \a description argument specifies a description for the settings group.
      */
     QgsSettingsGroup( QString key = QString(),
                       QgsSettingsGroup *parentGroup = nullptr,
@@ -43,15 +51,15 @@ class CORE_EXPORT QgsSettingsGroup
 
     /**
      * Constructor for QgsSettingsGroup.
+     *
+     * The \a key argument specifies a part of the settings key.
+     * The \a section argument specifies settings section for this group and for children groups
+     * and settings entries.
+     * The \a description argument specifies a description for the settings group.
      */
     QgsSettingsGroup( QString key,
                       QgsSettings::Section section,
                       QString description = QString() );
-
-    /**
-     * Destructor for QgsSettingsGroup.
-     */
-    virtual ~QgsSettingsGroup();
 
     /**
      * Set settings group key.
@@ -59,12 +67,12 @@ class CORE_EXPORT QgsSettingsGroup
     void setKey( const QString &key );
 
     /**
-     * Get settings group key.
+     * Get settings group key. The returned key is composed of this group key plus parent keys.
      */
     QString key() const;
 
     /**
-     * Get settings group section.
+     * Get settings group section. The settings section of the parent group is returned if available.
      */
     QgsSettings::Section section();
 

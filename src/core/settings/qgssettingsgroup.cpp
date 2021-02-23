@@ -36,10 +36,6 @@ QgsSettingsGroup::QgsSettingsGroup( QString key,
 {
 }
 
-QgsSettingsGroup::~QgsSettingsGroup()
-{
-}
-
 void QgsSettingsGroup::setKey( const QString &key )
 {
   mKey = key;

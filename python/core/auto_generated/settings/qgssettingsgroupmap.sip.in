@@ -15,6 +15,8 @@ class QgsSettingsGroupMap : QgsSettingsGroup
 {
 %Docstring
 
+Represent a map of custom group of settings and it is the parent of inserted settings groups.
+Template type T must be a subclass of :py:class:`QgsSettingsGroup`
 
 .. versionadded:: 3.18
 %End
@@ -29,6 +31,11 @@ class QgsSettingsGroupMap : QgsSettingsGroup
                          QString description = QString() );
 %Docstring
 Constructor for QgsSettingsGroupMap.
+
+The ``key`` argument specifies a part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``description`` argument specifies a description for the settings group map.
 %End
 
     QgsSettingsGroupMap( QString key,
@@ -36,9 +43,12 @@ Constructor for QgsSettingsGroupMap.
                          QString description = QString() );
 %Docstring
 Constructor for QgsSettingsGroupMap.
-%End
 
-    virtual ~QgsSettingsGroupMap();
+The ``key`` argument specifies a part of the settings key.
+The ``section`` argument specifies settings section for this group map and for children groups
+and settings entries.
+The ``description`` argument specifies a description for the settings group map.
+%End
 
     T &operator[]( const QString &key );
 

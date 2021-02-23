@@ -14,6 +14,9 @@ class QgsSettingsEntry
 {
 %Docstring
 
+Represent settings entry and provides methods for reading and writing settings values.
+Different subclasses are provided for differents settings types with metainformations
+to validate set values and provide more accurate settings description for the gui.
 
 .. versionadded:: 3.18
 %End
@@ -52,18 +55,24 @@ class QgsSettingsEntry
                       QString description = QString() );
 %Docstring
 Constructor for QgsSettingsEntry.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
 %End
 
     virtual ~QgsSettingsEntry();
 
     QString key() const;
 %Docstring
-Get settings key.
+Get settings entry key. The returned key is composed of this group key plus parent keys.
 %End
 
     QgsSettings::Section section();
 %Docstring
-Get settings section.
+Get settings section. The settings section of the parent group is returned if available.
 %End
 
     virtual bool setValue( const QVariant &value );
@@ -84,8 +93,14 @@ Get settings default value.
 
 
     virtual SettingsType settingsType() const;
+%Docstring
+Get the settings entry type.
+%End
 
     QString description() const;
+%Docstring
+Get the settings entry description.
+%End
 
 };
 
@@ -110,12 +125,27 @@ A string settings entry.
                             int maxLength = -1 );
 %Docstring
 Constructor for QgsSettingsEntryString.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``minLength`` argument specifies the minimal length of the string value.
+The ``maxLength`` argument specifies the maximal lenght of the string value.
+By -1 the there is no limit
 %End
 
     virtual bool setValue( const QVariant &value );
 
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
 
     virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
 
     int minLength();
 %Docstring
@@ -148,12 +178,24 @@ A string list settings entry.
                                 const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryStringList.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
 %End
 
     virtual bool setValue( const QVariant &value );
 
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
 
     virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
 
 };
 
@@ -176,12 +218,24 @@ A boolean settings entry.
                           const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryBool.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
 %End
 
     virtual bool setValue( const QVariant &value );
 
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
 
     virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
 
 };
 
@@ -206,12 +260,26 @@ An integer settings entry.
                              qlonglong maxValue = __LONG_LONG_MAX__ );
 %Docstring
 Constructor for QgsSettingsEntryInteger.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``minValue`` argument specifies the minimal value.
+The ``maxValue`` argument specifies the maximal value.
 %End
 
     virtual bool setValue( const QVariant &value );
 
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
 
     virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
 
     qlonglong minValue();
 %Docstring
@@ -247,12 +315,26 @@ A double settings entry.
                             double displayDecimals = 1 );
 %Docstring
 Constructor for QgsSettingsEntryDouble.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``minValue`` argument specifies the minimal value.
+The ``maxValue`` argument specifies the maximal value.
 %End
 
     virtual bool setValue( const QVariant &value );
 
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
 
     virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
 
     double minValue() const;
 %Docstring

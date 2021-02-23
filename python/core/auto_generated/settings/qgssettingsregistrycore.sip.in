@@ -23,12 +23,6 @@ class QgsSettingsRegistryCore
 %End
   public:
 
-    QgsSettingsRegistryCore();
-%Docstring
-Constructor for QgsSettingsRegistryCore.
-%End
-    ~QgsSettingsRegistryCore();
-
     struct Layout : public QgsSettingsGroup
     {
         Layout();
