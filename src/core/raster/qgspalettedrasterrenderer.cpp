@@ -566,6 +566,11 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
         }
       }
     }
+    // must be sorted
+    std::sort( data.begin(), data.end(), []( const Class & a, const Class & b ) -> bool
+    {
+      return a.value < b.value;
+    } );
   }
   else
   {
@@ -600,7 +605,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
   }
 
   // assign colors from ramp
-  if ( ramp )
+  if ( ramp && numClasses > 0 )
   {
     int i = 0;
 
