@@ -38,6 +38,8 @@ namespace Qt3DRender
   class QFrameGraphNode;
 }
 
+class QgsShadowRenderingFrameGraph;
+
 /**
  * \ingroup 3d
  * \brief Base class for 3D engine implementation. A 3D engine is responsible for setting up
@@ -93,6 +95,8 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      * \since QGIS 3.14
      */
     virtual QSurface *surface() const = 0;
+
+    virtual QgsShadowRenderingFrameGraph *frameGraph() = 0;
 
   signals:
     //! Emitted after a call to requestCaptureImage() to return the captured image.
