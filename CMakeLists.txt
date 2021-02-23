@@ -926,12 +926,7 @@ set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required s
 # Python build dependency
 
 find_package(PythonLibrary REQUIRED)
-set(MIN_PYTHON_VERSION "3.6")
-if(${PYTHON_SHORT_VERSION} VERSION_LESS ${MIN_PYTHON_VERSION})
-    message(FATAL_ERROR "Python version ${PYTHON_SHORT_VERSION} is too old. Minimum Python version is ${MIN_PYTHON_VERSION}.")
-endif()
-
-set(MIN_PYTHON_VERSION "3.6")
+set(MIN_PYTHON_VERSION "3.7")
 if(${PYTHON_SHORT_VERSION} VERSION_LESS ${MIN_PYTHON_VERSION})
     message(FATAL_ERROR "Python version ${PYTHON_SHORT_VERSION} is too old. Minimum Python version is ${MIN_PYTHON_VERSION}.")
 endif()
