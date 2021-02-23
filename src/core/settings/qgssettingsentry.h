@@ -400,8 +400,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
     /**
      * Constructor for QgsSettingsEntryEnum.
      *
-     * - The \a key argument specifies the final part of the settings key.
-     *
+     * The \a key argument specifies the final part of the settings key.
      * The \a parentGroup argument specifies a parent group which is used to rebuild
      * the entiere settings key and to determine the settings section.
      * The \a default value argument specifies the default value for the settings entry.
