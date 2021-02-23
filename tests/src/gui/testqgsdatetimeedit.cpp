@@ -56,9 +56,9 @@ void TestQgsDateTimeEdit::cleanupTestCase()
 void TestQgsDateTimeEdit::init()
 {
 
-  vl = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
-                                          QStringLiteral( "myvl" ),
-                                          QLatin1String( "memory" ) );
+  vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
+                                         QStringLiteral( "myvl" ),
+                                         QLatin1String( "memory" ) );
 
   // add fields
   QList<QgsField> fields;
@@ -73,12 +73,12 @@ void TestQgsDateTimeEdit::init()
   QVERIFY( vl.get() );
   QVERIFY( vl->isValid() );
 
-  widget1 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 0, nullptr, nullptr );
-  widget2 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 1, nullptr, nullptr );
-  widget3 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 2, nullptr, nullptr );
-  widget4 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 3, nullptr, nullptr );
-  widget5 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 4, nullptr, nullptr );
-  widget6 = qgis::make_unique<QgsDateTimeEditWrapper>( vl.get(), 5, nullptr, nullptr );
+  widget1 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 0, nullptr, nullptr );
+  widget2 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 1, nullptr, nullptr );
+  widget3 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 2, nullptr, nullptr );
+  widget4 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 3, nullptr, nullptr );
+  widget5 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 4, nullptr, nullptr );
+  widget6 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 5, nullptr, nullptr );
   QVERIFY( widget1.get() );
   QVERIFY( widget2.get() );
   QVERIFY( widget3.get() );

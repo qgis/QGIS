@@ -164,11 +164,11 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::Bilinear:
-        zoomedInResampler = qgis::make_unique< QgsBilinearRasterResampler >();
+        zoomedInResampler = std::make_unique< QgsBilinearRasterResampler >();
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::Cubic:
-        zoomedInResampler = qgis::make_unique< QgsCubicRasterResampler >();
+        zoomedInResampler = std::make_unique< QgsCubicRasterResampler >();
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
@@ -192,11 +192,11 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::Bilinear:
-        zoomedOutResampler = qgis::make_unique< QgsBilinearRasterResampler >();
+        zoomedOutResampler = std::make_unique< QgsBilinearRasterResampler >();
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::Cubic:
-        zoomedOutResampler = qgis::make_unique< QgsCubicRasterResampler >();
+        zoomedOutResampler = std::make_unique< QgsCubicRasterResampler >();
         break;
 
 

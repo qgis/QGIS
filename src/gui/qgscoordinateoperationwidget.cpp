@@ -135,7 +135,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
 
   for ( const QgsDatumTransform::TransformDetails &transform : qgis::as_const( mDatumTransforms ) )
   {
-    std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
+    std::unique_ptr< QTableWidgetItem > item = std::make_unique< QTableWidgetItem >();
     item->setData( ProjRole, transform.proj );
     item->setData( AvailableRole, transform.isAvailable );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
@@ -298,7 +298,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     mCoordinateOperationTableWidget->setRowCount( row + 1 );
     mCoordinateOperationTableWidget->setItem( row, 0, item.release() );
 
-    item = qgis::make_unique< QTableWidgetItem >();
+    item = std::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( transform.accuracy >= 0 ? QString::number( transform.accuracy ) : tr( "Unknown" ) );
     item->setToolTip( toolTipString );
@@ -309,7 +309,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     mCoordinateOperationTableWidget->setItem( row, 1, item.release() );
 
     // area of use column
-    item = qgis::make_unique< QTableWidgetItem >();
+    item = std::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( areasOfUse.join( QLatin1String( ", " ) ) );
     item->setToolTip( toolTipString );

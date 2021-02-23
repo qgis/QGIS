@@ -1020,7 +1020,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
         const auto links { QgsStringUtils::insertLinks( formattedValue, &foundLinks ) };
         if ( foundLinks )
         {
-          auto valueLabel { qgis::make_unique<QLabel>( links ) };
+          auto valueLabel { std::make_unique<QLabel>( links ) };
           attrItem->setText( 1, QString( ) );
           valueLabel->setOpenExternalLinks( true );
           lstResults->setItemWidget( attrItem, 1, valueLabel.release() );
@@ -1104,7 +1104,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QString links = QgsStringUtils::insertLinks( it.value(), &foundLinks );
     if ( foundLinks )
     {
-      auto valueLabel { qgis::make_unique<QLabel>( links ) };
+      auto valueLabel { std::make_unique<QLabel>( links ) };
       valueLabel->setOpenExternalLinks( true );
       tblResults->setCellWidget( j, 3, valueLabel.release() );
     }

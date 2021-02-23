@@ -44,7 +44,7 @@ void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const
     if ( layer )
     {
       mAllowedGapsLayer = layer;
-      mAllowedGapsSource = qgis::make_unique<QgsVectorLayerFeatureSource>( layer );
+      mAllowedGapsSource = std::make_unique<QgsVectorLayerFeatureSource>( layer );
 
       mAllowedGapsBuffer = configuration.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble();
     }
@@ -401,7 +401,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     }
   }
 
-  std::unique_ptr<QgsPolygon> snappedErrGeom = qgis::make_unique<QgsPolygon>();
+  std::unique_ptr<QgsPolygon> snappedErrGeom = std::make_unique<QgsPolygon>();
   snappedErrGeom->setExteriorRing( new QgsLineString( snappedRing ) );
 
   // Merge geometries

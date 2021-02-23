@@ -1559,7 +1559,7 @@ void TestQgsLabelingEngine::testLabelBoundary()
   {
     for ( int y = 0; y < 12; y++ )
     {
-      f.setGeometry( qgis::make_unique< QgsPoint >( x, y ) );
+      f.setGeometry( std::make_unique< QgsPoint >( x, y ) );
       vl2->dataProvider()->addFeature( f );
     }
   }
@@ -1628,7 +1628,7 @@ void TestQgsLabelingEngine::testLabelBlockingRegion()
   {
     for ( int y = 0; y < 12; y++ )
     {
-      f.setGeometry( qgis::make_unique< QgsPoint >( x, y ) );
+      f.setGeometry( std::make_unique< QgsPoint >( x, y ) );
       vl2->dataProvider()->addFeature( f );
     }
   }

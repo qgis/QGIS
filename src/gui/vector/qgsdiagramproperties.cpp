@@ -801,19 +801,19 @@ void QgsDiagramProperties::apply()
 
   if ( mDiagramType == DIAGRAM_NAME_TEXT )
   {
-    diagram = qgis::make_unique< QgsTextDiagram >();
+    diagram = std::make_unique< QgsTextDiagram >();
   }
   else if ( mDiagramType == DIAGRAM_NAME_PIE )
   {
-    diagram = qgis::make_unique< QgsPieDiagram >();
+    diagram = std::make_unique< QgsPieDiagram >();
   }
   else if ( mDiagramType == DIAGRAM_NAME_STACKED )
   {
-    diagram = qgis::make_unique< QgsStackedBarDiagram >();
+    diagram = std::make_unique< QgsStackedBarDiagram >();
   }
   else // if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
   {
-    diagram = qgis::make_unique< QgsHistogramDiagram >();
+    diagram = std::make_unique< QgsHistogramDiagram >();
   }
 
   QgsDiagramSettings ds;

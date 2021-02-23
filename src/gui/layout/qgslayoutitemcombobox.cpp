@@ -33,7 +33,7 @@ void QgsLayoutItemComboBox::setCurrentLayout( QgsLayout *layout )
 {
   const bool prevAllowEmpty = mProxyModel && mProxyModel->allowEmptyItem();
   int itemType = mProxyModel ? mProxyModel->filterType() : -1;
-  mProxyModel = qgis::make_unique< QgsLayoutProxyModel >( layout, this );
+  mProxyModel = std::make_unique< QgsLayoutProxyModel >( layout, this );
   connect( mProxyModel.get(), &QAbstractItemModel::rowsInserted, this, &QgsLayoutItemComboBox::rowsChanged );
   connect( mProxyModel.get(), &QAbstractItemModel::rowsRemoved, this, &QgsLayoutItemComboBox::rowsChanged );
   setModel( mProxyModel.get() );

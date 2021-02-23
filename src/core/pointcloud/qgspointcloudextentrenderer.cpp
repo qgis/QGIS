@@ -38,7 +38,7 @@ QString QgsPointCloudExtentRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudExtentRenderer > res = qgis::make_unique< QgsPointCloudExtentRenderer >( mFillSymbol ? mFillSymbol->clone() : nullptr );
+  std::unique_ptr< QgsPointCloudExtentRenderer > res = std::make_unique< QgsPointCloudExtentRenderer >( mFillSymbol ? mFillSymbol->clone() : nullptr );
   copyCommonProperties( res.get() );
   return res.release();
 }
@@ -50,7 +50,7 @@ void QgsPointCloudExtentRenderer::renderBlock( const QgsPointCloudBlock *, QgsPo
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudExtentRenderer > r = qgis::make_unique< QgsPointCloudExtentRenderer >();
+  std::unique_ptr< QgsPointCloudExtentRenderer > r = std::make_unique< QgsPointCloudExtentRenderer >();
 
   QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
@@ -115,7 +115,7 @@ void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPo
 
 QgsFillSymbol *QgsPointCloudExtentRenderer::defaultFillSymbol()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > layer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > layer = std::make_unique< QgsSimpleLineSymbolLayer >();
   layer->setColor( QColor( 228, 26, 28 ) );
   layer->setWidth( 0.960000 );
   layer->setPenStyle( Qt::DotLine );

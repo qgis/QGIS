@@ -82,9 +82,9 @@ void TestQgsRangeWidgetWrapper::cleanupTestCase()
 
 void TestQgsRangeWidgetWrapper::init()
 {
-  vl = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
-                                          QStringLiteral( "myvl" ),
-                                          QLatin1String( "memory" ) );
+  vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
+                                         QStringLiteral( "myvl" ),
+                                         QLatin1String( "memory" ) );
 
   // add fields
   QList<QgsField> fields;
@@ -125,10 +125,10 @@ void TestQgsRangeWidgetWrapper::init()
   QCOMPARE( vl->featureCount( ), ( long )3 );
   QgsFeature _feat1( vl->getFeature( 1 ) );
   QCOMPARE( _feat1, feat1 );
-  widget0 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 0, nullptr, nullptr );
-  widget1 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
-  widget2 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 2, nullptr, nullptr );
-  widget3 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 3, nullptr, nullptr );
+  widget0 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 0, nullptr, nullptr );
+  widget1 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
+  widget2 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 2, nullptr, nullptr );
+  widget3 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 3, nullptr, nullptr );
   QVERIFY( widget1.get() );
 }
 

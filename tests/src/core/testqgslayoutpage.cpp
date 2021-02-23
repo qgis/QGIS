@@ -214,7 +214,7 @@ void TestQgsLayoutPage::borderedPaper()
   l.pageCollection()->addPage( page.release() );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::white );
   simpleFill->setStrokeColor( Qt::black );
@@ -236,7 +236,7 @@ void TestQgsLayoutPage::markerLinePaper()
 
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   static_cast< QgsSimpleMarkerSymbolLayer * >( markerLine->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
-  std::unique_ptr< QgsFillSymbol > markerLineSymbol = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsFillSymbol > markerLineSymbol = std::make_unique< QgsFillSymbol >();
   markerLineSymbol->changeSymbolLayer( 0, markerLine );
   l.pageCollection()->setPageStyleSymbol( markerLineSymbol.get() );
 
@@ -254,7 +254,7 @@ void TestQgsLayoutPage::hiddenPages()
   l.pageCollection()->addPage( page.release() );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::blue );
   simpleFill->setStrokeColor( Qt::transparent );

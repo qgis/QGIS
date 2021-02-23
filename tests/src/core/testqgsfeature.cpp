@@ -325,7 +325,7 @@ void TestQgsFeature::geometry()
   //setGeometry using abstract geom
   copy = feature;
   QCOMPARE( copy.geometry().asWkb(), mGeometry.asWkb() );
-  copy.setGeometry( qgis::make_unique< QgsPoint >( 5, 6 ) );
+  copy.setGeometry( std::make_unique< QgsPoint >( 5, 6 ) );
   QCOMPARE( copy.geometry().asWkt(), QStringLiteral( "Point (5 6)" ) );
   QCOMPARE( feature.geometry().asWkb(), mGeometry.asWkb() );
 

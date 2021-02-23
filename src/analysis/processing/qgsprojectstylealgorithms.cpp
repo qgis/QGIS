@@ -185,7 +185,7 @@ bool QgsStyleFromProjectAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   if ( selectedObjects.contains( 3 ) )
     mObjects << QgsStyle::LabelSettingsEntity;
 
-  mStyle = qgis::make_unique< QgsStyle >();
+  mStyle = std::make_unique< QgsStyle >();
   mStyle->createMemoryDatabase();
 
   if ( mProjectPath.isEmpty() )

@@ -77,7 +77,7 @@ void TestQgsValueMapWidgetWrapper::testPopulateComboBox()
   config.insert( QStringLiteral( "map" ), valueList );
 
 
-  std::unique_ptr< QComboBox > combo = qgis::make_unique< QComboBox >();
+  std::unique_ptr< QComboBox > combo = std::make_unique< QComboBox >();
 
   // with nulls
   QgsValueMapConfigDlg::populateComboBox( combo.get(), config, false );

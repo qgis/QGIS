@@ -392,7 +392,7 @@ void QgsStyleXmlDataItem::browseStyle( const QString &xmlPath )
   QgsStyle s;
   s.createMemoryDatabase();
 
-  auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+  auto cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
   if ( s.importXml( xmlPath ) )
   {
     cursorOverride.reset();

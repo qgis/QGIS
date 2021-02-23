@@ -591,7 +591,7 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     for ( const QString &tag : parts )
       additionalTags << tag.trimmed();
 
-    auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    auto cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     const int count = copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, additionalTags, false, false );
     cursorOverride.reset();
     if ( count > 0 )
@@ -802,7 +802,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A symbol with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -855,7 +855,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A color ramp with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -906,7 +906,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A text format with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -956,7 +956,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "Label settings with the name “%1” already exist.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -1006,7 +1006,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "Legend patch shape with the name “%1” already exist.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -1058,7 +1058,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A 3D symbol with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:

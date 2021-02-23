@@ -2868,7 +2868,7 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
   if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isNull() )
     return QVariant();
 
-  std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
 
   const QgsCurve *exteriorRing = qgsgeometry_cast< QgsCurve * >( outerRing.constGet() );
   if ( !exteriorRing && outerRing.isMultipart() )
@@ -7387,7 +7387,7 @@ QVariant QgsArrayForeachExpressionFunction::run( QgsExpressionNode::NodeList *ar
   std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !subContext )
   {
-    tempContext = qgis::make_unique< QgsExpressionContext >();
+    tempContext = std::make_unique< QgsExpressionContext >();
     subContext = tempContext.get();
   }
 
@@ -7482,7 +7482,7 @@ QVariant QgsArrayFilterExpressionFunction::run( QgsExpressionNode::NodeList *arg
   std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !subContext )
   {
-    tempContext = qgis::make_unique< QgsExpressionContext >();
+    tempContext = std::make_unique< QgsExpressionContext >();
     subContext = tempContext.get();
   }
 
@@ -7607,7 +7607,7 @@ QVariant QgsWithVariableExpressionFunction::run( QgsExpressionNode::NodeList *ar
   std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !updatedContext )
   {
-    tempContext = qgis::make_unique< QgsExpressionContext >();
+    tempContext = std::make_unique< QgsExpressionContext >();
     updatedContext = tempContext.get();
   }
 
@@ -7647,7 +7647,7 @@ bool QgsWithVariableExpressionFunction::prepare( const QgsExpressionNodeFunction
   std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !updatedContext )
   {
-    tempContext = qgis::make_unique< QgsExpressionContext >();
+    tempContext = std::make_unique< QgsExpressionContext >();
     updatedContext = tempContext.get();
   }
 

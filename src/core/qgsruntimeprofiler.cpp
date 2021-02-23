@@ -155,7 +155,7 @@ double QgsRuntimeProfilerNode::totalElapsedTimeForChildren( const QString &group
 //
 
 QgsRuntimeProfiler::QgsRuntimeProfiler()
-  : mRootNode( qgis::make_unique< QgsRuntimeProfilerNode >( QString(), QString() ) )
+  : mRootNode( std::make_unique< QgsRuntimeProfilerNode >( QString(), QString() ) )
 {
 
 }
@@ -205,7 +205,7 @@ QStringList QgsRuntimeProfiler::childGroups( const QString &parent, const QStrin
 
 void QgsRuntimeProfiler::start( const QString &name, const QString &group )
 {
-  std::unique_ptr< QgsRuntimeProfilerNode > node = qgis::make_unique< QgsRuntimeProfilerNode >( group, name );
+  std::unique_ptr< QgsRuntimeProfilerNode > node = std::make_unique< QgsRuntimeProfilerNode >( group, name );
   node->start();
 
   QgsRuntimeProfilerNode *child = node.get();
@@ -419,7 +419,7 @@ void QgsRuntimeProfiler::otherProfilerStarted( const QString &group, const QStri
     QgsRuntimeProfilerNode *child = parentNode->child( group, part );
     if ( !child )
     {
-      std::unique_ptr< QgsRuntimeProfilerNode > newChild = qgis::make_unique< QgsRuntimeProfilerNode >( group, part );
+      std::unique_ptr< QgsRuntimeProfilerNode > newChild = std::make_unique< QgsRuntimeProfilerNode >( group, part );
 
       const QModelIndex parentIndex = node2index( parentNode );
       beginInsertRows( parentIndex, parentNode->childCount(), parentNode->childCount() );
@@ -439,7 +439,7 @@ void QgsRuntimeProfiler::otherProfilerStarted( const QString &group, const QStri
 
   const QModelIndex parentIndex = node2index( parentNode );
   beginInsertRows( parentIndex, parentNode->childCount(), parentNode->childCount() );
-  parentNode->addChild( qgis::make_unique< QgsRuntimeProfilerNode >( group, name ) );
+  parentNode->addChild( std::make_unique< QgsRuntimeProfilerNode >( group, name ) );
   endInsertRows();
 
   if ( !mGroups.contains( group ) )
@@ -457,7 +457,7 @@ void QgsRuntimeProfiler::otherProfilerEnded( const QString &group, const QString
     QgsRuntimeProfilerNode *child = parentNode->child( group, part );
     if ( !child )
     {
-      std::unique_ptr< QgsRuntimeProfilerNode > newChild = qgis::make_unique< QgsRuntimeProfilerNode >( group, part );
+      std::unique_ptr< QgsRuntimeProfilerNode > newChild = std::make_unique< QgsRuntimeProfilerNode >( group, part );
 
       const QModelIndex parentIndex = node2index( parentNode );
       beginInsertRows( parentIndex, parentNode->childCount(), parentNode->childCount() );
@@ -475,7 +475,7 @@ void QgsRuntimeProfiler::otherProfilerEnded( const QString &group, const QString
   QgsRuntimeProfilerNode *destNode = parentNode->child( group, name );
   if ( !destNode )
   {
-    std::unique_ptr< QgsRuntimeProfilerNode > node = qgis::make_unique< QgsRuntimeProfilerNode >( group, name );
+    std::unique_ptr< QgsRuntimeProfilerNode > node = std::make_unique< QgsRuntimeProfilerNode >( group, name );
     destNode = node.get();
     const QModelIndex parentIndex = node2index( parentNode );
     beginInsertRows( parentIndex, parentNode->childCount(), parentNode->childCount() );

@@ -46,7 +46,7 @@ QString QgsMultiPoint::geometryType() const
 
 QgsMultiPoint *QgsMultiPoint::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsMultiPoint >();
+  auto result = std::make_unique< QgsMultiPoint >();
   result->mWkbType = mWkbType;
   return result.release();
 }

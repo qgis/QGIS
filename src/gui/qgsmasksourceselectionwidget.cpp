@@ -103,7 +103,7 @@ void QgsMaskSourceSelectionWidget::update()
           QVector<int> indexPath = rootPath;
           indexPath.append( idx );
 
-          std::unique_ptr< QTreeWidgetItem > slItem = qgis::make_unique< QTreeWidgetItem >( rootItem );
+          std::unique_ptr< QTreeWidgetItem > slItem = std::make_unique< QTreeWidgetItem >( rootItem );
           QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
           slItem->setIcon( 0, slIcon );
           if ( sl->layerType() == "MaskMarker" )
@@ -135,7 +135,7 @@ void QgsMaskSourceSelectionWidget::update()
         if ( ! symbol )
           return true;
 
-        std::unique_ptr< QTreeWidgetItem > symbolItem = qgis::make_unique< QTreeWidgetItem >( mLayerItem, QStringList() << ( mCurrentDescription + leaf.description ) );
+        std::unique_ptr< QTreeWidgetItem > symbolItem = std::make_unique< QTreeWidgetItem >( mLayerItem, QStringList() << ( mCurrentDescription + leaf.description ) );
         QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ) );
         symbolItem->setIcon( 0, icon );
 
@@ -209,7 +209,7 @@ void QgsMaskSourceSelectionWidget::update()
     if ( ! vl->renderer() )
       continue;
 
-    std::unique_ptr< QTreeWidgetItem > layerItem = qgis::make_unique< QTreeWidgetItem >( mTree, QStringList() << layer->name() );
+    std::unique_ptr< QTreeWidgetItem > layerItem = std::make_unique< QTreeWidgetItem >( mTree, QStringList() << layer->name() );
     layerItem->setData( 0, Qt::UserRole, vl );
 
     if ( vl->labeling() )

@@ -34,7 +34,7 @@ QgsPrintLayout *QgsPrintLayout::clone() const
   QDomElement elem = writeXml( currentDoc, context );
   currentDoc.appendChild( elem );
 
-  std::unique_ptr< QgsPrintLayout > newLayout = qgis::make_unique< QgsPrintLayout >( project() );
+  std::unique_ptr< QgsPrintLayout > newLayout = std::make_unique< QgsPrintLayout >( project() );
   bool ok = false;
   newLayout->loadFromTemplate( currentDoc, context, true, &ok );
   if ( !ok )

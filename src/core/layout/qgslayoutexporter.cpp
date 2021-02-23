@@ -533,7 +533,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
   if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
-    geoPdfExporter = qgis::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
+    geoPdfExporter = std::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
 

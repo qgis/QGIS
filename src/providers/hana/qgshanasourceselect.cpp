@@ -572,8 +572,8 @@ void QgsHanaSourceSelect::btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( mConnectionName, uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
-  mColumnTypeTask = qgis::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
+  mColumnTypeThread = std::make_unique<QgsHanaColumnTypeThread>( mConnectionName, uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
+  mColumnTypeTask = std::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
   QgsApplication::taskManager()->addTask( mColumnTypeTask.get() );
 
   connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::setLayerType,

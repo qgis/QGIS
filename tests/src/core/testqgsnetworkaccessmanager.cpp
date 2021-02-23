@@ -656,7 +656,7 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   if ( QgsTest::isCIRun() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
-  QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< TestSslErrorHandler >() );
+  QgsNetworkAccessManager::instance()->setSslErrorHandler( std::make_unique< TestSslErrorHandler >() );
 
   QObject context;
   //test fetching from a blank url
@@ -751,7 +751,7 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   blockingThread->wait();
   blockingThread->deleteLater();
 
-  QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
+  QgsNetworkAccessManager::instance()->setSslErrorHandler( std::make_unique< QgsSslErrorHandler >() );
 }
 
 void TestQgsNetworkAccessManager::testAuthRequestHandler()
@@ -760,7 +760,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
     QSKIP( "This test is disabled on Travis CI environment" );
 
   // initially this request should fail -- we aren't providing the username and password required
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
 
   QObject context;
   bool loaded = false;
@@ -877,7 +877,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   // try with username and password specified
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
@@ -899,7 +899,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   gotAuthDetailsAdded = false;
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   expectedPassword = hash;
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   req = QNetworkRequest{ u };
   rep = QgsNetworkAccessManager::blockingGet( req );
@@ -913,7 +913,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
   // correct username and password, in a thread
   hash = QUuid::createUuid().toString().mid( 1, 10 );
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
   u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me2/" ) + hash );
   loaded = false;
   gotAuthRequest = false;
@@ -937,7 +937,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
   // blocking request in worker thread
   hash = QUuid::createUuid().toString().mid( 1, 10 );
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
   u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me2/" ) + hash );
   loaded = false;
   gotAuthRequest = false;
@@ -958,7 +958,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   blockingThread->wait();
   blockingThread->deleteLater();
 
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< QgsNetworkAuthenticationHandler >() );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< QgsNetworkAuthenticationHandler >() );
 }
 
 void TestQgsNetworkAccessManager::fetchTimeout()

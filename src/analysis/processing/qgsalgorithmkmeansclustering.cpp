@@ -54,11 +54,11 @@ void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CLUSTERS" ), QObject::tr( "Number of clusters" ),
                 QgsProcessingParameterNumber::Integer, 5, false, 1 ) );
 
-  auto fieldNameParam = qgis::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ),
+  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ),
                         QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
   fieldNameParam->setFlags( fieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( fieldNameParam.release() );
-  auto sizeFieldNameParam = qgis::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ),
+  auto sizeFieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ),
                             QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
   sizeFieldNameParam->setFlags( sizeFieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( sizeFieldNameParam.release() );

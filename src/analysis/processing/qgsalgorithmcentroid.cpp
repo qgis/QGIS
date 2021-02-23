@@ -63,7 +63,7 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
 
 void QgsCentroidAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterBoolean> allParts = qgis::make_unique< QgsProcessingParameterBoolean >(
+  std::unique_ptr< QgsProcessingParameterBoolean> allParts = std::make_unique< QgsProcessingParameterBoolean >(
         QStringLiteral( "ALL_PARTS" ),
         QObject::tr( "Create centroid for each part" ),
         false );

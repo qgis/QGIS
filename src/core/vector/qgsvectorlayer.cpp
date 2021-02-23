@@ -165,7 +165,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
 
   setProviderType( providerKey );
 
-  mGeometryOptions = qgis::make_unique<QgsGeometryOptions>();
+  mGeometryOptions = std::make_unique<QgsGeometryOptions>();
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles( this );
   mStoredExpressionManager = new QgsStoredExpressionManager();
@@ -1661,7 +1661,7 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
 
     bool defaultLoadedFlag = false;
 
@@ -1753,7 +1753,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
   mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
   if ( !mDataProvider )
@@ -3766,7 +3766,7 @@ void QgsVectorLayer::destroyEditCommand()
   // and delete, so we add a dummy obsolete command to force this to occur.
   // Pushing the new command deletes the destroyed one, and since the new
   // command is obsolete it's automatically deleted by the undo stack.
-  std::unique_ptr< QUndoCommand > command = qgis::make_unique< QUndoCommand >();
+  std::unique_ptr< QUndoCommand > command = std::make_unique< QUndoCommand >();
   command->setObsolete( true );
   undoStack()->push( command.release() );
 

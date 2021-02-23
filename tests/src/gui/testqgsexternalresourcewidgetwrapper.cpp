@@ -60,9 +60,9 @@ void TestQgsExternalResourceWidgetWrapper::cleanupTestCase()
 
 void TestQgsExternalResourceWidgetWrapper::init()
 {
-  vl = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "NoGeometry?field=link:string" ),
-                                          QStringLiteral( "myvl" ),
-                                          QLatin1String( "memory" ) );
+  vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "NoGeometry?field=link:string" ),
+                                         QStringLiteral( "myvl" ),
+                                         QLatin1String( "memory" ) );
 }
 
 void TestQgsExternalResourceWidgetWrapper::cleanup()

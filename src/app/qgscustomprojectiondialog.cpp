@@ -257,7 +257,7 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
 
 void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
 {
-  std::unique_ptr< QgsProjectionSelectionDialog > selector = qgis::make_unique< QgsProjectionSelectionDialog >( this );
+  std::unique_ptr< QgsProjectionSelectionDialog > selector = std::make_unique< QgsProjectionSelectionDialog >( this );
   if ( selector->exec() )
   {
     QgsCoordinateReferenceSystem srs = selector->crs();

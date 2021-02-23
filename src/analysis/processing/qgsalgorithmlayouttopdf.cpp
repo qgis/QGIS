@@ -63,31 +63,31 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Print layout" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = qgis::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), QgsProcessing::TypeMapLayer, QVariant(), true );
+  std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = std::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), QgsProcessing::TypeMapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( layersParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > dpiParam = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DPI" ), QObject::tr( "DPI (leave blank for default layout DPI)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > dpiParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DPI" ), QObject::tr( "DPI (leave blank for default layout DPI)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
   dpiParam->setFlags( dpiParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( dpiParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > forceVectorParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "FORCE_VECTOR" ), QObject::tr( "Always export as vectors" ), false );
+  std::unique_ptr< QgsProcessingParameterBoolean > forceVectorParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "FORCE_VECTOR" ), QObject::tr( "Always export as vectors" ), false );
   forceVectorParam->setFlags( forceVectorParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( forceVectorParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > appendGeorefParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Append georeference information" ), true );
+  std::unique_ptr< QgsProcessingParameterBoolean > appendGeorefParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Append georeference information" ), true );
   appendGeorefParam->setFlags( appendGeorefParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( appendGeorefParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > exportRDFParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_METADATA" ), QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
+  std::unique_ptr< QgsProcessingParameterBoolean > exportRDFParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_METADATA" ), QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
   exportRDFParam->setFlags( exportRDFParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( exportRDFParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > disableTiled = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "DISABLE_TILED" ), QObject::tr( "Disable tiled raster layer exports" ), false );
+  std::unique_ptr< QgsProcessingParameterBoolean > disableTiled = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "DISABLE_TILED" ), QObject::tr( "Disable tiled raster layer exports" ), false );
   disableTiled->setFlags( disableTiled->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( disableTiled.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > simplify = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SIMPLIFY" ), QObject::tr( "Simplify geometries to reduce output file size" ), true );
+  std::unique_ptr< QgsProcessingParameterBoolean > simplify = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SIMPLIFY" ), QObject::tr( "Simplify geometries to reduce output file size" ), true );
   simplify->setFlags( simplify->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( simplify.release() );
 
@@ -97,11 +97,11 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
     QObject::tr( "Always Export Text as Text Objects" )
   };
 
-  std::unique_ptr< QgsProcessingParameterEnum > textFormat = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "TEXT_FORMAT" ), QObject::tr( "Text export" ), textExportOptions, false, 0 );
+  std::unique_ptr< QgsProcessingParameterEnum > textFormat = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "TEXT_FORMAT" ), QObject::tr( "Text export" ), textExportOptions, false, 0 );
   textFormat->setFlags( textFormat->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( textFormat.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > layeredExport = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SEPARATE_LAYERS" ), QObject::tr( "Export layers as separate PDF files" ), false );
+  std::unique_ptr< QgsProcessingParameterBoolean > layeredExport = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SEPARATE_LAYERS" ), QObject::tr( "Export layers as separate PDF files" ), false );
   layeredExport->setFlags( layeredExport->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( layeredExport.release() );
 

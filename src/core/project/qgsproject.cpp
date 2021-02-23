@@ -1174,7 +1174,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   QgsScopedRuntimeProfile profile( tr( "Create layer" ), QStringLiteral( "projectload" ) );
   if ( type == QLatin1String( "vector" ) )
   {
-    mapLayer = qgis::make_unique<QgsVectorLayer>();
+    mapLayer = std::make_unique<QgsVectorLayer>();
     // apply specific settings to vector layer
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
     {
@@ -1183,19 +1183,19 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   }
   else if ( type == QLatin1String( "raster" ) )
   {
-    mapLayer =  qgis::make_unique<QgsRasterLayer>();
+    mapLayer =  std::make_unique<QgsRasterLayer>();
   }
   else if ( type == QLatin1String( "mesh" ) )
   {
-    mapLayer = qgis::make_unique<QgsMeshLayer>();
+    mapLayer = std::make_unique<QgsMeshLayer>();
   }
   else if ( type == QLatin1String( "vector-tile" ) )
   {
-    mapLayer = qgis::make_unique<QgsVectorTileLayer>();
+    mapLayer = std::make_unique<QgsVectorTileLayer>();
   }
   else if ( type == QLatin1String( "point-cloud" ) )
   {
-    mapLayer = qgis::make_unique<QgsPointCloudLayer>();
+    mapLayer = std::make_unique<QgsPointCloudLayer>();
   }
   else if ( type == QLatin1String( "plugin" ) )
   {
@@ -1205,7 +1205,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   else if ( type == QLatin1String( "annotation" ) )
   {
     QgsAnnotationLayer::LayerOptions options( mTransformContext );
-    mapLayer = qgis::make_unique<QgsAnnotationLayer>( QString(), options );
+    mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
   }
   if ( !mapLayer )
   {
@@ -1928,14 +1928,14 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   // MUCH cheaper to clone than build
   if ( mProjectScope )
   {
-    std::unique_ptr< QgsExpressionContextScope > projectScope = qgis::make_unique< QgsExpressionContextScope >( *mProjectScope );
+    std::unique_ptr< QgsExpressionContextScope > projectScope = std::make_unique< QgsExpressionContextScope >( *mProjectScope );
     // we can't cache these
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_distance_units" ), QgsUnitTypes::toString( distanceUnits() ), true, true ) );
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_area_units" ), QgsUnitTypes::toString( areaUnits() ), true, true ) );
     return projectScope.release();
   }
 
-  mProjectScope = qgis::make_unique< QgsExpressionContextScope >( QObject::tr( "Project" ) );
+  mProjectScope = std::make_unique< QgsExpressionContextScope >( QObject::tr( "Project" ) );
 
   const QVariantMap vars = customVariables();
 

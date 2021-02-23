@@ -444,10 +444,10 @@ void QgsMapRendererTask::prepare()
 {
   if ( mGeoPDF )
   {
-    mGeoPdfExporter = qgis::make_unique< QgsMapRendererTaskGeoPdfExporter >( mMapSettings );
+    mGeoPdfExporter = std::make_unique< QgsMapRendererTaskGeoPdfExporter >( mMapSettings );
     if ( mGeoPdfExportDetails.includeFeatures )
     {
-      mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ), mMapSettings );
+      mRenderedFeatureHandler = std::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ), mMapSettings );
       mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
     }
 

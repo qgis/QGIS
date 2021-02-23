@@ -98,37 +98,37 @@ void TestQgsProjectProperties::testEllipsoidChange()
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
-  std::unique_ptr< QgsProjectProperties > pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  std::unique_ptr< QgsProjectProperties > pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "ESRI:107900" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "ESRI:107900" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7002" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7002" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7005" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7005" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "NONE" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "PARAMETER:55:66" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "PARAMETER:55:66" ) );
@@ -145,7 +145,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
-  std::unique_ptr< QgsProjectProperties > pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  std::unique_ptr< QgsProjectProperties > pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
@@ -155,7 +155,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
 
   // if ellipsoid is not set to none, then it should always be synced with the project crs choice
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
@@ -164,14 +164,14 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
 
   // but if ellipsoid is initially set, then changing the project CRS should update the ellipsoid to match
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7021" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
   // ellipsoid should be updated to match CRS ellipsoid
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7019" ) );
 
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4240" ) ) );
   pp->apply();
   pp.reset();
@@ -181,7 +181,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   // some ArcGIS versions: see https://github.com/OSGeo/PROJ/issues/1781
   const QString wkt = QStringLiteral( R"""(PROJCS["Belge 1972 / Belgian Lambert 72",GEOGCS["Belge 1972",DATUM["Reseau_National_Belge_1972",SPHEROID["International 1924",6378388,297],AUTHORITY["EPSG","6313"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36748666666667],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" );
   QgsCoordinateReferenceSystem customCrs = QgsCoordinateReferenceSystem::fromWkt( wkt );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( customCrs );
   pp->apply();
   pp.reset();
@@ -191,7 +191,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem() );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "NONE" ) );
 
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
@@ -202,11 +202,11 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
 void TestQgsProjectProperties::testBearingFormat()
 {
   QgsProject::instance()->clear();
-  std::unique_ptr< QgsBearingNumericFormat > format = qgis::make_unique< QgsBearingNumericFormat >();
+  std::unique_ptr< QgsBearingNumericFormat > format = std::make_unique< QgsBearingNumericFormat >();
   format->setNumberDecimalPlaces( 9 );
   QgsProject::instance()->displaySettings()->setBearingFormat( format.release() );
 
-  std::unique_ptr< QgsProjectProperties > pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  std::unique_ptr< QgsProjectProperties > pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
   QCOMPARE( QgsProject::instance()->displaySettings()->bearingFormat()->numberDecimalPlaces(), 9 );
 }
@@ -220,7 +220,7 @@ void TestQgsProjectProperties::testTimeSettings()
   QgsProject::instance()->timeSettings()->setTemporalRange( range );
   QgsDateTimeRange projectRange = QgsProject::instance()->timeSettings()->temporalRange();
 
-  std::unique_ptr< QgsProjectProperties > projectProperties = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  std::unique_ptr< QgsProjectProperties > projectProperties = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
 
   QCOMPARE( projectRange, range );
 

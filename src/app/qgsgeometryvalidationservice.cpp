@@ -227,7 +227,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
       precision = 8;
   }
 
-  checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext(), mProject );
+  checkInformation.context = std::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext(), mProject );
 
   QList<QgsGeometryCheck *> layerChecks;
 

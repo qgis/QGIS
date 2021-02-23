@@ -21,7 +21,7 @@
 #include "qgs3dsceneexporter.h"
 
 QgsLine3DSymbol::QgsLine3DSymbol()
-  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
 {
 
 }
@@ -30,7 +30,7 @@ QgsLine3DSymbol::~QgsLine3DSymbol() = default;
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
 {
-  std::unique_ptr< QgsLine3DSymbol > result = qgis::make_unique< QgsLine3DSymbol >();
+  std::unique_ptr< QgsLine3DSymbol > result = std::make_unique< QgsLine3DSymbol >();
   result->mAltClamping = mAltClamping;
   result->mAltBinding = mAltBinding;
   result->mWidth = mWidth;

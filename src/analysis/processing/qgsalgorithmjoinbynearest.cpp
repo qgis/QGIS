@@ -75,7 +75,7 @@ void QgsJoinByNearestAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > nonMatchingSink = qgis::make_unique< QgsProcessingParameterFeatureSink >(
+  std::unique_ptr< QgsProcessingParameterFeatureSink > nonMatchingSink = std::make_unique< QgsProcessingParameterFeatureSink >(
         QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, false );
   // TODO GUI doesn't support advanced outputs yet
   //nonMatchingSink->setFlags(nonMatchingSink->flags() | QgsProcessingParameterDefinition::FlagAdvanced );

@@ -269,7 +269,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 {
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
-  mPal = qgis::make_unique< pal::Pal >();
+  mPal = std::make_unique< pal::Pal >();
 
   mPal->setMaximumLineCandidatesPerMapUnit( settings.maximumLineCandidatesPerCm() / context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ) );
   mPal->setMaximumPolygonCandidatesPerMapUnitSquared( settings.maximumPolygonCandidatesPerCmSquared() / std::pow( context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ), 2 ) );
@@ -283,7 +283,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
     std::unique_ptr< QgsExpressionContextScopePopper > layerScopePopper;
     if ( QgsMapLayer *ml = provider->layer() )
     {
-      layerScopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), QgsExpressionContextUtils::layerScope( ml ) );
+      layerScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), QgsExpressionContextUtils::layerScope( ml ) );
     }
     processProvider( provider, context, *mPal );
   }
@@ -422,7 +422,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   }
 
   QgsExpressionContextScope *symbolScope = new QgsExpressionContextScope();
-  std::unique_ptr< QgsExpressionContextScopePopper > symbolScopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
+  std::unique_ptr< QgsExpressionContextScopePopper > symbolScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
   // draw label backgrounds
   for ( pal::LabelPosition *label : qgis::as_const( mLabels ) )

@@ -1249,7 +1249,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
     const QgsCategorizedSymbolRenderer *categorizedSymbolRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer );
     if ( categorizedSymbolRenderer )
     {
-      r = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
+      r = std::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
       if ( categorizedSymbolRenderer->sourceSymbol() )
         r->setSourceSymbol( categorizedSymbolRenderer->sourceSymbol()->clone() );
       if ( categorizedSymbolRenderer->sourceColorRamp() )
@@ -1280,7 +1280,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
 
   if ( !r )
   {
-    r = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
+    r = std::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
     QgsRenderContext context;
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )

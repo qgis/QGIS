@@ -472,8 +472,8 @@ void TestQgs3DRendering::testPolygonsEdges()
 
   std::unique_ptr< QgsVectorLayer > layer( mLayerBuildings->clone() );
 
-  std::unique_ptr< QgsSimpleFillSymbolLayer > simpleFill = qgis::make_unique< QgsSimpleFillSymbolLayer >( QColor( 0, 0, 0 ), Qt::SolidPattern, QColor( 0, 0, 0 ), Qt::NoPen );
-  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << simpleFill.release() );
+  std::unique_ptr< QgsSimpleFillSymbolLayer > simpleFill = std::make_unique< QgsSimpleFillSymbolLayer >( QColor( 0, 0, 0 ), Qt::SolidPattern, QColor( 0, 0, 0 ), Qt::NoPen );
+  std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << simpleFill.release() );
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol.release() ) );
 
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );

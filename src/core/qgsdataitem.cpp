@@ -193,7 +193,7 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
     try
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
-      mTableProperty = qgis::make_unique<QgsAbstractDatabaseProviderConnection::TableProperty>( conn->table( schema, tableName ) );
+      mTableProperty = std::make_unique<QgsAbstractDatabaseProviderConnection::TableProperty>( conn->table( schema, tableName ) );
     }
     catch ( QgsProviderConnectionException &ex )
     {

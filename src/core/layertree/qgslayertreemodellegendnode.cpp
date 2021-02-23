@@ -453,7 +453,7 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
     return nullptr;
 
   // setup temporary render context
-  std::unique_ptr<QgsRenderContext> context = qgis::make_unique<QgsRenderContext>( );
+  std::unique_ptr<QgsRenderContext> context = std::make_unique<QgsRenderContext>( );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
@@ -611,7 +611,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     context = ctx->context;
   else
   {
-    tempRenderContext = qgis::make_unique< QgsRenderContext >();
+    tempRenderContext = std::make_unique< QgsRenderContext >();
     // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
@@ -1370,7 +1370,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
     context = ctx->context;
   else
   {
-    tempRenderContext = qgis::make_unique< QgsRenderContext >();
+    tempRenderContext = std::make_unique< QgsRenderContext >();
     // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );

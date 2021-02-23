@@ -128,7 +128,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   if ( mSettings.mIsMBTiles )
   {
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Setup tile capabilities" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Setup tile capabilities" ), QStringLiteral( "projectload" ) );
 
     // we are dealing with a local MBTiles file
     if ( !setupMBTilesCapabilities( uri ) )
@@ -140,7 +140,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   else if ( mSettings.mXyz )
   {
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Setup tile capabilities" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Setup tile capabilities" ), QStringLiteral( "projectload" ) );
 
     // we are working with XYZ tiles
     // no need to get capabilities, the whole definition is in URI
@@ -156,7 +156,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       mCaps = *capabilities;
 
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve server capabilities" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve server capabilities" ), QStringLiteral( "projectload" ) );
 
     // Make sure we have capabilities - other functions here may need them
     if ( !retrieveServerCapabilities() )

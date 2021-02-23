@@ -64,7 +64,7 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRendererWidget::renderer()
     return nullptr;
   }
 
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
 
   renderer->setMinimum( mMinSpin->value() );

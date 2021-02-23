@@ -167,7 +167,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   if ( !CPLGetConfigOption( "AAIGRID_DATATYPE", nullptr ) )
   {
@@ -616,7 +616,7 @@ QString QgsGdalProvider::htmlMetadata()
 
 QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  std::unique_ptr< QgsRasterBlock > block = qgis::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+  std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
   if ( !initIfNeeded() )
     return block.release();
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )

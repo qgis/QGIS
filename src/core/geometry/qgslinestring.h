@@ -144,9 +144,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     {
       std::unique_ptr< QgsPoint > p;
       if ( a0 >= 0 )
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
       else // negative index, count backwards from end
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End
@@ -723,9 +723,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     {
       std::unique_ptr< QgsPoint > p;
       if ( a0 >= 0 )
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
       else
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End

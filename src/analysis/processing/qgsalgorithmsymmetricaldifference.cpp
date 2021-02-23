@@ -61,7 +61,7 @@ void QgsSymmetricalDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterString > prefix = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
+  std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( prefix.release() );
 

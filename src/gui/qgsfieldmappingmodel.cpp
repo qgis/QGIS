@@ -506,7 +506,7 @@ QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExp
   if ( mBaseGenerator )
   {
     QgsExpressionContext ctx = mBaseGenerator->createExpressionContext();
-    std::unique_ptr< QgsExpressionContextScope > fieldMappingScope = qgis::make_unique< QgsExpressionContextScope >( tr( "Field Mapping" ) );
+    std::unique_ptr< QgsExpressionContextScope > fieldMappingScope = std::make_unique< QgsExpressionContextScope >( tr( "Field Mapping" ) );
     fieldMappingScope->setFields( mSourceFields );
     ctx.appendScope( fieldMappingScope.release() );
     return ctx;

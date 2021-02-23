@@ -259,12 +259,12 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     std::unique_ptr< QgsVectorLayer > layer;
     if ( useProvider )
     {
-      layer = qgis::make_unique<QgsVectorLayer>( uri, name, provider, options );
+      layer = std::make_unique<QgsVectorLayer>( uri, name, provider, options );
     }
     else
     {
       // fallback to ogr
-      layer = qgis::make_unique<QgsVectorLayer>( uri, name, QStringLiteral( "ogr" ), options );
+      layer = std::make_unique<QgsVectorLayer>( uri, name, QStringLiteral( "ogr" ), options );
     }
     if ( layer->isValid() )
     {
@@ -280,12 +280,12 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     std::unique_ptr< QgsRasterLayer > rasterLayer;
     if ( useProvider )
     {
-      rasterLayer = qgis::make_unique< QgsRasterLayer >( uri, name, provider, rasterOptions );
+      rasterLayer = std::make_unique< QgsRasterLayer >( uri, name, provider, rasterOptions );
     }
     else
     {
       // fallback to gdal
-      rasterLayer = qgis::make_unique< QgsRasterLayer >( uri, name, QStringLiteral( "gdal" ), rasterOptions );
+      rasterLayer = std::make_unique< QgsRasterLayer >( uri, name, QStringLiteral( "gdal" ), rasterOptions );
     }
 
     if ( rasterLayer->isValid() )
@@ -301,11 +301,11 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     std::unique_ptr< QgsMeshLayer > meshLayer;
     if ( useProvider )
     {
-      meshLayer = qgis::make_unique< QgsMeshLayer >( uri, name, provider, meshOptions );
+      meshLayer = std::make_unique< QgsMeshLayer >( uri, name, provider, meshOptions );
     }
     else
     {
-      meshLayer = qgis::make_unique< QgsMeshLayer >( uri, name, QStringLiteral( "mdal" ), meshOptions );
+      meshLayer = std::make_unique< QgsMeshLayer >( uri, name, QStringLiteral( "mdal" ), meshOptions );
     }
     if ( meshLayer->isValid() )
     {
@@ -374,7 +374,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
 
   if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) ) )
   {
-    std::unique_ptr< QgsProcessingFeatureSource> source = qgis::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit );
+    std::unique_ptr< QgsProcessingFeatureSource> source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit );
     if ( overrideGeometryCheck )
       source->setInvalidGeometryCheck( geometryCheck );
     return source.release();
@@ -390,7 +390,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     // fall back to default
     if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( fallbackValue ) ) )
     {
-      std::unique_ptr< QgsProcessingFeatureSource> source = qgis::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit );
+      std::unique_ptr< QgsProcessingFeatureSource> source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit );
       if ( overrideGeometryCheck )
         source->setInvalidGeometryCheck( geometryCheck );
       return source.release();
@@ -413,11 +413,11 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   std::unique_ptr< QgsProcessingFeatureSource> source;
   if ( selectedFeaturesOnly )
   {
-    source = qgis::make_unique< QgsProcessingFeatureSource>( new QgsVectorLayerSelectedFeatureSource( vl ), context, true, featureLimit );
+    source = std::make_unique< QgsProcessingFeatureSource>( new QgsVectorLayerSelectedFeatureSource( vl ), context, true, featureLimit );
   }
   else
   {
-    source = qgis::make_unique< QgsProcessingFeatureSource >( vl, context, false, featureLimit );
+    source = std::make_unique< QgsProcessingFeatureSource >( vl, context, false, featureLimit );
   }
 
   if ( overrideGeometryCheck )
@@ -770,7 +770,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       {
         saveOptions.actionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
         // sniff destination file to get correct wkb type and crs
-        std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( destination );
+        std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( destination );
         if ( vl->isValid() )
         {
           remappingDefinition->setDestinationWkbType( vl->wkbType() );
@@ -795,7 +795,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
 
       if ( remappingDefinition )
       {
-        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, writer.release(), true );
+        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, writer.release(), true );
         remapSink->setExpressionContext( context.expressionContext() );
         remapSink->setTransformContext( context.transformContext() );
         return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
@@ -818,7 +818,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
           uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
         }
 
-        std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
+        std::unique_ptr< QgsVectorLayer > layer = std::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
         // update destination to layer ID
         destination = layer->id();
         if ( layer->isValid() )
@@ -828,7 +828,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
           remappingDefinition->setDestinationFields( layer->fields() );
         }
 
-        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
+        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
         context.temporaryLayerStore()->addMapLayer( layer.release() );
         remapSink->setExpressionContext( context.expressionContext() );
         remapSink->setTransformContext( context.transformContext() );
@@ -838,7 +838,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       else
       {
         //create empty layer
-        std::unique_ptr< QgsVectorLayerExporter > exporter = qgis::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
+        std::unique_ptr< QgsVectorLayerExporter > exporter = std::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
         if ( exporter->errorCode() )
         {
           throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
@@ -959,7 +959,7 @@ QString QgsProcessingUtils::tempFolder()
     if ( sTempFolders.empty() )
     {
       const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( QDir::tempPath() );
-      std::unique_ptr< QTemporaryDir > tempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+      std::unique_ptr< QTemporaryDir > tempFolder = std::make_unique< QTemporaryDir >( templatePath );
       sFolder = tempFolder->path();
       sTempFolders.emplace_back( std::move( tempFolder ) );
     }
@@ -970,7 +970,7 @@ QString QgsProcessingUtils::tempFolder()
       QDir().mkpath( basePath );
 
     const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( basePath );
-    std::unique_ptr< QTemporaryDir > tempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+    std::unique_ptr< QTemporaryDir > tempFolder = std::make_unique< QTemporaryDir >( templatePath );
     sFolder = tempFolder->path();
     sTempFolders.emplace_back( std::move( tempFolder ) );
   }

@@ -135,7 +135,7 @@ QgsNumericFormat *QgsBasicNumericFormat::clone() const
 
 QgsNumericFormat *QgsBasicNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsBasicNumericFormat > res = qgis::make_unique< QgsBasicNumericFormat >();
+  std::unique_ptr< QgsBasicNumericFormat > res = std::make_unique< QgsBasicNumericFormat >();
   res->setConfiguration( configuration, context );
   return res.release();
 }

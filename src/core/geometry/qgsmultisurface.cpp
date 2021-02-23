@@ -54,7 +54,7 @@ void QgsMultiSurface::clear()
 
 QgsMultiSurface *QgsMultiSurface::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsMultiSurface >();
+  auto result = std::make_unique< QgsMultiSurface >();
   result->mWkbType = mWkbType;
   return result.release();
 }

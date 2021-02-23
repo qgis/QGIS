@@ -196,7 +196,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
 
   QString crsAuthId = mMapCanvas ? mMapCanvas->mapSettings().destinationCrs().authid() : QString();
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=%1" ).arg( crsAuthId ),
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=%1" ).arg( crsAuthId ),
                                           QStringLiteral( "tmp" ),
                                           QStringLiteral( "memory" ),
                                           options ) ;

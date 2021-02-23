@@ -27,7 +27,7 @@
 QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Add circle" );
 

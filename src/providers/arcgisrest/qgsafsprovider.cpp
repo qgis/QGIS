@@ -51,7 +51,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve service definition" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve service definition" ), QStringLiteral( "projectload" ) );
 
   const QVariantMap layerData = QgsArcGisRestQueryUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ),
                                 authcfg, errorTitle, errorMessage, mRequestHeaders );

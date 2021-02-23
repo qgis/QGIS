@@ -217,7 +217,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   if ( mMapCanvas )
   {
-    mPixelSelectorTool = qgis::make_unique<QgsMapToolEmitPoint>( canvas );
+    mPixelSelectorTool = std::make_unique<QgsMapToolEmitPoint>( canvas );
     connect( mPixelSelectorTool.get(), &QgsMapToolEmitPoint::canvasClicked, this, &QgsRasterLayerProperties::pixelSelected );
     connect( mPixelSelectorTool.get(), &QgsMapToolEmitPoint::deactivated, this, &QgsRasterLayerProperties::restoreWindowModality );
   }

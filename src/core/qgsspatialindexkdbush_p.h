@@ -102,11 +102,11 @@ class QgsSpatialIndexKDBushPrivate
   public:
 
     explicit QgsSpatialIndexKDBushPrivate( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
-      : index( qgis::make_unique < PointXYKDBush >( fi, feedback ) )
+      : index( std::make_unique < PointXYKDBush >( fi, feedback ) )
     {}
 
     explicit QgsSpatialIndexKDBushPrivate( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr )
-      : index( qgis::make_unique < PointXYKDBush >( source, feedback ) )
+      : index( std::make_unique < PointXYKDBush >( source, feedback ) )
     {}
 
     QAtomicInt ref = 1;

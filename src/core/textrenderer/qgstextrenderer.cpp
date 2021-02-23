@@ -1247,7 +1247,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   {
     fontScale = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
     const QFont f = format.scaledFont( context, fontScale );
-    tmpMetrics = qgis::make_unique< QFontMetricsF >( f );
+    tmpMetrics = std::make_unique< QFontMetricsF >( f );
     fontMetrics = tmpMetrics.get();
   }
 

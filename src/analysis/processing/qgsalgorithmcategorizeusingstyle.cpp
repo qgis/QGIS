@@ -39,13 +39,13 @@ void QgsCategorizeUsingStyleAlgorithm::initAlgorithm( const QVariantMap & )
 
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Categorized layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > failCategories = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "NON_MATCHING_CATEGORIES" ),  QObject::tr( "Non-matching categories" ),
+  std::unique_ptr< QgsProcessingParameterFeatureSink > failCategories = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "NON_MATCHING_CATEGORIES" ),  QObject::tr( "Non-matching categories" ),
       QgsProcessing::TypeVector, QVariant(), true, false );
   // not supported for outputs yet!
   //failCategories->setFlags( failCategories->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( failCategories.release() );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > failSymbols = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "NON_MATCHING_SYMBOLS" ),  QObject::tr( "Non-matching symbol names" ),
+  std::unique_ptr< QgsProcessingParameterFeatureSink > failSymbols = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "NON_MATCHING_SYMBOLS" ),  QObject::tr( "Non-matching symbol names" ),
       QgsProcessing::TypeVector, QVariant(), true, false );
   //failSymbols->setFlags( failSymbols->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( failSymbols.release() );
@@ -174,7 +174,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   std::unique_ptr< QgsStyle >importedStyle;
   if ( !styleFile.isEmpty() )
   {
-    importedStyle = qgis::make_unique< QgsStyle >();
+    importedStyle = std::make_unique< QgsStyle >();
     if ( !importedStyle->importXml( styleFile ) )
     {
       throw QgsProcessingException( QObject::tr( "An error occurred while reading style file: %1" ).arg( importedStyle->errorString() ) );
@@ -222,7 +222,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
     cats.append( QgsRendererCategory( val, defaultSymbol->clone(), val.toString() ) );
   }
 
-  mRenderer = qgis::make_unique< QgsCategorizedSymbolRenderer >( mField, cats );
+  mRenderer = std::make_unique< QgsCategorizedSymbolRenderer >( mField, cats );
 
   const QgsSymbol::SymbolType type = mLayerGeometryType == QgsWkbTypes::PointGeometry ? QgsSymbol::Marker
                                      : mLayerGeometryType == QgsWkbTypes::LineGeometry ? QgsSymbol::Line

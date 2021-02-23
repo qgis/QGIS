@@ -372,13 +372,13 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        s = qgis::make_unique< QgsMarkerSymbol >();
+        s = std::make_unique< QgsMarkerSymbol >();
         break;
       case QgsWkbTypes::LineGeometry:
-        s = qgis::make_unique< QgsLineSymbol >();
+        s = std::make_unique< QgsLineSymbol >();
         break;
       case QgsWkbTypes::PolygonGeometry:
-        s = qgis::make_unique< QgsFillSymbol >();
+        s = std::make_unique< QgsFillSymbol >();
         break;
       default:
         QgsDebugMsg( QStringLiteral( "unknown layer's geometry type" ) );
@@ -610,7 +610,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 
         std::unique_ptr< QgsEffectPainter > effectPainter;
         if ( effect && effect->enabled() )
-          effectPainter = qgis::make_unique< QgsEffectPainter >( symbolContext.renderContext(), effect );
+          effectPainter = std::make_unique< QgsEffectPainter >( symbolContext.renderContext(), effect );
 
         for ( const QList< QPolygonF > &poly : polys )
         {

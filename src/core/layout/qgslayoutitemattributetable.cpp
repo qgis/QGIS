@@ -405,7 +405,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   bool activeFilter = false;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
-    filterExpression = qgis::make_unique< QgsExpression >( mFeatureFilter );
+    filterExpression = std::make_unique< QgsExpression >( mFeatureFilter );
     if ( !filterExpression->hasParserError() )
     {
       activeFilter = true;
@@ -570,7 +570,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       else
       {
         // Lets assume it's an expression
-        std::unique_ptr< QgsExpression > expression = qgis::make_unique< QgsExpression >( column.attribute() );
+        std::unique_ptr< QgsExpression > expression = std::make_unique< QgsExpression >( column.attribute() );
         context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );

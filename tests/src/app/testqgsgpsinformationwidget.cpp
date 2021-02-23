@@ -108,7 +108,7 @@ void TestQgsGpsInformationWidget::cleanupTestCase()
 std::unique_ptr<QgsGpsInformationWidget> TestQgsGpsInformationWidget::prepareWidget()
 {
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
-  std::unique_ptr<QgsGpsInformationWidget> widget = qgis::make_unique<QgsGpsInformationWidget>( canvas );
+  std::unique_ptr<QgsGpsInformationWidget> widget = std::make_unique<QgsGpsInformationWidget>( canvas );
   // Widget config and input values
   // 2019/06/19 12:27:34.543[UTC]
   widget->mLastNmeaTime = { 119, 5, 19, 12, 27, 34, 543 };
@@ -299,12 +299,12 @@ void TestQgsGpsInformationWidget::testTimestampWrite()
 
 void TestQgsGpsInformationWidget::testMultiPartLayers()
 {
-  std::unique_ptr< QgsVectorLayer >multiLineString = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+  std::unique_ptr< QgsVectorLayer >multiLineString = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
-  std::unique_ptr<QgsGpsInformationWidget> widget = qgis::make_unique<QgsGpsInformationWidget>( canvas );
+  std::unique_ptr<QgsGpsInformationWidget> widget = std::make_unique<QgsGpsInformationWidget>( canvas );
   widget->mMapCanvas->setCurrentLayer( multiLineString.get() );
   multiLineString->startEditing();
 
@@ -325,11 +325,11 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
   multiLineString->rollBack();
 
   // multipolygon
-  std::unique_ptr< QgsVectorLayer >multiPolygon = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+  std::unique_ptr< QgsVectorLayer >multiPolygon = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ),
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
-  widget = qgis::make_unique<QgsGpsInformationWidget>( canvas );
+  widget = std::make_unique<QgsGpsInformationWidget>( canvas );
   widget->mMapCanvas->setCurrentLayer( multiPolygon.get() );
   multiPolygon->startEditing();
 

@@ -178,7 +178,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   QgsScopedRuntimeProfile profile( tr( "Initializing authentication manager" ) );
 
   QgsDebugMsgLevel( QStringLiteral( "Initializing QCA..." ), 2 );
-  mQcaInitializer = qgis::make_unique<QCA::Initializer>( QCA::Practical, 256 );
+  mQcaInitializer = std::make_unique<QCA::Initializer>( QCA::Practical, 256 );
 
   QgsDebugMsgLevel( QStringLiteral( "QCA initialized." ), 2 );
   QCA::scanForPlugins();

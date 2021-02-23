@@ -256,8 +256,8 @@ void TestQgsZonalStatistics::testNoData()
   QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // test that zonal stats respects no data and user set no data values
-  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr< QgsVectorLayer > vectorLayer = qgis::make_unique< QgsVectorLayer >( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsRasterLayer > rasterLayer = std::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsVectorLayer > vectorLayer = std::make_unique< QgsVectorLayer >( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
 
   QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, QgsZonalStatistics::All );
   zs.calculateStatistics( nullptr );
@@ -310,8 +310,8 @@ void TestQgsZonalStatistics::testSmallPolygons()
   QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // test that zonal stats works ok with polygons much smaller than pixel size
-  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr< QgsVectorLayer > vectorLayer = qgis::make_unique< QgsVectorLayer >( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsRasterLayer > rasterLayer = std::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsVectorLayer > vectorLayer = std::make_unique< QgsVectorLayer >( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
 
   QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, QgsZonalStatistics::All );
   zs.calculateStatistics( nullptr );

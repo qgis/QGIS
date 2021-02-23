@@ -63,7 +63,7 @@ void QgsLineIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
                   QStringLiteral( "INTERSECT" ), QgsProcessingParameterField::Any,
                   true, true ) );
 
-  std::unique_ptr< QgsProcessingParameterString > prefix = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "INTERSECT_FIELDS_PREFIX" ), QObject::tr( "Intersect fields prefix" ), QString(), false, true );
+  std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "INTERSECT_FIELDS_PREFIX" ), QObject::tr( "Intersect fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( prefix.release() );
 

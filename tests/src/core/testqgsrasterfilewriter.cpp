@@ -283,10 +283,10 @@ void TestQgsRasterFileWriter::testVrtCreation()
   //create a raster layer that will be used in all tests...
   QString srcFileName = mTestDataDir + QStringLiteral( "ALLINGES_RGF93_CC46_1_1.tif" );
   QFileInfo rasterFileInfo( srcFileName );
-  std::unique_ptr< QgsRasterLayer > srcRasterLayer = qgis::make_unique< QgsRasterLayer >( rasterFileInfo.absoluteFilePath(), rasterFileInfo.completeBaseName() );
+  std::unique_ptr< QgsRasterLayer > srcRasterLayer = std::make_unique< QgsRasterLayer >( rasterFileInfo.absoluteFilePath(), rasterFileInfo.completeBaseName() );
 
   QTemporaryDir dir;
-  std::unique_ptr< QgsRasterFileWriter > rasterFileWriter = qgis::make_unique< QgsRasterFileWriter >( dir.path() + '/' + rasterFileInfo.completeBaseName() );
+  std::unique_ptr< QgsRasterFileWriter > rasterFileWriter = std::make_unique< QgsRasterFileWriter >( dir.path() + '/' + rasterFileInfo.completeBaseName() );
 
   //2. Definition of the pyramid levels
   QList<int> levelList;
@@ -312,7 +312,7 @@ void TestQgsRasterFileWriter::testVrtCreation()
   QCOMPARE( res, QgsRasterFileWriter::NoError );
 
   // Now let's compare the georef of the original raster with the georef of the generated vrt file
-  std::unique_ptr< QgsRasterLayer > vrtRasterLayer = qgis::make_unique< QgsRasterLayer >( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );
+  std::unique_ptr< QgsRasterLayer > vrtRasterLayer = std::make_unique< QgsRasterLayer >( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );
 
   double xminVrt = vrtRasterLayer->extent().xMinimum();
   double yminVrt = vrtRasterLayer->extent().yMaximum();
