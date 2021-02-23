@@ -94,10 +94,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   // actually it is more busy than with the default "Always" policy although there are no changes in the scene.
   //mRenderer->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
 
-#if QT_VERSION >= 0x050900
   // we want precise picking of terrain (also bounding volume picking does not seem to work - not sure why)
   mEngine->renderSettings()->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );
-#endif
 
   QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
 
@@ -389,17 +387,6 @@ void Qgs3DMapScene::updateScene()
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
   }
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  QgsWindow3DEngine *windowEngine = qobject_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine != nullptr )
-  {
-    QVector<Qt3DRender::QLayer *> layers;
-    layers.push_back( windowEngine->shadowRenderingFrameGraph()->castShadowsLayer() );
-    layers.push_back( windowEngine->shadowRenderingFrameGraph()->forwardRenderLayer() );
-    removeQLayerComponentsFromHierarchy( this );
-    addQLayerComponentsToHierarchy( this, layers );
-  }
-#endif
   updateSceneState();
 }
 

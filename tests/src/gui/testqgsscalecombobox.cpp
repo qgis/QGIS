@@ -267,11 +267,7 @@ void TestQgsScaleComboBox::testLocale()
   QCOMPARE( s->toString( 1e8 ), QString( "1:100000000" ) );
 
   QLocale::setDefault( QLocale::French );
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 12, 0 )
   QCOMPARE( s->toString( 1e8 ), QString( "1:100 000 000" ) );
-#else
-  QCOMPARE( s->toString( 1e8 ), QString( "1:100\u00A0000\u00A0000" ) );
-#endif
   QLocale customFrench( QLocale::French );
   customFrench.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customFrench );

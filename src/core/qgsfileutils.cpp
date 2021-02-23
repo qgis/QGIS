@@ -80,18 +80,11 @@ bool QgsFileUtils::fileMatchesFilter( const QString &fileName, const QString &fi
 #endif
     for ( const QString &glob : globPatterns )
     {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
       const QString re = QRegularExpression::wildcardToRegularExpression( glob );
 
       const QRegularExpression globRx( re );
       if ( globRx.match( name ).hasMatch() )
         return true;
-#else
-      QRegExp rx( glob );
-      rx.setPatternSyntax( QRegExp::Wildcard );
-      if ( rx.indexIn( name ) != -1 )
-        return true;
-#endif
     }
   }
   return false;

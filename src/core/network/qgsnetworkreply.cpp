@@ -22,10 +22,7 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
   , mRawHeaderPairs( reply->rawHeaderPairs() )
   , mRequest( reply->request() )
 {
-  int maxAttribute = static_cast< int >( QNetworkRequest::RedirectPolicyAttribute );
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 11, 0 )
-  maxAttribute = static_cast< int >( QNetworkRequest::Http2DirectAttribute );
-#endif
+  int maxAttribute = static_cast< int >( QNetworkRequest::Http2DirectAttribute );
   for ( int i = 0; i <= maxAttribute; ++i )
   {
     if ( reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) ).isValid() )

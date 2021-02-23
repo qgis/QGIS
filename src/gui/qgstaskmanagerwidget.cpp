@@ -47,18 +47,10 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int progressColWidth = static_cast< int >( fontMetrics().width( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
-#else
   int progressColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
-#endif
   mTreeView->setColumnWidth( QgsTaskManagerModel::Progress, progressColWidth );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int statusColWidth = static_cast< int >( fontMetrics().width( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
-#else
   int statusColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
-#endif
   mTreeView->setColumnWidth( QgsTaskManagerModel::Status, statusColWidth );
   mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
@@ -582,11 +574,7 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
   setLayout( new QVBoxLayout() );
   QgsTaskManagerWidget *w = new QgsTaskManagerWidget( manager );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int minWidth = static_cast< int >( fontMetrics().width( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
-#else
   int minWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
-#endif
   int minHeight = static_cast< int >( fontMetrics().height() * 15 * Qgis::UI_SCALE_FACTOR );
   setMinimumSize( minWidth, minHeight );
   layout()->addWidget( w );
@@ -628,12 +616,7 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const
 {
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int width = static_cast< int >( fontMetrics().width( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
-#else
   int width = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
-#endif
   int height = QToolButton::sizeHint().height();
   return QSize( width, height );
 }

@@ -56,11 +56,7 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
   mTextBaseline = mRulerMinSize / 1.667;
   mMinSpacingVerticalLabels = mRulerMinSize / 5;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  double guideMarkerSize = mRulerFontMetrics->width( QStringLiteral( "*" ) );
-#else
   double guideMarkerSize = mRulerFontMetrics->horizontalAdvance( '*' );
-#endif
   mDragGuideTolerance = guideMarkerSize;
   switch ( mOrientation )
   {

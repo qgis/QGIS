@@ -58,12 +58,8 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
     mLineEdit->setValidator( validator );
   }
 
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( QStringLiteral( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) ) );
-#else
   mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().horizontalAdvance( 'x' ) * 44 );
-#endif
+
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsNewNameDialog::nameChanged );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsNewNameDialog::newNameChanged );
   layout()->addWidget( mLineEdit );

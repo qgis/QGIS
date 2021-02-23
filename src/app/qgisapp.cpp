@@ -2571,11 +2571,7 @@ int QgisApp::chooseReasonableDefaultIconSize() const
   }
   else
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    double size = fontMetrics().width( QStringLiteral( "XXX" ) );
-#else
     double size = fontMetrics().horizontalAdvance( 'X' ) * 3;
-#endif
     if ( size < 24 )
       return 16;
     else if ( size < 32 )
@@ -3094,13 +3090,11 @@ void QgisApp::createActionGroups()
 
 void QgisApp::setAppStyleSheet( const QString &stylesheet )
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
   // avoid crash on stylesheet change -- see https://bugreports.qt.io/browse/QTBUG-69204
   static bool sOnce = false;
   if ( sOnce )
     return;
   sOnce = true;
-#endif
 
   setStyleSheet( stylesheet );
 

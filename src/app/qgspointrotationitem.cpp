@@ -100,11 +100,7 @@ void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
   QFontMetricsF fm( mFont );
 
   //set item size
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mItemSize.setWidth( mPixmap.width() + fm.width( QStringLiteral( "360" ) ) );
-#else
   mItemSize.setWidth( mPixmap.width() + fm.horizontalAdvance( QStringLiteral( "360" ) ) );
-#endif
   const double pixmapHeight = mPixmap.height();
   double fontHeight = fm.height();
   if ( pixmapHeight >= fontHeight )

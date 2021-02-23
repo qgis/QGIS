@@ -47,11 +47,7 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setHtml( mHtmlCode );
 #ifdef WITH_QTWEBKIT
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
-#else
   const int horizontalDpi = mWidget->logicalDpiX();
-#endif
 
   mWidget->setZoomFactor( horizontalDpi / 96.0 );
 

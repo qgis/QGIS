@@ -34,9 +34,7 @@
 
 #include <Qt3DRender/QMesh>
 
-#if QT_VERSION >= 0x050900
 #include <Qt3DExtras/QExtrudedTextGeometry>
-#endif
 
 #include <QUrl>
 #include <QVector3D>
@@ -222,11 +220,7 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   ba.resize( byteCount );
   memcpy( ba.data(), positions.constData(), byteCount );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *instanceBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer );
-#else
   Qt3DRender::QBuffer *instanceBuffer = new Qt3DRender::QBuffer();
-#endif
   instanceBuffer->setData( ba );
 
   Qt3DRender::QAttribute *instanceDataAttribute = new Qt3DRender::QAttribute;
@@ -318,7 +312,6 @@ Qt3DRender::QGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( QgsPoin
       return g;
     }
 
-#if QT_VERSION >= 0x050900
     case QgsPoint3DSymbol::ExtrudedText:
     {
       float depth = shapeProperties[QStringLiteral( "depth" )].toFloat();
@@ -328,7 +321,6 @@ Qt3DRender::QGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( QgsPoin
       g->setText( text );
       return g;
     }
-#endif
 
     default:
       Q_ASSERT( false );
