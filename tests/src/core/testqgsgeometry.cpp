@@ -545,7 +545,7 @@ void TestQgsGeometry::equality()
   QVERIFY( !QgsGeometry().equals( QgsGeometry() ) );
 
   // compare to null
-  QgsGeometry g1( qgis::make_unique< QgsPoint >( 1.0, 2.0 ) );
+  QgsGeometry g1( std::make_unique< QgsPoint >( 1.0, 2.0 ) );
   QVERIFY( !g1.equals( QgsGeometry() ) );
   QVERIFY( !QgsGeometry().equals( g1 ) );
 

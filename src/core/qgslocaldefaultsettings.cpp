@@ -49,7 +49,7 @@ QgsBearingNumericFormat *QgsLocalDefaultSettings::bearingFormat()
   }
   s.endGroup();
 
-  std::unique_ptr< QgsBearingNumericFormat > res = qgis::make_unique< QgsBearingNumericFormat >();
+  std::unique_ptr< QgsBearingNumericFormat > res = std::make_unique< QgsBearingNumericFormat >();
   res->setConfiguration( config, QgsReadWriteContext() );
   return res.release();
 }

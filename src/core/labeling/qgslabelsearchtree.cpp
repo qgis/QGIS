@@ -88,7 +88,7 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
 
   const QgsRectangle bounds( xMin, yMin, xMax, yMax );
   QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
-  std::unique_ptr< QgsLabelPosition > newEntry = qgis::make_unique< QgsLabelPosition >( featureId, labelPos->getAlpha() + mMapSettings.rotation(), cornerPoints, bounds,
+  std::unique_ptr< QgsLabelPosition > newEntry = std::make_unique< QgsLabelPosition >( featureId, labelPos->getAlpha() + mMapSettings.rotation(), cornerPoints, bounds,
       labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced );
   mSpatialIndex.insert( newEntry.get(), bounds );
   mOwnedPositions.emplace_back( std::move( newEntry ) );
@@ -105,7 +105,7 @@ bool QgsLabelSearchTree::insertCallout( const QgsCalloutPosition &position )
   const QPointF origin = position.origin();
   const QPointF destination = position.destination();
 
-  std::unique_ptr< QgsCalloutPosition > newEntry = qgis::make_unique< QgsCalloutPosition >( position );
+  std::unique_ptr< QgsCalloutPosition > newEntry = std::make_unique< QgsCalloutPosition >( position );
 
   mCalloutIndex.insert( newEntry.get(), QgsRectangle( origin.x(), origin.y(), origin.x(), origin.y() ) );
   mCalloutIndex.insert( newEntry.get(), QgsRectangle( destination.x(), destination.y(), destination.x(), destination.y() ) );

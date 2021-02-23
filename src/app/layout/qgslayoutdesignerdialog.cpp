@@ -2666,8 +2666,8 @@ void QgsLayoutDesignerDialog::printAtlas()
   printSettings.predefinedMapScales = predefinedScales();
 
   QString error;
-  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Printing Atlas" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
@@ -2873,8 +2873,8 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
-  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3038,8 +3038,8 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
-  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3269,8 +3269,8 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
 
   QString error;
-  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
 
@@ -3405,8 +3405,8 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
-  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report…" ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Rendering report…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3522,8 +3522,8 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
-  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3658,8 +3658,8 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   pdfSettings.rasterizeWholeImage = rasterize;
 
   QString error;
-  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3763,8 +3763,8 @@ void QgsLayoutDesignerDialog::printReport()
   printSettings.predefinedMapScales = predefinedScales();
 
   QString error;
-  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Printing Report" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
@@ -4064,7 +4064,7 @@ void QgsLayoutDesignerDialog::initializeRegistry()
   sInitializedRegistry = true;
   auto createPageWidget = ( []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    std::unique_ptr< QgsLayoutPagePropertiesWidget > newWidget = qgis::make_unique< QgsLayoutPagePropertiesWidget >( nullptr, item );
+    std::unique_ptr< QgsLayoutPagePropertiesWidget > newWidget = std::make_unique< QgsLayoutPagePropertiesWidget >( nullptr, item );
     return newWidget.release();
   } );
 
@@ -4782,7 +4782,7 @@ QPrinter *QgsLayoutDesignerDialog::printer()
   //only create the printer on demand - creating a printer object can be very slow
   //due to QTBUG-3033
   if ( !mPrinter )
-    mPrinter = qgis::make_unique< QPrinter >();
+    mPrinter = std::make_unique< QPrinter >();
 
   return mPrinter.get();
 }

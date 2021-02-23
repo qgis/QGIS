@@ -507,7 +507,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   }
   if ( !mRenderer )
   {
-    mRenderer = qgis::make_unique< QgsCategorizedSymbolRenderer >( QString(), QgsCategoryList() );
+    mRenderer = std::make_unique< QgsCategorizedSymbolRenderer >( QString(), QgsCategoryList() );
   }
 
   QString attrName = mRenderer->classAttribute();
@@ -898,7 +898,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   */
 
   // recreate renderer
-  std::unique_ptr< QgsCategorizedSymbolRenderer > r = qgis::make_unique< QgsCategorizedSymbolRenderer >( attrName, cats );
+  std::unique_ptr< QgsCategorizedSymbolRenderer > r = std::make_unique< QgsCategorizedSymbolRenderer >( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
   std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( ramp )

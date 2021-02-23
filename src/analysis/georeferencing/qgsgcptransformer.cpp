@@ -117,7 +117,7 @@ bool QgsLinearGeorefTransform::getOriginScale( QgsPointXY &origin, double &scale
 
 QgsGcpTransformerInterface *QgsLinearGeorefTransform::clone() const
 {
-  std::unique_ptr< QgsLinearGeorefTransform > res = qgis::make_unique< QgsLinearGeorefTransform >();
+  std::unique_ptr< QgsLinearGeorefTransform > res = std::make_unique< QgsLinearGeorefTransform >();
   res->mParameters = mParameters;
   return res.release();
 }
@@ -235,7 +235,7 @@ bool QgsHelmertGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, doub
 
 QgsGcpTransformerInterface *QgsHelmertGeorefTransform::clone() const
 {
-  std::unique_ptr< QgsHelmertGeorefTransform > res = qgis::make_unique< QgsHelmertGeorefTransform >();
+  std::unique_ptr< QgsHelmertGeorefTransform > res = std::make_unique< QgsHelmertGeorefTransform >();
   res->mHelmertParameters = mHelmertParameters;
   return res.release();
 }
@@ -331,7 +331,7 @@ QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
 
 QgsGcpTransformerInterface *QgsGDALGeorefTransform::clone() const
 {
-  std::unique_ptr< QgsGDALGeorefTransform > res = qgis::make_unique< QgsGDALGeorefTransform >( mIsTPSTransform, mPolynomialOrder );
+  std::unique_ptr< QgsGDALGeorefTransform > res = std::make_unique< QgsGDALGeorefTransform >( mIsTPSTransform, mPolynomialOrder );
   res->updateParametersFromGcps( mSourceCoords, mDestCoordinates, mInvertYAxis );
   return res.release();
 }
@@ -438,7 +438,7 @@ QgsProjectiveGeorefTransform::QgsProjectiveGeorefTransform()
 
 QgsGcpTransformerInterface *QgsProjectiveGeorefTransform::clone() const
 {
-  std::unique_ptr< QgsProjectiveGeorefTransform > res = qgis::make_unique< QgsProjectiveGeorefTransform >();
+  std::unique_ptr< QgsProjectiveGeorefTransform > res = std::make_unique< QgsProjectiveGeorefTransform >();
   res->mParameters = mParameters;
   return res.release();
 }

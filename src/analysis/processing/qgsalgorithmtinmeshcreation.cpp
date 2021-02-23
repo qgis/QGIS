@@ -191,7 +191,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
 
 void QgsTinMeshCreationAlgorithm::addZValueDataset( const QString &fileName, const QgsMesh &mesh, const QString &driver )
 {
-  std::unique_ptr<QgsMeshLayer> tempLayer = qgis::make_unique<QgsMeshLayer>( fileName, "temp", "mdal" );
+  std::unique_ptr<QgsMeshLayer> tempLayer = std::make_unique<QgsMeshLayer>( fileName, "temp", "mdal" );
   QgsMeshZValueDatasetGroup *zValueDatasetGroup = new QgsMeshZValueDatasetGroup( QObject::tr( "Terrain Elevation" ), mesh );
   tempLayer->addDatasets( zValueDatasetGroup );
   int datasetGroupIndex = tempLayer->datasetGroupCount() - 1;

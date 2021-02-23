@@ -74,7 +74,7 @@ void QgsRuleBasedRenderer::Rule::initFilter()
   else
   {
     mElseRule = false;
-    mFilter = qgis::make_unique< QgsExpression >( mFilterExp );
+    mFilter = std::make_unique< QgsExpression >( mFilterExp );
   }
 }
 
@@ -1322,7 +1322,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       return nullptr;
 
     std::unique_ptr< QgsSymbol > origSymbol( singleSymbolRenderer->symbol()->clone() );
-    r = qgis::make_unique< QgsRuleBasedRenderer >( origSymbol.release() );
+    r = std::make_unique< QgsRuleBasedRenderer >( origSymbol.release() );
   }
   else if ( renderer->type() == QLatin1String( "categorizedSymbol" ) )
   {
@@ -1340,14 +1340,14 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       attr = QgsExpression::quotedColumnRef( attr );
     }
 
-    std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = qgis::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+    std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
     QString expression;
     QString value;
     QgsRendererCategory category;
     for ( const QgsRendererCategory &category : categorizedRenderer->categories() )
     {
-      std::unique_ptr< QgsRuleBasedRenderer::Rule > rule = qgis::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer::Rule > rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
       rule->setLabel( category.label() );
 
@@ -1412,7 +1412,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       rootrule->appendChild( rule.release() );
     }
 
-    r = qgis::make_unique< QgsRuleBasedRenderer >( rootrule.release() );
+    r = std::make_unique< QgsRuleBasedRenderer >( rootrule.release() );
   }
   else if ( renderer->type() == QLatin1String( "graduatedSymbol" ) )
   {
@@ -1435,14 +1435,14 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       attr = QStringLiteral( "(%1)" ).arg( attr );
     }
 
-    std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = qgis::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+    std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
     QString expression;
     QgsRendererRange range;
     for ( int i = 0; i < graduatedRenderer->ranges().size(); ++i )
     {
       range = graduatedRenderer->ranges().value( i );
-      std::unique_ptr< QgsRuleBasedRenderer::Rule > rule = qgis::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer::Rule > rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
       rule->setLabel( range.label() );
       if ( i == 0 )//The lower boundary of the first range is included, while it is excluded for the others
       {
@@ -1466,7 +1466,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       rootrule->appendChild( rule.release() );
     }
 
-    r = qgis::make_unique< QgsRuleBasedRenderer >( rootrule.release() );
+    r = std::make_unique< QgsRuleBasedRenderer >( rootrule.release() );
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) || renderer->type() == QLatin1String( "pointCluster" ) )
   {

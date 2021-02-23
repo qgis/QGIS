@@ -242,7 +242,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
 QgsMeshZValueDatasetGroup::QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh ):
   QgsMeshDatasetGroup( datasetGroupName, QgsMeshDatasetGroupMetadata::DataOnVertices )
 {
-  mDataset = qgis::make_unique< QgsMeshZValueDataset >( mesh );
+  mDataset = std::make_unique< QgsMeshZValueDataset >( mesh );
 }
 
 void QgsMeshZValueDatasetGroup::initialize()

@@ -27,7 +27,7 @@
 QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Add regular polygon" );
 
@@ -44,7 +44,7 @@ QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
 {
   deleteNumberSidesSpinBox();
-  mNumberSidesSpinBox = qgis::make_unique<QgsSpinBox>();
+  mNumberSidesSpinBox = std::make_unique<QgsSpinBox>();
   mNumberSidesSpinBox->setMaximum( 99999999 );
   mNumberSidesSpinBox->setMinimum( 3 );
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );

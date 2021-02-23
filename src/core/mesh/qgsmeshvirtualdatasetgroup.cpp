@@ -158,7 +158,7 @@ bool QgsMeshVirtualDatasetGroup::calculateDataset() const
     return false;
 
   //open output dataset
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = qgis::make_unique<QgsMeshMemoryDatasetGroup> ( QString(), dsu.outputType() );
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup> ( QString(), dsu.outputType() );
   mCalcNode->calculate( dsu, *outputGroup );
 
   if ( outputGroup->memoryDatasets.isEmpty() )

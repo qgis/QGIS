@@ -25,8 +25,8 @@
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );
-  mLineSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbolLayer.release() );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );
+  mLineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbolLayer.release() );
 }
 
 QgsDataDefinedSizeLegend::~QgsDataDefinedSizeLegend() = default;

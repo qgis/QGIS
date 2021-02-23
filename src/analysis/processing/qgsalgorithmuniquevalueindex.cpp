@@ -53,11 +53,11 @@ void QgsAddUniqueValueIndexAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ),
                 QObject::tr( "Output field name" ), QStringLiteral( "NUM_FIELD" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > classedOutput = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer with index field" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true );
+  std::unique_ptr< QgsProcessingParameterFeatureSink > classedOutput = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer with index field" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true );
   classedOutput->setCreateByDefault( true );
   addParameter( classedOutput.release() );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > summaryOutput = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "SUMMARY_OUTPUT" ),  QObject::tr( "Class summary" ),
+  std::unique_ptr< QgsProcessingParameterFeatureSink > summaryOutput = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "SUMMARY_OUTPUT" ),  QObject::tr( "Class summary" ),
       QgsProcessing::TypeVector, QVariant(), true );
   summaryOutput->setCreateByDefault( false );
   addParameter( summaryOutput.release() );

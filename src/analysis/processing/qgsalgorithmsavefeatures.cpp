@@ -63,13 +63,13 @@ void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector features" ) ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Saved features" ), QgsVectorFileWriter::fileFilterString(), QVariant(), false ) );
 
-  std::unique_ptr< QgsProcessingParameterString > param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ), QVariant(), false, true );
+  std::unique_ptr< QgsProcessingParameterString > param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
-  param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "DATASOURCE_OPTIONS" ), QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
+  param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "DATASOURCE_OPTIONS" ), QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
-  param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_OPTIONS" ), QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
+  param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_OPTIONS" ), QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
 

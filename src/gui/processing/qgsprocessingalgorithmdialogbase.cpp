@@ -233,7 +233,7 @@ void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const
 
 QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
 {
-  auto feedback = qgis::make_unique< QgsProcessingAlgorithmDialogFeedback >();
+  auto feedback = std::make_unique< QgsProcessingAlgorithmDialogFeedback >();
   connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmDialogBase::setPercentage );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushCommandInfo );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushConsoleInfo );

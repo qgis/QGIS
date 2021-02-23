@@ -242,7 +242,7 @@ namespace QgsWms
     // content based legend
     if ( ! parameters.bbox().isEmpty() )
     {
-      mapSettings = qgis::make_unique<QgsMapSettings>();
+      mapSettings = std::make_unique<QgsMapSettings>();
       mapSettings->setOutputSize( context.mapSize() );
       // Inverted axis?
       QgsRectangle bbox { parameters.bboxAsRectangle() };

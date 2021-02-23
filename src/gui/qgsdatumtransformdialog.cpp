@@ -77,7 +77,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     QWidget *parent,
     Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas, bool allowFallback )
   : QDialog( parent, f )
-  , mPreviousCursorOverride( qgis::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
+  , mPreviousCursorOverride( std::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
   setupUi( this );
 

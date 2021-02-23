@@ -85,7 +85,7 @@ QgsSingleSidedBufferAlgorithm *QgsSingleSidedBufferAlgorithm::createInstance() c
 
 void QgsSingleSidedBufferAlgorithm::initParameters( const QVariantMap & )
 {
-  auto bufferParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 10, QStringLiteral( "INPUT" ) );
+  auto bufferParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 10, QStringLiteral( "INPUT" ) );
   bufferParam->setIsDynamic( true );
   bufferParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Buffer distance" ), QgsPropertyDefinition::Double ) );
   bufferParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

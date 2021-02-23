@@ -24,7 +24,7 @@
 
 QgsProjectDisplaySettings::QgsProjectDisplaySettings( QObject *parent )
   : QObject( parent )
-  , mBearingFormat( qgis::make_unique< QgsBearingNumericFormat >() )
+  , mBearingFormat( std::make_unique< QgsBearingNumericFormat >() )
 {
 
 }

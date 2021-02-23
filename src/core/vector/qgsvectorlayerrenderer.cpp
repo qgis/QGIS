@@ -51,7 +51,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mLabeling( false )
   , mDiagrams( false )
 {
-  mSource = qgis::make_unique< QgsVectorLayerFeatureSource >( layer );
+  mSource = std::make_unique< QgsVectorLayerFeatureSource >( layer );
 
   std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
 
@@ -249,7 +249,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   QgsScopedQPainterState painterState( context.painter() );
 
   // MUST be created in the thread doing the rendering
-  mInterruptionChecker = qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( context );
+  mInterruptionChecker = std::make_unique< QgsVectorLayerRendererInterruptionChecker >( context );
   bool usingEffect = false;
   if ( renderer->paintEffect() && renderer->paintEffect()->enabled() )
   {
@@ -532,7 +532,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   }
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
+  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
 
   std::unique_ptr< QgsGeometryEngine > clipEngine;

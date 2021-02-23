@@ -95,7 +95,7 @@ QString QgsTriangle::geometryType() const
 
 QgsTriangle *QgsTriangle::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsTriangle >();
+  auto result = std::make_unique< QgsTriangle >();
   result->mWkbType = mWkbType;
   return result.release();
 }

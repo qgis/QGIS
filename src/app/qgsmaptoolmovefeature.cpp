@@ -34,7 +34,7 @@
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
   , mMode( mode )
 {
   mToolName = tr( "Move feature" );

@@ -44,7 +44,7 @@ void QgsCellStatisticsAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, false );
+  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, false );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( output_nodata_parameter.release() );
 
@@ -92,7 +92,7 @@ bool QgsCellStatisticsAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
       // add projector if necessary
       if ( layer->crs() != mCrs )
       {
-        input.projector = qgis::make_unique< QgsRasterProjector >();
+        input.projector = std::make_unique< QgsRasterProjector >();
         input.projector->setInput( input.sourceDataProvider.get() );
         input.projector->setCrs( layer->crs(), mCrs, context.transformContext() );
         input.interface = input.projector.get();
@@ -126,7 +126,7 @@ QVariantMap QgsCellStatisticsAlgorithmBase::processAlgorithm( const QVariantMap 
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
   mOutputRasterDataProvider = writer->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs );

@@ -102,11 +102,11 @@ void TestQgsNewDatabaseTableNameWidget::cleanup()
 
 void TestQgsNewDatabaseTableNameWidget::testWidgetFilters()
 {
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "NOT_EXISTS" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "NOT_EXISTS" } ) };
   QCOMPARE( w->mBrowserProxyModel.rowCount(), 0 );
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w2 { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w2 { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr ) };
   QVERIFY( w2->mBrowserProxyModel.rowCount() > 0 );
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w3 { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w3 { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
   QVERIFY( w3->mBrowserProxyModel.rowCount() > 0 );
 }
 
@@ -114,7 +114,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetFilters()
 void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
 {
 #ifdef ENABLE_PGTEST
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
 
   auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
   QVERIFY( index.isValid() );
@@ -224,7 +224,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
 void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
 {
 #ifdef ENABLE_PGTEST
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "ogr" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "ogr" } ) };
 
   auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
   QVERIFY( index.isValid() );

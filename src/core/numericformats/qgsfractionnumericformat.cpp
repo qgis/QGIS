@@ -152,7 +152,7 @@ QgsNumericFormat *QgsFractionNumericFormat::clone() const
 
 QgsNumericFormat *QgsFractionNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsFractionNumericFormat > res = qgis::make_unique< QgsFractionNumericFormat >();
+  std::unique_ptr< QgsFractionNumericFormat > res = std::make_unique< QgsFractionNumericFormat >();
   res->setConfiguration( configuration, context );
   return res.release();
 }

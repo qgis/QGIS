@@ -111,7 +111,7 @@ bool QgsGeometryCollection::operator!=( const QgsAbstractGeometry &other ) const
 
 QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsGeometryCollection >();
+  auto result = std::make_unique< QgsGeometryCollection >();
   result->mWkbType = mWkbType;
   return result.release();
 }

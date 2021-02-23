@@ -216,7 +216,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         // case we want to avoid creating potentially thousands of contexts one-by-one (usually one context
         // is created for a batch of multiple evalutions like this), and we only use a very minimal context
         // anyway...
-        mExpressionContext = qgis::make_unique< QgsExpressionContext >();
+        mExpressionContext = std::make_unique< QgsExpressionContext >();
         mExpressionContext->appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
       }
 

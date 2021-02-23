@@ -20,7 +20,7 @@
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mFeedback( qgis::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayerOpacity( layer->opacity() )
 {
   // clone items from layer

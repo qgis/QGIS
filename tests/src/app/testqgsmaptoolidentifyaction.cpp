@@ -348,7 +348,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QGSCOMPARENEAR( length, 26930.6, 0.1 );
 
   // LineString with Z
-  tempLayer = qgis::make_unique< QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  tempLayer = std::make_unique< QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( tempLayer->isValid() );
   f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ(2484588 2425722 10, 2482767 2398853 1000)" ) ) );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );

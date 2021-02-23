@@ -60,16 +60,16 @@ void QgsDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "EPS" ),
                 QObject::tr( "Maximum distance between clustered points" ), 1, QStringLiteral( "INPUT" ), false, 0 ) );
 
-  auto dbscanStarParam = qgis::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "DBSCAN*" ),
+  auto dbscanStarParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "DBSCAN*" ),
                          QObject::tr( "Treat border points as noise (DBSCAN*)" ), false, true );
   dbscanStarParam->setFlags( dbscanStarParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( dbscanStarParam.release() );
 
-  auto fieldNameParam = qgis::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ),
+  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ),
                         QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
   fieldNameParam->setFlags( fieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( fieldNameParam.release() );
-  auto sizeFieldNameParam = qgis::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ),
+  auto sizeFieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ),
                             QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
   sizeFieldNameParam->setFlags( sizeFieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( sizeFieldNameParam.release() );

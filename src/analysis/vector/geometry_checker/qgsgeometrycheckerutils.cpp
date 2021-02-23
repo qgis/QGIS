@@ -102,7 +102,7 @@ QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QgsGeometryChe
   mLayerIt = rh.mLayerIt;
   mFeatureIt = rh.mFeatureIt;
   mParent = rh.mParent;
-  mCurrentFeature = qgis::make_unique<LayerFeature>( *rh.mCurrentFeature.get() );
+  mCurrentFeature = std::make_unique<LayerFeature>( *rh.mCurrentFeature.get() );
 }
 
 bool QgsGeometryCheckerUtils::LayerFeature::useMapCrs() const
@@ -197,7 +197,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
     QgsFeature feature;
     if ( featurePool->getFeature( *mFeatureIt, feature ) && !feature.geometry().isNull() )
     {
-      mCurrentFeature = qgis::make_unique<LayerFeature>( featurePool, feature, mParent->mContext, mParent->mUseMapCrs );
+      mCurrentFeature = std::make_unique<LayerFeature>( featurePool, feature, mParent->mContext, mParent->mUseMapCrs );
       return true;
     }
     ++mFeatureIt;
@@ -262,7 +262,7 @@ QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerF
 
 std::unique_ptr<QgsGeometryEngine> QgsGeometryCheckerUtils::createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance )
 {
-  return qgis::make_unique<QgsGeos>( geometry, tolerance );
+  return std::make_unique<QgsGeos>( geometry, tolerance );
 }
 
 QgsAbstractGeometry *QgsGeometryCheckerUtils::getGeomPart( QgsAbstractGeometry *geom, int partIdx )

@@ -1054,7 +1054,7 @@ QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
   std::unique_ptr< QgsPoint > res;
   visitPointsByRegularDistance( distance, [ & ]( double x, double y, double z, double m, double, double, double, double, double, double, double, double )->bool
   {
-    res = qgis::make_unique< QgsPoint >( pointType, x, y, z, m );
+    res = std::make_unique< QgsPoint >( pointType, x, y, z, m );
     return false;
   } );
   return res.release();
@@ -1223,7 +1223,7 @@ void QgsLineString::extend( double startDistance, double endDistance )
 
 QgsLineString *QgsLineString::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsLineString >();
+  auto result = std::make_unique< QgsLineString >();
   result->mWkbType = mWkbType;
   return result.release();
 }

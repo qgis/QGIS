@@ -59,7 +59,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::clearSelection );
 
-  mTempStyle = qgis::make_unique< QgsStyle >();
+  mTempStyle = std::make_unique< QgsStyle >();
   mTempStyle->createMemoryDatabase();
 
   // TODO validate
@@ -165,7 +165,7 @@ void QgsStyleExportImportDialog::doExportImport()
 
     mFileName = fileName;
 
-    mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    mCursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     moveStyles( &selection, mStyle, mTempStyle.get() );
     if ( !mTempStyle->exportXml( mFileName ) )
     {
@@ -185,7 +185,7 @@ void QgsStyleExportImportDialog::doExportImport()
   }
   else // import
   {
-    mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    mCursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     moveStyles( &selection, mTempStyle.get(), mStyle );
 
     accept();

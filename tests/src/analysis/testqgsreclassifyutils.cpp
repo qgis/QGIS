@@ -197,7 +197,7 @@ void TestQgsReclassifyUtils::testReclassify()
   // create a GeoTIFF - this will create data provider in editable mode
   QString filename = tmpFile.fileName();
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( filename );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( filename );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( QStringLiteral( "GTiff" ) );
   std::unique_ptr<QgsRasterDataProvider > dp( writer->createOneBandRaster( Qgis::Float32, nCols, nRows, extent, crs ) );

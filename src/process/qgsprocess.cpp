@@ -651,7 +651,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
   const QgsProcessingAlgorithm *alg = nullptr;
   if ( QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "model3" ) )
   {
-    model = qgis::make_unique< QgsProcessingModelAlgorithm >();
+    model = std::make_unique< QgsProcessingModelAlgorithm >();
     if ( !model->fromFile( id ) )
     {
       std::cerr << QStringLiteral( "File %1 is not a valid Processing model!\n" ).arg( id ).toLocal8Bit().constData();
@@ -839,7 +839,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
   const QgsProcessingAlgorithm *alg = nullptr;
   if ( QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "model3" ) )
   {
-    model = qgis::make_unique< QgsProcessingModelAlgorithm >();
+    model = std::make_unique< QgsProcessingModelAlgorithm >();
     if ( !model->fromFile( id ) )
     {
       std::cerr << QStringLiteral( "File %1 is not a valid Processing model!\n" ).arg( id ).toLocal8Bit().constData();
@@ -902,7 +902,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
   std::unique_ptr< QgsProject > project;
   if ( !projectPath.isEmpty() )
   {
-    project = qgis::make_unique< QgsProject >();
+    project = std::make_unique< QgsProject >();
     if ( !project->read( projectPath ) )
     {
       std::cerr << QStringLiteral( "Could not load the QGIS project \"%1\"\n" ).arg( projectPath ).toLocal8Bit().constData();

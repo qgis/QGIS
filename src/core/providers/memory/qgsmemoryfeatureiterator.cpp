@@ -46,7 +46,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    mSubsetExpression = qgis::make_unique< QgsExpression >( mSource->mSubsetString );
+    mSubsetExpression = std::make_unique< QgsExpression >( mSource->mSubsetString );
     mSubsetExpression->prepare( mSource->expressionContext() );
   }
 
@@ -253,7 +253,7 @@ bool QgsMemoryFeatureIterator::close()
 QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   : mFields( p->mFields )
   , mFeatures( p->mFeatures )
-  , mSpatialIndex( p->mSpatialIndex ? qgis::make_unique< QgsSpatialIndex >( *p->mSpatialIndex ) : nullptr ) // just shallow copy
+  , mSpatialIndex( p->mSpatialIndex ? std::make_unique< QgsSpatialIndex >( *p->mSpatialIndex ) : nullptr ) // just shallow copy
   , mSubsetString( p->mSubsetString )
   , mCrs( p->mCrs )
 {
@@ -270,7 +270,7 @@ QgsExpressionContext *QgsMemoryFeatureSource::expressionContext()
   // iterating over a memory layer with a subset string set
   if ( !mExpressionContext )
   {
-    mExpressionContext = qgis::make_unique< QgsExpressionContext >(
+    mExpressionContext = std::make_unique< QgsExpressionContext >(
                            QList<QgsExpressionContextScope *>()
                            << QgsExpressionContextUtils::globalScope()
                            << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );

@@ -48,7 +48,7 @@ QString QgsPointCloudClassifiedRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > res = qgis::make_unique< QgsPointCloudClassifiedRenderer >();
+  std::unique_ptr< QgsPointCloudClassifiedRenderer > res = std::make_unique< QgsPointCloudClassifiedRenderer >();
   res->mAttribute = mAttribute;
   res->mCategories = mCategories;
 
@@ -152,7 +152,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > r = qgis::make_unique< QgsPointCloudClassifiedRenderer >();
+  std::unique_ptr< QgsPointCloudClassifiedRenderer > r = std::make_unique< QgsPointCloudClassifiedRenderer >();
 
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Classification" ) ) );
 

@@ -107,7 +107,7 @@ bool QgsCircularString::equals( const QgsCurve &other ) const
 
 QgsCircularString *QgsCircularString::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsCircularString >();
+  auto result = std::make_unique< QgsCircularString >();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -1452,7 +1452,7 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
                     << QgsPoint( pointType, prevX, prevY, prevZ, prevM );
   }
 
-  std::unique_ptr< QgsCircularString > result = qgis::make_unique< QgsCircularString >();
+  std::unique_ptr< QgsCircularString > result = std::make_unique< QgsCircularString >();
   result->setPoints( substringPoints );
   return result.release();
 }

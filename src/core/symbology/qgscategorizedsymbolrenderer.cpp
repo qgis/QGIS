@@ -1089,7 +1089,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
 
   if ( !r )
   {
-    r = qgis::make_unique< QgsCategorizedSymbolRenderer >( QString(), QgsCategoryList() );
+    r = std::make_unique< QgsCategorizedSymbolRenderer >( QString(), QgsCategoryList() );
     QgsRenderContext context;
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )

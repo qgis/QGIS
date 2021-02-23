@@ -1709,7 +1709,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   dsUri.setSrid( QString::number( srid ) );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  unique_ptr< QgsHanaProvider > provider = qgis::make_unique< QgsHanaProvider >( dsUri.uri( false ), providerOptions );
+  unique_ptr< QgsHanaProvider > provider = std::make_unique< QgsHanaProvider >( dsUri.uri( false ), providerOptions );
 
   if ( !provider->isValid() )
   {

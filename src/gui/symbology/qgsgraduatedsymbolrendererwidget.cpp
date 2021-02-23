@@ -458,7 +458,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   }
   if ( !mRenderer )
   {
-    mRenderer = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
+    mRenderer = std::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
   }
 
   // setup user interface

@@ -852,10 +852,10 @@ void TestQgsLayerTree::testRasterSymbolNode()
   QgsLayerTreeNode *secondGroup = mRoot->children()[1];
   QCOMPARE( secondGroup->depth(), 1 );
 
-  std::unique_ptr< QgsRasterLayer > rl = qgis::make_unique< QgsRasterLayer >( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ), QStringLiteral( "gdal" ) );
   QVERIFY( rl->isValid() );
 
-  std::unique_ptr< QgsLayerTreeLayer > n = qgis::make_unique< QgsLayerTreeLayer >( rl.get() );
+  std::unique_ptr< QgsLayerTreeLayer > n = std::make_unique< QgsLayerTreeLayer >( rl.get() );
 
   // not checkable
   QgsRasterSymbolLegendNode rasterNode( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, false, QStringLiteral( "key" ) );

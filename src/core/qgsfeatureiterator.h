@@ -273,7 +273,7 @@ class CORE_EXPORT QgsFeatureIterator
 
     SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsFeature );
     % MethodCode
-    std::unique_ptr< QgsFeature > f = qgis::make_unique< QgsFeature >();
+    std::unique_ptr< QgsFeature > f = std::make_unique< QgsFeature >();
     bool result = false;
     Py_BEGIN_ALLOW_THREADS
     result = ( sipCpp->nextFeature( *f ) );

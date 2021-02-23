@@ -71,7 +71,7 @@ QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
 }
 
 QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface():
-  mTemporalCapabilities( qgis::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
+  mTemporalCapabilities( std::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
 {

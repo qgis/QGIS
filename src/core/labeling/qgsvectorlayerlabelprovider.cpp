@@ -56,7 +56,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
 
   if ( withFeatureLoop )
   {
-    mSource = qgis::make_unique<QgsVectorLayerFeatureSource>( layer );
+    mSource = std::make_unique<QgsVectorLayerFeatureSource>( layer );
   }
 
   init();
@@ -205,7 +205,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
   bool isMultiPoint = fet.geometry().constGet()->nCoordinates() > 1;
   std::unique_ptr< QgsAbstractGeometry > obstacleGeom;
   if ( isMultiPoint )
-    obstacleGeom = qgis::make_unique< QgsMultiPolygon >();
+    obstacleGeom = std::make_unique< QgsMultiPolygon >();
 
   // for each point
   for ( int i = 0; i < fet.geometry().constGet()->nCoordinates(); ++i )
@@ -248,7 +248,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
     QVector< double > bY;
     bY << bounds.top() << bounds.top() << bounds.bottom() << bounds.bottom();
-    std::unique_ptr< QgsLineString > boundLineString = qgis::make_unique< QgsLineString >( bX, bY );
+    std::unique_ptr< QgsLineString > boundLineString = std::make_unique< QgsLineString >( bX, bY );
 
     //then transform back to map units
     //TODO - remove when labeling is refactored to use screen units
@@ -283,7 +283,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
         return QgsGeometry();
     }
 
-    std::unique_ptr< QgsPolygon > obstaclePolygon = qgis::make_unique< QgsPolygon >();
+    std::unique_ptr< QgsPolygon > obstaclePolygon = std::make_unique< QgsPolygon >();
     obstaclePolygon->setExteriorRing( boundLineString.release() );
 
     if ( isMultiPoint )

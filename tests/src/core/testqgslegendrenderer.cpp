@@ -555,13 +555,13 @@ void TestQgsLegendRenderer::testOverrideSymbol()
 
   QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL2 );
 
-  std::unique_ptr< QgsFillSymbol > sym2 = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsFillSymbol > sym2 = std::make_unique< QgsFillSymbol >();
   sym2->setColor( Qt::red );
 
   QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
   dynamic_cast< QgsSymbolLegendNode * >( embeddedNode )->setCustomSymbol( sym2.release() );
 
-  std::unique_ptr< QgsMarkerSymbol > sym3 = qgis::make_unique< QgsMarkerSymbol >();
+  std::unique_ptr< QgsMarkerSymbol > sym3 = std::make_unique< QgsMarkerSymbol >();
   sym3->setColor( QColor( 0, 150, 0 ) );
   sym3->setSize( 6 );
 

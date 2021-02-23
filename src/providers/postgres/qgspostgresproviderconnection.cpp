@@ -244,7 +244,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
       } );
     }
 
-    std::unique_ptr<QgsPostgresResult> res = qgis::make_unique<QgsPostgresResult>( conn->PQexec( sql ) );
+    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->PQexec( sql ) );
 
     if ( feedback )
     {

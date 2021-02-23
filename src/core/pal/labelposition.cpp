@@ -151,7 +151,7 @@ LabelPosition::LabelPosition( const LabelPosition &other )
   h = other.h;
 
   if ( other.mNextPart )
-    mNextPart = qgis::make_unique< LabelPosition >( *other.mNextPart );
+    mNextPart = std::make_unique< LabelPosition >( *other.mNextPart );
 
   partId = other.partId;
   upsideDown = other.upsideDown;

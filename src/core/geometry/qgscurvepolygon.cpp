@@ -45,7 +45,7 @@ QgsCurvePolygon::~QgsCurvePolygon()
 
 QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsCurvePolygon >();
+  auto result = std::make_unique< QgsCurvePolygon >();
   result->mWkbType = mWkbType;
   return result.release();
 }

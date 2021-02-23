@@ -218,7 +218,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   QVector<QgsVector> vectors;
   QSize gridSize;
   QgsPointXY minCorner;
-  std::unique_ptr< Qt3DRender::QParameter > arrowsEnabledParameter = qgis::make_unique< Qt3DRender::QParameter >( "arrowsEnabled", nullptr );
+  std::unique_ptr< Qt3DRender::QParameter > arrowsEnabledParameter = std::make_unique< Qt3DRender::QParameter >( "arrowsEnabled", nullptr );
   if ( !layer || mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol->arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )
     arrowsEnabledParameter->setValue( false );
   else

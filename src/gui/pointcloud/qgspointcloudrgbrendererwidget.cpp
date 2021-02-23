@@ -83,7 +83,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRendererWidget::renderer()
     return nullptr;
   }
 
-  std::unique_ptr< QgsPointCloudRgbRenderer > renderer = qgis::make_unique< QgsPointCloudRgbRenderer >();
+  std::unique_ptr< QgsPointCloudRgbRenderer > renderer = std::make_unique< QgsPointCloudRgbRenderer >();
   renderer->setRedAttribute( mRedAttributeComboBox->currentAttribute() );
   renderer->setGreenAttribute( mGreenAttributeComboBox->currentAttribute() );
   renderer->setBlueAttribute( mBlueAttributeComboBox->currentAttribute() );

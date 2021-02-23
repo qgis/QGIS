@@ -227,7 +227,7 @@ void TestQgsLayoutShapes::readWriteXml()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( &l );
+  std::unique_ptr< QgsLayoutItemShape > shape = std::make_unique< QgsLayoutItemShape >( &l );
   shape->setShapeType( QgsLayoutItemShape::Triangle );
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
@@ -249,7 +249,7 @@ void TestQgsLayoutShapes::readWriteXml()
   shape->writeXml( rootNode, doc, QgsReadWriteContext() );
 
   //create new item and restore settings from xml
-  std::unique_ptr< QgsLayoutItemShape > copy = qgis::make_unique< QgsLayoutItemShape >( &l );
+  std::unique_ptr< QgsLayoutItemShape > copy = std::make_unique< QgsLayoutItemShape >( &l );
   QVERIFY( copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() ) );
   QCOMPARE( copy->shapeType(), QgsLayoutItemShape::Triangle );
   QCOMPARE( copy->symbol()->symbolLayer( 0 )->color().name(), QStringLiteral( "#00ff00" ) );
@@ -260,7 +260,7 @@ void TestQgsLayoutShapes::bounds()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( &l );
+  std::unique_ptr< QgsLayoutItemShape > shape = std::make_unique< QgsLayoutItemShape >( &l );
   shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 

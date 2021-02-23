@@ -183,11 +183,11 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsGeometry g;
       if ( layerWKBType == QgsWkbTypes::Point )
       {
-        g = QgsGeometry( qgis::make_unique<QgsPoint>( savePoint ) );
+        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint ) );
       }
       else if ( !QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
       {
-        g = QgsGeometry( qgis::make_unique<QgsPoint>( savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
+        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
       }
       else if ( QgsWkbTypes::isMultiType( layerWKBType ) && !QgsWkbTypes::hasZ( layerWKBType ) )
       {
@@ -202,7 +202,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else
       {
         // if layer supports more types (mCheckGeometryType is false)
-        g = QgsGeometry( qgis::make_unique<QgsPoint>( savePoint ) );
+        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint ) );
       }
 
       if ( QgsWkbTypes::hasM( layerWKBType ) )

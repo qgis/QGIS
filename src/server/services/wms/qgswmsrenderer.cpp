@@ -910,7 +910,7 @@ namespace QgsWms
 
 
     // add layers to dxf
-    std::unique_ptr<QgsDxfExport> dxf = qgis::make_unique<QgsDxfExport>();
+    std::unique_ptr<QgsDxfExport> dxf = std::make_unique<QgsDxfExport>();
     dxf->setExtent( mapExtent );
     dxf->setDestinationCrs( outputCRS );
     dxf->addLayers( dxfLayers );
@@ -1049,12 +1049,12 @@ namespace QgsWms
 
     if ( transparent && format != QgsWmsParameters::JPG )
     {
-      image = qgis::make_unique<QImage>( size, QImage::Format_ARGB32_Premultiplied );
+      image = std::make_unique<QImage>( size, QImage::Format_ARGB32_Premultiplied );
       image->fill( 0 );
     }
     else
     {
-      image = qgis::make_unique<QImage>( size, QImage::Format_RGB32 );
+      image = std::make_unique<QImage>( size, QImage::Format_RGB32 );
       image->fill( mWmsParameters.backgroundColorAsColor() );
     }
 
@@ -2720,7 +2720,7 @@ namespace QgsWms
 
       // create vector layer
       const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( url, param.mName, QLatin1String( "memory" ), options );
+      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( url, param.mName, QLatin1String( "memory" ), options );
       if ( !layer->isValid() )
       {
         continue;

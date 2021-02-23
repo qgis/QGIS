@@ -67,7 +67,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
   std::unique_ptr< QgsMapBoxGlStyleConversionContext > tmpContext;
   if ( !context )
   {
-    tmpContext = qgis::make_unique< QgsMapBoxGlStyleConversionContext >();
+    tmpContext = std::make_unique< QgsMapBoxGlStyleConversionContext >();
     context = tmpContext.get();
   }
 
@@ -151,11 +151,11 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     context->clearWarnings();
   }
 
-  mRenderer = qgis::make_unique< QgsVectorTileBasicRenderer >();
+  mRenderer = std::make_unique< QgsVectorTileBasicRenderer >();
   QgsVectorTileBasicRenderer *renderer = dynamic_cast< QgsVectorTileBasicRenderer *>( mRenderer.get() );
   renderer->setStyles( rendererStyles );
 
-  mLabeling = qgis::make_unique< QgsVectorTileBasicLabeling >();
+  mLabeling = std::make_unique< QgsVectorTileBasicLabeling >();
   QgsVectorTileBasicLabeling *labeling = dynamic_cast< QgsVectorTileBasicLabeling * >( mLabeling.get() );
   labeling->setStyles( labelingStyles );
 }
@@ -313,7 +313,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
-  std::unique_ptr< QgsSymbol > symbol( qgis::make_unique< QgsFillSymbol >() );
+  std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsFillSymbol >() );
   QgsSimpleFillSymbolLayer *fillSymbol = dynamic_cast< QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) );
   Q_ASSERT( fillSymbol ); // should not fail since QgsFillSymbol() constructor instantiates a QgsSimpleFillSymbolLayer
 
@@ -593,7 +593,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
-  std::unique_ptr< QgsSymbol > symbol( qgis::make_unique< QgsLineSymbol >() );
+  std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsLineSymbol >() );
   QgsSimpleLineSymbolLayer *lineSymbol = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
   Q_ASSERT( lineSymbol ); // should not fail since QgsLineSymbol() constructor instantiates a QgsSimpleLineSymbolLayer
 
@@ -837,7 +837,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     }
   }
 
-  std::unique_ptr< QgsSymbol > symbol( qgis::make_unique< QgsMarkerSymbol >() );
+  std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsMarkerSymbol >() );
   QgsSimpleMarkerSymbolLayer *markerSymbolLayer = dynamic_cast< QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) );
   Q_ASSERT( markerSymbolLayer );
 
@@ -1847,7 +1847,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
     markerLayer->setAngle( rotation );
     lineSymbol->setSubSymbol( new QgsMarkerSymbol( QgsSymbolLayerList() << markerLayer ) );
 
-    std::unique_ptr< QgsSymbol > symbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbol );
+    std::unique_ptr< QgsSymbol > symbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbol );
 
     // set render units
     symbol->setOutputUnit( context.targetUnit() );

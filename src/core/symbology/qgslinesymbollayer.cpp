@@ -354,7 +354,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
        QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) &&
        ( p->renderHints() & QPainter::Antialiasing ) )
   {
-    painterState = qgis::make_unique< QgsScopedQPainterState >( p );
+    painterState = std::make_unique< QgsScopedQPainterState >( p );
     p->setRenderHint( QPainter::Antialiasing, false );
   }
 
@@ -2155,7 +2155,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "rotate" ) ) )
     rotate = ( props[QStringLiteral( "rotate" )].toString() == QLatin1String( "1" ) );
 
-  std::unique_ptr< QgsMarkerLineSymbolLayer > x = qgis::make_unique< QgsMarkerLineSymbolLayer >( rotate, interval );
+  std::unique_ptr< QgsMarkerLineSymbolLayer > x = std::make_unique< QgsMarkerLineSymbolLayer >( rotate, interval );
   setCommonProperties( x.get(), props );
   return x.release();
 }
@@ -2195,7 +2195,7 @@ void QgsMarkerLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 
 QgsMarkerLineSymbolLayer *QgsMarkerLineSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsMarkerLineSymbolLayer > x = qgis::make_unique< QgsMarkerLineSymbolLayer >( rotateSymbols(), interval() );
+  std::unique_ptr< QgsMarkerLineSymbolLayer > x = std::make_unique< QgsMarkerLineSymbolLayer >( rotateSymbols(), interval() );
   copyTemplateSymbolProperties( x.get() );
   return x.release();
 }
@@ -2474,7 +2474,7 @@ QgsSymbolLayer *QgsHashedLineSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "rotate" ) ) )
     rotate = ( props[QStringLiteral( "rotate" )] == QLatin1String( "1" ) );
 
-  std::unique_ptr< QgsHashedLineSymbolLayer > x = qgis::make_unique< QgsHashedLineSymbolLayer >( rotate, interval );
+  std::unique_ptr< QgsHashedLineSymbolLayer > x = std::make_unique< QgsHashedLineSymbolLayer >( rotate, interval );
   setCommonProperties( x.get(), props );
   if ( props.contains( QStringLiteral( "hash_angle" ) ) )
   {
@@ -2528,7 +2528,7 @@ QVariantMap QgsHashedLineSymbolLayer::properties() const
 
 QgsHashedLineSymbolLayer *QgsHashedLineSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsHashedLineSymbolLayer > x = qgis::make_unique< QgsHashedLineSymbolLayer >( rotateSymbols(), interval() );
+  std::unique_ptr< QgsHashedLineSymbolLayer > x = std::make_unique< QgsHashedLineSymbolLayer >( rotateSymbols(), interval() );
   copyTemplateSymbolProperties( x.get() );
   x->setHashAngle( mHashAngle );
   x->setHashLength( mHashLength );

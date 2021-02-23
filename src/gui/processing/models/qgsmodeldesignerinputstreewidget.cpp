@@ -30,7 +30,7 @@ QMimeData *QgsModelDesignerInputsTreeWidget::mimeData( const QList<QTreeWidgetIt
   if ( items.empty() )
     return nullptr;
 
-  std::unique_ptr< QMimeData > res = qgis::make_unique< QMimeData >();
+  std::unique_ptr< QMimeData > res = std::make_unique< QMimeData >();
   const QString text = items.value( 0 )->data( 0, Qt::UserRole ).toString();
   res->setText( text );
   return res.release();

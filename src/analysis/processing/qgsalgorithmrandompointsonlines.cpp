@@ -63,34 +63,34 @@ QString QgsRandomPointsOnLinesAlgorithm::groupId() const
 void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( INPUT, QObject::tr( "Input line layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
-  std::unique_ptr< QgsProcessingParameterNumber > numberPointsParam = qgis::make_unique< QgsProcessingParameterNumber >( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
+  std::unique_ptr< QgsProcessingParameterNumber > numberPointsParam = std::make_unique< QgsProcessingParameterNumber >( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
   numberPointsParam->setIsDynamic( true );
   numberPointsParam->setDynamicPropertyDefinition( QgsPropertyDefinition( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsPropertyDefinition::IntegerPositive ) );
   numberPointsParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( numberPointsParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterDistance > minDistParam = qgis::make_unique< QgsProcessingParameterDistance >( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance > minDistParam = std::make_unique< QgsProcessingParameterDistance >( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 );
   minDistParam->setIsDynamic( true );
   minDistParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MIN_DISTANCE, QObject::tr( "Minimum distance between points (per feature)" ), QgsPropertyDefinition::DoublePositive ) );
   minDistParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( minDistParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterDistance > minDistGlobalParam = qgis::make_unique< QgsProcessingParameterDistance >( MIN_DISTANCE_GLOBAL, QObject::tr( "Global minimum distance between points" ), 0, INPUT, true, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance > minDistGlobalParam = std::make_unique< QgsProcessingParameterDistance >( MIN_DISTANCE_GLOBAL, QObject::tr( "Global minimum distance between points" ), 0, INPUT, true, 0 );
   minDistGlobalParam->setFlags( minDistGlobalParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( minDistGlobalParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > maxAttemptsParam = qgis::make_unique< QgsProcessingParameterNumber >( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1 );
+  std::unique_ptr< QgsProcessingParameterNumber > maxAttemptsParam = std::make_unique< QgsProcessingParameterNumber >( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1 );
   maxAttemptsParam->setFlags( maxAttemptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   maxAttemptsParam->setIsDynamic( true );
   maxAttemptsParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   maxAttemptsParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( maxAttemptsParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = qgis::make_unique< QgsProcessingParameterNumber >( SEED, QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 );
+  std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = std::make_unique< QgsProcessingParameterNumber >( SEED, QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 );
   randomSeedParam->setFlags( randomSeedParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( randomSeedParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > includeLineAttrParam = qgis::make_unique< QgsProcessingParameterBoolean >( INCLUDE_LINE_ATTRIBUTES, QObject::tr( "Include line attributes" ), true );
+  std::unique_ptr< QgsProcessingParameterBoolean > includeLineAttrParam = std::make_unique< QgsProcessingParameterBoolean >( INCLUDE_LINE_ATTRIBUTES, QObject::tr( "Include line attributes" ), true );
   includeLineAttrParam->setFlags( includeLineAttrParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( includeLineAttrParam.release() );
 

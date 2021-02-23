@@ -734,7 +734,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 
   int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
-  std::unique_ptr<QgsExpression> exp = qgis::make_unique<QgsExpression>( exps[oi].cachedExpression );
+  std::unique_ptr<QgsExpression> exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
   da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
@@ -1198,7 +1198,7 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 
 void QgsVectorLayerFeatureIterator::createExpressionContext()
 {
-  mExpressionContext = qgis::make_unique< QgsExpressionContext >();
+  mExpressionContext = std::make_unique< QgsExpressionContext >();
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );

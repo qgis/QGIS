@@ -607,7 +607,7 @@ void QgsAuthOAuth2Edit::getSoftStatementDir()
 
 void QgsAuthOAuth2Edit::initConfigObjs()
 {
-  mOAuthConfigCustom = qgis::make_unique<QgsAuthOAuth2Config>( nullptr );
+  mOAuthConfigCustom = std::make_unique<QgsAuthOAuth2Config>( nullptr );
   mOAuthConfigCustom->setConfigType( QgsAuthOAuth2Config::Custom );
   mOAuthConfigCustom->setToDefaults();
 }

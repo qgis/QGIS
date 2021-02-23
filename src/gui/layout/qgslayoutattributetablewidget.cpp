@@ -180,7 +180,7 @@ QgsExpressionContext QgsLayoutAttributeTableWidget::createExpressionContext() co
   else if ( mTable )
     context = mTable->createExpressionContext();
 
-  std::unique_ptr< QgsExpressionContextScope > cellScope = qgis::make_unique< QgsExpressionContextScope >();
+  std::unique_ptr< QgsExpressionContextScope > cellScope = std::make_unique< QgsExpressionContextScope >();
   cellScope->setVariable( QStringLiteral( "row_number" ), 1, true );
   cellScope->setVariable( QStringLiteral( "column_number" ), 1, true );
   context.appendScope( cellScope.release() );

@@ -58,7 +58,7 @@ void QgsRasterLayerZonalStatsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "ZONES_BAND" ),
                 QObject::tr( "Zones band number" ), 1, QStringLiteral( "ZONES" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterEnum > refParam = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ),
+  std::unique_ptr< QgsProcessingParameterEnum > refParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ),
       QStringList() << QObject::tr( "Input layer" ) << QObject::tr( "Zones layer" ), false, 0 );
   refParam->setFlags( refParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( refParam.release() );
@@ -138,7 +138,7 @@ bool QgsRasterLayerZonalStatsAlgorithm::prepareAlgorithm( const QVariantMap &par
       // add projector if necessary
       if ( layer->crs() != zonesLayer->crs() )
       {
-        mProjector = qgis::make_unique< QgsRasterProjector >();
+        mProjector = std::make_unique< QgsRasterProjector >();
         mProjector->setInput( mZonesDataProvider.get() );
         mProjector->setCrs( zonesLayer->crs(), layer->crs(), context.transformContext() );
         mZonesInterface = mProjector.get();
@@ -156,7 +156,7 @@ bool QgsRasterLayerZonalStatsAlgorithm::prepareAlgorithm( const QVariantMap &par
       // add projector if necessary
       if ( layer->crs() != zonesLayer->crs() )
       {
-        mProjector = qgis::make_unique< QgsRasterProjector >();
+        mProjector = std::make_unique< QgsRasterProjector >();
         mProjector->setInput( mSourceDataProvider.get() );
         mProjector->setCrs( layer->crs(), zonesLayer->crs(), context.transformContext() );
         mSourceInterface = mProjector.get();

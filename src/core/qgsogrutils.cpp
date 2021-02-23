@@ -368,12 +368,12 @@ std::unique_ptr< QgsPoint > ogrGeometryToQgsPoint( OGRGeometryH geom )
 
   double x, y, z, m;
   OGR_G_GetPointZM( geom, 0, &x, &y, &z, &m );
-  return qgis::make_unique< QgsPoint >( wkbType, x, y, z, m );
+  return std::make_unique< QgsPoint >( wkbType, x, y, z, m );
 }
 
 std::unique_ptr< QgsMultiPoint > ogrGeometryToQgsMultiPoint( OGRGeometryH geom )
 {
-  std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
+  std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >();
 
   const int count = OGR_G_GetGeometryCount( geom );
   mp->reserve( count );
@@ -408,12 +408,12 @@ std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
   }
   OGR_G_GetPointsZM( geom, x.data(), sizeof( double ), y.data(), sizeof( double ), pz, sizeof( double ), pm, sizeof( double ) );
 
-  return qgis::make_unique< QgsLineString>( x, y, z, m, wkbType == QgsWkbTypes::LineString25D );
+  return std::make_unique< QgsLineString>( x, y, z, m, wkbType == QgsWkbTypes::LineString25D );
 }
 
 std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeometryH geom )
 {
-  std::unique_ptr< QgsMultiLineString > mp = qgis::make_unique< QgsMultiLineString >();
+  std::unique_ptr< QgsMultiLineString > mp = std::make_unique< QgsMultiLineString >();
 
   const int count = OGR_G_GetGeometryCount( geom );
   mp->reserve( count );
