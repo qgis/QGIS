@@ -607,17 +607,9 @@ void QgsRubberBand::updateRect()
     {
       QgsPointXY p( point.x() + mTranslationOffsetX, point.y() + mTranslationOffsetY );
       p = m2p.transform( p );
-      QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w );
-
-      if ( r.isEmpty() )
-      {
-        // Get rectangle of the first point
-        r = rect;
-      }
-      else
-      {
-        r.combineExtentWith( rect );
-      }
+      // no need to normalize the rectangle -- we know it is already normal
+      QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w, false );
+      r.combineExtentWith( rect );
     }
   }
 
