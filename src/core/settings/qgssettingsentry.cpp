@@ -28,6 +28,8 @@ QgsSettingsEntry::QgsSettingsEntry( QString key,
   , mSection()
   , mDescription( description )
 {
+  if ( mSettingsGroupParent != nullptr )
+    mSettingsGroupParent->registerChildSettingsEntry( this );
 }
 
 QgsSettingsEntry::~QgsSettingsEntry()
