@@ -41,6 +41,9 @@ include_directories(
 
 add_library (spatialiteprovider MODULE ${SPATIALITE_SRCS})
 
+# require c++17
+target_compile_features(spatialiteprovider PRIVATE cxx_std_17)
+
 target_link_libraries(spatialiteprovider
   qgis_core
   ${SPATIALITE_LIBRARY}

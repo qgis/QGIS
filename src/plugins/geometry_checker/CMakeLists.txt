@@ -34,6 +34,9 @@ QT5_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
 
 add_library (geometrycheckerplugin   MODULE ${geometrychecker_HDRS} ${geometrychecker_SRCS}  ${geometrychecker_RCC_SRCS} ${geometrychecker_UIS_H})
 
+# require c++17
+target_compile_features(geometrycheckerplugin PRIVATE cxx_std_17)
+
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
 

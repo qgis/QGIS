@@ -1727,6 +1727,9 @@ set(IMAGE_RCCS ../../images/images.qrc)
 # qgis_core library
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
 
+# require c++17
+target_compile_features(qgis_core PRIVATE cxx_std_17)
+
 target_include_directories(qgis_core SYSTEM PUBLIC
   ${QT_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}

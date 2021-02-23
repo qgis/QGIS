@@ -41,6 +41,9 @@ include_directories(
 
 add_library (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS})
 
+# require c++17
+target_compile_features(db2provider PRIVATE cxx_std_17)
+
 target_link_libraries (db2provider
   qgis_core
   ${Qt5Sql_LIBRARIES}

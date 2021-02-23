@@ -56,6 +56,10 @@ endif()
 
 # static library
 add_library (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS})
+
+# require c++17
+target_compile_features(postgresprovider_a PRIVATE cxx_std_17)
+
 target_link_libraries (postgresprovider_a
   qgis_core
   ${POSTGRES_LIBRARY}
@@ -69,6 +73,10 @@ target_link_libraries (postgresprovider_a
 
 if (WITH_GUI)
   add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS})
+
+  # require c++17
+  target_compile_features(postgresprovider_gui_a PRIVATE cxx_std_17)
+
   target_link_libraries(postgresprovider_gui_a
     qgis_gui
     postgresprovider_a
@@ -98,6 +106,10 @@ set(PGRASTER_SRCS
 
 # static library
 add_library (postgresrasterprovider_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
+
+# require c++17
+target_compile_features(postgresrasterprovider_a PRIVATE cxx_std_17)
+
 target_link_libraries (postgresrasterprovider_a
     qgis_core
     ${POSTGRES_LIBRARY}
@@ -131,6 +143,10 @@ else()
   # dynamically loaded module
   add_library(postgresprovider MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
   add_library(postgresrasterprovider MODULE ${PGRASTER_SRCS} ${PG_HDRS})
+
+  # require c++17
+  target_compile_features(postgresprovider PRIVATE cxx_std_17)
+  target_compile_features(postgresrasterprovider PRIVATE cxx_std_17)
 
   target_link_libraries(postgresprovider
     ${POSTGRES_LIBRARY}
