@@ -2,7 +2,7 @@ name: Build Docker images for current branches
 
 on:
   push:
-    branches: 
+    branches:
       - master
     paths:
       - .github/workflows/build-docker.yml
@@ -35,7 +35,7 @@ jobs:
           path: ~/.ccache
           key: docker-build-${{ matrix.branch }}
 
-      - name: checkout ${branch}
+      - name: checkout ${{ matrix.branch }}
         uses: actions/checkout@v2
         with:
           ref: ${{ matrix.branch }}
