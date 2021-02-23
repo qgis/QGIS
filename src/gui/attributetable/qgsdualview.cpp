@@ -878,10 +878,21 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( setWidth, &QAction::triggered, this, &QgsDualView::resizeColumn );
   setWidth->setData( col );
   mHorizontalHeaderMenu->addAction( setWidth );
+
+  QAction *setWidthAllColumns = new QAction( tr( "&Set All Column Widths…" ), mHorizontalHeaderMenu );
+  connect( setWidthAllColumns, &QAction::triggered, this, &QgsDualView::resizeAllColumns );
+  setWidthAllColumns->setData( col );
+  mHorizontalHeaderMenu->addAction( setWidthAllColumns );
+
   QAction *optimizeWidth = new QAction( tr( "&Autosize" ), mHorizontalHeaderMenu );
   connect( optimizeWidth, &QAction::triggered, this, &QgsDualView::autosizeColumn );
   optimizeWidth->setData( col );
   mHorizontalHeaderMenu->addAction( optimizeWidth );
+
+  QAction *optimizeWidthAllColumns = new QAction( tr( "&Autosize All Columns" ), mHorizontalHeaderMenu );
+  connect( optimizeWidthAllColumns, &QAction::triggered, this, &QgsDualView::autosizeAllColumns );
+  mHorizontalHeaderMenu->addAction( optimizeWidthAllColumns );
+
 
   mHorizontalHeaderMenu->addSeparator();
   QAction *organize = new QAction( tr( "&Organize Columns…" ), mHorizontalHeaderMenu );
@@ -956,11 +967,43 @@ void QgsDualView::resizeColumn()
   }
 }
 
+void QgsDualView::resizeAllColumns()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  int col = action->data().toInt();
+  if ( col < 0 )
+    return;
+
+  QgsAttributeTableConfig config = mConfig;
+
+  bool ok = false;
+  int width = QInputDialog::getInt( this, tr( "Set Column Width" ), tr( "Enter column width" ),
+                                    mTableView->columnWidth( col ),
+                                    1, 1000, 10, &ok );
+  if ( ok )
+  {
+    const int colCount = mTableView->model()->columnCount();
+    if ( colCount > 0 )
+    {
+      for ( int i = 0; i < colCount; i++ )
+      {
+        config.setColumnWidth( i, width );
+      }
+      setAttributeTableConfig( config );
+    }
+  }
+}
+
 void QgsDualView::autosizeColumn()
 {
   QAction *action = qobject_cast<QAction *>( sender() );
   int col = action->data().toInt();
   mTableView->resizeColumnToContents( col );
+}
+
+void QgsDualView::autosizeAllColumns()
+{
+  mTableView->resizeColumnsToContents();
 }
 
 bool QgsDualView::modifySort()

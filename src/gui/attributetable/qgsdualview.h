@@ -344,7 +344,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void resizeColumn();
 
+    void resizeAllColumns();
+
     void autosizeColumn();
+
+    void autosizeAllColumns();
 
     void previewExpressionChanged( const QString &expression );
 
