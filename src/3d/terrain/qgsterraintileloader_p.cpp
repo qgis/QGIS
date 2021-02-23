@@ -26,11 +26,7 @@
 #include <Qt3DRender/QTexture>
 
 #include <Qt3DExtras/QTextureMaterial>
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-#include <Qt3DExtras/QDiffuseMapMaterial>
-#else
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
-#endif
 #include <Qt3DExtras/QPhongMaterial>
 
 #include "quantizedmeshterraingenerator.h"
@@ -73,15 +69,9 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   {
     if ( isShadingEnabled )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-      Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial;
-      diffuseMapMaterial = new Qt3DExtras::QDiffuseMapMaterial;
-      diffuseMapMaterial->setDiffuse( texture );
-#else
       Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseSpecularMaterial;
       diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
       material = diffuseMapMaterial;
-#endif
       diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
       diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
       diffuseMapMaterial->setShininess( shadingMaterial.shininess() );

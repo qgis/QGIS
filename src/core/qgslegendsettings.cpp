@@ -157,11 +157,7 @@ double QgsLegendSettings::textWidthMillimeters( const QFont &font, const QString
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
-#else
   return ( fontMetrics.horizontalAdvance( text ) / FONT_WORKAROUND_SCALE );
-#endif
 }
 
 double QgsLegendSettings::fontHeightCharacterMM( const QFont &font, QChar c ) const

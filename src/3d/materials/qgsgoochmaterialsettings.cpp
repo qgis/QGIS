@@ -170,11 +170,7 @@ int QgsGoochMaterialSettings::dataDefinedByteStride() const
 
 void QgsGoochMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, geometry );
-#else
   Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer( geometry );
-#endif
 
   Qt3DRender::QAttribute *diffuseAttribute = new Qt3DRender::QAttribute( geometry );
   diffuseAttribute->setName( QStringLiteral( "dataDefinedDiffuseColor" ) );

@@ -348,13 +348,8 @@ void QgsMeshDataset3dGeometry::init()
        scalarMagnitude.count() != mTriangulaMesh.vertices().count() )
     return;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-  Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
-#else
   Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( this );
   Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( this );
-#endif
 
   const int stride = ( 3 /*position*/ +
                        3 /*normale*/ +
@@ -450,13 +445,8 @@ QgsMeshTerrain3dGeometry::QgsMeshTerrain3dGeometry(
 
 void QgsMeshTerrain3dGeometry::init()
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-  Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
-#else
   Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( this );
   Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( this );
-#endif
 
   const int stride = ( 3 /*position*/ +
                        3 /*normale*/ ) * sizeof( float );

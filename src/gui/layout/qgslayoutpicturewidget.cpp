@@ -92,11 +92,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mPictureRotationSpinBox->setClearValue( 0.0 );
 
   viewGroups->setHeaderHidden( true );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 4 ) ) );
-#else
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 4 ) ) );
-#endif
   viewImages->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
   viewImages->setUniformItemSizes( false );
   populateList();

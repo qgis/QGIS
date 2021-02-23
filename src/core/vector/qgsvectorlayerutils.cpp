@@ -683,11 +683,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
 
   auto getFeatureSource = [ layer, &featureSource, feedback ]
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
     Q_ASSERT( QThread::currentThread() == qApp->thread() || feedback );
-#else
-    Q_UNUSED( feedback )
-#endif
     QgsVectorLayer *lyr = layer.data();
 
     if ( lyr )

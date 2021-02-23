@@ -1515,17 +1515,10 @@ static QVariant fcnRegexpSubstr( const QVariantList &values, const QgsExpression
 static QVariant fcnUuid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   QString uuid = QUuid::createUuid().toString();
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  if ( values.at( 0 ).toString().compare( QStringLiteral( "WithoutBraces" ), Qt::CaseInsensitive ) == 0 )
-    uuid.remove( QRegExp( "[{}]" ) );
-  else if ( values.at( 0 ).toString().compare( QStringLiteral( "Id128" ), Qt::CaseInsensitive ) == 0 )
-    uuid.remove( QRegExp( "[{}-]" ) );
-#else
   if ( values.at( 0 ).toString().compare( QStringLiteral( "WithoutBraces" ), Qt::CaseInsensitive ) == 0 )
     uuid = QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces );
   else if ( values.at( 0 ).toString().compare( QStringLiteral( "Id128" ), Qt::CaseInsensitive ) == 0 )
     uuid = QUuid::createUuid().toString( QUuid::StringFormat::Id128 );
-#endif
   return uuid;
 }
 
@@ -5880,7 +5873,6 @@ static QVariant fcnGenericHash( const QVariantList &values, const QgsExpressionC
   {
     hash = fcnHash( str, QCryptographicHash::Sha3_512 );
   }
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 9, 2 )
   else if ( method == QLatin1String( "keccak_224" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Keccak_224 );
@@ -5897,7 +5889,6 @@ static QVariant fcnGenericHash( const QVariantList &values, const QgsExpressionC
   {
     hash = fcnHash( str, QCryptographicHash::Keccak_512 );
   }
-#endif
   else
   {
     parent->setEvalErrorString( QObject::tr( "Hash method %1 is not available on this system." ).arg( str ) );

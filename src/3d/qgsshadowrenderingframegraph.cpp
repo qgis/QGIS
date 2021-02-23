@@ -151,12 +151,10 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, QSi
   mCastShadowsLayer = new Qt3DRender::QLayer;
   mForwardRenderLayer = new Qt3DRender::QLayer;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
   mPostprocessPassLayer->setRecursive( true );
   mPreviewLayer->setRecursive( true );
   mCastShadowsLayer->setRecursive( true );
   mForwardRenderLayer->setRecursive( true );
-#endif
 
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
   mRenderSurfaceSelector->setSurface( window );

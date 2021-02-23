@@ -48,7 +48,6 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
     QWidget *widget = qobject_cast<QWidget *>( object );
     QString name = widgetSafeName( widget );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     // If window is already maximized by Window Manager,
     // there is no need to restore its geometry as it might lead to
     // an incorrect state of QFlags<Qt::WindowState>(WindowMinimized|WindowMaximized)
@@ -64,10 +63,6 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
       QString key = mKeys[name];
       QgsGuiUtils::restoreGeometry( widget, key );
     }
-#else
-    QString key = mKeys[name];
-    QgsGuiUtils::restoreGeometry( widget, key );
-#endif
 
     widget->setProperty( "widgetStateHelperWasShown", QVariant( true ) );
   }

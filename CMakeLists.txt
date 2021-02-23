@@ -432,7 +432,7 @@ if(WITH_CORE)
 
   #############################################################
   # search for Qt5
-  set(QT_MIN_VERSION 5.9.0)
+  set(QT_MIN_VERSION 5.12.0)
 
   # Use Qt5SerialPort optionally for GPS
   set (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")

@@ -228,11 +228,7 @@ double QgsLayoutUtils::textWidthMM( const QFont &font, const QString &text )
   double maxWidth = 0;
   for ( const QString &line : multiLineSplit )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    maxWidth = std::max( maxWidth, ( fontMetrics.width( line ) / FONT_WORKAROUND_SCALE ) );
-#else
     maxWidth = std::max( maxWidth, ( fontMetrics.horizontalAdvance( line ) / FONT_WORKAROUND_SCALE ) );
-#endif
   }
   return maxWidth;
 }
