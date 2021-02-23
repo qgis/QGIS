@@ -152,6 +152,7 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
     QMenu *mBookmarkMenu = nullptr;
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
     QString mReportTypeString;
+    int mBlockThemeComboChanges = 0;
 
     //! Sets extent of composer map from line edits
     void updateComposerExtentFromGui();
