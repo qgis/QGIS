@@ -5,6 +5,8 @@
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
 [![Windows cross build](https://github.com/qgis/QGIS/workflows/MingW64%20Windows%2064bit%20Build/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
 
+*Note: This is an in-progress draft. Formatting, especially images, will be improved once feedback on structure and main text is received.*
+
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical 
 information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 
@@ -25,17 +27,17 @@ Features include
   
 **2. Beautiful cartography**
 * Fine control over symbology, labeling, legends and additional graphical elements for beautifully rendered maps
-* Geometry generator symbol layers (modify geometries or even create new geometries while rendering)
 * Create and update maps with specified scale, extent, style, and decorations via saved layouts
 * Generate a group of maps with same style and layout via atlases
 * Flexible output direct to printer, or as image (raster), PDF, or SVG for further customization 
+* On-the-fly rendering enhancement via geometry generator symbol layers, e.g. callouts, dimensions, oriented/scaled markers
 
 </div><img align="right" src="https://docs.qgis.org/3.16/en/_images/models_model.png" width="250" alt="example modeler"><div style="min-height:180;">
 
 **3. Advanced GIS analysis**
 * Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
-* Immediate visualization of geospatial queries results
 * 150+ geoprocessing algorithms
+* Immediate visualization of geospatial query and geoprocessing results
 * Graphical modeler and scripting
 * Access to additional algorithms via GDAL, GRASS, SAGA, etc.
 
