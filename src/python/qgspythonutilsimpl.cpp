@@ -156,8 +156,6 @@ void QgsPythonUtilsImpl::init()
 {
   // initialize python
   Py_Initialize();
-  // initialize threading AND acquire GIL
-  PyEval_InitThreads();
 
   mPythonEnabled = true;
 
