@@ -1,4 +1,4 @@
-name: Auto set milestone on PR
+name: PR set milestone
 
 on:
   pull_request_target:
