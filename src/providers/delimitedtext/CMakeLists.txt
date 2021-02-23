@@ -25,6 +25,9 @@ include_directories(
 
 add_library(delimitedtextprovider MODULE ${DTEXT_SRCS})
 
+# require c++17
+target_compile_features(delimitedtextprovider PRIVATE cxx_std_17)
+
 target_link_libraries(delimitedtextprovider
   qgis_core
 )

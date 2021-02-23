@@ -1363,6 +1363,9 @@ add_library(qgis_gui SHARED
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
 )
 
+# require c++17
+target_compile_features(qgis_gui PRIVATE cxx_std_17)
+
 target_include_directories(qgis_gui SYSTEM PUBLIC
   ${QWT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}

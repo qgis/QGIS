@@ -2,6 +2,9 @@ set(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
 add_library (qgispython SHARED ${QGISPYTHON_SRCS})
 
+# require c++17
+target_compile_features(qgispython PRIVATE cxx_std_17)
+
 target_include_directories(qgispython PUBLIC
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/python

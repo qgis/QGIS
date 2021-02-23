@@ -33,6 +33,7 @@ macro (ADD_QGIS_TEST TESTSRC)
   set(${TESTNAME}_SRCS ${TESTSRC} ${util_SRCS})
   set(${TESTNAME}_MOC_CPPS ${TESTSRC})
   add_executable(${TESTNAME} ${${TESTNAME}_SRCS})
+  target_compile_features(${TESTNAME} PRIVATE cxx_std_17)
   target_link_libraries(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}

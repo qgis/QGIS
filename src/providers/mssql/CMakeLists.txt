@@ -34,6 +34,9 @@ include_directories(
 
 add_library(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_HDRS})
 
+# require c++17
+target_compile_features(mssqlprovider PRIVATE cxx_std_17)
+
 target_link_libraries(mssqlprovider
   qgis_core
   ${Qt5Sql_LIBRARIES}

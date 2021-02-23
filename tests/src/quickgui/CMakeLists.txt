@@ -41,6 +41,7 @@ macro (ADD_QGIS_TEST testname testsrc)
   set(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   add_custom_target(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   add_executable(qgis_${testname} ${qgis_${testname}_SRCS})
+  target_compile_features(qgis_${testname} PRIVATE cxx_std_17)
   target_link_libraries(qgis_${testname}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}

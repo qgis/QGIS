@@ -560,15 +560,6 @@ if (WITH_CORE)
 endif()
 
 #############################################################
-# enable use of c++11 features where available
-# full c++11 support in clang 3.3+: http://clang.llvm.org/cxx_status.html
-# for Mac, this is probably Apple LLVM 4.2 (based on LLVM 3.2svn, in XCode 4.6+)
-#   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
-#   https://gist.github.com/yamaya/2924292
-
-set(CMAKE_CXX_STANDARD 11)
-
-#############################################################
 # enable warnings
 
 if (PEDANTIC)

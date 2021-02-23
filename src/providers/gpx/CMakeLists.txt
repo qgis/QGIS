@@ -19,6 +19,9 @@ include_directories (SYSTEM
 
 add_library(gpxprovider MODULE ${GPX_SRCS})
 
+# require c++17
+target_compile_features(gpxprovider PRIVATE cxx_std_17)
+
 target_link_libraries(gpxprovider
   ${EXPAT_LIBRARY}
   qgis_core

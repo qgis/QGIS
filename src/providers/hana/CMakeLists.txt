@@ -77,6 +77,10 @@ INCLUDE_DIRECTORIES (SYSTEM
 ADD_LIBRARY(hanaprovider MODULE ${HANA_SRCS} ${HANA_HDRS})
 ADD_LIBRARY(hanaprovider_a STATIC ${HANA_SRCS} ${HANA_HDRS})
 
+# require c++17
+target_compile_features(hanaprovider PRIVATE cxx_std_17)
+target_compile_features(hanaprovider_a PRIVATE cxx_std_17)
+
 TARGET_COMPILE_DEFINITIONS(hanaprovider PUBLIC ODBC_STATIC)
 TARGET_COMPILE_DEFINITIONS(hanaprovider_a PUBLIC ODBC_STATIC)
 

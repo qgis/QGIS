@@ -25,6 +25,9 @@ QT5_WRAP_UI (topol_UIS_H  ${topol_UIS})
 
 add_library (topolplugin MODULE ${topol_SRCS} ${topol_RCCS} ${topol_UIS_H})
 
+# require c++17
+target_compile_features(topolplugin PRIVATE cxx_std_17)
+
 include_directories(SYSTEM
   ${GEOS_INCLUDE_DIR}
 )

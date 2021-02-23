@@ -18,6 +18,9 @@ endif()
 
 add_executable (qgis_process MACOSX_BUNDLE ${QGIS_PROCESS_SRCS})
 
+# require c++17
+target_compile_features(qgis_process PRIVATE cxx_std_17)
+
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
