@@ -311,7 +311,15 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   if ( crs.isValid() )
   {
     QgsCoordinateTransform ct( crs, ms.destinationCrs(), QgsProject::instance() );
-    geom.transform( ct );
+    try
+    {
+      geom.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform rubber band geometry to map CRS" ) );
+      return;
+    }
   }
 
   QgsWkbTypes::Type geomType = geom.wkbType();
