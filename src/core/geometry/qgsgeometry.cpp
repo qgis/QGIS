@@ -1720,19 +1720,20 @@ QgsMultiPolygonXY QgsGeometry::asMultiPolygon() const
     return QgsMultiPolygonXY();
   }
 
-  QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry.get() );
+  const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( d->geometry.get() );
   if ( !geomCollection )
   {
     return QgsMultiPolygonXY();
   }
 
-  int nPolygons = geomCollection->numGeometries();
+  const int nPolygons = geomCollection->numGeometries();
   if ( nPolygons < 1 )
   {
     return QgsMultiPolygonXY();
   }
 
   QgsMultiPolygonXY mp;
+  mp.reserve( nPolygons );
   for ( int i = 0; i < nPolygons; ++i )
   {
     const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( geomCollection->geometryN( i ) );
@@ -1751,7 +1752,7 @@ QgsMultiPolygonXY QgsGeometry::asMultiPolygon() const
 
     QgsPolygonXY poly;
     convertPolygon( *polygon, poly );
-    mp.append( poly );
+    mp.push_back( poly );
   }
   return mp;
 }
@@ -3043,32 +3044,55 @@ void QgsGeometry::convertPointList( const QgsPointSequence &input, QVector<QgsPo
   }
 }
 
-void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output )
-{
-  output.clear();
-  output.resize( input.size() );
-
-  for ( int i = 0; i < input.size(); ++i )
-  {
-    const QgsPoint &pt = input.at( i );
-    output[i].setX( pt.x() );
-    output[i].setY( pt.y() );
-  }
-}
-
 void QgsGeometry::convertPolygon( const QgsPolygon &input, QgsPolygonXY &output )
 {
   output.clear();
-  QgsCoordinateSequence coords = input.coordinateSequence();
-  if ( coords.empty() )
+
+  auto convertRing = []( const QgsCurve * ring ) -> QgsPolylineXY
   {
-    return;
+    QgsPolylineXY res;
+    bool doSegmentation = ( QgsWkbTypes::flatType( ring->wkbType() ) == QgsWkbTypes::CompoundCurve
+                            || QgsWkbTypes::flatType( ring->wkbType() ) == QgsWkbTypes::CircularString );
+    std::unique_ptr< QgsLineString > segmentizedLine;
+    const QgsLineString *line = nullptr;
+    if ( doSegmentation )
+    {
+      segmentizedLine.reset( ring->curveToLine() );
+      line = segmentizedLine.get();
+    }
+    else
+    {
+      line = qgsgeometry_cast<const QgsLineString *>( ring );
+      if ( !line )
+      {
+        return res;
+      }
+    }
+
+    int nVertices = line->numPoints();
+    res.resize( nVertices );
+    QgsPointXY *data = res.data();
+    const double *xData = line->xData();
+    const double *yData = line->yData();
+    for ( int i = 0; i < nVertices; ++i )
+    {
+      data->setX( *xData++ );
+      data->setY( *yData++ );
+      data++;
+    }
+    return res;
+  };
+
+  if ( const QgsCurve *exterior = input.exteriorRing() )
+  {
+    output.push_back( convertRing( exterior ) );
   }
-  const QgsRingSequence &rings = coords[0];
-  output.resize( rings.size() );
-  for ( int i = 0; i < rings.size(); ++i )
+
+  const int interiorRingCount = input.numInteriorRings();
+  output.reserve( output.size() + interiorRingCount );
+  for ( int n = 0; n < interiorRingCount; ++n )
   {
-    convertToPolyline( rings[i], output[i] );
+    output.push_back( convertRing( input.interiorRing( n ) ) );
   }
 }
 

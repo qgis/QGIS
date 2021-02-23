@@ -2489,7 +2489,6 @@ class CORE_EXPORT QgsGeometry
      */
     void reset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
 
-    static void convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output );
     static void convertPolygon( const QgsPolygon &input, QgsPolygonXY &output );
 
     //! Try to convert the geometry to a point
