@@ -714,7 +714,6 @@ set(QGIS_CORE_SRCS
 
   settings/qgssettingsentry.cpp
   settings/qgssettingsgroup.cpp
-  settings/qgssettingsregistrycore.cpp
 
   validity/qgsabstractvaliditycheck.cpp
   validity/qgsvaliditycheckcontext.cpp

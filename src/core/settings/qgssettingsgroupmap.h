@@ -29,6 +29,9 @@
  * \ingroup core
  * \class QgsSettingsGroupMap
  *
+ * Represent a map of custom group of settings and it is the parent of inserted settings groups.
+ * Template type T must be a subclass of QgsSettingsGroup
+ *
  * \since QGIS 3.18
  */
 template<typename T>
@@ -38,6 +41,11 @@ class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
 
     /**
      * Constructor for QgsSettingsGroupMap.
+     *
+     * The \a key argument specifies a part of the settings key.
+     * The \a parentGroup argument specifies a parent group which is used to rebuild
+     * the entiere settings key and to determine the settings section.
+     * The \a description argument specifies a description for the settings group map.
      */
     QgsSettingsGroupMap( QString key = QString(),
                          QgsSettingsGroup *parentGroup = nullptr,
@@ -48,6 +56,11 @@ class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
 
     /**
      * Constructor for QgsSettingsGroupMap.
+     *
+     * The \a key argument specifies a part of the settings key.
+     * The \a section argument specifies settings section for this group map and for children groups
+     * and settings entries.
+     * The \a description argument specifies a description for the settings group map.
      */
     QgsSettingsGroupMap( QString key,
                          QgsSettings::Section section,
@@ -56,10 +69,9 @@ class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
     {
     }
 
-    virtual ~QgsSettingsGroupMap()
-    {
-    }
-
+    /**
+     * Get a settings group by key. If the key does not exist a new element is inserted in to the map.
+     */
     T &operator[]( const QString &key )
     {
       if ( mMapKeySettingsGroup.contains( key ) == false )

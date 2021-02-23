@@ -34,12 +34,6 @@ class CORE_EXPORT QgsSettingsRegistryCore
 {
   public:
 
-    /**
-     * Constructor for QgsSettingsRegistryCore.
-     */
-    QgsSettingsRegistryCore();
-    ~QgsSettingsRegistryCore();
-
     struct Layout : public QgsSettingsGroup
     {
         Layout()
