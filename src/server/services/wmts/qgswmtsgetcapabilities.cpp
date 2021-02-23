@@ -417,7 +417,7 @@ namespace QgsWmts
           QDomElement bboxElement = doc.createElement( QStringLiteral( "ows:BoundingBox" ) );
           bboxElement.setAttribute( QStringLiteral( "crs" ), tms.ref );
           QDomElement lowerCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-          if (invert)
+          if ( invert )
           {
             QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.yMinimum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.xMinimum(), precision ), precision ) );
             lowerCornerElement.appendChild( lowerCornerText );
@@ -429,7 +429,7 @@ namespace QgsWmts
           }
           bboxElement.appendChild( lowerCornerElement );
           QDomElement upperCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-          if (invert)
+          if ( invert )
           {
             QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.yMaximum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.xMaximum(), precision ), precision ) );
             upperCornerElement.appendChild( upperCornerText );
