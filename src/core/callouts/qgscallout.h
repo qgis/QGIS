@@ -224,7 +224,7 @@ class CORE_EXPORT QgsCallout
         /**
          * Contains the CRS of the original feature associated with this callout.
          *
-         * \since QGIS 3.18
+         * \since QGIS 3.20
          */
         QgsCoordinateReferenceSystem originalFeatureCrs;
 
