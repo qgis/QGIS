@@ -91,6 +91,14 @@ jobs:
       - name: Def Window Title Test
         run: ./tests/code_layout/test_defwindowtitle.sh
 
+  qvariant_no_brace_init:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: No brace initialization of QVariant variables
+        run: ./tests/code_layout/test_qvariant_no_brace_init.sh
+
   doxygen_layout_check:
     runs-on: ubuntu-latest
     steps:

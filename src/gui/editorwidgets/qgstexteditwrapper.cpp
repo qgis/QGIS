@@ -328,7 +328,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     v = v.remove( QLocale().groupSeparator() );
   }
 
-  const QVariant currentValue { value( ) };
+  const QVariant currentValue = value( );
   // Note: comparing QVariants leads to funny (and wrong) results:
   // QVariant(0.0) == QVariant(QVariant.Double) -> True
   const bool changed { val != currentValue || val.isNull() != currentValue.isNull() };
