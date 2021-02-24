@@ -251,7 +251,7 @@ class CORE_EXPORT QgsFeature
      * \see setAttribute
      * \see attributes
      * \warning Method will return false if the number of provided attributes does not exactly match
-     * the number of the feature's fields and it will not be possible to add this feature to the data 
+     * the number of the feature's fields and it will not be possible to add this feature to the data
      * provider.
      */
     void setAttributes( const QgsAttributes &attrs );
