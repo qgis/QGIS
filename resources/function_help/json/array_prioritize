@@ -2,7 +2,7 @@
   "name": "array_prioritize",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns an array sorted by another. Missing values are added to the end.",
+  "description": "Returns an array sorted using the ordering specified in another array. Values which are present in the first array but are missing from the second array will be added to the end of the result.",
   "arguments": [
     {"arg":"array", "description":"an array"},
     {"arg":"array_prioritize", "description":"an array with values ordered by priority" }],
