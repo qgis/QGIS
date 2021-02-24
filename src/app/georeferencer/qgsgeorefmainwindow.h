@@ -189,7 +189,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
      * a value of -1 indicates that thin plate spline interpolation should be used for warping.
     */
-    QString generateGDALogr2ogrCommand( int order );
+    QString generateGDALogr2ogrCommand( const QgsGeorefTransform::TransformMethod &method );
 
     // utils
     bool checkReadyGeoref();

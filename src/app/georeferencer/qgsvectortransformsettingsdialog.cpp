@@ -108,8 +108,7 @@ QgsVectorTransformSettingsDialog::QgsVectorTransformSettingsDialog( const QStrin
 
 void QgsVectorTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
     QString &output, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile,
-    QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
-    double &resX, double &resY )
+    QString &pdfReportFile, QString &gcpPoints, bool &loadInQgis )
 {
   if ( cmbTransformType->currentIndex() == -1 )
     tp = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
@@ -222,7 +221,7 @@ bool QgsVectorTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoi
 {
   QgsGeorefTransform georefTransform;
   georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformMethod )count );
-  minGCPpoints = georefTransform.minimumGCPCount();
+  minGCPpoints = georefTransform.minimumGcpCount();
   return ( mCountGCPpoints >= minGCPpoints );
 }
 

@@ -17,10 +17,10 @@
 
 #include <QCoreApplication>
 #include <QString>
+#include "qgsgcpgeometrytransformer.h"
 
 #include <vector>
 
-class QgsGcpGeometryTransformer;
 class QgsCoordinateReferenceSystem;
 class QgsGCPList;
 class QWidget;

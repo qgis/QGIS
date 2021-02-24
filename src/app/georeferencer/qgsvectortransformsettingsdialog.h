@@ -33,8 +33,7 @@ class QgsVectorTransformSettingsDialog : public QDialog, private Ui::QgsVectorTr
 
     void getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
                                QString &output, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile,
-                               QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
-                               double &resX, double &resY );
+                               QString &pdfReportFile, QString &gcpPoints, bool &loadInQgis );
     static void resetSettings();
 
   protected:

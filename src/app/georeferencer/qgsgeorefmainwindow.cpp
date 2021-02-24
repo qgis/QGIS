@@ -284,7 +284,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   mGCPpointsFileName = mFileName + ".points";
   ( void )loadGCPs();
 
-  if ( mLayer )
+  if ( mRLayer )
     mCanvas->setExtent( mLayer->extent() );
 
   mCanvas->refresh();
@@ -374,9 +374,13 @@ void QgsGeoreferencerMainWindow::openVector( const QString &fileName )
   mGCPpointsFileName = mFileName + ".points";
   ( void )loadGCPs();
 
-  mCanvas->setExtent( mVLayer->extent() );
-  mCanvas->refresh();
-  QgisApp::instance()->mapCanvas()->refresh();
+  if ( mVLayer )
+  {
+    mCanvas->setExtent( mVLayer->extent() );
+    mCanvas->refresh();
+    QgisApp::instance()->mapCanvas()->refresh();
+  }
+
 
   mActionLinkGeorefToQgis->setChecked( false );
   mActionLinkQGisToGeoref->setChecked( false );
@@ -501,7 +505,7 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
     d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
                             mModifiedFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
   }
-  mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
+  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
   mWorldFileName = guessWorldFileName( mFileName );
@@ -535,16 +539,16 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
   {
     switch ( mTransformParam )
     {
-    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
-    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
-    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
-    case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
-    QString vectorCommand = generateGDALogr2ogrCommand( mTransformParam - 1 );
-    FALLTHROUGH
-    default:
-      mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
-                                .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
-                                , Qgis::Critical );
+      case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
+      case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
+      case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
+      case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
+        QString vectorCommand = generateGDALogr2ogrCommand( mTransformParam );
+        FALLTHROUGH
+      default:
+        mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
+                                  .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
+                                  , Qgis::Critical );
     }
   }
   else
@@ -1041,6 +1045,7 @@ void QgsGeoreferencerMainWindow::extentsChanged()
     else
     {
       mRLayer = nullptr;
+      mVLayer = nullptr;
       mAgainAddLayer = false;
     }
   }
@@ -2197,20 +2202,20 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
-QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand( int order )
+QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand( const QgsGeorefTransform::TransformMethod &method )
 {
   QStringList gdalCommand;
   gdalCommand << QStringLiteral( "ogr2ogr" );
-
-  if ( order > 0 && order <= 3 )
+  switch ( method )
   {
-    // Let gdalwarp use polynomial warp with the given degree
-    gdalCommand << QStringLiteral( "-order" ) << QString::number( order );
-  }
-  else
-  {
-    // Otherwise, use thin plate spline interpolation
-    gdalCommand << QStringLiteral( "-tps" );
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
+      gdalCommand << QStringLiteral( "-order" ) << QString::number( 1 );
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
+      gdalCommand << QStringLiteral( "-order" ) << QString::number( 2 );
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
+      gdalCommand << QStringLiteral( "-order" ) << QString::number( 3 );
+    default:
+      gdalCommand << QStringLiteral( "-tps" );
   }
 
   for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
