@@ -244,7 +244,7 @@ int QgsImageWarper::warpFile( const QString &input,
   progressDialog->raise();
   progressDialog->activateWindow();
 
-  eErr = oOperation.ChunkAndWarpMulti( 0, 0, destPixels, destLines );
+  eErr = oOperation.ChunkAndWarpImage( 0, 0, destPixels, destLines );
 
   destroyGeoToPixelTransform( psWarpOptions->pTransformerArg );
   delete progressDialog;
