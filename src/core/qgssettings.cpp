@@ -294,7 +294,7 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
   // The valid check is required because different invalid QVariant types
   // like QVariant(QVariant::String) and QVariant(QVariant::Int))
   // may be considered different and we don't want to store the value in that case.
-  QVariant currentValue { QgsSettings::value( prefixedKey( key, section ) ) };
+  QVariant currentValue = QgsSettings::value( prefixedKey( key, section ) );
   if ( ( currentValue.isValid() || value.isValid() ) && ( currentValue != value ) )
   {
     mUserSettings->setValue( prefixedKey( key, section ), value );
