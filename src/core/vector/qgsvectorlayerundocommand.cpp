@@ -122,10 +122,7 @@ QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry
   }
 }
 
-int QgsVectorLayerUndoCommandChangeGeometry::id() const
-{
-  return 1;
-}
+
 
 bool QgsVectorLayerUndoCommandChangeGeometry::mergeWith( const QUndoCommand *other )
 {

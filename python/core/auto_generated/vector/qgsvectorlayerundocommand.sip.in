@@ -124,8 +124,7 @@ Constructor for QgsVectorLayerUndoCommandChangeGeometry
     virtual void redo();
 
     virtual int id() const;
-
-    virtual bool mergeWith( const QUndoCommand * );
+    virtual bool mergeWith( const QUndoCommand *other );
 
 
 };

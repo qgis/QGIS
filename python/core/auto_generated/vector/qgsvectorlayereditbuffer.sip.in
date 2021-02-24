@@ -208,6 +208,7 @@ Returns ``True`` if the specified feature ID has been deleted but not committed.
 %End
 
 
+
   protected slots:
     void undoIndexChanged( int index );
 
@@ -268,8 +269,6 @@ Emitted after committing an attribute rename
 %Docstring
 Constructor for QgsVectorLayerEditBuffer
 %End
-
-    void updateFields( QgsFields &fields );
 
     void updateFeatureGeometry( QgsFeature &f );
 %Docstring
