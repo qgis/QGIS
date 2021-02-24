@@ -645,33 +645,60 @@ QString QgsLineString::asKml( int precision ) const
 
 double QgsLineString::length() const
 {
-  double length = 0;
-  int size = mX.size();
+  double total = 0;
+  const int size = mX.size();
+  if ( size < 2 )
+    return 0;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
   double dx, dy;
+
+  double prevX = *x++;
+  double prevY = *y++;
+
   for ( int i = 1; i < size; ++i )
   {
-    dx = mX.at( i ) - mX.at( i - 1 );
-    dy = mY.at( i ) - mY.at( i - 1 );
-    length += std::sqrt( dx * dx + dy * dy );
+    dx = *x - prevX;
+    dy = *y - prevY;
+    total += std::sqrt( dx * dx + dy * dy );
+
+    prevX = *x++;
+    prevY = *y++;
   }
-  return length;
+  return total;
 }
 
 double QgsLineString::length3D() const
 {
   if ( is3D() )
   {
-    double length = 0;
-    int size = mX.size();
+    double total = 0;
+    const int size = mX.size();
+    if ( size < 2 )
+      return 0;
+
+    const double *x = mX.constData();
+    const double *y = mY.constData();
+    const double *z = mZ.constData();
     double dx, dy, dz;
+
+    double prevX = *x++;
+    double prevY = *y++;
+    double prevZ = *z++;
+
     for ( int i = 1; i < size; ++i )
     {
-      dx = mX.at( i ) - mX.at( i - 1 );
-      dy = mY.at( i ) - mY.at( i - 1 );
-      dz = mZ.at( i ) - mZ.at( i - 1 );
-      length += std::sqrt( dx * dx + dy * dy + dz * dz );
+      dx = *x - prevX;
+      dy = *y - prevY;
+      dz = *z - prevZ;
+      total += std::sqrt( dx * dx + dy * dy + dz * dz );
+
+      prevX = *x++;
+      prevY = *y++;
+      prevZ = *z++;
     }
-    return length;
+    return total;
   }
   else
   {
