@@ -103,6 +103,20 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      */
     QgsShadowRenderingFrameGraph *frameGraph() { return mFrameGraph; }
 
+    /**
+     * Sets whether it will be possible to render to an image
+     *
+     * \note for QgsWindow3DEngine render capture will be disabled by default
+     *  and for QgsOffscreen3DEngine it is enabled by default
+     * \since QGIS 3.18
+     */
+    void setRenderCaptureEnabled( bool enabled );
+
+    /**
+     * Returns whether it will be possible to render to an image
+     * \since QGIS 3.18
+     */
+    bool renderCaptureEnabled() const;
   signals:
     //! Emitted after a call to requestCaptureImage() to return the captured image.
     void imageCaptured( const QImage &image );

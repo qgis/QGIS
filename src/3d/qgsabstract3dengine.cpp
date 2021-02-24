@@ -35,3 +35,13 @@ void QgsAbstract3DEngine::requestCaptureImage()
     captureReply->deleteLater();
   } );
 }
+
+void QgsAbstract3DEngine::setRenderCaptureEnabled( bool enabled )
+{
+  mFrameGraph->setRenderCaptureEnabled( enabled );
+}
+
+bool QgsAbstract3DEngine::renderCaptureEnabled() const
+{
+  return mFrameGraph->renderCaptureEnabled();
+}
