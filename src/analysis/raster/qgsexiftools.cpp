@@ -16,8 +16,6 @@
 #include "qgsexiftools.h"
 #include "qgspoint.h"
 
-// needed because released versions of eviv (<=0.27) make use of auto_ptr in the public header
-#define _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR
 #include <exiv2/exiv2.hpp>
 
 #include <QRegularExpression>
