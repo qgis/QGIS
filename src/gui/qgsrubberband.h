@@ -30,6 +30,7 @@
 
 class QgsVectorLayer;
 class QPaintEvent;
+class QgsSymbol;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -132,6 +133,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    ~QgsRubberBand() override;
 
     /**
      * Sets the color for the rubberband.
@@ -385,6 +387,29 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
 
     void updatePosition() override;
 
+    /**
+     * Returns the symbol used for rendering the rubberband, if set.
+     *
+     * \see setSymbol()
+     * \since QGIS 3.20
+     */
+    QgsSymbol *symbol() const;
+
+    /**
+     * Sets the \a symbol used for rendering the rubberband.
+     *
+     * Ownership of \a symbol is transferred to the rubberband.
+     *
+     * \warning Only line symbols are currently supported.
+     *
+     * \note Setting a symbol for the rubberband overrides any other appearance setting,
+     * such as the strokeColor() or width().
+     *
+     * \see setSymbol()
+     * \since QGIS 3.20
+     */
+    void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
+
   protected:
 
     /**
@@ -422,6 +447,8 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     IconType mIconType = ICON_CIRCLE;
     std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
+
+    std::unique_ptr< QgsSymbol > mSymbol;
 
     /**
      * Nested lists used for multitypes

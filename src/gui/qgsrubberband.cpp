@@ -20,6 +20,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
+#include "qgssymbol.h"
+#include "qgsrendercontext.h"
+
 #include <QPainter>
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
@@ -42,6 +45,8 @@ QgsRubberBand::QgsRubberBand()
   , QgsMapCanvasItem( nullptr )
 {
 }
+
+QgsRubberBand::~QgsRubberBand() = default;
 
 void QgsRubberBand::setColor( const QColor &color )
 {
@@ -455,26 +460,45 @@ void QgsRubberBand::paint( QPainter *p )
     shapes.append( rings );
   }
 
-  int iterations = mSecondaryPen.color().isValid() ? 2 : 1;
-  for ( int i = 0; i < iterations; ++i )
+  if ( QgsLineSymbol *lineSymbol = dynamic_cast< QgsLineSymbol * >( mSymbol.get() ) )
   {
-    if ( i == 0 && iterations > 1 )
-    {
-      // first iteration with multi-pen painting, so use secondary pen
-      mSecondaryPen.setWidth( mPen.width() + 2 );
-      p->setBrush( Qt::NoBrush );
-      p->setPen( mSecondaryPen );
-    }
-    else
-    {
-      // "top" layer, use primary pen/brush
-      p->setBrush( mBrush );
-      p->setPen( mPen );
-    }
+    QgsRenderContext context( QgsRenderContext::fromQPainter( p ) );
+    context.setFlag( QgsRenderContext::Antialiasing, true );
 
+    lineSymbol->startRender( context );
     for ( const QVector<QPolygonF> &shape : qgis::as_const( shapes ) )
     {
       drawShape( p, shape );
+      for ( const QPolygonF &ring : shape )
+      {
+        lineSymbol->renderPolyline( ring, nullptr, context );
+      }
+    }
+    lineSymbol->stopRender( context );
+  }
+  else
+  {
+    int iterations = mSecondaryPen.color().isValid() ? 2 : 1;
+    for ( int i = 0; i < iterations; ++i )
+    {
+      if ( i == 0 && iterations > 1 )
+      {
+        // first iteration with multi-pen painting, so use secondary pen
+        mSecondaryPen.setWidth( mPen.width() + 2 );
+        p->setBrush( Qt::NoBrush );
+        p->setPen( mSecondaryPen );
+      }
+      else
+      {
+        // "top" layer, use primary pen/brush
+        p->setBrush( mBrush );
+        p->setPen( mPen );
+      }
+
+      for ( const QVector<QPolygonF> &shape : qgis::as_const( shapes ) )
+      {
+        drawShape( p, shape );
+      }
     }
   }
 }
@@ -628,6 +652,16 @@ void QgsRubberBand::updateRect()
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 
   setRect( rect );
+}
+
+QgsSymbol *QgsRubberBand::symbol() const
+{
+  return mSymbol.get();
+}
+
+void QgsRubberBand::setSymbol( QgsSymbol *symbol )
+{
+  mSymbol.reset( symbol );
 }
 
 void QgsRubberBand::updatePosition()
