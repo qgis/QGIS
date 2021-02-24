@@ -68,6 +68,7 @@ Creates a new RubberBand.
 :param geometryType: Defines how the data should be drawn onto the screen.
                      :py:class:`QgsWkbTypes`.LineGeometry, :py:class:`QgsWkbTypes`.PolygonGeometry or :py:class:`QgsWkbTypes`.PointGeometry
 %End
+    ~QgsRubberBand();
 
     void setColor( const QColor &color );
 %Docstring
@@ -344,6 +345,36 @@ Returns the rubberband as a Geometry
 
     virtual void updatePosition();
 
+
+    QgsSymbol *symbol() const;
+%Docstring
+Returns the symbol used for rendering the rubberband, if set.
+
+.. seealso:: :py:func:`setSymbol`
+
+.. versionadded:: 3.20
+%End
+
+    void setSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used for rendering the rubberband.
+
+Ownership of ``symbol`` is transferred to the rubberband.
+
+.. warning::
+
+   Only line symbols are currently supported.
+
+.. note::
+
+   Setting a symbol for the rubberband overrides any other appearance setting,
+   such as the :py:func:`~QgsRubberBand.strokeColor` or :py:func:`~QgsRubberBand.width`.
+
+
+.. seealso:: :py:func:`setSymbol`
+
+.. versionadded:: 3.20
+%End
 
   protected:
 
