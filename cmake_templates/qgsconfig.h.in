@@ -90,5 +90,8 @@
 #define PDAL_VERSION_MINOR "${PDAL_VERSION_MINOR}"
 #define PDAL_VERSION_MICRO "${PDAL_VERSION_MICRO}"
 
+// Needed because sip uses deprecated throw(...) annotations to raise the correct Python exception
+#define throw(...)
+
 #endif
 
