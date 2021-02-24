@@ -141,20 +141,23 @@ This list is updated when preparing the search
 .. versionadded:: 3.16
 %End
 
-    struct LocatorFilter : public QgsSettingsGroup
+    struct SettingsStructure
     {
-      LocatorFilter( QgsSettingsGroup *parentGroup = 0 );
+        struct LocatorFilter : public QgsSettingsGroup
+        {
+          LocatorFilter( const QString &groupName = "", QgsSettingsGroup *parentGroup = 0 );
 
-      QgsSettingsEntryBool enabled;
-      QgsSettingsEntryBool byDefault;
-      QgsSettingsEntryString prefix;
-    };
+          QgsSettingsEntryBool enabled;
+          QgsSettingsEntryBool byDefault;
+          QgsSettingsEntryString prefix;
+        };
 
-    struct LocatorFilters : public QgsSettingsGroupMap<LocatorFilter>
-    {
-      LocatorFilters();
+        struct LocatorFilters : public QgsSettingsGroupMap<LocatorFilter>
+        {
+          LocatorFilters( QgsSettingsGroup *parent );
+        };
+        LocatorFilters locatorFilters;
     };
-    LocatorFilters locatorFilters;
 
   signals:
 

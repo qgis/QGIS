@@ -22,6 +22,9 @@
 #include "qgssettingsentry.h"
 #include "qgssettingsgroupmap.h"
 
+#include "qgslayout.h"
+#include "qgslocator.h"
+
 class QgsSettingsEntryStringList;
 
 /**
@@ -36,43 +39,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsGroup
 
     QgsSettingsRegistryCore()
       : QgsSettingsGroup( QgsSettings::Core, QObject::tr( "Settings of section core" ) )
+      , layout( this )
+      , locatorFilters( this )
     {}
 
-//    struct Layout : public QgsSettingsGroup
-//    {
-//        Layout(QgsSettingsGroup *parent)
-//          : QgsSettingsGroup( "layout", parent, QObject::tr( "Layout group description" ) )
-//          , searchPathForTemplates( "searchPathsForTemplates", this, QStringList(), QObject::tr( "Search path for templates" ) )
-//          , anotherNumericSettings( "anotherNumericSettings", this, 1234, "Example settings", 100, 9999 )
-//          , subLayout( this )
-//        {}
-
-//        QgsSettingsEntryStringList searchPathForTemplates;
-//        QgsSettingsEntryInteger anotherNumericSettings;
-
-//        struct SubLayout : public QgsSettingsGroup
-//        {
-//          SubLayout( QgsSettingsGroup *parentGroup )
-//            : QgsSettingsGroup( "sub_layout", parentGroup, "Description..." )
-//            , searchPathForTemplatesInSub( "anotherValue", this, QStringList() )
-//          {}
-
-//          QgsSettingsEntryStringList searchPathForTemplatesInSub;
-//        };
-//        SubLayout subLayout;
-//    };
-//    Layout layout;
-
-//    struct Measure : public QgsSettingsGroup
-//    {
-//      Measure(QgsSettingsGroup *parent)
-//        : QgsSettingsGroup( "measure", parent, QObject::tr( "Measure group description" ) )
-//        , planimetric( "planimetric", this, false, QObject::tr( "Planimetric description" ) )
-//      {}
-
-//      QgsSettingsEntryBool planimetric;
-//    };
-//    Measure measure;
+    QgsLayout::SettingsStructure::Layout layout;
+    QgsLocator::SettingsStructure::LocatorFilters locatorFilters;
 };
 
 #endif // QGSSETTINGSREGISTRYCORE_H

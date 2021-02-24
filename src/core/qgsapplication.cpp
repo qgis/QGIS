@@ -20,6 +20,7 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsannotationitemregistry.h"
+#include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -1101,7 +1102,7 @@ QStringList QgsApplication::layoutTemplatePaths()
 {
   //local directories to search when looking for an template with a given basename
   //defined by user in options dialog
-  return settingsRegistryCore()->layout.searchPathForTemplates.value<QStringList>();
+  return QgsApplication::settingsRegistryCore()->layout.searchPathForTemplates.value<QStringList>();
 }
 
 QMap<QString, QString> QgsApplication::systemEnvVars()

@@ -614,6 +614,26 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    struct SettingsStructure
+    {
+        struct Layout : public QgsSettingsGroup
+        {
+            Layout( QgsSettingsGroup *parent );
+
+            QgsSettingsEntryStringList searchPathForTemplates;
+            QgsSettingsEntryInteger anotherNumericSettings;
+
+            struct SubLayout : public QgsSettingsGroup
+            {
+              SubLayout( QgsSettingsGroup *parentGroup );
+
+              QgsSettingsEntryStringList searchPathForTemplatesInSub;
+            };
+            SubLayout subLayout;
+        };
+        Layout layout;
+    };
+
   public slots:
 
     void refresh();

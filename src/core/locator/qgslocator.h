@@ -30,7 +30,6 @@
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
-#include "qgssettingsregistrycore.h"
 #include "qgssettingsentry.h"
 #include "qgssettingsgroupmap.h"
 
@@ -156,27 +155,30 @@ class CORE_EXPORT QgsLocator : public QObject
      */
     QStringList completionList() const {return mAutocompletionList;}
 
-    struct LocatorFilter : public QgsSettingsGroup
+    struct SettingsStructure
     {
-      LocatorFilter( QgsSettingsGroup *parentGroup = nullptr )
-        : QgsSettingsGroup( "", parentGroup )
-        , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
-        , byDefault( "default", this, false, QObject::tr( "Default value" ) )
-        , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )
-      {}
+        struct LocatorFilter : public QgsSettingsGroup
+        {
+          LocatorFilter( const QString &groupName = "", QgsSettingsGroup *parentGroup = nullptr )
+            : QgsSettingsGroup( groupName, parentGroup )
+            , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
+            , byDefault( "default", this, false, QObject::tr( "Default value" ) )
+            , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )
+          {}
 
-      QgsSettingsEntryBool enabled;
-      QgsSettingsEntryBool byDefault;
-      QgsSettingsEntryString prefix;
-    };
+          QgsSettingsEntryBool enabled;
+          QgsSettingsEntryBool byDefault;
+          QgsSettingsEntryString prefix;
+        };
 
-    struct LocatorFilters : public QgsSettingsGroupMap<LocatorFilter>
-    {
-      LocatorFilters()
-        : QgsSettingsGroupMap( "locator_filters", QgsApplication::settingsRegistryCore(), QObject::tr( "Locator filters settings" ) )
-      {}
+        struct LocatorFilters : public QgsSettingsGroupMap<LocatorFilter>
+        {
+          LocatorFilters( QgsSettingsGroup *parent )
+            : QgsSettingsGroupMap( "locator_filters", parent, QObject::tr( "Locator filters settings" ) )
+          {}
+        };
+        LocatorFilters locatorFilters;
     };
-    LocatorFilters locatorFilters;
 
   signals:
 

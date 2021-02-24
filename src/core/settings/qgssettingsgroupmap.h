@@ -51,21 +51,7 @@ class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
                          QgsSettingsGroup *parentGroup = nullptr,
                          QString description = QString() )
       : QgsSettingsGroup( key, parentGroup, description )
-    {
-    }
-
-    /**
-     * Constructor for QgsSettingsGroupMap.
-     *
-     * The \a key argument specifies a part of the settings key.
-     * The \a section argument specifies settings section for this group map and for children groups
-     * and settings entries.
-     * The \a description argument specifies a description for the settings group map.
-     */
-    QgsSettingsGroupMap( QString key,
-                         QgsSettings::Section section,
-                         QString description = QString() )
-      : QgsSettingsGroup( key, section, description )
+      , mMapKeySettingsGroup()
     {
     }
 
@@ -74,10 +60,13 @@ class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
      */
     T &operator[]( const QString &key )
     {
+      QgsLogger::warning( QStringLiteral( "Settings map '%1' accessing child group '%2'" ).arg( QgsSettingsGroupMap::key() ).arg( key ) );
+
       if ( mMapKeySettingsGroup.contains( key ) == false )
       {
-        T group( this );
-        group.setKey( key );
+        QgsLogger::warning( QStringLiteral( "Settings map '%1' inserting child group '%2'" ).arg( QgsSettingsGroupMap::key() ).arg( key ) );
+
+        T group( key, this );
         mMapKeySettingsGroup.insert( key, group );
       }
 
