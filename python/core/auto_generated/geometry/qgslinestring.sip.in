@@ -13,10 +13,6 @@
 
 
 
-%ModuleHeaderCode
-#include <memory>
-%End
-
 class QgsLineString: QgsCurve
 {
 %Docstring
