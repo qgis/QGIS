@@ -87,7 +87,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      * The function does not block - when the rendered image is captured, it is returned in imageCaptured() signal.
      * Only one image request can be active at a time.
      */
-    virtual void requestCaptureImage() = 0;
+    void requestCaptureImage();
 
     /**
      * Returns the surface of the engine
@@ -101,11 +101,14 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      *
      * \since QGIS 3.18
      */
-    virtual QgsShadowRenderingFrameGraph *frameGraph() = 0;
+    QgsShadowRenderingFrameGraph *frameGraph() { return mFrameGraph; }
 
   signals:
     //! Emitted after a call to requestCaptureImage() to return the captured image.
     void imageCaptured( const QImage &image );
+
+  protected:
+    QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
 };
 
 

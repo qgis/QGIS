@@ -80,10 +80,9 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QCamera *camera() override;
     QSize size() const override;
     QSurface *surface() const override;
-
-    void requestCaptureImage() override;
-
-    QgsShadowRenderingFrameGraph *frameGraph() override { return mFrameGraph; }
+  signals:
+    //! Emitted after a call to requestCaptureImage() to return the captured image.
+    void imageCaptured( const QImage &image );
   private:
 
     QSize mSize = QSize( 640, 480 );
@@ -98,8 +97,7 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DCore::QNode *mSceneRoot = nullptr;                         // The scene root, which becomes a child of the engine's root entity.
     Qt3DCore::QEntity *mRoot = nullptr;
 
-    QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
-
+//    QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
 };
 
 #endif // QGSOFFSCREEN3DENGINE_H
