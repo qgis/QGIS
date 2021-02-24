@@ -724,11 +724,6 @@ void TestQgs3DRendering::testMesh()
 
 void TestQgs3DRendering::testMeshSimplified()
 {
-  if ( QgsTest::isCIRun() )
-  {
-    QSKIP( "Intermittently fails on CI" );
-  }
-
   QgsMeshSimplificationSettings simplificationSettings;
   simplificationSettings.setEnabled( true );
   simplificationSettings.setReductionFactor( 3 );
