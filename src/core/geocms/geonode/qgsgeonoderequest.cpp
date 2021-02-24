@@ -543,7 +543,7 @@ bool QgsGeoNodeRequest::requestBlocking( const QString &endPoint )
 QNetworkReply *QgsGeoNodeRequest::requestUrl( const QString &url )
 {
   QNetworkRequest request( url );
-  request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, 1 );
 
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGeoNodeRequest" ) );
   // Add authentication check here

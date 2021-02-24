@@ -228,7 +228,7 @@ void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MidButton )
+    if ( event->button() == Qt::MiddleButton )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
