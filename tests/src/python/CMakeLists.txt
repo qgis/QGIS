@@ -397,6 +397,7 @@ endif()
 
 if (ENABLE_ORACLETEST)
   ADD_PYTHON_TEST(PyQgsOracleProvider test_provider_oracle.py)
+  ADD_PYTHON_TEST(PyQgsProviderConnectionOracle test_qgsproviderconnection_oracle.py)
 endif()
 
 if (ENABLE_HANATEST)
@@ -448,4 +449,3 @@ if (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsServerRequest test_qgsserver_request.py)
   ADD_PYTHON_TEST(PyQgsServerResponse test_qgsserver_response.py)
 endif()
-
