@@ -54,6 +54,7 @@
 #include "qgsunittypes.h"
 #include "qgsclipboard.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgslocatorwidget.h"
 #include "qgslocatoroptionswidget.h"
