@@ -56,7 +56,7 @@ endif()
 add_library (wfsprovider MODULE ${WFS_SRCS})
 
 # require c++17
-target_compile_features(wcsprovider PRIVATE cxx_std_17)
+target_compile_features(wfsprovider PRIVATE cxx_std_17)
 
 target_link_libraries (wfsprovider
   ${EXPAT_LIBRARY}
