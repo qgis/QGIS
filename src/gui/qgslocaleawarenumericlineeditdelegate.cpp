@@ -42,7 +42,7 @@ void QgsLocaleAwareNumericLineEditDelegate::setEditorData( QWidget *editor, cons
   QLineEdit *lineEdit { qobject_cast<QLineEdit *>( editor ) };
   if ( lineEdit )
   {
-    const QVariant value { index.data( ) };
+    const QVariant value = index.data( );
     lineEdit->setText( displayText( value, QLocale() ) );
   }
   else

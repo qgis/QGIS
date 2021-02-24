@@ -399,8 +399,8 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
     table.setSchema( row[0].toString() );
     table.setTableName( row[1].toString() );
     table.setGeometryColumn( row[2].toString() );
-    //const QVariant srid { row[3] };
-    //const QVariant type { row[4] }; // GEOMETRY|GEOGRAPHY
+    //const QVariant srid = row[3];
+    //const QVariant type = row[4]; // GEOMETRY|GEOGRAPHY
     if ( row[5].toBool() )
       table.setFlag( QgsMssqlProviderConnection::TableFlag::View );
 
