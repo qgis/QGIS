@@ -32,7 +32,7 @@ bool QgsVectorLayerEditPassthrough::isModified() const
 
 bool QgsVectorLayerEditPassthrough::modify( QgsVectorLayerUndoPassthroughCommand *cmd )
 {
-  L->undoStack()->push( cmd ); // push takes owneship -> no need for cmd to be a smart ptr
+  L->undoStack()->push( cmd ); // push takes ownership -> no need for cmd to be a smart ptr
   if ( cmd->hasError() )
     return false;
 

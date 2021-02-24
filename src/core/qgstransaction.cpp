@@ -218,7 +218,9 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
     return QString();
 
   if ( !mLastSavePointIsDirty && !mSavepoints.isEmpty() )
+  {
     return mSavepoints.top();
+  }
 
   const QString name( QStringLiteral( "qgis" ) + ( QUuid::createUuid().toString().mid( 1, 24 ).replace( '-', QString() ) ) );
 
@@ -260,7 +262,10 @@ bool QgsTransaction::rollbackToSavepoint( const QString &name, QString &error SI
     return false;
 
   mSavepoints.resize( idx );
-  mLastSavePointIsDirty = false;
+  // Rolling back always dirties the previous savepoint because
+  // the status of the DB has changed between the previous savepoint and the
+  // one we are rolling back to.
+  mLastSavePointIsDirty = true;
   return executeSql( QStringLiteral( "ROLLBACK TO SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error );
 }
 

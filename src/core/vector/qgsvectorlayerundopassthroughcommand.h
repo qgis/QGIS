@@ -145,6 +145,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandDeleteFeatures : public Qg
 
   private:
     const QgsFeatureIds mFids;
+    // Keeps track of the deleted features that belong to the added pool
+    QgsFeatureMap mDeletedNewFeatures;
 };
 
 /**
@@ -169,10 +171,13 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeGeometry : public Qg
     void undo() override;
     void redo() override;
 
+    int id() const override { return 1; }
+    bool mergeWith( const QUndoCommand  *other ) override;
+
   private:
     QgsFeatureId mFid;
-    const QgsGeometry mNewGeom;
-    const QgsGeometry mOldGeom;
+    mutable QgsGeometry mNewGeom;
+    QgsGeometry mOldGeom;
 };
 
 /**
@@ -200,9 +205,10 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttribute: public Qg
 
   private:
     QgsFeatureId mFid;
-    const int mField;
+    const int mFieldIndex;
     const QVariant mNewValue;
-    const QVariant mOldValue;
+    QVariant mOldValue;
+    bool mFirstChange;
 };
 
 /**
