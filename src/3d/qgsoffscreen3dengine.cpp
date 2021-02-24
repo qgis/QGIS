@@ -38,6 +38,27 @@
 
 QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 {
+  // Set up the default OpenGL surface format.
+  QSurfaceFormat format;
+
+  // by default we get just some older version of OpenGL from the system,
+  // but for 3D lines we use "primitive restart" functionality supported in OpenGL >= 3.1
+  // Qt3DWindow uses this - requesting OpenGL 4.3 - so let's request the same version.
+  qDebug() << "QOpenGLContext::openGLModuleType: " << QOpenGLContext::openGLModuleType();
+#ifdef QT_OPENGL_ES_2
+  format.setRenderableType( QSurfaceFormat::OpenGLES );
+#else
+  if ( QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL )
+  {
+    format.setVersion( 4, 3 );
+    format.setProfile( QSurfaceFormat::CoreProfile );
+  }
+#endif
+
+  format.setMajorVersion( 3 );
+  format.setDepthBufferSize( 32 ); // TODO: or 24?  (used by QWindow3D)
+  format.setSamples( 8 );
+  QSurfaceFormat::setDefaultFormat( format );
 
   // Set up a camera to point at the shapes.
   mCamera = new Qt3DRender::QCamera;
@@ -68,6 +89,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   // Create the offscreen frame graph, which will manage all of the resources required
   // for rendering without a QWindow.
   mOffscreenSurface = new QOffscreenSurface();
+  mOffscreenSurface->setFormat( QSurfaceFormat::defaultFormat() );
   mOffscreenSurface->create();
 
   mFrameGraph = new QgsShadowRenderingFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );
