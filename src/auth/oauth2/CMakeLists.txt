@@ -119,7 +119,7 @@ add_library (oauth2authmethod_static STATIC
 )
 
 # require c++17
-target_compile_features(identcertauthmethod PRIVATE cxx_std_17)
+target_compile_features(oauth2authmethod PRIVATE cxx_std_17)
 target_compile_features(oauth2authmethod_static PRIVATE cxx_std_17)
 
 # Common linked libs
