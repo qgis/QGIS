@@ -160,14 +160,3 @@ QSurface *QgsOffscreen3DEngine::surface() const
 {
   return mOffscreenSurface;
 }
-
-void QgsOffscreen3DEngine::requestCaptureImage()
-{
-  Qt3DRender::QRenderCaptureReply *captureReply;
-  captureReply = mFrameGraph->renderCapture()->requestCapture();
-  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
-  {
-    emit imageCaptured( captureReply->image() );
-    captureReply->deleteLater();
-  } );
-}

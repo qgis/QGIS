@@ -15,8 +15,23 @@
 
 #include "qgsabstract3dengine.h"
 
+#include "qgsshadowrenderingframegraph.h"
+
+#include <Qt3DRender/QRenderCapture>
+
 QgsAbstract3DEngine::QgsAbstract3DEngine( QObject *parent )
   : QObject( parent )
 {
 
+}
+
+void QgsAbstract3DEngine::requestCaptureImage()
+{
+  Qt3DRender::QRenderCaptureReply *captureReply;
+  captureReply = mFrameGraph->renderCapture()->requestCapture();
+  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
+  {
+    emit imageCaptured( captureReply->image() );
+    captureReply->deleteLater();
+  } );
 }
