@@ -450,3 +450,14 @@ void QgsShadowRenderingFrameGraph::setSize( QSize s )
   mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
   mRenderSurfaceSelector->setExternalRenderTargetSize( mSize );
 }
+
+void QgsShadowRenderingFrameGraph::setRenderCaptureEnabled( bool enabled )
+{
+  if ( enabled == mRenderCaptureEnabled )
+    return;
+  mRenderCaptureEnabled = enabled;
+  if ( mRenderCaptureEnabled )
+    mRenderCaptureTargetSelector->setParent( mPostprocessPassLayerFilter );
+  else
+    mRenderCaptureTargetSelector->setParent( ( Qt3DCore::QNode * ) nullptr );
+}
