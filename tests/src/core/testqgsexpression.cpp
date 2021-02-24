@@ -941,10 +941,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "length line" ) << "length(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant( 4.0 );
       QTest::newRow( "length polygon" ) << "length(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant();
       QTest::newRow( "length point" ) << "length(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
+      QTest::newRow( "length empty line" ) << "length(geom_from_wkt('LINESTRING EMPTY'))" << false << QVariant( 0.0 );
       QTest::newRow( "length3D lineZ" ) << "length3D(geom_from_wkt('LINESTRINGZ(0 0 0, 3 0 4)'))" << false << QVariant( 5.0 );
       QTest::newRow( "length3D line" ) << "length3D(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant( 4.0 );
       QTest::newRow( "length3D polygon" ) << "length3D(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant();
       QTest::newRow( "length3D point" ) << "length3D(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
+      QTest::newRow( "length3D empty linez" ) << "length3D(geom_from_wkt('LINESTRINGZ EMPTY'))" << false << QVariant( 0.0 );
+      QTest::newRow( "length3D empty line" ) << "length3D(geom_from_wkt('LINESTRING EMPTY'))" << false << QVariant( 0.0 );
+      QTest::newRow( "length3D multiline" ) << "length3D(geom_from_wkt('MULTILINESTRINGZ((0 0 0, 3 0 4),(10 0 0, 13 0 4))'))" << false << QVariant( 10.0 );
       QTest::newRow( "area polygon" ) << "area(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant( 8.0 );
       QTest::newRow( "area line" ) << "area(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant();
       QTest::newRow( "area point" ) << "area(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
