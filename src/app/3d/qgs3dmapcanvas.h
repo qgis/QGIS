@@ -123,9 +123,6 @@ class Qgs3DMapCanvas : public QWidget
   private:
     QgsWindow3DEngine *mEngine = nullptr;
 
-    QString mCaptureFileName;
-    QString mCaptureFileFormat;
-
     //! Container QWidget that encapsulates mWindow3D so we can use it embedded in ordinary widgets app
     QWidget *mContainer = nullptr;
     //! Description of the 3D scene
