@@ -64,7 +64,11 @@ namespace QgsWms
                                     QgsWmsParameter::LAYERS );
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList layerList = layersName.split( ',', QString::SkipEmptyParts );
+#else
+    QStringList layerList = layersName.split( ',', Qt::SkipEmptyParts );
+#endif
     if ( layerList.isEmpty() )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,

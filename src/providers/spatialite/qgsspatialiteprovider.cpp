@@ -845,10 +845,18 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
 
   QgsDebugMsg( "SpatiaLite version info: " + mSpatialiteVersionInfo );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', Qt::SkipEmptyParts );
+#endif
 
   // Get major and minor version
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', QString::SkipEmptyParts );
+#else
+  QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', Qt::SkipEmptyParts );
+#endif
   if ( spatialiteVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse spatialite version string '%1'" ).arg( mSpatialiteVersionInfo ), tr( "SpatiaLite" ) );
@@ -874,10 +882,18 @@ bool QgsSpatiaLiteProvider::versionIsAbove( sqlite3 *sqlite_handle, int major, i
     if ( rows == 1 && columns == 1 )
     {
       QString version = QString::fromUtf8( results[1] );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       QStringList parts = version.split( ' ', QString::SkipEmptyParts );
+#else
+      QStringList parts = version.split( ' ', Qt::SkipEmptyParts );
+#endif
       if ( !parts.empty() )
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         QStringList verparts = parts.at( 0 ).split( '.', QString::SkipEmptyParts );
+#else
+        QStringList verparts = parts.at( 0 ).split( '.', Qt::SkipEmptyParts );
+#endif
         above = verparts.size() >= 2 && ( verparts.at( 0 ).toInt() > major || ( verparts.at( 0 ).toInt() == major && verparts.at( 1 ).toInt() >= minor ) );
       }
     }

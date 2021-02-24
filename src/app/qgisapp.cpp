@@ -7232,8 +7232,8 @@ bool QgisApp::fileSave()
                                  tr( "The loaded project file on disk was meanwhile changed. Do you want to overwrite the changes?\n"
                                      "\nLast modification date on load was: %1"
                                      "\nCurrent last modification date is: %2" )
-                                 .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ),
-                                       QgsProject::instance()->lastModified().toString( Qt::DefaultLocaleLongDate ) ),
+                                 .arg( QLocale::system().toString( mProjectLastModified, QLocale::LongFormat ),
+                                       QLocale::system().toString( QgsProject::instance()->lastModified(), QLocale::LongFormat ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
         return false;
     }

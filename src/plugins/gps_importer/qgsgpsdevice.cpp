@@ -21,6 +21,7 @@ QgsGpsDevice::QgsGpsDevice( const QString &wptDlCmd, const QString &wptUlCmd,
                             const QString &rteDlCmd, const QString &rteUlCmd,
                             const QString &trkDlCmd, const QString &trkUlCmd )
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   if ( !wptDlCmd.isEmpty() )
     mWptDlCmd = wptDlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
   if ( !wptUlCmd.isEmpty() )
@@ -33,6 +34,20 @@ QgsGpsDevice::QgsGpsDevice( const QString &wptDlCmd, const QString &wptUlCmd,
     mTrkDlCmd = trkDlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
   if ( !trkUlCmd.isEmpty() )
     mTrkUlCmd = trkUlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+#else
+  if ( !wptDlCmd.isEmpty() )
+    mWptDlCmd = wptDlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+  if ( !wptUlCmd.isEmpty() )
+    mWptUlCmd = wptUlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+  if ( !rteDlCmd.isEmpty() )
+    mRteDlCmd = rteDlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+  if ( !rteUlCmd.isEmpty() )
+    mRteUlCmd = rteUlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+  if ( !trkDlCmd.isEmpty() )
+    mTrkDlCmd = trkDlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+  if ( !trkUlCmd.isEmpty() )
+    mTrkUlCmd = trkUlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+#endif
 }
 
 

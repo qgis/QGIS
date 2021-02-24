@@ -80,7 +80,11 @@ QString QgsFileWidget::filePath()
 QStringList QgsFileWidget::splitFilePaths( const QString &path )
 {
   QStringList paths;
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts );
+#else
+  const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), Qt::SkipEmptyParts );
+#endif
   for ( const auto &pathsPart : pathParts )
   {
     QString cleaned = pathsPart;
