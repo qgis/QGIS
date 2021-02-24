@@ -307,6 +307,7 @@ double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
   {
     if ( !mGeod )
       computeAreaInit();
+    Q_ASSERT_X( static_cast<bool>( mGeod ), "QgsDistanceArea::measureLine()", "Error creating geod_geodesic object" );
     if ( !mGeod )
       return 0;
   }
@@ -358,6 +359,7 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
   {
     if ( !mGeod )
       computeAreaInit();
+    Q_ASSERT_X( static_cast<bool>( mGeod ), "QgsDistanceArea::measureLine()", "Error creating geod_geodesic object" );
     if ( !mGeod )
       return 0;
   }
@@ -480,6 +482,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
 
   if ( !mGeod )
     computeAreaInit();
+  Q_ASSERT_X( static_cast<bool>( mGeod ), "QgsDistanceArea::latitudeGeodesicCrossesAntimeridian()", "Error creating geod_geodesic object" );
   if ( !mGeod )
     return 0;
 
@@ -849,6 +852,7 @@ double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) co
 
     if ( !mGeod )
       computeAreaInit();
+    Q_ASSERT_X( static_cast<bool>( mGeod ), "QgsDistanceArea::bearing()", "Error creating geod_geodesic object" );
     if ( !mGeod )
       return 0;
 
@@ -913,6 +917,7 @@ double QgsDistanceArea::computePolygonArea( const QVector<QgsPointXY> &points ) 
 
   if ( !mGeod )
     computeAreaInit();
+  Q_ASSERT_X( static_cast<bool>( mGeod ), "QgsDistanceArea::computePolygonArea()", "Error creating geod_geodesic object" );
   if ( !mGeod )
     return 0;
 
