@@ -1359,26 +1359,26 @@ static QVariant fcnLength( const QVariantList &values, const QgsExpressionContex
 
 static QVariant fcnLength3D( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
 
   if ( geom.type() != QgsWkbTypes::LineGeometry )
     return QVariant();
 
-  if ( !geom.isMultipart() )
-    return QVariant( qgsgeometry_cast< const QgsCurve * >( geom.constGet() )->curveToLine()->length3D() );
-
-  if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+  double totalLength = 0;
+  for ( auto it = geom.const_parts_begin(); it != geom.const_parts_end(); ++it )
   {
-    double sumLength3DParts = 0;
-    for ( int i = 0; i < collection->numGeometries(); ++i )
+    if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( *it ) )
     {
-      if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( collection->geometryN( i ) ) )
-        sumLength3DParts += curve->curveToLine()->length3D();
+      totalLength += line->length3D();
     }
-    return QVariant( sumLength3DParts );
+    else
+    {
+      std::unique_ptr< QgsLineString > segmentized( qgsgeometry_cast< const QgsCurve * >( *it )->curveToLine() );
+      totalLength += segmentized->length3D();
+    }
   }
 
-  return QVariant();
+  return totalLength;
 }
 
 static QVariant fcnReplace( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
