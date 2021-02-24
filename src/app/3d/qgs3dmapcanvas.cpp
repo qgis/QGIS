@@ -35,18 +35,13 @@
 #include "qgsonlineterraingenerator.h"
 #include "qgsray3d.h"
 #include "qgs3dutils.h"
+#include "qgsoffscreen3dengine.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
   QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
-
-  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
-  {
-    image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() );
-    emit savedAsImage( mCaptureFileName );
-  } );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
   mNavigationWidget = new Qgs3DNavigationWidget( this );
@@ -177,9 +172,15 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
 {
   if ( !fileName.isEmpty() )
   {
-    mCaptureFileName = fileName;
-    mCaptureFileFormat = fileFormat;
-    mEngine->requestCaptureImage();
+    QgsOffscreen3DEngine engine;
+    engine.setSize( size() );
+    Qgs3DMapScene scene( *mMap, &engine );
+    engine.setRootEntity( &scene );
+    QgsCameraController *cameraController = mScene->cameraController();
+    scene.cameraController()->setLookingAtPoint( cameraController->lookingAtPoint(), cameraController->distance(), cameraController->pitch(), cameraController->yaw() );
+    QImage img = Qgs3DUtils::captureSceneImage( engine, &scene );
+    img.save( fileName, fileFormat.toLocal8Bit().data() );
+    emit savedAsImage( fileName );
   }
 }
 
