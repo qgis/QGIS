@@ -387,7 +387,7 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
     if ( mResolveTypes )
     {
       const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
-      QVariant val { result->PQgetvalue( mRowIndex, colIdx ) };
+      QVariant val = result->PQgetvalue( mRowIndex, colIdx );
       // Special case for bools: 'f' and 't'
       if ( vType == QVariant::Bool )
       {

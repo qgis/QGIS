@@ -1096,7 +1096,7 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
        providerProperty( EvaluateDefaultValues, false ).toBool() )
   {
     QString errorMessage;
-    QVariant nextVal { QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage ) };
+    QVariant nextVal = QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage );
     if ( errorMessage.isEmpty() && nextVal != -1 )
     {
       resultVar = nextVal;

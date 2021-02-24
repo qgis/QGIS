@@ -213,7 +213,7 @@ void TestQgsGpsInformationWidget::testTimestamp()
   QVERIFY( fieldIdx != -1 );
   // UTC
   widget->mCboTimestampFormat->setCurrentIndex( widget->mCboTimestampFormat->findData( Qt::TimeSpec::UTC ) );
-  QVariant dt { widget->timestamp( tempLayerDateTime, fieldIdx ) };
+  QVariant dt = widget->timestamp( tempLayerDateTime, fieldIdx );
   QCOMPARE( dt.toDateTime(), dateTime );
 
   // Local time
