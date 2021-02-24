@@ -22,11 +22,6 @@ which are not wrapped by PyQt:
 - NULL QVariant which is missing in PyQt5 with sip.enableautoconversion
 */
 
-%ModuleHeaderCode
-// Needed because sip uses deprecated throw(...) annotations to raise the correct Python exception
-#define throw(...)
-%End
-
 
 template <TYPE>
 %MappedType QVector< QVector<TYPE> >
