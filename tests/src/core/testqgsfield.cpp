@@ -740,7 +740,7 @@ void TestQgsField::convertCompatible()
 
   // Test 0 on int fields
   intField = QgsField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "Integer" ), 10 );
-  QVariant vZero { 0 };
+  QVariant vZero = 0;
   QVERIFY( intField.convertCompatible( vZero ) );
 }
 
