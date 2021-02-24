@@ -3,6 +3,11 @@
 
 ${DEFAULTDOCSTRINGSIGNATURE}
 
+%ModuleHeaderCode
+// Needed because sip uses deprecated throw(...) annotations to raise the correct Python exception
+#define throw(...)
+%End
+
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
 %Import QtXml/QtXmlmod.sip
