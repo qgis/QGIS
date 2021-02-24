@@ -23,7 +23,8 @@ which are not wrapped by PyQt:
 */
 
 %ModuleHeaderCode
-
+// Needed because sip uses deprecated throw(...) annotations to raise the correct Python exception
+#define throw(...)
 %End
 
 
