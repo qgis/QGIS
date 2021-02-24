@@ -285,7 +285,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   ( void )loadGCPs();
 
   if ( mRLayer )
-    mCanvas->setExtent( mLayer->extent() );
+    mCanvas->setExtent( mRLayer->extent() );
 
   mCanvas->refresh();
   QgisApp::instance()->mapCanvas()->refresh();
@@ -492,7 +492,7 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
     }
     d.getTransformSettings( mTransformParam, mModifiedFileName, mProjection,
                             mPdfOutputMapFile, mPdfOutputFile, mSaveGcp,
-                            mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
+                            mLoadInQgis );
   }
   else
   {
@@ -503,7 +503,8 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
     }
 
     d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
-                            mModifiedFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
+                            mModifiedFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile,
+                            mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
   }
   mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
@@ -544,7 +545,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
       case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
       case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
         QString vectorCommand = generateGDALogr2ogrCommand( mTransformParam );
-        FALLTHROUGH
+        break;
       default:
         mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
                                   .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
@@ -1600,7 +1601,7 @@ bool QgsGeoreferencerMainWindow::georeference()
   if ( mDataType == QgsGeoreferencerMainWindow::VECTOR && mVLayer )
   {
     bool success;
-    QgsVectorWarper warper = QgsVectorWarper( mTransformParam, mPoints, mProjection, );
+    QgsVectorWarper warper = QgsVectorWarper( mTransformParam, mPoints, mProjection );
     if ( mModifiedFileName.isEmpty() )
       success = warper.executeTransformInplace( mVLayer );
     else
@@ -2210,10 +2211,13 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand( const QgsGeorefT
   {
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
       gdalCommand << QStringLiteral( "-order" ) << QString::number( 1 );
+      break;
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
       gdalCommand << QStringLiteral( "-order" ) << QString::number( 2 );
+      break;
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
       gdalCommand << QStringLiteral( "-order" ) << QString::number( 3 );
+      break;
     default:
       gdalCommand << QStringLiteral( "-tps" );
   }
