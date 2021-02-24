@@ -313,6 +313,20 @@ Returns the current list of predefined scales for use with the layout.
 .. versionadded:: 3.10
 %End
 
+    QgsFeatureFilterProvider *featureFilterProvider() const;
+%Docstring
+Returns the possibly NULL featureFilterProvider
+
+.. versionadded:: 3.18
+%End
+
+    void setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider );
+%Docstring
+Sets ``featureFilterProvider``
+
+.. versionadded:: 3.18
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutRenderContext::Flags flags );

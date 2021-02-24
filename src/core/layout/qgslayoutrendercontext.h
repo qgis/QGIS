@@ -297,6 +297,18 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      */
     QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
+    /**
+     * Returns the possibly NULL featureFilterProvider
+     * \since QGIS 3.18
+     */
+    QgsFeatureFilterProvider *featureFilterProvider() const;
+
+    /**
+     * Sets \a featureFilterProvider
+     * \since QGIS 3.18
+     */
+    void setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider );
+
   signals:
 
     /**
@@ -341,6 +353,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QgsVectorSimplifyMethod mSimplifyMethod;
 
     QVector<qreal> mPredefinedScales;
+
+    QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;

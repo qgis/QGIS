@@ -427,6 +427,14 @@ namespace QgsWms
     // configure layout
     configurePrintLayout( layout.get(), mapSettings, atlas );
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsFeatureFilterProviderGroup filters;
+    mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
+    filters.addProvider( mContext.accessControl() );
+    QgsLayoutRenderContext &layoutRendererContext = layout->renderContext();
+    layoutRendererContext.setFeatureFilterProvider( &filters );
+#endif
+
     // Get the temporary output file
     const QgsWmsParameters::Format format = mWmsParameters.format();
     const QString extension = QgsWmsParameters::formatAsString( format ).toLower();
@@ -556,6 +564,7 @@ namespace QgsWms
 
   bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint )
   {
+
     c->renderContext().setSelectionColor( mapSettings.selectionColor() );
     // Maps are configured first
     QList<QgsLayoutItemMap *> maps;
@@ -1174,7 +1183,7 @@ namespace QgsWms
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
       const QImage *outputImage, const QString &version ) const
   {
-    const QStringList queryLayers = mContext.flattenedQueryLayers( );
+    const QStringList queryLayers = mContext.flattenedQueryLayers( mContext.parameters().queryLayersNickname() );
 
     bool ijDefined = ( !mWmsParameters.i().isEmpty() && !mWmsParameters.j().isEmpty() );
 
