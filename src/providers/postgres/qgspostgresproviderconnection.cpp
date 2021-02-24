@@ -270,7 +270,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             break;
           }
           const Oid oid { res.PQftype( rowIdx ) };
-          QList<QVariantList> typeRes { executeSqlPrivate( QStringLiteral( "SELECT typname FROM pg_type WHERE oid = %1" ).arg( oid ), false, nullptr, pgconn ) };
+          QList<QVariantList> typeRes = executeSqlPrivate( QStringLiteral( "SELECT typname FROM pg_type WHERE oid = %1" ).arg( oid ), false, nullptr, pgconn );
           // Set the default to string
           QVariant::Type vType { QVariant::Type::String };
           if ( typeRes.size() > 0 && typeRes.first().size() > 0 )
@@ -335,7 +335,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
           if ( resolveTypes )
           {
             const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
-            QVariant val { res.PQgetvalue( rowIdx, colIdx ) };
+            QVariant val = res.PQgetvalue( rowIdx, colIdx );
             // Special case for bools: 'f' and 't'
             if ( vType == QVariant::Bool )
             {

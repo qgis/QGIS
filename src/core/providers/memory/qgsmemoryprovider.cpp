@@ -430,7 +430,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     QString errorMessage;
     for ( int i = 0; i < mFields.count(); ++i )
     {
-      QVariant attrValue { it->attribute( i ) };
+      QVariant attrValue = it->attribute( i );
       if ( ! attrValue.isNull() && ! mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
       {
         // Push first conversion error only
@@ -614,7 +614,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
     // Break on errors
     for ( QgsAttributeMap::const_iterator it2 = attrs.constBegin(); it2 != attrs.constEnd(); ++it2 )
     {
-      QVariant attrValue { it2.value() };
+      QVariant attrValue = it2.value();
       // Check attribute conversion
       const bool conversionError { ! attrValue.isNull()
                                    && ! mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };

@@ -6,6 +6,7 @@ add_test(qgis_banned_keywords ${CMAKE_SOURCE_DIR}/tests/code_layout/test_banned_
 add_test(qgis_licenses ${CMAKE_SOURCE_DIR}/tests/code_layout/test_licenses.sh)
 add_test(qgis_spelling ${CMAKE_SOURCE_DIR}/scripts/spell_check/spell_test.sh)
 add_test(qgis_defwindowtitle ${CMAKE_SOURCE_DIR}/tests/code_layout/test_defwindowtitle.sh)
+add_test(qgis_qvariant_no_brace_init ${CMAKE_SOURCE_DIR}/tests/code_layout/test_qvariant_no_brace_init.sh)
 
 add_test(qgis_shellcheck ${CMAKE_SOURCE_DIR}/tests/code_layout/test_shellcheck.sh)
 add_test(qgis_sipify ${CMAKE_SOURCE_DIR}/tests/code_layout/test_sipify.sh)

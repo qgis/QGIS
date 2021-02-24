@@ -2302,7 +2302,7 @@ void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::S
         {
           QString tableSchema;
           QString tableName;
-          const QVariantMap sourceParts { providerMetadata->decodeUri( dependency.source ) };
+          const QVariantMap sourceParts = providerMetadata->decodeUri( dependency.source );
 
           // This part should really be abstracted out to the connection classes or to the providers directly.
           // Different providers decode the uri differently, for example we don't get the table name out of OGR
