@@ -34,6 +34,12 @@ class QgsLineSegment2D;
  * See details in QEP #17
  ****************************************************************************/
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <memory>
+% End
+#endif
+
 /**
  * \ingroup core
  * \class QgsLineString
@@ -42,6 +48,7 @@ class QgsLineSegment2D;
  */
 class CORE_EXPORT QgsLineString: public QgsCurve
 {
+
   public:
 
     /**
