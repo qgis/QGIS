@@ -124,6 +124,18 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     void setupDepthMapDebugging( bool enabled, Qt::Corner corner, double size );
     //! Sets the size of the buffers used for rendering
     void setSize( QSize s );
+
+    /**
+     * Sets whether it will be possible to render to an image
+     * \since QGIS 3.18
+     */
+    void setRenderCaptureEnabled( bool enabled );
+
+    /**
+     * Returns whether it will be possible to render to an image
+     * \since QGIS 3.18
+     */
+    bool renderCaptureEnabled() const { return mRenderCaptureEnabled; }
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -199,6 +211,8 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QFrameGraphNode *constructForwardRenderPass();
     Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
+
+    bool mRenderCaptureEnabled = true;
 
     Q_DISABLE_COPY( QgsShadowRenderingFrameGraph )
 };
