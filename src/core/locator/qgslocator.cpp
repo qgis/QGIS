@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslocator.h"
+#include "qgssettingsregistrycore.h"
 #include <QtConcurrent>
 #include <functional>
 
@@ -93,9 +94,9 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   filter->setParent( this );
 
   // restore settings
-  bool enabled = locatorFilters[ filter->name() ].enabled.value<bool>();
-  bool byDefault = locatorFilters[ filter->name() ].byDefault.value<bool>();
-  QString prefix = locatorFilters[ filter->name() ].prefix.value<QString>();
+  bool enabled = QgsApplication::settingsRegistryCore()->locatorFilters[ filter->name() ].enabled.value<bool>();
+  bool byDefault = QgsApplication::settingsRegistryCore()->locatorFilters[ filter->name() ].byDefault.value<bool>();
+  QString prefix = QgsApplication::settingsRegistryCore()->locatorFilters[ filter->name() ].prefix.value<QString>();
   if ( prefix.isEmpty() )
   {
     prefix = filter->prefix();

@@ -24,6 +24,8 @@
 #include "qgslayoutguidecollection.h"
 #include "qgslayoutexporter.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgssettingsgroup.h"
+#include "qgssettingsentry.h"
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
@@ -656,6 +658,34 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \since QGIS 3.10
      */
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    struct SettingsStructure
+    {
+        struct Layout : public QgsSettingsGroup
+        {
+            Layout( QgsSettingsGroup *parent )
+              : QgsSettingsGroup( "layout", parent, QObject::tr( "Layout group description" ) )
+              , searchPathForTemplates( "searchPathsForTemplates", this, QStringList(), QObject::tr( "Search path for templates" ) )
+              , anotherNumericSettings( "anotherNumericSettings", this, 1234, "Example settings", 100, 9999 )
+              , subLayout( this )
+            {}
+
+            QgsSettingsEntryStringList searchPathForTemplates;
+            QgsSettingsEntryInteger anotherNumericSettings;
+
+            struct SubLayout : public QgsSettingsGroup
+            {
+              SubLayout( QgsSettingsGroup *parentGroup )
+                : QgsSettingsGroup( "sub_layout", parentGroup, "Description..." )
+                , searchPathForTemplatesInSub( "anotherValue", this, QStringList() )
+              {}
+
+              QgsSettingsEntryStringList searchPathForTemplatesInSub;
+            };
+            SubLayout subLayout;
+        };
+        Layout layout;
+    };
 
   public slots:
 

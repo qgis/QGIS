@@ -41,6 +41,9 @@ QString QgsSettingsEntry::key() const
   if ( mSettingsGroupParent == nullptr )
     return mKey;
 
+  if ( mSettingsGroupParent->key().isEmpty() )
+    return mKey;
+
   return QString( "%1/%2" )
          .arg( mSettingsGroupParent->key() )
          .arg( mKey );
