@@ -4218,6 +4218,65 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp2.referencedVariables(), QSet<QString>() << QStringLiteral( "field_name_part_var" ) << QStringLiteral( "static_feature" ) );
     }
 
+    void testPrecomputedNodesWithBinaryOperators()
+    {
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "first_field" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "second_field" ), QVariant::Int ) );
+
+      // OR operations:
+
+      // the result of this expression will always be true, regardless of the field value - so we can precompile it to a static node!
+      QgsExpression exp( QStringLiteral( "\"first_field\" or (true or false)" ) );
+
+      // prepare the expression using static variables
+      QgsExpressionContext context;
+      context.setFields( fields );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->cachedStaticValue().toBool(), true );
+
+      // the result of this expression depends on the value of first_field, it can't be completely precompiled
+      exp = QgsExpression( QStringLiteral( "\"first_field\" or (true and false)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+
+      // the result of this expression will always be true, regardless of the field value
+      exp = QgsExpression( QStringLiteral( "(true or false) or \"first_field\"" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->cachedStaticValue().toBool(), true );
+
+      // the result of this expression depends on the value of first_field, it can't be completely precompiled
+      exp = QgsExpression( QStringLiteral( "(true and false) or \"first_field\"" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+
+      // AND operations:
+
+      // the result of this expression will always be false, regardless of the field value - so we can precompile it to a static node!
+      exp = QgsExpression( QStringLiteral( "\"first_field\" AND (true AND false)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->cachedStaticValue().toBool(), false );
+
+      // the result of this expression depends on the value of first_field, it can't be completely precompiled
+      exp = QgsExpression( QStringLiteral( "\"first_field\" AND (true or false)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+
+      // the result of this expression will always be false, regardless of the field value
+      exp = QgsExpression( QStringLiteral( "(true and false) AND \"first_field\"" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->cachedStaticValue().toBool(), false );
+
+      // the result of this expression depends on the value of first_field, it can't be completely precompiled
+      exp = QgsExpression( QStringLiteral( "(true or false) AND \"first_field\"" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsExpression )
