@@ -1,2 +1,7 @@
 These are examples used in the GitHub landing page README.md
-<to be filled in>
+
+QGIS_ex1.png - https://www.qgis.org/en/_images/qgisdesktopscreenshot.jpg via https://www.qgis.org/en/site/about/index.html
+QGIS_ex2.png - https://www.flickr.com/photos/7361002@N08/50870685936/in/pool-2244553@N22 via https://www.qgis.org/en/site/about/screenshots.html
+QGIS_ex3.png - https://docs.qgis.org/3.16/en/_images/models_model.png
+QGIS_ex4.png - https://docs.qgis.org/3.16/en/_images/python_console_editor.png
+QGIS_ex5.png - https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png
