@@ -988,23 +988,23 @@ void TestQgsProcessingAlgs::flattenRelations()
     res.insert( created );
   }
 
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 0 << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 12 << 10.0 << 1 << 1 << 2 << QStringLiteral( "Point (-103 23)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 34 << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 80 << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 90 << 3.0 << 2 << 0 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 85 << 3.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 95 << 3.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 90 << 3.0 << 1 << 0 << 1 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 160 << 4.0 << 2 << 0 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 180 << 3.0 << 1 << 0 << 1 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 140 << 10.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 100 << 20.0 << 3 << 0 << 3 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 0 << 1.0 << 3 << 3 << 6 << QStringLiteral( "Point (-83 34)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 340 << 1.0 << 3 << 3 << 6 << QStringLiteral( "Point (-83 34)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 300 << 1.0 << 3 << 2 << 5 << QStringLiteral( "Point (-83 34)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 270 << 1.0 << 3 << 4 << 7 << QStringLiteral( "Point (-83 34)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 240 << 1.0 << 3 << 2 << 5 << QStringLiteral( "Point (-83 34)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 0LL << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 12LL << 10.0 << 1 << 1 << 2 << QStringLiteral( "Point (-103 23)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 34LL << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 80LL << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 90LL << 3.0 << 2 << 0 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 85LL << 3.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 95LL << 3.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 90LL << 3.0 << 1 << 0 << 1 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 160LL << 4.0 << 2 << 0 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 180LL << 3.0 << 1 << 0 << 1 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 140LL << 10.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 100LL << 20.0 << 3 << 0 << 3 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 0LL << 1.0 << 3 << 3 << 6 << QStringLiteral( "Point (-83 34)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 340LL << 1.0 << 3 << 3 << 6 << QStringLiteral( "Point (-83 34)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 300LL << 1.0 << 3 << 2 << 5 << QStringLiteral( "Point (-83 34)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 270LL << 1.0 << 3 << 4 << 7 << QStringLiteral( "Point (-83 34)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Biplane" ) << 2 << QStringLiteral( "Biplane" ) << 240LL << 1.0 << 3 << 2 << 5 << QStringLiteral( "Point (-83 34)" ) ) );
 
   QgsRelation relation2( relationContext );
   relation2.setId( QStringLiteral( "rel2" ) );
