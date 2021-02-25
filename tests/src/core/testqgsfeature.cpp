@@ -119,6 +119,14 @@ void TestQgsFeature::attributesTest()
   //constructed with size
   QgsAttributes attr7( 5 );
   QCOMPARE( attr7.size(), 5 );
+
+  // datetime vs string -- default qt qvariant equality test considers these equal? ?? ?!
+  QgsAttributes attrWithString;
+  attrWithString << QVariant( 5 ) << QVariant( QStringLiteral( "val" ) ) << QVariant( QStringLiteral( "2021-02-10 00:00" ) );
+  QgsAttributes attrWithDate;
+  attrWithDate << QVariant( 5 ) << QVariant( QStringLiteral( "val" ) ) << QVariant( QDateTime( QDate( 2021, 2, 10 ), QTime( 0, 0 ) ) );
+  QVERIFY( attrWithString != attrWithDate );
+  QVERIFY( attrWithDate != attrWithString );
 }
 
 void TestQgsFeature::constructorTest()
