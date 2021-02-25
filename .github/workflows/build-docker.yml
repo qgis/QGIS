@@ -1,7 +1,13 @@
 name: Build Docker images for current branches
 
+# on commits to this file, schedule and dispatch runs, the workflow will build the 3 different Docker images (master, PR, LTR)
+# on tags, it will build only the image of the given tag
+# this is made by using a matrix defined in a dedicated job
+
 on:
   push:
+    tags:
+      - final-*
     branches:
       - master
     paths:
@@ -13,6 +19,19 @@ on:
     # POST https://api.github.com/repos/qgis/QGIS/actions/workflows/2264135/dispatches:
 
 jobs:
+  define-strategy:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - id: matrix
+        run: |
+          if [[ "${GITHUB_REF}" =~ ^refs/tags ]]; then
+            echo "::set-output name=matrix::{\"branch\":[\"${GITHUB_REF##*/}\"]}"
+          else
+            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_16\", \"release-3_18\"]}"
+          fi
+
   build-docker:
     runs-on: ubuntu-latest
 
@@ -24,8 +43,7 @@ jobs:
       CXX: /usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
 
     strategy:
-      matrix:
-        branch: [master, release-3_16, release-3_18]
+      matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
 
     steps:
       - name: Cache
