@@ -183,8 +183,8 @@ class GdalUtils:
                     or metadata[gdal.DCAP_RASTER] != 'YES':
                 continue
 
-            if gdal.DMD_EXTENSION in metadata:
-                extensions = metadata[gdal.DMD_EXTENSION].split('/')
+            if gdal.DMD_EXTENSIONS in metadata:
+                extensions = metadata[gdal.DMD_EXTENSIONS].split(' ')
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
                     # Only creatable rasters can be referenced in output rasters
