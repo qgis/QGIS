@@ -663,26 +663,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     {
         struct Layout : public QgsSettingsGroup
         {
-            Layout( QgsSettingsGroup *parent )
-              : QgsSettingsGroup( "layout", parent, QObject::tr( "Layout group description" ) )
-              , searchPathForTemplates( "searchPathsForTemplates", this, QStringList(), QObject::tr( "Search path for templates" ) )
-              , anotherNumericSettings( "anotherNumericSettings", this, 1234, "Example settings", 100, 9999 )
-              , subLayout( this )
-            {}
+          Layout( QgsSettingsGroup *parent )
+            : QgsSettingsGroup( "layout", parent, QObject::tr( "Layout group description" ) )
+            , searchPathForTemplates( "searchPathsForTemplates", this, QStringList(), QObject::tr( "Search path for templates" ) )
+          {}
 
-            QgsSettingsEntryStringList searchPathForTemplates;
-            QgsSettingsEntryInteger anotherNumericSettings;
-
-            struct SubLayout : public QgsSettingsGroup
-            {
-              SubLayout( QgsSettingsGroup *parentGroup )
-                : QgsSettingsGroup( "sub_layout", parentGroup, "Description..." )
-                , searchPathForTemplatesInSub( "anotherValue", this, QStringList() )
-              {}
-
-              QgsSettingsEntryStringList searchPathForTemplatesInSub;
-            };
-            SubLayout subLayout;
+          QgsSettingsEntryStringList searchPathForTemplates;
         };
         Layout layout;
     };
