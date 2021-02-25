@@ -506,6 +506,27 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(layer.fields()[i].length(), fields[i].length())
             self.assertEqual(layer.fields()[i].precision(), fields[i].precision())
 
+    def testAddChangeFeatureConvertAttribute(self):
+        """
+        Test add features with attribute values which require conversion
+        """
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=dt:datetime', 'test', 'memory')
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        # string value specified for datetime field -- must be converted when adding the feature
+        f.setAttributes([5, -200, '2021-02-10 00:00'])
+        self.assertTrue(provider.addFeatures([f]))
+
+        saved_feature = next(provider.getFeatures())
+        # saved feature must have a QDateTime value for field, not string
+        self.assertEqual(saved_feature.attributes(), [5, -200, QDateTime(2021, 2, 10, 0, 0)])
+
+        self.assertTrue(provider.changeAttributeValues({saved_feature.id(): {2: '2021-02-12 00:00'}}))
+        saved_feature = next(provider.getFeatures())
+        # saved feature must have a QDateTime value for field, not string
+        self.assertEqual(saved_feature.attributes(), [5, -200, QDateTime(2021, 2, 12, 0, 0)])
+
     def testThreadSafetyWithIndex(self):
         layer = QgsVectorLayer(
             'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
