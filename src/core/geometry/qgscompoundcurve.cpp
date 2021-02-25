@@ -427,7 +427,7 @@ bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
   QgsPoint lastEnd;
   for ( QgsCurve *curve : curves )
   {
-    result = result || curve->removeDuplicateNodes( epsilon, useZValues );
+    result = curve->removeDuplicateNodes( epsilon, useZValues ) || result;
     if ( curve->numPoints() == 0 || qgsDoubleNear( curve->length(), 0.0, epsilon ) )
     {
       // empty curve, remove it
