@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgssettingsentry.cpp
+  qgssettingsgroup.cpp
   --------------------------------------
   Date                 : February 2021
   Copyright            : (C) 2021 by Damiano Lombardi
@@ -53,6 +53,16 @@ void QgsSettingsGroup::setParentSettingsGroup( QgsSettingsGroup *parentSettingsG
 
   if ( mSettingsGroupParent != nullptr )
     mSettingsGroupParent->registerChildSettingsGroup( this );
+}
+
+QList<QgsSettingsGroup *> QgsSettingsGroup::childSettingsGroups() const
+{
+  return mChildSettingsGroups;
+}
+
+QList<QgsSettingsEntry *> QgsSettingsGroup::childSettingsEntries() const
+{
+  return mChildSettingsEntries;
 }
 
 void QgsSettingsGroup::setKey( const QString &key )
