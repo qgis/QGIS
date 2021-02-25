@@ -118,6 +118,7 @@ jobs:
 
       - name: Finalize image
         run: |
+          cd .docker
           # enable experimental features in Docker to squash
           echo '{ "experimental": true}' | sudo tee /etc/docker/daemon.json
           sudo service docker restart
