@@ -12,7 +12,11 @@ information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 
 Features include
 
-<img align="right" src="https://www.qgis.org/en/_images/qgisdesktopscreenshot.jpg" width="250" alt="example layer display"><div style="min-height:240;">
+<!-- NEED TO FIX THIS TO POINT TO IMAGES WITH A FORK-INDEPENDENT PATH, i.e. ideally like the markdown []() example below but with align right and chosen size
+NEED TO DO FOR ALL 5 IMAGES BELOW -->
+<!--<img align="right" src="https://www.qgis.org/en/_images/qgisdesktopscreenshot.jpg" width="250" alt="example layer display"><div style="min-height:240;"> -->
+<!--![Example layer display](images/README-md/QGIS_ex1.png){:width="250px"}  Doesn't work, also .png&s=250 or .png | width=250 -->
+<img align="right" src="https://raw.githubusercontent.com/Houska1/QGIS/README-md-update/images/README-md/QGIS_ex1.png" width="200" alt="Example image"><div style="min-height:220;">
 
 **1. Flexible visualization and editing of geospatial data**
 * Raster, vector, mesh layers in a range of industry-standard formats
@@ -22,8 +26,10 @@ Features include
 * Visual and numerical and digitizing and editing
 * Temporal support
 
-</div><img align="right" src="https://live.staticflickr.com/65535/50870685936_e1ae8c29bd_k.jpg" width="180" height="180" style="margin:0 25px 0 25px;" alt="example image"><div style="min-height:300;">
+</div>
+<!--<img align="right" src="https://live.staticflickr.com/65535/50870685936_e1ae8c29bd_k.jpg" width="180" height="180" style="margin:0 25px 0 25px;" alt="example image"><div style="min-height:300;"> -->
 <!-- Having trouble clipping the image, and also the div min-height seems to be ignored by github --> 
+<img align="right" src="https://raw.githubusercontent.com/Houska1/QGIS/README-md-update/images/README-md/QGIS_ex2.png" width="200" alt="Example image"><div style="min-height:220;">
   
 **2. Beautiful cartography**
 * Fine control over symbology, labeling, legends and additional graphical elements for beautifully rendered maps
@@ -32,7 +38,9 @@ Features include
 * Flexible output direct to printer, or as image (raster), PDF, or SVG for further customization 
 * On-the-fly rendering enhancement via geometry generator symbol layers, e.g. callouts, dimensions, oriented/scaled markers
 
-</div><img align="right" src="https://docs.qgis.org/3.16/en/_images/models_model.png" width="250" alt="example modeler"><div style="min-height:180;">
+</div>
+<!--<img align="right" src="https://docs.qgis.org/3.16/en/_images/models_model.png" width="250" alt="example modeler"><div style="min-height:180;"> -->
+<img align="right" src="https://raw.githubusercontent.com/Houska1/QGIS/README-md-update/images/README-md/QGIS_ex3.png" width="200" alt="Example image"><div style="min-height:220;">
 
 **3. Advanced GIS analysis**
 * Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
@@ -41,7 +49,9 @@ Features include
 * Graphical modeler and scripting
 * Access to additional algorithms via GDAL, GRASS, SAGA, etc.
 
-</div><img align="right" src="https://docs.qgis.org/3.16/en/_images/python_console_editor.png" width="250" alt="example image"><div style="min-height:220;">
+</div>
+<!--<img align="right" src="https://docs.qgis.org/3.16/en/_images/python_console_editor.png" width="250" alt="example image"><div style="min-height:220;"> -->
+<img align="right" src="https://raw.githubusercontent.com/Houska1/QGIS/README-md-update/images/README-md/QGIS_ex4.png" width="200" alt="Example image"><div style="min-height:220;">
 
 **4. Wide customization**
 * Fully customizable user interface
@@ -49,7 +59,9 @@ Features include
 * Rich ecosystem of plugins, data connectors, advanced analysis and charting tools, in-the-field data capture
 * Python and C++ API for standalone applications
 
-</div><img align="right" src="https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png" width="250" alt="server image"><div style="min-height:160;">
+</div>
+<!--<img align="right" src="https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png" width="250" alt="server image"><div style="min-height:160;"> -->
+<img align="right" src="https://raw.githubusercontent.com/Houska1/QGIS/README-md-update/images/README-md/QGIS_ex5.png" width="200" alt="Example image"><div style="min-height:220;">
 
 **5. QGIS server**
 * Headless map server, running on Windows, Mac OSX, Linux or in a docker container, that shares the same code base as QGIS
