@@ -2010,9 +2010,10 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  // Prevent prefetch of XYZ openstreetmap images
-  // See: https://github.com/qgis/QGIS/issues/34813
-  if ( !( mSettings.mTiled && mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
+  // Prevent prefetch of XYZ openstreetmap images, see: https://github.com/qgis/QGIS/issues/34813
+  // But also prevent prefetching if service is a true WMS (mSettings.mTiled = True)
+  // See https://github.com/qgis/QGIS/issues/34813
+  if ( mSettings.mTiled && !( mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
   {
     capability |= Capability::Prefetch;
   }
