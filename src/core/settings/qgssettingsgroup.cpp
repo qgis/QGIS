@@ -42,6 +42,19 @@ QgsSettingsGroup::QgsSettingsGroup( QgsSettings::Section section,
 {
 }
 
+QgsSettingsGroup *QgsSettingsGroup::parentSettingsGroup() const
+{
+  return mSettingsGroupParent;
+}
+
+void QgsSettingsGroup::setParentSettingsGroup( QgsSettingsGroup *parentSettingsGroup )
+{
+  mSettingsGroupParent = parentSettingsGroup;
+
+  if ( mSettingsGroupParent != nullptr )
+    mSettingsGroupParent->registerChildSettingsGroup( this );
+}
+
 void QgsSettingsGroup::setKey( const QString &key )
 {
   mKey = key;
@@ -75,8 +88,6 @@ QString QgsSettingsGroup::description() const
 
 void QgsSettingsGroup::registerChildSettingsGroup( QgsSettingsGroup *childSettingsGroup )
 {
-  QgsLogger::warning( QStringLiteral( "Settings group '%1' registering child group '%2' current size '%3'" ).arg( key() ).arg( childSettingsGroup->key() ).arg( mChildSettingsGroups.size() ) );
-
   if ( mChildSettingsGroups.contains( childSettingsGroup ) )
   {
     QgsLogger::warning( QStringLiteral( "Settings group '%1' already contains child group '%2'" ).arg( key() ).arg( childSettingsGroup->key() ) );

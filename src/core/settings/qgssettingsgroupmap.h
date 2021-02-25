@@ -60,14 +60,11 @@ class CORE_EXPORT QgsSettingsGroupMap : public QgsSettingsGroup
      */
     T &operator[]( const QString &key )
     {
-      QgsLogger::warning( QStringLiteral( "Settings map '%1' accessing child group '%2'" ).arg( QgsSettingsGroupMap::key() ).arg( key ) );
-
       if ( mMapKeySettingsGroup.contains( key ) == false )
       {
-        QgsLogger::warning( QStringLiteral( "Settings map '%1' inserting child group '%2'" ).arg( QgsSettingsGroupMap::key() ).arg( key ) );
-
-        T group( key, this );
-        mMapKeySettingsGroup.insert( key, group );
+        mMapKeySettingsGroup.insert( key, T( nullptr ) );
+        mMapKeySettingsGroup[ key ].setKey( key );
+        mMapKeySettingsGroup[ key ].setParentSettingsGroup( this );
       }
 
       return mMapKeySettingsGroup[ key ];

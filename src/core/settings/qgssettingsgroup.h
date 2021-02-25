@@ -62,6 +62,10 @@ class CORE_EXPORT QgsSettingsGroup
     QgsSettingsGroup( QgsSettings::Section section,
                       QString description = QString() );
 
+    QgsSettingsGroup *parentSettingsGroup() const;
+
+    void setParentSettingsGroup( QgsSettingsGroup *parentSettingsGroup );
+
     /**
      * Set settings group key.
      */
