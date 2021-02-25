@@ -159,8 +159,8 @@ class CORE_EXPORT QgsLocator : public QObject
     {
         struct LocatorFilter : public QgsSettingsGroup
         {
-          LocatorFilter( const QString &groupName = "", QgsSettingsGroup *parentGroup = nullptr )
-            : QgsSettingsGroup( groupName, parentGroup )
+          LocatorFilter( QgsSettingsGroup *parentGroup = nullptr )
+            : QgsSettingsGroup( "", parentGroup )
             , enabled( "enabled", this, true, QObject::tr( "Enabled" ) )
             , byDefault( "default", this, false, QObject::tr( "Default value" ) )
             , prefix( "prefix", this, QString(), QObject::tr( "Locator filter prefix" ) )

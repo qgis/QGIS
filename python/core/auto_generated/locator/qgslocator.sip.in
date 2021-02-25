@@ -145,7 +145,7 @@ This list is updated when preparing the search
     {
         struct LocatorFilter : public QgsSettingsGroup
         {
-          LocatorFilter( const QString &groupName = "", QgsSettingsGroup *parentGroup = 0 );
+          LocatorFilter( QgsSettingsGroup *parentGroup = 0 );
 
           QgsSettingsEntryBool enabled;
           QgsSettingsEntryBool byDefault;
