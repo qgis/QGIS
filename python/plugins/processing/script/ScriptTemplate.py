@@ -44,7 +44,10 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
 
     def tr(self, string):
         """
-        Returns a translatable string with the self.tr() function.
+        Returns a string translated by the self.tr() function.
+
+		This function makes use of the QT5 ability to translate a given 
+		text strings into local languages.
         """
         return QCoreApplication.translate('Processing', string)
 
@@ -53,11 +56,11 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
 
     def name(self):
         """
-        Returns the algorithm name, used for identifying the algorithm. This
-        string should be fixed for the algorithm, and must not be localised.
-        The name should be unique within each provider. Names should contain
-        lowercase alphanumeric characters only and no spaces or other
-        formatting characters.
+        Returns the algorithm name used for identifying the algorithm. This
+        string should be fixed for the algorithm and is not required to be 
+		in local language. The name should be unique within each provider. Names 
+		should  contain lowercase alphanumeric characters only and no spaces or 
+		other formatting characters.
         """
         return 'myscript'
 
@@ -71,23 +74,23 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
     def group(self):
         """
         Returns the name of the group this algorithm belongs to. This string
-        should be localised.
+        should be in local language.
         """
         return self.tr('Example scripts')
 
     def groupId(self):
         """
         Returns the unique ID of the group this algorithm belongs to. This
-        string should be fixed for the algorithm, and must not be localised.
-        The group id should be unique within each provider. Group id should
-        contain lowercase alphanumeric characters only and no spaces or other
-        formatting characters.
+        string should be fixed for the algorithm and is not required to be in 
+		local language. The group id should be unique within each provider. The 
+		group id should contain lowercase alphanumeric characters only with no 
+		spaces nor any other formatting characters.
         """
         return 'examplescripts'
 
     def shortHelpString(self):
         """
-        Returns a localised short helper string for the algorithm. This string
+        Returns a short helper string in local language for the algorithm. This string
         should provide a basic description about what the algorithm does and the
         parameters and outputs associated with it..
         """
