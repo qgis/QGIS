@@ -576,8 +576,13 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         QDomElement upperCorner = WGS84BoundingBox.firstChildElement( QStringLiteral( "UpperCorner" ) );
         if ( !lowerCorner.isNull() && !upperCorner.isNull() )
         {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
           QStringList lowerCornerList = lowerCorner.text().split( QStringLiteral( " " ), QString::SkipEmptyParts );
           QStringList upperCornerList = upperCorner.text().split( QStringLiteral( " " ), QString::SkipEmptyParts );
+#else
+          QStringList lowerCornerList = lowerCorner.text().split( QStringLiteral( " " ), Qt::SkipEmptyParts );
+          QStringList upperCornerList = upperCorner.text().split( QStringLiteral( " " ), Qt::SkipEmptyParts );
+#endif
           if ( lowerCornerList.size() == 2 && upperCornerList.size() == 2 )
           {
             featureType.bbox = QgsRectangle(
