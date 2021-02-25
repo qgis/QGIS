@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgssettingsentry.h
+  qgssettingsgroup.h
   --------------------------------------
   Date                 : February 2021
   Copyright            : (C) 2021 by Damiano Lombardi

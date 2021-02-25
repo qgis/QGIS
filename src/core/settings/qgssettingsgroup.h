@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgssettingsentry.h
+  qgssettingsgroup.h
   --------------------------------------
   Date                 : February 2021
   Copyright            : (C) 2021 by Damiano Lombardi
@@ -65,6 +65,10 @@ class CORE_EXPORT QgsSettingsGroup
     QgsSettingsGroup *parentSettingsGroup() const;
 
     void setParentSettingsGroup( QgsSettingsGroup *parentSettingsGroup );
+
+    QList<QgsSettingsGroup *> childSettingsGroups() const;
+
+    QList<QgsSettingsEntry *> childSettingsEntries() const;
 
     /**
      * Set settings group key.
