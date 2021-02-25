@@ -726,14 +726,20 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    QSet<QString> filteredAttributes = layout()->renderContext().featureFilterProvider()->layerAttributes( source, QStringList::fromSet( allowedAttributes ) ).toSet();
-    if ( filteredAttributes != allowedAttributes )
+    const QStringList filteredAttributes { layout()->renderContext().featureFilterProvider()->layerAttributes( source, allowedAttributes.values() ) };
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    const QSet<QString> filteredAttributesSet( filteredAttributes.constBegin(), filteredAttributes.constEnd() );
+#else
+    const QSet<QString> filteredAttributesSet { filteredAttributes.toSet() };
+#endif
+    if ( filteredAttributesSet != allowedAttributes )
     {
-      const auto forbidden { allowedAttributes.subtract( filteredAttributes ) };
-      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &forbidden ]( QgsLayoutTableColumn & c )
+      const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
+      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &forbidden ]( QgsLayoutTableColumn & c ) -> bool
       {
         return forbidden.contains( c.attribute() );
       } ), allowedColumns.end() );
+
     }
   }
 
