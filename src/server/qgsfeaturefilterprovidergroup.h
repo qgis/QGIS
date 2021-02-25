@@ -42,6 +42,8 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
      */
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
 
+    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
+
     /**
      * Returns a clone of the object
      * \returns A clone
@@ -55,8 +57,11 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
      */
     QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
 
+
   private:
     QList<const QgsFeatureFilterProvider *> mProviders;
+
+
 };
 
 #endif

@@ -32,6 +32,17 @@ void QgsFeatureFilterProviderGroup::filterFeatures( const QgsVectorLayer *layer,
   }
 }
 
+QStringList QgsFeatureFilterProviderGroup::layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const
+{
+  QStringList allowedAttributes { attributes };
+  for ( const QgsFeatureFilterProvider *provider : mProviders )
+  {
+    QgsFeatureRequest temp;
+    allowedAttributes = provider->layerAttributes( layer, allowedAttributes );
+  }
+  return allowedAttributes;
+}
+
 QgsFeatureFilterProvider *QgsFeatureFilterProviderGroup::clone() const
 {
   auto result = new QgsFeatureFilterProviderGroup();

@@ -176,6 +176,7 @@ void QgsLayoutItemAttributeTable::resetColumns()
   //rebuild columns list from vector layer fields
   int idx = 0;
   const QgsFields sourceFields = source->fields();
+
   for ( const auto &field : sourceFields )
   {
     QString currentAlias = source->attributeDisplayName( idx );
@@ -329,8 +330,9 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
     {
       int attrIdx = layerFields.lookupField( field );
       if ( attrIdx < 0 )
+      {
         continue;
-
+      }
       QString currentAlias = source->attributeDisplayName( attrIdx );
       QgsLayoutTableColumn col;
       col.setAttribute( layerFields.at( attrIdx ).name() );
@@ -412,6 +414,13 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       req.setFilterExpression( mFeatureFilter );
     }
   }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  if ( mLayout->renderContext().featureFilterProvider() )
+  {
+    mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
+  }
+#endif
 
   QgsRectangle selectionRect;
   QgsGeometry visibleRegion;
@@ -541,6 +550,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     // We also need a list of just the cell contents, so that we can do a quick check for row uniqueness (when the
     // corresponding option is enabled)
     QVector< Cell > currentRow;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    mColumns = filteredColumns();
+#endif
     currentRow.reserve( mColumns.count() );
     QgsLayoutTableRow rowContents;
     rowContents.reserve( mColumns.count() );
@@ -692,6 +704,42 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
   replaced.replace( mWrapString, QLatin1String( "\n" ) );
   return replaced;
 }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
+{
+  QgsLayoutTableColumns allowedColumns { mColumns };
+
+  QgsVectorLayer *source { sourceLayer() };
+
+  if ( ! source )
+  {
+    return allowedColumns;
+  }
+
+  QSet<QString> allowedAttributes;
+  for ( const auto &c : qgis::as_const( allowedColumns ) )
+  {
+    if ( ! c.attribute().isEmpty() )
+      allowedAttributes.insert( c.attribute() );
+  }
+
+  if ( mLayout->renderContext().featureFilterProvider() )
+  {
+    QSet<QString> filteredAttributes = layout()->renderContext().featureFilterProvider()->layerAttributes( source, QStringList::fromSet( allowedAttributes ) ).toSet();
+    if ( filteredAttributes != allowedAttributes )
+    {
+      const auto forbidden { allowedAttributes.subtract( filteredAttributes ) };
+      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &forbidden ]( QgsLayoutTableColumn & c )
+      {
+        return forbidden.contains( c.attribute() );
+      } ), allowedColumns.end() );
+    }
+  }
+
+  return allowedColumns;
+}
+#endif
 
 QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer() const
 {
