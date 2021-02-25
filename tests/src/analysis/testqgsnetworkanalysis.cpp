@@ -520,7 +520,7 @@ void TestQgsNetworkAnalysis::testRouteFail()
 
 void TestQgsNetworkAnalysis::testRouteFail2()
 {
-  std::unique_ptr< QgsVectorLayer > network = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "LineString?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > network = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "LineString?crs=epsg:4326&field=cost:double" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   QStringList lines = QStringList() << QStringLiteral( "LineString (11.25044997999680874 48.42605439713970128, 11.25044693759680925 48.42603339773970106, 11.25044760759680962 48.42591690773969759, 11.25052289759680946 48.42589190773969676)" )
                       << QStringLiteral( "LineString (11.25052289759680946 48.42589190773969676, 11.25050350759680917 48.42586202773969717, 11.25047190759680937 48.42581754773969749, 11.2504146475968092 48.42573849773970096, 11.25038716759680923 48.42569834773969717, 11.2502920175968093 48.42557470773969897, 11.25019984759680902 48.42560406773969817, 11.25020393759680992 48.42571203773970012, 11.2502482875968095 48.42577478773969801, 11.25021922759680848 48.42578442773969982)" )
