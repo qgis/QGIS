@@ -41,10 +41,26 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsGroup
       : QgsSettingsGroup( QgsSettings::Core, QObject::tr( "Settings of section core" ) )
       , layout( this )
       , locatorFilters( this )
+      , measure( this )
     {}
 
     QgsLayout::SettingsStructure::Layout layout;
     QgsLocator::SettingsStructure::LocatorFilters locatorFilters;
+
+
+    // Settings that don't have a clear appartenance class can be defined here:
+
+    struct Measure : public QgsSettingsGroup
+    {
+      Measure( QgsSettingsGroup *parent )
+        : QgsSettingsGroup( "measure", parent, QObject::tr( "Measure group description" ) )
+        , planimetric( "planimetric", this, false, QObject::tr( "Planimetric settings description" ) )
+      {}
+
+      QgsSettingsEntryBool planimetric;
+    };
+    Measure measure;
+
 };
 
 #endif // QGSSETTINGSREGISTRYCORE_H
