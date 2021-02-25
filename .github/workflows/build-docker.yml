@@ -42,6 +42,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       CC: /usr/lib/ccache/gcc
       CXX: /usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
+      DOCKER_BUILD_DEPS_FILE: qgis3-build-deps.dockerfile
 
     strategy:
       matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
@@ -59,18 +60,23 @@ jobs:
         with:
           ref: ${{ matrix.branch }}
 
-      - name: Build QGIS Docker image for branch ${{ matrix.branch }}
+      - name: Define vars
         env:
           branch: ${{ matrix.branch }}
         run: |
           export DOCKER_TAG=${branch//master/latest}
-          export DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
           export DOCKER_DEPS_TAG=${DOCKER_TAG}
+
+          # add vars for next steps
+          echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
+          echo "DOCKER_DEPS_TAG=${DOCKER_DEPS_TAG}" >> $GITHUB_ENV
 
           echo "branch: ${branch}"
           echo "docker tag: ${DOCKER_TAG}"
           echo "docker deps tag: ${DOCKER_DEPS_TAG}"
 
+      - name: Copy cache
+        run: |
           [[ -d ~/.ccache ]] && echo "cache directory (~/.ccache) exists" || mkdir -p ~/.ccache
           # copy ccache dir within QGIS source so it can be accessed from docker
           cp -r ~/.ccache/. ./.ccache_image_build
