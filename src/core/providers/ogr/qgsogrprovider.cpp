@@ -56,10 +56,12 @@ email                : sherman at mrcc.com
 #include <ogr_srs_api.h>
 #include <cpl_string.h>
 
-// Temporary solution until GDAL Unique support is available
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 2, 1)
+// Temporary solution for gdal < 3.2.1 without GDAL Unique support
 #include "qgssqliteutils.h"
 #include <sqlite3.h>
 // end temporary
+#endif
 
 #include <limits>
 #include <memory>
@@ -1128,6 +1130,7 @@ void QgsOgrProvider::loadFields()
   mFirstFieldIsFid = !fidColumn.isEmpty() &&
                      fdef.GetFieldIndex( fidColumn ) < 0;
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 2, 1)
   // This is a temporary solution until GDAL Unique support is available
   QSet<QString> uniqueFieldNames;
 
@@ -1145,6 +1148,7 @@ void QgsOgrProvider::loadFields()
       }
     }
   }
+#endif
 
   int createdFields = 0;
   if ( mFirstFieldIsFid )
@@ -1288,7 +1292,11 @@ void QgsOgrProvider::loadFields()
       newField.setConstraints( constraints );
     }
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 2, 1)
     if ( uniqueFieldNames.contains( OGR_Fld_GetNameRef( fldDef ) ) )
+#else
+    if ( OGR_Fld_IsUnique( fldDef ) )
+#endif
     {
       QgsFieldConstraints constraints = newField.constraints();
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
