@@ -93,6 +93,7 @@ jobs:
 
       - name: Docker QGIS build
         run: |
+          cd .docker
           DOCKER_BUILD_ARGS="--build-arg DOCKER_DEPS_TAG --build-arg CC --build-arg CXX"
           docker build ${DOCKER_BUILD_ARGS} \
                        --cache-from "qgis/qgis:${DOCKER_TAG}" \
