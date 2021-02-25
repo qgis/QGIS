@@ -74,39 +74,39 @@ jobs:
           # copy ccache dir within QGIS source so it can be accessed from docker
           cp -r ~/.ccache/. ./.ccache_image_build
 
-        - name: QGIS deps Docker pull/rebuild
-          run: |
-            cd .docker
-            docker --version
-            docker pull "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" || true
-            docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
-            echo "push to qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}"
-            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-            docker push "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}"
+      - name: QGIS deps Docker pull/rebuild
+        run: |
+          cd .docker
+          docker --version
+          docker pull "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" || true
+          docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
+          echo "push to qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}"
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+          docker push "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}"
 
-        - name: Docker QGIS build
-          run: |
-            DOCKER_BUILD_ARGS="--build-arg DOCKER_DEPS_TAG --build-arg CC --build-arg CXX"
-            docker build ${DOCKER_BUILD_ARGS} \
-                         --cache-from "qgis/qgis:${DOCKER_TAG}" \
-                         -t "qgis/qgis:BUILDER" \
-                         -f qgis.dockerfile ..
+      - name: Docker QGIS build
+        run: |
+          DOCKER_BUILD_ARGS="--build-arg DOCKER_DEPS_TAG --build-arg CC --build-arg CXX"
+          docker build ${DOCKER_BUILD_ARGS} \
+                       --cache-from "qgis/qgis:${DOCKER_TAG}" \
+                       -t "qgis/qgis:BUILDER" \
+                       -f qgis.dockerfile ..
 
-        - name: Tag container and copy cache
-          run: |
-            docker run --name qgis_container qgis/qgis:BUILDER /bin/true
-            docker cp qgis_container:/QGIS/build_exit_value ./build_exit_value
+      - name: Tag container and copy cache
+        run: |
+          docker run --name qgis_container qgis/qgis:BUILDER /bin/true
+          docker cp qgis_container:/QGIS/build_exit_value ./build_exit_value
 
-            if [[ $(cat ./build_exit_value) != "OK" ]]; then
-              echo "Build failed, not pushing image"
-              exit 1
-            fi
+          if [[ $(cat ./build_exit_value) != "OK" ]]; then
+            echo "Build failed, not pushing image"
+            exit 1
+          fi
 
-            echo "Copy build cache from Docker container to Travis cache directory"
-            rm -rf ~/.ccache/*
-            mkdir -p ~/.ccache
-            docker cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
-            echo "Cache size: "$(du -sh ~/.ccache)
+          echo "Copy build cache from Docker container to Travis cache directory"
+          rm -rf ~/.ccache/*
+          mkdir -p ~/.ccache
+          docker cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
+          echo "Cache size: "$(du -sh ~/.ccache)
 
       - name: Finalize image
         run: |
