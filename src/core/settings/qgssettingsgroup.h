@@ -62,12 +62,24 @@ class CORE_EXPORT QgsSettingsGroup
     QgsSettingsGroup( QgsSettings::Section section,
                       QString description = QString() );
 
+    /**
+     * Get settings group parent. If no parent is set it return nullptr.
+     */
     QgsSettingsGroup *parentSettingsGroup() const;
 
+    /**
+     * Set settings group parent.
+     */
     void setParentSettingsGroup( QgsSettingsGroup *parentSettingsGroup );
 
+    /**
+     * Get children settings groups.
+     */
     QList<QgsSettingsGroup *> childSettingsGroups() const;
 
+    /**
+     * Get children settings entries.
+     */
     QList<QgsSettingsEntry *> childSettingsEntries() const;
 
     /**

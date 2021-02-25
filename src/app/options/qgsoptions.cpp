@@ -592,7 +592,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   {
     mKeepBaseUnitCheckBox->setChecked( false );
   }
-  mPlanimetricMeasurementsComboBox->setChecked( mSettings->value( QStringLiteral( "measure/planimetric" ), false, QgsSettings::Core ).toBool() );
+  mPlanimetricMeasurementsComboBox->setChecked( QgsApplication::settingsRegistryCore()->measure.planimetric.value<bool>() );
 
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( mSettings->value( QStringLiteral( "qgis/iconSize" ), QGIS_ICON_SIZE ).toString() ) );
 
@@ -1689,7 +1689,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), mShowDatumTransformDialogCheckBox->isChecked(), QgsSettings::App );
 
   //measurement settings
-  mSettings->setValue( QStringLiteral( "measure/planimetric" ), mPlanimetricMeasurementsComboBox->isChecked(), QgsSettings::Core );
+  QgsApplication::settingsRegistryCore()->measure.planimetric.setValue( mPlanimetricMeasurementsComboBox->isChecked() );
 
   QgsUnitTypes::DistanceUnit distanceUnit = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( distanceUnit ) );
