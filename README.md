@@ -46,18 +46,18 @@ NEED TO DO FOR ALL 5 IMAGES BELOW -->
 * Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
 * 150+ geoprocessing algorithms
 * Immediate visualization of geospatial query and geoprocessing results
-* Graphical modeler and scripting
+* Graphical modeler and processing scripting
 * Access to additional algorithms via GDAL, GRASS, SAGA, etc.
 
 </div>
 <!--<img align="right" src="https://docs.qgis.org/3.16/en/_images/python_console_editor.png" width="250" alt="example image"><div style="min-height:220;"> -->
 <img align="right" src="https://raw.githubusercontent.com/Houska1/QGIS/README-md-update/images/README-md/QGIS_ex4.png" width="200" alt="Example image"><div style="min-height:220;">
 
-**4. Wide customization**
-* Fully customizable user interface
-* Powerful expression engine, plus scripting via Python
-* Rich ecosystem of plugins, data connectors, advanced analysis and charting tools, in-the-field data capture
-* Python and C++ API for standalone applications
+**4. Powerful customization**
+* Fully customizable user interface, for power users' convenience or for simplified end-user experience
+* Rich expression engine for maximum flexibility in visualization or geoprocessing
+* Broad ecosystem of plugins, including data connectors, digitizing aids, advanced analysis and charting tools, in-the-field data capture, etc.
+* Python and C++ API for standalone (headless) applications as well as in-application comprehensive scripting (PyQGIS)
 
 </div>
 <!--<img align="right" src="https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png" width="250" alt="server image"><div style="min-height:160;"> -->
