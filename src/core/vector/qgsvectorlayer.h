@@ -98,7 +98,12 @@ typedef QSet<int> QgsAttributeIds;
  * connects to the data source.
  *
  * The QgsVectorLayer provides a common interface to the different data types. It also
- * manages editing transactions.
+ * manages editing transactions by buffering layer edits until they are written to the
+ * underlying QgsVectorDataProvider. Before edits can be made a call to startEditing()
+ * is required. Any edits made to a QgsVectorLayer are then held in memory only, and
+ * are not written to the underlying QgsVectorDataProvider until a call to commitChanges()
+ * is made. Buffered edits can be rolled back and discarded without altering the
+ * underlying provider by calling rollBack().
  *
  *  Sample usage of the QgsVectorLayer class:
  *
