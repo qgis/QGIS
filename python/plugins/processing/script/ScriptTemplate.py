@@ -46,8 +46,8 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         """
         Returns a string translated by the self.tr() function.
 
-		This function makes use of the QT5 ability to translate a given 
-		text strings into local languages.
+        This function makes use of the QT5 ability to translate a given 
+        text strings into local languages.
         """
         return QCoreApplication.translate('Processing', string)
 
@@ -58,9 +58,9 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         """
         Returns the algorithm name used for identifying the algorithm. This
         string should be fixed for the algorithm and is not required to be 
-		in local language. The name should be unique within each provider. Names 
-		should  contain lowercase alphanumeric characters only and no spaces or 
-		other formatting characters.
+        in local language. The name should be unique within each provider. Names 
+        should  contain lowercase alphanumeric characters only and no spaces or 
+        other formatting characters.
         """
         return 'myscript'
 
@@ -82,9 +82,9 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         """
         Returns the unique ID of the group this algorithm belongs to. This
         string should be fixed for the algorithm and is not required to be in 
-		local language. The group id should be unique within each provider. The 
-		group id should contain lowercase alphanumeric characters only with no 
-		spaces nor any other formatting characters.
+        local language. The group id should be unique within each provider. The 
+        group id should contain lowercase alphanumeric characters only with no 
+        spaces nor any other formatting characters.
         """
         return 'examplescripts'
 
