@@ -456,8 +456,5 @@ void QgsShadowRenderingFrameGraph::setRenderCaptureEnabled( bool enabled )
   if ( enabled == mRenderCaptureEnabled )
     return;
   mRenderCaptureEnabled = enabled;
-  if ( mRenderCaptureEnabled )
-    mRenderCaptureTargetSelector->setParent( mPostprocessPassLayerFilter );
-  else
-    mRenderCaptureTargetSelector->setParent( ( Qt3DCore::QNode * ) nullptr );
+  mRenderCaptureTargetSelector->setEnabled( mRenderCaptureEnabled );
 }
