@@ -309,7 +309,9 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
   }
 }
 
-QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsHanaProviderConnection::tablesWithFilter(
+  const QString &schema,
+  const TableFlags &flags, const std::function<bool( const QString &name )> &tableFilter ) const
 {
   checkCapability( Capability::Tables );
 
@@ -323,7 +325,7 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
   try
   {
     const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
-    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, aspatial, false );
+    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, aspatial, false, tableFilter );
     tables.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo :  layers )
     {
@@ -371,6 +373,24 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
   }
 
   return tables;
+}
+
+QgsAbstractDatabaseProviderConnection::TableProperty QgsHanaProviderConnection::table( const QString &schema, const QString &table ) const
+{
+  auto tableFilter = [&table]( const QString & name )
+  {
+    return name == table;
+  };
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tablesWithFilter( schema, TableFlags(), tableFilter ) };
+  if ( constTables.empty() )
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                          .arg( table, schema ) );
+  return constTables[0];
+}
+
+QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+{
+  return tablesWithFilter( schema, flags );
 }
 
 QStringList QgsHanaProviderConnection::schemas( ) const
