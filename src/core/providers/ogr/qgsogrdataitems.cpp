@@ -221,13 +221,13 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   if ( !rlayer.dataProvider()->subLayers( ).empty() )
   {
     const QStringList layers( rlayer.dataProvider()->subLayers( ) );
-    for ( const QString &uri : layers )
+    for ( const QString &sublayer : layers )
     {
-      // Split on ':' since this is what comes out from the provider
-      QStringList pieces = uri.split( ':' );
-      QString name = pieces.value( pieces.length() - 1 );
-      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2" ).arg( name, uri ), 3 );
-      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster, driver ) );
+      const QStringList parts = sublayer.split( QgsDataProvider::sublayerSeparator() );
+      const QString uri = parts[0];
+      const QString desc = parts[1];
+      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2" ).arg( desc, uri ), 3 );
+      children.append( new QgsOgrDbLayerInfo( path, uri, desc, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster, driver ) );
     }
   }
   else if ( rlayer.isValid( ) )
