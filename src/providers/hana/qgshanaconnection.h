@@ -59,11 +59,13 @@ class QgsHanaConnection : public QObject
     QVector<QgsHanaLayerProperty> getLayers(
       const QString &schemaName,
       bool allowGeometrylessTables,
-      bool userTablesOnly = true );
+      bool userTablesOnly = true,
+      const std::function<bool( const QString &name )> &layerFilter = nullptr );
     QVector<QgsHanaLayerProperty> getLayersFull(
       const QString &schemaName,
       bool allowGeometrylessTables,
-      bool userTablesOnly = true );
+      bool userTablesOnly = true,
+      const std::function<bool( const QString &name )> &layerFilter = nullptr );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
     QStringList getLayerPrimaryKey( const QString &schemaName, const QString &tableName );
