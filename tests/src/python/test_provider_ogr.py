@@ -475,6 +475,19 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertIn('testDataItems.gpkg|layername=Layer1', children[0].uri())
         self.assertIn('testDataItems.gpkg|layername=Layer2', children[1].uri())
 
+    def testDataItemsRaster(self):
+
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+
+        # Multiple layer (geopackage)
+        path = os.path.join(unitTestDataPath(), 'two_raster_layers.gpkg')
+        item = ogrprovider.createDataItem(path, None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        self.assertIn('GPKG:' + path + ':layer01', children[0].uri())
+        self.assertIn('GPKG:' + path + ':layer02', children[1].uri())
+
     def testOSM(self):
         """ Test that opening several layers of the same OSM datasource works properly """
 
