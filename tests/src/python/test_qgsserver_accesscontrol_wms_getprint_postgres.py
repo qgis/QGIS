@@ -75,7 +75,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         allowed = []
 
         for attr in attributes:
-            if not "name" in attr and not "virtual" in attr:  # spellok
+            if "name" not in attr and "virtual" not in attr:  # spellok
                 allowed.append(attr)  # spellok
 
         return allowed
