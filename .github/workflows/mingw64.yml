@@ -1,0 +1,108 @@
+name: MingW64 Windows 64bit Build
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/mingw64.yml'
+  pull_request:
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/mingw64.yml'
+
+jobs:
+  mingw64-build:
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+    name: MinGW64 Windows Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Build Docker Container with Build Environment
+        id: docker-build
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          image_name: qgis3-mingw-buildenv
+          dockerfile: ms-windows/mingw/qgis3-build-deps-mingw.dockerfile
+          push_git_tag: true
+          push_image_and_stages: on:push
+
+      - name: Prepare build cache for pull request
+        uses: pat-s/always-upload-cache@v2.1.3
+        if: github.event_name == 'pull_request'
+        with:
+          path: ${{ github.workspace }}/.ccache
+          key: mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
+          # The head_ref or source branch of the pull request in a workflow run.
+          # The base_ref or target branch of the pull request in a workflow run.
+          restore-keys: |
+            mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-
+            mingw64-ccache-${{ github.base_ref }}-
+            mingw64-ccache-refs/heads/master-
+
+      - name: Prepare build cache for branch/tag
+        # use a fork of actions/cache@v2 to upload cache even when the build or test failed
+        uses: pat-s/always-upload-cache@v2.1.3
+        if: github.event_name != 'pull_request'
+        with:
+          path: ${{ github.workspace }}/.ccache
+          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
+          key: mingw64-ccache-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            mingw64-ccache-${{ github.ref }}-
+            mingw64-ccache-refs/heads/master-
+
+      - name: Build QGIS Application
+        run: |
+          mkdir -p ${GITHUB_WORKSPACE}/.ccache
+          docker run \
+            --env CCACHE_DIR=/QGIS/.ccache \
+            -w /QGIS \
+            -v ${GITHUB_WORKSPACE}:/QGIS \
+            ${DOCKER_IMAGE} \
+            ms-windows/mingw/build.sh x86_64 nodebug 4
+        env:
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+
+      - name: Create Portable zip
+        run: |
+          DISTROOT=build_mingw64/dist/usr/x86_64-w64-mingw32/sys-root/mingw
+          DEBUGROOT=dist_debug
+          for file in $(find $DISTROOT -name '*.debug' \( -type l -or -type f \)); do
+              DEST=${file/$DISTROOT/$DEBUGROOT}
+              mkdir -p "$(dirname $DEST)"
+              sudo mv "$file" "$DEST"
+          done
+          sudo mv $DISTROOT QGIS-Portable
+          zip -r qgis-portable-win64.zip QGIS-Portable
+          (cd $DEBUGROOT && zip -r - *) > qgis-portable-win64-debugsym.zip
+
+      - name: Upload QGIS for Windows 64bit
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: QGIS for Windows 64bit
+          path: qgis-portable-win64.zip
+
+      - name: Upload QGIS for Windows 64bit Debug Symbols
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: QGIS for Windows 64bit Debug Symbols
+          path: qgis-portable-win64-debugsym.zip
