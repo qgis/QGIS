@@ -752,7 +752,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     static QgsAuthManager *instance() SIP_SKIP;
 
+#ifdef __MINGW32__
+  public:
     explicit QgsAuthManager() SIP_SKIP;
+#else
+  protected:
+    explicit QgsAuthManager() SIP_SKIP;
+#endif
 
   private:
 
