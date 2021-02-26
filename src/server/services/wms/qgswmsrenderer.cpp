@@ -487,7 +487,7 @@ namespace QgsWms
       {
         bool ok;
         double _dpi = mWmsParameters.dpi().toDouble( &ok );
-        if ( ! ok )
+        if ( ok )
           dpi = _dpi;
       }
       exportSettings.dpi = dpi;
