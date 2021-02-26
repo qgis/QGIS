@@ -151,7 +151,7 @@ class gdal2tiles(GdalAlgorithm):
         return 'rastermiscellaneous'
 
     def commandName(self):
-        return 'gdal2tiles.bat' if isWindows() else 'gdal2tiles.py'
+        return 'gdal2tiles'
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
@@ -224,4 +224,4 @@ class gdal2tiles(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
 
-        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]
