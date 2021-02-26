@@ -570,8 +570,13 @@ class QgsPluginInstaller(QObject):
         settings.setValue(settingsGroup + '/lastZipDirectory',
                           QFileInfo(filePath).absoluteDir().absolutePath())
 
+        pluginName = None
         with zipfile.ZipFile(filePath, 'r') as zf:
-            pluginName = os.path.split(zf.namelist()[0])[0]
+            # search for metadata.txt. In case of multiple files, we can assume that
+            # the shortest path relates <pluginname>/metadata.txt
+            metadatafiles = sorted(f for f in zf.namelist() if f.endswith('metadata.txt'))
+            if len(metadatafiles) > 0:
+                pluginName = os.path.split(metadatafiles[0])[0]
 
         pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
 
