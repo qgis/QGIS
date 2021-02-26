@@ -99,22 +99,6 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QRenderSettings *mRenderSettings = nullptr;        // The render settings, which control the general rendering behavior.
     Qt3DCore::QNode *mSceneRoot = nullptr;                         // The scene root, which becomes a child of the engine's root entity.
     Qt3DCore::QEntity *mRoot = nullptr;
-
-    // render target stuff
-    Qt3DRender::QRenderTarget *mTextureTarget = nullptr;
-    Qt3DRender::QRenderTargetOutput *mTextureOutput = nullptr;
-    Qt3DRender::QTexture2D *mTexture = nullptr;
-    Qt3DRender::QRenderTargetOutput *mDepthTextureOutput = nullptr;
-    Qt3DRender::QTexture2D *mDepthTexture = nullptr;
-
-    // frame graph stuff
-    Qt3DRender::QRenderSurfaceSelector *mSurfaceSelector = nullptr;
-    Qt3DRender::QRenderTargetSelector *mRenderTargetSelector = nullptr;
-    Qt3DRender::QViewport *mViewport = nullptr;
-    Qt3DRender::QClearBuffers *mClearBuffers = nullptr;
-    Qt3DRender::QCameraSelector *mCameraSelector = nullptr;
-    Qt3DRender::QRenderCapture *mRenderCapture = nullptr;          // The render capture node, which is appended to the frame graph.
-
 };
 
 #endif // QGSOFFSCREEN3DENGINE_H

@@ -408,4 +408,15 @@ void QgsShadowRenderingFrameGraph::setSize( QSize s )
   mSize = s;
   mForwardColorTexture->setSize( mSize.width(), mSize.height() );
   mForwardDepthTexture->setSize( mSize.width(), mSize.height() );
+  mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
+  mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
+  mRenderSurfaceSelector->setExternalRenderTargetSize( mSize );
+}
+
+void QgsShadowRenderingFrameGraph::setRenderCaptureEnabled( bool enabled )
+{
+  if ( enabled == mRenderCaptureEnabled )
+    return;
+  mRenderCaptureEnabled = enabled;
+  mRenderCaptureTargetSelector->setEnabled( mRenderCaptureEnabled );
 }
