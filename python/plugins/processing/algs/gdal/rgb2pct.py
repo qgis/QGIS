@@ -72,7 +72,7 @@ class rgb2pct(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
 
     def commandName(self):
-        return 'rgb2pct.bat' if isWindows() else 'rgb2pct.py'
+        return 'rgb2pct'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
@@ -90,4 +90,4 @@ class rgb2pct(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(out)
 
-        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]
