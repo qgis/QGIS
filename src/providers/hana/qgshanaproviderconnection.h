@@ -65,6 +65,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void dropSchema( const QString &name, bool force = false ) const override;
     void renameSchema( const QString &name, const QString &newName ) const override;
     QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
+    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = TableFlags() ) const override;
     QStringList schemas( ) const override;
@@ -78,6 +79,8 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void setCapabilities();
     void dropTable( const QString &schema, const QString &name ) const;
     void renameTable( const QString &schema, const QString &name, const QString &newName ) const;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesWithFilter( const QString &schema,
+        const TableFlags &flags = TableFlags(), const std::function<bool( const QString &name )> &tableFilter = nullptr ) const;
 };
 
 #endif // QGSHANAPROVIDERCONNECTION_H

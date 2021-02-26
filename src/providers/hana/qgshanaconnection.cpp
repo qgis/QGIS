@@ -434,7 +434,8 @@ QgsCoordinateReferenceSystem QgsHanaConnection::getCrs( int srid )
 QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
   const QString &schemaName,
   bool allowGeometrylessTables,
-  bool userTablesOnly )
+  bool userTablesOnly,
+  const std::function<bool( const QString &name )> &layerFilter )
 {
   const QString schema = mUri.schema().isEmpty() ? schemaName : mUri.schema();
   const QString sqlSchemaFilter = QStringLiteral(
@@ -468,7 +469,6 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
                              "(SELECT VIEW_OID AS VIEW_OID_2, COMMENTS AS VIEW_COMMENTS FROM SYS.VIEWS) "
                              "ON VIEW_OID = VIEW_OID_2" );
 
-
   QMultiHash<QPair<QString, QString>, QgsHanaLayerProperty> layers;
 
   auto addLayers = [&]( const QString & sql, bool isView )
@@ -482,6 +482,8 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       QgsHanaLayerProperty layer;
       layer.schemaName = rsLayers->getString( 1 );
       layer.tableName = rsLayers->getString( 2 );
+      if ( layerFilter != nullptr && !layerFilter( layer.tableName ) )
+        continue;
       QString geomColumnType = rsLayers->getString( 4 );
       bool isGeometryColumn = ( geomColumnType == QLatin1String( "ST_GEOMETRY" ) || geomColumnType == QLatin1String( "ST_POINT" ) );
       layer.geometryColName = isGeometryColumn ? rsLayers->getString( 3 ) : QString();
@@ -540,9 +542,10 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
 QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayersFull(
   const QString &schemaName,
   bool allowGeometrylessTables,
-  bool userTablesOnly )
+  bool userTablesOnly,
+  const std::function<bool( const QString &name )> &layerFilter )
 {
-  QVector<QgsHanaLayerProperty> layers = getLayers( schemaName, allowGeometrylessTables, userTablesOnly );
+  QVector<QgsHanaLayerProperty> layers = getLayers( schemaName, allowGeometrylessTables, userTablesOnly, layerFilter );
   // We cannot use a range-based for loop as layers are modified in readLayerInfo.
   for ( int i = 0; i < layers.size(); ++i )
     readLayerInfo( layers[i] );
