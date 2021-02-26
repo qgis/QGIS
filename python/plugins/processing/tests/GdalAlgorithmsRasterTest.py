@@ -1718,6 +1718,24 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
                  ])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'OUTPUT_CSV': 'out.csv',
+                                        'DELIMITER': '',
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -targetDir {} '.format(outdir) +
+                 source])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'OUTPUT_CSV': 'out.csv',
+                                        'DELIMITER': ';',
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -csvDelim ";" -targetDir {} '.format(outdir) +
+                 source])
+
             # additional parameters
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': [source],
