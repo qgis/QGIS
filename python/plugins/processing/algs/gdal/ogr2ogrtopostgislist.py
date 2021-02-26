@@ -252,14 +252,14 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         if shapeEncoding:
             arguments.append('--config')
             arguments.append('SHAPE_ENCODING')
-            arguments.append('"' + shapeEncoding + '"')
+            arguments.append(shapeEncoding)
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"')
-        for token in QgsDataSourceUri(uri).connectionInfo(executing).split(' '):
-            arguments.append(token)
-        arguments.append('active_schema={}'.format(schema or 'public'))
-        arguments.append('"')
+
+        connection_parts = QgsDataSourceUri(uri).connectionInfo(executing).split(' ')
+        connection_parts.append('active_schema={}'.format(schema or 'public'))
+        arguments.append('PG:{}'.format(' '.join(connection_parts)))
+
         arguments.append(dimstring)
         arguments.append(ogrLayer)
         arguments.append(layername)
