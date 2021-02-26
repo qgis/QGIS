@@ -127,7 +127,7 @@ class merge(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'merge.png'))
 
     def commandName(self):
-        return 'gdal_merge.bat' if isWindows() else 'gdal_merge.py'
+        return 'gdal_merge'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -173,4 +173,4 @@ class merge(GdalAlgorithm):
         arguments.append('--optfile')
         arguments.append(list_file)
 
-        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]
