@@ -300,7 +300,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     /**
      * Returns the possibly NULL feature filter provider.
      *
-     * A feature filter provider allows to filter visible features or attributes.
+     * A feature filter provider for filtering visible features or attributes.
      * It is currently used by QGIS Server Access Control Plugins.
      *
      * \since QGIS 3.18
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     /**
      * Sets feature filter provider to \a featureFilterProvider.
      *
-     * A feature filter provider allows to filter visible features or attributes.
+     * A feature filter provider for filtering visible features or attributes.
      * It is currently used by QGIS Server Access Control Plugins.
      *
      * \since QGIS 3.18
