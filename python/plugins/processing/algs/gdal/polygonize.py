@@ -91,7 +91,7 @@ class polygonize(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
 
     def commandName(self):
-        return 'gdal_polygonize.bat' if isWindows() else 'gdal_polygonize.py'
+        return 'gdal_polygonize'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
@@ -124,4 +124,4 @@ class polygonize(GdalAlgorithm):
             arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
-        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]
