@@ -112,7 +112,7 @@ class PointsAlongLines(GdalAlgorithm):
             ogrLayer,
             '-dialect',
             'sqlite',
-            '-sql'
+            '-sql',
             f'SELECT ST_Line_Interpolate_Point({geometry}, {distance}) AS {geometry}{other_fields} FROM "{layerName}"'
         ]
 
