@@ -394,7 +394,7 @@ namespace QgsWms
             {
               filterString.append( " AND " );
             }
-            filterString.append( QString( "\"%1\" = %2" ).arg( pkAttributeNames.at( j ) ).arg( atlasPk.at( currentAtlasPk ) ) );
+            filterString.append( QString( "\"%1\" = %2" ).arg( pkAttributeNames.at( j ), atlasPk.at( currentAtlasPk ) ) );
             ++currentAtlasPk;
           }
 
@@ -508,6 +508,10 @@ namespace QgsWms
         {
           QgsLayoutExporter atlasPngExport( atlas->layout() );
           atlasPngExport.exportToImage( tempOutputFile.fileName(), exportSettings );
+        }
+        else
+        {
+          throw QgsServiceException( QStringLiteral( "Bad request" ), QStringLiteral( "Atlas error: empty atlas." ), QString(), 400 );
         }
       }
       else
@@ -3255,7 +3259,7 @@ namespace QgsWms
       if ( !( *mapIt )->renderingErrors().isEmpty() )
       {
         const QgsMapRendererJob::Error e = ( *mapIt )->renderingErrors().at( 0 );
-        throw QgsException( QStringLiteral( "Rendering error : '%1' in layer %2" ).arg( e.message ).arg( e.layerID ) );
+        throw QgsException( QStringLiteral( "Rendering error : '%1' in layer %2" ).arg( e.message, e.layerID ) );
       }
     }
   }

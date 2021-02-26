@@ -20,7 +20,6 @@
 
 void QgsFeatureFilterProviderGroup::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const
 {
-  filterFeatures.disableFilter();
   for ( const QgsFeatureFilterProvider *provider : mProviders )
   {
     QgsFeatureRequest temp;

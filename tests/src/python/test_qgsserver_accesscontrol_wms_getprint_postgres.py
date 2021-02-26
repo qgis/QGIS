@@ -34,7 +34,7 @@ from utilities import unitTestDataPath
 
 
 class RestrictedAccessControl(QgsAccessControlFilter):
-    """Restrict access to pk1 = 1 AND pk2 = 1"""
+    """Restricts access to pk1 = 1 AND pk2 = 1"""
 
     # Be able to deactivate the access control to have a reference point
     active = {
@@ -75,7 +75,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         allowed = []
 
         for attr in attributes:
-            if "name" not in attr and "virtual" not in attr:  # spellok
+            if "name" != attr and "virtual" != attr:  # spellok
                 allowed.append(attr)  # spellok
 
         return allowed
@@ -143,6 +143,42 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         cls._accesscontrol = RestrictedAccessControl(cls._server_iface)
         cls._server_iface.registerAccessControl(cls._accesscontrol, 100)
 
+    def setUp(self):
+        super().setUp()
+        self._accesscontrol.active['authorizedLayerAttributes'] = False
+        self._accesscontrol.active['layerFilterExpression'] = False
+        self._accesscontrol.active['layerFilterSubsetString'] = False
+        self._accesscontrol.active['layerPermissions'] = False
+
+    def _check_exception(self, qs, exception_text):
+        """Check that server throws"""
+
+        req = QgsBufferServerRequest('http://my_server/' + qs)
+        res = QgsBufferServerResponse()
+        self._server.handleRequest(req, res, self.test_project)
+        self.assertEqual(res.statusCode(), 400)
+        self.assertTrue(exception_text in bytes(res.body()).decode('utf8'))
+
+    def _check_white(self, qs):
+        """Check that output is a white image"""
+
+        req = QgsBufferServerRequest('http://my_server/' + qs)
+        res = QgsBufferServerResponse()
+        self._server.handleRequest(req, res, self.test_project)
+        self.assertEqual(res.statusCode(), 200)
+
+        result_path = os.path.join(self.temp_dir.path(), 'white.png')
+        with open(result_path, 'wb+') as f:
+            f.write(res.body())
+
+        # A full white image is expected
+        image = QImage(result_path)
+        self.assertTrue(image.isGrayscale())
+        color = image.pixelColor(100, 100)
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 255)
+
     def test_wms_getprint_postgres(self):
         """Test issue GH #41800 """
 
@@ -176,36 +212,17 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         self.assertEqual(color.green(), 0)
         self.assertEqual(color.blue(), 0)
 
-        def _check_white():
-
-            req = QgsBufferServerRequest('http://my_server/' + qs)
-            res = QgsBufferServerResponse()
-            self._server.handleRequest(req, res, self.test_project)
-            self.assertEqual(res.statusCode(), 200)
-
-            result_path = os.path.join(self.temp_dir.path(), 'white.png')
-            with open(result_path, 'wb+') as f:
-                f.write(res.body())
-
-            # A full white image is expected
-            image = QImage(result_path)
-            self.assertTrue(image.isGrayscale())
-            color = image.pixelColor(100, 100)
-            self.assertEqual(color.red(), 255)
-            self.assertEqual(color.green(), 255)
-            self.assertEqual(color.blue(), 255)
-
         # Now activate the rule to exclude the feature where pk1 = 1, pk2 = 2
         # A white image is expected
 
         self._accesscontrol.active['layerFilterExpression'] = True
-        _check_white()
+        self._check_white(qs)
 
         # Activate the other rule for subset string
 
         self._accesscontrol.active['layerFilterExpression'] = False
         self._accesscontrol.active['layerFilterSubsetString'] = True
-        _check_white()
+        self._check_white(qs)
 
         # Activate the other rule for layer permission
 
@@ -284,6 +301,46 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         self.assertEqual(res.statusCode(), 200)
 
         self._img_diff_error(res.body(), res.headers(), "WMS_GetPrint_postgres_print2_filtered")
+
+    def test_atlas(self):
+        """Test atlas"""
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            'SERVICE': "WMS",
+            'VERSION': "1.3.0",
+            'REQUEST': "GetPrint",
+            'CRS': 'EPSG:4326',
+            'FORMAT': 'png',
+            'LAYERS': 'multiple_pks',
+            'DPI': 72,
+            'TEMPLATE': "print1",
+        }.items())])
+
+        req = QgsBufferServerRequest('http://my_server/' + qs + '&ATLAS_PK=1,1')
+        res = QgsBufferServerResponse()
+
+        self._server.handleRequest(req, res, self.test_project)
+        self.assertEqual(res.statusCode(), 200)
+
+        result_path = os.path.join(self.temp_dir.path(), 'atlas_1_2.png')
+        with open(result_path, 'wb+') as f:
+            f.write(res.body())
+
+        # A full red image is expected
+        image = QImage(result_path)
+        self.assertFalse(image.isGrayscale())
+        color = image.pixelColor(100, 100)
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 0)
+
+        # Forbid 1-1
+        self._accesscontrol.active['layerFilterSubsetString'] = True
+        self._check_exception(qs + '&ATLAS_PK=1,2', "Atlas error: empty atlas.")
+
+        self._accesscontrol.active['layerFilterSubsetString'] = False
+        self._accesscontrol.active['layerFilterExpression'] = True
+        self._check_exception(qs + '&ATLAS_PK=1,2', "Atlas error: empty atlas.")
 
 
 if __name__ == '__main__':

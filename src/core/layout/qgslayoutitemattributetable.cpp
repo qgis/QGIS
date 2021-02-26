@@ -29,6 +29,7 @@
 #include "qgsexception.h"
 #include "qgsmapsettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
 
@@ -717,11 +718,22 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
     return allowedColumns;
   }
 
+  QHash<const QString, QSet<QString>> columnAttributesMap;
   QSet<QString> allowedAttributes;
+
   for ( const auto &c : qgis::as_const( allowedColumns ) )
   {
-    if ( ! c.attribute().isEmpty() )
-      allowedAttributes.insert( c.attribute() );
+    if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
+    {
+      columnAttributesMap[ c.attribute() ] = QSet<QString>();
+      const QgsExpression columnExp { c.attribute() };
+      const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
+      for ( const auto &cref : constRefs )
+      {
+        columnAttributesMap[ c.attribute() ].insert( cref->name() );
+        allowedAttributes.insert( cref->name() );
+      }
+    }
   }
 
   if ( mLayout->renderContext().featureFilterProvider() )
@@ -735,9 +747,16 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
     if ( filteredAttributesSet != allowedAttributes )
     {
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
-      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &forbidden ]( QgsLayoutTableColumn & c ) -> bool
+      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &columnAttributesMap, &forbidden ]( QgsLayoutTableColumn & c ) -> bool
       {
-        return forbidden.contains( c.attribute() );
+        for ( const auto &f : qgis::as_const( forbidden ) )
+        {
+          if ( columnAttributesMap[ c.attribute() ].contains( f ) )
+          {
+            return true;
+          }
+        }
+        return false;
       } ), allowedColumns.end() );
 
     }

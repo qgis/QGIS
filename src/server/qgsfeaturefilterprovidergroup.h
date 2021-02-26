@@ -36,7 +36,7 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
     QgsFeatureFilterProviderGroup() = default;
 
     /**
-     * Filter the features of the layer
+     * Filter the features of the layer.
      * \param layer the layer to control
      * \param filterFeatures the request to fill
      */
