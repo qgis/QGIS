@@ -72,9 +72,13 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         if not self.active['authorizedLayerAttributes']:
             return super().authorizedLayerAttributes(layer, attributes)
 
-        if "name" in attributes:  # spellok
-            attributes.remove("name")  # spellok
-        return attributes
+        allowed = []
+
+        for attr in attributes:
+            if not "name" in attr and not "virtual" in attr:  # spellok
+                allowed.append(attr)  # spellok
+
+        return allowed
 
     def layerPermissions(self, layer):
         """ Return the layer rights """
@@ -89,7 +93,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
     """QGIS Server WMS Tests for GetPrint request"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regenerate_reference = False
+    # regenerate_reference = True
 
     @classmethod
     def setUpClass(cls):
@@ -150,7 +154,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
             'CRS': 'EPSG:4326',
             'FORMAT': 'png',
             'LAYERS': 'multiple_pks',
-            'DPI': 10,
+            'DPI': 72,
             'TEMPLATE': "print1",
             'map0:EXTENT': '45.70487804878048621,7.67926829268292099,46.22987804878049189,8.42479674796748235',
         }.items())])
@@ -269,6 +273,17 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         self.assertEqual(res.statusCode(), 200)
 
         self._img_diff_error(res.body(), res.headers(), "WMS_GetPrint_postgres_print2_subset")
+
+        # Test attribute table with attribute filter
+        self._accesscontrol.active['layerFilterExpression'] = False
+        self._accesscontrol.active['authorizedLayerAttributes'] = True
+
+        req = QgsBufferServerRequest('http://my_server/' + qs.replace('print1', 'print2'))
+        res = QgsBufferServerResponse()
+        self._server.handleRequest(req, res, self.test_project)
+        self.assertEqual(res.statusCode(), 200)
+
+        self._img_diff_error(res.body(), res.headers(), "WMS_GetPrint_postgres_print2_filtered")
 
 
 if __name__ == '__main__':
