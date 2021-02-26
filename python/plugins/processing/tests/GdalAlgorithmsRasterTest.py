@@ -2609,7 +2609,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest -srcnodata "-9999" ' +
+                              '-resolution average -separate -r nearest -srcnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 

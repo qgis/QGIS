@@ -350,6 +350,7 @@ class TestGdalAlgorithms(unittest.TestCase):
 
     def testEscapeAndJoin(self):
         self.assertEqual(GdalUtils.escapeAndJoin([1, "a", "a b", "a&b", "a(b)", ";"]), '1 a "a b" "a&b" "a(b)" ";"')
+        self.assertEqual(GdalUtils.escapeAndJoin([1, "-srcnodata", "--srcnodata", "-9999 9999"]), '1 -srcnodata --srcnodata "-9999 9999"')
 
 
 if __name__ == '__main__':
