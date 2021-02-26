@@ -170,8 +170,8 @@ class GdalUtils:
 
         GdalUtils.supportedRasters = {}
         GdalUtils.supportedOutputRasters = {}
-        GdalUtils.supportedRasters['GTiff'] = ['tif']
-        GdalUtils.supportedOutputRasters['GTiff'] = ['tif']
+        GdalUtils.supportedRasters['GTiff'] = ['tif', 'tiff']
+        GdalUtils.supportedOutputRasters['GTiff'] = ['tif', 'tiff']
 
         for i in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(i)
@@ -183,8 +183,8 @@ class GdalUtils:
                     or metadata[gdal.DCAP_RASTER] != 'YES':
                 continue
 
-            if gdal.DMD_EXTENSION in metadata:
-                extensions = metadata[gdal.DMD_EXTENSION].split('/')
+            if gdal.DMD_EXTENSIONS in metadata:
+                extensions = metadata[gdal.DMD_EXTENSIONS].split(' ')
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
                     # Only creatable rasters can be referenced in output rasters
@@ -210,20 +210,24 @@ class GdalUtils:
 
     @staticmethod
     def getSupportedRasterExtensions():
-        allexts = ['tif']
+        allexts = []
         for exts in list(GdalUtils.getSupportedRasters().values()):
             for ext in exts:
-                if ext not in allexts and ext != '':
+                if ext not in allexts and ext not in ['', 'tif', 'tiff']:
                     allexts.append(ext)
+        allexts.sort()
+        allexts[0:0] = ['tif', 'tiff']
         return allexts
 
     @staticmethod
     def getSupportedOutputRasterExtensions():
-        allexts = ['tif']
+        allexts = []
         for exts in list(GdalUtils.getSupportedOutputRasters().values()):
             for ext in exts:
-                if ext not in allexts and ext != '':
+                if ext not in allexts and ext not in ['', 'tif', 'tiff']:
                     allexts.append(ext)
+        allexts.sort()
+        allexts[0:0] = ['tif', 'tiff']
         return allexts
 
     @staticmethod
