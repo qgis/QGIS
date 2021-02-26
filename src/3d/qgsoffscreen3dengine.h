@@ -96,8 +96,6 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QRenderSettings *mRenderSettings = nullptr;        // The render settings, which control the general rendering behavior.
     Qt3DCore::QNode *mSceneRoot = nullptr;                         // The scene root, which becomes a child of the engine's root entity.
     Qt3DCore::QEntity *mRoot = nullptr;
-
-//    QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
 };
 
 #endif // QGSOFFSCREEN3DENGINE_H

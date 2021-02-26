@@ -18,6 +18,7 @@
 #include <QBoxLayout>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QRenderCapture>
+#include <Qt3DLogic/QFrameAction>
 #include <QMouseEvent>
 
 
@@ -42,6 +43,13 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
 {
   QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
+
+  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, [ = ]( const QImage & image )
+  {
+    image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() );
+    mEngine->setRenderCaptureEnabled( false );
+    emit savedAsImage( mCaptureFileName );
+  } );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
   mNavigationWidget = new Qgs3DNavigationWidget( this );
@@ -172,15 +180,19 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
 {
   if ( !fileName.isEmpty() )
   {
-    QgsOffscreen3DEngine engine;
-    engine.setSize( size() );
-    Qgs3DMapScene scene( *mMap, &engine );
-    engine.setRootEntity( &scene );
-    QgsCameraController *cameraController = mScene->cameraController();
-    scene.cameraController()->setLookingAtPoint( cameraController->lookingAtPoint(), cameraController->distance(), cameraController->pitch(), cameraController->yaw() );
-    QImage img = Qgs3DUtils::captureSceneImage( engine, &scene );
-    img.save( fileName, fileFormat.toLocal8Bit().data() );
-    emit savedAsImage( fileName );
+    mCaptureFileName = fileName;
+    mCaptureFileFormat = fileFormat;
+    mEngine->setRenderCaptureEnabled( true );
+    // Setup a frame action that is used to wait until next frame
+    Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
+    mScene->addComponent( screenCaptureFrameAction );
+    // Wait to have the render capture enabled in the next frame
+    connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, [ = ]( float )
+    {
+      mEngine->requestCaptureImage();
+      mScene->removeComponent( screenCaptureFrameAction );
+      screenCaptureFrameAction->deleteLater();
+    } );
   }
 }
 
