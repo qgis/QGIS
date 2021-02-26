@@ -298,13 +298,21 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /**
-     * Returns the possibly NULL featureFilterProvider
+     * Returns the possibly NULL feature filter provider.
+     *
+     * A feature filter provider allows to filter visible features or attributes.
+     * It is currently used by QGIS Server Access Control Plugins.
+     *
      * \since QGIS 3.18
      */
     QgsFeatureFilterProvider *featureFilterProvider() const;
 
     /**
-     * Sets \a featureFilterProvider
+     * Sets feature filter provider to \a featureFilterProvider.
+     *
+     * A feature filter provider allows to filter visible features or attributes.
+     * It is currently used by QGIS Server Access Control Plugins.
+     *
      * \since QGIS 3.18
      */
     void setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider );
