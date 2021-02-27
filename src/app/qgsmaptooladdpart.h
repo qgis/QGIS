@@ -32,6 +32,6 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
     void activate() override;
 
   private:
-    //! Check if there is any feature selected
+    //! Check if there is any feature selected and the layer supports adding the part
     bool checkSelection();
 };
