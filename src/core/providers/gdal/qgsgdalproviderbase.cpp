@@ -349,7 +349,6 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   if ( path.contains( '|' ) )
   {
     const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
-
     while ( true )
     {
       QRegularExpressionMatch match = openOptionRegex.match( path );
@@ -370,19 +369,24 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   uriComponents.insert( QStringLiteral( "layerName" ), layerName );
   if ( !openOptions.isEmpty() )
     uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
+  if ( !vsiPrefix.isEmpty() )
+    uriComponents.insert( QStringLiteral( "vsiPrefix" ), vsiPrefix );
   return uriComponents;
 }
 
 QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
 {
-  QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
-  QString uri;
+  const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
 
+  QString uri;
   if ( !layerName.isEmpty() && path.endsWith( QLatin1String( "gpkg" ) ) )
     uri = QStringLiteral( "GPKG:%1:%2" ).arg( path, layerName );
+  else if ( !layerName.isEmpty() )
+    uri = path + QStringLiteral( "|%1" ).arg( layerName );
   else
-    uri = path + ( !layerName.isEmpty() ? QStringLiteral( "|%1" ).arg( layerName ) : QString() );
+    uri = path;
 
   const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
 
@@ -392,7 +396,7 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
     uri += openOption;
   }
 
-  return uri;
+  return !vsiPrefix.isEmpty() ? vsiPrefix + uri : uri;
 }
 
 ///@endcond
