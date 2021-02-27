@@ -239,14 +239,6 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       errorMessage = tr( "Selected feature is not multi part." );
       break;
 
-    case QgsGeometry::OperationResult::AddRingNotValid:
-      errorMessage = tr( "New part's geometry is not valid." );
-      break;
-
-    case QgsGeometry::OperationResult::AddRingCrossesExistingRings:
-      errorMessage = tr( "New polygon ring not disjoint with existing polygons." );
-      break;
-
     case QgsGeometry::OperationResult::SelectionIsEmpty:
       errorMessage = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table." );
       break;
@@ -256,7 +248,11 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       break;
 
     case QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound:
-      errorMessage = tr( "Selected geometry could not be found" );
+      errorMessage = tr( "Selected geometry could not be found." );
+      break;
+
+    case QgsGeometry::OperationResult::InvalidBaseGeometry:
+      errorMessage = tr( "Base geometry is not valid." );
       break;
 
     default:
