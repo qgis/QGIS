@@ -345,13 +345,6 @@ void QgsApplication::init( QString profileFolder )
   }
   *sSystemEnvVars() = systemEnvVarMap;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
-  if ( CPLGetConfigOption( "GDAL_NUM_THREADS", nullptr ) == nullptr )
-  {
-    CPLSetConfigOption( "GDAL_NUM_THREADS", "ALL_CPUS" );
-  }
-#endif
-
   // append local user-writable folder as a proj search path
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
