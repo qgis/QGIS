@@ -401,7 +401,7 @@ void QgsHandleBadLayers::apply()
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, item->text() );
 
     if ( provider == QString( "spatialite" ) )
-      formatter = QString( "dbname='%1") + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
+      formatter = QString( "dbname='%1" ) + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
     else
       formatter = QString( "%1" );
 
@@ -442,13 +442,11 @@ void QgsHandleBadLayers::apply()
           // store the previous layer subset string, so we can restore after fixing the data source
           subsetString = vlayer->subsetString();
         }
-        qDebug()<<datasource;
         mapLayer->setDataSource( formatter.arg( datasource ), name, provider, options );
         dataSourceChanged = mapLayer->isValid();
 
         if ( dataSourceChanged && vlayer && !subsetString.isEmpty() )
         {
-          qDebug()<< QString("datasource is valid");
           vlayer->setSubsetString( subsetString );
         }
       }
@@ -537,9 +535,9 @@ QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString
     if ( !mAlternativeBasepaths.value( originalBase ).contains( newBasepath ) )
       mAlternativeBasepaths[ originalBase ].append( newBasepath );
     if ( QFileInfo( newPath ).isFile() )
-        return ( newPath );
+      return ( newPath );
     else
-        return( newPath + QDir::separator() + fileName );
+      return( newPath + QDir::separator() + fileName );
   }
   else if ( mAlternativeBasepaths.contains( originalBase ) )
   {
@@ -594,7 +592,7 @@ void QgsHandleBadLayers::autoFind()
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, item->text() );
 
     if ( provider == QString( "spatialite" ) )
-      formatter = QString( "dbname='%1") + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
+      formatter = QString( "dbname='%1" ) + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
     else
       formatter = QString( "%1" );
 
