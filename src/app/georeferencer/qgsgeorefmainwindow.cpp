@@ -544,7 +544,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
       case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
       case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
       case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
-        QString vectorCommand = generateGDALogr2ogrCommand( mTransformParam );
+        showGDALScript(QStringList() << generateGDALogr2ogrCommand( mTransformParam ) );
         break;
       default:
         mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
@@ -1031,31 +1031,6 @@ void QgsGeoreferencerMainWindow::updateMouseCoordinatePrecision()
     dp = 0;
 
   mMousePrecisionDecimalPlaces = dp;
-}
-
-void QgsGeoreferencerMainWindow::extentsChanged()
-{
-  if ( mAgainAddLayer )
-  {
-    if ( mDataType == QgsGeoreferencerMainWindow::RASTER && QFile::exists( mFileName ) )
-    {
-      addRaster( mFileName );
-    }
-    else if ( mDataType == QgsGeoreferencerMainWindow::VECTOR && QFile::exists( mFileName ) )
-      addVector( mFileName );
-    else
-    {
-      mRLayer = nullptr;
-      mVLayer = nullptr;
-      mAgainAddLayer = false;
-    }
-  }
-}
-
-// Registry layer QGis
-void QgsGeoreferencerMainWindow::layerWillBeRemoved( const QString &layerId )
-{
-  mAgainAddLayer = mRLayer && mRLayer->id().compare( layerId ) == 0;
 }
 
 // ------------------------------ private ---------------------------------- //
@@ -1601,7 +1576,7 @@ bool QgsGeoreferencerMainWindow::georeference()
   if ( mDataType == QgsGeoreferencerMainWindow::VECTOR && mVLayer )
   {
     bool success;
-    QgsVectorWarper warper = QgsVectorWarper( mTransformParam, mPoints, mProjection );
+    QgsVectorWarper warper( mTransformParam, mPoints, mProjection );
     if ( mModifiedFileName.isEmpty() )
       success = warper.executeTransformInplace( mVLayer );
     else

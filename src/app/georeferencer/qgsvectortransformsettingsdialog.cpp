@@ -50,7 +50,7 @@ QgsVectorTransformSettingsDialog::QgsVectorTransformSettingsDialog( const QStrin
 
   mOutputVector->setStorageMode( QgsFileWidget::SaveFile );
   mOutputVector->setFilter( outputFilters );
-  mOutputVector->setConfirmOverwrite( false );
+  mOutputVector->setConfirmOverwrite( true );
   mOutputVector->setDialogTitle( tr( "Destination" ) );
   mOutputVector->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   connect( mOutputVector, &QgsFileWidget::fileChanged, this, [ = ]
@@ -232,7 +232,7 @@ QString QgsVectorTransformSettingsDialog::generateModifiedOutputFileName( const 
 
   QString modifiedFileName = filename;
   int lastDot = filename.lastIndexOf( "." );
-  if ( filename.length() - lastDot <= 4 )
+  if ( filename.length() - lastDot <= 8 )
     modifiedFileName = modifiedFileName.insert( lastDot, tr( "_modified" ) );
   else
     modifiedFileName.append( tr( "_modified" ) );

@@ -19,31 +19,29 @@
 #include "qgsgcplist.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsprocessingfeaturesource.h"
+#include "qgsprocessingutils.h"
+#include "qgsprocessingcontext.h"
 
 #include <QFile>
 #include <QProgressDialog>
 
 #include "qgsvectorwarper.h"
 
-
-
-
-QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QgsGCPList points,
-                                  const QgsCoordinateReferenceSystem destCrs )
+QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod& method, const QgsGCPList& points,
+                                  const QgsCoordinateReferenceSystem& destCrs )
   : mDestCRS( destCrs )
 {
   QVector<QgsPointXY> srcPts;
   QVector<QgsPointXY> destPts;
-  for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
+  for ( QgsGeorefDataPoint *pt : qgis::as_const( points ) )
   {
     srcPts << pt->pixelCoords();
     destPts << pt->transCoords();
   }
-  mTransformer = QgsGcpGeometryTransformer( method, srcPts, destPts );
+  mTransformer = new QgsGcpGeometryTransformer( method, srcPts, destPts );
 }
 
 bool QgsVectorWarper::executeTransformInplace( QgsVectorLayer *layer )
@@ -51,13 +49,17 @@ bool QgsVectorWarper::executeTransformInplace( QgsVectorLayer *layer )
   if ( !layer )
     return false;
   if ( layer->sourceCrs() != mDestCRS )
-    layer.setCoordinateSystem( mDestCRS );
+    layer->setCrs( mDestCRS );
 
-  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest() );
   QgsFeature f;
+  QgsGeometry transformed;
+  bool ok;
   while ( it.nextFeature( f ) )
   {
-    f.setGeometry( mTransofrmer.transform( f.geometry() );
+    transformed = mTransformer->transform( f.geometry(), ok );
+    if ( ok )
+      f.setGeometry( transformed );
   }
   return true;
 }
@@ -66,19 +68,29 @@ bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QStri
 {
   if ( !layer )
     return false;
-  exporter = QgsVectorLayerExporter( ouputName, "OGR", layer->fields(), layer->geometryType(), mDestCRS, true );
-  if ( exporter.errorCode() != QgsVectorLayerExporter::NoError )
+  QString name2( outputName );
+  QgsProcessingContext *context = new QgsProcessingContext();
+  std::unique_ptr< QgsFeatureSink > exporter( QgsProcessingUtils::createFeatureSink( name2, *context, layer->fields(), layer->wkbType(), mDestCRS ) );
+  if ( !exporter->lastError().isEmpty() )
     return false;
 
   QgsFeature outputFeature;
-  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest() );
   QgsFeature f;
+  QgsGeometry transformed;
+  bool ok;
+  bool allGood = true;
   while ( it.nextFeature( f ) )
   {
     outputFeature = QgsFeature( f );
-    outputFeature.setGeometry( mTransofrmer.transform( f.geometry() ) );
-    exporter.addFeature( outputFeature, QgsFeatureSink.FastInsert );
+    transformed = mTransformer->transform( f.geometry(), ok );
+    if ( ok )
+    {
+      outputFeature.setGeometry( transformed );
+      exporter->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !exporter->lastError().isEmpty() )
+          allGood = false;
+    }
   }
-  exporter.flushBuffer();
-  return true;
+  return allGood;
 }

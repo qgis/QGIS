@@ -34,9 +34,10 @@ class QWidget;
  */
 class QgsVectorWarper
 {
+
   public:
-    explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QgsGCPList points,
-                              const QgsCoordinateReferenceSystem destCrs );
+    explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod &method, const QgsGCPList &points,
+                              const QgsCoordinateReferenceSystem &destCrs );
 
     /**
      * Functions to reproject features of the vector layer
@@ -55,9 +56,8 @@ class QgsVectorWarper
     bool executeTransform( const QgsVectorLayer *layer, const QString outputName );
 
   private:
-    QgsGcpGeometryTransformer mTransformer;
-    const QgsCoordinateReferenceSystem mSrcCRS;
-    const QgsCoordinateReferenceSystem mDestCRS;
+    QgsGcpGeometryTransformer *mTransformer;
+    QgsCoordinateReferenceSystem mDestCRS;
 
 };
 
