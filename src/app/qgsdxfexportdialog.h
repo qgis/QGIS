@@ -108,6 +108,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void cleanGroup( QgsLayerTreeNode *node );
     QgsLayerTree *mLayerTreeGroup = nullptr;
     FieldSelectorDelegate *mFieldSelectorDelegate = nullptr;
+    QgsVectorLayerAndAttributeModel *mModel = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 };
