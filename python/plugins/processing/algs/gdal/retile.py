@@ -206,7 +206,7 @@ class retile(GdalAlgorithm):
             delimiter = self.parameterAsString(parameters, self.DELIMITER, context)
             if delimiter:
                 arguments.append('-csvDelim')
-                arguments.append('"{}"'.format(delimiter))
+                arguments.append(delimiter)
 
         arguments.append('-targetDir')
         arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
