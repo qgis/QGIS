@@ -2434,6 +2434,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
     connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addRasterLayers, this, [ = ]( const QStringList & layersList ) { addRasterLayers( layersList ); } );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),
              this, SLOT( addVectorLayer( QString const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayers( QStringList const &, QString const &, QString const & ) ),
@@ -15585,38 +15586,36 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
   // be ogr layers. We'll set returnValue to false if one or more layers fail
   // to load.
   bool returnValue = true;
-  for ( QStringList::ConstIterator myIterator = fileNameQStringList.begin();
-        myIterator != fileNameQStringList.end();
-        ++myIterator )
+  for ( const QString &src : fileNameQStringList )
   {
     QString errMsg;
     bool ok = false;
 
     // if needed prompt for zipitem layers
-    QString vsiPrefix = QgsZipItem::vsiPrefix( *myIterator );
-    if ( ! myIterator->startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) &&
+    QString vsiPrefix = QgsZipItem::vsiPrefix( src );
+    if ( ( !src.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || src.endsWith( QLatin1String( ".zip" ) ) || src.endsWith( QLatin1String( ".tar" ) ) ) &&
          ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
     {
-      if ( askUserForZipItemLayers( *myIterator ) )
+      if ( askUserForZipItemLayers( src ) )
         continue;
     }
 
-    if ( QgsRasterLayer::isValidRasterFileName( *myIterator, errMsg ) )
+    if ( QgsRasterLayer::isValidRasterFileName( src, errMsg ) )
     {
-      QFileInfo myFileInfo( *myIterator );
+      QFileInfo myFileInfo( src );
 
       // set the layer name to the file base name...
       QString layerName = myFileInfo.completeBaseName();
 
       // ...unless provided explicitly
-      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), *myIterator );
+      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), src );
       if ( !uriDetails[ QStringLiteral( "layerName" ) ].toString().isEmpty() )
       {
         layerName = uriDetails[ QStringLiteral( "layerName" ) ].toString();
       }
 
       // try to create the layer
-      QgsRasterLayer *layer = addRasterLayerPrivate( *myIterator, layerName,
+      QgsRasterLayer *layer = addRasterLayerPrivate( src, layerName,
                               QString(), guiWarning, true );
       if ( layer && layer->isValid() )
       {
@@ -15641,7 +15640,7 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
       // loaded afterwards (see main.cpp)
       if ( guiWarning )
       {
-        QString msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
+        QString msg = tr( "%1 is not a supported raster data source" ).arg( src );
         if ( !errMsg.isEmpty() )
           msg += '\n' + errMsg;
 

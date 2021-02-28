@@ -87,6 +87,15 @@ Emitted when a DB layer has been selected for addition
 Emitted when a raster layer has been selected for addition
 %End
 
+    void addRasterLayers( const QStringList &layersList );
+%Docstring
+Emitted when one or more GDAL supported layers are selected for addition
+
+:param layersList: list of layers protocol URIs
+
+.. versionadded:: 3.20
+%End
+
     void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
 %Docstring
 Emitted when a vector layer has been selected for addition.

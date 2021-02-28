@@ -168,13 +168,7 @@ void QgsGdalSourceSelect::addButtonClicked()
     return;
   }
 
-  for ( const QString &dataSource : mDataSources )
-  {
-    if ( QFile::exists( dataSource ) )
-      emit addRasterLayer( dataSource, QFileInfo( dataSource ).completeBaseName(), QStringLiteral( "gdal" ) );
-    else
-      emit addRasterLayer( dataSource, dataSource, QStringLiteral( "gdal" ) );
-  }
+  emit addRasterLayers( mDataSources );
 }
 
 void QgsGdalSourceSelect::computeDataSources()
