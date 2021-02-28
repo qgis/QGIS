@@ -183,11 +183,11 @@ QgsAbstractMetadataBase *QgsMetadataWidget::metadata()
   switch ( mMode )
   {
     case LayerMetadata:
-      md = qgis::make_unique< QgsLayerMetadata >();
+      md = std::make_unique< QgsLayerMetadata >();
       break;
 
     case ProjectMetadata:
-      md = qgis::make_unique< QgsProjectMetadata >();
+      md = std::make_unique< QgsProjectMetadata >();
       break;
 
   }
@@ -781,11 +781,11 @@ bool QgsMetadataWidget::checkMetadata()
   switch ( mMode )
   {
     case LayerMetadata:
-      validator = qgis::make_unique< QgsNativeMetadataValidator>();
+      validator = std::make_unique< QgsNativeMetadataValidator>();
       break;
 
     case ProjectMetadata:
-      validator = qgis::make_unique< QgsNativeProjectMetadataValidator>();
+      validator = std::make_unique< QgsNativeProjectMetadataValidator>();
       break;
   }
 

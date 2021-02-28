@@ -85,7 +85,7 @@ void QgsRubberBand::setIcon( IconType icon )
 void QgsRubberBand::setSvgIcon( const QString &path, QPoint drawOffset )
 {
   setIcon( ICON_SVG );
-  mSvgRenderer = qgis::make_unique<QSvgRenderer>( path );
+  mSvgRenderer = std::make_unique<QSvgRenderer>( path );
   mSvgOffset = drawOffset;
 }
 

@@ -17,7 +17,7 @@
 #include "qgslabelsearchtree.h"
 
 QgsLabelingResults::QgsLabelingResults()
-  : mLabelSearchTree( qgis::make_unique< QgsLabelSearchTree >() )
+  : mLabelSearchTree( std::make_unique< QgsLabelSearchTree >() )
 {
 }
 

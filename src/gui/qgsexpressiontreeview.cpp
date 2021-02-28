@@ -110,8 +110,8 @@ QgsExpressionTreeView::QgsExpressionTreeView( QWidget *parent )
 {
   connect( this, &QTreeView::doubleClicked, this, &QgsExpressionTreeView::onDoubleClicked );
 
-  mModel = qgis::make_unique<QStandardItemModel>();
-  mProxyModel = qgis::make_unique<QgsExpressionItemSearchProxy>();
+  mModel = std::make_unique<QStandardItemModel>();
+  mProxyModel = std::make_unique<QgsExpressionItemSearchProxy>();
   mProxyModel->setDynamicSortFilter( true );
   mProxyModel->setSourceModel( mModel.get() );
   setModel( mProxyModel.get() );

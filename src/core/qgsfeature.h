@@ -245,10 +245,14 @@ class CORE_EXPORT QgsFeature
 
     /**
      * Sets the feature's attributes.
-     * The feature will be valid after.
-     * \param attrs attribute list
+     * The feature will be valid after. The number of provided attributes need to match exactly the
+     * number of the feature's fields.
+     * \param attrs List of attribute values
      * \see setAttribute
      * \see attributes
+     * \warning Method will return false if the number of provided attributes does not exactly match
+     * the number of the feature's fields and it will not be possible to add this feature to the data
+     * provider.
      */
     void setAttributes( const QgsAttributes &attrs );
 

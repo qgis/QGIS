@@ -54,6 +54,9 @@ add_library(virtuallayerprovider MODULE
   ${QGIS_VLAYER_SQL_FUNCTIONS_RCCS}
 )
 
+# require c++17
+target_compile_features(virtuallayerprovider PRIVATE cxx_std_17)
+
 target_link_libraries( virtuallayerprovider
   qgis_core
   ${Qt5Core_LIBRARIES}

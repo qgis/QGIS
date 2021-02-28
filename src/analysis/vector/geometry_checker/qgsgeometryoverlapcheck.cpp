@@ -294,7 +294,7 @@ bool QgsGeometryOverlapCheckError::handleChanges( const QgsGeometryCheck::Change
   {
     return false;
   }
-  if ( changes.value( mOverlappedFeature.layerId() ).keys().contains( mOverlappedFeature.featureId() ) )
+  if ( changes.value( mOverlappedFeature.layerId() ).contains( mOverlappedFeature.featureId() ) )
   {
     return false;
   }

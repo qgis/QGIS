@@ -30,6 +30,8 @@ macro (ADD_QGIS_TEST testname testsrc)
   set(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   set(qgis_${testname}_MOC_CPPS ${testsrc})
   add_executable(qgis_${testname} ${qgis_${testname}_SRCS})
+  # require c++17
+  target_compile_features(qgis_${testname} PRIVATE cxx_std_17)
   set_target_properties(qgis_${testname} PROPERTIES AUTORCC TRUE)
   target_link_libraries(qgis_${testname}
     ${Qt5Xml_LIBRARIES}

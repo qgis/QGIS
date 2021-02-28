@@ -168,7 +168,7 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( !mAnchorPoint )
     {
-      mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+      mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     }
     mAnchorPoint->setCenter( e->mapPoint() );
@@ -199,7 +199,7 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     mAutoSetAnchorPoint = false;
     if ( !mAnchorPoint )
     {
-      mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+      mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
       mAutoSetAnchorPoint = true;
     }
@@ -394,7 +394,7 @@ void QgsMapToolScaleFeature::activate()
     mExtent = vlayer->boundingBoxOfSelected();
     mFeatureCenterMapCoords = mExtent.center();
 
-    mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+    mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     mAnchorPoint->setCenter( mFeatureCenterMapCoords );
   }

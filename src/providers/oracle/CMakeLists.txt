@@ -49,6 +49,9 @@ endif()
 
 add_library (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS})
 
+# require c++17
+target_compile_features(oracleprovider PRIVATE cxx_std_17)
+
 target_link_libraries (oracleprovider
   qgis_core
   ${Qt5Sql_LIBRARIES}

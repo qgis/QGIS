@@ -219,7 +219,11 @@ void QgsRasterFormatSaveOptionsWidget::updateOptions()
 {
   mBlockOptionUpdates++;
   QString myOptions = mOptionsMap.value( currentProfileKey() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList myOptionsList = myOptions.trimmed().split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList myOptionsList = myOptions.trimmed().split( ' ', Qt::SkipEmptyParts );
+#endif
 
   // If the default JPEG compression profile was selected, remove PHOTOMETRIC_OVERVIEW=YCBCR
   // if the raster is not RGB. Otherwise this is bound to fail afterwards.
@@ -473,7 +477,11 @@ QString QgsRasterFormatSaveOptionsWidget::currentProfileKey() const
 
 QStringList QgsRasterFormatSaveOptionsWidget::options() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   return mOptionsMap.value( currentProfileKey() ).trimmed().split( ' ', QString::SkipEmptyParts );
+#else
+  return mOptionsMap.value( currentProfileKey() ).trimmed().split( ' ', Qt::SkipEmptyParts );
+#endif
 }
 
 QString QgsRasterFormatSaveOptionsWidget::createOptions( const QString &profileName ) const
@@ -599,7 +607,11 @@ void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )
   mBlockOptionUpdates++;
   mOptionsTable->clearContents();
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList optionsList = options.trimmed().split( ' ', QString::SkipEmptyParts );
+#else
+  const QStringList optionsList = options.trimmed().split( ' ', Qt::SkipEmptyParts );
+#endif
   for ( const QString &opt : optionsList )
   {
     int rowCount = mOptionsTable->rowCount();

@@ -399,7 +399,7 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
       const double y = dataDefinedProperties().valueAsDouble( QgsCallout::DestinationY, context.expressionContext(), 0, &ok );
       if ( ok )
       {
-        tempPartAnchor = qgis::make_unique< QgsPoint >( QgsWkbTypes::Point, x, y );
+        tempPartAnchor = std::make_unique< QgsPoint >( QgsWkbTypes::Point, x, y );
         evaluatedPartAnchor = tempPartAnchor.get();
         try
         {
@@ -472,7 +472,7 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
 
 QgsSimpleLineCallout::QgsSimpleLineCallout()
 {
-  mLineSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << new QgsSimpleLineSymbolLayer( QColor( 60, 60, 60 ), .3 ) );
+  mLineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << new QgsSimpleLineSymbolLayer( QColor( 60, 60, 60 ), .3 ) );
 
 }
 
@@ -497,7 +497,7 @@ QgsSimpleLineCallout::QgsSimpleLineCallout( const QgsSimpleLineCallout &other )
 
 QgsCallout *QgsSimpleLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsSimpleLineCallout > callout = qgis::make_unique< QgsSimpleLineCallout >();
+  std::unique_ptr< QgsSimpleLineCallout > callout = std::make_unique< QgsSimpleLineCallout >();
   callout->readProperties( properties, context );
   return callout.release();
 }
@@ -695,7 +695,7 @@ QgsManhattanLineCallout::QgsManhattanLineCallout( const QgsManhattanLineCallout 
 
 QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsManhattanLineCallout > callout = qgis::make_unique< QgsManhattanLineCallout >();
+  std::unique_ptr< QgsManhattanLineCallout > callout = std::make_unique< QgsManhattanLineCallout >();
   callout->readProperties( properties, context );
   return callout.release();
 }

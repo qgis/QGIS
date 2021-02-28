@@ -218,7 +218,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
 
   if ( requestMadeFromMainThread )
   {
-    std::unique_ptr<DownloaderThread> downloaderThread = qgis::make_unique<DownloaderThread>( downloaderFunction );
+    std::unique_ptr<DownloaderThread> downloaderThread = std::make_unique<DownloaderThread>( downloaderFunction );
     downloaderThread->start();
 
     while ( true )

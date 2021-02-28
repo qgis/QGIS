@@ -81,7 +81,7 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 
   Q_ASSERT( mLayers.find( provider ) == mLayers.end() );
 
-  std::unique_ptr< Layer > layer = qgis::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
+  std::unique_ptr< Layer > layer = std::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
   Layer *res = layer.get();
   mLayers.insert( std::pair<QgsAbstractLabelProvider *, std::unique_ptr< Layer >>( provider, std::move( layer ) ) );
   mMutex.unlock();
@@ -100,7 +100,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   PalRtree< FeaturePart > obstacles( maxCoordinateExtentForSpatialIndices );
   PalRtree< LabelPosition > allCandidatesFirstRound( maxCoordinateExtentForSpatialIndices );
   std::vector< FeaturePart * > allObstacleParts;
-  std::unique_ptr< Problem > prob = qgis::make_unique< Problem >( maxCoordinateExtentForSpatialIndices );
+  std::unique_ptr< Problem > prob = std::make_unique< Problem >( maxCoordinateExtentForSpatialIndices );
 
   double bbx[4];
   double bby[4];
@@ -202,7 +202,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
 
         // valid features are added to fFeats
-        std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
+        std::unique_ptr< Feats > ft = std::make_unique< Feats >();
         ft->feature = featurePart;
         ft->shape = nullptr;
         ft->candidates = std::move( candidates );
@@ -223,7 +223,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
           candidates.emplace_back( std::move( unplacedPosition ) );
 
           // valid features are added to fFeats
-          std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
+          std::unique_ptr< Feats > ft = std::make_unique< Feats >();
           ft->feature = featurePart;
           ft->shape = nullptr;
           ft->candidates = std::move( candidates );

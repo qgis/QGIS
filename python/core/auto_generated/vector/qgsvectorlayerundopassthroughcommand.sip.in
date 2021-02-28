@@ -169,6 +169,10 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeGeometry
     virtual void redo();
 
 
+    virtual int id() const;
+    virtual bool mergeWith( const QUndoCommand  *other );
+
+
 };
 
 

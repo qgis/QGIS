@@ -124,7 +124,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     {
       if ( mParameterItems.contains( it.key() ) && mParameterItems.contains( otherName ) )
       {
-        std::unique_ptr< QgsModelArrowItem > arrow = qgis::make_unique< QgsModelArrowItem >( mParameterItems.value( otherName ), QgsModelArrowItem::Marker::Circle, mParameterItems.value( it.key() ), QgsModelArrowItem::Marker::ArrowHead );
+        std::unique_ptr< QgsModelArrowItem > arrow = std::make_unique< QgsModelArrowItem >( mParameterItems.value( otherName ), QgsModelArrowItem::Marker::Circle, mParameterItems.value( it.key() ), QgsModelArrowItem::Marker::ArrowHead );
         arrow->setPenStyle( Qt::DotLine );
         addItem( arrow.release() );
       }
@@ -467,7 +467,7 @@ void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgori
   connect( commentItem, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
   connect( commentItem, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
 
-  std::unique_ptr< QgsModelArrowItem > arrow = qgis::make_unique< QgsModelArrowItem >( parentItem, QgsModelArrowItem::Circle, commentItem, QgsModelArrowItem::Circle );
+  std::unique_ptr< QgsModelArrowItem > arrow = std::make_unique< QgsModelArrowItem >( parentItem, QgsModelArrowItem::Circle, commentItem, QgsModelArrowItem::Circle );
   arrow->setPenStyle( Qt::DotLine );
   addItem( arrow.release() );
 }

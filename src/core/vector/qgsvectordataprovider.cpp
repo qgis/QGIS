@@ -39,7 +39,7 @@
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
     QgsDataProvider::ReadFlags flags )
   : QgsDataProvider( uri, options, flags )
-  , mTemporalCapabilities( qgis::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
+  , mTemporalCapabilities( std::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
 {
 }
 

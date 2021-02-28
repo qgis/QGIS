@@ -653,8 +653,10 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
     featureCount++;
 
-    if ( isSingleClick )
-      derivedAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
+    // When not single click identify, pass an empty point so some derived attributes may still be computed
+    if ( !isSingleClick )
+      point = QgsPointXY();
+    derivedAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
 
     derivedAttributes.insert( tr( "Feature ID" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
@@ -772,8 +774,11 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   {
     geometryType = feature.geometry().type();
     wkbType = feature.geometry().wkbType();
-    //find closest vertex to clicked point
-    closestPoint = QgsGeometryUtils::closestVertex( *feature.geometry().constGet(), QgsPoint( layerPoint ), vId );
+    if ( !layerPoint.isEmpty() )
+    {
+      //find closest vertex to clicked point
+      closestPoint = QgsGeometryUtils::closestVertex( *feature.geometry().constGet(), QgsPoint( layerPoint ), vId );
+    }
   }
 
 
@@ -782,8 +787,11 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   {
     QString str = QLocale().toString( static_cast<const QgsGeometryCollection *>( feature.geometry().constGet() )->numGeometries() );
     derivedAttributes.insert( tr( "Parts" ), str );
-    str = QLocale().toString( vId.part + 1 );
-    derivedAttributes.insert( tr( "Part number" ), str );
+    if ( !layerPoint.isEmpty() )
+    {
+      str = QLocale().toString( vId.part + 1 );
+      derivedAttributes.insert( tr( "Part number" ), str );
+    }
   }
 
   QgsUnitTypes::DistanceUnit cartesianDistanceUnits = QgsUnitTypes::unitType( layer->crs().mapUnits() ) == QgsUnitTypes::unitType( displayDistanceUnits() )
@@ -819,9 +827,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     {
       str = QLocale().toString( geom->nCoordinates() );
       derivedAttributes.insert( tr( "Vertices" ), str );
-      //add details of closest vertex to identify point
-      closestVertexAttributes( *geom, vId, layer, derivedAttributes );
-      closestPointAttributes( *geom, layerPoint, derivedAttributes );
+      if ( !layerPoint.isEmpty() )
+      {
+        //add details of closest vertex to identify point
+        closestVertexAttributes( *geom, vId, layer, derivedAttributes );
+        closestPointAttributes( *geom, layerPoint, derivedAttributes );
+      }
 
       if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
       {
@@ -867,9 +878,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     str = QLocale().toString( feature.geometry().constGet()->nCoordinates() );
     derivedAttributes.insert( tr( "Vertices" ), str );
 
-    //add details of closest vertex to identify point
-    closestVertexAttributes( *feature.geometry().constGet(), vId, layer, derivedAttributes );
-    closestPointAttributes( *feature.geometry().constGet(), layerPoint, derivedAttributes );
+    if ( !layerPoint.isEmpty() )
+    {
+      //add details of closest vertex to identify point
+      closestVertexAttributes( *feature.geometry().constGet(), vId, layer, derivedAttributes );
+      closestPointAttributes( *feature.geometry().constGet(), layerPoint, derivedAttributes );
+    }
   }
   else if ( geometryType == QgsWkbTypes::PointGeometry )
   {
@@ -897,9 +911,10 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     {
       //multipart
 
-      //add details of closest vertex to identify point
-      const QgsAbstractGeometry *geom = feature.geometry().constGet();
+      if ( !layerPoint.isEmpty() )
       {
+        //add details of closest vertex to identify point
+        const QgsAbstractGeometry *geom = feature.geometry().constGet();
         closestVertexAttributes( *geom, vId, layer, derivedAttributes );
       }
     }

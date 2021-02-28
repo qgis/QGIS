@@ -327,7 +327,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
 
     bool defaultLoadedFlag = false;
 

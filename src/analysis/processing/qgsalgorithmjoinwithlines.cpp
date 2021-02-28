@@ -70,7 +70,7 @@ void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "GEODESIC" ), QObject::tr( "Create geodesic lines" ), false ) );
 
-  auto distanceParam = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "GEODESIC_DISTANCE" ), QObject::tr( "Distance between vertices (geodesic lines only)" ), 1000 );
+  auto distanceParam = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "GEODESIC_DISTANCE" ), QObject::tr( "Distance between vertices (geodesic lines only)" ), 1000 );
   distanceParam->setFlags( distanceParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   distanceParam->setDefaultUnit( QgsUnitTypes::DistanceKilometers );
   distanceParam->setIsDynamic( true );
@@ -78,7 +78,7 @@ void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
   distanceParam->setDynamicLayerParameterName( QStringLiteral( "HUBS" ) );
   addParameter( distanceParam.release() );
 
-  auto breakParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "ANTIMERIDIAN_SPLIT" ), QObject::tr( "Split lines at antimeridian (±180 degrees longitude)" ), false );
+  auto breakParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "ANTIMERIDIAN_SPLIT" ), QObject::tr( "Split lines at antimeridian (±180 degrees longitude)" ), false );
   breakParam->setFlags( breakParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( breakParam.release() );
 
@@ -297,8 +297,8 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
           distance = geodesicDistanceProperty.valueAsDouble( expressionContext, distance );
         }
 
-        std::unique_ptr< QgsMultiLineString > ml = qgis::make_unique< QgsMultiLineString >();
-        std::unique_ptr< QgsLineString > l = qgis::make_unique< QgsLineString >( QVector< QgsPoint >() << hubPoint );
+        std::unique_ptr< QgsMultiLineString > ml = std::make_unique< QgsMultiLineString >();
+        std::unique_ptr< QgsLineString > l = std::make_unique< QgsLineString >( QVector< QgsPoint >() << hubPoint );
         QVector< QVector< QgsPointXY > > points = da.geodesicLine( QgsPointXY( hubPoint ), QgsPointXY( spokePoint ), distance, splitAntimeridian );
         QVector< QgsPointXY > points1 = points.at( 0 );
         points1.pop_front();
@@ -315,7 +315,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
         {
           QVector< QgsPointXY > points2 = points.at( 1 );
           points2.pop_back();
-          l = qgis::make_unique< QgsLineString >( points2 );
+          l = std::make_unique< QgsLineString >( points2 );
           if ( hasZ )
             l->addZValue( std::numeric_limits<double>::quiet_NaN() );
           if ( hasM )

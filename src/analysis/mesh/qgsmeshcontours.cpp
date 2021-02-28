@@ -145,8 +145,8 @@ QgsGeometry QgsMeshContours::exportPolygons( double min_value, double max_value,
     {
       QVector<QgsMeshVertex> ring = coords;
       ring.push_back( coords[0] );
-      std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString> ( coords );
-      std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+      std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString> ( coords );
+      std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
       poly->setExteriorRing( ext.release() );
       multiPolygon.push_back( QgsGeometry( std::move( poly ) ) );
       continue;
@@ -245,8 +245,8 @@ QgsGeometry QgsMeshContours::exportPolygons( double min_value, double max_value,
     // add if the polygon is not degraded
     if ( ring.size() > 2 )
     {
-      std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString> ( ring );
-      std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+      std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString> ( ring );
+      std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
       poly->setExteriorRing( ext.release() );
       multiPolygon.push_back( QgsGeometry( std::move( poly ) ) );
     }

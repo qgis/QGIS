@@ -195,7 +195,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   if ( QgsZipUtils::isZipFile( mProjectFileWidget->filePath() ) )
   {
 
-    archive = qgis::make_unique<QgsProjectArchive>();
+    archive = std::make_unique<QgsProjectArchive>();
 
     // unzip the archive
     if ( !archive->unzip( mProjectFileWidget->filePath() ) )

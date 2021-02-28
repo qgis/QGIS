@@ -253,7 +253,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   {
     for ( int y = 0; y < 10; y += 3 )
     {
-      f.setGeometry( qgis::make_unique< QgsPoint >( x, y ) );
+      f.setGeometry( std::make_unique< QgsPoint >( x, y ) );
       vl2->dataProvider()->addFeature( f );
     }
   }

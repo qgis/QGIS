@@ -51,7 +51,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( c
   {
     QgsGeometry errorGeometry;
     if ( error.hasWhere() )
-      errorGeometry = QgsGeometry( qgis::make_unique<QgsPoint>( error.where() ) );
+      errorGeometry = QgsGeometry( std::make_unique<QgsPoint>( error.where() ) );
 
     result << new QgsGeometryIsValidCheckError( this, geometry, errorGeometry, error.what() );
   }

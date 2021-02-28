@@ -24,7 +24,7 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsgeometry.h"
 #include "qgspointlocator.h"
-
+#include "qobjectuniqueptr.h"
 
 class QRubberBand;
 
@@ -444,7 +444,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     // support for vertex editor
 
     //! Locked feature for the vertex editor
-    std::unique_ptr<QgsLockedFeature> mLockedFeature;
+    QObjectUniquePtr<QgsLockedFeature> mLockedFeature;
     //! Dock widget which allows editing vertices
     QPointer<QgsVertexEditor> mVertexEditor;
 

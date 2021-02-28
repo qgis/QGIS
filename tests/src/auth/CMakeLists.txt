@@ -27,6 +27,7 @@ endif()
 
 macro (ADD_QGIS_TEST testname testsrc)
   add_executable(qgis_${testname} ${testsrc} ${util_SRCS})
+  target_compile_features(qgis_${testname} PRIVATE cxx_std_17)
   if(APPLE)
     target_link_libraries(qgis_${testname} ${APP_SERVICES_LIBRARY})
   endif()

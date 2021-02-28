@@ -29,7 +29,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *par
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
   , mShowCenterPointRubberBand( false )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Add circular string" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircularString::stopCapturing );

@@ -41,6 +41,7 @@ macro (ADD_QGIS_TEST TESTSRC)
   string(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
   set (TESTNAME  "qgis_${TESTNAME}test")
   add_executable(${TESTNAME} ${TESTSRC} ${MODULE_WMS_SRCS} ${MODULE_WMS_MOC_SRCS})
+  target_compile_features(${TESTNAME} PRIVATE cxx_std_17)
   target_link_libraries(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Xml_LIBRARIES}

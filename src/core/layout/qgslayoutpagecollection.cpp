@@ -297,7 +297,7 @@ void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, QgsUn
 
   if ( mPages.empty() )
   {
-    std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( mLayout );
+    std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( mLayout );
     addPage( page.release() );
   }
 
@@ -576,7 +576,7 @@ QgsLayoutItemPage *QgsLayoutPageCollection::extendByNewPage()
     return nullptr;
 
   QgsLayoutItemPage *lastPage = mPages.at( mPages.count() - 1 );
-  std::unique_ptr< QgsLayoutItemPage > newPage = qgis::make_unique< QgsLayoutItemPage >( mLayout );
+  std::unique_ptr< QgsLayoutItemPage > newPage = std::make_unique< QgsLayoutItemPage >( mLayout );
   newPage->attemptResize( lastPage->sizeWithUnits() );
   addPage( newPage.release() );
   return mPages.at( mPages.count() - 1 );

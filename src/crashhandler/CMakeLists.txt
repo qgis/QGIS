@@ -21,6 +21,8 @@ add_executable(qgiscrashhandler WIN32
   ${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc
 )
 
+target_compile_features(qgiscrashhandler PRIVATE cxx_std_17)
+
 target_link_libraries(qgiscrashhandler
   ${Qt5Core_LIBRARIES}
   ${Qt5Gui_LIBRARIES}

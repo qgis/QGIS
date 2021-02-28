@@ -209,7 +209,7 @@ Wrapper for iterator of features from vector data provider or vector layer
 
     SIP_PYOBJECT __next__() /TypeHint="QgsFeature"/;
 %MethodCode
-    std::unique_ptr< QgsFeature > f = qgis::make_unique< QgsFeature >();
+    std::unique_ptr< QgsFeature > f = std::make_unique< QgsFeature >();
     bool result = false;
     Py_BEGIN_ALLOW_THREADS
     result = ( sipCpp->nextFeature( *f ) );

@@ -21,7 +21,7 @@
 #include "qgis.h"
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings()
-  : mNumericFormat( qgis::make_unique< QgsBasicNumericFormat >() )
+  : mNumericFormat( std::make_unique< QgsBasicNumericFormat >() )
 {
 }
 

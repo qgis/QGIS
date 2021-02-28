@@ -23,6 +23,9 @@ include_directories(
 
 add_library(geonodeprovider MODULE ${GEONODE_SRCS})
 
+# require c++17
+target_compile_features(geonodeprovider PRIVATE cxx_std_17)
+
 target_link_libraries(geonodeprovider
   qgis_core
 )

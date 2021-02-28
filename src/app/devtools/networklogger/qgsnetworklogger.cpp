@@ -24,7 +24,7 @@
 QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *parent )
   : QAbstractItemModel( parent )
   , mNam( manager )
-  , mRootNode( qgis::make_unique< QgsNetworkLoggerRootNode >() )
+  , mRootNode( std::make_unique< QgsNetworkLoggerRootNode >() )
 {
   // logger must be created on the main thread
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
@@ -76,7 +76,7 @@ void QgsNetworkLogger::requestAboutToBeCreated( QgsNetworkRequestParameters para
 
   beginInsertRows( QModelIndex(), childCount, childCount );
 
-  std::unique_ptr< QgsNetworkLoggerRequestGroup > group = qgis::make_unique< QgsNetworkLoggerRequestGroup >( parameters );
+  std::unique_ptr< QgsNetworkLoggerRequestGroup > group = std::make_unique< QgsNetworkLoggerRequestGroup >( parameters );
   mRequestGroups.insert( parameters.requestId(), group.get() );
   mRootNode->addChild( std::move( group ) );
   endInsertRows();

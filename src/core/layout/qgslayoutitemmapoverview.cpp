@@ -34,7 +34,7 @@
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mExtentLayer( qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
+  , mExtentLayer( std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
 {
   createDefaultFrameSymbol();
 }

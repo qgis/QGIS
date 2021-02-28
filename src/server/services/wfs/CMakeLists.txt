@@ -23,6 +23,8 @@ set (WFS_HDRS
 
 add_library (wfs MODULE ${WFS_SRCS} ${WFS_HDRS})
 
+# require c++17
+target_compile_features(wfs PRIVATE cxx_std_17)
 
 include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}

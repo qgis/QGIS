@@ -51,13 +51,13 @@ void QgsDetectVectorChangesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ORIGINAL" ), QObject::tr( "Original layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REVISED" ), QObject::tr( "Revised layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterField > compareAttributesParam = qgis::make_unique< QgsProcessingParameterField >( QStringLiteral( "COMPARE_ATTRIBUTES" ),
+  std::unique_ptr< QgsProcessingParameterField > compareAttributesParam = std::make_unique< QgsProcessingParameterField >( QStringLiteral( "COMPARE_ATTRIBUTES" ),
       QObject::tr( "Attributes to consider for match (or none to compare geometry only)" ), QVariant(),
       QStringLiteral( "ORIGINAL" ), QgsProcessingParameterField::Any, true, true );
   compareAttributesParam->setDefaultToAllFields( true );
   addParameter( compareAttributesParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterDefinition > matchTypeParam = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "MATCH_TYPE" ),
+  std::unique_ptr< QgsProcessingParameterDefinition > matchTypeParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "MATCH_TYPE" ),
       QObject::tr( "Geometry comparison behavior" ),
       QStringList() << QObject::tr( "Exact Match" )
       << QObject::tr( "Tolerant Match (Topological Equality)" ),

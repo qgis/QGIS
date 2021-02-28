@@ -53,7 +53,7 @@ void QgsMultiPolygon::clear()
 
 QgsMultiPolygon *QgsMultiPolygon::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsMultiPolygon >();
+  auto result = std::make_unique< QgsMultiPolygon >();
   result->mWkbType = mWkbType;
   return result.release();
 }

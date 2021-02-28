@@ -92,11 +92,11 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
   // Write the generalized geometry
   if ( geometryType == QgsWkbTypes::LineString && !isRing )
   {
-    return qgis::make_unique< QgsLineString >( QVector<double>() << x1 << x2, QVector<double>() << y1 << y2 );
+    return std::make_unique< QgsLineString >( QVector<double>() << x1 << x2, QVector<double>() << y1 << y2 );
   }
   else
   {
-    std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString >(
+    std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
         QVector< double >() << x1
         << x2
         << x2
@@ -111,7 +111,7 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
       return std::move( ext );
     else
     {
-      std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+      std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
       polygon->setExteriorRing( ext.release() );
       return std::move( polygon );
     }
@@ -308,7 +308,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
     if ( !output )
     {
-      output = qgis::make_unique< QgsLineString >( lineStringX, lineStringY );
+      output = std::make_unique< QgsLineString >( lineStringX, lineStringY );
     }
     if ( output->numPoints() < ( isaLinearRing ? 4 : 2 ) )
     {

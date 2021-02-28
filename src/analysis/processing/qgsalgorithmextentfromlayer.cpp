@@ -73,7 +73,7 @@ void QgsExtentFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
-  auto roundParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "ROUND_TO" ), QObject::tr( "Round values to" ), 0, QStringLiteral( "INPUT" ), 0 );
+  auto roundParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "ROUND_TO" ), QObject::tr( "Round values to" ), 0, QStringLiteral( "INPUT" ), 0 );
   roundParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( roundParam.release() );
 

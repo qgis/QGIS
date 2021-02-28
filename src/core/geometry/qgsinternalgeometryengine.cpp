@@ -988,7 +988,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
             // close ring
             points.append( points.at( 0 ) );
 
-            std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+            std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
             poly->setExteriorRing( new QgsLineString( points ) );
             if ( poly->area() > 0 )
               parts << QgsGeometry( std::move( poly ) );
@@ -1200,7 +1200,7 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
 std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString, double distanceTolerance,
     double pointSpacingAngleTolerance )
 {
-  std::unique_ptr< QgsCompoundCurve > out = qgis::make_unique< QgsCompoundCurve >();
+  std::unique_ptr< QgsCompoundCurve > out = std::make_unique< QgsCompoundCurve >();
 
   /* Minimum number of edges, per quadrant, required to define an arc */
   const unsigned int minQuadEdges = 2;
@@ -1348,7 +1348,7 @@ std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString
       {
         points.append( lineString->pointN( j ) );
       }
-      std::unique_ptr< QgsCurve > straightSegment = qgis::make_unique< QgsLineString >( points );
+      std::unique_ptr< QgsCurve > straightSegment = std::make_unique< QgsLineString >( points );
       out->addCurve( straightSegment.release() );
     }
     else
@@ -1358,7 +1358,7 @@ std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString
       points.append( lineString->pointN( start ) );
       points.append( lineString->pointN( ( start + end + 1 ) / 2 ) );
       points.append( lineString->pointN( end + 1 ) );
-      std::unique_ptr< QgsCircularString > curvedSegment = qgis::make_unique< QgsCircularString >();
+      std::unique_ptr< QgsCircularString > curvedSegment = std::make_unique< QgsCircularString >();
       curvedSegment->setPoints( points );
       out->addCurve( curvedSegment.release() );
     }
@@ -1392,7 +1392,7 @@ std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstrac
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsCurvePolygon > result = qgis::make_unique< QgsCurvePolygon>();
+    std::unique_ptr< QgsCurvePolygon > result = std::make_unique< QgsCurvePolygon>();
 
     result->setExteriorRing( lineToCurve( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                                           distanceTolerance, angleTolerance ).release() );

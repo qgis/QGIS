@@ -99,7 +99,7 @@ bool QgsFlattenRelationshipsAlgorithm::prepareAlgorithm( const QVariantMap &para
   if ( !referencingLayer )
     throw QgsProcessingException( QObject::tr( "Could not resolved referenced layer." ) );
 
-  mReferencingSource = qgis::make_unique< QgsVectorLayerFeatureSource >( referencingLayer );
+  mReferencingSource = std::make_unique< QgsVectorLayerFeatureSource >( referencingLayer );
   mReferencingFields = referencingLayer->fields();
 
   return true;

@@ -157,7 +157,7 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
     }
   }
 
-  std::unique_ptr< QgsMesh3DSymbol > defaultSymbol = qgis::make_unique< QgsMesh3DSymbol >();
+  std::unique_ptr< QgsMesh3DSymbol > defaultSymbol = std::make_unique< QgsMesh3DSymbol >();
   // set symbol does not take ownership!
   setSymbol( defaultSymbol.get() );
 

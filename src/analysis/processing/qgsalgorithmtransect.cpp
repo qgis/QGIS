@@ -50,14 +50,14 @@ void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
-  std::unique_ptr< QgsProcessingParameterDistance > length = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "LENGTH" ), QObject::tr( "Length of the transect" ),
+  std::unique_ptr< QgsProcessingParameterDistance > length = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "LENGTH" ), QObject::tr( "Length of the transect" ),
       5.0, QStringLiteral( "INPUT" ), false, 0 );
   length->setIsDynamic( true );
   length->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "LENGTH" ), QObject::tr( "Length of the transect" ), QgsPropertyDefinition::DoublePositive ) );
   length->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( length.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > angle = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees from the original line at the vertices" ), QgsProcessingParameterNumber::Double,
+  std::unique_ptr< QgsProcessingParameterNumber > angle = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees from the original line at the vertices" ), QgsProcessingParameterNumber::Double,
       90.0, false, 0, 360 );
   angle->setIsDynamic( true );
   angle->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees" ), QgsPropertyDefinition::Double ) );

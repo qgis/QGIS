@@ -163,7 +163,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   if ( ok )
   {
     long featureCount = selectedOnly ? mLayer->selectedFeatureCount() : mLayer->featureCount();
-    std::unique_ptr< QgsStatisticsValueGatherer > gatherer = qgis::make_unique< QgsStatisticsValueGatherer >( mLayer, fit, featureCount, sourceFieldExp );
+    std::unique_ptr< QgsStatisticsValueGatherer > gatherer = std::make_unique< QgsStatisticsValueGatherer >( mLayer, fit, featureCount, sourceFieldExp );
     switch ( mFieldType )
     {
       case DataType::Numeric:

@@ -33,7 +33,7 @@ QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent 
 
   mCurrentFormat.reset( QgsApplication::numericFormatRegistry()->fallbackFormat() );
 
-  mPreviewFormat = qgis::make_unique< QgsBasicNumericFormat >();
+  mPreviewFormat = std::make_unique< QgsBasicNumericFormat >();
   mPreviewFormat->setShowThousandsSeparator( false );
   mPreviewFormat->setShowPlusSign( false );
   mPreviewFormat->setShowTrailingZeros( false );

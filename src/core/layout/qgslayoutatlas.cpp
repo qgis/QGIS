@@ -293,7 +293,7 @@ int QgsLayoutAtlas::updateFeatures()
   std::unique_ptr<QgsExpression> nameExpression;
   if ( !mPageNameExpression.isEmpty() )
   {
-    nameExpression = qgis::make_unique< QgsExpression >( mPageNameExpression );
+    nameExpression = std::make_unique< QgsExpression >( mPageNameExpression );
     if ( nameExpression->hasParserError() )
     {
       nameExpression.reset( nullptr );
@@ -313,7 +313,7 @@ int QgsLayoutAtlas::updateFeatures()
   std::unique_ptr<QgsExpression> sortExpression;
   if ( mSortFeatures && !mSortExpression.isEmpty() )
   {
-    sortExpression = qgis::make_unique< QgsExpression >( mSortExpression );
+    sortExpression = std::make_unique< QgsExpression >( mSortExpression );
     if ( sortExpression->hasParserError() )
     {
       sortExpression.reset( nullptr );

@@ -217,7 +217,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   if ( mMapCanvas )
   {
-    mPixelSelectorTool = qgis::make_unique<QgsMapToolEmitPoint>( canvas );
+    mPixelSelectorTool = std::make_unique<QgsMapToolEmitPoint>( canvas );
     connect( mPixelSelectorTool.get(), &QgsMapToolEmitPoint::canvasClicked, this, &QgsRasterLayerProperties::pixelSelected );
     connect( mPixelSelectorTool.get(), &QgsMapToolEmitPoint::deactivated, this, &QgsRasterLayerProperties::restoreWindowModality );
   }
@@ -1898,7 +1898,11 @@ void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
         {
           if ( !myInputLine.simplified().startsWith( '#' ) )
           {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
+#else
+            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), Qt::SkipEmptyParts );
+#endif
             if ( myTokens.count() != 4 )
             {
               myImportError = true;
@@ -1931,7 +1935,11 @@ void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
         {
           if ( !myInputLine.simplified().startsWith( '#' ) )
           {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
+#else
+            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), Qt::SkipEmptyParts );
+#endif
             if ( myTokens.count() != 3 && myTokens.count() != 2 ) // 2 for QGIS < 1.9 compatibility
             {
               myImportError = true;

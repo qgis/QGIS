@@ -387,7 +387,7 @@ void TestQgsCallout::calloutsInLayout()
 {
   //test rendering callouts inside a layout (tests DPI scaling of callouts)
   QgsLayout l( QgsProject::instance() );
-  std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &l );
+  std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( &l );
   page->setPageSize( QgsLayoutSize( 50, 50 ) );
   l.pageCollection()->addPage( page.release() );
 

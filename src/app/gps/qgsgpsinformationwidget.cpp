@@ -1198,7 +1198,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   int idx { vlayer->fields().indexOf( mCboTimestampField->currentText() ) };
   if ( idx != -1 )
   {
-    QVariant ts { timestamp( vlayer, idx ) };
+    QVariant ts = timestamp( vlayer, idx );
     if ( ts.isValid() )
     {
       attrMap[ idx ] = ts;

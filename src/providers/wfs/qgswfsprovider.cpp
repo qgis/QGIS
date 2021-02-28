@@ -122,8 +122,8 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
     const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
-    auto downloader = qgis::make_unique<QgsFeatureDownloader>();
-    downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
+    auto downloader = std::make_unique<QgsFeatureDownloader>();
+    downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(),
              qgis::overload < QVector<QgsFeatureUniqueIdPair> >::of( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );

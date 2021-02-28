@@ -2570,7 +2570,7 @@ void QgsVertexTool::initSelectionRubberBand()
 {
   if ( !mSelectionRubberBand )
   {
-    mSelectionRubberBand = qgis::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
+    mSelectionRubberBand = std::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
     QColor fillColor = QColor( 0, 120, 215, 63 );
     QColor strokeColor = QColor( 0, 102, 204, 100 );
     mSelectionRubberBand->setFillColor( fillColor );

@@ -132,8 +132,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEdit->setShowSearchIcon( true );
   txtSearchEdit->setPlaceholderText( tr( "Search…" ) );
 
-  mValuesModel = qgis::make_unique<QStandardItemModel>();
-  mProxyValues = qgis::make_unique<QSortFilterProxyModel>();
+  mValuesModel = std::make_unique<QStandardItemModel>();
+  mProxyValues = std::make_unique<QSortFilterProxyModel>();
   mProxyValues->setSourceModel( mValuesModel.get() );
   mValuesListView->setModel( mProxyValues.get() );
   txtSearchEditValues->setShowSearchIcon( true );

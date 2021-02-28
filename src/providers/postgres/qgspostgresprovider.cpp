@@ -4546,7 +4546,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
   QgsDataProvider::ProviderOptions providerOptions;
   QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions, flags );
+  std::unique_ptr< QgsPostgresProvider > provider = std::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions, flags );
   if ( !provider->isValid() )
   {
     if ( errorMessage )

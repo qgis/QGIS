@@ -30,7 +30,12 @@ corresponding to the provider type, and passes it the url. The data provider
 connects to the data source.
 
 The :py:class:`QgsVectorLayer` provides a common interface to the different data types. It also
-manages editing transactions.
+manages editing transactions by buffering layer edits until they are written to the
+underlying :py:class:`QgsVectorDataProvider`. Before edits can be made a call to :py:func:`~startEditing`
+is required. Any edits made to a :py:class:`QgsVectorLayer` are then held in memory only, and
+are not written to the underlying :py:class:`QgsVectorDataProvider` until a call to :py:func:`~commitChanges`
+is made. Buffered edits can be rolled back and discarded without altering the
+underlying provider by calling :py:func:`~rollBack`.
 
 Sample usage of the :py:class:`QgsVectorLayer` class:
 

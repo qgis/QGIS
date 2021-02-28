@@ -62,7 +62,7 @@ bool QgsCompoundCurve::equals( const QgsCurve &other ) const
 
 QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsCompoundCurve >();
+  auto result = std::make_unique< QgsCompoundCurve >();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -444,7 +444,7 @@ bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
   QgsPoint lastEnd;
   for ( QgsCurve *curve : curves )
   {
-    result = result || curve->removeDuplicateNodes( epsilon, useZValues );
+    result = curve->removeDuplicateNodes( epsilon, useZValues ) || result;
     if ( curve->numPoints() == 0 || qgsDoubleNear( curve->length(), 0.0, epsilon ) )
     {
       // empty curve, remove it
@@ -958,7 +958,7 @@ QgsCompoundCurve *QgsCompoundCurve::curveSubstring( double startDistance, double
     return createEmptyWithSameType();
 
   endDistance = std::max( startDistance, endDistance );
-  std::unique_ptr< QgsCompoundCurve > substring = qgis::make_unique< QgsCompoundCurve >();
+  std::unique_ptr< QgsCompoundCurve > substring = std::make_unique< QgsCompoundCurve >();
 
   double distanceTraversed = 0;
   for ( const QgsCurve *curve : mCurves )

@@ -30,6 +30,10 @@ endif()
 add_library (arcgisfeatureserverprovider_a STATIC ${AFS_SRCS})
 add_library(arcgisfeatureserverprovider MODULE ${AFS_SRCS})
 
+# require c++17
+target_compile_features(arcgisfeatureserverprovider_a PRIVATE cxx_std_17)
+target_compile_features(arcgisfeatureserverprovider PRIVATE cxx_std_17)
+
 target_link_libraries(arcgisfeatureserverprovider
   qgis_core
   ${QCA_LIBRARY}
@@ -62,6 +66,9 @@ set (AMS_SRCS
 )
 
 add_library(arcgismapserverprovider MODULE ${AMS_SRCS})
+
+# require c++17
+target_compile_features(arcgismapserverprovider PRIVATE cxx_std_17)
 
 target_link_libraries(arcgismapserverprovider
   qgis_core

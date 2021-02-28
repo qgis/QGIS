@@ -83,7 +83,7 @@ bool QgsAnnotationLayer::isEmpty() const
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
   QgsAnnotationLayer::LayerOptions options( mTransformContext );
-  std::unique_ptr< QgsAnnotationLayer > layer = qgis::make_unique< QgsAnnotationLayer >( name(), options );
+  std::unique_ptr< QgsAnnotationLayer > layer = std::make_unique< QgsAnnotationLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
 
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )

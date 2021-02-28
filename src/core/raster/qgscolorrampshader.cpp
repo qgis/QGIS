@@ -37,7 +37,7 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
-  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
+  , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
 {
   QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 
@@ -137,7 +137,7 @@ QgsColorRamp *QgsColorRampShader::sourceColorRamp() const
 
 QgsColorRamp *QgsColorRampShader::createColorRamp() const
 {
-  std::unique_ptr<QgsGradientColorRamp> ramp = qgis::make_unique< QgsGradientColorRamp >();
+  std::unique_ptr<QgsGradientColorRamp> ramp = std::make_unique< QgsGradientColorRamp >();
   int count = mColorRampItemList.size();
   if ( count == 0 )
   {
@@ -633,7 +633,7 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const 
   setColorRampItemList( itemList );
 
   if ( !mLegendSettings )
-    mLegendSettings = qgis::make_unique< QgsColorRampLegendNodeSettings >();
+    mLegendSettings = std::make_unique< QgsColorRampLegendNodeSettings >();
 
   mLegendSettings->readXml( colorRampShaderElem, context );
 }

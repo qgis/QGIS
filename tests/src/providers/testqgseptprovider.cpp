@@ -158,13 +158,13 @@ void TestQgsEptProvider::uriIsBlocklisted()
 void TestQgsEptProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( !layer->isValid() );
 }
 
 void TestQgsEptProvider::validLayer()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:28356" ) );
@@ -184,7 +184,7 @@ void TestQgsEptProvider::validLayer()
 
 void TestQgsEptProvider::validLayerWithEptHierarchy()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QGSCOMPARENEAR( layer->extent().xMinimum(), 515368.000000, 0.1 );
@@ -200,7 +200,7 @@ void TestQgsEptProvider::validLayerWithEptHierarchy()
 
 void TestQgsEptProvider::attributes()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
@@ -241,7 +241,7 @@ void TestQgsEptProvider::attributes()
 
 void TestQgsEptProvider::calculateZRange()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QgsDoubleRange range = layer->elevationProperties()->calculateZRange( layer.get() );
@@ -258,7 +258,7 @@ void TestQgsEptProvider::calculateZRange()
 
 void TestQgsEptProvider::testIdentify()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
 
   // identify 1 point click (rectangular point shape)
   {

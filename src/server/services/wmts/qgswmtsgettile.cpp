@@ -47,13 +47,13 @@ namespace QgsWmts
       {
         contentType = QStringLiteral( "image/jpeg" );
         saveFormat = QStringLiteral( "JPEG" );
-        image = qgis::make_unique<QImage>( 256, 256, QImage::Format_RGB32 );
+        image = std::make_unique<QImage>( 256, 256, QImage::Format_RGB32 );
       }
       else
       {
         contentType = QStringLiteral( "image/png" );
         saveFormat = QStringLiteral( "PNG" );
-        image = qgis::make_unique<QImage>( 256, 256, QImage::Format_ARGB32_Premultiplied );
+        image = std::make_unique<QImage>( 256, 256, QImage::Format_ARGB32_Premultiplied );
       }
 
       QByteArray content = cacheManager->getCachedImage( project, request, accessControl );

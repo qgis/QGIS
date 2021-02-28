@@ -337,7 +337,7 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
 
   if ( requestMadeFromMainThread )
   {
-    std::unique_ptr<ProcessThread> processThread = qgis::make_unique<ProcessThread>( runFunction );
+    std::unique_ptr<ProcessThread> processThread = std::make_unique<ProcessThread>( runFunction );
     processThread->start();
     // wait for thread to gracefully exit
     processThread->wait();

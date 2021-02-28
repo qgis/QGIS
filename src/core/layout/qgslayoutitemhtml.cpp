@@ -45,7 +45,7 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   // only possible on the main thread!
   if ( QThread::currentThread() == QApplication::instance()->thread() )
   {
-    mWebPage = qgis::make_unique< QgsWebPage >();
+    mWebPage = std::make_unique< QgsWebPage >();
   }
   else
   {

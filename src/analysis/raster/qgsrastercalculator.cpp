@@ -178,7 +178,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
           if ( ref.ref == layerRef )
           {
             uniqueRasterEntries[layerRef] = ref;
-            inputBlocks[layerRef ] = qgis::make_unique<QgsRasterBlock>();
+            inputBlocks[layerRef ] = std::make_unique<QgsRasterBlock>();
           }
         }
       }

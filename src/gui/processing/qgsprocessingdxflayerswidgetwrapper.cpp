@@ -179,7 +179,6 @@ QgsProcessingDxfLayersWidget::QgsProcessingDxfLayersWidget( QWidget *parent )
   : QWidget( parent )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();

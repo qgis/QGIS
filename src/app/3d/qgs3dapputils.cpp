@@ -58,7 +58,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DAppUtils::convert2dPointCloud
   if ( renderer->type() == QLatin1String( "ramp" ) )
   {
     const QgsPointCloudAttributeByRampRenderer *renderer2d = dynamic_cast< const QgsPointCloudAttributeByRampRenderer * >( renderer );
-    symbol3D = qgis::make_unique< QgsColorRampPointCloud3DSymbol >();
+    symbol3D = std::make_unique< QgsColorRampPointCloud3DSymbol >();
     QgsColorRampPointCloud3DSymbol *symbol = static_cast< QgsColorRampPointCloud3DSymbol * >( symbol3D.get() );
     symbol->setAttribute( renderer2d->attribute() );
     symbol->setColorRampShaderMinMax( renderer2d->minimum(), renderer2d->maximum() );
@@ -67,7 +67,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DAppUtils::convert2dPointCloud
   else if ( renderer->type() == QLatin1String( "rgb" ) )
   {
     const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast< const QgsPointCloudRgbRenderer * >( renderer );
-    symbol3D = qgis::make_unique< QgsRgbPointCloud3DSymbol >();
+    symbol3D = std::make_unique< QgsRgbPointCloud3DSymbol >();
     QgsRgbPointCloud3DSymbol *symbol = static_cast< QgsRgbPointCloud3DSymbol * >( symbol3D.get() );
     symbol->setRedAttribute( renderer2d->redAttribute() );
     symbol->setGreenAttribute( renderer2d->greenAttribute() );
@@ -81,7 +81,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DAppUtils::convert2dPointCloud
   {
 
     const QgsPointCloudClassifiedRenderer *renderer2d = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( renderer );
-    symbol3D = qgis::make_unique< QgsClassificationPointCloud3DSymbol >();
+    symbol3D = std::make_unique< QgsClassificationPointCloud3DSymbol >();
     QgsClassificationPointCloud3DSymbol *symbol = static_cast< QgsClassificationPointCloud3DSymbol * >( symbol3D.get() );
     symbol->setAttribute( renderer2d->attribute() );
     symbol->setCategoriesList( renderer2d->categories() );
@@ -89,7 +89,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DAppUtils::convert2dPointCloud
 
   if ( symbol3D )
   {
-    std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = qgis::make_unique< QgsPointCloudLayer3DRenderer >();
+    std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = std::make_unique< QgsPointCloudLayer3DRenderer >();
     renderer3D->setSymbol( symbol3D.release() );
     return renderer3D;
   }

@@ -217,7 +217,7 @@ std::unique_ptr<QgsProcessingParameterDefinition> QgsRasterAnalysisUtils::create
     i++;
   }
 
-  return qgis::make_unique< QgsProcessingParameterEnum >( name, description, names, false, defaultChoice );
+  return std::make_unique< QgsProcessingParameterEnum >( name, description, names, false, defaultChoice );
 }
 
 Qgis::DataType QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( int choice )

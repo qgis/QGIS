@@ -88,7 +88,7 @@ QgsLayout *QgsLayout::clone() const
   QDomElement elem = writeXml( currentDoc, context );
   currentDoc.appendChild( elem );
 
-  std::unique_ptr< QgsLayout > newLayout = qgis::make_unique< QgsLayout >( mProject );
+  std::unique_ptr< QgsLayout > newLayout = std::make_unique< QgsLayout >( mProject );
   bool ok = false;
   newLayout->loadFromTemplate( currentDoc, context, true, &ok );
   if ( !ok )
@@ -960,7 +960,7 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Read layout settings" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Read layout settings" ), QStringLiteral( "projectload" ) );
 
   blockSignals( true ); // defer changed signal to end
   readXmlLayoutSettings( layoutElement, document, context );
@@ -1014,7 +1014,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Read items" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Read items" ), QStringLiteral( "projectload" ) );
 
   // multiframes
 
@@ -1116,7 +1116,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
   {
     if ( profile )
-      itemProfile = qgis::make_unique< QgsScopedRuntimeProfile >( item->displayName(), QStringLiteral( "projectload" ) );
+      itemProfile = std::make_unique< QgsScopedRuntimeProfile >( item->displayName(), QStringLiteral( "projectload" ) );
     item->finalizeRestoreFromXml();
     if ( itemProfile )
       itemProfile.reset();
@@ -1124,7 +1124,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
   {
     if ( profile )
-      itemProfile = qgis::make_unique< QgsScopedRuntimeProfile >( mf->displayName(), QStringLiteral( "projectload" ) );
+      itemProfile = std::make_unique< QgsScopedRuntimeProfile >( mf->displayName(), QStringLiteral( "projectload" ) );
     mf->finalizeRestoreFromXml();
     if ( itemProfile )
       itemProfile.reset();

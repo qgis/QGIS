@@ -81,7 +81,7 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
   {
     case  Qt::DisplayRole:
     {
-      const QList<QVariant> result { mRows.at( index.row() ) };
+      const QList<QVariant> result = mRows.at( index.row() );
       if ( index.column() < result.count( ) )
       {
         return result.at( index.column() );

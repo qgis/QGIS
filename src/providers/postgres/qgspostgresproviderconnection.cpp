@@ -244,7 +244,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
       } );
     }
 
-    std::unique_ptr<QgsPostgresResult> res = qgis::make_unique<QgsPostgresResult>( conn->PQexec( sql ) );
+    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->PQexec( sql ) );
 
     if ( feedback )
     {
@@ -387,7 +387,7 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
     if ( mResolveTypes )
     {
       const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
-      QVariant val { result->PQgetvalue( mRowIndex, colIdx ) };
+      QVariant val = result->PQgetvalue( mRowIndex, colIdx );
       // Special case for bools: 'f' and 't'
       if ( vType == QVariant::Bool )
       {

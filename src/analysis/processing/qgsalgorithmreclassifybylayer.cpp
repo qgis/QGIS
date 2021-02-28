@@ -47,12 +47,12 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addAlgorithmParams();
 
-  std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
+  std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
       QObject::tr( "Output no data value" ), QgsProcessingParameterNumber::Double, -9999 );
   noDataValueParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( noDataValueParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterEnum > boundsHandling = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "RANGE_BOUNDARIES" ),
+  std::unique_ptr< QgsProcessingParameterEnum > boundsHandling = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "RANGE_BOUNDARIES" ),
       QObject::tr( "Range boundaries" ), QStringList() << QObject::tr( "min < value <= max" )
       << QObject::tr( "min <= value < max" )
       << QObject::tr( "min <= value <= max" )
@@ -61,7 +61,7 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
   boundsHandling->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( boundsHandling.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > missingValuesParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NODATA_FOR_MISSING" ),
+  std::unique_ptr< QgsProcessingParameterBoolean > missingValuesParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NODATA_FOR_MISSING" ),
       QObject::tr( "Use no data when no range matches value" ), false, false );
   missingValuesParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( missingValuesParam.release() );
@@ -131,7 +131,7 @@ QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &par
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( mDataType, mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );

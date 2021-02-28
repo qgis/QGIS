@@ -549,7 +549,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   }
 
   //create an icon pixmap
-  std::unique_ptr< QgsLineSymbol > previewSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << layerCopy.release() );
+  std::unique_ptr< QgsLineSymbol > previewSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << layerCopy.release() );
   const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize );
   mChangePatternButton->setIconSize( currentIconSize );
   mChangePatternButton->setIcon( icon );

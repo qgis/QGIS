@@ -79,7 +79,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   QgsDebugMsgLevel( "Delimited text file uri is " + uri, 2 );
 
   const QUrl url = QUrl::fromEncoded( uri.toLatin1() );
-  mFile = qgis::make_unique< QgsDelimitedTextFile >();
+  mFile = std::make_unique< QgsDelimitedTextFile >();
   mFile->setFromUrl( url );
 
   QString subset;
@@ -269,7 +269,7 @@ void QgsDelimitedTextProvider::resetIndexes() const
 
   mSubsetIndex.clear();
   if ( mBuildSpatialIndex && mGeomRep != GeomNone )
-    mSpatialIndex = qgis::make_unique< QgsSpatialIndex >();
+    mSpatialIndex = std::make_unique< QgsSpatialIndex >();
 }
 
 bool QgsDelimitedTextProvider::createSpatialIndex()
@@ -1103,7 +1103,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
   if ( ! nonNullSubset.isEmpty() )
   {
 
-    expression = qgis::make_unique< QgsExpression >( nonNullSubset );
+    expression = std::make_unique< QgsExpression >( nonNullSubset );
     QString error;
     if ( expression->hasParserError() )
     {

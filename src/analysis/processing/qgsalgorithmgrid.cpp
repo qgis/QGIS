@@ -340,7 +340,7 @@ void QgsGridAlgorithm::createRectangleGrid( std::unique_ptr< QgsFeatureSink > &s
 
       ringX = { x1, x2, x2, x1, x1 };
       ringY = { y1, y1, y2, y2, y1 };
-      std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+      std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
       poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
       f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x2 << y2 );
@@ -417,7 +417,7 @@ void QgsGridAlgorithm::createDiamondGrid( std::unique_ptr< QgsFeatureSink > &sin
 
       ringX = { x1, x2, x3, x2, x1 };
       ringY = { y2, y1, y2, y3, y2 };
-      std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+      std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
       poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
       f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x3 << y3 );
@@ -505,7 +505,7 @@ void QgsGridAlgorithm::createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink,
 
       ringX = { x1, x2, x3, x4, x3, x2, x1 };
       ringY = { y2, y1, y1, y2, y3, y3, y2 };
-      std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+      std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
       poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
       f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x4 << y3 );

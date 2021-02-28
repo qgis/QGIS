@@ -24,7 +24,7 @@ void QgsTransformAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterCoordinateOperation > crsOpParam = qgis::make_unique< QgsProcessingParameterCoordinateOperation >( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ),
+  std::unique_ptr< QgsProcessingParameterCoordinateOperation > crsOpParam = std::make_unique< QgsProcessingParameterCoordinateOperation >( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ),
       QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "TARGET_CRS" ), QVariant(), QVariant(), true );
   crsOpParam->setFlags( crsOpParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( crsOpParam.release() );

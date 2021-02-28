@@ -388,11 +388,18 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
 
   QRegularExpression linePartRx( QStringLiteral( "[\\s,:]+" ) );
 
-  QStringList parts = string.split( '\n', QString::SkipEmptyParts );
-  const auto constParts = parts;
-  for ( const QString &part : constParts )
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+  const QStringList parts = string.split( '\n', QString::SkipEmptyParts );
+#else
+  const QStringList parts = string.split( '\n', Qt::SkipEmptyParts );
+#endif
+  for ( const QString &part : parts )
   {
-    QStringList lineParts = part.split( linePartRx, QString::SkipEmptyParts );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QStringList lineParts = part.split( linePartRx, QString::SkipEmptyParts );
+#else
+    const QStringList lineParts = part.split( linePartRx, Qt::SkipEmptyParts );
+#endif
     bool ok = false;
     switch ( lineParts.count() )
     {

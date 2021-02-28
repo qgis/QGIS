@@ -1111,7 +1111,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   startProfile( tr( "Geometry validation" ) );
 
-  mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
+  mGeometryValidationService = std::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
   mGeometryValidationService->setMessageBar( mInfoBar );
   mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ), mMapCanvas, this );
   mGeometryValidationDock->hide();
@@ -1671,7 +1671,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
 
-  mNetworkLoggerWidgetFactory.reset( qgis::make_unique< QgsNetworkLoggerWidgetFactory >( mNetworkLogger ) );
+  mNetworkLoggerWidgetFactory.reset( std::make_unique< QgsNetworkLoggerWidgetFactory >( mNetworkLogger ) );
 
   // update windows
   qApp->processEvents();
@@ -1692,7 +1692,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   toggleFullScreen();
 #endif
 
-  mStartupProfilerWidgetFactory.reset( qgis::make_unique< QgsProfilerWidgetFactory >( profiler ) );
+  mStartupProfilerWidgetFactory.reset( std::make_unique< QgsProfilerWidgetFactory >( profiler ) );
 
   auto toggleRevert = [ = ]
   {
@@ -1720,10 +1720,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     mCentralContainer->setCurrentIndex( 0 );
   } );
 
-  mCodeEditorWidgetFactory.reset( qgis::make_unique< QgsCodeEditorOptionsFactory >() );
+  mCodeEditorWidgetFactory.reset( std::make_unique< QgsCodeEditorOptionsFactory >() );
 
 #ifdef HAVE_3D
-  m3DOptionsWidgetFactory.reset( qgis::make_unique< Qgs3DOptionsFactory >() );
+  m3DOptionsWidgetFactory.reset( std::make_unique< Qgs3DOptionsFactory >() );
 #endif
 }
 
@@ -2327,7 +2327,7 @@ void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::S
         {
           QString tableSchema;
           QString tableName;
-          const QVariantMap sourceParts { providerMetadata->decodeUri( dependency.source ) };
+          const QVariantMap sourceParts = providerMetadata->decodeUri( dependency.source );
 
           // This part should really be abstracted out to the connection classes or to the providers directly.
           // Different providers decode the uri differently, for example we don't get the table name out of OGR
@@ -2351,7 +2351,7 @@ void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::S
             {
               const QString layerUri { conn->tableUri( tableSchema, tableName )};
               // Load it!
-              std::unique_ptr< QgsVectorLayer > newVl = qgis::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
+              std::unique_ptr< QgsVectorLayer > newVl = std::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
               if ( newVl->isValid() )
               {
                 QgsProject::instance()->addMapLayer( newVl.release() );
@@ -2434,6 +2434,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
     connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addRasterLayers, this, [ = ]( const QStringList & layersList ) { addRasterLayers( layersList ); } );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),
              this, SLOT( addVectorLayer( QString const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayers( QStringList const &, QString const &, QString const & ) ),
@@ -5458,7 +5459,7 @@ static void setupVectorLayer( const QString &vectorLayerPath,
     QString composedURI = QgsProviderRegistry::instance()->encodeUri(
                             layer->providerType(), uriParts );
 
-    auto newLayer = qgis::make_unique<QgsVectorLayer>( composedURI, layer->name(), QStringLiteral( "ogr" ), options );
+    auto newLayer = std::make_unique<QgsVectorLayer>( composedURI, layer->name(), QStringLiteral( "ogr" ), options );
     if ( newLayer && newLayer->isValid() )
     {
       delete layer;
@@ -7010,7 +7011,7 @@ bool QgisApp::addProject( const QString &projectFile )
   QgsCanvasRefreshBlocker refreshBlocker;
 
   bool returnCode = false;
-  std::unique_ptr< QgsProjectDirtyBlocker > dirtyBlocker = qgis::make_unique< QgsProjectDirtyBlocker >( QgsProject::instance() );
+  std::unique_ptr< QgsProjectDirtyBlocker > dirtyBlocker = std::make_unique< QgsProjectDirtyBlocker >( QgsProject::instance() );
   QObject connectionScope; // manually control scope of layersChanged lambda connection - we need the connection automatically destroyed when this function finishes
   bool badLayersHandled = false;
   connect( mAppBadLayersHandler, &QgsHandleBadLayersHandler::layersChanged, &connectionScope, [&badLayersHandled] { badLayersHandled = true; } );
@@ -7232,8 +7233,8 @@ bool QgisApp::fileSave()
                                  tr( "The loaded project file on disk was meanwhile changed. Do you want to overwrite the changes?\n"
                                      "\nLast modification date on load was: %1"
                                      "\nCurrent last modification date is: %2" )
-                                 .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ),
-                                       QgsProject::instance()->lastModified().toString( Qt::DefaultLocaleLongDate ) ),
+                                 .arg( QLocale::system().toString( mProjectLastModified, QLocale::LongFormat ),
+                                       QLocale::system().toString( QgsProject::instance()->lastModified(), QLocale::LongFormat ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
         return false;
     }
@@ -7443,7 +7444,7 @@ void QgisApp::openTemplate( const QString &fileName )
   }
 
   //create new layout object
-  std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
+  std::unique_ptr< QgsPrintLayout > layout = std::make_unique< QgsPrintLayout >( QgsProject::instance() );
   bool loadedOk = false;
   layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOk );
   if ( loadedOk )
@@ -9581,7 +9582,7 @@ QgsLayoutDesignerDialog *QgisApp::createNewReport( QString title )
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
   //create new report
-  std::unique_ptr< QgsReport > report = qgis::make_unique< QgsReport >( QgsProject::instance() );
+  std::unique_ptr< QgsReport > report = std::make_unique< QgsReport >( QgsProject::instance() );
   report->setName( title );
   QgsMasterLayoutInterface *layout = report.get();
   QgsProject::instance()->layoutManager()->addLayout( report.release() );
@@ -13192,7 +13193,7 @@ void QgisApp::initLayouts()
   {
     return new QgsLayoutViewRectangularRubberBand( view );
   } );
-  std::unique_ptr< QgsLayoutItemGuiMetadata > map3dMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
+  std::unique_ptr< QgsLayoutItemGuiMetadata > map3dMetadata = std::make_unique< QgsLayoutItemGuiMetadata>(
         QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
         [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
@@ -15458,7 +15459,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   {
     // let the user know we're going to possibly be taking a while
     // QApplication::setOverrideCursor( Qt::WaitCursor );
-    refreshBlocker = qgis::make_unique< QgsCanvasRefreshBlocker >();
+    refreshBlocker = std::make_unique< QgsCanvasRefreshBlocker >();
   }
 
   QString shortName = name;
@@ -15585,38 +15586,36 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
   // be ogr layers. We'll set returnValue to false if one or more layers fail
   // to load.
   bool returnValue = true;
-  for ( QStringList::ConstIterator myIterator = fileNameQStringList.begin();
-        myIterator != fileNameQStringList.end();
-        ++myIterator )
+  for ( const QString &src : fileNameQStringList )
   {
     QString errMsg;
     bool ok = false;
 
     // if needed prompt for zipitem layers
-    QString vsiPrefix = QgsZipItem::vsiPrefix( *myIterator );
-    if ( ! myIterator->startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) &&
+    QString vsiPrefix = QgsZipItem::vsiPrefix( src );
+    if ( ( !src.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || src.endsWith( QLatin1String( ".zip" ) ) || src.endsWith( QLatin1String( ".tar" ) ) ) &&
          ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
     {
-      if ( askUserForZipItemLayers( *myIterator ) )
+      if ( askUserForZipItemLayers( src ) )
         continue;
     }
 
-    if ( QgsRasterLayer::isValidRasterFileName( *myIterator, errMsg ) )
+    if ( QgsRasterLayer::isValidRasterFileName( src, errMsg ) )
     {
-      QFileInfo myFileInfo( *myIterator );
+      QFileInfo myFileInfo( src );
 
       // set the layer name to the file base name...
       QString layerName = myFileInfo.completeBaseName();
 
       // ...unless provided explicitly
-      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), *myIterator );
+      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), src );
       if ( !uriDetails[ QStringLiteral( "layerName" ) ].toString().isEmpty() )
       {
         layerName = uriDetails[ QStringLiteral( "layerName" ) ].toString();
       }
 
       // try to create the layer
-      QgsRasterLayer *layer = addRasterLayerPrivate( *myIterator, layerName,
+      QgsRasterLayer *layer = addRasterLayerPrivate( src, layerName,
                               QString(), guiWarning, true );
       if ( layer && layer->isValid() )
       {
@@ -15641,7 +15640,7 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
       // loaded afterwards (see main.cpp)
       if ( guiWarning )
       {
-        QString msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
+        QString msg = tr( "%1 is not a supported raster data source" ).arg( src );
         if ( !errMsg.isEmpty() )
           msg += '\n' + errMsg;
 
@@ -16381,9 +16380,9 @@ void QgisApp::namSetup()
   connect( nam, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestTimedOut ),
            this, &QgisApp::namRequestTimedOut );
 
-  nam->setAuthHandler( qgis::make_unique<QgsAppAuthRequestHandler>() );
+  nam->setAuthHandler( std::make_unique<QgsAppAuthRequestHandler>() );
 #ifndef QT_NO_SSL
-  nam->setSslErrorHandler( qgis::make_unique<QgsAppSslErrorHandler>() );
+  nam->setSslErrorHandler( std::make_unique<QgsAppSslErrorHandler>() );
 #endif
 }
 

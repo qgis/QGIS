@@ -151,7 +151,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
   int cellcnt = 0;
 
-  std::unique_ptr< QgsRasterBlock > rasterDataLine = qgis::make_unique< QgsRasterBlock >( Qgis::Float32, cols, 1 );
+  std::unique_ptr< QgsRasterBlock > rasterDataLine = std::make_unique< QgsRasterBlock >( Qgis::Float32, cols, 1 );
 
   for ( int row = 0; row < rows; row++ )
   {

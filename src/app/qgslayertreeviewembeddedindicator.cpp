@@ -56,7 +56,7 @@ void QgsLayerTreeViewEmbeddedIndicatorProvider::onAddedChildren( QgsLayerTreeNod
 
 std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewEmbeddedIndicatorProvider::newIndicator( const QString &project )
 {
-  std::unique_ptr< QgsLayerTreeViewIndicator > indicator = qgis::make_unique< QgsLayerTreeViewIndicator >( this );
+  std::unique_ptr< QgsLayerTreeViewIndicator > indicator = std::make_unique< QgsLayerTreeViewIndicator >( this );
   indicator->setIcon( mIcon );
   indicator->setToolTip( tr( "Embedded from <b>%1</b>" ).arg( project ) );
   mIndicators.insert( indicator.get() );

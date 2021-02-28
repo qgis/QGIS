@@ -2957,7 +2957,7 @@ class TestQgsExpression: public QObject
       QgsExpression expArea2( QStringLiteral( "$area" ) );
       expArea2.setGeomCalculator( &da );
       vArea = expArea2.evaluate( &context );
-      expected = 1005721496.780085;
+      expected = 1005755617.819134;
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       // test unit conversion
       expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMeters ); //default units should be square meters
@@ -2967,7 +2967,7 @@ class TestQgsExpression: public QObject
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMiles );
-      expected = 388.311241;
+      expected = 388.324415;
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 0.001 );
 
@@ -4204,7 +4204,7 @@ class TestQgsExpression: public QObject
 
       // prepare the expression using static variables
       QgsExpressionContext context;
-      std::unique_ptr< QgsExpressionContextScope > scope = qgis::make_unique< QgsExpressionContextScope >();
+      std::unique_ptr< QgsExpressionContextScope > scope = std::make_unique< QgsExpressionContextScope >();
       scope->setVariable( QStringLiteral( "field_name_part_var" ), QStringLiteral( "field" ), true );
 
       // this feature gets added as a static variable, to emulate eg the @atlas_feature variable

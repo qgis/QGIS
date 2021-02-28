@@ -545,7 +545,7 @@ void TestQgsGeometry::equality()
   QVERIFY( !QgsGeometry().equals( QgsGeometry() ) );
 
   // compare to null
-  QgsGeometry g1( qgis::make_unique< QgsPoint >( 1.0, 2.0 ) );
+  QgsGeometry g1( std::make_unique< QgsPoint >( 1.0, 2.0 ) );
   QVERIFY( !g1.equals( QgsGeometry() ) );
   QVERIFY( !QgsGeometry().equals( g1 ) );
 
@@ -12062,6 +12062,11 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99),(111.01 11.99, 111 12))" ) );
   QVERIFY( nodeCurve.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99))" ) );
+
+  // with multiple duplicate nodes
+  nodeCurve.fromWkt( QStringLiteral( "CompoundCurve ((11 1, 11 2, 11 2),CircularString(11 2, 10 3, 10 2),(10 2, 10 2, 11 1))" ) );
+  QVERIFY( nodeCurve.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeCurve.asWkt( 0 ), QStringLiteral( "CompoundCurve ((11 1, 11 2),CircularString (11 2, 10 3, 10 2),(10 2, 11 1))" ) );
 
   // ensure continuity
   nodeCurve.clear();

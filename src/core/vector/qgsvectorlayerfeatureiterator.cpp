@@ -71,12 +71,16 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     else
     {
 #endif
-      mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
-      mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
-      mDeletedFeatureIds = QgsFeatureIds( layer->editBuffer()->deletedFeatureIds() );
-      mChangedAttributeValues = QgsChangedAttributesMap( layer->editBuffer()->changedAttributeValues() );
-      mAddedAttributes = QList<QgsField>( layer->editBuffer()->addedAttributes() );
-      mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );
+      // If we are inside a transaction the iterator "sees" the current status
+      if ( layer->dataProvider() && ! layer->dataProvider()->transaction() )
+      {
+        mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
+        mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
+        mDeletedFeatureIds = QgsFeatureIds( layer->editBuffer()->deletedFeatureIds() );
+        mChangedAttributeValues = QgsChangedAttributesMap( layer->editBuffer()->changedAttributeValues() );
+        mAddedAttributes = QList<QgsField>( layer->editBuffer()->addedAttributes() );
+        mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );
+      }
 #if 0
     }
 #endif
@@ -730,7 +734,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 
   int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
-  std::unique_ptr<QgsExpression> exp = qgis::make_unique<QgsExpression>( exps[oi].cachedExpression );
+  std::unique_ptr<QgsExpression> exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
   da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
@@ -1194,7 +1198,7 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 
 void QgsVectorLayerFeatureIterator::createExpressionContext()
 {
-  mExpressionContext = qgis::make_unique< QgsExpressionContext >();
+  mExpressionContext = std::make_unique< QgsExpressionContext >();
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );

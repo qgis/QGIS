@@ -165,7 +165,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
 
   setProviderType( providerKey );
 
-  mGeometryOptions = qgis::make_unique<QgsGeometryOptions>();
+  mGeometryOptions = std::make_unique<QgsGeometryOptions>();
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles( this );
   mStoredExpressionManager = new QgsStoredExpressionManager();
@@ -874,7 +874,7 @@ QgsRectangle QgsVectorLayer::extent() const
   }
 
   if ( !mEditBuffer ||
-       ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() ) ||
+       ( !mDataProvider->transaction() && ( mEditBuffer->deletedFeatureIds().isEmpty() && mEditBuffer->changedGeometries().isEmpty() ) ) ||
        QgsDataSourceUri( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
   {
     mDataProvider->updateExtents();
@@ -887,9 +887,10 @@ QgsRectangle QgsVectorLayer::extent() const
       rect.combineExtentWith( r );
     }
 
-    if ( mEditBuffer )
+    if ( mEditBuffer && !mDataProvider->transaction() )
     {
-      for ( QgsFeatureMap::const_iterator it = mEditBuffer->mAddedFeatures.constBegin(); it != mEditBuffer->mAddedFeatures.constEnd(); ++it )
+      const auto addedFeatures = mEditBuffer->addedFeatures();
+      for ( QgsFeatureMap::const_iterator it = addedFeatures.constBegin(); it != addedFeatures.constEnd(); ++it )
       {
         if ( it->hasGeometry() )
         {
@@ -1661,7 +1662,7 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
 
     bool defaultLoadedFlag = false;
 
@@ -1753,7 +1754,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
   mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
   if ( !mDataProvider )
@@ -3363,13 +3364,13 @@ long QgsVectorLayer::featureCount() const
   if ( ! mDataProvider )
     return -1;
   return mDataProvider->featureCount() +
-         ( mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
+         ( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->addedFeatures().size() - mEditBuffer->deletedFeatureIds().size() : 0 );
 }
 
 QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
 {
-  const QgsFeatureIds deletedFeatures( mEditBuffer ? mEditBuffer->deletedFeatureIds() : QgsFeatureIds() );
-  const QgsFeatureMap addedFeatures( mEditBuffer ? mEditBuffer->addedFeatures() : QgsFeatureMap() );
+  const QgsFeatureIds deletedFeatures( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->deletedFeatureIds() : QgsFeatureIds() );
+  const QgsFeatureMap addedFeatures( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->addedFeatures() : QgsFeatureMap() );
 
   if ( mEditBuffer && !deletedFeatures.empty() )
   {
@@ -3453,9 +3454,9 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     return false;
   }
 
-  bool rollbackExtent = !mEditBuffer->mDeletedFeatureIds.isEmpty() ||
-                        !mEditBuffer->mAddedFeatures.isEmpty() ||
-                        !mEditBuffer->mChangedGeometries.isEmpty();
+  bool rollbackExtent = !mDataProvider->transaction() && ( !mEditBuffer->deletedFeatureIds().isEmpty() ||
+                        !mEditBuffer->addedFeatures().isEmpty() ||
+                        !mEditBuffer->changedGeometries().isEmpty() );
 
   emit beforeRollBack();
 
@@ -3766,7 +3767,7 @@ void QgsVectorLayer::destroyEditCommand()
   // and delete, so we add a dummy obsolete command to force this to occur.
   // Pushing the new command deletes the destroyed one, and since the new
   // command is obsolete it's automatically deleted by the undo stack.
-  std::unique_ptr< QUndoCommand > command = qgis::make_unique< QUndoCommand >();
+  std::unique_ptr< QUndoCommand > command = std::make_unique< QUndoCommand >();
   command->setObsolete( true );
   undoStack()->push( command.release() );
 
@@ -4040,7 +4041,7 @@ QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
     {
       uniqueValues = mDataProvider->uniqueValues( index, limit );
 
-      if ( mEditBuffer )
+      if ( mEditBuffer && ! mDataProvider->transaction() )
       {
         QSet<QString> vals;
         const auto constUniqueValues = uniqueValues;
@@ -4088,10 +4089,11 @@ QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
 
     case QgsFields::OriginEdit:
       // the layer is editable, but in certain cases it can still be avoided going through all features
-      if ( mEditBuffer->mDeletedFeatureIds.isEmpty() &&
-           mEditBuffer->mAddedFeatures.isEmpty() &&
-           !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
-           mEditBuffer->mChangedAttributeValues.isEmpty() )
+      if ( mDataProvider->transaction() || (
+             mEditBuffer->deletedFeatureIds().isEmpty() &&
+             mEditBuffer->addedFeatures().isEmpty() &&
+             !mEditBuffer->deletedAttributeIds().contains( index ) &&
+             mEditBuffer->changedAttributeValues().isEmpty() ) )
       {
         uniqueValues = mDataProvider->uniqueValues( index, limit );
         return uniqueValues;
@@ -4147,7 +4149,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString &sub
     {
       results = mDataProvider->uniqueStringsMatching( index, substring, limit, feedback );
 
-      if ( mEditBuffer )
+      if ( mEditBuffer && ! mDataProvider->transaction() )
       {
         QgsFeatureMap added = mEditBuffer->addedFeatures();
         QMapIterator< QgsFeatureId, QgsFeature > addedIt( added );
@@ -4186,10 +4188,10 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString &sub
 
     case QgsFields::OriginEdit:
       // the layer is editable, but in certain cases it can still be avoided going through all features
-      if ( mEditBuffer->mDeletedFeatureIds.isEmpty() &&
-           mEditBuffer->mAddedFeatures.isEmpty() &&
-           !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
-           mEditBuffer->mChangedAttributeValues.isEmpty() )
+      if ( mDataProvider->transaction() || ( mEditBuffer->deletedFeatureIds().isEmpty() &&
+                                             mEditBuffer->addedFeatures().isEmpty() &&
+                                             !mEditBuffer->deletedAttributeIds().contains( index ) &&
+                                             mEditBuffer->changedAttributeValues().isEmpty() ) )
       {
         return mDataProvider->uniqueStringsMatching( index, substring, limit, feedback );
       }
@@ -4257,7 +4259,7 @@ QVariant QgsVectorLayer::minimumOrMaximumValue( int index, bool minimum ) const
     case QgsFields::OriginProvider: //a provider field
     {
       QVariant val = minimum ? mDataProvider->minimumValue( index ) : mDataProvider->maximumValue( index );
-      if ( mEditBuffer )
+      if ( mEditBuffer && ! mDataProvider->transaction() )
       {
         QgsFeatureMap added = mEditBuffer->addedFeatures();
         QMapIterator< QgsFeatureId, QgsFeature > addedIt( added );
@@ -4290,10 +4292,10 @@ QVariant QgsVectorLayer::minimumOrMaximumValue( int index, bool minimum ) const
     case QgsFields::OriginEdit:
     {
       // the layer is editable, but in certain cases it can still be avoided going through all features
-      if ( mEditBuffer->mDeletedFeatureIds.isEmpty() &&
-           mEditBuffer->mAddedFeatures.isEmpty() &&
-           !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
-           mEditBuffer->mChangedAttributeValues.isEmpty() )
+      if ( mDataProvider->transaction() || ( mEditBuffer->deletedFeatureIds().isEmpty() &&
+                                             mEditBuffer->addedFeatures().isEmpty() &&
+                                             !mEditBuffer->deletedAttributeIds().contains( index ) &&
+                                             mEditBuffer->changedAttributeValues().isEmpty() ) )
       {
         return minimum ? mDataProvider->minimumValue( index ) : mDataProvider->maximumValue( index );
       }

@@ -42,7 +42,7 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
              << QObject::tr( "within" )
              << QObject::tr( "crosses" );
 
-  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Geometric predicate" ), predicates, true, 0 );
+  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Geometric predicate" ), predicates, true, 0 );
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );

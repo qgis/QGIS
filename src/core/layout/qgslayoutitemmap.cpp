@@ -57,8 +57,8 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
     shapeChanged();
   } );
 
-  mGridStack = qgis::make_unique< QgsLayoutItemMapGridStack >( this );
-  mOverviewStack = qgis::make_unique< QgsLayoutItemMapOverviewStack >( this );
+  mGridStack = std::make_unique< QgsLayoutItemMapGridStack >( this );
+  mOverviewStack = std::make_unique< QgsLayoutItemMapOverviewStack >( this );
 
   connect( mAtlasClippingSettings, &QgsLayoutItemMapAtlasClippingSettings::changed, this, [ = ]
   {
@@ -2738,7 +2738,7 @@ void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const 
   QgsMapSettings settings = mapSettings( extent, size, dpi, true );
   settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
 
-  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( settings,
+  mStagedRendererJob = std::make_unique< QgsMapRendererStagedRenderJob >( settings,
                        mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagRenderLabelsByMapLayer
                        ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
                        : QgsMapRendererStagedRenderJob::Flags() );

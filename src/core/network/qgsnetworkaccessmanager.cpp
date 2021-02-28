@@ -549,9 +549,9 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   else
   {
 #ifndef QT_NO_SSL
-    setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
+    setSslErrorHandler( std::make_unique< QgsSslErrorHandler >() );
 #endif
-    setAuthHandler( qgis::make_unique< QgsNetworkAuthenticationHandler>() );
+    setAuthHandler( std::make_unique< QgsNetworkAuthenticationHandler>() );
   }
 #ifndef QT_NO_SSL
   connect( this, &QgsNetworkAccessManager::sslErrorsOccurred, sMainNAM, &QgsNetworkAccessManager::handleSslErrors );

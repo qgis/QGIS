@@ -128,7 +128,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   if ( mSettings.mIsMBTiles )
   {
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Setup tile capabilities" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Setup tile capabilities" ), QStringLiteral( "projectload" ) );
 
     // we are dealing with a local MBTiles file
     if ( !setupMBTilesCapabilities( uri ) )
@@ -140,7 +140,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   else if ( mSettings.mXyz )
   {
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Setup tile capabilities" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Setup tile capabilities" ), QStringLiteral( "projectload" ) );
 
     // we are working with XYZ tiles
     // no need to get capabilities, the whole definition is in URI
@@ -156,7 +156,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       mCaps = *capabilities;
 
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve server capabilities" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve server capabilities" ), QStringLiteral( "projectload" ) );
 
     // Make sure we have capabilities - other functions here may need them
     if ( !retrieveServerCapabilities() )
@@ -2010,9 +2010,10 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  // Prevent prefetch of XYZ openstreetmap images
-  // See: https://github.com/qgis/QGIS/issues/34813
-  if ( !( mSettings.mTiled && mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
+  // Prevent prefetch of XYZ openstreetmap images, see: https://github.com/qgis/QGIS/issues/34813
+  // But also prevent prefetching if service is a true WMS (mSettings.mTiled = True)
+  // See https://github.com/qgis/QGIS/issues/34813
+  if ( mSettings.mTiled && !( mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
   {
     capability |= Capability::Prefetch;
   }

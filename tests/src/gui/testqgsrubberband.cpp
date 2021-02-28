@@ -232,7 +232,7 @@ void TestQgsRubberband::testClose()
 
 void TestQgsRubberband::testSymbolRender()
 {
-  std::unique_ptr< QgsMapCanvas > canvas = qgis::make_unique< QgsMapCanvas >();
+  std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
   canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   canvas->setFrameStyle( 0 );
   canvas->resize( 600, 400 );
