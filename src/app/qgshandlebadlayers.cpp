@@ -124,10 +124,13 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
     QString type = node.toElement().attribute( QStringLiteral( "type" ) );
     QString id = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
-    QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
-    bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) );
+    QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
+    if ( provider == QString( "spatialite" ) )
+         datasource = datasource.mid( 8 );
+
+    bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) || provider == QLatin1String( "spatialite" ) );
     const QString basepath = QFileInfo( datasource ).absolutePath();
     mOriginalFileBase[ node.namedItem( QStringLiteral( "id" ) ).toElement().text() ].append( basepath );
 
@@ -383,12 +386,23 @@ void QgsHandleBadLayers::apply()
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
     QString fileName;
+    QString formatter;
     const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
     const QString name { mLayerList->item( i, 0 )->text() };
+    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    if ( provider == QString( "spatialite" ) )
+    {
+        if ( datasource.contains( "dbname='" ) )
+            datasource = datasource.mid( datasource.indexOf( "dbname=" ) + 8 );
+        formatter = QString( "dbname='%1") + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
+        datasource = datasource.left( datasource.indexOf( ".sqlite' " ) + 7 );
+    }
+    else
+        formatter = QString( "%1" );
     const QFileInfo dataInfo = QFileInfo( datasource );
     const QString basepath = dataInfo.absoluteDir().path();
     const QString longName = dataInfo.fileName();
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+
     const QString fileType = mLayerList->item( i, 2 )->text();
     if ( provider.toLower().toStdString() == "none" )
     {
@@ -401,7 +415,7 @@ void QgsHandleBadLayers::apply()
     }
 
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
-    if ( providerMap.contains( QStringLiteral( "path" ) ) )
+    if ( providerMap.contains( QStringLiteral( "path" ) ) && !providerMap[ QStringLiteral( "path" ) ].toString().isEmpty() )
       fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
     else
     {
@@ -432,12 +446,13 @@ void QgsHandleBadLayers::apply()
           // store the previous layer subset string, so we can restore after fixing the data source
           subsetString = vlayer->subsetString();
         }
-
-        mapLayer->setDataSource( datasource, name, provider, options );
+        qDebug()<<datasource;
+        mapLayer->setDataSource( formatter.arg( datasource ), name, provider, options );
         dataSourceChanged = mapLayer->isValid();
 
         if ( dataSourceChanged && vlayer && !subsetString.isEmpty() )
         {
+          qDebug()<< QString("datasource is valid");
           vlayer->setSubsetString( subsetString );
         }
       }
@@ -520,12 +535,15 @@ QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString
   const QString originalBase = mOriginalFileBase.value( layerId );
   const QDir newpathDir = QDir( newPath );
   bool exists = newpathDir.exists( fileName );
-  if ( exists )
+  if ( !newpathDir.isEmpty() && exists )
   {
     const QString newBasepath = newpathDir.absolutePath();
     if ( !mAlternativeBasepaths.value( originalBase ).contains( newBasepath ) )
       mAlternativeBasepaths[ originalBase ].append( newBasepath );
-    return ( newPath );
+    if ( QFileInfo( newPath ).isFile() )
+        return ( newPath );
+    else
+        return( newPath + QDir::separator() + fileName );
   }
   else if ( mAlternativeBasepaths.contains( originalBase ) )
   {
@@ -563,12 +581,22 @@ void QgsHandleBadLayers::autoFind()
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
     QString fileName;
+    QString formatter;
     const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
     const QString name { mLayerList->item( i, 0 )->text() };
+    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    if ( provider == QString( "spatialite" ) )
+    {
+        if ( datasource.contains( "dbname=" ) )
+            datasource = datasource.mid( datasource.indexOf( "dbname=" ) + 7 );
+        formatter = QString( "dbname='%1") + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
+        datasource = datasource.left( datasource.indexOf( ".sqlite' " ) + 7 );
+    }
+    else
+        formatter = QString( "%1" );
     const QFileInfo dataInfo = QFileInfo( datasource );
     const QString basepath = dataInfo.absoluteDir().path();
     const QString longName = dataInfo.fileName();
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     const QString fileType = mLayerList->item( i, 2 )->text();
 
     progressDialog.setValue( i );
@@ -587,12 +615,12 @@ void QgsHandleBadLayers::autoFind()
         provider = QStringLiteral( "mdal" );
     }
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
-    if ( providerMap.contains( QStringLiteral( "path" ) ) )
+    if ( providerMap.contains( QStringLiteral( "path" ) ) && !providerMap[ QStringLiteral( "path" ) ].toString().isEmpty() )
       fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
     else
     {
+      fileName = longName;
       item->setForeground( QBrush( Qt::red ) );
-      continue;
     }
 
     datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ) );
@@ -607,7 +635,7 @@ void QgsHandleBadLayers::autoFind()
       QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
       if ( mapLayer )
       {
-        mapLayer->setDataSource( datasource.replace( fileName, longName ), name, provider, options );
+        mapLayer->setDataSource( formatter.arg( datasource.replace( fileName, longName ) ), name, provider, options );
         dataSourceChanged = mapLayer->isValid();
       }
     }
@@ -636,7 +664,7 @@ void QgsHandleBadLayers::autoFind()
         QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
         if ( mapLayer )
         {
-          mapLayer->setDataSource( datasource.replace( fileName, longName ), name, provider, options );
+          mapLayer->setDataSource( formatter.arg( datasource.replace( fileName, longName ) ), name, provider, options );
           dataSourceChanged = mapLayer->isValid();
         }
       }
@@ -652,14 +680,14 @@ void QgsHandleBadLayers::autoFind()
     // finally marks with red all remaining bad layers.
     if ( dataSourceChanged )
     {
-      setFilename( i, datasource );
-      item->setText( datasource );
+      setFilename( i, formatter.arg( datasource ) );
+      item->setText( formatter.arg( datasource ) );
       item->setForeground( QBrush( Qt::green ) );
       item->setData( static_cast< int >( CustomRoles::DataSourceIsChanged ), QVariant( true ) );
     }
     else
     {
-      node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
+      node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( formatter.arg( datasource ) );
       if ( QgsProject::instance()->readLayer( node ) )
       {
         mLayerList->removeRow( i-- );
@@ -669,10 +697,6 @@ void QgsHandleBadLayers::autoFind()
         item->setForeground( QBrush( Qt::red ) );
       }
     }
-
   }
-
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
-
 }
-
