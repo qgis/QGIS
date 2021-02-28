@@ -127,8 +127,6 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
-    if ( provider == QString( "spatialite" ) )
-         datasource = datasource.mid( 8 );
 
     bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) || provider == QLatin1String( "spatialite" ) );
     const QString basepath = QFileInfo( datasource ).absolutePath();
@@ -389,44 +387,42 @@ void QgsHandleBadLayers::apply()
     QString formatter;
     const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
     const QString name { mLayerList->item( i, 0 )->text() };
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
-    if ( provider == QString( "spatialite" ) )
-    {
-        if ( datasource.contains( "dbname='" ) )
-            datasource = datasource.mid( datasource.indexOf( "dbname=" ) + 8 );
-        formatter = QString( "dbname='%1") + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
-        datasource = datasource.left( datasource.indexOf( ".sqlite' " ) + 7 );
-    }
-    else
-        formatter = QString( "%1" );
-    const QFileInfo dataInfo = QFileInfo( datasource );
-    const QString basepath = dataInfo.absoluteDir().path();
-    const QString longName = dataInfo.fileName();
-
     const QString fileType = mLayerList->item( i, 2 )->text();
-    if ( provider.toLower().toStdString() == "none" )
+    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    if ( provider.toLower() == QLatin1String( "none" ) )
     {
-      if ( fileType.toStdString() == "raster" )
+      if ( fileType == QLatin1String( "raster" ) )
         provider = QStringLiteral( "gdal" );
-      else if ( fileType.toStdString() == "vector" )
+      else if ( fileType == QLatin1String( "vector" ) )
         provider = QStringLiteral( "ogr" );
       else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
         provider = QStringLiteral( "mdal" );
     }
+    QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, item->text() );
 
-    QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
-    if ( providerMap.contains( QStringLiteral( "path" ) ) && !providerMap[ QStringLiteral( "path" ) ].toString().isEmpty() )
-      fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
+    if ( provider == QString( "spatialite" ) )
+      formatter = QString( "dbname='%1") + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
     else
+      formatter = QString( "%1" );
+
+    if ( providerMap.contains( QStringLiteral( "path" ) ) && !providerMap[ QStringLiteral( "path" ) ].toString().isEmpty() )
     {
-      fileName = longName;
+      datasource = providerMap[ QStringLiteral( "path" ) ].toString();
+      fileName = QFileInfo( datasource ).fileName();
     }
+    else
+      item->setForeground( QBrush( Qt::red ) );
+
+    const QFileInfo dataInfo = QFileInfo( datasource );
+    const QString basepath = dataInfo.absoluteDir().path();
+    const QString longName = dataInfo.fileName();
+    if ( fileName.isEmpty() )
+      fileName = longName;
 
     const QVariant dataSourceIsChanged = item->data( static_cast< int >( CustomRoles::DataSourceIsChanged ) );
     if ( !( dataSourceIsChanged.isValid() && dataSourceIsChanged.toBool() ) )
-    {
       datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ).replace( fileName, longName ) );
-    }
+
 
     bool dataSourceChanged { false };
 
@@ -585,26 +581,7 @@ void QgsHandleBadLayers::autoFind()
     const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
     const QString name { mLayerList->item( i, 0 )->text() };
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
-    if ( provider == QString( "spatialite" ) )
-    {
-        if ( datasource.contains( "dbname=" ) )
-            datasource = datasource.mid( datasource.indexOf( "dbname=" ) + 7 );
-        formatter = QString( "dbname='%1") + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
-        datasource = datasource.left( datasource.indexOf( ".sqlite' " ) + 7 );
-    }
-    else
-        formatter = QString( "%1" );
-    const QFileInfo dataInfo = QFileInfo( datasource );
-    const QString basepath = dataInfo.absoluteDir().path();
-    const QString longName = dataInfo.fileName();
     const QString fileType = mLayerList->item( i, 2 )->text();
-
-    progressDialog.setValue( i );
-    QChar sentenceEnd = ( name.length() > 15 ) ? QChar( 0x2026 ) : '.';
-    progressDialog.setLabelText( QObject::tr( "Searching for file: %1 \n [ %2 of %3 ] " ).arg( name.left( 15 ) + sentenceEnd,
-                                 QString::number( i + 1 ), QString::number( layersToFind.size() ) ) );
-    progressDialog.open();
-
     if ( provider.toLower() == QLatin1String( "none" ) )
     {
       if ( fileType == QLatin1String( "raster" ) )
@@ -614,14 +591,31 @@ void QgsHandleBadLayers::autoFind()
       else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
         provider = QStringLiteral( "mdal" );
     }
-    QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
-    if ( providerMap.contains( QStringLiteral( "path" ) ) && !providerMap[ QStringLiteral( "path" ) ].toString().isEmpty() )
-      fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
+    QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, item->text() );
+
+    if ( provider == QString( "spatialite" ) )
+      formatter = QString( "dbname='%1") + datasource.mid( datasource.indexOf( ".sqlite' " ) + 7 );
     else
+      formatter = QString( "%1" );
+
+    if ( providerMap.contains( QStringLiteral( "path" ) ) && !providerMap[ QStringLiteral( "path" ) ].toString().isEmpty() )
     {
-      fileName = longName;
-      item->setForeground( QBrush( Qt::red ) );
+      datasource = providerMap[ QStringLiteral( "path" ) ].toString();
+      fileName = QFileInfo( datasource ).fileName();
     }
+    else
+      item->setForeground( QBrush( Qt::red ) );
+
+    const QFileInfo dataInfo = QFileInfo( datasource );
+    const QString basepath = dataInfo.absoluteDir().path();
+    const QString longName = dataInfo.fileName();
+    if ( fileName.isEmpty() )
+      fileName = longName;
+    progressDialog.setValue( i );
+    QChar sentenceEnd = ( name.length() > 15 ) ? QChar( 0x2026 ) : '.';
+    progressDialog.setLabelText( QObject::tr( "Searching for file: %1 \n [ %2 of %3 ] " ).arg( name.left( 15 ) + sentenceEnd,
+                                 QString::number( i + 1 ), QString::number( layersToFind.size() ) ) );
+    progressDialog.open();
 
     datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ) );
 
