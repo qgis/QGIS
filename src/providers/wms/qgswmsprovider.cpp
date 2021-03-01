@@ -2015,7 +2015,12 @@ int QgsWmsProvider::capabilities() const
   // See https://github.com/qgis/QGIS/issues/34813
   if ( mSettings.mTiled && !( mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
   {
-    capability |= Capability::Prefetch;
+    // but only if the user explicitly set prefetching to allowed
+    QgsSettings settings;
+    if ( settings.value( QStringLiteral( "providers/wmsprovider/prefetch_allowed" ), false ).toBool() )
+    {
+      capability |= Capability::Prefetch;
+    }
   }
 
   QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );
