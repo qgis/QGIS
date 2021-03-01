@@ -77,7 +77,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DAppUtils::convert2dPointCloud
     symbol->setGreenContrastEnhancement( renderer2d->greenContrastEnhancement() ? new QgsContrastEnhancement( *renderer2d->greenContrastEnhancement() ) : nullptr );
     symbol->setBlueContrastEnhancement( renderer2d->blueContrastEnhancement() ? new QgsContrastEnhancement( *renderer2d->blueContrastEnhancement() ) : nullptr );
   }
-  else if ( renderer->type() == QLatin1String( "classification" ) )
+  else if ( renderer->type() == QLatin1String( "classified" ) )
   {
 
     const QgsPointCloudClassifiedRenderer *renderer2d = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( renderer );
