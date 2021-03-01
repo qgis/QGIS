@@ -143,12 +143,15 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         cls._accesscontrol = RestrictedAccessControl(cls._server_iface)
         cls._server_iface.registerAccessControl(cls._accesscontrol, 100)
 
-    def setUp(self):
-        super().setUp()
+    def _clear_contraints(self):
         self._accesscontrol.active['authorizedLayerAttributes'] = False
         self._accesscontrol.active['layerFilterExpression'] = False
         self._accesscontrol.active['layerFilterSubsetString'] = False
         self._accesscontrol.active['layerPermissions'] = False
+
+    def setUp(self):
+        super().setUp()
+        self._clear_contraints()
 
     def _check_exception(self, qs, exception_text):
         """Check that server throws"""
@@ -195,22 +198,26 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
             'map0:EXTENT': '45.70487804878048621,7.67926829268292099,46.22987804878049189,8.42479674796748235',
         }.items())])
 
-        req = QgsBufferServerRequest('http://my_server/' + qs)
-        res = QgsBufferServerResponse()
-        self._server.handleRequest(req, res, self.test_project)
-        self.assertEqual(res.statusCode(), 200)
+        def _check_red():
 
-        result_path = os.path.join(self.temp_dir.path(), 'red.png')
-        with open(result_path, 'wb+') as f:
-            f.write(res.body())
+            req = QgsBufferServerRequest('http://my_server/' + qs)
+            res = QgsBufferServerResponse()
+            self._server.handleRequest(req, res, self.test_project)
+            self.assertEqual(res.statusCode(), 200)
 
-        # A full red image is expected
-        image = QImage(result_path)
-        self.assertFalse(image.isGrayscale())
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
+            result_path = os.path.join(self.temp_dir.path(), 'red.png')
+            with open(result_path, 'wb+') as f:
+                f.write(res.body())
+
+            # A full red image is expected
+            image = QImage(result_path)
+            self.assertFalse(image.isGrayscale())
+            color = image.pixelColor(100, 100)
+            self.assertEqual(color.red(), 255)
+            self.assertEqual(color.green(), 0)
+            self.assertEqual(color.blue(), 0)
+
+        _check_red()
 
         # Now activate the rule to exclude the feature where pk1 = 1, pk2 = 2
         # A white image is expected
@@ -302,6 +309,17 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
 
         self._img_diff_error(res.body(), res.headers(), "WMS_GetPrint_postgres_print2_filtered")
 
+        # Clear constraints
+        self._clear_contraints()
+        _check_red()
+
+        req = QgsBufferServerRequest('http://my_server/' + qs.replace('print1', 'print2'))
+        res = QgsBufferServerResponse()
+        self._server.handleRequest(req, res, self.test_project)
+        self.assertEqual(res.statusCode(), 200)
+
+        self._img_diff_error(res.body(), res.headers(), "WMS_GetPrint_postgres_print2")
+
     def test_atlas(self):
         """Test atlas"""
 
@@ -316,7 +334,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
             'TEMPLATE': "print1",
         }.items())])
 
-        req = QgsBufferServerRequest('http://my_server/' + qs + '&ATLAS_PK=1,1')
+        req = QgsBufferServerRequest('http://my_server/' + qs + '&ATLAS_PK=1,2')
         res = QgsBufferServerResponse()
 
         self._server.handleRequest(req, res, self.test_project)
@@ -341,6 +359,26 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         self._accesscontrol.active['layerFilterSubsetString'] = False
         self._accesscontrol.active['layerFilterExpression'] = True
         self._check_exception(qs + '&ATLAS_PK=1,2', "Atlas error: empty atlas.")
+
+        # Remove all constraints
+        self._clear_contraints()
+        req = QgsBufferServerRequest('http://my_server/' + qs + '&ATLAS_PK=1,2')
+        res = QgsBufferServerResponse()
+
+        self._server.handleRequest(req, res, self.test_project)
+        self.assertEqual(res.statusCode(), 200)
+
+        result_path = os.path.join(self.temp_dir.path(), 'atlas_1_2.png')
+        with open(result_path, 'wb+') as f:
+            f.write(res.body())
+
+        # A full red image is expected
+        image = QImage(result_path)
+        self.assertFalse(image.isGrayscale())
+        color = image.pixelColor(100, 100)
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 0)
 
 
 if __name__ == '__main__':
