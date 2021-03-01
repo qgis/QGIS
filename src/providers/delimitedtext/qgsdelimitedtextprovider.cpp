@@ -24,7 +24,7 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QSettings>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
 
@@ -56,8 +56,8 @@ const QString QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION = QStringLiter
 
 static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 
-QRegExp QgsDelimitedTextProvider::sWktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
+QRegularExpression QgsDelimitedTextProvider::sWktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", QRegularExpression::CaseInsensitiveOption );
+QRegularExpression QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", QRegularExpression::CaseInsensitiveOption );
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
@@ -223,8 +223,8 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
   strTypeList = strTypeList.toLower();
-  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
-  if ( ! reTypeList.exactMatch( strTypeList ) )
+  QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" ) ).match( strTypeList );
+  if ( !match.hasMatch() )
   {
     // Looks like this was supposed to be a CSVT file, so report bad formatted string
     if ( message ) { *message = tr( "File type string in %1 is not correctly formatted" ).arg( csvtInfo.fileName() ); }
@@ -235,14 +235,13 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsgLevel( QStringLiteral( "Reading field types from %1" ).arg( csvtInfo.fileName() ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
-  int pos = 0;
-  QRegExp reType( "(integer|real|double|string|date|datetime|time)" );
-
-  while ( ( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
+  QRegularExpressionMatchIterator reType = QRegularExpression( "(integer|real|double|string|date|datetime|time)" ).globalMatch( strTypeList );
+  QString capted;
+  while ( reType.hasNext() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( reType.cap( 1 ) ), 2 );
-    types << reType.cap( 1 );
-    pos += reType.matchedLength();
+    capted = reType.next().captured( 1 );
+    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( capted ), 2 );
+    types << capted;
   }
 
   if ( message )

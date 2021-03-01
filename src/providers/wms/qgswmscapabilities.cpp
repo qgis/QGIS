@@ -1212,7 +1212,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
-        const QStringList crsList = nodeElement.text().split( QRegExp( "\\s+" ) );
+        const QStringList crsList = nodeElement.text().split( QRegularExpression( "\\s+" ) );
         for ( const QString &srs : crsList )
         {
           if ( !layerProperty.crs.contains( srs ) )

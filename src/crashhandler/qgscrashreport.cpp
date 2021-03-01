@@ -23,6 +23,7 @@
 #include <QSysInfo>
 #include <QFileInfo>
 #include <QCryptographicHash>
+#include <QRegularExpression>
 
 QgsCrashReport::QgsCrashReport()
 {
@@ -177,16 +178,17 @@ QString QgsCrashReport::htmlToMarkdown( const QString &html )
   converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
   converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
 
-  static QRegExp hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
-  int offset = 0;
-  while ( hrefRegEx.indexIn( converted, offset ) != -1 )
+  static QRegularExpression hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+  QRegularExpressionMatchIterator itr = hrefRegEx.globalMatch( converted );
+  QRegularExpressionMatch match;
+  while ( itr.hasNext() )
   {
-    QString url = hrefRegEx.cap( 1 ).replace( QLatin1String( "\"" ), QString() );
+    match = itr.next();
+    QString url = match.captured( 1 ).replace( QLatin1String( "\"" ), QString() );
     url.replace( '\'', QString() );
-    QString name = hrefRegEx.cap( 2 );
+    QString name = match.captured( 2 );
     QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
     converted.replace( hrefRegEx, anchor );
-    offset = hrefRegEx.pos( 1 ) + anchor.length();
   }
 
   return converted;

@@ -465,7 +465,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSOnlineResourceExpressionButton->setToProperty( QgsProject::instance()->dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource ) );
 
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegExp(), this );
   mWMSName->setValidator( shortNameValidator );
 
   // WMS Contact Position
@@ -1297,7 +1297,7 @@ void QgsProjectProperties::apply()
   QStringList keywordStringList = mWMSKeywordList->text().split( ',' );
   if ( !keywordStringList.isEmpty() )
   {
-    keywordStringList.replaceInStrings( QRegExp( "^\\s+" ), QString() ).replaceInStrings( QRegExp( "\\s+$" ), QString() );
+    keywordStringList.replaceInStrings( QRegularExpression( "^\\s+" ), QString() ).replaceInStrings( QRegularExpression( "\\s+$" ), QString() );
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ), keywordStringList );
   }
   else
@@ -2552,8 +2552,8 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
 void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
-  QRegExp regExp( "1:0*[1-9]\\d*" );
-  if ( regExp.exactMatch( changedScaleItem->text() ) )
+  QRegularExpression regExp( "1:0*[1-9]\\d*" );
+  if ( regExp.match( changedScaleItem->text() ).hasMatch() )
   {
     //Remove leading zeroes from the denominator
     regExp.setPattern( QStringLiteral( "1:0*" ) );

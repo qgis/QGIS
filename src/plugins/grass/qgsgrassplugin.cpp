@@ -426,7 +426,7 @@ void QgsGrassPlugin::onFieldsChanged()
     return;
   }
   QString uri = grassProvider->dataSourceUri();
-  uri.remove( QRegExp( "[^_]*$" ) );
+  uri.remove( QRegularExpression( "[^_]*$" ) );
   QgsDebugMsg( "uri = " + uri );
   Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {

@@ -343,11 +343,11 @@ QStringList RegExpFilter::HotSpot::capturedTexts() const
     return _capturedTexts;
 }
 
-void RegExpFilter::setRegExp(const QRegExp& regExp)
+void RegExpFilter::setRegExp(const QRegularExpression& regExp)
 {
     _searchText = regExp;
 }
-QRegExp RegExpFilter::regExp() const
+QRegularExpression RegExpFilter::regExp() const
 {
     return _searchText;
 }
@@ -483,13 +483,13 @@ void UrlFilter::HotSpot::activate(const QString& actionName)
 //regexp matches:
 // full url:
 // protocolname:// or www. followed by anything other than whitespaces, <, >, ' or ", and ends before whitespaces, <, >, ', ", ], !, comma and dot
-const QRegExp UrlFilter::FullUrlRegExp("(www\\.(?!\\.)|[a-z][a-z0-9+.-]*://)[^\\s<>'\"]+[^!,\\.\\s<>'\"\\]]");
+const QRegularExpression UrlFilter::FullUrlRegExp("(www\\.(?!\\.)|[a-z][a-z0-9+.-]*://)[^\\s<>'\"]+[^!,\\.\\s<>'\"\\]]");
 // email address:
 // [word chars, dots or dashes]@[word chars, dots or dashes].[word chars]
-const QRegExp UrlFilter::EmailAddressRegExp("\\b(\\w|\\.|-)+@(\\w|\\.|-)+\\.\\w+\\b");
+const QRegularExpression UrlFilter::EmailAddressRegExp("\\b(\\w|\\.|-)+@(\\w|\\.|-)+\\.\\w+\\b");
 
 // matches full url or email address
-const QRegExp UrlFilter::CompleteUrlRegExp('('+FullUrlRegExp.pattern()+'|'+
+const QRegularExpression UrlFilter::CompleteUrlRegExp('('+FullUrlRegExp.pattern()+'|'+
                                             EmailAddressRegExp.pattern()+')');
 
 UrlFilter::UrlFilter()

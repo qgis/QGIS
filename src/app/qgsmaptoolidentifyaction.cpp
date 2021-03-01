@@ -103,7 +103,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   {
     filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
   }
-  filter = filter.replace( QRegExp( ",$" ), QStringLiteral( ")" ) );
+  filter = filter.replace( QRegularExpression( ",$" ), QStringLiteral( ")" ) );
 
   QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl, QgsAttributeTableFilterModel::ShowFilteredList );
   tableDialog->setFilterExpression( filter );

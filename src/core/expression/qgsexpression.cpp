@@ -432,11 +432,10 @@ void QgsExpression::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QgsDistanceArea *distanceArea )
 {
   QString expr_action;
-
+  static const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
   int index = 0;
   while ( index < action.size() )
   {
-    static const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
     const QRegularExpressionMatch match = sRegEx.match( action, index );
     if ( !match.hasMatch() )
@@ -484,16 +483,17 @@ QSet<QString> QgsExpression::referencedVariables( const QString &text )
 {
   QSet<QString> variables;
   int index = 0;
+  QRegularExpression rx = QRegularExpression( "\\[%([^\\]]+)%\\]" );
   while ( index < text.size() )
   {
-    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
 
-    int pos = rx.indexIn( text, index );
+    QRegularExpressionMatch matches = rx.match( text.mid( index ) );
+    int pos = matches.capturedStart();
     if ( pos < 0 )
       break;
 
-    index = pos + rx.matchedLength();
-    QString to_replace = rx.cap( 1 ).trimmed();
+    index = pos + matches.capturedLength();
+    QString to_replace = matches.captured( 1 ).trimmed();
 
     QgsExpression exp( to_replace );
     variables.unite( exp.referencedVariables() );

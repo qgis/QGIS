@@ -751,9 +751,7 @@ void QgsWFSSourceSelect::buildQueryButtonClicked()
 void QgsWFSSourceSelect::filterChanged( const QString &text )
 {
   QgsDebugMsgLevel( "WFS FeatureType filter changed to :" + text, 2 );
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
-  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
+  QRegExp myRegExp( text, Qt::CaseInsensitive );
   mModelProxy->setFilterRegExp( myRegExp );
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }

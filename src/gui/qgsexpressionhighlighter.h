@@ -17,6 +17,7 @@
 #define QGSEXPRESSIONHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
+#include <QRegularExpression>
 
 #include <QHash>
 #include <QTextCharFormat>
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
   private:
     struct HighlightingRule
     {
-      QRegExp pattern;
+      QRegularExpression pattern;
       QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;

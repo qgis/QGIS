@@ -928,10 +928,10 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
   // TODO: We should check the correct encoding by using the BOM (Byte
   // Order Mark) from the beginning of the data.
   QString xmlDeclaration = QString::fromUtf8( baDesc ).section( '>', 0, 0, QString::SectionIncludeTrailingSep );
-  QRegExp reg( "<\\?xml\\s+.*encoding\\s*=\\s*(['\"])([A-Za-z][-a-zA-Z0-9_.]*)\\1\\s*\\?>" );
-  if ( reg.indexIn( xmlDeclaration ) != -1 )
+  QRegularExpressionMatch mreg = QRegularExpression( "<\\?xml\\s+.*encoding\\s*=\\s*(['\"])([A-Za-z][-a-zA-Z0-9_.]*)\\1\\s*\\?>" ).match( xmlDeclaration );
+  if ( mreg.capturedStart() != -1 )
   {
-    QByteArray enc = reg.cap( 2 ).toLocal8Bit();
+    QByteArray enc = mreg.captured( 2 ).toLocal8Bit();
     QgsDebugMsg( QString( "found encoding name '%1'" ).arg( QString::fromUtf8( enc ) ) );
 
     codec = QTextCodec::codecForName( enc );

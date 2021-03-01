@@ -178,7 +178,7 @@ void QgsOWSSourceSelect::populateFormats()
   {
     QString format = layersFormats.value( i );
     QgsDebugMsg( "server format = " + format );
-    QString simpleFormat = format.toLower().remove( QStringLiteral( "image/" ) ).remove( QRegExp( "_.*" ) );
+    QString simpleFormat = format.toLower().remove( QStringLiteral( "image/" ) ).remove( QRegularExpression( "_.*" ) );
     QgsDebugMsg( "server simpleFormat = " + simpleFormat );
     QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
     QgsDebugMsg( "server mimeFormat = " + mimeFormat );

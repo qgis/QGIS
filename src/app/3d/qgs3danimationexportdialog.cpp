@@ -40,8 +40,8 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
                                QStringLiteral( "%1####.jpg" ).arg( QgsProject::instance()->baseName() )
                                , QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  QRegExp rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
-  QValidator *validator = new QRegExpValidator( rx, this );
+  QRegularExpression rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
+  QValidator *validator = new QRegularExpressionValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 
   connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [ = ]

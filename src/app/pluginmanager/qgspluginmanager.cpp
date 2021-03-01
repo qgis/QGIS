@@ -24,7 +24,7 @@
 #include <QLibrary>
 #include <QStandardItem>
 #include <QPushButton>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSortFilterProxyModel>
 #include <QActionGroup>
 #include <QTextStream>

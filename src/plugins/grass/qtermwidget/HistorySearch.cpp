@@ -24,7 +24,7 @@
 #include "Emulation.h"
 #include "HistorySearch.h"
 
-HistorySearch::HistorySearch(EmulationPtr emulation, QRegExp regExp,
+HistorySearch::HistorySearch(EmulationPtr emulation, QRegularExpression regExp,
         bool forwards, int startColumn, int startLine,
         QObject* parent) :
 QObject(parent),
@@ -104,22 +104,23 @@ bool HistorySearch::search(int startColumn, int startLine, int endColumn, int en
 
         // So now we can log for m_regExp in the string between startColumn and endPosition
         int matchStart;
+        QRegularExpressionMatch match;
         if (m_forwards)
         {
-            matchStart = string.indexOf(m_regExp, startColumn);
+            matchStart = string.indexOf(m_regExp, startColumn, &match);
             if (matchStart >= endPosition)
                 matchStart = -1;
         }
         else
         {
-            matchStart = string.lastIndexOf(m_regExp, endPosition - 1);
+            matchStart = string.lastIndexOf(m_regExp, endPosition - 1, &match);
             if (matchStart < startColumn)
                 matchStart = -1;
         }
 
         if (matchStart > -1)
         {
-            int matchEnd = matchStart + m_regExp.matchedLength() - 1;
+            int matchEnd = matchStart + match.capturedLength() - 1;
             qDebug() << "Found in string from" << matchStart << "to" << matchEnd;
 
             // Translate startPos and endPos to startColum, startLine, endColumn and endLine in history.

@@ -563,7 +563,7 @@ void QgsGrassModule::run()
 
       // Quote options with special characters so that user
       // can copy-paste-run the command
-      if ( it->contains( QRegExp( "[ <>\\$|;&]" ) ) )
+      if ( it->contains( QRegularExpression( "[ <>\\$|;&]" ) ) )
       {
         argumentsHtml.append( "\"" + *it + "\"" );
       }
@@ -764,7 +764,8 @@ void QgsGrassModule::readStdout()
   QgsDebugMsg( "called." );
 
   QString line;
-  QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
+  QRegularExpression rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
+  QRegularExpressionMatch matches;
 
   mProcess.setReadChannel( QProcess::StandardOutput );
   while ( mProcess.canReadLine() )
@@ -774,9 +775,10 @@ void QgsGrassModule::readStdout()
 
     // GRASS_INFO_PERCENT is caught here only because of bugs in GRASS,
     // normally it should be printed to stderr
-    if ( rxpercent.indexIn( line ) != -1 )
+    matches = rxpercent.match( line );
+    if ( matches.hasMatch() )
     {
-      int progress = rxpercent.cap( 1 ).toInt();
+      int progress = matches.captured( 1 ).toInt();
       setProgress( progress );
     }
     else

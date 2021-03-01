@@ -2425,7 +2425,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     QString myGdalDriverLongName = GDALGetMetadataItem( myGdalDriver, GDAL_DMD_LONGNAME, "" );
     // remove any superfluous (.*) strings at the end as
     // they'll confuse QFileDialog::getOpenFileNames()
-    myGdalDriverLongName.remove( QRegExp( "\\(.*\\)$" ) );
+    myGdalDriverLongName.remove( QRegularExpression( "\\(.*\\)$" ) );
 
     // if we have both the file name extension and the long name,
     // then we've all the information we need for the current

@@ -179,9 +179,8 @@ void TestQgisAppClipboard::copyToText()
 
   // just test coordinates as integers - that's enough to verify that reprojection has occurred
   // and helps avoid rounding issues
-  QRegExp regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
-  ( void )regex.indexIn( result );
-  QStringList list = regex.capturedTexts();
+  QRegularExpressionMatch matches( "\\[([-\\d.]+),([-\\d.]+)\\]" ).match( result );
+  QStringList list = matches.capturedTexts();
   QCOMPARE( list.count(), 3 );
 
   int x = std::round( list.at( 1 ).toDouble() );

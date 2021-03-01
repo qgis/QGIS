@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QStringList>
+#include <QRegularExpression>
 
 #include "qgsgeorefvalidators.h"
 
@@ -26,8 +27,8 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
 {
   Q_UNUSED( pos )
 
-  QRegExp rx( "-?\\d*" );
-  if ( rx.exactMatch( input ) )
+  QRegularExpression rx( QRegularExpression::anchoredPattern( "-?\\d*" ) );
+  if ( rx.match( input ).hasMatch() )
   {
     return Acceptable;
   }
@@ -45,17 +46,17 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
 
   if ( !input.contains( ' ' ) )
   {
-    rx.setPattern( QStringLiteral( "-?\\d*(\\.|,)(\\d+)?" ) );
-    if ( rx.exactMatch( input ) )
+    rx.setPattern( QRegularExpression::anchoredPattern( "-?\\d*(\\.|,)(\\d+)?" ) );
+    if ( rx.match( input ).hasMatch() )
       return Acceptable;
   }
   else
   {
-    rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s(\\d{1,2}(\\s(\\d{1,2}((\\.|,)(\\d{1,3})?)?)?)?)?" ) );
-    if ( rx.exactMatch( input ) )
+    rx.setPattern( QRegularExpression::anchoredPattern( "-?\\d{1,3}\\s(\\d{1,2}(\\s(\\d{1,2}((\\.|,)(\\d{1,3})?)?)?)?)?" ) );
+    if ( rx.match( input ).hasMatch() )
     {
-      rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s60" ) );
-      if ( rx.exactMatch( input ) )
+      rx.setPattern( QRegularExpression::anchoredPattern( "-?\\d{1,3}\\s60" ) );
+      if ( rx.match( input ).hasMatch() )
       {
         int in = input.leftRef( input.indexOf( ' ' ) ).toInt();
         int grad = input.startsWith( '-' ) ? in - 1 : in + 1;
@@ -65,8 +66,8 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
         return Acceptable;
       }
 
-      rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s\\d{1,2}\\s60" ) );
-      if ( rx.exactMatch( input ) )
+      rx.setPattern( QRegularExpression::anchoredPattern( "-?\\d{1,3}\\s\\d{1,2}\\s60" ) );
+      if ( rx.match( input ).hasMatch() )
       {
         int min = input.split( ' ' ).at( 1 ).toInt() + 1;
         if ( min <= 60 )

@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include <QRegExp>
+#include <QRegularExpression>
 
 QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username,  QString password, bool expandAuthConfig )
 {

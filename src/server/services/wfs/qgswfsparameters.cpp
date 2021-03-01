@@ -80,18 +80,17 @@ namespace QgsWfs
       theList << val;
     else
     {
-      QRegExp rx( exp );
-      if ( rx.indexIn( val, 0 ) == -1 )
+      QRegularExpression rx( exp );
+      QRegularExpressionMatchIterator i = rx.globalMatch( val );
+      if ( ! i.hasNext() )
       {
         theList << val;
       }
       else
       {
-        int pos = 0;
-        while ( ( pos = rx.indexIn( val, pos ) ) != -1 )
+        while ( i.hasNext() )
         {
-          theList << rx.cap( 1 );
-          pos += rx.matchedLength();
+          theList << i.next().captured( 1 );
         }
       }
     }

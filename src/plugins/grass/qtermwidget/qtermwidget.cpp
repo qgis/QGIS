@@ -159,9 +159,11 @@ void QTermWidget::search(bool forwards, bool next)
     qDebug() << "current selection starts at: " << startColumn << startLine;
     qDebug() << "current cursor position: " << m_impl->m_terminalDisplay->screenWindow()->cursorPosition();
 
-    QRegExp regExp(m_searchBar->searchText());
-    regExp.setPatternSyntax(m_searchBar->useRegularExpression() ? QRegExp::RegExp : QRegExp::FixedString);
-    regExp.setCaseSensitivity(m_searchBar->matchCase() ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    QRegularExpression regExp(m_searchBar->searchText());
+    //setPatternSyntax(m_searchBar->useRegularExpression() ? Qt::RegExp : Qt::FixedString);
+    //no clue about alt method
+    if ( m_searchBar->matchCase() )
+        regExp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
 
     HistorySearch *historySearch =
             new HistorySearch(m_impl->m_session->emulation(), regExp, forwards, startColumn, startLine, this);

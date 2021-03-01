@@ -50,8 +50,9 @@
 #include <QProcess>
 #include <QProgressBar>
 #include <QProgressDialog>
-#include <QRegExp>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QRegularExpressionMatch>
 #include <QScreen>
 #include <QShortcut>
 #include <QSpinBox>
@@ -5237,7 +5238,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
     {
-      newuri.replace( QRegExp( "crs=[^&]+" ), "crs=" + c );
+      newuri.replace( QRegularExpression( "crs=[^&]+" ), "crs=" + c );
       QgsDebugMsgLevel( QStringLiteral( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ), 2 );
       break;
     }
@@ -5250,7 +5251,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
   {
     if ( fmt == lastImageEncoding )
     {
-      newuri.replace( QRegExp( "format=[^&]+" ), "format=" + fmt );
+      newuri.replace( QRegularExpression( "format=[^&]+" ), "format=" + fmt );
       QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
       break;
     }
@@ -5834,7 +5835,9 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   if ( chooseSublayersDialog.exec() )
   {
     // create more informative layer names, containing filename as well as sublayer name
-    QRegExp rx( "\"(.*)\"" );
+    QRegularExpression rx( "\"(.*)\"" );
+    QRegularExpressionMatch matches;
+    QString uri, name;
 
     QgsLayerTreeGroup *group = nullptr;
     bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
@@ -5848,13 +5851,14 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
     {
       int i = def.layerId;
-
       const QStringList parts = sublayers[i].split( QgsDataProvider::sublayerSeparator() );
       const QString path = parts[0];
       QString name = path;
-      if ( rx.indexIn( name ) != -1 )
+      matches = rx.match( sublayers[i] );
+      if ( matches.hasMatch() )
       {
-        const QString uri = rx.cap( 1 );
+        uri = matches.captured( 1 );
+        name = sublayers[i];
         name.replace( uri, QFileInfo( uri ).completeBaseName() );
       }
       else
@@ -9389,7 +9393,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   while ( !titleValid )
   {
 
-    QgsNewNameDialog dlg( typeString, newTitle, QStringList(), layoutNames, QRegExp(), Qt::CaseSensitive, parent );
+    QgsNewNameDialog dlg( typeString, newTitle, QStringList(), layoutNames, QRegularExpression(), Qt::CaseSensitive, parent );
     dlg.setWindowTitle( windowTitle );
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
@@ -12867,8 +12871,8 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
 
   // if the layer needs authentication, ensure the master password is set
   bool authok = true;
-  QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
-  if ( rx.indexIn( vectorLayerPath ) != -1 )
+  QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
+  if ( rx.match( vectorLayerPath ).hasMatch() )
   {
     authok = false;
     if ( !QgsAuthGuiUtils::isDisabled( messageBar() ) )
@@ -15253,7 +15257,7 @@ void QgisApp::renameView()
 
   QString currentName = view->mapCanvas()->objectName();
 
-  QgsNewNameDialog renameDlg( currentName, currentName, QStringList(), names, QRegExp(), Qt::CaseSensitive, this );
+  QgsNewNameDialog renameDlg( currentName, currentName, QStringList(), names, QRegularExpression(), Qt::CaseSensitive, this );
   renameDlg.setWindowTitle( tr( "Map Views" ) );
   //renameDlg.setHintString( tr( "Name of the new view" ) );
   renameDlg.setOverwriteEnabled( false );

@@ -18,7 +18,7 @@
 
 #include "qgsbabelformat.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 
 
@@ -133,18 +133,18 @@ QgsBabelCommand::QgsBabelCommand( const QString &importCmd,
   if ( !importCmd.isEmpty() )
   {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    mImportCmd = importCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+    mImportCmd = importCmd.split( QRegularExpression( "\\s" ), QString::SkipEmptyParts );
 #else
-    mImportCmd = importCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+    mImportCmd = importCmd.split( QRegularExpression( "\\s" ), Qt::SkipEmptyParts );
 #endif
     mSupportsImport = true;
   }
   if ( !exportCmd.isEmpty() )
   {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    mExportCmd = exportCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+    mExportCmd = exportCmd.split( QRegularExpression( "\\s" ), QString::SkipEmptyParts );
 #else
-    mExportCmd = exportCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+    mExportCmd = exportCmd.split( QRegularExpression( "\\s" ), Qt::SkipEmptyParts );
 #endif
     mSupportsExport = true;
   }

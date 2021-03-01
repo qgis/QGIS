@@ -27,7 +27,7 @@ from builtins import range
 from functools import cmp_to_key
 
 from qgis.PyQt.QtCore import (
-    QRegExp,
+    QRegularExpression,
     QFile,
     QVariant,
     QDateTime,
@@ -851,9 +851,10 @@ class PostGisDBConnector(DBConnector):
 
         srtext = sr[0]
         # try to extract just SR name (should be quoted in double quotes)
-        regex = QRegExp('"([^"]+)"')
-        if regex.indexIn(srtext) > -1:
-            srtext = regex.cap(1)
+        regex = QRegularExpression('"([^"]+)"')
+        matches = regex.match(srtext)
+        if matches.hasMatch():
+            srtext = matches.captured(1)
         return srtext
 
     def isVectorTable(self, table):

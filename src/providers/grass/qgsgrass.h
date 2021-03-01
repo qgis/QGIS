@@ -40,7 +40,7 @@ extern "C"
 #include <QString>
 #include <QMap>
 #include <QHash>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTemporaryFile>
 #include "qgis_grass_lib.h"
 class QgsCoordinateReferenceSystem;
@@ -113,7 +113,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     // returns true if gisdbase, location and mapset are the same
     bool mapsetIdentical( const QgsGrassObject &other ) const;
     // get regexp patter for new names, e.g. vectors should not start with number
-    static QRegExp newNameRegExp( Type type );
+    static QRegularExpression newNameRegExp( Type type );
 
     bool operator==( const QgsGrassObject &other ) const;
   private:
@@ -556,7 +556,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QString versionString();
 
     // files case sensitivity (insensitive on windows)
-    static Qt::CaseSensitivity caseSensitivity();
+    static QRegularExpression::PatternOption caseSensitivity();
     // set environment variable
     static void putEnv( const QString &name, const QString &value );
 

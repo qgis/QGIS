@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include "qgsgpsdevice.h"
 
@@ -23,30 +23,30 @@ QgsGpsDevice::QgsGpsDevice( const QString &wptDlCmd, const QString &wptUlCmd,
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   if ( !wptDlCmd.isEmpty() )
-    mWptDlCmd = wptDlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+    mWptDlCmd = wptDlCmd.split( QRegularExpression( "\\s" ), QString::SkipEmptyParts );
   if ( !wptUlCmd.isEmpty() )
-    mWptUlCmd = wptUlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+    mWptUlCmd = wptUlCmd.split( QRegularExpression( "\\s" ), QString::SkipEmptyParts );
   if ( !rteDlCmd.isEmpty() )
-    mRteDlCmd = rteDlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+    mRteDlCmd = rteDlCmd.split( QRegularExpression( "\\s" ), QString::SkipEmptyParts );
   if ( !rteUlCmd.isEmpty() )
-    mRteUlCmd = rteUlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+    mRteUlCmd = rteUlCmd.split( QRegularExpression( "\\s" ), QString::SkipEmptyParts );
   if ( !trkDlCmd.isEmpty() )
-    mTrkDlCmd = trkDlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+    mTrkDlCmd = trkDlCmd.split( QRegularExpression( "\\s" ), QString::SkipEmptyParts );
   if ( !trkUlCmd.isEmpty() )
-    mTrkUlCmd = trkUlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+    mTrkUlCmd = trkUlCmd.split( QRegularExpression( "\\s" ), QString::SkipEmptyParts );
 #else
   if ( !wptDlCmd.isEmpty() )
-    mWptDlCmd = wptDlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+    mWptDlCmd = wptDlCmd.split( QRegularExpression( "\\s" ), Qt::SkipEmptyParts );
   if ( !wptUlCmd.isEmpty() )
-    mWptUlCmd = wptUlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+    mWptUlCmd = wptUlCmd.split( QRegularExpression( "\\s" ), Qt::SkipEmptyParts );
   if ( !rteDlCmd.isEmpty() )
-    mRteDlCmd = rteDlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+    mRteDlCmd = rteDlCmd.split( QRegularExpression( "\\s" ), Qt::SkipEmptyParts );
   if ( !rteUlCmd.isEmpty() )
-    mRteUlCmd = rteUlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+    mRteUlCmd = rteUlCmd.split( QRegularExpression( "\\s" ), Qt::SkipEmptyParts );
   if ( !trkDlCmd.isEmpty() )
-    mTrkDlCmd = trkDlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+    mTrkDlCmd = trkDlCmd.split( QRegularExpression( "\\s" ), Qt::SkipEmptyParts );
   if ( !trkUlCmd.isEmpty() )
-    mTrkUlCmd = trkUlCmd.split( QRegExp( "\\s" ), Qt::SkipEmptyParts );
+    mTrkUlCmd = trkUlCmd.split( QRegularExpression( "\\s" ), Qt::SkipEmptyParts );
 #endif
 }
 

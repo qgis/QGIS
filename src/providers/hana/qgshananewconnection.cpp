@@ -89,7 +89,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
     QgsHanaSettings settings( connName, true );
     updateControlsFromSettings( settings );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]*" ), txtName ) );
 
   chkEnableSSL_clicked();
 }

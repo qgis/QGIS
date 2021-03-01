@@ -794,8 +794,8 @@ void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetI
 void QgsProjectionSelectionTreeWidget::updateFilter()
 {
   QString filterTxtCopy = leSearch->text();
-  filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
-  QRegExp re( filterTxtCopy, Qt::CaseInsensitive );
+  filterTxtCopy.replace( QRegularExpression( "\\s+" ), QStringLiteral( ".*" ) );
+  QRegularExpression re( filterTxtCopy, QRegularExpression::CaseInsensitiveOption );
 
   const bool hideDeprecated = cbxHideDeprecated->isChecked();
 

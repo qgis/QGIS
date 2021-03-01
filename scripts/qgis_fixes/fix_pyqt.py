@@ -289,7 +289,7 @@ MAPPING = {
             "QDate",
             "QTime",
             "QDateTime",
-            "QRegExp",
+            "QRegularExpression",
             "QTemporaryFile",
             "QTextStream",
             "QVariant",
