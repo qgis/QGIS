@@ -97,6 +97,10 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     {
       iconType = QgsVertexMarker::ICON_RHOMBUS; // area snap
     }
+    else if ( match.hasLineEndpoint() )
+    {
+      iconType = QgsVertexMarker::ICON_BOX; // line endpoint snap
+    }
     else  // must be segment snap
     {
       iconType = QgsVertexMarker::ICON_DOUBLE_TRIANGLE;

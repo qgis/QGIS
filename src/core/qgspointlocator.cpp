@@ -26,6 +26,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslinestring.h"
+#include "qgscurvepolygon.h"
 #include "qgspointlocatorinittask.h"
 #include <spatialindex/SpatialIndex.h>
 
@@ -158,8 +159,8 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -210,8 +211,8 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -244,6 +245,111 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
     QgsPointXY mSrcPoint;
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
+
+////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \ingroup core
+ * \brief Helper class used when traversing the index looking for line endpoints (start or end vertex) - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.20
+*/
+class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
+{
+  public:
+
+    /**
+     * \ingroup core
+     * \brief Helper class used when traversing the index looking for line endpoints (start or end vertex) - builds a list of matches.
+    */
+    QgsPointLocator_VisitorNearestLineEndpoint( QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mBest( m )
+      , mSrcPoint( srcPoint )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      const QgsGeometry *geom = mLocator->mGeoms.value( id );
+
+      QgsPointXY bestPoint;
+      int bestVertexNumber = -1;
+      auto replaceIfBetter = [this, &bestPoint, &bestVertexNumber]( const QgsPoint & candidate, int vertexNumber )
+      {
+        if ( bestPoint.isEmpty() || candidate.distanceSquared( mSrcPoint.x(), mSrcPoint.y() ) < bestPoint.sqrDist( mSrcPoint ) )
+        {
+          bestPoint = QgsPointXY( candidate );
+          bestVertexNumber = vertexNumber;
+        }
+      };
+
+      switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
+      {
+        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::UnknownGeometry:
+        case QgsWkbTypes::NullGeometry:
+          return;
+
+        case QgsWkbTypes::LineGeometry:
+        {
+          int partStartVertexNum = 0;
+          for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
+          {
+            if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( *partIt ) )
+            {
+              replaceIfBetter( curve->startPoint(), partStartVertexNum );
+              replaceIfBetter( curve->endPoint(), partStartVertexNum + curve->numPoints() - 1 );
+              partStartVertexNum += curve->numPoints();
+            }
+          }
+          break;
+        }
+
+        case QgsWkbTypes::PolygonGeometry:
+        {
+          int partStartVertexNum = 0;
+          for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
+          {
+            if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( *partIt ) )
+            {
+              if ( polygon->exteriorRing() )
+              {
+                replaceIfBetter( polygon->exteriorRing()->startPoint(), partStartVertexNum );
+                partStartVertexNum += polygon->exteriorRing()->numPoints();
+              }
+              for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+              {
+                const QgsCurve *ring = polygon->interiorRing( i );
+                replaceIfBetter( ring->startPoint(), partStartVertexNum );
+                partStartVertexNum += ring->numPoints();
+              }
+            }
+          }
+          break;
+        }
+      }
+
+      QgsPointLocator::Match m( QgsPointLocator::LineEndpoint, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( bestPoint ) ), bestPoint, bestVertexNumber );
+      // in range queries the filter may reject some matches
+      if ( mFilter && !mFilter->acceptMatch( m ) )
+        return;
+
+      if ( !mBest.isValid() || m.distance() < mBest.distance() )
+        mBest = m;
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::Match &mBest;
+    QgsPointXY mSrcPoint;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
+
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -1201,6 +1307,21 @@ QgsPointLocator::Match QgsPointLocator::nearestMiddleOfSegment( const QgsPointXY
 
   Match m;
   QgsPointLocator_VisitorNearestMiddleOfSegment visitor( this, m, point, filter );
+
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  if ( m.isValid() && m.distance() > tolerance )
+    return Match(); // make sure that only match strictly within the tolerance is returned
+  return m;
+}
+
+QgsPointLocator::Match QgsPointLocator::nearestLineEndpoints( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter, bool relaxed )
+{
+  if ( !prepare( relaxed ) )
+    return Match();
+
+  Match m;
+  QgsPointLocator_VisitorNearestLineEndpoint visitor( this, m, point, filter );
 
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );

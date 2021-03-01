@@ -71,21 +71,22 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     mTypeButton->setToolTip( tr( "Snapping Type" ) );
     mTypeButton->setPopupMode( QToolButton::InstantPopup );
     SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), parent );
-    QAction *mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), tr( "Vertex" ), typeMenu );
-    QAction *mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
-    QAction *mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
-    QAction *mCentroidAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingCentroid.svg" ) ), tr( "Centroid" ), typeMenu );
-    QAction *mMiddleAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingMiddle.svg" ) ), tr( "Middle of Segments" ), typeMenu );
-    mVertexAction->setCheckable( true );
-    mSegmentAction->setCheckable( true );
-    mAreaAction->setCheckable( true );
-    mCentroidAction->setCheckable( true );
-    mMiddleAction->setCheckable( true );
-    typeMenu->addAction( mVertexAction );
-    typeMenu->addAction( mSegmentAction );
-    typeMenu->addAction( mAreaAction );
-    typeMenu->addAction( mCentroidAction );
-    typeMenu->addAction( mMiddleAction );
+
+    for ( QgsSnappingConfig::SnappingTypes type :
+          {
+            QgsSnappingConfig::VertexFlag,
+            QgsSnappingConfig::SegmentFlag,
+            QgsSnappingConfig::AreaFlag,
+            QgsSnappingConfig::CentroidFlag,
+            QgsSnappingConfig::MiddleOfSegmentFlag,
+            QgsSnappingConfig::LineEndpointFlag
+          } )
+    {
+      QAction *action = new QAction( QgsSnappingConfig::snappingTypeFlagToIcon( type ), QgsSnappingConfig::snappingTypeFlagToString( type ), typeMenu );
+      action->setData( type );
+      action->setCheckable( true );
+      typeMenu->addAction( action );
+    }
     mTypeButton->setMenu( typeMenu );
     mTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
     mTypeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -161,13 +162,11 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
     QToolButton *tb = qobject_cast<QToolButton *>( editor );
     if ( tb )
     {
-      QList<QAction *>actions = tb->menu()->actions();
-
-      actions.at( 0 )->setChecked( type & QgsSnappingConfig::VertexFlag );
-      actions.at( 1 )->setChecked( type & QgsSnappingConfig::SegmentFlag );
-      actions.at( 2 )->setChecked( type & QgsSnappingConfig::AreaFlag );
-      actions.at( 3 )->setChecked( type & QgsSnappingConfig::CentroidFlag );
-      actions.at( 4 )->setChecked( type & QgsSnappingConfig::MiddleOfSegmentFlag );
+      const QList<QAction *> actions = tb->menu()->actions();
+      for ( QAction *action : actions )
+      {
+        action->setChecked( type & static_cast< QgsSnappingConfig::SnappingTypeFlag >( action->data().toInt() ) );
+      }
     }
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
@@ -212,18 +211,17 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
     QToolButton *t = qobject_cast<QToolButton *>( editor );
     if ( t )
     {
-      QList<QAction *> actions = t->menu()->actions();
+      const QList<QAction *> actions = t->menu()->actions();
       QgsSnappingConfig::SnappingTypeFlag type = QgsSnappingConfig::NoSnapFlag;
-      if ( actions.at( 0 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::VertexFlag );
-      if ( actions.at( 1 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::SegmentFlag );
-      if ( actions.at( 2 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::AreaFlag );
-      if ( actions.at( 3 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::CentroidFlag );
-      if ( actions.at( 4 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::MiddleOfSegmentFlag );
+
+      for ( QAction *action : actions )
+      {
+        if ( action->isChecked() )
+        {
+          const QgsSnappingConfig::SnappingTypeFlag actionFlag = static_cast<QgsSnappingConfig::SnappingTypeFlag>( action->data().toInt() );
+          type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | actionFlag );
+        }
+      }
       model->setData( index, static_cast<int>( type ), Qt::EditRole );
     }
 
