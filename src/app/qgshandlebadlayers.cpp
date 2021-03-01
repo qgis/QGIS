@@ -537,7 +537,7 @@ QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString
     if ( QFileInfo( newPath ).isFile() )
       return ( newPath );
     else
-      return( newPath + QDir::separator() + fileName );
+      return ( newPath + QDir::separator() + fileName );
   }
   else if ( mAlternativeBasepaths.contains( originalBase ) )
   {
