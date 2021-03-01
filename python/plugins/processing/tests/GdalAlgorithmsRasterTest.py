@@ -101,7 +101,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
         crs = QgsCoordinateReferenceSystem.fromProj(proj_def)
         custom_crs = f'proj4: {proj_def}'
         if QgsProjUtils.projVersionMajor() >= 6:
-            return custom_crs, crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL).replace('"', '"""')
+            return custom_crs, crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL).replace('"', '\\"')
         else:
             return custom_crs, proj_def
 

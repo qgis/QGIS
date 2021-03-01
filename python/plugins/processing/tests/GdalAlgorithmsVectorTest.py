@@ -182,7 +182,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(ST_Buffer(geom, 1.0)) AS geom,* FROM """polys2"""" ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(ST_Buffer(geom, 1.0)) AS geom,* FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
