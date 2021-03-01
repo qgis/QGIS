@@ -41,6 +41,79 @@
 
 using namespace odbc;
 
+QgsField AttributeField::toQgsField() const
+{
+  QVariant::Type fieldType;
+  switch ( type )
+  {
+    case SQLDataTypes::Bit:
+    case SQLDataTypes::Boolean:
+      fieldType = QVariant::Bool;
+      break;
+    case SQLDataTypes::TinyInt:
+    case SQLDataTypes::SmallInt:
+    case SQLDataTypes::Integer:
+      fieldType = isSigned ? QVariant::Int : QVariant::UInt;
+      break;
+    case SQLDataTypes::BigInt:
+      fieldType = isSigned ? QVariant::LongLong : QVariant::ULongLong;
+      break;
+    case SQLDataTypes::Numeric:
+    case SQLDataTypes::Decimal:
+      fieldType = QVariant::Double;
+      break;
+    case SQLDataTypes::Double:
+    case SQLDataTypes::Float:
+    case SQLDataTypes::Real:
+      fieldType = QVariant::Double;
+      break;
+    case SQLDataTypes::Char:
+    case SQLDataTypes::WChar:
+      fieldType = ( size == 1 ) ? QVariant::Char : QVariant::String;
+      break;
+    case SQLDataTypes::VarChar:
+    case SQLDataTypes::WVarChar:
+    case SQLDataTypes::LongVarChar:
+    case SQLDataTypes::WLongVarChar:
+      fieldType = QVariant::String;
+      break;
+    case SQLDataTypes::Binary:
+    case SQLDataTypes::VarBinary:
+    case SQLDataTypes::LongVarBinary:
+      fieldType = QVariant::ByteArray;
+      break;
+    case SQLDataTypes::Date:
+    case SQLDataTypes::TypeDate:
+      fieldType = QVariant::Date;
+      break;
+    case SQLDataTypes::Time:
+    case SQLDataTypes::TypeTime:
+      fieldType = QVariant::Time;
+      break;
+    case SQLDataTypes::Timestamp:
+    case SQLDataTypes::TypeTimestamp:
+      fieldType = QVariant::DateTime;
+      break;
+    case 29812: // ST_GEOMETRY, ST_POINT
+      fieldType = QVariant::String;
+      break;
+    default:
+      break;
+  }
+
+  QgsField field = QgsField( name, fieldType, typeName, size, precision, QString(), QVariant::Invalid );
+  if ( !isNullable || isAutoIncrement )
+  {
+    QgsFieldConstraints constraints;
+    if ( !isNullable )
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+    if ( isAutoIncrement )
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    field.setConstraints( constraints );
+  }
+  return field;
+}
+
 static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
 static const int GEOMETRIES_SELECT_LIMIT = 10;
 
@@ -435,7 +508,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
   const QString &schemaName,
   bool allowGeometrylessTables,
   bool userTablesOnly,
-  const std::function<bool( const QString &name )> &layerFilter )
+  const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter )
 {
   const QString schema = mUri.schema().isEmpty() ? schemaName : mUri.schema();
   const QString sqlSchemaFilter = QStringLiteral(
@@ -482,8 +555,6 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       QgsHanaLayerProperty layer;
       layer.schemaName = rsLayers->getString( 1 );
       layer.tableName = rsLayers->getString( 2 );
-      if ( layerFilter != nullptr && !layerFilter( layer.tableName ) )
-        continue;
       QString geomColumnType = rsLayers->getString( 4 );
       bool isGeometryColumn = ( geomColumnType == QLatin1String( "ST_GEOMETRY" ) || geomColumnType == QLatin1String( "ST_POINT" ) );
       layer.geometryColName = isGeometryColumn ? rsLayers->getString( 3 ) : QString();
@@ -491,6 +562,9 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       layer.isView = isView;
       layer.srid = -1;
       layer.type = isGeometryColumn ? QgsWkbTypes::Type::Unknown : QgsWkbTypes::NoGeometry;
+
+      if ( layerFilter != nullptr && !layerFilter( layer ) )
+        continue;
 
       QPair<QString, QString> layerKey( layer.schemaName, layer.tableName );
       if ( allowGeometrylessTables )
@@ -543,7 +617,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayersFull(
   const QString &schemaName,
   bool allowGeometrylessTables,
   bool userTablesOnly,
-  const std::function<bool( const QString &name )> &layerFilter )
+  const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter )
 {
   QVector<QgsHanaLayerProperty> layers = getLayers( schemaName, allowGeometrylessTables, userTablesOnly, layerFilter );
   // We cannot use a range-based for loop as layers are modified in readLayerInfo.
@@ -557,6 +631,27 @@ void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
   layerProperty.srid = getColumnSrid( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
   layerProperty.type = getColumnGeometryType( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
   layerProperty.pkCols = getPrimaryKeyCandidates( layerProperty );
+}
+
+void QgsHanaConnection::readQueryFields( const QString &sql, const std::function<void( const AttributeField &field )> &callback )
+{
+  PreparedStatementRef stmt = prepareStatement( sql );
+  ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
+  for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
+  {
+    AttributeField field;
+    field.schemaName = QString::fromStdU16String( rsmd->getSchemaName( i ) );
+    field.tableName = QString::fromStdU16String( rsmd->getTableName( i ) );
+    field.name = QString::fromStdU16String( rsmd->getColumnName( i ) );
+    field.typeName = QString::fromStdU16String( rsmd->getColumnTypeName( i ) );
+    field.type = rsmd->getColumnType( i );
+    field.isSigned = rsmd->isSigned( i );
+    field.isNullable = rsmd->isNullable( i );
+    field.isAutoIncrement = rsmd->isAutoIncrement( i );
+    field.size = static_cast<int>( rsmd->getColumnLength( i ) );
+    field.precision = -1;
+    callback( field );
+  }
 }
 
 QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &ownerName )

@@ -69,6 +69,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = TableFlags() ) const override;
     QStringList schemas( ) const override;
+    QgsFields fields( const QString &schema, const QString &table ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QIcon icon() const override;
@@ -80,7 +81,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void dropTable( const QString &schema, const QString &name ) const;
     void renameTable( const QString &schema, const QString &name, const QString &newName ) const;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesWithFilter( const QString &schema,
-        const TableFlags &flags = TableFlags(), const std::function<bool( const QString &name )> &tableFilter = nullptr ) const;
+        const TableFlags &flags = TableFlags(), const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr ) const;
 };
 
 #endif // QGSHANAPROVIDERCONNECTION_H

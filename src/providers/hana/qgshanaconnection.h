@@ -28,7 +28,23 @@
 
 #include "odbc/Forwards.h"
 
-class QgsField;
+struct AttributeField
+{
+  QString schemaName;
+  QString tableName;
+  QString name;
+  short type;
+  QString typeName;
+  int size;
+  int precision;
+  bool isAutoIncrement;
+  bool isNullable;
+  bool isSigned;
+
+  QgsField toQgsField() const;
+};
+
+using AttributeFields = QVector<AttributeField>;
 
 class QgsHanaConnection : public QObject
 {
@@ -60,13 +76,14 @@ class QgsHanaConnection : public QObject
       const QString &schemaName,
       bool allowGeometrylessTables,
       bool userTablesOnly = true,
-      const std::function<bool( const QString &name )> &layerFilter = nullptr );
+      const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr );
     QVector<QgsHanaLayerProperty> getLayersFull(
       const QString &schemaName,
       bool allowGeometrylessTables,
       bool userTablesOnly = true,
-      const std::function<bool( const QString &name )> &layerFilter = nullptr );
+      const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
+    void readQueryFields( const QString &sql, const std::function<void( const AttributeField &field )> &callback );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
     QStringList getLayerPrimaryKey( const QString &schemaName, const QString &tableName );
     QgsWkbTypes::Type getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName );
