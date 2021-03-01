@@ -379,6 +379,8 @@ bool QgsProviderRegistry::exists()
 
 QgsProviderRegistry::~QgsProviderRegistry()
 {
+  qDeleteAll( mUnusableUriHandlers );
+
   clean();
   if ( sInstance == this )
     sInstance = nullptr;
@@ -805,6 +807,25 @@ QList<QgsProviderRegistry::ProviderCandidateDetails> QgsProviderRegistry::prefer
     }
   }
   return res;
+}
+
+bool QgsProviderRegistry::registerUnusableUriHandler( QgsProviderRegistry::UnusableUriHandlerInterface *handler )
+{
+  mUnusableUriHandlers << handler;
+  return true;
+}
+
+bool QgsProviderRegistry::handleUnusableUri( const QString &uri, UnusableUriDetails &details ) const
+{
+  for ( const QgsProviderRegistry::UnusableUriHandlerInterface *handler : mUnusableUriHandlers )
+  {
+    if ( handler->matchesUri( uri ) )
+    {
+      details = handler->details( uri );
+      return true;
+    }
+  }
+  return false;
 }
 
 bool QgsProviderRegistry::shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const
