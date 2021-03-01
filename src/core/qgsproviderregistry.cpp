@@ -117,6 +117,7 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   init();
 }
 
+///@cond PRIVATE
 class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriHandlerInterface
 {
   public:
@@ -141,11 +142,12 @@ class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriH
                                          "obtain one of the alternative installers from https://qgis.org which has point "
                                          "cloud support enabled." );
 #else
-      res.detailedWarning = QObject::tr( "This QGIS build does not include the PDAL library dependancy required for opening LAS or LAZ point clouds." );
+      res.detailedWarning = QObject::tr( "This QGIS build does not include the PDAL library dependency required for opening LAS or LAZ point clouds." );
 #endif
       return res;
     }
 };
+///@endcond
 
 void QgsProviderRegistry::init()
 {

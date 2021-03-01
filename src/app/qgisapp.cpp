@@ -7631,7 +7631,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     ok = static_cast< bool >( addMeshLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "mdal" ), false ) );
   }
 
-  // maybe a known file type, which couldn't be opened due to a missing dependancy... (eg. las for a non-pdal-enabled build)
+  // maybe a known file type, which couldn't be opened due to a missing dependency... (eg. las for a non-pdal-enabled build)
   {
     QgsProviderRegistry::UnusableUriDetails details;
     if ( QgsProviderRegistry::instance()->handleUnusableUri( fileName, details ) )

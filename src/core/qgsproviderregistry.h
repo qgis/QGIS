@@ -469,7 +469,7 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Returns TRUE if the specified \a uri can potentially be handled by QGIS, if additional
-     * dependancies or build-time requirements are present.
+     * dependencies or build-time requirements are present.
      *
      * This can be used to show user-friendly warning messages advising them why a particular
      * \a uri cannot be opened on their QGIS install. For example, if a QGIS install is built
