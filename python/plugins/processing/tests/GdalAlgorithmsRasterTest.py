@@ -1538,6 +1538,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         source = os.path.join(testDataPath, 'polys.gml')
+        sourceZ = os.path.join(testDataPath, 'pointsz.gml')
         alg = rasterize()
         alg.initAlgorithm()
 
@@ -1591,6 +1592,27 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  '-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -at -add ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+
+            # use_Z selected with no field
+            self.asserEqual(
+                alg.getConsoleCommands({'INPUT': sourceZ,
+                                        'USE_Z': True,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG' +
+                source + ' ' +
+                outdir + '/check.jpg'])
+
+            # use_Z selected with field indicated (should prefer use_Z)
+            self.asserEqual(
+                alg.getConsoleCommands({'INPUT': sourceZ,
+                                        'FIELD': 'elev',
+                                        'USE_Z': True,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG' +
+                source + ' ' +
+                outdir + '/check.jpg'])
 
     def testRasterizeOver(self):
         context = QgsProcessingContext()
