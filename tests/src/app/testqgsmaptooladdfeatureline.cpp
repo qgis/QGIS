@@ -851,6 +851,8 @@ void TestQgsMapToolAddFeatureLine::testDifferentCrs()
   utils.mouseClick( 2, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 4, Qt::RightButton );
 
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  QString newWkt = "LineString (-2 4, 0 4, 2 4)";
   QString new3946Wkt = "LineString (0 0, 0 4, 0 10)";
 
   QCOMPARE( mLayerCRS3946Line->getFeature( mFidLine3946 ).geometry().asWkt( 0 ), new3946Wkt ); // use wkt to avoid float rounding errors
@@ -862,6 +864,7 @@ void TestQgsMapToolAddFeatureLine::testDifferentCrs()
   utils.mouseClick( 8, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 8, 4, Qt::RightButton );
 
+  newFid = utils.newFeatureId( oldFids );
   // (2 2, 8 2, 8 4, 8 8) transformed from 3946 to 3945
   QString new3945Wkt = "LineString (17441.5859966475982219 -862119.21677098423242569, 17441.58100318093784153 -862117.23846332356333733, 17441.57101624645292759 -862113.28184797242283821)";
   QCOMPARE( mLayerCRS3945Line->getFeature( mFidLine3945 ).geometry().asWkt( 2 ), QgsGeometry::fromWkt( new3945Wkt ).asWkt( 2 ) );
