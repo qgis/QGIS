@@ -127,37 +127,37 @@ namespace
   void SetStatementValue(
     PreparedStatementRef &stmt,
     unsigned short paramIndex,
-    FieldInfo fieldInfo,
+    const AttributeField &field,
     const QVariant &value )
   {
     bool isNull = ( value.isNull() || !value.isValid() );
 
-    switch ( fieldInfo.type )
+    switch ( field.type )
     {
       case SQLDataTypes::Bit:
       case SQLDataTypes::Boolean:
         stmt->setBoolean( paramIndex, isNull ? Boolean() : Boolean( value.toBool() ) );
         break;
       case SQLDataTypes::TinyInt:
-        if ( fieldInfo.isSigned )
+        if ( field.isSigned )
           stmt->setByte( paramIndex, isNull ? Byte() : Byte( static_cast<int8_t>( value.toInt() ) ) );
         else
           stmt->setUByte( paramIndex, isNull ? UByte() : UByte( static_cast<uint8_t>( value.toUInt() ) ) );
         break;
       case SQLDataTypes::SmallInt:
-        if ( fieldInfo.isSigned )
+        if ( field.isSigned )
           stmt->setShort( paramIndex, isNull ? Short() : Short( static_cast<int16_t>( value.toInt() ) ) );
         else
           stmt->setUShort( paramIndex, isNull ? UShort() : UShort( static_cast<uint16_t>( value.toUInt() ) ) );
         break;
       case SQLDataTypes::Integer:
-        if ( fieldInfo.isSigned )
+        if ( field.isSigned )
           stmt->setInt( paramIndex, isNull ? Int() : Int( value.toInt() ) );
         else
           stmt->setUInt( paramIndex, isNull ? UInt() : UInt( value.toUInt() ) );
         break;
       case SQLDataTypes::BigInt:
-        if ( fieldInfo.isSigned )
+        if ( field.isSigned )
           stmt->setLong( paramIndex, isNull ? Long() : Long( value.toLongLong() ) );
         else
           stmt->setULong( paramIndex, isNull ? ULong() : ULong( value.toULongLong() ) );
@@ -235,14 +235,14 @@ namespace
         break;
       default:
         QgsDebugMsg( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
-                     .arg( QString::number( fieldInfo.type ), QString::number( paramIndex ) ) );
+                     .arg( QString::number( field.type ), QString::number( paramIndex ) ) );
     }
   }
 
   void SetStatementFidValue(
     PreparedStatementRef &stmt,
     unsigned short paramIndex,
-    const QVector<FieldInfo> &fieldsInfo,
+    const AttributeFields &fields,
     QgsHanaPrimaryKeyType pkType,
     const QList<int> &pkAttrs,
     QgsHanaPrimaryKeyContext &pkContext,
@@ -258,7 +258,7 @@ namespace
         QVariantList pkValues = pkContext.lookupKey( featureId );
         if ( pkValues.empty() )
           throw QgsHanaException( QStringLiteral( "Key values for feature %1 not found." ).arg( featureId ) );
-        SetStatementValue( stmt, paramIndex, fieldsInfo.at( pkAttrs[0] ), pkValues[0] );
+        SetStatementValue( stmt, paramIndex, fields.at( pkAttrs[0] ), pkValues[0] );
       }
       break;
       case QgsHanaPrimaryKeyType::PktFidMap:
@@ -272,7 +272,7 @@ namespace
         {
           const QVariant &value = pkValues[i];
           Q_ASSERT( !value.isNull() );
-          SetStatementValue( stmt, static_cast<unsigned short>( paramIndex + i ), fieldsInfo.at( pkAttrs[i] ), value );
+          SetStatementValue( stmt, static_cast<unsigned short>( paramIndex + i ), fields.at( pkAttrs[i] ), value );
         }
       }
       break;
@@ -434,7 +434,7 @@ long QgsHanaProvider::featureCount() const
 
 QgsFields QgsHanaProvider::fields() const
 {
-  return mAttributeFields;
+  return mFields;
 }
 
 // Returns the minimum value of an attribute
@@ -446,8 +446,7 @@ QVariant QgsHanaProvider::minimumValue( int index ) const
   QgsHanaConnectionRef conn = createConnection();
   if ( !conn.isNull() )
   {
-    QgsField fld = mAttributeFields[ index ];
-    QString sql = buildQuery( QStringLiteral( "MIN(%1)" ).arg( QgsHanaUtils::quotedIdentifier( fld.name() ) ) );
+    QString sql = buildQuery( QStringLiteral( "MIN(%1)" ).arg( QgsHanaUtils::quotedIdentifier( mAttributeFields[ index ].name ) ) );
 
     try
     {
@@ -470,8 +469,7 @@ QVariant QgsHanaProvider::maximumValue( int index ) const
   QgsHanaConnectionRef conn = createConnection();
   if ( !conn.isNull() )
   {
-    QgsField fld = mAttributeFields[ index ];
-    QString sql = buildQuery( QStringLiteral( "MAX(%1)" ).arg( QgsHanaUtils::quotedIdentifier( fld.name() ) ) );
+    QString sql = buildQuery( QStringLiteral( "MAX(%1)" ).arg( QgsHanaUtils::quotedIdentifier( mAttributeFields[ index ].name ) ) );
     try
     {
       return conn->executeScalar( sql );
@@ -494,7 +492,7 @@ QSet<QVariant> QgsHanaProvider::uniqueValues( int index, int limit ) const
   QgsHanaConnectionRef conn = createConnection();
   if ( !conn.isNull() )
   {
-    QString fieldName = mAttributeFields[ index ].name();
+    QString fieldName = mAttributeFields[ index ].name;
     QString sql = buildQuery( QStringLiteral( "DISTINCT %1" ).arg(
                                 QgsHanaUtils::quotedIdentifier( fieldName ) ),
                               mQueryWhereClause,
@@ -594,14 +592,13 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
   for ( int idx = 0; idx < mAttributeFields.count(); ++idx )
   {
-    const QgsField &field = mAttributeFields.at( idx );
-    if ( field.name().isEmpty() || field.name() == mGeometryColumn )
+    const AttributeField &field = mAttributeFields.at( idx );
+    if ( field.name.isEmpty() || field.name == mGeometryColumn )
       continue;
 
     if ( mPrimaryKeyAttrs.contains( idx ) )
     {
-      const FieldInfo &fieldInfo = mFieldInfos.at( idx );
-      if ( fieldInfo.isAutoIncrement )
+      if ( field.isAutoIncrement )
         continue;
       pkFields << true;
     }
@@ -610,7 +607,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       pkFields << false;
     }
 
-    columnNames << QgsHanaUtils::quotedIdentifier( field.name() );
+    columnNames << QgsHanaUtils::quotedIdentifier( field.name );
     values << QStringLiteral( "?" );
     fieldIds << idx;
   }
@@ -662,21 +659,21 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( int i = 0; i < fieldIds.size(); ++i )
       {
         const int fieldIndex = fieldIds[i];
-        const FieldInfo &fieldInfo = mFieldInfos.at( fieldIndex );
+        const AttributeField &field = mAttributeFields.at( fieldIndex );
         QVariant attrValue = fieldIndex < attrs.length() ? attrs.at( fieldIndex ) : QVariant( QVariant::LongLong );
         if ( pkFields[i] )
         {
           hasIdValue = hasIdValue || !attrValue.isNull();
-          if ( !hasIdValue && !fieldInfo.isNullable )
+          if ( !hasIdValue && !field.isNullable )
             attrValue = 0;
         }
         else
         {
-          if ( !fieldInfo.isNullable && attrValue.isNull() )
+          if ( !field.isNullable && attrValue.isNull() )
             attrValue = mDefaultValues[fieldIndex];
         }
 
-        SetStatementValue( stmtInsert, paramIndex, fieldInfo, attrValue );
+        SetStatementValue( stmtInsert, paramIndex, field, attrValue );
         ++paramIndex;
       }
 
@@ -757,7 +754,7 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &ids )
   if ( conn.isNull() )
     return false;
 
-  const QString featureIdsWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( ids, mAttributeFields,  mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx );
+  const QString featureIdsWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( ids, mFields, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx );
   if ( featureIdsWhereClause.isEmpty() )
   {
     pushError( tr( "Failed to delete features: Unable to find feature ids" ) );
@@ -878,8 +875,8 @@ bool QgsHanaProvider::deleteAttributes( const QgsAttributeIds &attributes )
   {
     if ( !columnNames.isEmpty() )
       columnNames += QLatin1Char( ',' );
-    const QgsField &field = mAttributeFields.at( attrId );
-    columnNames +=  QgsHanaUtils::quotedIdentifier( field.name() );
+    const AttributeField &field = mAttributeFields.at( attrId );
+    columnNames +=  QgsHanaUtils::quotedIdentifier( field.name );
   }
 
   QString sql = QStringLiteral( "ALTER TABLE %1.%2 DROP (%3)" ).arg(
@@ -930,7 +927,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
       return false;
     }
 
-    QString fromName = mAttributeFields.at( fieldIndex ).name();
+    QString fromName = mAttributeFields.at( fieldIndex ).name;
     QString toName = it.value();
     if ( fromName == toName )
       continue;
@@ -943,7 +940,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
 
   QSet<QString> resultFieldNames;
   for ( int i = 0; i < mAttributeFields.count(); ++i )
-    resultFieldNames.insert( mAttributeFields[i].name() );
+    resultFieldNames.insert( mAttributeFields[i].name );
 
   // Ordered list of renaming pairs
   QList<QPair<QString, QString>> fieldsToRename;
@@ -1016,7 +1013,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
   if ( conn.isNull() )
     return false;
 
-  QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs );
+  QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( mFields, mPrimaryKeyType, mPrimaryKeyAttrs );
   QString sql = QStringLiteral( "UPDATE %1.%2 SET %3 = ST_GeomFromWKB(?, %4) WHERE %5" ).arg(
                   QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),
                   QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( mSrid ),
@@ -1035,7 +1032,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
 
       QByteArray wkb = it->asWkb();
       stmtUpdate->setBinary( 1, makeNullable<vector<char>>( wkb.begin(), wkb.end() ) );
-      SetStatementFidValue( stmtUpdate, 2, mFieldInfos, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
+      SetStatementFidValue( stmtUpdate, 2, mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
       stmtUpdate->addBatch();
 
       if ( stmtUpdate->getBatchDataSize() >= MAXIMUM_BATCH_DATA_SIZE )
@@ -1098,20 +1095,19 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
       for ( QgsAttributeMap::const_iterator it2 = attrValues.begin(); it2 != attrValues.end(); ++it2 )
       {
         int fieldIndex = it2.key();
-        const QgsField &field = mAttributeFields.at( fieldIndex );
-        const FieldInfo &fieldInfo = mFieldInfos.at( fieldIndex );
+        const AttributeField &field = mAttributeFields.at( fieldIndex );
 
-        if ( field.name().isEmpty() || fieldInfo.isAutoIncrement )
+        if ( field.name.isEmpty() || field.isAutoIncrement )
           continue;
 
         pkChanged = pkChanged || mPrimaryKeyAttrs.contains( fieldIndex );
-        attrs << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( field.name() ) );
+        attrs << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
       }
 
       if ( attrs.empty() )
         return true;
 
-      const QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs );
+      const QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( mFields, mPrimaryKeyType, mPrimaryKeyAttrs );
       const QString sql = QStringLiteral( "UPDATE %1.%2 SET %3 WHERE %4" ).arg(
                             QgsHanaUtils::quotedIdentifier( mSchemaName ),
                             QgsHanaUtils::quotedIdentifier( mTableName ),
@@ -1124,17 +1120,16 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
       for ( QgsAttributeMap::const_iterator attrIt = attrValues.begin(); attrIt != attrValues.end(); ++attrIt )
       {
         int fieldIndex = attrIt.key();
-        const QgsField &field = mAttributeFields.at( fieldIndex );
-        const FieldInfo &fieldInfo = mFieldInfos.at( fieldIndex );
+        const AttributeField &field = mAttributeFields.at( fieldIndex );
 
-        if ( field.name().isEmpty() || fieldInfo.isAutoIncrement )
+        if ( field.name.isEmpty() || field.isAutoIncrement )
           continue;
 
-        SetStatementValue( stmtUpdate, paramIndex, fieldInfo, *attrIt );
+        SetStatementValue( stmtUpdate, paramIndex, field, *attrIt );
         ++paramIndex;
       }
 
-      SetStatementFidValue( stmtUpdate, paramIndex, mFieldInfos, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
+      SetStatementFidValue( stmtUpdate, paramIndex, mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
 
       stmtUpdate->executeUpdate();
 
@@ -1311,111 +1306,26 @@ QgsRectangle QgsHanaProvider::estimateExtent() const
 void QgsHanaProvider::readAttributeFields( QgsHanaConnection &conn )
 {
   mAttributeFields.clear();
-  mFieldInfos.clear();
+  mFields.clear();
   mDefaultValues.clear();
 
-  PreparedStatementRef stmt = conn.prepareStatement( buildQuery( QStringLiteral( "*" ) ) );
-  ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
-  for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
+  auto processField = [&]( const AttributeField & field )
   {
-    const QString fieldName = QString::fromStdU16String( rsmd->getColumnName( i ) );
-    if ( fieldName == mGeometryColumn )
-      continue;
+    if ( field.name == mGeometryColumn )
+      return;
 
-    QVariant::Type fieldType = QVariant::Invalid;
-    const short sqlType = rsmd->getColumnType( i );
-    const QString fieldTypeName = QString::fromStdU16String( rsmd->getColumnTypeName( i ) );
-    const bool isSigned = rsmd->isSigned( i );
-    int fieldSize = static_cast<int>( rsmd->getColumnLength( i ) );
-    int fieldPrec = -1;
+    mAttributeFields.append( field );
+    mFields.append( field.toQgsField() );
 
-    switch ( sqlType )
-    {
-      case SQLDataTypes::Bit:
-      case SQLDataTypes::Boolean:
-        fieldType = QVariant::Bool;
-        break;
-      case SQLDataTypes::TinyInt:
-      case SQLDataTypes::SmallInt:
-      case SQLDataTypes::Integer:
-        fieldType = isSigned ? QVariant::Int : QVariant::UInt;
-        break;
-      case SQLDataTypes::BigInt:
-        fieldType = isSigned ? QVariant::LongLong : QVariant::ULongLong;
-        break;
-      case SQLDataTypes::Numeric:
-      case SQLDataTypes::Decimal:
-        fieldType = QVariant::Double;
-        fieldSize = rsmd->getPrecision( i );
-        fieldPrec = rsmd->getScale( i );
-        break;
-      case SQLDataTypes::Double:
-      case SQLDataTypes::Float:
-      case SQLDataTypes::Real:
-        fieldType = QVariant::Double;
-        break;
-      case SQLDataTypes::Char:
-      case SQLDataTypes::WChar:
-        fieldType = ( fieldSize == 1 ) ? QVariant::Char : QVariant::String;
-        break;
-      case SQLDataTypes::VarChar:
-      case SQLDataTypes::WVarChar:
-      case SQLDataTypes::LongVarChar:
-      case SQLDataTypes::WLongVarChar:
-        fieldType = QVariant::String;
-        break;
-      case SQLDataTypes::Binary:
-      case SQLDataTypes::VarBinary:
-      case SQLDataTypes::LongVarBinary:
-        fieldType = QVariant::ByteArray;
-        break;
-      case SQLDataTypes::Date:
-      case SQLDataTypes::TypeDate:
-        fieldType = QVariant::Date;
-        break;
-      case SQLDataTypes::Time:
-      case SQLDataTypes::TypeTime:
-        fieldType = QVariant::Time;
-        break;
-      case SQLDataTypes::Timestamp:
-      case SQLDataTypes::TypeTimestamp:
-        fieldType = QVariant::DateTime;
-        break;
-      default:
-        break;
-    }
+    const QString schemaName = field.schemaName.isEmpty() ? mSchemaName : field.schemaName;
+    const QString tableName = field.tableName.isEmpty() ? mTableName : field.tableName;
+    QgsHanaResultSetRef rsColumns = conn.getColumns( schemaName, tableName, field.name );
+    if ( rsColumns->next() )
+      mDefaultValues.insert( mAttributeFields.size() - 1, rsColumns->getValue( 13/*COLUMN_DEF*/ ) );
+    rsColumns->close();
+  };
 
-    if ( fieldType != QVariant::Invalid )
-    {
-      QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, QString(), QVariant::Invalid );
-
-      bool isNullable = rsmd->isNullable( i );
-      bool isAutoIncrement = rsmd->isAutoIncrement( i );
-      if ( !isNullable || isAutoIncrement )
-      {
-        QgsFieldConstraints constraints;
-        if ( !isNullable )
-          constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-        if ( isAutoIncrement )
-          constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-        newField.setConstraints( constraints );
-      }
-
-      mAttributeFields.append( newField );
-      mFieldInfos.append( { sqlType, isAutoIncrement, isNullable, isSigned } );
-
-      QString schemaName = QString::fromStdU16String( rsmd->getSchemaName( i ) );
-      if ( schemaName.isEmpty() )
-        schemaName = mSchemaName;
-      QString tableName = QString::fromStdU16String( rsmd->getTableName( i ) );
-      if ( tableName.isEmpty() )
-        tableName = mTableName;
-      QgsHanaResultSetRef rsColumns = conn.getColumns( schemaName, tableName, fieldName );
-      if ( rsColumns->next() )
-        mDefaultValues.insert( mAttributeFields.size() - 1, rsColumns->getValue( 13/*COLUMN_DEF*/ ) );
-      rsColumns->close();
-    }
-  }
+  conn.readQueryFields( buildQuery( QStringLiteral( "*" ) ), processField );
 
   determinePrimaryKey( conn );
 }
@@ -1477,14 +1387,14 @@ void QgsHanaProvider::determinePrimaryKey( QgsHanaConnection &conn )
     if ( conn.isTable( mSchemaName, mTableName ) )
     {
       QStringList layerPrimaryKey = conn.getLayerPrimaryKey( mSchemaName, mTableName );
-      primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromColumns( layerPrimaryKey, mAttributeFields );
+      primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromColumns( layerPrimaryKey, mFields );
     }
     else
-      primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mAttributeFields );
+      primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mFields );
   }
   else
   {
-    primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mAttributeFields );
+    primaryKey = QgsHanaPrimaryKeyUtils::determinePrimaryKeyFromUriKeyColumn( mUri.keyColumn(), mFields );
   }
 
   mPrimaryKeyType = primaryKey.first;
@@ -1493,10 +1403,10 @@ void QgsHanaProvider::determinePrimaryKey( QgsHanaConnection &conn )
   if ( mPrimaryKeyAttrs.size() == 1 )
   {
     //primary keys are unique, not null
-    QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs.value( 0 ) ).constraints();
+    QgsFieldConstraints constraints = mFields.at( mPrimaryKeyAttrs.value( 0 ) ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-    mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
+    mFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
   }
 }
 

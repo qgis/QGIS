@@ -62,7 +62,7 @@ QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
 }
 
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( QgsHanaUtils::connectionInfo( QgsDataSourceUri( uri ) ), configuration )
+  QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
   mProviderKey = QStringLiteral( "hana" );
   setCapabilities();
@@ -311,7 +311,7 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsHanaProviderConnection::tablesWithFilter(
   const QString &schema,
-  const TableFlags &flags, const std::function<bool( const QString &name )> &tableFilter ) const
+  const TableFlags &flags, const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter ) const
 {
   checkCapability( Capability::Tables );
 
@@ -325,7 +325,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsHanaProviderConne
   try
   {
     const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
-    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, aspatial, false, tableFilter );
+    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, aspatial, false, layerFilter );
     tables.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo :  layers )
     {
@@ -377,11 +377,12 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsHanaProviderConne
 
 QgsAbstractDatabaseProviderConnection::TableProperty QgsHanaProviderConnection::table( const QString &schema, const QString &table ) const
 {
-  auto tableFilter = [&table]( const QString & name )
+  QString geometryColumn = QgsDataSourceUri( uri() ).geometryColumn();
+  auto layerFilter = [&table, &geometryColumn]( const QgsHanaLayerProperty & layer )
   {
-    return name == table;
+    return layer.tableName == table && ( geometryColumn.isEmpty() || layer.geometryColName == geometryColumn );
   };
-  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tablesWithFilter( schema, TableFlags(), tableFilter ) };
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tablesWithFilter( schema, TableFlags(), layerFilter ) };
   if ( constTables.empty() )
     throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
                                           .arg( table, schema ) );
@@ -414,6 +415,34 @@ QStringList QgsHanaProviderConnection::schemas( ) const
   catch ( const QgsHanaException &ex )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not retrieve schemas: %1, %2" ).arg( uri(), ex.what() ) );
+  }
+}
+
+QgsFields QgsHanaProviderConnection::fields( const QString &schema, const QString &table ) const
+{
+  const QgsDataSourceUri dsUri { uri() };
+  QgsHanaConnectionRef conn( dsUri );
+  if ( conn.isNull() )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  const QString geometryColumn = dsUri.geometryColumn();
+  const QString sql =  QStringLiteral( "SELECT * FROM %1.%2" )
+                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                             QgsHanaUtils::quotedIdentifier( table ) );
+  try
+  {
+    QgsFields fields;
+    auto processField = [&geometryColumn, &fields]( const AttributeField & field )
+    {
+      if ( field.name != geometryColumn )
+        fields.append( field.toQgsField() );
+    };
+    conn->readQueryFields( sql, processField );
+    return fields;
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve fields: %1, %2" ).arg( uri(), ex.what() ) );
   }
 }
 
