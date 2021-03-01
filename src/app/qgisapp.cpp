@@ -5813,6 +5813,23 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
     std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( layer->renderer() );
     if ( renderer3D )
       layer->setRenderer3D( renderer3D.release() );
+    else
+    {
+      // maybe waiting on an index...
+      if ( layer->dataProvider()->indexingState() != QgsPointCloudDataProvider::Indexed )
+      {
+        QPointer< QgsPointCloudLayer > layerPointer( layer.get() );
+        connect( layer->dataProvider(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, [layerPointer]( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
+        {
+          if ( !layerPointer || state != QgsPointCloudDataProvider::Indexed )
+            return;
+
+          std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( layerPointer->renderer() );
+          if ( renderer3D )
+            layerPointer->setRenderer3D( renderer3D.release() );
+        } );
+      }
+    }
   }
 #endif
 

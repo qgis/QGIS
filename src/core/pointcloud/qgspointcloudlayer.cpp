@@ -369,7 +369,7 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
     }
     triggerRepaint();
 
-    emit renderer3DChanged();
+    emit rendererChanged();
   }
 }
 
