@@ -3,7 +3,7 @@
 [Replace this with some text explaining the rationale and details about this pull request]
 
 <!--
-  BEFORE HTTING SUBMIT -- Please BUILD AND TEST your changes thoroughly. This is YOUR responsibility! Do NOT rely on the QGIS code maintainers to do this for you!!
+  BEFORE HITTING SUBMIT -- Please BUILD AND TEST your changes thoroughly. This is YOUR responsibility! Do NOT rely on the QGIS code maintainers to do this for you!!
 
   IMPORTANT NOTES FOR FIRST TIME CONTRIBUTORS
   ===========================================
