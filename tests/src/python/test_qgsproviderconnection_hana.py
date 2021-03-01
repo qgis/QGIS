@@ -73,8 +73,9 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
         md = self.createProviderMetadata()
         vl = self.createVectorLayer(f'key=\'key1\' srid=4326 type=POINT table="{self.schemaName}"."some_data" ('
                                     'geom) sql=', 'test')
-        conn = md.createConnection(vl.dataProvider().uri().uri(), {})
-        self.assertEqual(conn.uri(), QgsDataSourceUri(self.uri).uri(False))
+        uri = vl.dataProvider().uri().uri()
+        conn = md.createConnection(uri, {})
+        self.assertEqual(conn.uri(), uri)
 
     def testTableUri(self):
         """Create a connection from a layer uri and create a table URI"""

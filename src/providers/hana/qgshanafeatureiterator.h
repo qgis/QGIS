@@ -45,7 +45,6 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
     QList<int> mPrimaryKeyAttrs;
     std::shared_ptr<QgsHanaPrimaryKeyContext> mPrimaryKeyCntx;
     QgsFields mFields;
-    QVector<FieldInfo> mFieldInfos;
     QString mGeometryColumn;
     QgsWkbTypes::Type mGeometryType;
     int mSrid;
