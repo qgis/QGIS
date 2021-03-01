@@ -12,7 +12,10 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsProviderRegistry
+from qgis.core import (
+    QgsProviderRegistry,
+    QgsMapLayerType
+)
 from qgis.testing import start_app, unittest
 
 # Convenience instances in case you may need them
@@ -90,6 +93,21 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertEqual(parts[1], 'All Files (*.*)')
         self.assertIn('Entwine Point Clouds (ept.json EPT.JSON)', parts)
+
+    def testUnusableUriDetails(self):
+        """
+        Test retrieving user-friendly details about an unusable URI
+        """
+        res, details = QgsProviderRegistry.instance().handleUnusableUri('')
+        self.assertFalse(res)
+        res, details = QgsProviderRegistry.instance().handleUnusableUri('/home/me/test.png')
+        self.assertFalse(res)
+        res, details = QgsProviderRegistry.instance().handleUnusableUri('/home/me/test.las')
+        self.assertTrue(res)
+        self.assertIn('LAS', details.warning)
+        res, details = QgsProviderRegistry.instance().handleUnusableUri('/home/me/test.laz')
+        self.assertTrue(res)
+        self.assertIn('LAZ', details.warning)
 
 
 if __name__ == '__main__':

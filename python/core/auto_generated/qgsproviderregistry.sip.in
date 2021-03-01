@@ -12,6 +12,7 @@
 
 
 
+
 class QgsProviderRegistry
 {
 %Docstring
@@ -337,6 +338,125 @@ all of these providers will be returned.
 .. seealso:: :py:func:`shouldDeferUriForOtherProviders`
 
 .. versionadded:: 3.18
+%End
+
+    class UnusableUriDetails
+{
+%Docstring
+
+Contains information about unusable URIs which aren't handled by any registered providers.
+
+For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
+This class can then be used to construct friendly warnings to users advising them why the las/laz
+files cannot be used on their QGIS build.
+
+.. versionadded:: 3.18.1
+%End
+
+%TypeHeaderCode
+#include "qgsproviderregistry.h"
+%End
+      public:
+
+        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< QgsMapLayerType > &layerTypes = QList< QgsMapLayerType >() );
+%Docstring
+Constructor for UnusableUriDetails for the given ``uri``, with the specified user-friendly, translated ``warning``.
+
+The optional ``layerTypes`` argument can be used to specify layer types which are usually valid
+options for opening the URI.
+%End
+
+        QString uri;
+
+        QString warning;
+
+        QString detailedWarning;
+
+        QList<QgsMapLayerType> layerTypes;
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    };
+
+    class UnusableUriHandlerInterface
+{
+%Docstring
+
+An interface used to handle unusable URIs which aren't handled by any registered providers, and construct
+user-friendly warnings as to why the URI is unusable.
+
+For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
+This class can then be used to construct friendly warnings to users advising them why the las/laz
+files cannot be used on their QGIS build.
+
+.. versionadded:: 3.18.1
+%End
+
+%TypeHeaderCode
+#include "qgsproviderregistry.h"
+%End
+      public:
+
+        virtual ~UnusableUriHandlerInterface();
+
+        virtual bool matchesUri( const QString &uri ) const = 0;
+%Docstring
+Returns ``True`` if the handle is an unusable URI handler for the specified ``uri``.
+%End
+
+        virtual UnusableUriDetails details( const QString &uri ) const = 0;
+%Docstring
+Returns the details for advising the user why the ``uri`` is not usable.
+%End
+
+    };
+
+    bool registerUnusableUriHandler( UnusableUriHandlerInterface *handler /Transfer/ );
+%Docstring
+Registers an unusable URI ``handler``, used to handle unusable URIs which aren't
+handled by any registered providers, and construct user-friendly warnings as to why the URI is unusable.
+
+:return: ``True`` on success
+
+.. note::
+
+   ownership of the UnusableUriHandlerInterface instance is transferred to the registry
+
+
+.. versionadded:: 3.18.1
+%End
+
+    bool handleUnusableUri( const QString &uri, UnusableUriDetails &details /Out/ ) const;
+%Docstring
+Returns ``True`` if the specified ``uri`` can potentially be handled by QGIS, if additional
+dependencies or build-time requirements are present.
+
+This can be used to show user-friendly warning messages advising them why a particular
+``uri`` cannot be opened on their QGIS install. For example, if a QGIS install is built
+without the PDAL library then las/laz files are unusable, and this method can be used
+to retrieve a user-friendly warning as to why the las/laz files cannot be used on their
+QGIS build.
+
+.. warning::
+
+   This method does not perform the test to actually determine if the given ``uri``
+   can be handled by any registered provider. It is assumed that prior to calling this method
+   the caller has already determined in advance that the ``uri`` could not be handled.
+
+:param uri: URI to test
+
+
+:return: - ``True`` if the ``uri`` was matched to a registered QgsProviderRegistry.UnusableUriHandlerInterface.
+         - details: will be populated with details allowing construction of a user-friendly warning message
+
+
+.. seealso:: :py:func:`registerUnusableUriHandler`
+
+.. versionadded:: 3.18.1
 %End
 
     bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
