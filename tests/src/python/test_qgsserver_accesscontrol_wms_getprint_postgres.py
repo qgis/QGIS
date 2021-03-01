@@ -143,7 +143,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         cls._accesscontrol = RestrictedAccessControl(cls._server_iface)
         cls._server_iface.registerAccessControl(cls._accesscontrol, 100)
 
-    def _clear_contraints(self):
+    def _clear_constraints(self):
         self._accesscontrol.active['authorizedLayerAttributes'] = False
         self._accesscontrol.active['layerFilterExpression'] = False
         self._accesscontrol.active['layerFilterSubsetString'] = False
@@ -151,7 +151,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
 
     def setUp(self):
         super().setUp()
-        self._clear_contraints()
+        self._clear_constraints()
 
     def _check_exception(self, qs, exception_text):
         """Check that server throws"""
@@ -310,7 +310,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         self._img_diff_error(res.body(), res.headers(), "WMS_GetPrint_postgres_print2_filtered")
 
         # Clear constraints
-        self._clear_contraints()
+        self._clear_constraints()
         _check_red()
 
         req = QgsBufferServerRequest('http://my_server/' + qs.replace('print1', 'print2'))
@@ -361,7 +361,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         self._check_exception(qs + '&ATLAS_PK=1,2', "Atlas error: empty atlas.")
 
         # Remove all constraints
-        self._clear_contraints()
+        self._clear_constraints()
         req = QgsBufferServerRequest('http://my_server/' + qs + '&ATLAS_PK=1,2')
         res = QgsBufferServerResponse()
 
