@@ -72,7 +72,7 @@ void QgsVertexMarker::paint( QPainter *p )
 
 void QgsVertexMarker::updatePath()
 {
-  mPath.clear();
+  mPath = QPainterPath();
 
   const qreal s = ( mIconSize - 1 ) / 2.0;
 
