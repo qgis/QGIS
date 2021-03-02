@@ -1022,24 +1022,44 @@ void TestQgsVertexTool::testAvoidIntersections()
 
   QgsPolygonXY polygon2;
   QgsPolylineXY polygon2exterior;
-  polygon2exterior << QgsPointXY( 8, 1 ) << QgsPointXY( 9, 1 ) << QgsPointXY( 9, 4 ) << QgsPointXY( 8, 4 ) << QgsPointXY( 8, 1 );
+  polygon2exterior << QgsPointXY( 8, 2 ) << QgsPointXY( 9, 2 ) << QgsPointXY( 9, 3 ) << QgsPointXY( 8, 3 ) << QgsPointXY( 8, 2 );
   polygon2 << polygon2exterior;
   QgsFeature polygonF2;
   polygonF2.setGeometry( QgsGeometry::fromPolygonXY( polygon2 ) );
 
   mLayerPolygon->addFeature( polygonF2 );
+  QgsFeatureId mFidPolygonF2 = polygonF2.id();
   QCOMPARE( mLayerPolygon->featureCount(), ( long )2 );
 
-  mouseClick( 6.5, 1, Qt::LeftButton );
+  mouseClick( 7, 1, Qt::LeftButton );
   mouseClick( 9, 2, Qt::LeftButton );
 
   QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );
 
-  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "MultiPolygon (((4 4, 7 4, 8 3.2, 8 2, 6.5 2, 4 4)),((9 2.4, 9.5 2, 9 2, 9 2.4)))" ) ); // avoid rounding errors
+  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "Polygon ((4 4, 7 4, 8 3, 8 2, 9 2, 4 1, 4 4))" ) ); // avoid rounding errors
+  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "Polygon ((8 2, 9 2, 9 3, 8 3, 8 2))" ) );
+
+  mLayerPolygon->undoStack()->undo();
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  // Move polygons and check that geometry are not avoided
+  // select polygons
+  mousePress( 3, 5, Qt::LeftButton );
+  mouseMove( 9.5, 0.5 );
+  mouseRelease( 9.5, 0.5, Qt::LeftButton );
+
+  // move polygons
+  mouseClick( 8, 2, Qt::LeftButton );
+  mouseClick( 5, 2, Qt::LeftButton );
+
+  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "Polygon ((1 1, 4 1, 4 4, 1 4, 1 1))" ) );
+  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "Polygon ((5 2, 6 2, 6 3, 5 3, 5 2))" ) );
 
   mLayerPolygon->undoStack()->undo();
   mLayerPolygon->undoStack()->undo(); // delete feature
 
+  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 
   QgsProject::instance()->setTopologicalEditing( false );
