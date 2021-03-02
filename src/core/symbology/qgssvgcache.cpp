@@ -32,6 +32,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QPicture>
+#include <QRegularExpression>
 #include <QSvgRenderer>
 #include <QFileInfo>
 #include <QNetworkReply>
