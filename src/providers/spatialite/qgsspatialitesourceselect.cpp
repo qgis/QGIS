@@ -521,7 +521,13 @@ QString QgsSpatiaLiteSourceSelect::connectionInfo()
 void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
 {
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
+  const auto item { mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) ) };
+  if ( !item )
+  {
+    return;
+  }
+
+  const QString tableName = item->text();
 
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ), options );
@@ -588,7 +594,9 @@ void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
 
 void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
-  emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
+  const bool selectionIsNotEmpty { !mTablesTreeView->selectionModel()->selection().isEmpty() };
+  mBuildQueryButton->setEnabled( selectionIsNotEmpty );
+  emit enableButtons( selectionIsNotEmpty );
 }
 
 void QgsSpatiaLiteSourceSelect::showHelp()
