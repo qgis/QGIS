@@ -78,44 +78,6 @@ namespace QgsWms
     return getStyledLayerDescriptorDocument( serverIface, project, layerList );
   }
 
-  //GetStyle for compatibility with earlier QGIS versions
-  void writeGetStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                      const QgsServerRequest &request, QgsServerResponse &response )
-  {
-    QDomDocument doc = getStyle( serverIface, project, version, request );
-    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-    response.write( doc.toByteArray() );
-  }
-
-  QDomDocument getStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                         const QgsServerRequest &request )
-  {
-    Q_UNUSED( version )
-
-    QgsServerRequest::Parameters parameters = request.parameters();
-
-    QDomDocument doc;
-
-    QString styleName = parameters.value( QStringLiteral( "STYLE" ) );
-    QString layerName = parameters.value( QStringLiteral( "LAYER" ) );
-
-    if ( styleName.isEmpty() )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
-                                    QgsWmsParameter::STYLE );
-    }
-
-    if ( layerName.isEmpty() )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
-                                    QgsWmsParameter::LAYERS );
-    }
-
-    QStringList layerList;
-    layerList.append( layerName );
-    return getStyledLayerDescriptorDocument( serverIface, project, layerList );
-  }
-
   namespace
   {
     QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project,
@@ -224,10 +186,4 @@ namespace QgsWms
       return myDocument;
     }
   }
-
-
 } // namespace QgsWms
-
-
-
-
