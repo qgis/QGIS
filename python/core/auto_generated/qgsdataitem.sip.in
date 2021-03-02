@@ -246,7 +246,7 @@ A draggable item has to implement :py:func:`~QgsDataItem.mimeUri` that will be u
 .. versionadded:: 3.0
 %End
 
- virtual QgsMimeDataUtils::Uri mimeUri() const;
+ virtual QgsMimeDataUtils::Uri mimeUri() const /Deprecated/;
 %Docstring
 Returns mime URI for the data item.
 Items that return valid URI will be returned in mime data when dragging a selection from browser model.

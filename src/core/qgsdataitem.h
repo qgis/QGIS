@@ -263,10 +263,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * \deprecated since QGIS 3.18, use mimeUris() instead
      * \since QGIS 3.0
      */
-    Q_DECL_DEPRECATED virtual QgsMimeDataUtils::Uri mimeUri() const
-    {
-      return mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : mimeUris().first();
-    }
+    Q_DECL_DEPRECATED virtual QgsMimeDataUtils::Uri mimeUri() const SIP_DEPRECATED;
 
     /**
      * Returns mime URIs for the data item, most data providers will only return a single URI

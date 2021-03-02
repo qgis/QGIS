@@ -817,6 +817,11 @@ bool QgsDataItem::handleDoubleClick()
   return false;
 }
 
+QgsMimeDataUtils::Uri QgsDataItem::mimeUri() const
+{
+  return mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : mimeUris().first();
+}
+
 bool QgsDataItem::rename( const QString & )
 {
   return false;
