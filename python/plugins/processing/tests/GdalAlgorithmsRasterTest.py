@@ -1599,9 +1599,9 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'USE_Z': True,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_rasterize',
-                '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG' +
-                source + ' ' +
-                outdir + '/check.jpg'])
+                 '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG ' +
+                 sourceZ + ' ' +
+                 outdir + '/check.jpg'])
 
             # use_Z selected with field indicated (should prefer use_Z)
             self.assertEqual(
