@@ -358,7 +358,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
-        QMenu *menuSetCRS = new QMenu( tr( "La&yer CRS" ), menu );
+        QMenu *menuSetCRS = new QMenu( tr( "Layer CRS" ), menu );
 
         const QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
         QgsCoordinateReferenceSystem layerCrs;
