@@ -566,7 +566,7 @@ bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemG
 
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
-    const QgsMimeDataUtils::UriList layerUriList = QgsMimeDataUtils::UriList() << layerItem->mimeUri();
+    const QgsMimeDataUtils::UriList layerUriList = layerItem->mimeUris();
     QgisApp::instance()->handleDropUriList( layerUriList );
     return true;
   }

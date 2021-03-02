@@ -131,7 +131,7 @@ class CORE_EXPORT QgsOgrDataCollectionItem final: public QgsDataCollectionItem
     static bool createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName );
 
     bool hasDragEnabled() const override;
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 

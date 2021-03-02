@@ -375,8 +375,7 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
   else
   {
     errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
-               .arg( tableName )
-               .arg( parent()->path() );
+               .arg( tableName, parent()->path() );
     return false;
   }
   return true;
@@ -395,11 +394,14 @@ bool QgsGeoPackageCollectionItem::hasDragEnabled() const
   return true;
 }
 
-QgsMimeDataUtils::Uri QgsGeoPackageCollectionItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
 {
-  QgsMimeDataUtils::Uri u;
-  u.providerKey = QStringLiteral( "ogr" );
-  u.uri = path();
-  u.layerType = QStringLiteral( "vector" );
-  return u;
+  QgsMimeDataUtils::Uri vectorUri;
+  vectorUri.providerKey = QStringLiteral( "ogr" );
+  vectorUri.uri = path();
+  vectorUri.layerType = QStringLiteral( "vector" );
+  QgsMimeDataUtils::Uri rasterUri { vectorUri };
+  rasterUri.layerType = QStringLiteral( "raster" );
+  rasterUri.providerKey = QStringLiteral( "gdal" );
+  return { vectorUri, rasterUri };
 }

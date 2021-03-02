@@ -260,9 +260,23 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \see hasDragEnabled()
+     * \deprecated since QGIS 3.18, use mimeUris() instead
      * \since QGIS 3.0
      */
-    virtual QgsMimeDataUtils::Uri mimeUri() const { return QgsMimeDataUtils::Uri(); }
+    Q_DECL_DEPRECATED virtual QgsMimeDataUtils::Uri mimeUri() const
+    {
+      return mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : mimeUris().first();
+    }
+
+    /**
+     * Returns mime URIs for the data item, most data providers will only return a single URI
+     * but some data collection items (e.g. GPKG, OGR) may report multiple URIs (e.g. for vector and
+     * raster layer types).
+     *
+     * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+     * \since QGIS 3.18
+     */
+    virtual QgsMimeDataUtils::UriList mimeUris() const { return QgsMimeDataUtils::UriList(); }
 
     enum Capability
     {
