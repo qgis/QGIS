@@ -213,6 +213,14 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 
     /**
+     * Returns TRUE if the renderer uses embedded symbols for features.
+     * The default implementation returns FALSE.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool usesEmbeddedSymbols() const;
+
+    /**
      * Returns TRUE if this renderer requires the geometry to apply the filter.
      */
     virtual bool filterNeedsGeometry() const;
@@ -234,7 +242,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Returns TRUE if the feature has been returned (this is used for example
      * to determine whether the feature may be labelled).
      *
-     * If layer is not -1, the renderer should draw only a particula layer from symbols
+     * If layer is not -1, the renderer should draw only a particular layer from symbols
      * (in order to support symbol level rendering).
      *
      * \see startRender()
