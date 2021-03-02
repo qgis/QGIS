@@ -72,7 +72,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void pasteSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey );
     void setSymbolLegendNodeColor( const QColor &color );
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
-    void toggleLabels( const QString &layerId, bool enabled );
+    void toggleLabels( bool enabled );
   private:
     bool removeActionEnabled();
 };
