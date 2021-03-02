@@ -75,7 +75,7 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QUrl>
-
+#include <QStandardPaths>
 
 #ifdef _MSC_VER
 #include <sys/utime.h>

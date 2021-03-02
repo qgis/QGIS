@@ -23,7 +23,9 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include <QDateTime>
-
+#include <QUrlQuery>
+#include <QFile>
+#include <QDir>
 
 QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg, QObject *parent )
   : QObject( parent )

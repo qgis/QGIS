@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include "qgstest.h"
 #include <QPixmap>
+#include <QSettings>
+#include <QSignalSpy>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"

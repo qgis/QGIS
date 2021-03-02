@@ -25,6 +25,8 @@
 #include "qgsattributeform.h"
 #include "qgis_gui.h"
 
+#include <QPointer>
+
 class QgsFeatureRequest;
 class QgsMapLayerAction;
 class QgsScrollArea;

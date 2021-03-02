@@ -43,6 +43,7 @@
 #include "qgsfeaturerenderergenerator.h"
 
 #include <QPicture>
+#include <QTimer>
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

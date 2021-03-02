@@ -25,6 +25,8 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QUrl>
+#include <QTimer>
+#include <QStandardPaths>
 
 #include <sqlite3.h>
 

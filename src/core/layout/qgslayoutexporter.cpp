@@ -31,6 +31,8 @@
 #include <QImageWriter>
 #include <QSize>
 #include <QSvgGenerator>
+#include <QBuffer>
+#include <QTimeZone>
 
 #include "gdal.h"
 #include "cpl_conv.h"

@@ -27,6 +27,7 @@
 
 #include <QSharedDataPointer>
 
+class QMimeData;
 class QgsTextSettingsPrivate;
 
 /**

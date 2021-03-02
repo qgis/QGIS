@@ -23,6 +23,8 @@
 #include <QMap>
 #include <QFuture>
 #include <QReadWriteLock>
+#include <QSemaphore>
+#include <QElapsedTimer>
 
 #include "qgis_core.h"
 #include "qgsmaplayer.h"

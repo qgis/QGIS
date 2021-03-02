@@ -16,7 +16,7 @@
 #ifndef QGSTEST_H
 #define QGSTEST_H
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
 

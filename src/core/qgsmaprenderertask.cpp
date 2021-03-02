@@ -29,6 +29,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QTimeZone>
 #ifndef QT_NO_PRINTER
 #include <QPrinter>
 #endif

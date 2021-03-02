@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMenu>
+#include <QMimeData>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

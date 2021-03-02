@@ -28,6 +28,7 @@
 #include <qgslayerdefinition.h>
 #include <qgsproject.h>
 #include "qgslayertree.h"
+#include <QSignalSpy>
 
 /**
  * @ingroup UnitTests

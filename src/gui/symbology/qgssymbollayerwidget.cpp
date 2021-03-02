@@ -59,6 +59,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QInputDialog>
+#include <QBuffer>
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {

@@ -21,6 +21,7 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QToolButton>
+#include <QItemSelectionModel>
 
 #include "qgspanelwidget.h"
 

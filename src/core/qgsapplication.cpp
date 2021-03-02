@@ -95,6 +95,8 @@
 #include <QThreadPool>
 #include <QLocale>
 #include <QStyle>
+#include <QLibraryInfo>
+#include <QStandardPaths>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>

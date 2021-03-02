@@ -39,6 +39,8 @@ email                : sherman at mrcc.com
 #include <QWindow>
 #include <QMenu>
 #include <QClipboard>
+#include <QVariantAnimation>
+#include <QPropertyAnimation>
 
 #include "qgis.h"
 #include "qgssettings.h"

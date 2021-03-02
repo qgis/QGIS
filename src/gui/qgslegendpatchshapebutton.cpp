@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgsguiutils.h"
 #include <QMenu>
+#include <QBuffer>
 
 QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )

@@ -20,6 +20,7 @@
 #include "qgstextformat.h"
 
 #include <QToolButton>
+#include <QPointer>
 
 class QgsExpressionContextGenerator;
 class QgsMapCanvas;

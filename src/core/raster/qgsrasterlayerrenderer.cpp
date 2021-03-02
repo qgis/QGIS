@@ -27,6 +27,9 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsmapclippingutils.h"
 
+#include <QElapsedTimer>
+#include <QPointer>
+
 ///@cond PRIVATE
 
 QgsRasterLayerRendererFeedback::QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r )

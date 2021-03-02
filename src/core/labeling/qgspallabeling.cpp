@@ -39,6 +39,7 @@
 #include <QTime>
 #include <QPainter>
 #include <QDesktopWidget>
+#include <QTextBoundaryFinder>
 
 #include "diagram/qgsdiagram.h"
 #include "qgsdiagramrenderer.h"

@@ -31,6 +31,7 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <QUrl>
+#include <QUrlQuery>
 
 const int MAX_SAMPLE_LENGTH = 200;
 

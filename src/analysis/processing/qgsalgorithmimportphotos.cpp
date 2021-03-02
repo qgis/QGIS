@@ -18,6 +18,8 @@
 #include "qgsalgorithmimportphotos.h"
 #include "qgsogrutils.h"
 #include "qgsvectorlayer.h"
+#include <QDirIterator>
+#include <QFileInfo>
 
 ///@cond PRIVATE
 

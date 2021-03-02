@@ -31,6 +31,7 @@
 #include <QDialogButtonBox>
 #include <QDir>
 #include <QEvent>
+#include <QUrlQuery>
 #include <QFile>
 #include <QFileInfo>
 #include <QImageWriter>

@@ -39,6 +39,7 @@
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QTemporaryFile>
 
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )

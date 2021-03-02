@@ -24,6 +24,8 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
 
+#include <QTextBoundaryFinder>
+
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 

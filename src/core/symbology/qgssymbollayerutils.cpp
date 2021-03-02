@@ -47,6 +47,8 @@
 #include <QSettings>
 #include <QRegExp>
 #include <QPicture>
+#include <QUrlQuery>
+#include <QMimeData>
 
 #define POINTS_TO_MM 2.83464567
 

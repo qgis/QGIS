@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 #include <QUrl>
+#include <QTemporaryFile>
 
 //qgis includes...
 #include <qgsgeometry.h>

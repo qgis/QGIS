@@ -16,7 +16,7 @@
 
 #include "qgstest.h"
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <QApplication>
 #include <QDateTime>
 #include <QDebug>
@@ -24,6 +24,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
+#include <QSignalSpy>
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"

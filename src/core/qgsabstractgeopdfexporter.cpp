@@ -31,6 +31,7 @@
 #include <QMutexLocker>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QTimeZone>
 
 
 bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()

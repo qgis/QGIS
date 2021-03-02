@@ -28,6 +28,7 @@
 #include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
+#include <QTimer>
 #include <mutex>
 
 #include "qgis.h"
