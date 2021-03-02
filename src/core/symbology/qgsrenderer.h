@@ -127,6 +127,8 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_Qgs25DRenderer;
     else if ( type == QLatin1String( "nullSymbol" ) )
       sipType = sipType_QgsNullSymbolRenderer;
+    else if ( type == QLatin1String( "embeddedSymbol" ) )
+      sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;
     SIP_END

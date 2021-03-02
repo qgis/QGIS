@@ -559,6 +559,7 @@
 %Include auto_generated/symbology/qgscolorbrewerpalette.sip
 %Include auto_generated/symbology/qgscptcityarchive.sip
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
+%Include auto_generated/symbology/qgsembeddedsymbolrenderer.sip
 %Include auto_generated/symbology/qgsfeaturerenderergenerator.sip
 %Include auto_generated/symbology/qgsfillsymbollayer.sip
 %Include auto_generated/symbology/qgsgeometrygeneratorsymbollayer.sip
