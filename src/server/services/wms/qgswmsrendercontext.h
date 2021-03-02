@@ -48,7 +48,8 @@ namespace QgsWms
         UseWfsLayersOnly       = 0x100,
         AddExternalLayers      = 0x200,
         UseSrcWidthHeight      = 0x400,
-        UseTileBuffer          = 0x800
+        UseTileBuffer          = 0x800,
+        AddAllLayers           = 0x1000 //!< For GetPrint: add layers from LAYER(S) parameter
       };
       Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -209,7 +210,7 @@ namespace QgsWms
        * Returns a list of query layer names where group names are replaced by the names of their layer components.
        * \since QGIS 3.8
        */
-      QStringList flattenedQueryLayers() const;
+      QStringList flattenedQueryLayers( const QStringList &layerNames ) const;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
