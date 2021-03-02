@@ -182,7 +182,7 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   return dpm / 1000.0;
 }
 
-QStringList QgsWmsRenderContext::flattenedQueryLayers() const
+QStringList QgsWmsRenderContext::flattenedQueryLayers( const QStringList &layerNames ) const
 {
   QStringList result;
   std::function <QStringList( const QString &name )> findLeaves = [ & ]( const QString & name ) -> QStringList
@@ -211,8 +211,8 @@ QStringList QgsWmsRenderContext::flattenedQueryLayers() const
     }
     return _result;
   };
-  const auto constNicks { mParameters.queryLayersNickname() };
-  for ( const auto &name : constNicks )
+
+  for ( const auto &name : qgis::as_const( layerNames ) )
   {
     result.append( findLeaves( name ) );
   }
@@ -429,7 +429,21 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
-    const QStringList queryLayerNames { flattenedQueryLayers() };
+    const QStringList queryLayerNames = flattenedQueryLayers( mParameters.queryLayersNickname() );
+    for ( const QString &layerName : queryLayerNames )
+    {
+      const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
+      for ( QgsMapLayer *lyr : layers )
+        if ( !mLayersToRender.contains( lyr ) )
+        {
+          mLayersToRender.append( lyr );
+        }
+    }
+  }
+
+  if ( mFlags & AddAllLayers )
+  {
+    const QStringList queryLayerNames = flattenedQueryLayers( mParameters.allLayersNickname() );
     for ( const QString &layerName : queryLayerNames )
     {
       const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );

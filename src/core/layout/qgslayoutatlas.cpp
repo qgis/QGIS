@@ -288,6 +288,13 @@ int QgsLayoutAtlas::updateFeatures()
     req.setFilterExpression( mFilterExpression );
   }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  if ( mLayout->renderContext().featureFilterProvider() )
+  {
+    mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get(), req );
+  }
+#endif
+
   QgsFeatureIterator fit = mCoverageLayer->getFeatures( req );
 
   std::unique_ptr<QgsExpression> nameExpression;

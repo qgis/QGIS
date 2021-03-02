@@ -64,7 +64,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRe
 
   QString expression;
 
-  if ( mResolved && mFilterFeaturesExpressions.keys().contains( layer->id() ) )
+  if ( mResolved && mFilterFeaturesExpressions.contains( layer->id() ) )
   {
     expression = mFilterFeaturesExpressions[layer->id()];
   }
