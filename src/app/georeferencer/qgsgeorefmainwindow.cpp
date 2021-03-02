@@ -544,7 +544,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
       case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
       case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
       case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
-        showGDALScript(QStringList() << generateGDALogr2ogrCommand( mTransformParam ) );
+        showGDALScript( QStringList() << generateGDALogr2ogrCommand( mTransformParam ) );
         break;
       default:
         mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
@@ -1384,7 +1384,7 @@ void QgsGeoreferencerMainWindow::addRaster( const QString &file )
 
 void QgsGeoreferencerMainWindow::addVector( const QString &file )
 {
-  mVLayer = new QgsVectorLayer( file, QStringLiteral( "Vector" ) );
+  mVLayer = std::make_unique< QgsVectorLayer >( file, QStringLiteral( "Vector" ) );
 
   // so layer is not added to legend
   QgsProject::instance()->addMapLayers(

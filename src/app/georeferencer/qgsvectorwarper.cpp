@@ -30,8 +30,8 @@
 
 #include "qgsvectorwarper.h"
 
-QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod& method, const QgsGCPList& points,
-                                  const QgsCoordinateReferenceSystem& destCrs )
+QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod &method, const QgsGCPList &points,
+                                  const QgsCoordinateReferenceSystem &destCrs )
   : mDestCRS( destCrs )
 {
   QVector<QgsPointXY> srcPts;
@@ -89,7 +89,7 @@ bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QStri
       outputFeature.setGeometry( transformed );
       exporter->addFeature( outputFeature, QgsFeatureSink::FastInsert );
       if ( !exporter->lastError().isEmpty() )
-          allGood = false;
+        allGood = false;
     }
   }
   return allGood;
