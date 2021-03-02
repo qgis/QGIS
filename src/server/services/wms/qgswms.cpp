@@ -127,7 +127,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetStyle" ) or QSTR_COMPARE( req, "GetStyles" ) )
         {
-          writeGetStyles( mServerIface, project, version, request, response );
+          writeGetStyles( mServerIface, project, request, response );
         }
         else if ( QSTR_COMPARE( req, "DescribeLayer" ) )
         {

@@ -23,6 +23,7 @@
 #include "qgswmsutils.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsgetstyles.h"
+#include "qgswmsrendercontext.h"
 #include "qgsserverprojectutils.h"
 
 #include "qgsproject.h"
@@ -37,52 +38,33 @@ namespace QgsWms
 
   namespace
   {
-    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project,
-        QStringList &layerList );
+    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request );
   }
 
-  void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+  void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project,
                        const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = getStyles( serverIface, project, version, request );
+    QDomDocument doc = getStyles( serverIface, project, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
-  QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+  QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project,
                           const QgsServerRequest &request )
   {
-    Q_UNUSED( version )
-
-    QgsServerRequest::Parameters parameters = request.parameters();
-
-    QString layersName = parameters.value( "LAYERS" );
-
-    if ( layersName.isEmpty() )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
-                                    QgsWmsParameter::LAYERS );
-    }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList layerList = layersName.split( ',', QString::SkipEmptyParts );
-#else
-    QStringList layerList = layersName.split( ',', Qt::SkipEmptyParts );
-#endif
-    if ( layerList.isEmpty() )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
-                                    QgsWmsParameter::LAYERS );
-    }
-
-    return getStyledLayerDescriptorDocument( serverIface, project, layerList );
+    return getStyledLayerDescriptorDocument( serverIface, project, request );
   }
 
   namespace
   {
-    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project,
-        QStringList &layerList )
+    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request )
     {
+      // init WMS parameters and context
+      const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+      QgsWmsRenderContext context( project, serverIface );
+      context.setFlag( QgsWmsRenderContext::SetAccessControl );
+
+      // init document
       QDomDocument myDocument = QDomDocument();
 
       QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
@@ -98,48 +80,15 @@ namespace QgsWms
       root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
       myDocument.appendChild( root );
 
-      // access control
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      QgsAccessControl *accessControl = serverIface->accessControls();
-#else
-      ( void )serverIface;
-#endif
-      // Use layer ids
-      bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
-      // WMS restricted layers
-      QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
-
-      for ( QgsMapLayer *layer : project->mapLayers() )
+      for ( auto layer : context.layersToRender() )
       {
-        QString name = layer->name();
-        if ( useLayerIds )
-          name = layer->id();
-        else if ( !layer->shortName().isEmpty() )
-          name = layer->shortName();
-
-        if ( !layerList.contains( name ) )
-        {
-          continue;
-        }
-
-        //unpublished layer
-        if ( restrictedLayers.contains( layer->name() ) )
-        {
-          throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
-        }
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-        if ( accessControl && !accessControl->layerReadPermission( layer ) )
-        {
-          throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
-        }
-#endif
         // Create the NamedLayer element
         QDomElement namedLayerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
         root.appendChild( namedLayerNode );
 
         // store the Name element
         QDomElement nameNode = myDocument.createElement( QStringLiteral( "se:Name" ) );
-        nameNode.appendChild( myDocument.createTextNode( name ) );
+        nameNode.appendChild( myDocument.createTextNode( context.layerNickname( *layer ) ) );
         namedLayerNode.appendChild( nameNode );
 
         if ( layer->type() == QgsMapLayerType::VectorLayer )
