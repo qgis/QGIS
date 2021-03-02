@@ -192,11 +192,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show &Labels" ), menu );
         actionShowLabels->setCheckable( true );
         actionShowLabels->setChecked( vlayer->labelsEnabled() );
-        const QString layerId = vlayer->id();
-        connect( actionShowLabels, &QAction::toggled, this, [this, layerId]( bool enabled )
-        {
-          toggleLabels( layerId, enabled );
-        } );
+        connect( actionShowLabels, &QAction::toggled, this, &QgsAppLayerTreeViewMenuProvider::toggleLabels );
         menu->addAction( actionShowLabels );
       }
 
@@ -1115,40 +1111,44 @@ void QgsAppLayerTreeViewMenuProvider::setLayerCrs( const QgsCoordinateReferenceS
   }
 }
 
-void QgsAppLayerTreeViewMenuProvider::toggleLabels( const QString &layerId, bool enabled )
+void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
 {
-  QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
-  if ( !vlayer )
-    return;
-
-  if ( enabled && !vlayer->labeling() )
+  const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : selectedLayerNodes )
   {
-    // no labeling setup - create default labeling for layer
-    QgsPalLayerSettings settings;
-    settings.fieldName = vlayer->displayField();
-    switch ( vlayer->geometryType() )
+    QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( l->layer() );
+    if ( !vlayer || !vlayer->isSpatial() )
+      continue;
+
+    if ( enabled && !vlayer->labeling() )
     {
-      case QgsWkbTypes::PointGeometry:
-      case QgsWkbTypes::PolygonGeometry:
-        settings.placement = QgsPalLayerSettings::AroundPoint;
-        break;
+      // no labeling setup - create default labeling for layer
+      QgsPalLayerSettings settings;
+      settings.fieldName = vlayer->displayField();
+      switch ( vlayer->geometryType() )
+      {
+        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::PolygonGeometry:
+          settings.placement = QgsPalLayerSettings::AroundPoint;
+          break;
 
-      case QgsWkbTypes::LineGeometry:
-        settings.placement = QgsPalLayerSettings::Line;
-        break;
+        case QgsWkbTypes::LineGeometry:
+          settings.placement = QgsPalLayerSettings::Line;
+          break;
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
-        break;
+        case QgsWkbTypes::UnknownGeometry:
+        case QgsWkbTypes::NullGeometry:
+          break;
+      }
+
+      vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+      vlayer->setLabelsEnabled( true );
     }
-
-    vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
-    vlayer->setLabelsEnabled( true );
+    else
+    {
+      vlayer->setLabelsEnabled( enabled );
+    }
+    vlayer->emitStyleChanged();
+    vlayer->triggerRepaint();
   }
-  else
-  {
-    vlayer->setLabelsEnabled( enabled );
-  }
-  vlayer->emitStyleChanged();
-  vlayer->triggerRepaint();
 }
