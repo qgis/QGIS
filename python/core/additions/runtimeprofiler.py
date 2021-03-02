@@ -43,4 +43,4 @@ class ScopedRuntimeProfileContextManager():
 
     def __exit__(self, ex_type, ex_value, traceback):
         del self.profiler
-        return True
+        return ex_type is None
