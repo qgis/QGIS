@@ -16,6 +16,7 @@
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgspainteffectregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgssinglesymbolrenderer.h"
 
 QgsEmbeddedSymbolRenderer::QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol )
   : QgsFeatureRenderer( QStringLiteral( "embeddedSymbol" ) )
@@ -112,6 +113,23 @@ QgsFeatureRenderer *QgsEmbeddedSymbolRenderer::create( QDomElement &element, con
 
   QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer( symbolMap.take( QStringLiteral( "0" ) ) );
   return r;
+}
+
+QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+{
+  if ( renderer->type() == QLatin1String( "embeddedSymbol" ) )
+  {
+    return dynamic_cast<QgsEmbeddedSymbolRenderer *>( renderer->clone() );
+  }
+  else if ( renderer->type() == QLatin1String( "singleSymbol" ) )
+  {
+    std::unique_ptr< QgsEmbeddedSymbolRenderer > symbolRenderer = std::make_unique< QgsEmbeddedSymbolRenderer >( static_cast< const QgsSingleSymbolRenderer * >( renderer )->symbol()->clone() );
+    return symbolRenderer.release();
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 QDomElement QgsEmbeddedSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )

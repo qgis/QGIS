@@ -79,6 +79,12 @@ class CORE_EXPORT QgsEmbeddedSymbolRenderer : public QgsFeatureRenderer
      */
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
+    /**
+     * Creates a QgsEmbeddedSymbolRenderer from an existing \a renderer.
+     * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
+     */
+    static QgsEmbeddedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+
   private:
 #ifdef SIP_RUN
     QgsEmbeddedSymbolRenderer( const QgsEmbeddedSymbolRenderer & );

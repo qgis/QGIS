@@ -81,6 +81,13 @@ Creates a new embedded symbol renderer from an XML ``element``, using the suppli
 The caller takes ownership of the returned renderer.
 %End
 
+    static QgsEmbeddedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+Creates a QgsEmbeddedSymbolRenderer from an existing ``renderer``.
+
+:return: a new renderer if the conversion was possible, otherwise ``None``.
+%End
+
   private:
     QgsEmbeddedSymbolRenderer( const QgsEmbeddedSymbolRenderer & );
     QgsEmbeddedSymbolRenderer &operator=( const QgsEmbeddedSymbolRenderer & );
