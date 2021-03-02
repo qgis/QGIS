@@ -1085,7 +1085,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     if ( invertedPolygonRenderer )
       r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
   }
-  if ( renderer->type() == QLatin1String( "embeddedSymbol" ) && layer )
+  else if ( renderer->type() == QLatin1String( "embeddedSymbol" ) && layer )
   {
     const QgsEmbeddedSymbolRenderer *embeddedRenderer = dynamic_cast<const QgsEmbeddedSymbolRenderer *>( renderer );
     QgsCategoryList categories;
