@@ -243,7 +243,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   {
     // a zero width buffer is safer than calling make valid here!
     selectGeomTrans = selectGeomTrans.buffer( 0, 1 );
-    if ( selectGeomTrans.isNull() || selectGeomTrans.isEmpty() )
+    if ( selectGeomTrans.isEmpty() )
       return newSelectedFeatures;
   }
 
