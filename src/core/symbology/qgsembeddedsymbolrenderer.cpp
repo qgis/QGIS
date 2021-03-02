@@ -59,12 +59,12 @@ bool QgsEmbeddedSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRen
     clone->startRender( context );
     renderFeatureWithSymbol( feature, clone.get(), context, layer, selected, drawVertexMarker );
     clone->stopRender( context );
-    return true;
   }
   else
   {
     renderFeatureWithSymbol( feature, mDefaultSymbol.get(), context, layer, selected, drawVertexMarker );
   }
+  return true;
 }
 
 void QgsEmbeddedSymbolRenderer::stopRender( QgsRenderContext &context )
