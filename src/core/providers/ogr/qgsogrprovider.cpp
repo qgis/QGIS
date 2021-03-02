@@ -48,7 +48,7 @@ email                : sherman at mrcc.com
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgis.h"
-
+#include "qgsembeddedsymbolrenderer.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -2967,6 +2967,12 @@ void QgsOgrProvider::computeCapabilities()
       //supports transactions
       ability |= TransactionSupport;
     }
+
+    if ( GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES, nullptr ) != nullptr )
+    {
+      ability |= FeatureSymbology;
+      ability |= CreateRenderer;
+    }
   }
 
   ability |= ReadLayerMetadata;
@@ -4614,6 +4620,15 @@ bool QgsOgrProvider::doesStrictFeatureTypeCheck() const
 {
   // FIXME probably other drivers too...
   return mGDALDriverName != QLatin1String( "ESRI Shapefile" ) || ( mOGRGeomType == wkbPoint || mOGRGeomType == wkbPoint25D );
+}
+
+QgsFeatureRenderer *QgsOgrProvider::createRenderer( const QVariantMap & ) const
+{
+  if ( !( mCapabilities & FeatureSymbology ) )
+    return nullptr;
+
+  std::unique_ptr< QgsSymbol > defaultSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::geometryType( wkbType() ) ) );
+  return new QgsEmbeddedSymbolRenderer( defaultSymbol.release() );
 }
 
 OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type )
