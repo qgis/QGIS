@@ -251,6 +251,39 @@ void QgsSymbol::_getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRende
   }
 }
 
+QString QgsSymbol::symbolTypeToString( QgsSymbol::SymbolType type )
+{
+  switch ( type )
+  {
+    case QgsSymbol::Marker:
+      return QObject::tr( "Marker" );
+    case QgsSymbol::Line:
+      return QObject::tr( "Line" );
+    case QgsSymbol::Fill:
+      return QObject::tr( "Fill" );
+    case QgsSymbol::Hybrid:
+      return QObject::tr( "Hybrid" );
+  }
+  return QString();
+}
+
+QgsSymbol::SymbolType QgsSymbol::symbolTypeForGeometryType( QgsWkbTypes::GeometryType type )
+{
+  switch ( type )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return Marker;
+    case QgsWkbTypes::LineGeometry:
+      return Line;
+    case QgsWkbTypes::PolygonGeometry:
+      return Fill;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      return Hybrid;
+  }
+  return Hybrid;
+}
+
 const QgsPropertiesDefinition &QgsSymbol::propertyDefinitions()
 {
   QgsSymbol::initPropertyDefinitions();

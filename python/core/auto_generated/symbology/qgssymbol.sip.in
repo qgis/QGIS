@@ -41,6 +41,20 @@ Abstract base class for all rendered symbols.
       Hybrid
     };
 
+    static QString symbolTypeToString( SymbolType type );
+%Docstring
+Returns a translated string version of the specified symbol ``type``.
+
+.. versionadded:: 3.20
+%End
+
+    static SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
+%Docstring
+Returns the default symbol type required for the specified geometry ``type``.
+
+.. versionadded:: 3.20
+%End
+
     enum ScaleMethod
     {
       ScaleArea,

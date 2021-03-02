@@ -26,6 +26,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerreference.h"
 #include "qgspropertycollection.h"
+#include "qgswkbtypes.h"
 
 class QColor;
 class QImage;
@@ -90,6 +91,20 @@ class CORE_EXPORT QgsSymbol
       Fill,   //!< Fill symbol
       Hybrid  //!< Hybrid symbol
     };
+
+    /**
+     * Returns a translated string version of the specified symbol \a type.
+     *
+     * \since QGIS 3.20
+     */
+    static QString symbolTypeToString( SymbolType type );
+
+    /**
+     * Returns the default symbol type required for the specified geometry \a type.
+     *
+     * \since QGIS 3.20
+     */
+    static SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
 
     /**
      * Scale method
