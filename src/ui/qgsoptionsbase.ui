@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>9</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>675</width>
-                <height>1019</height>
+                <width>848</width>
+                <height>987</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1133,8 +1133,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>586</width>
-                <height>1084</height>
+                <width>848</width>
+                <height>1102</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1672,8 +1672,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>340</width>
-                <height>442</height>
+                <width>848</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1864,8 +1864,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>599</width>
-                <height>111</height>
+                <width>848</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1947,8 +1947,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>628</width>
-                <height>804</height>
+                <width>848</width>
+                <height>760</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2083,22 +2083,38 @@
                  <property name="title">
                   <string>Data Source Handling</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,0,0,0">
-                  <item row="0" column="2">
-                   <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
-                  </item>
-                  <item row="5" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,0,0">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="textLabel1_13">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Evaluate default values</string>
+                     <string>Prompt for sublayers when opening</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="cmbScanZipInBrowser"/>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_30">
+                    <property name="text">
+                     <string>Scan for valid items in the browser dock</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="cmbPromptSublayers">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
+                   </widget>
                   </item>
                   <item row="1" column="1">
                    <spacer name="horizontalSpacer_3">
@@ -2113,34 +2129,8 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="textLabel1_13">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Prompt for sublayers when opening</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="cmbPromptSublayers">
-                    <item>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_30">
-                    <property name="text">
-                     <string>Scan for valid items in the browser dock</string>
-                    </property>
-                   </widget>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="cmbScanZipInBrowser"/>
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_29">
@@ -2349,8 +2339,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>713</width>
-                <height>1198</height>
+                <width>848</width>
+                <height>1154</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -3154,8 +3144,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
-                <height>375</height>
+                <width>848</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3599,8 +3589,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>614</width>
-                <height>709</height>
+                <width>848</width>
+                <height>729</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -4116,8 +4106,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>139</width>
-                <height>255</height>
+                <width>848</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4296,8 +4286,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>1024</height>
+                <width>848</width>
+                <height>939</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4970,8 +4960,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>474</width>
-                <height>556</height>
+                <width>848</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -5251,8 +5241,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>447</width>
-                <height>431</height>
+                <width>848</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -5523,8 +5513,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>660</width>
-                <height>699</height>
+                <width>848</width>
+                <height>708</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -6004,7 +5994,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Fira Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -6116,6 +6106,12 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -6131,12 +6127,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>
@@ -6267,7 +6257,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
   <tabstop>cmbPromptSublayers</tabstop>
-  <tabstop>cbxEvaluateDefaultValues</tabstop>
   <tabstop>mLocalizedDataPathAddButton</tabstop>
   <tabstop>mLocalizedDataPathRemoveButton</tabstop>
   <tabstop>mLocalizedDataPathUpButton</tabstop>
