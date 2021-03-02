@@ -149,6 +149,25 @@ class TestQgsSymbol(unittest.TestCase):
         layers = [l.color().name() for l in markerSymbol]
         self.assertEqual(layers, ['#ff0000'])
 
+    def testSymbolTypeToString(self):
+        """
+        Test QgsSymbol.symbolTypeToString
+        """
+        self.assertEqual(QgsSymbol.symbolTypeToString(QgsSymbol.Marker), 'Marker')
+        self.assertEqual(QgsSymbol.symbolTypeToString(QgsSymbol.Line), 'Line')
+        self.assertEqual(QgsSymbol.symbolTypeToString(QgsSymbol.Fill), 'Fill')
+        self.assertEqual(QgsSymbol.symbolTypeToString(QgsSymbol.Hybrid), 'Hybrid')
+
+    def testSymbolTypeForGeometryType(self):
+        """
+        Test QgsSymbol.symbolTypeForGeometryType
+        """
+        self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.PointGeometry), QgsSymbol.Marker)
+        self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.LineGeometry), QgsSymbol.Line)
+        self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.PolygonGeometry), QgsSymbol.Fill)
+        self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.NullGeometry), QgsSymbol.Hybrid)
+        self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.UnknownGeometry), QgsSymbol.Hybrid)
+
     def testCanCauseArtifactsBetweenAdjacentTiles(self):
         """
         Test canCauseArtifactsBetweenAdjacentTiles()
