@@ -95,6 +95,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
       CreateRenderer = 1 << 24, //!< Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider::createRenderer().
       CreateLabeling = 1 << 25, //!< Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider::createLabeling().
       ReloadData = 1 << 26, //!< Provider is able to force reload data
+      FeatureSymbology = 1 << 27, //!< Provider is able retrieve embedded symbology associated with individual features. Since QGIS 3.20.
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )

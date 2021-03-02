@@ -321,6 +321,11 @@ QString QgsVectorDataProvider::capabilitiesString() const
     abilitiesList += tr( "Curved Geometries" );
   }
 
+  if ( abilities & QgsVectorDataProvider::FeatureSymbology )
+  {
+    abilitiesList += tr( "Feature Symbology" );
+  }
+
   return abilitiesList.join( QLatin1String( ", " ) );
 }
 
