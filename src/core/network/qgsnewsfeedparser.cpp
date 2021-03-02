@@ -26,6 +26,7 @@
 #include <QUrlQuery>
 #include <QFile>
 #include <QDir>
+#include <QRegularExpression>
 
 QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg, QObject *parent )
   : QObject( parent )
