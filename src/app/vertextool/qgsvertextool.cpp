@@ -2307,6 +2307,24 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
     for ( ; it2 != layerEdits.end(); ++it2 )
     {
+      QgsGeometry featGeom = it2.value();
+      layer->changeGeometry( it2.key(), featGeom );
+      edits[layer][it2.key()] = featGeom;
+    }
+
+    if ( mVertexEditor )
+      mVertexEditor->updateEditor( mLockedFeature.get() );
+  }
+
+
+
+  for ( it = edits.begin() ; it != edits.end(); ++it )
+  {
+    QgsVectorLayer *layer = it.key();
+    QHash<QgsFeatureId, QgsGeometry> &layerEdits = it.value();
+    QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
+    for ( ; it2 != layerEdits.end(); ++it2 )
+    {
       QList<QgsVectorLayer *>  avoidIntersectionsLayers;
       switch ( QgsProject::instance()->avoidIntersectionsMode() )
       {
@@ -2340,6 +2358,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     if ( mVertexEditor )
       mVertexEditor->updateEditor( mLockedFeature.get() );
   }
+
 }
 
 
