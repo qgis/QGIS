@@ -91,45 +91,45 @@ namespace QgsWms
         nameNode.appendChild( myDocument.createTextNode( context.layerNickname( *layer ) ) );
         namedLayerNode.appendChild( nameNode );
 
-        if ( layer->type() == QgsMapLayerType::VectorLayer )
+        if ( layer->type() != QgsMapLayerType::VectorLayer )
+          continue;
+
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( ! vlayer->isSpatial() )
+          continue;
+
+        QString currentStyle = vlayer->styleManager()->currentStyle();
+
+        QVariantMap props;
+        if ( vlayer->hasScaleBasedVisibility() )
         {
-          QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-          if ( vlayer->isSpatial() )
-          {
-            QString currentStyle = vlayer->styleManager()->currentStyle();
-
-            QVariantMap props;
-            if ( vlayer->hasScaleBasedVisibility() )
-            {
-              props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( vlayer->maximumScale() );
-              props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( vlayer->minimumScale() );
-            }
-
-            for ( const QString &styleName : vlayer->styleManager()->styles() )
-            {
-              vlayer->styleManager()->setCurrentStyle( styleName );
-
-              QDomElement userStyleElem = myDocument.createElement( QStringLiteral( "UserStyle" ) );
-
-              QDomElement styleNameElem = myDocument.createElement( QStringLiteral( "se:Name" ) );
-              styleNameElem.appendChild( myDocument.createTextNode( styleName ) );
-
-              userStyleElem.appendChild( styleNameElem );
-
-              QDomElement featureTypeStyleElem = myDocument.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
-              userStyleElem.appendChild( featureTypeStyleElem );
-
-              vlayer->renderer()->toSld( myDocument, featureTypeStyleElem, props );
-              if ( vlayer->labelsEnabled() )
-              {
-                vlayer->labeling()->toSld( featureTypeStyleElem, props );
-              }
-
-              namedLayerNode.appendChild( userStyleElem );
-            }
-            vlayer->styleManager()->setCurrentStyle( currentStyle );
-          }
+          props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( vlayer->maximumScale() );
+          props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( vlayer->minimumScale() );
         }
+
+        for ( const QString &styleName : vlayer->styleManager()->styles() )
+        {
+          vlayer->styleManager()->setCurrentStyle( styleName );
+
+          QDomElement userStyleElem = myDocument.createElement( QStringLiteral( "UserStyle" ) );
+
+          QDomElement styleNameElem = myDocument.createElement( QStringLiteral( "se:Name" ) );
+          styleNameElem.appendChild( myDocument.createTextNode( styleName ) );
+
+          userStyleElem.appendChild( styleNameElem );
+
+          QDomElement featureTypeStyleElem = myDocument.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
+          userStyleElem.appendChild( featureTypeStyleElem );
+
+          vlayer->renderer()->toSld( myDocument, featureTypeStyleElem, props );
+          if ( vlayer->labelsEnabled() )
+          {
+            vlayer->labeling()->toSld( featureTypeStyleElem, props );
+          }
+
+          namedLayerNode.appendChild( userStyleElem );
+        }
+        vlayer->styleManager()->setCurrentStyle( currentStyle );
       }
 
       return myDocument;
