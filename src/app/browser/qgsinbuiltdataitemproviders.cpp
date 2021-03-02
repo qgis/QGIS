@@ -602,7 +602,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
     if ( item && item->type() == QgsDataItem::Layer )
     {
       if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
-        layerUriList << layerItem->mimeUri();
+        layerUriList.append( layerItem->mimeUris() );
     }
   }
   if ( !layerUriList.isEmpty() )
