@@ -390,6 +390,14 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
      */
     QVariant replaceWrapChar( const QVariant &variant ) const;
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+    /**
+     * Returns the list of visible columns filtered by the access control filter rules.
+     */
+    QgsLayoutTableColumns filteredColumns( );
+#endif
+
   private slots:
     //! Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes)
     void removeLayer( const QString &layerId );

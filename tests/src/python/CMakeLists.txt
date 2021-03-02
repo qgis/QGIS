@@ -361,6 +361,7 @@ if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsProviderConnectionPostgres test_qgsproviderconnection_postgres.py)
   if (WITH_SERVER)
     ADD_PYTHON_TEST(PyQgsServerWMSGetFeatureInfoPG test_qgsserver_wms_getfeatureinfo_postgres.py)
+    ADD_PYTHON_TEST(PyQgsServerAccessControlWMSGetPrintPG test_qgsserver_accesscontrol_wms_getprint_postgres.py)
   endif()
 endif()
 

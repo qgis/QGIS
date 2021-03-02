@@ -108,7 +108,8 @@ Returns the layer delete right
 :return: ``True`` if we can do a delete
 %End
 
-    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
 %Docstring
 Returns the authorized layer attributes
 
