@@ -913,6 +913,21 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer(os.path.join(d.path(), 'writetest.shp'))
         self.assertEqual(vl.featureCount(), 1)
 
+    def testEmbeddedSymbolsKml(self):
+        """
+        Test retrieving embedded symbols from a KML file
+        """
+        layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'embedded_symbols', 'samples.kml') + '|layername=Paths', 'Lines')
+        self.assertTrue(layer.isValid())
+
+        # symbols should not be fetched by default
+        self.assertFalse(any(f.embeddedSymbol() for f in layer.getFeatures()))
+
+        symbols = [f.embeddedSymbol().clone() if f.embeddedSymbol() else None for f in layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.EmbeddedSymbols))]
+        self.assertCountEqual([s.color().name() for s in symbols if s is not None], ['#ff00ff', '#ffff00', '#000000', '#ff0000'])
+        self.assertCountEqual([s.color().alpha() for s in symbols if s is not None], [127, 135, 255, 127])
+        self.assertEqual(len([s for s in symbols if s is None]), 2)
+
 
 if __name__ == '__main__':
     unittest.main()
