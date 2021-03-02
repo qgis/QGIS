@@ -377,7 +377,7 @@ QString QgsCellStatisticsPercentileAlgorithm::displayName() const
 
 QString QgsCellStatisticsPercentileAlgorithm::name() const
 {
-  return QObject::tr( "cellstackpercentile" );
+  return QStringLiteral( "cellstackpercentile" );
 }
 
 QStringList QgsCellStatisticsPercentileAlgorithm::tags() const
@@ -520,7 +520,7 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::displayName() const
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::name() const
 {
-  return QObject::tr( "cellstackpercentrankfromvalue" );
+  return QStringLiteral( "cellstackpercentrankfromvalue" );
 }
 
 QStringList QgsCellStatisticsPercentRankFromValueAlgorithm::tags() const
@@ -656,7 +656,7 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::displayName() const
 
 QString QgsCellStatisticsPercentRankFromRasterAlgorithm::name() const
 {
-  return QObject::tr( "cellstackpercentrankfromrasterlayer" );
+  return QStringLiteral( "cellstackpercentrankfromrasterlayer" );
 }
 
 QStringList QgsCellStatisticsPercentRankFromRasterAlgorithm::tags() const
