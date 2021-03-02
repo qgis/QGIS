@@ -68,7 +68,8 @@ bool QgsFeature::operator ==( const QgsFeature &other ) const
        && d->valid == other.d->valid
        && d->fields == other.d->fields
        && d->attributes == other.d->attributes
-       && d->geometry.equals( other.d->geometry ) )
+       && d->geometry.equals( other.d->geometry )
+       && d->symbol == other.d->symbol )
     return true;
 
   return false;
@@ -282,6 +283,20 @@ QVariant QgsFeature::attribute( int fieldIdx ) const
     return QVariant();
 
   return d->attributes.at( fieldIdx );
+}
+
+const QgsSymbol *QgsFeature::embeddedSymbol() const
+{
+  return d->symbol.get();
+}
+
+void QgsFeature::setEmbeddedSymbol( QgsSymbol *symbol )
+{
+  if ( symbol == d->symbol.get() )
+    return;
+
+  d.detach();
+  d->symbol.reset( symbol );
 }
 
 QVariant QgsFeature::attribute( const QString &name ) const
