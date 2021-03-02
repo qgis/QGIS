@@ -15,28 +15,39 @@
 
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgspainteffectregistry.h"
+#include "qgssymbollayerutils.h"
 
-QgsEmbeddedSymbolRenderer::QgsEmbeddedSymbolRenderer()
+QgsEmbeddedSymbolRenderer::QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol )
   : QgsFeatureRenderer( QStringLiteral( "embeddedSymbol" ) )
+  , mDefaultSymbol( defaultSymbol )
 {
+  Q_ASSERT( mDefaultSymbol );
 }
 
 QgsEmbeddedSymbolRenderer::~QgsEmbeddedSymbolRenderer() = default;
 
 QgsSymbol *QgsEmbeddedSymbolRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext & ) const
 {
-  return const_cast< QgsSymbol * >( feature.embeddedSymbol() );
+  if ( feature.embeddedSymbol() )
+    return const_cast< QgsSymbol * >( feature.embeddedSymbol() );
+  else
+    return mDefaultSymbol.get();
 }
 
 QgsSymbol *QgsEmbeddedSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( context )
-  return const_cast< QgsSymbol * >( feature.embeddedSymbol() );
+  if ( feature.embeddedSymbol() )
+    return const_cast< QgsSymbol * >( feature.embeddedSymbol() );
+  else
+    return mDefaultSymbol.get();
 }
 
 void QgsEmbeddedSymbolRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
   QgsFeatureRenderer::startRender( context, fields );
+
+  mDefaultSymbol->startRender( context, fields );
 }
 
 bool QgsEmbeddedSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
@@ -52,19 +63,22 @@ bool QgsEmbeddedSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRen
   }
   else
   {
-    return false;
+    renderFeatureWithSymbol( feature, mDefaultSymbol.get(), context, layer, selected, drawVertexMarker );
   }
-  return true;
 }
 
 void QgsEmbeddedSymbolRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
+  mDefaultSymbol->stopRender( context );
 }
 
-QSet<QString> QgsEmbeddedSymbolRenderer::usedAttributes( const QgsRenderContext & ) const
+QSet<QString> QgsEmbeddedSymbolRenderer::usedAttributes( const QgsRenderContext &context ) const
 {
-  return QSet<QString>();
+  QSet<QString> attributes;
+  if ( mDefaultSymbol )
+    attributes.unite( mDefaultSymbol->usedAttributes( context ) );
+  return attributes;
 }
 
 bool QgsEmbeddedSymbolRenderer::usesEmbeddedSymbols() const
@@ -74,7 +88,7 @@ bool QgsEmbeddedSymbolRenderer::usesEmbeddedSymbols() const
 
 QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::clone() const
 {
-  QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer();
+  QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer( mDefaultSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
   copyRendererData( r );
   return r;
@@ -85,18 +99,32 @@ QgsFeatureRenderer::Capabilities QgsEmbeddedSymbolRenderer::capabilities()
   return SymbolLevels;
 }
 
-QgsFeatureRenderer *QgsEmbeddedSymbolRenderer::create( QDomElement &, const QgsReadWriteContext & )
+QgsFeatureRenderer *QgsEmbeddedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer();
+  QDomElement symbolsElem = element.firstChildElement( QStringLiteral( "symbols" ) );
+  if ( symbolsElem.isNull() )
+    return nullptr;
+
+  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, context );
+
+  if ( !symbolMap.contains( QStringLiteral( "0" ) ) )
+    return nullptr;
+
+  QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer( symbolMap.take( QStringLiteral( "0" ) ) );
   return r;
 }
 
-QDomElement QgsEmbeddedSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext & )
+QDomElement QgsEmbeddedSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "embeddedSymbol" ) );
   rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+
+  QgsSymbolMap symbols;
+  symbols[QStringLiteral( "0" )] = mDefaultSymbol.get();
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
+  rendererElem.appendChild( symbolsElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -110,4 +138,23 @@ QDomElement QgsEmbeddedSymbolRenderer::save( QDomDocument &doc, const QgsReadWri
   rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   return rendererElem;
+}
+
+QgsSymbolList QgsEmbeddedSymbolRenderer::symbols( QgsRenderContext &context ) const
+{
+  Q_UNUSED( context )
+  QgsSymbolList lst;
+  lst.append( mDefaultSymbol.get() );
+  return lst;
+}
+
+QgsSymbol *QgsEmbeddedSymbolRenderer::defaultSymbol() const
+{
+  return mDefaultSymbol.get();
+}
+
+void QgsEmbeddedSymbolRenderer::setDefaultSymbol( QgsSymbol *symbol )
+{
+  Q_ASSERT( symbol );
+  mDefaultSymbol.reset( symbol );
 }
