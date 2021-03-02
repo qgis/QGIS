@@ -313,6 +313,26 @@ Returns the current list of predefined scales for use with the layout.
 .. versionadded:: 3.10
 %End
 
+    QgsFeatureFilterProvider *featureFilterProvider() const;
+%Docstring
+Returns the possibly NULL feature filter provider.
+
+A feature filter provider for filtering visible features or attributes.
+It is currently used by QGIS Server Access Control Plugins.
+
+.. versionadded:: 3.18
+%End
+
+    void setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider );
+%Docstring
+Sets feature filter provider to ``featureFilterProvider``.
+
+A feature filter provider for filtering visible features or attributes.
+It is currently used by QGIS Server Access Control Plugins.
+
+.. versionadded:: 3.18
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutRenderContext::Flags flags );
