@@ -1594,7 +1594,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  outdir + '/check.jpg'])
 
             # use_Z selected with no field
-            self.asserEqual(
+            self.assertEqual(
                 alg.getConsoleCommands({'INPUT': sourceZ,
                                         'USE_Z': True,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
@@ -1604,7 +1604,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 outdir + '/check.jpg'])
 
             # use_Z selected with field indicated (should prefer use_Z)
-            self.asserEqual(
+            self.assertEqual(
                 alg.getConsoleCommands({'INPUT': sourceZ,
                                         'FIELD': 'elev',
                                         'USE_Z': True,
