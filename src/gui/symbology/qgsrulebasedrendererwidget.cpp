@@ -61,7 +61,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   if ( renderer )
   {
-    mRenderer = QgsRuleBasedRenderer::convertFromRenderer( renderer );
+    mRenderer = QgsRuleBasedRenderer::convertFromRenderer( renderer, layer );
   }
   if ( !mRenderer )
   {
