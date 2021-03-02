@@ -26,9 +26,12 @@ on how each feature should be rendered.
 %End
   public:
 
-    QgsEmbeddedSymbolRenderer();
+    QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol /Transfer/ );
 %Docstring
 Constructor for QgsEmbeddedSymbolRenderer.
+
+The ``defaultSymbol`` will be used to render any feature without embedded symbology. Ownership
+of ``defaultSymbol`` is transferred to the renderer.
 %End
     ~QgsEmbeddedSymbolRenderer();
 
@@ -52,6 +55,24 @@ Constructor for QgsEmbeddedSymbolRenderer.
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
+
+
+    QgsSymbol *defaultSymbol() const;
+%Docstring
+Returns the default symbol which will be rendered for any feature which does not have embedded symbology.
+
+.. seealso:: :py:func:`setDefaultSymbol`
+%End
+
+    void setDefaultSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the default ``symbol`` which will be rendered for any feature which does not have embedded symbology.
+
+Ownership of ``symbol`` is transferred to the renderer.
+
+.. seealso:: :py:func:`defaultSymbol`
+%End
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring

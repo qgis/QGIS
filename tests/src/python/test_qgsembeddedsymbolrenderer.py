@@ -68,7 +68,7 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
             QgsMarkerSymbol.createSimple({'name': 'circle', 'size': 9, 'color': '#0000ff', 'outline_style': 'no'}))
         self.assertTrue(points_layer.dataProvider().addFeature(f))
 
-        renderer = QgsEmbeddedSymbolRenderer()
+        renderer = QgsEmbeddedSymbolRenderer(defaultSymbol=QgsMarkerSymbol.createSimple({'name': 'star', 'size': 10, 'color': '#ff0000', 'outline_style': 'no'}))
         points_layer.setRenderer(renderer)
 
         self.mapsettings.setLayers([points_layer])
@@ -93,7 +93,7 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
             QgsLineSymbol.createSimple({'line_width': 2, 'line_color': '#0000ff', 'line_style': 'dash'}))
         self.assertTrue(line_layer.dataProvider().addFeature(f))
 
-        renderer = QgsEmbeddedSymbolRenderer()
+        renderer = QgsEmbeddedSymbolRenderer(defaultSymbol=QgsLineSymbol.createSimple({'line_width': 10, 'line_color': '#ff0000'}))
         line_layer.setRenderer(renderer)
 
         self.mapsettings.setLayers([line_layer])
@@ -117,7 +117,7 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         f.setEmbeddedSymbol(QgsFillSymbol.createSimple({'color': '#0000ff', 'outline_style': 'no'}))
         self.assertTrue(line_layer.dataProvider().addFeature(f))
 
-        renderer = QgsEmbeddedSymbolRenderer()
+        renderer = QgsEmbeddedSymbolRenderer(defaultSymbol=QgsFillSymbol.createSimple({'color': '#ffff00', 'outline_style': 'no'}))
         line_layer.setRenderer(renderer)
 
         self.mapsettings.setLayers([line_layer])
@@ -127,6 +127,32 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('embedded')
         renderchecker.setControlName('expected_embedded_polys')
         self.assertTrue(renderchecker.runTest('embedded_polys'))
+
+    def testDefaultSymbol(self):
+        points_layer = QgsVectorLayer('Point', 'Polys', 'memory')
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('Point(-100 30)'))
+        f.setEmbeddedSymbol(
+            QgsMarkerSymbol.createSimple({'name': 'triangle', 'size': 10, 'color': '#ff0000', 'outline_style': 'no'}))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+        f.setGeometry(QgsGeometry.fromWkt('Point(-110 40)'))
+        f.setEmbeddedSymbol(
+            QgsMarkerSymbol.createSimple({'name': 'square', 'size': 7, 'color': '#00ff00', 'outline_style': 'no'}))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+        f.setGeometry(QgsGeometry.fromWkt('Point(-90 50)'))
+        f.setEmbeddedSymbol(None)
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+
+        renderer = QgsEmbeddedSymbolRenderer(defaultSymbol=QgsMarkerSymbol.createSimple({'name': 'star', 'size': 10, 'color': '#ff00ff', 'outline_style': 'no'}))
+        points_layer.setRenderer(renderer)
+
+        self.mapsettings.setLayers([points_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('embedded')
+        renderchecker.setControlName('expected_embedded_defaultsymbol')
+        self.assertTrue(renderchecker.runTest('embedded_defaultsymbol'))
 
 
 if __name__ == '__main__':

@@ -38,8 +38,11 @@ class CORE_EXPORT QgsEmbeddedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Constructor for QgsEmbeddedSymbolRenderer.
+     *
+     * The \a defaultSymbol will be used to render any feature without embedded symbology. Ownership
+     * of \a defaultSymbol is transferred to the renderer.
      */
-    QgsEmbeddedSymbolRenderer();
+    QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol SIP_TRANSFER );
     ~QgsEmbeddedSymbolRenderer() override;
 
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
@@ -52,6 +55,22 @@ class CORE_EXPORT QgsEmbeddedSymbolRenderer : public QgsFeatureRenderer
     QgsEmbeddedSymbolRenderer *clone() const override SIP_FACTORY;
     QgsFeatureRenderer::Capabilities capabilities() override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
+
+    /**
+     * Returns the default symbol which will be rendered for any feature which does not have embedded symbology.
+     * \see setDefaultSymbol()
+     */
+    QgsSymbol *defaultSymbol() const;
+
+    /**
+     * Sets the default \a symbol which will be rendered for any feature which does not have embedded symbology.
+     *
+     * Ownership of \a symbol is transferred to the renderer.
+     *
+     * \see defaultSymbol()
+     */
+    void setDefaultSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
     /**
      * Creates a new embedded symbol renderer from an XML \a element, using the supplied read/write \a context.
@@ -65,6 +84,8 @@ class CORE_EXPORT QgsEmbeddedSymbolRenderer : public QgsFeatureRenderer
     QgsEmbeddedSymbolRenderer( const QgsEmbeddedSymbolRenderer & );
     QgsEmbeddedSymbolRenderer &operator=( const QgsEmbeddedSymbolRenderer & );
 #endif
+
+    std::unique_ptr<QgsSymbol> mDefaultSymbol;
 
 };
 
