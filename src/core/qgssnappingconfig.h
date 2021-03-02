@@ -75,7 +75,7 @@ class CORE_EXPORT QgsSnappingConfig
       AreaFlag = 1 << 2, //!< On Area
       CentroidFlag = 1 << 3, //!< On centroid
       MiddleOfSegmentFlag = 1 << 4, //!< On Middle segment
-      LineEndpointFlag = 1 << 5, //!< Start or end points of lines only (since QGIS 3.20)
+      LineEndpointFlag = 1 << 5, //!< Start or end points of lines, or first vertex in polygon rings only (since QGIS 3.20)
     };
     Q_ENUM( SnappingTypes )
     Q_DECLARE_FLAGS( SnappingTypeFlag, SnappingTypes )
