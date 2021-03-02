@@ -2901,16 +2901,6 @@ void QgsOgrProvider::computeCapabilities()
     }
 
 #if 0
-    if ( mOgrLayer->TestCapability( "FastSpatialFilter" ) )
-      // true if this layer implements spatial filtering efficiently.
-      // Layers that effectively read all features, and test them with the
-      // OGRFeature intersection methods should return false.
-      // This can be used as a clue by the application whether it should build
-      // and maintain it's own spatial index for features in this layer.
-    {
-      // TODO: Perhaps use as a clue by QGIS whether it should build and maintain it's own spatial index for features in this layer.
-    }
-
     if ( mOgrLayer->TestCapability( "FastFeatureCount" ) )
       // true if this layer can return a feature count
       // (via OGRLayer::GetFeatureCount()) efficiently ... ie. without counting
@@ -2918,15 +2908,6 @@ void QgsOgrProvider::computeCapabilities()
       // filter is installed after which it will return false.
     {
       // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to count features.
-    }
-
-    if ( mOgrLayer->TestCapability( "FastGetExtent" ) )
-      // true if this layer can return its data extent
-      // (via OGRLayer::GetExtent()) efficiently ... ie. without scanning
-      // all the features. In some cases this will return true until a
-      // spatial filter is installed after which it will return false.
-    {
-      // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to calculate extent.
     }
 
     if ( mOgrLayer->TestCapability( "FastSetNextByIndex" ) )
