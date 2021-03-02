@@ -151,6 +151,7 @@ void TestQgsTileDownloadManager::testOneRequestTwice()
   QSignalSpy spy1( r1.get(), &QgsTileDownloadManagerReply::finished );
   QSignalSpy spy2( r2.get(), &QgsTileDownloadManagerReply::finished );
   spy1.wait();
+  spy2.wait();
   QCoreApplication::processEvents();
   QCOMPARE( spy1.count(), 1 );
   QCOMPARE( spy2.count(), 1 );
