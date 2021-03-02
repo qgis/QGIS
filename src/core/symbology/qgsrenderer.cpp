@@ -112,6 +112,11 @@ void QgsFeatureRenderer::stopRender( QgsRenderContext & )
 #endif
 }
 
+bool QgsFeatureRenderer::usesEmbeddedSymbols() const
+{
+  return false;
+}
+
 bool QgsFeatureRenderer::filterNeedsGeometry() const
 {
   return false;

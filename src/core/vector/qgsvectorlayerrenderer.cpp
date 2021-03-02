@@ -313,6 +313,11 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
     featureRequest.combineFilterExpression( mTemporalFilter );
   }
 
+  if ( renderer->usesEmbeddedSymbols() )
+  {
+    featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::EmbeddedSymbols );
+  }
+
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
   if ( mSimplifyGeometry )
   {
