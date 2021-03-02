@@ -253,8 +253,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsGCPList mPoints;
     QgsGCPList mInitialPoints;
     QgsMapCanvas *mCanvas = nullptr;
-    std::unique_ptr< QgsRasterLayer > mRLayer = nullptr;
-    std::unique_ptr< QgsVectorLayer > mVLayer = nullptr;
+    std::unique_ptr< QgsRasterLayer > mRLayer;
+    std::unique_ptr< QgsVectorLayer > mVLayer;
     bool mAgainAddLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;

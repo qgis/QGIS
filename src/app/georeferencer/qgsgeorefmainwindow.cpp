@@ -845,11 +845,11 @@ void QgsGeoreferencerMainWindow::showLayerPropertiesDialog()
 {
   if ( mDataType == QgsGeoreferencerMainWindow::RASTER && mRLayer )
   {
-    QgisApp::instance()->showLayerProperties( mRLayer );
+    QgisApp::instance()->showLayerProperties( mRLayer.get() );
   }
   else if ( mDataType == QgsGeoreferencerMainWindow::VECTOR && mVLayer )
   {
-    QgisApp::instance()->showLayerProperties( mVLayer );
+    QgisApp::instance()->showLayerProperties( mVLayer.get() );
   }
   else
   {
@@ -899,7 +899,7 @@ void QgsGeoreferencerMainWindow::localHistogramStretch()
 {
   if ( mRLayer && mCanvas )
   {
-    QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( mRLayer, QgisApp::instance()->mapCanvas()->extent() );
+    QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( mRLayer.get(), QgisApp::instance()->mapCanvas()->extent() );
 
     mRLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax, rectangle );
     mCanvas->refresh();
@@ -1330,17 +1330,9 @@ void QgsGeoreferencerMainWindow::removeOldLayer()
 {
   // delete layer (and don't signal it as it's our private layer)
   if ( mRLayer )
-  {
-    QgsProject::instance()->removeMapLayers(
-      ( QStringList() << mRLayer->id() ) );
-    mRLayer = nullptr;
-  }
+    mRLayer.reset();
   if ( mVLayer )
-  {
-    QgsProject::instance()->removeMapLayers(
-      ( QStringList() << mVLayer->id() ) );
-    mVLayer = nullptr;
-  }
+    mVLayer.reset();
   mCanvas->setLayers( QList<QgsMapLayer *>() );
   mCanvas->clearCache();
   mRotationEdit->clear();
@@ -1358,10 +1350,10 @@ void QgsGeoreferencerMainWindow::addRaster( const QString &file )
 
   // so layer is not added to legend
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mRLayer, false, false );
+    QList<QgsMapLayer *>() << mRLayer.get(), false, false );
 
   // add layer to map canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mRLayer );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mRLayer.get() );
 
   mAgainAddLayer = false;
 
@@ -1391,7 +1383,7 @@ void QgsGeoreferencerMainWindow::addVector( const QString &file )
     QList<QgsMapLayer *>() << mVLayer, false, false );
 
   // add layer to map canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mVLayer );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mVLayer.get() );
 
   mAgainAddLayer = false;
 
