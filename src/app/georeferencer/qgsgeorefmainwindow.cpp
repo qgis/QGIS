@@ -1380,7 +1380,7 @@ void QgsGeoreferencerMainWindow::addVector( const QString &file )
 
   // so layer is not added to legend
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mVLayer, false, false );
+    QList<QgsMapLayer *>() << mVLayer.get(), false, false );
 
   // add layer to map canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << mVLayer.get() );
@@ -1570,9 +1570,9 @@ bool QgsGeoreferencerMainWindow::georeference()
     bool success;
     QgsVectorWarper warper( mTransformParam, mPoints, mProjection );
     if ( mModifiedFileName.isEmpty() )
-      success = warper.executeTransformInplace( mVLayer );
+      success = warper.executeTransformInplace( mVLayer.get() );
     else
-      success = warper.executeTransform( mVLayer, mModifiedFileName );
+      success = warper.executeTransform( mVLayer.get(), mModifiedFileName );
 
     if ( !mPdfOutputFile.isEmpty() )
     {
