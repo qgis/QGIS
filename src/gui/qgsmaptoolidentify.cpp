@@ -556,6 +556,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, identifyContext.temporalRange() );
   }
 
+  const bool fetchFeatureSymbols = layer->dataProvider()->capabilities() & QgsVectorDataProvider::FeatureSymbology;
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QMap< QString, QString > commonDerivedAttributes;
@@ -610,7 +612,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
     QgsFeatureRequest featureRequest;
     featureRequest.setFilterRect( r );
-    featureRequest.setFlags( QgsFeatureRequest::ExactIntersect );
+    featureRequest.setFlags( QgsFeatureRequest::ExactIntersect | ( fetchFeatureSymbols ? QgsFeatureRequest::EmbeddedSymbols : QgsFeatureRequest::Flags() ) );
     if ( !temporalFilter.isEmpty() )
       featureRequest.setFilterExpression( temporalFilter );
 
@@ -918,6 +920,11 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
         closestVertexAttributes( *geom, vId, layer, derivedAttributes );
       }
     }
+  }
+
+  if ( feature.embeddedSymbol() )
+  {
+    derivedAttributes.insert( tr( "Embedded Symbol" ), tr( "%1 (%2)" ).arg( QgsSymbol::symbolTypeToString( feature.embeddedSymbol()->type() ), feature.embeddedSymbol()->color().name() ) );
   }
 
   return derivedAttributes;
