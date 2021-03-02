@@ -189,7 +189,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         const QString iconName = vlayer && vlayer->labeling() && vlayer->labeling()->type() == QLatin1String( "rule-based" )
                                  ? QStringLiteral( "labelingRuleBased.svg" )
                                  : QStringLiteral( "labelingSingle.svg" );
-        QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show Labels" ), menu );
+        QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show &Labels" ), menu );
         actionShowLabels->setCheckable( true );
         actionShowLabels->setChecked( vlayer->labelsEnabled() );
         const QString layerId = vlayer->id();
@@ -362,7 +362,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
-        QMenu *menuSetCRS = new QMenu( tr( "&Layer CRS" ), menu );
+        QMenu *menuSetCRS = new QMenu( tr( "La&yer CRS" ), menu );
 
         const QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
         QgsCoordinateReferenceSystem layerCrs;
