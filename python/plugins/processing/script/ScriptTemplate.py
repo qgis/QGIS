@@ -57,9 +57,9 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
     def name(self):
         """
         Returns the algorithm name used for identifying the algorithm. This
-        string should be fixed for the algorithm and is not required to be 
-        in local language. The name should be unique within each provider. Names 
-        should  contain lowercase alphanumeric characters only and no spaces or 
+        string should be fixed for the algorithm and is not required to be
+        in local language. The name should be unique within each provider. Names
+        should  contain lowercase alphanumeric characters only and no spaces or
         other formatting characters.
         """
         return 'myscript'
