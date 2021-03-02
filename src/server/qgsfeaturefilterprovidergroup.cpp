@@ -20,7 +20,6 @@
 
 void QgsFeatureFilterProviderGroup::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const
 {
-  filterFeatures.disableFilter();
   for ( const QgsFeatureFilterProvider *provider : mProviders )
   {
     QgsFeatureRequest temp;
@@ -30,6 +29,17 @@ void QgsFeatureFilterProviderGroup::filterFeatures( const QgsVectorLayer *layer,
       filterFeatures.combineFilterExpression( lFilterExpression->dump() );
     }
   }
+}
+
+QStringList QgsFeatureFilterProviderGroup::layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const
+{
+  QStringList allowedAttributes { attributes };
+  for ( const QgsFeatureFilterProvider *provider : mProviders )
+  {
+    QgsFeatureRequest temp;
+    allowedAttributes = provider->layerAttributes( layer, allowedAttributes );
+  }
+  return allowedAttributes;
 }
 
 QgsFeatureFilterProvider *QgsFeatureFilterProviderGroup::clone() const
