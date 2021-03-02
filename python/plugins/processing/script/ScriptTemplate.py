@@ -81,9 +81,9 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
     def groupId(self):
         """
         Returns the unique ID of the group this algorithm belongs to. This
-        string should be fixed for the algorithm and is not required to be in 
-        local language. The group id should be unique within each provider. The 
-        group id should contain lowercase alphanumeric characters only with no 
+        string should be fixed for the algorithm and is not required to be in
+        local language. The group id should be unique within each provider. The
+        group id should contain lowercase alphanumeric characters only with no
         spaces nor any other formatting characters.
         """
         return 'examplescripts'
