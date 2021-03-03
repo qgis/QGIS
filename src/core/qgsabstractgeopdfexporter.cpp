@@ -32,7 +32,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QTimeZone>
-
+#include <QUuid>
 
 bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
 {
