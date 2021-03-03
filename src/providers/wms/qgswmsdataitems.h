@@ -98,7 +98,7 @@ class QgsWMSLayerCollectionItem : public QgsDataCollectionItem, public QgsWMSIte
 
     bool hasDragEnabled() const override;
 
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 
   protected:
     //! The URI
