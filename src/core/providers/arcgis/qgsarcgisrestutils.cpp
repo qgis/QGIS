@@ -35,6 +35,8 @@
 #include "qgsgeometryengine.h"
 #include "qgsmultisurface.h"
 #include "qgsmultipoint.h"
+#include <QRegularExpression>
+
 
 QVariant::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {
