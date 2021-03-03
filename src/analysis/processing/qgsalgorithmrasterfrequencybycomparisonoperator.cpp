@@ -234,7 +234,7 @@ QString QgsRasterFrequencyByEqualOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByEqualOperatorAlgorithm::name() const
 {
-  return QObject::tr( "equaltofrequency" );
+  return QStringLiteral( "equaltofrequency" );
 }
 
 QStringList QgsRasterFrequencyByEqualOperatorAlgorithm::tags() const
@@ -277,7 +277,7 @@ QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::name() const
 {
-  return QObject::tr( "greaterthanfrequency" );
+  return QStringLiteral( "greaterthanfrequency" );
 }
 
 QStringList QgsRasterFrequencyByGreaterThanOperatorAlgorithm::tags() const
@@ -320,7 +320,7 @@ QString QgsRasterFrequencyByLessThanOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByLessThanOperatorAlgorithm::name() const
 {
-  return QObject::tr( "lessthanfrequency" );
+  return QStringLiteral( "lessthanfrequency" );
 }
 
 QStringList QgsRasterFrequencyByLessThanOperatorAlgorithm::tags() const
