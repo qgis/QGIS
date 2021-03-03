@@ -76,6 +76,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QStandardPaths>
+#include <QUuid>
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
