@@ -364,6 +364,11 @@ void QgsMapToolCapture::setCircularDigitizingEnabled( bool enable )
     mTempRubberBand->setStringType( mDigitizingType );
 }
 
+void QgsMapToolCapture::setStreamDigitizingEnabled( bool enable )
+{
+  mStreamingEnabled = enable;
+  mStartNewCurve = true;
+}
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
@@ -378,8 +383,13 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     bool hasTrace = false;
 
-
-    if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
+    if ( mStreamingEnabled )
+    {
+      mAllowAddingStreamingPoints = true;
+      addVertex( mapPoint );
+      mAllowAddingStreamingPoints = false;
+    }
+    else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
     {
       // Store the intermediate point for circular string to retrieve after tracing mouse move if
       // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
@@ -407,7 +417,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       }
     }
 
-    if ( !hasTrace )
+    if ( !mStreamingEnabled && !hasTrace )
     {
       if ( mCaptureCurve.numPoints() > 0 )
       {
@@ -535,6 +545,9 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     QgsDebugMsg( QStringLiteral( "invalid capture mode" ) );
     return 2;
   }
+
+  if ( mCapturing && mStreamingEnabled && !mAllowAddingStreamingPoints )
+    return 0;
 
   int res;
   QgsPoint layerPoint;
@@ -670,7 +683,8 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 
   // we set the extendPrevious option to true to avoid creating compound curves with many 2 vertex linestrings -- instead we prefer
   // to extend linestring curves so that they continue the previous linestring wherever possible...
-  mCaptureCurve.addCurve( c, true );
+  mCaptureCurve.addCurve( c, !mStartNewCurve );
+  mStartNewCurve = false;
 
   int countAfter = mCaptureCurve.vertexCount();
   int addedPoint = countAfter - countBefore;
