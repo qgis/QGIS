@@ -39,11 +39,13 @@ The :py:class:`QgsCadUtils` class provides routines for CAD editing.
 
       QgsCadUtils::AlignMapPointConstraint xConstraint;
       QgsCadUtils::AlignMapPointConstraint yConstraint;
+      QgsCadUtils::AlignMapPointConstraint zConstraint;
+      QgsCadUtils::AlignMapPointConstraint mConstraint;
       QgsCadUtils::AlignMapPointConstraint distanceConstraint;
       QgsCadUtils::AlignMapPointConstraint angleConstraint;
       QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
 
-      QList<QgsPointXY> cadPointList;
+      QList<QgsPoint> cadPointList;
 
     };
 
