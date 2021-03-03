@@ -7,7 +7,6 @@ jobs:
     if: contains(github.event.issue.labels.*.name, 'stale')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: actions-ecosystem/action-remove-labels@v1
         if: ${{ github.event.comment.user.url != 'https://github.com/apps/github-actions' }}
         with:
