@@ -74,6 +74,7 @@ email                : sherman at mrcc.com
 #include <QMessageBox>
 #include <QString>
 #include <QTextCodec>
+#include <QStorageInfo>
 
 
 #ifdef Q_OS_WIN
