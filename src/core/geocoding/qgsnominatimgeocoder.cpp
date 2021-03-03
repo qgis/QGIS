@@ -33,7 +33,7 @@ qint64 QgsNominatimGeocoder::sLastRequestTimestamp = 0;
 QgsNominatimGeocoder::QgsNominatimGeocoder( const QString &countryCodes, const QString &endpoint )
   : QgsGeocoderInterface()
   , mCountryCodes( countryCodes )
-  , mEndpoint( QStringLiteral( "https://nominatim.openstreetmap.org/search" ) )
+  , mEndpoint( QStringLiteral( "https://nominatim.qgis.org/search" ) )
 {
   if ( !endpoint.isEmpty() )
     mEndpoint = endpoint;
