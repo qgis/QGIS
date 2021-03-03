@@ -1262,7 +1262,7 @@ QString  QgsDelimitedTextProvider::description() const
 
 QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri )
 {
-  const QUrl url( uri );
+  const QUrl url = QUrl::fromEncoded( uri.toLatin1() );
   const QUrlQuery queryItems( url.query() );
 
   QString subset;
@@ -1309,7 +1309,7 @@ QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts )
     queryItems.addQueryItem( QStringLiteral( "subset" ), parts.value( QStringLiteral( "subset" ) ).toString() );
   url.setQuery( queryItems );
 
-  return url.toString();
+  return QString::fromLatin1( url.toEncoded() );
 }
 
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
