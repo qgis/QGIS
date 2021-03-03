@@ -633,9 +633,11 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     if ( index.isValid() )
     {
       QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
-      QgsMimeDataUtils::Uri uri = ptr->mimeUri();
-      if ( uri.isValid() )
+      const QgsMimeDataUtils::UriList uris = ptr->mimeUris();
+      for ( const auto &uri : qgis::as_const( uris ) )
+      {
         lst.append( uri );
+      }
     }
   }
   return QgsMimeDataUtils::encodeUriList( lst );

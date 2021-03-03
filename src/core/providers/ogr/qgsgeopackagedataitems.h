@@ -66,7 +66,7 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
   public:
     bool layerCollection() const override;
     bool hasDragEnabled() const override;
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 };
 
 

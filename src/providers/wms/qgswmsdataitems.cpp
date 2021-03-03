@@ -416,7 +416,8 @@ bool QgsWMSLayerCollectionItem::hasDragEnabled() const
   return false;
 }
 
-QgsMimeDataUtils::Uri QgsWMSLayerCollectionItem::mimeUri() const
+
+QgsMimeDataUtils::UriList QgsWMSLayerCollectionItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
 
@@ -427,7 +428,7 @@ QgsMimeDataUtils::Uri QgsWMSLayerCollectionItem::mimeUri() const
   u.supportedCrs = mLayerProperty.crs;
   u.supportedFormats = mCapabilitiesProperty.capability.request.getMap.format;
 
-  return u;
+  return { u };
 }
 
 // ---------------------------------------------------------------------------
