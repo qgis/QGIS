@@ -203,6 +203,25 @@ on the left hand side.
 Labeling on top leaves more horizontal space for the widget itself.
 %End
 
+    bool reuseLastValue( int index ) const;
+%Docstring
+If this returns ``True``, the widget at the given ``index`` will remember the previously
+entered value from this QGIS session when creating new features.
+
+.. seealso:: :py:func:`setReuseLastValue`
+
+.. versionadded:: 3.20
+%End
+
+    void setReuseLastValue( int index, bool reuse );
+%Docstring
+Sets whether the widget at the given ``index`` will remember the previously
+entered value from this QGIS session when creating new features.
+
+.. seealso:: :py:func:`reuseLastValue`
+
+.. versionadded:: 3.20
+%End
 
 
     QString initFunction() const;
