@@ -34,6 +34,10 @@
 
 #include <QPushButton>
 
+typedef QHash<QgsVectorLayer *, QgsAttributeMap> CachedAttributesHash;
+Q_GLOBAL_STATIC( CachedAttributesHash, sLastUsedValues )
+
+
 QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, QUuid actionId, int defaultAttr, QObject *parent )
   : QAction( name, parent )
   , mLayer( layer )
@@ -183,9 +187,9 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     {
       initialAttributeValues.insert( idx, defaultAttributes.value( idx ) );
     }
-    else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) )
+    else if ( reuseLastValues && sLastUsedValues()->contains( mLayer ) && ( *sLastUsedValues() )[ mLayer ].contains( idx ) )
     {
-      initialAttributeValues.insert( idx, sLastUsedValues[ mLayer ][idx] );
+      initialAttributeValues.insert( idx, ( *sLastUsedValues() )[ mLayer ][idx] );
     }
   }
 
@@ -304,11 +308,11 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
       QgsAttributes newValues = feature.attributes();
-      QgsAttributeMap origValues = sLastUsedValues[ mLayer ];
+      QgsAttributeMap origValues = ( *sLastUsedValues() )[ mLayer ];
       if ( origValues[idx] != newValues.at( idx ) )
       {
-        QgsDebugMsg( QStringLiteral( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-        sLastUsedValues[ mLayer ][idx] = newValues.at( idx );
+        QgsDebugMsg( QStringLiteral( "saving %1 for %2" ).arg( ( *sLastUsedValues() )[ mLayer ][idx].toString() ).arg( idx ) );
+        ( *sLastUsedValues() )[ mLayer ][idx] = newValues.at( idx );
       }
     }
   }
@@ -319,4 +323,3 @@ QgsFeature QgsFeatureAction::feature() const
   return mFeature ? *mFeature : QgsFeature();
 }
 
-QHash<QgsVectorLayer *, QgsAttributeMap> QgsFeatureAction::sLastUsedValues;
