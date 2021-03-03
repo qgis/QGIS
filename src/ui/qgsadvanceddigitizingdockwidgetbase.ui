@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>208</width>
-    <height>220</height>
+    <width>252</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -112,60 +112,6 @@
             <property name="spacing">
              <number>3</number>
             </property>
-            <item row="3" column="1">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>y</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="2">
-             <widget class="QLineEdit" name="mYLineEdit">
-              <property name="toolTip">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="3">
-             <widget class="QToolButton" name="mLockYButton">
-              <property name="toolTip">
-               <string/>
-              </property>
-              <property name="text">
-               <string>…</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="autoRaise">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3">
-             <widget class="QToolButton" name="mLockXButton">
-              <property name="toolTip">
-               <string/>
-              </property>
-              <property name="text">
-               <string>…</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="autoRaise">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="0">
              <widget class="QToolButton" name="mRelativeYButton">
               <property name="toolTip">
@@ -186,37 +132,10 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="3">
-             <widget class="QToolButton" name="mLockAngleButton">
-              <property name="toolTip">
-               <string/>
-              </property>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label">
               <property name="text">
-               <string>…</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="autoRaise">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QLineEdit" name="mXLineEdit">
-              <property name="toolTip">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>a</string>
+               <string>d</string>
               </property>
              </widget>
             </item>
@@ -243,56 +162,8 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="2">
-             <widget class="QLineEdit" name="mAngleLineEdit">
-              <property name="toolTip">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>x</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>d</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QToolButton" name="mLockDistanceButton">
-              <property name="toolTip">
-               <string/>
-              </property>
-              <property name="text">
-               <string>…</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="autoRaise">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLineEdit" name="mDistanceLineEdit">
-              <property name="toolTip">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QToolButton" name="mRelativeXButton">
+            <item row="5" column="0">
+             <widget class="QToolButton" name="mRelativeMButton">
               <property name="toolTip">
                <string/>
               </property>
@@ -311,28 +182,22 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="4">
-             <widget class="QToolButton" name="mRepeatingLockDistanceButton">
+            <item row="5" column="2">
+             <widget class="QLineEdit" name="mMLineEdit">
               <property name="toolTip">
                <string/>
               </property>
-              <property name="text">
-               <string>…</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/locked_repeating.svg</normaloff>:/images/themes/default/locked_repeating.svg</iconset>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="autoRaise">
-               <bool>true</bool>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLineEdit" name="mDistanceLineEdit">
+              <property name="toolTip">
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="1" column="4">
-             <widget class="QToolButton" name="mRepeatingLockAngleButton">
+            <item row="5" column="4">
+             <widget class="QToolButton" name="mRepeatingLockMButton">
               <property name="toolTip">
                <string/>
               </property>
@@ -371,6 +236,282 @@
               </property>
              </widget>
             </item>
+            <item row="0" column="4">
+             <widget class="QToolButton" name="mRepeatingLockDistanceButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/locked_repeating.svg</normaloff>:/images/themes/default/locked_repeating.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLabel" name="mZLabel">
+              <property name="text">
+               <string>z</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLineEdit" name="mAngleLineEdit">
+              <property name="toolTip">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QToolButton" name="mLockXButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QToolButton" name="mRelativeZButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/cadtools/delta.svg</normaloff>:/images/themes/default/cadtools/delta.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>a</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QToolButton" name="mLockAngleButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLineEdit" name="mXLineEdit">
+              <property name="toolTip">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>x</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="3">
+             <widget class="QToolButton" name="mLockMButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="3">
+             <widget class="QToolButton" name="mLockZButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="2">
+             <widget class="QLineEdit" name="mYLineEdit">
+              <property name="toolTip">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>y</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="4">
+             <widget class="QToolButton" name="mRepeatingLockZButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/locked_repeating.svg</normaloff>:/images/themes/default/locked_repeating.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QToolButton" name="mLockDistanceButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QToolButton" name="mRepeatingLockAngleButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/locked_repeating.svg</normaloff>:/images/themes/default/locked_repeating.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QToolButton" name="mRelativeXButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/cadtools/delta.svg</normaloff>:/images/themes/default/cadtools/delta.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="QLineEdit" name="mZLineEdit">
+              <property name="toolTip">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="3">
+             <widget class="QToolButton" name="mLockYButton">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string>…</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
             <item row="3" column="4">
              <widget class="QToolButton" name="mRepeatingLockYButton">
               <property name="toolTip">
@@ -391,7 +532,14 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="5" column="1">
+             <widget class="QLabel" name="mMLabel">
+              <property name="text">
+               <string>m</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
              <spacer name="verticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -414,57 +562,57 @@
     </item>
    </layout>
    <action name="mEnableAction">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="icon">
+     <iconset resource="../../images/images.qrc">
+      <normaloff>:/images/themes/default/cadtools/cad.svg</normaloff>:/images/themes/default/cadtools/cad.svg</iconset>
+    </property>
     <property name="toolTip">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable advanced digitizing tools&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
-    <property name="icon">
-     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/cadtools/cad.svg</normaloff>:/images/themes/default/cadtools/cad.svg</iconset>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
    </action>
    <action name="mConstructionModeAction">
-    <property name="toolTip">
-     <string/>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
     <property name="icon">
      <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/cadtools/construction.svg</normaloff>:/images/themes/default/cadtools/construction.svg</iconset>
+      <normaloff>:/images/themes/default/cadtools/construction.svg</normaloff>:/images/themes/default/cadtools/construction.svg</iconset>
     </property>
-    <property name="checkable">
-     <bool>true</bool>
+    <property name="toolTip">
+     <string/>
     </property>
    </action>
    <action name="mParallelAction">
-    <property name="toolTip">
-     <string/>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
     <property name="icon">
      <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/cadtools/parallel.svg</normaloff>:/images/themes/default/cadtools/parallel.svg</iconset>
+      <normaloff>:/images/themes/default/cadtools/parallel.svg</normaloff>:/images/themes/default/cadtools/parallel.svg</iconset>
     </property>
-    <property name="checkable">
-     <bool>true</bool>
+    <property name="toolTip">
+     <string/>
     </property>
    </action>
    <action name="mPerpendicularAction">
-    <property name="toolTip">
-     <string/>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
     <property name="icon">
      <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/cadtools/perpendicular.svg</normaloff>:/images/themes/default/cadtools/perpendicular.svg</iconset>
+      <normaloff>:/images/themes/default/cadtools/perpendicular.svg</normaloff>:/images/themes/default/cadtools/perpendicular.svg</iconset>
     </property>
-    <property name="checkable">
-     <bool>true</bool>
+    <property name="toolTip">
+     <string/>
     </property>
    </action>
    <action name="mSettingsAction">
     <property name="icon">
      <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
+      <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
     </property>
    </action>
   </widget>
@@ -505,36 +653,16 @@
   <tabstop>mYLineEdit</tabstop>
   <tabstop>mLockYButton</tabstop>
   <tabstop>mRepeatingLockYButton</tabstop>
+  <tabstop>mRelativeZButton</tabstop>
+  <tabstop>mZLineEdit</tabstop>
+  <tabstop>mLockZButton</tabstop>
+  <tabstop>mRepeatingLockZButton</tabstop>
+  <tabstop>mRelativeMButton</tabstop>
+  <tabstop>mMLineEdit</tabstop>
+  <tabstop>mLockMButton</tabstop>
+  <tabstop>mRepeatingLockMButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

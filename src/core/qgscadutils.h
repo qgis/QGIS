@@ -62,6 +62,10 @@ class CORE_EXPORT QgsCadUtils
       QgsCadUtils::AlignMapPointConstraint xConstraint;
       //! Constraint for Y coordinate
       QgsCadUtils::AlignMapPointConstraint yConstraint;
+      //! Constraint for Z coordinate
+      QgsCadUtils::AlignMapPointConstraint zConstraint;
+      //! Constraint for M coordinate
+      QgsCadUtils::AlignMapPointConstraint mConstraint;
       //! Constraint for distance
       QgsCadUtils::AlignMapPointConstraint distanceConstraint;
       //! Constraint for angle
@@ -74,7 +78,7 @@ class CORE_EXPORT QgsCadUtils
        * First point is the most recent point. Currently using only "previous" point (index 1) and "penultimate"
        * point (index 2) for alignment purposes.
        */
-      QList<QgsPointXY> cadPointList;
+      QList<QgsPoint> cadPointList;
 
       /**
        * Dumps the context's properties, for debugging.
