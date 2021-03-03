@@ -24,6 +24,7 @@
 #include "qgssettings.h"
 
 #include <QDir>
+#include <QTextStream>
 
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
