@@ -27,6 +27,7 @@
 #include <QUrl>
 #include <QTimer>
 #include <QStandardPaths>
+#include <QUuid>
 
 #include <sqlite3.h>
 
