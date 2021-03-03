@@ -356,9 +356,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   if ( !layerItem )
     return;
 
-  QgsMimeDataUtils::UriList list;
-  list << layerItem->mimeUri();
-  emit handleDropUriList( list );
+  emit handleDropUriList( layerItem->mimeUris() );
 }
 
 bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )

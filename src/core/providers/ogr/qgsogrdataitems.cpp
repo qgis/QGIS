@@ -452,13 +452,16 @@ bool QgsOgrDataCollectionItem::hasDragEnabled() const
   return true;
 }
 
-QgsMimeDataUtils::Uri QgsOgrDataCollectionItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsOgrDataCollectionItem::mimeUris() const
 {
-  QgsMimeDataUtils::Uri u;
-  u.providerKey = QStringLiteral( "ogr" );
-  u.uri = path();
-  u.layerType = QStringLiteral( "vector" );
-  return u;
+  QgsMimeDataUtils::Uri vectorUri;
+  vectorUri.providerKey = QStringLiteral( "ogr" );
+  vectorUri.uri = path();
+  vectorUri.layerType = QStringLiteral( "vector" );
+  QgsMimeDataUtils::Uri rasterUri { vectorUri };
+  rasterUri.layerType = QStringLiteral( "raster" );
+  rasterUri.providerKey = QStringLiteral( "gdal" );
+  return { vectorUri, rasterUri };
 }
 
 QgsAbstractDatabaseProviderConnection *QgsOgrDataCollectionItem::databaseConnection() const

@@ -250,8 +250,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Returns TRUE if the item may be dragged.
      * Default implementation returns FALSE.
-     * A draggable item has to implement mimeUri() that will be used to pass data.
-     * \see mimeUri()
+     * A draggable item has to implement mimeUris() that will be used to pass data.
+     * \see mimeUris()
      * \since QGIS 3.0
      */
     virtual bool hasDragEnabled() const { return false; }
@@ -260,9 +260,20 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \see hasDragEnabled()
+     * \deprecated since QGIS 3.18, use mimeUris() instead
      * \since QGIS 3.0
      */
-    virtual QgsMimeDataUtils::Uri mimeUri() const { return QgsMimeDataUtils::Uri(); }
+    Q_DECL_DEPRECATED virtual QgsMimeDataUtils::Uri mimeUri() const SIP_DEPRECATED;
+
+    /**
+     * Returns mime URIs for the data item, most data providers will only return a single URI
+     * but some data collection items (e.g. GPKG, OGR) may report multiple URIs (e.g. for vector and
+     * raster layer types).
+     *
+     * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+     * \since QGIS 3.18
+     */
+    virtual QgsMimeDataUtils::UriList mimeUris() const { return QgsMimeDataUtils::UriList(); }
 
     enum Capability
     {
@@ -571,7 +582,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     bool hasDragEnabled() const override { return true; }
 
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 
     // --- New virtual methods for layer item derived classes ---
 
@@ -841,7 +852,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QIcon icon() override;
     Q_DECL_DEPRECATED QWidget *paramWidget() override SIP_FACTORY SIP_DEPRECATED;
     bool hasDragEnabled() const override { return true; }
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
@@ -880,7 +891,7 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
 
     bool hasDragEnabled() const override { return true; }
 
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 
 };
 

@@ -118,7 +118,7 @@ void TestQgsDataItem::testDirItem()
   QCOMPARE( dirItem->name(), QStringLiteral( "Test" ) );
 
   QVERIFY( dirItem->hasDragEnabled() );
-  QgsMimeDataUtils::Uri mime = dirItem->mimeUri();
+  QgsMimeDataUtils::Uri mime = dirItem->mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : dirItem->mimeUris().first();
   QVERIFY( mime.isValid() );
   QCOMPARE( mime.uri, QStringLiteral( TEST_DATA_DIR ) );
   QCOMPARE( mime.layerType, QStringLiteral( "directory" ) );
