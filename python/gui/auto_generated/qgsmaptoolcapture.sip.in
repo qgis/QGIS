@@ -33,6 +33,7 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
     {
       StraightSegments,
       CircularString,
+      Streaming,
     };
 
     enum Capability
@@ -135,6 +136,13 @@ transfers ownership to the caller.
     void setCircularDigitizingEnabled( bool enable );
 %Docstring
 Enable the digitizing with curve
+%End
+
+    void setStreamDigitizingEnabled( bool enable );
+%Docstring
+Toggles the stream digitizing mode.
+
+.. versionadded:: 3.20
 %End
 
   protected:

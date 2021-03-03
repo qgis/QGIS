@@ -2583,6 +2583,9 @@ void QgisApp::createActions()
   connect( mActionRegularPolygonCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::RegularPolygonCenterPoint ), true ); } );
   connect( mActionRegularPolygonCenterCorner, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::RegularPolygonCenterCorner ), true ); } );
   connect( mActionDigitizeWithCurve, &QAction::triggered, this, &QgisApp::enableDigitizeWithCurve );
+  connect( mActionStreamDigitize, &QAction::triggered, this, &QgisApp::enableStreamDigitizing );
+  mActionStreamDigitize->setShortcut( tr( "R", "Keyboard shortcut: toggle stream digitizing" ) );
+
   connect( mActionMoveFeature, &QAction::triggered, this, &QgisApp::moveFeature );
   connect( mActionMoveFeatureCopy, &QAction::triggered, this, &QgisApp::moveFeatureCopy );
   connect( mActionRotateFeature, &QAction::triggered, this, &QgisApp::rotateFeature );
@@ -10102,6 +10105,18 @@ void QgisApp::enableDigitizeWithCurve( bool enable )
   settings.setValue( QStringLiteral( "UI/digitizeWithCurve" ), enable ? 1 : 0 );
 }
 
+void QgisApp::enableStreamDigitizing( bool enable )
+{
+  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
+  for ( QgsMapToolCapture *tool : captureTools )
+  {
+    if ( tool->supportsTechnique( QgsMapToolCapture::Streaming ) )
+      tool->setStreamDigitizingEnabled( enable );
+  }
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/digitizeWithStream" ), enable ? 1 : 0 );
+}
+
 void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFromToolAction )
 {
   QgsSettings settings;
@@ -10113,8 +10128,11 @@ void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFro
   {
     if ( triggeredFromToolAction == tool->action() || ( !triggeredFromToolAction && mMapCanvas->mapTool() == tool ) )
     {
-      if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
-        supportedTechniques.insert( QgsMapToolCapture::CircularString );
+      for ( QgsMapToolCapture::CaptureTechnique technique : { QgsMapToolCapture::CircularString, QgsMapToolCapture::Streaming } )
+      {
+        if ( tool->supportsTechnique( technique ) )
+          supportedTechniques.insert( technique );
+      }
       break;
     }
   }
@@ -10123,10 +10141,16 @@ void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFro
   const bool curveIsChecked = settings.value( QStringLiteral( "UI/digitizeWithCurve" ) ).toInt();
   mActionDigitizeWithCurve->setChecked( curveIsChecked && mActionDigitizeWithCurve->isEnabled() );
 
+  mActionStreamDigitize->setEnabled( enable && supportedTechniques.contains( QgsMapToolCapture::Streaming ) );
+  const bool streamIsChecked = settings.value( QStringLiteral( "UI/digitizeWithStream" ) ).toInt();
+  mActionStreamDigitize->setChecked( streamIsChecked && mActionStreamDigitize->isEnabled() );
+
   for ( QgsMapToolCapture *tool : captureTools )
   {
     if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
       tool->setCircularDigitizingEnabled( mActionDigitizeWithCurve->isChecked() );
+    if ( tool->supportsTechnique( QgsMapToolCapture::Streaming ) )
+      tool->setStreamDigitizingEnabled( mActionStreamDigitize->isChecked() );
   }
 }
 

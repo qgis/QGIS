@@ -1963,6 +1963,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void enableDigitizeWithCurve( bool enable );
 
     /**
+     * Enables or disables stream digitizing
+     * \since QGIS 3.20
+     */
+    void enableStreamDigitizing( bool enable );
+
+    /**
      * Enables the action that toggles digitizing with curve
      */
     void enableDigitizeTechniqueActions( bool enable, QAction *triggeredFromToolAction = nullptr );
