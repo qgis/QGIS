@@ -143,6 +143,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     {
       StraightSegments, //!< Default capture mode - capture occurs with straight line segments
       CircularString, //!< Capture in circular strings
+      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves)
     };
 
     //! Specific capabilities of the tool
@@ -232,6 +233,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
   public slots:
     //! Enable the digitizing with curve
     void setCircularDigitizingEnabled( bool enable );
+
+    /**
+     * Toggles the stream digitizing mode.
+     * \since QGIS 3.20
+     */
+    void setStreamDigitizingEnabled( bool enable );
 
   private slots:
     void addError( const QgsGeometry::Error &error );
@@ -454,6 +461,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! Used to store the state of digitizing type (linear or circular)
     QgsWkbTypes::Type mDigitizingType = QgsWkbTypes::LineString;
+
+    bool mStreamingEnabled = false;
+    bool mAllowAddingStreamingPoints = false;
+    bool mStartNewCurve = false;
+
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )
