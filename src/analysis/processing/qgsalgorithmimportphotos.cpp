@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include <QDirIterator>
 #include <QFileInfo>
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 

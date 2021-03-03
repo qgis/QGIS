@@ -77,6 +77,7 @@
 #include <QUrl>
 #include <QStandardPaths>
 #include <QUuid>
+#include <QRegularExpression>
 
 #ifdef _MSC_VER
 #include <sys/utime.h>

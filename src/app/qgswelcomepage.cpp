@@ -41,6 +41,7 @@
 #include <QTextBrowser>
 #include <QMessageBox>
 #include <QSplitter>
+#include <QRegularExpression>
 
 #define FEED_URL "https://feed.qgis.org/"
 

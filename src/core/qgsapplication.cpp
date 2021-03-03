@@ -97,6 +97,7 @@
 #include <QStyle>
 #include <QLibraryInfo>
 #include <QStandardPaths>
+#include <QRegularExpression>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>

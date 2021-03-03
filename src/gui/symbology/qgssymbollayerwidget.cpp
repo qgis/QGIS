@@ -60,6 +60,7 @@
 #include <QAction>
 #include <QInputDialog>
 #include <QBuffer>
+#include <QRegularExpression>
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {

@@ -35,7 +35,7 @@
 #include "qgstextbackgroundsettings.h"
 
 #include <QBuffer>
-
+#include <QRegularExpression>
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {
