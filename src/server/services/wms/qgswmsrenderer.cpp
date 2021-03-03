@@ -975,6 +975,10 @@ namespace QgsWms
     // add layers to map settings
     mapSettings.setLayers( layers );
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
+#endif
+
     QDomDocument result = featureInfoDocument( layers, mapSettings, outputImage.get(), version );
 
     QByteArray ba;
