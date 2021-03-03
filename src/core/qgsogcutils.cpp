@@ -30,6 +30,7 @@
 #include <QStringList>
 #include <QTextStream>
 #include <QObject>
+#include <QRegularExpression>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
