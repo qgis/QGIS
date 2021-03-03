@@ -168,6 +168,7 @@ class TestQgsGeometry : public QObject
     void differenceCheck2();
     void bufferCheck();
     void smoothCheck();
+    void shortestLineEmptyGeometry();
 
     void unaryUnion();
 
@@ -17370,6 +17371,16 @@ void TestQgsGeometry::smoothCheck()
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 3 );
   QCOMPARE( result.wkbType(), QgsWkbTypes::Polygon );
+}
+
+void TestQgsGeometry::shortestLineEmptyGeometry()
+{
+  // test calculating distance to an empty geometry
+  // refs https://github.com/qgis/QGIS/issues/41968
+  QgsGeometry geom1( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ))" ) ) );
+  QgsGeometry geom2( new QgsPoint() );
+  QgsGeos geos( geom1.constGet() );
+  QVERIFY( geos.shortestLine( geom2.constGet() ).isNull() );
 }
 
 void TestQgsGeometry::unaryUnion()
