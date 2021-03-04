@@ -7,8 +7,7 @@
 
 # About QGIS
 
-QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical 
-information system (GIS) that runs on Unix platforms, Windows, and MacOS.
+QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 
 ## Features 
 
@@ -77,7 +76,7 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 
 *Example: Style manager*
 
-![Example: Style manager](https://docs.qgis.org/3.16/en/_images/stylemanager.png "Style Manager")
+![Example: Style manager](https://docs.qgis.org/latest/en/_images/stylemanager.png "Style Manager")
 
 *Example: Plugins*
 
@@ -86,7 +85,7 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 <!-- Kill this one for now, since it's Python2 not 3
 Example: Python console
 
-![Example: Python console](https://docs.qgis.org/3.16/en/_images/python_console_editor.png "Python console")
+![Example: Python console](https://docs.qgis.org/latest/en/_images/python_console_editor.png "Python console")
 -->
 
 ### 5. QGIS server
@@ -100,11 +99,11 @@ Headless map server -- running on Linux, macOS, Windows, or in a docker containe
 
 *Example: QGIS server WMS response*
 
-![Example: QGIS Server response to a WMS request](https://docs.qgis.org/3.16/en/_images/server_selection_parameter.png "QGIS Server response to a WMS request")
+![Example: QGIS Server response to a WMS request](https://docs.qgis.org/latest/en/_images/server_selection_parameter.png "QGIS Server response to a WMS request")
 
 *Example: QGIS server WFS response*
 
-![Example: QGIS Server response to a WFS Feature request](https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png "QGIS Server response to a WFS Feature request")
+![Example: QGIS Server response to a WFS Feature request](https://docs.qgis.org/latest/en/_images/server_wfs3_feature.png "QGIS Server response to a WFS Feature request")
 
 ## Under the hood
 
@@ -165,13 +164,13 @@ There are several channels where you can find help and support for QGIS:
 
 ## Get involved with the community
 
-Please **help us by submitting bug reports** using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
+### Bug reporting and bug fixing
 
-### New features and enhahncements
+You can help us **by submitting bug reports or fixing bugs** in the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
 
-If you wish to contribute
-patches you can [fork the project](https://help.github.com/forking/), make your changes, commit to your
-repository, and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). The development team can then review your contribution and commit it upstream as appropriate.
+### New features and enhancements
+
+If you wish to contribute patches you can [fork the project](https://help.github.com/forking/), make your changes, commit to your repository, and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). The development team can then review your contribution and commit it upstream as appropriate.
 
 If you commit a new feature, add [FEATURE] to your commit message AND give a clear description of the new feature. A webhook will automatically create an issue on the QGIS-Documentation repo to tell people to write documentation about it.
 
