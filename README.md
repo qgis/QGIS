@@ -1,9 +1,11 @@
-# About QGIS
+<img src="images/README-md/main_logo.png" width="300">
 
 [![Tests](https://github.com/qgis/QGIS/workflows/QGIS%20tests/badge.svg)](https://github.com/qgis/QGIS/actions?query=workflow%3A%22QGIS+tests%22)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://hub.docker.com/r/qgis/qgis/tags)
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
 ![Windows cross build with MXE](https://github.com/qgis/QGIS/workflows/Windows%20cross%20build%20with%20MXE/badge.svg)
+
+# About QGIS
 
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical 
 information system (GIS) that runs on Unix platforms, Windows, and MacOS.
