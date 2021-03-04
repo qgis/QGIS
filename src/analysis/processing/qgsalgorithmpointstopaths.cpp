@@ -20,6 +20,7 @@
 #include "qgsmultipoint.h"
 
 #include <QCollator>
+#include <QTextStream>
 
 ///@cond PRIVATE
 

@@ -33,6 +33,7 @@
 #include <QSvgGenerator>
 #include <QBuffer>
 #include <QTimeZone>
+#include <QTextStream>
 
 #include "gdal.h"
 #include "cpl_conv.h"

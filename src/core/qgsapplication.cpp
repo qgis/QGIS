@@ -98,6 +98,7 @@
 #include <QLibraryInfo>
 #include <QStandardPaths>
 #include <QRegularExpression>
+#include <QTextStream>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
