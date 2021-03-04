@@ -40,6 +40,20 @@ QgsMapToolCapture::Capabilities QgsMapToolAddPart::capabilities() const
   return QgsMapToolCapture::SupportsCurves;
 }
 
+bool QgsMapToolAddPart::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  switch ( technique )
+  {
+    case QgsMapToolCapture::StraightSegments:
+    case QgsMapToolCapture::Streaming:
+      return true;
+
+    case QgsMapToolCapture::CircularString:
+      return false;
+  }
+  return false;
+}
+
 void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )
