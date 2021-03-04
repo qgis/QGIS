@@ -47,6 +47,7 @@
 #include <QUndoView>
 #include <QPushButton>
 #include <QUrl>
+#include <QTextStream>
 
 ///@cond NOT_STABLE
 
