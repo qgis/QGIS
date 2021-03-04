@@ -1686,7 +1686,7 @@
      <normaloff>:/images/themes/default/mActionOpenTableSelected.svg</normaloff>:/images/themes/default/mActionOpenTableSelected.svg</iconset>
    </property>
    <property name="text">
-    <string>Open Attribute Table Selected</string>
+    <string>Open Attribute Table (Selected items)</string>
    </property>
    <property name="shortcut">
     <string>Shift+F6</string>
@@ -1698,7 +1698,7 @@
      <normaloff>:/images/themes/default/mActionOpenTableVisible.svg</normaloff>:/images/themes/default/mActionOpenTableVisible.svg</iconset>
    </property>
    <property name="text">
-    <string>Open Attribute Table Visible</string>
+    <string>Open Attribute Table (Visible items)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F6</string>
