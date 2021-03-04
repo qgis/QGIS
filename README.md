@@ -5,8 +5,6 @@
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
 [![Windows cross build](https://github.com/qgis/QGIS/workflows/MingW64%20Windows%2064bit%20Build/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
 
-*Note: This is an in-progress draft. Formatting, especially images, will be improved once feedback on structure and main text is received.*
-
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical 
 information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 
@@ -25,9 +23,11 @@ information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 - Temporal support
 
 *Example: Temporal animation*
+
 ![Example: Temporal animation](images/README-md/icebergs.gif "Temporal animation")
 
 *Example: 3D map view*
+
 ![Example: 3D map view](https://docs.qgis.org/latest/en/_images/3dmapview.png "3D map view")
 
 ### 2. Beautiful cartography
@@ -42,9 +42,11 @@ information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 - Preview modes for inclusive map making (e.g. monochrome, color blindness)
 
 *[Example: Map of Bogota, Columbia in the style of Starry Starry Night, by Andrés Felipe Lancheros Sánchez](https://flic.kr/p/2jFfGJP)*
+
 ![Map of Bogota, Columbia in the style of Starry Starry Night](https://live.staticflickr.com/65535/50327326323_3da28f0d86_b.jpg "Map of Bogota, Columbia in the style of Starry Starry Night")
 
 For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](https://www.flickr.com/groups/2244553@N22/pool/with/50355460063/).
+
 ![QGIS Map Showcase](images/README-md/qgis_map_showcase.png "QGIS Map Showcase")
 
 ### 3. Advanced and robust geospatial analysis
@@ -55,9 +57,11 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 - Graphical modeler and batch processing
 
 *Example: Travel isochrones*
+
 ![Example: Travel isochrones](images/README-md/network_analysis_2.png "Travel isochrones")
 
 *Example: Graphical model*
+
 ![Example: graphical model](https://docs.qgis.org/latest/en/_images/models_model.png "Graphical model")
 
 ### 4. Powerful customization and extensibility
@@ -70,13 +74,16 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 - Python and C++ API for standalone (headless) applications as well as in-application comprehensive scripting (PyQGIS)
 
 *Example: Style manager*
+
 ![Example: Style manager](https://docs.qgis.org/3.16/en/_images/stylemanager.png "Style Manager")
 
 *Example: Plugins*
+
 ![Example: Plugins](images/README-md/plugins_1.png "Plugins")
 
 <!-- Kill this one for now, since it's Python2 not 3
 Example: Python console
+
 ![Example: Python console](https://docs.qgis.org/3.16/en/_images/python_console_editor.png "Python console")
 -->
 
@@ -90,9 +97,11 @@ Headless map server -- running on Linux, macOS, Windows, or in a docker containe
 - Fully customizable with Python scripting support
 
 *Example: QGIS server WMS response*
+
 ![Example: QGIS Server response to a WMS request](https://docs.qgis.org/3.16/en/_images/server_selection_parameter.png "QGIS Server response to a WMS request")
 
 *Example: QGIS server WFS response*
+
 ![Example: QGIS Server response to a WFS Feature request](https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png "QGIS Server response to a WFS Feature request")
 
 ## Under the hood
