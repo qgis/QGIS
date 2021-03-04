@@ -662,7 +662,11 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   //if there is only one point, this the first digitized point that are in the this first curve added --> remove the point
   if ( mCaptureCurve.numPoints() == 1 )
     mCaptureCurve.removeCurve( 0 );
-  mCaptureCurve.addCurve( c );
+
+  // we set the extendPrevious option to true to avoid creating compound curves with many 2 vertex linestrings -- instead we prefer
+  // to extend linestring curves so that they continue the previous linestring wherever possible...
+  mCaptureCurve.addCurve( c, true );
+
   int countAfter = mCaptureCurve.vertexCount();
   int addedPoint = countAfter - countBefore;
 
