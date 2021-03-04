@@ -21,8 +21,8 @@
 #include "qgs3drendererregistry.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
-
 #include "qgsmaplayerref.h"
+#include <QUuid>
 
 class Qgs3DRenderContext;
 class QgsFeature3DHandler;
