@@ -1095,6 +1095,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::createToolBars, this, QStringLiteral( "Toolbars" ) );
   functionProfile( &QgisApp::createStatusBar, this, QStringLiteral( "Status bar" ) );
   functionProfile( &QgisApp::createCanvasTools, this, QStringLiteral( "Create canvas tools" ) );
+  const QList< QgsMapToolCapture * > captureTools = mMapTools.captureTools();
+  for ( QgsMapToolCapture *tool : captureTools )
+  {
+    connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) { enableDigitizeTechniqueActions( checked, tool->action() ); } );
+  }
 
   applyDefaultSettingsToCanvas( mMapCanvas );
 
@@ -2927,9 +2932,6 @@ void QgisApp::createActions()
   connect( mActionChangeLabelProperties, &QAction::triggered, this, &QgisApp::changeLabelProperties );
 
   connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
-
-  connect( mActionAddFeature, &QAction::toggled, this, &QgisApp::enableDigitizeWithCurveAction );
-  connect( mActionSplitFeatures, &QAction::toggled, this, &QgisApp::enableDigitizeWithCurveAction );
 
   // we can't set the shortcut these actions, because we need to restrict their context to the canvas and it's children..
   for ( QWidget *widget :
@@ -10246,29 +10248,42 @@ void QgisApp::snappingOptions()
 
 void QgisApp::enableDigitizeWithCurve( bool enable )
 {
-  mMapTools.mAddFeature->setCircularDigitizingEnabled( enable );
-  static_cast<QgsMapToolCapture *>( mMapTools.mSplitFeatures )->setCircularDigitizingEnabled( enable );
+  const QList< QgsMapToolCapture * > captureTools = mMapTools.captureTools();
+  for ( QgsMapToolCapture *tool : captureTools )
+  {
+    if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
+      tool->setCircularDigitizingEnabled( enable );
+  }
   QgsSettings settings;
   settings.setValue( QStringLiteral( "UI/digitizeWithCurve" ), enable ? 1 : 0 );
 }
 
-void QgisApp::enableDigitizeWithCurveAction( bool enable )
+void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFromToolAction )
 {
   QgsSettings settings;
 
-  QObject *sender = QObject::sender();
+  const QList< QgsMapToolCapture * > captureTools = mMapTools.captureTools();
 
-  enable &= ( sender == mActionAddFeature && mMapTools.mAddFeature->mode() != QgsMapToolCapture::CapturePoint ) ||
-            ( mMapCanvas->mapTool() == mMapTools.mAddFeature && mMapTools.mAddFeature->mode() != QgsMapToolCapture::CapturePoint ) ||
-            sender == mActionSplitFeatures ||
-            mMapCanvas->mapTool() == mMapTools.mSplitFeatures;
+  QSet< QgsMapToolCapture::CaptureTechnique > supportedTechniques;
+  for ( QgsMapToolCapture *tool : captureTools )
+  {
+    if ( triggeredFromToolAction == tool->action() || ( !triggeredFromToolAction && mMapCanvas->mapTool() == tool ) )
+    {
+      if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
+        supportedTechniques.insert( QgsMapToolCapture::CircularString );
+      break;
+    }
+  }
 
-  bool isChecked = settings.value( QStringLiteral( "UI/digitizeWithCurve" ) ).toInt() && enable;
-  mActionDigitizeWithCurve->setChecked( isChecked );
-  mActionDigitizeWithCurve->setEnabled( enable );
+  mActionDigitizeWithCurve->setEnabled( enable && supportedTechniques.contains( QgsMapToolCapture::CircularString ) );
+  const bool curveIsChecked = settings.value( QStringLiteral( "UI/digitizeWithCurve" ) ).toInt();
+  mActionDigitizeWithCurve->setChecked( curveIsChecked && mActionDigitizeWithCurve->isEnabled() );
 
-  mMapTools.mAddFeature->setCircularDigitizingEnabled( isChecked );
-  static_cast<QgsMapToolCapture *>( mMapTools.mSplitFeatures )->setCircularDigitizingEnabled( isChecked );
+  for ( QgsMapToolCapture *tool : captureTools )
+  {
+    if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
+      tool->setCircularDigitizingEnabled( mActionDigitizeWithCurve->isChecked() );
+  }
 }
 
 void QgisApp::splitFeatures()
@@ -14772,7 +14787,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionZoomToLayers->setEnabled( false );
     mActionZoomToLayer->setEnabled( false );
 
-    enableDigitizeWithCurveAction( false );
+    enableDigitizeTechniqueActions( false );
 
     return;
   }
@@ -14926,7 +14941,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionVertexTool->setEnabled( isEditable && canChangeGeometry );
         mActionVertexToolActiveLayer->setEnabled( isEditable && canChangeGeometry );
 
-        enableDigitizeWithCurveAction( isEditable && canChangeGeometry );
+        enableDigitizeTechniqueActions( isEditable && canChangeGeometry );
 
         if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
         {
@@ -15133,7 +15148,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLabeling->setEnabled( false );
       mActionDiagramProperties->setEnabled( false );
 
-      enableDigitizeWithCurveAction( false );
+      enableDigitizeTechniqueActions( false );
 
       //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
       //If you load a layer with a provider and idenitfy ability then load another without, the tool would be disabled for both
@@ -15222,7 +15237,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLabeling->setEnabled( false );
       mActionDiagramProperties->setEnabled( false );
       mActionIdentify->setEnabled( true );
-      enableDigitizeWithCurveAction( false );
+      enableDigitizeTechniqueActions( false );
       break;
 
     case QgsMapLayerType::VectorTileLayer:
@@ -15287,7 +15302,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLabeling->setEnabled( false );
       mActionDiagramProperties->setEnabled( false );
       mActionIdentify->setEnabled( true );
-      enableDigitizeWithCurveAction( false );
+      enableDigitizeTechniqueActions( false );
       break;
 
     case QgsMapLayerType::PointCloudLayer:
@@ -15352,7 +15367,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLabeling->setEnabled( false );
       mActionDiagramProperties->setEnabled( false );
       mActionIdentify->setEnabled( true );
-      enableDigitizeWithCurveAction( false );
+      enableDigitizeTechniqueActions( false );
       break;
 
     case QgsMapLayerType::PluginLayer:
@@ -17150,4 +17165,23 @@ QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
   context.setCadDockWidget( cadDockWidget() );
   context.setMainMessageBar( messageBar() );
   return context;
+}
+
+QList<QgsMapToolCapture *> QgisApp::Tools::captureTools() const
+{
+  QList< QgsMapToolCapture * > res;
+  for ( QgsMapTool *tool :
+        {
+          qobject_cast< QgsMapTool * >( mAddFeature ),
+          mReshapeFeatures,
+          mSplitFeatures,
+          mSplitParts,
+          mAddRing,
+          mFillRing,
+          mAddPart
+        } )
+  {
+    res << qobject_cast< QgsMapToolCapture * >( tool );
+  }
+  return res;
 }

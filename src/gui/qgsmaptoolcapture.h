@@ -134,6 +134,17 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       CapturePolygon  //!< Capture polygons
     };
 
+    /**
+     * Capture technique.
+     *
+     * \since QGIS 3.20
+     */
+    enum CaptureTechnique
+    {
+      StraightSegments, //!< Default capture mode - capture occurs with straight line segments
+      CircularString, //!< Capture in circular strings
+    };
+
     //! Specific capabilities of the tool
     enum Capability
     {
@@ -152,6 +163,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Returns flags containing the supported capabilities
      */
     virtual QgsMapToolCapture::Capabilities capabilities() const;
+
+    /**
+     * Returns TRUE if the tool supports the specified capture \a technique.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool supportsTechnique( CaptureTechnique technique ) const;
 
     void activate() override;
     void deactivate() override;
@@ -390,6 +408,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
   private:
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
+
+
 
     //! Flag to indicate a map canvas capture operation is taking place
     bool mCapturing = false;

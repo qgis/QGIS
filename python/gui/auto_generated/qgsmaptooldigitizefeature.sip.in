@@ -34,6 +34,8 @@ QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
 
     virtual QgsMapToolCapture::Capabilities capabilities() const;
 
+    virtual bool supportsTechnique( CaptureTechnique technique ) const;
+
 
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
 
