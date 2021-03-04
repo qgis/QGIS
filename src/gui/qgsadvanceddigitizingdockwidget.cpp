@@ -312,7 +312,39 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   clear();
   setConstructionMode( false );
 
+  switchZM();
   emit cadEnabledChanged( enabled );
+}
+
+
+void QgsAdvancedDigitizingDockWidget::switchZM( void )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if ( vlayer )
+  {
+
+    const QgsWkbTypes::Type type = vlayer->wkbType();
+    mRelativeZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
+    mZLabel->setEnabled( QgsWkbTypes::hasZ( type ) );
+    mZLineEdit->setEnabled( QgsWkbTypes::hasZ( type ) );
+    if ( mZLineEdit->isEnabled() )
+      mZLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultZValue(), 'f', 6 ) );
+    else
+      mZLineEdit->clear();
+    mLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
+    mRepeatingLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
+
+    mRelativeMButton->setEnabled( QgsWkbTypes::hasM( type ) );
+    mMLabel->setEnabled( QgsWkbTypes::hasM( type ) );
+    mMLineEdit->setEnabled( QgsWkbTypes::hasM( type ) );
+    if ( mMLineEdit->isEnabled() )
+      mMLineEdit->setText( QLocale().toString( 0.0, 'f', 6 ) );
+    else
+      mMLineEdit->clear();
+    mLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
+    mRepeatingLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
+  }
+
 }
 
 void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
@@ -1345,24 +1377,6 @@ void QgsAdvancedDigitizingDockWidget::enable()
     mEnableAction->setEnabled( true );
     mErrorLabel->hide();
     mCadWidget->show();
-
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-    if ( vlayer )
-    {
-
-      const QgsWkbTypes::Type type = vlayer->wkbType();
-      mRelativeZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
-      mZLabel->setEnabled( QgsWkbTypes::hasZ( type ) );
-      mZLineEdit->setEnabled( QgsWkbTypes::hasZ( type ) );
-      mLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
-      mRepeatingLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
-
-      mRelativeMButton->setEnabled( QgsWkbTypes::hasM( type ) );
-      mMLabel->setEnabled( QgsWkbTypes::hasM( type ) );
-      mMLineEdit->setEnabled( QgsWkbTypes::hasM( type ) );
-      mLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
-      mRepeatingLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
-    }
 
     mCurrentMapToolSupportsCad = true;
 
