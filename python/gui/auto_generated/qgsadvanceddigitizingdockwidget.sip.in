@@ -214,6 +214,13 @@ Clear any cached previous clicks and helper lines
 determines if CAD tools are enabled or if map tools behaves "nomally"
 %End
 
+    void switchZM( void );
+%Docstring
+Determines if Z or M will be enabled.
+
+.. versionadded:: 3.20
+%End
+
     bool constructionMode() const;
 %Docstring
 construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)

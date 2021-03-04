@@ -250,6 +250,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! determines if CAD tools are enabled or if map tools behaves "nomally"
     bool cadEnabled() const { return mCadEnabled; }
 
+    /**
+     * Determines if Z or M will be enabled.
+      * \since QgIS 3.20
+      */
+    void switchZM( void );
+
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
     bool constructionMode() const { return mConstructionMode; }
 
