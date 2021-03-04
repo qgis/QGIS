@@ -18,7 +18,7 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
     - *Vector formats include:* GeoPackage, ESRI Shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](http://www.gdal.org/ogr_formats.html). 
     - *Mesh formats include*: NetCDF, GRIB, 2DM, and [other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats).
     - *Point-cloud format*: LAS/LAZ and EPT datasets.
-- Access and display local files, spatial databases (PostGIS, SpatiaLite, MSSQL, SAP HANA), web services (WMS, WCS, WFS, ArcGIS REST services), tile services, etc. <!-- removed DB2 due to https://github.com/qgis/QGIS/pull/41178 -->
+- Access and display local files, spatial databases (PostGIS, SpatiaLite, SQL Server, Oracle, SAP HANA), web services (WMS, WCS, WFS, ArcGIS REST services), tile services, etc. <!-- removed DB2 due to https://github.com/qgis/QGIS/pull/41178 -->
 - Visual and numerical digitizing and editing
 - On-the-fly reprojection between coordinate reference systems (CRS)
 - Temporal support
