@@ -300,7 +300,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
         if ( xCol < vlayer->fields().count() )
         {
-          if ( ! xNewPos.convert( vlayer->fields().at( xCol ).type() ) )
+          if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
           {
             xNewPos = xPosNew; // revert and hope for the best
           }
@@ -308,7 +308,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
         if ( yCol < vlayer->fields().count() )
         {
-          if ( ! yNewPos.convert( vlayer->fields().at( yCol ).type() ) )
+          if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
           {
             yNewPos = yPosNew; // revert and hope for the best
           }
