@@ -40,7 +40,7 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QTemporaryFile>
-
+#include <QUrl>
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
   : QDialog( parent )

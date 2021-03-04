@@ -47,6 +47,7 @@
 #include <QSettings>
 #include <QRegExp>
 #include <QPicture>
+#include <QUrl>
 #include <QUrlQuery>
 #include <QMimeData>
 #include <QRegularExpression>

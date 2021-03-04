@@ -24,6 +24,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QUrl>
 
 //
 // QgsAbstractFileContentSourceLineEdit

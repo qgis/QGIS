@@ -42,6 +42,7 @@
 #include <QMessageBox>
 #include <QSplitter>
 #include <QRegularExpression>
+#include <QUrl>
 
 #define FEED_URL "https://feed.qgis.org/"
 

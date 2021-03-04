@@ -48,6 +48,7 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QDesktopServices>
+#include <QUrl>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"

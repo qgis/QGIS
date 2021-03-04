@@ -28,6 +28,7 @@
 #include <QDesktopServices>
 #include <QDialogButtonBox>
 #include <QFileInfo>
+#include <QUrl>
 
 QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   QgsBrowserGuiModel *browserModel,

@@ -49,6 +49,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QUrl>
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {

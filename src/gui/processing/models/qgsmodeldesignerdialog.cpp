@@ -46,6 +46,7 @@
 #include <QMessageBox>
 #include <QUndoView>
 #include <QPushButton>
+#include <QUrl>
 
 ///@cond NOT_STABLE
 

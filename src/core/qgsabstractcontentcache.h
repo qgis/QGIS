@@ -35,6 +35,7 @@
 #include <QFile>
 #include <QNetworkReply>
 #include <QFileInfo>
+#include <QUrl>
 
 /**
  * \class QgsAbstractContentCacheEntry

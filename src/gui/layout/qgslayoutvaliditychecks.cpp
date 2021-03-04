@@ -21,6 +21,7 @@
 #include "qgslayoutitempicture.h"
 #include "qgslayout.h"
 #include "qgssettings.h"
+#include <QUrl>
 
 //
 // QgsLayoutScaleBarValidityCheck
