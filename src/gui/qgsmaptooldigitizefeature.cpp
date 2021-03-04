@@ -48,6 +48,18 @@ QgsMapToolCapture::Capabilities QgsMapToolDigitizeFeature::capabilities() const
   return QgsMapToolCapture::SupportsCurves;
 }
 
+bool QgsMapToolDigitizeFeature::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  switch ( technique )
+  {
+    case QgsMapToolCapture::StraightSegments:
+      return true;
+    case QgsMapToolCapture::CircularString:
+      return mode() != QgsMapToolCapture::CapturePoint;
+  }
+  return false;
+}
+
 void QgsMapToolDigitizeFeature::digitized( const QgsFeature &f )
 {
   emit digitizingCompleted( f );

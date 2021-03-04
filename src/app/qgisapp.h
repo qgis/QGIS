@@ -71,6 +71,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
+class QgsMapToolCapture;
 class QgsMapToolAddFeature;
 class QgsMapToolDigitizeFeature;
 class QgsMapToolAdvancedDigitizing;
@@ -1966,9 +1967,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Enables the action that toggles digitizing with curve
-     * \since QGIS 3.16
      */
-    void enableDigitizeWithCurveAction( bool enable );
+    void enableDigitizeTechniqueActions( bool enable, QAction *triggeredFromToolAction = nullptr );
 
 #ifdef HAVE_GEOREFERENCER
     void showGeoreferencer();
@@ -2394,6 +2394,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       public:
 
         Tools() = default;
+
+        /**
+         * Returns a list of all QgsMapToolCapture derived tools.
+         */
+        QList< QgsMapToolCapture * > captureTools() const;
 
         QgsMapTool *mZoomIn = nullptr;
         QgsMapTool *mZoomOut = nullptr;

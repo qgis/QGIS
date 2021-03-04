@@ -29,6 +29,12 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
       CapturePolygon
     };
 
+    enum CaptureTechnique
+    {
+      StraightSegments,
+      CircularString,
+    };
+
     enum Capability
     {
       NoCapabilities,
@@ -48,6 +54,13 @@ constructor
     virtual QgsMapToolCapture::Capabilities capabilities() const;
 %Docstring
 Returns flags containing the supported capabilities
+%End
+
+    virtual bool supportsTechnique( CaptureTechnique technique ) const;
+%Docstring
+Returns ``True`` if the tool supports the specified capture ``technique``.
+
+.. versionadded:: 3.20
 %End
 
     virtual void activate();

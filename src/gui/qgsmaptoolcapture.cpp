@@ -93,6 +93,11 @@ QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
   return QgsMapToolCapture::NoCapabilities;
 }
 
+bool QgsMapToolCapture::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  return technique == StraightSegments;
+}
+
 void QgsMapToolCapture::activate()
 {
   if ( mTempRubberBand )
