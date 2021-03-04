@@ -293,8 +293,30 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
         else
           vlayer->beginEditCommand( tr( "Moved callout" ) );
-        bool success = vlayer->changeAttributeValue( featureId, xCol, xPosNew );
-        success = vlayer->changeAttributeValue( featureId, yCol, yPosNew ) && success;
+
+        // Try to convert to the destination field type
+        QVariant xNewPos( xPosNew );
+        QVariant yNewPos( yPosNew );
+
+        if ( xCol < vlayer->fields().count() )
+        {
+          if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
+          {
+            xNewPos = xPosNew; // revert and hope for the best
+          }
+        }
+
+        if ( yCol < vlayer->fields().count() )
+        {
+          if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
+          {
+            yNewPos = yPosNew; // revert and hope for the best
+          }
+        }
+
+        bool success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
+        success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
+
         if ( !success )
         {
           // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
