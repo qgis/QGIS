@@ -214,7 +214,7 @@ Clear any cached previous clicks and helper lines
 determines if CAD tools are enabled or if map tools behaves "nomally"
 %End
 
-    void switchZM( void );
+    void switchZM( );
 %Docstring
 Determines if Z or M will be enabled.
 
