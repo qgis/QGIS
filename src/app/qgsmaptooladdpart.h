@@ -24,6 +24,7 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
     QgsMapToolAddPart( QgsMapCanvas *canvas );
 
     QgsMapToolCapture::Capabilities capabilities() const override;
+    bool supportsTechnique( CaptureTechnique technique ) const override;
 
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;

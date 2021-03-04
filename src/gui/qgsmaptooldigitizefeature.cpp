@@ -55,6 +55,7 @@ bool QgsMapToolDigitizeFeature::supportsTechnique( QgsMapToolCapture::CaptureTec
     case QgsMapToolCapture::StraightSegments:
       return true;
     case QgsMapToolCapture::CircularString:
+    case QgsMapToolCapture::Streaming:
       return mode() != QgsMapToolCapture::CapturePoint;
   }
   return false;
