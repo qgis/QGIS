@@ -317,7 +317,7 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 }
 
 
-void QgsAdvancedDigitizingDockWidget::switchZM( )
+void QgsAdvancedDigitizingDockWidget::switchZM( void )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
   if ( vlayer )
@@ -1376,24 +1376,6 @@ void QgsAdvancedDigitizingDockWidget::enable()
     mEnableAction->setEnabled( true );
     mErrorLabel->hide();
     mCadWidget->show();
-
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-    if ( vlayer )
-    {
-
-      const QgsWkbTypes::Type type = vlayer->wkbType();
-      mRelativeZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
-      mZLabel->setEnabled( QgsWkbTypes::hasZ( type ) );
-      mZLineEdit->setEnabled( QgsWkbTypes::hasZ( type ) );
-      mLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
-      mRepeatingLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
-
-      mRelativeMButton->setEnabled( QgsWkbTypes::hasM( type ) );
-      mMLabel->setEnabled( QgsWkbTypes::hasM( type ) );
-      mMLineEdit->setEnabled( QgsWkbTypes::hasM( type ) );
-      mLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
-      mRepeatingLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
-    }
 
     mCurrentMapToolSupportsCad = true;
 
