@@ -461,7 +461,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \throws QgsProviderConnectionException
      * \see findConnection()
      */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
 
     /**
      * Removes the connection with the given \a name from the settings.
