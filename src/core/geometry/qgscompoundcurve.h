@@ -84,9 +84,15 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     const QgsCurve *curveAt( int i ) const SIP_HOLDGIL;
 
     /**
-     * Adds a curve to the geometry (takes ownership)
+     * Adds a curve to the geometry (takes ownership).
+     *
+     * Since QGIS 3.20, if \a extendPrevious is TRUE, then adding a LineString when the last existing curve
+     * in the compound curve is also a LineString will cause the existing linestring to be
+     * extended with the newly added LineString vertices instead of appending a whole new
+     * LineString curve to the compound curve. This can result in simplified compound curves with lesser number
+     * of component curves while still being topologically identical to the desired result.
      */
-    void addCurve( QgsCurve *c SIP_TRANSFER );
+    void addCurve( QgsCurve *c SIP_TRANSFER, bool extendPrevious = false );
 
     /**
      * Removes a curve from the geometry.

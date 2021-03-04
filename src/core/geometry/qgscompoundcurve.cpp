@@ -474,35 +474,49 @@ const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
   return mCurves.at( i );
 }
 
-void QgsCompoundCurve::addCurve( QgsCurve *c )
+void QgsCompoundCurve::addCurve( QgsCurve *c, const bool extendPrevious )
 {
-  if ( c )
+  if ( !c )
+    return;
+
+  if ( mCurves.empty() )
   {
-    if ( mCurves.empty() )
-    {
-      setZMTypeFromSubGeometry( c, QgsWkbTypes::CompoundCurve );
-    }
-
-    mCurves.append( c );
-
-    if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( c->wkbType() ) )
-    {
-      c->addZValue();
-    }
-    else if ( !QgsWkbTypes::hasZ( mWkbType ) && QgsWkbTypes::hasZ( c->wkbType() ) )
-    {
-      c->dropZValue();
-    }
-    if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( c->wkbType() ) )
-    {
-      c->addMValue();
-    }
-    else if ( !QgsWkbTypes::hasM( mWkbType ) && QgsWkbTypes::hasM( c->wkbType() ) )
-    {
-      c->dropMValue();
-    }
-    clearCache();
+    setZMTypeFromSubGeometry( c, QgsWkbTypes::CompoundCurve );
   }
+
+  if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( c->wkbType() ) )
+  {
+    c->addZValue();
+  }
+  else if ( !QgsWkbTypes::hasZ( mWkbType ) && QgsWkbTypes::hasZ( c->wkbType() ) )
+  {
+    c->dropZValue();
+  }
+  if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( c->wkbType() ) )
+  {
+    c->addMValue();
+  }
+  else if ( !QgsWkbTypes::hasM( mWkbType ) && QgsWkbTypes::hasM( c->wkbType() ) )
+  {
+    c->dropMValue();
+  }
+
+  QgsLineString *previousLineString = !mCurves.empty() ? qgsgeometry_cast< QgsLineString * >( mCurves.constLast() ) : nullptr;
+  const QgsLineString *newLineString = qgsgeometry_cast< const QgsLineString * >( c );
+  const bool canExtendPrevious = extendPrevious && previousLineString && newLineString;
+  if ( canExtendPrevious )
+  {
+    previousLineString->append( newLineString );
+    // we are taking ownership, so delete the input curve
+    delete c;
+    c = nullptr;
+  }
+  else
+  {
+    mCurves.append( c );
+  }
+
+  clearCache();
 }
 
 void QgsCompoundCurve::removeCurve( int i )
