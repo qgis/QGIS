@@ -117,6 +117,31 @@ namespace
       throw QgsHanaException( errorMessage.toStdString().c_str() );
   }
 
+  QPair<QString, QString> determinePrimaryKeyColumn( const QgsFields &fields, const QString &keyColumn )
+  {
+    int index = fields.indexFromName( keyColumn );
+    if ( index >= 0 )
+    {
+      QgsField field = fields.at( index );
+      const QgsFieldConstraints &constraints = field.constraints();
+      if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider &&
+           constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintOriginProvider )
+      {
+        if ( QgsHanaUtils::convertField( field ) )
+          return qMakePair( field.name(),  field.typeName() );
+      }
+    }
+
+    QString primaryKey = keyColumn;
+    index = 0;
+    while ( fields.indexFromName( primaryKey ) >= 0 )
+    {
+      primaryKey = QStringLiteral( "%1_%2" ).arg( keyColumn ).arg( index++ );
+    }
+
+    return qMakePair( primaryKey, QStringLiteral( "BIGINT" ) );
+  }
+
   bool isSrsRoundEarth( QgsHanaConnection &conn, int srsId )
   {
     QString sql = QStringLiteral( "SELECT ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = ?" );
@@ -124,7 +149,7 @@ namespace
     return roundEarth.toString() == QLatin1String( "TRUE" );
   }
 
-  void SetStatementValue(
+  void setStatementValue(
     PreparedStatementRef &stmt,
     unsigned short paramIndex,
     const AttributeField &field,
@@ -239,7 +264,7 @@ namespace
     }
   }
 
-  void SetStatementFidValue(
+  void setStatementFidValue(
     PreparedStatementRef &stmt,
     unsigned short paramIndex,
     const AttributeFields &fields,
@@ -258,7 +283,7 @@ namespace
         QVariantList pkValues = pkContext.lookupKey( featureId );
         if ( pkValues.empty() )
           throw QgsHanaException( QStringLiteral( "Key values for feature %1 not found." ).arg( featureId ) );
-        SetStatementValue( stmt, paramIndex, fields.at( pkAttrs[0] ), pkValues[0] );
+        setStatementValue( stmt, paramIndex, fields.at( pkAttrs[0] ), pkValues[0] );
       }
       break;
       case QgsHanaPrimaryKeyType::PktFidMap:
@@ -272,7 +297,7 @@ namespace
         {
           const QVariant &value = pkValues[i];
           Q_ASSERT( !value.isNull() );
-          SetStatementValue( stmt, static_cast<unsigned short>( paramIndex + i ), fields.at( pkAttrs[i] ), value );
+          setStatementValue( stmt, static_cast<unsigned short>( paramIndex + i ), fields.at( pkAttrs[i] ), value );
         }
       }
       break;
@@ -673,7 +698,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             attrValue = mDefaultValues[fieldIndex];
         }
 
-        SetStatementValue( stmtInsert, paramIndex, field, attrValue );
+        setStatementValue( stmtInsert, paramIndex, field, attrValue );
         ++paramIndex;
       }
 
@@ -1032,7 +1057,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
 
       QByteArray wkb = it->asWkb();
       stmtUpdate->setBinary( 1, makeNullable<vector<char>>( wkb.begin(), wkb.end() ) );
-      SetStatementFidValue( stmtUpdate, 2, mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
+      setStatementFidValue( stmtUpdate, 2, mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
       stmtUpdate->addBatch();
 
       if ( stmtUpdate->getBatchDataSize() >= MAXIMUM_BATCH_DATA_SIZE )
@@ -1125,11 +1150,11 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
         if ( field.name.isEmpty() || field.isAutoIncrement )
           continue;
 
-        SetStatementValue( stmtUpdate, paramIndex, field, *attrIt );
+        setStatementValue( stmtUpdate, paramIndex, field, *attrIt );
         ++paramIndex;
       }
 
-      SetStatementFidValue( stmtUpdate, paramIndex, mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
+      setStatementFidValue( stmtUpdate, paramIndex, mAttributeFields, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
 
       stmtUpdate->executeUpdate();
 
@@ -1499,10 +1524,6 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   }
 
   QString geometryColumn = dsUri.geometryColumn();
-
-  QString primaryKey = dsUri.keyColumn();
-  QString primaryKeyType;
-
   QString schemaTableName = QgsHanaUtils::quotedIdentifier( schemaName ) + '.' +
                             QgsHanaUtils::quotedIdentifier( tableName );
 
@@ -1516,32 +1537,10 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   if ( wkbType != QgsWkbTypes::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" );
 
-  bool createdNewPk = false;
-
-  if ( primaryKey.isEmpty() )
-  {
-    QString pk = primaryKey = fieldsInUpperCase ? QStringLiteral( "ID" ) : QStringLiteral( "id" );
-    int index = 0;
-    while ( fields.indexFromName( primaryKey ) >= 0 )
-    {
-      primaryKey = QStringLiteral( "%1_%2" ).arg( pk ).arg( index++ );
-    }
-
-    createdNewPk = true;
-  }
-  else
-  {
-    int idx = fields.indexFromName( primaryKey );
-    if ( idx >= 0 )
-    {
-      QgsField fld = fields.at( idx );
-      if ( QgsHanaUtils::convertField( fld ) )
-        primaryKeyType = fld.typeName();
-    }
-  }
-
-  if ( primaryKeyType.isEmpty() )
-    primaryKeyType = QStringLiteral( "BIGINT" );
+  QString keyColumn = !dsUri.keyColumn().isEmpty() ? dsUri.keyColumn() : ( fieldsInUpperCase ? QStringLiteral( "ID" ) : QStringLiteral( "id" ) );
+  auto pk = determinePrimaryKeyColumn( fields, keyColumn );
+  QString primaryKey = pk.first;
+  QString primaryKeyType = pk.second;
 
   QString sql;
 
@@ -1635,7 +1634,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
 
   if ( fields.size() > 0 )
   {
-    int offset = createdNewPk ? 1 : 0;
+    int offset = ( fields.indexFromName( primaryKey ) >= 0 ) ? 1 : 0;
 
     QList<QgsField> flist;
     for ( int i = 0, n = fields.size(); i < n; ++i )
