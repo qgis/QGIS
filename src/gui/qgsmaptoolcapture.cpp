@@ -515,7 +515,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
         if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
           layerPoint.addZValue( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().z() : defaultZValue() );
         if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
-          layerPoint.addMValue( defaultMValue() );
+          layerPoint.addMValue( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().m() : defaultMValue() );
       }
 
       // ZM support depends on the target layer
@@ -1023,7 +1023,7 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
   // set m value if necessary
   if ( QgsWkbTypes::hasM( newPoint.wkbType() ) )
   {
-    newPoint.setM( defaultMValue() );
+    newPoint.setM( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().m() : defaultMValue() );
   }
 
   return newPoint;
