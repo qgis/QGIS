@@ -94,7 +94,7 @@ Headless map server -- running on Linux, macOS, Windows, or in a docker containe
 
 - Industry-standard protocols (WMS, WFS, WFS3/OGC API for Features and WCS) allow plug-n-play with any software stack
 - Works with any web server (Apache, nginx, etc) or standalone
-- All QGIS beautiful cartography is supported with best-in-class support for printing
+- All beautiful QGIS cartography is supported with best-in-class support for printing
 - Fully customizable with Python scripting support
 
 *Example: QGIS server WMS response*
