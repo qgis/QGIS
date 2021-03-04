@@ -20,6 +20,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsexpressioncontextutils.h"
+#include <QUuid>
 
 QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )
   : QgsLayoutObject( layout )

@@ -26,6 +26,7 @@
 #include "qgis_gui.h"
 
 #include <QPointer>
+#include <QUuid>
 
 class QgsFeatureRequest;
 class QgsMapLayerAction;
