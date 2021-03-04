@@ -149,7 +149,7 @@ A range of
 - [Developers Guide](https://docs.qgis.org/latest/en/docs/developers_guide/index.html)
 - [Visual Changelog](https://qgis.org/en/site/forusers/visualchangelogs.html)
 
-### Help and Support Channels
+### Help and support channels
 
 There are several channels where you can find help and support for QGIS:
 
