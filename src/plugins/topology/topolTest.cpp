@@ -30,6 +30,7 @@
 #include "qgsgeos.h"
 #include "qgsgeometrycollection.h"
 #include <qlogging.h>
+#include <QDebug>
 #include <cmath>
 #include <set>
 #include <map>
