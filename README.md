@@ -19,14 +19,15 @@ information system (GIS) that runs on Unix platforms, Windows, and MacOS.
     - *Vector formats include:* GeoPackage, ESRI Shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](http://www.gdal.org/ogr_formats.html). 
     - *Mesh formats include*: NetCDF, GRIB, 2DM, and [other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats).
     - *Point-cloud format*: LAS/LAZ and EPT datasets.
-- Access and display local files, spatial databases (PostGIS, SpatiaLite, MSSQL, SAP HANA), web services (WMS, WCS, WFS, ArcGIS REST services), tile services, etc.
-<!-- removed DB2 due to https://github.com/qgis/QGIS/pull/41178 -->
+- Access and display local files, spatial databases (PostGIS, SpatiaLite, MSSQL, SAP HANA), web services (WMS, WCS, WFS, ArcGIS REST services), tile services, etc. <!-- removed DB2 due to https://github.com/qgis/QGIS/pull/41178 -->
 - Visual and numerical digitizing and editing
 - On-the-fly reprojection between coordinate reference systems (CRS)
 - Temporal support
 
+*Example: Temporal animation*
 ![Example: Temporal animation](images/README-md/icebergs.gif "Temporal animation")
 
+*Example: 3D map view*
 ![Example: 3D map view](https://docs.qgis.org/latest/en/_images/3dmapview.png "3D map view")
 
 ### 2. Beautiful cartography
@@ -40,11 +41,10 @@ information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 - On-the-fly rendering enhancements using geometry generators (e.g. create and style new geometries from existing features)
 - Preview modes for inclusive map making (e.g. monochrome, color blindness)
 
-[Example: Map of Bogota, Columbia in the style of Starry Starry Night, by Andrés Felipe Lancheros Sánchez](https://flic.kr/p/2jFfGJP)
+*[Example: Map of Bogota, Columbia in the style of Starry Starry Night, by Andrés Felipe Lancheros Sánchez](https://flic.kr/p/2jFfGJP)*
 ![Map of Bogota, Columbia in the style of Starry Starry Night](https://live.staticflickr.com/65535/50327326323_3da28f0d86_b.jpg "Map of Bogota, Columbia in the style of Starry Starry Night")
 
 For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](https://www.flickr.com/groups/2244553@N22/pool/with/50355460063/).
-
 ![QGIS Map Showcase](images/README-md/qgis_map_showcase.png "QGIS Map Showcase")
 
 ### 3. Advanced and robust geospatial analysis
@@ -54,10 +54,10 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 - Immediate visualization of geospatial query and geoprocessing results
 - Graphical modeler and batch processing
 
-Example: Travel isochrones
+*Example: Travel isochrones*
 ![Example: Travel isochrones](images/README-md/network_analysis_2.png "Travel isochrones")
 
-Example: Graphical model
+*Example: Graphical model*
 ![Example: graphical model](https://docs.qgis.org/latest/en/_images/models_model.png "Graphical model")
 
 ### 4. Powerful customization and extensibility
@@ -69,10 +69,10 @@ Example: Graphical model
 - [QGIS style hub](https://plugins.qgis.org/styles/) for easy sharing of styles
 - Python and C++ API for standalone (headless) applications as well as in-application comprehensive scripting (PyQGIS)
 
-Example: Style manager
+*Example: Style manager*
 ![Example: Style manager](https://docs.qgis.org/3.16/en/_images/stylemanager.png "Style Manager")
 
-Example: Plugins
+*Example: Plugins*
 ![Example: Plugins](images/README-md/plugins_1.png "Plugins")
 
 <!-- Kill this one for now, since it's Python2 not 3
@@ -89,11 +89,10 @@ Headless map server -- running on Linux, macOS, Windows, or in a docker containe
 - All QGIS beautiful cartography is supported with best-in-class support for printing
 - Fully customizable with Python scripting support
 
-Example: QGIS server WMS response
-
+*Example: QGIS server WMS response*
 ![Example: QGIS Server response to a WMS request](https://docs.qgis.org/3.16/en/_images/server_selection_parameter.png "QGIS Server response to a WMS request")
 
-Example: QGIS server WFS response
+*Example: QGIS server WFS response*
 ![Example: QGIS Server response to a WFS Feature request](https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png "QGIS Server response to a WFS Feature request")
 
 ## Under the hood
