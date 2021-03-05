@@ -28,6 +28,9 @@
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <QThreadStorage>
+#include <QStack>
+
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );

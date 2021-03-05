@@ -18,6 +18,7 @@
 #include "qgsnumericformat.h"
 #include "qgis.h"
 #include "qgsproperty.h"
+#include <QPointer>
 
 QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent )
   : QgsPanelWidget( parent )

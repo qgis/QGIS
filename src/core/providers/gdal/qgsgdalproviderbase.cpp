@@ -28,6 +28,8 @@
 #include "qgssettings.h"
 
 #include <mutex>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {

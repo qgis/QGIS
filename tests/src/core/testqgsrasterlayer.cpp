@@ -23,6 +23,7 @@
 #include <QPainter>
 #include <QTime>
 #include <QDesktopServices>
+#include <QSignalSpy>
 
 #include "cpl_conv.h"
 #include "gdal.h"

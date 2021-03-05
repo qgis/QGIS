@@ -10,7 +10,6 @@
 
 
 
-
 class QgsFetchedContent : QObject
 {
 %Docstring

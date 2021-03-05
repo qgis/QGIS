@@ -24,6 +24,7 @@
 #include "qgspallabeling.h"
 #include <QFontDatabase>
 #include <QDesktopWidget>
+#include <QMimeData>
 
 QgsTextFormat::QgsTextFormat()
 {
@@ -592,6 +593,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
 QMimeData *QgsTextFormat::toMimeData() const
 {
   //set both the mime color data, and the text (format settings).
+
   QMimeData *mimeData = new QMimeData;
   mimeData->setColorData( QVariant( color() ) );
 

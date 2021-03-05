@@ -24,6 +24,8 @@
 #include "qgsreadwritelocker.h"
 
 #include <QMutexLocker>
+#include <QThread>
+
 
 
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )

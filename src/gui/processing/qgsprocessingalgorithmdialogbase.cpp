@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFileDialog>
+#include <QMimeData>
 
 
 ///@cond NOT_STABLE

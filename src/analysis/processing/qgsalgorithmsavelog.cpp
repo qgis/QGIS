@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsavelog.h"
+#include <QTextStream>
 
 ///@cond PRIVATE
 

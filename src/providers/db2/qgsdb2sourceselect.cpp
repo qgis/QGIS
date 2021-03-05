@@ -38,6 +38,8 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlField>
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const

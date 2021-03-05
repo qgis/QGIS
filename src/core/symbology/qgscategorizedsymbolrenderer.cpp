@@ -40,6 +40,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSettings> // for legend
+#include <QRegularExpression>
 
 QgsRendererCategory::QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render )
   : mValue( value )

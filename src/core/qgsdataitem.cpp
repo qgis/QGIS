@@ -28,7 +28,9 @@
 #include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
+#include <QTimer>
 #include <mutex>
+#include <QRegularExpression>
 
 #include "qgis.h"
 #include "qgsdataitem.h"

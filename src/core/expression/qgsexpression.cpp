@@ -25,6 +25,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpression_p.h"
 
+#include <QRegularExpression>
+
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
 

@@ -34,6 +34,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QFileDialog>
+#include <QUrl>
 
 ///@cond PRIVATE
 

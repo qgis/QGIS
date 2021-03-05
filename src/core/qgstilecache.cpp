@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include <QAbstractNetworkCache>
 #include <QImage>
+#include <QUrl>
 
 QCache<QUrl, QImage> QgsTileCache::sTileCache( 256 );
 QMutex QgsTileCache::sTileCacheMutex;

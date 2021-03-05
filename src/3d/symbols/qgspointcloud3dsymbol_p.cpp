@@ -33,6 +33,7 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QEffect>
 #include <QPointSize>
+#include <QUrl>
 
 QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, unsigned int byteStride )
   : Qt3DRender::QGeometry( parent )

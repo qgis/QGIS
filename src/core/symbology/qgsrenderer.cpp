@@ -40,6 +40,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QPolygonF>
+#include <QThread>
 
 QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint &point )
 {

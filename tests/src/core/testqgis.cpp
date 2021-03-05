@@ -18,6 +18,7 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <memory>
+#include <QSignalSpy>
 
 //qgis includes...
 #include "qgis.h"

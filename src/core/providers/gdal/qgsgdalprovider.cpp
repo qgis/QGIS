@@ -56,6 +56,7 @@
 #include <QTime>
 #include <QTextDocument>
 #include <QDebug>
+#include <QRegularExpression>
 
 #include <gdalwarper.h>
 #include <gdal.h>

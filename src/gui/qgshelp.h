@@ -16,9 +16,10 @@
 #ifndef QGSHELP_H
 #define QGSHELP_H
 
-#include <QtCore>
-
 #include "qgis_gui.h"
+
+#include <QString>
+#include <QUrl>
 
 /**
  * \ingroup gui

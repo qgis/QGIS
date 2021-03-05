@@ -19,6 +19,7 @@
 #include <QString>
 #include <QStringList>
 #include <QApplication>
+#include <QTemporaryFile>
 
 #include <qgsdatasourceuri.h>
 #include <qgsrasterlayer.h>

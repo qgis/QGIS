@@ -34,6 +34,8 @@
 #include "qgsreferencedgeometry.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsvectortilelayer.h"
+#include <QRegularExpression>
+#include <QUuid>
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {

@@ -33,6 +33,7 @@
 #include <QDesktopWidget>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QStandardPaths>
 
 #include <cstdio>
 #include <cstdlib>

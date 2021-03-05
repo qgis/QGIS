@@ -15,6 +15,7 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QSignalSpy>
 
 #include "qgsapplication.h"
 #include "qgsmarkersymbollayer.h"

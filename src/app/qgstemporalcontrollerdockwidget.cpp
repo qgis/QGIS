@@ -30,7 +30,7 @@
 
 #include <QProgressDialog>
 #include <QMessageBox>
-
+#include <QUrl>
 
 QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString &name, QWidget *parent )
   : QgsDockWidget( parent )

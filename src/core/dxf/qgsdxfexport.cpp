@@ -59,6 +59,7 @@
 #include "pal/labelposition.h"
 
 #include <QIODevice>
+#include <QTextCodec>
 
 QgsDxfExport::QgsDxfExport() = default;
 

@@ -15,6 +15,7 @@
 
 
 #include "qgstest.h"
+#include <QSignalSpy>
 
 #include <editorwidgets/qgskeyvaluewidgetfactory.h>
 #include <qgskeyvaluewidget.h>

@@ -20,6 +20,7 @@
 #include "qgsprocessingrecentalgorithmlog.h"
 #include <functional>
 #include <QPalette>
+#include <QMimeData>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

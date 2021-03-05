@@ -23,6 +23,7 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QDepthTest>
+#include <QUrl>
 
 #include "qgsshadowrenderingframegraph.h"
 

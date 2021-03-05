@@ -21,6 +21,7 @@
 #include "qgsexternalresourcewidget.h"
 
 #include <QLineEdit>
+#include <QSignalSpy>
 
 /**
  * @ingroup UnitTests

@@ -36,6 +36,7 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <QSurface>
+#include <QUrl>
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>

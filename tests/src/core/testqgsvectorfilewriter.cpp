@@ -17,6 +17,7 @@
 #include <QString>
 #include <QStringList>
 #include <QApplication>
+#include <QTemporaryFile>
 
 #include "qgsvectorlayer.h" //defines QgsFieldMap
 #include "qgsvectorfilewriter.h" //logic for writing shpfiles

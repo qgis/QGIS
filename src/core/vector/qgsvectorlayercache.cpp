@@ -22,6 +22,8 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayer.h"
 
+#include <QElapsedTimer>
+
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent )
   : QObject( parent )
   , mLayer( layer )

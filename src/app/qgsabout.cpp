@@ -26,6 +26,7 @@
 #include <QImageReader>
 #include <QSqlDatabase>
 #include <QTcpSocket>
+#include <QUrl>
 
 #ifdef Q_OS_MACX
 QgsAbout::QgsAbout( QWidget *parent )

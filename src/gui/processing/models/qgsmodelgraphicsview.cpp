@@ -31,6 +31,8 @@
 #include <QScrollBar>
 #include <QApplication>
 #include <QClipboard>
+#include <QMimeData>
+#include <QTimer>
 
 ///@cond NOT_STABLE
 

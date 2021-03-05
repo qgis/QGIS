@@ -32,11 +32,11 @@
 
 #include <QDomDocument>
 #include <QGraphicsView>
-#include <QtCore>
 
 #include "qgsmapsettings.h" // TEMPORARY
 #include "qgsprevieweffect.h" //for QgsPreviewEffect::PreviewMode
 
+#include <QTimer>
 #include <QGestureEvent>
 #include "qgis_gui.h"
 

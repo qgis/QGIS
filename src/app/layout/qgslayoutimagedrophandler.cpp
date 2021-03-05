@@ -20,6 +20,8 @@
 #include "qgslayoutitempicture.h"
 
 #include <QImageReader>
+#include <QFileInfo>
+#include <QMimeData>
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )
