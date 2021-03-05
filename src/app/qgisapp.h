@@ -71,12 +71,6 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
-class QgsMapToolCapture;
-class QgsMapToolAddFeature;
-class QgsMapToolDigitizeFeature;
-class QgsMapToolAdvancedDigitizing;
-class QgsMapToolIdentifyAction;
-class QgsMapToolSelect;
 class QgsOptions;
 class QgsPluginLayer;
 class QgsPluginLayer;
@@ -115,6 +109,8 @@ class QgsNetworkAccessManager;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
 class QgsAbstractMapToolHandler;
+class QgsAppMapTools;
+class QgsMapToolIdentifyAction;
 
 class QDomDocument;
 class QNetworkReply;
@@ -842,7 +838,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomToBookmarkIndex( const QModelIndex & );
 
     //! Returns pointer to the identify map tool - used by identify tool in 3D view
-    QgsMapToolIdentifyAction *identifyMapTool() const { return mMapTools.mIdentify; }
+    QgsMapToolIdentifyAction *identifyMapTool() const;
 
     /**
      * Take screenshots for user documentation
@@ -2389,82 +2385,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *mWindowAction = nullptr;
 #endif
 
-    class Tools
-    {
-      public:
-
-        Tools() = default;
-
-        /**
-         * Returns a list of all QgsMapToolCapture derived tools.
-         */
-        QList< QgsMapToolCapture * > captureTools() const;
-
-        QgsMapTool *mZoomIn = nullptr;
-        QgsMapTool *mZoomOut = nullptr;
-        QgsMapTool *mPan = nullptr;
-        QgsMapToolIdentifyAction *mIdentify = nullptr;
-        QgsMapTool *mFeatureAction = nullptr;
-        QgsMapTool *mMeasureDist = nullptr;
-        QgsMapTool *mMeasureArea = nullptr;
-        QgsMapTool *mMeasureAngle = nullptr;
-        QgsMapToolAddFeature *mAddFeature = nullptr;
-        QgsMapTool *mCircularStringCurvePoint = nullptr;
-        QgsMapTool *mCircularStringRadius = nullptr;
-        QgsMapTool *mCircle2Points = nullptr;
-        QgsMapTool *mCircle3Points = nullptr;
-        QgsMapTool *mCircle3Tangents = nullptr;
-        QgsMapTool *mCircle2TangentsPoint = nullptr;
-        QgsMapTool *mCircleCenterPoint = nullptr;
-        QgsMapTool *mEllipseCenter2Points = nullptr;
-        QgsMapTool *mEllipseCenterPoint = nullptr;
-        QgsMapTool *mEllipseExtent = nullptr;
-        QgsMapTool *mEllipseFoci = nullptr;
-        QgsMapTool *mRectangleCenterPoint = nullptr;
-        QgsMapTool *mRectangleExtent = nullptr;
-        QgsMapTool *mRectangle3PointsDistance = nullptr;
-        QgsMapTool *mRectangle3PointsProjected = nullptr;
-        QgsMapTool *mRegularPolygon2Points = nullptr;
-        QgsMapTool *mRegularPolygonCenterPoint = nullptr;
-        QgsMapTool *mRegularPolygonCenterCorner = nullptr;
-        QgsMapTool *mMoveFeature = nullptr;
-        QgsMapTool *mMoveFeatureCopy = nullptr;
-        QgsMapTool *mOffsetCurve = nullptr;
-        QgsMapTool *mReshapeFeatures = nullptr;
-        QgsMapTool *mSplitFeatures = nullptr;
-        QgsMapTool *mSplitParts = nullptr;
-        QgsMapToolSelect *mSelectFeatures = nullptr;
-        QgsMapToolSelect *mSelectPolygon = nullptr;
-        QgsMapToolSelect *mSelectFreehand = nullptr;
-        QgsMapToolSelect *mSelectRadius = nullptr;
-        QgsMapTool *mVertexAdd = nullptr;
-        QgsMapTool *mVertexMove = nullptr;
-        QgsMapTool *mVertexDelete = nullptr;
-        QgsMapTool *mAddRing = nullptr;
-        QgsMapTool *mFillRing = nullptr;
-        QgsMapTool *mAddPart = nullptr;
-        QgsMapTool *mSimplifyFeature = nullptr;
-        QgsMapTool *mDeleteRing = nullptr;
-        QgsMapTool *mDeletePart = nullptr;
-        QgsMapTool *mVertexTool = nullptr;
-        QgsMapTool *mVertexToolActiveLayer = nullptr;
-        QgsMapTool *mRotatePointSymbolsTool = nullptr;
-        QgsMapTool *mOffsetPointSymbolTool = nullptr;
-        QgsMapTool *mAnnotation = nullptr;
-        QgsMapTool *mFormAnnotation = nullptr;
-        QgsMapTool *mHtmlAnnotation = nullptr;
-        QgsMapTool *mSvgAnnotation = nullptr;
-        QgsMapTool *mTextAnnotation = nullptr;
-        QgsMapTool *mPinLabels = nullptr;
-        QgsMapTool *mShowHideLabels = nullptr;
-        QgsMapTool *mMoveLabel = nullptr;
-        QgsMapTool *mRotateFeature = nullptr;
-        QgsMapTool *mScaleFeature = nullptr;
-        QgsMapTool *mRotateLabel = nullptr;
-        QgsMapTool *mChangeLabelProperties = nullptr;
-        QgsMapTool *mReverseLine = nullptr ;
-        QgsMapTool *mTrimExtendFeature = nullptr ;
-    } mMapTools;
+    std::unique_ptr< QgsAppMapTools > mMapTools;
 
     QgsMapTool *mNonEditMapTool = nullptr;
 
