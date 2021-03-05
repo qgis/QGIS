@@ -2235,7 +2235,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setupConnections();
     void initLayerTreeView();
     void createOverview();
-    void createCanvasTools();
+    void setupCanvasTools();
     void createMapTips();
     void createDecorations();
     void init3D();

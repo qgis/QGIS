@@ -1052,9 +1052,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::createMenus, this, QStringLiteral( "Create menus" ) );
   functionProfile( &QgisApp::createActions, this, QStringLiteral( "Create actions" ) );
   functionProfile( &QgisApp::createActionGroups, this, QStringLiteral( "Create action group" ) );
+
+  // create tools
+  mMapTools = std::make_unique< QgsAppMapTools >( mMapCanvas, mAdvancedDigitizingDockWidget );
+
   functionProfile( &QgisApp::createToolBars, this, QStringLiteral( "Toolbars" ) );
   functionProfile( &QgisApp::createStatusBar, this, QStringLiteral( "Status bar" ) );
-  functionProfile( &QgisApp::createCanvasTools, this, QStringLiteral( "Create canvas tools" ) );
+  functionProfile( &QgisApp::setupCanvasTools, this, QStringLiteral( "Create canvas tools" ) );
   const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
@@ -1739,6 +1743,8 @@ QgisApp::~QgisApp()
   delete mQgisInterface;
   delete mStyleSheetBuilder;
 
+  if ( QgsMapTool *tool = mMapCanvas->mapTool() )
+    mMapCanvas->unsetMapTool( tool );
   mMapTools.reset();
 
   delete mpMaptip;
@@ -3216,6 +3222,13 @@ void QgisApp::createToolBars()
            static_cast< void ( QgsDoubleSpinBox::* )( double ) >( &QgsDoubleSpinBox::valueChanged ),
   this, [ = ]( double v ) { mTracer->setOffset( v ); } );
 
+  QToolButton *bt = new QToolButton();
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionStreamDigitize );
+  bt->addAction( mMapTools->streamDigitizingSettingsAction() );
+  bt->setDefaultAction( mActionStreamDigitize );
+  mAdvancedDigitizeToolBar->insertWidget( mAdvancedDigitizeToolBar->actions().at( 0 ), bt );
+
   QList<QAction *> toolbarMenuActions;
   // Set action names so that they can be used in customization
   const auto constToolbarMenuToolBars = toolbarMenuToolBars;
@@ -3231,7 +3244,7 @@ void QgisApp::createToolBars()
   mToolbarMenu->addActions( toolbarMenuActions );
 
   // advanced selection tool button
-  QToolButton *bt = new QToolButton( mSelectionToolBar );
+  bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionSelectByForm );
   bt->addAction( mActionSelectByExpression );
@@ -4207,11 +4220,8 @@ void QgisApp::setupConnections()
   connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgisApp::layoutsMenuAboutToShow );
 }
 
-void QgisApp::createCanvasTools()
+void QgisApp::setupCanvasTools()
 {
-  // create tools
-  mMapTools = std::make_unique< QgsAppMapTools >( mMapCanvas, mAdvancedDigitizingDockWidget );
-
   mMapTools->mapTool( QgsAppMapTools::ZoomIn )->setAction( mActionZoomIn );
   mMapTools->mapTool( QgsAppMapTools::ZoomOut )->setAction( mActionZoomOut );
   connect( mMapTools->mapTool< QgsMapToolPan >( QgsAppMapTools::Pan ), &QgsMapToolPan::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
@@ -10095,6 +10105,12 @@ void QgisApp::snappingOptions()
 
 void QgisApp::enableDigitizeWithCurve( bool enable )
 {
+  if ( enable && mActionStreamDigitize->isChecked() )
+  {
+    mActionStreamDigitize->setChecked( false );
+    enableStreamDigitizing( false );
+  }
+
   const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
@@ -10107,6 +10123,12 @@ void QgisApp::enableDigitizeWithCurve( bool enable )
 
 void QgisApp::enableStreamDigitizing( bool enable )
 {
+  if ( enable && mActionDigitizeWithCurve->isChecked() )
+  {
+    mActionDigitizeWithCurve->setChecked( false );
+    enableDigitizeWithCurve( false );
+  }
+
   const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
