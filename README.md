@@ -139,7 +139,7 @@ For installation of QGIS Server, see its [getting started documentation](https:/
 ### Documentation
 
 A range of 
-[documentation](https://qgis.org/en/docs/index.html) is available. This includes
+[documentation](https://qgis.org/en/docs/index.html) is available. This includes:
 
 - [Training Manual](https://docs.qgis.org/latest/en/docs/training_manual/index.html)
 - [QGIS User Guide](https://docs.qgis.org/latest/en/docs/user_manual/index.html)
