@@ -25,6 +25,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
+#include "qgsmapinfosymbolconverter.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -1255,6 +1256,18 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
     double lineWidth = DEFAULT_SIMPLELINE_WIDTH;
     QgsUnitTypes::RenderUnit lineWidthUnit = QgsUnitTypes::RenderMillimeters;
     convertSize( lineStyle.value( QStringLiteral( "w" ) ).toString(), lineWidth, lineWidthUnit );
+
+    // if the pen is a mapinfo pen, use dedicated converter for more accurate results
+    const thread_local QRegularExpression sMapInfoId = QRegularExpression( QStringLiteral( "mapinfo-pen-(\\d+)" ) );
+    const QRegularExpressionMatch match = sMapInfoId.match( string );
+    if ( match.hasMatch() )
+    {
+      const int penId = match.captured( 1 ).toInt();
+      QgsMapInfoSymbolConversionContext context;
+      std::unique_ptr<QgsSymbol> res( QgsMapInfoSymbolConverter::convertLineSymbol( penId, context, color, lineWidth, lineWidthUnit ) );
+      if ( res )
+        return res;
+    }
 
     std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( color, lineWidth );
     simpleLine->setWidthUnit( lineWidthUnit );

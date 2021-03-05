@@ -571,6 +571,7 @@
 %Include auto_generated/symbology/qgsinvertedpolygonrenderer.sip
 %Include auto_generated/symbology/qgslegendsymbolitem.sip
 %Include auto_generated/symbology/qgslinesymbollayer.sip
+%Include auto_generated/symbology/qgsmapinfosymbolconverter.sip
 %Include auto_generated/symbology/qgsmarkersymbollayer.sip
 %Include auto_generated/symbology/qgsmergedfeaturerenderer.sip
 %Include auto_generated/symbology/qgsnullsymbolrenderer.sip
