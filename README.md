@@ -170,7 +170,14 @@ You can help us **by submitting bug reports or fixing bugs** in the [QGIS bug tr
 
 ### New features and enhancements
 
-If you wish to contribute patches you can [fork the project](https://help.github.com/forking/), make your changes, commit to your repository, and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). The development team can then review your contribution and commit it upstream as appropriate.
+If you wish to contribute patches you can:
+
+1. [fork the project](https://help.github.com/forking/)
+1. make your changes
+1. commit to your repository
+1. and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
+
+ The development team can then review your contribution and commit it upstream as appropriate.
 
 If you commit a new feature, add [FEATURE] to your commit message AND give a clear description of the new feature. A webhook will automatically create an issue on the QGIS-Documentation repo to tell people to write documentation about it.
 
