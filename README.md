@@ -72,7 +72,7 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 - Broad and varied [plugin ecosystem](https://plugins.qgis.org/) that includes data connectors, digitizing aids, advanced analysis and charting tools, in-the-field data capture, etc.
 - Style manager for creating, storing, and managing styles
 - [QGIS style hub](https://plugins.qgis.org/styles/) for easy sharing of styles
-- Python and C++ API for standalone (headless) applications as well as in-application comprehensive scripting (PyQGIS)
+- Python and C++ [API](https://qgis.org/api/) for standalone (headless) applications as well as in-application comprehensive scripting (PyQGIS)
 
 *Example: Style manager*
 
