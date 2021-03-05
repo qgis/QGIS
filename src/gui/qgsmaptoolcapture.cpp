@@ -710,7 +710,7 @@ QList<QgsPointLocator::Match> QgsMapToolCapture::snappingMatches() const
   return mSnappingMatches;
 }
 
-void QgsMapToolCapture::undo()
+void QgsMapToolCapture::undo( bool isAutoRepeat )
 {
   mTracingStartPoint = QgsPointXY();
 
@@ -718,6 +718,10 @@ void QgsMapToolCapture::undo()
   {
     if ( size() <= 1 && mTempRubberBand->pointsCount() != 0 )
       return;
+
+    if ( isAutoRepeat && mIgnoreSubsequentAutoRepeatUndo )
+      return;
+    mIgnoreSubsequentAutoRepeatUndo = false;
 
     QgsPoint lastPoint = mTempRubberBand->lastPoint();
 
@@ -742,12 +746,22 @@ void QgsMapToolCapture::undo()
     }
     else
     {
+      const int curvesBefore = mCaptureCurve.nCurves();
+      const bool lastCurveIsLineString = qgsgeometry_cast< QgsLineString * >( mCaptureCurve.curveAt( curvesBefore - 1 ) );
+
       int pointsCountBefore = mCaptureCurve.numPoints();
       mCaptureCurve.deleteVertex( vertexToRemove );
       int pointsCountAfter = mCaptureCurve.numPoints();
       for ( ; pointsCountAfter < pointsCountBefore; pointsCountAfter++ )
         if ( !mSnappingMatches.empty() )
           mSnappingMatches.removeLast();
+
+      // if we have removed the last point in a linestring curve, then we "stick" here and ignore subsequent
+      // autorepeat undo actions until the user releases the undo key and holds it down again. This allows
+      // users to selectively remove portions of the geometry captured with the streaming mode by holding down
+      // the undo key, without risking accidental undo of non-streamed portions.
+      if ( mCaptureCurve.nCurves() < curvesBefore && lastCurveIsLineString )
+        mIgnoreSubsequentAutoRepeatUndo = true;
     }
 
     updateExtraSnapLayer();
@@ -773,7 +787,7 @@ void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
-    undo();
+    undo( e->isAutoRepeat() );
 
     // Override default shortcut management in MapCanvas
     e->ignore();
