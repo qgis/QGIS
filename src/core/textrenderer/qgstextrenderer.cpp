@@ -23,6 +23,7 @@
 #include "qgspainterswapper.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsrendercontext.h"
 
 #include <QTextBoundaryFinder>
 
@@ -162,6 +163,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
   component.rotation = rotation;
   component.size = rect.size();
   component.hAlign = alignment;
+  component.vAlign = vAlignment;
 
   switch ( part )
   {
@@ -744,28 +746,53 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     QFontMetricsF fm( format.scaledFont( context, scaleFactor ) );
     double width = textWidth( context, format, document );
     double height = textHeight( context, format, document, mode );
-
+    qreal ycenter;
+    qreal xcenter;
     switch ( mode )
     {
       case Rect:
+        if ( component.hAlign == QgsTextRenderer::AlignJustify || component.hAlign == QgsTextRenderer::AlignFullJustify )
+        {
+          if ( format.orientation() != QgsTextFormat::HorizontalOrientation )
+            height *= 2;
+          else if ( format.orientation() != QgsTextFormat::VerticalOrientation )
+            width *= 2;
+        }
+        switch ( component.vAlign )
+        {
+          case AlignTop:
+            ycenter = component.origin.y() + height / 2.0;
+            break;
+          case AlignVCenter:
+            ycenter = component.origin.y() + component.size.height() / 2.0;
+            break;
+          case AlignBottom:
+            ycenter = component.origin.y() + component.size.height() - height / 2.0;
+            break;
+
+        }
         switch ( component.hAlign )
         {
           case AlignLeft:
+            xcenter = component.origin.x() + width / 2.0;
+            break;
           case AlignJustify:
-            component.center = QPointF( component.origin.x() + width / 2.0,
-                                        component.origin.y() + height / 2.0 );
+          case AlignFullJustify:
+            if ( format.orientation() != QgsTextFormat::VerticalOrientation )
+              xcenter =  component.origin.x() + component.size.width() / 2.0;
+            else
+              xcenter = component.origin.x() + width / 2.0;
             break;
 
           case AlignCenter:
-            component.center = QPointF( component.origin.x() + component.size.width() / 2.0,
-                                        component.origin.y() + height / 2.0 );
+            xcenter =  component.origin.x() + component.size.width() / 2.0;
             break;
 
           case AlignRight:
-            component.center = QPointF( component.origin.x() + component.size.width() - width / 2.0,
-                                        component.origin.y() + height / 2.0 );
+            xcenter = component.origin.x() + component.size.width() - width / 2.0;
             break;
         }
+        component.center = QPointF( xcenter, ycenter );
         break;
 
       case Point:
@@ -775,6 +802,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         {
           case AlignLeft:
           case AlignJustify:
+          case AlignFullJustify:
             component.center = QPointF( component.origin.x() + width / 2.0,
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
@@ -1406,8 +1434,6 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
   {
     const QgsTextBlock block = document.at( i );
 
-    const bool isFinalLine = i == document.size() - 1;
-
     QgsScopedQPainterState painterState( context.painter() );
     context.setPainterFlagsUsingContext();
     context.painter()->translate( component.origin );
@@ -1442,7 +1468,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           break;
 
         case AlignJustify:
-          if ( !isFinalLine && labelWidest > labelWidth )
+        case AlignFullJustify:
+          if ( labelWidest > labelWidth )
           {
             calculateExtraSpacingForLineJustification( labelWidest - labelWidth, block, extraWordSpace, extraLetterSpace );
           }
@@ -1473,6 +1500,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
             case AlignLeft:
             case AlignJustify:
+            case AlignFullJustify:
               break;
           }
         }
@@ -1690,6 +1718,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
 
         case AlignLeft:
         case AlignJustify:
+        case AlignFullJustify:
           break;
       }
 
@@ -1860,4 +1889,133 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
       maskPainter->restore();
     i++;
   }
+}
+
+bool QgsTextRenderer::requiresWrapping( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format )
+{
+  const QStringList multiLineSplit = text.split( '\n' );
+  double currentTextLength;
+  if ( format.orientation() == QgsTextFormat::HorizontalOrientation )
+    currentTextLength = QgsTextRenderer::textHeight( context, format, multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  else
+    currentTextLength = QgsTextRenderer::textWidth( context, format, multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  return currentTextLength > space;
+}
+
+QStringList QgsTextRenderer::wrapText( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format, const bool autoSize, HAlignment alignment )
+{
+  const QStringList lines = text.split( '\n' );
+  const int startIdx = ( format.orientation() == QgsTextFormat::HorizontalOrientation ) ? 0 : lines.length() - 1;
+  const int stepIdx = ( format.orientation() == QgsTextFormat::HorizontalOrientation ) ? 1 : -1;
+  int idx;
+  QStringList outLines;
+  for ( int i = 0; i < lines.length() ; ++i )
+  {
+    idx = startIdx + ( i * stepIdx );
+    const QString line = lines.at( idx );
+    if ( autoSize || QgsTextRenderer::requiresWrapping( line, space, context, format ) )
+    {
+      //first step is to identify words which must be on their own line (too long to fit)
+      QStringList words = line.split( ' ' );
+      QStringList linesToProcess;
+      QString wordsInCurrentLine;
+      const auto constWords = words;
+      for ( const QString &word : constWords )
+      {
+        if ( autoSize || QgsTextRenderer::requiresWrapping( word, space, context, format ) )
+        {
+          //too long to fit
+          if ( !wordsInCurrentLine.isEmpty() )
+            linesToProcess << wordsInCurrentLine;
+          wordsInCurrentLine.clear();
+          linesToProcess << word;
+        }
+        else
+        {
+          if ( !wordsInCurrentLine.isEmpty() )
+            wordsInCurrentLine.append( ' ' );
+          wordsInCurrentLine.append( word );
+        }
+      }
+      if ( !wordsInCurrentLine.isEmpty() )
+        linesToProcess << wordsInCurrentLine;
+
+      const auto constLinesToProcess = linesToProcess;
+      for ( const QString &line : constLinesToProcess )
+      {
+        QString remainingText = line;
+        int lastPos = remainingText.lastIndexOf( ' ' );
+        while ( lastPos > -1 )
+        {
+          //check if remaining text is short enough to go in one line
+          if ( !autoSize && !requiresWrapping( remainingText, space, context, format ) )
+          {
+            break;
+          }
+
+          if ( !autoSize && !requiresWrapping( remainingText.left( lastPos ), space, context, format ) )
+          {
+            outLines << remainingText.left( lastPos );
+            remainingText = remainingText.mid( lastPos + 1 );
+            lastPos = 0;
+          }
+          lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
+        }
+
+        if ( alignment == AlignFullJustify )
+          remainingText = justify( remainingText, space, context, format );
+        outLines << remainingText;
+      }
+    }
+    else
+    {
+      if ( alignment == AlignFullJustify )
+        outLines << justify( line, space, context, format );
+      else
+        outLines << line;
+    }
+  }
+  return outLines;
+}
+
+QString QgsTextRenderer::justify( const QString &text, const int space, const QgsRenderContext &context, const QgsTextFormat &format )
+{
+  QStringList words = text.simplified().split( ' ' );
+  const double screenScale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  double currentTextSpace;
+  if ( format.orientation() == QgsTextFormat::HorizontalOrientation )
+    currentTextSpace = QgsTextRenderer::textHeight( context, format, { text } );
+  else
+    currentTextSpace = QgsTextRenderer::textWidth( context, format, { text } );
+  currentTextSpace /= screenScale;
+  if ( currentTextSpace >= space || words.length() < 1 )
+    return text;
+  double gap = space - currentTextSpace;
+  const double spaceRatio = gap / ( words.length() - ( ( words.last() == "\n" ) ? 2 : 1 ) ); // don't pad returns
+  const double spaceW =  format.font().wordSpacing();
+  if ( spaceW > gap || spaceW > spaceRatio )
+    return text;
+
+  const int i = ( int ) spaceRatio;
+  QString justified = words.takeFirst();
+  int padSpace = ( int )( gap - ( words.length() * i * spaceW ) ) / spaceW;
+  int spaces = i;
+  while ( gap > spaceW || !words.isEmpty() )
+  {
+    // sprinkle pad spaces somehow
+    if ( padSpace > 0 )
+    {
+      spaces += 1;
+    }
+    justified.append( QString( " " ).repeated( spaces ) );
+
+    gap -= spaceW * spaces;
+    if ( spaces > i )
+    {
+      padSpace -= 1;
+      spaces = i;
+    }
+  }
+
+  return justified;
 }
