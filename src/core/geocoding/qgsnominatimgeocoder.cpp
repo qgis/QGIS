@@ -26,6 +26,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 
+QMutex QgsNominatimGeocoder::sMutex;
 typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
 Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
 qint64 QgsNominatimGeocoder::sLastRequestTimestamp = 0;

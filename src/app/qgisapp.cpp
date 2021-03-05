@@ -3918,7 +3918,7 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsSettingsLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsGotoLocatorFilter() );
 
-  mNominatimGeocoder = qgis::make_unique< QgsNominatimGeocoder>();
+  mNominatimGeocoder = std::make_unique< QgsNominatimGeocoder>();
   mLocatorWidget->locator()->registerFilter( new QgsNominatimLocatorFilter( mNominatimGeocoder.get(), mMapCanvas ) );
 }
 
