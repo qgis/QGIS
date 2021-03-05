@@ -472,6 +472,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
   ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/maptools
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud
