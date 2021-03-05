@@ -46,7 +46,7 @@ while QGIS server internal logging is printed to stderr.
 #include <QObject>
 #include <QQueue>
 #include <QThread>
-
+#include <QPointer>
 
 #ifndef Q_OS_WIN
 #include <csignal>
@@ -66,7 +66,7 @@ std::mutex SERVER_MUTEX;
 
 struct RequestContext
 {
-  QTcpSocket *clientConnection;
+  QPointer<QTcpSocket> clientConnection;
   QString httpHeader;
   std::chrono::steady_clock::time_point startTime;
   QgsBufferServerRequest request;
@@ -154,7 +154,7 @@ class TcpServerWorker: public QObject
         mIsListening = true;
 
         // Incoming connection handler
-        mTcpServer.connect( &mTcpServer, &QTcpServer::newConnection, [ = ]
+        mTcpServer.connect( &mTcpServer, &QTcpServer::newConnection, this, [ = ]
         {
           QTcpSocket *clientConnection = mTcpServer.nextPendingConnection();
 
@@ -176,7 +176,16 @@ class TcpServerWorker: public QObject
           };
 
           // This will delete the connection
-          clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, connectionDeleter, Qt::QueuedConnection );
+          clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, [ = ] {
+            connectionDeleter();
+            qDebug() << "Socket disconnected";
+          }, Qt::QueuedConnection );
+
+          // Debugging output
+          clientConnection->connect( clientConnection, &QAbstractSocket::errorOccurred, clientConnection, [ = ]( QAbstractSocket::SocketError socketError )
+          {
+            qDebug() << "Socket error #" << socketError;
+          }, Qt::QueuedConnection );
 
           // Incoming connection parser
           clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ = ] {
@@ -358,16 +367,17 @@ class TcpServerWorker: public QObject
       const auto &response { request->response };
       const auto &clientConnection { request->clientConnection };
 
-      if ( clientConnection->state() != QAbstractSocket::SocketState::ConnectedState )
+      if ( ! clientConnection ||
+           clientConnection->state() != QAbstractSocket::SocketState::ConnectedState )
       {
-        std::cout << QStringLiteral( "Connection reset by peer" ).toStdString() << std::endl;
+        std::cout << "Connection reset by peer" << std::endl;
         return;
       }
 
       // Output stream
       if ( -1 == clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode(), QStringLiteral( "Unknown response code" ) ) ).toUtf8() ) )
       {
-        std::cout << QStringLiteral( "Cannot write to output socket" ).toStdString() << std::endl;
+        std::cout << "Cannot write to output socket" << std::endl;
         clientConnection->disconnectFromHost();
         return;
       }
@@ -418,6 +428,12 @@ class TcpServerThread: public QThread
     {
     }
 
+    void emitResponseReady( RequestContext *requestContext )
+    {
+      if ( requestContext->clientConnection )
+        emit responseReady( requestContext );
+    }
+
     void run( )
     {
       TcpServerWorker worker( mIpAddress, mPort );
@@ -461,14 +477,14 @@ class QueueMonitorThread: public QThread
         {
           // Lock if server is running
           SERVER_MUTEX.lock();
-          emit responseReady( REQUEST_QUEUE.dequeue() );
+          emit requestReady( REQUEST_QUEUE.dequeue() );
         }
       }
     }
 
   signals:
 
-    void responseReady( RequestContext *requestContext );
+    void requestReady( RequestContext *requestContext );
 
   public slots:
 
@@ -610,11 +626,23 @@ int main( int argc, char *argv[] )
 
   // Monitoring thread
   QueueMonitorThread queueMonitorThread;
-  queueMonitorThread.connect( &queueMonitorThread, &QueueMonitorThread::responseReady, qApp, [ & ]( RequestContext * requestContext )
+  queueMonitorThread.connect( &queueMonitorThread, &QueueMonitorThread::requestReady, qApp, [ & ]( RequestContext * requestContext )
   {
-    server.handleRequest( requestContext->request, requestContext->response );
-    SERVER_MUTEX.unlock();
-    tcpServerThread.responseReady( requestContext );
+    if ( requestContext->clientConnection && requestContext->clientConnection->isValid() )
+    {
+      server.handleRequest( requestContext->request, requestContext->response );
+      SERVER_MUTEX.unlock();
+    }
+    else
+    {
+      delete requestContext;
+      SERVER_MUTEX.unlock();
+      return;
+    }
+    if ( requestContext->clientConnection && requestContext->clientConnection->isValid() )
+      tcpServerThread.emitResponseReady( requestContext );
+    else
+      delete requestContext;
   } );
 
   // Exit handlers
