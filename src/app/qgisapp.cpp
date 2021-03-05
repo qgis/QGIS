@@ -96,6 +96,7 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsvectorlayersavestyledialog.h"
+#include "maptools/qgsappmaptools.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -433,66 +434,20 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include <memory>
 #include <vector>
 
-//
-// Map tools
-//
-#include "qgsmaptooladdpart.h"
-#include "qgsmaptooladdfeature.h"
-#include "qgsmaptooladdring.h"
-#include "qgsmaptoolfillring.h"
-#include "qgsmaptoolannotation.h"
-#include "qgsmaptoolcircularstringcurvepoint.h"
-#include "qgsmaptoolcircularstringradius.h"
-#include "qgsmaptoolcircle2points.h"
-#include "qgsmaptoolcircle3points.h"
-#include "qgsmaptoolcircle3tangents.h"
-#include "qgsmaptoolcircle2tangentspoint.h"
-#include "qgsmaptoolcirclecenterpoint.h"
-#include "qgsmaptoolellipsecenter2points.h"
-#include "qgsmaptoolellipsecenterpoint.h"
-#include "qgsmaptoolellipseextent.h"
-#include "qgsmaptoolellipsefoci.h"
-#include "qgsmaptoolrectanglecenter.h"
-#include "qgsmaptoolrectangleextent.h"
-#include "qgsmaptoolrectangle3points.h"
-#include "qgsmaptoolregularpolygon2points.h"
-#include "qgsmaptoolregularpolygoncenterpoint.h"
-#include "qgsmaptoolregularpolygoncentercorner.h"
-#include "qgsmaptooldeletering.h"
-#include "qgsmaptooldeletepart.h"
-#include "qgsmaptoolfeatureaction.h"
-#include "qgsmaptoolformannotation.h"
-#include "qgsmaptoolhtmlannotation.h"
-#include "qgsmaptoolidentifyaction.h"
-#include "qgsmaptoolmeasureangle.h"
-#include "qgsmaptoolmovefeature.h"
-#include "qgsmaptoolrotatefeature.h"
-#include "qgsmaptoolscalefeature.h"
-#include "qgsmaptooloffsetcurve.h"
-#include "qgsmaptooloffsetpointsymbol.h"
-#include "qgsmaptoolpan.h"
-#include "qgsmaptoolselect.h"
-#include "qgsmaptoolsvgannotation.h"
-#include "qgsmaptoolreshape.h"
-#include "qgsmaptoolrotatepointsymbols.h"
-#include "qgsmaptoolsplitfeatures.h"
-#include "qgsmaptoolsplitparts.h"
-#include "qgsmaptooltextannotation.h"
-#include "qgsmaptoolzoom.h"
-#include "qgsmaptoolsimplify.h"
 #include "qgsmeasuretool.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsmaptoolpan.h"
+#include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptoolpinlabels.h"
-#include "qgsmaptoolshowhidelabels.h"
-#include "qgsmaptoolmovelabel.h"
-#include "qgsmaptoolrotatelabel.h"
-#include "qgsmaptoolchangelabelproperties.h"
-#include "qgsmaptoolreverseline.h"
+#include "qgsmaptoolmeasureangle.h"
+#include "qgsmaptoolrotatepointsymbols.h"
+#include "qgsmaptooldigitizefeature.h"
+#include "qgsmaptooloffsetpointsymbol.h"
+#include "vertextool/qgsvertextool.h"
+
 #include "qgsgeometryvalidationmodel.h"
 #include "qgsgeometryvalidationdock.h"
-#include "qgsmaptooltrimextendfeature.h"
 #include "qgslayoutvaliditychecks.h"
-
-#include "vertextool/qgsvertextool.h"
 
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
@@ -1098,7 +1053,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::createToolBars, this, QStringLiteral( "Toolbars" ) );
   functionProfile( &QgisApp::createStatusBar, this, QStringLiteral( "Status bar" ) );
   functionProfile( &QgisApp::createCanvasTools, this, QStringLiteral( "Create canvas tools" ) );
-  const QList< QgsMapToolCapture * > captureTools = mMapTools.captureTools();
+  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
     connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) { enableDigitizeTechniqueActions( checked, tool->action() ); } );
@@ -1782,67 +1737,8 @@ QgisApp::~QgisApp()
   delete mQgisInterface;
   delete mStyleSheetBuilder;
 
-  delete mMapTools.mZoomIn;
-  delete mMapTools.mZoomOut;
-  delete mMapTools.mPan;
-  delete mMapTools.mAddPart;
-  delete mMapTools.mAddRing;
-  delete mMapTools.mFillRing;
-  delete mMapTools.mAnnotation;
-  delete mMapTools.mChangeLabelProperties;
-  delete mMapTools.mDeletePart;
-  delete mMapTools.mDeleteRing;
-  delete mMapTools.mTrimExtendFeature;
-  delete mMapTools.mFeatureAction;
-  delete mMapTools.mFormAnnotation;
-  delete mMapTools.mHtmlAnnotation;
-  delete mMapTools.mIdentify;
-  delete mMapTools.mMeasureAngle;
-  delete mMapTools.mMeasureArea;
-  delete mMapTools.mMeasureDist;
-  delete mMapTools.mMoveFeature;
-  delete mMapTools.mMoveFeatureCopy;
-  delete mMapTools.mMoveLabel;
-  delete mMapTools.mVertexTool;
-  delete mMapTools.mVertexToolActiveLayer;
-  delete mMapTools.mOffsetCurve;
-  delete mMapTools.mPinLabels;
-  delete mMapTools.mReshapeFeatures;
-  delete mMapTools.mReverseLine;
-  delete mMapTools.mRotateFeature;
-  delete mMapTools.mScaleFeature;
-  delete mMapTools.mRotateLabel;
-  delete mMapTools.mRotatePointSymbolsTool;
-  delete mMapTools.mOffsetPointSymbolTool;
-  delete mMapTools.mSelectFreehand;
-  delete mMapTools.mSelectPolygon;
-  delete mMapTools.mSelectRadius;
-  delete mMapTools.mSelectFeatures;
-  delete mMapTools.mShowHideLabels;
-  delete mMapTools.mSimplifyFeature;
-  delete mMapTools.mSplitFeatures;
-  delete mMapTools.mSplitParts;
-  delete mMapTools.mSvgAnnotation;
-  delete mMapTools.mTextAnnotation;
-  delete mMapTools.mCircularStringCurvePoint;
-  delete mMapTools.mCircularStringRadius;
-  delete mMapTools.mCircle2Points;
-  delete mMapTools.mCircle3Points;
-  delete mMapTools.mCircle3Tangents;
-  delete mMapTools.mCircle2TangentsPoint;
-  delete mMapTools.mCircleCenterPoint;
-  delete mMapTools.mEllipseCenter2Points;
-  delete mMapTools.mEllipseCenterPoint;
-  delete mMapTools.mEllipseExtent;
-  delete mMapTools.mEllipseFoci;
-  delete mMapTools.mRectangleCenterPoint;
-  delete mMapTools.mRectangleExtent;
-  delete mMapTools.mRectangle3PointsDistance;
-  delete mMapTools.mRectangle3PointsProjected;
-  delete mMapTools.mRegularPolygon2Points;
-  delete mMapTools.mRegularPolygonCenterPoint;
-  delete mMapTools.mRegularPolygonCenterCorner;
-  delete mMapTools.mAddFeature;
+  mMapTools.reset();
+
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -2666,24 +2562,24 @@ void QgisApp::createActions()
   connect( mActionCopyLayer, &QAction::triggered, this, &QgisApp::copyLayer );
   connect( mActionPasteLayer, &QAction::triggered, this, &QgisApp::pasteLayer );
   connect( mActionAddFeature, &QAction::triggered, this, &QgisApp::addFeature );
-  connect( mActionCircularStringCurvePoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringCurvePoint ); } );
-  connect( mActionCircularStringRadius, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringRadius ); } );
-  connect( mActionCircle2Points, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircle2Points, true ); } );
-  connect( mActionCircle3Points, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircle3Points, true ); } );
-  connect( mActionCircle3Tangents, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircle3Tangents, true ); } );
-  connect( mActionCircle2TangentsPoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircle2TangentsPoint, true ); } );
-  connect( mActionCircleCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mCircleCenterPoint, true ); } );
-  connect( mActionEllipseCenter2Points, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mEllipseCenter2Points, true ); } );
-  connect( mActionEllipseCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mEllipseCenterPoint, true ); } );
-  connect( mActionEllipseExtent, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mEllipseExtent, true ); } );
-  connect( mActionEllipseFoci, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mEllipseFoci, true ); } );
-  connect( mActionRectangleCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangleCenterPoint, true ); } );
-  connect( mActionRectangleExtent, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangleExtent, true ); } );
-  connect( mActionRectangle3PointsDistance, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangle3PointsDistance, true ); } );
-  connect( mActionRectangle3PointsProjected, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangle3PointsProjected, true ); } );
-  connect( mActionRegularPolygon2Points, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRegularPolygon2Points, true ); } );
-  connect( mActionRegularPolygonCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRegularPolygonCenterPoint, true ); } );
-  connect( mActionRegularPolygonCenterCorner, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRegularPolygonCenterCorner, true ); } );
+  connect( mActionCircularStringCurvePoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::CircularStringCurvePoint ) ); } );
+  connect( mActionCircularStringRadius, &QAction::triggered, this, [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::CircularStringRadius ) ); } );
+  connect( mActionCircle2Points, &QAction::triggered, this, [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::Circle2Points ), true ); } );
+  connect( mActionCircle3Points, &QAction::triggered, this, [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::Circle3Points ), true ); } );
+  connect( mActionCircle3Tangents, &QAction::triggered, this, [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::Circle3Tangents ), true ); } );
+  connect( mActionCircle2TangentsPoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::Circle2TangentsPoint ), true ); } );
+  connect( mActionCircleCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::CircleCenterPoint ), true ); } );
+  connect( mActionEllipseCenter2Points, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::EllipseCenter2Points ), true ); } );
+  connect( mActionEllipseCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::EllipseCenterPoint ), true ); } );
+  connect( mActionEllipseExtent, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::EllipseExtent ), true ); } );
+  connect( mActionEllipseFoci, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::EllipseFoci ), true ); } );
+  connect( mActionRectangleCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::RectangleCenterPoint ), true ); } );
+  connect( mActionRectangleExtent, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::RectangleExtent ), true ); } );
+  connect( mActionRectangle3PointsDistance, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::Rectangle3PointsDistance ), true ); } );
+  connect( mActionRectangle3PointsProjected, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::Rectangle3PointsProjected ), true ); } );
+  connect( mActionRegularPolygon2Points, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::RegularPolygon2Points ), true ); } );
+  connect( mActionRegularPolygonCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::RegularPolygonCenterPoint ), true ); } );
+  connect( mActionRegularPolygonCenterCorner, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::RegularPolygonCenterCorner ), true ); } );
   connect( mActionDigitizeWithCurve, &QAction::triggered, this, &QgisApp::enableDigitizeWithCurve );
   connect( mActionMoveFeature, &QAction::triggered, this, &QgisApp::moveFeature );
   connect( mActionMoveFeatureCopy, &QAction::triggered, this, &QgisApp::moveFeatureCopy );
@@ -2709,7 +2605,7 @@ void QgisApp::createActions()
   connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
   connect( mActionOffsetCurve, &QAction::triggered, this, &QgisApp::offsetCurve );
   connect( mActionReverseLine, &QAction::triggered, this, &QgisApp::reverseLine );
-  connect( mActionTrimExtendFeature, &QAction::triggered, this, [ = ] { mMapCanvas->setMapTool( mMapTools.mTrimExtendFeature ); } );
+  connect( mActionTrimExtendFeature, &QAction::triggered, this, [ = ] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::TrimExtendFeature ) ); } );
 
   // View Menu Items
   connect( mActionPan, &QAction::triggered, this, &QgisApp::pan );
@@ -4306,143 +4202,83 @@ void QgisApp::setupConnections()
 void QgisApp::createCanvasTools()
 {
   // create tools
-  mMapTools.mZoomIn = new QgsMapToolZoom( mMapCanvas, false /* zoomIn */ );
-  mMapTools.mZoomIn->setAction( mActionZoomIn );
-  mMapTools.mZoomOut = new QgsMapToolZoom( mMapCanvas, true /* zoomOut */ );
-  mMapTools.mZoomOut->setAction( mActionZoomOut );
-  mMapTools.mPan = new QgsMapToolPan( mMapCanvas );
-  connect( static_cast< QgsMapToolPan * >( mMapTools.mPan ), &QgsMapToolPan::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
-  mMapTools.mPan->setAction( mActionPan );
-  mMapTools.mIdentify = new QgsMapToolIdentifyAction( mMapCanvas );
-  mMapTools.mIdentify->setAction( mActionIdentify );
-  connect( mMapTools.mIdentify, &QgsMapToolIdentifyAction::copyToClipboard,
+  mMapTools = std::make_unique< QgsAppMapTools >( mMapCanvas, mAdvancedDigitizingDockWidget );
+
+  mMapTools->mapTool( QgsAppMapTools::ZoomIn )->setAction( mActionZoomIn );
+  mMapTools->mapTool( QgsAppMapTools::ZoomOut )->setAction( mActionZoomOut );
+  connect( mMapTools->mapTool< QgsMapToolPan >( QgsAppMapTools::Pan ), &QgsMapToolPan::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
+  mMapTools->mapTool( QgsAppMapTools::Pan )->setAction( mActionPan );
+  mMapTools->mapTool( QgsAppMapTools::Identify )->setAction( mActionIdentify );
+  connect( mMapTools->mapTool< QgsMapToolIdentifyAction >( QgsAppMapTools::Identify ), &QgsMapToolIdentifyAction::copyToClipboard,
            this, &QgisApp::copyFeatures );
-  mMapTools.mFeatureAction = new QgsMapToolFeatureAction( mMapCanvas );
-  mMapTools.mFeatureAction->setAction( mActionFeatureAction );
-  mMapTools.mMeasureDist = new QgsMeasureTool( mMapCanvas, false /* area */ );
-  mMapTools.mMeasureDist->setAction( mActionMeasure );
-  mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, true /* area */ );
-  mMapTools.mMeasureArea->setAction( mActionMeasureArea );
-  mMapTools.mMeasureAngle = new QgsMapToolMeasureAngle( mMapCanvas );
-  mMapTools.mMeasureAngle->setAction( mActionMeasureAngle );
-  mMapTools.mTextAnnotation = new QgsMapToolTextAnnotation( mMapCanvas );
-  mMapTools.mTextAnnotation->setAction( mActionTextAnnotation );
-  mMapTools.mFormAnnotation = new QgsMapToolFormAnnotation( mMapCanvas );
-  mMapTools.mFormAnnotation->setAction( mActionFormAnnotation );
-  mMapTools.mHtmlAnnotation = new QgsMapToolHtmlAnnotation( mMapCanvas );
-  mMapTools.mHtmlAnnotation->setAction( mActionHtmlAnnotation );
-  mMapTools.mSvgAnnotation = new QgsMapToolSvgAnnotation( mMapCanvas );
-  mMapTools.mSvgAnnotation->setAction( mActionSvgAnnotation );
-  mMapTools.mAnnotation = new QgsMapToolAnnotation( mMapCanvas );
-  mMapTools.mAnnotation->setAction( mActionAnnotation );
-  mMapTools.mAddFeature = new QgsMapToolAddFeature( mMapCanvas, QgsMapToolCapture::CaptureNone );
-  mMapTools.mAddFeature->setAction( mActionAddFeature );
-  mMapTools.mCircularStringCurvePoint = new QgsMapToolCircularStringCurvePoint( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mCircularStringCurvePoint->setAction( mActionCircularStringCurvePoint );
-  mMapTools.mCircularStringRadius = new QgsMapToolCircularStringRadius( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mCircularStringRadius->setAction( mActionCircularStringRadius );
-  mMapTools.mCircle2Points = new QgsMapToolCircle2Points( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mCircle2Points->setAction( mActionCircle2Points );
-  mMapTools.mCircle3Points = new QgsMapToolCircle3Points( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mCircle3Points->setAction( mActionCircle3Points );
-  mMapTools.mCircle3Tangents = new QgsMapToolCircle3Tangents( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mCircle3Tangents->setAction( mActionCircle3Tangents );
-  mMapTools.mCircle2TangentsPoint = new QgsMapToolCircle2TangentsPoint( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mCircle2TangentsPoint->setAction( mActionCircle2TangentsPoint );
-  mMapTools.mCircleCenterPoint = new QgsMapToolCircleCenterPoint( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mCircleCenterPoint->setAction( mActionCircleCenterPoint );
-  mMapTools.mEllipseCenter2Points = new QgsMapToolEllipseCenter2Points( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mEllipseCenter2Points->setAction( mActionEllipseCenter2Points );
-  mMapTools.mEllipseCenterPoint = new QgsMapToolEllipseCenterPoint( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mEllipseCenterPoint->setAction( mActionEllipseCenterPoint );
-  mMapTools.mEllipseExtent = new QgsMapToolEllipseExtent( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mEllipseExtent->setAction( mActionEllipseExtent );
-  mMapTools.mEllipseFoci = new QgsMapToolEllipseFoci( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mEllipseFoci->setAction( mActionEllipseFoci );
-  mMapTools.mRectangleCenterPoint = new QgsMapToolRectangleCenter( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mRectangleCenterPoint->setAction( mActionRectangleCenterPoint );
-  mMapTools.mRectangleExtent = new QgsMapToolRectangleExtent( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mRectangleExtent->setAction( mActionRectangleExtent );
-  mMapTools.mRectangle3PointsDistance = new QgsMapToolRectangle3Points( mMapTools.mAddFeature, mMapCanvas, QgsMapToolRectangle3Points::DistanceMode );
-  mMapTools.mRectangle3PointsDistance->setAction( mActionRectangle3PointsDistance );
-  mMapTools.mRectangle3PointsProjected = new QgsMapToolRectangle3Points( mMapTools.mAddFeature, mMapCanvas, QgsMapToolRectangle3Points::ProjectedMode );
-  mMapTools.mRectangle3PointsProjected->setAction( mActionRectangle3PointsProjected );
-  mMapTools.mRegularPolygon2Points = new QgsMapToolRegularPolygon2Points( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mRegularPolygon2Points->setAction( mActionRegularPolygon2Points );
-  mMapTools.mRegularPolygonCenterPoint = new QgsMapToolRegularPolygonCenterPoint( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mRegularPolygonCenterPoint->setAction( mActionRegularPolygonCenterPoint );
-  mMapTools.mRegularPolygonCenterCorner = new QgsMapToolRegularPolygonCenterCorner( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mRegularPolygonCenterCorner->setAction( mActionRegularPolygonCenterCorner );
-  mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas, QgsMapToolMoveFeature::Move );
-  mMapTools.mMoveFeature->setAction( mActionMoveFeature );
-  mMapTools.mMoveFeatureCopy = new QgsMapToolMoveFeature( mMapCanvas, QgsMapToolMoveFeature::CopyMove );
-  mMapTools.mMoveFeatureCopy->setAction( mActionMoveFeatureCopy );
-  mMapTools.mRotateFeature = new QgsMapToolRotateFeature( mMapCanvas );
-  mMapTools.mRotateFeature->setAction( mActionRotateFeature );
-  mMapTools.mScaleFeature = new QgsMapToolScaleFeature( mMapCanvas );
-  mMapTools.mScaleFeature->setAction( mActionScaleFeature );
-  mMapTools.mOffsetCurve = new QgsMapToolOffsetCurve( mMapCanvas );
-  mMapTools.mOffsetCurve->setAction( mActionOffsetCurve );
-  mMapTools.mReshapeFeatures = new QgsMapToolReshape( mMapCanvas );
-  mMapTools.mReshapeFeatures->setAction( mActionReshapeFeatures );
-  mMapTools.mReverseLine = new QgsMapToolReverseLine( mMapCanvas );
-  mMapTools.mReverseLine->setAction( mActionReverseLine );
-  mMapTools.mSplitFeatures = new QgsMapToolSplitFeatures( mMapCanvas );
-  mMapTools.mSplitFeatures->setAction( mActionSplitFeatures );
-  mMapTools.mSplitParts = new QgsMapToolSplitParts( mMapCanvas );
-  mMapTools.mSplitParts->setAction( mActionSplitParts );
-  mMapTools.mSelectFeatures = new QgsMapToolSelect( mMapCanvas );
-  mMapTools.mSelectFeatures->setAction( mActionSelectFeatures );
-  mMapTools.mSelectFeatures->setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
-  connect( mMapTools.mSelectFeatures, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
-  mMapTools.mSelectPolygon = new QgsMapToolSelect( mMapCanvas );
-  mMapTools.mSelectPolygon->setAction( mActionSelectPolygon );
-  mMapTools.mSelectPolygon->setSelectionMode( QgsMapToolSelectionHandler::SelectPolygon );
-  connect( mMapTools.mSelectPolygon, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
-  mMapTools.mSelectFreehand = new QgsMapToolSelect( mMapCanvas );
-  mMapTools.mSelectFreehand->setAction( mActionSelectFreehand );
-  mMapTools.mSelectFreehand->setSelectionMode( QgsMapToolSelectionHandler::SelectFreehand );
-  connect( mMapTools.mSelectFreehand, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
-  mMapTools.mSelectRadius = new QgsMapToolSelect( mMapCanvas );
-  mMapTools.mSelectRadius->setAction( mActionSelectRadius );
-  mMapTools.mSelectRadius->setSelectionMode( QgsMapToolSelectionHandler::SelectRadius );
-  connect( mMapTools.mSelectRadius, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
-  mMapTools.mAddRing = new QgsMapToolAddRing( mMapCanvas );
-  mMapTools.mAddRing->setAction( mActionAddRing );
-  mMapTools.mFillRing = new QgsMapToolFillRing( mMapCanvas );
-  mMapTools.mFillRing->setAction( mActionFillRing );
-  mMapTools.mAddPart = new QgsMapToolAddPart( mMapCanvas );
-  mMapTools.mAddPart->setAction( mActionAddPart );
-  mMapTools.mSimplifyFeature = new QgsMapToolSimplify( mMapCanvas );
-  mMapTools.mSimplifyFeature->setAction( mActionSimplifyFeature );
-  mMapTools.mDeleteRing = new QgsMapToolDeleteRing( mMapCanvas );
-  mMapTools.mDeleteRing->setAction( mActionDeleteRing );
-  mMapTools.mDeletePart = new QgsMapToolDeletePart( mMapCanvas );
-  mMapTools.mDeletePart->setAction( mActionDeletePart );
-  mMapTools.mVertexTool = new QgsVertexTool( mMapCanvas, mAdvancedDigitizingDockWidget );
-  mMapTools.mVertexTool->setAction( mActionVertexTool );
-  mMapTools.mVertexToolActiveLayer = new QgsVertexTool( mMapCanvas, mAdvancedDigitizingDockWidget, QgsVertexTool::ActiveLayer );
-  mMapTools.mVertexToolActiveLayer->setAction( mActionVertexToolActiveLayer );
-  mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
-  mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
-  mMapTools.mOffsetPointSymbolTool = new QgsMapToolOffsetPointSymbol( mMapCanvas );
-  mMapTools.mOffsetPointSymbolTool->setAction( mActionOffsetPointSymbol );
-  mMapTools.mTrimExtendFeature = new QgsMapToolTrimExtendFeature( mMapCanvas );
-  mMapTools.mTrimExtendFeature->setAction( mActionTrimExtendFeature );
+  mMapTools->mapTool( QgsAppMapTools::FeatureAction )->setAction( mActionFeatureAction );
+  mMapTools->mapTool( QgsAppMapTools::MeasureDistance )->setAction( mActionMeasure );
+  mMapTools->mapTool( QgsAppMapTools::MeasureArea )->setAction( mActionMeasureArea );
+  mMapTools->mapTool( QgsAppMapTools::MeasureAngle )->setAction( mActionMeasureAngle );
+  mMapTools->mapTool( QgsAppMapTools::TextAnnotation )->setAction( mActionTextAnnotation );
+  mMapTools->mapTool( QgsAppMapTools::FormAnnotation )->setAction( mActionFormAnnotation );
+  mMapTools->mapTool( QgsAppMapTools::HtmlAnnotation )->setAction( mActionHtmlAnnotation );
+  mMapTools->mapTool( QgsAppMapTools::SvgAnnotation )->setAction( mActionSvgAnnotation );
+  mMapTools->mapTool( QgsAppMapTools::Annotation )->setAction( mActionAnnotation );
+  mMapTools->mapTool( QgsAppMapTools::AddFeature )->setAction( mActionAddFeature );
+  mMapTools->mapTool( QgsAppMapTools::CircularStringCurvePoint )->setAction( mActionCircularStringCurvePoint );
+  mMapTools->mapTool( QgsAppMapTools::CircularStringRadius )->setAction( mActionCircularStringRadius );
+  mMapTools->mapTool( QgsAppMapTools::Circle2Points )->setAction( mActionCircle2Points );
+  mMapTools->mapTool( QgsAppMapTools::Circle3Points )->setAction( mActionCircle3Points );
+  mMapTools->mapTool( QgsAppMapTools::Circle3Tangents )->setAction( mActionCircle3Tangents );
+  mMapTools->mapTool( QgsAppMapTools::Circle2TangentsPoint )->setAction( mActionCircle2TangentsPoint );
+  mMapTools->mapTool( QgsAppMapTools::CircleCenterPoint )->setAction( mActionCircleCenterPoint );
+  mMapTools->mapTool( QgsAppMapTools::EllipseCenter2Points )->setAction( mActionEllipseCenter2Points );
+  mMapTools->mapTool( QgsAppMapTools::EllipseCenterPoint )->setAction( mActionEllipseCenterPoint );
+  mMapTools->mapTool( QgsAppMapTools::EllipseExtent )->setAction( mActionEllipseExtent );
+  mMapTools->mapTool( QgsAppMapTools::EllipseFoci )->setAction( mActionEllipseFoci );
+  mMapTools->mapTool( QgsAppMapTools::RectangleCenterPoint )->setAction( mActionRectangleCenterPoint );
+  mMapTools->mapTool( QgsAppMapTools::RectangleExtent )->setAction( mActionRectangleExtent );
+  mMapTools->mapTool( QgsAppMapTools::Rectangle3PointsDistance )->setAction( mActionRectangle3PointsDistance );
+  mMapTools->mapTool( QgsAppMapTools::Rectangle3PointsProjected )->setAction( mActionRectangle3PointsProjected );
+  mMapTools->mapTool( QgsAppMapTools::RegularPolygon2Points )->setAction( mActionRegularPolygon2Points );
+  mMapTools->mapTool( QgsAppMapTools::RegularPolygonCenterPoint )->setAction( mActionRegularPolygonCenterPoint );
+  mMapTools->mapTool( QgsAppMapTools::RegularPolygonCenterCorner )->setAction( mActionRegularPolygonCenterCorner );
+  mMapTools->mapTool( QgsAppMapTools::MoveFeature )->setAction( mActionMoveFeature );
+  mMapTools->mapTool( QgsAppMapTools::MoveFeatureCopy )->setAction( mActionMoveFeatureCopy );
+  mMapTools->mapTool( QgsAppMapTools::RotateFeature )->setAction( mActionRotateFeature );
+  mMapTools->mapTool( QgsAppMapTools::ScaleFeature )->setAction( mActionScaleFeature );
+  mMapTools->mapTool( QgsAppMapTools::OffsetCurve )->setAction( mActionOffsetCurve );
+  mMapTools->mapTool( QgsAppMapTools::ReshapeFeatures )->setAction( mActionReshapeFeatures );
+  mMapTools->mapTool( QgsAppMapTools::ReverseLine )->setAction( mActionReverseLine );
+  mMapTools->mapTool( QgsAppMapTools::SplitFeatures )->setAction( mActionSplitFeatures );
+  mMapTools->mapTool( QgsAppMapTools::SplitParts )->setAction( mActionSplitParts );
+  mMapTools->mapTool( QgsAppMapTools::SelectFeatures )->setAction( mActionSelectFeatures );
+  mMapTools->mapTool<QgsMapToolSelect>( QgsAppMapTools::SelectFeatures )->setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
+  connect( mMapTools->mapTool<QgsMapToolSelect>( QgsAppMapTools::SelectFeatures ), &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
+  mMapTools->mapTool( QgsAppMapTools::SelectPolygon )->setAction( mActionSelectPolygon );
+  mMapTools->mapTool<QgsMapToolSelect>( QgsAppMapTools::SelectPolygon )->setSelectionMode( QgsMapToolSelectionHandler::SelectPolygon );
+  connect( mMapTools->mapTool<QgsMapToolSelect>( QgsAppMapTools::SelectPolygon ), &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
+  mMapTools->mapTool( QgsAppMapTools::SelectFreehand )->setAction( mActionSelectFreehand );
+  mMapTools->mapTool<QgsMapToolSelect>( QgsAppMapTools::SelectFreehand )->setSelectionMode( QgsMapToolSelectionHandler::SelectFreehand );
+  connect( mMapTools->mapTool<QgsMapToolSelect>( QgsAppMapTools::SelectFreehand ), &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
+  mMapTools->mapTool( QgsAppMapTools::SelectRadius )->setAction( mActionSelectRadius );
+  mMapTools->mapTool<QgsMapToolSelect>( QgsAppMapTools::SelectRadius )->setSelectionMode( QgsMapToolSelectionHandler::SelectRadius );
+  connect( mMapTools->mapTool<QgsMapToolSelect>( QgsAppMapTools::SelectRadius ), &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
+  mMapTools->mapTool( QgsAppMapTools::AddRing )->setAction( mActionAddRing );
+  mMapTools->mapTool( QgsAppMapTools::FillRing )->setAction( mActionFillRing );
+  mMapTools->mapTool( QgsAppMapTools::AddPart )->setAction( mActionAddPart );
+  mMapTools->mapTool( QgsAppMapTools::SimplifyFeature )->setAction( mActionSimplifyFeature );
+  mMapTools->mapTool( QgsAppMapTools::DeleteRing )->setAction( mActionDeleteRing );
+  mMapTools->mapTool( QgsAppMapTools::DeletePart )->setAction( mActionDeletePart );
+  mMapTools->mapTool( QgsAppMapTools::VertexTool )->setAction( mActionVertexTool );
+  mMapTools->mapTool( QgsAppMapTools::VertexToolActiveLayer )->setAction( mActionVertexToolActiveLayer );
+  mMapTools->mapTool( QgsAppMapTools::RotatePointSymbolsTool )->setAction( mActionRotatePointSymbols );
+  mMapTools->mapTool( QgsAppMapTools::OffsetPointSymbolTool )->setAction( mActionOffsetPointSymbol );
+  mMapTools->mapTool( QgsAppMapTools::TrimExtendFeature )->setAction( mActionTrimExtendFeature );
+  mMapTools->mapTool( QgsAppMapTools::PinLabels )->setAction( mActionPinLabels );
+  mMapTools->mapTool( QgsAppMapTools::ShowHideLabels )->setAction( mActionShowHideLabels );
+  mMapTools->mapTool( QgsAppMapTools::MoveLabel )->setAction( mActionMoveLabel );
+  mMapTools->mapTool( QgsAppMapTools::RotateLabel )->setAction( mActionRotateLabel );
+  mMapTools->mapTool( QgsAppMapTools::ChangeLabelProperties )->setAction( mActionChangeLabelProperties );
 
-  mMapTools.mPinLabels = new QgsMapToolPinLabels( mMapCanvas, mAdvancedDigitizingDockWidget );
-  mMapTools.mPinLabels->setAction( mActionPinLabels );
-  mMapTools.mShowHideLabels = new QgsMapToolShowHideLabels( mMapCanvas, mAdvancedDigitizingDockWidget );
-  mMapTools.mShowHideLabels->setAction( mActionShowHideLabels );
-  mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas, mAdvancedDigitizingDockWidget );
-  mMapTools.mMoveLabel->setAction( mActionMoveLabel );
-
-  mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas, mAdvancedDigitizingDockWidget );
-  mMapTools.mRotateLabel->setAction( mActionRotateLabel );
-  mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas, mAdvancedDigitizingDockWidget );
-  mMapTools.mChangeLabelProperties->setAction( mActionChangeLabelProperties );
-//ensure that non edit tool is initialized or we will get crashes in some situations
-  mNonEditMapTool = mMapTools.mPan;
+  //ensure that non edit tool is initialized or we will get crashes in some situations
+  mNonEditMapTool = mMapTools->mapTool( QgsAppMapTools::Pan );
 }
 
 void QgisApp::createOverview()
@@ -6552,8 +6388,8 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   }
 
   // set the initial map tool
-  mMapCanvas->setMapTool( mMapTools.mPan );
-  mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::Pan ) );
+  mNonEditMapTool = mMapTools->mapTool( QgsAppMapTools::Pan );  // signals are not yet setup to catch this
 
   prj->setDirty( false );
   return true;
@@ -8159,13 +7995,13 @@ void QgisApp::zoomIn()
 {
   QgsDebugMsgLevel( QStringLiteral( "Setting map tool to zoomIn" ), 2 );
 
-  mMapCanvas->setMapTool( mMapTools.mZoomIn );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ZoomIn ) );
 }
 
 
 void QgisApp::zoomOut()
 {
-  mMapCanvas->setMapTool( mMapTools.mZoomOut );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ZoomOut ) );
 }
 
 void QgisApp::zoomToSelected()
@@ -8192,7 +8028,7 @@ void QgisApp::panToSelected()
 
 void QgisApp::pan()
 {
-  mMapCanvas->setMapTool( mMapTools.mPan );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::Pan ) );
 }
 
 void QgisApp::zoomFull()
@@ -8217,12 +8053,12 @@ void QgisApp::zoomActualSize()
 
 void QgisApp::identify()
 {
-  mMapCanvas->setMapTool( mMapTools.mIdentify );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::Identify ) );
 }
 
 void QgisApp::doFeatureAction()
 {
-  mMapCanvas->setMapTool( mMapTools.mFeatureAction );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::FeatureAction ) );
 }
 
 void QgisApp::updateDefaultFeatureAction( QAction *action )
@@ -8480,42 +8316,42 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
 
 void QgisApp::measure()
 {
-  mMapCanvas->setMapTool( mMapTools.mMeasureDist );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureDistance ) );
 }
 
 void QgisApp::measureArea()
 {
-  mMapCanvas->setMapTool( mMapTools.mMeasureArea );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureArea ) );
 }
 
 void QgisApp::measureAngle()
 {
-  mMapCanvas->setMapTool( mMapTools.mMeasureAngle );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureAngle ) );
 }
 
 void QgisApp::addFormAnnotation()
 {
-  mMapCanvas->setMapTool( mMapTools.mFormAnnotation );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::FormAnnotation ) );
 }
 
 void QgisApp::addHtmlAnnotation()
 {
-  mMapCanvas->setMapTool( mMapTools.mHtmlAnnotation );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::HtmlAnnotation ) );
 }
 
 void QgisApp::addTextAnnotation()
 {
-  mMapCanvas->setMapTool( mMapTools.mTextAnnotation );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::TextAnnotation ) );
 }
 
 void QgisApp::addSvgAnnotation()
 {
-  mMapCanvas->setMapTool( mMapTools.mSvgAnnotation );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SvgAnnotation ) );
 }
 
 void QgisApp::modifyAnnotation()
 {
-  mMapCanvas->setMapTool( mMapTools.mAnnotation );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::Annotation ) );
 }
 
 void QgisApp::reprojectAnnotations()
@@ -9421,37 +9257,37 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
 
 void QgisApp::moveFeature()
 {
-  mMapCanvas->setMapTool( mMapTools.mMoveFeature );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::MoveFeature ) );
 }
 
 void QgisApp::moveFeatureCopy()
 {
-  mMapCanvas->setMapTool( mMapTools.mMoveFeatureCopy );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::MoveFeatureCopy ) );
 }
 
 void QgisApp::offsetCurve()
 {
-  mMapCanvas->setMapTool( mMapTools.mOffsetCurve );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::OffsetCurve ) );
 }
 
 void QgisApp::simplifyFeature()
 {
-  mMapCanvas->setMapTool( mMapTools.mSimplifyFeature );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SimplifyFeature ) );
 }
 
 void QgisApp::deleteRing()
 {
-  mMapCanvas->setMapTool( mMapTools.mDeleteRing );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::DeleteRing ) );
 }
 
 void QgisApp::deletePart()
 {
-  mMapCanvas->setMapTool( mMapTools.mDeletePart );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::DeletePart ) );
 }
 
 void QgisApp::reverseLine()
 {
-  mMapCanvas->setMapTool( mMapTools.mReverseLine );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ReverseLine ) );
 }
 
 QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &featureList, bool &canceled )
@@ -9829,43 +9665,43 @@ void QgisApp::populateLayoutsMenu( QMenu *menu )
 
 void QgisApp::showPinnedLabels( bool show )
 {
-  qobject_cast<QgsMapToolPinLabels *>( mMapTools.mPinLabels )->showPinnedLabels( show );
+  mMapTools->mapTool< QgsMapToolPinLabels >( QgsAppMapTools::PinLabels )->showPinnedLabels( show );
 }
 
 void QgisApp::pinLabels()
 {
   mActionShowPinnedLabels->setChecked( true );
-  mMapCanvas->setMapTool( mMapTools.mPinLabels );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::PinLabels ) );
 }
 
 void QgisApp::showHideLabels()
 {
-  mMapCanvas->setMapTool( mMapTools.mShowHideLabels );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ShowHideLabels ) );
 }
 
 void QgisApp::moveLabel()
 {
-  mMapCanvas->setMapTool( mMapTools.mMoveLabel );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::MoveLabel ) );
 }
 
 void QgisApp::rotateFeature()
 {
-  mMapCanvas->setMapTool( mMapTools.mRotateFeature );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::RotateFeature ) );
 }
 
 void QgisApp::scaleFeature()
 {
-  mMapCanvas->setMapTool( mMapTools.mScaleFeature );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ScaleFeature ) );
 }
 
 void QgisApp::rotateLabel()
 {
-  mMapCanvas->setMapTool( mMapTools.mRotateLabel );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::RotateLabel ) );
 }
 
 void QgisApp::changeLabelProperties()
 {
-  mMapCanvas->setMapTool( mMapTools.mChangeLabelProperties );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ChangeLabelProperties ) );
 }
 
 QList<QgsMapCanvasAnnotationItem *> QgisApp::annotationItems()
@@ -10226,22 +10062,22 @@ void QgisApp::mergeSelectedFeatures()
 
 void QgisApp::vertexTool()
 {
-  mMapCanvas->setMapTool( mMapTools.mVertexTool );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::VertexTool ) );
 }
 
 void QgisApp::vertexToolActiveLayer()
 {
-  mMapCanvas->setMapTool( mMapTools.mVertexToolActiveLayer );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::VertexToolActiveLayer ) );
 }
 
 void QgisApp::rotatePointSymbols()
 {
-  mMapCanvas->setMapTool( mMapTools.mRotatePointSymbolsTool );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::RotatePointSymbolsTool ) );
 }
 
 void QgisApp::offsetPointSymbol()
 {
-  mMapCanvas->setMapTool( mMapTools.mOffsetPointSymbolTool );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::OffsetPointSymbolTool ) );
 }
 
 void QgisApp::snappingOptions()
@@ -10251,7 +10087,7 @@ void QgisApp::snappingOptions()
 
 void QgisApp::enableDigitizeWithCurve( bool enable )
 {
-  const QList< QgsMapToolCapture * > captureTools = mMapTools.captureTools();
+  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
     if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
@@ -10265,7 +10101,7 @@ void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFro
 {
   QgsSettings settings;
 
-  const QList< QgsMapToolCapture * > captureTools = mMapTools.captureTools();
+  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
 
   QSet< QgsMapToolCapture::CaptureTechnique > supportedTechniques;
   for ( QgsMapToolCapture *tool : captureTools )
@@ -10291,22 +10127,22 @@ void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFro
 
 void QgisApp::splitFeatures()
 {
-  mMapCanvas->setMapTool( mMapTools.mSplitFeatures );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SplitFeatures ) );
 }
 
 void QgisApp::splitParts()
 {
-  mMapCanvas->setMapTool( mMapTools.mSplitParts );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SplitParts ) );
 }
 
 void QgisApp::reshapeFeatures()
 {
-  mMapCanvas->setMapTool( mMapTools.mReshapeFeatures );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ReshapeFeatures ) );
 }
 
 void QgisApp::addFeature()
 {
-  mMapCanvas->setMapTool( mMapTools.mAddFeature );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
 }
 
 void QgisApp::setMapTool( QgsMapTool *tool, bool clean )
@@ -10316,22 +10152,22 @@ void QgisApp::setMapTool( QgsMapTool *tool, bool clean )
 
 void QgisApp::selectFeatures()
 {
-  mMapCanvas->setMapTool( mMapTools.mSelectFeatures );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SelectFeatures ) );
 }
 
 void QgisApp::selectByPolygon()
 {
-  mMapCanvas->setMapTool( mMapTools.mSelectPolygon );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SelectPolygon ) );
 }
 
 void QgisApp::selectByFreehand()
 {
-  mMapCanvas->setMapTool( mMapTools.mSelectFreehand );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SelectFreehand ) );
 }
 
 void QgisApp::selectByRadius()
 {
-  mMapCanvas->setMapTool( mMapTools.mSelectRadius );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SelectRadius ) );
 }
 
 void QgisApp::deselectAll()
@@ -10446,18 +10282,18 @@ void QgisApp::selectByForm()
 
 void QgisApp::addRing()
 {
-  mMapCanvas->setMapTool( mMapTools.mAddRing );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddRing ) );
 }
 
 void QgisApp::fillRing()
 {
-  mMapCanvas->setMapTool( mMapTools.mFillRing );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::FillRing ) );
 }
 
 
 void QgisApp::addPart()
 {
-  mMapCanvas->setMapTool( mMapTools.mAddPart );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddPart ) );
 }
 
 
@@ -12583,9 +12419,9 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
       mScaleWidget->updateScales();
     }
 
-    qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureDist )->updateSettings();
-    qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureArea )->updateSettings();
-    qobject_cast<QgsMapToolMeasureAngle *>( mMapTools.mMeasureAngle )->updateSettings();
+    mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureDistance )->updateSettings();
+    mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureArea )->updateSettings();
+    mMapTools->mapTool< QgsMapToolMeasureAngle >( QgsAppMapTools::MeasureAngle )->updateSettings();
 
 #ifdef HAVE_3D
     const QList< Qgs3DMapCanvasDockWidget * > canvases3D = findChildren< Qgs3DMapCanvasDockWidget * >();
@@ -14490,9 +14326,9 @@ void QgisApp::projectProperties( const QString &currentPage )
   // Display the modal dialog box.
   pp.exec();
 
-  qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureDist )->updateSettings();
-  qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureArea )->updateSettings();
-  qobject_cast<QgsMapToolMeasureAngle *>( mMapTools.mMeasureAngle )->updateSettings();
+  mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureDistance )->updateSettings();
+  mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureArea )->updateSettings();
+  mMapTools->mapTool< QgsMapToolMeasureAngle >( QgsAppMapTools::MeasureAngle )->updateSettings();
 
   // Set the window title.
   setTitleBarText_( *this );
@@ -15932,6 +15768,11 @@ void QgisApp::zoomToBookmarkIndex( const QModelIndex &index )
   mBookMarksDockWidget->zoomToBookmarkIndex( index );
 }
 
+QgsMapToolIdentifyAction *QgisApp::identifyMapTool() const
+{
+  return mMapTools->mapTool< QgsMapToolIdentifyAction >( QgsAppMapTools::Identify );
+}
+
 void QgisApp::takeAppScreenShots( const QString &saveDirectory, const int categories )
 {
   QgsAppScreenShots ass( saveDirectory );
@@ -17170,21 +17011,3 @@ QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
   return context;
 }
 
-QList<QgsMapToolCapture *> QgisApp::Tools::captureTools() const
-{
-  QList< QgsMapToolCapture * > res;
-  for ( QgsMapTool *tool :
-        {
-          qobject_cast< QgsMapTool * >( mAddFeature ),
-          mReshapeFeatures,
-          mSplitFeatures,
-          mSplitParts,
-          mAddRing,
-          mFillRing,
-          mAddPart
-        } )
-  {
-    res << qobject_cast< QgsMapToolCapture * >( tool );
-  }
-  return res;
-}
