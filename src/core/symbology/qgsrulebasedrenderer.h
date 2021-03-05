@@ -547,7 +547,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     /**
      * Creates a new QgsRuleBasedRenderer from an existing \a renderer.
      *
-     * The optional \a layer parameter is required for conversions of some renderer types.
+     * Since QGIS 3.20, the optional \a layer parameter is required for conversions of some renderer types.
      *
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      * \since QGIS 2.5
