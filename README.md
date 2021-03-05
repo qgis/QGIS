@@ -88,7 +88,7 @@ Example: Python console
 ![Example: Python console](https://docs.qgis.org/latest/en/_images/python_console_editor.png "Python console")
 -->
 
-### 5. QGIS server
+### 5. QGIS Server
 
 Headless map server -- running on Linux, macOS, Windows, or in a docker container -- that shares the same code base as QGIS.
 
