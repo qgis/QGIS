@@ -44,7 +44,8 @@ QgsPointCloudDataProvider::Capabilities QgsPointCloudDataProvider::capabilities(
 
 bool QgsPointCloudDataProvider::hasValidIndex() const
 {
-  return index() && index()->isValid();
+  QgsPointCloudIndex *lIndex = index();
+  return lIndex && lIndex->isValid();
 }
 
 QgsGeometry QgsPointCloudDataProvider::polygonBounds() const

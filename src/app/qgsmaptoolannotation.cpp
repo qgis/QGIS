@@ -165,10 +165,12 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent *e )
 void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsMapCanvasAnnotationItem *item = selectedItem();
-  if ( !item || !item->annotation() )
+  if ( !item )
     return;
 
   QgsAnnotation *annotation = item->annotation();
+  if ( !annotation )
+    return;
 
   if ( e->buttons() & Qt::LeftButton )
   {
