@@ -19,7 +19,8 @@
 #define QGSDB2GEOMETRYCOLUMNS_H
 
 #include "qgsdb2tablemodel.h" // needed for QgsDB2LayerProperty
-#include <QtSql>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 /**
  * \class QgsDb2GeometryColumns

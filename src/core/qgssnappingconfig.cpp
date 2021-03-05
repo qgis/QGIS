@@ -17,6 +17,7 @@
 
 #include <QDomElement>
 #include <QHeaderView>
+#include <QRegularExpression>
 
 #include "qgssettings.h"
 #include "qgslogger.h"

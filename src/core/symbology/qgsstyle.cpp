@@ -39,6 +39,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QByteArray>
+#include <QFileInfo>
 
 #include <sqlite3.h>
 #include "qgssqliteutils.h"

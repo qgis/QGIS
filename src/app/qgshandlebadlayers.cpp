@@ -41,6 +41,7 @@
 #include <QUrl>
 #include <QDir>
 #include <QProgressDialog>
+#include <QUrlQuery>
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {

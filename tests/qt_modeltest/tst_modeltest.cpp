@@ -45,8 +45,13 @@
 ****************************************************************************/
 
 
-#include <QtTest/QtTest>
-#include <QtGui/QtGui>
+#include <QtTest/QTest>
+#include <QObject>
+#include <QStringListModel>
+#include <QSortFilterProxyModel>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QStandardItemModel>
 
 #include "modeltest.h"
 #include "dynamictreemodel.h"

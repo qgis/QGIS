@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include <QSpinBox>
 #include <QMessageBox>
+#include <QTimer>
 
 QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent )
   : QDialog( parent )

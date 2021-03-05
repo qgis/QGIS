@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+#include <QTimeZone>
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"

@@ -19,6 +19,7 @@
 #include "qgsnetworkcontentfetcherregistry.h"
 
 #include "qgsapplication.h"
+#include <QUrl>
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {

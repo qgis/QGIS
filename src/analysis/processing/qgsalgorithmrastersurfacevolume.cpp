@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmrastersurfacevolume.h"
 #include "qgsstringutils.h"
+#include <QTextStream>
 
 ///@cond PRIVATE
 

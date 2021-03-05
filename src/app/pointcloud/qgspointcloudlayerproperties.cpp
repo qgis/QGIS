@@ -34,6 +34,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QUrl>
 
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsOptionsDialogBase( QStringLiteral( "PointCloudLayerProperties" ), parent, flags )

@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <QObject>
+#include <QLibrary>
 
 #include <ogr_api.h>
 #include <gdal_version.h>

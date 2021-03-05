@@ -34,6 +34,7 @@
 #include <QTableWidget>
 #include <QStringListModel>
 #include <QCompleter>
+#include <QTimer>
 
 #include <nlohmann/json.hpp>
 using namespace nlohmann;

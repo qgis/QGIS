@@ -39,6 +39,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QBuffer>
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )

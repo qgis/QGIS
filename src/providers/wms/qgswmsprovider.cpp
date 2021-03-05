@@ -65,6 +65,8 @@
 #include <QNetworkDiskCache>
 #include <QTimer>
 #include <QStringBuilder>
+#include <QUrlQuery>
+#include <QJsonArray>
 
 #include <ogr_api.h>
 

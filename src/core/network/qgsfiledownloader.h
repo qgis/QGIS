@@ -19,6 +19,8 @@
 #include <QObject>
 #include <QFile>
 #include <QNetworkReply>
+#include <QUrl>
+
 #include "qgis_core.h"
 
 #ifndef QT_NO_SSL

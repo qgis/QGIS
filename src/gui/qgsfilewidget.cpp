@@ -22,6 +22,7 @@
 #include <QGridLayout>
 #include <QUrl>
 #include <QDropEvent>
+#include <QRegularExpression>
 
 #include "qgssettings.h"
 #include "qgsfilterlineedit.h"

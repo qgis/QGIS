@@ -18,6 +18,7 @@
 #include "qgsmemoryproviderutils.h"
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"
+#include <QUrl>
 
 QString memoryLayerFieldType( QVariant::Type type )
 {

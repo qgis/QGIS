@@ -21,6 +21,7 @@
 #include "qgslayoutitem.h"
 #include "qgswebpage.h"
 #include <QFont>
+#include <QUrl>
 
 class QgsVectorLayer;
 class QgsFeature;

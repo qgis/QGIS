@@ -10,6 +10,7 @@
 
 
 
+
 class QgsVectorLayerExporter : QgsFeatureSink
 {
 %Docstring

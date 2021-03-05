@@ -18,6 +18,7 @@
 #include <QFutureWatcher>
 #include <QMutex>
 #include <QTimer>
+#include <QTextStream>
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"

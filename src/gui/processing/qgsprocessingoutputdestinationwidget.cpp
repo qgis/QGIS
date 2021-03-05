@@ -31,6 +31,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QCheckBox>
+#include <QUrl>
 
 ///@cond NOT_STABLE
 

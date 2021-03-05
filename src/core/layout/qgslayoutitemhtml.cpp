@@ -34,6 +34,8 @@
 #include <QPainter>
 #include <QImage>
 #include <QNetworkReply>
+#include <QThread>
+#include <QUrl>
 
 // clazy:excludeall=lambda-in-connect
 

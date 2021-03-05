@@ -46,6 +46,7 @@
 #include <QWidget>
 #include <QPair>
 #include <QTimer>
+#include <QUrlQuery>
 
 #include <cfloat>
 

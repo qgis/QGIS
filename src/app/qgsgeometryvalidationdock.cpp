@@ -15,6 +15,7 @@ email                : matthias@opengis.ch
 
 #include <QButtonGroup>
 #include <QToolButton>
+#include <QPropertyAnimation>
 
 #include "qgsgeometryvalidationdock.h"
 #include "qgsgeometryvalidationmodel.h"

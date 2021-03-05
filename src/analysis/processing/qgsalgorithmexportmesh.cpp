@@ -27,6 +27,8 @@
 #include "qgsrasterfilewriter.h"
 #include "qgslinestring.h"
 
+#include <QTextStream>
+
 ///@cond PRIVATE
 
 

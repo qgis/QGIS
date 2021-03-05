@@ -31,6 +31,7 @@
 #include <QDialogButtonBox>
 #include <QDir>
 #include <QEvent>
+#include <QUrlQuery>
 #include <QFile>
 #include <QFileInfo>
 #include <QImageWriter>
@@ -55,6 +56,8 @@
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
+#include <QUrl>
+#include <QRegularExpression>
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif

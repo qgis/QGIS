@@ -18,6 +18,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QDesktopServices>
+#include <QUrl>
 
 #include "qgsapplication.h"
 #include "qgsauthguiutils.h"

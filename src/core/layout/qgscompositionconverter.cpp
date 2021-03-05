@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include <QObject>
+#include <QUuid>
 
 #include "qgscompositionconverter.h"
 #include "qgsreadwritecontext.h"

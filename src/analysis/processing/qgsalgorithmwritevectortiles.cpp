@@ -18,6 +18,7 @@
 #include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilewriter.h"
+#include <QUrl>
 
 ///@cond PRIVATE
 

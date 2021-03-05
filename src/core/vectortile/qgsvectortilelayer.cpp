@@ -32,6 +32,8 @@
 #include "qgsjsonutils.h"
 #include "qgspainting.h"
 
+#include <QUrl>
+
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
 {

@@ -15,6 +15,7 @@
 
 #include "qgs3dicongenerator.h"
 #include "qgsapplication.h"
+#include <QDir>
 
 Qgs3DIconGenerator::Qgs3DIconGenerator( QObject *parent )
   : QgsAbstractStyleEntityIconGenerator( parent )

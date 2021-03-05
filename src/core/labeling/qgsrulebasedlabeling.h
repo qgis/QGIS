@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include <QStringList>
 #include <QMap>
+#include <QUuid>
 
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"

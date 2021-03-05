@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmnearestneighbouranalysis.h"
 #include "qgsapplication.h"
+#include <QTextStream>
 
 ///@cond PRIVATE
 

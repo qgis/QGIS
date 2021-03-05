@@ -38,6 +38,7 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QStringListModel>
 
 QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, item )

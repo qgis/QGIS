@@ -21,6 +21,7 @@
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QUrl>
 
 QgsQmlWidgetWrapper::QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )

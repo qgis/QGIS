@@ -40,6 +40,9 @@
 #include <QNetworkReply>
 #include <QPainter>
 #include <QNetworkCacheMetaData>
+#include <QUrlQuery>
+#include <QDir>
+#include <QTimer>
 
 const QString QgsAmsProvider::AMS_PROVIDER_KEY = QStringLiteral( "arcgismapserver" );
 const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Map Service data provider" );

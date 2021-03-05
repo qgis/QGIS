@@ -31,6 +31,8 @@
 #include <QAction>
 #include <mutex>
 #include <QMessageBox>
+#include <QUrlQuery>
+#include <QUrl>
 
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );

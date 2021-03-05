@@ -27,7 +27,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorrelation.h"
-
+#include <QUrl>
 
 QgsEditFormConfig::QgsEditFormConfig()
   : d( new QgsEditFormConfigPrivate() )

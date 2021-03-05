@@ -30,6 +30,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgslinesymbollayer.h"
 #include <QTemporaryFile>
+#include <QRegularExpression>
 
 Q_DECLARE_METATYPE( QgsDxfExport::HAlign )
 Q_DECLARE_METATYPE( QgsDxfExport::VAlign )

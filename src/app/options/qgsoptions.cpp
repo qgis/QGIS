@@ -78,6 +78,7 @@
 #include <QStyleFactory>
 #include <QMessageBox>
 #include <QNetworkDiskCache>
+#include <QStandardPaths>
 
 #include <limits>
 #include <sqlite3.h>

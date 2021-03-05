@@ -28,6 +28,7 @@
 
 #include <QDir>
 #include <QPushButton>
+#include <QRegularExpression>
 
 #if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"

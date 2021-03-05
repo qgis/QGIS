@@ -17,6 +17,7 @@
 #include <QStringList>
 #include <QApplication>
 #include <QFileInfo>
+#include <QSignalSpy>
 
 // clazy:excludeall=qcolor-from-literal
 

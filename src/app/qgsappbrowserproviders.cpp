@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QUrl>
 
 QIcon QgsBookmarksItem::iconBookmarks()
 {

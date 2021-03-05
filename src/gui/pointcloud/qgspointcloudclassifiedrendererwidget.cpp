@@ -27,6 +27,8 @@
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
 
+#include <QMimeData>
+
 ///@cond PRIVATE
 
 QgsPointCloudClassifiedRendererModel::QgsPointCloudClassifiedRendererModel( QObject *parent )

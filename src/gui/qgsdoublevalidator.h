@@ -26,6 +26,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+class QRegularExpression;
+
 /**
  * \ingroup gui
  *

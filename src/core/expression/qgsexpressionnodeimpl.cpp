@@ -20,6 +20,8 @@
 #include "qgsgeometry.h"
 #include "qgsfeaturerequest.h"
 
+#include <QRegularExpression>
+
 const char *QgsExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
 {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator

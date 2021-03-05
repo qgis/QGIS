@@ -16,6 +16,8 @@
 #include "qgsrendererrange.h"
 #include "qgsclassificationmethod.h"
 
+#include <QLocale>
+
 
 QgsRendererRange::QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol, bool render )
   : mLowerValue( range.lowerBound() )

@@ -30,6 +30,7 @@
 
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QTextCodec>
 #include <nlohmann/json.hpp>
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )

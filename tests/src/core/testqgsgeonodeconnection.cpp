@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 
 #include "qgsgeonodeconnection.h"
 #include "qgssettings.h"

@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include <QIcon>
+#include <QBuffer>
 
 const double ICON_PADDING_FACTOR = 0.16;
 

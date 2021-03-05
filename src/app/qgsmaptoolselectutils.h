@@ -16,10 +16,10 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
-#include <Qt>
 #include <QRect>
 #include <QPoint>
 #include <QList>
+#include <QFutureWatcher>
 
 #include "qgsvectorlayer.h"
 

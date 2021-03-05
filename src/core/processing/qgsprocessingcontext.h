@@ -28,6 +28,8 @@
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
 
+#include <QThread>
+
 class QgsProcessingLayerPostProcessorInterface;
 
 /**

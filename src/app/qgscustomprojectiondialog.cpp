@@ -32,6 +32,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
+#include <QRegularExpression>
 
 //proj4 includes
 #if PROJ_VERSION_MAJOR>=6

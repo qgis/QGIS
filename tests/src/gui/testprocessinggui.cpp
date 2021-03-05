@@ -25,6 +25,7 @@
 #include <QPushButton>
 #include <QPlainTextEdit>
 #include <QStandardItemModel>
+#include <QSignalSpy>
 
 #include "qgstest.h"
 #include "qgsgui.h"

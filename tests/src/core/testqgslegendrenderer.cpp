@@ -15,6 +15,7 @@
 
 #include "qgstest.h"
 #include <QObject>
+#include <QJsonArray>
 
 #include "qgsapplication.h"
 #include "qgsblureffect.h"
