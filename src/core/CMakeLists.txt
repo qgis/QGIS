@@ -55,6 +55,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsinvertedpolygonrenderer.cpp
   symbology/qgslegendsymbolitem.cpp
   symbology/qgslinesymbollayer.cpp
+  symbology/qgsmapinfosymbolconverter.cpp
   symbology/qgsmarkersymbollayer.cpp
   symbology/qgsmasksymbollayer.cpp
   symbology/qgsmergedfeaturerenderer.cpp
@@ -1530,6 +1531,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsinvertedpolygonrenderer.h
   symbology/qgslegendsymbolitem.h
   symbology/qgslinesymbollayer.h
+  symbology/qgsmapinfosymbolconverter.h
   symbology/qgsmarkersymbollayer.h
   symbology/qgsmergedfeaturerenderer.h
   symbology/qgsnullsymbolrenderer.h
