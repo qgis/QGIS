@@ -709,35 +709,38 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 {
+
   QgsLayoutTableColumns allowedColumns { mColumns };
 
-  QgsVectorLayer *source { sourceLayer() };
-
-  if ( ! source )
-  {
-    return allowedColumns;
-  }
-
-  QHash<const QString, QSet<QString>> columnAttributesMap;
-  QSet<QString> allowedAttributes;
-
-  for ( const auto &c : qgis::as_const( allowedColumns ) )
-  {
-    if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
-    {
-      columnAttributesMap[ c.attribute() ] = QSet<QString>();
-      const QgsExpression columnExp { c.attribute() };
-      const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
-      for ( const auto &cref : constRefs )
-      {
-        columnAttributesMap[ c.attribute() ].insert( cref->name() );
-        allowedAttributes.insert( cref->name() );
-      }
-    }
-  }
-
+  // Filter columns
   if ( mLayout->renderContext().featureFilterProvider() )
   {
+
+    QgsVectorLayer *source { sourceLayer() };
+
+    if ( ! source )
+    {
+      return allowedColumns;
+    }
+
+    QHash<const QString, QSet<QString>> columnAttributesMap;
+    QSet<QString> allowedAttributes;
+
+    for ( const auto &c : qgis::as_const( allowedColumns ) )
+    {
+      if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
+      {
+        columnAttributesMap[ c.attribute() ] = QSet<QString>();
+        const QgsExpression columnExp { c.attribute() };
+        const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
+        for ( const auto &cref : constRefs )
+        {
+          columnAttributesMap[ c.attribute() ].insert( cref->name() );
+          allowedAttributes.insert( cref->name() );
+        }
+      }
+    }
+
     const QStringList filteredAttributes { layout()->renderContext().featureFilterProvider()->layerAttributes( source, allowedAttributes.values() ) };
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     const QSet<QString> filteredAttributesSet( filteredAttributes.constBegin(), filteredAttributes.constEnd() );
