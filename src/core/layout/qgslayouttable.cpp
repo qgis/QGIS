@@ -1193,7 +1193,7 @@ bool QgsLayoutTable::calculateMaxRowHeights()
     {
       heights[i] = 0;
     }
-    else if ( mWrapBehavior != TruncateText && column.width() > 0 && QgsTextRenderer::requiresWrapping( col.heading(), mColumns.at( i ).width(), context, cellFormat ) )
+    else if ( mWrapBehavior != TruncateText && mColumns.at( i ).width() > 0 && QgsTextRenderer::requiresWrapping( col.heading(), mColumns.at( i ).width(), context, cellFormat ) )
     {
       //contents too wide for cell, need to wrap
       heights[i] = QgsTextRenderer::textHeight( context, cellFormat, QgsTextRenderer::wrapText( col.heading(), mColumns.at( i ).width(), context, cellFormat, qgsDoubleNear( mColumns.at( i ).width(), 0.0 ) ), QgsTextRenderer::Rect )
@@ -1222,7 +1222,7 @@ bool QgsLayoutTable::calculateMaxRowHeights()
       cellFormat.updateDataDefinedProperties( context );
       const double contentDescentMm = QgsTextRenderer::fontMetrics( context, cellFormat, QgsTextRenderer::FONT_WORKAROUND_SCALE ).descent() / QgsTextRenderer::FONT_WORKAROUND_SCALE  / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
-      if ( mWrapBehavior != TruncateText && column.width() > 0 && QgsTextRenderer::requiresWrapping( ( *colIt ).toString(), mColumns.at( i ).width(), context, cellFormat ) )
+      if ( mWrapBehavior != TruncateText && mColumns.at( i ).width() > 0 && QgsTextRenderer::requiresWrapping( ( *colIt ).toString(), mColumns.at( i ).width(), context, cellFormat ) )
       {
         //contents too wide for cell, need to wrap
         heights[ row * cols + i ] = QgsTextRenderer::textHeight( context, cellFormat, QgsTextRenderer::wrapText( ( *colIt ).toString(), mColumns.at( i ).width(), context, cellFormat, qgsDoubleNear( mColumns.at( i ).width(), 0.0 ) ), QgsTextRenderer::Rect ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) - contentDescentMm;
