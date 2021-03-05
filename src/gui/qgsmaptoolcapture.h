@@ -326,8 +326,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
 
-    //! Removes the last vertex from mRubberBand and mCaptureList
-    void undo();
+    /**
+     * Removes the last vertex from mRubberBand and mCaptureList.
+     *
+     * Since QGIS 3.20, if \a isAutoRepeat is set to TRUE then the undo operation will be treated
+     * as a auto repeated undo as if the user has held down the undo key for an extended period of time.
+     */
+    void undo( bool isAutoRepeat = false );
 
     /**
      * Start capturing
@@ -466,6 +471,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mAllowAddingStreamingPoints = false;
     bool mStartNewCurve = false;
 
+    bool mIgnoreSubsequentAutoRepeatUndo = false;
 
 };
 
