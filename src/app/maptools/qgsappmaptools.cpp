@@ -68,6 +68,50 @@
 #include "qgsmaptoolchangelabelproperties.h"
 #include "qgsmaptoolpinlabels.h"
 #include "qgsmaptooloffsetpointsymbol.h"
+#include "qgsspinbox.h"
+
+//
+// QgsStreamDigitizingSettingsAction
+//
+
+QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *parent )
+  : QWidgetAction( parent )
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  QgsSettings settings;
+  int defaultTolerance = settings.value( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 2 ).toInt();
+
+  mStreamToleranceSpinBox = new QgsSpinBox();
+  mStreamToleranceSpinBox->setSuffix( tr( "px" ) );
+  mStreamToleranceSpinBox->setKeyboardTracking( false );
+  mStreamToleranceSpinBox->setRange( 1, 200 );
+  mStreamToleranceSpinBox->setWrapping( false );
+  mStreamToleranceSpinBox->setSingleStep( 1 );
+  mStreamToleranceSpinBox->setClearValue( 2 );
+  mStreamToleranceSpinBox->setValue( defaultTolerance );
+
+  QLabel *label = new QLabel( tr( "Tolerance" ) );
+  gLayout->addWidget( label, 1, 0 );
+  gLayout->addWidget( mStreamToleranceSpinBox, 1, 1 );
+  connect( mStreamToleranceSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, [ = ]( int value )
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), value );
+  } );
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+  setDefaultWidget( w );
+}
+
+QgsStreamDigitizingSettingsAction::~QgsStreamDigitizingSettingsAction() = default;
+
+
+//
+// QgsAppMapTools
+//
 
 QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
 {
@@ -133,6 +177,8 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::MoveLabel, new QgsMapToolMoveLabel( canvas, cadDock ) );
   mTools.insert( Tool::RotateLabel, new QgsMapToolRotateLabel( canvas, cadDock ) );
   mTools.insert( Tool::ChangeLabelProperties, new QgsMapToolChangeLabelProperties( canvas, cadDock ) );
+
+  mStreamDigitizingSettingsAction = new QgsStreamDigitizingSettingsAction();
 }
 
 QgsAppMapTools::~QgsAppMapTools()
@@ -158,5 +204,10 @@ QList<QgsMapToolCapture *> QgsAppMapTools::captureTools() const
       res << captureTool;
   }
   return res;
+}
+
+QWidgetAction *QgsAppMapTools::streamDigitizingSettingsAction()
+{
+  return mStreamDigitizingSettingsAction;
 }
 

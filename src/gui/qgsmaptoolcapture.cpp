@@ -385,6 +385,15 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
     if ( mStreamingEnabled )
     {
+      if ( ! mCaptureCurve.isEmpty() )
+      {
+        QgsSettings settings;
+        const int tolerance = settings.value( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 2 ).toInt();
+        QgsPoint prevPoint = mCaptureCurve.curveAt( mCaptureCurve.nCurves() - 1 )->endPoint();
+        if ( QgsPointXY( toCanvasCoordinates( toMapCoordinates( mCanvas->currentLayer(), prevPoint ) ) ).distance( e->pos() ) < tolerance )
+          return;
+      }
+
       mAllowAddingStreamingPoints = true;
       addVertex( mapPoint );
       mAllowAddingStreamingPoints = false;
