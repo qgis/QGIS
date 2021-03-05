@@ -115,7 +115,7 @@ community of GIS professionals and enthusiasts as well as geospatial data publis
 
 QGIS development and releases follow a [time based schedule/roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html). There are three main branches of QGIS that users can install. These are the **Long Term Release (LTR)** branch, **Latest Release (LR)** branch, and the **Development (Nightly)** branch. 
 
-Every month, there is a **Point Release** that provides bug-fixes to the LTR and bug-fixes as well as new features to the LR.
+Every month, there is a **Point Release** that provides bug-fixes to the LTR and LR.
 
 ### Free and Open Source
 
@@ -153,7 +153,7 @@ A range of
 
 There are several channels where you can find help and support for QGIS:
 
-- Using the QGIS community site at [https://qgis.org](https://qgis.org)
+- Using the [QGIS community site](https://qgis.org](https://qgis.org)
 - Joining the [qgis-users mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-user)
 - Chatting with other users real-time. *Please wait around for a response to your question as many folks on the channel are doing other things and it may take a while for them to notice your question. The following paths all take you to the same chat room:*
     - Using an IRC client and joining the [#qgis](http://webchat.freenode.net/?channels=#qgis) channel on irc.freenode.net.
