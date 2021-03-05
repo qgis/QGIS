@@ -60,7 +60,7 @@ namespace QgsWms
     QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request )
     {
       // init WMS parameters and context
-      const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+      const QgsWmsParameters parameters( request.serverParameters() );
 
       QgsWmsRenderContext context( project, serverIface );
       context.setFlag( QgsWmsRenderContext::SetAccessControl );
