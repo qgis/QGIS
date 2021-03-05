@@ -350,9 +350,6 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     //! Uses region
     bool mUsesRegion;
 
-    //! Required field
-    bool mRequired;
-
     QgsGrassModuleInput( const QgsGrassModuleInput & ) = delete;
     QgsGrassModuleInput &operator = ( const QgsGrassModuleInput & ) = delete;
 };

@@ -786,7 +786,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   , mModuleStandardOptions( options )
   , mUpdate( false )
   , mUsesRegion( false )
-  , mRequired( false )
 {
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
@@ -795,9 +794,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     mTitle = tr( "Input" );
   }
   adjustTitle();
-
-  // Check if this parameter is required
-  mRequired = gnode.toElement().attribute( QStringLiteral( "required" ) ) == QLatin1String( "yes" );
 
   QDomNode promptNode = gnode.namedItem( QStringLiteral( "gisprompt" ) );
   QDomElement promptElem = promptNode.toElement();
