@@ -75,6 +75,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testSelfSnapping();
     void testLineString();
     void testCompoundCurve();
+    void testStream();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -853,6 +854,53 @@ void TestQgsMapToolAddFeatureLine::testCompoundCurve()
   QCOMPARE( mLayerLineCurved->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLineCurved->undoStack()->undo();
+}
+
+void TestQgsMapToolAddFeatureLine::testStream()
+{
+  // test streaming mode digitizing
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLine );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 5, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
+
+  mCaptureTool->setStreamDigitizingEnabled( true );
+  utils.mouseMove( 7.0, 6.6 );
+  utils.mouseMove( 7.1, 6.7 );
+  utils.mouseMove( 7.2, 6.6 );
+  utils.mouseMove( 7.3, 6.5 );
+  utils.mouseMove( 7.5, 6.9 );
+  utils.mouseMove( 7.6, 6.3 );
+  utils.mouseClick( 7.75, 6.5, Qt::LeftButton );
+  mCaptureTool->setStreamDigitizingEnabled( false );
+  utils.mouseClick( 7.5, 5.0, Qt::LeftButton );
+  mCaptureTool->setStreamDigitizingEnabled( true );
+  utils.mouseMove( 7.4, 5.0 );
+  utils.mouseMove( 7.3, 5.1 );
+  utils.mouseMove( 7.2, 5.0 );
+  utils.mouseMove( 7.1, 4.9 );
+
+  // check capture curve initially -- the streamed sections MUST become their own curve in the geometry, and not be compined with the straight line segments!
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5, 7.09 4.91))" ) );
+  utils.mouseClick( 7.0, 5.0, Qt::RightButton );
+  mCaptureTool->setStreamDigitizingEnabled( false );
+
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineString (5 6.5, 6.25 6.5, 6.75 6.5, 7 6.59375, 7.09375 6.703125, 7.203125 6.59375, 7.296875 6.5, 7.5 6.90625, 7.59375 6.296875, 7.5 5, 7.40625 5, 7.296875 5.09375, 7.203125 5, 7.09375 4.90625)";
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )
