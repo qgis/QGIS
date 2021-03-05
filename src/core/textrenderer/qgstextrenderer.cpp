@@ -1941,6 +1941,7 @@ QStringList QgsTextRenderer::wrapText( const QString &text, double space, const 
         linesToProcess << wordsInCurrentLine;
 
       const auto constLinesToProcess = linesToProcess;
+      int i = 0;
       for ( const QString &line : constLinesToProcess )
       {
         QString remainingText = line;
@@ -1961,8 +1962,8 @@ QStringList QgsTextRenderer::wrapText( const QString &text, double space, const 
           }
           lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
         }
-
-        if ( alignment == AlignFullJustify )
+        i++;
+        if ( alignment == AlignFullJustify && i == constLinesToProcess.length() )
           remainingText = justify( remainingText, space, context, format );
         outLines << remainingText;
       }
