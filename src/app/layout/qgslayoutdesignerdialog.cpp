@@ -93,6 +93,8 @@
 #include <QWidgetAction>
 #include <QProgressBar>
 #include <QClipboard>
+#include <QRegularExpression>
+#include <QUrl>
 
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>

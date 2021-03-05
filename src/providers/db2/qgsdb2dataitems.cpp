@@ -28,6 +28,7 @@
 #include "qgsproject.h"
 
 #include <QMessageBox>
+#include <QSqlError>
 
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 

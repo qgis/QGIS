@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+#include <QSignalSpy>
+#include <QtMath>
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"

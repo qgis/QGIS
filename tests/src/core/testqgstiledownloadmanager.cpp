@@ -17,10 +17,11 @@
 
 #include <QCoreApplication>
 #include <QTimer>
-#include <QtTest>
+#include <QTest>
 #include <QAbstractNetworkCache>
 #include <iostream>
 #include <memory>
+#include <QSignalSpy>
 
 #include "qgsapplication.h"
 #include "qgstiledownloadmanager.h"

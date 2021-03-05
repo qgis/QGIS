@@ -69,7 +69,7 @@
 #include <QFileDialog>
 #include <QPixmap>
 #include <QPen>
-
+#include <QTimeZone>
 
 const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
 const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)

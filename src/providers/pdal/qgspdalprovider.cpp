@@ -31,6 +31,9 @@
 #include <pdal/io/LasHeader.hpp>
 #include <pdal/Options.hpp>
 
+#include <QQueue>
+#include <QFileInfo>
+#include <QDir>
 
 #define PROVIDER_KEY QStringLiteral( "pdal" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "PDAL point cloud data provider" )

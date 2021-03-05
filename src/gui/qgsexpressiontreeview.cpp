@@ -15,6 +15,7 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QVersionNumber>
 
 #include "qgsexpressiontreeview.h"
 #include "qgis.h"
@@ -511,9 +512,7 @@ void QgsExpressionTreeView::saveToUserExpressions( const QString &label, const Q
   settings.setValue( QStringLiteral( "helpText" ), helpText );
   loadUserExpressions( );
   // Scroll
-  const QModelIndexList idxs { mModel->match( mModel->index( 0, 0 ),
-                               Qt::DisplayRole, label, 1,
-                               Qt::MatchFlag::MatchRecursive ) };
+  const QModelIndexList idxs { mModel->match( mModel->index( 0, 0 ), Qt::DisplayRole, label, 1, Qt::MatchFlag::MatchRecursive ) };
   if ( ! idxs.isEmpty() )
   {
     scrollTo( idxs.first() );

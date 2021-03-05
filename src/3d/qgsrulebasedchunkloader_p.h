@@ -31,6 +31,7 @@
 #include "qgsfeature3dhandler_p.h"
 #include "qgschunkedentity_p.h"
 #include "qgsrulebased3drenderer.h"
+#include <QFutureWatcher>
 
 #define SIP_NO_FILE
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QElapsedTimer>
+#include <QPointer>
 
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudlayer.h"

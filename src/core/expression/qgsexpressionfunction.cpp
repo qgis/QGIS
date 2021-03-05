@@ -61,6 +61,11 @@
 #include "qgsunittypes.h"
 #include "qgsspatialindex.h"
 
+#include <QMimeDatabase>
+#include <QProcessEnvironment>
+#include <QCryptographicHash>
+#include <QRegularExpression>
+#include <QUuid>
 
 typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
 

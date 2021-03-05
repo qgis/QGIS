@@ -20,6 +20,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QAction>
+#include <QSignalSpy>
 
 class TestQgsDockWidget: public QObject
 {

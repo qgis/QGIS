@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <QDir>
 #include <QTimer>
+#include <QUrlQuery>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )

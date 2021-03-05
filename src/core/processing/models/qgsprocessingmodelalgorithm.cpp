@@ -31,7 +31,7 @@
 
 #include <QFile>
 #include <QTextStream>
-
+#include <QRegularExpression>
 ///@cond NOT_STABLE
 
 QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group, const QString &groupId )

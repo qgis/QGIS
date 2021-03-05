@@ -22,6 +22,7 @@
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
 #include <editorwidgets/qgslistwidgetwrapper.h>
+#include <QSignalSpy>
 
 class TestQgsListWidget : public QObject
 {

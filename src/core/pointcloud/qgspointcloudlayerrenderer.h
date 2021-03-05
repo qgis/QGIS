@@ -34,6 +34,7 @@
 #include <QDomElement>
 #include <QString>
 #include <QPainter>
+#include <QElapsedTimer>
 
 class QgsRenderContext;
 class QgsPointCloudLayer;

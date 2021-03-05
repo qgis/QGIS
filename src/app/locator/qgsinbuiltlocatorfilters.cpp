@@ -21,6 +21,7 @@
 #include <QString>
 #include <QToolButton>
 #include <QUrl>
+#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"

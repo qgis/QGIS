@@ -37,7 +37,7 @@
 #include <QDoubleSpinBox>
 #include <QAbstractTableModel>
 #include <QToolButton>
-
+#include <QUrl>
 
 const int QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES = 6;
 

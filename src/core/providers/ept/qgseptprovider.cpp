@@ -22,6 +22,8 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 
+#include <QFileInfo>
+
 ///@cond PRIVATE
 
 #define PROVIDER_KEY QStringLiteral( "ept" )

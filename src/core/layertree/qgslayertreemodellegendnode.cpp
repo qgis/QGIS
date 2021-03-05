@@ -38,6 +38,7 @@
 #include "qgstextrenderer.h"
 #include "qgssettings.h"
 
+#include <QBuffer>
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )

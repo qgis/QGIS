@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 #include <QObject>
+#include <QSignalSpy>
 
 //qgis includes...
 #include <qgsvectorlayer.h>

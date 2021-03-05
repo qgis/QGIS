@@ -22,8 +22,11 @@
 #include "qgslogger.h"
 
 #include <algorithm>
+#include <random>
 
 #include <QTime>
+#include <QDir>
+#include <QFileInfo>
 
 //////////////
 

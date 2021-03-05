@@ -22,6 +22,7 @@
 #include <QPainter>
 #include <QTime>
 #include <QDesktopServices>
+#include <QTemporaryFile>
 
 #include "cpl_conv.h"
 

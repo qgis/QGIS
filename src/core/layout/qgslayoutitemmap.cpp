@@ -38,6 +38,7 @@
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QTimer>
 
 QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   : QgsLayoutItem( layout )

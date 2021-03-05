@@ -34,6 +34,8 @@ class QgsVectorLayerFeatureSource;
 #include "qgspointlocatorinittask.h"
 #include <memory>
 
+#include <QPointer>
+
 /**
  * \ingroup core
  * \brief Helper class used when traversing the index looking for vertices - builds a list of matches.

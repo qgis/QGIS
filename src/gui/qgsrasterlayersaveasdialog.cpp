@@ -35,6 +35,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
     QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent,

@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsguiutils.h"
 
+#include <QRegularExpression>
 #include <QDialogButtonBox>
 #include <QPushButton>
 

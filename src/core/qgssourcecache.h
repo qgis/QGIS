@@ -22,6 +22,8 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 
+class QTemporaryDir;
+
 #ifndef SIP_RUN
 
 ///@cond PRIVATE

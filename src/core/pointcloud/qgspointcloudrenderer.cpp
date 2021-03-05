@@ -24,6 +24,8 @@
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgslogger.h"
 #include "qgscircle.h"
+#include <QThread>
+#include <QPointer>
 
 QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset )
   : mRenderContext( context )

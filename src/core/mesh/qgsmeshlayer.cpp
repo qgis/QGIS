@@ -19,6 +19,7 @@
 #include <limits>
 
 #include <QUuid>
+#include <QUrl>
 
 #include "qgscolorramp.h"
 #include "qgslogger.h"

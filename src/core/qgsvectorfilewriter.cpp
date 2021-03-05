@@ -45,6 +45,7 @@
 #include <QSet>
 #include <QMetaType>
 #include <QMutex>
+#include <QRegularExpression>
 
 #include <cassert>
 #include <cstdlib> // size_t

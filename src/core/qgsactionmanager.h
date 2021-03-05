@@ -28,6 +28,7 @@
 #include <QString>
 #include <QIcon>
 #include <QObject>
+#include <QUuid>
 
 #include "qgsaction.h"
 #include "qgsfeature.h"

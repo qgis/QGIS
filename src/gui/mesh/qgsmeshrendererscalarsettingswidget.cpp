@@ -23,6 +23,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmeshvariablestrokewidthwidget.h"
 #include "qgssettings.h"
+#include <QPointer>
 
 QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidget *parent )
   : QWidget( parent )

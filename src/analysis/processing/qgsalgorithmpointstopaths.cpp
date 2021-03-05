@@ -19,6 +19,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsmultipoint.h"
 
+#include <QCollator>
+#include <QTextStream>
+
 ///@cond PRIVATE
 
 QString QgsPointsToPathsAlgorithm::name() const

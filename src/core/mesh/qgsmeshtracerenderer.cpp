@@ -17,6 +17,9 @@
 
 #include "qgsmeshtracerenderer.h"
 #include "qgsmeshlayerrenderer.h"
+
+#include <QPointer>
+
 ///@cond PRIVATE
 
 #ifndef M_DEG2RAD

@@ -16,7 +16,7 @@
 
 
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 
 #include "qgsmapsettings.h"
 #include "qgslayout.h"

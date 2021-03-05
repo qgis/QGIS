@@ -37,6 +37,7 @@
 #include "qgsfileutils.h"
 #include "qgsproviderregistry.h"
 #include <functional>
+#include <QRegularExpression>
 
 
 QVariant QgsProcessingFeatureSourceDefinition::toVariant() const

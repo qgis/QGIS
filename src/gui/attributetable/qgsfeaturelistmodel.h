@@ -20,6 +20,7 @@
 #include <QSortFilterProxyModel>
 #include <QVariant>
 #include <QItemSelectionModel>
+#include <QPointer>
 
 #include "qgsfeaturemodel.h"
 #include "qgsfeature.h" // QgsFeatureId

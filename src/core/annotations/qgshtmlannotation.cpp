@@ -35,7 +35,7 @@
 #include <QPainter>
 #include <QSettings>
 #include <QWidget>
-
+#include <QTextStream>
 
 QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
   : QgsAnnotation( parent )

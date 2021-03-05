@@ -32,6 +32,7 @@
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QSpinBox>
+#include <QRegularExpression>
 #include "gdal.h"
 
 static const int COLUMN_IDX_NAME = 0;

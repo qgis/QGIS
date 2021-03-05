@@ -22,6 +22,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 
+#include <QRegularExpression>
+
 QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type, const QString &origin, const QString &comment )
   : mName( name )
   , mDescription( description )

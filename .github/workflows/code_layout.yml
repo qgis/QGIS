@@ -99,6 +99,14 @@ jobs:
       - name: No brace initialization of QVariant variables
         run: ./tests/code_layout/test_qvariant_no_brace_init.sh
 
+  qt_module_wide_imports:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: No module-wide imports of Qt modules
+        run: ./tests/code_layout/test_qt_imports.sh
+
   doxygen_layout_check:
     runs-on: ubuntu-latest
     steps:

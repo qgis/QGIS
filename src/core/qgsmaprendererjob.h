@@ -23,6 +23,7 @@
 #include <QPainter>
 #include <QObject>
 #include <QTime>
+#include <QElapsedTimer>
 
 #include "qgsrendercontext.h"
 

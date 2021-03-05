@@ -43,6 +43,7 @@
 #include "qgsvectorlayerutils.h"
 
 #include <QVariant>
+#include <QUuid>
 
 #include <limits>
 

@@ -34,6 +34,8 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgstextbackgroundsettings.h"
 
+#include <QBuffer>
+#include <QRegularExpression>
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {

@@ -23,6 +23,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
+#include <QRegularExpression>
 
 #include "qgsmessagelog.h"
 #include "qgssqliteutils.h"

@@ -19,6 +19,7 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QPointer>
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"

@@ -28,6 +28,7 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QFileDialog>
+#include <QDirIterator>
 
 ///@cond NOT_STABLE
 

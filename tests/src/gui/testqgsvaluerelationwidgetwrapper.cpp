@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 #include <QScrollBar>
+#include <QSignalSpy>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <qgsapplication.h>

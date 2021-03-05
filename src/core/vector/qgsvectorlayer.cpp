@@ -36,6 +36,8 @@
 #include <QStringBuilder>
 #include <QUrl>
 #include <QUndoCommand>
+#include <QUrlQuery>
+#include <QUuid>
 
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"

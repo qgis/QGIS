@@ -28,6 +28,7 @@
 
 #include <QDir>
 #include <QPushButton>
+#include <QRegularExpression>
 
 #include "qgsprojutils.h"
 #include <proj.h>

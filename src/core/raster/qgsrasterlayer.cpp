@@ -80,6 +80,7 @@ email                : tim at linfiniti.com
 #include <QPixmap>
 #include <QRegExp>
 #include <QSlider>
+#include <QUrl>
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
