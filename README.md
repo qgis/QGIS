@@ -184,4 +184,4 @@ The [translation](https://qgis.org/en/site/getinvolved/translate.html) process i
 
 ### Other ways to contribute
 
-If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](http://qgis.org/en/site/getinvolved/index.html).
+If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](https://qgis.org/en/site/getinvolved/index.html).
