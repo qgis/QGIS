@@ -61,8 +61,10 @@ namespace QgsWms
     {
       // init WMS parameters and context
       const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+
       QgsWmsRenderContext context( project, serverIface );
       context.setFlag( QgsWmsRenderContext::SetAccessControl );
+      context.setParameters( parameters );
 
       // init document
       QDomDocument myDocument = QDomDocument();
