@@ -31,6 +31,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QDataStream>
+#include <QRegularExpression>
 
 #include "ogr_srs_api.h"
 
