@@ -22,6 +22,7 @@
 #include "qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 #include "qgslayoutexporter.h"
+#include "qgsprojectviewsettings.h"
 
 ///@cond PRIVATE
 
@@ -183,6 +184,25 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+
+  QVector< double > mapScales = layout->project()->viewSettings()->mapScales();
+  bool hasProjectScales( layout->project()->viewSettings()->useProjectScales() );
+  if ( !hasProjectScales || mapScales.isEmpty() )
+  {
+    // default to global map tool scales
+    QgsSettings settings;
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
+    const QStringList scales = scalesStr.split( ',' );
+    for ( const QString &scale : scales )
+    {
+      QStringList parts( scale.split( ':' ) );
+      if ( parts.size() == 2 )
+      {
+        mapScales.push_back( parts[1].toDouble() );
+      }
+    }
+  }
+  settings.predefinedMapScales = mapScales;
 
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.size() > 0 )
