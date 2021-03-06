@@ -47,7 +47,7 @@ class QgsVectorWarper
      * \return True if operation finished properly, otherwise false.
      * \since QGIS 3.20
      */
-    bool executeTransformInplace( QgsVectorLayer *layer, QgsFeedback *feedback = nullptr  );
+    bool executeTransformInplace( QgsVectorLayer *layer, QgsFeedback *feedback = nullptr );
 
     /**
      * Functions to reproject features of the vector layer to a new source
