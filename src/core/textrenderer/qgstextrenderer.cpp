@@ -1468,6 +1468,11 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           break;
 
         case AlignJustify:
+        {
+          if ( i == document.size() - 1 )
+            break;
+        }
+        FALLTHROUGH
         case AlignFullJustify:
           if ( labelWidest > labelWidth )
           {
