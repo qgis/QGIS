@@ -172,7 +172,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             if feedback.isCanceled():
                 break
 
-            # Add a feature in the sink
+            # Add a feature to the sink
             sink.addFeature(feature, QgsFeatureSink.FastInsert)
 
             # Update the progress bar
