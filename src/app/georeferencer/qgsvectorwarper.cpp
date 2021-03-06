@@ -22,8 +22,9 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgsprocessingutils.h"
-#include "qgsprocessingcontext.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsfeedback.h"
+#include "qgsmessagelog.h"
 
 #include <QFile>
 #include <QProgressDialog>
@@ -44,7 +45,7 @@ QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod &m
   mTransformer = new QgsGcpGeometryTransformer( method, srcPts, destPts );
 }
 
-bool QgsVectorWarper::executeTransformInplace( QgsVectorLayer *layer )
+bool QgsVectorWarper::executeTransformInplace( QgsVectorLayer *layer, QgsFeedback* feedback )
 {
   if ( !layer )
     return false;
@@ -64,14 +65,13 @@ bool QgsVectorWarper::executeTransformInplace( QgsVectorLayer *layer )
   return true;
 }
 
-bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QString outputName )
+bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QString outputName, QgsFeedback* feedback )
 {
   if ( !layer )
     return false;
-  QString name2( outputName );
-  QgsProcessingContext *context = new QgsProcessingContext();
-  std::unique_ptr< QgsFeatureSink > exporter( QgsProcessingUtils::createFeatureSink( name2, *context, layer->fields(), layer->wkbType(), mDestCRS ) );
-  if ( !exporter->lastError().isEmpty() )
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  std::unique_ptr< QgsVectorFileWriter > exporter( QgsVectorFileWriter::create( outputName, layer->fields(), layer->wkbType(), mDestCRS, QgsCoordinateTransformContext(), saveOptions ) );
+  if ( !exporter->hasError() )
     return false;
 
   QgsFeature outputFeature;
@@ -79,17 +79,35 @@ bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QStri
   QgsFeature f;
   QgsGeometry transformed;
   bool ok;
+  int featureCount;
   bool allGood = true;
+  if ( feedback )
+  {
+    featureCount = layer->featureCount();
+    feedback->setProgress( 0 );
+  }
+  int i = 0;
   while ( it.nextFeature( f ) )
   {
+    if ( feedback )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      feedback->setProgress( 100 * i / featureCount );
+      i++;
+    }
     outputFeature = QgsFeature( f );
     transformed = mTransformer->transform( f.geometry(), ok );
     if ( ok )
     {
       outputFeature.setGeometry( transformed );
       exporter->addFeature( outputFeature, QgsFeatureSink::FastInsert );
-      if ( !exporter->lastError().isEmpty() )
+      if ( !exporter->hasError() )
+      {
         allGood = false;
+        QgsMessageLog::logMessage( QObject::tr( "Error performing transformation: {}" ).arg( exporter->errorMessage() ) );
+      }
     }
   }
   return allGood;

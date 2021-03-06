@@ -18,6 +18,7 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmaplayer.h"
 
 #include <memory>
 
@@ -135,11 +136,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
       GCPCANCEL
     };
 
-    enum DataType
-    {
-      RASTER,
-      VECTOR
-    };
+    QgsMapLayerType  mDataType;
 
     // gui
     void createActions();
@@ -253,9 +250,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsGCPList mPoints;
     QgsGCPList mInitialPoints;
     QgsMapCanvas *mCanvas = nullptr;
-    std::unique_ptr< QgsRasterLayer > mRLayer;
-    std::unique_ptr< QgsVectorLayer > mVLayer;
-    bool mAgainAddLayer;
+    std::unique_ptr< QgsMapLayer > mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
@@ -276,8 +271,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     bool mExtentsChangedRecursionGuard;
     bool mGCPsDirty;
     bool mLoadInQgis = false;
-
-    DataType mDataType;
 
 
     QgsDockWidget *mDock = nullptr;

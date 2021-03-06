@@ -284,8 +284,8 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   mGCPpointsFileName = mFileName + ".points";
   ( void )loadGCPs();
 
-  if ( mRLayer )
-    mCanvas->setExtent( mRLayer->extent() );
+  if ( mLayer )
+    mCanvas->setExtent( mLayer->extent() );
 
   mCanvas->refresh();
   QgisApp::instance()->mapCanvas()->refresh();
@@ -297,7 +297,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mWorldFileName = guessWorldFileName( mFileName );
-  mDataType = QgsGeoreferencerMainWindow::RASTER;
+  mDataType = mLayer->type();
 }
 
 void QgsGeoreferencerMainWindow::openVector( const QString &fileName )
@@ -374,9 +374,9 @@ void QgsGeoreferencerMainWindow::openVector( const QString &fileName )
   mGCPpointsFileName = mFileName + ".points";
   ( void )loadGCPs();
 
-  if ( mVLayer )
+  if ( mLayer )
   {
-    mCanvas->setExtent( mVLayer->extent() );
+    mCanvas->setExtent( mLayer->extent() );
     mCanvas->refresh();
     QgisApp::instance()->mapCanvas()->refresh();
   }
@@ -389,7 +389,7 @@ void QgsGeoreferencerMainWindow::openVector( const QString &fileName )
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mWorldFileName = guessWorldFileName( mFileName );
-  mDataType = QgsGeoreferencerMainWindow::VECTOR;
+  mDataType = mLayer->type();
 }
 
 void QgsGeoreferencerMainWindow::dropEvent( QDropEvent *event )
@@ -445,7 +445,7 @@ void QgsGeoreferencerMainWindow::doGeoreference()
     mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
     if ( mLoadInQgis )
     {
-      if ( mDataType == QgsGeoreferencerMainWindow::RASTER )
+      if ( mDataType == QgsMapLayerType::RasterLayer )
       {
         if ( mModifiedFileName.isEmpty() )
         {
@@ -456,7 +456,7 @@ void QgsGeoreferencerMainWindow::doGeoreference()
           QgisApp::instance()->addRasterLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName() );
         }
       }
-      else if ( mDataType == QgsGeoreferencerMainWindow::VECTOR )
+      else if ( mDataType == QgsMapLayerType::VectorLayer )
       {
         if ( mModifiedFileName.isEmpty() )
         {
@@ -483,7 +483,7 @@ void QgsGeoreferencerMainWindow::doGeoreference()
 
 bool QgsGeoreferencerMainWindow::getTransformSettings()
 {
-  if ( mDataType == QgsGeoreferencerMainWindow::VECTOR )
+  if ( mDataType == QgsMapLayerType::VectorLayer )
   {
     QgsVectorTransformSettingsDialog d( mFileName, mModifiedFileName, mPoints.size(), QgsProviderRegistry::instance()->fileVectorFilters() );
     if ( !d.exec() )
@@ -536,7 +536,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
   if ( !checkReadyGeoref() )
     return;
 
-  if ( mDataType == QgsGeoreferencerMainWindow::VECTOR )
+  if ( mDataType == QgsMapLayerType::VectorLayer )
   {
     switch ( mTransformParam )
     {
@@ -631,9 +631,9 @@ void QgsGeoreferencerMainWindow::setZoomOutTool()
 
 void QgsGeoreferencerMainWindow::zoomToLayerTool()
 {
-  if ( mRLayer )
+  if ( mLayer )
   {
-    mCanvas->setExtent( mRLayer->extent() );
+    mCanvas->setExtent( mLayer->extent() );
     mCanvas->refresh();
   }
 }
@@ -784,7 +784,7 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords 
   mNewlyAddedPointItem->setPos( mNewlyAddedPointItem->toCanvasCoordinates( pixelCoords ) );
 
   QgsCoordinateReferenceSystem lastProjection = mLastGCPProjection.isValid() ? mLastGCPProjection : mProjection;
-  if ( ( mRLayer || mVLayer ) && !mMapCoordsDialog )
+  if ( ( mLayer ) && !mMapCoordsDialog )
   {
     mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, lastProjection, this );
     connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & b, const QgsCoordinateReferenceSystem & crs )
@@ -843,13 +843,13 @@ void QgsGeoreferencerMainWindow::saveGCPsDialog()
 // Settings slots
 void QgsGeoreferencerMainWindow::showLayerPropertiesDialog()
 {
-  if ( mDataType == QgsGeoreferencerMainWindow::RASTER && mRLayer )
+  if ( mDataType == QgsMapLayerType::RasterLayer && mLayer )
   {
-    QgisApp::instance()->showLayerProperties( mRLayer.get() );
+    QgisApp::instance()->showLayerProperties( qobject_cast<QgsRasterLayer *>( mLayer.get() ) );
   }
-  else if ( mDataType == QgsGeoreferencerMainWindow::VECTOR && mVLayer )
+  else if ( mDataType == QgsMapLayerType::VectorLayer && mLayer )
   {
-    QgisApp::instance()->showLayerProperties( mVLayer.get() );
+    QgisApp::instance()->showLayerProperties( qobject_cast<QgsVectorLayer *>( mLayer.get() ) );
   }
   else
   {
@@ -888,20 +888,20 @@ void QgsGeoreferencerMainWindow::showGeorefConfigDialog()
 // Histogram stretch slots
 void QgsGeoreferencerMainWindow::fullHistogramStretch()
 {
-  if ( mRLayer && mCanvas )
+  if ( mLayer &&  mDataType == QgsMapLayerType::RasterLayer  && mCanvas )
   {
-    mRLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum );
+    qobject_cast<QgsRasterLayer *>( mLayer.get() )->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum );
     mCanvas->refresh();
   }
 }
 
 void QgsGeoreferencerMainWindow::localHistogramStretch()
 {
-  if ( mRLayer && mCanvas )
+  if ( mLayer && mDataType == QgsMapLayerType::RasterLayer  && mCanvas )
   {
-    QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( mRLayer.get(), QgisApp::instance()->mapCanvas()->extent() );
+    QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( qobject_cast<QgsRasterLayer *>( mLayer.get() ), QgisApp::instance()->mapCanvas()->extent() );
 
-    mRLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax, rectangle );
+    qobject_cast<QgsRasterLayer *>( mLayer.get() )->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax, rectangle );
     mCanvas->refresh();
   }
 }
@@ -1329,10 +1329,8 @@ void QgsGeoreferencerMainWindow::setupConnections()
 void QgsGeoreferencerMainWindow::removeOldLayer()
 {
   // delete layer (and don't signal it as it's our private layer)
-  if ( mRLayer )
-    mRLayer.reset();
-  if ( mVLayer )
-    mVLayer.reset();
+  if ( mLayer )
+    mLayer.reset();
   mCanvas->setLayers( QList<QgsMapLayer *>() );
   mCanvas->clearCache();
   mRotationEdit->clear();
@@ -1346,16 +1344,10 @@ void QgsGeoreferencerMainWindow::addRaster( const QString &file )
   // never prompt for a crs selection for the input raster!
   options.skipCrsValidation = true;
 
-  mRLayer = std::make_unique< QgsRasterLayer >( file, QStringLiteral( "Raster" ), QStringLiteral( "gdal" ), options );
-
-  // so layer is not added to legend
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mRLayer.get(), false, false );
+  std::unique_ptr< QgsRasterLayer > RLayer = std::make_unique< QgsRasterLayer >( file, QStringLiteral( "Raster" ), QStringLiteral( "gdal" ), options );
 
   // add layer to map canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mRLayer.get() );
-
-  mAgainAddLayer = false;
+  mCanvas->setLayers( QList<QgsMapLayer *>() << RLayer.get() );
 
   mActionLocalHistogramStretch->setEnabled( true );
   mActionFullHistogramStretch->setEnabled( true );
@@ -1363,29 +1355,24 @@ void QgsGeoreferencerMainWindow::addRaster( const QString &file )
   // Status Bar
   if ( mGeorefTransform.hasCrs() )
   {
-    QString authid = mRLayer->crs().authid();
+    QString authid = RLayer.get()->crs().authid();
     mEPSG->setText( authid );
-    mEPSG->setToolTip( mRLayer->crs().toProj() );
+    mEPSG->setToolTip( RLayer.get()->crs().toProj() );
   }
   else
   {
     mEPSG->setText( tr( "None" ) );
     mEPSG->setToolTip( tr( "Coordinate of image(column/line)" ) );
   }
+  mLayer = std::move( RLayer );
 }
 
 void QgsGeoreferencerMainWindow::addVector( const QString &file )
 {
-  mVLayer = std::make_unique< QgsVectorLayer >( file, QStringLiteral( "Vector" ) );
-
-  // so layer is not added to legend
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mVLayer.get(), false, false );
+   std::unique_ptr< QgsVectorLayer > VLayer = std::make_unique< QgsVectorLayer >( file, QStringLiteral( "Vector" ) );
 
   // add layer to map canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mVLayer.get() );
-
-  mAgainAddLayer = false;
+  mCanvas->setLayers( QList<QgsMapLayer *>() << VLayer.get() );
 
   mActionLocalHistogramStretch->setEnabled( true );
   mActionFullHistogramStretch->setEnabled( true );
@@ -1393,15 +1380,16 @@ void QgsGeoreferencerMainWindow::addVector( const QString &file )
   // Status Bar
   if ( mGeorefTransform.hasCrs() )
   {
-    QString authid = mVLayer->crs().authid();
+    QString authid = VLayer.get()->crs().authid();
     mEPSG->setText( authid );
-    mEPSG->setToolTip( mVLayer->crs().toProj() );
+    mEPSG->setToolTip( VLayer.get()->crs().toProj() );
   }
   else
   {
     mEPSG->setText( tr( "None" ) );
     mEPSG->setToolTip( tr( "Coordinate of image(column/line)" ) );
   }
+  mLayer = std::move( VLayer );
 }
 
 // Settings
@@ -1565,14 +1553,14 @@ bool QgsGeoreferencerMainWindow::georeference()
     return false;
 
 
-  if ( mDataType == QgsGeoreferencerMainWindow::VECTOR && mVLayer )
+  if ( mDataType == QgsMapLayerType::VectorLayer && mLayer )
   {
     bool success;
     QgsVectorWarper warper( mTransformParam, mPoints, mProjection );
     if ( mModifiedFileName.isEmpty() )
-      success = warper.executeTransformInplace( mVLayer.get() );
+      success = warper.executeTransformInplace( qobject_cast<QgsVectorLayer *>( mLayer.get() ) );
     else
-      success = warper.executeTransform( mVLayer.get(), mModifiedFileName );
+      success = warper.executeTransform( qobject_cast<QgsVectorLayer *>( mLayer.get() ), mModifiedFileName );
 
     if ( !mPdfOutputFile.isEmpty() )
     {
@@ -2246,7 +2234,7 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
   }
 
   // skip next validation with vector data
-  if ( mVLayer )
+  if ( mDataType == QgsMapLayerType::VectorLayer )
     return true;
 
   if ( mPoints.count() < static_cast<int>( mGeorefTransform.minimumGcpCount() ) )
