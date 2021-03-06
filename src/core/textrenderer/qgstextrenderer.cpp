@@ -1900,7 +1900,7 @@ bool QgsTextRenderer::requiresWrapping( const QString &text, double space, const
 {
   const QStringList multiLineSplit = text.split( '\n' );
   double currentTextLength;
-  if ( format.orientation() == QgsTextFormat::HorizontalOrientation )
+  if ( format.orientation() != QgsTextFormat::HorizontalOrientation )
     currentTextLength = QgsTextRenderer::textHeight( context, format, multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   else
     currentTextLength = QgsTextRenderer::textWidth( context, format, multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
