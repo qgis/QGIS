@@ -43,20 +43,20 @@ class QgsVectorWarper
     /**
      * Functions to reproject features of the vector layer
      * \param layer source vector layer
-     * \param feedback feedback instance for reporting and cancelling
+     * \param feedback optional qgsfeedback instance
      * \return True if operation finished properly, otherwise false.
      * \since QGIS 3.20
      */
-    bool executeTransformInplace( QgsVectorLayer *layer, QgsFeedback* feedback = nullptr  );
+    bool executeTransformInplace( QgsVectorLayer *layer, QgsFeedback *feedback = nullptr  );
 
     /**
      * Functions to reproject features of the vector layer to a new source
      * \param layer source vector layer
-     * \param feedback feedback instance for reporting and cancelling
+     * \param feedback optional qgsfeedback instance
      * \return True if operation finished properly, otherwise false.
      * \since QGIS 3.20
      */
-    bool executeTransform( const QgsVectorLayer *layer, const QString outputName, QgsFeedback* feedback = nullptr );
+    bool executeTransform( const QgsVectorLayer *layer, const QString outputName, QgsFeedback *feedback = nullptr );
 
   private:
     QgsGcpGeometryTransformer *mTransformer;

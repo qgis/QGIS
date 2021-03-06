@@ -37,6 +37,7 @@
 #include "qgsgui.h"
 #include "qgisapp.h"
 
+#include "qgsfeedback.h"
 #include "qgslayout.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
@@ -1369,7 +1370,7 @@ void QgsGeoreferencerMainWindow::addRaster( const QString &file )
 
 void QgsGeoreferencerMainWindow::addVector( const QString &file )
 {
-   std::unique_ptr< QgsVectorLayer > VLayer = std::make_unique< QgsVectorLayer >( file, QStringLiteral( "Vector" ) );
+  std::unique_ptr< QgsVectorLayer > VLayer = std::make_unique< QgsVectorLayer >( file, QStringLiteral( "Vector" ) );
 
   // add layer to map canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << VLayer.get() );
@@ -1557,10 +1558,11 @@ bool QgsGeoreferencerMainWindow::georeference()
   {
     bool success;
     QgsVectorWarper warper( mTransformParam, mPoints, mProjection );
+    QgsFeedback *feedback = new QgsFeedback();
     if ( mModifiedFileName.isEmpty() )
-      success = warper.executeTransformInplace( qobject_cast<QgsVectorLayer *>( mLayer.get() ) );
+      success = warper.executeTransformInplace( qobject_cast<QgsVectorLayer *>( mLayer.get() ), feedback );
     else
-      success = warper.executeTransform( qobject_cast<QgsVectorLayer *>( mLayer.get() ), mModifiedFileName );
+      success = warper.executeTransform( qobject_cast<QgsVectorLayer *>( mLayer.get() ), mModifiedFileName, feedback );
 
     if ( !mPdfOutputFile.isEmpty() )
     {

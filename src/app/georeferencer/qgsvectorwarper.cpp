@@ -45,7 +45,7 @@ QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod &m
   mTransformer = new QgsGcpGeometryTransformer( method, srcPts, destPts );
 }
 
-bool QgsVectorWarper::executeTransformInplace( QgsVectorLayer *layer, QgsFeedback* feedback )
+bool QgsVectorWarper::executeTransformInplace( QgsVectorLayer *layer, QgsFeedback *feedback )
 {
   if ( !layer )
     return false;
@@ -56,16 +56,33 @@ bool QgsVectorWarper::executeTransformInplace( QgsVectorLayer *layer, QgsFeedbac
   QgsFeature f;
   QgsGeometry transformed;
   bool ok;
+  int featureCount;
+  if ( feedback )
+  {
+    featureCount = layer->featureCount();
+    feedback->setProgress( 0 );
+  }
+  int i = 0;
   while ( it.nextFeature( f ) )
   {
+    if ( feedback )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      feedback->setProgress( 100 * i / featureCount );
+      i++;
+    }
     transformed = mTransformer->transform( f.geometry(), ok );
     if ( ok )
       f.setGeometry( transformed );
+    else
+      QgsMessageLog::logMessage( QObject::tr( "Error performing transformation on a feature, geometry unchanged" ) );
   }
   return true;
 }
 
-bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QString outputName, QgsFeedback* feedback )
+bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QString outputName, QgsFeedback *feedback )
 {
   if ( !layer )
     return false;
