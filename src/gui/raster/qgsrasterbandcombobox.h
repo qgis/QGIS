@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsrasterlayer.h"
 #include <QComboBox>
+#include <QPointer>
 
 class QgsMapLayer;
 class QgsRasterDataProvider;

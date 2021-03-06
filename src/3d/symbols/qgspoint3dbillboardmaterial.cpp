@@ -21,6 +21,7 @@
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QNoDepthMask>
+#include <QUrl>
 
 #include "qgslogger.h"
 #include "qgspoint3dbillboardmaterial.h"

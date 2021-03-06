@@ -41,6 +41,7 @@
 #include <QDesktopWidget>
 #include <QMenu>
 #include <QClipboard>
+#include <QMimeData>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0

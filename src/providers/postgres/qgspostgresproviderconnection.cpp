@@ -20,6 +20,7 @@
 #include "qgspostgresprovider.h"
 #include "qgsexception.h"
 #include "qgsapplication.h"
+#include <QRegularExpression>
 
 extern "C"
 {

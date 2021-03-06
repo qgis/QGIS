@@ -48,7 +48,7 @@ email                : sherman at mrcc.com
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgis.h"
-
+#include "qgsembeddedsymbolrenderer.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -56,10 +56,12 @@ email                : sherman at mrcc.com
 #include <ogr_srs_api.h>
 #include <cpl_string.h>
 
-// Temporary solution until GDAL Unique support is available
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 2, 1)
+// Temporary solution for gdal < 3.2.1 without GDAL Unique support
 #include "qgssqliteutils.h"
 #include <sqlite3.h>
 // end temporary
+#endif
 
 #include <limits>
 #include <memory>
@@ -72,6 +74,8 @@ email                : sherman at mrcc.com
 #include <QMessageBox>
 #include <QString>
 #include <QTextCodec>
+#include <QStorageInfo>
+#include <QRegularExpression>
 
 
 #ifdef Q_OS_WIN
@@ -1110,6 +1114,7 @@ void QgsOgrProvider::loadFields()
   mFirstFieldIsFid = !fidColumn.isEmpty() &&
                      fdef.GetFieldIndex( fidColumn ) < 0;
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 2, 1)
   // This is a temporary solution until GDAL Unique support is available
   QSet<QString> uniqueFieldNames;
 
@@ -1127,6 +1132,7 @@ void QgsOgrProvider::loadFields()
       }
     }
   }
+#endif
 
   int createdFields = 0;
   if ( mFirstFieldIsFid )
@@ -1266,7 +1272,11 @@ void QgsOgrProvider::loadFields()
       newField.setConstraints( constraints );
     }
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 2, 1)
     if ( uniqueFieldNames.contains( OGR_Fld_GetNameRef( fldDef ) ) )
+#else
+    if ( OGR_Fld_IsUnique( fldDef ) )
+#endif
     {
       QgsFieldConstraints constraints = newField.constraints();
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
@@ -2891,16 +2901,6 @@ void QgsOgrProvider::computeCapabilities()
     }
 
 #if 0
-    if ( mOgrLayer->TestCapability( "FastSpatialFilter" ) )
-      // true if this layer implements spatial filtering efficiently.
-      // Layers that effectively read all features, and test them with the
-      // OGRFeature intersection methods should return false.
-      // This can be used as a clue by the application whether it should build
-      // and maintain it's own spatial index for features in this layer.
-    {
-      // TODO: Perhaps use as a clue by QGIS whether it should build and maintain it's own spatial index for features in this layer.
-    }
-
     if ( mOgrLayer->TestCapability( "FastFeatureCount" ) )
       // true if this layer can return a feature count
       // (via OGRLayer::GetFeatureCount()) efficiently ... ie. without counting
@@ -2908,15 +2908,6 @@ void QgsOgrProvider::computeCapabilities()
       // filter is installed after which it will return false.
     {
       // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to count features.
-    }
-
-    if ( mOgrLayer->TestCapability( "FastGetExtent" ) )
-      // true if this layer can return its data extent
-      // (via OGRLayer::GetExtent()) efficiently ... ie. without scanning
-      // all the features. In some cases this will return true until a
-      // spatial filter is installed after which it will return false.
-    {
-      // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to calculate extent.
     }
 
     if ( mOgrLayer->TestCapability( "FastSetNextByIndex" ) )
@@ -2975,6 +2966,12 @@ void QgsOgrProvider::computeCapabilities()
     {
       //supports transactions
       ability |= TransactionSupport;
+    }
+
+    if ( GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES, nullptr ) != nullptr )
+    {
+      ability |= FeatureSymbology;
+      ability |= CreateRenderer;
     }
   }
 
@@ -4625,6 +4622,15 @@ bool QgsOgrProvider::doesStrictFeatureTypeCheck() const
   return mGDALDriverName != QLatin1String( "ESRI Shapefile" ) || ( mOGRGeomType == wkbPoint || mOGRGeomType == wkbPoint25D );
 }
 
+QgsFeatureRenderer *QgsOgrProvider::createRenderer( const QVariantMap & ) const
+{
+  if ( !( mCapabilities & FeatureSymbology ) )
+    return nullptr;
+
+  std::unique_ptr< QgsSymbol > defaultSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::geometryType( wkbType() ) ) );
+  return new QgsEmbeddedSymbolRenderer( defaultSymbol.release() );
+}
+
 OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type )
 {
   type = wkbFlatten( type );
@@ -4709,6 +4715,7 @@ void QgsOgrProvider::open( OpenMode mode )
   QgsDebugMsgLevel( "mSubsetString: " + mSubsetString, 3 );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
   CPLSetConfigOption( "GPX_ELE_AS_25D", "YES" );  // use GPX elevation as z values
+  CPLSetConfigOption( "LIBKML_RESOLVE_STYLE", "YES" );  // resolve kml style urls from style tables to feature style strings
   if ( !CPLGetConfigOption( "OSM_USE_CUSTOM_INDEXING", nullptr ) )
   {
     // Disable custom/fast indexing by default, as it can prevent some .osm.pbf

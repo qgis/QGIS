@@ -26,6 +26,7 @@
 #include <qgsnetworkaccessmanager.h>
 
 #include <QObject>
+#include <QThread>
 
 #include <cpl_conv.h>
 

@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgspoint.h"
 #include "qgsogrproxytextcodec.h"
+#include "qgslinesymbollayer.h"
 
 class TestQgsOgrUtils: public QObject
 {
@@ -49,6 +50,9 @@ class TestQgsOgrUtils: public QObject
     void stringToFeatureList();
     void stringToFields();
     void textCodec();
+    void parseStyleString_data();
+    void parseStyleString();
+    void convertStyleString();
 
   private:
 
@@ -510,6 +514,86 @@ void TestQgsOgrUtils::textCodec()
   QCOMPARE( codec->toUnicode( codec->fromUnicode( "abcŐ" ) ), QStringLiteral( "abcŐ" ) );
   QCOMPARE( codec->toUnicode( codec->fromUnicode( "" ) ), QString() );
   // cppcheck-suppress memleak
+}
+
+void TestQgsOgrUtils::parseStyleString_data()
+{
+  QTest::addColumn<QString>( "string" );
+  QTest::addColumn<QVariantMap>( "expected" );
+
+  QTest::newRow( "symbol" ) << QStringLiteral( R"""(SYMBOL(a:0,c:#000000,s:12pt,id:"mapinfo-sym-35,ogr-sym-10"))""" ) << QVariantMap{ { "symbol", QVariantMap{ { "a", "0"},
+        {"c", "#000000"},
+        {"s", "12pt"},
+        {"id", "mapinfo-sym-35,ogr-sym-10"},
+      }
+    } };
+
+  QTest::newRow( "pen" ) << QStringLiteral( R"""(PEN(w:2px,c:#ffb060,id:"mapinfo-pen-14,ogr-pen-6",p:"8 2 1 2px"))""" ) << QVariantMap{ { "pen", QVariantMap{ { "w", "2px"},
+        {"c", "#ffb060"},
+        {"id", "mapinfo-pen-14,ogr-pen-6"},
+        {"p", "8 2 1 2px"},
+      }
+    } };
+
+  QTest::newRow( "brush and pen" ) << QStringLiteral( R"""(BRUSH(FC:#ff8000,bc:#f0f000,id:"mapinfo-brush-6,ogr-brush-4");pen(W:3px,c:#e00000,id:"mapinfo-pen-2,ogr-pen-0"))""" )
+  << QVariantMap{ { "brush", QVariantMap{ { "fc", "#ff8000"},
+        {"bc", "#f0f000"},
+        {"id", "mapinfo-brush-6,ogr-brush-4"}
+      }
+    },
+    {
+      "pen", QVariantMap{   { "w", "3px"},
+        {"c", "#e00000"},
+        {"id", "mapinfo-pen-2,ogr-pen-0"}
+      }
+    }
+  };
+}
+
+void TestQgsOgrUtils::parseStyleString()
+{
+  QFETCH( QString, string );
+  QFETCH( QVariantMap, expected );
+
+  const QVariantMap res = QgsOgrUtils::parseStyleString( string );
+  QCOMPARE( expected, res );
+}
+
+void TestQgsOgrUtils::convertStyleString()
+{
+  std::unique_ptr<QgsSymbol> symbol( QgsOgrUtils::symbolFromStyleString( QStringLiteral( "xxx" ), QgsSymbol::Line ) );
+  QVERIFY( !symbol );
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(PEN(w:7px,c:#0040c0,id:"mapinfo-pen-5,ogr-pen-3",p:"3 1px"))""" ), QgsSymbol::Line );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#0040c0" ) );
+  // px sizes should be converted to pts
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->width(), 5.25 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->widthUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->penCapStyle(), Qt::RoundCap );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->penJoinStyle(), Qt::RoundJoin );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->customDashVector(), QVector< qreal >() << 23.625 << 7.875 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->customDashPatternUnit(), QgsUnitTypes::RenderPoints );
+  QVERIFY( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->useCustomDashPattern() );
+
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(PEN(c:#00000087,w:10.500000cm,cap:p,j:b))""" ), QgsSymbol::Line );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#000000" ) );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().alpha(), 135 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->width(), 105.0 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->widthUnit(), QgsUnitTypes::RenderMillimeters );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->penCapStyle(), Qt::SquareCap );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->penJoinStyle(), Qt::BevelJoin );
+
+  // both brush and pen, but requesting a line symbol only
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(PEN(c:#FFFF007F,w:4.000000pt);BRUSH(fc:#00FF007F))""" ), QgsSymbol::Line );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#ffff00" ) );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().alpha(), 127 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->width(), 4.0 );
+  QCOMPARE( dynamic_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->widthUnit(), QgsUnitTypes::RenderPoints );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )

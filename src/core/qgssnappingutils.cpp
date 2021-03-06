@@ -180,13 +180,23 @@ static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointL
     return;
 
   // ORDER
+  // LineEndpoint
   // Vertex, Intersection
   // Middle
   // Centroid
   // Edge
   // Area
 
-  // First Vertex, or intersection
+  // first line endpoint -- these are like vertex matches, but even more strict
+  if ( ( bestMatch.type() & QgsPointLocator::LineEndpoint ) && !( candidateMatch.type() & QgsPointLocator::LineEndpoint ) )
+    return;
+  if ( candidateMatch.type() & QgsPointLocator::LineEndpoint )
+  {
+    bestMatch = candidateMatch;
+    return;
+  }
+
+  // Second Vertex, or intersection
   if ( ( bestMatch.type() & QgsPointLocator::Vertex ) && !( candidateMatch.type() & QgsPointLocator::Vertex ) )
     return;
   if ( candidateMatch.type() & QgsPointLocator::Vertex )
@@ -230,6 +240,10 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
   if ( type & QgsPointLocator::MiddleOfSegment )
   {
     _replaceIfBetter( bestMatch, loc->nearestMiddleOfSegment( pointMap, tolerance, filter ), tolerance );
+  }
+  if ( type & QgsPointLocator::LineEndpoint )
+  {
+    _replaceIfBetter( bestMatch, loc->nearestLineEndpoints( pointMap, tolerance, filter ), tolerance );
   }
 }
 

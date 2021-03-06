@@ -78,6 +78,7 @@
 #include <QStyleFactory>
 #include <QMessageBox>
 #include <QNetworkDiskCache>
+#include <QStandardPaths>
 
 #include <limits>
 #include <sqlite3.h>
@@ -1075,12 +1076,23 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
-  mDefaultSnapModeComboBox->addItem( tr( "No Snapping" ), QgsSnappingConfig::NoSnapFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::VertexFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::SegmentFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), QgsSnappingConfig::CentroidFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), QgsSnappingConfig::MiddleOfSegmentFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Area" ), QgsSnappingConfig::AreaFlag );
+
+  for ( QgsSnappingConfig::SnappingTypes type :
+        {
+          QgsSnappingConfig::NoSnapFlag,
+          QgsSnappingConfig::VertexFlag,
+          QgsSnappingConfig::SegmentFlag,
+          QgsSnappingConfig::CentroidFlag,
+          QgsSnappingConfig::MiddleOfSegmentFlag,
+          QgsSnappingConfig::LineEndpointFlag,
+          QgsSnappingConfig::AreaFlag,
+        } )
+  {
+    mDefaultSnapModeComboBox->addItem( QgsSnappingConfig::snappingTypeFlagToIcon( type ),
+                                       QgsSnappingConfig::snappingTypeFlagToString( type ),
+                                       type );
+  }
+
   QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = mSettings->flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  QgsSnappingConfig::VertexFlag );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );

@@ -81,7 +81,6 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 #include <QList>
-#include <QtCore>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 

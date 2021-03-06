@@ -19,6 +19,7 @@
 #include "qgssqliteutils.h"
 #include "qgsapplication.h"
 #include <QUuid>
+#include <QTextStream>
 #include <sqlite3.h>
 
 //

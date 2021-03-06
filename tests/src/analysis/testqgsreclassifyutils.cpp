@@ -19,6 +19,7 @@
 #include "qgsreclassifyutils.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterfilewriter.h"
+#include <QTemporaryFile>
 
 class TestQgsReclassifyUtils: public QObject
 {

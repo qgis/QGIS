@@ -41,6 +41,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QEventLoop>
+#include <QThread>
 
 QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   : QgsLayoutItem( layout )

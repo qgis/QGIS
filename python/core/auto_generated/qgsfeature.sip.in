@@ -12,7 +12,6 @@
 
 
 
-
 class QgsFeature
 {
 %Docstring
@@ -204,13 +203,20 @@ Returns the number of attributes attached to the feature.
     void setAttributes( const QgsAttributes &attrs );
 %Docstring
 Sets the feature's attributes.
-The feature will be valid after.
+The feature will be valid after. The number of provided attributes need to match exactly the
+number of the feature's fields.
 
-:param attrs: attribute list
+:param attrs: List of attribute values
 
 .. seealso:: :py:func:`setAttribute`
 
 .. seealso:: :py:func:`attributes`
+
+.. warning::
+
+   Method will return false if the number of provided attributes does not exactly match
+   the number of the feature's fields and it will not be possible to add this feature to the data
+   provider.
 %End
 
     bool setAttribute( int field, const QVariant &attr /GetWrapper/ );
@@ -570,6 +576,22 @@ before this method can be used.
         sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
       }
     }
+%End
+
+    const QgsSymbol *embeddedSymbol() const;
+%Docstring
+Returns the feature's embedded symbology, or ``None`` if the feature has no embedded symbol.
+
+.. versionadded:: 3.20
+%End
+
+    void setEmbeddedSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the feature's embedded ``symbol``.
+
+Ownership of ``symbol`` is transferred to the feature.
+
+.. versionadded:: 3.20
 %End
 
     int fieldNameIndex( const QString &fieldName ) const;

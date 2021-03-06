@@ -260,14 +260,12 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
     int numGeom = gc->numGeometries();
     double maxDist = 0;
     QgsPoint bestPoint;
-    bool found = false;
     for ( int i = 0; i < numGeom; ++i )
     {
       const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( gc->geometryN( i ) );
       if ( !surface )
         continue;
 
-      found = true;
       double dist = std::numeric_limits<double>::max();
       QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
       if ( dist > maxDist )
@@ -277,7 +275,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
       }
     }
 
-    if ( !found )
+    if ( bestPoint.isEmpty() )
       return QgsGeometry();
 
     if ( distanceFromBoundary )
@@ -292,6 +290,9 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
 
     double dist = std::numeric_limits<double>::max();
     QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
+    if ( p.isEmpty() )
+      return QgsGeometry();
+
     if ( distanceFromBoundary )
       *distanceFromBoundary = dist;
     return QgsGeometry( new QgsPoint( p ) );

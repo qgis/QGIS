@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtWidgets>
 #include <QIcon>
 #include <QPushButton>
 #include <QComboBox>

@@ -21,6 +21,10 @@
 #include "qgsapplication.h"
 #include "qgsproxyprogresstask.h"
 #include <QObject>
+#include <QThread>
+#include <QSignalSpy>
+#include <QThreadPool>
+#include <QTimer>
 #include "qgstest.h"
 
 class TestTask : public QgsTask

@@ -790,9 +790,6 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   }
   adjustTitle();
 
-  // Check if this parameter is required
-  mRequired = gnode.toElement().attribute( QStringLiteral( "required" ) ) == QLatin1String( "yes" );
-
   // Read "layeroption" is defined
   QString opt = qdesc.attribute( QStringLiteral( "layeroption" ) );
   if ( ! opt.isNull() )

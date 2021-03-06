@@ -21,6 +21,7 @@
 #include "qgsray3d.h"
 
 #include <QSize>
+#include <QtMath>
 
 /**
  * \ingroup UnitTests

@@ -196,7 +196,8 @@ class buildvrt(GdalAlgorithm):
 
         if self.SRC_NODATA in parameters and parameters[self.SRC_NODATA] not in (None, ''):
             nodata = self.parameterAsString(parameters, self.SRC_NODATA, context)
-            arguments.append('-srcnodata "{}"'.format(nodata))
+            arguments.append('-srcnodata')
+            arguments.append(nodata)
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)

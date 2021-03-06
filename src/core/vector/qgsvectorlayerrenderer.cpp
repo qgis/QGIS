@@ -43,6 +43,7 @@
 #include "qgsfeaturerenderergenerator.h"
 
 #include <QPicture>
+#include <QTimer>
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -310,6 +311,11 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   if ( !mTemporalFilter.isEmpty() )
   {
     featureRequest.combineFilterExpression( mTemporalFilter );
+  }
+
+  if ( renderer->usesEmbeddedSymbols() )
+  {
+    featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::EmbeddedSymbols );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.

@@ -45,8 +45,9 @@ class sqlite3_connection(object):
     def __enter__(self):
         return self.conn
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, ex_type, value, traceback):
         self.conn.close()
+        return ex_type is None
 
 
 def getQueryGeometryName(sqlite_file):

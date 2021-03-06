@@ -26,6 +26,8 @@
 #include "qgsmargins.h"
 #include "qgsmaplayer.h"
 
+#include <QPointer>
+
 class QgsRenderContext;
 
 /**

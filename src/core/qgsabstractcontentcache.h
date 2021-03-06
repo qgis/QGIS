@@ -24,6 +24,7 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetchertask.h"
 
 #include <QObject>
 #include <QMutex>
@@ -31,8 +32,10 @@
 #include <QSet>
 #include <QDateTime>
 #include <QList>
-#include "qgsnetworkcontentfetchertask.h"
+#include <QFile>
 #include <QNetworkReply>
+#include <QFileInfo>
+#include <QUrl>
 
 /**
  * \class QgsAbstractContentCacheEntry

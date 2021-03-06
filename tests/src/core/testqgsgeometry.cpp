@@ -168,6 +168,7 @@ class TestQgsGeometry : public QObject
     void differenceCheck2();
     void bufferCheck();
     void smoothCheck();
+    void shortestLineEmptyGeometry();
 
     void unaryUnion();
 
@@ -10318,6 +10319,38 @@ void TestQgsGeometry::compoundCurve()
             << QgsPoint( QgsWkbTypes::PointM, 3, 4, 0, 9 ) );
   c8.removeCurve( 1 );
 
+  // add curve and extend existing
+  QgsCompoundCurve c8j;
+  // try to extend empty compound curve
+  l8.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  c8j.addCurve( l8.clone(), true );
+  QCOMPARE( c8j.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4))" ) );
+  // try to add another curve with extend existing as true - should be ignored.
+  l8.setPoints( QgsPointSequence() << QgsPoint( 6, 6 ) << QgsPoint( 7, 8 ) );
+  c8j.addCurve( l8.clone(), true );
+  QCOMPARE( c8j.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8))" ) );
+  // try to add a linestring with extend existing as true - should be ignored because the last curve isn't a linestring
+  QgsLineString l8j;
+  l8j.setPoints( QgsPointSequence() << QgsPoint( 10, 8 ) << QgsPoint( 10, 12 ) );
+  c8j.addCurve( l8j.clone(), true );
+  QCOMPARE( c8j.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12))" ) );
+  // try to extend with another linestring -- should add to final part
+  l8j.setPoints( QgsPointSequence() << QgsPoint( 11, 13 ) << QgsPoint( 12, 12 ) );
+  c8j.addCurve( l8j.clone(), true );
+  QCOMPARE( c8j.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12))" ) );
+  // try to extend with another linestring -- should add to final part, with no duplicate points
+  l8j.setPoints( QgsPointSequence() << QgsPoint( 12, 12 ) << QgsPoint( 13, 12 ) << QgsPoint( 14, 15 ) );
+  c8j.addCurve( l8j.clone(), true );
+  QCOMPARE( c8j.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12, 13 12, 14 15))" ) );
+  // not extending, should be added as new curve
+  l8j.setPoints( QgsPointSequence() << QgsPoint( 15, 16 ) << QgsPoint( 17, 12 ) );
+  c8j.addCurve( l8j.clone(), false );
+  QCOMPARE( c8j.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12, 13 12, 14 15),(15 16, 17 12))" ) );
+  c8j.clear();
+  // adding a linestring as first part, with extend as true
+  c8j.addCurve( l8j.clone(), true );
+  QCOMPARE( c8j.asWkt(), QStringLiteral( "CompoundCurve ((15 16, 17 12))" ) );
+
   //test getters/setters
   QgsCompoundCurve c9;
 
@@ -17370,6 +17403,16 @@ void TestQgsGeometry::smoothCheck()
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 3 );
   QCOMPARE( result.wkbType(), QgsWkbTypes::Polygon );
+}
+
+void TestQgsGeometry::shortestLineEmptyGeometry()
+{
+  // test calculating distance to an empty geometry
+  // refs https://github.com/qgis/QGIS/issues/41968
+  QgsGeometry geom1( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ))" ) ) );
+  QgsGeometry geom2( new QgsPoint() );
+  QgsGeos geos( geom1.constGet() );
+  QVERIFY( geos.shortestLine( geom2.constGet() ).isNull() );
 }
 
 void TestQgsGeometry::unaryUnion()

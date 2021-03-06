@@ -35,6 +35,8 @@
 #include "qgsvectorlayerutils.h"
 #include "qgslogger.h"
 
+#include <QTextCodec>
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsfilterrestorer.h"
 #include "qgsaccesscontrol.h"

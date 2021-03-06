@@ -25,6 +25,7 @@
 #include <QTextStream>
 #include <QClipboard>
 #include <QKeyEvent>
+#include <QMimeData>
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

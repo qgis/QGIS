@@ -22,6 +22,7 @@
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgsogrprovider.h"
+#include "qgslinesymbollayer.h"
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -30,6 +31,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QDataStream>
+#include <QRegularExpression>
 
 #include "ogr_srs_api.h"
 
@@ -927,4 +929,215 @@ QString QgsOgrUtils::readShapefileEncodingFromLdid( const QString &path )
   }
   return QString();
 #endif
+}
+
+QVariantMap QgsOgrUtils::parseStyleString( const QString &string )
+{
+  QVariantMap styles;
+
+  char **papszStyleString = CSLTokenizeString2( string.toUtf8().constData(), ";",
+                            CSLT_HONOURSTRINGS
+                            | CSLT_PRESERVEQUOTES
+                            | CSLT_PRESERVEESCAPES );
+  for ( int i = 0; papszStyleString[i] != nullptr; ++i )
+  {
+    // style string format is:
+    // <tool_name>([<tool_param>[,<tool_param>[,...]]])
+
+    // first extract tool name
+    const thread_local QRegularExpression sToolPartRx( QStringLiteral( "^(.*?)\\((.*)\\)$" ) );
+    const QString stylePart( papszStyleString[i] );
+    const QRegularExpressionMatch match = sToolPartRx.match( stylePart );
+    if ( !match.hasMatch() )
+      continue;
+
+    const QString tool = match.captured( 1 );
+    const QString params = match.captured( 2 );
+
+    char **papszTokens = CSLTokenizeString2( params.toUtf8().constData(), ",", CSLT_HONOURSTRINGS
+                         | CSLT_PRESERVEESCAPES );
+
+    QVariantMap toolParts;
+    const thread_local QRegularExpression sToolParamRx( QStringLiteral( "^(.*?):(.*)$" ) );
+    for ( int j = 0; papszTokens[j] != nullptr; ++j )
+    {
+      const QString toolPart( papszTokens[j] );
+      const QRegularExpressionMatch toolMatch = sToolParamRx.match( toolPart );
+      if ( !match.hasMatch() )
+        continue;
+
+      // note we always convert the keys to lowercase, just to be safe...
+      toolParts.insert( toolMatch.captured( 1 ).toLower(), toolMatch.captured( 2 ) );
+    }
+    CSLDestroy( papszTokens );
+
+    // note we always convert the keys to lowercase, just to be safe...
+    styles.insert( tool.toLower(), toolParts );
+  }
+  CSLDestroy( papszStyleString );
+  return styles;
+}
+
+std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &string, QgsSymbol::SymbolType type )
+{
+  const QVariantMap styles = parseStyleString( string );
+
+  auto convertSize = []( const QString & size, double & value, QgsUnitTypes::RenderUnit & unit )->bool
+  {
+    const thread_local QRegularExpression sUnitRx = QRegularExpression( QStringLiteral( "^([\\d\\.]+)(g|px|pt|mm|cm|in)$" ) );
+    const QRegularExpressionMatch match = sUnitRx.match( size );
+    if ( match.hasMatch() )
+    {
+      value = match.captured( 1 ).toDouble();
+      const QString unitString = match.captured( 2 );
+      if ( unitString.compare( QLatin1String( "px" ), Qt::CaseInsensitive ) == 0 )
+      {
+        // pixels are a poor unit choice for QGIS -- they render badly in hidpi layouts. Convert to points instead, using
+        // a 96 dpi conversion
+        static constexpr double PT_TO_INCHES_FACTOR = 1 / 72.0;
+        static constexpr double PX_TO_PT_FACTOR = 1 / ( 96.0 * PT_TO_INCHES_FACTOR );
+        unit = QgsUnitTypes::RenderPoints;
+        value *= PX_TO_PT_FACTOR;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "pt" ), Qt::CaseInsensitive ) == 0 )
+      {
+        unit = QgsUnitTypes::RenderPoints;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "mm" ), Qt::CaseInsensitive ) == 0 )
+      {
+        unit = QgsUnitTypes::RenderMillimeters;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "cm" ), Qt::CaseInsensitive ) == 0 )
+      {
+        value *= 10;
+        unit = QgsUnitTypes::RenderMillimeters;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "in" ), Qt::CaseInsensitive ) == 0 )
+      {
+        unit = QgsUnitTypes::RenderInches;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "g" ), Qt::CaseInsensitive ) == 0 )
+      {
+        unit = QgsUnitTypes::RenderMapUnits;
+        return true;
+      }
+      QgsDebugMsg( QStringLiteral( "Unknown unit %1" ).arg( unitString ) );
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Could not parse style size %1" ).arg( size ) );
+    }
+    return false;
+  };
+
+  auto convertColor = []( const QString & string ) -> QColor
+  {
+    const thread_local QRegularExpression sColorWithAlphaRx = QRegularExpression( QStringLiteral( "^#([0-9a-fA-F]{6})([0-9a-fA-F]{2})$" ) );
+    const QRegularExpressionMatch match = sColorWithAlphaRx.match( string );
+    if ( match.hasMatch() )
+    {
+      // need to convert #RRGGBBAA to #AARRGGBB for QColor
+      return QColor( QStringLiteral( "#%1%2" ).arg( match.captured( 2 ), match.captured( 1 ) ) );
+    }
+    else
+    {
+      return QColor( string );
+    }
+  };
+
+  if ( type == QgsSymbol::Line && styles.contains( QStringLiteral( "pen" ) ) )
+  {
+    // line symbol type
+    const QVariantMap lineStyle = styles.value( QStringLiteral( "pen" ) ).toMap();
+    QColor color = convertColor( lineStyle.value( QStringLiteral( "c" ), QStringLiteral( "#000000" ) ).toString() );
+
+    double lineWidth = DEFAULT_SIMPLELINE_WIDTH;
+    QgsUnitTypes::RenderUnit lineWidthUnit = QgsUnitTypes::RenderMillimeters;
+    convertSize( lineStyle.value( QStringLiteral( "w" ) ).toString(), lineWidth, lineWidthUnit );
+
+    std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( color, lineWidth );
+    simpleLine->setWidthUnit( lineWidthUnit );
+
+    // pattern
+    const QString pattern = lineStyle.value( QStringLiteral( "p" ) ).toString();
+    if ( !pattern.isEmpty() )
+    {
+      const thread_local QRegularExpression sPatternUnitRx = QRegularExpression( QStringLiteral( "^([\\d\\.\\s]+)(g|px|pt|mm|cm|in)$" ) );
+      const QRegularExpressionMatch match = sPatternUnitRx.match( pattern );
+      if ( match.hasMatch() )
+      {
+        const QStringList patternValues = match.captured( 1 ).split( ' ' );
+        QVector< qreal > dashPattern;
+        QgsUnitTypes::RenderUnit patternUnits = QgsUnitTypes::RenderMillimeters;
+        for ( const QString &val : patternValues )
+        {
+          double length;
+          convertSize( val + match.captured( 2 ), length, patternUnits );
+          dashPattern.push_back( length * lineWidth * 2 );
+        }
+
+        simpleLine->setCustomDashVector( dashPattern );
+        simpleLine->setCustomDashPatternUnit( patternUnits );
+        simpleLine->setUseCustomDashPattern( true );
+      }
+    }
+
+    Qt::PenCapStyle capStyle = Qt::FlatCap;
+    Qt::PenJoinStyle joinStyle = Qt::MiterJoin;
+    // workaround https://github.com/OSGeo/gdal/pull/3509 in older GDAL versions
+    const QString id = lineStyle.value( QStringLiteral( "id" ) ).toString();
+    if ( id.contains( QLatin1String( "mapinfo-pen" ), Qt::CaseInsensitive ) )
+    {
+      // MapInfo renders all lines using a round pen cap and round pen join
+      // which are not the default values for OGR pen cap/join styles. So we need to explicitly
+      // override the OGR default values here on older GDAL versions
+      capStyle = Qt::RoundCap;
+      joinStyle = Qt::RoundJoin;
+    }
+
+    // pen cap
+    const QString penCap = lineStyle.value( QStringLiteral( "cap" ) ).toString();
+    if ( penCap.compare( QLatin1String( "b" ), Qt::CaseInsensitive ) == 0 )
+    {
+      capStyle = Qt::FlatCap;
+    }
+    else if ( penCap.compare( QLatin1String( "r" ), Qt::CaseInsensitive ) == 0 )
+    {
+      capStyle = Qt::RoundCap;
+    }
+    else if ( penCap.compare( QLatin1String( "p" ), Qt::CaseInsensitive ) == 0 )
+    {
+      capStyle = Qt::SquareCap;
+    }
+    simpleLine->setPenCapStyle( capStyle );
+
+    // pen join
+    const QString penJoin = lineStyle.value( QStringLiteral( "j" ) ).toString();
+    if ( penJoin.compare( QLatin1String( "m" ), Qt::CaseInsensitive ) == 0 )
+    {
+      joinStyle = Qt::MiterJoin;
+    }
+    else if ( penJoin.compare( QLatin1String( "r" ), Qt::CaseInsensitive ) == 0 )
+    {
+      joinStyle = Qt::RoundJoin;
+    }
+    else if ( penJoin.compare( QLatin1String( "b" ), Qt::CaseInsensitive ) == 0 )
+    {
+      joinStyle = Qt::BevelJoin;
+    }
+    simpleLine->setPenJoinStyle( joinStyle );
+
+    const QString priority = lineStyle.value( QStringLiteral( "l" ) ).toString();
+    if ( !priority.isEmpty() )
+    {
+      simpleLine->setRenderingPass( priority.toInt() );
+    }
+    return std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << simpleLine.release() );
+  }
+  return nullptr;
 }

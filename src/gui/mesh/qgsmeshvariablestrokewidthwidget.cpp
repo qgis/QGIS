@@ -17,6 +17,7 @@
 
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QPointer>
 
 #include "qgssettings.h"
 

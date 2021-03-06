@@ -21,6 +21,7 @@
 #include <QFont>
 #include <QIcon>
 #include <QTimer>
+#include <QUuid>
 #include <memory>
 
 #include "qgsgeometry.h"

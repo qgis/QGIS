@@ -56,7 +56,7 @@ Returns the URL generated for geocoding the specified ``address``.
 
     QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
 %Docstring
-Converts a JSON result returned from the Google Maps service to a geocoder result object.
+Converts a JSON result returned from the Nominatim service to a geocoder result object.
 %End
 
     QString endpoint() const;

@@ -29,6 +29,8 @@
 #include "qgsexpressioncontextutils.h"
 
 #include <QObject>
+#include <QSignalSpy>
+
 #include "qgstest.h"
 
 class TestQgsLayoutMultiFrame : public QObject

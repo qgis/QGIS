@@ -29,6 +29,7 @@
 #include <Qt3DRender/QSeamlessCubemap>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTextureImage>
+#include <QUrl>
 
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"

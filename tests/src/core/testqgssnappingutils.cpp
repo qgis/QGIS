@@ -437,7 +437,245 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m2.isValid() );
       QCOMPARE( m2.type(), QgsPointLocator::Centroid );
       QCOMPARE( m2.point(), QgsPointXY( 2.5, 2.5 ) );
+    }
 
+    void testSnapOnLineEndpoints()
+    {
+      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0)" );
+      f1.setGeometry( f1g );
+
+      QgsFeatureList flist;
+      flist << f1;
+      vSnapCentroidMiddle->dataProvider()->addFeatures( flist );
+      QVERIFY( vSnapCentroidMiddle->dataProvider()->featureCount() == 1 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::LineEndpointFlag ), 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0 );
+      snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      // snap to start
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 0, -0.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 0.0, 0.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 0 );
+
+      // snap to end
+      m = u.snapToMap( QgsPointXY( 5, -0.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 5.0, 0.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 3 );
+
+      // try to snap to a non start/end vertex
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( -0.1, 5 ) );
+      QVERIFY( !m2.isValid() );
+    }
+
+    void testSnapOnLineEndpointsMultiLine()
+    {
+      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "MultiLineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "MultiLineString ((0 0, 0 5, 5 5, 5 0), (0 -0.1, 0 -5, 5 -0.5))" );
+      f1.setGeometry( f1g );
+
+      QgsFeatureList flist;
+      flist << f1;
+      vSnapCentroidMiddle->dataProvider()->addFeatures( flist );
+      QVERIFY( vSnapCentroidMiddle->dataProvider()->featureCount() == 1 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::LineEndpointFlag ), 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0 );
+      snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      // snap to start
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 0, 0.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 0.0, 0.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 0 );
+
+      m = u.snapToMap( QgsPointXY( 0, -0.07 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 0.0, -0.1 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 4 );
+
+      // snap to end
+      m = u.snapToMap( QgsPointXY( 5, -0.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 5.0, 0.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 3 );
+
+      m = u.snapToMap( QgsPointXY( 5, -0.4 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 5.0, -0.5 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 6 );
+
+      // try to snap to a non start/end vertex
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( -0.1, 5 ) );
+      QVERIFY( !m2.isValid() );
+
+      m2 = u.snapToMap( QgsPointXY( 0, -5 ) );
+      QVERIFY( !m2.isValid() );
+    }
+
+    void testSnapOnPolygonEndpoints()
+    {
+      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "Polygon ((1 0, 0 5, 5 5, 5 0, 1 0),(3 2, 3.5 2, 3.5 3, 3 2))" );
+      f1.setGeometry( f1g );
+
+      QgsFeatureList flist;
+      flist << f1;
+      vSnapCentroidMiddle->dataProvider()->addFeatures( flist );
+      QVERIFY( vSnapCentroidMiddle->dataProvider()->featureCount() == 1 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::LineEndpointFlag ), 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0 );
+      snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      // snap to start of exterior
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 1, -0.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 1.0, 0.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 0 );
+
+      // snap to ring start
+      m = u.snapToMap( QgsPointXY( 3, 2.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 3.0, 2.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 5 );
+
+      // try to snap to a non start/end vertex
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( -0.1, 5 ) );
+      QVERIFY( !m2.isValid() );
+      m2 = u.snapToMap( QgsPointXY( 3.51, 3 ) );
+      QVERIFY( !m2.isValid() );
+    }
+
+    void testSnapOnMultiPolygonEndpoints()
+    {
+      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "MultiPolygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "MultiPolygon (((1 0, 0 5, 5 5, 5 0, 1 0),(3 2, 3.5 2, 3.5 3, 3 2)), ((10 0, 10 5, 15 5, 15 0, 10 0),(13 2, 13.5 2, 13.5 3, 13 2)) )" );
+      f1.setGeometry( f1g );
+
+      QgsFeatureList flist;
+      flist << f1;
+      vSnapCentroidMiddle->dataProvider()->addFeatures( flist );
+      QVERIFY( vSnapCentroidMiddle->dataProvider()->featureCount() == 1 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::LineEndpointFlag ), 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0 );
+      snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      // snap to start of exterior
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 1, -0.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 1.0, 0.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 0 );
+
+      m = u.snapToMap( QgsPointXY( 10, -0.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 10.0, 0.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 9 );
+
+      // snap to ring start
+      m = u.snapToMap( QgsPointXY( 3, 2.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 3.0, 2.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 5 );
+
+      m = u.snapToMap( QgsPointXY( 13, 2.1 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::LineEndpoint );
+      QCOMPARE( m.point(), QgsPointXY( 13.0, 2.0 ) );
+      QVERIFY( m.hasLineEndpoint() );
+      QVERIFY( !m.hasEdge() );
+      QCOMPARE( m.vertexIndex(), 14 );
+
+      // try to snap to a non start/end vertex
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( -0.1, 5 ) );
+      QVERIFY( !m2.isValid() );
+      m2 = u.snapToMap( QgsPointXY( 3.51, 3 ) );
+      QVERIFY( !m2.isValid() );
+      m2 = u.snapToMap( QgsPointXY( 10, 5 ) );
+      QVERIFY( !m2.isValid() );
+      m2 = u.snapToMap( QgsPointXY( 13.51, 3 ) );
+      QVERIFY( !m2.isValid() );
     }
 
     void testSnapOnCurrentLayer()

@@ -21,6 +21,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
+#include <QSignalSpy>
 
 //qgis includes...
 #include <qgsgeometry.h>

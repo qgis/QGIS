@@ -27,7 +27,7 @@
 #include <QAction>
 #include <QClipboard>
 #include <QMessageBox>
-
+#include <QMimeData>
 
 QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   : QgsPanelWidget( parent )

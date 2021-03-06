@@ -23,7 +23,7 @@
 #include "qgslayoutundostack.h"
 
 #include <QFileDialog>
-
+#include <QUrl>
 
 QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast< QgsLayoutItemHtml* >( frame->multiFrame() ) : nullptr )

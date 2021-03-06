@@ -29,6 +29,7 @@
 #include "qgsexception.h"
 #include "qgsmapsettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
 
@@ -176,6 +177,7 @@ void QgsLayoutItemAttributeTable::resetColumns()
   //rebuild columns list from vector layer fields
   int idx = 0;
   const QgsFields sourceFields = source->fields();
+
   for ( const auto &field : sourceFields )
   {
     QString currentAlias = source->attributeDisplayName( idx );
@@ -329,8 +331,9 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
     {
       int attrIdx = layerFields.lookupField( field );
       if ( attrIdx < 0 )
+      {
         continue;
-
+      }
       QString currentAlias = source->attributeDisplayName( attrIdx );
       QgsLayoutTableColumn col;
       col.setAttribute( layerFields.at( attrIdx ).name() );
@@ -412,6 +415,13 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       req.setFilterExpression( mFeatureFilter );
     }
   }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  if ( mLayout->renderContext().featureFilterProvider() )
+  {
+    mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
+  }
+#endif
 
   QgsRectangle selectionRect;
   QgsGeometry visibleRegion;
@@ -541,6 +551,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     // We also need a list of just the cell contents, so that we can do a quick check for row uniqueness (when the
     // corresponding option is enabled)
     QVector< Cell > currentRow;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    mColumns = filteredColumns();
+#endif
     currentRow.reserve( mColumns.count() );
     QgsLayoutTableRow rowContents;
     rowContents.reserve( mColumns.count() );
@@ -692,6 +705,66 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
   replaced.replace( mWrapString, QLatin1String( "\n" ) );
   return replaced;
 }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
+{
+  QgsLayoutTableColumns allowedColumns { mColumns };
+
+  QgsVectorLayer *source { sourceLayer() };
+
+  if ( ! source )
+  {
+    return allowedColumns;
+  }
+
+  QHash<const QString, QSet<QString>> columnAttributesMap;
+  QSet<QString> allowedAttributes;
+
+  for ( const auto &c : qgis::as_const( allowedColumns ) )
+  {
+    if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
+    {
+      columnAttributesMap[ c.attribute() ] = QSet<QString>();
+      const QgsExpression columnExp { c.attribute() };
+      const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
+      for ( const auto &cref : constRefs )
+      {
+        columnAttributesMap[ c.attribute() ].insert( cref->name() );
+        allowedAttributes.insert( cref->name() );
+      }
+    }
+  }
+
+  if ( mLayout->renderContext().featureFilterProvider() )
+  {
+    const QStringList filteredAttributes { layout()->renderContext().featureFilterProvider()->layerAttributes( source, allowedAttributes.values() ) };
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    const QSet<QString> filteredAttributesSet( filteredAttributes.constBegin(), filteredAttributes.constEnd() );
+#else
+    const QSet<QString> filteredAttributesSet { filteredAttributes.toSet() };
+#endif
+    if ( filteredAttributesSet != allowedAttributes )
+    {
+      const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
+      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &columnAttributesMap, &forbidden ]( QgsLayoutTableColumn & c ) -> bool
+      {
+        for ( const auto &f : qgis::as_const( forbidden ) )
+        {
+          if ( columnAttributesMap[ c.attribute() ].contains( f ) )
+          {
+            return true;
+          }
+        }
+        return false;
+      } ), allowedColumns.end() );
+
+    }
+  }
+
+  return allowedColumns;
+}
+#endif
 
 QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer() const
 {

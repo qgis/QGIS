@@ -477,7 +477,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
   {
     // Check aliases
     bool found { false };
-    if ( QgsServerOgcApi::contentTypeAliases().keys().contains( result ) )
+    if ( QgsServerOgcApi::contentTypeAliases().contains( result ) )
     {
       const QList<QgsServerOgcApi::ContentType> constCt { contentTypes() };
       for ( const auto &ct : constCt )

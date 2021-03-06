@@ -48,6 +48,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mFirstFieldIsFid( source->mFirstFieldIsFid )
   , mFieldsWithoutFid( source->mFieldsWithoutFid )
   , mAuthCfg( source->mAuthCfg )
+  , mSymbolType( QgsSymbol::symbolTypeForGeometryType( QgsWkbTypes::geometryType( source->mWkbType ) ) )
 {
 
   /* When inside a transaction for GPKG/SQLite and fetching fid(s) we might be nested inside an outer fetching loop,
@@ -565,6 +566,12 @@ bool QgsOgrFeatureIterator::readFeature( gdal::ogr_feature_unique_ptr fet, QgsFe
     {
       getFeatureAttribute( fet.get(), feature, idx );
     }
+  }
+
+  if ( mRequest.flags() & QgsFeatureRequest::EmbeddedSymbols )
+  {
+    const QString styleString( OGR_F_GetStyleString( fet.get() ) );
+    feature.setEmbeddedSymbol( QgsOgrUtils::symbolFromStyleString( styleString, mSymbolType ).release() );
   }
 
   return true;

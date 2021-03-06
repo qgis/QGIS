@@ -20,6 +20,7 @@
 #include <QPair>
 #include <QLinearGradient>
 #include <QBrush>
+#include <QPointer>
 #include <algorithm>
 
 #include "qgsmeshlayerrenderer.h"

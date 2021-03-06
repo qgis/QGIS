@@ -1538,6 +1538,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         source = os.path.join(testDataPath, 'polys.gml')
+        sourceZ = os.path.join(testDataPath, 'pointsz.gml')
         alg = rasterize()
         alg.initAlgorithm()
 
@@ -1590,6 +1591,27 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdal_rasterize',
                  '-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -at -add ' +
                  source + ' ' +
+                 outdir + '/check.jpg'])
+
+            # use_Z selected with no field
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': sourceZ,
+                                        'USE_Z': True,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG ' +
+                 sourceZ + ' ' +
+                 outdir + '/check.jpg'])
+
+            # use_Z selected with field indicated (should prefer use_Z)
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': sourceZ,
+                                        'FIELD': 'elev',
+                                        'USE_Z': True,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG ' +
+                 sourceZ + ' ' +
                  outdir + '/check.jpg'])
 
     def testRasterizeOver(self):
@@ -1714,6 +1736,24 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdal_retile.py',
                  '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
                  ])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'OUTPUT_CSV': 'out.csv',
+                                        'DELIMITER': '',
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -targetDir {} '.format(outdir) +
+                 source])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'OUTPUT_CSV': 'out.csv',
+                                        'DELIMITER': ';',
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -csvDelim ";" -targetDir {} '.format(outdir) +
+                 source])
 
             # additional parameters
             self.assertEqual(
@@ -2588,7 +2628,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest -srcnodata "-9999" ' +
+                              '-resolution average -separate -r nearest -srcnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 

@@ -24,6 +24,7 @@
 #include <QPen>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPointer>
 #include "qgis_gui.h"
 
 class QgsMapLayer;
@@ -195,7 +196,7 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     QPen mPen;
     QgsGeometry mOriginalGeometry;
     QgsGeometry mGeometry;
-    QgsMapLayer *mLayer = nullptr;
+    QPointer< QgsMapLayer > mLayer;
     QgsFeature mFeature;
     double mBuffer = 0; // line / stroke buffer in pixels
     double mMinWidth = 0; // line / stroke minimum width in pixels

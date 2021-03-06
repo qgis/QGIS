@@ -32,6 +32,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
+#include <QRegularExpression>
 
 //proj includes
 #include "qgsprojutils.h"

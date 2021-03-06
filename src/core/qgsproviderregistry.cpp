@@ -117,6 +117,38 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   init();
 }
 
+///@cond PRIVATE
+class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriHandlerInterface
+{
+  public:
+    bool matchesUri( const QString &uri ) const override
+    {
+      const QFileInfo fi( uri );
+      if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 )
+        return true;
+
+      return false;
+    }
+
+    QgsProviderRegistry::UnusableUriDetails details( const QString &uri ) const override
+    {
+      QgsProviderRegistry::UnusableUriDetails res = QgsProviderRegistry::UnusableUriDetails( uri,
+          QObject::tr( "LAS and LAZ files cannot be opened by this QGIS install." ),
+          QList<QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer );
+
+#ifdef Q_OS_WIN
+      res.detailedWarning = QObject::tr( "The installer used to install this version of QGIS does "
+                                         "not include the PDAL library required for opening LAS and LAZ point clouds. Please "
+                                         "obtain one of the alternative installers from https://qgis.org which has point "
+                                         "cloud support enabled." );
+#else
+      res.detailedWarning = QObject::tr( "This QGIS build does not include the PDAL library dependency required for opening LAS or LAZ point clouds." );
+#endif
+      return res;
+    }
+};
+///@endcond
+
 void QgsProviderRegistry::init()
 {
   // add static providers
@@ -150,6 +182,9 @@ void QgsProviderRegistry::init()
     mProviders[ pc->key() ] = pc;
   }
 #endif
+
+  registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
+
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
@@ -379,6 +414,8 @@ bool QgsProviderRegistry::exists()
 
 QgsProviderRegistry::~QgsProviderRegistry()
 {
+  qDeleteAll( mUnusableUriHandlers );
+
   clean();
   if ( sInstance == this )
     sInstance = nullptr;
@@ -805,6 +842,25 @@ QList<QgsProviderRegistry::ProviderCandidateDetails> QgsProviderRegistry::prefer
     }
   }
   return res;
+}
+
+bool QgsProviderRegistry::registerUnusableUriHandler( QgsProviderRegistry::UnusableUriHandlerInterface *handler )
+{
+  mUnusableUriHandlers << handler;
+  return true;
+}
+
+bool QgsProviderRegistry::handleUnusableUri( const QString &uri, UnusableUriDetails &details ) const
+{
+  for ( const QgsProviderRegistry::UnusableUriHandlerInterface *handler : mUnusableUriHandlers )
+  {
+    if ( handler->matchesUri( uri ) )
+    {
+      details = handler->details( uri );
+      return true;
+    }
+  }
+  return false;
 }
 
 bool QgsProviderRegistry::shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const

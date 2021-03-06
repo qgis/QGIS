@@ -37,6 +37,9 @@ Filter the features of the layer
 :param filterFeatures: the request to fill
 %End
 
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
+
     virtual QgsFeatureFilterProvider *clone() const /Factory/;
 
 %Docstring

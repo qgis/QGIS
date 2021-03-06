@@ -44,6 +44,7 @@
 #include "qgsxmlutils.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -184,6 +185,15 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *showFeatureCount = actions->actionShowFeatureCount( menu );
         menu->addAction( showFeatureCount );
         showFeatureCount->setEnabled( vlayer->isValid() );
+
+        const QString iconName = vlayer && vlayer->labeling() && vlayer->labeling()->type() == QLatin1String( "rule-based" )
+                                 ? QStringLiteral( "labelingRuleBased.svg" )
+                                 : QStringLiteral( "labelingSingle.svg" );
+        QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show &Labels" ), menu );
+        actionShowLabels->setCheckable( true );
+        actionShowLabels->setChecked( vlayer->labelsEnabled() );
+        connect( actionShowLabels, &QAction::toggled, this, &QgsAppLayerTreeViewMenuProvider::toggleLabels );
+        menu->addAction( actionShowLabels );
       }
 
       QAction *actionCopyLayer = new QAction( tr( "Copy Layer" ), menu );
@@ -348,7 +358,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
-        QMenu *menuSetCRS = new QMenu( tr( "&Layer CRS" ), menu );
+        QMenu *menuSetCRS = new QMenu( tr( "Layer CRS" ), menu );
 
         const QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
         QgsCoordinateReferenceSystem layerCrs;
@@ -1098,5 +1108,47 @@ void QgsAppLayerTreeViewMenuProvider::setLayerCrs( const QgsCoordinateReferenceS
         nodeLayer->layer()->triggerRepaint();
       }
     }
+  }
+}
+
+void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
+{
+  const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : selectedLayerNodes )
+  {
+    QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( l->layer() );
+    if ( !vlayer || !vlayer->isSpatial() )
+      continue;
+
+    if ( enabled && !vlayer->labeling() )
+    {
+      // no labeling setup - create default labeling for layer
+      QgsPalLayerSettings settings;
+      settings.fieldName = vlayer->displayField();
+      switch ( vlayer->geometryType() )
+      {
+        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::PolygonGeometry:
+          settings.placement = QgsPalLayerSettings::AroundPoint;
+          break;
+
+        case QgsWkbTypes::LineGeometry:
+          settings.placement = QgsPalLayerSettings::Line;
+          break;
+
+        case QgsWkbTypes::UnknownGeometry:
+        case QgsWkbTypes::NullGeometry:
+          break;
+      }
+
+      vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+      vlayer->setLabelsEnabled( true );
+    }
+    else
+    {
+      vlayer->setLabelsEnabled( enabled );
+    }
+    vlayer->emitStyleChanged();
+    vlayer->triggerRepaint();
   }
 }

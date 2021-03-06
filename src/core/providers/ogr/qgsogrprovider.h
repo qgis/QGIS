@@ -159,6 +159,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString description() const override;
     QgsTransaction *transaction() const override;
     bool doesStrictFeatureTypeCheck() const override;
+    QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
 
     //! Returns OGR geometry type
     static OGRwkbGeometryType getOgrGeomType( const QString &driverName, OGRLayerH ogrLayer );

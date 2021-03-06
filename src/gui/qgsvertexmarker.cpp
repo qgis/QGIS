@@ -20,16 +20,20 @@
 
 QgsVertexMarker::QgsVertexMarker( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )
-{}
+{
+  updatePath();
+}
 
 void QgsVertexMarker::setIconType( int type )
 {
   mIconType = type;
+  updatePath();
 }
 
 void QgsVertexMarker::setIconSize( int iconSize )
 {
   mIconSize = iconSize;
+  updatePath();
 }
 
 void QgsVertexMarker::setCenter( const QgsPointXY &point )
@@ -58,13 +62,19 @@ void QgsVertexMarker::setPenWidth( int width )
 
 void QgsVertexMarker::paint( QPainter *p )
 {
-  qreal s = ( mIconSize - 1 ) / 2.0;
-
   QPen pen( mColor );
   pen.setWidth( mPenWidth );
   p->setPen( pen );
   QBrush brush( mFillColor );
   p->setBrush( brush );
+  p->drawPath( mPath );
+}
+
+void QgsVertexMarker::updatePath()
+{
+  mPath = QPainterPath();
+
+  const qreal s = ( mIconSize - 1 ) / 2.0;
 
   switch ( mIconType )
   {
@@ -72,47 +82,58 @@ void QgsVertexMarker::paint( QPainter *p )
       break;
 
     case ICON_CROSS:
-      p->drawLine( QLineF( -s, 0, s, 0 ) );
-      p->drawLine( QLineF( 0, -s, 0, s ) );
+      mPath.moveTo( QPointF( -s, 0 ) );
+      mPath.lineTo( QPointF( s, 0 ) );
+      mPath.moveTo( QPointF( 0, -s ) );
+      mPath.lineTo( QPointF( 0, s ) );
       break;
 
     case ICON_X:
-      p->drawLine( QLineF( -s, -s, s, s ) );
-      p->drawLine( QLineF( -s, s, s, -s ) );
+      mPath.moveTo( QPointF( -s, -s ) );
+      mPath.lineTo( QPointF( s, s ) );
+      mPath.moveTo( QPointF( -s, s ) );
+      mPath.lineTo( QPointF( s, -s ) );
       break;
 
     case ICON_BOX:
-      p->drawLine( QLineF( -s, -s, s, -s ) );
-      p->drawLine( QLineF( s, -s, s, s ) );
-      p->drawLine( QLineF( s, s, -s, s ) );
-      p->drawLine( QLineF( -s, s, -s, -s ) );
+      mPath.addRect( QRectF( -s, -s, s * 2, s * 2 ) );
       break;
 
     case ICON_CIRCLE:
-      p->drawEllipse( QPointF( 0, 0 ), s, s );
+      mPath.addEllipse( QPointF( 0, 0 ), s, s );
       break;
 
     case ICON_DOUBLE_TRIANGLE:
-      p->drawLine( QLineF( -s, -s,  s, -s ) );
-      p->drawLine( QLineF( -s,  s,  s,  s ) );
-      p->drawLine( QLineF( -s, -s,  s,  s ) );
-      p->drawLine( QLineF( s, -s, -s,  s ) );
+      mPath.moveTo( QPointF( -s, -s ) );
+      mPath.lineTo( QPointF( s, -s ) );
+      mPath.lineTo( QPointF( -s, s ) );
+      mPath.lineTo( QPointF( s, s ) );
+      mPath.lineTo( QPointF( -s, -s ) );
       break;
 
     case ICON_TRIANGLE:
-      p->drawLine( QLineF( -s,  s,  s,  s ) );
-      p->drawLine( QLineF( s,  s,  0, -s ) );
-      p->drawLine( QLineF( 0, -s, -s,  s ) );
+      mPath.moveTo( QPointF( -s, s ) );
+      mPath.lineTo( QPointF( s, s ) );
+      mPath.lineTo( QPointF( 0, -s ) );
+      mPath.lineTo( QPointF( -s, s ) );
       break;
+
     case ICON_RHOMBUS:
-      p->drawLine( QLineF( 0, -s, -s,  0 ) );
-      p->drawLine( QLineF( -s,  0,  0,  s ) );
-      p->drawLine( QLineF( 0,  s,  s,  0 ) );
-      p->drawLine( QLineF( s,  0,  0, -s ) );
+      mPath.moveTo( QPointF( 0, -s ) );
+      mPath.lineTo( QPointF( -s, 0 ) );
+      mPath.lineTo( QPointF( 0, s ) );
+      mPath.lineTo( QPointF( s, 0 ) );
+      mPath.lineTo( QPointF( 0, -s ) );
+      break;
+
+    case ICON_INVERTED_TRIANGLE:
+      mPath.moveTo( QPointF( -s, -s ) );
+      mPath.lineTo( QPointF( s, -s ) );
+      mPath.lineTo( QPointF( 0, s ) );
+      mPath.lineTo( QPointF( -s, -s ) );
       break;
   }
 }
-
 
 QRectF QgsVertexMarker::boundingRect() const
 {

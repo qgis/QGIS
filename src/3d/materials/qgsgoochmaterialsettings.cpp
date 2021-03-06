@@ -25,6 +25,7 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QGraphicsApiFilter>
+#include <QUrl>
 
 QString QgsGoochMaterialSettings::type() const
 {

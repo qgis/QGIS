@@ -27,6 +27,9 @@
 #include "ui_qgspalettedrendererwidgetbase.h"
 #include "qgis_gui.h"
 
+#include <QThread>
+#include <QSortFilterProxyModel>
+
 class QgsRasterLayer;
 class QgsLocaleAwareNumericLineEditDelegate;
 

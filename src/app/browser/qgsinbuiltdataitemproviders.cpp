@@ -49,6 +49,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QUrl>
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -566,7 +567,7 @@ bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemG
 
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
-    const QgsMimeDataUtils::UriList layerUriList = QgsMimeDataUtils::UriList() << layerItem->mimeUri();
+    const QgsMimeDataUtils::UriList layerUriList = layerItem->mimeUris();
     QgisApp::instance()->handleDropUriList( layerUriList );
     return true;
   }
@@ -602,7 +603,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
     if ( item && item->type() == QgsDataItem::Layer )
     {
       if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
-        layerUriList << layerItem->mimeUri();
+        layerUriList.append( layerItem->mimeUris() );
     }
   }
   if ( !layerUriList.isEmpty() )

@@ -170,9 +170,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       FieldConfig() = default;
       FieldConfig( QgsVectorLayer *layer, int idx );
 
-      bool mEditable =  true ;
-      bool mEditableEnabled =  true ;
-      bool mLabelOnTop =  false ;
+      bool mEditable = true;
+      bool mEditableEnabled = true;
+      bool mLabelOnTop = false;
+      bool mReuseLastValues = false;
       QgsFieldConstraints mFieldConstraints;
       QPushButton *mButton = nullptr;
       QString mEditorWidgetType;

@@ -26,6 +26,7 @@
 #include <gdalwarper.h>
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "qgssymbol.h"
 
 namespace gdal
 {
@@ -320,6 +321,20 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.12
      */
     static QString readShapefileEncodingFromLdid( const QString &path );
+
+    /**
+     * Parses an OGR style \a string to a variant map containing the style string components.
+     *
+     * \since QGIS 3.20
+     */
+    static QVariantMap parseStyleString( const QString &string );
+
+    /**
+     * Creates a new QgsSymbol matching an OGR style \a string.
+     *
+     * \since QGIS 3.20
+     */
+    static std::unique_ptr< QgsSymbol > symbolFromStyleString( const QString &string, QgsSymbol::SymbolType type ) SIP_FACTORY;
 };
 
 #endif // QGSOGRUTILS_H

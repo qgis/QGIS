@@ -21,6 +21,8 @@
 #include "qgsvirtuallayerdefinition.h"
 #include "qgstaskmanager.h"
 
+#include <QWaitCondition>
+
 /**
  * \ingroup core
  *

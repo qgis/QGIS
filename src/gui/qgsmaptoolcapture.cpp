@@ -93,6 +93,11 @@ QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
   return QgsMapToolCapture::NoCapabilities;
 }
 
+bool QgsMapToolCapture::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  return technique == StraightSegments;
+}
+
 void QgsMapToolCapture::activate()
 {
   if ( mTempRubberBand )
@@ -462,8 +467,8 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsVectorLayer *sourceLayer = match.layer();
-  if ( match.isValid() && ( match.hasVertex() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer )
-
+  if ( match.isValid() && ( match.hasVertex() || match.hasLineEndpoint() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer &&
+       ( sourceLayer->crs() == vlayer->crs() ) )
   {
     QgsFeature f;
     QgsFeatureRequest request;
@@ -483,34 +488,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
           return 2;
         QgsLineString line( geom.constGet()->vertexAt( vId ), geom.constGet()->vertexAt( vId2 ) );
 
-        QgsPoint pt( match.point() );
-        // Transform point to sourceLayer crs, since vId and vId2 coordinates are in sourceLayer crs
-        if ( sourceLayer->crs() != QgsProject::instance()->crs() )
-        {
-          try
-          {
-            pt.transform( QgsCoordinateTransform( QgsProject::instance()->crs(), sourceLayer->crs(), sourceLayer->transformContext() ) );
-          }
-          catch ( QgsCsException &cse )
-          {
-            Q_UNUSED( cse )
-            QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
-            return 2;
-          }
-        }
-        layerPoint = QgsGeometryUtils::closestPoint( line,  pt );
-        // (re)Transform layerPoint to vlayer crs
-        try
-        {
-          layerPoint.transform( QgsCoordinateTransform( sourceLayer->crs(), vlayer->crs(), vlayer->transformContext() ) );
-        }
-        catch ( QgsCsException &cse )
-        {
-          Q_UNUSED( cse )
-          QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
-          return 2;
-        }
-
+        layerPoint = QgsGeometryUtils::closestPoint( line,  QgsPoint( match.point() ) );
       }
       else
       {
@@ -689,7 +667,11 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   //if there is only one point, this the first digitized point that are in the this first curve added --> remove the point
   if ( mCaptureCurve.numPoints() == 1 )
     mCaptureCurve.removeCurve( 0 );
-  mCaptureCurve.addCurve( c );
+
+  // we set the extendPrevious option to true to avoid creating compound curves with many 2 vertex linestrings -- instead we prefer
+  // to extend linestring curves so that they continue the previous linestring wherever possible...
+  mCaptureCurve.addCurve( c, true );
+
   int countAfter = mCaptureCurve.vertexCount();
   int addedPoint = countAfter - countBefore;
 

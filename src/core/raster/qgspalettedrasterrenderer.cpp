@@ -31,6 +31,8 @@
 #include <QVector>
 #include <memory>
 #include <set>
+#include <QRegularExpression>
+#include <QTextStream>
 
 const int QgsPalettedRasterRenderer::MAX_FLOAT_CLASSES = 65536;
 

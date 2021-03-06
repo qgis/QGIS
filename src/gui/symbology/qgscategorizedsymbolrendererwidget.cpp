@@ -503,7 +503,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer.reset( QgsCategorizedSymbolRenderer::convertFromRenderer( renderer ) );
+    mRenderer.reset( QgsCategorizedSymbolRenderer::convertFromRenderer( renderer, layer ) );
   }
   if ( !mRenderer )
   {

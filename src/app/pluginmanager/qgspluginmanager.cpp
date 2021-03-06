@@ -30,6 +30,8 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QDesktopServices>
+#include <QRegularExpression>
+#include <QUrl>
 
 #include "qgsmessagelog.h"
 

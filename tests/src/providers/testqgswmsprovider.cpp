@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include <QFile>
 #include <QObject>
+#include <QUrlQuery>
+
 #include "qgstest.h"
 #include <qgswmsprovider.h>
 #include <qgsapplication.h>

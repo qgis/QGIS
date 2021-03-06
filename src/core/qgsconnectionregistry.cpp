@@ -18,6 +18,7 @@
 #include "qgsconnectionregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include <QRegularExpression>
 
 QgsConnectionRegistry::QgsConnectionRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )

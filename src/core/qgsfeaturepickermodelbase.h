@@ -15,10 +15,11 @@
 #ifndef QGSFEATUREFILTERMODELBASE_H
 #define QGSFEATUREFILTERMODELBASE_H
 
-#include <QAbstractItemModel>
-
 #include "qgsconditionalstyle.h"
 #include "qgsfeatureexpressionvaluesgatherer.h"
+
+#include <QAbstractItemModel>
+#include <QTimer>
 
 /**
  * \ingroup core

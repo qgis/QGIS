@@ -24,6 +24,7 @@
 #include "qgssettings.h"
 #include <QNetworkReply>
 #include <QAuthenticator>
+#include <QThread>
 
 class BackgroundRequest : public QThread
 {

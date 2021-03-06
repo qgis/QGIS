@@ -34,6 +34,7 @@
 #include <QTableWidget>
 #include <QStringListModel>
 #include <QCompleter>
+#include <QTimer>
 
 #include <nlohmann/json.hpp>
 using namespace nlohmann;
@@ -325,7 +326,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
     {
       if ( ! mCache.isEmpty() )
       {
-        updateValues( mCache.at( 0 ).key );
+        updateValues( formFeature().attribute( fieldIdx() ).isValid() ? formFeature().attribute( fieldIdx() ) : mCache.at( 0 ).key );
       }
     } );
   }

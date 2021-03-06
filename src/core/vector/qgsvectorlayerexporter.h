@@ -26,6 +26,8 @@
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
 
+#include <QPointer>
+
 class QProgressDialog;
 class QgsVectorDataProvider;
 class QgsFields;
