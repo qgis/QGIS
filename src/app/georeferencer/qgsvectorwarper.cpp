@@ -88,7 +88,7 @@ bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QStri
     return false;
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   std::unique_ptr< QgsVectorFileWriter > exporter( QgsVectorFileWriter::create( outputName, layer->fields(), layer->wkbType(), mDestCRS, QgsCoordinateTransformContext(), saveOptions ) );
-  if ( !exporter->hasError() )
+  if ( exporter->hasError() )
     return false;
 
   QgsFeature outputFeature;
@@ -120,7 +120,7 @@ bool QgsVectorWarper::executeTransform( const QgsVectorLayer *layer, const QStri
     {
       outputFeature.setGeometry( transformed );
       exporter->addFeature( outputFeature, QgsFeatureSink::FastInsert );
-      if ( !exporter->hasError() )
+      if ( exporter->hasError() )
       {
         allGood = false;
         QgsMessageLog::logMessage( QObject::tr( "Error performing transformation: {}" ).arg( exporter->errorMessage() ) );
