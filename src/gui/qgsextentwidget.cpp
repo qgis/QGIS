@@ -208,10 +208,10 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
   mYMinLineEdit->setText( QLocale().toString( extent.yMinimum(), 'f', decimals ) );
   mYMaxLineEdit->setText( QLocale().toString( extent.yMaximum(), 'f', decimals ) );
 
-  QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( mXMinLineEdit->text(),
-                      mXMaxLineEdit->text(),
-                      mYMinLineEdit->text(),
-                      mYMaxLineEdit->text() );
+  QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( QString::number( extent.xMinimum(), 'f', decimals ),
+                      QString::number( extent.xMaximum(), 'f', decimals ),
+                      QString::number( extent.yMinimum(), 'f', decimals ),
+                      QString::number( extent.yMaximum(), 'f', decimals ) );
   condensed += QStringLiteral( " [%1]" ).arg( mOutputCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
   mCondensedLineEdit->setText( condensed );
 
