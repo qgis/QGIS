@@ -1539,6 +1539,9 @@ namespace QgsWms
       QgsWmsParametersLayer param;
       param.mNickname = layer;
 
+      if ( i < opacities.count() )
+        param.mOpacity = opacities[i];
+
       if ( isExternalLayer( layer ) )
       {
         const QgsWmsParametersExternalLayer extParam = externalLayerParameter( layer );
@@ -1549,9 +1552,6 @@ namespace QgsWms
       {
         if ( i < styles.count() )
           param.mStyle = styles[i];
-
-        if ( i < opacities.count() )
-          param.mOpacity = opacities[i];
 
         if ( filters.contains( layer ) )
         {
