@@ -29,7 +29,7 @@ namespace QgsWms
                             QgsServerResponse &response )
   {
     // get wms parameters from query
-    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+    QgsWmsParameters parameters( request.serverParameters() );
 
     // WIDTH and HEIGHT are not mandatory, but we need to set a default size
     if ( ( parameters.widthAsInt() <= 0

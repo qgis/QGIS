@@ -30,7 +30,7 @@ namespace QgsWms
                       QgsServerResponse &response )
   {
     // get wms parameters from query
-    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+    const QgsWmsParameters parameters( request.serverParameters() );
 
     // GetPrint supports svg/png/pdf
     const QgsWmsParameters::Format format = parameters.format();

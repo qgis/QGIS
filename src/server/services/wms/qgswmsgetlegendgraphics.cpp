@@ -41,7 +41,7 @@ namespace QgsWms
                                QgsServerResponse &response )
   {
     // get parameters from query
-    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+    QgsWmsParameters parameters( request.serverParameters() );
 
     // check parameters validity
     // FIXME fail with png + mode

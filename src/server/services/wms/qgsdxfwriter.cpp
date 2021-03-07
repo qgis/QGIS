@@ -26,7 +26,7 @@ namespace QgsWms
                    QgsServerResponse &response )
   {
     // get wms parameters from query
-    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+    const QgsWmsParameters parameters( request.serverParameters() );
 
     // prepare render context
     QgsWmsRenderContext context( project, serverIface );
