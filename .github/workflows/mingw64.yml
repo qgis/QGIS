@@ -22,6 +22,7 @@ on:
     - 'ms-windows/**'
     - 'CMakeLists.txt'
     - '.github/workflows/mingw64.yml'
+  workflow_dispatch:
 
 jobs:
   mingw64-build:
