@@ -935,7 +935,8 @@ namespace QgsWfs
       {
         QString expFilterName = parameters.value( QStringLiteral( "EXP_FILTER" ) );
         QStringList expFilterList;
-        QRegularExpressionMatch match = QRegularExpression( "\\(([^()]+)\\)" ).match( expFilterName );
+        QRegularExpression rx( "\\(([^()]+)\\)" );
+        QRegularExpressionMatch match = rx.match( expFilterName );
         if ( !match.hasMatch() )
         {
           expFilterList << expFilterName;
