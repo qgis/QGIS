@@ -152,7 +152,7 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
   {
     QLineEdit *lineEdit = new QLineEdit( parent );
     lineEdit->setFrame( false );
-    if ( !regExp.isEmpty() )
+    if ( !regExp.pattern().isEmpty() )
     {
       QValidator *validator = new QRegularExpressionValidator( regExp, lineEdit );
       lineEdit->setValidator( validator );
