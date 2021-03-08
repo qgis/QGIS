@@ -26,6 +26,8 @@
 #include <sys/select.h>
 #endif
 
+const int PG_CONNECT_TIMEOUT = 30;
+
 extern "C"
 {
 #include <libpq-fe.h>
@@ -59,12 +61,14 @@ QgsPostgresListener::~QgsPostgresListener()
 void QgsPostgresListener::run()
 {
   PGconn *conn = nullptr;
+  QString connectString = mConnString;
 
-  conn = PQconnectdb( mConnString.toUtf8() );
+  connectString += QStringLiteral( " connect_timeout=%1" ).arg( PG_CONNECT_TIMEOUT );
+  conn = PQconnectdb( connectString.toUtf8() );
 
   if ( PQstatus( conn ) != CONNECTION_OK )
   {
-    QgsDataSourceUri uri( mConnString );
+    QgsDataSourceUri uri( connectString );
     QString username = uri.username();
     QString password = uri.password();
 
@@ -74,13 +78,11 @@ void QgsPostgresListener::run()
 
     if ( QgsCredentials::instance()->get( mConnString, username, password, PQerrorMessage( conn ) ) )
     {
-      if ( !username.isEmpty() )
-        uri.setUsername( username );
+      uri.setUsername( username );
+      uri.setPassword( password );
+      connectString = uri.connectionInfo( false );
+      connectString += QStringLiteral( " connect_timeout=%1" ).arg( PG_CONNECT_TIMEOUT );
 
-      if ( !password.isEmpty() )
-        uri.setPassword( password );
-
-      QString connectString = uri.connectionInfo( false );
       conn = PQconnectdb( connectString.toUtf8() );
       if ( PQstatus( conn ) == CONNECTION_OK )
         QgsCredentials::instance()->put( mConnString, username, password );
@@ -90,6 +92,7 @@ void QgsPostgresListener::run()
 
     if ( PQstatus( conn ) != CONNECTION_OK )
     {
+      PQfinish( conn );
       QgsDebugMsg( QStringLiteral( "LISTENer not started" ) );
       return;
     }
