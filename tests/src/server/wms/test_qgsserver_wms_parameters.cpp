@@ -29,6 +29,7 @@ class TestQgsServerWmsParameters : public QObject
     void cleanupTestCase();
 
     void external_layers();
+    void percent_encoding();
 };
 
 void TestQgsServerWmsParameters::initTestCase()
@@ -66,6 +67,21 @@ void TestQgsServerWmsParameters::external_layers()
   layer_params = layers_params[2];
   QCOMPARE( layer_params.mNickname, QString( "external_layer_2" ) );
   QCOMPARE( layer_params.mExternalUri, QString( "layers=layer_2_name&url=http://url_2" ) );
+}
+
+void TestQgsServerWmsParameters::percent_encoding()
+{
+  // '+' in its encoded ('%2B') form is transformed in '+' sign and
+  // forwarded to parameters subclasses
+  QUrlQuery query;
+  query.addQueryItem( "MYPARAM", QString( "my%1value" ).arg( QLatin1String( "%2B" ) ) );
+
+  QgsServerParameters params;
+  params.load( query );
+  QCOMPARE( params.value( "MYPARAM" ), QString( "my+value" ) );
+
+  QgsWms::QgsWmsParameters wmsParams( params );
+  QCOMPARE( wmsParams.value( "MYPARAM" ), QString( "my+value" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )

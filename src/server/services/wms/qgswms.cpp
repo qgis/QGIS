@@ -65,7 +65,7 @@ namespace QgsWms
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {
-        const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+        const QgsWmsParameters parameters( request.serverParameters() );
 
         QString version = parameters.version();
         if ( version.isEmpty() )
