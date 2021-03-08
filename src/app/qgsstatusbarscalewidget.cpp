@@ -60,6 +60,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   setLayout( mLayout );
 
   connect( mScale, &QgsScaleComboBox::scaleChanged, this, &QgsStatusBarScaleWidget::userScale );
+  connect( mMapCanvas, &QgsMapCanvas::scaleLockChanged, this, &QgsStatusBarScaleWidget::setLocked );
 }
 
 void QgsStatusBarScaleWidget::setScale( double scale )
