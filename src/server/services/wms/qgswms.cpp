@@ -125,13 +125,9 @@ namespace QgsWms
         {
           writeGetSchemaExtension( response );
         }
-        else if ( QSTR_COMPARE( req, "GetStyle" ) )
+        else if ( QSTR_COMPARE( req, "GetStyle" ) or QSTR_COMPARE( req, "GetStyles" ) )
         {
-          writeGetStyle( mServerIface, project, version, request, response );
-        }
-        else if ( QSTR_COMPARE( req, "GetStyles" ) )
-        {
-          writeGetStyles( mServerIface, project, version, request, response );
+          writeGetStyles( mServerIface, project, request, response );
         }
         else if ( QSTR_COMPARE( req, "DescribeLayer" ) )
         {
