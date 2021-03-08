@@ -1,4 +1,4 @@
-name: Build Docker images for current branches
+name: 🐳 Build Docker images for current branches
 
 on:
   schedule:

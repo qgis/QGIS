@@ -1,4 +1,4 @@
-name: Mac OS build
+name: 🍏 Mac OS build
 on:
   push:
     branches:
