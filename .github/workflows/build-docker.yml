@@ -1,4 +1,4 @@
-name: Build Docker images for current branches
+name: 🐳 Build Docker images for current branches
 
 # on commits to this file, schedule and dispatch runs, the workflow will build the 3 different Docker images (master, PR, LTR)
 # on tags, it will build only the image of the given tag
