@@ -521,7 +521,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionDigitizeWithCurve"/>
    <addaction name="mActionRotateFeature"/>
    <addaction name="mActionScaleFeature"/>
    <addaction name="mActionSimplifyFeature"/>
@@ -3468,7 +3467,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</iconset>
    </property>
    <property name="text">
-    <string>Digitize with curve</string>
+    <string>Digitize with Curve</string>
    </property>
    <property name="toolTip">
     <string>Digitize with curve</string>
