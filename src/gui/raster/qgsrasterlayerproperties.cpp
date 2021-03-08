@@ -896,7 +896,7 @@ void QgsRasterLayerProperties::sync()
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract

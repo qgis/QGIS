@@ -394,7 +394,7 @@ class PGTableField(TableField):
 
         # get modifier (e.g. "precision,scale") from formatted type string
         trimmedTypeStr = typeStr.strip()
-        regex = QRegularExpression( QRegularExpression.anchoredPattern( r"\((.+)\)$" ) )
+        regex = QRegularExpression(QRegularExpression.anchoredPattern(r"\((.+)\)$"))
         matches = regex.match(trimmedTypeStr)
         if matches.hasMatch():
             self.modifier = matches.captured(1).strip()

@@ -401,7 +401,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString userStylePath();
 
     //! Returns the short name regular expression for line edit validator
-    static QRegularExpression shortNameRegExp();
+    static QRegExp shortNameRegExp();
+
+    //! Returns the short name regular expression for line edit validator
+    static QRegularExpression shortNameRegularExpression();
 
     /**
      * Returns the user's operating system login account name.

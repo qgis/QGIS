@@ -1032,8 +1032,9 @@ namespace QgsWfs
       {
         QString filterName = parameters.value( QStringLiteral( "FILTER" ) );
         QStringList filterList;
-        QRegularExpressionMatch match = QRegularExpression( "\\(([^()]+)\\)" ).match( filterName );
-        if ( rx.indexIn( filterName, 0 ) == -1 )
+        QRegularExpression rx( "\\(([^()]+)\\)" );
+        QRegularExpressionMatch match = rx.match( filterName );
+        if ( match.hasMatch() )
         {
           filterList << filterName;
         }

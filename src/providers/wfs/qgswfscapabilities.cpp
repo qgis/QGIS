@@ -664,7 +664,7 @@ QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
   }
   // urn:x-ogc:def:crs:EPSG:xxxx as returned by http://maps.warwickshire.gov.uk/gs/ows? in WFS 1.1
   QRegularExpressionMatch match2 = QRegularExpression( QRegularExpression::anchoredPattern( "urn:x-ogc:def:crs:([^:]+).+([^:]+)" ), QRegularExpression::CaseInsensitiveOption ).match( crsName );
-  if ( match2.hasMatch( )
+  if ( match2.hasMatch() )
   {
     return match2.captured( 1 ) + ':' + match2.captured( 2 );
   }

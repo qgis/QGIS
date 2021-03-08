@@ -620,7 +620,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
     const auto constWildcards = QgsOgrProviderUtils::wildcards();
     for ( const QString &wildcard : constWildcards )
     {
-      QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption);// QRegularExpression::Wildcard
+      QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption );
       if ( rx.match( info.fileName() ).hasMatch() )
       {
         matches = true;

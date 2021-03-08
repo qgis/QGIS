@@ -106,7 +106,7 @@ void QgsBrowserProxyModel::updateFilter()
     }
     case RegularExpression:
     {
-      QRegularExpression rx( mFilter.trimmed() );
+      QRegularExpression rx( QRegularExpression::anchoredPattern( mFilter.trimmed() ) );
       rx.setPatternOptions( mCaseSensitivity );
       mREList.append( rx );
       break;
@@ -134,7 +134,7 @@ bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
     {
       for ( const QRegularExpression &rx : mREList )
       {
-        if ( rx.match( value ).capturedStart() != -1 )
+        if ( rx.match( value ).hasMatch() )
           return true;
       }
       break;

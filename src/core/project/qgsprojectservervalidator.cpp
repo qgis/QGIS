@@ -20,6 +20,7 @@
 #include "qgslayertreelayer.h"
 #include "qgsprojectservervalidator.h"
 #include "qgsvectorlayer.h"
+#include <QRegularExpression>
 
 
 QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValidator::ValidationError error )
@@ -94,7 +95,7 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   browseLayerTree( project->layerTreeRoot(), owsNames, encodingMessages );
 
   QStringList duplicateNames, regExpMessages;
-  QRegularExpression snRegExp( QRegularExpression::anchoredPattern( QgsApplication::shortNameRegExp().pattern() ) );
+  QRegularExpression snRegExp( QRegularExpression::anchoredPattern( QgsApplication::shortNameRegularExpression().pattern() ) );
   const auto constOwsNames = owsNames;
   for ( const QString &name : constOwsNames )
   {

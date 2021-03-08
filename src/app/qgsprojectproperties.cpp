@@ -465,7 +465,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSOnlineResourceExpressionButton->setToProperty( QgsProject::instance()->dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource ) );
 
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mWMSName->setValidator( shortNameValidator );
 
   // WMS Contact Position
@@ -2552,7 +2552,7 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
 void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
-  QRegularExpression regExp( "1:0*[1-9]\\d*" );
+  QRegularExpression regExp( QRegularExpression::anchoredPattern( "1:0*[1-9]\\d*" ) );
   if ( regExp.match( changedScaleItem->text() ).hasMatch() )
   {
     //Remove leading zeroes from the denominator

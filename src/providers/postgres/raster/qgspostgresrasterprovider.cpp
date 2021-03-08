@@ -1656,7 +1656,7 @@ bool QgsPostgresRasterProvider::loadFields()
           if ( match.hasMatch() )
           {
             fieldSize = match.captured( 1 ).toInt();
-            field Prec = match.captured( 2 ).toInt();
+            fieldPrec = match.captured( 2 ).toInt();
           }
           else if ( formattedFieldType != QLatin1String( "numeric" ) )
           {

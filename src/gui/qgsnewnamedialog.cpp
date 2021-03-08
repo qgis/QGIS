@@ -23,15 +23,34 @@
 #include "qgslogger.h"
 #include "qgsnewnamedialog.h"
 
+
 QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initial,
                                     const QStringList &extensions, const QStringList &existing,
-                                    const QRegularExpression &regexp, Qt::CaseSensitivity cs,
+                                    const QRegExp &regexp, Qt::CaseSensitivity cs,
                                     QWidget *parent, Qt::WindowFlags flags )
   : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
   , mExiting( existing )
   , mExtensions( extensions )
   , mCaseSensitivity( cs )
-  , mRegexp( regexp )
+  , mRegexp( QRegularExpression::anchoredPattern( regexp.pattern() ) )
+{
+  QgsNewNameDialogInternal( source, initial );
+}
+
+QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initial,
+                                    const QStringList &extensions, const QStringList &existing,
+                                    const QRegularExpression &regexpression, Qt::CaseSensitivity cs,
+                                    QWidget *parent, Qt::WindowFlags flags )
+  : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
+  , mExiting( existing )
+  , mExtensions( extensions )
+  , mCaseSensitivity( cs )
+  , mRegexp( QRegularExpression::anchoredPattern( regexpression.pattern() ) )
+{
+  QgsNewNameDialogInternal( source, initial );
+}
+
+void QgsNewNameDialog::QgsNewNameDialogInternal( const QString &source, const QString &initial )
 {
   setWindowTitle( tr( "New Name" ) );
   QgsDialog::layout()->setSizeConstraint( QLayout::SetMinimumSize );
@@ -52,9 +71,9 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
   layout()->addWidget( mHintLabel );
 
   mLineEdit = new QLineEdit( initial, this );
-  if ( !regexp.pattern().isEmpty() )
+  if ( !mRegexp.pattern().isEmpty() )
   {
-    QRegularExpressionValidator *validator = new QRegularExpressionValidator( regexp, this );
+    QRegularExpressionValidator *validator = new QRegularExpressionValidator( mRegexp, this );
     mLineEdit->setValidator( validator );
   }
 
@@ -131,7 +150,7 @@ void QgsNewNameDialog::nameChanged()
 
   QString newName = name();
 
-  if ( newName.length() == 0 || ( !mRegexp.pattern().isEmpty() && !( mRegexp.match( newName ).capturedLength() == newName.length() ) ) )
+  if ( newName.length() == 0 || ( !mRegexp.pattern().isEmpty() && !( mRegexp.match( newName ).hasMatch() ) ) )
   {
     //mErrorLabel->setText( highlightText( tr( "Enter new name" ) );
     okButton->setEnabled( mAllowEmptyName );

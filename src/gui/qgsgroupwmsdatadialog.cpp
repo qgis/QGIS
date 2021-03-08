@@ -23,7 +23,7 @@ QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags f
 {
   setupUi( this );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mShortNameLineEdit->setValidator( shortNameValidator );
 }
 

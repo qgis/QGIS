@@ -912,7 +912,7 @@ bool QgsAuthManager::configIdUnique( const QString &id ) const
 bool QgsAuthManager::hasConfigId( const QString &txt ) const
 {
   QRegularExpression rx( AUTH_CFG_REGEX );
-  return rx.match( txt ).capturedStart() != -1;
+  return rx.match( txt ).hasMatch();
 }
 
 QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString &dataprovider )

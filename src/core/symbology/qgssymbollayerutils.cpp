@@ -50,7 +50,6 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QMimeData>
-#include <QRegularExpression>
 
 #define POINTS_TO_MM 2.83464567
 

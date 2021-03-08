@@ -47,6 +47,7 @@
 #include <QDomNode>
 #include <QFile>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 #include <ogr_srs_api.h>
 

@@ -1453,7 +1453,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       alias = QStringLiteral( "subQuery_%1" ).arg( QString::number( index++ ) );
       QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegularExpression::escape( alias ) );
       regex.setPattern( pattern );
-      regex.setCaseSensitivity( Qt::CaseInsensitive );
+      regex.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
     }
     while ( mQuery.contains( regex ) );
 
@@ -3745,10 +3745,10 @@ QgsRectangle QgsPostgresProvider::extent() const
     {
       QgsDebugMsgLevel( "Got extents using: " + sql, 2 );
 
-      QRegularExpression rx( "\\((.+) (.+),(.+) (.+)\\)" );
-      if ( ext.contains( rx ) )
+      QRegularExpressionMatch match = QRegularExpression( "\\((.+) (.+),(.+) (.+)\\)" ).match( ext );
+      if ( match.hasMatch() )
       {
-        QStringList ex = rx.capturedTexts();
+        QStringList ex = match.capturedTexts();
 
         mLayerExtent.setXMinimum( ex[1].toDouble() );
         mLayerExtent.setYMinimum( ex[2].toDouble() );
@@ -4731,7 +4731,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
   jumpSpace( txt, i );
   if ( i < txt.length() && txt.at( i ) == '"' )
   {
-    QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( ( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) ).match( txt.mid( i ) );
+    QRegularExpressionMatch match = QRegularExpression( QRegularExpression::anchoredPattern( ( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) ) ).match( txt.mid( i ) );
     if ( !match.hasMatch() )
     {
       QgsMessageLog::logMessage( tr( "Cannot find end of double quoted string: %1" ).arg( txt ), tr( "PostGIS" ) );

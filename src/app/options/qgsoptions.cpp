@@ -2793,7 +2793,7 @@ void QgsOptions::updateActionsForCurrentColorScheme( QgsColorScheme *scheme )
 void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
-  QRegularExpression regExp( "1:0*[1-9]\\d*" );
+  QRegularExpression regExp( QRegularExpression::anchoredPattern( "1:0*[1-9]\\d*" ) );
   if ( regExp.match( changedScaleItem->text() ).hasMatch() )
   {
     //Remove leading zeroes from the denominator

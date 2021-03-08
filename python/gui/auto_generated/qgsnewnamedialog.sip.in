@@ -40,6 +40,24 @@ New dialog constructor.
 :param flags:
 %End
 
+    QgsNewNameDialog( const QString &source, const QString &initial,
+                      const QStringList &extensions, const QStringList &existing,
+                      const QRegularExpression &regexpression, Qt::CaseSensitivity cs = Qt::CaseSensitive,
+                      QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+New dialog constructor.
+
+:param source: original data source name, e.g. original layer name of the layer to be copied
+:param initial: initial name
+:param extensions: base name extensions, e.g. raster base name band extensions or vector layer type extensions
+:param existing: existing names
+:param regexpression: regular expression to be used as validator, for example db tables should have "[A-Za-z_][A-Za-z0-9_]+"
+:param cs: case sensitivity for new name to existing names comparison
+:param parent:
+:param flags:
+%End
+
+
     void setHintString( const QString &hintString );
 %Docstring
 Sets the hint string for the dialog (the text shown above the name
@@ -164,6 +182,7 @@ List of names with extensions
     static QStringList fullNames( const QString &name, const QStringList &extensions );
     static QStringList matching( const QStringList &newNames, const QStringList &existingNames,
                                  Qt::CaseSensitivity cs = Qt::CaseSensitive );
+
 };
 
 /************************************************************************

@@ -58,7 +58,6 @@
 #include <QSpinBox>
 #include <QSplashScreen>
 #include <QUrl>
-#include <QRegularExpression>
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif
@@ -5854,11 +5853,10 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
       const QStringList parts = sublayers[i].split( QgsDataProvider::sublayerSeparator() );
       const QString path = parts[0];
       QString name = path;
-      matches = rx.match( sublayers[i] );
+      matches = rx.match( name );
       if ( matches.hasMatch() )
       {
         uri = matches.captured( 1 );
-        name = sublayers[i];
         name.replace( uri, QFileInfo( uri ).completeBaseName() );
       }
       else

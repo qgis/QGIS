@@ -245,11 +245,11 @@ QRegularExpression QgsGrassObject::newNameRegExp( Type type )
   QRegularExpression rx;
   if ( type == QgsGrassObject::Vector )
   {
-    rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
+    rx.setPattern( QRegularExpression::anchoredPattern( "[A-Za-z_][A-Za-z0-9_]+" ) );
   }
   else // location, raster, see G_legal_filename
   {
-    rx.setPattern( QStringLiteral( "[\\w_\\-][\\w_\\-.]+" ) );
+    rx.setPattern( QRegularExpression::anchoredPattern( "[\\w_\\-][\\w_\\-.]+" ) );
   }
   return rx;
 }
@@ -2587,12 +2587,12 @@ QString QgsGrass::versionString()
   return QStringLiteral( GRASS_VERSION_STRING );
 }
 
-QRegularExpression::PatternOption QgsGrass::caseSensitivity()
+Qt::CaseSensitivity QgsGrass::caseSensitivity()
 {
 #ifdef Q_OS_WIN
-  return QRegularExpression::CaseInsensitiveOption;
+  return Qt::CaseInsensitive;
 #else
-  return QRegularExpression::NoPatternOption;
+  return Qt::CaseSensitive;
 #endif
 }
 
