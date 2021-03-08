@@ -786,7 +786,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
 
     Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
     if ( QgsNewNameDialog::exists( destName, extensions, existingNames, caseSensitivity )
-         || !regExp.exactMatch( destName ) )
+         || !regExp.match( destName ).hasMatch() )
     {
       QgsNewNameDialog dialog( srcName, destName, extensions, existingNames, regExp, caseSensitivity );
       if ( dialog.exec() != QDialog::Accepted )
