@@ -3209,12 +3209,25 @@ void QgisApp::createToolBars()
            static_cast< void ( QgsDoubleSpinBox::* )( double ) >( &QgsDoubleSpinBox::valueChanged ),
   this, [ = ]( double v ) { mTracer->setOffset( v ); } );
 
-  QToolButton *bt = new QToolButton();
-  bt->setPopupMode( QToolButton::MenuButtonPopup );
-  bt->addAction( mActionStreamDigitize );
-  bt->addAction( mMapTools->streamDigitizingSettingsAction() );
-  bt->setDefaultAction( mActionStreamDigitize );
-  mAdvancedDigitizeToolBar->insertWidget( mAdvancedDigitizeToolBar->actions().at( 0 ), bt );
+  mDigitizeModeToolButton = new QToolButton();
+  mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+  QMenu *digitizeMenu = new QMenu();
+  digitizeMenu->addAction( mActionDigitizeWithCurve );
+  digitizeMenu->addAction( mActionStreamDigitize );
+  digitizeMenu->addSeparator();
+  digitizeMenu->addAction( mMapTools->streamDigitizingSettingsAction() );
+  mDigitizeModeToolButton->setMenu( digitizeMenu );
+
+  switch ( settings.value( QStringLiteral( "UI/digitizeTechnique" ), 0 ).toInt() )
+  {
+    case 0:
+      mDigitizeModeToolButton->setDefaultAction( mActionDigitizeWithCurve );
+      break;
+    case 1:
+      mDigitizeModeToolButton->setDefaultAction( mActionStreamDigitize );
+      break;
+  }
+  mAdvancedDigitizeToolBar->insertWidget( mAdvancedDigitizeToolBar->actions().at( 0 ), mDigitizeModeToolButton );
 
   QList<QAction *> toolbarMenuActions;
   // Set action names so that they can be used in customization
@@ -3231,7 +3244,7 @@ void QgisApp::createToolBars()
   mToolbarMenu->addActions( toolbarMenuActions );
 
   // advanced selection tool button
-  bt = new QToolButton( mSelectionToolBar );
+  QToolButton *bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionSelectByForm );
   bt->addAction( mActionSelectByExpression );
@@ -10130,6 +10143,12 @@ void QgisApp::enableDigitizeWithCurve( bool enable )
     enableStreamDigitizing( false );
   }
 
+  if ( enable )
+  {
+    mDigitizeModeToolButton->setDefaultAction( mActionDigitizeWithCurve );
+    QgsSettings().setValue( QStringLiteral( "UI/digitizeTechnique" ), 0 );
+  }
+
   const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
@@ -10146,6 +10165,12 @@ void QgisApp::enableStreamDigitizing( bool enable )
   {
     mActionDigitizeWithCurve->setChecked( false );
     enableDigitizeWithCurve( false );
+  }
+
+  if ( enable )
+  {
+    mDigitizeModeToolButton->setDefaultAction( mActionStreamDigitize );
+    QgsSettings().setValue( QStringLiteral( "UI/digitizeTechnique" ), 1 );
   }
 
   const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
