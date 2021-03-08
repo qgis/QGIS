@@ -1,4 +1,4 @@
-name: OGC tests for QGIS Server
+name: 🗺 OGC tests for QGIS Server
 
 on:
   push:

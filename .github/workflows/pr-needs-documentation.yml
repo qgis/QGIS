@@ -1,5 +1,5 @@
 
-name: PR needs documentation
+name: 📖 PR needs documentation
 
 # a message will be added to the PR to ping the author about her/his responsibility to handle the documentation issue
 # an issue is automatically created in the QGIS-Documentation repository when the PR gets merged

@@ -1,4 +1,4 @@
-name: Code Layout
+name: 🧹 Code Layout
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
       - release-**
   pull_request:
-  
+
 jobs:
   documentation_checks:
     runs-on: ubuntu-latest
