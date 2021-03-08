@@ -153,10 +153,6 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
     fileName.replace( token, frameNoPaddedLeft );
     const QString path = QDir( outputDirectory ).filePath( fileName );
 
-    // It would initially return empty rendered image.
-    // Capturing the initial image and throwing it away fixes that.
-    // Hopefully we will find a better fix in the future.
-    Qgs3DUtils::captureSceneImage( engine, scene );
     QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
     img.save( path );

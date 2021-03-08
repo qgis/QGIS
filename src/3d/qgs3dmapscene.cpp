@@ -1014,10 +1014,7 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
 
 void Qgs3DMapScene::onShadowSettingsChanged()
 {
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine == nullptr )
-    return;
-  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
 
   QList<QgsDirectionalLightSettings> directionalLights = mMap.directionalLights();
   QgsShadowSettings shadowSettings = mMap.shadowSettings();
@@ -1036,28 +1033,19 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
 {
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine == nullptr )
-    return;
-  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
   shadowRenderingFrameGraph->setupShadowMapDebugging( mMap.debugShadowMapEnabled(), mMap.debugShadowMapCorner(), mMap.debugShadowMapSize() );
 }
 
 void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
 {
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine == nullptr )
-    return;
-  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
   shadowRenderingFrameGraph->setupDepthMapDebugging( mMap.debugDepthMapEnabled(), mMap.debugDepthMapCorner(), mMap.debugDepthMapSize() );
 }
 
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine == nullptr )
-    return;
-  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
 
   bool edlEnabled = mMap.eyeDomeLightingEnabled();
   double edlStrength = mMap.eyeDomeLightingStrength();
