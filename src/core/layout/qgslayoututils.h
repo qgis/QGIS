@@ -239,6 +239,13 @@ class CORE_EXPORT QgsLayoutUtils
      */
     static bool itemIsAClippingSource( const QgsLayoutItem *item );
 
+    /**
+     * Returns a list of predefined scales associated with a \a layout.
+     *
+     * \since QGIS 3.20
+     */
+    static QVector< double > predefinedScales( const QgsLayout *layout );
+
   private:
 
     //! Scale factor for upscaling fontsize and downscaling painter
