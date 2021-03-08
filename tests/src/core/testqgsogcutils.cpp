@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 #include <memory>
+#include <QRegularExpression>
 
 //qgis includes...
 #include <qgsgeometry.h>

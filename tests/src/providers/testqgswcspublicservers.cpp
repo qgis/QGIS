@@ -21,6 +21,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"

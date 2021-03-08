@@ -52,6 +52,7 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QStandardItemModel>
+#include <QRegularExpression>
 
 #include "modeltest.h"
 #include "dynamictreemodel.h"

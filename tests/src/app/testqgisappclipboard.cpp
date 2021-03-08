@@ -19,6 +19,7 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
+#include <QRegularExpression>
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
