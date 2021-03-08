@@ -37,6 +37,8 @@
 #include "qgswfstransaction_1_0_0.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <QRegularExpression>
+
 namespace QgsWfs
 {
   namespace v1_0_0

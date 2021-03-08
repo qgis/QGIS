@@ -40,6 +40,7 @@
 #include "qgslogger.h"
 #include "qgsserverlogger.h"
 
+#include <QRegularExpression>
 
 namespace QgsWfs
 {

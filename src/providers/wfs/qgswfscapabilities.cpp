@@ -27,6 +27,7 @@
 #include <QDomDocument>
 #include <QStringList>
 #include <QUrlQuery>
+#include <QRegularExpression>
 
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options )
   : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ),
