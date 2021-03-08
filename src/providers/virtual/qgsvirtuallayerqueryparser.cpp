@@ -74,7 +74,6 @@ namespace QgsVirtualLayerQueryParser
     // a column name followed by /*:type*/
     QRegularExpressionMatchIterator rx = QRegularExpression( "([a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*)\\s*/\\*:(int|real|text|((?:multi)?(?:point|linestring|polygon)):(\\d+))\\s*\\*/", QRegularExpression::CaseInsensitiveOption ).globalMatch( query );
     QRegularExpressionMatch match;
-    int pos;
 
     while ( rx.hasNext() )
     {
