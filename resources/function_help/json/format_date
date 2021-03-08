@@ -9,6 +9,9 @@
  {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, <a href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO 639 language code</a>) used to format the date into a custom string"}
   ],
   "examples": [ { "expression":"format_date('2012-05-15','dd.MM.yyyy')", "returns":"'15.05.2012'"},
-                { "expression":"format_date('2012-05-15','d MMMM yyyy','fr')", "returns":"'15 mai 2012'"}
+                { "expression":"format_date('2012-05-15','d MMMM yyyy','fr')", "returns":"'15 mai 2012'"},
+                { "expression":"format_date('2012-05-15','dddd')", "returns":"'Tuesday'"},
+                { "expression":"format_date('2012-05-15 13:54:20','dd.MM.yy')", "returns":"'15.05.12'"},
+                { "expression":"format_date('13:54:20','hh:mm AP')", "returns":"'01:54 PM'"}
   ]
 }
