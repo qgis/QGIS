@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoututils.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 #include "qgslayoutexporter.h"
@@ -183,6 +184,8 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+
+  settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
 
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.size() > 0 )
