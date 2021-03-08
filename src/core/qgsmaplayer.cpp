@@ -1968,7 +1968,8 @@ bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
 {
   QgsDataProvider *lDataProvider = dataProvider();
-  if ( !lDataProvider )
+
+  if ( !lDataProvider || !lDataProvider->isValid() || !( providerType() == QStringLiteral("postgres") ) )
     return;
 
   if ( enabled && !isRefreshOnNotifyEnabled() )
