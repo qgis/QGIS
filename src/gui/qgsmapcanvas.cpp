@@ -2123,7 +2123,11 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 
 void QgsMapCanvas::setScaleLocked( bool isLocked )
 {
-  mScaleLocked = isLocked;
+  if ( mScaleLocked != isLocked )
+  {
+    mScaleLocked = isLocked;
+    emit scaleLockChanged( mScaleLocked );
+  }
 }
 
 void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
