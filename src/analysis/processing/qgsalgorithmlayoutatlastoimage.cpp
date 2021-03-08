@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoututils.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 #include "qgslayoutexporter.h"
@@ -200,6 +201,8 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagAntialiasing;
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagAntialiasing;
+
+  settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
 
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.size() > 0 )
