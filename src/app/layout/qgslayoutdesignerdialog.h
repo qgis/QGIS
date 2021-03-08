@@ -546,7 +546,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     //! Load predefined scales from the project's properties
     void loadPredefinedScalesFromProject();
-    QVector<double> predefinedScales() const;
 
     QgsLayoutAtlas *atlas();
 
