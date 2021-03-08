@@ -989,6 +989,18 @@ Emits current mouse position
 Emitted when the scale of the map changes
 %End
 
+    void scaleLockChanged( bool locked );
+%Docstring
+Emitted when the scale locked state of the map changes
+
+:param locked: true if the scale is locked
+
+.. seealso:: :py:func:`setScaleLocked`
+
+.. versionadded:: 3.16
+%End
+
+
     void extentsChanged();
 %Docstring
 Emitted when the extents of the map change
