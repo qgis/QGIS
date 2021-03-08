@@ -53,6 +53,7 @@ void TestQgsServerWmsParameters::external_layers()
   query.addQueryItem( "external_layer_1:layers", "layer_1_name" );
   query.addQueryItem( "external_layer_2:url", "http://url_2" );
   query.addQueryItem( "external_layer_2:layers", "layer_2_name" );
+  query.addQueryItem( "OPACITIES", "255,200,125" );
 
   QgsWms::QgsWmsParameters parameters( query );
 
@@ -69,6 +70,11 @@ void TestQgsServerWmsParameters::external_layers()
   layer_params = layers_params[2];
   QCOMPARE( layer_params.mNickname, QString( "external_layer_2" ) );
   QCOMPARE( layer_params.mExternalUri, QString( "layers=layer_2_name&url=http://url_2" ) );
+
+  //test if opacities are also applied to external layers
+  QCOMPARE( layers_params[0].mOpacity, 255 );
+  QCOMPARE( layers_params[1].mOpacity, 200 );
+  QCOMPARE( layers_params[2].mOpacity, 125 );
 }
 
 void TestQgsServerWmsParameters::percent_encoding()
