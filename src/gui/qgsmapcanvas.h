@@ -953,6 +953,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the scale of the map changes
     void scaleChanged( double );
 
+    /**
+     * Emitted when the scale locked state of the map changes
+     * \param locked true if the scale is locked
+     * \since QGIS 3.18
+     * \see setScaleLocked
+     */
+    void scaleLockChanged( bool locked );
+
+
     //! Emitted when the extents of the map change
     void extentsChanged();
 
