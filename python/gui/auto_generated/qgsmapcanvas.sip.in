@@ -1046,9 +1046,9 @@ Emitted when the scale locked state of the map changes
 
 :param locked: true if the scale is locked
 
-.. versionadded:: 3.18
-
 .. seealso:: :py:func:`setScaleLocked`
+
+.. versionadded:: 3.18
 %End
 
 
