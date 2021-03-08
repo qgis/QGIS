@@ -2531,6 +2531,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsDockWidget *mDevToolsDock = nullptr;
     QgsDevToolsPanelWidget *mDevToolsWidget = nullptr;
 
+    QToolButton *mDigitizeModeToolButton = nullptr;
+
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
 
