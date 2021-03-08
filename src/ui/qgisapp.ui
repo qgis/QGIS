@@ -3469,7 +3469,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mIconSnappingSelf.svg</normaloff>:/images/themes/default/mIconSnappingSelf.svg</iconset>
+     <normaloff>:/images/themes/default/mActionStreamingDigitize.svg</normaloff>:/images/themes/default/mActionStreamingDigitize.svg</iconset>
    </property>
    <property name="text">
     <string>Stream Digitizing</string>
