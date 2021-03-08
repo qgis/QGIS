@@ -253,6 +253,13 @@ Returns ``True`` if an ``item`` is a clipping item for another layout item.
 .. versionadded:: 3.16
 %End
 
+    static QVector< double > predefinedScales( const QgsLayout *layout );
+%Docstring
+Returns a list of predefined scales associated with a ``layout``.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 /************************************************************************
