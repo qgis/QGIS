@@ -981,6 +981,11 @@ QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return path;
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 QString QgsMdalProviderMetadata::filters( FilterType type )
 {
   switch ( type )

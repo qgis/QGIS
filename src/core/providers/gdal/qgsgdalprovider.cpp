@@ -3569,6 +3569,11 @@ QList<QPair<QString, QString> > QgsGdalProviderMetadata::pyramidResamplingMethod
   return methods;
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsGdalProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const
 {
   QList< QgsDataItemProvider * > providers;

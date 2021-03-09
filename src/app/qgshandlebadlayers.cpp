@@ -29,6 +29,7 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgsapplication.h"
 #include "qgsfileutils.h"
+#include "qgsprovidermetadata.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -126,9 +127,12 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString type = node.toElement().attribute( QStringLiteral( "type" ) );
     QString id = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
     QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
-    QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
-    bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) );
+    const QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+
+    bool providerFileBased = false;
+    if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( provider ) )
+      providerFileBased = metadata->providerCapabilities() & QgsProviderMetadata::FileBasedUris;
+
     const QString basepath = QFileInfo( datasource ).absolutePath();
     mOriginalFileBase[ node.namedItem( QStringLiteral( "id" ) ).toElement().text() ].append( basepath );
 
