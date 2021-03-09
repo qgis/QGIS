@@ -84,7 +84,6 @@ class APP_EXPORT QgsHandleBadLayers
     QPushButton *mApplyButton = nullptr;
     QPushButton *mAutoFindButton = nullptr;
     const QList<QDomNode> &mLayers;
-    QList<int> mRows;
     QString mVectorFileFilter;
     QString mRasterFileFilter;
     // Registry of the original paths associated with a file as a backup
@@ -102,7 +101,12 @@ class APP_EXPORT QgsHandleBadLayers
      */
     QString checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName );
 
-
+    /**
+     * Returns a list of all rows associated with file-based providers.
+     *
+     * If \a selectedOnly is true then only currently selected rows will be considered.
+     */
+    QList<int> fileBasedRows( bool selectedOnly );
 };
 
 #endif
