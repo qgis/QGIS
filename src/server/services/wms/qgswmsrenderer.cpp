@@ -3285,13 +3285,12 @@ namespace QgsWms
         continue;
       }
 
-      if ( mContext.testFlag( QgsWmsRenderContext::UseOpacity ) )
-      {
-        setLayerOpacity( layer, param.mOpacity );
-      }
-
       if ( mContext.isExternalLayer( param.mNickname ) )
       {
+        if ( mContext.testFlag( QgsWmsRenderContext::UseOpacity ) )
+        {
+          setLayerOpacity( layer, param.mOpacity );
+        }
         continue;
       }
 
@@ -3302,6 +3301,11 @@ namespace QgsWms
       else
       {
         setLayerStyle( layer, mContext.style( *layer ) );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::UseOpacity ) )
+      {
+        setLayerOpacity( layer, param.mOpacity );
       }
 
       if ( mContext.testFlag( QgsWmsRenderContext::UseFilter ) )
