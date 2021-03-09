@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgsfileutils.h"
 #include "qgsprovidermetadata.h"
+#include "qgsmaplayerfactory.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -146,10 +147,13 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
 
     QTableWidgetItem *item = nullptr;
 
+    bool ok = false;
     item = new QTableWidgetItem( name );
     item->setData( static_cast< int >( CustomRoles::Index ), i );
+    item->setData( static_cast< int >( CustomRoles::Provider ), provider );
     item->setData( static_cast< int >( CustomRoles::ProviderIsFileBased ), providerFileBased );
     item->setData( static_cast< int >( CustomRoles::LayerId ), layerId );
+    item->setData( static_cast< int >( CustomRoles::LayerType ), static_cast< int >( QgsMapLayerFactory::typeFromString( type, ok ) ) );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 0, item );
 
@@ -374,9 +378,7 @@ void QgsHandleBadLayers::editAuthCfg()
   if ( row == -1 )
     return;
 
-  QString provider = mLayerList->item( row, 2 )->text();
-  if ( provider == QLatin1String( "none" ) )
-    provider.clear();
+  const QString provider = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
 
   QString prevuri = mLayerList->item( row, 4 )->text();
 
@@ -406,12 +408,12 @@ void QgsHandleBadLayers::apply()
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
     QString fileName;
-    const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+    const QString layerId = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::LayerId ) ).toString();
     const QString name { mLayerList->item( i, 0 )->text() };
     const QFileInfo dataInfo = QFileInfo( datasource );
     const QString basepath = dataInfo.absoluteDir().path();
     const QString longName = dataInfo.fileName();
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
     const QString fileType = mLayerList->item( i, 2 )->text();
     if ( provider.toLower().toStdString() == "none" )
     {
@@ -579,12 +581,12 @@ void QgsHandleBadLayers::autoFind()
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
     QString fileName;
-    const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+    const QString layerId = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::LayerId ) ).toString();
     const QString name { mLayerList->item( i, 0 )->text() };
     const QFileInfo dataInfo = QFileInfo( datasource );
     const QString basepath = dataInfo.absoluteDir().path();
     const QString longName = dataInfo.fileName();
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
     const QString fileType = mLayerList->item( i, 2 )->text();
 
     progressDialog.setValue( i );
