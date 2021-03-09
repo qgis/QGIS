@@ -670,11 +670,8 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
   emit activeLayerChanged( layer );
 }
 
-void QgisApp::vectorLayerStyleLoaded( QgsMapLayer::StyleCategories categories )
+void QgisApp::vectorLayerStyleLoaded( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories )
 {
-
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
-
   if ( vl && vl->isValid( ) )
   {
 
@@ -13036,6 +13033,14 @@ void QgisApp::embedLayers()
           QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes );
       }
     }
+
+    // fix broken relations and dependencies
+    for ( const QString &id : constSortedIds )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
+      if ( vlayer )
+        vectorLayerStyleLoaded( vlayer, QgsMapLayer::AllStyleCategories );
+    }
   }
 }
 
@@ -14173,7 +14178,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::readOnlyChanged, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::raiseError, this, &QgisApp::onLayerError );
-      connect( vlayer, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
+      connect( vlayer, &QgsVectorLayer::styleLoaded, [this, vlayer]( QgsMapLayer::StyleCategories categories ) { vectorLayerStyleLoaded( vlayer, categories ); } );
 
       provider = vProvider;
     }
