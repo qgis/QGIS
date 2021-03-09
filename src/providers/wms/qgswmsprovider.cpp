@@ -3491,7 +3491,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
             // Try to parse and set feature id if matches "<some string>.<integer>"
             if ( f.value( QLatin1String( "id" ) ).isString() )
             {
-              static const QRegularExpression re{ R"raw(\.(\d+)$)raw" };
+             const thread_local QRegularExpression re{ R"raw(\.(\d+)$)raw" };
               const QString idVal { f.value( QLatin1String( "id" ) ).toString() };
               const QRegularExpressionMatch match { re.match( idVal ) };
               if ( match.hasMatch() )

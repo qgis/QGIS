@@ -2432,7 +2432,7 @@ namespace QgsWms
     if ( layer && layer->dataProvider() )
       fid = QgsServerFeatureId::getServerFid( *feat, layer->dataProvider()->pkAttributeIndexes() );
     else
-      fid = QString::number( feat->id() );
+      fid = FID_TO_STRING( feat->id() );
 
     typeNameElement.setAttribute( QStringLiteral( "fid" ), QStringLiteral( "%1.%2" ).arg( typeName, fid ) );
 
