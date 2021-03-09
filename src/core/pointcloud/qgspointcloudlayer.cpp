@@ -30,6 +30,7 @@
 #include "qgspointcloudrendererregistry.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerfactory.h"
 #include <QUrl>
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
@@ -121,7 +122,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "point-cloud" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
 
   if ( mDataProvider )
   {
