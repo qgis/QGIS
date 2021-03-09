@@ -53,7 +53,10 @@ jobs:
         uses: actions/cache@v2.1.4
         with:
           path: ~/.ccache
-          key: docker-build-${{ matrix.branch }}
+          key: docker-build-${{ matrix.branch }}-${{ github.sha }}
+          restore-keys: |
+            docker-build-${{ matrix.branch }}-
+            docker-build-master-
 
       - name: checkout ${{ matrix.branch }}
         uses: actions/checkout@v2
