@@ -160,6 +160,8 @@ if errorlevel 1 (echo cmake failed & goto error)
 
 if "%CONFIGONLY%"=="1" (echo Exiting after configuring build directory: %CD% & goto end)
 
+copy %BUILDDIR%\CTestConfig.cmake %SRCDIR%
+
 :skipcmake
 if exist ..\noclean (echo skip clean & goto skipclean)
 echo CLEAN: %DATE% %TIME%
