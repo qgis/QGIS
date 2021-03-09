@@ -188,41 +188,20 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
 
 void QgsHandleBadLayers::selectionChanged()
 {
-
-  mRows.clear();
-
-  const auto constSelectedItems = mLayerList->selectedItems();
-  for ( QTableWidgetItem *item : constSelectedItems )
-  {
-    if ( item->column() != 0 )
-      continue;
-
-    const bool providerFileBased = mLayerList->item( item->row(), 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
-    if ( !providerFileBased )
-      continue;
-
-    mRows << item->row();
-  }
-
-  mBrowseButton->setEnabled( !mRows.isEmpty() );
+  mBrowseButton->setEnabled( !fileBasedRows( true ).isEmpty() );
 }
 
 QString QgsHandleBadLayers::filename( int row )
 {
-  QString type = mLayerList->item( row, 1 )->text();
-  QString provider = mLayerList->item( row, 2 )->text();
-  QString datasource = mLayerList->item( row, 4 )->text();
+  const bool providerFileBased = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+  if ( !providerFileBased )
+    return QString();
 
-  if ( type == QLatin1String( "vector" ) )
-  {
-    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
-    // if parts is empty then provider doesn't handle this method!
-    return parts.empty() ? datasource : parts.value( QStringLiteral( "path" ) ).toString();
-  }
-  else
-  {
-    return datasource;
-  }
+  const QString provider = mLayerList->item( row, 2 )->text();
+  const QString datasource = mLayerList->item( row, 4 )->text();
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
+  return parts.value( QStringLiteral( "path" ) ).toString();
 }
 
 void QgsHandleBadLayers::setFilename( int row, const QString &filename )
@@ -266,12 +245,50 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
   item->setText( datasource );
 }
 
+QList< int > QgsHandleBadLayers::fileBasedRows( bool selectedOnly )
+{
+  QList< int > res;
+  if ( selectedOnly )
+  {
+    const QList<QTableWidgetItem *> selectedItems = mLayerList->selectedItems();
+
+    for ( QTableWidgetItem *item : selectedItems )
+    {
+      if ( item->column() != 0 )
+        continue;
+
+      const bool providerFileBased = mLayerList->item( item->row(), 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+      if ( !providerFileBased )
+        continue;
+
+      res << item->row();
+    }
+
+  }
+  else
+  {
+    for ( int row = 0; row < mLayerList->rowCount(); row++ )
+    {
+      const bool providerFileBased = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+      if ( !providerFileBased )
+        continue;
+
+      res << row;
+    }
+  }
+  return res;
+}
+
 void QgsHandleBadLayers::browseClicked()
 {
+  const QList< int > selectedRows = fileBasedRows( true );
 
-  if ( mRows.size() == 1 )
+  if ( selectedRows.empty() )
+    return;
+
+  if ( selectedRows.size() == 1 )
   {
-    int row = mRows.at( 0 );
+    int row = selectedRows.at( 0 );
     QString type = mLayerList->item( row, 1 )->text();
 
     QString memoryQualifier, fileFilter;
@@ -303,7 +320,7 @@ void QgsHandleBadLayers::browseClicked()
 
     setFilename( row, selectedFiles[0] );
   }
-  else if ( mRows.size() > 1 )
+  else
   {
     QString title = tr( "Select New Directory of Selected Files" );
 
@@ -321,7 +338,7 @@ void QgsHandleBadLayers::browseClicked()
       return;
     }
 
-    for ( int row : qgis::as_const( mRows ) )
+    for ( int row : selectedRows )
     {
       const bool providerFileBased = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
       if ( !providerFileBased )
@@ -550,14 +567,7 @@ void QgsHandleBadLayers::autoFind()
   QDir::setCurrent( QgsProject::instance()->absolutePath() );
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
 
-  QList<int> layersToFind;
-  if ( mRows.size() > 0 )
-    layersToFind = mRows;
-  else
-  {
-    for ( int i = 0; i < mLayerList->rowCount(); i++ )
-      layersToFind.append( i );
-  }
+  const QList<int> layersToFind = fileBasedRows( !mLayerList->selectedItems().isEmpty() );
 
   QProgressDialog progressDialog( QObject::tr( "Searching files" ), 0, 1, layersToFind.size(), this, Qt::Dialog );
 
