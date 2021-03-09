@@ -29,6 +29,7 @@ class TestQgsServerWmsRequest : public QObject
     void cleanupTestCase();
 
     void cst();
+    void update();
 };
 
 void TestQgsServerWmsRequest::initTestCase()
@@ -54,6 +55,33 @@ void TestQgsServerWmsRequest::cst()
   // WMS context
   QgsWms::QgsWmsRequest wmsRequest( request );
   QCOMPARE( wmsRequest.wmsParameters().version(), "1.1.1" );
+}
+
+void TestQgsServerWmsRequest::update()
+{
+  // init request with parameters
+  QgsServerRequest request;
+  request.setParameter( "PARAM_0", "0" );
+  request.setParameter( "PARAM_1", "1" );
+
+  QgsWms::QgsWmsRequest wmsRequest( request );
+  QCOMPARE( wmsRequest.wmsParameters().value( "PARAM_0" ), "0" );
+
+  wmsRequest.setParameter( "PARAM_3", "3" );
+  QCOMPARE( wmsRequest.wmsParameters().value( "PARAM_3" ), "3" );
+
+  // init request by loading a query
+  QUrl url( "http://qgisserver?PARAM_0=0&PARAM_1=1" );
+
+  QgsServerRequest request2( url );
+
+  QCOMPARE( request2.serverParameters().value( "PARAM_0" ), "0" );
+
+  QgsWms::QgsWmsRequest wmsRequest2( request2 );
+  QCOMPARE( wmsRequest2.wmsParameters().value( "PARAM_0" ), "0" );
+
+  wmsRequest2.setParameter( "PARAM_3", "3" );
+  QCOMPARE( wmsRequest2.wmsParameters().value( "PARAM_3" ), "3" );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsRequest )
