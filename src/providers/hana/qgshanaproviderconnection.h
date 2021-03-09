@@ -78,8 +78,6 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
   private:
     void executeSqlStatement( const QString &sql ) const;
     void setCapabilities();
-    void dropTable( const QString &schema, const QString &name ) const;
-    void renameTable( const QString &schema, const QString &name, const QString &newName ) const;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesWithFilter( const QString &schema,
         const TableFlags &flags = TableFlags(), const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr ) const;
 };
