@@ -599,7 +599,7 @@ void QgsRelationReferenceWidget::init()
     }
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
-    connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
+    connect( mComboBox, &QgsFeatureListComboBox::currentFeatureChanged, this, &QgsRelationReferenceWidget::comboReferenceChanged );
 
     QApplication::restoreOverrideCursor();
 
@@ -723,7 +723,7 @@ void QgsRelationReferenceWidget::mapIdentification()
   }
 }
 
-void QgsRelationReferenceWidget::comboReferenceChanged( int index )
+void QgsRelationReferenceWidget::comboReferenceChanged()
 {
   Q_UNUSED( index )
   mReferencedLayer->getFeatures( mComboBox->currentFeatureRequest() ).nextFeature( mFeature );

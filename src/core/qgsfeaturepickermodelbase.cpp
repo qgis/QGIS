@@ -513,11 +513,13 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValueUnguarded( const QVariant
       if ( !isNull )
       {
         mEntries.prepend( createEntry( identifierValue ) );
+        setExtraValueDoesNotExist( true );
         reloadCurrentFeature();
       }
       else
       {
         mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry( mSourceLayer ) );
+        setExtraValueDoesNotExist( false );
       }
       endInsertRows();
 
