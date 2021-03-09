@@ -753,22 +753,59 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::DPI ].toDouble();
   }
 
-  QgsProjectVersion QgsWmsParameters::versionAsNumber() const
+  QString QgsWmsParameters::version() const
   {
-    const QString vStr = version();
+    QString version = QgsServerParameters::version();
 
-    QgsProjectVersion version;
-
-    if ( vStr.isEmpty() )
+    if ( QgsServerParameters::request().compare( QLatin1String( "GetProjectSettings" ), Qt::CaseInsensitive ) == 0 )
     {
-      version = QgsProjectVersion( 1, 3, 0 ); // default value
+      version = QStringLiteral( "1.3.0" );
     }
-    else if ( mVersions.contains( QgsProjectVersion( vStr ) ) )
+    else if ( version.isEmpty() )
     {
-      version = QgsProjectVersion( vStr );
+      if ( ! wmtver().isEmpty() )
+      {
+        version = wmtver();
+      }
+      else
+      {
+        version = QStringLiteral( "1.3.0" );
+      }
+    }
+    else if ( !mVersions.contains( QgsProjectVersion( version ) ) )
+    {
+      // WMS 1.3.0 specification: If a version lower than any of those
+      // known to the server is requested, then the server shall send the
+      // lowest version it supports.
+      if ( QgsProjectVersion( 1, 1, 1 ) > QgsProjectVersion( version ) )
+      {
+        version = QStringLiteral( "1.1.1" );
+      }
+      else
+      {
+        version = QStringLiteral( "1.3.0" );
+      }
     }
 
     return version;
+  }
+
+  QString QgsWmsParameters::request() const
+  {
+    QString req = QgsServerParameters::request();
+
+    if ( version().compare( QLatin1String( "1.1.1" ) ) == 0
+         && req.compare( QLatin1String( "capabilities" ), Qt::CaseInsensitive ) == 0 )
+    {
+      req = QStringLiteral( "GetCapabilities" );
+    }
+
+    return req;
+  }
+
+  QgsProjectVersion QgsWmsParameters::versionAsNumber() const
+  {
+    return QgsProjectVersion( version() );
   }
 
   bool QgsWmsParameters::versionIsValid( const QString version ) const

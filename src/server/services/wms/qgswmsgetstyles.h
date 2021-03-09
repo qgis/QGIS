@@ -26,13 +26,13 @@ namespace QgsWms
    * Output GetStyles response
    */
   void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project,
-                       const QgsServerRequest &request, QgsServerResponse &response );
+                       const QgsWmsRequest &request, QgsServerResponse &response );
 
 
   /**
    * Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)
    */
   QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project,
-                          const QgsServerRequest &request );
+                          const QgsWmsRequest &request );
 
 } // namespace QgsWms

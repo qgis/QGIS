@@ -324,7 +324,7 @@ defined.
 :return: service
 %End
 
-    QString request() const;
+    virtual QString request() const;
 %Docstring
 Returns REQUEST parameter as a string or an empty string if not
 defined.
@@ -348,7 +348,7 @@ defined.
 :return: filename
 %End
 
-    QString version() const;
+    virtual QString version() const;
 %Docstring
 Returns VERSION parameter as a string or an empty string if not
 defined.
