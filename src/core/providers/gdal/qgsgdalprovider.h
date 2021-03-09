@@ -382,6 +382,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QString filters( FilterType type ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QList<QPair<QString, QString> > pyramidResamplingMethods() override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 ///@endcond
