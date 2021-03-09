@@ -1444,7 +1444,7 @@ void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
   {
     // Expand rect to give a bit of space around the selected
     // objects so as to keep them clear of the map boundaries
-    rect.scale( 1.15 );
+    rect.scale( 1.5 );
   }
 
   setExtent( rect );
