@@ -140,6 +140,13 @@ Returns a translated, user-friendly name for the filter.
 .. seealso:: :py:func:`name`
 %End
 
+    virtual QString description() const;
+%Docstring
+Returns a translated, description for the filter.
+
+.. versionadded:: 3.20
+%End
+
     virtual QgsLocatorFilter::Flags flags() const;
 %Docstring
 Returns flags which specify the filter's behavior.
