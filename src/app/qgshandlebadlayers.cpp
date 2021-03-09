@@ -123,10 +123,10 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   {
     const QDomNode &node = mLayers[i];
 
-    QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
-    QString type = node.toElement().attribute( QStringLiteral( "type" ) );
-    QString id = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
-    QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
+    const QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
+    const QString type = node.toElement().attribute( QStringLiteral( "type" ) );
+    const QString layerId = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
+    const QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
     const QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
 
     bool providerFileBased = false;
@@ -134,13 +134,13 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
       providerFileBased = metadata->providerCapabilities() & QgsProviderMetadata::FileBasedUris;
 
     const QString basepath = QFileInfo( datasource ).absolutePath();
-    mOriginalFileBase[ node.namedItem( QStringLiteral( "id" ) ).toElement().text() ].append( basepath );
+    mOriginalFileBase[ layerId ].append( basepath );
 
-    QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
-                 .arg( name,
-                       type,
-                       vectorProvider,
-                       datasource ) );
+    QgsDebugMsgLevel( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
+                      .arg( name,
+                            type,
+                            provider,
+                            datasource ), 2 );
 
     mLayerList->setRowCount( j + 1 );
 
@@ -153,10 +153,11 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
 
     item = new QTableWidgetItem( type );
     item->setData( static_cast< int >( CustomRoles::ProviderIsFileBased ), providerFileBased );
+    item->setData( static_cast< int >( CustomRoles::LayerId ), layerId );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 1, item );
 
-    item = new QTableWidgetItem( vectorProvider );
+    item = new QTableWidgetItem( provider );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 2, item );
 
