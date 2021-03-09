@@ -31,6 +31,7 @@
 #include "qgsmapboxglstyleconverter.h"
 #include "qgsjsonutils.h"
 #include "qgspainting.h"
+#include "qgsmaplayerfactory.h"
 
 #include <QUrl>
 
@@ -208,7 +209,7 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "vector-tile" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
 
   writeStyleManager( layerNode, doc );
 

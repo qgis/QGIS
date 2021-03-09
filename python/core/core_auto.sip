@@ -106,6 +106,7 @@
 %Include auto_generated/qgsmaphittest.sip
 %Include auto_generated/qgsmaplayer.sip
 %Include auto_generated/qgsmaplayerdependency.sip
+%Include auto_generated/qgsmaplayerfactory.sip
 %Include auto_generated/qgsmaplayerlegend.sip
 %Include auto_generated/qgsmaplayermodel.sip
 %Include auto_generated/qgsmaplayerproxymodel.sip
