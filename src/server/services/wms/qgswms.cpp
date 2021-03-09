@@ -107,7 +107,7 @@ namespace QgsWms
         {
           writeGetSchemaExtension( response );
         }
-        else if ( QSTR_COMPARE( req, "GetStyle" ) or QSTR_COMPARE( req, "GetStyles" ) )
+        else if ( QSTR_COMPARE( req, "GetStyle" ) || QSTR_COMPARE( req, "GetStyles" ) )
         {
           writeGetStyles( mServerIface, project, request, response );
         }

@@ -39,7 +39,7 @@ namespace QgsWms
 
   namespace
   {
-    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request );
+    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request );
   }
 
   void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project,
@@ -51,7 +51,7 @@ namespace QgsWms
   }
 
   QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project,
-                          const QgsServerRequest &request )
+                          const QgsWmsRequest &request )
   {
     return getStyledLayerDescriptorDocument( serverIface, project, request );
   }
