@@ -179,6 +179,12 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
   signals:
 
     /**
+     * Emitted when the current feature in the model has changed
+     * \since QGIS 3.16.5
+     */
+    void currentFeatureChanged();
+
+    /**
      * The source layer from which features will be fetched.
      */
     void sourceLayerChanged();

@@ -154,6 +154,13 @@ If set to 0, no limit is applied when fetching
 
   signals:
 
+    void currentFeatureChanged();
+%Docstring
+Emitted when the current feature in the model has changed
+
+.. versionadded:: 3.16.5
+%End
+
     void sourceLayerChanged();
 %Docstring
 The source layer from which features will be fetched.

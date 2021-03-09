@@ -61,8 +61,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
 
   connect( mLineEdit, &QgsFilterLineEdit::textEdited, this, &QgsFeatureListComboBox::onCurrentTextChanged );
 
-  connect( this, static_cast<void( QgsFeatureListComboBox::* )( int )>( &QgsFeatureListComboBox::currentIndexChanged ), this, &QgsFeatureListComboBox::currentFeatureChanged );
-  connect( mModel, &QgsFeatureFilterModel::extraValueDoesNotExistChanged, this, &QgsFeatureListComboBox::currentFeatureChanged );
+  connect( mModel, &QgsFeatureFilterModel::currentFeatureChanged, this, &QgsFeatureListComboBox::currentFeatureChanged );
 
   setToolTip( tr( "Just start typing what you are looking for." ) );
 }

@@ -725,7 +725,6 @@ void QgsRelationReferenceWidget::mapIdentification()
 
 void QgsRelationReferenceWidget::comboReferenceChanged()
 {
-  Q_UNUSED( index )
   mReferencedLayer->getFeatures( mComboBox->currentFeatureRequest() ).nextFeature( mFeature );
   highlightFeature( mFeature );
   updateAttributeEditorFrame( mFeature );
