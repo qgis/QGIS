@@ -766,6 +766,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString filters( FilterType type ) override;
+    ProviderCapabilities providerCapabilities() const override;
     bool uriIsBlocklisted( const QString &uri ) const override;
     QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
