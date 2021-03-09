@@ -42,9 +42,9 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 - On-the-fly rendering enhancements using geometry generators (e.g. create and style new geometries from existing features)
 - Preview modes for inclusive map making (e.g. monochrome, color blindness)
 
-*[Example: Map of Bogota, Columbia in the style of Starry Starry Night, by Andrés Felipe Lancheros Sánchez](https://flic.kr/p/2jFfGJP)*
+*[Example: Map of Bogota, Colombia in the style of Starry Starry Night, by Andrés Felipe Lancheros Sánchez](https://flic.kr/p/2jFfGJP)*
 
-![Map of Bogota, Columbia in the style of Starry Starry Night](https://live.staticflickr.com/65535/50327326323_3da28f0d86_b.jpg "Map of Bogota, Columbia in the style of Starry Starry Night")
+![Map of Bogota, Colombia in the style of Starry Starry Night](https://live.staticflickr.com/65535/50327326323_3da28f0d86_b.jpg "Map of Bogota, Colombia in the style of Starry Starry Night")
 
 For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](https://www.flickr.com/groups/2244553@N22/pool/with/50355460063/).
 
