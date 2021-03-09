@@ -21,7 +21,6 @@
 #include "qgshanaresultset.h"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
-#include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
@@ -150,13 +149,6 @@ void QgsHanaProviderConnection::setCapabilities()
                    Capability::Schemas | Capability::Tables | Capability::TableExists;
 }
 
-void QgsHanaProviderConnection::dropTable( const QString &schema, const QString &name ) const
-{
-  executeSqlStatement( QStringLiteral( "DROP TABLE %1.%2" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
-                             QgsHanaUtils::quotedIdentifier( name ) ) );
-}
-
 void QgsHanaProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
@@ -196,7 +188,7 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema,
 
 QString QgsHanaProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
-  const auto tableInfo { table( schema, name ) };
+  const TableProperty tableInfo { table( schema, name ) };
 
   QgsDataSourceUri dsUri( uri() );
   dsUri.setTable( name );
@@ -208,21 +200,24 @@ QString QgsHanaProviderConnection::tableUri( const QString &schema, const QStrin
 void QgsHanaProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );
-  dropTable( schema, name );
-}
-
-void QgsHanaProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
-{
-  executeSqlStatement( QStringLiteral( "RENAME TABLE %1.%2 TO %1.%3" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
-                             QgsHanaUtils::quotedIdentifier( name ),
-                             QgsHanaUtils::quotedIdentifier( newName ) ) );
+  const TableProperty tableInfo = table( schema, name );
+  if ( tableInfo.flags().testFlag( TableFlag::View ) )
+    executeSqlStatement( QStringLiteral( "DROP VIEW %1.%2" )
+                         .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                               QgsHanaUtils::quotedIdentifier( name ) ) );
+  else
+    executeSqlStatement( QStringLiteral( "DROP TABLE %1.%2" )
+                         .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                               QgsHanaUtils::quotedIdentifier( name ) ) );
 }
 
 void QgsHanaProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameVectorTable );
-  renameTable( schema, name, newName );
+  executeSqlStatement( QStringLiteral( "RENAME TABLE %1.%2 TO %1.%3" )
+                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                             QgsHanaUtils::quotedIdentifier( name ),
+                             QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
 void QgsHanaProviderConnection::createSchema( const QString &name ) const
@@ -263,12 +258,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
   if ( feedback && feedback->isCanceled() )
     return QueryResult( std::make_shared<QgsHanaEmptyProviderResultIterator>() );
 
-  bool isQuery = false;
-
   try
   {
     odbc::PreparedStatementRef stmt = conn->prepareStatement( sql );
-    isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
+    bool isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
     if ( isQuery )
     {
       QgsHanaResultSetRef rs = conn->executeQuery( sql );
