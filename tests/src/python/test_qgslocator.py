@@ -47,6 +47,9 @@ class test_filter(QgsLocatorFilter):
     def displayName(self):
         return 'test_' + self.identifier
 
+    def description(self):
+        return 'test_description'
+
     def prefix(self):
         return self._prefix
 
