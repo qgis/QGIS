@@ -85,6 +85,7 @@ RUN  apt-get update \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
+    python3-pyqt5.qtwebkit \
     python3-sip \
     python3-sip-dev \
     python3-termcolor \
