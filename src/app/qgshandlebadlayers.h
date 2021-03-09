@@ -75,6 +75,8 @@ class APP_EXPORT QgsHandleBadLayers
     enum class CustomRoles : int
     {
       Index = Qt::UserRole,
+      LayerType,
+      Provider,
       ProviderIsFileBased,
       DataSourceIsChanged,
       LayerId,
