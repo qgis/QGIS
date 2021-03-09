@@ -24,6 +24,7 @@
 #include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdatasetgroupstore.h"
 #include "qgsmeshlayer.h"
@@ -1234,7 +1235,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "mesh" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::MeshLayer ) );
 
   // add provider node
   if ( mDataProvider )

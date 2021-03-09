@@ -358,6 +358,7 @@ set(QGIS_CORE_SRCS
   qgsmaphittest.cpp
   qgsmaplayer.cpp
   qgsmaplayerelevationproperties.cpp
+  qgsmaplayerfactory.cpp
   qgsmaplayerlegend.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
@@ -953,6 +954,7 @@ set(QGIS_CORE_HDRS
   qgsmaphittest.h
   qgsmaplayer.h
   qgsmaplayerdependency.h
+  qgsmaplayerfactory.h
   qgsmaplayerlegend.h
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h

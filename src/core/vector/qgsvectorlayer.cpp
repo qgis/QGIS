@@ -56,6 +56,7 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsgeometry.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
@@ -1868,7 +1869,7 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "vector" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorLayer ) );
 
   // set the geometry type
   mapLayerNode.setAttribute( QStringLiteral( "geometry" ), QgsWkbTypes::geometryDisplayString( geometryType() ) );
