@@ -77,6 +77,7 @@ class APP_EXPORT QgsHandleBadLayers
       Index = Qt::UserRole,
       ProviderIsFileBased,
       DataSourceIsChanged,
+      LayerId,
     };
 
     QPushButton *mBrowseButton = nullptr;
