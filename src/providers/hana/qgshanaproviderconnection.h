@@ -44,6 +44,8 @@ struct QgsHanaProviderResultIterator: public QgsAbstractDatabaseProviderConnecti
     bool hasNextRowPrivate() const;
 };
 
+class QgsHanaConnectionRef;
+
 class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
   public:
@@ -76,6 +78,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
+    QgsHanaConnectionRef createConnection() const;
     void executeSqlStatement( const QString &sql ) const;
     void setCapabilities();
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesWithFilter( const QString &schema,
