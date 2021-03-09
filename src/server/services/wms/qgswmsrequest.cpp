@@ -52,6 +52,6 @@ namespace QgsWms
 
   void QgsWmsRequest::init()
   {
-    mWmsParams = QgsWmsParameters( QUrlQuery( url() ) );
+    mWmsParams = QgsWmsParameters( serverParameters() );
   }
 }
