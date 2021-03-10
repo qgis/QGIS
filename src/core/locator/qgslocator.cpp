@@ -94,10 +94,15 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   filter->setParent( this );
 
   // restore settings
-  QgsSettings settings;
-  bool enabled = settings.value( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), true, QgsSettings::Section::Gui ).toBool();
-  bool byDefault = settings.value( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), filter->useWithoutPrefix(), QgsSettings::Section::Gui ).toBool();
-  QString prefix = settings.value( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), filter->prefix(), QgsSettings::Section::Gui ).toString();
+  bool enabled = true;
+  if ( QgsLocator::Settings::LocatorFilterEnabled().exists( filter->name() ) )
+    enabled = QgsLocator::Settings::LocatorFilterEnabled().value<bool>( filter->name() );
+  bool byDefault = filter->useWithoutPrefix();
+  if ( QgsLocator::Settings::LocatorFilterDefault().exists( filter->name() ) )
+    byDefault = QgsLocator::Settings::LocatorFilterDefault().value<bool>( filter->name() );
+  QString prefix = filter->prefix();
+  if ( QgsLocator::Settings::LocatorFilterPrefix().exists( filter->name() ) )
+    prefix = QgsLocator::Settings::LocatorFilterPrefix().value<QString>( filter->name() );
   if ( prefix.isEmpty() )
   {
     prefix = filter->prefix();

@@ -714,6 +714,10 @@ set(QGIS_CORE_SRCS
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
 
+  settings/qgssettingsentry.cpp
+  settings/qgssettingsregistry.cpp
+  settings/qgssettingsregistrycore.cpp
+
   validity/qgsabstractvaliditycheck.cpp
   validity/qgsvaliditycheckcontext.cpp
   validity/qgsvaliditycheckregistry.cpp
@@ -1552,6 +1556,10 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  settings/qgssettingsentry.h
+  settings/qgssettingsregistry.h
+  settings/qgssettingsregistrycore.h
+
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
@@ -1792,6 +1800,7 @@ target_include_directories(qgis_core PUBLIC
   raster
   renderer
   scalebar
+  settings
   symbology
   textrenderer
   validity

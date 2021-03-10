@@ -20,6 +20,7 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsannotationitemregistry.h"
+#include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -52,6 +53,7 @@
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgstiledownloadmanager.h"
 #include "qgsunittypes.h"
 #include "qgsuserprofile.h"
@@ -1097,10 +1099,7 @@ QStringList QgsApplication::layoutTemplatePaths()
 {
   //local directories to search when looking for an template with a given basename
   //defined by user in options dialog
-  QgsSettings settings;
-  QStringList pathList = settings.value( QStringLiteral( "Layout/searchPathsForTemplates" ), QVariant(), QgsSettings::Core ).toStringList();
-
-  return pathList;
+  return QgsLayout::Settings::SearchPathForTemplates().value<QStringList>();
 }
 
 QMap<QString, QString> QgsApplication::systemEnvVars()
@@ -2160,6 +2159,11 @@ QgsTaskManager *QgsApplication::taskManager()
   return members()->mTaskManager;
 }
 
+QgsSettingsRegistryCore *QgsApplication::settingsRegistryCore()
+{
+  return members()->mSettingsRegistryCore;
+}
+
 QgsColorSchemeRegistry *QgsApplication::colorSchemeRegistry()
 {
   return members()->mColorSchemeRegistry;
@@ -2349,6 +2353,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
+  mSettingsRegistryCore = new QgsSettingsRegistryCore();
   mLocalizedDataPathRegistry = new QgsLocalizedDataPathRegistry();
   mMessageLog = new QgsMessageLog();
   QgsRuntimeProfiler *profiler = QgsRuntimeProfiler::threadLocalInstance();
@@ -2550,6 +2555,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mConnectionRegistry;
   delete mLocalizedDataPathRegistry;
   delete mCrsRegistry;
+  delete mSettingsRegistryCore;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()
