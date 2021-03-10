@@ -359,6 +359,34 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   triggerRepaint();
 }
 
+QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( providerType(), source );
+  if ( parts.contains( QStringLiteral( "path" ) ) )
+  {
+    parts.insert( QStringLiteral( "path" ), context.pathResolver().writePath( parts.value( QStringLiteral( "path" ) ).toString() ) );
+    return QgsProviderRegistry::instance()->encodeUri( providerType(), parts );
+  }
+  else
+  {
+    return source;
+  }
+}
+
+QString QgsPointCloudLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( dataProvider, source );
+  if ( parts.contains( QStringLiteral( "path" ) ) )
+  {
+    parts.insert( QStringLiteral( "path" ), context.pathResolver().readPath( parts.value( QStringLiteral( "path" ) ).toString() ) );
+    return QgsProviderRegistry::instance()->encodeUri( dataProvider, parts );
+  }
+  else
+  {
+    return source;
+  }
+}
+
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
 {
   if ( state == QgsPointCloudDataProvider::Indexed )
