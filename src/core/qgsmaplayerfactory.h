@@ -27,7 +27,7 @@
  * \ingroup core
  * \brief Contains utility functions for creating map layers.
  *
- * \since QGIS 3.20
+ * \since QGIS 3.18.1
  */
 class CORE_EXPORT QgsMapLayerFactory
 {
