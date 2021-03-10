@@ -3,7 +3,6 @@ name: 🐳 Build Docker images for current branches
 # on commits to this file, schedule and dispatch runs, the workflow will build the 3 different Docker images (master, PR, LTR)
 # on tags, it will build only the image of the given tag
 # this is made by using a matrix defined in a dedicated job
-
 on:
   push:
     tags:
@@ -20,6 +19,7 @@ on:
 
 jobs:
   define-strategy:
+    if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
@@ -33,6 +33,7 @@ jobs:
           fi
 
   build-docker:
+    if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     needs: define-strategy
 
