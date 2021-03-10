@@ -86,8 +86,6 @@ class APP_EXPORT QgsHandleBadLayers
     QPushButton *mApplyButton = nullptr;
     QPushButton *mAutoFindButton = nullptr;
     const QList<QDomNode> &mLayers;
-    QString mVectorFileFilter;
-    QString mRasterFileFilter;
     // Registry of the original paths associated with a file as a backup
     QHash <QString, QString > mOriginalFileBase;
     // Keeps a registry of valid alternatives for a basepath
