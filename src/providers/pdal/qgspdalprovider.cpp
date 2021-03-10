@@ -339,6 +339,11 @@ QString QgsPdalProviderMetadata::filters( QgsProviderMetadata::FilterType type )
   return QString();
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsPdalProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();

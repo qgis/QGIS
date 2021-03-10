@@ -81,6 +81,7 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     int priorityForUri( const QString &uri ) const override;
     QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 #endif // QGSPDALPROVIDER_H
