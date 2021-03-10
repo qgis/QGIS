@@ -67,12 +67,19 @@ class TestQgsRectangle(unittest.TestCase):
 
         # test for point
         self.assertTrue(rect1.contains(pnt1))
+        self.assertTrue(rect1.contains(pnt1.x(), pnt1.y()))
         self.assertTrue(rect2.contains(pnt1))
+        self.assertTrue(rect2.contains(pnt1.x(), pnt1.y()))
         self.assertTrue(rect3.contains(pnt1))
+        self.assertTrue(rect3.contains(pnt1.x(), pnt1.y()))
         self.assertFalse(rect1.contains(pnt2))
+        self.assertFalse(rect1.contains(pnt2.x(), pnt2.y()))
         self.assertTrue(rect2.contains(pnt2))
+        self.assertTrue(rect2.contains(pnt2.x(), pnt2.y()))
         self.assertFalse(rect3.contains(pnt2))
+        self.assertFalse(rect3.contains(pnt2.x(), pnt2.y()))
         self.assertTrue(rect3.contains(pnt1))
+        self.assertTrue(rect3.contains(pnt1.x(), pnt1.y()))
 
     def testUnion(self):
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
