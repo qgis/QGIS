@@ -55,6 +55,7 @@ email                : tim at linfiniti.com
 #include "qgscubicrasterresampler.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsmaplayerfactory.h"
 
 #include <cmath>
 #include <cstdio>
@@ -2182,7 +2183,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "raster" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::RasterLayer ) );
 
   // add provider node
 

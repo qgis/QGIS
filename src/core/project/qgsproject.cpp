@@ -24,6 +24,7 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsmaplayerfactory.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
@@ -1174,41 +1175,59 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   std::unique_ptr<QgsMapLayer> mapLayer;
 
   QgsScopedRuntimeProfile profile( tr( "Create layer" ), QStringLiteral( "projectload" ) );
-  if ( type == QLatin1String( "vector" ) )
+
+  bool ok = false;
+  const QgsMapLayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
+  if ( !ok )
   {
-    mapLayer = std::make_unique<QgsVectorLayer>();
-    // apply specific settings to vector layer
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+    QgsDebugMsg( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
+    return false;
+  }
+
+  switch ( layerType )
+  {
+    case QgsMapLayerType::VectorLayer:
     {
-      vl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+      mapLayer = std::make_unique<QgsVectorLayer>();
+      // apply specific settings to vector layer
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+      {
+        vl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+      }
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+      mapLayer = std::make_unique<QgsRasterLayer>();
+      break;
+
+    case QgsMapLayerType::MeshLayer:
+      mapLayer = std::make_unique<QgsMeshLayer>();
+      break;
+
+    case QgsMapLayerType::VectorTileLayer:
+      mapLayer = std::make_unique<QgsVectorTileLayer>();
+      break;
+
+    case QgsMapLayerType::PointCloudLayer:
+      mapLayer = std::make_unique<QgsPointCloudLayer>();
+      break;
+
+    case QgsMapLayerType::PluginLayer:
+    {
+      QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
+      mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
+      break;
+    }
+
+    case QgsMapLayerType::AnnotationLayer:
+    {
+      QgsAnnotationLayer::LayerOptions options( mTransformContext );
+      mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
+      break;
     }
   }
-  else if ( type == QLatin1String( "raster" ) )
-  {
-    mapLayer =  std::make_unique<QgsRasterLayer>();
-  }
-  else if ( type == QLatin1String( "mesh" ) )
-  {
-    mapLayer = std::make_unique<QgsMeshLayer>();
-  }
-  else if ( type == QLatin1String( "vector-tile" ) )
-  {
-    mapLayer = std::make_unique<QgsVectorTileLayer>();
-  }
-  else if ( type == QLatin1String( "point-cloud" ) )
-  {
-    mapLayer = std::make_unique<QgsPointCloudLayer>();
-  }
-  else if ( type == QLatin1String( "plugin" ) )
-  {
-    QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-    mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
-  }
-  else if ( type == QLatin1String( "annotation" ) )
-  {
-    QgsAnnotationLayer::LayerOptions options( mTransformContext );
-    mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
-  }
+
   if ( !mapLayer )
   {
     QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );

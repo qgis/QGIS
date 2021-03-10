@@ -7060,4 +7060,9 @@ void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection
   saveConnectionProtected( conn, name );
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsOgrProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 ///@endcond
+

@@ -115,6 +115,13 @@ library object.
     typedef QFlags<QgsProviderMetadata::ProviderMetadataCapability> ProviderMetadataCapabilities;
 
 
+    enum ProviderCapability
+    {
+      FileBasedUris,
+    };
+    typedef QFlags<QgsProviderMetadata::ProviderCapability> ProviderCapabilities;
+
+
 
     QgsProviderMetadata( const QString &key, const QString &description, const QString &library = QString() );
 %Docstring
@@ -147,6 +154,13 @@ This is used to provide a descriptive list of available data providers.
 Returns the provider metadata capabilities.
 
 .. versionadded:: 3.18
+%End
+
+    virtual QgsProviderMetadata::ProviderCapabilities providerCapabilities() const;
+%Docstring
+Returns the provider's capabilities.
+
+.. versionadded:: 3.18.1
 %End
 
  QString library() const /Deprecated/;
