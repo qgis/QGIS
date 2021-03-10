@@ -24,8 +24,6 @@
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 
-#include <QMap>
-
 #include "odbc/Forwards.h"
 
 struct AttributeField
