@@ -401,26 +401,26 @@ void QgsHandleBadLayers::apply()
 
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
-    QString fileName;
     const QString layerId = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::LayerId ) ).toString();
     const QString name { mLayerList->item( i, 0 )->text() };
-    const QFileInfo dataInfo = QFileInfo( datasource );
-    const QString basepath = dataInfo.absoluteDir().path();
-    const QString longName = dataInfo.fileName();
     const QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
 
-    QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
-    if ( providerMap.contains( QStringLiteral( "path" ) ) )
-      fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
-    else
+    const bool dataSourceWasAutoRepaired = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::DataSourceWasAutoRepaired ) ).toBool();
+    const bool providerFileBased = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+    if ( providerFileBased && !dataSourceWasAutoRepaired )
     {
-      fileName = longName;
-    }
+      QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
+      const QString filePath = providerMap[ QStringLiteral( "path" ) ].toString();
+      const QFileInfo dataInfo = QFileInfo( filePath );
 
-    const QVariant dataSourceIsChanged = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::DataSourceIsChanged ) );
-    if ( !( dataSourceIsChanged.isValid() && dataSourceIsChanged.toBool() ) )
-    {
-      datasource = checkBasepath( layerId, basepath, fileName ).replace( fileName, longName );
+      bool fixedPath = false;
+      const QString correctedPath = checkBasepath( layerId, dataInfo.absoluteDir().path(), dataInfo.fileName(), fixedPath );
+      if ( fixedPath && correctedPath != filePath )
+      {
+        // reencode uri for provider
+        providerMap.insert( QStringLiteral( "path" ), correctedPath );
+        datasource = QgsProviderRegistry::instance()->encodeUri( provider, providerMap );
+      }
     }
 
     bool dataSourceChanged { false };
@@ -524,28 +524,34 @@ int QgsHandleBadLayers::layerCount()
   return mLayerList->rowCount();
 }
 
-QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName )
+QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName, bool &foundPath )
 {
+  foundPath = false;
   const QString originalBase = mOriginalFileBase.value( layerId );
   const QDir newpathDir = QDir( newPath );
   bool exists = newpathDir.exists( fileName );
   if ( exists )
   {
+    foundPath = true;
     const QString newBasepath = newpathDir.absolutePath();
     if ( !mAlternativeBasepaths.value( originalBase ).contains( newBasepath ) )
       mAlternativeBasepaths[ originalBase ].append( newBasepath );
-    return ( newPath );
+    return newpathDir.filePath( fileName );
   }
   else if ( mAlternativeBasepaths.contains( originalBase ) )
   {
     const QStringList altPaths = mAlternativeBasepaths.value( originalBase );
     for ( const QString &altPath : altPaths )
     {
-      if ( QFileInfo::exists( altPath + fileName ) && QFileInfo( altPath + fileName ).isFile() )
-        return ( altPath + fileName );
+      QDir altDir( altPath );
+      if ( altDir.exists( fileName ) && QFileInfo( altDir.filePath( fileName ) ).isFile() )
+      {
+        foundPath = true;
+        return altDir.filePath( fileName );
+      }
     }
   }
-  return ( mOriginalFileBase.value( layerId ) );
+  return mOriginalFileBase.value( layerId );
 }
 
 void QgsHandleBadLayers::autoFind()
@@ -587,7 +593,8 @@ void QgsHandleBadLayers::autoFind()
       continue;
     }
 
-    datasource = checkBasepath( layerId, basepath, fileName );
+    bool fixedPath = false;
+    datasource = checkBasepath( layerId, basepath, fileName, fixedPath );
 
     bool dataSourceChanged { false };
 
@@ -634,7 +641,7 @@ void QgsHandleBadLayers::autoFind()
       if ( dataSourceChanged )
       {
         QString cleanSrc = QFileInfo( datasource ).absoluteDir().absolutePath();
-        checkBasepath( layerId, cleanSrc, fileName );
+        checkBasepath( layerId, cleanSrc, fileName, fixedPath );
       }
     }
 
@@ -646,7 +653,7 @@ void QgsHandleBadLayers::autoFind()
       setFilename( i, datasource );
       item->setText( datasource );
       item->setForeground( QBrush( Qt::green ) );
-      mLayerList->item( i, 0 )->setData( static_cast< int >( CustomRoles::DataSourceIsChanged ), QVariant( true ) );
+      mLayerList->item( i, 0 )->setData( static_cast< int >( CustomRoles::DataSourceWasAutoRepaired ), QVariant( true ) );
     }
     else
     {
