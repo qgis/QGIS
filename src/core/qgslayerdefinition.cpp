@@ -30,6 +30,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerfactory.h"
+#include "qgsmeshlayer.h"
+#include "qgspointcloudlayer.h"
+#include "qgsannotationlayer.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {
@@ -294,26 +298,42 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDom
     const QString type = layerElem.attribute( QStringLiteral( "type" ) );
     QgsMapLayer *layer = nullptr;
 
-    if ( type == QLatin1String( "vector" ) )
+    bool ok = false;
+    const QgsMapLayerType layerType = QgsMapLayerFactory::typeFromString( type, ok );
+    if ( ok )
     {
-      layer = new QgsVectorLayer( );
-    }
-    else if ( type == QLatin1String( "raster" ) )
-    {
-      layer = new QgsRasterLayer;
-    }
-    else if ( type == QLatin1String( "vector-tile" ) )
-    {
-      layer = new QgsVectorTileLayer;
-    }
-    else if ( type == QLatin1String( "plugin" ) )
-    {
-      QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-      layer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
-    }
-    else
-    {
-      errorMessage = QObject::tr( "Unsupported layer type: %1" ).arg( type );
+      switch ( layerType )
+      {
+        case QgsMapLayerType::VectorLayer:
+          layer = new QgsVectorLayer();
+          break;
+
+        case QgsMapLayerType::RasterLayer:
+          layer = new QgsRasterLayer();
+          break;
+
+        case QgsMapLayerType::PluginLayer:
+        {
+          QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
+          layer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
+          break;
+        }
+
+        case QgsMapLayerType::MeshLayer:
+          layer = new QgsMeshLayer();
+          break;
+
+        case QgsMapLayerType::VectorTileLayer:
+          layer = new QgsVectorTileLayer;
+          break;
+
+        case QgsMapLayerType::PointCloudLayer:
+          layer = new QgsPointCloudLayer();
+          break;
+
+        case QgsMapLayerType::AnnotationLayer:
+          break;
+      }
     }
 
     if ( layer )
@@ -322,6 +342,10 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDom
       // at a later stage and still retain all the layer properties intact
       layer->readLayerXml( layerElem, context );
       layers << layer;
+    }
+    else
+    {
+      errorMessage = QObject::tr( "Unsupported layer type: %1" ).arg( type );
     }
     layerElem = layerElem.nextSiblingElement( QStringLiteral( "maplayer" ) );
   }

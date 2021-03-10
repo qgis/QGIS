@@ -8916,6 +8916,8 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
     case QgsMapLayerType::RasterLayer:
     case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::VectorTileLayer:
     {
       QgsSettings settings;
       QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
@@ -8938,10 +8940,8 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::PointCloudLayer:
       break;
 
   }
