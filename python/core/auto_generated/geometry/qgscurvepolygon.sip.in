@@ -71,6 +71,8 @@ Curve polygon geometry type
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
 
 
     int numInteriorRings() const /HoldGIL/;

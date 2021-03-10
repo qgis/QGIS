@@ -292,9 +292,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
                             QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM ) const;
 #endif
 
-  private:
-
+    /**
+     * Cached bounding box.
+     */
     mutable QgsRectangle mBoundingBox;
+
+  private:
 
     mutable bool mHasCachedValidity = false;
     mutable QString mValidityFailureReason;
