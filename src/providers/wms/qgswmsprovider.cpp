@@ -3489,6 +3489,23 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
             params.insert( QStringLiteral( "getFeatureInfoUrl" ), requestUrl.toString() );
             featureStore.setParams( params );
 
+            // Try to parse and set feature id if matches "<some string>.<integer>"
+            if ( f.value( QLatin1String( "id" ) ).isString() )
+            {
+              const thread_local QRegularExpression re{ R"raw(\.(\d+)$)raw" };
+              const QString idVal { f.value( QLatin1String( "id" ) ).toString() };
+              const QRegularExpressionMatch match { re.match( idVal ) };
+              if ( match.hasMatch() )
+              {
+                bool ok;
+                QgsFeatureId id { match.captured( 1 ).toLongLong( &ok ) };
+                if ( ok )
+                {
+                  feature.setId( id );
+                }
+              }
+            }
+
             feature.setValid( true );
             featureStore.addFeature( feature );
 
