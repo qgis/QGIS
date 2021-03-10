@@ -15,7 +15,7 @@ class QgsMapLayerFactory
 %Docstring
 Contains utility functions for creating map layers.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.18.1
 %End
 
 %TypeHeaderCode
