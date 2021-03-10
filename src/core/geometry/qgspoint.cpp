@@ -537,6 +537,11 @@ double QgsPoint::segmentLength( QgsVertexId ) const
   return 0.0;
 }
 
+bool QgsPoint::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  return rectangle.contains( mX, mY );
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

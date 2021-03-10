@@ -436,6 +436,8 @@ Angle undefined. Always returns 0.0
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
 
     virtual bool addZValue( double zValue = 0 );
 

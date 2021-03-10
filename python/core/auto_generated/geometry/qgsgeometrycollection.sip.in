@@ -102,6 +102,8 @@ Returns a geometry from within the collection.
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
 
     void reserve( int size ) /HoldGIL/;
 %Docstring
