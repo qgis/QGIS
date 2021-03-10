@@ -7440,7 +7440,7 @@ void QgisApp::openLayerDefinition( const QString &path )
 {
   QString errorMessage;
   bool loaded = QgsLayerDefinition::loadLayerDefinition( path, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage );
-  if ( !loaded )
+  if ( !loaded || !errorMessage.isEmpty() )
   {
     QgsDebugMsg( errorMessage );
     visibleMessageBar()->pushMessage( tr( "Error loading layer definition" ), errorMessage, Qgis::Warning );
@@ -10956,7 +10956,7 @@ void QgisApp::pasteLayer()
     bool loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), root,
                   errorMessage, readWriteContext );
 
-    if ( !loaded )
+    if ( !loaded || !errorMessage.isEmpty() )
     {
       visibleMessageBar()->pushMessage( tr( "Error pasting layer" ), errorMessage, Qgis::Warning );
     }
