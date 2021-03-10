@@ -6954,7 +6954,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "layer_property" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "property" ) ),
-                                            fcnGetLayerProperty, QStringLiteral( "General" ) )
+                                            fcnGetLayerProperty, QStringLiteral( "Map Layers" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "decode_uri" ),
                                             QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
