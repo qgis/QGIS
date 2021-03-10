@@ -280,6 +280,7 @@ Returns the curve's orientation, e.g. clockwise or counter-clockwise.
 
 
 
+
 };
 
 /************************************************************************

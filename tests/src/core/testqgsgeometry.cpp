@@ -1388,6 +1388,11 @@ void TestQgsGeometry::point()
 
   TestFailTransformer failTransformer;
   QVERIFY( !p.transform( &failTransformer ) );
+
+  // test bounding box intersects
+  QVERIFY( QgsPoint( 1, 2 ).boundingBoxIntersects( QgsRectangle( 0, 0.5, 1.5, 3 ) ) );
+  QVERIFY( !QgsPoint( 1, 2 ).boundingBoxIntersects( QgsRectangle( 3, 0.5, 3.5, 3 ) ) );
+  QVERIFY( !QgsPoint().boundingBoxIntersects( QgsRectangle( 0, 0.5, 3.5, 3 ) ) );
 }
 
 void TestQgsGeometry::circularString()
@@ -5175,6 +5180,23 @@ void TestQgsGeometry::lineString()
   QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
   orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
   QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
+
+  // test bounding box intersects
+  QgsLineString bb;
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  bb.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 13, -10 ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
+  // double test because of cache
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 11, -10, 13, 12 ) );
+  // clear cache
+  bb.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 13, -10 ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 11, -10, 13, 12 ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
 }
 
 void TestQgsGeometry::polygon()
