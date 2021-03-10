@@ -408,7 +408,6 @@ void QgsHandleBadLayers::apply()
     const QString basepath = dataInfo.absoluteDir().path();
     const QString longName = dataInfo.fileName();
     const QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
-    const QString fileType = mLayerList->item( i, 2 )->text();
 
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
     if ( providerMap.contains( QStringLiteral( "path" ) ) )
@@ -421,7 +420,7 @@ void QgsHandleBadLayers::apply()
     const QVariant dataSourceIsChanged = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::DataSourceIsChanged ) );
     if ( !( dataSourceIsChanged.isValid() && dataSourceIsChanged.toBool() ) )
     {
-      datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ).replace( fileName, longName ) );
+      datasource = checkBasepath( layerId, basepath, fileName ).replace( fileName, longName );
     }
 
     bool dataSourceChanged { false };
@@ -588,7 +587,7 @@ void QgsHandleBadLayers::autoFind()
       continue;
     }
 
-    datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ) );
+    datasource = checkBasepath( layerId, basepath, fileName );
 
     bool dataSourceChanged { false };
 
@@ -622,7 +621,6 @@ void QgsHandleBadLayers::autoFind()
           datasource = tdatasource;
       }
 
-      datasource = QDir::toNativeSeparators( datasource );
       if ( QgsProject::instance()->mapLayer( layerId ) && !( datasource.isEmpty() ) )
       {
         QgsDataProvider::ProviderOptions options;
