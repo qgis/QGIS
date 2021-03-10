@@ -417,7 +417,7 @@ void QgsHandleBadLayers::apply()
       const QString correctedPath = checkBasepath( layerId, dataInfo.absoluteDir().path(), dataInfo.fileName(), fixedPath );
       if ( fixedPath && correctedPath != filePath )
       {
-        // reencode uri for provider
+        // re-encode uri for provider
         providerMap.insert( QStringLiteral( "path" ), correctedPath );
         datasource = QgsProviderRegistry::instance()->encodeUri( provider, providerMap );
       }
