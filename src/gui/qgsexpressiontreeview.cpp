@@ -413,7 +413,7 @@ void QgsExpressionTreeView::loadLayers()
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
     QIcon icon = QgsMapLayerModel::iconForLayer( layerIt.value() );
-    registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 1, icon );
+    registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 99, icon );
   }
 }
 
