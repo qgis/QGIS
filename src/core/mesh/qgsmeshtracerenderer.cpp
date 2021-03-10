@@ -26,6 +26,10 @@
 #define M_DEG2RAD 0.0174532925
 #endif
 
+#ifdef _MSC_VER
+#include <time.h>
+#endif
+
 
 QgsVector QgsMeshVectorValueInterpolator::vectorValue( const QgsPointXY &point ) const
 {
