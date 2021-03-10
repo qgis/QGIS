@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsrelationmanager.h"
 #include "qgsapplication.h"
+#include "qgsmaplayermodel.h"
 
 
 //! Returns a HTML formatted string for use as a \a relation item help.
@@ -411,7 +412,8 @@ void QgsExpressionTreeView::loadLayers()
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    registerItemForAllGroups( QStringList() << tr( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ) );
+    QIcon icon = QgsMapLayerModel::iconForLayer( layerIt.value() );
+    registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 1, icon );
   }
 }
 
