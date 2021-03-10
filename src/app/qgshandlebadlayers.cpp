@@ -82,9 +82,6 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
 {
   setupUi( this );
 
-  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
-  mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
-
   mBrowseButton = new QPushButton( tr( "Browse" ) );
   buttonBox->addButton( mBrowseButton, QDialogButtonBox::ActionRole );
   mBrowseButton->setDisabled( true );
@@ -201,7 +198,7 @@ QString QgsHandleBadLayers::filename( int row )
   if ( !providerFileBased )
     return QString();
 
-  const QString provider = mLayerList->item( row, 2 )->text();
+  const QString provider = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
   const QString datasource = mLayerList->item( row, 4 )->text();
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
@@ -213,40 +210,15 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
   if ( !QFileInfo::exists( filename ) )
     return;
 
-  QString type = mLayerList->item( row, 1 )->text();
-  QString provider = mLayerList->item( row, 2 )->text();
+  const QString provider = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
   QTableWidgetItem *item = mLayerList->item( row, 4 );
 
-  QString datasource = item->text();
+  const QString datasource = item->text();
 
-  if ( type == QLatin1String( "vector" ) )
-  {
-    if ( provider == QLatin1String( "spatialite" ) )
-    {
-      QgsDataSourceUri uri( datasource );
-      uri.setDatabase( filename );
-      datasource = uri.uri();
-    }
-    else if ( provider == QLatin1String( "ogr" ) )
-    {
-      QStringList theURIParts = datasource.split( '|' );
-      theURIParts[0] = filename;
-      datasource = theURIParts.join( QLatin1Char( '|' ) );
-    }
-    else if ( provider == QLatin1String( "delimitedtext" ) )
-    {
-      QUrl uriSource = QUrl::fromEncoded( datasource.toLatin1() );
-      QUrl uriDest = QUrl::fromLocalFile( filename );
-      uriDest.setQuery( QUrlQuery( uriSource ) );
-      datasource = QString::fromLatin1( uriDest.toEncoded() );
-    }
-  }
-  else
-  {
-    datasource = filename;
-  }
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
+  parts.insert( QStringLiteral( "path" ), filename );
 
-  item->setText( datasource );
+  item->setText( QgsProviderRegistry::instance()->encodeUri( provider, parts ) );
 }
 
 QList< int > QgsHandleBadLayers::fileBasedRows( bool selectedOnly )
@@ -293,18 +265,40 @@ void QgsHandleBadLayers::browseClicked()
   if ( selectedRows.size() == 1 )
   {
     int row = selectedRows.at( 0 );
-    QString type = mLayerList->item( row, 1 )->text();
 
-    QString memoryQualifier, fileFilter;
-    if ( type == QLatin1String( "vector" ) )
+    QString memoryQualifier;
+
+    const QgsMapLayerType layerType = static_cast< QgsMapLayerType >( mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::LayerType ) ).toInt() );
+    const QString provider = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
+
+    QString fileFilter;
+    switch ( layerType )
     {
-      memoryQualifier = QStringLiteral( "lastVectorFileFilter" );
-      fileFilter = mVectorFileFilter;
-    }
-    else
-    {
-      memoryQualifier = QStringLiteral( "lastRasterFileFilter" );
-      fileFilter = mRasterFileFilter;
+      case QgsMapLayerType::VectorLayer:
+        memoryQualifier = QStringLiteral( "lastVectorFileFilter" );
+        fileFilter = QgsProviderRegistry::instance()->providerMetadata( provider )->filters( QgsProviderMetadata::FilterType::FilterVector );
+        break;
+      case QgsMapLayerType::RasterLayer:
+        memoryQualifier = QStringLiteral( "lastRasterFileFilter" );
+        fileFilter = QgsProviderRegistry::instance()->providerMetadata( provider )->filters( QgsProviderMetadata::FilterType::FilterRaster );
+        break;
+      case QgsMapLayerType::MeshLayer:
+        memoryQualifier = QStringLiteral( "lastMeshFileFilter" );
+        fileFilter = QgsProviderRegistry::instance()->fileMeshFilters();
+        break;
+      case QgsMapLayerType::VectorTileLayer:
+        memoryQualifier = QStringLiteral( "lastVectorTileFileFilter" );
+        // not quite right -- but currently there's no generic method to get vector tile filters...
+        fileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
+        break;
+      case QgsMapLayerType::PointCloudLayer:
+        memoryQualifier = QStringLiteral( "lastPointCloudFileFilter" );
+        fileFilter = QgsProviderRegistry::instance()->providerMetadata( provider )->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
+        break;
+
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PluginLayer:
+        break;
     }
 
     QString fn = filename( row );
@@ -413,17 +407,8 @@ void QgsHandleBadLayers::apply()
     const QFileInfo dataInfo = QFileInfo( datasource );
     const QString basepath = dataInfo.absoluteDir().path();
     const QString longName = dataInfo.fileName();
-    QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
+    const QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
     const QString fileType = mLayerList->item( i, 2 )->text();
-    if ( provider.toLower().toStdString() == "none" )
-    {
-      if ( fileType.toStdString() == "raster" )
-        provider = QStringLiteral( "gdal" );
-      else if ( fileType.toStdString() == "vector" )
-        provider = QStringLiteral( "ogr" );
-      else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
-        provider = QStringLiteral( "mdal" );
-    }
 
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
     if ( providerMap.contains( QStringLiteral( "path" ) ) )
@@ -571,7 +556,7 @@ void QgsHandleBadLayers::autoFind()
 
   const QList<int> layersToFind = fileBasedRows( !mLayerList->selectedItems().isEmpty() );
 
-  QProgressDialog progressDialog( QObject::tr( "Searching files" ), 0, 1, layersToFind.size(), this, Qt::Dialog );
+  QProgressDialog progressDialog( QObject::tr( "Searching files" ), QObject::tr( "Cancel" ), 1, layersToFind.size(), this, Qt::Dialog );
 
   for ( int i : qgis::as_const( layersToFind ) )
   {
@@ -586,8 +571,7 @@ void QgsHandleBadLayers::autoFind()
     const QFileInfo dataInfo = QFileInfo( datasource );
     const QString basepath = dataInfo.absoluteDir().path();
     const QString longName = dataInfo.fileName();
-    QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
-    const QString fileType = mLayerList->item( i, 2 )->text();
+    const QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
 
     progressDialog.setValue( i );
     QChar sentenceEnd = ( name.length() > 15 ) ? QChar( 0x2026 ) : '.';
@@ -595,15 +579,6 @@ void QgsHandleBadLayers::autoFind()
                                  QString::number( i + 1 ), QString::number( layersToFind.size() ) ) );
     progressDialog.open();
 
-    if ( provider.toLower() == QLatin1String( "none" ) )
-    {
-      if ( fileType == QLatin1String( "raster" ) )
-        provider = QStringLiteral( "gdal" );
-      else if ( fileType == QLatin1String( "vector" ) )
-        provider = QStringLiteral( "ogr" );
-      else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
-        provider = QStringLiteral( "mdal" );
-    }
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
     if ( providerMap.contains( QStringLiteral( "path" ) ) )
       fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
