@@ -294,6 +294,11 @@ QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
 }
 #endif
 
+int QgsProjUtils::projVersionMajor()
+{
+  return PROJ_VERSION_MAJOR;
+}
+
 QStringList QgsProjUtils::searchPaths()
 {
   const QString path( proj_info().searchpath );
