@@ -514,7 +514,7 @@ WGS84 extent is returned.
 
 :param forceRecalculate: True to return the current WGS84 extent whatever the read flags
 
-.. versionadded:: 3.18
+.. versionadded:: 3.20
 %End
 
     bool isValid() const;
@@ -1818,7 +1818,7 @@ Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
 the extent is not invalidated because we want to trust metadata whatever
 happens.
 
-.. versionadded:: 3.18
+.. versionadded:: 3.20
 %End
 
 

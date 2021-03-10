@@ -520,7 +520,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * WGS84 extent read in the qgs project is returned. Otherwise, the actual
      * WGS84 extent is returned.
      * \param forceRecalculate True to return the current WGS84 extent whatever the read flags
-     * \since QGIS 3.18
+     * \since QGIS 3.20
      */
     QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
 
@@ -1616,7 +1616,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
      * the extent is not invalidated because we want to trust metadata whatever
      * happens.
-     * \since QGIS 3.18
+     * \since QGIS 3.20
      */
     void invalidateWgs84Extent();
 
