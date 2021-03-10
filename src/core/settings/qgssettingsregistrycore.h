@@ -32,7 +32,7 @@ class QgsSettingsEntryStringList;
  * \ingroup core
  * \class QgsSettingsRegistryCore
  *
- * \since QGIS 3.18
+ * \since QGIS 3.20
  */
 class CORE_EXPORT QgsSettingsRegistryCore
 {
