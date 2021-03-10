@@ -157,6 +157,7 @@ void QgsCodeEditorExpression::updateApis()
     mApis->add( fieldName );
   }
 
+  mApis->add( QString( "NULL" ) );
   mApis->prepare();
   mSqlLexer->setAPIs( mApis );
 }
