@@ -194,6 +194,11 @@ QString QgsEptProviderMetadata::filters( QgsProviderMetadata::FilterType type )
   return QString();
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsEptProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
