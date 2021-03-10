@@ -5,17 +5,35 @@
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
 [![Windows cross build](https://github.com/qgis/QGIS/workflows/MingW64%20Windows%2064bit%20Build/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
 
-# About QGIS
-
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical information system (GIS) that runs on Unix platforms, Windows, and MacOS.
+
+<!-- TOC generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
+
+  * [Features](#features)
+       * [1. Flexible and powerful spatial data management](#1-flexible-and-powerful-spatial-data-management)
+       * [2. Beautiful cartography](#2-beautiful-cartography)
+       * [3. Advanced and robust geospatial analysis](#3-advanced-and-robust-geospatial-analysis)
+       * [4. Powerful customization and extensibility](#4-powerful-customization-and-extensibility)
+       * [5. QGIS Server](#5-qgis-server)
+   * [Under the hood](#under-the-hood)
+       * [Versions and release cycle](#versions-and-release-cycle)
+       * [Free and Open Source](#free-and-open-source)
+   * [Installing and using QGIS](#installing-and-using-qgis)
+       * [Documentation](#documentation)
+       * [Help and support channels](#help-and-support-channels)
+   * [Get involved with the community](#get-involved-with-the-community)
+       * [Bug reporting and bug fixing](#bug-reporting-and-bug-fixing)
+       * [New features and enhancements](#new-features-and-enhancements)
+       * [Translations](#translations)
+       * [Other ways to contribute](#other-ways-to-contribute)
 
 ## Features 
 
 ### 1. Flexible and powerful spatial data management
 
 - Supports raster, vector, mesh, and point cloud data in a range of industry-standard formats
-    - *Raster formats include:* GeoPackage, GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, and [other GDAL supported formats](https://gdal.org/drivers/raster/index.html).
-    - *Vector formats include:* GeoPackage, ESRI Shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](http://www.gdal.org/ogr_formats.html). 
+    - *Raster formats include*: GeoPackage, GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, and [other GDAL supported formats](https://gdal.org/drivers/raster/index.html).
+    - *Vector formats include*: GeoPackage, ESRI Shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](http://www.gdal.org/ogr_formats.html). 
     - *Mesh formats include*: NetCDF, GRIB, 2DM, and [other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats).
     - *Point-cloud format*: LAS/LAZ and EPT datasets.
 - Access and display local files, spatial databases (PostGIS, SpatiaLite, SQL Server, Oracle, SAP HANA), web services (WMS, WCS, WFS, ArcGIS REST services), tile services, etc. <!-- removed DB2 due to https://github.com/qgis/QGIS/pull/41178 -->
@@ -72,7 +90,7 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 - Broad and varied [plugin ecosystem](https://plugins.qgis.org/) that includes data connectors, digitizing aids, advanced analysis and charting tools, in-the-field data capture, etc.
 - Style manager for creating, storing, and managing styles
 - [QGIS style hub](https://plugins.qgis.org/styles/) for easy sharing of styles
-- Python and C++ [API](https://qgis.org/api/) for standalone (headless) applications as well as in-application comprehensive scripting (PyQGIS)
+- Python and C++ API for standalone (headless) applications as well as in-application comprehensive scripting (PyQGIS)
 
 *Example: Style manager*
 
@@ -138,27 +156,28 @@ For installation of QGIS Server, see its [getting started documentation](https:/
 
 ### Documentation
 
-A range of 
-[documentation](https://qgis.org/en/docs/index.html) is available. This includes:
+A range of [documentation](https://qgis.org/en/docs/index.html) is available. This includes:
 
 - [Training Manual](https://docs.qgis.org/latest/en/docs/training_manual/index.html)
 - [QGIS User Guide](https://docs.qgis.org/latest/en/docs/user_manual/index.html)
 - [QGIS Server Guide](https://docs.qgis.org/latest/en/docs/server_manual/index.html)
-- [Documentation Guidelines](https://docs.qgis.org/latest/en/docs/documentation_guidelines/index.html)
-- [PyQGIS Cookbook](https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/index.html)
-- [Developers Guide](https://docs.qgis.org/latest/en/docs/developers_guide/index.html)
 - [Visual Changelog](https://qgis.org/en/site/forusers/visualchangelogs.html)
+- [Documentation Guidelines](https://docs.qgis.org/latest/en/docs/documentation_guidelines/index.html)
+- [QGIS Python (PyQGIS) Cookbook](https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/index.html)
+- [QGIS Python (PyQGIS) API](https://qgis.org/pyqgis/)
+- [QGIS C++ API](https://qgis.org/api/)
+- [Developers Guide](https://docs.qgis.org/latest/en/docs/developers_guide/index.html)
 
 ### Help and support channels
 
 There are several channels where you can find help and support for QGIS:
 
-- Using the [QGIS community site](https://qgis.org](https://qgis.org)
+- Using the [QGIS community site](https://qgis.org)
 - Joining the [qgis-users mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-user)
 - Chatting with other users real-time. *Please wait around for a response to your question as many folks on the channel are doing other things and it may take a while for them to notice your question. The following paths all take you to the same chat room:*
     - Using an IRC client and joining the [#qgis](http://webchat.freenode.net/?channels=#qgis) channel on irc.freenode.net.
     - Using a Matrix client and joining the [#qgis:matrix.org](http://matrix.to/#/#qgis:matrix.org) room.
-    - Using [Gitter](https://gitter.im/qgis/QGIS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) chat.
+    - Using [Gitter](https://gitter.im/qgis/QGIS) chat.
  - At the [GIS stackexchange](https://gis.stackexchange.com/) or [r/QGIS reddit](https://www.reddit.com/r/QGIS/), which are not maintained by the QGIS team, but where the QGIS and broader GIS community provides lots of advice
 - [Other support channels](https://qgis.org/en/site/forusers/support.html)
 
@@ -187,7 +206,7 @@ For large-scale changes, you can open a [QEP (QGIS Enhancement Proposal)](https:
 
 Please help translate QGIS to your language. At this moment about forty languages are already available in the Desktop user interface and about eighty languages are available in transifex ready to be translated.
 
-The [translation](https://qgis.org/en/site/getinvolved/translate.html) process is managed by the [Translation Team](https://qgis.org/en/site/getinvolved/governance/governance.html#gui-translation) and all the activities are done under the [Transifex](https://www.transifex.com/) platform.
+The [translation](https://qgis.org/en/site/getinvolved/translate.html) process is managed by the [Translation Team](https://qgis.org/en/site/getinvolved/governance/governance.html#gui-translation) and all the activities are done under the [Transifex](https://www.transifex.com/qgis/) platform.
 
 ### Other ways to contribute
 
