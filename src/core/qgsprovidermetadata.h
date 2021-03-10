@@ -160,7 +160,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     enum ProviderCapability
     {
-      FileBasedUris = 1 << 0, //!< Indicates that the provider can utilise URIs which are based on paths to files (as opposed to database or internet paths)
+      FileBasedUris = 1 << 0, //!< Indicates that the provider can utilize URIs which are based on paths to files (as opposed to database or internet paths)
     };
     Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
 
