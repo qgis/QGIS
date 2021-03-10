@@ -344,6 +344,7 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
   Q_UNUSED( transformContext )
+  invalidateWgs84Extent();
 }
 
 QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )

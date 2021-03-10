@@ -277,6 +277,7 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+  invalidateWgs84Extent();
 }
 
 void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,

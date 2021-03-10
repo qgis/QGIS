@@ -515,6 +515,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsRectangle extent() const;
 
     /**
+     * Returns the WGS84 extent (EPSG:4326) of the layer according to
+     * ReadFlag::FlagTrustLayerMetadata. If that flag is activated, then the
+     * WGS84 extent read in the qgs project is returned. Otherwise, the actual
+     * WGS84 extent is returned.
+     * \param forceRecalculate True to return the current WGS84 extent whatever the read flags
+     * \since QGIS 3.20
+     */
+    QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
+
+    /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when initialized.
      * \returns TRUE if the layer is valid and can be accessed
@@ -1602,8 +1612,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
-    //! Extent of the layer
-    mutable QgsRectangle mExtent;
+    /**
+     * Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
+     * the extent is not invalidated because we want to trust metadata whatever
+     * happens.
+     * \since QGIS 3.20
+     */
+    void invalidateWgs84Extent();
 
     //! Indicates if the layer is valid and can be drawn
     bool mValid = false;
@@ -1685,6 +1700,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
                                bool &resultFlag, StyleCategories categories = AllStyleCategories );
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
 
+    // const method because extents are mutable
+    void updateExtent( const QgsRectangle &extent ) const;
+
     /**
      * This method returns TRUE by default but can be overwritten to specify
      * that a certain layer is writable.
@@ -1742,6 +1760,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
+    //! Extent of the layer
+    mutable QgsRectangle mExtent;
+
+    //! Extent of the layer in EPSG:4326
+    mutable QgsRectangle mWgs84Extent;
+
     /**
      * Stores the original XML properties of the layer when loaded from the project
      *
@@ -1751,6 +1775,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
+
+    friend class QgsVectorLayer;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )

@@ -539,6 +539,7 @@ void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &tra
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+  invalidateWgs84Extent();
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const

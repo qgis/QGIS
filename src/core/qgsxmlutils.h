@@ -59,7 +59,14 @@ class CORE_EXPORT QgsXmlUtils
      */
     static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument &doc );
 
-    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc );
+    /**
+     * Encodes a rectangle to a DOM element.
+     * \param rect rectangle to encode
+     * \param doc DOM document
+     * \param elementName name of the DOM element
+     * \returns element containing encoded rectangle
+     */
+    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent" ) );
 
     /**
      * Write a QVariant to a QDomElement.

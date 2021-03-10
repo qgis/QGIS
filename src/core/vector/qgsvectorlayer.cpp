@@ -848,23 +848,20 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !mValidExtent && mLazyExtent && mDataProvider && !mDataProvider->hasMetadata() && mReadExtentFromXml && !mXmlExtent.isNull() )
   {
-    mExtent = mXmlExtent;
+    updateExtent( mXmlExtent );
     mValidExtent = true;
     mLazyExtent = false;
   }
 
   if ( !mValidExtent && mLazyExtent && mDataProvider && mDataProvider->isValid() )
   {
-    // get the extent
-    QgsRectangle mbr = mDataProvider->extent();
+    // store the extent
+    updateExtent( mDataProvider->extent() );
+    mValidExtent = true;
+    mLazyExtent = false;
 
     // show the extent
-    QgsDebugMsgLevel( QStringLiteral( "Extent of layer: %1" ).arg( mbr.toString() ), 3 );
-    // store the extent
-    mValidExtent = true;
-    mExtent = mbr;
-
-    mLazyExtent = false;
+    QgsDebugMsgLevel( QStringLiteral( "Extent of layer: %1" ).arg( mExtent.toString() ), 3 );
   }
 
   if ( mValidExtent )
@@ -886,7 +883,7 @@ QgsRectangle QgsVectorLayer::extent() const
     // but only when there are some features already
     if ( mDataProvider->featureCount() != 0 )
     {
-      QgsRectangle r = mDataProvider->extent();
+      const QgsRectangle r = mDataProvider->extent();
       rect.combineExtentWith( r );
     }
 
@@ -897,7 +894,7 @@ QgsRectangle QgsVectorLayer::extent() const
       {
         if ( it->hasGeometry() )
         {
-          QgsRectangle r = it->geometry().boundingBox();
+          const QgsRectangle r = it->geometry().boundingBox();
           rect.combineExtentWith( r );
         }
       }
@@ -913,7 +910,7 @@ QgsRectangle QgsVectorLayer::extent() const
     {
       if ( fet.hasGeometry() && fet.geometry().type() != QgsWkbTypes::UnknownGeometry )
       {
-        QgsRectangle bb = fet.geometry().boundingBox();
+        const QgsRectangle bb = fet.geometry().boundingBox();
         rect.combineExtentWith( bb );
       }
     }
@@ -925,8 +922,8 @@ QgsRectangle QgsVectorLayer::extent() const
     rect = QgsRectangle(); // use rectangle with zero coordinates
   }
 
+  updateExtent( rect );
   mValidExtent = true;
-  mExtent = rect;
 
   // Send this (hopefully) up the chain to the map canvas
   emit recalculateExtents();
