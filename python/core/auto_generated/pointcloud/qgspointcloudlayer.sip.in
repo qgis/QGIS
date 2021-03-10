@@ -98,6 +98,10 @@ QgsPointCloudLayer cannot be copied.
 
     virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
 
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
+
+    virtual QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const;
+
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
     virtual QString htmlMetadata() const;

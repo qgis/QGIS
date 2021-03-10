@@ -129,6 +129,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
+    QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
     QString htmlMetadata() const override;
     QgsMapLayerElevationProperties *elevationProperties() override;
