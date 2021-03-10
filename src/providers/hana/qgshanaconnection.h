@@ -40,6 +40,7 @@ struct AttributeField
   bool isAutoIncrement;
   bool isNullable;
   bool isSigned;
+  QString comment;
 
   QgsField toQgsField() const;
 };
@@ -83,7 +84,7 @@ class QgsHanaConnection : public QObject
       bool userTablesOnly = true,
       const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
-    void readQueryFields( const QString &sql, const std::function<void( const AttributeField &field )> &callback );
+    void readQueryFields( const QString &sql, const QString &schemaName, const std::function<void( const AttributeField &field )> &callback );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
     QStringList getLayerPrimaryKey( const QString &schemaName, const QString &tableName );
     QgsWkbTypes::Type getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName );

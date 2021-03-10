@@ -1350,7 +1350,7 @@ void QgsHanaProvider::readAttributeFields( QgsHanaConnection &conn )
     rsColumns->close();
   };
 
-  conn.readQueryFields( buildQuery( QStringLiteral( "*" ) ), processField );
+  conn.readQueryFields( buildQuery( QStringLiteral( "*" ) ), mSchemaName, processField );
 
   determinePrimaryKey( conn );
 }

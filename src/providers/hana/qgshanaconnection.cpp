@@ -101,7 +101,7 @@ QgsField AttributeField::toQgsField() const
       break;
   }
 
-  QgsField field = QgsField( name, fieldType, typeName, size, precision, QString(), QVariant::Invalid );
+  QgsField field = QgsField( name, fieldType, typeName, size, precision, comment, QVariant::Invalid );
   if ( !isNullable || isAutoIncrement )
   {
     QgsFieldConstraints constraints;
@@ -633,24 +633,62 @@ void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
   layerProperty.pkCols = getPrimaryKeyCandidates( layerProperty );
 }
 
-void QgsHanaConnection::readQueryFields( const QString &sql, const std::function<void( const AttributeField &field )> &callback )
+void QgsHanaConnection::readQueryFields( const QString &sql, const QString &schemaName,
+    const std::function<void( const AttributeField &field )> &callback )
 {
-  PreparedStatementRef stmt = prepareStatement( sql );
-  ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
-  for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
+  QMap<QString, QMap<QString, QString>> clmComments;
+  auto getColumnComments = [&clmComments, &conn = mConnection]( const QString & schemaName, const QString & tableName, const QString & columnName )
   {
-    AttributeField field;
-    field.schemaName = QString::fromStdU16String( rsmd->getSchemaName( i ) );
-    field.tableName = QString::fromStdU16String( rsmd->getTableName( i ) );
-    field.name = QString::fromStdU16String( rsmd->getColumnName( i ) );
-    field.typeName = QString::fromStdU16String( rsmd->getColumnTypeName( i ) );
-    field.type = rsmd->getColumnType( i );
-    field.isSigned = rsmd->isSigned( i );
-    field.isNullable = rsmd->isNullable( i );
-    field.isAutoIncrement = rsmd->isAutoIncrement( i );
-    field.size = static_cast<int>( rsmd->getColumnLength( i ) );
-    field.precision = -1;
-    callback( field );
+    if ( schemaName.isEmpty() || tableName.isEmpty() )
+      return QString();
+
+    const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+    if ( clmComments.contains( key ) )
+      return clmComments[key].value( columnName );
+
+    const char *sql = "SELECT COLUMN_NAME, COMMENTS FROM SYS.TABLE_COLUMNS WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?";
+    PreparedStatementRef stmt = conn->prepareStatement( sql );
+    stmt->setNString( 1, NString( schemaName.toStdU16String() ) );
+    stmt->setNString( 2, NString( tableName.toStdU16String() ) );
+
+    ResultSetRef rsColumns = stmt->executeQuery();
+    while ( rsColumns->next() )
+    {
+      QString name = QgsHanaUtils::toQString( rsColumns->getString( 1 ) );
+      QString comments = QgsHanaUtils::toQString( rsColumns->getString( 2 ) );
+      clmComments[key].insert( name, comments );
+    }
+    rsColumns->close();
+
+    return clmComments[key].value( columnName );
+  };
+
+  try
+  {
+    PreparedStatementRef stmt = prepareStatement( sql );
+    ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
+    for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
+    {
+      AttributeField field;
+      field.schemaName = QString::fromStdU16String( rsmd->getSchemaName( i ) );
+      field.tableName = QString::fromStdU16String( rsmd->getTableName( i ) );
+      field.name = QString::fromStdU16String( rsmd->getColumnName( i ) );
+      field.typeName = QString::fromStdU16String( rsmd->getColumnTypeName( i ) );
+      field.type = rsmd->getColumnType( i );
+      field.isSigned = rsmd->isSigned( i );
+      field.isNullable = rsmd->isNullable( i );
+      field.isAutoIncrement = rsmd->isAutoIncrement( i );
+      field.size = static_cast<int>( rsmd->getColumnLength( i ) );
+      field.precision = -1;
+      // As field comments cannot be retrieved via ODBC, we get it from SYS.TABLE_COLUMNS.
+      field.comment = getColumnComments( !field.schemaName.isEmpty() ? field.schemaName : schemaName, field.tableName, field.name );
+
+      callback( field );
+    }
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
   }
 }
 
