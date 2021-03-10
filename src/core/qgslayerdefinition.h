@@ -115,6 +115,12 @@ class CORE_EXPORT QgsLayerDefinition
         bool mHasMissingDependency;
         void init( const QDomDocument &doc );
     };
+
+  private:
+
+    static QList<QgsMapLayer *> loadLayerDefinitionLayersInternal( QDomDocument &document, QgsReadWriteContext &context, QString &errorMessage );
+
+
 };
 
 #endif // QGSLAYERDEFINITION_H
