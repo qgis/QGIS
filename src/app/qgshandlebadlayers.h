@@ -78,7 +78,7 @@ class APP_EXPORT QgsHandleBadLayers
       LayerType,
       Provider,
       ProviderIsFileBased,
-      DataSourceIsChanged,
+      DataSourceWasAutoRepaired,
       LayerId,
     };
 
@@ -99,7 +99,7 @@ class APP_EXPORT QgsHandleBadLayers
      * Otherwise all other know viable alternative for the original basepath will be tested.
      * \since QGIS 3.12
      */
-    QString checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName );
+    QString checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName, bool &foundPath );
 
     /**
      * Returns a list of all rows associated with file-based providers.
