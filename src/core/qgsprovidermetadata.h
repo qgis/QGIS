@@ -156,7 +156,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     /**
      * Provider capabilities
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.18.1
      */
     enum ProviderCapability
     {
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     /**
      * Returns the provider's capabilities.
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.18.1
      */
     virtual QgsProviderMetadata::ProviderCapabilities providerCapabilities() const;
 

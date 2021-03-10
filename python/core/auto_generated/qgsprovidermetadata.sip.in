@@ -160,7 +160,7 @@ Returns the provider metadata capabilities.
 %Docstring
 Returns the provider's capabilities.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.18.1
 %End
 
  QString library() const /Deprecated/;
