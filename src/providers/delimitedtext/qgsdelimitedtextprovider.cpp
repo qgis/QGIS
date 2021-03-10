@@ -1312,6 +1312,11 @@ QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts ) 
   return QString::fromLatin1( url.toEncoded() );
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsDelimitedTextProvider( uri, options, flags );
