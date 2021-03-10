@@ -424,7 +424,7 @@ QgsFields QgsHanaProviderConnection::fields( const QString &schema, const QStrin
       if ( field.name != geometryColumn )
         fields.append( field.toQgsField() );
     };
-    conn->readQueryFields( sql, processField );
+    conn->readQueryFields( sql, schema, processField );
     return fields;
   }
   catch ( const QgsHanaException &ex )
