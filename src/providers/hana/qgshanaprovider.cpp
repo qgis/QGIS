@@ -41,8 +41,6 @@
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 
-#include <ctype.h>
-
 #include "odbc/PreparedStatement.h"
 #include "odbc/ResultSet.h"
 #include "odbc/ResultSetMetaDataUnicode.h"
@@ -1334,6 +1332,27 @@ void QgsHanaProvider::readAttributeFields( QgsHanaConnection &conn )
   mFields.clear();
   mDefaultValues.clear();
 
+  QMap<QString, QMap<QString, QVariant>> defaultValues;
+  auto getColumnDefaultValue = [&defaultValues, &conn]( const QString & schemaName, const QString & tableName, const QString & columnName )
+  {
+    if ( schemaName.isEmpty() || tableName.isEmpty() )
+      return QVariant();
+
+    const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+    if ( defaultValues.contains( key ) )
+      return defaultValues[key].value( columnName );
+
+    QgsHanaResultSetRef rsColumns = conn.getColumns( schemaName, tableName, QStringLiteral( "%" ) );
+    while ( rsColumns->next() )
+    {
+      QString name = rsColumns->getString( 4 /*COLUMN_NAME*/ );
+      QVariant value = rsColumns->getValue( 13 /*COLUMN_DEF*/ );
+      defaultValues[key].insert( name, value );
+    }
+    rsColumns->close();
+    return defaultValues[key].value( columnName );
+  };
+
   auto processField = [&]( const AttributeField & field )
   {
     if ( field.name == mGeometryColumn )
@@ -1344,10 +1363,7 @@ void QgsHanaProvider::readAttributeFields( QgsHanaConnection &conn )
 
     const QString schemaName = field.schemaName.isEmpty() ? mSchemaName : field.schemaName;
     const QString tableName = field.tableName.isEmpty() ? mTableName : field.tableName;
-    QgsHanaResultSetRef rsColumns = conn.getColumns( schemaName, tableName, field.name );
-    if ( rsColumns->next() )
-      mDefaultValues.insert( mAttributeFields.size() - 1, rsColumns->getValue( 13/*COLUMN_DEF*/ ) );
-    rsColumns->close();
+    mDefaultValues.insert( mAttributeFields.size() - 1, getColumnDefaultValue( schemaName, tableName, field.name ) );
   };
 
   conn.readQueryFields( buildQuery( QStringLiteral( "*" ) ), mSchemaName, processField );
@@ -1871,4 +1887,3 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsHanaProviderMetadata();
 }
-
