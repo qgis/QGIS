@@ -375,6 +375,18 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
+bool QgsLineString::isClosed() const
+{
+  if ( mX.empty() )
+    return false;
+
+  bool closed = qgsDoubleNear( mX.first(), mX.last() ) &&
+                qgsDoubleNear( mY.first(), mY.last() );
+  if ( is3D() && closed )
+    closed &= qgsDoubleNear( mZ.first(), mZ.last() ) || ( std::isnan( mZ.first() ) && std::isnan( mZ.last() ) );
+  return closed;
+}
+
 QVector< QgsVertexId > QgsLineString::collectDuplicateNodes( double epsilon, bool useZValues ) const
 {
   QVector< QgsVertexId > res;
@@ -448,23 +460,15 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 QgsRectangle QgsLineString::calculateBoundingBox() const
 {
-  double xmin = std::numeric_limits<double>::max();
-  double ymin = std::numeric_limits<double>::max();
-  double xmax = -std::numeric_limits<double>::max();
-  double ymax = -std::numeric_limits<double>::max();
+  if ( mX.empty() )
+    return QgsRectangle();
 
-  const int nb = mX.size();
-  const double *x = mX.constData();
-  const double *y = mY.constData();
-  for ( int i = 0; i < nb; ++i )
-  {
-    const double px = *x++;
-    xmin = std::min( xmin, px );
-    xmax = std::max( xmax, px );
-    const double py = *y++;
-    ymin = std::min( ymin, py );
-    ymax = std::max( ymax, py );
-  }
+  auto result = std::minmax_element( mX.begin(), mX.end() );
+  const double xmin = *result.first;
+  const double xmax = *result.second;
+  result = std::minmax_element( mY.begin(), mY.end() );
+  const double ymin = *result.first;
+  const double ymax = *result.second;
   return QgsRectangle( xmin, ymin, xmax, ymax, false );
 }
 
