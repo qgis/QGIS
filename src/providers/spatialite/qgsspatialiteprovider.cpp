@@ -5904,6 +5904,11 @@ QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) con
   return dsUri.uri();
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsSpatiaLiteProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 
 QgsVectorLayerExporter::ExportError QgsSpatiaLiteProviderMetadata::createEmptyLayer(
   const QString &uri,
