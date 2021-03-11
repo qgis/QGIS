@@ -7063,6 +7063,35 @@ void TestQgsGeometry::polygon()
   rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
   rhr.forceRHR();
   QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
+
+  // test bounding box intersects
+  QgsPolygon bb;
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QgsLineString bbR;
+  bbR.setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( 4, 2 ) << QgsPoint( 4, 4 ) << QgsPoint( 0, 2 ) );
+  bb.setExteriorRing( bbR.clone() );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  // double test because of cache
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 11, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 11, 3, 6, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 0, 2, 4, 4 ) );
+  // clear cache
+  bbR.setPoints( QgsPointSequence() << QgsPoint( 10, 2 ) << QgsPoint( 14, 2 ) << QgsPoint( 15, 4 ) << QgsPoint( 10, 2 ) );
+  bb.setExteriorRing( bbR.clone() );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 10, 2, 15, 4 ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 11, 3, 16, 9 ) ) );
+  // technically invalid -- the interior ring is outside the exterior, but we want boundingBoxIntersects to be tolerant to
+  // cases like this!
+  bbR.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 4, 2 ) << QgsPoint( 5, 4 ) << QgsPoint( 1, 2 ) );
+  bb.addInteriorRing( bbR.clone() );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 11, 3, 16, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 21, 3, 26, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 10, 2, 15, 4 ) );
 }
 
 void TestQgsGeometry::triangle()
