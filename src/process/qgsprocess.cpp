@@ -61,9 +61,10 @@ void ConsoleFeedback::setProgressText( const QString &text )
 {
   if ( !mUseJson )
     std::cout << text.toLocal8Bit().constData() << '\n';
+  QgsProcessingFeedback::setProgressText( text );
 }
 
-void ConsoleFeedback::reportError( const QString &error, bool )
+void ConsoleFeedback::reportError( const QString &error, bool fatalError )
 {
   if ( !mUseJson )
     std::cerr << "ERROR:\t" << error.toLocal8Bit().constData() << '\n';
@@ -73,6 +74,7 @@ void ConsoleFeedback::reportError( const QString &error, bool )
       mJsonLog.insert( QStringLiteral( "errors" ), QStringList() );
     mJsonLog[ QStringLiteral( "errors" )] = mJsonLog.value( QStringLiteral( "errors" ) ).toStringList() << error;
   }
+  QgsProcessingFeedback::reportError( error, fatalError );
 }
 
 void ConsoleFeedback::pushWarning( const QString &warning )
@@ -85,6 +87,7 @@ void ConsoleFeedback::pushWarning( const QString &warning )
       mJsonLog.insert( QStringLiteral( "warning" ), QStringList() );
     mJsonLog[ QStringLiteral( "warning" )] = mJsonLog.value( QStringLiteral( "warning" ) ).toStringList() << warning;
   }
+  QgsProcessingFeedback::pushWarning( warning );
 }
 
 void ConsoleFeedback::pushInfo( const QString &info )
@@ -97,6 +100,7 @@ void ConsoleFeedback::pushInfo( const QString &info )
       mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
     mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << info;
   }
+  QgsProcessingFeedback::pushInfo( info );
 }
 
 void ConsoleFeedback::pushCommandInfo( const QString &info )
@@ -109,6 +113,7 @@ void ConsoleFeedback::pushCommandInfo( const QString &info )
       mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
     mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << info;
   }
+  QgsProcessingFeedback::pushCommandInfo( info );
 }
 
 void ConsoleFeedback::pushDebugInfo( const QString &info )
@@ -121,6 +126,7 @@ void ConsoleFeedback::pushDebugInfo( const QString &info )
       mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
     mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << info;
   }
+  QgsProcessingFeedback::pushDebugInfo( info );
 }
 
 void ConsoleFeedback::pushConsoleInfo( const QString &info )
@@ -133,6 +139,7 @@ void ConsoleFeedback::pushConsoleInfo( const QString &info )
       mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
     mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << info;
   }
+  QgsProcessingFeedback::pushConsoleInfo( info );
 }
 
 QVariantMap ConsoleFeedback::jsonLog() const
