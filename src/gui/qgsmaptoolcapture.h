@@ -469,6 +469,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     bool mStreamingEnabled = false;
     bool mAllowAddingStreamingPoints = false;
+    int mStreamingToleranceInPixels = 1;
+
     bool mStartNewCurve = false;
 
     bool mIgnoreSubsequentAutoRepeatUndo = false;
