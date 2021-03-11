@@ -63,6 +63,7 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   QgsGui::enableAutoGeometryRestore( this );
 
   connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
+  connect( mFromLargestPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromLargestPushButton_clicked );
   connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
   createTableWidgetContents();
 
@@ -75,7 +76,12 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mTableWidget->setSelectionMode( QAbstractItemView::SingleSelection );
 
   mFromSelectedPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromSelectedFeature.svg" ) ) );
+  mFromLargestPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromLargestFeature.svg" ) ) );
   mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRemoveSelectedFeature.svg" ) ) );
+
+  mFromLargestPushButton->setEnabled( mVectorLayer->geometryType() == QgsWkbTypes::LineGeometry ||
+                                      mVectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
+  mTakeLargestAttributesLabel->setEnabled( mFromLargestPushButton->isEnabled() );
 
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
@@ -389,6 +395,24 @@ QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int
   return QVariant( mVectorLayer->fields().at( fieldIdx ).type() );
 }
 
+void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId featureId )
+{
+  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
+  {
+    QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    if ( !currentComboBox )
+      continue;
+
+    if ( mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    {
+      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );
+    }
+    else
+    {
+      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
+    }
+  }
+}
 
 QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary::Statistic stat )
 {
@@ -460,21 +484,49 @@ void QgsMergeAttributesDialog::mFromSelectedPushButton_clicked()
     return;
   }
 
-  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
-  {
-    QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
-    if ( !currentComboBox )
-      continue;
+  setAllAttributesFromFeature( featureId );
+}
 
-    if ( mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+void QgsMergeAttributesDialog::mFromLargestPushButton_clicked()
+{
+  QgsFeatureId featureId;
+  double maxValue = 0;
+
+  switch ( mVectorLayer->geometryType() )
+  {
+    case QgsWkbTypes::LineGeometry:
     {
-      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );
+      QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
+      for ( ; f_it != mFeatureList.constEnd(); ++f_it )
+      {
+        double featureLength = f_it->geometry().length();
+        if ( featureLength > maxValue )
+        {
+          featureId = f_it->id();
+          maxValue = featureLength;
+        }
+      }
+      break;
     }
-    else
+    case QgsWkbTypes::PolygonGeometry:
     {
-      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
+      QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
+      for ( ; f_it != mFeatureList.constEnd(); ++f_it )
+      {
+        double featureArea = f_it->geometry().area();
+        if ( featureArea > maxValue )
+        {
+          featureId = f_it->id();
+          maxValue = featureArea;
+        }
+      }
+      break;
     }
+    default:
+      return;
   }
+  if ( maxValue > 0 )
+    setAllAttributesFromFeature( featureId );
 }
 
 void QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked()
