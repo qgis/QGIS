@@ -638,11 +638,9 @@ void PointSet::extendLineByDistance( double startDistance, double endDistance, d
   invalidateGeos();
 }
 
-CHullBox PointSet::compute_chull_bbox()
+OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bool &ok )
 {
-  int i;
-  int j;
-
+  ok = false;
   double bbox[4]; // xmin, ymin, xmax, ymax
 
   double alpha;
@@ -650,18 +648,9 @@ CHullBox PointSet::compute_chull_bbox()
 
   double alpha_seg;
 
-  double dref;
   double d1, d2;
 
   double bb[16];   // {ax, ay, bx, by, cx, cy, dx, dy, ex, ey, fx, fy, gx, gy, hx, hy}}
-
-  double cp;
-  double best_cp;
-  double distNearestPoint;
-
-  double area;
-  double width;
-  double length;
 
   double best_area = std::numeric_limits<double>::max();
   double best_alpha = -1;
@@ -675,7 +664,7 @@ CHullBox PointSet::compute_chull_bbox()
   bbox[2] = std::numeric_limits<double>::lowest();
   bbox[3] = std::numeric_limits<double>::lowest();
 
-  for ( i = 0; i < cHullSize; i++ )
+  for ( int i = 0; i < cHullSize; i++ )
   {
     if ( x[cHull[i]] < bbox[0] )
       bbox[0] = x[cHull[i]];
@@ -690,8 +679,14 @@ CHullBox PointSet::compute_chull_bbox()
       bbox[3] = y[cHull[i]];
   }
 
+  OrientedConvexHullBoundingBox finalBb;
 
-  dref = bbox[2] - bbox[0];
+  const double dref = bbox[2] - bbox[0];
+  if ( qgsDoubleNear( dref, 0 ) )
+  {
+    ok = false;
+    return finalBb;
+  }
 
   for ( alpha_d = 0; alpha_d < 90; alpha_d++ )
   {
@@ -722,22 +717,22 @@ CHullBox PointSet::compute_chull_bbox()
     bb[15] = bb[13] - d1; // hx, hy
 
     // adjust all points
-    for ( i = 0; i < 16; i += 4 )
+    for ( int i = 0; i < 16; i += 4 )
     {
 
       alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI_2 + alpha;
 
-      best_cp = std::numeric_limits<double>::max();
-      for ( j = 0; j < nbPoints; j++ )
+      double best_cp = std::numeric_limits<double>::max();
+      for ( int j = 0; j < nbPoints; j++ )
       {
-        cp = GeomFunction::cross_product( bb[i + 2], bb[i + 3], bb[i], bb[i + 1], x[cHull[j]], y[cHull[j]] );
+        const double cp = GeomFunction::cross_product( bb[i + 2], bb[i + 3], bb[i], bb[i + 1], x[cHull[j]], y[cHull[j]] );
         if ( cp < best_cp )
         {
           best_cp = cp;
         }
       }
 
-      distNearestPoint = best_cp / dref;
+      const double distNearestPoint = best_cp / dref;
 
       d1 = std::cos( alpha_seg ) * distNearestPoint;
       d2 = std::sin( alpha_seg ) * distNearestPoint;
@@ -749,10 +744,10 @@ CHullBox PointSet::compute_chull_bbox()
     }
 
     // compute and compare AREA
-    width = GeomFunction::cross_product( bb[6], bb[7], bb[4], bb[5], bb[12], bb[13] ) / dref;
-    length = GeomFunction::cross_product( bb[2], bb[3], bb[0], bb[1], bb[8], bb[9] ) / dref;
+    const double width = GeomFunction::cross_product( bb[6], bb[7], bb[4], bb[5], bb[12], bb[13] ) / dref;
+    const double length = GeomFunction::cross_product( bb[2], bb[3], bb[0], bb[1], bb[8], bb[9] ) / dref;
 
-    area = width * length;
+    double area = width * length;
 
     if ( area < 0 )
       area *= -1;
@@ -769,10 +764,7 @@ CHullBox PointSet::compute_chull_bbox()
   }
 
   // best bbox is defined
-
-  CHullBox finalBb;
-
-  for ( i = 0; i < 16; i = i + 4 )
+  for ( int i = 0; i < 16; i = i + 4 )
   {
     GeomFunction::computeLineIntersection( best_bb[i], best_bb[i + 1], best_bb[i + 2], best_bb[i + 3],
                                            best_bb[( i + 4 ) % 16], best_bb[( i + 5 ) % 16], best_bb[( i + 6 ) % 16], best_bb[( i + 7 ) % 16],
@@ -783,6 +775,7 @@ CHullBox PointSet::compute_chull_bbox()
   finalBb.width = best_width;
   finalBb.length = best_length;
 
+  ok = true;
   return finalBb;
 }
 
