@@ -1669,7 +1669,7 @@ QString QgsOgrProvider::jsonStringValue( const QVariant &value ) const
   return stringValue;
 }
 
-bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
+bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId incrementalFeatureId )
 {
   bool returnValue = true;
   QgsOgrFeatureDefn &featureDefinition = mOgrLayer->GetLayerDefn();
@@ -1860,16 +1860,23 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     pushError( tr( "OGR error creating feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
     returnValue = false;
   }
-  else if ( !( flags & QgsFeatureSink::FastInsert ) )
+  else
   {
-    QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature.get() ) );
-    if ( id >= 0 )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      f.setId( id );
-
-      if ( mFirstFieldIsFid && attributes.count() > 0 )
+      QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature.get() ) );
+      if ( id >= 0 )
       {
-        f.setAttribute( 0, id );
+        f.setId( id );
+
+        if ( mFirstFieldIsFid && attributes.count() > 0 )
+        {
+          f.setAttribute( 0, id );
+        }
+      }
+      else if ( incrementalFeatureId >= 0 )
+      {
+        f.setId( incrementalFeatureId );
       }
     }
   }
@@ -1890,13 +1897,33 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
   const bool inTransaction = startTransaction();
 
+  QgsFeatureId incrementalFeatureId = -1;
+  OGRGeometryH filter;
+  if ( !( flags & QgsFeatureSink::FastInsert ) &&
+       ( mGDALDriverName == QLatin1String( "CSV" ) || mGDALDriverName == QLatin1String( "XLSX" ) || mGDALDriverName == QLatin1String( "ODS" ) ) )
+  {
+    filter = mOgrLayer->GetSpatialFilter();
+    if ( filter )
+    {
+      filter = OGR_G_Clone( filter );
+      mOgrLayer->SetSpatialFilter( nullptr );
+    }
+
+    incrementalFeatureId = static_cast< QgsFeatureId >( mOgrLayer->GetFeatureCount() ) + 1;
+
+    if ( filter )
+      mOgrLayer->SetSpatialFilter( filter );
+  }
+
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    if ( !addFeaturePrivate( *it, flags ) )
+    if ( !addFeaturePrivate( *it, flags, incrementalFeatureId ) )
     {
       returnvalue = false;
     }
+    if ( incrementalFeatureId >= 0 )
+      incrementalFeatureId++;
   }
 
   if ( inTransaction )
