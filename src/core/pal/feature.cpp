@@ -1654,14 +1654,17 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     double beta;
     double diago = std::sqrt( labelWidth * labelWidth / 4.0 + labelHeight * labelHeight / 4 );
     double rx, ry;
-    std::vector< CHullBox > boxes;
+    std::vector< OrientedConvexHullBoundingBox > boxes;
     boxes.reserve( shapes_final.size() );
 
     // Compute bounding box foreach finalShape
     while ( !shapes_final.isEmpty() )
     {
       PointSet *shape = shapes_final.takeFirst();
-      boxes.emplace_back( shape->compute_chull_bbox() );
+      bool ok = false;
+      OrientedConvexHullBoundingBox box = shape->computeConvexHullOrientedBoundingBox( ok );
+      if ( ok )
+        boxes.emplace_back( box );
 
       if ( shape->parent )
         delete shape;
@@ -1682,7 +1685,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
 
     do
     {
-      for ( CHullBox &box : boxes )
+      for ( OrientedConvexHullBoundingBox &box : boxes )
       {
         // there is two possibilities here:
         // 1. no maximum candidates for polygon setting is in effect (i.e. maxPolygonCandidates == 0). In that case,
