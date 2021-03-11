@@ -49,6 +49,7 @@ class TestQgsOgrProvider : public QObject
     void decodeUri();
     void encodeUri();
     void testThread();
+    void testCsvFeatureAddition();
 
   private:
     QString mTestDataDir;
@@ -350,6 +351,37 @@ void TestQgsOgrProvider::testThread()
   thread->wait();
   qInstallMessageHandler( 0 );
 
+}
+
+void TestQgsOgrProvider::testCsvFeatureAddition()
+{
+  QString csvFilename = QDir::tempPath() + "/csvfeatureadditiontest.csv";
+  QFile csvFile( csvFilename );
+  if ( csvFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream textStream( &csvFile );
+    textStream << QLatin1String( "col1,col2\n1,2\n" );
+    csvFile.close();
+  }
+
+  QgsVectorLayer *csvLayer = new QgsVectorLayer( csvFilename, QStringLiteral( "csv" ) );
+  QVERIFY( csvLayer->isValid() );
+  QCOMPARE( csvLayer->featureCount(), 1 );
+
+
+  QgsFeature feature( csvLayer->fields() );
+  feature.setAttribute( 0, 1 );
+  feature.setAttribute( 1, 1 );
+  feature.setAttribute( 2, QLatin1String( "csv" ) );
+
+  QgsFeatureList features;
+  features << feature << feature;
+  csvLayer->dataProvider()->addFeatures( features );
+  QCOMPARE( features.at( 0 ).id(), 2 );
+  QCOMPARE( features.at( 1 ).id(), 3 );
+
+  delete csvLayer;
+  QFile::remove( csvFilename );
 }
 
 
