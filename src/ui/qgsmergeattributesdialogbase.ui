@@ -84,7 +84,7 @@
      <item>
       <widget class="QLabel" name="mTakeLargestAttributesLabel">
        <property name="text">
-        <string>Take attributes from largest geometry</string>
+        <string>Take attributes from feature with the largest geometry</string>
        </property>
        <property name="buddy">
         <cstring>mFromLargestPushButton</cstring>
