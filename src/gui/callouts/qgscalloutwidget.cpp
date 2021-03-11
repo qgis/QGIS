@@ -97,14 +97,8 @@ void QgsCalloutWidget::createAuxiliaryField()
   // create property in auxiliary storage if necessary
   if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
   {
-    QgsNewAuxiliaryFieldDialog dlg( def, mVectorLayer, true, this );
-    if ( dlg.exec() == QDialog::Accepted )
-      def = dlg.propertyDefinition();
+    mVectorLayer->auxiliaryLayer()->addAuxiliaryField( def );
   }
-
-  // return if still not exist
-  if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
-    return;
 
   // update property with join field name from auxiliary storage
   QgsProperty property = button->toProperty();
