@@ -266,6 +266,20 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertEqual(res['algorithm_details']['id'], 'Test model')
         self.assertTrue(os.path.exists(output_file))
 
+    def testModelRunWithLog(self):
+        output_file = self.TMP_DIR + '/model_log.log'
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_logging_model.model3', '--', 'logfile={}'.format(output_file)])
+        self.assertIn('Test logged message', err)
+        self.assertEqual(rc, 0)
+        self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
+        self.assertIn('results', output.lower())
+        self.assertTrue(os.path.exists(output_file))
+
+        with open(output_file, 'rt') as f:
+            lines = '\n'.join(f.readlines())
+
+        self.assertIn('Test logged message', lines)
+
 
 if __name__ == '__main__':
     # look for qgis bin path
