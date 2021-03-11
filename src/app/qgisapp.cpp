@@ -3694,7 +3694,7 @@ void QgisApp::createToolBars()
   connect( moveFeatureButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   // vertex tool button
-  QToolButton *vertexToolButton = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionVertexTool ) );
+  QToolButton *vertexToolButton = new QToolButton( mDigitizeToolBar );
   vertexToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   vertexToolButton->addAction( mActionVertexTool );
   vertexToolButton->addAction( mActionVertexToolActiveLayer );
@@ -3709,6 +3709,8 @@ void QgisApp::createToolBars()
       break;
   }
   vertexToolButton->setDefaultAction( defActionVertexTool );
+  QAction *ActionVertexTool = mDigitizeToolBar->insertWidget( mActionMultiEditAttributes, vertexToolButton );
+  ActionVertexTool->setObjectName( QStringLiteral( "ActionVertexTool" ) );
   connect( vertexToolButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   bt = new QToolButton();
