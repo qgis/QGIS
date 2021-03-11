@@ -199,6 +199,26 @@ Sets the ramp ``orientation`` (i.e. horizontal or vertical).
 .. seealso:: :py:func:`setDirection`
 %End
 
+    bool useContinuousLegend() const;
+%Docstring
+Returns the ``True`` if the flag to use continuous legend is set.
+
+.. seealso:: :py:func:`setUseContinuousLegend`
+%End
+
+    void setUseContinuousLegend( bool useContinuousLegend );
+%Docstring
+Sets the flag to use a continuos legend to ``useContinuousLegend``.
+
+When this flag is set the legend will be rendered using a single color ramp with
+min and max values, when it is not set the legend will be rendered using separate
+items for each item entry.
+
+.. seealso:: :py:func:`setOrientation`
+
+.. seealso:: :py:func:`direction`
+%End
+
 };
 
 /************************************************************************

@@ -202,7 +202,27 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      */
     void setOrientation( Qt::Orientation orientation );
 
+    /**
+     * Returns the TRUE if the flag to use continuous legend is set.
+     *
+     * \see setUseContinuousLegend()
+     */
+    bool useContinuousLegend() const;
+
+    /**
+     * Sets the flag to use a continuos legend to \a useContinuousLegend.
+     *
+     * When this flag is set the legend will be rendered using a single color ramp with
+     * min and max values, when it is not set the legend will be rendered using separate
+     * items for each item entry.
+     *
+     * \see setOrientation()
+     * \see direction()
+     */
+    void setUseContinuousLegend( bool useContinuousLegend );
+
   private:
+    bool mUseContinuousLegend = true;
     QString mMinimumLabel;
     QString mMaximumLabel;
     QString mPrefix;
