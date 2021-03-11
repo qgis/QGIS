@@ -201,7 +201,7 @@ Sets the ramp ``orientation`` (i.e. horizontal or vertical).
 
     bool useContinuousLegend() const;
 %Docstring
-Returns the ``True`` if the flag to use continuous legend is set.
+Returns ``True`` if a continuous gradient legend will be used.
 
 .. seealso:: :py:func:`setUseContinuousLegend`
 %End
