@@ -143,7 +143,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     {
       StraightSegments, //!< Default capture mode - capture occurs with straight line segments
       CircularString, //!< Capture in circular strings
-      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves)
+      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves). Since QGIS 3.20.
     };
 
     //! Specific capabilities of the tool
