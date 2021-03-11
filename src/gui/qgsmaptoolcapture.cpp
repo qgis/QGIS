@@ -368,6 +368,11 @@ void QgsMapToolCapture::setStreamDigitizingEnabled( bool enable )
 {
   mStreamingEnabled = enable;
   mStartNewCurve = true;
+  if ( enable )
+  {
+    QgsSettings settings;
+    mStreamingToleranceInPixels = settings.value( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 2 ).toInt();
+  }
 }
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
@@ -385,12 +390,10 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
     if ( mStreamingEnabled )
     {
-      if ( ! mCaptureCurve.isEmpty() )
+      if ( !mCaptureCurve.isEmpty() )
       {
-        QgsSettings settings;
-        const int tolerance = settings.value( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 2 ).toInt();
         QgsPoint prevPoint = mCaptureCurve.curveAt( mCaptureCurve.nCurves() - 1 )->endPoint();
-        if ( QgsPointXY( toCanvasCoordinates( toMapCoordinates( mCanvas->currentLayer(), prevPoint ) ) ).distance( toCanvasCoordinates( point ) ) < tolerance )
+        if ( QgsPointXY( toCanvasCoordinates( toMapCoordinates( mCanvas->currentLayer(), prevPoint ) ) ).distance( toCanvasCoordinates( point ) ) < mStreamingToleranceInPixels )
           return;
       }
 
