@@ -65,6 +65,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void comboValueChanged( const QString &text );
     void selectedRowChanged();
     void mFromSelectedPushButton_clicked();
+    void mFromLargestPushButton_clicked();
     void mRemoveFeatureFromSelectionButton_clicked();
     void tableWidgetCellChanged( int row, int column );
 
@@ -83,6 +84,8 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void refreshMergedValue( int col );
     //! Inserts the attribute value of a specific feature into the row of merged attributes
     QVariant featureAttribute( QgsFeatureId featureId, int fieldIdx );
+    //! Inserts all attribute values of a specific feature into the row of merged attributes
+    void setAllAttributesFromFeature( QgsFeatureId featureId );
     //! Appends the values of the features for the final value
     QVariant concatenationAttribute( int col );
 
