@@ -52,7 +52,10 @@ namespace pal
 
   class PointSet;
 
-  struct CHullBox
+  /**
+   * Represents the minimum area, oriented bounding box surrounding a convex hull.
+   */
+  struct OrientedConvexHullBoundingBox
   {
     double x[4];
     double y[4];
@@ -112,10 +115,9 @@ namespace pal
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
       /**
-       * Computes a con???? hull. Maybe convex, maybe concave. The person who wrote this
-       * had no care for anyone else ever reading their code.
+       * Computes an oriented bounding box for the shape's convex hull.
        */
-      CHullBox compute_chull_bbox();
+      OrientedConvexHullBoundingBox computeConvexHullOrientedBoundingBox( bool &ok );
 
       /**
        * Split a concave shape into several convex shapes.
