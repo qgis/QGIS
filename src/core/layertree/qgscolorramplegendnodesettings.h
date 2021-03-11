@@ -203,7 +203,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
     void setOrientation( Qt::Orientation orientation );
 
     /**
-     * Returns the TRUE if the flag to use continuous legend is set.
+     * Returns TRUE if a continuous gradient legend will be used.
      *
      * \see setUseContinuousLegend()
      */
