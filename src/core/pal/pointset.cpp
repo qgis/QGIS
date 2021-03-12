@@ -1041,3 +1041,32 @@ bool PointSet::isClosed() const
 {
   return qgsDoubleNear( x[0], x[nbPoints - 1] ) && qgsDoubleNear( y[0], y[nbPoints - 1] );
 }
+
+QString PointSet::toWkt() const
+{
+  if ( !mGeos )
+    createGeosGeom();
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+
+  try
+  {
+    GEOSWKTWriter *writer = GEOSWKTWriter_create_r( geosctxt );
+
+    char *wkt = GEOSWKTWriter_write_r( geosctxt, writer, mGeos );
+    const QString res( wkt );
+
+    GEOSFree_r( geosctxt, wkt );
+
+    GEOSWKTWriter_destroy_r( geosctxt, writer );
+    writer = nullptr;
+
+    return res;
+  }
+  catch ( GEOSException &e )
+  {
+    qWarning( "GEOS exception: %s", e.what() );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return QString();
+  }
+}

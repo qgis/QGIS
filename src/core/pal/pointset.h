@@ -200,6 +200,11 @@ namespace pal
        */
       bool isClosed() const;
 
+      /**
+       * Returns a WKT representation of the point set.
+       */
+      QString toWkt() const;
+
       int nbPoints;
       std::vector< double > x;
       std::vector< double > y;   // points order is counterclockwise
