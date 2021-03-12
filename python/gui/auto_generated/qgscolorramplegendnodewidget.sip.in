@@ -49,6 +49,15 @@ Sets the settings to show in the widget.
 .. seealso:: :py:func:`settings`
 %End
 
+    void setUseContinuousRampCheckBoxVisibility( bool visible );
+%Docstring
+Sets visibility for the "Use Continuous Legend" checkbox to ``visible``.
+
+This widget is visible and checked by default but in a few cases it does not
+need to be visible because disabling it would not make sense (for instance
+when using single band gray renderer).
+%End
+
 };
 
 class QgsColorRampLegendNodeDialog : QDialog
@@ -77,6 +86,15 @@ Returns the legend node settings as defined by the dialog.
     QDialogButtonBox *buttonBox() const;
 %Docstring
 Returns a reference to the dialog's button box.
+%End
+
+    void setUseContinuousRampCheckBoxVisibility( bool visible );
+%Docstring
+Sets visibility for the "Use Continuous Legend" checkbox in the legend settings dialog to ``visible``.
+
+This widget is visible and checked by default but in a few cases it does not
+need to be visible because disabling it would not make sense (for instance
+when using single band gray renderer).
 %End
 
 };
