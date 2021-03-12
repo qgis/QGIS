@@ -1901,21 +1901,22 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   const bool inTransaction = startTransaction();
 
   QgsFeatureId incrementalFeatureId = -1;
-  OGRGeometryH filter;
   if ( !( flags & QgsFeatureSink::FastInsert ) &&
        ( mGDALDriverName == QLatin1String( "CSV" ) || mGDALDriverName == QLatin1String( "XLSX" ) || mGDALDriverName == QLatin1String( "ODS" ) ) )
   {
-    filter = mOgrLayer->GetSpatialFilter();
-    if ( filter )
+    QMutex *mutex = nullptr;
+    OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     {
-      filter = OGR_G_Clone( filter );
-      mOgrLayer->SetSpatialFilter( nullptr );
+      QMutexLocker locker( mutex );
+
+      if ( !mSubsetString.isEmpty() )
+        OGR_L_SetAttributeFilter( layer, nullptr );
+
+      incrementalFeatureId = static_cast< QgsFeatureId >( OGR_L_GetFeatureCount( layer, false ) ) + 1;
+
+      if ( !mSubsetString.isEmpty() )
+        OGR_L_SetAttributeFilter( layer, textEncoding()->fromUnicode( mSubsetString ).constData() );
     }
-
-    incrementalFeatureId = static_cast< QgsFeatureId >( mOgrLayer->GetFeatureCount() ) + 1;
-
-    if ( filter )
-      mOgrLayer->SetSpatialFilter( filter );
   }
 
   bool returnvalue = true;
