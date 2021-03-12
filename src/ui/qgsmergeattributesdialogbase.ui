@@ -65,7 +65,7 @@
      <item>
       <widget class="QPushButton" name="mFromLargestPushButton">
        <property name="toolTip">
-        <string>Take all attributes from the Polygon with the largest area or Line with the longest length</string>
+        <string>Take all attributes from the Polygon with the largest area, Line with the longest length or MultiPoint with the most parts</string>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
