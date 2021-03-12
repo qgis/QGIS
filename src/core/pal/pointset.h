@@ -124,9 +124,7 @@ namespace pal
        *
        * \warning this code is completely unreadable and cannot be understood by mortals
        */
-      static void splitPolygons( QLinkedList<PointSet *> &inputShapes,
-                                 QLinkedList<PointSet *> &outputShapes,
-                                 double xrm, double yrm );
+      static QLinkedList<PointSet *> splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight );
 
       /**
        * Extends linestrings by the specified amount at the start and end of the line,
@@ -215,8 +213,7 @@ namespace pal
       mutable GEOSGeometry *mGeos = nullptr;
       mutable bool mOwnsGeom = false;
 
-      int *cHull = nullptr;
-      int cHullSize = 0;
+      std::vector< int > convexHull;
 
       int type;
 
