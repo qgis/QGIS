@@ -57,6 +57,8 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
   private:
     bool currentCalloutDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol );
 
+    QgsPointXY snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const;
+
 };
 
 #endif // QGSMAPTOOLMOVELABEL_H
