@@ -541,8 +541,20 @@ void QgsMergeAttributesDialog::mFromLargestPushButton_clicked()
     default:
       return;
   }
+  // Only proceed if we do have a largest geometry
   if ( maxValue > 0 )
+  {
     setAllAttributesFromFeature( featureId );
+    // Also select the appropriate row so the feature gets highlighted
+    for ( int row = mTableWidget->rowCount() - 1; row >= 0; --row )
+    {
+      if ( mTableWidget->verticalHeaderItem( row )->text() == FID_TO_STRING( featureId ) )
+      {
+        mTableWidget->selectRow( row );
+        return;
+      }
+    }
+  }
 }
 
 void QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked()
