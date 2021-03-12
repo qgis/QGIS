@@ -1637,12 +1637,13 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     return 0;
 
   QLinkedList<PointSet *> shapes_final = splitPolygons( mapShape, labelWidth, labelHeight );
+#if 0
   QgsDebugMsg( QStringLiteral( "PAL split polygons resulted in:" ) );
   for ( PointSet *ps : shapes_final )
   {
     QgsDebugMsg( ps->toWkt() );
   }
-
+#endif
 
   std::size_t nbp = 0;
 
