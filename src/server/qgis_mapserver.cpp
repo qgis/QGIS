@@ -357,7 +357,7 @@ class TcpServerWorker: public QObject
   public slots:
 
     // Outgoing connection handler
-    void responseReady( RequestContext *requestContext )
+    void responseReady( RequestContext *requestContext )  //#spellok
     {
       std::unique_ptr<RequestContext> request { requestContext };
       auto elapsedTime { std::chrono::steady_clock::now() - request->startTime };
@@ -426,10 +426,10 @@ class TcpServerThread: public QThread
     {
     }
 
-    void emitResponseReady( RequestContext *requestContext )
+    void emitResponseReady( RequestContext *requestContext )  //#spellok
     {
       if ( requestContext->clientConnection )
-        emit responseReady( requestContext );
+        emit responseReady( requestContext );  //#spellok
     }
 
     void run( )
@@ -442,14 +442,14 @@ class TcpServerThread: public QThread
       else
       {
         // Forward signal to worker
-        connect( this, &TcpServerThread::responseReady, &worker, &TcpServerWorker::responseReady );
+        connect( this, &TcpServerThread::responseReady, &worker, &TcpServerWorker::responseReady );  //#spellok
         QThread::run();
       }
     }
 
   signals:
 
-    void responseReady( RequestContext *requestContext );
+    void responseReady( RequestContext *requestContext );  //#spellok
     void serverError( );
 
   private:
@@ -638,7 +638,7 @@ int main( int argc, char *argv[] )
       return;
     }
     if ( requestContext->clientConnection && requestContext->clientConnection->isValid() )
-      tcpServerThread.emitResponseReady( requestContext );
+      tcpServerThread.emitResponseReady( requestContext );  //#spellok
     else
       delete requestContext;
   } );
