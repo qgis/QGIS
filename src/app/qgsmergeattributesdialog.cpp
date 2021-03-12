@@ -79,7 +79,8 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mFromLargestPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromLargestFeature.svg" ) ) );
   mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRemoveSelectedFeature.svg" ) ) );
 
-  mFromLargestPushButton->setEnabled( mVectorLayer->geometryType() == QgsWkbTypes::LineGeometry ||
+  mFromLargestPushButton->setEnabled( mVectorLayer->geometryType() == QgsWkbTypes::PointGeometry ||
+                                      mVectorLayer->geometryType() == QgsWkbTypes::LineGeometry ||
                                       mVectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
   mTakeLargestAttributesLabel->setEnabled( mFromLargestPushButton->isEnabled() );
 
@@ -494,6 +495,21 @@ void QgsMergeAttributesDialog::mFromLargestPushButton_clicked()
 
   switch ( mVectorLayer->geometryType() )
   {
+    case QgsWkbTypes::PointGeometry:
+    {
+      QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
+      for ( ; f_it != mFeatureList.constEnd(); ++f_it )
+      {
+        const QgsAbstractGeometry *geom = f_it->geometry().constGet();
+        int partCount = geom ? geom->partCount() : 0;
+        if ( partCount > maxValue )
+        {
+          featureId = f_it->id();
+          maxValue = partCount;
+        }
+      }
+      break;
+    }
     case QgsWkbTypes::LineGeometry:
     {
       QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
