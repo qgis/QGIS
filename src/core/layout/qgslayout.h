@@ -660,10 +660,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     struct Settings
     {
-        struct SearchPathForTemplates : public QgsSettingsEntryStringList
-        {
-          SearchPathForTemplates() : QgsSettingsEntryStringList( "Layout/searchPathsForTemplates", QgsSettings::Core, QStringList(), QObject::tr( "Search path for templates" ) ) {}
-        };
+      QGS_SETTING_ENTRY_STRINGLIST( SearchPathForTemplates, "Layout/searchPathsForTemplates", QgsSettings::Core, QStringList(), "Search path for templates" )
     };
 
   public slots:

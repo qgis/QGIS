@@ -155,18 +155,9 @@ class CORE_EXPORT QgsLocator : public QObject
 
     struct Settings
     {
-        struct LocatorFilterEnabled : public QgsSettingsEntryBool
-        {
-          LocatorFilterEnabled() : QgsSettingsEntryBool( "locator_filters/enabled_%", QgsSettings::Gui, true, QObject::tr( "Enabled" ) ) {}
-        };
-        struct LocatorFilterDefault : public QgsSettingsEntryBool
-        {
-          LocatorFilterDefault() : QgsSettingsEntryBool( "locator_filters/default_%", QgsSettings::Gui, false, QObject::tr( "Default value" ) ) {}
-        };
-        struct LocatorFilterPrefix : public QgsSettingsEntryString
-        {
-          LocatorFilterPrefix() : QgsSettingsEntryString( "locator_filters/prefix_%", QgsSettings::Gui, QString(), QObject::tr( "Locator filter prefix" ) ) {}
-        };
+      QGS_SETTING_ENTRY_BOOL( LocatorFilterEnabled, "locator_filters/enabled_%", QgsSettings::Gui, true, "Enabled" )
+      QGS_SETTING_ENTRY_BOOL( LocatorFilterDefault, "locator_filters/default_%", QgsSettings::Gui, false, "Default value" )
+      QGS_SETTING_ENTRY_STRING( LocatorFilterPrefix, "locator_filters/prefix_%", QgsSettings::Gui, QString(), "Locator filter prefix", 0, -1 )
     };
 
   signals:
