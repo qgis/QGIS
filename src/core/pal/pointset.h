@@ -120,7 +120,9 @@ namespace pal
       OrientedConvexHullBoundingBox computeConvexHullOrientedBoundingBox( bool &ok );
 
       /**
-       * Split a concave shape into several convex shapes.
+       * Split a polygon using some random logic into some other polygons.
+       *
+       * \warning this code is completely unreadable and cannot be understood by mortals
        */
       static void splitPolygons( QLinkedList<PointSet *> &inputShapes,
                                  QLinkedList<PointSet *> &outputShapes,
