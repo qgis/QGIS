@@ -40,8 +40,7 @@ using namespace pal;
 
 PointSet::PointSet()
 {
-  nbPoints = cHullSize = 0;
-  cHull = nullptr;
+  nbPoints = 0;
   type = -1;
 }
 
@@ -67,9 +66,8 @@ PointSet::PointSet( double aX, double aY )
   , xmax( aY )
   , ymin( aX )
   , ymax( aY )
-
 {
-  nbPoints = cHullSize = 1;
+  nbPoints = 1;
   x.resize( 1 );
   y.resize( 1 );
   x[0] = aX;
@@ -82,26 +80,11 @@ PointSet::PointSet( const PointSet &ps )
   , ymin( ps.ymin )
   , ymax( ps.ymax )
 {
-  int i;
-
   nbPoints = ps.nbPoints;
   x = ps.x;
   y = ps.y;
 
-  if ( ps.cHull )
-  {
-    cHullSize = ps.cHullSize;
-    cHull = new int[cHullSize];
-    for ( i = 0; i < cHullSize; i++ )
-    {
-      cHull[i] = ps.cHull[i];
-    }
-  }
-  else
-  {
-    cHull = nullptr;
-    cHullSize = 0;
-  }
+  convexHull = ps.convexHull;
 
   type = ps.type;
 
@@ -212,8 +195,6 @@ PointSet::~PointSet()
   }
 
   deleteCoords();
-
-  delete[] cHull;
 }
 
 void PointSet::deleteCoords()
@@ -285,88 +266,62 @@ bool PointSet::containsLabelCandidate( double x, double y, double width, double 
   return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha );
 }
 
-void PointSet::splitPolygons( QLinkedList<PointSet *> &inputShapes,
-                              QLinkedList<PointSet *> &outputShapes,
-                              double xrm, double yrm )
+QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight )
 {
-  int i, j;
-
-  int nbp;
-  std::vector< double > x;
-  std::vector< double > y;
-
-  int *pts = nullptr;
-
-  int *cHull = nullptr;
-  int cHullSize;
-
-  double cp;
-  double bestcp = 0;
+  int j;
 
   double bestArea = 0;
-  double area;
 
-  double base;
-  double b, c;
-  double s;
-
-  int ihs;
-  int ihn;
-
-  int ips;
-  int ipn;
+  double b;
 
   int holeS = -1;  // hole start and end points
   int holeE = -1;
 
   int retainedPt = -1;
-  int pt = 0;
 
-  double labelArea = xrm * yrm;
+  const double labelArea = labelWidth * labelHeight;
 
-  PointSet *shape = nullptr;
+  QLinkedList<PointSet *> inputShapes;
+  inputShapes.push_back( inputShape );
+  QLinkedList<PointSet *> outputShapes;
 
   while ( !inputShapes.isEmpty() )
   {
-    shape = inputShapes.takeFirst();
+    PointSet *shape = inputShapes.takeFirst();
 
-    x = shape->x;
-    y = shape->y;
-    nbp = shape->nbPoints;
-    pts = new int[nbp];
-
-    for ( i = 0; i < nbp; i++ )
+    const std::vector< double > &x = shape->x;
+    const std::vector< double > &y = shape->y;
+    const int nbp = shape->nbPoints;
+    std::vector< int > pts( nbp );
+    for ( int i = 0; i < nbp; i++ )
     {
       pts[i] = i;
     }
 
-    // conpute convex hull
-    shape->cHullSize = GeomFunction::convexHullId( pts, x, y, nbp, shape->cHull );
-
-    cHull = shape->cHull;
-    cHullSize = shape->cHullSize;
+    // compute convex hull
+    shape->convexHull = GeomFunction::convexHullId( pts, x, y );
 
     bestArea = 0;
     retainedPt = -1;
 
     // lookup for a hole
-    for ( ihs = 0; ihs < cHullSize; ihs++ )
+    for ( std::size_t ihs = 0; ihs < shape->convexHull.size(); ihs++ )
     {
       // ihs->ihn => cHull'seg
-      ihn = ( ihs + 1 ) % cHullSize;
+      std::size_t ihn = ( ihs + 1 ) % shape->convexHull.size();
 
-      ips = cHull[ihs];
-      ipn = ( ips + 1 ) % nbp;
-      if ( ipn != cHull[ihn] ) // next point on shape is not the next point on cHull => there is a hole here !
+      int ips = shape->convexHull[ihs];
+      int ipn = ( ips + 1 ) % nbp;
+      if ( ipn != shape->convexHull[ihn] ) // next point on shape is not the next point on cHull => there is a hole here !
       {
-        bestcp = 0;
-        pt = -1;
+        double bestcp = 0;
+        int pt = -1;
         // lookup for the deepest point in the hole
-        for ( i = ips; i != cHull[ihn]; i = ( i + 1 ) % nbp )
+        for ( int i = ips; i != shape->convexHull[ihn]; i = ( i + 1 ) % nbp )
         {
-          cp = std::fabs( GeomFunction::cross_product( x[cHull[ihs]], y[cHull[ihs]],
-                          x[cHull[ihn]], y[cHull[ihn]],
-                          x[i], y[i] ) );
+          double cp = std::fabs( GeomFunction::cross_product( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
+                                 x[shape->convexHull[ihn]], y[shape->convexHull[ihn]],
+                                 x[i], y[i] ) );
           if ( cp - bestcp > EPSILON )
           {
             bestcp = cp;
@@ -377,17 +332,17 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &inputShapes,
         if ( pt  != -1 )
         {
           // compute the ihs->ihn->pt triangle's area
-          base = GeomFunction::dist_euc2d( x[cHull[ihs]], y[cHull[ihs]],
-                                           x[cHull[ihn]], y[cHull[ihn]] );
+          const double base = GeomFunction::dist_euc2d( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
+                              x[shape->convexHull[ihn]], y[shape->convexHull[ihn]] );
 
-          b = GeomFunction::dist_euc2d( x[cHull[ihs]], y[cHull[ihs]],
+          b = GeomFunction::dist_euc2d( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
                                         x[pt], y[pt] );
 
-          c = GeomFunction::dist_euc2d( x[cHull[ihn]], y[cHull[ihn]],
-                                        x[pt], y[pt] );
+          const double c = GeomFunction::dist_euc2d( x[shape->convexHull[ihn]], y[shape->convexHull[ihn]],
+                           x[pt], y[pt] );
 
-          s = ( base + b + c ) / 2; // s = half perimeter
-          area = s * ( s - base ) * ( s - b ) * ( s - c );
+          const double s = ( base + b + c ) / 2; // s = half perimeter
+          double area = s * ( s - base ) * ( s - b ) * ( s - c );
           if ( area < 0 )
             area = -area;
 
@@ -414,12 +369,12 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &inputShapes,
     int ps = -1, pe = -1, fps = -1, fpe = -1;
     if ( retainedPt >= 0 && bestArea > labelArea ) // there is a hole so we'll cut the shape in two new shape (only if hole area is bigger than twice labelArea)
     {
-      c = std::numeric_limits<double>::max();
+      double c = std::numeric_limits<double>::max();
 
       // iterate on all shape points except points which are in the hole
       bool isValid;
       int k, l;
-      for ( i = ( cHull[holeE] + 1 ) % nbp; i != ( cHull[holeS] - 1 + nbp ) % nbp; i = j )
+      for ( int i = ( shape->convexHull[holeE] + 1 ) % nbp; i != ( shape->convexHull[holeS] - 1 + nbp ) % nbp; i = j )
       {
         j = ( i + 1 ) % nbp; // i->j is shape segment not in hole
 
@@ -478,7 +433,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &inputShapes,
           pointY = pty;
         }
 
-        for ( k = cHull[holeS]; k != cHull[holeE]; k = ( k + 1 ) % nbp )
+        for ( k = shape->convexHull[holeS]; k != shape->convexHull[holeE]; k = ( k + 1 ) % nbp )
         {
           l = ( k + 1 ) % nbp;
           if ( GeomFunction::isSegIntersects( x[retainedPt], y[retainedPt], pointX, pointY, x[k], y[k], x[l], y[l] ) )
@@ -558,8 +513,8 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &inputShapes,
     {
       outputShapes.append( shape );
     }
-    delete[] pts;
   }
+  return outputShapes;
 }
 
 void PointSet::extendLineByDistance( double startDistance, double endDistance, double smoothDistance )
@@ -675,19 +630,19 @@ OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bo
   bbox[2] = std::numeric_limits<double>::lowest();
   bbox[3] = std::numeric_limits<double>::lowest();
 
-  for ( int i = 0; i < cHullSize; i++ )
+  for ( std::size_t i = 0; i < convexHull.size(); i++ )
   {
-    if ( x[cHull[i]] < bbox[0] )
-      bbox[0] = x[cHull[i]];
+    if ( x[convexHull[i]] < bbox[0] )
+      bbox[0] = x[convexHull[i]];
 
-    if ( x[cHull[i]] > bbox[2] )
-      bbox[2] = x[cHull[i]];
+    if ( x[convexHull[i]] > bbox[2] )
+      bbox[2] = x[convexHull[i]];
 
-    if ( y[cHull[i]] < bbox[1] )
-      bbox[1] = y[cHull[i]];
+    if ( y[convexHull[i]] < bbox[1] )
+      bbox[1] = y[convexHull[i]];
 
-    if ( y[cHull[i]] > bbox[3] )
-      bbox[3] = y[cHull[i]];
+    if ( y[convexHull[i]] > bbox[3] )
+      bbox[3] = y[convexHull[i]];
   }
 
   OrientedConvexHullBoundingBox finalBb;
@@ -728,15 +683,16 @@ OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bo
     bb[15] = bb[13] - d1; // hx, hy
 
     // adjust all points
-    for ( int i = 0; i < 16; i += 4 )
+    for ( int  i = 0; i < 16; i += 4 )
     {
 
       alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI_2 + alpha;
 
       double best_cp = std::numeric_limits<double>::max();
-      for ( int j = 0; j < nbPoints; j++ )
+
+      for ( std::size_t j = 0; j < convexHull.size(); j++ )
       {
-        const double cp = GeomFunction::cross_product( bb[i + 2], bb[i + 3], bb[i], bb[i + 1], x[cHull[j]], y[cHull[j]] );
+        const double cp = GeomFunction::cross_product( bb[i + 2], bb[i + 3], bb[i], bb[i + 1], x[convexHull[j]], y[convexHull[j]] );
         if ( cp < best_cp )
         {
           best_cp = cp;

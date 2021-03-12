@@ -104,7 +104,7 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
         hole->holeOf = nullptr;
         // possibly not needed. it's not done for the exterior ring, so I'm not sure
         // why it's just done here...
-        GeomFunction::reorderPolygon( hole->nbPoints, hole->x, hole->y );
+        GeomFunction::reorderPolygon( hole->x, hole->y );
 
         mHoles << hole;
       }
@@ -1629,8 +1629,6 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   const std::size_t targetPolygonCandidates = maxPolygonCandidates > 0 ? std::min( maxPolygonCandidates,  static_cast< std::size_t>( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * area() ) ) )
       : 0;
 
-  QLinkedList<PointSet *> shapes_toProcess;
-  QLinkedList<PointSet *> shapes_final;
   const double totalArea = area();
 
   mapShape->parent = nullptr;
@@ -1638,9 +1636,13 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   if ( pal->isCanceled() )
     return 0;
 
-  shapes_toProcess.append( mapShape );
+  QLinkedList<PointSet *> shapes_final = splitPolygons( mapShape, labelWidth, labelHeight );
+  QgsDebugMsg( QStringLiteral( "PAL split polygons resulted in:" ) );
+  for ( PointSet *ps : shapes_final )
+  {
+    QgsDebugMsg( ps->toWkt() );
+  }
 
-  splitPolygons( shapes_toProcess, shapes_final, labelWidth, labelHeight );
 
   std::size_t nbp = 0;
 
