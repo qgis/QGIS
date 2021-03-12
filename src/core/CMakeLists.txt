@@ -717,7 +717,6 @@ set(QGIS_CORE_SRCS
   geocms/geonode/qgsgeonoderequest.cpp
 
   settings/qgssettingsentry.cpp
-  settings/qgssettingsregistry.cpp
   settings/qgssettingsregistrycore.cpp
 
   validity/qgsabstractvaliditycheck.cpp
@@ -1560,7 +1559,6 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextshadowsettings.h
 
   settings/qgssettingsentry.h
-  settings/qgssettingsregistry.h
   settings/qgssettingsregistrycore.h
 
   validity/qgsabstractvaliditycheck.h
