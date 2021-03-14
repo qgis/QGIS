@@ -46,7 +46,7 @@ void QgsRenderChecker::setControlImagePath( const QString &path )
 void QgsRenderChecker::setControlName( const QString &name )
 {
   mControlName = name;
-  mExpectedImageFile = controlImagePath() + name + '/' + mControlPathSuffix + name + ".png";
+  mExpectedImageFile = controlImagePath() + name + '/' + mControlPathSuffix + name + "." + mControlExtension;
 }
 
 void QgsRenderChecker::setControlPathSuffix( const QString &name )
