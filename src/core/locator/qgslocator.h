@@ -155,9 +155,9 @@ class CORE_EXPORT QgsLocator : public QObject
 
     struct Settings
     {
-      QGS_SETTING_ENTRY_BOOL( LocatorFilterEnabled, "locator_filters/enabled_%", QgsSettings::Gui, true, "Enabled" )
-      QGS_SETTING_ENTRY_BOOL( LocatorFilterDefault, "locator_filters/default_%", QgsSettings::Gui, false, "Default value" )
-      QGS_SETTING_ENTRY_STRING( LocatorFilterPrefix, "locator_filters/prefix_%", QgsSettings::Gui, QString(), "Locator filter prefix", 0, -1 )
+      QGS_SETTING_ENTRY_BOOL( LocatorFilterEnabled, QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, tr( "Enabled" ) )
+      QGS_SETTING_ENTRY_BOOL( LocatorFilterDefault, QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, tr( "Default value" ) )
+      QGS_SETTING_ENTRY_STRING( LocatorFilterPrefix, QStringLiteral( "locator_filters/prefix_%" ), QgsSettings::Gui, QString(), tr( "Locator filter prefix" ) )
     };
 
   signals:

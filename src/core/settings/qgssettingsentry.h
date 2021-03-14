@@ -23,30 +23,6 @@
 #include "qgis_sip.h"
 #include "qgssettings.h"
 
-# define QGS_SETTING_ENTRY_STRING(name, path, section, defaultValue, description, minLength, maxLength) \
-  struct name : public QgsSettingsEntryString \
-  { name() : QgsSettingsEntryString( path, section, defaultValue, QObject::tr( description ), minLength, maxLength ) {} };
-
-# define QGS_SETTING_ENTRY_STRINGLIST(name, path, section, defaultValue, description) \
-  struct name : public QgsSettingsEntryStringList \
-  { name() : QgsSettingsEntryStringList( path, section, defaultValue, QObject::tr( description ) ) {} };
-
-# define QGS_SETTING_ENTRY_BOOL(name, path, section, defaultValue, description) \
-  struct name : public QgsSettingsEntryBool \
-  { name() : QgsSettingsEntryBool( path, section, defaultValue, QObject::tr( description ) ) {} };
-
-# define QGS_SETTING_ENTRY_INTEGER(name, path, section, defaultValue, description, minValue, maxValue) \
-  struct name : public QgsSettingsEntryInteger \
-  { name() : QgsSettingsEntryInteger( path, section, defaultValue, QObject::tr( description ), minValue, maxValue ) {} };
-
-# define QGS_SETTING_ENTRY_DOUBLE(name, path, section, defaultValue, description, minValue, maxValue, displayDecimals) \
-  struct name : public QgsSettingsEntryDouble \
-  { name() : QgsSettingsEntryDouble( path, section, defaultValue, QObject::tr( description ), minValue, maxValue, displayDecimals ) {} };
-
-# define QGS_SETTING_ENTRY_ENUM(name, path, section, defaultValue, description) \
-  struct name : public QgsSettingsEntryEnum \
-  { name() : QgsSettingsEntryEnum( path, section, defaultValue, QObject::tr( description ) ) {} };
-
 /**
  * \ingroup core
  * \class QgsSettingsEntry
@@ -204,6 +180,11 @@ class CORE_EXPORT QgsSettingsEntry
 
 };
 
+
+#define QGS_SETTING_ENTRY_STRING(name, path, section, defaultValue, ...) \
+  struct name : public QgsSettingsEntryString \
+  { name() : QgsSettingsEntryString( path, section, defaultValue, ##__VA_ARGS__ ) {} };
+
 /**
  * \class QgsSettingsEntryString
  * \ingroup core
@@ -256,6 +237,11 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 
 };
 
+
+# define QGS_SETTING_ENTRY_STRINGLIST(name, path, section, defaultValue, ...) \
+  struct name : public QgsSettingsEntryStringList \
+  { name() : QgsSettingsEntryStringList( path, section, defaultValue, ##__VA_ARGS__ ) {} };
+
 /**
  * \class QgsSettingsEntryStringList
  * \ingroup core
@@ -288,6 +274,11 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
 
 };
 
+
+# define QGS_SETTING_ENTRY_BOOL(name, path, section, defaultValue, ...) \
+  struct name : public QgsSettingsEntryBool \
+  { name() : QgsSettingsEntryBool( path, section, defaultValue, ##__VA_ARGS__ ) {} };
+
 /**
  * \class QgsSettingsEntryBool
  * \ingroup core
@@ -319,6 +310,11 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
     virtual SettingsType settingsType() const override;
 
 };
+
+
+# define QGS_SETTING_ENTRY_INTEGER(name, path, section, defaultValue, ...) \
+  struct name : public QgsSettingsEntryInteger \
+  { name() : QgsSettingsEntryInteger( path, section, defaultValue, ##__VA_ARGS__ ) {} };
 
 /**
  * \class QgsSettingsEntryInteger
@@ -370,6 +366,11 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
     qlonglong mMaxValue;
 
 };
+
+
+# define QGS_SETTING_ENTRY_DOUBLE(name, path, section, defaultValue, ...) \
+  struct name : public QgsSettingsEntryDouble \
+  { name() : QgsSettingsEntryDouble( path, section, defaultValue, ##__VA_ARGS__ ) {} };
 
 /**
  * \class QgsSettingsEntryDouble
@@ -430,7 +431,12 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
 
 };
 
+
 #ifndef SIP_RUN
+
+# define QGS_SETTING_ENTRY_ENUM(name, path, section, defaultValue, ...) \
+  struct name : public QgsSettingsEntryEnum \
+  { name() : QgsSettingsEntryEnum( path, section, defaultValue, ##__VA_ARGS__ ) {} };
 
 /**
  * \class QgsSettingsEntryEnum
@@ -453,7 +459,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
      */
     template <class T>
     QgsSettingsEntryEnum( const QString &key,
-                          QgsSettings::Section *section,
+                          QgsSettings::Section section,
                           const T &defaultValue,
                           const QString &description = QString() )
       : QgsSettingsEntry( key,
