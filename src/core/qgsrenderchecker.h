@@ -103,7 +103,7 @@ class CORE_EXPORT QgsRenderChecker
     void setControlName( const QString &name );
 
     /**
-     * Sets file extension for the control image. By defailt it is "png"
+     * Sets file extension for the control image. By default it is "png"
      * \since QGIS 3.20
      */
     void setControlExtension( const QString &extension ) { mControlExtension = extension; }

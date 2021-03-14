@@ -87,7 +87,7 @@ The path to the image will be constructed like this:
 
     void setControlExtension( const QString &extension );
 %Docstring
-Sets file extension for the control image. By defailt it is "png"
+Sets file extension for the control image. By default it is "png"
 
 .. versionadded:: 3.20
 %End
