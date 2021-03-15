@@ -40,8 +40,10 @@ inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrC
 {
   c = new QgsOgrConn;
 
-  QVariantMap parts = QgsOgrProviderMetadata().decodeUri( connInfo );
-  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( connInfo );
+  const QString fullPath = parts.value( QStringLiteral( "vsiPrefix" ) ).toString()
+                           + parts.value( QStringLiteral( "path" ) ).toString()
+                           + parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
   const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
   char **papszOpenOptions = nullptr;
   for ( const QString &option : openOptions )
@@ -49,7 +51,7 @@ inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrC
     papszOpenOptions = CSLAddString( papszOpenOptions,
                                      option.toUtf8().constData() );
   }
-  c->ds = QgsOgrProviderUtils::GDALOpenWrapper( filePath.toUtf8().constData(), false, papszOpenOptions, nullptr );
+  c->ds = QgsOgrProviderUtils::GDALOpenWrapper( fullPath.toUtf8().constData(), false, papszOpenOptions, nullptr );
   CSLDestroy( papszOpenOptions );
   c->path = connInfo;
   c->valid = true;
