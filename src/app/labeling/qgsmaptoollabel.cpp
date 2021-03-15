@@ -877,7 +877,6 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes, bool ov
   return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
 }
 
-
 bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes, bool overwriteExpression )
 {
   bool newAuxiliaryLayer = false;
@@ -922,6 +921,56 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   return newAuxiliaryLayer;
 }
 
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
+{
+  return createAuxiliaryFields( mCurrentCallout, calloutIndexes, overwriteExpression );
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
+{
+  bool newAuxiliaryLayer = false;
+  QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( details.layerID );
+
+  if ( !vlayer )
+    return newAuxiliaryLayer;
+
+  if ( !vlayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vlayer );
+    dlg.exec();
+    newAuxiliaryLayer = true;
+  }
+
+  if ( !vlayer->auxiliaryLayer() )
+    return false;
+
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+  bool changed = false;
+  for ( const QgsCallout::Property &p : qgis::as_const( mCalloutProperties ) )
+  {
+    int index = -1;
+
+    // always use the default activated property
+    QgsProperty prop = vlayer->labeling() && vlayer->labeling()->settings( details.providerID ).callout() ? vlayer->labeling()->settings( details.providerID ).callout()->dataDefinedProperties().property( p ) :
+                       QgsProperty();
+    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    {
+      index = vlayer->fields().lookupField( prop.field() );
+    }
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
+    {
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      changed = true;
+    }
+
+    calloutIndexes[p] = index;
+  }
+  if ( changed )
+    emit vlayer->styleChanged();
+
+  return newAuxiliaryLayer;
+}
+
 void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
 {
   if ( !mHoverRubberBand )
@@ -938,9 +987,7 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
 
   QgsCalloutPosition calloutPosition;
   bool isOrigin = false;
-  int xCol = 0;
-  int yCol = 0;
-  if ( calloutAtPosition( e, calloutPosition, isOrigin ) && canModifyCallout( calloutPosition, isOrigin, xCol, yCol ) )
+  if ( calloutAtPosition( e, calloutPosition, isOrigin ) )
   {
     if ( !mCalloutOtherPointsRubberBand )
     {
