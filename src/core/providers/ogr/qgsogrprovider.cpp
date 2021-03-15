@@ -319,7 +319,10 @@ static QString AnalyzeURI( QString const &uri,
     openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
   }
 
-  return parts.value( QStringLiteral( "path" ) ).toString();
+  const QString fullPath = parts.value( QStringLiteral( "vsiPrefix" ) ).toString()
+                           + parts.value( QStringLiteral( "path" ) ).toString()
+                           + parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+  return fullPath;
 }
 
 QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QString &uri,
@@ -3572,6 +3575,27 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
 
   int layerId = -1;
 
+  QString vsiPrefix = qgsVsiPrefix( path );
+  QString vsiSuffix;
+  if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
+  {
+    path = path.mid( vsiPrefix.count() );
+    if ( vsiPrefix == QLatin1String( "/vsizip/" ) )
+    {
+      const QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]*)" ) );
+      QRegularExpressionMatch match = vsiRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        vsiSuffix = match.captured( 1 );
+        path = path.remove( match.capturedStart( 1 ), match.capturedLength( 1 ) );
+      }
+    }
+  }
+  else
+  {
+    vsiPrefix.clear();
+  }
+
   if ( path.contains( '|' ) )
   {
     const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
@@ -3667,18 +3691,24 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
     uriComponents.insert( QStringLiteral( "databaseName" ), databaseName );
   if ( !openOptions.isEmpty() )
     uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
+  if ( !vsiPrefix.isEmpty() )
+    uriComponents.insert( QStringLiteral( "vsiPrefix" ), vsiPrefix );
+  if ( !vsiSuffix.isEmpty() )
+    uriComponents.insert( QStringLiteral( "vsiSuffix" ), vsiSuffix );
   return uriComponents;
 }
 
 QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
+  const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
+  const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
   const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
   const QString layerId = parts.value( QStringLiteral( "layerId" ) ).toString();
   const QString subset = parts.value( QStringLiteral( "subset" ) ).toString();
   const QString geometryType = parts.value( QStringLiteral( "geometryType" ) ).toString();
   const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
-  QString uri = path
+  QString uri = vsiPrefix + path + vsiSuffix
                 + ( !layerName.isEmpty() ? QStringLiteral( "|layername=%1" ).arg( layerName ) : !layerId.isEmpty() ? QStringLiteral( "|layerid=%1" ).arg( layerId ) : QString() )
                 + ( !geometryType.isEmpty() ? QStringLiteral( "|geometrytype=%1" ).arg( geometryType ) : QString() );
   for ( const QString &openOption : openOptions )
