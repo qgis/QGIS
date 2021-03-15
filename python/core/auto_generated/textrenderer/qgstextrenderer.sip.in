@@ -45,7 +45,6 @@ and background shapes.
       AlignCenter,
       AlignRight,
       AlignJustify,
-      AlignFullJustify,
     };
 
     static HAlignment convertQtHAlignment( Qt::Alignment alignment );

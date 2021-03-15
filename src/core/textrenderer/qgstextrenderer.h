@@ -61,7 +61,6 @@ class CORE_EXPORT QgsTextRenderer
       AlignCenter, //!< Center align
       AlignRight, //!< Right align
       AlignJustify, //!< Justify align
-      AlignFullJustify, //!< Full justification
     };
 
     /**

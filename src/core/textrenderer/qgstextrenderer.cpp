@@ -777,7 +777,6 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
             xcenter = component.origin.x() + width / 2.0;
             break;
           case AlignJustify:
-          case AlignFullJustify:
             if ( format.orientation() != QgsTextFormat::VerticalOrientation )
               xcenter =  component.origin.x() + component.size.width() / 2.0;
             else
@@ -802,7 +801,6 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         {
           case AlignLeft:
           case AlignJustify:
-          case AlignFullJustify:
             component.center = QPointF( component.origin.x() + width / 2.0,
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
@@ -1471,14 +1469,12 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         {
           if ( i == document.size() - 1 )
             break;
-        }
-        FALLTHROUGH
-        case AlignFullJustify:
           if ( labelWidest > labelWidth )
           {
             calculateExtraSpacingForLineJustification( labelWidest - labelWidth, block, extraWordSpace, extraLetterSpace );
           }
           break;
+        }
 
         case AlignLeft:
           break;
@@ -1505,7 +1501,6 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
             case AlignLeft:
             case AlignJustify:
-            case AlignFullJustify:
               break;
           }
         }
@@ -1723,7 +1718,6 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
 
         case AlignLeft:
         case AlignJustify:
-        case AlignFullJustify:
           break;
       }
 
@@ -1968,17 +1962,12 @@ QStringList QgsTextRenderer::wrapText( const QString &text, double space, const 
           lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
         }
         i++;
-        if ( alignment == AlignFullJustify && i == constLinesToProcess.length() )
-          remainingText = justify( remainingText, space, context, format );
         outLines << remainingText;
       }
     }
     else
     {
-      if ( alignment == AlignFullJustify )
-        outLines << justify( line, space, context, format );
-      else
-        outLines << line;
+      outLines << line;
     }
   }
   return outLines;
