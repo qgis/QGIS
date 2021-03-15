@@ -86,6 +86,8 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
+
+  setAttributeTableConfig( mVectorLayer->attributeTableConfig() );
 }
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
@@ -100,6 +102,29 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog()
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
   delete mSelectionRubberBand;
+}
+
+void QgsMergeAttributesDialog::setAttributeTableConfig( const QgsAttributeTableConfig &config )
+{
+  const QVector< QgsAttributeTableConfig::ColumnConfig > columns = config.columns();
+  for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : columns )
+  {
+    if ( columnConfig.hidden )
+      continue;
+
+    const int col = mFieldToColumnMap.value( columnConfig.name, -1 );
+    if ( col < 0 )
+      continue;
+
+    if ( columnConfig.width >= 0 )
+    {
+      mTableWidget->setColumnWidth( col, columnConfig.width );
+    }
+    else
+    {
+      mTableWidget->setColumnWidth( col, mTableWidget->horizontalHeader()->defaultSectionSize() );
+    }
+  }
 }
 
 void QgsMergeAttributesDialog::createTableWidgetContents()
@@ -128,6 +153,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     }
 
     mTableWidget->setColumnCount( col + 1 );
+    mFieldToColumnMap[ mFields.at( idx ).name() ] = col;
 
     QComboBox *cb = createMergeComboBox( mFields.at( idx ).type() );
     if ( mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
