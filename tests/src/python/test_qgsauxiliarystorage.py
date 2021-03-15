@@ -21,11 +21,14 @@ from qgis.core import (QgsAuxiliaryStorage,
                        QgsFeature,
                        QgsGeometry,
                        QgsPropertyDefinition,
+                       QgsProperty,
                        QgsProject,
                        QgsFeatureRequest,
                        QgsPalLayerSettings,
                        QgsSymbolLayer,
                        QgsVectorLayerSimpleLabeling,
+                       QgsCallout,
+                       QgsSimpleLineCallout,
                        NULL)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, writeShape
@@ -404,6 +407,60 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
         afIndex = vl.fields().indexOf(afName)
         self.assertEqual(index, afIndex)
+
+    def testCreateCalloutProperty(self):
+        s = QgsAuxiliaryStorage()
+        self.assertTrue(s.isValid())
+
+        # Create a new auxiliary layer with 'pk' as key
+        vl = createLayer()
+        pkf = vl.fields().field(vl.fields().indexOf('pk'))
+        al = s.createAuxiliaryLayer(pkf, vl)
+        self.assertTrue(al.isValid())
+        vl.setAuxiliaryLayer(al)
+
+        # Create a new callout property on layer without labels
+        key = QgsCallout.DestinationX
+        index = QgsAuxiliaryLayer.createProperty(key, vl)
+        self.assertEqual(index, -1)
+
+        # Labeling, but no callouts
+        settings = QgsPalLayerSettings()
+        settings.setCallout(None)
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        index = QgsAuxiliaryLayer.createProperty(key, vl)
+        self.assertEqual(index, -1)
+
+        # callouts
+        settings = QgsPalLayerSettings()
+        callout = QgsSimpleLineCallout()
+        callout.setEnabled(True)
+        settings.setCallout(callout)
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        index = QgsAuxiliaryLayer.createProperty(key, vl)
+
+        p = QgsCallout.propertyDefinitions()[key]
+        afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
+        afIndex = vl.fields().indexOf(afName)
+        self.assertEqual(index, afIndex)
+
+        settings = vl.labeling().settings()
+        self.assertEqual(settings.callout().dataDefinedProperties().property(key), QgsProperty.fromField('auxiliary_storage_callouts_destinationx'))
+
+        key2 = QgsCallout.DestinationY
+        index = QgsAuxiliaryLayer.createProperty(key2, vl)
+
+        p = QgsCallout.propertyDefinitions()[key2]
+        afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
+        afIndex = vl.fields().indexOf(afName)
+        self.assertEqual(index, afIndex)
+
+        settings = vl.labeling().settings()
+        self.assertEqual(settings.callout().dataDefinedProperties().property(key),
+                         QgsProperty.fromField('auxiliary_storage_callouts_destinationx'))
+        self.assertEqual(settings.callout().dataDefinedProperties().property(key2),
+                         QgsProperty.fromField('auxiliary_storage_callouts_destinationy'))
 
     def testCreateField(self):
         s = QgsAuxiliaryStorage()
