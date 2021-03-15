@@ -3287,6 +3287,10 @@ namespace QgsWms
 
       if ( mContext.isExternalLayer( param.mNickname ) )
       {
+        if ( mContext.testFlag( QgsWmsRenderContext::UseOpacity ) )
+        {
+          setLayerOpacity( layer, param.mOpacity );
+        }
         continue;
       }
 
