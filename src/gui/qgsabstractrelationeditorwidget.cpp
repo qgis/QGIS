@@ -221,34 +221,32 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
     // n:m Relation: first let the user create a new feature on the other table
     // and autocreate a new linking feature.
     QgsFeature f;
-    if ( vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &f ) )
+    if ( vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &f ) == false )
+      return;
+
+    // Fields of the linking table
+    const QgsFields fields = mRelation.referencingLayer()->fields();
+
+    // Expression context for the linking table
+    QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
+
+    QgsAttributeMap linkAttributes;
+    const auto constFieldPairs = mRelation.fieldPairs();
+    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
-      // Fields of the linking table
-      const QgsFields fields = mRelation.referencingLayer()->fields();
-
-      // Expression context for the linking table
-      QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
-
-      QgsAttributeMap linkAttributes;
-      const auto constFieldPairs = mRelation.fieldPairs();
-      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
-      {
-        int index = fields.indexOf( fieldPair.first );
-        linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
-      }
-
-      const auto constNmFieldPairs = mNmRelation.fieldPairs();
-      for ( const QgsRelation::FieldPair &fieldPair : constNmFieldPairs )
-      {
-        int index = fields.indexOf( fieldPair.first );
-        linkAttributes.insert( index, f.attribute( fieldPair.second ) );
-      }
-      QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
-
-      mRelation.referencingLayer()->addFeature( linkFeature );
-
-      updateUi();
+      int index = fields.indexOf( fieldPair.first );
+      linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
     }
+
+    const auto constNmFieldPairs = mNmRelation.fieldPairs();
+    for ( const QgsRelation::FieldPair &fieldPair : constNmFieldPairs )
+    {
+      int index = fields.indexOf( fieldPair.first );
+      linkAttributes.insert( index, f.attribute( fieldPair.second ) );
+    }
+    QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
+
+    mRelation.referencingLayer()->addFeature( linkFeature );
   }
   else
   {
@@ -265,8 +263,11 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
     }
 
-    vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry );
+    if ( vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) == false )
+      return;
   }
+
+  updateUi();
 }
 
 void QgsAbstractRelationEditorWidget::deleteFeature( const QgsFeatureId fid )
@@ -547,8 +548,6 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
     }
 
     mRelation.referencingLayer()->deleteFeatures( fids );
-
-    updateUi();
   }
   else
   {
@@ -589,6 +588,8 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
       }
     }
   }
+
+  updateUi();
 }
 
 void QgsAbstractRelationEditorWidget::updateUi()
