@@ -37,6 +37,11 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigit
 
   mDiagramProperties << QgsDiagramLayerSettings::PositionX;
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
+
+  mCalloutProperties << QgsCallout::OriginX;
+  mCalloutProperties << QgsCallout::OriginY;
+  mCalloutProperties << QgsCallout::DestinationX;
+  mCalloutProperties << QgsCallout::DestinationY;
 }
 
 QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
@@ -100,8 +105,19 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
     int xCol = 0;
     int yCol = 0;
-    if ( calloutAtPosition( e, calloutPosition, mCurrentCalloutMoveOrigin ) && canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+    if ( calloutAtPosition( e, calloutPosition, mCurrentCalloutMoveOrigin ) )
     {
+      if ( !canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+      {
+        QgsCalloutIndexes indexes;
+
+        if ( createAuxiliaryFields( calloutPosition, indexes ) )
+          return;
+
+        if ( !canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+          return;
+      }
+
       // callouts are a smaller target, so they take precedence over labels
       mCurrentLabel = LabelDetails();
       mCurrentCallout = calloutPosition;

@@ -43,7 +43,6 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 
     bool canModifyCallout( const QgsCalloutPosition &position, bool isOrigin, int &xCol, int &yCol ) override;
 
-    QgsCalloutPosition mCurrentCallout;
     bool mCurrentCalloutMoveOrigin = false;
 
     QgsRubberBand *mCalloutMoveRubberBand = nullptr;
