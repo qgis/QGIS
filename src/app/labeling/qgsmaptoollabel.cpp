@@ -987,7 +987,7 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
 
   QgsCalloutPosition calloutPosition;
   bool isOrigin = false;
-  if ( calloutAtPosition( e, calloutPosition, isOrigin ) )
+  if ( !mCalloutProperties.isEmpty() && calloutAtPosition( e, calloutPosition, isOrigin ) )
   {
     if ( !mCalloutOtherPointsRubberBand )
     {
