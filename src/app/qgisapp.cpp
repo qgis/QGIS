@@ -10036,6 +10036,7 @@ void QgisApp::mergeSelectedFeatures()
 
   //merge the attributes together
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
+  d.setWindowTitle( tr( "Merge Features" ) );
   if ( d.exec() == QDialog::Rejected )
   {
     return;
