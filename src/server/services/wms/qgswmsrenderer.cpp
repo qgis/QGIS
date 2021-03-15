@@ -495,9 +495,35 @@ namespace QgsWms
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Destination image size in px
       QgsLayoutSize layoutSize( layout->pageCollection()->page( 0 )->sizeWithUnits() );
+
       QgsLayoutMeasurement width( layout->convertFromLayoutUnits( layoutSize.width(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
       QgsLayoutMeasurement height( layout->convertFromLayoutUnits( layoutSize.height(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
-      exportSettings.imageSize = QSize( static_cast<int>( width.length() * dpi / 25.4 ), static_cast<int>( height.length() * dpi / 25.4 ) );
+
+      const QSize imageSize = QSize( static_cast<int>( width.length() * dpi / 25.4 ), static_cast<int>( height.length() * dpi / 25.4 ) );
+
+      const QString paramWidth = mWmsParameters.width();
+      const QString paramHeight = mWmsParameters.height();
+
+      // Prefer width and height from the http request
+      // Fallback to predefined values from layout
+      // Preserve aspect ratio if only one value is specified
+      if ( !paramWidth.isEmpty() && !paramHeight.isEmpty() )
+      {
+        exportSettings.imageSize = QSize( paramWidth.toInt(), paramHeight.toInt() );
+      }
+      else if ( !paramWidth.isEmpty() && paramHeight.isEmpty() )
+      {
+        exportSettings.imageSize = QSize( paramWidth.toInt(), static_cast<double>( paramWidth.toInt() ) / imageSize.width() * imageSize.height() );
+      }
+      else if ( paramWidth.isEmpty() && !paramHeight.isEmpty() )
+      {
+        exportSettings.imageSize = QSize( static_cast<double>( paramHeight.toInt() ) / imageSize.height() * imageSize.width(), paramHeight.toInt() );
+      }
+      else
+      {
+        exportSettings.imageSize = imageSize;
+      }
+
       // Export first page only (unless it's a pdf, see below)
       exportSettings.pages.append( 0 );
       if ( atlas )
