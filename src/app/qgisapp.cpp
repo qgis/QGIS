@@ -10071,13 +10071,8 @@ void QgisApp::mergeSelectedFeatures()
     }
   }
 
-  vl->beginEditCommand( tr( "Merged features" ) );
-
-  //create new feature
-  QgsFeature newFeature;
-  newFeature.setGeometry( unionGeom );
-
   QgsAttributes attrs = d.mergedAttributes();
+  QgsAttributeMap newAttributes;
   QString errorMessage;
   for ( int i = 0; i < attrs.count(); ++i )
   {
@@ -10094,9 +10089,13 @@ void QgisApp::mergeSelectedFeatures()
         tr( "Could not store value '%1' in field of type %2: %3" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName(), errorMessage ),
         Qgis::Warning );
     }
-    attrs[i] = val;
+    newAttributes[ i ] = val;
   }
-  newFeature.setAttributes( attrs );
+
+  vl->beginEditCommand( tr( "Merged features" ) );
+
+  //create new feature
+  QgsFeature newFeature = QgsVectorLayerUtils::createFeature( vl, unionGeom, newAttributes );
 
   QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
   for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )
