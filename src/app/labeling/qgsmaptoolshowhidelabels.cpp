@@ -284,10 +284,9 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer *vlayer,
   listPos.clear();
 
   // get list of all drawn labels from current layer that intersect rubberband
-  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false );
   if ( !labelingResults )
   {
-    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return false;
   }
 
