@@ -79,10 +79,34 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mFromLargestPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromLargestFeature.svg" ) ) );
   mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRemoveSelectedFeature.svg" ) ) );
 
-  mFromLargestPushButton->setEnabled( mVectorLayer->geometryType() == QgsWkbTypes::PointGeometry ||
-                                      mVectorLayer->geometryType() == QgsWkbTypes::LineGeometry ||
-                                      mVectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
-  mTakeLargestAttributesLabel->setEnabled( mFromLargestPushButton->isEnabled() );
+  switch ( mVectorLayer->geometryType() )
+  {
+    case QgsWkbTypes::PointGeometry:
+      mTakeLargestAttributesLabel->setText( tr( "Take attributes from feature with the most points" ) );
+      mFromLargestPushButton->setToolTip( tr( "Take all attributes from the MultiPoint feature with the most parts" ) );
+      if ( !QgsWkbTypes::isMultiType( mVectorLayer->wkbType() ) )
+      {
+        mTakeLargestAttributesLabel->setEnabled( false );
+        mFromLargestPushButton->setEnabled( false );
+      }
+      break;
+
+    case QgsWkbTypes::LineGeometry:
+      mTakeLargestAttributesLabel->setText( tr( "Take attributes from feature with the longest length" ) );
+      mFromLargestPushButton->setToolTip( tr( "Take all attributes from the Line feature with the longest length" ) );
+      break;
+
+    case QgsWkbTypes::PolygonGeometry:
+      mTakeLargestAttributesLabel->setText( tr( "Take attributes from feature with the largest area" ) );
+      mFromLargestPushButton->setToolTip( tr( "Take all attributes from the Polygon feature with the largest area" ) );
+      break;
+
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      mTakeLargestAttributesLabel->setEnabled( false );
+      mFromLargestPushButton->setEnabled( false );
+      break;
+  }
 
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
