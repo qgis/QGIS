@@ -23,12 +23,16 @@
 #include "qgis_sip.h"
 #include "qgssettings.h"
 
+#define QGS_SETTING_ENTRY_VARIANT(name, path, section, defaultValue, ...) \
+  struct name : public QgsSettingsEntry\
+  { name() : QgsSettingsEntry( path, section, defaultValue, ##__VA_ARGS__ ) {} };
+
 /**
  * \ingroup core
  * \class QgsSettingsEntry
  *
  * Represent settings entry and provides methods for reading and writing settings values.
- * Different subclasses are provided for differents settings types with metainformations
+ * Different subclasses are provided for different settings types with metainformations
  * to validate set values and provide more accurate settings description for the gui.
  *
  * \since QGIS 3.20
@@ -204,7 +208,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      * The \a minLength argument specifies the minimal length of the string value.
-     * The \a maxLength argument specifies the maximal lenght of the string value.
+     * The \a maxLength argument specifies the maximal length of the string value.
      * By -1 the there is no limit
      */
     QgsSettingsEntryString( const QString &key,
@@ -341,8 +345,8 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
                              QgsSettings::Section section,
                              qlonglong defaultValue = 0,
                              const QString &description = QString(),
-                             qlonglong minValue = -__LONG_LONG_MAX__ + 1,
-                             qlonglong maxValue = __LONG_LONG_MAX__ );
+                             qlonglong minValue = std::numeric_limits<qlonglong>::min(),
+                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() );
 
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) override;
@@ -397,8 +401,8 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
                             QgsSettings::Section section,
                             double defaultValue = 0.0,
                             const QString &description = QString(),
-                            double minValue = __DBL_MIN__,
-                            double maxValue = __DBL_MAX__,
+                            double minValue = std::numeric_limits<double>::min(),
+                            double maxValue = std::numeric_limits<double>::max(),
                             double displayDecimals = 1 );
 
     //! \copydoc QgsSettingsEntry::setValue
