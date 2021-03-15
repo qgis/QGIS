@@ -751,7 +751,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     switch ( mode )
     {
       case Rect:
-        if ( component.hAlign == QgsTextRenderer::AlignJustify || component.hAlign == QgsTextRenderer::AlignFullJustify )
+        if ( component.hAlign == QgsTextRenderer::AlignJustify )
         {
           if ( format.orientation() != QgsTextFormat::HorizontalOrientation )
             height *= 2;
