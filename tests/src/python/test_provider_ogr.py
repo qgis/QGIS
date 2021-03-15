@@ -914,6 +914,33 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer(os.path.join(d.path(), 'writetest.shp'))
         self.assertEqual(vl.featureCount(), 1)
 
+    def testDecodeEncodeUriVsizip(self):
+        """Test decodeUri/encodeUri for /vsizip/ prefixed URIs"""
+
+        uri = '/vsizip//my/file.zip/shapefile.shp'
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': None, 'layerId': None, 'vsiPrefix': '/vsizip/', 'vsiSuffix': '/shapefile.shp'})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
+
+        uri = '/my/file.zip'
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': None, 'layerId': None})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
+
+        uri = '/vsizip//my/file.zip|layername=shapefile'
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': 'shapefile', 'layerId': None, 'vsiPrefix': '/vsizip/'})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
+
+        uri = '/vsizip//my/file.zip|layername=shapefile|subset="field"=\'value\''
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': 'shapefile', 'layerId': None, 'subset': '"field"=\'value\'', 'vsiPrefix': '/vsizip/'})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
+
 
 if __name__ == '__main__':
     unittest.main()
