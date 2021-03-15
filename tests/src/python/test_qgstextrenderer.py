@@ -2584,6 +2584,25 @@ class PyQgsTextRenderer(unittest.TestCase):
         assert self.checkRender(format, 'text_rect_justify_aligned', text=['test'],
                                 alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
 
+    def testDrawTextRectMultilineFullJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_rect_multiline_justify_aligned', text=['a t est', 'off', 'justification', 'align'],
+                                alignment=QgsTextRenderer.AlignFullJustify, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectFullJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_justify_aligned', text=['test'],
+                                alignment=QgsTextRenderer.AlignFullJustify, rect=QRectF(100, 100, 200, 100))
+
     def testDrawTextRectMultilineBottomAlign(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
