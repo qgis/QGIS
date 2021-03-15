@@ -469,8 +469,11 @@ void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
   refresh();
 }
 
-const QgsLabelingResults *QgsMapCanvas::labelingResults() const
+const QgsLabelingResults *QgsMapCanvas::labelingResults( bool allowOutdatedResults ) const
 {
+  if ( !allowOutdatedResults && mLabelingResultsOutdated )
+    return nullptr;
+
   return mLabelingResults.get();
 }
 
@@ -567,6 +570,8 @@ void QgsMapCanvas::refresh()
 
   // schedule a refresh
   mRefreshTimer->start( 1 );
+
+  mLabelingResultsOutdated = true;
 }
 
 void QgsMapCanvas::refreshMap()
@@ -692,6 +697,7 @@ void QgsMapCanvas::rendererJobFinished()
     {
       mLabelingResults.reset( mJob->takeLabelingResults() );
     }
+    mLabelingResultsOutdated = false;
 
     QImage img = mJob->renderedImage();
 
