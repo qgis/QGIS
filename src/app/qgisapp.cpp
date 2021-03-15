@@ -97,6 +97,7 @@
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -14448,7 +14449,31 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( vlayer )
   {
-    showStatusMessage( tr( "%n feature(s) selected on layer %1.", "number of selected features", vlayer->selectedFeatureCount() ).arg( vlayer->name() ) );
+    const int selectedCount = vlayer->selectedFeatureCount();
+    if ( selectedCount == 1 )
+    {
+      QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
+      QgsExpression exp = vlayer->displayExpression();
+      exp.prepare( &context );
+
+      QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( exp.referencedColumns(), vlayer->fields() );
+      if ( !exp.needsGeometry() )
+        request.setFlags( request.flags() | QgsFeatureRequest::NoGeometry );
+
+      QgsFeature feat;
+      QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( request );
+      while ( featureIt.nextFeature( feat ) )
+      {
+        context.setFeature( feat );
+        QString featureTitle = exp.evaluate( &context ).toString();
+        showStatusMessage( tr( "1 feature selected on layer %1 (%2)." ).arg( vlayer->name(), featureTitle ) );
+        break;
+      }
+    }
+    else
+    {
+      showStatusMessage( tr( "%n features selected on layer %1.", "number of selected features", selectedCount ).arg( vlayer->name() ) );
+    }
   }
   if ( layer == activeLayer() )
   {
