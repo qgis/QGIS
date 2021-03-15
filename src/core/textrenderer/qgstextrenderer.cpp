@@ -1901,7 +1901,7 @@ bool QgsTextRenderer::requiresWrapping( const QString &text, double space, const
   return currentTextLength > space;
 }
 
-QStringList QgsTextRenderer::wrapText( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format, const bool autoSize, HAlignment alignment )
+QStringList QgsTextRenderer::wrapText( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format, const bool autoSize )
 {
   const QStringList lines = text.split( '\n' );
   const int startIdx = ( format.orientation() == QgsTextFormat::HorizontalOrientation ) ? 0 : lines.length() - 1;

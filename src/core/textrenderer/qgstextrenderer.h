@@ -257,11 +257,10 @@ class CORE_EXPORT QgsTextRenderer
      * \param context renderer context
      * \param format text formatting parameters
      * \param autoSize skip space validation when the box is set to resize
-     * \param alignment alignment of the text to display
      *
      * \since QGIS 3.20
      */
-    static QStringList wrapText( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format, const bool autoSize = false, HAlignment alignment = QgsTextRenderer::AlignLeft );
+    static QStringList wrapText( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format, const bool autoSize = false );
 
     /**
      * Justifies the text to fully occupy the given space, used in wrapText
