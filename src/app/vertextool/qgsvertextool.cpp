@@ -526,7 +526,9 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mouseMoveNotDragging( e );
     }
   }
-  else if ( mSelectionRubberBand )
+  else if ( mSelectionRubberBand &&
+            ( mSelectionMethod == SelectionNormal  ||
+              ( mSelectionMethod == SelectionPolygon && e->button() == Qt::RightButton ) ) )
   {
     // only handling of selection rect being dragged
     QList<Vertex> vertices;
@@ -649,6 +651,18 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     stopSelectionRubberBand();
   }
+  else if ( e->button() == Qt::LeftButton && e->modifiers() & Qt::AltModifier )
+  {
+    mSelectionMethod = SelectionPolygon;
+    initSelectionRubberBand();
+    mSelectionRubberBand->addPoint( toMapCoordinates( e->pos() ) );
+    return;
+  }
+  else if ( mSelectionRubberBand && mSelectionMethod == SelectionPolygon )
+  {
+    mSelectionRubberBand->addPoint( toMapCoordinates( e->pos() ) );
+    return;
+  }
   else  // selection rect is not being dragged
   {
     if ( e->button() == Qt::LeftButton && !( e->modifiers() & Qt::ShiftModifier ) && !( e->modifiers() & Qt::ControlModifier ) )
@@ -716,6 +730,7 @@ void QgsVertexTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     // the user may be dragging a rect to select vertices
     if ( !mSelectionRubberBand && ( e->pos() - *mSelectionRubberBandStartPos ).manhattanLength() >= 10 )
     {
+      mSelectionMethod = SelectionNormal;
       initSelectionRubberBand();
     }
     if ( mSelectionRubberBand )
@@ -1334,6 +1349,8 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
     {
       if ( mSelectionMethod == SelectionRange )
         stopRangeVertexSelection();
+      if ( mSelectionMethod == SelectionPolygon )
+        stopSelectionRubberBand();
       if ( mDraggingVertex || mDraggingEdge )
         stopDragging();
       break;
@@ -1341,6 +1358,13 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
     case Qt::Key_Delete:
     case Qt::Key_Backspace:
     {
+      if ( mSelectionMethod == SelectionPolygon )
+      {
+        e->ignore(); // Override default shortcut management
+        mSelectionRubberBand->removeLastPoint();
+        if ( mSelectionRubberBand->numberOfVertices() < 2 )
+          stopSelectionRubberBand();
+      }
       if ( mDraggingVertex || ( !mDraggingEdge && !mSelectedVertices.isEmpty() ) )
       {
         e->ignore();  // Override default shortcut management
@@ -2582,14 +2606,30 @@ void QgsVertexTool::initSelectionRubberBand()
 
 void QgsVertexTool::updateSelectionRubberBand( QgsMapMouseEvent *e )
 {
-  QRect rect = QRect( e->pos(), *mSelectionRubberBandStartPos );
-  if ( mSelectionRubberBand )
-    mSelectionRubberBand->setToCanvasRectangle( rect );
+  switch ( mSelectionMethod )
+  {
+    case SelectionNormal:
+    {
+      QRect rect = QRect( e->pos(), *mSelectionRubberBandStartPos );
+      if ( mSelectionRubberBand )
+        mSelectionRubberBand->setToCanvasRectangle( rect );
+      break;
+    }
+    case SelectionPolygon:
+    {
+      mSelectionRubberBand->movePoint( toMapCoordinates( e->pos() ) );
+      break;
+    }
+    default:
+      break;
+  }
 }
 
 void QgsVertexTool::stopSelectionRubberBand()
 {
   mSelectionRubberBand.reset();
+  mSelectionRubberBandStartPos.reset();
+  mSelectionMethod = SelectionNormal;
 }
 
 bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr )
