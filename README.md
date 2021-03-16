@@ -137,7 +137,7 @@ Every month, there is a **Point Release** that provides bug-fixes to the LTR and
 
 ### Free and Open Source
 
-QGIS is released under the GNU Public License (GPL) Version 2 or above.
+QGIS is released under the GNU Public License (GPL) Version 2 or any later version.
 Developing QGIS under this license means that you can (if you want to) inspect
 and modify the source code and guarantees that you, our happy user will always
 have access to a GIS program that is free of cost and can be freely
