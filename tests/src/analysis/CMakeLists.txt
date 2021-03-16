@@ -12,6 +12,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/labeling
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/metadata
@@ -89,7 +90,7 @@ set(TESTS
  testqgsreclassifyutils.cpp
  testqgsalignraster.cpp
  testqgsnetworkanalysis.cpp
- testqgsninecellfilters.cpp 
+ testqgsninecellfilters.cpp
  testqgsmeshcalculator.cpp
  testqgsmeshcontours.cpp
  testqgstriangulation.cpp
