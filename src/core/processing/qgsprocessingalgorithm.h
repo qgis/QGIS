@@ -378,7 +378,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * If specified, \a ok will be set to TRUE if algorithm was successfully run.
      *
-     * If \a catchExceptions is set to FALSE, then QgsProcessingExceptions raised during
+     * If \a catchExceptions is set to FALSE, then QgsProcessingException raised during
      * the algorithm run will not be automatically caught and will be raised instead.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
