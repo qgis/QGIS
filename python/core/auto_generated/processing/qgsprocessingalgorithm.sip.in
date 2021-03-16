@@ -350,7 +350,7 @@ Algorithm progress should be reported using the supplied ``feedback`` object.
 
 If specified, ``ok`` will be set to ``True`` if algorithm was successfully run.
 
-If ``catchExceptions`` is set to ``False``, then :py:class:`QgsProcessingExceptions` raised during
+If ``catchExceptions`` is set to ``False``, then :py:class:`QgsProcessingException` raised during
 the algorithm run will not be automatically caught and will be raised instead.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
