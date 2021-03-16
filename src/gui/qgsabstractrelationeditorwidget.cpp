@@ -221,7 +221,7 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
     // n:m Relation: first let the user create a new feature on the other table
     // and autocreate a new linking feature.
     QgsFeature f;
-    if ( vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &f ) == false )
+    if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &f ) )
       return;
 
     // Fields of the linking table
@@ -263,7 +263,7 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
     }
 
-    if ( vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) == false )
+    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) )
       return;
   }
 
