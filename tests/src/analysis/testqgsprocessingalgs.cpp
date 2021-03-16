@@ -38,6 +38,7 @@
 #include "qgsreclassifyutils.h"
 #include "qgsalgorithmrasterlogicalop.h"
 #include "qgsprintlayout.h"
+#include "qgslayertree.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutitemmap.h"
 #include "qgsmarkersymbollayer.h"
@@ -149,6 +150,8 @@ class TestQgsProcessingAlgs: public QObject
     void exportAtlasLayoutPng();
 
     void tinMeshCreation();
+
+    void rasterize();
 
   private:
 
@@ -4828,6 +4831,53 @@ void TestQgsProcessingAlgs::tinMeshCreation()
   meshLayer.updateTriangularMesh();
   QVERIFY( qgsDoubleNear( meshLayer.datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( -103.0, 39.0 ) ).scalar(), 20.0, 0.001 ) );
   QVERIFY( qgsDoubleNear( meshLayer.datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( -86.0, 35.0 ) ).scalar(), 1.855, 0.001 ) ) ;
+}
+
+void TestQgsProcessingAlgs::rasterize()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:rasterize" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QString outputTif = QDir::tempPath() + "/rasterize_output.tif";
+  if ( QFile::exists( outputTif ) )
+    QFile::remove( outputTif );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "EXTENT" ), QStringLiteral( "-120,-80,15,55" ) );
+  parameters.insert( QStringLiteral( "TILE_SIZE" ), 320 );
+  parameters.insert( QStringLiteral( "MAP_UNITS_PER_PIXEL" ), 0.125 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputTif );
+
+  // create a temporary project with three layers, but only two are visible
+  // (to test that the algorithm in the default setup without defined LAYERS or MAP_THEME uses only vsisible
+  // layers that and in the correct order)
+  QgsProject project;
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( dataDir + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( dataDir + "/lines.shp", QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *polygonLayer = new QgsVectorLayer( dataDir + "/polys.shp", QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() && linesLayer->isValid() && polygonLayer->isValid() );
+  project.addMapLayers( QList<QgsMapLayer *>() << pointsLayer << linesLayer << polygonLayer );
+  QgsLayerTreeLayer *nodePolygons = project.layerTreeRoot()->findLayer( polygonLayer );
+  QVERIFY( nodePolygons );
+  nodePolygons->setItemVisibilityChecked( false );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &project );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( QFile::exists( outputTif ) );
+
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( QStringLiteral( "processing_algorithm" ) );
+  checker.setControlExtension( "tif" );
+  checker.setControlName( "expected_rasterize" );
+  checker.setRenderedImage( outputTif );
+  QVERIFY( checker.compareImages( "rasterize", 500 ) );
 }
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )

@@ -40,9 +40,18 @@ Constructor for QgsRenderChecker.
 
     void setControlName( const QString &name );
 %Docstring
-Base directory name for the control image (with control image path
-suffixed) the path to the image will be constructed like this:
-controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
+Sets the base directory ``name`` for the control image (with control image path
+suffixed).
+
+The path to the image will be constructed like this:
+:py:func:`~QgsRenderChecker.controlImagePath` + '/' + control name + '/' + control name + '.' + extension ('png' by default)
+%End
+
+    void setControlExtension( const QString &extension );
+%Docstring
+Sets file extension for the control image. By default it is "png"
+
+.. versionadded:: 3.20
 %End
 
     void setControlPathPrefix( const QString &name );
