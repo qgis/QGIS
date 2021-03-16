@@ -60,15 +60,23 @@ class CORE_EXPORT QgsRenderChecker
     void setElapsedTimeTarget( int target ) { mElapsedTimeTarget = target; }
 
     /**
-     * Base directory name for the control image (with control image path
-     * suffixed) the path to the image will be constructed like this:
-     * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
+     * Sets the base directory \a name for the control image (with control image path
+     * suffixed).
+     *
+     * The path to the image will be constructed like this:
+     * controlImagePath() + '/' + control name + '/' + control name + '.' + extension ('png' by default)
      */
     void setControlName( const QString &name );
 
     /**
-     * Prefix where the control images are kept.
-     * This will be appended to controlImagePath
+     * Sets file extension for the control image. By default it is "png"
+     * \since QGIS 3.20
+     */
+    void setControlExtension( const QString &extension ) { mControlExtension = extension; }
+
+    /**
+     * Sets the path prefix where the control images are kept.
+     * This will be appended to controlImagePath().
      */
     void setControlPathPrefix( const QString &name ) { mControlPathPrefix = name + '/'; }
 
@@ -197,6 +205,7 @@ class CORE_EXPORT QgsRenderChecker
     int mMaxSizeDifferenceY = 0;
     int mElapsedTimeTarget = 0;
     QgsMapSettings mMapSettings;
+    QString mControlExtension = QStringLiteral( "png" );
     QString mControlPathPrefix;
     QString mControlPathSuffix;
     QVector<QgsDartMeasurement> mDashMessages;

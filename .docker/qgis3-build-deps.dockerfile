@@ -95,6 +95,7 @@ RUN  apt-get update \
     qt3d-defaultgeometryloader-plugin \
     qt3d-gltfsceneio-plugin \
     qt3d-scene2d-plugin \
+    qt5-image-formats-plugins \
     qt5keychain-dev \
     qtbase5-dev \
     qtdeclarative5-dev-tools \
