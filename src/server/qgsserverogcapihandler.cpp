@@ -311,7 +311,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       {
         fName.chop( 1 );
       }
-      fName += '/' + QString::number( args.at( 0 )->get<QgsFeatureId>( ) );
+      fName += '/' + QString::fromStdString( args.at( 0 )->get<std::string>( ) );
       if ( !suffix.isEmpty() )
       {
         fName += '.' + suffix;
