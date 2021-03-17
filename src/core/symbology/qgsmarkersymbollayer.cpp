@@ -75,6 +75,9 @@ QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::ava
          << CrossFill
          << Cross2
          << Line
+         << SemiArc
+         << ThirdArc
+         << QuarterArc
          << ArrowHead
          << ArrowHeadFilled
          << SemiCircle
@@ -133,6 +136,9 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBa
     case Cross2:
     case Line:
     case ArrowHead:
+    case SemiArc:
+    case ThirdArc:
+    case QuarterArc:
       return false;
   }
   return true;
@@ -356,6 +362,12 @@ QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShap
     return LeftHalfTriangle;
   else if ( cleaned == QLatin1String( "asterisk_fill" ) )
     return AsteriskFill;
+  else if ( cleaned == QLatin1String( "semi_arc" ) )
+    return SemiArc;
+  else if ( cleaned == QLatin1String( "third_arc" ) )
+    return ThirdArc;
+  else if ( cleaned == QLatin1String( "quarter_arc" ) )
+    return QuarterArc;
 
   if ( ok )
     *ok = false;
@@ -418,6 +430,12 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( QgsSimpleMarkerSymbolLayerB
       return QStringLiteral( "quarter_circle" );
     case AsteriskFill:
       return QStringLiteral( "asterisk_fill" );
+    case SemiArc:
+      return QStringLiteral( "semi_arc" );
+    case ThirdArc:
+      return QStringLiteral( "third_arc" );
+    case QuarterArc:
+      return QStringLiteral( "quarter_arc" );
   }
   return QString();
 }
@@ -635,6 +653,9 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
     case SemiCircle:
     case ThirdCircle:
     case QuarterCircle:
+    case SemiArc:
+    case ThirdArc:
+    case QuarterArc:
       return false;
   }
 
@@ -665,6 +686,21 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLay
     case QuarterCircle:
       mPath.arcTo( -1, -1, 2, 2, 90, 90 );
       mPath.lineTo( 0, 0 );
+      return true;
+
+    case SemiArc:
+      mPath.moveTo( 1, 0 );
+      mPath.arcTo( -1, -1, 2, 2, 0, 180 );
+      return true;
+
+    case ThirdArc:
+      mPath.moveTo( 0, -1 );
+      mPath.arcTo( -1, -1, 2, 2, 90, 120 );
+      return true;
+
+    case QuarterArc:
+      mPath.moveTo( 0, -1 );
+      mPath.arcTo( -1, -1, 2, 2, 90, 90 );
       return true;
 
     case Cross:
