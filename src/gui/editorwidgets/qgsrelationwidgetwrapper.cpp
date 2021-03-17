@@ -268,8 +268,6 @@ void QgsRelationWidgetWrapper::setNmRelationId( const QVariant &nmRelationId )
 {
   if ( mWidget )
   {
-    mWidget->setNmRelationId( nmRelationId );
-
     mNmRelation = QgsProject::instance()->relationManager()->relation( nmRelationId.toString() );
 
     // If this widget is already embedded by the same relation, reduce functionality
