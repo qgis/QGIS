@@ -32,6 +32,7 @@ struct AttributeField
   QString tableName;
   QString name;
   short type;
+  int srid;
   QString typeName;
   int size;
   int precision;
@@ -39,6 +40,8 @@ struct AttributeField
   bool isNullable;
   bool isSigned;
   QString comment;
+
+  bool isGeometry() const { return type == 29812; /* ST_GEOMETRY, ST_POINT */ }
 
   QgsField toQgsField() const;
 };

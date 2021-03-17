@@ -94,10 +94,12 @@ QgsField AttributeField::toQgsField() const
     case SQLDataTypes::TypeTimestamp:
       fieldType = QVariant::DateTime;
       break;
-    case 29812: // ST_GEOMETRY, ST_POINT
-      fieldType = QVariant::String;
-      break;
     default:
+      if ( isGeometry() )
+        // There are two options how to treat geometry columns that are attributes:
+        // 1. Type is QVariant::String. The value is provided as WKT and editable.
+        // 2. Type is QVariant::ByteArray. The value is provided as BLOB and uneditable.
+        fieldType = QVariant::String;
       break;
   }
 
@@ -669,8 +671,11 @@ void QgsHanaConnection::readQueryFields( const QString &sql, const QString &sche
     ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
     for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
     {
+      QString schema = QString::fromStdU16String( rsmd->getSchemaName( i ) );
+      if ( schema.isEmpty() )
+        schema = schemaName;
       AttributeField field;
-      field.schemaName = QString::fromStdU16String( rsmd->getSchemaName( i ) );
+      field.schemaName = schema;
       field.tableName = QString::fromStdU16String( rsmd->getTableName( i ) );
       field.name = QString::fromStdU16String( rsmd->getColumnName( i ) );
       field.typeName = QString::fromStdU16String( rsmd->getColumnTypeName( i ) );
@@ -680,8 +685,10 @@ void QgsHanaConnection::readQueryFields( const QString &sql, const QString &sche
       field.isAutoIncrement = rsmd->isAutoIncrement( i );
       field.size = static_cast<int>( rsmd->getColumnLength( i ) );
       field.precision = -1;
+      if ( field.isGeometry() )
+        field.srid = getColumnSrid( schema, field.tableName, field.name );
       // As field comments cannot be retrieved via ODBC, we get it from SYS.TABLE_COLUMNS.
-      field.comment = getColumnComments( !field.schemaName.isEmpty() ? field.schemaName : schemaName, field.tableName, field.name );
+      field.comment = getColumnComments( schema, field.tableName, field.name );
 
       callback( field );
     }
