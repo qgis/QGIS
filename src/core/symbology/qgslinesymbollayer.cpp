@@ -191,6 +191,19 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "dash_pattern_offset_map_unit_scale" ) ) )
     l->setDashPatternOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "dash_pattern_offset_map_unit_scale" )].toString() ) );
 
+  if ( props.contains( QStringLiteral( "trim_distance_start" ) ) )
+    l->setTrimDistanceStart( props[QStringLiteral( "trim_distance_start" )].toDouble() );
+  if ( props.contains( QStringLiteral( "trim_distance_start_unit" ) ) )
+    l->setTrimDistanceStartUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "trim_distance_start_unit" )].toString() ) );
+  if ( props.contains( QStringLiteral( "trim_distance_start_map_unit_scale" ) ) )
+    l->setTrimDistanceStartMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "trim_distance_start_map_unit_scale" )].toString() ) );
+  if ( props.contains( QStringLiteral( "trim_distance_end" ) ) )
+    l->setTrimDistanceEnd( props[QStringLiteral( "trim_distance_end" )].toDouble() );
+  if ( props.contains( QStringLiteral( "trim_distance_end_unit" ) ) )
+    l->setTrimDistanceEndUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "trim_distance_end_unit" )].toString() ) );
+  if ( props.contains( QStringLiteral( "trim_distance_end_map_unit_scale" ) ) )
+    l->setTrimDistanceEndMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "trim_distance_end_map_unit_scale" )].toString() ) );
+
   if ( props.contains( QStringLiteral( "align_dash_pattern" ) ) )
     l->setAlignDashPattern( props[ QStringLiteral( "align_dash_pattern" )].toInt() );
 
@@ -201,7 +214,6 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
 
   return l;
 }
-
 
 QString QgsSimpleLineSymbolLayer::layerType() const
 {
@@ -329,12 +341,52 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
 
 }
 
-void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
   {
     return;
+  }
+
+  QPolygonF points = pts;
+
+  double startTrim = mTrimDistanceStart;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyTrimStart ) )
+  {
+    context.setOriginalValueVariable( startTrim );
+    startTrim = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyTrimStart, context.renderContext().expressionContext(), mTrimDistanceStart );
+  }
+  double endTrim = mTrimDistanceEnd;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyTrimEnd ) )
+  {
+    context.setOriginalValueVariable( endTrim );
+    endTrim = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyTrimEnd, context.renderContext().expressionContext(), mTrimDistanceEnd );
+  }
+
+  double totalLength = -1;
+  if ( mTrimDistanceStartUnit == QgsUnitTypes::RenderPercentage )
+  {
+    totalLength = QgsSymbolLayerUtils::polylineLength( points );
+    startTrim = startTrim * 0.01 * totalLength;
+  }
+  else
+  {
+    startTrim = context.renderContext().convertToPainterUnits( startTrim, mTrimDistanceStartUnit, mTrimDistanceStartMapUnitScale );
+  }
+  if ( mTrimDistanceEndUnit == QgsUnitTypes::RenderPercentage )
+  {
+    if ( totalLength < 0 ) // only recalculate if we didn't already work this out for the start distance!
+      totalLength = QgsSymbolLayerUtils::polylineLength( points );
+    endTrim = endTrim * 0.01 * totalLength;
+  }
+  else
+  {
+    endTrim = context.renderContext().convertToPainterUnits( endTrim, mTrimDistanceEndUnit, mTrimDistanceEndMapUnitScale );
+  }
+  if ( !qgsDoubleNear( startTrim, 0 ) || !qgsDoubleNear( endTrim, 0 ) )
+  {
+    points = QgsSymbolLayerUtils::polylineSubstring( points, startTrim, -endTrim );
   }
 
   QColor penColor = mColor;
@@ -424,6 +476,12 @@ QVariantMap QgsSimpleLineSymbolLayer::properties() const
   map[QStringLiteral( "dash_pattern_offset" )] = QString::number( mDashPatternOffset );
   map[QStringLiteral( "dash_pattern_offset_unit" )] = QgsUnitTypes::encodeUnit( mDashPatternOffsetUnit );
   map[QStringLiteral( "dash_pattern_offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mDashPatternOffsetMapUnitScale );
+  map[QStringLiteral( "trim_distance_start" )] = QString::number( mTrimDistanceStart );
+  map[QStringLiteral( "trim_distance_start_unit" )] = QgsUnitTypes::encodeUnit( mTrimDistanceStartUnit );
+  map[QStringLiteral( "trim_distance_start_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mTrimDistanceStartMapUnitScale );
+  map[QStringLiteral( "trim_distance_end" )] = QString::number( mTrimDistanceEnd );
+  map[QStringLiteral( "trim_distance_end_unit" )] = QgsUnitTypes::encodeUnit( mTrimDistanceEndUnit );
+  map[QStringLiteral( "trim_distance_end_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mTrimDistanceEndMapUnitScale );
   map[QStringLiteral( "draw_inside_polygon" )] = ( mDrawInsidePolygon ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
   map[QStringLiteral( "align_dash_pattern" )] = mAlignDashPattern ? QStringLiteral( "1" ) : QStringLiteral( "0" );
@@ -450,6 +508,12 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
   l->setDashPatternOffset( mDashPatternOffset );
   l->setDashPatternOffsetUnit( mDashPatternOffsetUnit );
   l->setDashPatternOffsetMapUnitScale( mDashPatternOffsetMapUnitScale );
+  l->setTrimDistanceStart( mTrimDistanceStart );
+  l->setTrimDistanceStartUnit( mTrimDistanceStartUnit );
+  l->setTrimDistanceStartMapUnitScale( mTrimDistanceStartMapUnitScale );
+  l->setTrimDistanceEnd( mTrimDistanceEnd );
+  l->setTrimDistanceEndUnit( mTrimDistanceEndUnit );
+  l->setTrimDistanceEndMapUnitScale( mTrimDistanceEndMapUnitScale );
   l->setAlignDashPattern( mAlignDashPattern );
   l->setTweakDashPatternOnCorners( mPatternCartographicTweakOnSharpCorners );
 
@@ -612,7 +676,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
     //re-scale pattern vector after data defined pen width was applied
 
     QVector<qreal> scaledVector;
-    for ( double v : mCustomDashVector )
+    for ( double v : qgis::as_const( mCustomDashVector ) )
     {
       //the dash is specified in terms of pen widths, therefore the division
       scaledVector << context.renderContext().convertToPainterUnits( v, mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv;
@@ -624,7 +688,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   double patternOffset = mDashPatternOffset;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDashPatternOffset ) && pen.style() != Qt::SolidLine )
   {
-    context.setOriginalValueVariable( mDashPatternOffset );
+    context.setOriginalValueVariable( patternOffset );
     patternOffset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDashPatternOffset, context.renderContext().expressionContext(), mDashPatternOffset );
     pen.setDashOffset( context.renderContext().convertToPainterUnits( patternOffset, mDashPatternOffsetUnit, mDashPatternOffsetMapUnitScale ) / dashWidthDiv );
   }

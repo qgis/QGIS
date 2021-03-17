@@ -83,6 +83,88 @@ class TestQgsSimpleLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('simpleline_dashpattern_datadefined_width', 'simpleline_dashpattern_datadefined_width', rendered_image)
 
+    def testTrimDistance(self):
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
+
+        s.symbolLayer(0).setTrimDistanceStart(1.2)
+        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderPoints)
+        s.symbolLayer(0).setTrimDistanceStartMapUnitScale(QgsMapUnitScale(5, 10))
+        s.symbolLayer(0).setTrimDistanceEnd(3.2)
+        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderPercentage)
+        s.symbolLayer(0).setTrimDistanceEndMapUnitScale(QgsMapUnitScale(15, 20))
+
+        s2 = s.clone()
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStart(), 1.2)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStartUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStartMapUnitScale().minScale, 5)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStartMapUnitScale().maxScale, 10)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEnd(), 3.2)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEndUnit(), QgsUnitTypes.RenderPercentage)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEndMapUnitScale().minScale, 15)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEndMapUnitScale().maxScale, 20)
+
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
+
+        s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStart(), 1.2)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStartUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStartMapUnitScale().minScale, 5)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStartMapUnitScale().maxScale, 10)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEnd(), 3.2)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEndUnit(), QgsUnitTypes.RenderPercentage)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEndMapUnitScale().minScale, 15)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEndMapUnitScale().maxScale, 20)
+
+    def testTrimDistanceRender(self):
+        """
+        Rendering test of trim distances
+        """
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s.symbolLayer(0).setTrimDistanceStart(150)
+        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderPoints)
+        s.symbolLayer(0).setTrimDistanceEnd(9)
+        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderMillimeters)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_trim_distance_units', 'simpleline_trim_distance_units', rendered_image)
+
+    def testTrimDistanceRenderPercentage(self):
+        """
+        Rendering test of trim distances using percentage
+        """
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s.symbolLayer(0).setTrimDistanceStart(10)
+        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderPercentage)
+        s.symbolLayer(0).setTrimDistanceEnd(50)
+        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderPercentage)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_trim_distance_percentage', 'simpleline_trim_distance_percentage', rendered_image)
+
+    def testTrimDistanceRenderDataDefined(self):
+        """
+        Rendering test of trim distances using data defined lengths
+        """
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s.symbolLayer(0).setTrimDistanceStart(1)
+        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderPercentage)
+        s.symbolLayer(0).setTrimDistanceEnd(5)
+        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderPercentage)
+
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyTrimStart, QgsProperty.fromExpression('5*2'))
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyTrimEnd, QgsProperty.fromExpression('60-10'))
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_trim_distance_percentage', 'simpleline_trim_distance_percentage', rendered_image)
+
     def testDashPatternOffset(self):
 
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
