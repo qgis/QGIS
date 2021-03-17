@@ -367,7 +367,7 @@ Returns the map unit scale for the trim distance for the start of the line.
 
 .. seealso:: :py:func:`setTrimDistanceStartMapUnitScale`
 
-.. seealso:: :py:func:`trimDistanceEndMapUnitUnit`
+.. seealso:: :py:func:`trimDistanceEndMapUnit`
 
 .. seealso:: :py:func:`trimDistanceStart`
 
@@ -382,7 +382,7 @@ Sets the map unit ``scale`` for the trim distance for the start of the line.
 
 .. seealso:: :py:func:`trimDistanceStartMapUnitScale`
 
-.. seealso:: :py:func:`setTrimDistanceEndMapUnitUnit`
+.. seealso:: :py:func:`setTrimDistanceEndMapUnit`
 
 .. seealso:: :py:func:`setTrimDistanceStart`
 
@@ -463,7 +463,7 @@ Returns the map unit scale for the trim distance for the end of the line.
 
 .. seealso:: :py:func:`setTrimDistanceEndMapUnitScale`
 
-.. seealso:: :py:func:`trimDistanceStartMapUnitUnit`
+.. seealso:: :py:func:`trimDistanceStartMapUnit`
 
 .. seealso:: :py:func:`trimDistanceEnd`
 
@@ -478,7 +478,7 @@ Sets the map unit ``scale`` for the trim distance for the end of the line.
 
 .. seealso:: :py:func:`trimDistanceEndMapUnitScale`
 
-.. seealso:: :py:func:`setTrimDistanceStartMapUnitUnit`
+.. seealso:: :py:func:`setTrimDistanceStartMapUnit`
 
 .. seealso:: :py:func:`setTrimDistanceEnd`
 

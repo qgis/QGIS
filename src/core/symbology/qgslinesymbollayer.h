@@ -326,7 +326,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      * Returns the map unit scale for the trim distance for the start of the line.
      *
      * \see setTrimDistanceStartMapUnitScale()
-     * \see trimDistanceEndMapUnitUnit()
+     * \see trimDistanceEndMapUnit()
      * \see trimDistanceStart()
      * \see trimDistanceStartUnit()
      *
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      * Sets the map unit \a scale for the trim distance for the start of the line.
      *
      * \see trimDistanceStartMapUnitScale()
-     * \see setTrimDistanceEndMapUnitUnit()
+     * \see setTrimDistanceEndMapUnit()
      * \see setTrimDistanceStart()
      * \see setTrimDistanceStartUnit()
      *
@@ -404,7 +404,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      * Returns the map unit scale for the trim distance for the end of the line.
      *
      * \see setTrimDistanceEndMapUnitScale()
-     * \see trimDistanceStartMapUnitUnit()
+     * \see trimDistanceStartMapUnit()
      * \see trimDistanceEnd()
      * \see trimDistanceEndUnit()
      *
@@ -416,7 +416,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      * Sets the map unit \a scale for the trim distance for the end of the line.
      *
      * \see trimDistanceEndMapUnitScale()
-     * \see setTrimDistanceStartMapUnitUnit()
+     * \see setTrimDistanceStartMapUnit()
      * \see setTrimDistanceEnd()
      * \see setTrimDistanceEndUnit()
      *
