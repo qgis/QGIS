@@ -57,6 +57,10 @@ class CORE_EXPORT QgsCallout
     {
       sipType = sipType_QgsManhattanLineCallout;
     }
+    else if ( sipCpp->type() == "curved" && dynamic_cast<QgsCurvedLineCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsCurvedLineCallout;
+    }
     else
     {
       sipType = 0;
@@ -79,6 +83,8 @@ class CORE_EXPORT QgsCallout
       OriginY, //!< Y-coordinate of callout origin (label anchor) (since QGIS 3.20)
       DestinationX, //!< X-coordinate of callout destination (feature anchor) (since QGIS 3.20)
       DestinationY, //!< Y-coordinate of callout destination (feature anchor) (since QGIS 3.20)
+      Curvature, //!< Curvature of curved line callouts (since QGIS 3.20)
+      Orientation, //!< Orientation of curved line callouts (since QGIS 3.20)
     };
 
     //! Options for draw order (stacking) of callouts
@@ -738,6 +744,105 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
 #endif
 };
 
+
+/**
+ * \ingroup core
+ * \brief Draws curved lines as callouts.
+ *
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsCurvedLineCallout : public QgsSimpleLineCallout
+{
+  public:
+
+    /**
+     * Curve orientation
+     */
+    enum Orientation
+    {
+      Automatic, //!< Automatically choose most cartographically pleasing orientation based on label and callout arrangement
+      Clockwise, //!< Curve lines in a clockwise direction
+      CounterClockwise, //!< Curve lines in a counter-clockwise direction
+    };
+
+    QgsCurvedLineCallout();
+
+#ifndef SIP_RUN
+
+    /**
+     * Copy constructor.
+     */
+    QgsCurvedLineCallout( const QgsCurvedLineCallout &other );
+
+    QgsCurvedLineCallout &operator=( const QgsCurvedLineCallout & ) = delete;
+#endif
+
+    /**
+     * Creates a new QgsCurvedLineCallout, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsCurvedLineCallout::properties() ).
+     */
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
+
+    QString type() const override;
+    QgsCurvedLineCallout *clone() const override;
+    QVariantMap properties( const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Returns the callout line's curvature.
+     *
+     * The curvature is a percentage value (with typical ranges between 0.0 and 1.0), representing the overall curvature of the line.
+     *
+     * \see setCurvature()
+     */
+    double curvature() const;
+
+    /**
+     * Sets the callout line's \a curvature.
+     *
+     * The \a curvature is a percentage value (with typical ranges between 0.0 and 1.0), representing the overall curvature of the line.
+     *
+     * \see curvature()
+     */
+    void setCurvature( double curvature );
+
+    /**
+     * Returns the callout line's curve orientation.
+     *
+     * \see setOrientation()
+     */
+    Orientation orientation() const;
+
+    /**
+     * Sets the callout line's curve \a orientation.
+     *
+     * \see orientation()
+     */
+    void setOrientation( Orientation orientation );
+
+  protected:
+    QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) const override SIP_FACTORY;
+
+  private:
+#ifdef SIP_RUN
+    QgsCurvedLineCallout( const QgsCurvedLineCallout &other );
+    QgsCurvedLineCallout &operator=( const QgsCurvedLineCallout & );
+#endif
+
+    /**
+     * Decodes a string to an orientation value
+     */
+    static Orientation decodeOrientation( const QString &string );
+
+    /**
+     * Encodes an orientation string
+     */
+    static QString encodeOrientation( Orientation orientation );
+
+
+    Orientation mOrientation = Automatic;
+    double mCurvature = 0.1;
+};
 
 #endif // QGSCALLOUT_H
 

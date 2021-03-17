@@ -172,6 +172,49 @@ class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidg
 
 };
 
+
+///////////
+
+#include "ui_widget_curvedlinecallout.h"
+
+class QgsCurvedLineCallout;
+///@cond PRIVATE
+
+class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private Ui::WidgetCurvedLineCallout
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsCurvedLineCalloutWidget( vl ); }
+
+    void setCallout( QgsCallout *callout ) override;
+
+    QgsCallout *callout() override;
+
+    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
+
+  private slots:
+
+    void minimumLengthChanged();
+    void minimumLengthUnitWidgetChanged();
+    void offsetFromAnchorUnitWidgetChanged();
+    void offsetFromAnchorChanged();
+    void offsetFromLabelUnitWidgetChanged();
+    void offsetFromLabelChanged();
+    void lineSymbolChanged();
+    void mAnchorPointComboBox_currentIndexChanged( int index );
+    void mLabelAnchorPointComboBox_currentIndexChanged( int index );
+    void drawToAllPartsToggled( bool active );
+
+  private:
+    std::unique_ptr< QgsCurvedLineCallout > mCallout;
+
+};
+
+
 #endif
 ///@endcond
 
