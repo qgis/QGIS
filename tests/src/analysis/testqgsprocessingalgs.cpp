@@ -6520,7 +6520,7 @@ void TestQgsProcessingAlgs::rasterize()
   QVERIFY( nodePolygons );
   nodePolygons->setItemVisibilityChecked( false );
 
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
   context->setProject( &project );
   QgsProcessingFeedback feedback;
   QVariantMap results;
