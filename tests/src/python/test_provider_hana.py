@@ -297,6 +297,30 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         expected = {1: QByteArray(b'bbbvx'), 2: QByteArray(b'dddd')}
         self.assertEqual(values, expected)
 
+    def testGeometryAttributes(self):
+        create_sql = f'CREATE TABLE "{self.schemaName}"."geometry_attribute" ( ' \
+            'ID INTEGER NOT NULL PRIMARY KEY,' \
+            'GEOM1 ST_GEOMETRY(4326),' \
+            'GEOM2 ST_GEOMETRY(4326))'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."geometry_attribute" (ID, GEOM1, GEOM2) ' \
+                     f'VALUES (?, ST_GeomFromText(?, 4326), ST_GeomFromText(?, 4326)) '
+        insert_args = [[1, 'POINT (1 2)', 'LINESTRING (0 0,1 1)']]
+        self.prepareTestTable('geometry_attribute', create_sql, insert_sql, insert_args)
+
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."geometry_attribute" (GEOM1) sql=',
+                                    'testgeometryattribute')
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.names(), ['ID', 'GEOM2'])
+        self.assertEqual(fields.at(fields.indexFromName('ID')).type(), QVariant.Int)
+        self.assertEqual(fields.at(fields.indexFromName('GEOM2')).type(), QVariant.String)
+        values = {feat['ID']: feat['GEOM2'] for feat in vl.getFeatures()}
+        self.assertEqual(values, {1: 'LINESTRING (0 0,1 1)'})
+
+        # change attribute value
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {1: 'LINESTRING (0 0,2 2)'}}))
+        values = {feat['ID']: feat['GEOM2'] for feat in vl.getFeatures()}
+        self.assertEqual(values, {1: 'LINESTRING (0 0,2 2)'})
+
     def testFilterRectOutsideSrsExtent(self):
         """Test filterRect which partially lies outside of the srs extent"""
         self.source.setSubsetString(None)

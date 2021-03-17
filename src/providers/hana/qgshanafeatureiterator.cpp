@@ -57,6 +57,16 @@ namespace
 
     return bbox.intersect( QgsRectangle( minx, miny, maxx, maxy ) );
   }
+
+  QString fieldExpression( const QgsField &field )
+  {
+    QString typeName = field.typeName();
+    QString fieldName = QgsHanaUtils::quotedIdentifier( field.name() );
+    if ( field.type() == QVariant::String &&
+         ( typeName == QLatin1String( "ST_GEOMETRY" ) || typeName == QLatin1String( "ST_POINT" ) ) )
+      return QStringLiteral( "%1.ST_ASWKT()" ).arg( fieldName );
+    return fieldName;
+  }
 }
 
 QgsHanaFeatureIterator::QgsHanaFeatureIterator(
@@ -339,8 +349,8 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   // Add feature id column
   for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
   {
-    QString fieldName = mSource->mFields.at( idx ).name();
-    sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
+    const QgsField &field = mSource->mFields.at( idx );
+    sqlFields.push_back( fieldExpression( field ) );
   }
 
   for ( int idx : qgis::as_const( attrIds ) )
@@ -348,9 +358,9 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;
 
-    QString fieldName = mSource->mFields.at( idx ).name();
     mAttributesToFetch.append( idx );
-    sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
+    const QgsField &field = mSource->mFields.at( idx );
+    sqlFields.push_back( fieldExpression( field ) );
   }
 
   mHasAttributes = !mAttributesToFetch.isEmpty();
