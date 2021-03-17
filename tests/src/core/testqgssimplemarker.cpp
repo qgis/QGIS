@@ -78,6 +78,7 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void simpleMarkerSymbolBevelJoin();
     void simpleMarkerSymbolMiterJoin();
     void simpleMarkerSymbolRoundJoin();
+    void simpleMarkerSymbolCapStyle();
     void simpleMarkerOctagon();
     void simpleMarkerSquareWithCorners();
     void simpleMarkerAsterisk();
@@ -306,6 +307,19 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRoundJoin()
   mSimpleMarkerLayer->setStrokeWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
   QVERIFY( imageCheck( "simplemarker_roundjoin" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolCapStyle()
+{
+  mReport += QLatin1String( "<h2>Cap style</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::ArrowHead );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 3 );
+  mSimpleMarkerLayer->setPenCapStyle( Qt::RoundCap );
+  QVERIFY( imageCheck( "simplemarker_roundcap" ) );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerOctagon()

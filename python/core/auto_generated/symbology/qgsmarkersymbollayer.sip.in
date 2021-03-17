@@ -333,6 +333,8 @@ Returns the marker's stroke join style (e.g., miter, bevel, etc).
 
 .. seealso:: :py:func:`setPenJoinStyle`
 
+.. seealso:: :py:func:`penCapStyle`
+
 .. seealso:: :py:func:`strokeColor`
 
 .. seealso:: :py:func:`strokeStyle`
@@ -348,11 +350,43 @@ Sets the marker's stroke join style (e.g., miter, bevel, etc).
 
 .. seealso:: :py:func:`penJoinStyle`
 
+.. seealso:: :py:func:`setPenCapStyle`
+
 .. seealso:: :py:func:`setStrokeColor`
 
 .. seealso:: :py:func:`setStrokeStyle`
 
 .. versionadded:: 2.16
+%End
+
+    Qt::PenCapStyle penCapStyle() const;
+%Docstring
+Returns the marker's stroke cap style (e.g., flat, round, etc).
+
+.. seealso:: :py:func:`setPenCapStyle`
+
+.. seealso:: :py:func:`penJoinStyle`
+
+.. seealso:: :py:func:`strokeColor`
+
+.. seealso:: :py:func:`strokeStyle`
+
+.. versionadded:: 3.20
+%End
+
+    void setPenCapStyle( Qt::PenCapStyle style );
+%Docstring
+Sets the marker's stroke cap ``style`` (e.g., flat, round, etc).
+
+.. seealso:: :py:func:`penCapStyle`
+
+.. seealso:: :py:func:`penJoinStyle`
+
+.. seealso:: :py:func:`setStrokeColor`
+
+.. seealso:: :py:func:`setStrokeStyle`
+
+.. versionadded:: 3.20
 %End
 
     double strokeWidth() const;
