@@ -658,6 +658,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
 
     /**
+     * Returns the total length of a \a polyline.
+     *
+     * \since QGIS 3.20
+     */
+    static double polylineLength( const QPolygonF &polyline );
+
+    /**
      * Returns the substring of a \a polyline which starts at \a startOffset from the beginning of the line
      * and ends at \a endOffset from the start of the line.
      *
