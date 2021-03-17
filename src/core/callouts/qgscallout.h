@@ -424,9 +424,12 @@ class CORE_EXPORT QgsCallout
 
     /**
      * Returns the anchor point geometry for a label with the given bounding box and \a anchor point mode.
+     *
+     * The \a pinned argument will be set to TRUE if the callout label point is pinned (manually placed).
+     *
      * \since QGIS 3.20
      */
-    QgsGeometry calloutLabelPoint( QRectF bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext ) const;
+    QgsGeometry calloutLabelPoint( QRectF bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext, bool &pinned ) const;
 
     /**
      * Calculates the direct line from a label geometry to an anchor geometry part, respecting the various
@@ -434,9 +437,11 @@ class CORE_EXPORT QgsCallout
      *
      * Returns a null geometry if the callout line cannot be calculated.
      *
+     * The \a pinned argument will be set to TRUE if the callout anchor point is pinned (manually placed).
+     *
      * \since QGIS 3.20
      */
-    QgsGeometry calloutLineToPart( const QgsGeometry &labelGeometry, const QgsAbstractGeometry *partGeometry, QgsRenderContext &context, const QgsCalloutContext &calloutContext ) const;
+    QgsGeometry calloutLineToPart( const QgsGeometry &labelGeometry, const QgsAbstractGeometry *partGeometry, QgsRenderContext &context, const QgsCalloutContext &calloutContext, bool &pinned ) const;
 
   private:
 
