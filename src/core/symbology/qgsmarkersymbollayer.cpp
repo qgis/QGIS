@@ -894,6 +894,11 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
     m->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
   }
 
+  if ( props.contains( QStringLiteral( "cap_style" ) ) )
+  {
+    m->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( props[QStringLiteral( "cap_style" )].toString() ) );
+  }
+
   m->restoreOldDataDefinedProperties( props );
 
   return m;
@@ -918,6 +923,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
   mPen.setStyle( mStrokeStyle );
+  mPen.setCapStyle( mPenCapStyle );
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 
@@ -1113,6 +1119,16 @@ void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
       mSelPen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( style ) );
     }
   }
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCapStyle ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
+    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext(), QString(), &ok );
+    if ( ok )
+    {
+      mPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
+      mSelPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
+    }
+  }
 
   if ( shapeIsFilled( shape ) )
   {
@@ -1183,6 +1199,7 @@ QVariantMap QgsSimpleMarkerSymbolLayer::properties() const
   map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( mStrokeWidthUnit );
   map[QStringLiteral( "outline_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
   map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[QStringLiteral( "cap_style" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
   map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
   return map;
@@ -1202,6 +1219,7 @@ QgsSimpleMarkerSymbolLayer *QgsSimpleMarkerSymbolLayer::clone() const
   m->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  m->setPenCapStyle( mPenCapStyle );
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
   return m;

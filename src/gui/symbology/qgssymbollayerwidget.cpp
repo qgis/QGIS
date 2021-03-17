@@ -651,6 +651,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   connect( btnChangeColorStroke, &QgsColorButton::colorChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setColorStroke );
   connect( btnChangeColorFill, &QgsColorButton::colorChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setColorFill );
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::penJoinStyleChanged );
+  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::penCapStyleChanged );
   connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setSize );
   connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setAngle );
   connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setOffset );
@@ -698,6 +699,9 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   cboJoinStyle->blockSignals( true );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
   cboJoinStyle->blockSignals( false );
+  cboCapStyle->blockSignals( true );
+  cboCapStyle->setPenCapStyle( mLayer->penCapStyle() );
+  cboCapStyle->blockSignals( false );
 
   // without blocking signals the value gets changed because of slot setOffset()
   spinOffsetX->blockSignals( true );
@@ -734,6 +738,7 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
   registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
   registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
   registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
@@ -770,6 +775,12 @@ void QgsSimpleMarkerSymbolLayerWidget::setColorFill( const QColor &color )
 void QgsSimpleMarkerSymbolLayerWidget::penJoinStyleChanged()
 {
   mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
+  emit changed();
+}
+
+void QgsSimpleMarkerSymbolLayerWidget::penCapStyleChanged()
+{
+  mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
   emit changed();
 }
 
