@@ -56,8 +56,8 @@ Sets file extension for the control image. By default it is "png"
 
     void setControlPathPrefix( const QString &name );
 %Docstring
-Prefix where the control images are kept.
-This will be appended to controlImagePath
+Sets the path prefix where the control images are kept.
+This will be appended to :py:func:`~QgsRenderChecker.controlImagePath`.
 %End
 
     void setControlPathSuffix( const QString &name );
