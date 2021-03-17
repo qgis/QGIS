@@ -199,12 +199,14 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
 
   QRectF paperRect = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
 
-  if ( imageSize.isValid() && ( !qgsDoubleNear( static_cast< double >( imageSize.width() ) / imageSize.height(),
-                                paperRect.width() / paperRect.height(), 0.008 ) ) )
+  const double imageAspectRatio = static_cast< double >( imageSize.width() ) / imageSize.height();
+  const double paperAspectRatio = paperRect.width() / paperRect.height();
+  if ( imageSize.isValid() && ( !qgsDoubleNear( imageAspectRatio, paperAspectRatio, 0.008 ) ) )
   {
     // specified image size is wrong aspect ratio for paper rect - so ignore it and just use dpi
     // this can happen e.g. as a result of data defined page sizes
     // see https://github.com/qgis/QGIS/issues/26422
+    QgsMessageLog::logMessage( QObject::tr( "Ignoring custom image size because aspect ratio %1 does not match paper ratio %2" ).arg( QString::number( imageAspectRatio, 'g', 3 ), QString::number( paperAspectRatio, 'g', 3 ) ), QStringLiteral( "Layout" ), Qgis::Warning );
     imageSize = QSize();
   }
 
