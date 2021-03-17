@@ -257,8 +257,20 @@ namespace
         }
         break;
       default:
-        QgsDebugMsg( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
-                     .arg( QString::number( field.type ), QString::number( paramIndex ) ) );
+        if ( field.isGeometry() )
+        {
+          if ( value.type() == QVariant::String )
+            stmt->setString( paramIndex, isNull ? String() : String( value.toString().toStdString() ) );
+          else if ( value.type() == QVariant::ByteArray )
+          {
+            QByteArray arr = value.toByteArray();
+            stmt->setBinary( paramIndex, isNull ? Binary() :  Binary( vector<char>( arr.begin(), arr.end() ) ) );
+          }
+        }
+        else
+          QgsDebugMsg( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
+                       .arg( QString::number( field.type ), QString::number( paramIndex ) ) );
+        break;
     }
   }
 
@@ -631,7 +643,10 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     }
 
     columnNames << QgsHanaUtils::quotedIdentifier( field.name );
-    values << QStringLiteral( "?" );
+    if ( field.isGeometry() && mFields.at( idx ).type() == QVariant::String )
+      values << QStringLiteral( "ST_GeomFromWKT(?, %1)" ).arg( QString::number( field.srid ) );
+    else
+      values << QStringLiteral( "?" );
     fieldIds << idx;
   }
 
@@ -1124,7 +1139,11 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
           continue;
 
         pkChanged = pkChanged || mPrimaryKeyAttrs.contains( fieldIndex );
-        attrs << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
+        if ( field.isGeometry() && mFields.at( fieldIndex ).type() == QVariant::String )
+          attrs << QStringLiteral( "%1=ST_GeomFromWKT(?, %2)" ).arg(
+                  QgsHanaUtils::quotedIdentifier( field.name ), QString::number( field.srid ) );
+        else
+          attrs << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
       }
 
       if ( attrs.empty() )
