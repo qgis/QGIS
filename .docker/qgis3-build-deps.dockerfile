@@ -1,7 +1,7 @@
 
 ARG UBUNTU_BASE=20.04
 
-FROM      ubuntu:${UBUNTU_BASE}
+FROM      ubuntu:${UBUNTU_BASE} as binary-only
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
@@ -10,72 +10,47 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 314DF160 \
 
-
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     apt-transport-https \
-    bison \
     ca-certificates \
-    ccache \
-    clang \
     cmake \
     curl \
     dh-python \
-    flex \
     gdal-bin \
-    git \
     graphviz \
-    grass-dev \
+    grass \
     libaio1 \
-    libexiv2-dev \
-    libexpat1-dev \
-    libfcgi-dev \
-    libgdal-dev \
-    libgeos-dev \
-    libgsl-dev \
-    libpdal-dev \
-    libpq-dev \
-    libproj-dev \
-    libprotobuf-dev \
-    libqca-qt5-2-dev \
+    libexiv2-27 \
+    libfcgi0ldbl \
+    'libgsl23|libgsl23' \
+    'libprotobuf-lite17|libprotobuf-lite23' \
     libqca-qt5-2-plugins \
     libqt53dextras5 \
     libqt53drender5 \
     libqt5concurrent5 \
-    libqt5opengl5-dev \
+    libqt5keychain1 \
     libqt5positioning5 \
     libqt5qml5 \
     libqt5quick5 \
     libqt5quickcontrols2-5 \
-    libqt5scintilla2-dev \
+    libqt5quickwidgets5 \
+    libqt5serialport5 \
     libqt5sql5-odbc \
     libqt5sql5-sqlite \
-    libqt5svg5-dev \
-    libqt5webkit5-dev \
     libqt5xml5 \
-    libqt5serialport5-dev \
-    libqwt-qt5-dev \
-    libspatialindex-dev \
-    libspatialite-dev \
-    libsqlite3-dev \
+    libqt5webkit5 \
+    libqwt-qt5-6 \
+    libspatialindex6 \
     libsqlite3-mod-spatialite \
-    libzip-dev \
-    libzstd-dev \
+    libzip5 \
     lighttpd \
     locales \
-    ninja-build \
     pdal \
-    pkg-config \
     poppler-utils \
     postgresql-client \
-    protobuf-compiler \
-    pyqt5-dev \
-    pyqt5-dev-tools \
-    pyqt5.qsci-dev \
-    python3-all-dev \
-    python3-dev \
     python3-future \
     python3-gdal \
     python3-mock \
@@ -90,22 +65,13 @@ RUN  apt-get update \
     python3-pyqt5.qtsvg \
     python3-pyqt5.qtwebkit \
     python3-sip \
-    python3-sip-dev \
     python3-termcolor \
     python3-yaml \
-    qt3d5-dev \
     qt3d-assimpsceneimport-plugin \
     qt3d-defaultgeometryloader-plugin \
     qt3d-gltfsceneio-plugin \
     qt3d-scene2d-plugin \
     qt5-image-formats-plugins \
-    qt5keychain-dev \
-    qtbase5-dev \
-    qtdeclarative5-dev-tools \
-    qtpositioning5-dev \
-    qttools5-dev \
-    qttools5-dev-tools \
-    qtbase5-private-dev \
     saga \
     spawn-fcgi \
     supervisor \
@@ -116,9 +82,7 @@ RUN  apt-get update \
     xfonts-base \
     xfonts-scalable \
     xvfb \
-    opencl-headers \
     ocl-icd-libopencl1 \
-    ocl-icd-opencl-dev \
   && pip3 install \
     psycopg2 \
     numpy \
@@ -176,6 +140,60 @@ RUN echo "alias python=python3" >> ~/.bash_aliases
 # OTB: download and install otb packages for QGIS tests
 RUN curl -k https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
+
+FROM binary-only
+
+RUN  apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    bison \
+    ccache \
+    clang \
+    cmake \
+    flex \
+    git \
+    grass-dev \
+    libexiv2-dev \
+    libexpat1-dev \
+    libfcgi-dev \
+    libgdal-dev \
+    libgeos-dev \
+    libgsl-dev \
+    libpdal-dev \
+    libpq-dev \
+    libproj-dev \
+    libprotobuf-dev \
+    libqca-qt5-2-dev \
+    libqt5opengl5-dev \
+    libqt5scintilla2-dev \
+    libqt5svg5-dev \
+    libqt5webkit5-dev \
+    libqt5serialport5-dev \
+    libqwt-qt5-dev \
+    libspatialindex-dev \
+    libspatialite-dev \
+    libsqlite3-dev \
+    libsqlite3-mod-spatialite \
+    libzip-dev \
+    libzstd-dev \
+    ninja-build \
+    protobuf-compiler \
+    pyqt5-dev \
+    pyqt5-dev-tools \
+    pyqt5.qsci-dev \
+    python3-all-dev \
+    python3-dev \
+    python3-sip-dev \
+    qt3d5-dev \
+    qt5keychain-dev \
+    qtbase5-dev \
+    qtdeclarative5-dev-tools \
+    qtpositioning5-dev \
+    qttools5-dev \
+    qttools5-dev-tools \
+    qtbase5-private-dev \
+    opencl-headers \
+    ocl-icd-opencl-dev \
+  && apt-get clean
 
 # Clazy
 RUN curl -k https://downloads.kdab.com/clazy/1.6/Clazy-x86_64-1.6.AppImage -o /tmp/Clazy.AppImage \
