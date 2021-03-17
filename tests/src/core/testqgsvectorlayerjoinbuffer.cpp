@@ -907,6 +907,75 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumn()
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QVERIFY( !fA1.attribute( "value_b" ).isValid() );
   QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
+
+  vlA->removeJoin( vlB->id() );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"name"} ) );
+  vlA->addJoin( joinInfo );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
+  fi2.nextFeature( fA1 );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name"} ) );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
+
+  vlA->removeJoin( vlB->id() );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"value_b"} ) );
+  vlA->addJoin( joinInfo );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
+  fi2.nextFeature( fA1 );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b"} ) );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
+  QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );
+
+  vlA->removeJoin( vlB->id() );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"value_c"} ) );
+  vlA->addJoin( joinInfo );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
+  fi2.nextFeature( fA1 );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_c"} ) );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
+  QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
+
+  vlA->removeJoin( vlB->id() );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"name", "value_c"} ) );
+  vlA->addJoin( joinInfo );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2, 3} ) ) );
+  fi2.nextFeature( fA1 );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_c"} ) );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
+  QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
+
+  vlA->removeJoin( vlB->id() );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"value_b", "value_c"} ) );
+  vlA->addJoin( joinInfo );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2, 3} ) ) );
+  fi2.nextFeature( fA1 );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
+  QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );
+  QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
+
+  vlA->removeJoin( vlB->id() );
+  joinInfo.setJoinFieldNamesSubset( nullptr );
+  vlA->addJoin( joinInfo );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
+  fi2.nextFeature( fA1 );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
+  QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );
+  QVERIFY( !fA1.attribute( "value_c" ).isValid() );
+
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 3} ) ) );
+  fi2.nextFeature( fA1 );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
+  QVERIFY( !fA1.attribute( "value_b" ).isValid() );
+  QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
 }
 
 QGSTEST_MAIN( TestVectorLayerJoinBuffer )
