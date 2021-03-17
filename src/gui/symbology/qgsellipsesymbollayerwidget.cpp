@@ -97,6 +97,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   connect( spinOffsetX, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
   connect( spinOffsetY, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::penJoinStyleChanged );
+  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::penCapStyleChanged );
 }
 
 void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -137,6 +138,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
+  cboCapStyle->setPenCapStyle( mLayer->penCapStyle() );
   blockComboSignals( false );
 
   registerDataDefinedButton( mSymbolWidthDDBtn, QgsSymbolLayer::PropertyWidth );
@@ -147,6 +149,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
   registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
   registerDataDefinedButton( mShapeDDBtn, QgsSymbolLayer::PropertyName );
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
   registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
@@ -287,6 +290,12 @@ void QgsEllipseSymbolLayerWidget::penJoinStyleChanged()
   emit changed();
 }
 
+void QgsEllipseSymbolLayerWidget::penCapStyleChanged()
+{
+  mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
+  emit changed();
+}
+
 void QgsEllipseSymbolLayerWidget::blockComboSignals( bool block )
 {
   mSymbolWidthUnitWidget->blockSignals( block );
@@ -299,6 +308,7 @@ void QgsEllipseSymbolLayerWidget::blockComboSignals( bool block )
   mSymbolHeightUnitWidget->blockSignals( block );
   mOffsetUnitWidget->blockSignals( block );
   cboJoinStyle->blockSignals( block );
+  cboCapStyle->blockSignals( block );
 }
 
 void QgsEllipseSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
