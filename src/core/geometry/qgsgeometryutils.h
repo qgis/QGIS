@@ -302,6 +302,35 @@ class CORE_EXPORT QgsGeometryUtils
                                          double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
 
     /**
+     * Calculates a point a certain \a proportion of the way along the segment from (\a x1, \a y1) to (\a x2, \a y2),
+     * offset from the segment by the specified \a offset amount.
+     *
+     * \param x1 x-coordinate of start of segment
+     * \param y1 y-coordinate of start of segment
+     * \param x2 x-coordinate of end of segment
+     * \param y2 y-coordinate of end of segment
+     * \param proportion proportion of the segment's length at which to place the point (between 0.0 and 1.0)
+     * \param offset perpendicular offset from segment to apply to point. A negative \a offset shifts the point to the left of the segment, while a positive \a offset will shift it to the right of the segment.
+     * \param x calculated point x-coordinate
+     * \param y calculated point y-coordinate
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   # Offset point at center of segment by 2 units to the right
+     *   x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, 2 )
+     *   # (6.0, 3.0)
+     *
+     *   # Offset point at center of segment by 2 units to the left
+     *   x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
+     *   # (6.0, 7.0)
+     * \endcode
+     *
+     * \since QGIS 3.20
+     */
+    static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x SIP_OUT, double *y  SIP_OUT );
+
+    /**
      * Interpolates a point on an arc defined by three points, \a pt1, \a pt2 and \a pt3. The arc will be
      * interpolated by the specified \a distance from \a pt1.
      *
