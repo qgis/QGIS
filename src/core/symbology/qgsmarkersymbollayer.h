@@ -299,6 +299,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     /**
      * Returns the marker's stroke join style (e.g., miter, bevel, etc).
      * \see setPenJoinStyle()
+     * \see penCapStyle()
      * \see strokeColor()
      * \see strokeStyle()
      * \since QGIS 2.16
@@ -309,11 +310,32 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * Sets the marker's stroke join style (e.g., miter, bevel, etc).
      * \param style join style
      * \see penJoinStyle()
+     * \see setPenCapStyle()
      * \see setStrokeColor()
      * \see setStrokeStyle()
      * \since QGIS 2.16
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+
+    /**
+     * Returns the marker's stroke cap style (e.g., flat, round, etc).
+     * \see setPenCapStyle()
+     * \see penJoinStyle()
+     * \see strokeColor()
+     * \see strokeStyle()
+     * \since QGIS 3.20
+    */
+    Qt::PenCapStyle penCapStyle() const { return mPenCapStyle; }
+
+    /**
+     * Sets the marker's stroke cap \a style (e.g., flat, round, etc).
+     * \see penCapStyle()
+     * \see penJoinStyle()
+     * \see setStrokeColor()
+     * \see setStrokeStyle()
+     * \since QGIS 3.20
+    */
+    void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
 
     /**
      * Returns the width of the marker's stroke.
@@ -394,6 +416,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsMapUnitScale mStrokeWidthMapUnitScale;
     //! Stroke pen join style
     Qt::PenJoinStyle mPenJoinStyle;
+    //! Stroke pen cap style
+    Qt::PenCapStyle mPenCapStyle = Qt::SquareCap;
     //! QPen corresponding to marker's stroke style
     QPen mPen;
     //! QBrush corresponding to marker's fill style
