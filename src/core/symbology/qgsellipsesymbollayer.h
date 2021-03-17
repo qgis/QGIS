@@ -75,6 +75,26 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
+    /**
+     * Returns the marker's stroke cap style (e.g., flat, round, etc).
+     * \see setPenCapStyle()
+     * \see penJoinStyle()
+     * \see strokeColor()
+     * \see strokeStyle()
+     * \since QGIS 3.20
+    */
+    Qt::PenCapStyle penCapStyle() const { return mPenCapStyle; }
+
+    /**
+     * Sets the marker's stroke cap \a style (e.g., flat, round, etc).
+     * \see penCapStyle()
+     * \see penJoinStyle()
+     * \see setStrokeColor()
+     * \see setStrokeStyle()
+     * \since QGIS 3.20
+    */
+    void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
+
     void setStrokeWidth( double w ) { mStrokeWidth = w; }
     double strokeWidth() const { return mStrokeWidth; }
 
@@ -156,6 +176,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QColor mStrokeColor;
     Qt::PenStyle mStrokeStyle = Qt::SolidLine;
     Qt::PenJoinStyle mPenJoinStyle = DEFAULT_ELLIPSE_JOINSTYLE;
+    Qt::PenCapStyle mPenCapStyle = Qt::SquareCap;
     double mStrokeWidth = 0;
     QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mStrokeWidthMapUnitScale;

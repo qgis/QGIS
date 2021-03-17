@@ -102,6 +102,10 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QVariantMap &properties )
   {
     layer->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( properties[QStringLiteral( "joinstyle" )].toString() ) );
   }
+  if ( properties.contains( QStringLiteral( "cap_style" ) ) )
+  {
+    layer->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( properties[QStringLiteral( "cap_style" )].toString() ) );
+  }
   if ( properties.contains( QStringLiteral( "outline_width" ) ) )
   {
     layer->setStrokeWidth( properties[QStringLiteral( "outline_width" )].toDouble() );
@@ -179,9 +183,9 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   penColor.setAlphaF( penColor.alphaF() * context.opacity() );
   mPen.setColor( penColor );
 
-  if ( mDataDefinedProperties.hasActiveProperties() )
+  bool ok;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
-    bool ok;
     context.setOriginalValueVariable( mStrokeWidth );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
@@ -194,44 +198,67 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
         mSelPen.setWidthF( width );
       }
     }
+  }
 
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )
+  {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
-    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
       mPen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
       mSelPen.setStyle( mPen.style() );
     }
+  }
 
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyJoinStyle ) )
+  {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
       mPen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
       mSelPen.setJoinStyle( mPen.joinStyle() );
     }
+  }
 
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCapStyle ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
+    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext(), QString(), &ok );
+    if ( ok )
+    {
+      mPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
+      mSelPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
+    }
+  }
+
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+  {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
     QColor brushColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
     brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
     mBrush.setColor( brushColor );
+  }
 
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
+  {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
     QColor penColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor );
     penColor.setAlphaF( penColor.alphaF() * context.opacity() );
     mPen.setColor( penColor );
+  }
 
-    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
+  {
+    QString symbolName = mSymbolName;
+    context.setOriginalValueVariable( mSymbolName );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
+    if ( exprVal.isValid() )
     {
-      QString symbolName = mSymbolName;
-      context.setOriginalValueVariable( mSymbolName );
-      exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
-      if ( exprVal.isValid() )
-      {
-        symbolName = exprVal.toString();
-      }
-      preparePath( symbolName, context, &scaledWidth, &scaledHeight, context.feature() );
+      symbolName = exprVal.toString();
     }
+    preparePath( symbolName, context, &scaledWidth, &scaledHeight, context.feature() );
   }
 
   //offset and rotation
@@ -321,6 +348,7 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setColor( mStrokeColor );
   mPen.setStyle( mStrokeStyle );
   mPen.setJoinStyle( mPenJoinStyle );
+  mPen.setCapStyle( mPenCapStyle );
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
   mBrush.setColor( mColor );
 
@@ -353,6 +381,7 @@ QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
   m->setOffsetMapUnitScale( mOffsetMapUnitScale );
   m->setStrokeStyle( mStrokeStyle );
   m->setPenJoinStyle( mPenJoinStyle );
+  m->setPenCapStyle( mPenCapStyle );
   m->setStrokeWidth( mStrokeWidth );
   m->setColor( color() );
   m->setStrokeColor( mStrokeColor );
@@ -513,6 +542,7 @@ QVariantMap QgsEllipseSymbolLayer::properties() const
   map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( mStrokeWidthUnit );
   map[QStringLiteral( "outline_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
   map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[QStringLiteral( "cap_style" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
   map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
   map[QStringLiteral( "outline_color" )] = QgsSymbolLayerUtils::encodeColor( mStrokeColor );
   map[QStringLiteral( "offset" )] = QgsSymbolLayerUtils::encodePoint( mOffset );
