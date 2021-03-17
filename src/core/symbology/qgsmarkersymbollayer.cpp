@@ -75,7 +75,7 @@ QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::ava
          << CrossFill
          << Cross2
          << Line
-         << SemiArc
+         << HalfArc
          << ThirdArc
          << QuarterArc
          << ArrowHead
@@ -136,7 +136,7 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBa
     case Cross2:
     case Line:
     case ArrowHead:
-    case SemiArc:
+    case HalfArc:
     case ThirdArc:
     case QuarterArc:
       return false;
@@ -362,8 +362,8 @@ QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShap
     return LeftHalfTriangle;
   else if ( cleaned == QLatin1String( "asterisk_fill" ) )
     return AsteriskFill;
-  else if ( cleaned == QLatin1String( "semi_arc" ) )
-    return SemiArc;
+  else if ( cleaned == QLatin1String( "half_arc" ) )
+    return HalfArc;
   else if ( cleaned == QLatin1String( "third_arc" ) )
     return ThirdArc;
   else if ( cleaned == QLatin1String( "quarter_arc" ) )
@@ -430,8 +430,8 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( QgsSimpleMarkerSymbolLayerB
       return QStringLiteral( "quarter_circle" );
     case AsteriskFill:
       return QStringLiteral( "asterisk_fill" );
-    case SemiArc:
-      return QStringLiteral( "semi_arc" );
+    case HalfArc:
+      return QStringLiteral( "half_arc" );
     case ThirdArc:
       return QStringLiteral( "third_arc" );
     case QuarterArc:
@@ -653,7 +653,7 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
     case SemiCircle:
     case ThirdCircle:
     case QuarterCircle:
-    case SemiArc:
+    case HalfArc:
     case ThirdArc:
     case QuarterArc:
       return false;
@@ -688,7 +688,7 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLay
       mPath.lineTo( 0, 0 );
       return true;
 
-    case SemiArc:
+    case HalfArc:
       mPath.moveTo( 1, 0 );
       mPath.arcTo( -1, -1, 2, 2, 0, 180 );
       return true;

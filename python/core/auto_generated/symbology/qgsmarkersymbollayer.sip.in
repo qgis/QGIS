@@ -52,7 +52,7 @@ leaves the actual drawing of the symbols to subclasses.
       Octagon,
       SquareWithCorners,
       AsteriskFill,
-      SemiArc,
+      HalfArc,
       ThirdArc,
       QuarterArc,
     };
