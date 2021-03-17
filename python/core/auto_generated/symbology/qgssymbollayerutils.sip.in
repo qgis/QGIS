@@ -734,6 +734,13 @@ Calculate a point on the surface of a QPolygonF
 Calculate whether a point is within of a QPolygonF
 %End
 
+    static double polylineLength( const QPolygonF &polyline );
+%Docstring
+Returns the total length of a ``polyline``.
+
+.. versionadded:: 3.20
+%End
+
     static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );
 %Docstring
 Returns the substring of a ``polyline`` which starts at ``startOffset`` from the beginning of the line
