@@ -34,6 +34,10 @@ relevant symbology elements to render them.
     {
       sipType = sipType_QgsManhattanLineCallout;
     }
+    else if ( sipCpp->type() == "curved" && dynamic_cast<QgsCurvedLineCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsCurvedLineCallout;
+    }
     else
     {
       sipType = 0;
@@ -53,6 +57,8 @@ relevant symbology elements to render them.
       OriginY,
       DestinationX,
       DestinationY,
+      Curvature,
+      Orientation,
     };
 
     enum DrawOrder
@@ -733,6 +739,84 @@ serialized in the ``properties`` map (corresponding to the output from
     QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & );
 };
 
+
+class QgsCurvedLineCallout : QgsSimpleLineCallout
+{
+%Docstring
+Draws curved lines as callouts.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgscallout.h"
+%End
+  public:
+
+    enum Orientation
+    {
+      Automatic,
+      Clockwise,
+      CounterClockwise,
+    };
+
+    QgsCurvedLineCallout();
+
+
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+%Docstring
+Creates a new QgsCurvedLineCallout, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+:py:func:`QgsCurvedLineCallout.properties()` ).
+%End
+
+    virtual QString type() const;
+
+    virtual QgsCurvedLineCallout *clone() const;
+
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
+
+
+    double curvature() const;
+%Docstring
+Returns the callout line's curvature.
+
+The curvature is a percentage value (with typical ranges between 0.0 and 1.0), representing the overall curvature of the line.
+
+.. seealso:: :py:func:`setCurvature`
+%End
+
+    void setCurvature( double curvature );
+%Docstring
+Sets the callout line's ``curvature``.
+
+The ``curvature`` is a percentage value (with typical ranges between 0.0 and 1.0), representing the overall curvature of the line.
+
+.. seealso:: :py:func:`curvature`
+%End
+
+    Orientation orientation() const;
+%Docstring
+Returns the callout line's curve orientation.
+
+.. seealso:: :py:func:`setOrientation`
+%End
+
+    void setOrientation( Orientation orientation );
+%Docstring
+Sets the callout line's curve ``orientation``.
+
+.. seealso:: :py:func:`orientation`
+%End
+
+  protected:
+    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) const /Factory/;
+
+
+  private:
+    QgsCurvedLineCallout( const QgsCurvedLineCallout &other );
+    QgsCurvedLineCallout &operator=( const QgsCurvedLineCallout & );
+};
 
 
 /************************************************************************

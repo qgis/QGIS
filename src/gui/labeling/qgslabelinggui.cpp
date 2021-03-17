@@ -84,6 +84,7 @@ void QgsLabelingGui::initCalloutWidgets()
 {
   _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
   _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
+  _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
 }
 
 void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )

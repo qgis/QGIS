@@ -24,6 +24,8 @@
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgsgeos.h"
+#include "qgsgeometryutils.h"
+#include "qgscircularstring.h"
 #include <QPainter>
 #include <mutex>
 
@@ -51,6 +53,10 @@ void QgsCallout::initPropertyDefinitions()
     { QgsCallout::OriginY, QgsPropertyDefinition( "OriginY", QObject::tr( "Callout origin (Y)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsCallout::DestinationX, QgsPropertyDefinition( "DestinationX", QObject::tr( "Callout destination (X)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsCallout::DestinationY, QgsPropertyDefinition( "DestinationY", QObject::tr( "Callout destination (Y)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsCallout::Curvature, QgsPropertyDefinition( "Curvature", QObject::tr( "Callout line curvature" ), QgsPropertyDefinition::Double, origin ) },
+    {
+      QgsCallout::Orientation, QgsPropertyDefinition( "Orientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Callout curve orientation" ),  QObject::tr( "string " ) + "[<b>auto</b>|<b>clockwise</b>|<b>counterclockwise</b>]", origin )
+    },
   };
 }
 
@@ -744,4 +750,246 @@ QgsCurve *QgsManhattanLineCallout::createCalloutLine( const QgsPoint &start, con
 {
   QgsPoint mid1 = QgsPoint( start.x(), end.y() );
   return new QgsLineString( QVector< QgsPoint >() << start << mid1 << end );
+}
+
+
+//
+// QgsCurvedLineCallout
+//
+
+QgsCurvedLineCallout::QgsCurvedLineCallout()
+{
+}
+
+QgsCurvedLineCallout::QgsCurvedLineCallout( const QgsCurvedLineCallout &other )
+  : QgsSimpleLineCallout( other )
+  , mOrientation( other.mOrientation )
+  , mCurvature( other.mCurvature )
+{
+
+}
+
+QgsCallout *QgsCurvedLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
+{
+  std::unique_ptr< QgsCurvedLineCallout > callout = std::make_unique< QgsCurvedLineCallout >();
+  callout->readProperties( properties, context );
+
+  callout->setCurvature( properties.value( QStringLiteral( "curvature" ), 0.1 ).toDouble() );
+  callout->setOrientation( decodeOrientation( properties.value( QStringLiteral( "orientation" ), QStringLiteral( "auto" ) ).toString() ) );
+
+  return callout.release();
+}
+
+QString QgsCurvedLineCallout::type() const
+{
+  return QStringLiteral( "curved" );
+}
+
+QgsCurvedLineCallout *QgsCurvedLineCallout::clone() const
+{
+  return new QgsCurvedLineCallout( *this );
+}
+
+QVariantMap QgsCurvedLineCallout::properties( const QgsReadWriteContext &context ) const
+{
+  QVariantMap props = QgsSimpleLineCallout::properties( context );
+  props.insert( QStringLiteral( "curvature" ), mCurvature );
+  props.insert( QStringLiteral( "orientation" ), encodeOrientation( mOrientation ) );
+  return props;
+}
+
+QgsCurve *QgsCurvedLineCallout::createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &rect, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) const
+{
+  double curvature = mCurvature * 100;
+  if ( dataDefinedProperties().isActive( QgsCallout::Curvature ) )
+  {
+    context.expressionContext().setOriginalValueVariable( curvature );
+    curvature = dataDefinedProperties().valueAsDouble( QgsCallout::Curvature, context.expressionContext(), curvature );
+  }
+
+  Orientation orientation = mOrientation;
+  if ( dataDefinedProperties().isActive( QgsCallout::Orientation ) )
+  {
+    bool ok = false;
+    const QString orientationString = dataDefinedProperties().property( QgsCallout::Orientation ).valueAsString( context.expressionContext(), QString(), &ok );
+    if ( ok )
+    {
+      orientation = decodeOrientation( orientationString );
+    }
+  }
+
+  if ( orientation == Automatic )
+  {
+    // to calculate automatically the best curve orientation, we first check which side of the label bounding box
+    // the callout origin is nearest to
+    switch ( QgsGeometryUtils::closestSideOfRectangle( rect.right(), rect.bottom(), rect.left(), rect.top(), start.x(), start.y() ) )
+    {
+      case 1:
+        // closest to bottom
+        if ( qgsDoubleNear( end.x(), start.x() ) )
+        {
+          // if vertical line, we bend depending on whether the line sits towards the left or right side of the label
+          if ( start.x() < ( rect.left() + 0.5 * rect.width() ) )
+            orientation = CounterClockwise;
+          else
+            orientation = Clockwise;
+        }
+        else if ( end.x() > start.x() )
+          orientation = CounterClockwise;
+        else
+          orientation = Clockwise;
+        break;
+
+      case 2:
+        // closest to bottom-right
+        if ( end.x() < start.x() )
+          orientation = Clockwise;
+        else if ( end.y() < start.y() )
+          orientation = CounterClockwise;
+        else if ( end.x() - start.x() < end.y() - start.y() )
+          orientation = Clockwise;
+        else
+          orientation = CounterClockwise;
+        break;
+
+      case 3:
+        // closest to right
+        if ( qgsDoubleNear( end.y(), start.y() ) )
+        {
+          // if horizontal line, we bend depending on whether the line sits towards the top or bottom side of the label
+          if ( start.y() < ( rect.top() + 0.5 * rect.height() ) )
+            orientation = Clockwise;
+          else
+            orientation = CounterClockwise;
+        }
+        else if ( end.y() < start.y() )
+          orientation = CounterClockwise;
+        else
+          orientation = Clockwise;
+        break;
+
+      case 4:
+        // closest to top-right
+        if ( end.x() < start.x() )
+          orientation = CounterClockwise;
+        else if ( end.y() > start.y() )
+          orientation = Clockwise;
+        else if ( end.x() - start.x() < start.y() - end.y() )
+          orientation = CounterClockwise;
+        else
+          orientation = Clockwise;
+        break;
+
+      case 5:
+        // closest to top
+        if ( qgsDoubleNear( end.x(), start.x() ) )
+        {
+          // if vertical line, we bend depending on whether the line sits towards the left or right side of the label
+          if ( start.x() < ( rect.left() + 0.5 * rect.width() ) )
+            orientation = Clockwise;
+          else
+            orientation = CounterClockwise;
+        }
+        else if ( end.x() < start.x() )
+          orientation = CounterClockwise;
+        else
+          orientation = Clockwise;
+        break;
+
+      case 6:
+        // closest to top-left
+        if ( end.x() > start.x() )
+          orientation = Clockwise;
+        else if ( end.y() > start.y() )
+          orientation = CounterClockwise;
+        else if ( start.x() - end.x() < start.y() - end.y() )
+          orientation = Clockwise;
+        else
+          orientation = CounterClockwise;
+        break;
+
+      case 7:
+        //closest to left
+        if ( qgsDoubleNear( end.y(), start.y() ) )
+        {
+          // if horizontal line, we bend depending on whether the line sits towards the top or bottom side of the label
+          if ( start.y() < ( rect.top() + 0.5 * rect.height() ) )
+            orientation = CounterClockwise;
+          else
+            orientation = Clockwise;
+        }
+        else if ( end.y() > start.y() )
+          orientation = CounterClockwise;
+        else
+          orientation = Clockwise;
+        break;
+
+      case 8:
+        //closest to bottom-left
+        if ( end.x() > start.x() )
+          orientation = CounterClockwise;
+        else if ( end.y() < start.y() )
+          orientation = Clockwise;
+        else if ( start.x() - end.x() < end.y() - start.y() )
+          orientation = CounterClockwise;
+        else
+          orientation = Clockwise;
+        break;
+    }
+  }
+
+  // turn the line into a curved line. We do this by creating a circular string from the callout line's
+  // start to end point, where the curve point is in the middle of the callout line and perpendicularly offset
+  // by a proportion of the overall callout line length
+  const double distance = ( orientation == Clockwise ? 1 : -1 ) * start.distance( end ) * curvature / 100.0;
+  double midX, midY;
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( start.x(), start.y(), end.x(), end.y(), 0.5, distance, &midX, &midY );
+
+  return new QgsCircularString( start, QgsPoint( midX, midY ), end );
+}
+
+QgsCurvedLineCallout::Orientation QgsCurvedLineCallout::decodeOrientation( const QString &string )
+{
+  const QString cleaned = string.toLower().trimmed();
+  if ( cleaned == QLatin1String( "auto" ) )
+    return Automatic;
+  if ( cleaned == QLatin1String( "clockwise" ) )
+    return Clockwise;
+  if ( cleaned == QLatin1String( "counterclockwise" ) )
+    return CounterClockwise;
+  return Automatic;
+}
+
+QString QgsCurvedLineCallout::encodeOrientation( QgsCurvedLineCallout::Orientation orientation )
+{
+  switch ( orientation )
+  {
+    case QgsCurvedLineCallout::Automatic:
+      return QStringLiteral( "auto" );
+    case QgsCurvedLineCallout::Clockwise:
+      return QStringLiteral( "clockwise" );
+    case QgsCurvedLineCallout::CounterClockwise:
+      return QStringLiteral( "counterclockwise" );
+  }
+  return QString();
+}
+
+QgsCurvedLineCallout::Orientation QgsCurvedLineCallout::orientation() const
+{
+  return mOrientation;
+}
+
+void QgsCurvedLineCallout::setOrientation( Orientation orientation )
+{
+  mOrientation = orientation;
+}
+
+double QgsCurvedLineCallout::curvature() const
+{
+  return mCurvature;
+}
+
+void QgsCurvedLineCallout::setCurvature( double curvature )
+{
+  mCurvature = curvature;
 }
