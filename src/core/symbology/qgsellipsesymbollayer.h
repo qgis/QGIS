@@ -52,6 +52,14 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setSymbolName( const QString &name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }
 
+    /**
+     * Returns TRUE if a shape has a fill.
+     * \param symbolName name of shape to test
+     * \returns TRUE if shape uses a fill, or FALSE if shape uses lines only
+     * \since QGIS 3.20
+     */
+    bool shapeIsFilled( const QString &symbolName ) const;
+
     void setSize( double size ) override;
 
     void setSymbolWidth( double w );
