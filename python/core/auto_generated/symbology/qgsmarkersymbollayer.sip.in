@@ -52,6 +52,9 @@ leaves the actual drawing of the symbols to subclasses.
       Octagon,
       SquareWithCorners,
       AsteriskFill,
+      HalfArc,
+      ThirdArc,
+      QuarterArc,
     };
 
     static QList< QgsSimpleMarkerSymbolLayerBase::Shape > availableShapes();
