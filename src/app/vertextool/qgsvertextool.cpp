@@ -601,9 +601,10 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
         QgsGeometry g = f.geometry();
-        for ( int i = 0; i < g.constGet()->nCoordinates(); ++i )
+        int i = 0;
+        for ( auto it = g.constGet()->vertices_begin(); it != g.constGet()->vertices_end(); ++it )
         {
-          QgsPoint pt = g.vertexAt( i );
+          QgsPoint pt = *it;
           if ( layerRubberBandEngine->contains( &pt ) )
           {
             // we don't want to select invisible features,
@@ -618,6 +619,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
             if ( isFeatureSelected )
               selectedVertices << Vertex( vlayer, f.id(), i );
           }
+          i++;
         }
       }
       if ( r )
