@@ -243,4 +243,8 @@ foreach(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})
 endforeach(TESTSRC)
 
+if (ENABLE_PGTEST)
+  SET_TESTS_PROPERTIES(qgis_vectorlayerjoinbuffertest PROPERTIES LABELS "POSTGRES")
+endif()
+
 add_dependencies(qgis_coordinatereferencesystemtest synccrsdb)
