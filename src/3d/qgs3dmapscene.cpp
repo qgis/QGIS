@@ -91,9 +91,10 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &Qgs3DMapScene::onBackgroundColorChanged );
   onBackgroundColorChanged();
 
-  // TODO: strange - setting OnDemand render policy still keeps QGIS busy (Qt 5.9.0)
-  // actually it is more busy than with the default "Always" policy although there are no changes in the scene.
-  //mRenderer->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
+  // The default render policy in Qt3D is "Always" - i.e. the 3D map scene gets refreshed up to 60 fps
+  // even if there's no change. Switching to "on demand" should only re-render when something has changed
+  // and we save quite a lot of resources
+  mEngine->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
 
   // we want precise picking of terrain (also bounding volume picking does not seem to work - not sure why)
   mEngine->renderSettings()->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );
