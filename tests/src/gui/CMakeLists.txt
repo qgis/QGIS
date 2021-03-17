@@ -127,3 +127,10 @@ ADD_QGIS_TEST(singlebandpseudocolorrendererwidget testqgssinglebandpseudocolorre
 ADD_QGIS_TEST(doublevalidator testqgsdoublevalidator.cpp)
 ADD_QGIS_TEST(meshlayerpropertiesdialog testqgsmeshlayerpropertiesdialog.cpp)
 ADD_QGIS_TEST(externalresourcewidgetwrapper testqgsexternalresourcewidgetwrapper.cpp)
+
+SET_TESTS_PROPERTIES(qgis_listwidgettest PROPERTIES LABELS "POSTGRES")
+if (ENABLE_PGTEST)
+  SET_TESTS_PROPERTIES(qgis_processingguitest qgis_valuerelationwidgetwrapper qgis_texteditwrapper
+    qgis_newdatabasetablewidget
+    PROPERTIES LABELS "POSTGRES")
+endif()

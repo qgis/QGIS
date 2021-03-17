@@ -122,22 +122,19 @@ jobs:
                      --env PUSH_TO_CDASH=true \
                      --env WITH_3D=${WITH_3D} \
                      qgis/qgis3-build-deps:${DOCKER_TAG} \
-                     /root/QGIS/.docker/docker-qgis-build.sh
-          docker commit qgis_container qgis_image
+                     /bin/bash -c "/root/QGIS/.docker/docker-qgis-build.sh; ctest -V -S /root/QGIS/.ci/config_build.ctest"
 
-      - name: Push image
-        if: github.event_name == 'pull_request' && contains( github.event.pull_request.labels.*.name, 'Push Docker Image')
-        env:
-          GITHUB_PR_NUMBER: ${{github.event.number}}
-        run: |
-          docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-          docker commit qgis_container qgis/qgis-pr-build:PR${GITHUB_PR_NUMBER}
-          docker push qgis/qgis-pr-build:PR${GITHUB_PR_NUMBER}
-
-      - name: Run unit tests
-        id: tests
+      - name: Push artifact
+        id: push_artifact
         if: ${{ matrix.ubuntu-base == env.DEFAULT_UBUNTU_BASE }}
-        run: docker-compose -f .docker/docker-compose-testing.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
+        run: tar --exclude='*.o' -cvzf build.tgz build
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ matrix.ubuntu-base == env.DEFAULT_UBUNTU_BASE }}
+        with:
+          name: build.tgz
+          path: ./build.tgz
+          retention-days: 1
 
 #      - name: Test QGIS runners
 #        id: runners
@@ -231,3 +228,77 @@ jobs:
 #          comment-id: ${{ steps.process-vars.outputs.COMMENT_ID }}
 #          edit-mode: append
 #          body: ${{ steps.process-vars.outputs.COMMENT_BODY }}
+
+  run-tests:
+    name: Run tests
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
+      DEFAULT_UBUNTU_BASE: '20.04'
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
+        ubuntu-base: [20.04]
+        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, ORACLE, HANA]
+      fail-fast: false
+
+    needs: build
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set vars
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_PR_NUMBER: ${{github.event.number}}
+          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
+          TEST_BATCH: ${{ matrix.test-batch }}
+        run: |
+          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" || echo "" )
+          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${TEST_BATCH}"
+          [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
+          echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
+          echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
+          echo "PATCH_QT_3D=${PATCH_QT_3D}" >> $GITHUB_ENV
+
+      - name: Print vars
+        run: |
+          echo DOCKER_TAG: ${DOCKER_TAG}
+          echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
+          echo PATCH_QT_3D: ${PATCH_QT_3D}
+
+      - name: Build deps
+        env:
+          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
+        run: |
+          pushd .docker
+          docker build --target binary-only --build-arg UBUNTU_BASE=${UBUNTU_BASE} --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps-bin-only:${DOCKER_TAG} -f qgis3-build-deps.dockerfile .
+          popd
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build.tgz
+          path: .
+
+      - name: Extract build artifact
+        run: tar xvzf build.tgz
+
+      - name: Run tests
+        id: tests
+        env:
+          TEST_BATCH: ${{matrix.test-batch}}
+        run: |
+          DOCKERFILE=$( ( [[ ${TEST_BATCH} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
+                     || ( [[ ${TEST_BATCH} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
+                     || echo "docker-compose-testing.yml" )
+          echo "TEST_BATCH=$TEST_BATCH"
+          echo "DOCKERFILE=$DOCKERFILE"
+          docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
