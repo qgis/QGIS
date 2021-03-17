@@ -441,9 +441,6 @@ void QgsSimpleLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &c
       break;
 
     case QgsSymbol::Fill:
-      mTrimGroupBox->hide();
-      break;
-
     case QgsSymbol::Hybrid:
       break;
   }
