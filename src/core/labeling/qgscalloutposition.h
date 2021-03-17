@@ -103,11 +103,54 @@ class CORE_EXPORT QgsCalloutPosition
      */
     void setDestination( const QPointF &destination ) { mDestination = destination; }
 
+    /**
+     * Returns TRUE if the origin of the callout has pinned (manually placed).
+     *
+     * The origin of the callout line is the line point associated with the label text.
+     *
+     * \see destinationIsPinned()
+     * \see setOriginIsPinned()
+     */
+    bool originIsPinned() const { return mOriginIsPinned; }
+
+    /**
+     * Sets whether the origin of the callout has pinned (manually placed).
+     *
+     * The origin of the callout line is the line point associated with the label text.
+     *
+     * \see setDestinationIsPinned()
+     * \see originIsPinned()
+     */
+    void setOriginIsPinned( bool pinned ) { mOriginIsPinned = pinned; }
+
+    /**
+     * Returns TRUE if the destination of the callout has pinned (manually placed).
+     *
+     * The destination of the callout line is the line point associated with the feature's geometry.
+     *
+     * \see originIsPinned()
+     * \see setDestinationIsPinned()
+     */
+    bool destinationIsPinned() const { return mDestinationIsPinned; }
+
+    /**
+     * Sets whether the destination of the callout has pinned (manually placed).
+     *
+     * The destination of the callout line is the line point associated with the feature's geometry.
+     *
+     * \see setOriginIsPinned()
+     * \see destinationIsPinned()
+     */
+    void setDestinationIsPinned( bool pinned ) { mDestinationIsPinned = pinned; }
+
   private:
 
     QPointF mOrigin;
 
     QPointF mDestination;
+
+    bool mOriginIsPinned = false;
+    bool mDestinationIsPinned = false;
 };
 
 #endif // QGSCALLOUTPOSITION_H

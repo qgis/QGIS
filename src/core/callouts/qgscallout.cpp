@@ -309,8 +309,9 @@ QgsGeometry QgsCallout::labelAnchorGeometry( QRectF rect, const double angle, La
   return label;
 }
 
-QgsGeometry QgsCallout::calloutLabelPoint( QRectF rect, const double angle, QgsCallout::LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCallout::QgsCalloutContext &calloutContext ) const
+QgsGeometry QgsCallout::calloutLabelPoint( QRectF rect, const double angle, QgsCallout::LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCallout::QgsCalloutContext &calloutContext, bool &pinned ) const
 {
+  pinned = false;
   if ( dataDefinedProperties().isActive( QgsCallout::OriginX ) && dataDefinedProperties().isActive( QgsCallout::OriginY ) )
   {
     bool ok = false;
@@ -320,6 +321,7 @@ QgsGeometry QgsCallout::calloutLabelPoint( QRectF rect, const double angle, QgsC
       const double y = dataDefinedProperties().valueAsDouble( QgsCallout::OriginY, context.expressionContext(), 0, &ok );
       if ( ok )
       {
+        pinned = true;
         // data defined label point, use it directly
         QgsGeometry labelPoint = QgsGeometry::fromPointXY( QgsPointXY( x, y ) );
         try
@@ -384,8 +386,9 @@ QgsGeometry QgsCallout::calloutLabelPoint( QRectF rect, const double angle, QgsC
   return label;
 }
 
-QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, const QgsAbstractGeometry *partGeometry, QgsRenderContext &context, const QgsCalloutContext &calloutContext ) const
+QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, const QgsAbstractGeometry *partGeometry, QgsRenderContext &context, const QgsCalloutContext &calloutContext, bool &pinned ) const
 {
+  pinned = false;
   AnchorPoint anchor = anchorPoint();
   const QgsAbstractGeometry *evaluatedPartAnchor = partGeometry;
   std::unique_ptr< QgsAbstractGeometry > tempPartAnchor;
@@ -399,6 +402,7 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
       const double y = dataDefinedProperties().valueAsDouble( QgsCallout::DestinationY, context.expressionContext(), 0, &ok );
       if ( ok )
       {
+        pinned = true;
         tempPartAnchor = std::make_unique< QgsPoint >( QgsWkbTypes::Point, x, y );
         evaluatedPartAnchor = tempPartAnchor.get();
         try
@@ -603,13 +607,16 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
     context.expressionContext().setOriginalValueVariable( encodedAnchor );
     labelAnchor = decodeLabelAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::LabelAnchorPointPosition, context.expressionContext(), encodedAnchor ) );
   }
-  const QgsGeometry label = calloutLabelPoint( rect, angle, labelAnchor, context, calloutContext );
+
+  bool originPinned = false;
+  const QgsGeometry label = calloutLabelPoint( rect, angle, labelAnchor, context, calloutContext, originPinned );
   if ( label.isNull() )
     return;
 
-  auto drawCalloutLine = [this, &context, &calloutContext, &label]( const QgsAbstractGeometry * partAnchor )
+  auto drawCalloutLine = [this, &context, &calloutContext, &label, originPinned]( const QgsAbstractGeometry * partAnchor )
   {
-    QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext );
+    bool destinationPinned = false;
+    QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext, destinationPinned );
     if ( line.isEmpty() )
       return;
 
@@ -654,7 +661,9 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
 
     QgsCalloutPosition position;
     position.setOrigin( context.mapToPixel().toMapCoordinates( points.at( 0 ).x(), points.at( 0 ).y() ).toQPointF() );
+    position.setOriginIsPinned( originPinned );
     position.setDestination( context.mapToPixel().toMapCoordinates( points.constLast().x(), points.constLast().y() ).toQPointF() );
+    position.setDestinationIsPinned( destinationPinned );
     calloutContext.addCalloutPosition( position );
 
     mLineSymbol->renderPolyline( points, nullptr, context );
@@ -719,13 +728,15 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
     context.expressionContext().setOriginalValueVariable( encodedAnchor );
     labelAnchor = decodeLabelAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::LabelAnchorPointPosition, context.expressionContext(), encodedAnchor ) );
   }
-  const QgsGeometry label = calloutLabelPoint( rect, angle, labelAnchor, context, calloutContext );
+  bool originPinned = false;
+  const QgsGeometry label = calloutLabelPoint( rect, angle, labelAnchor, context, calloutContext, originPinned );
   if ( label.isNull() )
     return;
 
-  auto drawCalloutLine = [this, &context, &calloutContext, &label]( const QgsAbstractGeometry * partAnchor )
+  auto drawCalloutLine = [this, &context, &calloutContext, &label, originPinned]( const QgsAbstractGeometry * partAnchor )
   {
-    QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext );
+    bool destinationPinned = false;
+    QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext, destinationPinned );
     if ( line.isEmpty() )
       return;
 
@@ -773,7 +784,9 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
 
     QgsCalloutPosition position;
     position.setOrigin( context.mapToPixel().toMapCoordinates( points.at( 0 ).x(), points.at( 0 ).y() ).toQPointF() );
+    position.setOriginIsPinned( originPinned );
     position.setDestination( context.mapToPixel().toMapCoordinates( points.constLast().x(), points.constLast().y() ).toQPointF() );
+    position.setDestinationIsPinned( destinationPinned );
     calloutContext.addCalloutPosition( position );
 
     lineSymbol()->renderPolyline( points, nullptr, context );
