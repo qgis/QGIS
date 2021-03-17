@@ -83,6 +83,7 @@ class TestQgsGeometryUtils: public QObject
     void testPointContinuesArc();
     void testBisector();
     void testAngleBisector();
+    void testPerpendicularOffsetPoint();
 };
 
 
@@ -1535,6 +1536,35 @@ void TestQgsGeometryUtils::testAngleBisector()
   // collinear
   QVERIFY( !QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 5, 5, 10, 5, x, y, angle ) );
   QVERIFY( !QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 6, 0, 10, 0, x, y, angle ) );
+}
+
+void TestQgsGeometryUtils::testPerpendicularOffsetPoint()
+{
+  double x, y;
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, 2, &x, &y );
+  QGSCOMPARENEAR( x, 6.0, 10e-3 );
+  QGSCOMPARENEAR( y, 3.0, 10e-3 );
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2, &x, &y );
+  QGSCOMPARENEAR( x, 6.0, 10e-3 );
+  QGSCOMPARENEAR( y, 7.0, 10e-3 );
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.1, 2, &x, &y );
+  QGSCOMPARENEAR( x, 2.0, 10e-3 );
+  QGSCOMPARENEAR( y, 3.0, 10e-3 );
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.9, 2, &x, &y );
+  QGSCOMPARENEAR( x, 10.0, 10e-3 );
+  QGSCOMPARENEAR( y, 3.0, 10e-3 );
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.0, 2, &x, &y );
+  QGSCOMPARENEAR( x, 1.0, 10e-3 );
+  QGSCOMPARENEAR( y, 3.0, 10e-3 );
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 1.0, 2, &x, &y );
+  QGSCOMPARENEAR( x, 11.0, 10e-3 );
+  QGSCOMPARENEAR( y, 3.0, 10e-3 );
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 5, 1, 5, 11, 0.5, 2, &x, &y );
+  QGSCOMPARENEAR( x, 7.0, 10e-3 );
+  QGSCOMPARENEAR( y, 6.0, 10e-3 );
+  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 5, 1, 5, 11, 0.5, -2, &x, &y );
+  QGSCOMPARENEAR( x, 3.0, 10e-3 );
+  QGSCOMPARENEAR( y, 6.0, 10e-3 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
