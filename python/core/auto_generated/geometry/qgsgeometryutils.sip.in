@@ -269,6 +269,37 @@ Returns a point a specified ``distance`` toward a second point.
 %End
 
 
+    static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x /Out/, double *y  /Out/ );
+%Docstring
+Calculates a point a certain ``proportion`` of the way along the segment from (``x1``, ``y1``) to (``x2``, ``y2``),
+offset from the segment by the specified ``offset`` amount.
+
+:param x1: x-coordinate of start of segment
+:param y1: y-coordinate of start of segment
+:param x2: x-coordinate of end of segment
+:param y2: y-coordinate of end of segment
+:param proportion: proportion of the segment's length at which to place the point (between 0.0 and 1.0)
+:param offset: perpendicular offset from segment to apply to point. A negative ``offset`` shifts the point to the left of the segment, while a positive ``offset`` will shift it to the right of the segment.
+
+Example
+-------
+
+.. code-block:: python
+
+       # Offset point at center of segment by 2 units to the right
+       x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, 2 )
+       # (6.0, 3.0)
+
+       # Offset point at center of segment by 2 units to the left
+       x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
+       # (6.0, 7.0)
+
+:return: - x: calculated point x-coordinate
+         - y: calculated point y-coordinate
+
+.. versionadded:: 3.20
+%End
+
     static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) /HoldGIL/;
 %Docstring
 Interpolates a point on an arc defined by three points, ``pt1``, ``pt2`` and ``pt3``. The arc will be
