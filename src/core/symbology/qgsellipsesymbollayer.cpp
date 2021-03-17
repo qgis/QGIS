@@ -280,8 +280,16 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     transform.rotate( angle );
   }
 
-  p->setPen( context.selected() ? mSelPen : mPen );
-  p->setBrush( context.selected() ? mSelBrush : mBrush );
+  if ( shapeIsFilled( mSymbolName ) )
+  {
+    p->setPen( context.selected() ? mSelPen : mPen );
+    p->setBrush( context.selected() ? mSelBrush : mBrush );
+  }
+  else
+  {
+    p->setPen( context.selected() ? mSelPen : mPen );
+    p->setBrush( QBrush() );
+  }
   p->drawPath( transform.map( mPainterPath ) );
 }
 
@@ -627,6 +635,17 @@ void QgsEllipseSymbolLayer::preparePath( const QString &symbolName, QgsSymbolRen
     mPainterPath.moveTo( -size.width() / 2.0, 0 );
     mPainterPath.lineTo( size.width() / 2.0, 0 );
   }
+  else if ( symbolName == QLatin1String( "arrow" ) )
+  {
+    mPainterPath.moveTo( -size.width() / 2.0, size.height() / 2.0 );
+    mPainterPath.lineTo( 0, -size.height() / 2.0 );
+    mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
+  }
+  else if ( symbolName == QLatin1String( "semi_arc" ) )
+  {
+    mPainterPath.moveTo( size.width() / 2.0, 0 );
+    mPainterPath.arcTo( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height(), 0, 180 );
+  }
   else if ( symbolName == QLatin1String( "triangle" ) )
   {
     mPainterPath.moveTo( 0, -size.height() / 2.0 );
@@ -648,6 +667,11 @@ void QgsEllipseSymbolLayer::preparePath( const QString &symbolName, QgsSymbolRen
     mPainterPath.lineTo( 0, -size.height() / 2.0 );
     mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
   }
+}
+
+bool QgsEllipseSymbolLayer::shapeIsFilled( const QString &symbolName ) const
+{
+  return symbolName == QLatin1String( "cross" ) || symbolName == QLatin1String( "arrow" ) || symbolName == QLatin1String( "semi_arc" ) ? false : true;
 }
 
 void QgsEllipseSymbolLayer::setSize( double size )

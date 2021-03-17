@@ -51,6 +51,17 @@ Creates the symbol layer
     void setSymbolName( const QString &name );
     QString symbolName() const;
 
+    bool shapeIsFilled( const QString &symbolName ) const;
+%Docstring
+Returns ``True`` if a shape has a fill.
+
+:param symbolName: name of shape to test
+
+:return: ``True`` if shape uses a fill, or ``False`` if shape uses lines only
+
+.. versionadded:: 3.20
+%End
+
     virtual void setSize( double size );
 
 
