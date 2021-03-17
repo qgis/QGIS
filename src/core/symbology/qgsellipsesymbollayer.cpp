@@ -641,7 +641,7 @@ void QgsEllipseSymbolLayer::preparePath( const QString &symbolName, QgsSymbolRen
     mPainterPath.lineTo( 0, -size.height() / 2.0 );
     mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
   }
-  else if ( symbolName == QLatin1String( "semi_arc" ) )
+  else if ( symbolName == QLatin1String( "half_arc" ) )
   {
     mPainterPath.moveTo( size.width() / 2.0, 0 );
     mPainterPath.arcTo( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height(), 0, 180 );
@@ -671,7 +671,7 @@ void QgsEllipseSymbolLayer::preparePath( const QString &symbolName, QgsSymbolRen
 
 bool QgsEllipseSymbolLayer::shapeIsFilled( const QString &symbolName ) const
 {
-  return symbolName == QLatin1String( "cross" ) || symbolName == QLatin1String( "arrow" ) || symbolName == QLatin1String( "semi_arc" ) ? false : true;
+  return symbolName == QLatin1String( "cross" ) || symbolName == QLatin1String( "arrow" ) || symbolName == QLatin1String( "half_arc" ) ? false : true;
 }
 
 void QgsEllipseSymbolLayer::setSize( double size )

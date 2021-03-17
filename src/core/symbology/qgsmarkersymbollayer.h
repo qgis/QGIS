@@ -74,9 +74,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
       Octagon, //!< Octagon (since QGIS 3.18)
       SquareWithCorners, //!< A square with diagonal corners (since QGIS 3.18)
       AsteriskFill, //!< A filled asterisk shape (since QGIS 3.18)
-      SemiArc, //!< A line-only semi arc (since QGIS 3.20)
+      HalfArc, //!< A line-only half arc (since QGIS 3.20)
       ThirdArc, //!< A line-only one third arc (since QGIS 3.20)
-      QuarterArc, //!< A line-only quarter arc (since QGIS 3.20)
+      QuarterArc, //!< A line-only one quarter arc (since QGIS 3.20)
     };
 
     //! Returns a list of all available shape types.
