@@ -389,10 +389,10 @@ QList<QgsRelation> QgsPolymorphicRelation::generateRelations() const
     QgsRelation relation;
     QString referencedLayerName = d->mReferencedLayersMap[referencedLayerId]->name();
 
+    relation.setId( QStringLiteral( "%1_%2" ).arg( d->mRelationId, referencedLayerName ) );
     relation.setReferencedLayer( referencedLayerId );
     relation.setReferencingLayer( d->mReferencingLayerId );
     relation.setName( QStringLiteral( "Generated for \"%1\"" ).arg( referencedLayerName ) );
-    relation.setId( QStringLiteral( "%1_%2" ).arg( d->mRelationId, referencedLayerName ) );
     relation.setPolymorphicRelationId( d->mRelationId );
     relation.setStrength( d->mRelationStrength );
 
