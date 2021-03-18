@@ -167,7 +167,7 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   // Apply DPI parameter if present. This is an extension of QGIS Server
   // compared to WMS 1.3.
   // Because of backwards compatibility, this parameter is optional
-  int dpm = 1 / OGC_PX_M;
+  qreal dpm = 1 / OGC_PX_M;
 
   if ( !mParameters.dpi().isEmpty() )
   {
