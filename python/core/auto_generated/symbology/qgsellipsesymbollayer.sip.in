@@ -51,7 +51,7 @@ Creates the symbol layer
     void setSymbolName( const QString &name );
     QString symbolName() const;
 
-    bool shapeIsFilled( const QString &symbolName ) const;
+    static bool shapeIsFilled( const QString &symbolName );
 %Docstring
 Returns ``True`` if a shape has a fill.
 

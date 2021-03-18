@@ -669,7 +669,7 @@ void QgsEllipseSymbolLayer::preparePath( const QString &symbolName, QgsSymbolRen
   }
 }
 
-bool QgsEllipseSymbolLayer::shapeIsFilled( const QString &symbolName ) const
+bool QgsEllipseSymbolLayer::shapeIsFilled( const QString &symbolName )
 {
   return symbolName == QLatin1String( "cross" ) || symbolName == QLatin1String( "arrow" ) || symbolName == QLatin1String( "half_arc" ) ? false : true;
 }
