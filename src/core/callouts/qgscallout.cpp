@@ -120,7 +120,7 @@ QgsCallout::DrawOrder QgsCallout::drawOrder() const
   return OrderBelowAllLabels;
 }
 
-void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
+void QgsCallout::render( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
   if ( !mEnabled )
     return;
@@ -259,7 +259,7 @@ QgsCallout::LabelAnchorPoint QgsCallout::decodeLabelAnchorPoint( const QString &
   return LabelPointOnExterior;
 }
 
-QgsGeometry QgsCallout::labelAnchorGeometry( QRectF rect, const double angle, LabelAnchorPoint anchor ) const
+QgsGeometry QgsCallout::labelAnchorGeometry( const QRectF &rect, const double angle, LabelAnchorPoint anchor ) const
 {
   QgsGeometry label;
   switch ( anchor )
@@ -309,7 +309,7 @@ QgsGeometry QgsCallout::labelAnchorGeometry( QRectF rect, const double angle, La
   return label;
 }
 
-QgsGeometry QgsCallout::calloutLabelPoint( QRectF rect, const double angle, QgsCallout::LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCallout::QgsCalloutContext &calloutContext, bool &pinned ) const
+QgsGeometry QgsCallout::calloutLabelPoint( const QRectF &rect, const double angle, QgsCallout::LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCallout::QgsCalloutContext &calloutContext, bool &pinned ) const
 {
   pinned = false;
   if ( dataDefinedProperties().isActive( QgsCallout::OriginX ) && dataDefinedProperties().isActive( QgsCallout::OriginY ) )
@@ -471,6 +471,21 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
 }
 
 //
+// QgsCallout::QgsCalloutContext
+//
+
+QgsCoordinateTransform QgsCallout::QgsCalloutContext::originalFeatureToMapTransform( const QgsRenderContext &renderContext ) const
+{
+  if ( !mOriginalFeatureToMapTransform.isValid() )
+  {
+    // lazy initialization, only create if needed...
+    mOriginalFeatureToMapTransform = QgsCoordinateTransform( originalFeatureCrs, renderContext.coordinateTransform().destinationCrs(), renderContext.transformContext() );
+  }
+  return mOriginalFeatureToMapTransform;
+}
+
+
+//
 // QgsSimpleLineCallout
 //
 
@@ -598,7 +613,7 @@ void QgsSimpleLineCallout::setLineSymbol( QgsLineSymbol *symbol )
   mLineSymbol.reset( symbol );
 }
 
-void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
+void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
   LabelAnchorPoint labelAnchor = labelAnchorPoint();
   if ( dataDefinedProperties().isActive( QgsCallout::LabelAnchorPointPosition ) )
@@ -613,7 +628,7 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
   if ( label.isNull() )
     return;
 
-  auto drawCalloutLine = [this, &context, &calloutContext, &label, originPinned]( const QgsAbstractGeometry * partAnchor )
+  auto drawCalloutLine = [this, &context, &calloutContext, &label, &rect, angle, &anchor, originPinned]( const QgsAbstractGeometry * partAnchor )
   {
     bool destinationPinned = false;
     QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext, destinationPinned );
@@ -634,6 +649,9 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
     if ( minLengthPixels > 0 && lineLength < minLengthPixels )
       return; // too small!
 
+    std::unique_ptr< QgsCurve > calloutCurve( createCalloutLine( qgsgeometry_cast< const QgsLineString * >( line.constGet() )->startPoint(),
+        qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint(), context, rect, angle, anchor, calloutContext ) );
+
     double offsetFromAnchor = mOffsetFromAnchorDistance;
     if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromAnchor ) )
     {
@@ -651,13 +669,10 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
     const double offsetFromLabelPixels = context.convertToPainterUnits( offsetFromLabel, mOffsetFromLabelUnit, mOffsetFromLabelScale );
     if ( offsetFromAnchorPixels > 0 || offsetFromLabelPixels > 0 )
     {
-      if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( line.constGet() ) )
-      {
-        line = QgsGeometry( ls->curveSubstring( offsetFromLabelPixels, ls->length() - offsetFromAnchorPixels ) );
-      }
+      calloutCurve.reset( calloutCurve->curveSubstring( offsetFromLabelPixels, calloutCurve->length() - offsetFromAnchorPixels ) );
     }
 
-    const QPolygonF points = line.asQPolygonF();
+    const QPolygonF points = calloutCurve->asQPolygonF();
 
     if ( points.empty() )
       return;
@@ -688,7 +703,10 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
   }
 }
 
-
+QgsCurve *QgsSimpleLineCallout::createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) const
+{
+  return new QgsLineString( start, end );
+}
 
 //
 // QgsManhattanLineCallout
@@ -722,104 +740,8 @@ QgsManhattanLineCallout *QgsManhattanLineCallout::clone() const
   return new QgsManhattanLineCallout( *this );
 }
 
-void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
+QgsCurve *QgsManhattanLineCallout::createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) const
 {
-  LabelAnchorPoint labelAnchor = labelAnchorPoint();
-  if ( dataDefinedProperties().isActive( QgsCallout::LabelAnchorPointPosition ) )
-  {
-    QString encodedAnchor = encodeLabelAnchorPoint( labelAnchor );
-    context.expressionContext().setOriginalValueVariable( encodedAnchor );
-    labelAnchor = decodeLabelAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::LabelAnchorPointPosition, context.expressionContext(), encodedAnchor ) );
-  }
-  bool originPinned = false;
-  const QgsGeometry label = calloutLabelPoint( rect, angle, labelAnchor, context, calloutContext, originPinned );
-  if ( label.isNull() )
-    return;
-
-  auto drawCalloutLine = [this, &context, &calloutContext, &label, originPinned]( const QgsAbstractGeometry * partAnchor )
-  {
-    bool destinationPinned = false;
-    QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext, destinationPinned );
-    if ( line.isEmpty() )
-      return;
-
-    const double lineLength = line.length();
-    if ( qgsDoubleNear( lineLength, 0 ) )
-      return;
-
-    double minLength = minimumLength();
-    if ( dataDefinedProperties().isActive( QgsCallout::MinimumCalloutLength ) )
-    {
-      minLength = dataDefinedProperties().valueAsDouble( QgsCallout::MinimumCalloutLength, context.expressionContext(), minLength );
-    }
-    double minLengthPixels = context.convertToPainterUnits( minLength, minimumLengthUnit(), minimumLengthMapUnitScale() );
-    if ( minLengthPixels > 0 && lineLength < minLengthPixels )
-      return; // too small!
-
-    const QgsPoint start = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->startPoint();
-    const QgsPoint end = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint();
-    QgsPoint mid1 = QgsPoint( start.x(), end.y() );
-
-    line = QgsGeometry::fromPolyline( QgsPolyline() << start << mid1 << end );
-    double offsetFromAnchorDist = offsetFromAnchor();
-    if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromAnchor ) )
-    {
-      offsetFromAnchorDist = dataDefinedProperties().valueAsDouble( QgsCallout::OffsetFromAnchor, context.expressionContext(), offsetFromAnchorDist );
-    }
-    const double offsetFromAnchorPixels = context.convertToPainterUnits( offsetFromAnchorDist, offsetFromAnchorUnit(), offsetFromAnchorMapUnitScale() );
-
-    double offsetFromLabelDist = offsetFromLabel();
-    if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromLabel ) )
-    {
-      offsetFromLabelDist = dataDefinedProperties().valueAsDouble( QgsCallout::OffsetFromLabel, context.expressionContext(), offsetFromLabelDist );
-    }
-    const double offsetFromLabelPixels = context.convertToPainterUnits( offsetFromLabelDist, offsetFromAnchorUnit(), offsetFromAnchorMapUnitScale() );
-
-    if ( offsetFromAnchorPixels > 0 || offsetFromLabelPixels > 0 )
-    {
-      if ( QgsLineString *ls = qgsgeometry_cast< QgsLineString * >( line.get() ) )
-      {
-        line = QgsGeometry( ls->curveSubstring( offsetFromLabelPixels, ls->length() - offsetFromAnchorPixels ) );
-      }
-    }
-
-    const QPolygonF points = line.asQPolygonF();
-
-    if ( points.empty() )
-      return;
-
-    QgsCalloutPosition position;
-    position.setOrigin( context.mapToPixel().toMapCoordinates( points.at( 0 ).x(), points.at( 0 ).y() ).toQPointF() );
-    position.setOriginIsPinned( originPinned );
-    position.setDestination( context.mapToPixel().toMapCoordinates( points.constLast().x(), points.constLast().y() ).toQPointF() );
-    position.setDestinationIsPinned( destinationPinned );
-    calloutContext.addCalloutPosition( position );
-
-    lineSymbol()->renderPolyline( points, nullptr, context );
-  };
-
-  bool toAllParts = drawCalloutToAllParts();
-  if ( dataDefinedProperties().isActive( QgsCallout::DrawCalloutToAllParts ) )
-  {
-    context.expressionContext().setOriginalValueVariable( toAllParts );
-    toAllParts = dataDefinedProperties().valueAsBool( QgsCallout::DrawCalloutToAllParts, context.expressionContext(), toAllParts );
-  }
-
-  if ( calloutContext.allFeaturePartsLabeled || !toAllParts )
-    drawCalloutLine( anchor.constGet() );
-  else
-  {
-    for ( auto it = anchor.const_parts_begin(); it != anchor.const_parts_end(); ++it )
-      drawCalloutLine( *it );
-  }
-}
-
-QgsCoordinateTransform QgsCallout::QgsCalloutContext::originalFeatureToMapTransform( const QgsRenderContext &renderContext ) const
-{
-  if ( !mOriginalFeatureToMapTransform.isValid() )
-  {
-    // lazy initialization, only create if needed...
-    mOriginalFeatureToMapTransform = QgsCoordinateTransform( originalFeatureCrs, renderContext.coordinateTransform().destinationCrs(), renderContext.transformContext() );
-  }
-  return mOriginalFeatureToMapTransform;
+  QgsPoint mid1 = QgsPoint( start.x(), end.y() );
+  return new QgsLineString( QVector< QgsPoint >() << start << mid1 << end );
 }
