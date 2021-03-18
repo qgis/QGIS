@@ -84,6 +84,7 @@ class TestQgsGeometryUtils: public QObject
     void testBisector();
     void testAngleBisector();
     void testPerpendicularOffsetPoint();
+    void testClosestSideOfRectangle();
 };
 
 
@@ -1565,6 +1566,40 @@ void TestQgsGeometryUtils::testPerpendicularOffsetPoint()
   QgsGeometryUtils::perpendicularOffsetPointAlongSegment( 5, 1, 5, 11, 0.5, -2, &x, &y );
   QGSCOMPARENEAR( x, 3.0, 10e-3 );
   QGSCOMPARENEAR( y, 6.0, 10e-3 );
+}
+
+void TestQgsGeometryUtils::testClosestSideOfRectangle()
+{
+  // outside rect
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 1, -19 ), 7 );
+
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 1, -17 ), 7 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 9, -17 ), 8 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 9, -1 ), 1 );
+
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 1, -21 ), 7 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 9, -21 ), 6 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 9, -22 ), 5 );
+
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 14, -1 ), 1 );
+
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 18, -1 ), 1 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 17, -17 ), 2 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 20, -17 ), 3 );
+
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 18, -19 ), 3 );
+
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 18, -21 ), 3 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 17, -21 ), 4 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 17, -25 ), 5 );
+
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 14, -21 ), 5 );
+
+  // inside rect
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 10.5, -19 ), 7 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 16.5, -19 ), 3 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 14, -18.5 ), 1 );
+  QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 14, -19.5 ), 5 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
