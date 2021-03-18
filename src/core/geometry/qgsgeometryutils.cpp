@@ -1402,6 +1402,83 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
   return blocks;
 }
 
+int QgsGeometryUtils::closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y )
+{
+  // point outside rectangle
+  if ( x <= left && y <= bottom )
+  {
+    const double dx = left - x;
+    const double dy = bottom - y;
+    if ( qgsDoubleNear( dx, dy ) )
+      return 6;
+    else if ( dx < dy )
+      return 5;
+    else
+      return 7;
+  }
+  else if ( x >= right && y >= top )
+  {
+    const double dx = x - right;
+    const double dy = y - top;
+    if ( qgsDoubleNear( dx, dy ) )
+      return 2;
+    else if ( dx < dy )
+      return 1;
+    else
+      return 3;
+  }
+  else if ( x >= right && y <= bottom )
+  {
+    const double dx = x - right;
+    const double dy = bottom - y;
+    if ( qgsDoubleNear( dx, dy ) )
+      return 4;
+    else if ( dx < dy )
+      return 5;
+    else
+      return 3;
+  }
+  else if ( x <= left && y >= top )
+  {
+    const double dx = left - x;
+    const double dy = y - top;
+    if ( qgsDoubleNear( dx, dy ) )
+      return 8;
+    else if ( dx < dy )
+      return 1;
+    else
+      return 7;
+  }
+  else if ( x <= left )
+    return 7;
+  else if ( x >= right )
+    return 3;
+  else if ( y <= bottom )
+    return 5;
+  else if ( y >= top )
+    return 1;
+
+  // point is inside rectangle
+  const double smallestX = std::min( right - x, x - left );
+  const double smallestY = std::min( top - y, y - bottom );
+  if ( smallestX < smallestY )
+  {
+    // closer to left/right side
+    if ( right - x < x - left )
+      return 3; // closest to right side
+    else
+      return 7;
+  }
+  else
+  {
+    // closer to top/bottom side
+    if ( top - y < y - bottom )
+      return 1; // closest to top side
+    else
+      return 5;
+  }
+}
+
 QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
   QgsWkbTypes::Type pType( QgsWkbTypes::Point );

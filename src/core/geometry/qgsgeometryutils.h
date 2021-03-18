@@ -548,6 +548,30 @@ class CORE_EXPORT QgsGeometryUtils
     static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = QString() ) SIP_SKIP;
 
     /**
+     * Returns a number representing the closest side of a rectangle defined by /a right,
+     * \a bottom, \a left, \a top to the point at (\a x, \a y), where
+     * the point may be in ther interior of the rectangle or outside it.
+     *
+     * The returned value may be:
+     *
+     * 1. Point is closest to top side of rectangle
+     * 2. Point is located on the top-right diagonal of rectangle, equally close to the top and right sides
+     * 3. Point is closest to right side of rectangle
+     * 4. Point is located on the bottom-right diagonal of rectangle, equally close to the bottom and right sides
+     * 5. Point is closest to bottom side of rectangle
+     * 6. Point is located on the bottom-left diagonal of rectangle, equally close to the bottom and left sides
+     * 7. Point is closest to left side of rectangle
+     * 8. Point is located on the top-left diagonal of rectangle, equally close to the top and left sides
+     *
+     * \note This method effectively partitions the space outside of the rectangle into Voronoi cells, so a point
+     * to the top left of the rectangle may be assigned to the left or top sides based on its position relative
+     * to the diagonal line extended from the rectangle's top-left corner.
+     *
+     * \since QGIS 3.20
+     */
+    static int closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y );
+
+    /**
      * Returns a middle point between points pt1 and pt2.
      * Z value is computed if one of this point have Z.
      * M value is computed if one of this point have M.
