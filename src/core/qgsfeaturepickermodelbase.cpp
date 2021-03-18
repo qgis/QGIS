@@ -28,6 +28,7 @@ QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   mReloadTimer.setInterval( 100 );
   mReloadTimer.setSingleShot( true );
   connect( &mReloadTimer, &QTimer::timeout, this, &QgsFeaturePickerModelBase::scheduledReload );
+  connect( this, &QgsFeaturePickerModelBase::extraValueDoesNotExistChanged, this, &QgsFeaturePickerModelBase::extraIdentifierValueChanged );
 }
 
 
@@ -513,6 +514,7 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValueUnguarded( const QVariant
       if ( !isNull )
       {
         mEntries.prepend( createEntry( identifierValue ) );
+        setExtraValueDoesNotExist( true );
         reloadCurrentFeature();
       }
       else

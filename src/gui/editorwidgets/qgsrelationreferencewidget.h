@@ -287,7 +287,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
   private slots:
     void highlightActionTriggered( QAction *action );
     void deleteHighlight();
-    void comboReferenceChanged( int index );
+    void comboReferenceChanged();
     void featureIdentified( const QgsFeature &feature );
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
