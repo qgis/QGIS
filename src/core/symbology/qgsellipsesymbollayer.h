@@ -58,7 +58,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
      * \returns TRUE if shape uses a fill, or FALSE if shape uses lines only
      * \since QGIS 3.20
      */
-    bool shapeIsFilled( const QString &symbolName ) const;
+    static bool shapeIsFilled( const QString &symbolName );
 
     void setSize( double size ) override;
 

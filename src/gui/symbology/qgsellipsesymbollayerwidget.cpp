@@ -121,6 +121,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   {
     mShapeListWidget->setCurrentItem( symbolItemList.at( 0 ) );
   }
+  btnChangeColorFill->setEnabled( QgsEllipseSymbolLayer::shapeIsFilled( mLayer->symbolName() ) );
 
   //set combo entries to current values
   blockComboSignals( true );
@@ -170,6 +171,7 @@ void QgsEllipseSymbolLayerWidget::mShapeListWidget_itemSelectionChanged()
     if ( item )
     {
       mLayer->setSymbolName( item->data( Qt::UserRole ).toString() );
+      btnChangeColorFill->setEnabled( QgsEllipseSymbolLayer::shapeIsFilled( mLayer->symbolName() ) );
       emit changed();
     }
   }
