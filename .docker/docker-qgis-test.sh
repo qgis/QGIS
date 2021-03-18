@@ -57,30 +57,6 @@ popd > /dev/null # /root/QGIS
 # Restore Oracle test data
 ##############################
 
-echo "${bold}Load Oracle database...🙏${endbold}"
-
-export ORACLE_HOST="oracle"
-export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
-export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
-
-echo "Wait a moment while loading Oracle database."
-COUNT=0
-while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
-do
-  printf "🙏"
-  sleep 5
-  if [[ $(( COUNT++ )) -eq 200 ]]; then
-    break
-  fi
-done
-if [[ ${COUNT} -eq 201 ]]; then
-  echo "timeout, no oracle, no 🙏"
-else
-  echo " done 👀"
-  pushd /root/QGIS > /dev/null
-  /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
-  popd > /dev/null # /root/QGIS
-fi
 
 ##############################
 # Restore SQL Server test data
@@ -123,5 +99,5 @@ else
   echo "Flaky tests are run!"
 fi
 echo "List of skipped tests: $EXCLUDE_TESTS"
-python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config.ctest --output-on-failure
+python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -R 'PyQgsServerWMSGetMap$' -V -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config.ctest --output-on-failure
 
