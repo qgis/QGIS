@@ -158,7 +158,7 @@ If set to 0, no limit is applied when fetching
 %Docstring
 Emitted when the current feature in the model has changed
 This emitted both when the extra value changes and when the extra value status changes.
-It allows to be aware when the feature is fetched after the extra value has been set.
+It allows being notified when the feature is fetched after the extra value has been set.
 
 .. versionadded:: 3.16.5
 %End
