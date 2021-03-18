@@ -120,6 +120,8 @@ void QgsAbstractRelationEditorWidget::setNmRelationId( const QVariant &nmRelatio
   QgsRelation nmrelation = QgsProject::instance()->relationManager()->relation( nmRelationId.toString() );
   beforeSetRelations( mRelation, nmrelation );
   mNmRelation = nmrelation;
+  afterSetRelations();
+  updateUi();
 }
 
 QVariant QgsAbstractRelationEditorWidget::nmRelationId() const
