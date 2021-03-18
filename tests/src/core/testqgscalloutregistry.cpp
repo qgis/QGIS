@@ -31,7 +31,7 @@ class DummyCallout : public QgsCallout
     QgsCallout *clone() const override { return new DummyCallout(); }
     static QgsCallout *create( const QVariantMap &, const QgsReadWriteContext & ) { return new DummyCallout(); }
   protected:
-    void draw( QgsRenderContext &, QRectF, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override {}
+    void draw( QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override {}
 
 };
 
