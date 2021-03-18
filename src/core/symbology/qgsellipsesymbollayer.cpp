@@ -368,7 +368,7 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
     selPenColor.setAlphaF( context.opacity() );
   }
   mSelBrush = QBrush( selBrushColor );
-  mSelPen = QPen( selPenColor );
+  mSelPen = QPen( !shapeIsFilled( mSymbolName ) ? selBrushColor : selPenColor );
   mSelPen.setStyle( mStrokeStyle );
   mSelPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 }
