@@ -1098,7 +1098,14 @@
     <string>&amp;Vertex Tool (All Layers)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (All Layers)</string>
+    <string>Vertex Tool (All Layers)
+Manipulate vertices on any editable layer:
+Right click to lock on a feature.
+Click and drag to select vertices by rectangle.
+Alt+click to select vertices by polygon.
+Shift+click/drag to add vertices to selection.
+Ctrl+click/drag to remove vertices from selection.
+Shift+R to enable range selection.</string>
    </property>
   </action>
   <action name="mActionRotatePointSymbols">
@@ -3316,7 +3323,14 @@ Shift+click to snap rotation to 45 degree steps.</string>
     <string>&amp;Vertex Tool (Current Layer)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (Current Layer)</string>
+    <string>Vertex Tool (Current Layer)
+Manipulate vertices on the active layer:
+Right click to lock on a feature.
+Click and drag to select vertices by rectangle.
+Alt+click to select vertices by polygon.
+Shift+click/drag to add vertices to selection.
+Ctrl+click/drag to remove vertices from selection.
+Shift+R to enable range selection.</string>
    </property>
   </action>
   <action name="mActionRectangle3PointsProjected">
