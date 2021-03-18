@@ -69,6 +69,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testDependencies(); // Test relation datasource, id etc. config storage
     void testSetFilterExpression();
     void testSetFilterExpressionWithOrClause();
+    void testOpenFormButton();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -747,7 +748,6 @@ void TestQgsRelationReferenceWidget::testSetFilterExpression()
 
 void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
 {
-
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
@@ -778,6 +778,45 @@ void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
   // in case there is no field filter, the number of filtered features will be 2
   QCOMPARE( w.mComboBox->count(), 1 );
+}
+
+void TestQgsRelationReferenceWidget::testOpenFormButton()
+{
+
+  for ( int i = 1000; i < 1200; i++ )
+  {
+    QgsFeature fti( mLayer2->fields() );
+    fti.setAttribute( QStringLiteral( "pk" ), i );
+    fti.setAttribute( QStringLiteral( "material" ), "steel" );
+    fti.setAttribute( QStringLiteral( "diameter" ), i );
+    fti.setAttribute( QStringLiteral( "raccord" ), "collar" );
+    mLayer2->startEditing();
+    mLayer2->addFeature( fti );
+    mLayer2->commitChanges();
+  }
+
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  // be sure that the limit is smaller than the number of features in the layer
+  w.mComboBox->mModel->setFetchLimit( 100 );
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  QCOMPARE( w.mOpenFormButton->isEnabled(), true );
+  w.setForeignKeys( {"steel", 1190, "collar" } );
+  // if the feature is not yet loaded (further than the fetch limit, we have an intermediate step with no feature)
+  QCOMPARE( w.mOpenFormButton->isEnabled(), false );
+  QSignalSpy spy( w.mComboBox, &QgsFeatureListComboBox::currentFeatureChanged );
+  QCOMPARE( w.mOpenFormButton->isEnabled(), true );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
