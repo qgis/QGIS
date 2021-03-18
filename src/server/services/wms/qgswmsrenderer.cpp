@@ -1096,7 +1096,9 @@ namespace QgsWms
     }
 
     mapSettings.setOutputSize( QSize( paintDevice->width(), paintDevice->height() ) );
-    mapSettings.setOutputDpi( paintDevice->logicalDpiX() );
+    // Recalculate from input DPI: do not take the (integer) value from paint device
+    // because it loose precision!
+    mapSettings.setOutputDpi( mContext.dotsPerMm() * 25.4 );
 
     //map extent
     QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
