@@ -284,7 +284,7 @@ class CORE_EXPORT QgsCallout
      * \warning A prior call to startRender() must have been made before calling this method, and
      * after all render() operations are complete a call to stopRender() must be made.
      */
-    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
+    void render( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
 
     /**
      * Returns TRUE if the the callout is enabled.
@@ -414,13 +414,13 @@ class CORE_EXPORT QgsCallout
      * The \a calloutContext argument is used to specify additional contextual information about
      * how a callout is being rendered.
      */
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
+    virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 
     /**
      * Returns the anchor point geometry for a label with the given bounding box and \a anchor point mode.
      * \deprecated QGIS 3.20 use calloutLabelPoint() instead
      */
-    Q_DECL_DEPRECATED QgsGeometry labelAnchorGeometry( QRectF bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsGeometry labelAnchorGeometry( const QRectF &bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const SIP_DEPRECATED;
 
     /**
      * Returns the anchor point geometry for a label with the given bounding box and \a anchor point mode.
@@ -429,7 +429,7 @@ class CORE_EXPORT QgsCallout
      *
      * \since QGIS 3.20
      */
-    QgsGeometry calloutLabelPoint( QRectF bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext, bool &pinned ) const;
+    QgsGeometry calloutLabelPoint( const QRectF &bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext, bool &pinned ) const;
 
     /**
      * Calculates the direct line from a label geometry to an anchor geometry part, respecting the various
@@ -661,7 +661,16 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     void setDrawCalloutToAllParts( bool drawToAllParts ) { mDrawCalloutToAllParts = drawToAllParts; }
 
   protected:
-    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
+    void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
+
+    /**
+     * Creates a callout line between \a start and \a end in the desired style.
+     *
+     * The base class method returns a straight line.
+     *
+     * \since QGIS 3.20
+     */
+    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const SIP_FACTORY;
 
   private:
 
@@ -720,7 +729,7 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout *clone() const override;
 
   protected:
-    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
+    QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const override SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN

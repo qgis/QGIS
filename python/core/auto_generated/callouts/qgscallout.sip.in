@@ -235,7 +235,7 @@ Returns the list of rendered callout positions.
 
     };
 
-    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
+    void render( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
 %Docstring
 Renders the callout onto the specified render ``context``.
 
@@ -381,7 +381,7 @@ anchor point.
 
   protected:
 
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
+    virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 %Docstring
 Performs the actual rendering of the callout implementation onto the specified render ``context``.
 
@@ -401,7 +401,7 @@ The ``calloutContext`` argument is used to specify additional contextual informa
 how a callout is being rendered.
 %End
 
- QgsGeometry labelAnchorGeometry( QRectF bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const /Deprecated/;
+ QgsGeometry labelAnchorGeometry( const QRectF &bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const /Deprecated/;
 %Docstring
 Returns the anchor point geometry for a label with the given bounding box and ``anchor`` point mode.
 
@@ -409,7 +409,7 @@ Returns the anchor point geometry for a label with the given bounding box and ``
    QGIS 3.20 use :py:func:`~QgsCallout.calloutLabelPoint` instead
 %End
 
-    QgsGeometry calloutLabelPoint( QRectF bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext, bool &pinned ) const;
+    QgsGeometry calloutLabelPoint( const QRectF &bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext, bool &pinned ) const;
 %Docstring
 Returns the anchor point geometry for a label with the given bounding box and ``anchor`` point mode.
 
@@ -678,8 +678,17 @@ Sets whether callout lines should be drawn to all feature parts.
 %End
 
   protected:
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
+    virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
+
+    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const /Factory/;
+%Docstring
+Creates a callout line between ``start`` and ``end`` in the desired style.
+
+The base class method returns a straight line.
+
+.. versionadded:: 3.20
+%End
 
   private:
     QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
@@ -716,7 +725,7 @@ serialized in the ``properties`` map (corresponding to the output from
 
 
   protected:
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
+    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const /Factory/;
 
 
   private:

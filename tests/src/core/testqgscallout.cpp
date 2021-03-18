@@ -77,7 +77,7 @@ class DummyCallout : public QgsCallout
 
   protected:
 
-    void draw( QgsRenderContext &, QRectF, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override { }
+    void draw( QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override { }
 
   private:
     QString mProp1;
