@@ -234,6 +234,12 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      */
     void allowNullChanged();
 
+    /**
+     * Emitted when the current feature changes
+     * \since QGIS 3.16.5
+     */
+    void currentFeatureChanged();
+
   private slots:
     void onCurrentTextChanged( const QString &text );
     void onFilterUpdateCompleted();
@@ -253,6 +259,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     bool mIsCurrentlyEdited = false;
 
     friend class TestQgsFeatureListComboBox;
+    friend class TestQgsRelationReferenceWidget;
 };
 
 
