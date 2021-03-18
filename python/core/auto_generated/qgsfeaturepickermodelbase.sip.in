@@ -154,6 +154,15 @@ If set to 0, no limit is applied when fetching
 
   signals:
 
+    void currentFeatureChanged();
+%Docstring
+Emitted when the current feature in the model has changed
+This emitted both when the extra value changes and when the extra value status changes.
+It allows being notified when the feature is fetched after the extra value has been set.
+
+.. versionadded:: 3.16.5
+%End
+
     void sourceLayerChanged();
 %Docstring
 The source layer from which features will be fetched.
