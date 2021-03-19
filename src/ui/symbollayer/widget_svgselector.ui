@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>331</width>
-    <height>490</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,6 +38,9 @@
       <string>SVG browser</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="verticalSpacing">
+       <number>3</number>
+      </property>
       <item row="1" column="0">
        <widget class="QSplitter" name="splitter">
         <property name="orientation">
@@ -129,7 +132,7 @@
         </widget>
        </widget>
       </item>
-      <item row="0" column="0">
+      <item row="2" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <spacer name="horizontalSpacer_2">
