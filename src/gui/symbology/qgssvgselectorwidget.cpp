@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QAbstractListModel>
+#include <QSortFilterProxyModel>
 #include <QCheckBox>
 #include <QDir>
 #include <QFileDialog>
@@ -215,6 +216,18 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 }
 
 ///@endcond
+
+
+
+
+QgsSvgSelectorFilterModel::QgsSvgSelectorFilterModel( QObject *parent, const QString &path, int iconSize )
+  : QSortFilterProxyModel( parent )
+{
+  mModel = new QgsSvgSelectorListModel( parent, path, iconSize );
+  setFilterCaseSensitivity( Qt::CaseInsensitive );
+  setSourceModel( mModel );
+  setFilterRole( Qt::UserRole );
+}
 
 //,
 // QgsSvgSelectorListModel
@@ -731,3 +744,5 @@ void QgsSvgParameterValueDelegate::updateEditorGeometry( QWidget *editor, const 
 }
 
 ///@endcond
+
+
