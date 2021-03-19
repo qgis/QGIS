@@ -404,9 +404,12 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
 
   connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
   {
-    disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
-    mImagesListView->selectionModel()->clearSelection();
-    connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+    if ( mImagesListView->selectionModel()->selectedIndexes().count() > 0 )
+    {
+      disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+      mImagesListView->selectionModel()->clearSelection();
+      connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+    }
     qobject_cast<QgsSvgSelectorFilterModel *>( mImagesListView->model() )->setFilterFixedString( filterText );
   } );
 
