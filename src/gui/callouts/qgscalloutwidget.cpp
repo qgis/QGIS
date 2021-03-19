@@ -520,5 +520,152 @@ void QgsCurvedLineCalloutWidget::drawToAllPartsToggled( bool active )
 }
 
 
+//
+// QgsBalloonCalloutWidget
+//
+
+QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsCalloutWidget( parent, vl )
+{
+  setupUi( this );
+
+  // Callout options - to move to custom widgets when multiple callout styles exist
+  mCalloutFillStyleButton->setSymbolType( QgsSymbol::Fill );
+  mCalloutFillStyleButton->setDialogTitle( tr( "Balloon Symbol" ) );
+  mCalloutFillStyleButton->registerExpressionContextGenerator( this );
+
+  mCalloutFillStyleButton->setLayer( vl );
+  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  mSpinBottomMargin->setClearValue( 0 );
+  mSpinTopMargin->setClearValue( 0 );
+  mSpinRightMargin->setClearValue( 0 );
+  mSpinLeftMargin->setClearValue( 0 );
+
+  connect( mOffsetFromAnchorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsBalloonCalloutWidget::offsetFromAnchorUnitWidgetChanged );
+  connect( mOffsetFromAnchorSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsBalloonCalloutWidget::offsetFromAnchorChanged );
+
+  // Anchor point options
+  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast< int >( QgsCallout::PoleOfInaccessibility ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast< int >( QgsCallout::PointOnExterior ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast< int >( QgsCallout::PointOnSurface ) );
+  mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::Centroid ) );
+  connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBalloonCalloutWidget::mAnchorPointComboBox_currentIndexChanged );
+
+  connect( mCalloutFillStyleButton, &QgsSymbolButton::changed, this, &QgsBalloonCalloutWidget::fillSymbolChanged );
+
+  connect( mSpinBottomMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    QgsMargins margins = mCallout->margins();
+    margins.setBottom( value );
+    mCallout->setMargins( margins );
+    emit changed();
+  } );
+  connect( mSpinTopMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    QgsMargins margins = mCallout->margins();
+    margins.setTop( value );
+    mCallout->setMargins( margins );
+    emit changed();
+  } );
+  connect( mSpinLeftMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    QgsMargins margins = mCallout->margins();
+    margins.setLeft( value );
+    mCallout->setMargins( margins );
+    emit changed();
+  } );
+  connect( mSpinRightMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    QgsMargins margins = mCallout->margins();
+    margins.setRight( value );
+    mCallout->setMargins( margins );
+    emit changed();
+  } );
+  connect( mMarginUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    mCallout->setMarginsUnit( mMarginUnitWidget->unit() );
+    emit changed();
+  } );
+
+}
+
+void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
+{
+  if ( !callout )
+    return;
+
+  mCallout.reset( dynamic_cast<QgsBalloonCallout *>( callout->clone() ) );
+  if ( !mCallout )
+    return;
+
+  mOffsetFromAnchorUnitWidget->blockSignals( true );
+  mOffsetFromAnchorUnitWidget->setUnit( mCallout->offsetFromAnchorUnit() );
+  mOffsetFromAnchorUnitWidget->setMapUnitScale( mCallout->offsetFromAnchorMapUnitScale() );
+  mOffsetFromAnchorUnitWidget->blockSignals( false );
+  whileBlocking( mOffsetFromAnchorSpin )->setValue( mCallout->offsetFromAnchor() );
+
+  whileBlocking( mSpinBottomMargin )->setValue( mCallout->margins().bottom() );
+  whileBlocking( mSpinTopMargin )->setValue( mCallout->margins().top() );
+  whileBlocking( mSpinLeftMargin )->setValue( mCallout->margins().left() );
+  whileBlocking( mSpinRightMargin )->setValue( mCallout->margins().right() );
+  whileBlocking( mMarginUnitWidget )->setUnit( mCallout->marginsUnit() );
+
+  whileBlocking( mCalloutFillStyleButton )->setSymbol( mCallout->fillSymbol()->clone() );
+
+  whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
+
+  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
+  registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
+
+  registerDataDefinedButton( mDestXDDBtn, QgsCallout::DestinationX );
+  registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
+  registerDataDefinedButton( mMarginsDDBtn, QgsCallout::Margins );
+}
+
+void QgsBalloonCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
+{
+  bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  mAnchorPointLbl->setEnabled( isPolygon );
+  mAnchorPointLbl->setVisible( isPolygon );
+  mAnchorPointComboBox->setEnabled( isPolygon );
+  mAnchorPointComboBox->setVisible( isPolygon );
+  mAnchorPointDDBtn->setEnabled( isPolygon );
+  mAnchorPointDDBtn->setVisible( isPolygon );
+}
+
+QgsCallout *QgsBalloonCalloutWidget::callout()
+{
+  return mCallout.get();
+}
+
+void QgsBalloonCalloutWidget::offsetFromAnchorUnitWidgetChanged()
+{
+  mCallout->setOffsetFromAnchorUnit( mOffsetFromAnchorUnitWidget->unit() );
+  mCallout->setOffsetFromAnchorMapUnitScale( mOffsetFromAnchorUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsBalloonCalloutWidget::offsetFromAnchorChanged()
+{
+  mCallout->setOffsetFromAnchor( mOffsetFromAnchorSpin->value() );
+  emit changed();
+}
+
+void QgsBalloonCalloutWidget::fillSymbolChanged()
+{
+  mCallout->setFillSymbol( mCalloutFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+  emit changed();
+}
+
+void QgsBalloonCalloutWidget::mAnchorPointComboBox_currentIndexChanged( int index )
+{
+  mCallout->setAnchorPoint( static_cast<QgsCallout::AnchorPoint>( mAnchorPointComboBox->itemData( index ).toInt() ) );
+  emit changed();
+}
+
 ///@endcond
 
