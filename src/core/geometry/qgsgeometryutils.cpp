@@ -638,14 +638,14 @@ void QgsGeometryUtils::perpendicularOffsetPointAlongSegment( double x1, double y
   const double mY = y1 + ( y2 - y1 ) * proportion;
   const double pX = x1 - x2;
   const double pY = y1 - y2;
-  double normalX = -pY;
+  double normalX = -pY;  //#spellok
   double normalY = pX;
-  const double normalLength = sqrt( ( normalX * normalX ) + ( normalY * normalY ) );
-  normalX /= normalLength;
+  const double normalLength = sqrt( ( normalX * normalX ) + ( normalY * normalY ) );  //#spellok
+  normalX /= normalLength;  //#spellok
   normalY /= normalLength;
 
   *x = mX + offset * normalX;
-  *y = mY + offset * normalY;
+  *y = mY + offset * normalY;  //#spellok
 }
 
 QgsPoint QgsGeometryUtils::interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance )
