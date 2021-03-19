@@ -411,11 +411,7 @@ QStringList QgsHanaProviderConnection::schemas( ) const
 QgsFields QgsHanaProviderConnection::fields( const QString &schema, const QString &table ) const
 {
   QgsHanaConnectionRef conn = createConnection();
-
   const QString geometryColumn = QgsDataSourceUri( uri() ).geometryColumn();
-  const QString sql =  QStringLiteral( "SELECT * FROM %1.%2" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
-                             QgsHanaUtils::quotedIdentifier( table ) );
   try
   {
     QgsFields fields;
@@ -424,7 +420,7 @@ QgsFields QgsHanaProviderConnection::fields( const QString &schema, const QStrin
       if ( field.name != geometryColumn )
         fields.append( field.toQgsField() );
     };
-    conn->readQueryFields( sql, schema, processField );
+    conn->readTableFields( schema, table, processField );
     return fields;
   }
   catch ( const QgsHanaException &ex )
