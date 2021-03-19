@@ -38,6 +38,10 @@ relevant symbology elements to render them.
     {
       sipType = sipType_QgsCurvedLineCallout;
     }
+    else if ( sipCpp->type() == "balloon" && dynamic_cast<QgsBalloonCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsBalloonCallout;
+    }
     else
     {
       sipType = 0;
@@ -59,6 +63,7 @@ relevant symbology elements to render them.
       DestinationY,
       Curvature,
       Orientation,
+      Margins,
     };
 
     enum DrawOrder
@@ -817,6 +822,180 @@ Sets the callout line's curve ``orientation``.
     QgsCurvedLineCallout( const QgsCurvedLineCallout &other );
     QgsCurvedLineCallout &operator=( const QgsCurvedLineCallout & );
 };
+
+
+class QgsBalloonCallout : QgsCallout
+{
+%Docstring
+A cartoon talking bubble callout style.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgscallout.h"
+%End
+  public:
+
+    QgsBalloonCallout();
+    ~QgsBalloonCallout();
+
+
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+%Docstring
+Creates a new QgsBalloonCallout, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+:py:func:`QgsBalloonCallout.properties()` ).
+%End
+
+    virtual QString type() const;
+
+    virtual QgsBalloonCallout *clone() const;
+
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
+
+    virtual void readProperties( const QVariantMap &props, const QgsReadWriteContext &context );
+
+    virtual void startRender( QgsRenderContext &context );
+
+    virtual void stopRender( QgsRenderContext &context );
+
+    virtual QSet< QString > referencedFields( const QgsRenderContext &context ) const;
+
+
+    QgsFillSymbol *fillSymbol();
+%Docstring
+Returns the fill symbol used to render the callout.
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setFillSymbol`
+%End
+
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render the callout. Ownership of ``symbol`` is
+transferred to the callout.
+
+.. seealso:: :py:func:`fillSymbol`
+%End
+
+    double offsetFromAnchor() const;
+%Docstring
+Returns the offset distance from the anchor point at which to start the line. Units are specified through :py:func:`~QgsBalloonCallout.offsetFromAnchorUnit`.
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+
+.. seealso:: :py:func:`offsetFromAnchorUnit`
+%End
+
+    void setOffsetFromAnchor( double distance );
+%Docstring
+Sets the offset ``distance`` from the anchor point at which to start the line. Units are specified through :py:func:`~QgsBalloonCallout.setOffsetFromAnchorUnit`.
+
+.. seealso:: :py:func:`offsetFromAnchor`
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+%End
+
+    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the offset from anchor distance.
+
+.. seealso:: :py:func:`offsetFromAnchor`
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+%End
+
+    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const;
+%Docstring
+Returns the units for the offset from anchor point.
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+
+.. seealso:: :py:func:`offsetFromAnchor`
+%End
+
+    void setOffsetFromAnchorMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the offset from anchor.
+
+.. seealso:: :py:func:`offsetFromAnchorMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+%End
+
+    const QgsMapUnitScale &offsetFromAnchorMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the offset from anchor.
+
+.. seealso:: :py:func:`setOffsetFromAnchorMapUnitScale`
+
+.. seealso:: :py:func:`offsetFromAnchorUnit`
+
+.. seealso:: :py:func:`offsetFromAnchor`
+%End
+
+    const QgsMargins &margins() const;
+%Docstring
+Returns the margins between the outside of the callout frame and the label's bounding rectangle.
+
+Units are retrieved via :py:func:`~QgsBalloonCallout.marginsUnit`
+
+.. note::
+
+   Negative margins are acceptable.
+
+.. seealso:: :py:func:`setMargins`
+
+.. seealso:: :py:func:`marginsUnit`
+%End
+
+    void setMargins( const QgsMargins &margins );
+%Docstring
+Sets the ``margins`` between the outside of the callout frame and the label's bounding rectangle.
+
+Units are set via :py:func:`~QgsBalloonCallout.setMarginsUnit`
+
+.. note::
+
+   Negative margins are acceptable.
+
+.. seealso:: :py:func:`margins`
+
+.. seealso:: :py:func:`setMarginsUnit`
+%End
+
+    void setMarginsUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the margins between the outside of the callout frame and the label's bounding rectangle.
+
+.. seealso:: :py:func:`margins`
+
+.. seealso:: :py:func:`marginsUnit`
+%End
+
+    QgsUnitTypes::RenderUnit marginsUnit() const;
+%Docstring
+Returns the units for the margins between the outside of the callout frame and the label's bounding rectangle.
+
+.. seealso:: :py:func:`setMarginsUnit`
+
+.. seealso:: :py:func:`margins`
+%End
+
+  protected:
+    virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
+
+
+  private:
+    QgsBalloonCallout( const QgsBalloonCallout &other );
+    QgsBalloonCallout &operator=( const QgsBalloonCallout & );
+};
+
+
 
 
 /************************************************************************
