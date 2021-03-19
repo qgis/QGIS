@@ -87,6 +87,16 @@ double QgsHanaResultSet::getDouble( unsigned short columnIndex )
   return *mResultSet->getDouble( columnIndex );
 }
 
+int QgsHanaResultSet::getInt( unsigned short columnIndex )
+{
+  return *mResultSet->getInt( columnIndex );
+}
+
+short QgsHanaResultSet::getShort( unsigned short columnIndex )
+{
+  return *mResultSet->getShort( columnIndex );
+}
+
 QString QgsHanaResultSet::getString( unsigned short columnIndex )
 {
   return QgsHanaUtils::toQString( mResultSet->getNString( columnIndex ) );

@@ -41,6 +41,26 @@
 
 using namespace odbc;
 
+namespace
+{
+  QMap<QString, bool> getColumnsUniqueness( Connection &conn, const QString &schemaName, const QString &tableName )
+  {
+    QMap<QString, bool> ret;
+    DatabaseMetaDataUnicodeRef dmd = conn.getDatabaseMetaDataUnicode();
+    ResultSetRef rsStats = dmd->getStatistics( nullptr, schemaName.toStdU16String().c_str(),
+                           tableName.toStdU16String().c_str(), odbc::IndexType::UNIQUE, odbc::StatisticsAccuracy::ENSURE );
+    while ( rsStats->next() )
+    {
+      bool unique = rsStats->getShort( 4 /*NON_UNIQUE*/ ) == 0;
+      QString name = QgsHanaUtils::toQString( rsStats->getString( 9 /*COLUMN_NAME*/ ) );
+      if ( !name.isEmpty() )
+        ret.insert( name, unique );
+    }
+    rsStats->close();
+    return ret;
+  }
+}
+
 QgsField AttributeField::toQgsField() const
 {
   QVariant::Type fieldType;
@@ -104,12 +124,12 @@ QgsField AttributeField::toQgsField() const
   }
 
   QgsField field = QgsField( name, fieldType, typeName, size, precision, comment, QVariant::Invalid );
-  if ( !isNullable || isAutoIncrement )
+  if ( !isNullable || isUnique )
   {
     QgsFieldConstraints constraints;
     if ( !isNullable )
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-    if ( isAutoIncrement )
+    if ( isUnique )
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     field.setConstraints( constraints );
   }
@@ -635,34 +655,45 @@ void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
   layerProperty.pkCols = getPrimaryKeyCandidates( layerProperty );
 }
 
-void QgsHanaConnection::readQueryFields( const QString &sql, const QString &schemaName,
+void QgsHanaConnection::readQueryFields( const QString &schemaName, const QString &sql,
     const std::function<void( const AttributeField &field )> &callback )
 {
   QMap<QString, QMap<QString, QString>> clmComments;
-  auto getColumnComments = [&clmComments, &conn = mConnection]( const QString & schemaName, const QString & tableName, const QString & columnName )
+  auto getColumnComments = [&clmComments, &conn = mConnection](
+                             const QString & schemaName, const QString & tableName, const QString & columnName )
   {
     if ( schemaName.isEmpty() || tableName.isEmpty() )
       return QString();
-
     const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
-    if ( clmComments.contains( key ) )
-      return clmComments[key].value( columnName );
-
-    const char *sql = "SELECT COLUMN_NAME, COMMENTS FROM SYS.TABLE_COLUMNS WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?";
-    PreparedStatementRef stmt = conn->prepareStatement( sql );
-    stmt->setNString( 1, NString( schemaName.toStdU16String() ) );
-    stmt->setNString( 2, NString( tableName.toStdU16String() ) );
-
-    ResultSetRef rsColumns = stmt->executeQuery();
-    while ( rsColumns->next() )
+    if ( !clmComments.contains( key ) )
     {
-      QString name = QgsHanaUtils::toQString( rsColumns->getString( 1 ) );
-      QString comments = QgsHanaUtils::toQString( rsColumns->getString( 2 ) );
-      clmComments[key].insert( name, comments );
-    }
-    rsColumns->close();
+      const char *sql = "SELECT COLUMN_NAME, COMMENTS FROM SYS.TABLE_COLUMNS WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?";
+      PreparedStatementRef stmt = conn->prepareStatement( sql );
+      stmt->setNString( 1, NString( schemaName.toStdU16String() ) );
+      stmt->setNString( 2, NString( tableName.toStdU16String() ) );
 
+      ResultSetRef rsColumns = stmt->executeQuery();
+      while ( rsColumns->next() )
+      {
+        QString name = QgsHanaUtils::toQString( rsColumns->getString( 1 ) );
+        QString comments = QgsHanaUtils::toQString( rsColumns->getString( 2 ) );
+        clmComments[key].insert( name, comments );
+      }
+      rsColumns->close();
+    }
     return clmComments[key].value( columnName );
+  };
+
+  QMap<QString, QMap<QString, bool>> clmUniqueness;
+  auto isColumnUnique = [&clmUniqueness, &conn = mConnection](
+                          const QString & schemaName, const QString & tableName, const QString & columnName )
+  {
+    if ( schemaName.isEmpty() || tableName.isEmpty() )
+      return false;
+    const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+    if ( !clmUniqueness.contains( key ) )
+      clmUniqueness.insert( key, getColumnsUniqueness( *conn, schemaName, tableName ) );
+    return clmUniqueness[key].value( columnName, false );
   };
 
   try
@@ -683,12 +714,81 @@ void QgsHanaConnection::readQueryFields( const QString &sql, const QString &sche
       field.isSigned = rsmd->isSigned( i );
       field.isNullable = rsmd->isNullable( i );
       field.isAutoIncrement = rsmd->isAutoIncrement( i );
+      field.isUnique = isColumnUnique( schema, field.tableName, field.name );
       field.size = static_cast<int>( rsmd->getColumnLength( i ) );
       field.precision = -1;
       if ( field.isGeometry() )
         field.srid = getColumnSrid( schema, field.tableName, field.name );
       // As field comments cannot be retrieved via ODBC, we get it from SYS.TABLE_COLUMNS.
       field.comment = getColumnComments( schema, field.tableName, field.name );
+
+      callback( field );
+    }
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+void QgsHanaConnection::readTableFields( const QString &schemaName, const QString &tableName, const std::function<void( const AttributeField &field )> &callback )
+{
+  QMap<QString, QMap<QString, bool>> clmAutoIncrement;
+  auto isColumnAutoIncrement = [&]( const QString & columnName )
+  {
+    const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+    if ( !clmAutoIncrement.contains( key ) )
+    {
+      DatabaseMetaDataUnicodeRef dmd = mConnection->getDatabaseMetaDataUnicode();
+      ResultSetRef rsSpecialColumns = dmd->getSpecialColumns( RowIdentifierType::ROWVER, nullptr,
+                                      schemaName.toStdU16String().c_str(), tableName.toStdU16String().c_str(),
+                                      RowIdentifierScope::SESSION, ColumnNullableValue::NULLABLE );
+      while ( rsSpecialColumns->next() )
+      {
+        QString name = QgsHanaUtils::toQString( rsSpecialColumns->getString( 9 /*COLUMN_NAME*/ ) );
+        if ( !name.isEmpty() )
+        {
+          bool unique = rsSpecialColumns->getShort( 4 /*NON_UNIQUE*/ ) == 0;
+          clmAutoIncrement[key].insert( name, unique );
+        }
+      }
+      rsSpecialColumns->close();
+    }
+    return clmAutoIncrement[key].value( columnName, false );
+  };
+
+  QMap<QString, QMap<QString, bool>> clmUniqueness;
+  auto isColumnUnique = [&]( const QString & columnName )
+  {
+    const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+    if ( !clmUniqueness.contains( key ) )
+      clmUniqueness.insert( key, getColumnsUniqueness( *mConnection, schemaName, tableName ) );
+    return clmUniqueness[key].value( columnName, false );
+  };
+
+  try
+  {
+    QgsHanaResultSetRef rsColumns = getColumns( schemaName, tableName, QStringLiteral( "%" ) );
+    while ( rsColumns->next() )
+    {
+      AttributeField field;
+      field.schemaName = rsColumns->getString( 2/*TABLE_SCHEM*/ );
+      field.tableName = rsColumns->getString( 3/*TABLE_NAME*/ );
+      field.name = rsColumns->getString( 4/*COLUMN_NAME*/ );
+      field.type = rsColumns->getShort( 5/*DATA_TYPE*/ );
+      field.typeName =  rsColumns->getString( 6/*TYPE_NAME*/ );
+      field.size = rsColumns->getInt( 7/*COLUMN_SIZE*/ );
+      field.isSigned = field.type == SQLDataTypes::SmallInt || field.type == SQLDataTypes::Integer ||
+                       field.type == SQLDataTypes::BigInt || field.type == SQLDataTypes::Decimal ||
+                       field.type == SQLDataTypes::Numeric || field.type == SQLDataTypes::Real ||
+                       field.type == SQLDataTypes::Float || field.type == SQLDataTypes::Double;
+      field.isNullable = rsColumns->getString( 18/*IS_NULLABLE*/ ) == QLatin1String( "TRUE" );
+      field.isAutoIncrement = isColumnAutoIncrement( field.name );
+      field.isUnique = isColumnUnique( field.name );
+      field.precision = -1;
+      if ( field.isGeometry() )
+        field.srid = getColumnSrid( schemaName, tableName, field.name );
+      field.comment = rsColumns->getString( 12/*REMARKS*/ );
 
       callback( field );
     }
