@@ -271,7 +271,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 
 /**
  * \ingroup gui
- * \class QgsSvgSelectorListModel
+ * \class QgsSvgSelectorFilterModel
  * \brief A model for displaying SVG files with a preview icon which can be filtered by file name.
  * Population of the model is performed in a background thread to ensure that
  * initial creation of the model is responsive and does not block the GUI.
