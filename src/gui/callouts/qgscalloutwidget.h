@@ -215,6 +215,40 @@ class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private U
 };
 
 
+///////////
+
+#include "ui_widget_ballooncallout.h"
+
+class QgsBalloonCallout;
+
+class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::WidgetBalloonCallout
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsBalloonCalloutWidget( vl ); }
+
+    void setCallout( QgsCallout *callout ) override;
+
+    QgsCallout *callout() override;
+
+    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
+
+  private slots:
+
+    void offsetFromAnchorUnitWidgetChanged();
+    void offsetFromAnchorChanged();
+    void fillSymbolChanged();
+    void mAnchorPointComboBox_currentIndexChanged( int index );
+
+  private:
+    std::unique_ptr< QgsBalloonCallout > mCallout;
+
+};
+
 #endif
 ///@endcond
 
