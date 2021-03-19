@@ -638,11 +638,11 @@ void QgsGeometryUtils::perpendicularOffsetPointAlongSegment( double x1, double y
   const double mY = y1 + ( y2 - y1 ) * proportion;
   const double pX = x1 - x2;
   const double pY = y1 - y2;
-  double normalX = -pY;  //#spellok
-  double normalY = pX;
+  double normalX = -pY;
+  double normalY = pX;  //#spellok
   const double normalLength = sqrt( ( normalX * normalX ) + ( normalY * normalY ) );  //#spellok
-  normalX /= normalLength;  //#spellok
-  normalY /= normalLength;
+  normalX /= normalLength;
+  normalY /= normalLength;  //#spellok
 
   *x = mX + offset * normalX;
   *y = mY + offset * normalY;  //#spellok
