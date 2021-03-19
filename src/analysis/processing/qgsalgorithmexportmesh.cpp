@@ -1373,7 +1373,7 @@ QString QgsMeshExportTimeSeries::name() const
 
 QString QgsMeshExportTimeSeries::displayName() const
 {
-  return QObject::tr( "Export dataset values time series values on points from mesh" );
+  return QObject::tr( "Export time series values from points of a mesh dataset" );
 }
 
 QString QgsMeshExportTimeSeries::group() const
