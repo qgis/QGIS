@@ -550,7 +550,7 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Returns a number representing the closest side of a rectangle defined by /a right,
      * \a bottom, \a left, \a top to the point at (\a x, \a y), where
-     * the point may be in ther interior of the rectangle or outside it.
+     * the point may be in the interior of the rectangle or outside it.
      *
      * The returned value may be:
      *
