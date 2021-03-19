@@ -491,8 +491,9 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView, path, mIconSize );
+  QgsSvgSelectorFilterModel *m = new QgsSvgSelectorFilterModel( mImagesListView, path, mIconSize );
   mImagesListView->setModel( m );
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, m, &QSortFilterProxyModel::setFilterFixedString );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 
   connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -520,8 +521,9 @@ void QgsSvgSelectorWidget::populateList()
 
   // Initially load the icons in the List view without any grouping
   QAbstractItemModel *oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView );
+  QgsSvgSelectorFilterModel *m = new QgsSvgSelectorFilterModel( mImagesListView );
   mImagesListView->setModel( m );
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, m, &QSortFilterProxyModel::setFilterFixedString );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 }
 
