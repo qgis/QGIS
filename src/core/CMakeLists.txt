@@ -426,6 +426,7 @@ set(QGIS_CORE_SRCS
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
   qgsscaleutils.cpp
+  qgsshapegenerator.cpp
   qgssimplifymethod.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
@@ -1033,6 +1034,7 @@ set(QGIS_CORE_HDRS
   qgsscalecalculator.h
   qgsscaleutils.h
   qgssettings.h
+  qgsshapegenerator.h
   qgssimplifymethod.h
   qgssnappingconfig.h
   qgssnappingutils.h
