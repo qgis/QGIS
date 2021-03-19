@@ -221,14 +221,8 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 //
 
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, int iconSize )
-  : QAbstractListModel( parent )
-  , mSvgLoader( new QgsSvgSelectorLoader( this ) )
-  , mIconSize( iconSize )
-{
-  mSvgLoader->setPath( QString() );
-  connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
-  mSvgLoader->start();
-}
+  : QgsSvgSelectorListModel( parent, QString(), iconSize )
+{}
 
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString &path, int iconSize )
   : QAbstractListModel( parent )
