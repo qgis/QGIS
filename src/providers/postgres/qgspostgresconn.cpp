@@ -1364,32 +1364,34 @@ int QgsPostgresConn::PQCancel()
 bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
+  QString preStr = "";
 
   if ( mOpenCursors++ == 0 && !mTransaction )
   {
     QgsDebugMsgLevel( QStringLiteral( "Starting read-only transaction: %1" ).arg( mPostgresqlVersion ), 4 );
     if ( mPostgresqlVersion >= 80000 )
-      PQexecNR( QStringLiteral( "BEGIN READ ONLY" ) );
+      preStr = QStringLiteral( "BEGIN READ ONLY;" );
     else
-      PQexecNR( QStringLiteral( "BEGIN" ) );
+      preStr = QStringLiteral( "BEGIN;" );
   }
   QgsDebugMsgLevel( QStringLiteral( "Binary cursor %1 for %2" ).arg( cursorName, sql ), 3 );
-  return PQexecNR( QStringLiteral( "DECLARE %1 BINARY CURSOR%2 FOR %3" ).
-                   arg( cursorName, !mTransaction ? QString() : QStringLiteral( " WITH HOLD" ), sql ) );
+  return PQexecNR( QStringLiteral( "%1DECLARE %2 BINARY CURSOR%3 FOR %4" ).
+                   arg( preStr, cursorName, !mTransaction ? QString() : QStringLiteral( " WITH HOLD" ), sql ) );
 }
 
 bool QgsPostgresConn::closeCursor( const QString &cursorName )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
-
-  if ( !PQexecNR( QStringLiteral( "CLOSE %1" ).arg( cursorName ) ) )
-    return false;
+  QString postStr = "";
 
   if ( --mOpenCursors == 0 && !mTransaction )
   {
     QgsDebugMsgLevel( QStringLiteral( "Committing read-only transaction" ), 4 );
-    PQexecNR( QStringLiteral( "COMMIT" ) );
+    postStr = QStringLiteral( ";COMMIT" );
   }
+
+  if ( !PQexecNR( QStringLiteral( "CLOSE %1%2" ).arg( cursorName, postStr ) ) )
+    return false;
 
   return true;
 }
