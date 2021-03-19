@@ -1385,7 +1385,10 @@ void QgsHanaProvider::readAttributeFields( QgsHanaConnection &conn )
     mDefaultValues.insert( mAttributeFields.size() - 1, getColumnDefaultValue( schemaName, tableName, field.name ) );
   };
 
-  conn.readQueryFields( buildQuery( QStringLiteral( "*" ) ), mSchemaName, processField );
+  if ( mIsQuery )
+    conn.readQueryFields( mSchemaName, buildQuery( QStringLiteral( "*" ) ), processField );
+  else
+    conn.readTableFields( mSchemaName, mTableName, processField );
 
   determinePrimaryKey( conn );
 }
