@@ -29,8 +29,7 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
-  : mSymbolName( QStringLiteral( "circle" ) )
-  , mStrokeColor( QColor( 35, 35, 35 ) )
+  : mStrokeColor( QColor( 35, 35, 35 ) )
 {
   mColor = Qt::white;
   mPen.setColor( mStrokeColor );
@@ -48,7 +47,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QVariantMap &properties )
   QgsEllipseSymbolLayer *layer = new QgsEllipseSymbolLayer();
   if ( properties.contains( QStringLiteral( "symbol_name" ) ) )
   {
-    layer->setSymbolName( properties[ QStringLiteral( "symbol_name" )].toString() );
+    layer->setShape( decodeShape( properties[ QStringLiteral( "symbol_name" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "size" ) ) )
   {
@@ -249,16 +248,16 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     mPen.setColor( penColor );
   }
 
+  QgsEllipseSymbolLayer::Shape shape = mShape;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
-    QString symbolName = mSymbolName;
-    context.setOriginalValueVariable( mSymbolName );
+    context.setOriginalValueVariable( encodeShape( shape ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
-      symbolName = exprVal.toString();
+      shape = decodeShape( exprVal.toString() );
     }
-    preparePath( symbolName, context, &scaledWidth, &scaledHeight, context.feature() );
+    preparePath( shape, context, &scaledWidth, &scaledHeight, context.feature() );
   }
 
   //offset and rotation
@@ -280,7 +279,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     transform.rotate( angle );
   }
 
-  if ( shapeIsFilled( mSymbolName ) )
+  if ( shapeIsFilled( shape ) )
   {
     p->setPen( context.selected() ? mSelPen : mPen );
     p->setBrush( context.selected() ? mSelBrush : mBrush );
@@ -351,7 +350,7 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
   QgsMarkerSymbolLayer::startRender( context ); // get anchor point expressions
   if ( !context.feature() || !dataDefinedProperties().hasActiveProperties() )
   {
-    preparePath( mSymbolName, context );
+    preparePath( mShape, context );
   }
   mPen.setColor( mStrokeColor );
   mPen.setStyle( mStrokeStyle );
@@ -368,7 +367,7 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
     selPenColor.setAlphaF( context.opacity() );
   }
   mSelBrush = QBrush( selBrushColor );
-  mSelPen = QPen( selPenColor );
+  mSelPen = QPen( !shapeIsFilled( mShape ) ? selBrushColor : selPenColor );
   mSelPen.setStyle( mStrokeStyle );
   mSelPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 }
@@ -380,7 +379,7 @@ void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & )
 QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
 {
   QgsEllipseSymbolLayer *m = new QgsEllipseSymbolLayer();
-  m->setSymbolName( mSymbolName );
+  m->setShape( mShape );
   m->setSymbolWidth( mSymbolWidth );
   m->setSymbolHeight( mSymbolHeight );
   m->setStrokeStyle( mStrokeStyle );
@@ -429,7 +428,7 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
 
   double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
   double symbolWidth = QgsSymbolLayerUtils::rescaleUom( mSymbolWidth, mSymbolWidthUnit, props );
-  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mColor, mStrokeColor, mStrokeStyle, strokeWidth, symbolWidth );
+  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, encodeShape( mShape ), mColor, mStrokeColor, mStrokeStyle, strokeWidth, symbolWidth );
 
   // <Rotation>
   QgsProperty ddRotation = mDataDefinedProperties.property( QgsSymbolLayer::PropertyAngle );
@@ -523,7 +522,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
 
   QgsEllipseSymbolLayer *m = new QgsEllipseSymbolLayer();
   m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-  m->setSymbolName( name );
+  m->setShape( decodeShape( name ) );
   m->setFillColor( fillColor );
   m->setStrokeColor( strokeColor );
   m->setStrokeStyle( strokeStyle );
@@ -537,7 +536,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
 QVariantMap QgsEllipseSymbolLayer::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "symbol_name" )] = mSymbolName;
+  map[QStringLiteral( "symbol_name" )] = encodeShape( mShape );
   map[QStringLiteral( "symbol_width" )] = QString::number( mSymbolWidth );
   map[QStringLiteral( "symbol_width_unit" )] = QgsUnitTypes::encodeUnit( mSymbolWidthUnit );
   map[QStringLiteral( "symbol_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSymbolWidthMapUnitScale );
@@ -601,77 +600,96 @@ QSizeF QgsEllipseSymbolLayer::calculateSize( QgsSymbolRenderContext &context, do
   return QSizeF( width, height );
 }
 
-void QgsEllipseSymbolLayer::preparePath( const QString &symbolName, QgsSymbolRenderContext &context, double *scaledWidth, double *scaledHeight, const QgsFeature * )
+void QgsEllipseSymbolLayer::preparePath( const QgsEllipseSymbolLayer::Shape &shape, QgsSymbolRenderContext &context, double *scaledWidth, double *scaledHeight, const QgsFeature * )
 {
   mPainterPath = QPainterPath();
 
   QSizeF size = calculateSize( context, scaledWidth, scaledHeight );
 
-  if ( symbolName == QLatin1String( "circle" ) )
+  switch ( shape )
   {
-    mPainterPath.addEllipse( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
-  }
-  else if ( symbolName == QLatin1String( "semi_circle" ) )
-  {
-    mPainterPath.arcTo( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height(), 0, 180 );
-    mPainterPath.lineTo( 0, 0 );
-  }
-  else if ( symbolName == QLatin1String( "rectangle" ) )
-  {
-    mPainterPath.addRect( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
-  }
-  else if ( symbolName == QLatin1String( "diamond" ) )
-  {
-    mPainterPath.moveTo( -size.width() / 2.0, 0 );
-    mPainterPath.lineTo( 0, size.height() / 2.0 );
-    mPainterPath.lineTo( size.width() / 2.0, 0 );
-    mPainterPath.lineTo( 0, -size.height() / 2.0 );
-    mPainterPath.lineTo( -size.width() / 2.0, 0 );
-  }
-  else if ( symbolName == QLatin1String( "cross" ) )
-  {
-    mPainterPath.moveTo( 0, -size.height() / 2.0 );
-    mPainterPath.lineTo( 0, size.height() / 2.0 );
-    mPainterPath.moveTo( -size.width() / 2.0, 0 );
-    mPainterPath.lineTo( size.width() / 2.0, 0 );
-  }
-  else if ( symbolName == QLatin1String( "arrow" ) )
-  {
-    mPainterPath.moveTo( -size.width() / 2.0, size.height() / 2.0 );
-    mPainterPath.lineTo( 0, -size.height() / 2.0 );
-    mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
-  }
-  else if ( symbolName == QLatin1String( "half_arc" ) )
-  {
-    mPainterPath.moveTo( size.width() / 2.0, 0 );
-    mPainterPath.arcTo( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height(), 0, 180 );
-  }
-  else if ( symbolName == QLatin1String( "triangle" ) )
-  {
-    mPainterPath.moveTo( 0, -size.height() / 2.0 );
-    mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
-    mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
-    mPainterPath.lineTo( 0, -size.height() / 2.0 );
-  }
-  else if ( symbolName == QLatin1String( "left_half_triangle" ) )
-  {
-    mPainterPath.moveTo( 0, size.height() / 2.0 );
-    mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
-    mPainterPath.lineTo( 0, -size.height() / 2.0 );
-    mPainterPath.lineTo( 0, size.height() / 2.0 );
-  }
-  else if ( symbolName == QLatin1String( "right_half_triangle" ) )
-  {
-    mPainterPath.moveTo( -size.width() / 2.0, size.height() / 2.0 );
-    mPainterPath.lineTo( 0, size.height() / 2.0 );
-    mPainterPath.lineTo( 0, -size.height() / 2.0 );
-    mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
+    case Circle:
+      mPainterPath.addEllipse( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
+      return;
+
+    case SemiCircle:
+      mPainterPath.arcTo( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height(), 0, 180 );
+      mPainterPath.lineTo( 0, 0 );
+      return;
+
+    case Rectangle:
+      mPainterPath.addRect( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
+      return;
+
+    case Diamond:
+      mPainterPath.moveTo( -size.width() / 2.0, 0 );
+      mPainterPath.lineTo( 0, size.height() / 2.0 );
+      mPainterPath.lineTo( size.width() / 2.0, 0 );
+      mPainterPath.lineTo( 0, -size.height() / 2.0 );
+      mPainterPath.lineTo( -size.width() / 2.0, 0 );
+      return;
+
+    case Cross:
+      mPainterPath.moveTo( 0, -size.height() / 2.0 );
+      mPainterPath.lineTo( 0, size.height() / 2.0 );
+      mPainterPath.moveTo( -size.width() / 2.0, 0 );
+      mPainterPath.lineTo( size.width() / 2.0, 0 );
+      return;
+
+    case Arrow:
+      mPainterPath.moveTo( -size.width() / 2.0, size.height() / 2.0 );
+      mPainterPath.lineTo( 0, -size.height() / 2.0 );
+      mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
+      return;
+
+    case HalfArc:
+      mPainterPath.moveTo( size.width() / 2.0, 0 );
+      mPainterPath.arcTo( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height(), 0, 180 );
+      return;
+
+    case Triangle:
+      mPainterPath.moveTo( 0, -size.height() / 2.0 );
+      mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
+      mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
+      mPainterPath.lineTo( 0, -size.height() / 2.0 );
+      return;
+
+    case LeftHalfTriangle:
+      mPainterPath.moveTo( 0, size.height() / 2.0 );
+      mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
+      mPainterPath.lineTo( 0, -size.height() / 2.0 );
+      mPainterPath.lineTo( 0, size.height() / 2.0 );
+      return;
+
+    case RightHalfTriangle:
+      mPainterPath.moveTo( -size.width() / 2.0, size.height() / 2.0 );
+      mPainterPath.lineTo( 0, size.height() / 2.0 );
+      mPainterPath.lineTo( 0, -size.height() / 2.0 );
+      mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
+      return;
   }
 }
 
-bool QgsEllipseSymbolLayer::shapeIsFilled( const QString &symbolName ) const
+bool QgsEllipseSymbolLayer::shapeIsFilled( const QgsEllipseSymbolLayer::Shape &shape )
 {
-  return symbolName == QLatin1String( "cross" ) || symbolName == QLatin1String( "arrow" ) || symbolName == QLatin1String( "half_arc" ) ? false : true;
+  switch ( shape )
+  {
+    case Circle:
+    case Rectangle:
+    case Diamond:
+    case Triangle:
+    case RightHalfTriangle:
+    case LeftHalfTriangle:
+    case SemiCircle:
+      return true;
+
+    case Cross:
+    case Arrow:
+    case HalfArc:
+      return false;
+  }
+
+  return true;
 }
 
 void QgsEllipseSymbolLayer::setSize( double size )
@@ -865,11 +883,11 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
   }
 
   //symbol name
-  QString symbolName = mSymbolName;
+  QgsEllipseSymbolLayer::Shape shape = mShape;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
-    context.setOriginalValueVariable( mSymbolName );
-    symbolName = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext(), mSymbolName );
+    context.setOriginalValueVariable( encodeShape( shape ) );
+    shape = decodeShape( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext(), encodeShape( shape ) ) );
   }
 
   //offset
@@ -902,76 +920,168 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
   double halfWidth = symbolWidth / 2.0;
   double halfHeight = symbolHeight / 2.0;
 
-  if ( symbolName == QLatin1String( "circle" ) )
+  switch ( shape )
   {
-    if ( qgsDoubleNear( halfWidth, halfHeight ) )
+    case Circle:
     {
-      QgsPoint pt( t.map( QPointF( 0, 0 ) ) );
-      e.writeFilledCircle( layerName, oc, pt, halfWidth );
-    }
-    else
-    {
-      QgsPointSequence line;
-
-      double stepsize = 2 * M_PI / 40;
-      for ( int i = 0; i < 39; ++i )
+      if ( qgsDoubleNear( halfWidth, halfHeight ) )
       {
-        double angle = stepsize * i;
-        double x = halfWidth * std::cos( angle );
-        double y = halfHeight * std::sin( angle );
-        line << QgsPoint( t.map( QPointF( x, y ) ) );
+        QgsPoint pt( t.map( QPointF( 0, 0 ) ) );
+        e.writeFilledCircle( layerName, oc, pt, halfWidth );
       }
-      //close ellipse with first point
-      line << line.at( 0 );
+      else
+      {
+        QgsPointSequence line;
+
+        double stepsize = 2 * M_PI / 40;
+        for ( int i = 0; i < 39; ++i )
+        {
+          double angle = stepsize * i;
+          double x = halfWidth * std::cos( angle );
+          double y = halfHeight * std::sin( angle );
+          line << QgsPoint( t.map( QPointF( x, y ) ) );
+        }
+        //close ellipse with first point
+        line << line.at( 0 );
+
+        if ( mBrush.style() != Qt::NoBrush )
+          e.writePolygon( QgsRingSequence() << line, layerName, QStringLiteral( "SOLID" ), fc );
+        if ( mPen.style() != Qt::NoPen )
+          e.writePolyline( line, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+      }
+      return true;
+    }
+
+    case Rectangle:
+    {
+      QgsPointSequence p;
+      p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
+        << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
+        << QgsPoint( t.map( QPointF( halfWidth, halfHeight ) ) )
+        << QgsPoint( t.map( QPointF( -halfWidth, halfHeight ) ) );
+      p << p[0];
 
       if ( mBrush.style() != Qt::NoBrush )
-        e.writePolygon( QgsRingSequence() << line, layerName, QStringLiteral( "SOLID" ), fc );
+        e.writePolygon( QgsRingSequence() << p, layerName, QStringLiteral( "SOLID" ), fc );
       if ( mPen.style() != Qt::NoPen )
-        e.writePolyline( line, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+        e.writePolyline( p, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+      return true;
     }
-  }
-  else if ( symbolName == QLatin1String( "rectangle" ) )
-  {
-    QgsPointSequence p;
-    p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
-      << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
-      << QgsPoint( t.map( QPointF( halfWidth, halfHeight ) ) )
-      << QgsPoint( t.map( QPointF( -halfWidth, halfHeight ) ) );
-    p << p[0];
+    case Cross:
+    {
+      if ( mPen.style() != Qt::NoPen )
+      {
+        e.writePolyline( QgsPointSequence()
+                         << QgsPoint( t.map( QPointF( -halfWidth, 0 ) ) )
+                         << QgsPoint( t.map( QPointF( halfWidth, 0 ) ) ),
+                         layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+        e.writePolyline( QgsPointSequence()
+                         << QgsPoint( t.map( QPointF( 0, halfHeight ) ) )
+                         << QgsPoint( t.map( QPointF( 0, -halfHeight ) ) ),
+                         layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+        return true;
+      }
+      break;
+    }
 
-    if ( mBrush.style() != Qt::NoBrush )
-      e.writePolygon( QgsRingSequence() << p, layerName, QStringLiteral( "SOLID" ), fc );
-    if ( mPen.style() != Qt::NoPen )
-      e.writePolyline( p, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
-    return true;
-  }
-  else if ( symbolName == QLatin1String( "cross" ) && mPen.style() != Qt::NoPen )
-  {
-    e.writePolyline( QgsPointSequence()
-                     << QgsPoint( t.map( QPointF( -halfWidth, 0 ) ) )
-                     << QgsPoint( t.map( QPointF( halfWidth, 0 ) ) ),
-                     layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
-    e.writePolyline( QgsPointSequence()
-                     << QgsPoint( t.map( QPointF( 0, halfHeight ) ) )
-                     << QgsPoint( t.map( QPointF( 0, -halfHeight ) ) ),
-                     layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
-    return true;
-  }
-  else if ( symbolName == QLatin1String( "triangle" ) )
-  {
-    QgsPointSequence p;
-    p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
-      << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
-      << QgsPoint( t.map( QPointF( 0, halfHeight ) ) );
-    p << p[0];
-    if ( mBrush.style() != Qt::NoBrush )
-      e.writePolygon( QgsRingSequence() << p, layerName, QStringLiteral( "SOLID" ), fc );
-    if ( mPen.style() != Qt::NoPen )
-      e.writePolyline( p, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
-    return true;
+    case Triangle:
+    {
+      QgsPointSequence p;
+      p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
+        << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
+        << QgsPoint( t.map( QPointF( 0, halfHeight ) ) );
+      p << p[0];
+      if ( mBrush.style() != Qt::NoBrush )
+        e.writePolygon( QgsRingSequence() << p, layerName, QStringLiteral( "SOLID" ), fc );
+      if ( mPen.style() != Qt::NoPen )
+        e.writePolyline( p, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+      return true;
+    }
+
+    case Diamond:
+    case Arrow:
+    case HalfArc:
+    case RightHalfTriangle:
+    case LeftHalfTriangle:
+    case SemiCircle:
+      return false;
   }
 
-  return false; //soon...
+  return false;
 }
 
+QgsEllipseSymbolLayer::Shape QgsEllipseSymbolLayer::decodeShape( const QString &name, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+  QString cleaned = name.toLower().trimmed();
 
+  if ( cleaned == QLatin1String( "circle" ) )
+    return Circle;
+  else if ( cleaned == QLatin1String( "square" ) || cleaned == QLatin1String( "rectangle" ) )
+    return Rectangle;
+  else if ( cleaned == QLatin1String( "diamond" ) )
+    return Diamond;
+  else if ( cleaned == QLatin1String( "cross" ) )
+    return Cross;
+  else if ( cleaned == QLatin1String( "arrow" ) )
+    return Arrow;
+  else if ( cleaned == QLatin1String( "half_arc" ) )
+    return HalfArc;
+  else if ( cleaned == QLatin1String( "triangle" ) )
+    return Triangle;
+  else if ( cleaned == QLatin1String( "right_half_triangle" ) )
+    return RightHalfTriangle;
+  else if ( cleaned == QLatin1String( "left_half_triangle" ) )
+    return LeftHalfTriangle;
+  else if ( cleaned == QLatin1String( "semi_circle" ) )
+    return SemiCircle;
+
+  if ( ok )
+    *ok = false;
+  return Circle;
+}
+
+QString QgsEllipseSymbolLayer::encodeShape( QgsEllipseSymbolLayer::Shape shape )
+{
+  switch ( shape )
+  {
+    case Circle:
+      return QStringLiteral( "circle" );
+    case Rectangle:
+      return QStringLiteral( "rectangle" );
+    case Diamond:
+      return QStringLiteral( "diamond" );
+    case Cross:
+      return QStringLiteral( "cross" );
+    case Arrow:
+      return QStringLiteral( "arrow" );
+    case HalfArc:
+      return QStringLiteral( "half_arc" );
+    case Triangle:
+      return QStringLiteral( "triangle" );
+    case RightHalfTriangle:
+      return QStringLiteral( "right_half_triangle" );
+    case LeftHalfTriangle:
+      return QStringLiteral( "left_half_triangle" );
+    case SemiCircle:
+      return QStringLiteral( "semi_circle" );
+  }
+  return QString();
+}
+
+QList<QgsEllipseSymbolLayer::Shape> QgsEllipseSymbolLayer::availableShapes()
+{
+  QList< Shape > shapes;
+  shapes << Circle
+         << Rectangle
+         << Diamond
+         << Cross
+         << Arrow
+         << HalfArc
+         << Triangle
+         << LeftHalfTriangle
+         << RightHalfTriangle
+         << SemiCircle;
+  return shapes;
+}
