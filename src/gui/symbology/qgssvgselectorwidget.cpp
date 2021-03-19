@@ -402,6 +402,15 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
+  {
+    disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+    mImagesListView->selectionModel()->clearSelection();
+    connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+    qobject_cast<QgsSvgSelectorFilterModel *>( mImagesListView->model() )->setFilterFixedString( filterText );
+  } );
+
+
   mParametersModel = new QgsSvgParametersModel( this );
   mParametersTreeView->setModel( mParametersModel );
   mParametersGroupBox->setVisible( mAllowParameters );
@@ -523,7 +532,6 @@ void QgsSvgSelectorWidget::populateList()
   QAbstractItemModel *oldModel = mImagesListView->model();
   QgsSvgSelectorFilterModel *m = new QgsSvgSelectorFilterModel( mImagesListView );
   mImagesListView->setModel( m );
-  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, m, &QSortFilterProxyModel::setFilterFixedString );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 }
 
