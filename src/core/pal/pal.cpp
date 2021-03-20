@@ -156,7 +156,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     QMutexLocker locker( &layer->mMutex );
 
     // generate candidates for all features
-    for ( FeaturePart *featurePart : qgis::as_const( layer->mFeatureParts ) )
+    for ( FeaturePart *featurePart : std::as_const( layer->mFeatureParts ) )
     {
       if ( isCanceled() )
         break;
@@ -241,7 +241,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       return nullptr;
 
     // collate all layer obstacles
-    for ( FeaturePart *obstaclePart : qgis::as_const( layer->mObstacleParts ) )
+    for ( FeaturePart *obstaclePart : std::as_const( layer->mObstacleParts ) )
     {
       if ( isCanceled() )
         break; // do not continue searching

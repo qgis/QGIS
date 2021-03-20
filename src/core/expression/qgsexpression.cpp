@@ -552,7 +552,7 @@ QString QgsExpression::helpText( QString name )
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),
                               f.mDescription ) );
 
-  for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+  for ( const HelpVariant &v : std::as_const( f.mVariants ) )
   {
     if ( f.mVariants.size() > 1 )
     {
@@ -586,7 +586,7 @@ QString QgsExpression::helpText( QString name )
         helpContents += '(';
 
         QString delim;
-        for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
+        for ( const HelpArg &a : std::as_const( v.mArguments ) )
         {
           if ( !a.mDescOnly )
           {
@@ -628,7 +628,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
 
-      for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
+      for ( const HelpArg &a : std::as_const( v.mArguments ) )
       {
         if ( a.mSyntaxOnly )
           continue;
@@ -643,7 +643,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
 
-      for ( const HelpExample &e : qgis::as_const( v.mExamples ) )
+      for ( const HelpExample &e : std::as_const( v.mExamples ) )
       {
         helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
 
@@ -675,7 +675,7 @@ QStringList QgsExpression::tags( const QString &name )
   {
     const Help &f = ( *sFunctionHelpTexts() )[ name ];
 
-    for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+    for ( const HelpVariant &v : std::as_const( f.mVariants ) )
     {
       tags << v.mTags;
     }

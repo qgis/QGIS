@@ -865,7 +865,7 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    for ( auto i : qgis::as_const( mSubSetAttributes ) )
+    for ( auto i : std::as_const( mSubSetAttributes ) )
     {
       setAttr( i );
     }

@@ -284,7 +284,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
   QgsMultiPolygonXY finalMulti; //avoid expensive allocation for list for every feature
   QgsPolygonXY newPoly;
 
-  for ( const CombinedFeature &cit : qgis::as_const( mFeaturesCategories ) )
+  for ( const CombinedFeature &cit : std::as_const( mFeaturesCategories ) )
   {
     finalMulti.resize( 0 ); //preserve capacity - don't use clear!
     QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
@@ -325,7 +325,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
         // operations do not need geometries to be valid
 
         finalMulti.append( mExtentPolygon );
-        for ( const QgsGeometry &geom : qgis::as_const( cit.geometries ) )
+        for ( const QgsGeometry &geom : std::as_const( cit.geometries ) )
         {
           QgsMultiPolygonXY multi;
           QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
@@ -391,7 +391,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
   }
 
   // draw feature decorations
-  for ( FeatureDecoration deco : qgis::as_const( mFeatureDecorations ) )
+  for ( FeatureDecoration deco : std::as_const( mFeatureDecorations ) )
   {
     mSubRenderer->renderFeature( deco.feature, mContext, deco.layer, deco.selected, deco.drawMarkers );
   }

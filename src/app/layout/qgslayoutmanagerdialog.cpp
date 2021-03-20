@@ -417,7 +417,7 @@ void QgsLayoutManagerDialog::removeClicked()
   }
 
   // Once we have the layout list, we can delete all of them !
-  for ( QgsMasterLayoutInterface *l : qgis::as_const( layoutList ) )
+  for ( QgsMasterLayoutInterface *l : std::as_const( layoutList ) )
   {
     QgsProject::instance()->layoutManager()->removeLayout( l );
   }

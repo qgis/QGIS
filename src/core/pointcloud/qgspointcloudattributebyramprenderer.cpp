@@ -197,7 +197,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
       QList< QPair< QString, QColor > > items;
       mColorRampShader.legendSymbologyItems( items );
       res.reserve( items.size() );
-      for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+      for ( const QPair< QString, QColor > &item : std::as_const( items ) )
       {
         res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
       }

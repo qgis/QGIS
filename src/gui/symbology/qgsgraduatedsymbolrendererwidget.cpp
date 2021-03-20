@@ -642,7 +642,7 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
   connect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
 
-  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
   {
     connect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   }
@@ -668,7 +668,7 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
   disconnect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
 
-  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
   {
     disconnect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   }
@@ -706,7 +706,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     cbxTrimTrailingZeroes->setChecked( method->labelTrimTrailingZeroes() );
 
     QgsProcessingContext context;
-    for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+    for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
     {
       const QgsProcessingParameterDefinition *def = ppww->parameterDefinition();
       QVariant value = method->parameterValues().value( def->name(), def->defaultValueForGui() );
@@ -1016,7 +1016,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   }
 
   QVariantMap parameterValues;
-  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
     parameterValues.insert( ppww->parameterDefinition()->name(), ppww->parameterValue() );
   method->setParameterValues( parameterValues );
 

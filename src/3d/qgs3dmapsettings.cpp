@@ -337,7 +337,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
 
   QDomElement elemPointLights = doc.createElement( QStringLiteral( "point-lights" ) );
-  for ( const QgsPointLightSettings &pointLight : qgis::as_const( mPointLights ) )
+  for ( const QgsPointLightSettings &pointLight : std::as_const( mPointLights ) )
   {
     QDomElement elemPointLight = pointLight.writeXml( doc );
     elemPointLights.appendChild( elemPointLight );
@@ -345,7 +345,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemPointLights );
 
   QDomElement elemDirectionalLights = doc.createElement( QStringLiteral( "directional-lights" ) );
-  for ( const QgsDirectionalLightSettings &directionalLight : qgis::as_const( mDirectionalLights ) )
+  for ( const QgsDirectionalLightSettings &directionalLight : std::as_const( mDirectionalLights ) )
   {
     QDomElement elemDirectionalLight = directionalLight.writeXml( doc );
     elemDirectionalLights.appendChild( elemDirectionalLight );

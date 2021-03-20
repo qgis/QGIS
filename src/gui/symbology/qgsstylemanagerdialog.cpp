@@ -2162,7 +2162,7 @@ void QgsStyleManagerDialog::populateGroups()
   taggroup->setEditable( false );
   QStringList tags = mStyle->tags();
   tags.sort();
-  for ( const QString &tag : qgis::as_const( tags ) )
+  for ( const QString &tag : std::as_const( tags ) )
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
@@ -2600,7 +2600,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
     QAction *a = nullptr;
     QStringList tags = mStyle->tags();
     tags.sort();
-    for ( const QString &tag : qgis::as_const( tags ) )
+    for ( const QString &tag : std::as_const( tags ) )
     {
       a = new QAction( tag, mGroupListMenu );
       a->setData( tag );

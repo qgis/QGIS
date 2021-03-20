@@ -154,7 +154,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   QString prefix = searchString.left( std::max( searchString.indexOf( ' ' ), 0 ) );
   if ( !prefix.isEmpty() )
   {
-    for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
+    for ( QgsLocatorFilter *filter : std::as_const( mFilters ) )
     {
       if ( filter->activePrefix().compare( prefix, Qt::CaseInsensitive ) == 0 && filter->enabled() )
       {
@@ -169,7 +169,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
   else
   {
-    for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
+    for ( QgsLocatorFilter *filter : std::as_const( mFilters ) )
     {
       if ( filter->useWithoutPrefix() && filter->enabled() )
       {
@@ -179,7 +179,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
 
   QList< QgsLocatorFilter *> threadedFilters;
-  for ( QgsLocatorFilter *filter : qgis::as_const( activeFilters ) )
+  for ( QgsLocatorFilter *filter : std::as_const( activeFilters ) )
   {
     filter->clearPreviousResults();
     std::unique_ptr< QgsLocatorFilter > clone( filter->clone() );
@@ -210,7 +210,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
 
   mActiveThreads.clear();
-  for ( QgsLocatorFilter *filter : qgis::as_const( threadedFilters ) )
+  for ( QgsLocatorFilter *filter : std::as_const( threadedFilters ) )
   {
     QThread *thread = new QThread();
     mActiveThreads.append( thread );
@@ -265,7 +265,7 @@ bool QgsLocator::isRunning() const
 
 void QgsLocator::clearPreviousResults()
 {
-  for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
+  for ( QgsLocatorFilter *filter : std::as_const( mFilters ) )
   {
     if ( filter->enabled() )
     {

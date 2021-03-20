@@ -170,7 +170,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
           if ( closestVertex.distance( pt ) > mContext->tolerance )
           {
             bool alreadyReported = false;
-            for ( QgsGeometryCheckError *error : qgis::as_const( errors ) )
+            for ( QgsGeometryCheckError *error : std::as_const( errors ) )
             {
               // Only list missing vertices once
               if ( error->featureId() == currentFeature.id() && error->location() == QgsPointXY( pt ) )

@@ -430,7 +430,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
         QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
         iterator->setFields( fields );
 
-        for ( const auto &f : qgis::as_const( fields ) )
+        for ( const auto &f : std::as_const( fields ) )
         {
           results.appendColumn( f.name() );
         }

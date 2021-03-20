@@ -590,7 +590,7 @@ json QgsServerOgcApiHandler::jsonTags() const
 void QgsServerOgcApiHandler::setContentTypesInt( const QList<int> &contentTypes )
 {
   mContentTypes.clear();
-  for ( const int &i : qgis::as_const( contentTypes ) )
+  for ( const int &i : std::as_const( contentTypes ) )
   {
     mContentTypes.push_back( static_cast<QgsServerOgcApi::ContentType>( i ) );
   }

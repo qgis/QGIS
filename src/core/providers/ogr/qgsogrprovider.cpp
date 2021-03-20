@@ -444,7 +444,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
           // At this point we must check if there is a real FID field in the the fields argument,
           // because in that case we don't want to shift all fields (see issue GH #34333)
           // Check for unique values should be performed in client code.
-          for ( const auto &f : qgis::as_const( fields ) )
+          for ( const auto &f : std::as_const( fields ) )
           {
             if ( f.name().compare( ogrFidColumnName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
             {
@@ -3517,7 +3517,7 @@ QString createFilters( const QString &type )
 
     // can't forget the all supported case
     QStringList exts;
-    for ( const QString &ext : qgis::as_const( sExtensions ) )
+    for ( const QString &ext : std::as_const( sExtensions ) )
       exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
     sFileFilters.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QLatin1Char( ' ' ) ) ) );
 

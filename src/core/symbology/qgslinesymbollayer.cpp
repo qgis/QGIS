@@ -323,7 +323,7 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
       case InteriorRingsOnly:
       {
         mOffset = -mOffset; // invert the offset for rings!
-        for ( const QPolygonF &ring : qgis::as_const( *rings ) )
+        for ( const QPolygonF &ring : std::as_const( *rings ) )
           renderPolyline( ring, context );
         mOffset = -mOffset;
       }
@@ -676,7 +676,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
     //re-scale pattern vector after data defined pen width was applied
 
     QVector<qreal> scaledVector;
-    for ( double v : qgis::as_const( mCustomDashVector ) )
+    for ( double v : std::as_const( mCustomDashVector ) )
     {
       //the dash is specified in terms of pen widths, therefore the division
       scaledVector << context.renderContext().convertToPainterUnits( v, mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv;

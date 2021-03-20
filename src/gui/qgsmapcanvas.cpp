@@ -2510,7 +2510,7 @@ void QgsMapCanvas::dropEvent( QDropEvent *event )
     for ( const QgsMimeDataUtils::Uri &uri : lst )
     {
       bool handled = false;
-      for ( QgsCustomDropHandler *handler : qgis::as_const( mDropHandlers ) )
+      for ( QgsCustomDropHandler *handler : std::as_const( mDropHandlers ) )
       {
         if ( handler && handler->customUriProviderKey() == uri.providerKey )
         {
@@ -2740,7 +2740,7 @@ void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *event )
     for ( const QgsMimeDataUtils::Uri &uri : lst )
     {
       bool handled = false;
-      for ( QgsCustomDropHandler *handler : qgis::as_const( mDropHandlers ) )
+      for ( QgsCustomDropHandler *handler : std::as_const( mDropHandlers ) )
       {
         if ( handler->canHandleCustomUriCanvasDrop( uri, this ) )
         {

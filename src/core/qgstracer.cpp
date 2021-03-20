@@ -386,7 +386,7 @@ void resetGraph( QgsTracerGraph &g )
   g.joinedVertices = 0;
 
   // fix vertices of deactivated edges
-  for ( int eIdx : qgis::as_const( g.inactiveEdges ) )
+  for ( int eIdx : std::as_const( g.inactiveEdges ) )
   {
     if ( eIdx >= g.e.count() )
       continue;
@@ -488,7 +488,7 @@ bool QgsTracer::initGraph()
   t1.start();
   int featuresCounted = 0;
   bool enableInvisibleFeature = QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool();
-  for ( const QgsVectorLayer *vl : qgis::as_const( mLayers ) )
+  for ( const QgsVectorLayer *vl : std::as_const( mLayers ) )
   {
     QgsFeatureRequest request;
     bool filter = false;
@@ -606,7 +606,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
   if ( mLayers == layers )
     return;
 
-  for ( QgsVectorLayer *layer : qgis::as_const( mLayers ) )
+  for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
   {
     disconnect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     disconnect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );

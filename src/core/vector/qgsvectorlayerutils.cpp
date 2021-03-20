@@ -342,7 +342,7 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
 
         // try variants like base_1, base_2, etc until a new value found
         QStringList vals;
-        for ( const auto &v : qgis::as_const( existingValues ) )
+        for ( const auto &v : std::as_const( existingValues ) )
         {
           if ( v.toString().startsWith( base ) )
             vals.push_back( v.toString() );
@@ -522,7 +522,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
     return uniqueValueCache[ fieldIdx ].contains( value );
   };
 
-  for ( const auto &fd : qgis::as_const( featuresData ) )
+  for ( const auto &fd : std::as_const( featuresData ) )
   {
 
     QgsFeature newFeature( fields );

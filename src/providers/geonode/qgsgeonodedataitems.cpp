@@ -130,7 +130,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
       return items;
     }
 
-    for ( QgsDataItem *item : qgis::as_const( items ) )
+    for ( QgsDataItem *item : std::as_const( items ) )
     {
       item->populate( true ); // populate in foreground - this is already run in a thread
 

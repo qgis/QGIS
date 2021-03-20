@@ -486,7 +486,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
-  for ( const QgsLayoutTableColumn &column : qgis::as_const( mSortColumns ) )
+  for ( const QgsLayoutTableColumn &column : std::as_const( mSortColumns ) )
   {
     req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
   }
@@ -558,7 +558,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     QgsLayoutTableRow rowContents;
     rowContents.reserve( mColumns.count() );
 
-    for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
+    for ( const QgsLayoutTableColumn &column : std::as_const( mColumns ) )
     {
       int idx = layer->fields().lookupField( column.attribute() );
 
@@ -726,7 +726,7 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
     QHash<const QString, QSet<QString>> columnAttributesMap;
     QSet<QString> allowedAttributes;
 
-    for ( const auto &c : qgis::as_const( allowedColumns ) )
+    for ( const auto &c : std::as_const( allowedColumns ) )
     {
       if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
       {
@@ -752,7 +752,7 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
       allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &columnAttributesMap, &forbidden ]( QgsLayoutTableColumn & c ) -> bool
       {
-        for ( const auto &f : qgis::as_const( forbidden ) )
+        for ( const auto &f : std::as_const( forbidden ) )
         {
           if ( columnAttributesMap[ c.attribute() ].contains( f ) )
           {

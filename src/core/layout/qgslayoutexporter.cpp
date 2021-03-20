@@ -399,14 +399,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   }
   else
   {
-    for ( int page : qgis::as_const( settings.pages ) )
+    for ( int page : std::as_const( settings.pages ) )
     {
       if ( page >= 0 && page < mLayout->pageCollection()->pageCount() )
         pages << page;
     }
   }
 
-  for ( int page : qgis::as_const( pages ) )
+  for ( int page : std::as_const( pages ) )
   {
     if ( !mLayout->pageCollection()->shouldExportPage( page ) )
     {
@@ -626,7 +626,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         // setup georeferencing
         QList< QgsLayoutItemMap * > maps;
         mLayout->layoutItems( maps );
-        for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+        for ( QgsLayoutItemMap *map : std::as_const( maps ) )
         {
           QgsAbstractGeoPdfExporter::GeoReferencedSection georef;
           georef.crs = map->crs();

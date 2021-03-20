@@ -454,7 +454,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
     {
       engine.reset( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
       engine->prepareGeometry();
-      for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
+      for ( int ix : std::as_const( mJoinedFieldIndices ) )
       {
         joinAttributes.append( joinFeature.attribute( ix ) );
       }
@@ -535,7 +535,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
           {
             QgsAttributes joinAttributes = baseFeature.attributes();
             joinAttributes.reserve( joinAttributes.size() + mJoinedFieldIndices.size() );
-            for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
+            for ( int ix : std::as_const( mJoinedFieldIndices ) )
             {
               joinAttributes.append( joinFeature.attribute( ix ) );
             }
@@ -598,7 +598,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
         {
           QgsAttributes joinAttributes = baseFeature.attributes();
           joinAttributes.reserve( joinAttributes.size() + mJoinedFieldIndices.size() );
-          for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
+          for ( int ix : std::as_const( mJoinedFieldIndices ) )
           {
             joinAttributes.append( bestMatch.attribute( ix ) );
           }

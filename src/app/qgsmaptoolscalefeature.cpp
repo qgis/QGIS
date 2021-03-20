@@ -347,7 +347,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
   t.scale( mScaling, mScaling );
   t.translate( -mFeatureCenterMapCoords.x(), -mFeatureCenterMapCoords.y() );
 
-  for ( QgsFeatureId id : qgis::as_const( mScaledFeatures ) )
+  for ( QgsFeatureId id : std::as_const( mScaledFeatures ) )
   {
     QgsFeature feat;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );

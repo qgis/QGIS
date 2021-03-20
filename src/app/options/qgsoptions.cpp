@@ -1196,7 +1196,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // ensure advanced factory is always last
   QgsAdvancedSettingsOptionsFactory advancedFactory;
   factories << &advancedFactory;
-  for ( QgsOptionsWidgetFactory *factory : qgis::as_const( factories ) )
+  for ( QgsOptionsWidgetFactory *factory : std::as_const( factories ) )
   {
     QgsOptionsPageWidget *page = factory->createWidget( this );
     if ( !page )
@@ -2406,11 +2406,11 @@ void QgsOptions::loadGdalDriverList()
   // sort list case insensitive - no existing function for this!
   QMap<QString, QString> strMap;
 
-  for ( const QString &str : qgis::as_const( myDrivers ) )
+  for ( const QString &str : std::as_const( myDrivers ) )
     strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  for ( const QString &myName : qgis::as_const( myDrivers ) )
+  for ( const QString &myName : std::as_const( myDrivers ) )
   {
     QTreeWidgetItem *mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
@@ -2449,13 +2449,13 @@ void QgsOptions::loadGdalDriverList()
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
   strMap.clear();
-  for ( const QString &str : qgis::as_const( myGdalWriteDrivers ) )
+  for ( const QString &str : std::as_const( myGdalWriteDrivers ) )
     strMap.insert( str.toLower(), str );
   myGdalWriteDrivers = strMap.values();
   myGdalWriteDrivers.removeAll( QStringLiteral( "Gtiff" ) );
   myGdalWriteDrivers.prepend( QStringLiteral( "GTiff" ) );
   cmbEditCreateOptions->clear();
-  for ( const QString &myName : qgis::as_const( myGdalWriteDrivers ) )
+  for ( const QString &myName : std::as_const( myGdalWriteDrivers ) )
   {
     cmbEditCreateOptions->addItem( myName );
   }
@@ -2843,7 +2843,7 @@ void QgsOptions::showHelp()
   QString link;
 
   // give first priority to created pages which have specified a help key
-  for ( const QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalOptionWidgets ) )
+  for ( const QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
   {
     if ( widget == activeTab )
     {

@@ -39,7 +39,7 @@ QgsLayerTreeViewBadLayerIndicatorProvider::QgsLayerTreeViewBadLayerIndicatorProv
 
 void QgsLayerTreeViewBadLayerIndicatorProvider::reportLayerError( const QString &error, QgsMapLayer *layer )
 {
-  for ( const Error &e : qgis::as_const( mErrors ) )
+  for ( const Error &e : std::as_const( mErrors ) )
   {
     // don't report identical errors
     if ( e.layer == layer && error == e.error )
@@ -66,7 +66,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   {
     QStringList thisLayerErrors;
     QList< Error > newErrors;
-    for ( const Error &error : qgis::as_const( mErrors ) )
+    for ( const Error &error : std::as_const( mErrors ) )
     {
       if ( error.layer != layer )
         newErrors.append( error );
@@ -110,7 +110,7 @@ QString QgsLayerTreeViewBadLayerIndicatorProvider::tooltipText( QgsMapLayer *lay
     return tr( "<b>Unavailable layer!</b><br>Layer data source could not be found. Click to set a new data source" );
   else
   {
-    for ( const Error &error : qgis::as_const( mErrors ) )
+    for ( const Error &error : std::as_const( mErrors ) )
     {
       if ( error.layer == layer )
         return error.error;
@@ -124,7 +124,7 @@ bool QgsLayerTreeViewBadLayerIndicatorProvider::acceptLayer( QgsMapLayer *layer 
   if ( !layer->isValid() )
     return true;
 
-  for ( const Error &error : qgis::as_const( mErrors ) )
+  for ( const Error &error : std::as_const( mErrors ) )
   {
     if ( error.layer == layer )
       return true;

@@ -1281,7 +1281,7 @@ void TestProcessingGui::testAuthCfgWrapper()
 
   QgsAuthManager *authm = QgsApplication::authManager();
   QStringList authIds;
-  for ( QgsAuthMethodConfig config : qgis::as_const( configs ) )
+  for ( QgsAuthMethodConfig config : std::as_const( configs ) )
   {
     QVERIFY( config.isValid() );
 

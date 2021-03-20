@@ -3833,7 +3833,7 @@ void QgsProcessingFieldPanelWidget::showDialog()
   QVariantList availableOptions;
   QStringList fieldNames;
   availableOptions.reserve( mFields.size() );
-  for ( const QgsField &field : qgis::as_const( mFields ) )
+  for ( const QgsField &field : std::as_const( mFields ) )
   {
     availableOptions << field.name();
   }
@@ -6060,7 +6060,7 @@ void QgsProcessingRasterBandPanelWidget::showDialog()
   QVariantList availableOptions;
   QStringList fieldNames;
   availableOptions.reserve( mBands.size() );
-  for ( int band : qgis::as_const( mBands ) )
+  for ( int band : std::as_const( mBands ) )
   {
     availableOptions << band;
   }

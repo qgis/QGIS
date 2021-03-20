@@ -370,7 +370,7 @@ struct QgsWmsLayerProperty
     if ( dimensions.isEmpty() )
       return false;
 
-    for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( dimensions ) )
+    for ( const QgsWmsDimensionProperty &dimension : std::as_const( dimensions ) )
     {
       if ( dimension.name == dimensionName )
         return true;

@@ -1779,7 +1779,7 @@ namespace QgsWms
     QStringList layers;
     QList<QgsWmsParametersExternalLayer> eParams;
 
-    for ( const auto &layer : qgis::as_const( allLayers ) )
+    for ( const auto &layer : std::as_const( allLayers ) )
     {
       if ( isExternalLayer( layer ) )
       {

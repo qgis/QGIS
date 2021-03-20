@@ -571,7 +571,7 @@ void QgsSvgParametersModel::setParameters( const QMap<QString, QgsProperty> &par
 QMap<QString, QgsProperty> QgsSvgParametersModel::parameters() const
 {
   QMap<QString, QgsProperty> params;
-  for ( const Parameter &param : qgis::as_const( mParameters ) )
+  for ( const Parameter &param : std::as_const( mParameters ) )
   {
     if ( !param.name.isEmpty() )
       params.insert( param.name, param.property );
@@ -643,7 +643,7 @@ bool QgsSvgParametersModel::setData( const QModelIndex &index, const QVariant &v
     {
       QString oldName = mParameters.at( index.row() ).name;
       QString newName = value.toString();
-      for ( const Parameter &param : qgis::as_const( mParameters ) )
+      for ( const Parameter &param : std::as_const( mParameters ) )
       {
         if ( param.name == newName && param.name != oldName )
         {

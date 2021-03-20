@@ -493,7 +493,7 @@ bool QgsMapLayerModel::dropMimeData( const QMimeData *data, Qt::DropAction actio
   }
 
   insertRows( row, rows, QModelIndex() );
-  for ( const QString &text : qgis::as_const( newItems ) )
+  for ( const QString &text : std::as_const( newItems ) )
   {
     QModelIndex idx = index( row, 0, QModelIndex() );
     setData( idx, text, LayerIdRole );

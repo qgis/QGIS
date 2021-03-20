@@ -208,7 +208,7 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() <= mCache.size() )
   {
-    for ( const auto &idx : qgis::as_const( mCacheIndices ) )
+    for ( const auto &idx : std::as_const( mCacheIndices ) )
     {
       idx->requestCompleted( featureRequest, fids );
     }

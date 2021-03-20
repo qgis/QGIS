@@ -1035,7 +1035,7 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag );
 
   //write the log messages written before creating QgsApplication
-  for ( const QString &preApplicationLogMessage : qgis::as_const( preApplicationLogMessages ) )
+  for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage );
 
   // Settings migration is only supported on the default profile for now.
@@ -1399,7 +1399,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  for ( const QString &layerName : qgis::as_const( sFileList ) )
+  for ( const QString &layerName : std::as_const( sFileList ) )
   {
     QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files

@@ -289,7 +289,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         if ( layerProperty.pkCols.size() < 2 )
           flags |= Qt::ItemIsSelectable;
 
-        for ( QStandardItem *item : qgis::as_const( row ) )
+        for ( QStandardItem *item : std::as_const( row ) )
         {
           item->setFlags( item->flags() | flags );
         }

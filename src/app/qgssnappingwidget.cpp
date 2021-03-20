@@ -460,7 +460,7 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
   }
 
   // update snapping flag actions
-  for ( QAction *action : qgis::as_const( mSnappingFlagActions ) )
+  for ( QAction *action : std::as_const( mSnappingFlagActions ) )
   {
     const QgsSnappingConfig::SnappingTypeFlag actionFlag = static_cast<QgsSnappingConfig::SnappingTypeFlag>( action->data().toInt() );
     action->setChecked( config.typeFlag() & actionFlag );
@@ -712,7 +712,7 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
   else
   {
     // user unchecked the action -- find out which ones we should set as new default action
-    for ( QAction *flagAction : qgis::as_const( mSnappingFlagActions ) )
+    for ( QAction *flagAction : std::as_const( mSnappingFlagActions ) )
     {
       if ( type & static_cast<QgsSnappingConfig::SnappingTypeFlag>( flagAction->data().toInt() ) )
       {
