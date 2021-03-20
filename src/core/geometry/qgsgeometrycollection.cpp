@@ -150,7 +150,7 @@ QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, do
 bool QgsGeometryCollection::removeDuplicateNodes( double epsilon, bool useZValues )
 {
   bool result = false;
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( geom->removeDuplicateNodes( epsilon, useZValues ) ) result = true;
   }
@@ -313,7 +313,7 @@ QString QgsGeometryCollection::geometryType() const
 
 void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
-  for ( QgsAbstractGeometry *g : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *g : std::as_const( mGeometries ) )
   {
     g->transform( ct, d, transformZ );
   }
@@ -322,7 +322,7 @@ void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, QgsCoor
 
 void QgsGeometryCollection::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
-  for ( QgsAbstractGeometry *g : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *g : std::as_const( mGeometries ) )
   {
     g->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
@@ -494,7 +494,7 @@ QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, con
 json QgsGeometryCollection::asJsonObject( int precision ) const
 {
   json coordinates( json::array( ) );
-  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     coordinates.push_back( geom->asJsonObject( precision ) );
   }
@@ -781,7 +781,7 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   //if so, update the type dimensionality of the collection to match
   bool hasZ = false;
   bool hasM = false;
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     hasZ = hasZ || geom->is3D();
     hasM = hasM || geom->isMeasure();
@@ -915,7 +915,7 @@ bool QgsGeometryCollection::addZValue( double zValue )
 
   mWkbType = QgsWkbTypes::addZ( mWkbType );
 
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     geom->addZValue( zValue );
   }
@@ -930,7 +930,7 @@ bool QgsGeometryCollection::addMValue( double mValue )
 
   mWkbType = QgsWkbTypes::addM( mWkbType );
 
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     geom->addMValue( mValue );
   }
@@ -945,7 +945,7 @@ bool QgsGeometryCollection::dropZValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     geom->dropZValue();
   }
@@ -959,7 +959,7 @@ bool QgsGeometryCollection::dropMValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     geom->dropMValue();
   }
@@ -969,7 +969,7 @@ bool QgsGeometryCollection::dropMValue()
 
 void QgsGeometryCollection::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
 {
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( geom )
       geom->filterVertices( filter );
@@ -979,7 +979,7 @@ void QgsGeometryCollection::filterVertices( const std::function<bool ( const Qgs
 
 void QgsGeometryCollection::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
 {
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( geom )
       geom->transformVertices( transform );
@@ -989,7 +989,7 @@ void QgsGeometryCollection::transformVertices( const std::function<QgsPoint( con
 
 void QgsGeometryCollection::swapXy()
 {
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( geom )
       geom->swapXy();
@@ -1014,7 +1014,7 @@ bool QgsGeometryCollection::transform( QgsAbstractGeometryTransformer *transform
     return false;
 
   bool res = true;
-  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( geom )
       res = geom->transform( transformer, feedback );

@@ -272,7 +272,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
 
   QString wmsURLFormat, wfsURLFormat, xyzURLFormat;
 
-  for ( const QVariant &layer : qgis::as_const( layerList ) )
+  for ( const QVariant &layer : std::as_const( layerList ) )
   {
     QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
     const QVariantMap layerMap = layer.toMap();

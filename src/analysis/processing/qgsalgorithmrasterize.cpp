@@ -326,7 +326,7 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   }
   else if ( ! mapLayers.isEmpty() )
   {
-    for ( const QgsMapLayer *ml : qgis::as_const( mapLayers ) )
+    for ( const QgsMapLayer *ml : std::as_const( mapLayers ) )
     {
       mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone( ) ) );
     }
@@ -343,7 +343,7 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
         layers << layer;
     }
 
-    for ( const QgsMapLayer *ml : qgis::as_const( layers ) )
+    for ( const QgsMapLayer *ml : std::as_const( layers ) )
     {
       mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone( ) ) );
     }

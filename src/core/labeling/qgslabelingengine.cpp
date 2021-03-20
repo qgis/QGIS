@@ -127,12 +127,12 @@ QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
     return false;
   } );
 
-  for ( QgsAbstractLabelProvider *provider : qgis::as_const( providersByZ ) )
+  for ( QgsAbstractLabelProvider *provider : std::as_const( providersByZ ) )
   {
     if ( provider->layer() && !layers.contains( provider->layer() ) )
       layers << provider->layer();
   }
-  for ( QgsAbstractLabelProvider *provider : qgis::as_const( subProvidersByZ ) )
+  for ( QgsAbstractLabelProvider *provider : std::as_const( subProvidersByZ ) )
   {
     if ( provider->layer() && !layers.contains( provider->layer() ) )
       layers << provider->layer();
@@ -173,12 +173,12 @@ QStringList QgsLabelingEngine::participatingLayerIds() const
     return false;
   } );
 
-  for ( QgsAbstractLabelProvider *provider : qgis::as_const( providersByZ ) )
+  for ( QgsAbstractLabelProvider *provider : std::as_const( providersByZ ) )
   {
     if ( !layers.contains( provider->layerId() ) )
       layers << provider->layerId();
   }
-  for ( QgsAbstractLabelProvider *provider : qgis::as_const( subProvidersByZ ) )
+  for ( QgsAbstractLabelProvider *provider : std::as_const( subProvidersByZ ) )
   {
     if ( !layers.contains( provider->layerId() ) )
       layers << provider->layerId();
@@ -278,7 +278,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   mPal->setPlacementVersion( settings.placementVersion() );
 
   // for each provider: get labels and register them in PAL
-  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
+  for ( QgsAbstractLabelProvider *provider : std::as_const( mProviders ) )
   {
     std::unique_ptr< QgsExpressionContextScopePopper > layerScopePopper;
     if ( QgsMapLayer *ml = provider->layer() )
@@ -410,7 +410,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   QPainter *painter = context.painter();
 
   // prepare for rendering
-  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
+  for ( QgsAbstractLabelProvider *provider : std::as_const( mProviders ) )
   {
     if ( !layerId.isEmpty() && provider->layerId() != layerId )
       continue;
@@ -425,7 +425,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   std::unique_ptr< QgsExpressionContextScopePopper > symbolScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
   // draw label backgrounds
-  for ( pal::LabelPosition *label : qgis::as_const( mLabels ) )
+  for ( pal::LabelPosition *label : std::as_const( mLabels ) )
   {
     if ( context.renderingStopped() )
       break;
@@ -449,7 +449,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   }
 
   // draw the labels
-  for ( pal::LabelPosition *label : qgis::as_const( mLabels ) )
+  for ( pal::LabelPosition *label : std::as_const( mLabels ) )
   {
     if ( context.renderingStopped() )
       break;
@@ -477,7 +477,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   // draw unplaced labels. These are always rendered on top
   if ( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) )
   {
-    for ( pal::LabelPosition *label : qgis::as_const( mUnlabeled ) )
+    for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
     {
       if ( context.renderingStopped() )
         break;
@@ -505,7 +505,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   symbolScopePopper.reset();
 
   // cleanup
-  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
+  for ( QgsAbstractLabelProvider *provider : std::as_const( mProviders ) )
   {
     if ( !layerId.isEmpty() && provider->layerId() != layerId )
       continue;

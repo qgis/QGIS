@@ -433,7 +433,7 @@ void TestQgsMapRendererJob::testRenderedFeatureHandlers()
   QCOMPARE( geometries2.count(), 5 );
 
   QStringList attributes;
-  for ( const QgsFeature &f : qgis::as_const( features1 ) )
+  for ( const QgsFeature &f : std::as_const( features1 ) )
   {
     QStringList bits;
     for ( const QVariant &v : f.attributes() )
@@ -448,7 +448,7 @@ void TestQgsMapRendererJob::testRenderedFeatureHandlers()
   QCOMPARE( attributes.at( 4 ), QStringLiteral( "Jet,,,,," ) );
 
   QStringList wkts;
-  for ( const QgsGeometry &g : qgis::as_const( geometries1 ) )
+  for ( const QgsGeometry &g : std::as_const( geometries1 ) )
   {
     QgsDebugMsg( g.asWkt( 1 ) );
     wkts << g.asWkt( 1 );
@@ -473,7 +473,7 @@ void TestQgsMapRendererJob::testRenderedFeatureHandlers()
   QCOMPARE( features3.count(), 5 );
   QCOMPARE( geometries3.count(), 5 );
   attributes.clear();
-  for ( const QgsFeature &f : qgis::as_const( features3 ) )
+  for ( const QgsFeature &f : std::as_const( features3 ) )
   {
     QStringList bits;
     for ( const QVariant &v : f.attributes() )

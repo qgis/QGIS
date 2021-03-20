@@ -186,7 +186,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
   }
 
-  for ( const QgsField &field : qgis::as_const( mFields ) )
+  for ( const QgsField &field : std::as_const( mFields ) )
   {
     mAttributeAliasMap.insert( field.name(), QString() );
   }
@@ -827,7 +827,7 @@ void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
       feature = getFeature( fid );
 
     int size = mFields.size();
-    for ( int idx : qgis::as_const( mDefaultValueOnUpdateFields ) )
+    for ( int idx : std::as_const( mDefaultValueOnUpdateFields ) )
     {
       if ( idx < 0 || idx >= size )
         continue;
@@ -2671,7 +2671,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
     node.appendChild( fieldConfigurationElement );
 
-    for ( const QgsField &field : qgis::as_const( mFields ) )
+    for ( const QgsField &field : std::as_const( mFields ) )
     {
       QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
@@ -2703,7 +2703,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   {
     //attribute aliases
     QDomElement aliasElem = doc.createElement( QStringLiteral( "aliases" ) );
-    for ( const QgsField &field : qgis::as_const( mFields ) )
+    for ( const QgsField &field : std::as_const( mFields ) )
     {
       QDomElement aliasEntryElem = doc.createElement( QStringLiteral( "alias" ) );
       aliasEntryElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2715,7 +2715,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     //default expressions
     QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
-    for ( const QgsField &field : qgis::as_const( mFields ) )
+    for ( const QgsField &field : std::as_const( mFields ) )
     {
       QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
       defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2727,7 +2727,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     // constraints
     QDomElement constraintsElem = doc.createElement( QStringLiteral( "constraints" ) );
-    for ( const QgsField &field : qgis::as_const( mFields ) )
+    for ( const QgsField &field : std::as_const( mFields ) )
     {
       QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
       constraintElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2741,7 +2741,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     // constraint expressions
     QDomElement constraintExpressionsElem = doc.createElement( QStringLiteral( "constraintExpressions" ) );
-    for ( const QgsField &field : qgis::as_const( mFields ) )
+    for ( const QgsField &field : std::as_const( mFields ) )
     {
       QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraint" ) );
       constraintExpressionElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -3232,7 +3232,7 @@ bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
 
   std::sort( attrList.begin(), attrList.end(), std::greater<int>() );
 
-  for ( int attr : qgis::as_const( attrList ) )
+  for ( int attr : std::as_const( attrList ) )
   {
     if ( deleteAttribute( attr ) )
     {
@@ -5408,7 +5408,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   QSet<QgsMapLayerDependency> toAdd = deps - dependencies();
 
   // disconnect layers that are not present in the list of dependencies anymore
-  for ( const QgsMapLayerDependency &dep : qgis::as_const( mDependencies ) )
+  for ( const QgsMapLayerDependency &dep : std::as_const( mDependencies ) )
   {
     QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( dep.layerId() ) );
     if ( !lyr )
@@ -5429,7 +5429,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   emit dependenciesChanged();
 
   // connect to new layers
-  for ( const QgsMapLayerDependency &dep : qgis::as_const( mDependencies ) )
+  for ( const QgsMapLayerDependency &dep : std::as_const( mDependencies ) )
   {
     QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( dep.layerId() ) );
     if ( !lyr )

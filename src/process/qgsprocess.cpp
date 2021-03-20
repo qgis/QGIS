@@ -983,7 +983,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
   if ( !missingParams.isEmpty() )
   {
     std::cerr << QStringLiteral( "ERROR: The following mandatory parameters were not specified\n\n" ).toLocal8Bit().constData();
-    for ( const QgsProcessingParameterDefinition *p : qgis::as_const( missingParams ) )
+    for ( const QgsProcessingParameterDefinition *p : std::as_const( missingParams ) )
     {
       std::cerr << QStringLiteral( "\t%1:\t%2\n" ).arg( p->name(), p->description() ).toLocal8Bit().constData();
     }

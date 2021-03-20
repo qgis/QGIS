@@ -478,7 +478,7 @@ void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSi
   if ( effect && effect->enabled() )
     effectPainter = std::make_unique< QgsEffectPainter >( context.renderContext(), effect );
 
-  for ( QPointF point : qgis::as_const( points ) )
+  for ( QPointF point : std::as_const( points ) )
     renderPoint( point, context );
 
   effectPainter.reset();
@@ -708,7 +708,7 @@ void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVe
       case AllRings:
       case InteriorRingsOnly:
       {
-        for ( const QPolygonF &ring : qgis::as_const( *rings ) )
+        for ( const QPolygonF &ring : std::as_const( *rings ) )
           renderPolyline( ring, context );
       }
       break;

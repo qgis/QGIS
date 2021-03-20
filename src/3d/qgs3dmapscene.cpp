@@ -250,7 +250,7 @@ int Qgs3DMapScene::terrainPendingJobsCount() const
 int Qgs3DMapScene::totalPendingJobsCount() const
 {
   int count = 0;
-  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
     count += entity->pendingJobsCount();
   return count;
 }
@@ -295,7 +295,7 @@ void Qgs3DMapScene::onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent
   if ( !vlayer )
     return;
 
-  for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
+  for ( Qgs3DMapScenePickHandler *pickHandler : std::as_const( mPickHandlers ) )
   {
     pickHandler->handlePickOnVectorLayer( vlayer, fid, pickEvent->worldIntersection(), pickEvent );
   }
@@ -383,7 +383,7 @@ void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt
 void Qgs3DMapScene::updateScene()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
-  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
@@ -447,7 +447,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
     // Also involve all the other chunked entities to make sure that they will not get
     // clipped by the near or far plane
-    for ( QgsChunkedEntity *e : qgis::as_const( mChunkEntities ) )
+    for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
     {
       if ( e != mTerrain )
         _updateNearFarPlane( e->activeNodes(), viewMatrix, fnear, ffar );
@@ -485,7 +485,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
-  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
@@ -585,10 +585,10 @@ void Qgs3DMapScene::onBackgroundColorChanged()
 
 void Qgs3DMapScene::updateLights()
 {
-  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightEntities ) )
+  for ( Qt3DCore::QEntity *entity : std::as_const( mLightEntities ) )
     entity->deleteLater();
   mLightEntities.clear();
-  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightOriginEntities ) )
+  for ( Qt3DCore::QEntity *entity : std::as_const( mLightOriginEntities ) )
     entity->deleteLater();
   mLightOriginEntities.clear();
 
@@ -956,7 +956,7 @@ void Qgs3DMapScene::updateSceneState()
     return;
   }
 
-  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() && entity->pendingJobsCount() > 0 )
     {

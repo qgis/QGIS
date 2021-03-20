@@ -369,7 +369,7 @@ QVariantMap QgsQuickUtils::createValueRelationCache( const QVariantMap &config, 
   QVariantMap valueMap;
   QgsValueRelationFieldFormatter::ValueRelationCache cache = QgsValueRelationFieldFormatter::createCache( config, formFeature );
 
-  for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( cache ) )
+  for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : std::as_const( cache ) )
   {
     valueMap.insert( item.key.toString(), item.value );
   }

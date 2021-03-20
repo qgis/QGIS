@@ -510,7 +510,7 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
   if ( !data->text().isEmpty() && !rawPaths.contains( data->text() ) )
     rawPaths.append( data->text() );
 
-  for ( const QString &path : qgis::as_const( rawPaths ) )
+  for ( const QString &path : std::as_const( rawPaths ) )
   {
     QFileInfo file( path );
     if ( file.isFile() )

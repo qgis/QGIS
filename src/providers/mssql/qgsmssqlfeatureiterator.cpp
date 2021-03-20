@@ -173,7 +173,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
   }
 
-  for ( int i : qgis::as_const( attrs ) )
+  for ( int i : std::as_const( attrs ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( i ) )
       continue;

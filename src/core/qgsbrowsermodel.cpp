@@ -202,7 +202,7 @@ void QgsBrowserModel::dataItemProviderWillBeRemoved( QgsDataItemProvider *provid
 void QgsBrowserModel::onConnectionsChanged( const QString &providerKey )
 {
   // refresh the matching provider
-  for ( QgsDataItem *item : qgis::as_const( mRootItems ) )
+  for ( QgsDataItem *item : std::as_const( mRootItems ) )
   {
     if ( item->providerKey() == providerKey )
     {
@@ -634,7 +634,7 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     {
       QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
       const QgsMimeDataUtils::UriList uris = ptr->mimeUris();
-      for ( const auto &uri : qgis::as_const( uris ) )
+      for ( const auto &uri : std::as_const( uris ) )
       {
         lst.append( uri );
       }

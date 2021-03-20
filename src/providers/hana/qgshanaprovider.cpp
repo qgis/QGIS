@@ -702,7 +702,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           {
             QVariantList primaryKeyVals;
             primaryKeyVals.reserve( mPrimaryKeyAttrs.size() );
-            for ( int idx : qgis::as_const( mPrimaryKeyAttrs ) )
+            for ( int idx : std::as_const( mPrimaryKeyAttrs ) )
               primaryKeyVals << attrs.at( idx );
             feature.setId( mPrimaryKeyCntx->lookupFid( primaryKeyVals ) );
           }
@@ -951,7 +951,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
   while ( !renameCandidates.empty() )
   {
     bool found = false;
-    for ( const QPair<QString, QString> &candidate :  qgis::as_const( renameCandidates ) )
+    for ( const QPair<QString, QString> &candidate :  std::as_const( renameCandidates ) )
     {
       if ( resultFieldNames.contains( candidate.first ) && !resultFieldNames.contains( candidate.second ) )
       {
@@ -974,7 +974,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
 
   try
   {
-    for ( const QPair<QString, QString> &kv :  qgis::as_const( fieldsToRename ) )
+    for ( const QPair<QString, QString> &kv :  std::as_const( fieldsToRename ) )
     {
       QString sql = QStringLiteral( "RENAME COLUMN %1.%2.%3 TO %4" ).arg(
                       QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),

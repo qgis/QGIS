@@ -65,7 +65,7 @@ QgsLayout::~QgsLayout()
   while ( deleted )
   {
     deleted = false;
-    for ( QGraphicsItem *item : qgis::as_const( itemList ) )
+    for ( QGraphicsItem *item : std::as_const( itemList ) )
     {
       if ( dynamic_cast< QgsLayoutItem * >( item ) && !dynamic_cast< QgsLayoutItemPage *>( item ) )
       {
@@ -239,7 +239,7 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateU
 {
   QList<QgsLayoutItem *> itemList;
   layoutItems( itemList );
-  for ( QgsLayoutItem *item : qgis::as_const( itemList ) )
+  for ( QgsLayoutItem *item : std::as_const( itemList ) )
   {
     if ( item->uuid() == uuid )
       return item;
@@ -254,7 +254,7 @@ QgsLayoutItem *QgsLayout::itemByTemplateUuid( const QString &uuid ) const
 {
   QList<QgsLayoutItem *> itemList;
   layoutItems( itemList );
-  for ( QgsLayoutItem *item : qgis::as_const( itemList ) )
+  for ( QgsLayoutItem *item : std::as_const( itemList ) )
   {
     if ( item->mTemplateUuid == uuid )
       return item;
@@ -438,7 +438,7 @@ QgsLayoutItemMap *QgsLayout::referenceMap() const
   layoutItems( maps );
   QgsLayoutItemMap *largestMap = nullptr;
   double largestMapArea = 0;
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     double area = map->rect().width() * map->rect().height();
     if ( area > largestMapArea )
@@ -1113,7 +1113,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   {
     profile->switchTask( tr( "Finalize restore" ) );
   }
-  for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
+  for ( QgsLayoutItem *item : std::as_const( newItems ) )
   {
     if ( profile )
       itemProfile = std::make_unique< QgsScopedRuntimeProfile >( item->displayName(), QStringLiteral( "projectload" ) );
@@ -1121,7 +1121,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     if ( itemProfile )
       itemProfile.reset();
   }
-  for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
+  for ( QgsLayoutMultiFrame *mf : std::as_const( newMultiFrames ) )
   {
     if ( profile )
       itemProfile = std::make_unique< QgsScopedRuntimeProfile >( mf->displayName(), QStringLiteral( "projectload" ) );
@@ -1130,11 +1130,11 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       itemProfile.reset();
   }
 
-  for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
+  for ( QgsLayoutItem *item : std::as_const( newItems ) )
   {
     item->mTemplateUuid.clear();
   }
-  for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
+  for ( QgsLayoutMultiFrame *mf : std::as_const( newMultiFrames ) )
   {
     mf->mTemplateUuid.clear();
   }

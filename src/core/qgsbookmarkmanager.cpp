@@ -134,7 +134,7 @@ QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
   else
   {
     // check for duplicate ID
-    for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+    for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
     {
       if ( b.id() == bookmark.id() )
       {
@@ -167,7 +167,7 @@ bool QgsBookmarkManager::removeBookmark( const QString &id )
   QString group;
   int pos = -1;
   int i = 0;
-  for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+  for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
   {
     if ( b.id() == id )
     {
@@ -198,7 +198,7 @@ bool QgsBookmarkManager::updateBookmark( const QgsBookmark &bookmark )
 {
   // check for duplicate ID
   int i = 0;
-  for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+  for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
   {
     if ( b.id() == bookmark.id() )
     {

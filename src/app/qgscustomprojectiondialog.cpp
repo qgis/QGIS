@@ -285,7 +285,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem crs;
-  for ( const Definition &def : qgis::as_const( mDefinitions ) )
+  for ( const Definition &def : std::as_const( mDefinitions ) )
   {
     if ( !def.wkt.isEmpty() )
       crs.createFromWkt( def.wkt );
@@ -350,7 +350,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
 
   //Modify the CRS changed:
   bool saveSuccess = true;
-  for ( const Definition &def : qgis::as_const( mDefinitions ) )
+  for ( const Definition &def : std::as_const( mDefinitions ) )
   {
     if ( !def.wkt.isEmpty() )
       crs.createFromWkt( def.wkt );

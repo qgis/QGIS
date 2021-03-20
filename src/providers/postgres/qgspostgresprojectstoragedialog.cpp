@@ -119,7 +119,7 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
     return;
   }
 
-  for ( const QgsPostgresSchemaProperty &schema : qgis::as_const( schemas ) )
+  for ( const QgsPostgresSchemaProperty &schema : std::as_const( schemas ) )
   {
     mCboSchema->addItem( schema.name );
   }

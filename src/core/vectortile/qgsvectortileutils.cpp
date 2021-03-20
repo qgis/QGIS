@@ -53,7 +53,7 @@ QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
   QgsFields fields;
   QStringList fieldsSorted = qgis::setToList( flds );
   std::sort( fieldsSorted.begin(), fieldsSorted.end() );
-  for ( const QString &fieldName : qgis::as_const( fieldsSorted ) )
+  for ( const QString &fieldName : std::as_const( fieldsSorted ) )
   {
     fields.append( QgsField( fieldName, QVariant::String ) );
   }

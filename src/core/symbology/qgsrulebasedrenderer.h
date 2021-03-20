@@ -102,7 +102,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         zIndex = rh.zIndex;
         qDeleteAll( jobs );
         jobs.clear();
-        for ( RenderJob *job :  qgis::as_const( rh.jobs ) )
+        for ( RenderJob *job :  std::as_const( rh.jobs ) )
         {
           jobs << new RenderJob( *job );
         }
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
         : zIndex( other.zIndex ), jobs()
       {
-        for ( RenderJob *job : qgis::as_const( other.jobs ) )
+        for ( RenderJob *job : std::as_const( other.jobs ) )
         {
           jobs << new RenderJob( *job );
         }

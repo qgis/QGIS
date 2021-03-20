@@ -2533,7 +2533,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
   // can't forget the all supported case
   QStringList exts;
-  for ( const QString &ext : qgis::as_const( extensions ) )
+  for ( const QString &ext : std::as_const( extensions ) )
     exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
   fileFiltersString.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QLatin1Char( ' ' ) ) ) );
 

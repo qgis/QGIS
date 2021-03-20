@@ -546,7 +546,7 @@ void QgsExpressionTreeView::loadUserExpressions( )
   QString expression;
   int i = 0;
   mUserExpressionLabels = settings.childGroups();
-  for ( const auto &label : qgis::as_const( mUserExpressionLabels ) )
+  for ( const auto &label : std::as_const( mUserExpressionLabels ) )
   {
     settings.beginGroup( label );
     expression = settings.value( QStringLiteral( "expression" ) ).toString();
@@ -578,7 +578,7 @@ QJsonDocument QgsExpressionTreeView::exportUserExpressions()
 
   mUserExpressionLabels = settings.childGroups();
 
-  for ( const QString &label : qgis::as_const( mUserExpressionLabels ) )
+  for ( const QString &label : std::as_const( mUserExpressionLabels ) )
   {
     settings.beginGroup( label );
 
@@ -749,7 +749,7 @@ const QList<QgsExpressionItem *> QgsExpressionTreeView::findExpressions( const Q
 {
   QList<QgsExpressionItem *> result;
   const QList<QStandardItem *> found { mModel->findItems( label, Qt::MatchFlag::MatchRecursive ) };
-  for ( const auto &item : qgis::as_const( found ) )
+  for ( const auto &item : std::as_const( found ) )
   {
     result.push_back( static_cast<QgsExpressionItem *>( item ) );
   }

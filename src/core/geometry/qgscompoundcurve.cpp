@@ -213,7 +213,7 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
   //if so, update the type dimensionality of the compound curve to match
   bool hasZ = false;
   bool hasM = false;
-  for ( const QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( const QgsCurve *curve : std::as_const( mCurves ) )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -602,7 +602,7 @@ void QgsCompoundCurve::draw( QPainter &p ) const
 
 void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->transform( ct, d, transformZ );
   }
@@ -611,7 +611,7 @@ void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinat
 
 void QgsCompoundCurve::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
@@ -862,7 +862,7 @@ double QgsCompoundCurve::yAt( int index ) const
 bool QgsCompoundCurve::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
   bool res = true;
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     if ( !curve->transform( transformer ) )
     {
@@ -882,7 +882,7 @@ bool QgsCompoundCurve::transform( QgsAbstractGeometryTransformer *transformer, Q
 
 void QgsCompoundCurve::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->filterVertices( filter );
   }
@@ -891,7 +891,7 @@ void QgsCompoundCurve::filterVertices( const std::function<bool ( const QgsPoint
 
 void QgsCompoundCurve::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->transformVertices( transform );
   }
@@ -1033,7 +1033,7 @@ bool QgsCompoundCurve::addZValue( double zValue )
 
   mWkbType = QgsWkbTypes::addZ( mWkbType );
 
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->addZValue( zValue );
   }
@@ -1048,7 +1048,7 @@ bool QgsCompoundCurve::addMValue( double mValue )
 
   mWkbType = QgsWkbTypes::addM( mWkbType );
 
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->addMValue( mValue );
   }
@@ -1062,7 +1062,7 @@ bool QgsCompoundCurve::dropZValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->dropZValue();
   }
@@ -1076,7 +1076,7 @@ bool QgsCompoundCurve::dropMValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->dropMValue();
   }
@@ -1086,7 +1086,7 @@ bool QgsCompoundCurve::dropMValue()
 
 void QgsCompoundCurve::swapXy()
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->swapXy();
   }

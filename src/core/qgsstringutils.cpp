@@ -83,7 +83,7 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       bool firstWord = true;
       int i = 0;
       int lastWord = parts.count() - 1;
-      for ( const QString &word : qgis::as_const( parts ) )
+      for ( const QString &word : std::as_const( parts ) )
       {
         if ( newPhraseSeparators.contains( word.trimmed() ) )
         {

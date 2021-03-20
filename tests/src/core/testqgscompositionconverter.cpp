@@ -420,7 +420,7 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
     int count = 0;
     QList<QgsLayoutItemMap *> items;
     layout->layoutItems<QgsLayoutItemMap>( items );
-    for ( auto const &mapItem : qgis::as_const( items ) )
+    for ( auto const &mapItem : std::as_const( items ) )
     {
       const auto overviewItems = mapItem->overviews()->asList();
       for ( auto const &item : overviewItems )
@@ -622,7 +622,7 @@ void TestQgsCompositionConverter::importComposerTemplate()
   QList<QgsLayoutItemMap *> mapItems;
   layout->layoutItems<QgsLayoutItemMap>( mapItems );
   mapUuids.reserve( mapItems.count() );
-  for ( auto const &item : qgis::as_const( mapItems ) )
+  for ( auto const &item : std::as_const( mapItems ) )
   {
     mapUuids << item->uuid();
   }
@@ -632,7 +632,7 @@ void TestQgsCompositionConverter::importComposerTemplate()
     int count = 0;
     QList<QgsLayoutItemPicture *> items;
     layout->layoutItems<QgsLayoutItemPicture>( items );
-    for ( auto const &item : qgis::as_const( items ) )
+    for ( auto const &item : std::as_const( items ) )
     {
       if ( item->linkedMap() )
       {
@@ -650,7 +650,7 @@ void TestQgsCompositionConverter::importComposerTemplate()
     int count = 0;
     QList<QgsLayoutItemLegend *> items;
     layout->layoutItems<QgsLayoutItemLegend>( items );
-    for ( auto const &item : qgis::as_const( items ) )
+    for ( auto const &item : std::as_const( items ) )
     {
       if ( item->linkedMap() )
       {
@@ -667,7 +667,7 @@ void TestQgsCompositionConverter::importComposerTemplate()
     int count = 0;
     QList<QgsLayoutItemScaleBar *> items;
     layout->layoutItems<QgsLayoutItemScaleBar>( items );
-    for ( auto const &item : qgis::as_const( items ) )
+    for ( auto const &item : std::as_const( items ) )
     {
       if ( item->linkedMap( ) )
       {

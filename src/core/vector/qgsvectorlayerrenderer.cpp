@@ -68,7 +68,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   bool insertedMainRenderer = false;
   double prevLevel = std::numeric_limits< double >::lowest();
   mRenderer = mainRenderer.get();
-  for ( const QgsFeatureRendererGenerator *generator : qgis::as_const( generators ) )
+  for ( const QgsFeatureRendererGenerator *generator : std::as_const( generators ) )
   {
     if ( generator->level() >= 0 && prevLevel < 0 && !insertedMainRenderer )
     {

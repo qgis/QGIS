@@ -286,7 +286,7 @@ void QgsRelationReferenceWidget::setForeignKeys( const QVariantList &values )
     }
 
     mForeignKeys.clear();
-    for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
+    for ( const QString &fieldName : std::as_const( mReferencedFields ) )
       mForeignKeys << mFeature.attribute( fieldName );
 
     QgsExpression expr( mReferencedLayer->displayExpression() );
@@ -296,7 +296,7 @@ void QgsRelationReferenceWidget::setForeignKeys( const QVariantList &values )
     if ( expr.hasEvalError() )
     {
       QStringList titleFields;
-      for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
+      for ( const QString &fieldName : std::as_const( mReferencedFields ) )
         titleFields << mFeature.attribute( fieldName ).toString();
       title = titleFields.join( QLatin1Char( ' ' ) );
     }
@@ -352,7 +352,7 @@ void QgsRelationReferenceWidget::deleteForeignKeys()
     }
     mLineEdit->setText( nullText );
     QVariantList nullAttributes;
-    for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
+    for ( const QString &fieldName : std::as_const( mReferencedFields ) )
     {
       Q_UNUSED( fieldName );
       nullAttributes << QVariant( QVariant::Int );
@@ -513,7 +513,7 @@ void QgsRelationReferenceWidget::init()
 
     if ( !mFilterFields.isEmpty() )
     {
-      for ( const QString &fieldName : qgis::as_const( mFilterFields ) )
+      for ( const QString &fieldName : std::as_const( mFilterFields ) )
       {
         int idx = mReferencedLayer->fields().lookupField( fieldName );
 
@@ -769,14 +769,14 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
     if ( expr.hasEvalError() )
     {
       QStringList titleFields;
-      for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
+      for ( const QString &fieldName : std::as_const( mReferencedFields ) )
         titleFields << mFeature.attribute( fieldName ).toString();
       title = titleFields.join( QLatin1Char( ' ' ) );
     }
     mLineEdit->setText( title );
     mForeignKeys.clear();
     mFeature = feature;
-    for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
+    for ( const QString &fieldName : std::as_const( mReferencedFields ) )
       mForeignKeys << mFeature.attribute( fieldName );
   }
   else
@@ -1028,7 +1028,7 @@ void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )
   if ( mEditorContext.vectorLayerTools()->addFeature( mReferencedLayer, attributes, f.geometry(), &f ) )
   {
     QVariantList attrs;
-    for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
+    for ( const QString &fieldName : std::as_const( mReferencedFields ) )
       attrs << f.attribute( fieldName );
 
     setForeignKeys( attrs );

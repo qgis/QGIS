@@ -2884,7 +2884,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
 
   if ( !details.attributes.isEmpty() )
   {
-    for ( int attrIdx : qgis::as_const( details.attributes ) )
+    for ( int attrIdx : std::as_const( details.attributes ) )
     {
       details.outputFields.append( details.sourceFields.at( attrIdx ) );
     }
@@ -3409,7 +3409,7 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
   }
 
   results.reserve( writableDrivers.count() );
-  for ( const QString &drvName : qgis::as_const( writableDrivers ) )
+  for ( const QString &drvName : std::as_const( writableDrivers ) )
   {
     MetaData metadata;
     if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )

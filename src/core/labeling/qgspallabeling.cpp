@@ -3635,7 +3635,7 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
   {
     QStringList autoWrappedLines;
     autoWrappedLines.reserve( multiLineSplit.count() );
-    for ( const QString &line : qgis::as_const( multiLineSplit ) )
+    for ( const QString &line : std::as_const( multiLineSplit ) )
     {
       autoWrappedLines.append( QgsStringUtils::wordWrap( line, autoWrapLength, useMaxLineLengthWhenAutoWrapping ).split( '\n' ) );
     }
