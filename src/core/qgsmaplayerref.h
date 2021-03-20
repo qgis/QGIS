@@ -230,9 +230,9 @@ struct _LayerRef
       {
         layers = project->mapLayers().values();
       }
-      for ( QgsMapLayer *l : std::as_const( layers ) )
+      for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
       {
-        if ( TYPE *tl = qobject_cast< TYPE *>( l ) )
+        if ( TYPE *tl = qobject_cast< TYPE *>( *it ) )
         {
           if ( layerMatchesWeakly( tl, matchType ) )
           {
