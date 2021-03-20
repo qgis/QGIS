@@ -224,7 +224,7 @@ class GdalUtils:
                 s = str(s)
             # don't escape if command starts with - and isn't a negative number, e.g. -9999
             if s and re.match(r'^([^-]|-\d)', s) and any(c in s for c in escChars):
-                escaped = '"' + s.replace('\\', '\\\\').replace('"', '"""') \
+                escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
                           + '"'
             else:
                 escaped = s
