@@ -58,7 +58,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * lightening
      * \see setBrightness
      */
-    void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
+    void setBrightness( int brightness );
 
     /**
      * Returns the brightness modification for the effect.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * greater contrast
      * \see setContrast
      */
-    void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
+    void setContrast( int contrast );
 
     /**
      * Returns the contrast modification for the effect.

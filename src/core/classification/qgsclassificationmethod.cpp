@@ -142,7 +142,7 @@ void QgsClassificationMethod::setSymmetricMode( bool enabled, double symmetryPoi
 void QgsClassificationMethod::setLabelPrecision( int precision )
 {
   // Limit the range of decimal places to a reasonable range
-  precision = qBound( MIN_PRECISION, precision, MAX_PRECISION );
+  precision = std::clamp( precision, MIN_PRECISION, MAX_PRECISION );
   mLabelPrecision = precision;
   mLabelNumberScale = 1.0;
   mLabelNumberSuffix.clear();

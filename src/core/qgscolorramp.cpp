@@ -411,9 +411,9 @@ QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count,
     //see http://basecase.org/env/on-rainbows for more details
     currentHueAngle += 137.50776;
     //scale hue to between hueMax and hueMin
-    h = qBound( 0.0, std::round( ( std::fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 359.0 );
-    s = qBound( 0, ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeSatMin, 255 );
-    v = qBound( 0, ( qrand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 255 );
+    h = std::clamp( std::round( ( std::fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 0.0, 359.0 );
+    s = std::clamp( ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeSatMin, 0, 255 );
+    v = std::clamp( ( qrand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 0, 255 );
     colors.append( QColor::fromHsv( h, s, v ) );
   }
   return colors;

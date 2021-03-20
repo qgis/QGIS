@@ -137,6 +137,9 @@ HINTS[37]="Use range based for loops instead"
 KEYWORDS[38]="foreach"
 HINTS[38]="Use range based for loops instead"
 
+KEYWORDS[39]="\bqBound("
+HINTS[39]="Use std::clamp instead (but be careful of the different argument order!!)"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 

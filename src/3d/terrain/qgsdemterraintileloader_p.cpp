@@ -293,8 +293,8 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
 
   int cellX = ( int )( ( x - rect.xMinimum() ) / rect.width() * res + .5f );
   int cellY = ( int )( ( rect.yMaximum() - y ) / rect.height() * res + .5f );
-  cellX = qBound( 0, cellX, res - 1 );
-  cellY = qBound( 0, cellY, res - 1 );
+  cellX = std::clamp( cellX, 0, res - 1 );
+  cellY = std::clamp( cellY, 0, res - 1 );
 
   const float *data = ( const float * ) mDtmCoarseData.constData();
   return data[cellX + cellY * res];
