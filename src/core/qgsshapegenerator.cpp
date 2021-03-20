@@ -19,6 +19,7 @@
 #include "qgsgeometryutils.h"
 #include <QLineF>
 #include <QList>
+#include <algorithm>
 
 QLineF segment( int index, QRectF rect )
 {
@@ -111,18 +112,21 @@ QPolygonF QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const QRec
       balloonSegment = minEdgeIndex;
       QPointF minEdgeEnd = minEdge.p2();
       balloonSegmentPoint1 = QPointF( minEdgePoint.x(), minEdgePoint.y() );
-      if ( std::sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < wedgeWidth )
+
+      const double segmentLength = minEdge.length();
+      const double clampedWedgeWidth = std::clamp( wedgeWidth, 0.0, segmentLength );
+      if ( std::sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < clampedWedgeWidth )
       {
         double x = 0;
         double y = 0;
-        QgsGeometryUtils::pointOnLineWithDistance( minEdge.p2().x(), minEdge.p2().y(), minEdge.p1().x(), minEdge.p1().y(), wedgeWidth, x, y );
+        QgsGeometryUtils::pointOnLineWithDistance( minEdge.p2().x(), minEdge.p2().y(), minEdge.p1().x(), minEdge.p1().y(), clampedWedgeWidth, x, y );
         balloonSegmentPoint1 = QPointF( x, y );
       }
 
       {
         double x = 0;
         double y = 0;
-        QgsGeometryUtils::pointOnLineWithDistance( balloonSegmentPoint1.x(), balloonSegmentPoint1.y(), minEdge.p2().x(), minEdge.p2().y(), wedgeWidth, x, y );
+        QgsGeometryUtils::pointOnLineWithDistance( balloonSegmentPoint1.x(), balloonSegmentPoint1.y(), minEdge.p2().x(), minEdge.p2().y(), clampedWedgeWidth, x, y );
         balloonSegmentPoint2 = QPointF( x, y );
       }
     }

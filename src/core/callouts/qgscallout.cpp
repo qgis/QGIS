@@ -62,6 +62,7 @@ void QgsCallout::initPropertyDefinitions()
     {
       QgsCallout::Margins, QgsPropertyDefinition( "Margins", QgsPropertyDefinition::DataTypeString, QObject::tr( "Margins" ), QObject::tr( "string of four doubles '<b>top,right,bottom,left</b>' or array of doubles <b>[top, right, bottom, left]</b>" ) )
     },
+    { QgsCallout::WedgeWidth, QgsPropertyDefinition( "WedgeWidth", QObject::tr( "Wedge width" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 }
 
@@ -1020,6 +1021,9 @@ QgsBalloonCallout::QgsBalloonCallout( const QgsBalloonCallout &other )
   , mOffsetFromAnchorScale( other.mOffsetFromAnchorScale )
   , mMargins( other.mMargins )
   , mMarginUnit( other.mMarginUnit )
+  , mWedgeWidth( other.mWedgeWidth )
+  , mWedgeWidthUnit( other.mWedgeWidthUnit )
+  , mWedgeWidthScale( other.mWedgeWidthScale )
 {
 
 }
@@ -1057,6 +1061,10 @@ QVariantMap QgsBalloonCallout::properties( const QgsReadWriteContext &context ) 
   props[ QStringLiteral( "margins" ) ] = mMargins.toString();
   props[ QStringLiteral( "marginsUnit" ) ] = QgsUnitTypes::encodeUnit( mMarginUnit );
 
+  props[ QStringLiteral( "wedgeWidth" ) ] = mWedgeWidth;
+  props[ QStringLiteral( "wedgeWidthUnit" ) ] = QgsUnitTypes::encodeUnit( mWedgeWidthUnit );
+  props[ QStringLiteral( "wedgeWidthMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mWedgeWidthScale );
+
   return props;
 }
 
@@ -1078,6 +1086,10 @@ void QgsBalloonCallout::readProperties( const QVariantMap &props, const QgsReadW
 
   mMargins = QgsMargins::fromString( props.value( QStringLiteral( "margins" ) ).toString() );
   mMarginUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "marginsUnit" ) ).toString() );
+
+  mWedgeWidth = props.value( QStringLiteral( "wedgeWidth" ), 2.64 ).toDouble();
+  mWedgeWidthUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "wedgeWidthUnit" ) ).toString() );
+  mWedgeWidthScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "wedgeWidthMapUnitScale" ) ).toString() );
 }
 
 void QgsBalloonCallout::startRender( QgsRenderContext &context )
@@ -1164,7 +1176,13 @@ void QgsBalloonCallout::draw( QgsRenderContext &context, const QRectF &rect, con
 
 QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY origin, QRectF rect ) const
 {
-  double segmentPointWidth = context.convertToPainterUnits( 2.64, QgsUnitTypes::RenderMillimeters );
+  double segmentPointWidth = mWedgeWidth;
+  if ( dataDefinedProperties().isActive( QgsCallout::WedgeWidth ) )
+  {
+    context.expressionContext().setOriginalValueVariable( segmentPointWidth );
+    segmentPointWidth = dataDefinedProperties().valueAsDouble( QgsCallout::WedgeWidth, context.expressionContext(), segmentPointWidth );
+  }
+  segmentPointWidth = context.convertToPainterUnits( segmentPointWidth, mWedgeWidthUnit, mWedgeWidthScale );
 
   double left = mMargins.left();
   double right = mMargins.right();
