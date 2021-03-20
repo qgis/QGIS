@@ -1077,19 +1077,17 @@ QString QgsPostgresConn::postgisVersion() const
   mTopologyAvailable = false;
   if ( mPostgisVersionMajor > 1 )
   {
-    QgsPostgresResult result(
-      PQexec(
-        QStringLiteral(
-          "SELECT has_schema_privilege(n.oid, 'usage')"
-          "   AND has_table_privilege(t.oid, 'select')"
-          "   AND has_table_privilege(l.oid, 'select')"
-          "  FROM pg_namespace n, pg_class t, pg_class l"
-          " WHERE n.nspname = 'topology'"
-          "   AND t.relnamespace = n.oid"
-          "   AND l.relnamespace = n.oid"
-          "   AND t.relname = 'topology'"
-          "   AND l.relname = 'layer'"
-        ) ) );
+    result = PQexec( QStringLiteral(
+                        "SELECT has_schema_privilege(n.oid, 'usage')"
+                          " AND has_table_privilege(t.oid, 'select')"
+                          " AND has_table_privilege(l.oid, 'select')"
+                         " FROM pg_namespace n, pg_class t, pg_class l"
+                        " WHERE n.nspname = 'topology'"
+                          " AND t.relnamespace = n.oid"
+                          " AND l.relnamespace = n.oid"
+                          " AND t.relname = 'topology'"
+                          " AND l.relname = 'layer'"
+                     ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mTopologyAvailable = true;
@@ -1110,18 +1108,17 @@ QString QgsPostgresConn::postgisVersion() const
   if ( mPostgresqlVersion >= 90000 )
   {
     QgsDebugMsgLevel( QStringLiteral( "Checking for pointcloud support" ), 2 );
-    result = PQexec( QStringLiteral( R"(
-SELECT
- has_table_privilege(c.oid, 'select')
- AND has_table_privilege(f.oid, 'select')
-FROM pg_class c, pg_class f, pg_namespace n, pg_extension e
-WHERE c.relnamespace = n.oid
-  AND c.relname = 'pointcloud_columns'
-  AND f.relnamespace = n.oid
-  AND f.relname = 'pointcloud_formats'
-  AND n.oid = e.extnamespace
-  AND e.extname = 'pointcloud'
-    )" ), false );
+    result = PQexec( QStringLiteral(
+                        "SELECT has_table_privilege(c.oid, 'select')"
+                          " AND has_table_privilege(f.oid, 'select')"
+                         " FROM pg_class c, pg_class f, pg_namespace n, pg_extension e"
+                        " WHERE c.relnamespace = n.oid"
+                          " AND c.relname = 'pointcloud_columns'"
+                          " AND f.relnamespace = n.oid"
+                          " AND f.relname = 'pointcloud_formats'"
+                          " AND n.oid = e.extnamespace"
+                          " AND e.extname = 'pointcloud'"
+                     ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mPointcloudAvailable = true;
@@ -1132,15 +1129,14 @@ WHERE c.relnamespace = n.oid
   QgsDebugMsgLevel( QStringLiteral( "Checking for raster support" ), 2 );
   if ( mPostgisVersionMajor >= 2 )
   {
-    result = PQexec( QStringLiteral( R"(
-SELECT
- has_table_privilege(c.oid, 'select')
-FROM pg_class c, pg_namespace n, pg_type t
-WHERE c.relnamespace = n.oid
-  AND n.oid = t.typnamespace
-  AND c.relname = 'raster_columns'
-  AND t.typname = 'raster'
-    )" ), false );
+    result = PQexec( QStringLiteral(
+                        "SELECT has_table_privilege(c.oid, 'select')"
+                         " FROM pg_class c, pg_namespace n, pg_type t"
+                        " WHERE c.relnamespace = n.oid"
+                          " AND n.oid = t.typnamespace"
+                          " AND c.relname = 'raster_columns'"
+                          " AND t.typname = 'raster'"
+                     ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mRasterAvailable = true;
