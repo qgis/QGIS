@@ -23,6 +23,7 @@
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
 #include "qgsproject.h"
+#include <utility>
 
 /**
  * Internal structure to keep weak pointer to QgsMapLayer or layerId
