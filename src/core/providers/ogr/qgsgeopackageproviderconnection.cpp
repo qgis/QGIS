@@ -220,8 +220,8 @@ bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema,
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  const auto res { executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                                            QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows() };
+  const QList<QList<QVariant> > res = executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                                      QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows();
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
 }
 
@@ -255,9 +255,9 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 
   try
   {
-    const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
-                                          "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
-                                          "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
+    const QString sql = QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
+                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) );
     results = executeSql( sql );
 
     for ( const auto &row : std::as_const( results ) )
@@ -490,9 +490,9 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
   const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
   if ( ! vl.isValid() || ! vl.dataProvider() )
   {
-    const QString errorCause { vl.dataProvider() &&vl.dataProvider()->hasErrors() ?
-      vl.dataProvider()->errors().join( '\n' ) :
-      QObject::tr( "unknown error" ) };
+    const QString errorCause = vl.dataProvider() && vl.dataProvider()->hasErrors() ?
+                               vl.dataProvider()->errors().join( '\n' ) :
+                               QObject::tr( "unknown error" );
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
   }
   return vl.dataProvider()->nativeTypes();
