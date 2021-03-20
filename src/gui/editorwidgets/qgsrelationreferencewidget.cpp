@@ -712,7 +712,7 @@ void QgsRelationReferenceWidget::mapIdentification()
   mMapToolIdentify->setLayer( mReferencedLayer );
   setMapTool( mMapToolIdentify );
 
-  connect( mMapToolIdentify, qgis::overload<const QgsFeature &>::of( &QgsMapToolIdentifyFeature::featureIdentified ), this, &QgsRelationReferenceWidget::featureIdentified );
+  connect( mMapToolIdentify, qOverload<const QgsFeature &>( &QgsMapToolIdentifyFeature::featureIdentified ), this, &QgsRelationReferenceWidget::featureIdentified );
 
   if ( mMessageBar )
   {
@@ -821,7 +821,7 @@ void QgsRelationReferenceWidget::unsetMapTool()
     }
     else
     {
-      disconnect( mMapToolIdentify, qgis::overload<const QgsFeature &>::of( &QgsMapToolIdentifyFeature::featureIdentified ), this, &QgsRelationReferenceWidget::featureIdentified );
+      disconnect( mMapToolIdentify, qOverload<const QgsFeature &>( &QgsMapToolIdentifyFeature::featureIdentified ), this, &QgsRelationReferenceWidget::featureIdentified );
     }
   }
 }

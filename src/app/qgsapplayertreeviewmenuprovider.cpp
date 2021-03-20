@@ -286,7 +286,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( provider && provider->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
+          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
           action->setEnabled( !vlayer->isEditable() );
         }
       }
@@ -295,7 +295,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
            rlayer->dataProvider() &&
            rlayer->dataProvider()->supportsSubsetString() )
       {
-        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
+        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
       }
 
       // change data source is only supported for vectors and rasters, point clouds

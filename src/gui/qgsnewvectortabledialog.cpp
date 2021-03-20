@@ -122,7 +122,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   } );
 
   // Enable/disable geometry options and call validate
-  connect( mGeomTypeCbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  connect( mGeomTypeCbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
   {
     const bool hasGeom { index != 0 };
     mGeomColumn->setEnabled( hasGeom );
@@ -427,7 +427,7 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
       QComboBox *cbo = new QComboBox { parent };
       cbo->setEditable( false );
       cbo->setFrame( false );
-      connect( cbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
+      connect( cbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
       for ( const auto &f : std::as_const( mTypeList ) )
       {
         cbo->addItem( f.mTypeDesc, f.mTypeName );

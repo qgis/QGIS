@@ -74,7 +74,7 @@ void QgsFileDownloader::startDownload()
   connect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );
   connect( mReply, &QNetworkReply::finished, this, &QgsFileDownloader::onFinished );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsFileDownloader::onDownloadProgress );
-  connect( nam, qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsFileDownloader::onRequestTimedOut, Qt::UniqueConnection );
+  connect( nam, qOverload< QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsFileDownloader::onRequestTimedOut, Qt::UniqueConnection );
 #ifndef QT_NO_SSL
   connect( nam, &QgsNetworkAccessManager::sslErrors, this, &QgsFileDownloader::onSslErrors, Qt::UniqueConnection );
 #endif

@@ -1621,15 +1621,15 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   connect( mPatchShapeButton, &QgsLegendPatchShapeButton::changed, this, &QgsLayoutLegendNodeWidget::patchChanged );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsLayoutLegendNodeWidget::insertExpression );
 
-  connect( mWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
-  connect( mHeightSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
+  connect( mWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
+  connect( mHeightSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
 
   connect( mCustomSymbolCheckBox, &QGroupBox::toggled, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
   connect( mCustomSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
 
   connect( mColumnBreakBeforeCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendNodeWidget::columnBreakToggled );
 
-  connect( mColumnSplitBehaviorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::columnSplitChanged );
+  connect( mColumnSplitBehaviorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::columnSplitChanged );
 
   connect( mColorRampLegendWidget, &QgsColorRampLegendNodeWidget::widgetChanged, this, &QgsLayoutLegendNodeWidget::colorRampLegendChanged );
 

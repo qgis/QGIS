@@ -43,11 +43,11 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
   connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->selectFolderWidget, &QgsFileWidget::fileChanged, [ = ]( const QString & ) { settingsChanged(); } );
   connect( ui->smoothEdgesCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
-  connect( ui->terrainResolutionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
+  connect( ui->terrainResolutionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
   connect( ui->exportNormalsCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
   connect( ui->exportTexturesCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
-  connect( ui->terrainTextureResolutionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
-  connect( ui->scaleSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
+  connect( ui->terrainTextureResolutionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
+  connect( ui->scaleSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
 
   // sets the export settings to whatever is on the scene
   settingsChanged();

@@ -126,7 +126,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     auto downloader = std::make_unique<QgsFeatureDownloader>();
     downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(),
-             qgis::overload < QVector<QgsFeatureUniqueIdPair> >::of( &QgsFeatureDownloader::featureReceived ),
+             qOverload < QVector<QgsFeatureUniqueIdPair> >( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
     if ( requestMadeFromMainThread )
     {

@@ -77,8 +77,8 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::startEndDateTime_changed );
   connect( mFixedRangeStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::fixedRangeStartEndDateTime_changed );
   connect( mFixedRangeEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::fixedRangeStartEndDateTime_changed );
-  connect( mStepSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
-  connect( mTimeStepsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
+  connect( mStepSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
+  connect( mTimeStepsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
   connect( mSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
 
   mStepSpinBox->setClearValue( 1 );

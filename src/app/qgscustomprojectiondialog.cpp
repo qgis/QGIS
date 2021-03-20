@@ -89,7 +89,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
   connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
   connect( teParameters, &QPlainTextEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
-  connect( mFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsCustomProjectionDialog::formatChanged );
+  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsCustomProjectionDialog::formatChanged );
 }
 
 void QgsCustomProjectionDialog::populateList()

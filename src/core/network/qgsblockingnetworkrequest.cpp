@@ -30,7 +30,7 @@
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest()
 {
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QNetworkReply * >::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
+  connect( QgsNetworkAccessManager::instance(), qOverload< QNetworkReply * >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
 }
 
 QgsBlockingNetworkRequest::~QgsBlockingNetworkRequest()
