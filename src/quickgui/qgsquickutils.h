@@ -21,6 +21,7 @@
 #include <QString>
 #include <QUrl>
 #include <QtPositioning/QGeoCoordinate>
+#include <QModelIndex>
 
 #include <limits>
 
