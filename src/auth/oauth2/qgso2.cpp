@@ -312,7 +312,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
-    connect( tokenReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+    connect( tokenReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
   }
   else if ( grantFlow_ == GrantFlowImplicit )
   {

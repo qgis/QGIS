@@ -49,8 +49,8 @@ QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent )
   connect( mMaxLabelLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mPrefixLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mSuffixLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
-  connect( mDirectionComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onChanged );
-  connect( mOrientationComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onOrientationChanged );
+  connect( mDirectionComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onChanged );
+  connect( mOrientationComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onOrientationChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsColorRampLegendNodeWidget::changeNumberFormat );
   connect( mFontButton, &QgsFontButton::changed, this, &QgsColorRampLegendNodeWidget::onChanged );
 }

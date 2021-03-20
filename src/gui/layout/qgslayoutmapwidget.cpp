@@ -2006,7 +2006,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mAtlasClippingTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  connect( mAtlasClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     if ( !mBlockUpdates )
     {
@@ -2064,7 +2064,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mItemClippingTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  connect( mItemClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     if ( !mBlockUpdates )
     {

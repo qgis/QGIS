@@ -230,7 +230,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mUnitsComboBox->addItem( mapCanvasDistanceUnits, QgsTolerance::ProjectUnits );
   mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Project/Map Units (%1)" ).arg( mapCanvasDistanceUnits ) );
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
-  connect( mUnitsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mUnitsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsSnappingWidget::changeUnit );
 
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]

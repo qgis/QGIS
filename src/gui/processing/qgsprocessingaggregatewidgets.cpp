@@ -529,7 +529,7 @@ QWidget *QgsAggregateMappingWidget::AggregateDelegate::createEditor( QWidget *pa
   }
 
   connect( editor,
-           qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
+           qOverload<int >( &QComboBox::currentIndexChanged ),
            this,
            [ = ]( int currentIndex )
   {
