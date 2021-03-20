@@ -33,20 +33,23 @@ start_app()
 
 class TestQgsActionManager(unittest.TestCase):
 
-    def __init__(self, methodName):
-        """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
-
-        self.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddate:datetime",
-                                    "test_layer", "memory")
-        self.manager = QgsActionManager(self.layer)
+    @classmethod
+    def setUpClass(cls):
+        cls.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddate:datetime",
+                                   "test_layer", "memory")
+        cls.manager = QgsActionManager(cls.layer)
 
         # make a little script to aid in recording action outputs
         # this is just a little python file which writes out its arguments to a text file
-        self.run_script_file = os.path.join(QDir.tempPath(), 'run_action.py')
-        with open(self.run_script_file, 'w') as s:
+        cls.run_script_file = os.path.join(QDir.tempPath(), 'run_action.py')
+        with open(cls.run_script_file, 'w') as s:
             s.write('import sys\n')
             s.write('open(sys.argv[1], "w").write(" ".join(sys.argv[2:]))\n')
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.layer = None
+        cls.manager = None
 
     def get_temp_filename(self):
         tmpFile = QTemporaryFile()
@@ -152,7 +155,7 @@ class TestQgsActionManager(unittest.TestCase):
         return output
 
     @unittest.expectedFailure(platform.system() != 'Linux')
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test is flaky on Travis environment')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test is flaky on Travis environment')
     def testDoAction(self):
         """ test running action """
 

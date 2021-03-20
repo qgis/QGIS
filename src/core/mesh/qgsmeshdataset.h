@@ -36,7 +36,7 @@ class QgsRectangle;
 /**
  * \ingroup core
  *
- * QgsMeshDatasetIndex is index that identifies the dataset group (e.g. wind speed)
+ * \brief QgsMeshDatasetIndex is index that identifies the dataset group (e.g. wind speed)
  * and a dataset in this group (e.g. magnitude of wind speed in particular time)
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -66,9 +66,9 @@ class CORE_EXPORT QgsMeshDatasetIndex
 /**
  * \ingroup core
  *
- * QgsMeshDatasetValue represents single dataset value
+ * \brief QgsMeshDatasetValue represents single dataset value.
  *
- * could be scalar or vector. Nodata values are represented by NaNs.
+ * Values may be scalar or vector. Nodata values are represented by NaNs.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsMeshDatasetValue
 /**
  * \ingroup core
  *
- * QgsMeshDataBlock is a block of integers/doubles that can be used
+ * \brief QgsMeshDataBlock is a block of integers/doubles that can be used
  * to retrieve:
  * active flags (e.g. face's active integer flag)
  * scalars (e.g. scalar dataset double values)
@@ -231,10 +231,10 @@ class CORE_EXPORT QgsMeshDataBlock
 /**
  * \ingroup core
  *
- * QgsMesh3dDataBlock is a block of 3d stacked mesh data related N
+ * \brief QgsMesh3dDataBlock is a block of 3d stacked mesh data related N
  * faces defined on base mesh frame.
  *
- * data are implicitly shared, so the class can be quickly copied
+ * Data are implicitly shared, so the class can be quickly copied
  * std::numeric_limits<double>::quiet_NaN() represents NODATA value
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsMesh3dDataBlock
 /**
  * \ingroup core
  *
- * QgsMeshDatasetGroupMetadata is a collection of dataset group metadata
+ * \brief QgsMeshDatasetGroupMetadata is a collection of dataset group metadata
  * such as whether the data is vector or scalar, name
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -465,7 +465,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
 /**
  * \ingroup core
  *
- * QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
+ * \brief QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
  * as whether the data is valid or associated time for the dataset
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -533,7 +533,7 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 /**
  * \ingroup core
  *
- * Abstract class that represents a dataset
+ * \brief Abstract class that represents a dataset
  *
  * \since QGIS 3.16
  */
@@ -568,7 +568,7 @@ class CORE_EXPORT QgsMeshDataset
 /**
  * \ingroup core
  *
- * Abstract class that represents a dataset group
+ * \brief Abstract class that represents a dataset group
  *
  * \since QGIS 3.16
  */
@@ -686,7 +686,8 @@ class CORE_EXPORT QgsMeshDatasetGroup
 /**
  * \ingroup core
  *
- * Class to store memory dataset
+ * \brief Class to store memory dataset.
+ *
  * The QgsMeshDatasetValue objects and whether the faces are active are stored in QVector containers that are exposed for efficiency
  *
  * \since QGIS 3.16
@@ -718,7 +719,8 @@ class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
 /**
  * \ingroup core
  *
- * Class that represents a dataset group stored in memory
+ * \brief Class that represents a dataset group stored in memory.
+ *
  * The QgsMeshMemoryDataset objects stores in a QVector container that are exposed for efficiency
  *
  * \since QGIS 3.16
@@ -760,7 +762,7 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
 /**
  * \ingroup core
  *
- * Tree item for display of the mesh dataset groups.
+ * \brief Tree item for display of the mesh dataset groups.
  * Dataset group is set of datasets with the same name,
  * but different control variable (e.g. time)
  *

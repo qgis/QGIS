@@ -76,12 +76,6 @@ QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent,
 
 QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
-  , mMousePrecisionDecimalPlaces( 0 )
-  , mTransformParam( QgsGeorefTransform::InvalidTransform )
-  , mAgainAddRaster( false )
-  , mMapCoordsDialog( nullptr )
-  , mUseZeroForTrans( false )
-  , mLoadInQgis( false )
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -283,7 +277,9 @@ void QgsGeoreferencerMainWindow::openRaster()
   mGCPpointsFileName = mRasterFileName + ".points";
   ( void )loadGCPs();
 
-  mCanvas->setExtent( mLayer->extent() );
+  if ( mLayer )
+    mCanvas->setExtent( mLayer->extent() );
+
   mCanvas->refresh();
   QgisApp::instance()->mapCanvas()->refresh();
 
@@ -640,7 +636,7 @@ void QgsGeoreferencerMainWindow::showRasterPropertiesDialog()
 {
   if ( mLayer )
   {
-    QgisApp::instance()->showLayerProperties( mLayer );
+    QgisApp::instance()->showLayerProperties( mLayer.get() );
   }
   else
   {
@@ -685,7 +681,7 @@ void QgsGeoreferencerMainWindow::fullHistogramStretch()
 
 void QgsGeoreferencerMainWindow::localHistogramStretch()
 {
-  QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( mLayer, QgisApp::instance()->mapCanvas()->extent() );
+  QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( mLayer.get(), QgisApp::instance()->mapCanvas()->extent() );
 
   mLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax, rectangle );
   mCanvas->refresh();
@@ -809,28 +805,6 @@ void QgsGeoreferencerMainWindow::updateMouseCoordinatePrecision()
     dp = 0;
 
   mMousePrecisionDecimalPlaces = dp;
-}
-
-void QgsGeoreferencerMainWindow::extentsChanged()
-{
-  if ( mAgainAddRaster )
-  {
-    if ( QFile::exists( mRasterFileName ) )
-    {
-      addRaster( mRasterFileName );
-    }
-    else
-    {
-      mLayer = nullptr;
-      mAgainAddRaster = false;
-    }
-  }
-}
-
-// Registry layer QGis
-void QgsGeoreferencerMainWindow::layerWillBeRemoved( const QString &layerId )
-{
-  mAgainAddRaster = mLayer && mLayer->id().compare( layerId ) == 0;
 }
 
 // ------------------------------ private ---------------------------------- //
@@ -1093,22 +1067,12 @@ void QgsGeoreferencerMainWindow::setupConnections()
   // Connect status from ZoomLast/ZoomNext to corresponding action
   connect( mCanvas, &QgsMapCanvas::zoomLastStatusChanged, mActionZoomLast, &QAction::setEnabled );
   connect( mCanvas, &QgsMapCanvas::zoomNextStatusChanged, mActionZoomNext, &QAction::setEnabled );
-  // Connect when one Layer is removed - Case where change the Projetct in QGIS
-  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ), this, &QgsGeoreferencerMainWindow::layerWillBeRemoved );
-
-  // Connect extents changed - Use for need add again Raster
-  connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsGeoreferencerMainWindow::extentsChanged );
 }
 
 void QgsGeoreferencerMainWindow::removeOldLayer()
 {
-  // delete layer (and don't signal it as it's our private layer)
-  if ( mLayer )
-  {
-    QgsProject::instance()->removeMapLayers(
-      ( QStringList() << mLayer->id() ) );
-    mLayer = nullptr;
-  }
+  mLayer.reset();
+
   mCanvas->setLayers( QList<QgsMapLayer *>() );
   mCanvas->clearCache();
   mCanvas->refresh();
@@ -1117,16 +1081,13 @@ void QgsGeoreferencerMainWindow::removeOldLayer()
 // Mapcanvas Plugin
 void QgsGeoreferencerMainWindow::addRaster( const QString &file )
 {
-  mLayer = new QgsRasterLayer( file, QStringLiteral( "Raster" ) );
-
-  // so layer is not added to legend
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mLayer, false, false );
+  QgsRasterLayer::LayerOptions options;
+  // never prompt for a crs selection for the input raster!
+  options.skipCrsValidation = true;
+  mLayer = qgis::make_unique< QgsRasterLayer >( file, QStringLiteral( "Raster" ), QStringLiteral( "gdal" ), options );
 
   // add layer to map canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer );
-
-  mAgainAddRaster = false;
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer.get() );
 
   mActionLocalHistogramStretch->setEnabled( true );
   mActionFullHistogramStretch->setEnabled( true );

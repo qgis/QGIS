@@ -27,7 +27,7 @@
 /**
  * \ingroup quick
  *
- * Basic item model for attributes of QgsFeature associated
+ * \brief Basic item model for attributes of QgsFeature associated
  * from feature layer pair. Each attribute of the feature
  * gets a row in the model. Also supports CRUD operations
  * related to layer and feature pair.

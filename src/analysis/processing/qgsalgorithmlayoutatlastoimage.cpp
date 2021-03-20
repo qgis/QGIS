@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoututils.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 #include "qgslayoutexporter.h"
@@ -201,6 +202,8 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagAntialiasing;
 
+  settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
+
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.size() > 0 )
   {
@@ -217,30 +220,38 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
     }
   }
 
-  switch ( exporter.exportToImage( atlas, fileName, extension, settings, error, feedback ) )
+  if ( atlas->updateFeatures() )
   {
-    case QgsLayoutExporter::Success:
+    feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
+    switch ( exporter.exportToImage( atlas, fileName, extension, settings, error, feedback ) )
     {
-      feedback->pushInfo( QObject::tr( "Successfully exported layout to %1" ).arg( QDir::toNativeSeparators( directory ) ) );
-      break;
+      case QgsLayoutExporter::Success:
+      {
+        feedback->pushInfo( QObject::tr( "Successfully exported layout to %1" ).arg( QDir::toNativeSeparators( directory ) ) );
+        break;
+      }
+
+      case QgsLayoutExporter::FileError:
+        throw QgsProcessingException( QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( directory ) ) );
+
+      case QgsLayoutExporter::MemoryError:
+        throw QgsProcessingException( QObject::tr( "Trying to create the image "
+                                      "resulted in a memory overflow.\n\n"
+                                      "Please try a lower resolution or a smaller paper size." ) );
+
+      case QgsLayoutExporter::IteratorError:
+        throw QgsProcessingException( QObject::tr( "Error encountered while exporting atlas." ) );
+
+      case QgsLayoutExporter::SvgLayerError:
+      case QgsLayoutExporter::PrintError:
+      case QgsLayoutExporter::Canceled:
+        // no meaning for imageexports, will not be encountered
+        break;
     }
-
-    case QgsLayoutExporter::FileError:
-      throw QgsProcessingException( QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( directory ) ) );
-
-    case QgsLayoutExporter::MemoryError:
-      throw QgsProcessingException( QObject::tr( "Trying to create the image "
-                                    "resulted in a memory overflow.\n\n"
-                                    "Please try a lower resolution or a smaller paper size." ) );
-
-    case QgsLayoutExporter::IteratorError:
-      throw QgsProcessingException( QObject::tr( "Error encountered while exporting atlas." ) );
-
-    case QgsLayoutExporter::SvgLayerError:
-    case QgsLayoutExporter::PrintError:
-    case QgsLayoutExporter::Canceled:
-      // no meaning for imageexports, will not be encountered
-      break;
+  }
+  else
+  {
+    feedback->reportError( QObject::tr( "No atlas features found" ) );
   }
 
   feedback->setProgress( 100 );

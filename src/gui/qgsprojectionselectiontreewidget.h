@@ -25,7 +25,7 @@ class QResizeEvent;
 /**
  * \class QgsProjectionSelectionTreeWidget
  * \ingroup gui
- * A widget for selecting a coordinate reference system from a tree.
+ * \brief A widget for selecting a coordinate reference system from a tree.
  *
  * This widget implements a tree view of projections, as seen in the
  * QgsProjectionSelectionDialog dialog. In most cases it is more

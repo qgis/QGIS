@@ -31,7 +31,7 @@ class QImage;
 
 /**
  * \ingroup core
- * This is a helper class for unit tests that need to
+ * \brief This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
  */
@@ -131,6 +131,13 @@ class CORE_EXPORT QgsRenderChecker
      * \note: make sure to call setExpectedImage and setRenderedImage first.
      */
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
+
+    /**
+     * Test using two arbitrary images at the specified paths for equality.
+     *
+     * \since QGIS 3.18
+     */
+    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0 );
 
     /**
      * Gets a list of all the anomalies. An anomaly is a rendered difference

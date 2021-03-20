@@ -34,7 +34,7 @@ class QgsExpression;
 /**
  * \ingroup core
  * \class QgsSimpleLineSymbolLayer
- * A simple line symbol layer, which renders lines using a line in a variety of styles (e.g. solid, dotted, dashed).
+ * \brief A simple line symbol layer, which renders lines using a line in a variety of styles (e.g. solid, dotted, dashed).
  */
 class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 {
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
  * \ingroup core
  * \class QgsTemplatedLineSymbolLayerBase
  *
- * Base class for templated line symbols, e.g. line symbols which draw markers or hash
+ * \brief Base class for templated line symbols, e.g. line symbols which draw markers or hash
  * lines at intervals along the line feature.
  *
  * \since QGIS 3.8
@@ -689,7 +689,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
 /**
  * \ingroup core
  * \class QgsMarkerLineSymbolLayer
- * Line symbol layer type which draws repeating marker symbols along a line feature.
+ * \brief Line symbol layer type which draws repeating marker symbols along a line feature.
  */
 class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerBase
 {
@@ -779,7 +779,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
  * \ingroup core
  * \class QgsHashedLineSymbolLayer
  *
- * Line symbol layer type which draws repeating line sections along a line feature.
+ * \brief Line symbol layer type which draws repeating line sections along a line feature.
  *
  * \since QGIS 3.8
  */

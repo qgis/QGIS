@@ -24,6 +24,7 @@ class QgsSurface;
 
 /**
  * \ingroup analysis
+ * \brief Area check.
  */
 class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
 {

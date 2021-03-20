@@ -42,6 +42,7 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputMultipleLayers,
                        QgsProcessingFeedback,
                        QgsRuntimeProfiler)
+from qgis.analysis import QgsNativeAlgorithms
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -99,6 +100,20 @@ class Processing(object):
             return
 
         with QgsRuntimeProfiler.profile('Initialize'):
+
+            # add native provider if not already added
+            if "native" not in [p.id() for p in QgsApplication.processingRegistry().providers()]:
+                QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms(QgsApplication.processingRegistry()))
+
+            # add 3d provider if available and not already added
+            if "3d" not in [p.id() for p in QgsApplication.processingRegistry().providers()]:
+                try:
+                    from qgis._3d import Qgs3DAlgorithms
+                    QgsApplication.processingRegistry().addProvider(Qgs3DAlgorithms(QgsApplication.processingRegistry()))
+                except ImportError:
+                    # no 3d library available
+                    pass
+
             # Add the basic providers
             for c in [
                 QgisAlgorithmProvider,

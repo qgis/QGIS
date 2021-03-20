@@ -201,7 +201,7 @@ namespace QgsWfs
       getFeatureQuery &query = *qIt;
       QString typeName = query.typeName;
 
-      if ( !mapLayerMap.keys().contains( typeName ) )
+      if ( !mapLayerMap.contains( typeName ) )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' unknown" ).arg( typeName ) );
       }
@@ -333,7 +333,7 @@ namespace QgsWfs
         accessControl->filterFeatures( vlayer, featureRequest );
 
         QStringList attributes = QStringList();
-        for ( int idx : attrIndexes )
+        for ( int idx : qgis::as_const( attrIndexes ) )
         {
           attributes.append( vlayer->fields().field( idx ).name() );
         }
@@ -544,7 +544,7 @@ namespace QgsWfs
         }
 
         // each Feature requested by FEATUREID can have each own property list
-        QString key = QStringLiteral( "%1(%2)" ).arg( typeName ).arg( propertyName );
+        QString key = QStringLiteral( "%1(%2)" ).arg( typeName, propertyName );
         QStringList fids;
         if ( fidsMap.contains( key ) )
         {
@@ -734,12 +734,15 @@ namespace QgsWfs
       // get bbox extent
       QgsRectangle extent = mWfsParameters.bboxAsRectangle();
 
+      QString extentSrsName { mWfsParameters.srsName() };
+
       // handle WFS 1.1.0 optional CRS
       if ( mWfsParameters.bbox().split( ',' ).size() == 5 && ! mWfsParameters.srsName().isEmpty() )
       {
         QString crs( mWfsParameters.bbox().split( ',' )[4] );
         if ( crs != mWfsParameters.srsName() )
         {
+          extentSrsName = crs;
           QgsCoordinateReferenceSystem sourceCrs( crs );
           QgsCoordinateReferenceSystem destinationCrs( mWfsParameters.srsName() );
           if ( sourceCrs.isValid() && destinationCrs.isValid( ) )
@@ -761,6 +764,17 @@ namespace QgsWfs
             }
           }
         }
+      }
+
+      // Follow GeoServer conventions and handle axis order
+      // See: https://docs.geoserver.org/latest/en/user/services/wfs/axis_order.html#wfs-basics-axis
+      QgsCoordinateReferenceSystem extentCrs;
+      extentCrs.createFromUserInput( extentSrsName );
+      if ( extentCrs.isValid() && extentCrs.hasAxisInverted() && ! extentSrsName.startsWith( QStringLiteral( "EPSG:" ) ) )
+      {
+        QgsGeometry geom { QgsGeometry::fromRect( extent ) };
+        geom.get()->swapXy();
+        extent = geom.boundingBox();
       }
 
       // set feature request filter rectangle

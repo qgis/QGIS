@@ -31,7 +31,7 @@ class QgsMessageBar;
 /**
  * \ingroup gui
  * \class QgsSymbolButton
- * A button for creating and modifying QgsSymbol settings.
+ * \brief A button for creating and modifying QgsSymbol settings.
  *
  * The button shows a preview icon for the current symbol, and will open a detailed symbol editor dialog (or
  * panel widget) when clicked.

@@ -179,7 +179,7 @@ class gdalcalc(GdalAlgorithm):
         return 'rastermiscellaneous'
 
     def commandName(self):
-        return 'gdal_calc' if isWindows() else 'gdal_calc.py'
+        return 'gdal_calc'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -265,4 +265,4 @@ class gdalcalc(GdalAlgorithm):
         arguments.append('--outfile')
         arguments.append(out)
 
-        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

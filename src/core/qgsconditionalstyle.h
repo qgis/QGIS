@@ -107,7 +107,7 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
 /**
  * \class QgsConditionalStyle
  *  \ingroup core
- * Conditional styling for a rule.
+ * \brief Conditional styling for a rule.
  */
 class CORE_EXPORT QgsConditionalStyle
 {

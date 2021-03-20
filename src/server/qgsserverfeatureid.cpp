@@ -29,10 +29,9 @@ QString QgsServerFeatureId::getServerFid( const QgsFeature &feature, const QgsAt
   }
 
   QStringList pkValues;
-  QgsAttributeList::const_iterator it = pkAttributes.constBegin();
-  if ( it != pkAttributes.constEnd() )
+  for ( const auto &attrIdx : qgis::as_const( pkAttributes ) )
   {
-    pkValues.append( feature.attribute( *it ).toString() );
+    pkValues.append( feature.attribute( attrIdx ).toString() );
   }
   return pkValues.join( pkSeparator() );
 }

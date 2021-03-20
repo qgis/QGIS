@@ -73,7 +73,8 @@ class QgsProcessingExec
     void showUsage( const QString &appName );
     void loadPlugins();
     void listAlgorithms( bool useJson );
-    void listPlugins( bool useJson );
+    void listPlugins( bool useJson, bool showLoaded );
+    int enablePlugin( const QString &name, bool enabled );
     int showAlgorithmHelp( const QString &id, bool useJson );
     int execute( const QString &algId,
                  const QVariantMap &parameters,

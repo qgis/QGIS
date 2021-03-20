@@ -461,7 +461,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
 
 void TestQgsNetworkAccessManager::fetchPost()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
   QObject context;
@@ -554,7 +554,7 @@ void TestQgsNetworkAccessManager::fetchPost()
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
   QObject context;
@@ -653,7 +653,7 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
 
 void TestQgsNetworkAccessManager::testSslErrorHandler()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
   QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< TestSslErrorHandler >() );
@@ -756,7 +756,7 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
 
 void TestQgsNetworkAccessManager::testAuthRequestHandler()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
   // initially this request should fail -- we aren't providing the username and password required
@@ -963,7 +963,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
 void TestQgsNetworkAccessManager::fetchTimeout()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
   QgsNetworkAccessManager::setTimeout( 2000 );

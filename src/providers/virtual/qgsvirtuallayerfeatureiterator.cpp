@@ -118,8 +118,8 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         else // never return a feature if the id is negative
           offset = QStringLiteral( " LIMIT 0" );
       }
-      else if ( !mFilterRect.isNull() &&
-                mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      if ( !mFilterRect.isNull() &&
+           mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // if an exact intersection is requested, prepare the geometry to intersect
         QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );

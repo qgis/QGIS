@@ -29,7 +29,7 @@ class QDomElement;
 
 /**
  * \ingroup core
- *  Stores metadata about one callout renderer class.
+ *  \brief Stores metadata about one callout renderer class.
  *
  *  \note It's necessary to implement createCallout() function.
  *  In C++ you can use QgsCalloutMetadata convenience class.
@@ -104,7 +104,7 @@ typedef QgsCalloutWidget *( *QgsCalloutWidgetFunc )( QgsVectorLayer * ) SIP_SKIP
 
 /**
  * \ingroup core
- * Convenience metadata class that uses static functions to create callouts and their widgets.
+ * \brief Convenience metadata class that uses static functions to create callouts and their widgets.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
 
 /**
  * \ingroup core
- * Registry of available callout classes.
+ * \brief Registry of available callout classes.
  *
  * QgsCalloutRegistry is not usually directly created, but rather accessed through
  * QgsApplication::calloutRegistry().

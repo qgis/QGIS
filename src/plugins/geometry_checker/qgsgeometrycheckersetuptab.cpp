@@ -110,6 +110,9 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   // Collect layers
   for ( QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>() )
   {
+    if ( !layer->isValid() || !layer->dataProvider() )
+      continue;
+
     QListWidgetItem *item = new QListWidgetItem( layer->name() );
     bool supportedGeometryType = true;
     if ( layer->geometryType() == QgsWkbTypes::PointGeometry )

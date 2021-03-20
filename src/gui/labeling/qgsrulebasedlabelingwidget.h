@@ -33,7 +33,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * Model for rule based rendering rules view.
+ * \brief Model for rule based rendering rules view.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14
@@ -101,7 +101,7 @@ class QgsLabelingRulePropsWidget;
 
 /**
  * \ingroup gui
- * Widget for configuring rule based labeling
+ * \brief Widget for configuring rule based labeling
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14
@@ -152,7 +152,7 @@ class QgsLabelingGui;
 
 /**
  * \ingroup gui
- * Widget for editing a labeling rule
+ * \brief Widget for editing a labeling rule
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14

@@ -45,7 +45,7 @@ class QTreeView;
 /**
  * \ingroup gui
  * \class QgsSvgSelectorLoader
- * Recursively loads SVG images from a path in a background thread.
+ * \brief Recursively loads SVG images from a path in a background thread.
  * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgSelectorLoader : public QThread
@@ -174,7 +174,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 /**
  * \ingroup gui
  * \class QgsSvgSelectorListModel
- * A model for displaying SVG files with a preview icon. Population of the model is performed in
+ * \brief A model for displaying SVG files with a preview icon. Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
  * not block the GUI.
  */
@@ -226,7 +226,7 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 /**
  * \ingroup gui
  * \class QgsSvgSelectorGroupsModel
- * A model for displaying SVG search paths. Population of the model is performed in
+ * \brief A model for displaying SVG search paths. Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
  * not block the GUI.
  */

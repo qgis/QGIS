@@ -102,23 +102,31 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )
   {
-    // evaluate first feature, check result type
-    QgsFeatureRequest testRequest( request );
-    testRequest.setLimit( 1 );
-    QgsFeature f;
-    QgsFeatureIterator fit = mLayer->getFeatures( testRequest );
-    if ( !fit.nextFeature( f ) )
+    if ( aggregate == GeometryCollect )
     {
-      //no matching features
-      if ( ok )
-        *ok = true;
-      return defaultValue( aggregate );
+      // in this case we know the result should be a geometry value, so no need to sniff it out...
+      resultType = QVariant::UserType;
     }
+    else
+    {
+      // evaluate first feature, check result type
+      QgsFeatureRequest testRequest( request );
+      testRequest.setLimit( 1 );
+      QgsFeature f;
+      QgsFeatureIterator fit = mLayer->getFeatures( testRequest );
+      if ( !fit.nextFeature( f ) )
+      {
+        //no matching features
+        if ( ok )
+          *ok = true;
+        return defaultValue( aggregate );
+      }
 
-    if ( context )
-      context->setFeature( f );
-    QVariant v = expression->evaluate( context );
-    resultType = v.type();
+      if ( context )
+        context->setFeature( f );
+      QVariant v = expression->evaluate( context );
+      resultType = v.type();
+    }
   }
   else
     resultType = mLayer->fields().at( attrNum ).type();

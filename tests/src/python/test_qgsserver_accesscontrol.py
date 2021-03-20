@@ -138,7 +138,6 @@ class TestQgsServerAccessControl(QgsServerTestBase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls._app = QgsApplication([], False)
         cls._server = QgsServer()
         cls._execute_request("")
         cls._server_iface = cls._server.serverInterface()
@@ -149,7 +148,6 @@ class TestQgsServerAccessControl(QgsServerTestBase):
     def tearDownClass(cls):
         """Run after all tests"""
         del cls._server
-        cls._app.exitQgis()
 
     def setUp(self):
         super().setUp()

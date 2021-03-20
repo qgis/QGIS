@@ -40,7 +40,8 @@ class QgsFieldPrivate;
 /**
  * \class QgsField
   * \ingroup core
-  * Encapsulate a field in an attribute table or data source.
+  * \brief Encapsulate a field in an attribute table or data source.
+  *
   * QgsField stores metadata about an attribute field, including name, type
   * length, and if applicable, precision.
   * \note QgsField objects are implicitly shared.

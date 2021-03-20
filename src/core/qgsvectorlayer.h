@@ -88,7 +88,7 @@ typedef QSet<int> QgsAttributeIds;
 
 /**
  * \ingroup core
- * Represents a vector layer which manages a vector based data sets.
+ * \brief Represents a vector layer which manages a vector based data sets.
  *
  * The QgsVectorLayer is instantiated by specifying the name of a data provider,
  * such as postgres or wfs, and url defining the specific data set to connect to.

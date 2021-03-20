@@ -44,7 +44,8 @@ typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 
 /**
  * \ingroup core
- * Base class for all items in the model.
+ * \brief Base class for all items in the model.
+ *
  * Parent/children hierarchy is not based on QObject.
 */
 class CORE_EXPORT QgsDataItem : public QObject
@@ -415,6 +416,17 @@ class CORE_EXPORT QgsDataItem : public QObject
     //! Move object and all its descendants to thread
     void moveToThread( QThread *targetThread );
 
+    /**
+     * For data items that represent a DB connection or one of its children,
+     * this method returns a connection.
+     * All other data items will return NULL.
+     *
+     * Ownership of the returned objects is transferred to the caller.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const SIP_FACTORY;
+
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
 
@@ -525,7 +537,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
 
 /**
  * \ingroup core
- * Item that represents a layer that can be opened with one of the providers
+ * \brief Item that represents a layer that can be opened with one of the providers
 */
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
@@ -639,12 +651,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
+
 };
 
 
 /**
  * \ingroup core
- * A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
+ * \brief A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
 */
 class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
@@ -680,6 +693,8 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
      */
     static QIcon iconDataCollection();
 
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+
   protected:
 
     /**
@@ -693,12 +708,13 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
      * \since QGIS 3.4
      */
     static QIcon homeDirIcon();
+
 };
 
 
 /**
  * \ingroup core
- * A Collection that represents a database schema item
+ * \brief A Collection that represents a database schema item
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
@@ -721,6 +737,7 @@ class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
 
     ~QgsDatabaseSchemaItem() override;
 
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
     /**
      * Returns the standard browser data collection icon.
@@ -734,7 +751,7 @@ class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
 
 /**
  * \ingroup core
- * A Collection that represents a root group of connections from a single data provider
+ * \brief A Collection that represents a root group of connections from a single data provider
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem
@@ -761,7 +778,7 @@ class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem
 
 /**
  * \ingroup core
- * A directory: contains subdirectories and layers
+ * \brief A directory: contains subdirectories and layers
 */
 class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
@@ -836,7 +853,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
 /**
  * \ingroup core
- Data item that can be used to represent QGIS projects.
+ * \brief Data item that can be used to represent QGIS projects.
  */
 class CORE_EXPORT QgsProjectItem : public QgsDataItem
 {
@@ -860,7 +877,7 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
 
 /**
  * \ingroup core
- Data item that can be used to report problems (e.g. network error)
+ * \brief Data item that can be used to report problems (e.g. network error)
  */
 class CORE_EXPORT QgsErrorItem : public QgsDataItem
 {
@@ -879,7 +896,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
  * \ingroup core
  * \class QgsDirectoryParamWidget
  *
- * Browser parameter widget implementation for directory items.
+ * \brief Browser parameter widget implementation for directory items.
  */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {
@@ -897,7 +914,7 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 
 /**
  * \ingroup core
- * Contains various Favorites directories
+ * \brief Contains various Favorites directories
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
@@ -945,7 +962,7 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 
 /**
  * \ingroup core
- * A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
+ * \brief A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
 */
 class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 {
@@ -992,7 +1009,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
 /**
  * \ingroup core
- * A collection of field items with some internal logic to retrieve
+ * \brief A collection of field items with some internal logic to retrieve
  * the fields and a the vector layer instance from a connection URI,
  * the schema and the table name.
  * \since QGIS 3.16
@@ -1064,7 +1081,7 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
 
 /**
  * \ingroup core
- * A layer field item, information about the connection URI, the schema and the
+ * \brief A layer field item, information about the connection URI, the schema and the
  * table as well as the layer instance the field belongs to can be retrieved
  * from the parent QgsFieldsItem object.
  * \since QGIS 3.16
@@ -1101,7 +1118,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
 
 /**
  * \ingroup core
- * A directory item showing the current project directory.
+ * \brief A directory item showing the current project directory.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
@@ -1119,7 +1136,7 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
 
 /**
  * \ingroup core
- * A directory item showing the a single favorite directory.
+ * \brief A directory item showing the a single favorite directory.
  * \since QGIS 3.0
 */
 Q_NOWARN_DEPRECATED_PUSH  // rename is deprecated

@@ -32,7 +32,7 @@ class QgsBox3d;
 
 /**
  * \ingroup core
- * A rectangle specified with double values.
+ * \brief A rectangle specified with double values.
  *
  * QgsRectangle is used to store a rectangle when double values are required.
  * Examples are storing a layer extent or the current view extent of a map

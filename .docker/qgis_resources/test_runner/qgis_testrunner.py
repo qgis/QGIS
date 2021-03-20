@@ -112,6 +112,8 @@ if iface is None:
     command_line = ' '.join(args)
     print("QGIS Test Runner - launching QGIS as %s ..." % command_line)
     out, returncode = run("sh -c " + quote(command_line), withexitstatus=1)
+    if isinstance(out, bytes):
+        out = out.decode("utf-8")
     assert returncode is not None
     print("QGIS Test Runner - QGIS exited.")
     ok = out.find('(failures=') < 0 and \

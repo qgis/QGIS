@@ -85,22 +85,22 @@ class TestQgsRelation(unittest.TestCase):
 
     def test_isValid(self):
         rel = QgsRelation()
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.setId('rel1')
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.setName('Relation Number One')
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.setReferencingLayer(self.referencingLayer.id())
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.setReferencedLayer(self.referencedLayer.id())
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.addFieldPair('foreignkey', 'y')
-        assert rel.isValid()
+        self.assertTrue(rel.isValid())
 
     def test_getRelatedFeatures(self):
         rel = QgsRelation()
@@ -116,7 +116,7 @@ class TestQgsRelation(unittest.TestCase):
         self.assertEqual(rel.getRelatedFeaturesFilter(feat), '"foreignkey" = 123')
 
         it = rel.getRelatedFeatures(feat)
-        assert [a.attributes() for a in it] == [['test1', 123], ['test2', 123]]
+        self.assertEqual([a.attributes() for a in it], [['test1', 123], ['test2', 123]])
 
     def test_getRelatedFeaturesWithQuote(self):
         rel = QgsRelation()
@@ -130,7 +130,7 @@ class TestQgsRelation(unittest.TestCase):
         feat = self.referencedLayer.getFeature(3)
 
         it = rel.getRelatedFeatures(feat)
-        assert next(it).attributes() == ["foobar'bar", 124]
+        self.assertEqual(next(it).attributes(), ["foobar'bar", 124])
 
     def test_getReferencedFeature(self):
         rel = QgsRelation()
@@ -144,8 +144,23 @@ class TestQgsRelation(unittest.TestCase):
 
         f = rel.getReferencedFeature(feat)
 
-        assert f.isValid()
-        assert f[0] == 'foo'
+        self.assertTrue(f.isValid())
+        self.assertEqual(f[0], 'foo')
+
+        # try mixing up the field pair field name cases -- we should be tolerant to this
+        rel2 = QgsRelation()
+        rel2.setId('rel1')
+        rel2.setName('Relation Number One')
+        rel2.setReferencingLayer(self.referencingLayer.id())
+        rel2.setReferencedLayer(self.referencedLayer.id())
+        rel2.addFieldPair('ForeignKey', 'Y')
+
+        feat = next(self.referencingLayer.getFeatures())
+
+        f = rel2.getReferencedFeature(feat)
+
+        self.assertTrue(f.isValid())
+        self.assertEqual(f[0], 'foo')
 
     def test_fieldPairs(self):
         rel = QgsRelation()
@@ -156,7 +171,7 @@ class TestQgsRelation(unittest.TestCase):
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
 
-        assert (rel.fieldPairs() == {'foreignkey': 'y'})
+        self.assertEqual(rel.fieldPairs(), {'foreignkey': 'y'})
 
     def testValidRelationAfterChangingStyle(self):
         # load project
@@ -196,6 +211,11 @@ class TestQgsRelation(unittest.TestCase):
                 if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
                     valid = t.relation().isValid()
         self.assertTrue(valid)
+
+    def test_generateId_empty_relation(self):
+        rel = QgsRelation()
+        # Check that it does not crash
+        rel.generateId()
 
 
 if __name__ == '__main__':

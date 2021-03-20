@@ -13,7 +13,6 @@
 class QgsProcessingContextGenerator
 {
 %Docstring
-
 An interface for objects which can create Processing contexts.
 
 .. versionadded:: 3.4

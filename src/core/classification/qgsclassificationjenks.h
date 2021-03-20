@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * QgsClassificationJenks is an implementation of QgsClassificationMethod
+ * \brief QgsClassificationJenks is an implementation of QgsClassificationMethod
  * for natural breaks based on Jenks method
  * \since QGIS 3.10
  */

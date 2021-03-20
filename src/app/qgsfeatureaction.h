@@ -92,7 +92,6 @@ class APP_EXPORT QgsFeatureAction : public QAction
 
     bool mForceSuppressFormPopup = false;
 
-    static QHash<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };
 
 #endif

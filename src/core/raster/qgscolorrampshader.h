@@ -34,7 +34,7 @@ originally part of the larger QgsRasterLayer class
 
 /**
  * \ingroup core
- * A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
+ * \brief A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
  */
 class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 {

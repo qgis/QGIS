@@ -31,7 +31,7 @@ class QGraphicsPolygonItem;
 
 /**
  * \ingroup gui
- * QgsModelViewRubberBand is an abstract base class for temporary rubber band items
+ * \brief QgsModelViewRubberBand is an abstract base class for temporary rubber band items
  * in various shapes, for use within QgsModelGraphicsView widgets.
  * \since QGIS 3.14
  */
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsModelViewRubberBand : public QObject
 
 /**
  * \ingroup gui
- * QgsModelViewRectangularRubberBand is rectangular rubber band for use within QgsModelGraphicsView widgets.
+ * \brief QgsModelViewRectangularRubberBand is rectangular rubber band for use within QgsModelGraphicsView widgets.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelViewRectangularRubberBand : public QgsModelViewRubberBand

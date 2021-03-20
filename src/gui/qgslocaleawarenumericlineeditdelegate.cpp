@@ -40,13 +40,15 @@ QWidget *QgsLocaleAwareNumericLineEditDelegate::createEditor( QWidget *parent, c
 void QgsLocaleAwareNumericLineEditDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QLineEdit *lineEdit { qobject_cast<QLineEdit *>( editor ) };
-  if ( ! lineEdit )
+  if ( lineEdit )
+  {
+    const QVariant value = index.data( );
+    lineEdit->setText( displayText( value, QLocale() ) );
+  }
+  else
   {
     QStyledItemDelegate::setEditorData( editor, index );
   }
-
-  const QVariant value { index.data( ) };
-  return lineEdit->setText( displayText( value, QLocale() ) );
 }
 
 void QgsLocaleAwareNumericLineEditDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const

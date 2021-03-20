@@ -35,6 +35,7 @@
 #include "qgsexpression.h"
 #include "qgstextrenderer.h"
 #include "qgssettings.h"
+#include "qgsfileutils.h"
 
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
@@ -416,6 +417,7 @@ void QgsSymbolLegendNode::toggleAllItems()
   }
 
   emit dataChanged();
+  vlayer->emitStyleChanged();
   vlayer->triggerRepaint();
 }
 
@@ -453,6 +455,7 @@ void QgsSymbolLegendNode::checkAll( bool state )
   }
 
   emit dataChanged();
+  vlayer->emitStyleChanged();
   vlayer->triggerRepaint();
 }
 
@@ -1173,7 +1176,8 @@ QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
 
 void QgsWmsLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
 {
-  QString msg = QStringLiteral( "Downloading... %1/%2" ).arg( cur ).arg( tot );
+  const QString msg = tot > 0 ? tr( "Downloading: %1% (%2)" ).arg( static_cast< int >( std::round( 100 * cur / tot ) ) ).arg( QgsFileUtils::representFileSize( tot ) )
+                      : tr( "Downloading: %1" ).arg( QgsFileUtils::representFileSize( cur ) );
   mImage = renderMessage( msg );
   emit dataChanged();
 }

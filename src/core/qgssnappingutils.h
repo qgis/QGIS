@@ -28,7 +28,8 @@ class QgsSnappingConfig;
 
 /**
  * \ingroup core
- * This class has all the configuration of snapping and can return answers to snapping queries.
+ * \brief This class has all the configuration of snapping and can return answers to snapping queries.
+ *
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
  * Currently it supports the following queries:

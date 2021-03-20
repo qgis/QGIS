@@ -33,7 +33,7 @@ class QgsMapRendererQImageJob;
 
 /**
  * \ingroup gui
- * A widget that displays an overview map.
+ * \brief A widget that displays an overview map.
  */
 class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 {

@@ -26,7 +26,7 @@
  * \ingroup core
  * \class PalRtree
  *
- * A rtree spatial index for use in the pal labeling engine.
+ * \brief A rtree spatial index for use in the pal labeling engine.
  *
  * \note Not available in Python bindings.
  * \since QGIS 3.12

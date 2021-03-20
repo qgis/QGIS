@@ -116,11 +116,11 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   if ( buttonBoxFrame )
   {
     buttonBoxFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
-    layout->insertWidget( layout->count() + 1, buttonBoxFrame );
+    layout->insertWidget( layout->count(), buttonBoxFrame );
   }
   else if ( mOptButtonBox )
   {
-    layout->insertWidget( layout->count() + 1, mOptButtonBox );
+    layout->insertWidget( layout->count(), mOptButtonBox );
   }
 
   if ( mOptButtonBox )

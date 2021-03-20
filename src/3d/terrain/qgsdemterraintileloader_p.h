@@ -47,7 +47,7 @@ class QgsTerrainGenerator;
 
 /**
  * \ingroup 3d
- * Chunk loader for DEM terrain tiles.
+ * \brief Chunk loader for DEM terrain tiles.
  * \since QGIS 3.0
  */
 class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
@@ -75,7 +75,7 @@ class QgsTerrainDownloader;
 
 /**
  * \ingroup 3d
- * Utility class to asynchronously create heightmaps from DEM raster for given tiles of terrain.
+ * \brief Utility class to asynchronously create heightmaps from DEM raster for given tiles of terrain.
  * \since QGIS 3.0
  */
 class QgsDemHeightMapGenerator : public QObject

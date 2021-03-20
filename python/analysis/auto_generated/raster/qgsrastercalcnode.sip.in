@@ -12,6 +12,9 @@
 
 class QgsRasterCalcNode
 {
+%Docstring
+Represents a node in a raster calculator.
+%End
 
 %TypeHeaderCode
 #include "qgsrastercalcnode.h"

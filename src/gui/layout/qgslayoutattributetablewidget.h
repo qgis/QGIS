@@ -30,12 +30,12 @@ class QgsLayoutFrame;
 
 /**
  * \ingroup gui
- * A widget for configuring layout attribute table items.
+ * \brief A widget for configuring layout attribute table items.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutAttributeTableWidgetBase
+class GUI_EXPORT QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutAttributeTableWidgetBase
 {
     Q_OBJECT
   public:
@@ -44,6 +44,7 @@ class GUI_EXPORT QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, 
 
     void setReportTypeString( const QString &string ) override;
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
 

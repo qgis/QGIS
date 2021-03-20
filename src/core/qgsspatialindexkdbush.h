@@ -35,7 +35,7 @@ class QgsRectangle;
  * \class QgsSpatialIndexKDBush
  * \ingroup core
  *
- * A very fast static spatial index for 2D points based on a flat KD-tree.
+ * \brief A very fast static spatial index for 2D points based on a flat KD-tree.
  *
  * Compared to QgsSpatialIndex, this index:
  *

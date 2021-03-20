@@ -10,9 +10,11 @@ __author__ = 'Even Rouault'
 __date__ = '14/11/2020 late in the night'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-from qgis.PyQt.QtCore import QEventLoop
-from qgis.core import QgsDataCollectionItem, QgsLayerItem
 
+import os
+from qgis.PyQt.QtCore import QEventLoop
+from qgis.core import QgsDataCollectionItem, QgsLayerItem, QgsDirectoryItem
+from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -63,9 +65,12 @@ class TestQgsDataItem(unittest.TestCase):
             # Python object PyQgsLayerItem should still be alive
             self.assertFalse(tabSetDestroyedFlag[0])
 
-            self.assertEqual(len(item.children()), 2)
-            self.assertEqual(item.children()[0].name(), "name")
-            self.assertEqual(item.children()[1].name(), "name2")
+            children = item.children()
+            self.assertEqual(len(children), 2)
+            self.assertEqual(children[0].name(), "name")
+            self.assertEqual(children[1].name(), "name2")
+
+            del(children)
 
             # Delete the object and make sure all deferred deletions are processed
             item.destroyed.connect(loop.quit)
@@ -75,6 +80,20 @@ class TestQgsDataItem(unittest.TestCase):
             # Check that the PyQgsLayerItem Python object is now destroyed
             self.assertTrue(tabSetDestroyedFlag[0])
             tabSetDestroyedFlag[0] = False
+
+    def test_databaseConnection(self):
+
+        dataitem = QgsDataCollectionItem(None, 'name', '/invalid_path', 'ogr')
+        self.assertIsNone(dataitem.databaseConnection())
+        dataitem = QgsDirectoryItem(None, 'name', os.path.join(unitTestDataPath(), 'provider'))
+        children = dataitem.createChildren()
+        # Check spatialite and gpkg
+        spatialite_item = [i for i in children if i.path().endswith('spatialite.db')][0]
+        geopackage_item = [i for i in children if i.path().endswith('geopackage.gpkg')][0]
+        textfile_item = [i for i in children if i.path().endswith('.sql')][0]
+        self.assertIsNotNone(spatialite_item.databaseConnection())
+        self.assertIsNotNone(geopackage_item.databaseConnection())
+        self.assertIsNone(textfile_item.databaseConnection())
 
 
 if __name__ == '__main__':

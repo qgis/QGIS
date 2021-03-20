@@ -1960,6 +1960,9 @@ and the interior rings in a counter-clockwise direction.
 
     class Error
 {
+%Docstring
+A geometry error.
+%End
 
 %TypeHeaderCode
 #include "qgsgeometry.h"

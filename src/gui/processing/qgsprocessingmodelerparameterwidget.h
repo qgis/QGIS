@@ -43,7 +43,7 @@ class QComboBox;
 /**
  * \class QgsProcessingModelerParameterWidget
  *
- * A widget for customising the value of Processing algorithm parameter inside
+ * \brief A widget for customising the value of Processing algorithm parameter inside
  * a Processing model.
  *
  * The widget provides choice of the linked source for values for the parameter

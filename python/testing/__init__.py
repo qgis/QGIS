@@ -27,9 +27,18 @@ import difflib
 import functools
 import filecmp
 import tempfile
+from pathlib import Path
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsApplication, QgsFeatureRequest, NULL
+from qgis.PyQt.QtCore import QVariant, QDateTime, QDate
+from qgis.core import (
+    QgsApplication,
+    QgsFeatureRequest,
+    QgsCoordinateReferenceSystem,
+    NULL,
+    QgsVectorLayer,
+    QgsRenderChecker
+)
+
 import unittest
 
 # Get a backup, we will patch this one later
@@ -86,9 +95,12 @@ class TestCase(_TestCase):
 
         # Compare CRS
         if 'ignore_crs_check' not in compare or not compare['ignore_crs_check']:
+            expected_wkt = layer_expected.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
+            result_wkt = layer_result.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
+
             if use_asserts:
-                _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
-            elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
+                _TestCase.assertEqual(self, layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())
+            elif layer_expected.dataProvider().crs() != layer_result.dataProvider().crs():
                 return False
 
         # Compare features
@@ -108,6 +120,11 @@ class TestCase(_TestCase):
             topo_equal_check = False
 
         try:
+            ignore_part_order = compare['geometry']['ignore_part_order']
+        except KeyError:
+            ignore_part_order = False
+
+        try:
             unordered = compare['unordered']
         except KeyError:
             unordered = False
@@ -119,7 +136,7 @@ class TestCase(_TestCase):
                 for feat_expected in features_expected:
                     if self.checkGeometriesEqual(feat.geometry(), feat_expected.geometry(),
                                                  feat.id(), feat_expected.id(),
-                                                 False, precision, topo_equal_check) and \
+                                                 False, precision, topo_equal_check, ignore_part_order) and \
                        self.checkAttributesEqual(feat, feat_expected, layer_expected.fields(), False, compare):
                         feat_expected_equal = feat_expected
                         break
@@ -172,7 +189,7 @@ class TestCase(_TestCase):
                                            feats[1].geometry(),
                                            feats[0].id(),
                                            feats[1].id(),
-                                           use_asserts, precision, topo_equal_check)
+                                           use_asserts, precision, topo_equal_check, ignore_part_order)
             if not eq and not use_asserts:
                 return False
 
@@ -182,7 +199,7 @@ class TestCase(_TestCase):
 
         return True
 
-    def assertFilesEqual(self, filepath_expected, filepath_result):
+    def checkFilesEqual(self, filepath_expected, filepath_result, use_asserts=False):
         with open(filepath_expected, 'r') as file_expected:
             with open(filepath_result, 'r') as file_result:
                 diff = difflib.unified_diff(
@@ -192,36 +209,75 @@ class TestCase(_TestCase):
                     tofile='result',
                 )
                 diff = list(diff)
-                self.assertEqual(0, len(diff), ''.join(diff))
+                eq = not len(diff)
+                if use_asserts:
+                    self.assertEqual(0, len(diff), ''.join(diff))
+                else:
+                    return eq
 
-    def assertDirectoriesEqual(self, dirpath_expected, dirpath_result):
+    def assertFilesEqual(self, filepath_expected, filepath_result):
+        self.checkFilesEqual(filepath_expected, filepath_result, use_asserts=True)
+
+    def assertDirectoryEqual(self, dirpath_expected: str, dirpath_result: str):
+        """
+        Checks whether both directories have the same content (non-recursively) and raises an assertion error if not.
+        """
+        path_expected = Path(dirpath_expected)
+        path_result = Path(dirpath_result)
+
+        contents_result = list(path_result.iterdir())
+        contents_expected = list(path_expected.iterdir())
+        contents_expected = [p for p in contents_expected if p.suffix != '.png' or not p.stem.endswith('_mask')]
+        self.assertCountEqual([p.name if p.is_file() else p.stem for p in contents_expected], [p.name if p.is_file() else p.stem for p in contents_result], f'Directory contents mismatch in {dirpath_expected} vs {dirpath_result}')
+
+        # compare file contents
+        for expected_file_path in contents_expected:
+            if expected_file_path.is_dir():
+                continue
+
+            result_file_path = path_result / expected_file_path.name
+
+            if expected_file_path.suffix == '.pbf':
+                # vector layer, use assertLayersEqual
+                layer_expected = QgsVectorLayer(str(expected_file_path), 'Expected')
+                self.assertTrue(layer_expected.isValid())
+                layer_result = QgsVectorLayer(str(result_file_path), 'Result')
+                self.assertTrue(layer_result.isValid())
+                self.assertLayersEqual(layer_expected, layer_result)
+            elif expected_file_path.suffix == '.png':
+                # image file, use QgsRenderChecker
+                checker = QgsRenderChecker()
+                res = checker.compareImages(expected_file_path.stem, expected_file_path.as_posix(), result_file_path.as_posix())
+                self.assertTrue(res)
+            else:
+                assert False, f"Don't know how to compare {expected_file_path.suffix} files"
+
+    def assertDirectoriesEqual(self, dirpath_expected: str, dirpath_result: str):
         """ Checks whether both directories have the same content (recursively) and raises an assertion error if not. """
-        dc = filecmp.dircmp(dirpath_expected, dirpath_result)
-        dc.report_full_closure()
+        self.assertDirectoryEqual(dirpath_expected, dirpath_result)
 
-        def _check_dirs_equal_recursive(dcmp):
-            self.assertEqual(dcmp.left_only, [])
-            self.assertEqual(dcmp.right_only, [])
-            self.assertEqual(dcmp.diff_files, [])
-            for sub_dcmp in dcmp.subdirs.values():
-                _check_dirs_equal_recursive(sub_dcmp)
+        # recurse through subfolders
+        path_expected = Path(dirpath_expected)
+        path_result = Path(dirpath_result)
+        for p in path_expected.iterdir():
+            if p.is_dir():
+                self.assertDirectoriesEqual(str(p), path_result / p.stem)
 
-        _check_dirs_equal_recursive(dc)
+    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False, ignore_part_order=False):
+        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check, ignore_part_order=ignore_part_order)
 
-    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False):
-        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check)
-
-    def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False):
+    def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False, ignore_part_order=False):
         """ Checks whether two geometries are the same - using either a strict check of coordinates (up to given precision)
         or by using topological equality (where e.g. a polygon with clockwise is equal to a polygon with counter-clockwise
         order of vertices)
         .. versionadded:: 3.2
         """
         if not geom0.isNull() and not geom1.isNull():
-            if topo_equal_check:
+            equal = geom0.constGet().asWkt(precision) == geom1.constGet().asWkt(precision)
+            if not equal and topo_equal_check:
                 equal = geom0.isGeosEqual(geom1)
-            else:
-                equal = geom0.constGet().asWkt(precision) == geom1.constGet().asWkt(precision)
+            if not equal and ignore_part_order and geom0.isMultipart():
+                equal = sorted([p.asWkt(precision) for p in geom0.constParts()]) == sorted([p.asWkt(precision) for p in geom1.constParts()])
         elif geom0.isNull() and geom1.isNull():
             equal = True
         else:
@@ -230,12 +286,22 @@ class TestCase(_TestCase):
         if use_asserts:
             _TestCase.assertTrue(
                 self,
-                equal,
-                'Features (Expected fid: {}, Result fid: {}) differ in geometry: \n\n Expected geometry:\n {}\n\n Result geometry:\n {}'.format(
+                equal, ''
+                ' Features (Expected fid: {}, Result fid: {}) differ in geometry with method {}: \n\n'
+                '  At given precision ({}):\n'
+                '   Expected geometry: {}\n'
+                '   Result geometry:   {}\n\n'
+                '  Full precision:\n'
+                '   Expected geometry : {}\n'
+                '   Result geometry:   {}\n\n'.format(
                     geom0_id,
                     geom1_id,
+                    'geos' if topo_equal_check else 'wkt',
+                    precision,
                     geom0.constGet().asWkt(precision) if not geom0.isNull() else 'NULL',
-                    geom1.constGet().asWkt(precision) if not geom1.isNull() else 'NULL'
+                    geom1.constGet().asWkt(precision) if not geom1.isNull() else 'NULL',
+                    geom0.constGet().asWkt() if not geom1.isNull() else 'NULL',
+                    geom1.constGet().asWkt() if not geom0.isNull() else 'NULL'
                 )
             )
         else:
@@ -280,8 +346,18 @@ class TestCase(_TestCase):
                     attr_result = float(attr_result) if attr_result else None
                     isNumber = True
                 if cmp['cast'] == 'str':
-                    attr_expected = str(attr_expected) if attr_expected else None
-                    attr_result = str(attr_result) if attr_result else None
+                    if isinstance(attr_expected, QDateTime):
+                        attr_expected = attr_expected.toString('yyyy/MM/dd hh:mm:ss')
+                    elif isinstance(attr_expected, QDate):
+                        attr_expected = attr_expected.toString('yyyy/MM/dd')
+                    else:
+                        attr_expected = str(attr_expected) if attr_expected else None
+                    if isinstance(attr_result, QDateTime):
+                        attr_result = attr_result.toString('yyyy/MM/dd hh:mm:ss')
+                    elif isinstance(attr_result, QDate):
+                        attr_result = attr_result.toString('yyyy/MM/dd')
+                    else:
+                        attr_result = str(attr_result) if attr_result else None
 
             # Round field (only numeric so it works with __all__)
             if 'precision' in cmp and (field_expected.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong] or isNumber):

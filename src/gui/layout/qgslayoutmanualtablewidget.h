@@ -31,12 +31,12 @@ class QgsLayoutFrame;
 
 /**
  * \ingroup gui
- * A widget for configuring layout manual table items.
+ * \brief A widget for configuring layout manual table items.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutManualTableWidgetBase
+class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutManualTableWidgetBase
 {
     Q_OBJECT
   public:
@@ -44,6 +44,7 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pri
     QgsLayoutManualTableWidget( QgsLayoutFrame *frame );
 
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
 

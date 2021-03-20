@@ -343,7 +343,7 @@ void QgsFieldMappingWidget::TypeDelegate::setEditorData( QWidget *editor, const 
   if ( ! editorWidget )
     return;
 
-  const QVariant value { index.model()->data( index, Qt::EditRole ) };
+  const QVariant value = index.model()->data( index, Qt::EditRole );
   editorWidget->setCurrentIndex( editorWidget->findData( value ) );
 }
 
@@ -353,6 +353,6 @@ void QgsFieldMappingWidget::TypeDelegate::setModelData( QWidget *editor, QAbstra
   if ( ! editorWidget )
     return;
 
-  const QVariant currentValue { editorWidget->currentData( ) };
+  const QVariant currentValue = editorWidget->currentData( );
   model->setData( index, currentValue, Qt::EditRole );
 }

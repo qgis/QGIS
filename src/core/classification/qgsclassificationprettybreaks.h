@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * QgsClassificationPrettryBreaks is an implementation of QgsClassificationMethod
+ * \brief QgsClassificationPrettryBreaks is an implementation of QgsClassificationMethod
  * for pretty breaks
  * \since QGIS 3.10
  */

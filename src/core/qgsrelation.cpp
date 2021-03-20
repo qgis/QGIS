@@ -217,7 +217,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
-    int referencingIdx = referencingLayer()->fields().indexFromName( pair.referencingField() );
+    int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
     conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ) );
   }
 
@@ -261,11 +261,15 @@ QString QgsRelation::id() const
 
 void QgsRelation::generateId()
 {
-  d->mRelationId = QStringLiteral( "%1_%2_%3_%4" )
-                   .arg( referencingLayerId(),
-                         d->mFieldPairs.at( 0 ).referencingField(),
-                         referencedLayerId(),
-                         d->mFieldPairs.at( 0 ).referencedField() );
+  if ( !d->mFieldPairs.isEmpty() )
+  {
+    const QgsRelation::FieldPair fieldPair = d->mFieldPairs.at( 0 );
+    d->mRelationId = QStringLiteral( "%1_%2_%3_%4" )
+                     .arg( referencingLayerId(),
+                           fieldPair.referencingField(),
+                           referencedLayerId(),
+                           fieldPair.referencedField() );
+  }
   updateRelationStatus();
 }
 
@@ -297,7 +301,7 @@ QList<QgsRelation::FieldPair> QgsRelation::fieldPairs() const
 QgsAttributeList QgsRelation::referencedFields() const
 {
   QgsAttributeList attrs;
-
+  attrs.reserve( d->mFieldPairs.size() );
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
     attrs << d->mReferencedLayer->fields().lookupField( pair.second );

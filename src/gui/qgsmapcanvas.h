@@ -78,7 +78,7 @@ class QgsMapMouseEvent;
 
 /**
  * \ingroup gui
- * Map canvas is a class for displaying all GIS data types on a canvas.
+ * \brief Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
@@ -907,6 +907,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Emitted when the scale of the map changes
     void scaleChanged( double );
+
+    /**
+     * Emitted when the scale locked state of the map changes
+     * \param locked true if the scale is locked
+     * \see setScaleLocked
+     * \since QGIS 3.16
+     */
+    void scaleLockChanged( bool locked );
+
 
     //! Emitted when the extents of the map change
     void extentsChanged();

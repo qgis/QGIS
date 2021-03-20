@@ -1,6 +1,11 @@
-name: Code Layout
+name: 🧹 Code Layout
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - release-**
+  pull_request:
 
 jobs:
   documentation_checks:
@@ -9,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.7
       - name: Install Requirements
@@ -86,6 +91,14 @@ jobs:
       - name: Def Window Title Test
         run: ./tests/code_layout/test_defwindowtitle.sh
 
+  qvariant_no_brace_init:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: No brace initialization of QVariant variables
+        run: ./tests/code_layout/test_qvariant_no_brace_init.sh
+
   doxygen_layout_check:
     runs-on: ubuntu-latest
     steps:
@@ -110,7 +123,7 @@ jobs:
         run: |
           sudo apt install -y \
               astyle \
-              python-autopep8 \
+              python3-autopep8 \
               flip
       - name: Indentation Test
         run: ./scripts/verify_indentation.sh HEAD~1
@@ -137,7 +150,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.7
       - name: Install Requirements

@@ -61,6 +61,7 @@ class CORE_EXPORT QWebFrame : public QObject
     {
       Q_UNUSED( html )
       Q_UNUSED( url )
+      emit loadFinished( true );
     }
 
     QSize contentsSize() const
@@ -84,6 +85,8 @@ class CORE_EXPORT QWebFrame : public QObject
     }
 
   signals:
+    void loadFinished( bool ok );
+
     void javaScriptWindowObjectCleared();
 /// @endcond
 };

@@ -44,7 +44,7 @@ class QgsMeshLayer;
 
 /**
  * \ingroup 3d
- * Implementation of material used to render the mesh layer
+ * \brief Implementation of material used to render the mesh layer
  * \since QGIS 3.12
  */
 class QgsMesh3dMaterial : public Qt3DRender::QMaterial

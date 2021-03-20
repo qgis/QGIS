@@ -202,6 +202,13 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     static QgsCoordinateReferenceSystem lookupCrs( QgsOracleConn *conn, int srsid );
 
     /**
+     * Insert \a geometryColumn column from table \a tableName in Oracle geometry metadata table with given \a srs coordinate
+     * reference system, using \a conn connection
+     * Throws OracleException if an error occurred.
+     */
+    static void insertGeomMetadata( QgsOracleConn *conn, const QString &tableName, const QString &geometryColumn, const QgsCoordinateReferenceSystem &srs );
+
+    /**
      * Evaluates the given expression string server-side and convert the result to the given type
      */
     QVariant evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const;

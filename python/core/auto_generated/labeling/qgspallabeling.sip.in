@@ -14,6 +14,9 @@
 
 class QgsLabelPosition
 {
+%Docstring
+Represents the calculated placement of a map label.
+%End
 
 %TypeHeaderCode
 #include "qgspallabeling.h"
@@ -79,6 +82,9 @@ Constructor for QgsLabelPosition
 
 class QgsPalLayerSettings
 {
+%Docstring
+Contains settings for how a map layer will be labeled.
+%End
 
 %TypeHeaderCode
 #include "qgspallabeling.h"
@@ -723,6 +729,9 @@ Returns a pixmap preview for label ``settings``.
 
 class QgsLabelCandidate
 {
+%Docstring
+Represents a label candidate.
+%End
 
 %TypeHeaderCode
 #include "qgspallabeling.h"
@@ -775,6 +784,9 @@ Sets the map ``settings`` associated with the labeling run.
 
 class QgsPalLabeling
 {
+%Docstring
+PAL labeling utilities.
+%End
 
 %TypeHeaderCode
 #include "qgspallabeling.h"

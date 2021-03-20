@@ -24,7 +24,7 @@ email                : ersts@amnh.org
 
 /**
  * \ingroup core
-  * A color enhancement function that performs a linear enhanceContrast between min and max.
+  * \brief A color enhancement function that performs a linear enhanceContrast between min and max.
   */
 class CORE_EXPORT QgsLinearMinMaxEnhancement : public QgsContrastEnhancementFunction
 {

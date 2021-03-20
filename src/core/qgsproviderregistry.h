@@ -39,7 +39,7 @@ class QgsRasterDataProvider;
 
 /**
  * \ingroup core
-  * A registry / canonical manager of data providers.
+  * \brief A registry / canonical manager of data providers.
   *
   * This is a Singleton class that manages data provider access.
   *
@@ -111,6 +111,23 @@ class CORE_EXPORT QgsProviderRegistry
     //! Sets library directory where to search for plugins
     void setLibraryDirectory( const QDir &path );
 
+    /*
+     * IMPORTANT: While it seems like /Factory/ would be the correct annotation here, that's not
+     * the case.
+     * Paraphrasing Phil Thomson's advice on https://www.riverbankcomputing.com/pipermail/pyqt/2017-July/039450.html:
+     *
+     * "
+     * /Factory/ is used when the instance returned is guaranteed to be new to Python.
+     * In this case it isn't because it has already been seen when being returned by by the python function
+     * creating the provider subclass.
+     *
+     * (However for a different sub-class implemented in C++ then it would be the first time it was seen
+     * by Python so the /Factory/ on create() would be correct.)
+     *
+     * You might try using /TransferBack/ on createProvider() instead - that might be the best compromise.
+     * "
+     */
+
     /**
      * Creates a new instance of a provider.
      * \param providerKey identifier of the provider
@@ -124,7 +141,7 @@ class CORE_EXPORT QgsProviderRegistry
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
                                      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
+                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_TRANSFERBACK;
 
     /**
      * Returns the provider capabilities

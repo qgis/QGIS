@@ -3043,7 +3043,7 @@ bool QgsVectorLayer::changeAttributeValues( QgsFeatureId fid, const QgsAttribute
 
   if ( ! newValuesNotJoin.isEmpty() && mEditBuffer && mDataProvider )
   {
-    result &= mEditBuffer->changeAttributeValues( fid, newValues, oldValues );
+    result &= mEditBuffer->changeAttributeValues( fid, newValuesNotJoin, oldValues );
   }
 
   if ( result && !skipDefaultValues && !mDefaultValueOnUpdateFields.isEmpty() )
@@ -5031,11 +5031,15 @@ QString QgsVectorLayer::htmlMetadata() const
   // local path
   QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( mProviderKey, publicSource() );
   QString path;
+  bool isLocalPath = false;
   if ( uriComponents.contains( QStringLiteral( "path" ) ) )
   {
     path = uriComponents[QStringLiteral( "path" )].toString();
     if ( QFile::exists( path ) )
+    {
+      isLocalPath = true;
       myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
+    }
   }
   if ( uriComponents.contains( QStringLiteral( "url" ) ) )
   {
@@ -5044,8 +5048,8 @@ QString QgsVectorLayer::htmlMetadata() const
   }
 
   // data source
-  if ( publicSource() != path )
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
+  if ( publicSource() != path || !isLocalPath )
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
 
   // storage type
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QStringLiteral( "</td><td>" ) + storageType() + QStringLiteral( "</td></tr>\n" );

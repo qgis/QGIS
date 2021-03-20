@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * Raster namespace.
+ * \brief Raster namespace.
  */
 class CORE_EXPORT QgsRaster
 {

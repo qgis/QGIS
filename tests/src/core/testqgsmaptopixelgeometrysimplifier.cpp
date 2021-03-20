@@ -77,6 +77,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
     void testCircularString();
     void testVisvalingam();
     void testRingValidity();
+    void testAbstractGeometrySimplify();
 
 };
 
@@ -215,6 +216,43 @@ void TestQgsMapToPixelGeometrySimplifier::testRingValidity()
   QgsGeometry ret = simplifier.simplify( poly );
   QVERIFY( ret.isGeosValid() );
 
+}
+
+void TestQgsMapToPixelGeometrySimplifier::testAbstractGeometrySimplify()
+{
+  // test direct simplification of abstract geometries, especially the "no simplification required" paths
+  QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 5 );
+  std::unique_ptr< QgsAbstractGeometry > simplified;
+
+  // no input geometry
+  simplified.reset( simplifier.simplify( nullptr ) );
+  QVERIFY( !simplified.get() );
+
+  // no simplification flag
+  simplifier.setSimplifyFlags( QgsMapToPixelSimplifier::NoFlags );
+  simplified.reset( simplifier.simplify( nullptr ) );
+  QVERIFY( !simplified.get() );
+
+  simplifier.setSimplifyFlags( QgsMapToPixelSimplifier::SimplifyGeometry );
+  // point geometry = no simplification
+  simplified.reset( simplifier.simplify( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ).constGet() ) );
+  QVERIFY( !simplified.get() );
+  simplified.reset( simplifier.simplify( QgsGeometry::fromWkt( QStringLiteral( "PointZ( 1 2 3 )" ) ).constGet() ) );
+  QVERIFY( !simplified.get() );
+  simplified.reset( simplifier.simplify( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint( 1 2, 3 4 )" ) ).constGet() ) );
+  QVERIFY( !simplified.get() );
+
+  // triangle polygon = no simplification
+  simplified.reset( simplifier.simplify( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 1 1, 1 2, 2 2, 1 1))" ) ).constGet() ) );
+  QVERIFY( !simplified.get() );
+
+  // too large bounding box vs tolerance
+  simplified.reset( simplifier.simplify( QgsGeometry::fromWkt( QStringLiteral( "LineString( 1 1, 50 1.5, 100 2, 100 200 )" ) ).constGet() ) );
+  QVERIFY( !simplified.get() );
+
+  // should be simplified
+  simplified.reset( simplifier.simplify( QgsGeometry::fromWkt( QStringLiteral( "LineString( 1 1, 2 1.1, 2.1 1.09, 3 0.9, 4 1 )" ) ).constGet() ) );
+  QCOMPARE( simplified->asWkt( 2 ), QStringLiteral( "LineString (1 1, 2 1.1, 3 0.9, 4 1)" ) );
 }
 
 QGSTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )

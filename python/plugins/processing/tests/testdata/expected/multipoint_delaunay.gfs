@@ -1,7 +1,7 @@
 <GMLFeatureClassList>
   <GMLFeatureClass>
-    <Name>mp</Name>
-    <ElementPath>mp</ElementPath>
+    <Name>multipoint_delaunay</Name>
+    <ElementPath>multipoint_delaunay</ElementPath>
     <!--POLYGON-->
     <GeometryType>3</GeometryType>
     <SRSName>EPSG:4326</SRSName>

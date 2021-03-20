@@ -1042,8 +1042,8 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   {
     if ( mActiveSubLayerVisibility.constFind( *it ).value() )
     {
-      visibleLayers += *it;
-      visibleStyles += *it2;
+      visibleLayers += QUrl::toPercentEncoding( *it );
+      visibleStyles += QUrl::toPercentEncoding( *it2 );
     }
 
     ++it2;
@@ -3724,7 +3724,15 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
 {
   bool useContextualWMSLegend = mSettings.mEnableContextualLegend;
 
-  QString lurl = getLegendGraphicUrl();
+  QString lurl;
+  if ( mSettings.mIgnoreGetMapUrl )
+  {
+    lurl = mSettings.mBaseUrl;
+  }
+  else
+  {
+    lurl = getLegendGraphicUrl();
+  }
 
   if ( lurl.isEmpty() )
   {

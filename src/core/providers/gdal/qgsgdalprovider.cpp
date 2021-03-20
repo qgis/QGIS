@@ -2360,7 +2360,8 @@ QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts )
 
 QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsGdalProvider( uri, options, flags );
+  Q_UNUSED( flags );
+  return new QgsGdalProvider( uri, options );
 }
 
 /**
@@ -2861,6 +2862,10 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
     QgsDebugMsgLevel( QStringLiteral( "MEAN %1" ).arg( myRasterBandStats.mean ), 2 );
     QgsDebugMsgLevel( QStringLiteral( "STDDEV %1" ).arg( myRasterBandStats.stdDev ), 2 );
 #endif
+  }
+  else
+  {
+    myRasterBandStats.statsGathered = QgsRasterBandStats::Stats::None;
   }
 
   mStatistics.append( myRasterBandStats );

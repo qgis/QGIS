@@ -11,7 +11,7 @@
 class QgsRendererWidget : QgsPanelWidget
 {
 %Docstring
-Base class for renderer settings widgets
+Base class for renderer settings widgets.
 
 WORKFLOW:
 - open renderer dialog with some RENDERER  (never null!)
@@ -161,7 +161,7 @@ This can be overwritten in subclasses.
 class QgsDataDefinedValueDialog : QDialog
 {
 %Docstring
-Utility classes for "en masse" size definition
+Utility classes for "en masse" size definition.
 %End
 
 %TypeHeaderCode

@@ -58,9 +58,16 @@ class TestQgsCoordinateOperationWidget(unittest.TestCase):
         self.assertTrue(w.hasSelection())
         self.assertGreaterEqual(len(w.availableOperations()), 3)
 
-        self.assertEqual(w.defaultOperation().proj, '+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84')
-        self.assertEqual(w.selectedOperation().proj,
-                         '+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84')
+        available_operations = QgsDatumTransform.operations(w.sourceCrs(), w.destinationCrs())
+        for op in available_operations:
+            if op.isAvailable:
+                default_proj = op.proj
+                break
+        else:
+            self.assertTrue(False, 'No operations available')
+
+        self.assertEqual(w.defaultOperation().proj, default_proj)
+        self.assertEqual(w.selectedOperation().proj, default_proj)
         self.assertTrue(w.selectedOperation().isAvailable)
 
         op = QgsCoordinateOperationWidget.OperationDetails()
@@ -97,8 +104,7 @@ class TestQgsCoordinateOperationWidget(unittest.TestCase):
         w.setSelectedOperation(op)
         w.setSelectedOperationUsingContext(context)
         # should go to default, because there's nothing in the context matching these crs
-        self.assertEqual(w.selectedOperation().proj,
-                         '+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84')
+        self.assertEqual(w.selectedOperation().proj, default_proj)
         self.assertEqual(len(spy), 6)
 
         # put something in the context
@@ -116,7 +122,7 @@ class TestQgsCoordinateOperationWidget(unittest.TestCase):
         self.assertFalse(w.selectedOperation().allowFallback)
         self.assertEqual(len(spy), 8)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true' or QgsProjUtils.projVersionMajor() >= 6, 'Depends on local environment and grid presence')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true') or QgsProjUtils.projVersionMajor() >= 6, 'Depends on local environment and grid presence')
     def testOperationsCruftyProj(self):
         w = QgsCoordinateOperationWidget()
         self.assertFalse(w.hasSelection())

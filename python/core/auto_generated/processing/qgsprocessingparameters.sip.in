@@ -3411,7 +3411,6 @@ class QgsProcessingParameterFolderDestination : QgsProcessingDestinationParamete
 %Docstring
 A folder destination parameter, for specifying the destination path for a folder created
 by the algorithm or used for creating new files within the algorithm.
-A folder output parameter.
 
 .. versionadded:: 3.0
 %End

@@ -212,7 +212,7 @@ QString QgsRasterStackLowestPositionAlgorithm::displayName() const
 
 QString QgsRasterStackLowestPositionAlgorithm::name() const
 {
-  return QObject::tr( "lowestpositioninrasterstack" );
+  return QStringLiteral( "lowestpositioninrasterstack" );
 }
 
 QStringList QgsRasterStackLowestPositionAlgorithm::tags() const
@@ -315,7 +315,7 @@ QString QgsRasterStackHighestPositionAlgorithm::displayName() const
 
 QString QgsRasterStackHighestPositionAlgorithm::name() const
 {
-  return QObject::tr( "highestpositioninrasterstack" );
+  return QStringLiteral( "highestpositioninrasterstack" );
 }
 
 QStringList QgsRasterStackHighestPositionAlgorithm::tags() const

@@ -47,7 +47,7 @@ struct QgsMesh;
 
 /**
  * \ingroup core
- * Holds metadata about mesh driver
+ * \brief Holds metadata about mesh driver
  *
  * \since QGIS 3.12
  */
@@ -118,7 +118,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )
 
 /**
  * \ingroup core
- * Holds data provider key, description, and associated shared library file or function pointer information.
+ * \brief Holds data provider key, description, and associated shared library file or function pointer information.
  *
  * Provider metadata refers either to providers which are loaded via libraries or
  * which are native providers that are included in the core QGIS installation
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \throws QgsProviderConnectionException
      * \see findConnection()
      */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
 
     /**
      * Removes the connection with the given \a name from the settings.

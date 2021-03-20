@@ -31,7 +31,7 @@ class QgsField;
 
 /**
  * \ingroup gui
- * Manages an editor widget
+ * \brief Manages an editor widget
  * Widget and wrapper share the same parent
  *
  * A wrapper controls one attribute editor widget and is able to create a default

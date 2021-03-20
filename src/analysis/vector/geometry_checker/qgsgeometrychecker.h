@@ -40,7 +40,7 @@ class QMutex;
 /**
  * \ingroup analysis
  *
- * Manages and runs a set of geometry checks.
+ * \brief Manages and runs a set of geometry checks.
  *
  * \since QGIS 3.4
  */

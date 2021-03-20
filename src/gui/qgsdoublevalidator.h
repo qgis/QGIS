@@ -29,8 +29,8 @@
 /**
  * \ingroup gui
  *
- * QgsDoubleValidator is a QLineEdit Validator that combines QDoubleValidator
- * and QRegularExpressionValidator to allow user to enter double with both
+ * \brief QgsDoubleValidator is a QLineEdit Validator that combines QDoubleValidator
+ * and QRegularExpressionValidator to allow users to enter doubles with both
  * local and C interpretation as a fallback.
  *
  * \since QGIS 3.14

@@ -39,7 +39,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.app.exitQgis()
+
         try:
             os.remove(cls.db_clone)
         except OSError:

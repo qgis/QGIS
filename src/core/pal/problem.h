@@ -49,6 +49,7 @@ namespace pal
   /**
    * \class pal::Sol
    * \ingroup core
+   * \brief Chain solution parameters.
    * \note not available in Python bindings
    */
 

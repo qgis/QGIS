@@ -46,7 +46,7 @@ class QgsVectorLayerFeatureIterator;
 
 /**
  * \ingroup core
- * Partial snapshot of vector layer's state (only the members necessary for access to features)
+ * \brief Partial snapshot of vector layer's state (only the members necessary for access to features)
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
@@ -57,6 +57,11 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      * \param layer source layer
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
+
+    //! QgsVectorLayerFeatureSource cannot be copied
+    QgsVectorLayerFeatureSource( const QgsVectorLayerFeatureSource &other ) = delete;
+    //! QgsVectorLayerFeatureSource cannot be copied
+    QgsVectorLayerFeatureSource &operator==( const QgsVectorLayerFeatureSource &other ) = delete;
 
     ~QgsVectorLayerFeatureSource() override;
 
@@ -87,11 +92,9 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
   protected:
 
-    QgsAbstractFeatureSource *mProviderFeatureSource = nullptr;
-
-    QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;
-
-    QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
+    std::unique_ptr< QgsAbstractFeatureSource > mProviderFeatureSource;
+    std::unique_ptr< QgsVectorLayerJoinBuffer > mJoinBuffer;
+    std::unique_ptr< QgsExpressionFieldBuffer > mExpressionFieldBuffer;
 
     QgsFields mFields;
 
@@ -112,6 +115,11 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsAttributeList mDeletedAttributeIds;
 
     QgsCoordinateReferenceSystem mCrs;
+
+  private:
+#ifdef SIP_RUN
+    QgsVectorLayerFeatureSource( const QgsVectorLayerFeatureSource &other );
+#endif
 };
 
 /**
@@ -298,7 +306,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 /**
  * \class QgsVectorLayerSelectedFeatureSource
  * \ingroup core
- * QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
+ * \brief QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource, public QgsExpressionContextScopeGenerator
@@ -312,6 +320,11 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
      */
     QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
 
+    //! QgsVectorLayerSelectedFeatureSource cannot be copied
+    QgsVectorLayerSelectedFeatureSource( const QgsVectorLayerSelectedFeatureSource &other ) = delete;
+    //! QgsVectorLayerSelectedFeatureSource cannot be copied
+    QgsVectorLayerSelectedFeatureSource &operator==( const QgsVectorLayerSelectedFeatureSource &other ) = delete;
+
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsFields fields() const override;
@@ -322,6 +335,10 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     SpatialIndexPresence hasSpatialIndex() const override;
 
   private:
+
+#ifdef SIP_RUN
+    QgsVectorLayerSelectedFeatureSource( const QgsVectorLayerSelectedFeatureSource &other );
+#endif
 
     // ideally this wouldn't be mutable, but QgsVectorLayerFeatureSource has non-const getFeatures()
     mutable QgsVectorLayerFeatureSource mSource;

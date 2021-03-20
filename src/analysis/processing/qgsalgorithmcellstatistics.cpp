@@ -29,7 +29,7 @@ QString QgsCellStatisticsAlgorithm::displayName() const
 
 QString QgsCellStatisticsAlgorithm::name() const
 {
-  return QObject::tr( "cellstatistics" );
+  return QStringLiteral( "cellstatistics" );
 }
 
 QStringList QgsCellStatisticsAlgorithm::tags() const

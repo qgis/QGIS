@@ -1866,7 +1866,7 @@ void QgsProjectProperties::mRemoveWMSPrintLayoutButton_clicked()
 
 void QgsProjectProperties::mAddLayerRestrictionButton_clicked()
 {
-  QgsProjectLayerGroupDialog d( this, QgsProject::instance()->fileName() );
+  QgsProjectLayerGroupDialog d( QgsProject::instance(), this );
   d.setWindowTitle( tr( "Select Restricted Layers and Groups" ) );
   if ( d.exec() == QDialog::Accepted )
   {

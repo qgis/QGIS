@@ -1948,6 +1948,9 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
           mFieldExpWidget->setToolTip( parameterDefinition()->toolTip() );
           mFieldExpWidget->setExpressionDialogTitle( parameterDefinition()->description() );
           mFieldExpWidget->registerExpressionContextGenerator( this );
+          if ( expParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+            mFieldExpWidget->setAllowEmptyFieldName( true );
+
           connect( mFieldExpWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & )
           {
             emit widgetValueHasChanged( this );
@@ -2002,7 +2005,15 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
     context = tmpContext.get();
   }
 
-  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), parentWrapper->parameterValue(), *context );
+  QVariant val = parentWrapper->parameterValue();
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), val, *context );
   if ( !layer )
   {
     if ( mFieldExpWidget )

@@ -55,7 +55,7 @@ class QTimer;
 
 /**
  * \ingroup core
- * Singleton offering an interface to manage the authentication configuration database
+ * \brief Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
  *
  * QgsAuthManager should not usually be directly created, but rather accessed through
@@ -752,7 +752,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     static QgsAuthManager *instance() SIP_SKIP;
 
+#ifdef __MINGW32__
+  public:
     explicit QgsAuthManager() SIP_SKIP;
+#else
+  protected:
+    explicit QgsAuthManager() SIP_SKIP;
+#endif
 
   private:
 

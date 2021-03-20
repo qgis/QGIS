@@ -32,7 +32,7 @@ SIP_NO_FILE
 
 /**
  * \ingroup gui
- * SQL composer dialog
+ * \brief SQL composer dialog
  *  \note not available in Python bindings
  */
 class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLComposerDialogBase
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
 
     /**
      * \ingroup gui
-     * Callback to do actions on table selection
+     * \brief Callback to do actions on table selection
      * \note not available in Python bindings
      */
     class GUI_EXPORT TableSelectedCallback
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
 
     /**
      * \ingroup gui
-     * Callback to do validation check on dialog validation.
+     * \brief Callback to do validation check on dialog validation.
      * \note not available in Python bindings
      */
     class GUI_EXPORT SQLValidatorCallback

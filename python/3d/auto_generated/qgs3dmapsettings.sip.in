@@ -18,7 +18,7 @@
 class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
 %Docstring
-Definition of the world
+Definition of the world.
 
 .. versionadded:: 3.0
 %End

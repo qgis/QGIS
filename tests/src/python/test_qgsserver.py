@@ -41,7 +41,7 @@ import difflib
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
 from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
-from qgis.testing import unittest
+from qgis.testing import unittest, start_app
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
 
@@ -49,6 +49,8 @@ import osgeo.gdal  # NOQA
 import tempfile
 import base64
 
+
+start_app()
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -106,14 +108,6 @@ class QgsServerTestBase(unittest.TestCase):
                 self.assertEqual(expected_values, response_values, msg=msg + "\nXML attribute values differ at line {0}: {1} != {2}".format(line_no, expected_values, response_values))
             line_no += 1
 
-    @classmethod
-    def setUpClass(cls):
-        cls.app = QgsApplication([], False)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.app.exitQgis()
-
     def setUp(self):
         """Create the server instance"""
         self.fontFamily = QgsFontUtils.standardTestFontFamily()
@@ -135,6 +129,7 @@ class QgsServerTestBase(unittest.TestCase):
                 del os.environ[ev]
             except KeyError:
                 pass
+
         self.server = QgsServer()
 
         # Disable landing page API to test standard legacy XML responses in case of errors

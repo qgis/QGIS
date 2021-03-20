@@ -411,7 +411,7 @@ Ownership is transferred to the caller.
 .. versionadded:: 3.10
 %End
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
 Creates a new connection by loading the connection with the given ``name`` from the settings.
 Ownership is transferred to the caller.

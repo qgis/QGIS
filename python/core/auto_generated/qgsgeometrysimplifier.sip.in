@@ -27,6 +27,17 @@ Abstract base class for simplify geometries using a specific algorithm
 Returns a simplified version the specified geometry
 %End
 
+    virtual QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const = 0 /Factory/;
+%Docstring
+Returns a simplified version the specified ``geometry``.
+
+Will return ``None`` if no simplification is to be performed to the geometry.
+
+Caller takes ownership of the returned geometry.
+
+.. versionadded:: 3.18
+%End
+
   public:
     static bool isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol = 1.0f );
 %Docstring
@@ -60,6 +71,8 @@ is specified in layer units.
 %End
 
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const;
+
+    virtual QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const /Factory/;
 
 
   protected:

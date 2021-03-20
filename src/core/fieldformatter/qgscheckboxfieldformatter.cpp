@@ -52,6 +52,7 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   if ( fieldType == QVariant::Bool )
   {
     boolValue = value.toBool();
+    textValue = boolValue ? QObject::tr( "true" ) : QObject::tr( "false" );
   }
   else
   {
@@ -62,18 +63,19 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     }
     else
     {
-      if ( config.contains( QStringLiteral( "CheckedState" ) ) && value.toString() == config[ QStringLiteral( "CheckedState" ) ].toString() )
+      textValue = value.toString();
+      if ( config.contains( QStringLiteral( "CheckedState" ) ) && textValue == config[ QStringLiteral( "CheckedState" ) ].toString() )
       {
         boolValue = true;
       }
-      else if ( config.contains( QStringLiteral( "UncheckedState" ) ) && value.toString() == config[ QStringLiteral( "UncheckedState" ) ].toString() )
+      else if ( config.contains( QStringLiteral( "UncheckedState" ) ) && textValue == config[ QStringLiteral( "UncheckedState" ) ].toString() )
       {
         boolValue = false;
       }
       else
       {
         isNull = true;
-        textValue = QStringLiteral( "(%1)" ).arg( value.toString() );
+        textValue = QStringLiteral( "(%1)" ).arg( textValue );
       }
     }
   }
@@ -82,8 +84,18 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   {
     return textValue;
   }
-  if ( boolValue )
-    return QObject::tr( "true" );
-  else
-    return QObject::tr( "false" );
+
+  const TextDisplayMethod displayMethod = static_cast< TextDisplayMethod >( config.value( QStringLiteral( "TextDisplayMethod" ), QStringLiteral( "0" ) ).toInt() );
+  switch ( displayMethod )
+  {
+    case QgsCheckBoxFieldFormatter::ShowTrueFalse:
+      if ( boolValue )
+        return QObject::tr( "true" );
+      else
+        return QObject::tr( "false" );
+
+    case QgsCheckBoxFieldFormatter::ShowStoredValues:
+      return textValue;
+  }
+  return QString();
 }

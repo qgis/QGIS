@@ -127,6 +127,8 @@ class FindProjection(QgisAlgorithm):
                 continue
 
             transform_candidate = QgsCoordinateTransform(candidate_crs, target_crs, transform_context)
+            transform_candidate.setBallparkTransformsAreAppropriate(True)
+            transform_candidate.disableFallbackOperationHandler(True)
             transformed_bounds = QgsGeometry(layer_bounds)
             try:
                 if not transformed_bounds.transform(transform_candidate) == 0:

@@ -93,6 +93,11 @@ void QgsStatusBarMagnifierWidget::updateMagnification( double factor )
   mSpinBox->setValue( factor * 100 );
 }
 
+void QgsStatusBarMagnifierWidget::updateScaleLock( bool locked )
+{
+  mLockButton->setChecked( locked );
+}
+
 void QgsStatusBarMagnifierWidget::setMagnification( double value )
 {
   emit magnificationChanged( value / 100 );

@@ -45,7 +45,7 @@ class QgsMeshLayer;
 /**
  * \class QgsProcessingAlgorithm
  * \ingroup core
- * Abstract base class for processing algorithms.
+ * \brief Abstract base class for processing algorithms.
   * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingAlgorithm
@@ -1049,7 +1049,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingAlgorithm::Flags )
 /**
  * \class QgsProcessingFeatureBasedAlgorithm
  * \ingroup core
- * An abstract QgsProcessingAlgorithm base class for processing algorithms which operate "feature-by-feature".
+ * \brief An abstract QgsProcessingAlgorithm base class for processing algorithms which operate "feature-by-feature".
  *
  * Feature based algorithms are algorithms which operate on individual features in isolation. These
  * are algorithms where one feature is output for each input feature, and the output feature result

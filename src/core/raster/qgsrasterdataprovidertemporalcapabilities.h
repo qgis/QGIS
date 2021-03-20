@@ -26,7 +26,7 @@
 /**
  * \class QgsRasterDataProviderTemporalCapabilities
  * \ingroup core
- * Implementation of data provider temporal properties for QgsRasterDataProviders.
+ * \brief Implementation of data provider temporal properties for QgsRasterDataProviders.
  *
  * Data provider temporal capabilities reflect the temporal capabilities of a QgsDataProvider.
  * Unlike QgsMapLayerTemporalProperties, these settings are not user-configurable,

@@ -40,7 +40,7 @@ namespace Qt3DRender
 
 /**
  * \ingroup 3d
- * Base class for 3D engine implementation. A 3D engine is responsible for setting up
+ * \brief Base class for 3D engine implementation. A 3D engine is responsible for setting up
  * rendering with Qt3D. This means mainly:
  *
  * - creating Qt3D aspect engine and registering rendering aspect

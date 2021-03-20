@@ -31,7 +31,7 @@ class QStyleOptionGraphicsItem;
 
 /**
  * \ingroup core
- * Utilities for layouts.
+ * \brief Utilities for layouts.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutUtils
@@ -238,6 +238,13 @@ class CORE_EXPORT QgsLayoutUtils
      * \since QGIS 3.16
      */
     static bool itemIsAClippingSource( const QgsLayoutItem *item );
+
+    /**
+     * Returns a list of predefined scales associated with a \a layout.
+     *
+     * \since QGIS 3.20
+     */
+    static QVector< double > predefinedScales( const QgsLayout *layout );
 
   private:
 

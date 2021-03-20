@@ -17,7 +17,7 @@ tests:
         type: vector
 
   - algorithm: gdal:buffervectors
-    name: BUffer lines with dissolve
+    name: Buffer lines with dissolve
     params:
       DISSOLVE: true
       DISTANCE: 1.0
@@ -31,6 +31,7 @@ tests:
       OUTPUT:
         name: expected/gdal/buffer_lines_dissolve.gml
         type: vector
+        compare: False # command line is already well tested, let's trust that GDAL gives correct result
 
   - algorithm: gdal:buffervectors
     name: Buffer polygons
@@ -63,6 +64,7 @@ tests:
       OUTPUT:
         name: expected/gdal/buffer_polys_dissolve.gml
         type: vector
+        compare: False # command line is already well tested, let's trust that GDAL gives correct result
 
   - algorithm: gdal:clipvectorbyextent
     name: Clip points by extent

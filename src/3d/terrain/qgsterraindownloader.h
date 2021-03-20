@@ -33,7 +33,7 @@ class QgsCoordinateTransformContext;
 
 /**
  * \ingroup 3d
- * Takes care of downloading terrain data from a publicly available data source.
+ * \brief Takes care of downloading terrain data from a publicly available data source.
  *
  * Currently using terrain tiles in Terrarium format hosted on AWS. More info:
  *
@@ -59,12 +59,12 @@ class _3D_EXPORT QgsTerrainDownloader
     ~QgsTerrainDownloader();
 
     //! Definition of data source for terrain tiles (assuming "terrarium" data encoding with usual XYZ tiling scheme)
-    typedef struct
+    struct DataSource
     {
       QString uri;  //!< HTTP(S) template for XYZ tiles requests (e.g. http://example.com/{z}/{x}/{y}.png)
       int zMin = 0;  //!< Minimum zoom level (Z) with valid data
       int zMax = 0;  //!< Maximum zoom level (Z) with valid data
-    } DataSource;
+    };
 
     //! Returns the data source used by default
     static DataSource defaultDataSource();

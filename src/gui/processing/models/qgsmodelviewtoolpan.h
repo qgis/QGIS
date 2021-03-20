@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * Model designer view tool for panning a model.
+ * \brief Model designer view tool for panning a model.
  * \since QGIS 3.18
  */
 class GUI_EXPORT QgsModelViewToolPan : public QgsModelViewTool

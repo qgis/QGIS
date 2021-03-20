@@ -88,10 +88,10 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mTemporalExtent = uri.param( QStringLiteral( "timeDimensionExtent" ) );
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
 
-    if ( mTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+    if ( mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.size() > 0 )
     {
-      QDateTime begin = mTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.first();
-      QDateTime end = mTimeDimensionExtent.datesResolutionList.last().dates.dateTimes.last();
+      QDateTime begin = mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
+      QDateTime end = mTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
 
       mFixedRange =  QgsDateTimeRange( begin, end );
     }
@@ -104,10 +104,10 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
       mReferenceTimeDimensionExtent = parseTemporalExtent( referenceExtent );
 
-      if ( mReferenceTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+      if ( mReferenceTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.size() > 0 )
       {
-        QDateTime begin = mReferenceTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.first();
-        QDateTime end = mReferenceTimeDimensionExtent.datesResolutionList.last().dates.dateTimes.last();
+        QDateTime begin = mReferenceTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
+        QDateTime end = mReferenceTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
 
         mFixedReferenceRange =  QgsDateTimeRange( begin, end );
       }
@@ -189,7 +189,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   if ( uri.hasParam( QStringLiteral( "tileDimensions" ) ) )
   {
     mTiled = true;
-    const auto tileDimensions = uri.param( "tileDimensions" ).split( ';' );
+    const auto tileDimensions = uri.param( QStringLiteral( "tileDimensions" ) ).split( ';' );
     for ( const QString &param : tileDimensions )
     {
       QStringList kv = param.split( '=' );
@@ -218,48 +218,33 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   return true;
 }
 
-QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( QString extent )
+QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &extent )
 {
   QgsWmstDimensionExtent dimensionExtent;
-  if ( extent.isNull() )
+  if ( extent.isEmpty() )
     return dimensionExtent;
 
-  bool containResolution = false;
+  const QStringList parts = extent.split( ',' );
 
-  QStringList parts;
-
-  if ( extent.contains( ',' ) )
-    parts = extent.split( ',' );
-  else
-    parts.append( extent );
-
-  QStringListIterator iter( parts );
-
-  while ( iter.hasNext() )
+  for ( const QString &part : parts )
   {
-    QString item = iter.next();
-    QStringList itemParts;
+    const QString item = part.trimmed();
 
     // If item contain '/' content separator, it is an interval
     if ( item.contains( '/' ) )
     {
-      itemParts = item.split( '/' );
-      QStringListIterator itemIter( itemParts );
-      QgsWmstExtentPair itemPair;
+      const QStringList itemParts = item.split( '/' );
 
-      QgsWmstResolution itemResolution = itemPair.resolution;
-      QgsWmstDates itemDatesList = itemPair.dates;
+      QgsWmstResolution itemResolution;
+      QgsWmstDates itemDatesList;
 
-      bool itemContainResolution = false;
-
-      while ( itemIter.hasNext() )
+      for ( const QString &itemPart : itemParts )
       {
-        QString itemContent = itemIter.next();
+        QString itemContent = itemPart.trimmed();
 
         if ( itemContent.startsWith( 'P' ) )
         {
           itemResolution = parseWmstResolution( itemContent );
-          itemContainResolution = true;
         }
         else
         {
@@ -267,40 +252,29 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( QString extent )
         }
       }
 
-      if ( itemContainResolution )
-        dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution ) );
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution ) );
+    }
+    else
+    {
+      QgsWmstResolution resolution;
+      QgsWmstDates datesList;
+      if ( item.startsWith( 'P' ) )
+      {
+        resolution = parseWmstResolution( item );
+      }
       else
-        dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, QgsWmstResolution() ) );
-      itemContainResolution = false;
-      continue;
-    }
+      {
+        datesList.dateTimes.append( parseWmstDateTimes( item ) );
+      }
 
-    QgsWmstExtentPair pair;
-
-    QgsWmstResolution resolution = pair.resolution;
-    QgsWmstDates datesList = pair.dates;
-
-    if ( item.startsWith( 'P' ) )
-    {
-      resolution = parseWmstResolution( item );
-      containResolution = true;
-    }
-    else
-    {
-      datesList.dateTimes.append( parseWmstDateTimes( item ) );
-    }
-
-    if ( containResolution )
       dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, resolution ) );
-    else
-      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, QgsWmstResolution() ) );
-    containResolution = false;
+    }
   }
 
   return dimensionExtent;
 }
 
-void QgsWmsSettings::setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent )
+void QgsWmsSettings::setTimeDimensionExtent( const QgsWmstDimensionExtent &timeDimensionExtent )
 {
   mTimeDimensionExtent = timeDimensionExtent;
 }
@@ -310,7 +284,7 @@ QgsWmstDimensionExtent QgsWmsSettings::timeDimensionExtent() const
   return mTimeDimensionExtent;
 }
 
-QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolution )
+QDateTime QgsWmsSettings::addTime( const QDateTime &dateTime, const QgsWmstResolution &resolution )
 {
   QDateTime resultDateTime = QDateTime( dateTime );
 
@@ -330,46 +304,61 @@ QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolut
   return resultDateTime;
 }
 
-QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime, bool dateOnly ) const
+QDateTime QgsWmsSettings::findLeastClosestDateTime( const QDateTime &dateTime, bool dateOnly ) const
 {
   QDateTime closest = dateTime;
 
   long long seconds;
 
   if ( dateOnly )
-    seconds = QDateTime::fromString( closest.date().toString() ).toSecsSinceEpoch();
+    seconds = QDateTime( closest.date(), QTime( 0, 0, 0 ) ).toSecsSinceEpoch();
   else
     seconds = closest.toSecsSinceEpoch();
 
-  for ( QgsWmstExtentPair pair : mTimeDimensionExtent.datesResolutionList )
+  for ( const QgsWmstExtentPair &pair : mTimeDimensionExtent.datesResolutionList )
   {
-    if ( pair.dates.dateTimes.size() < 2 )
+    if ( pair.dates.dateTimes.empty() )
+    {
       continue;
+    }
+    else if ( pair.dates.dateTimes.size() == 1 )
+    {
+      long long startSeconds = pair.dates.dateTimes.at( 0 ).toSecsSinceEpoch();
 
-    long long startSeconds = pair.dates.dateTimes.at( 0 ).toSecsSinceEpoch();
-    long long endSeconds = pair.dates.dateTimes.at( 1 ).toSecsSinceEpoch();
+      // if out of bounds
+      if ( seconds < startSeconds )
+        continue;
 
-    // if out of bounds
-    if ( seconds < startSeconds || seconds > endSeconds )
-      continue;
-    if ( seconds == endSeconds )
-      break;
+      closest = pair.dates.dateTimes.at( 0 );
+    }
+    else
+    {
+      long long startSeconds = pair.dates.dateTimes.at( 0 ).toSecsSinceEpoch();
+      long long endSeconds = pair.dates.dateTimes.at( 1 ).toSecsSinceEpoch();
 
-    long long resolutionSeconds = pair.resolution.interval();
+      // if out of bounds
+      if ( seconds < startSeconds || seconds > endSeconds )
+        continue;
+      if ( seconds == endSeconds )
+        break;
 
-    if ( resolutionSeconds <= 0 )
-      continue;
-    long long step = std::floor( ( seconds - startSeconds ) / resolutionSeconds );
-    long long resultSeconds = startSeconds + ( step * resolutionSeconds );
+      long long resolutionSeconds = pair.resolution.interval();
 
-    closest.setSecsSinceEpoch( resultSeconds );
+      if ( resolutionSeconds <= 0 )
+        continue;
+      long long step = std::floor( ( seconds - startSeconds ) / resolutionSeconds );
+      long long resultSeconds = startSeconds + ( step * resolutionSeconds );
+
+      closest.setSecsSinceEpoch( resultSeconds );
+    }
   }
 
   return closest;
 }
 
-QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
+QgsWmstResolution QgsWmsSettings::parseWmstResolution( const QString &itemText )
 {
+  QString item = itemText;
   QgsWmstResolution resolution;
   bool found = false;
 
@@ -448,16 +437,14 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
   return resolution;
 }
 
-QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
+QDateTime QgsWmsSettings::parseWmstDateTimes( const QString &item )
 {
   // Standard item will have YYYY-MM-DDTHH:mm:ss.SSSZ
   //  format a Qt::ISODateWithMs
 
-  QString format = "yyyy-MM-ddTHH:mm:ss.SSSZ";
-
   // Check if it does not have time part
   if ( !item.contains( 'T' ) )
-    return QDateTime::fromString( item, "yyyy-MM-dd" );
+    return QDateTime::fromString( item, QStringLiteral( "yyyy-MM-dd" ) );
   else if ( item.contains( '.' ) )
     return QDateTime::fromString( item, Qt::ISODateWithMs );
   else
@@ -1229,16 +1216,19 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
         const QStringList crsList = nodeElement.text().split( QRegExp( "\\s+" ) );
         for ( const QString &srs : crsList )
         {
-          layerProperty.crs.push_back( srs );
+          if ( !layerProperty.crs.contains( srs ) )
+            layerProperty.crs.push_back( srs );
         }
       }
       else if ( tagName == QLatin1String( "LatLonBoundingBox" ) )    // legacy from earlier versions of WMS
       {
+        // boundingBox element can conatain comma as decimal separator and layer extent is not
+        // calculated at all. Fixing by replacing comma with point.
         layerProperty.ex_GeographicBoundingBox = QgsRectangle(
-              nodeElement.attribute( QStringLiteral( "minx" ) ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "miny" ) ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "maxx" ) ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "maxy" ) ).toDouble()
+              nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
+              nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(),
+              nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(),
+              nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
             );
 
         if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) && nodeElement.attribute( QStringLiteral( "SRS" ) ) != DEFAULT_LATLON_CRS )
@@ -1277,10 +1267,12 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 
         double wBLong, eBLong, sBLat, nBLat;
         bool wBOk, eBOk, sBOk, nBOk;
-        wBLong = wBoundLongitudeElem.text().toDouble( &wBOk );
-        eBLong = eBoundLongitudeElem.text().toDouble( &eBOk );
-        sBLat = sBoundLatitudeElem.text().toDouble( &sBOk );
-        nBLat = nBoundLatitudeElem.text().toDouble( &nBOk );
+        // boundingBox element can conatain comma as decimal separator and layer extent is not
+        // calculated at all. Fixing by replacing comma with point.
+        wBLong = wBoundLongitudeElem.text().replace( ',', '.' ).toDouble( &wBOk );
+        eBLong = eBoundLongitudeElem.text().replace( ',', '.' ).toDouble( &eBOk );
+        sBLat = sBoundLatitudeElem.text().replace( ',', '.' ).toDouble( &sBOk );
+        nBLat = nBoundLatitudeElem.text().replace( ',', '.' ).toDouble( &nBOk );
         if ( wBOk && eBOk && sBOk && nBOk )
         {
           layerProperty.ex_GeographicBoundingBox = QgsRectangle( wBLong, sBLat, eBLong, nBLat );
@@ -1289,10 +1281,10 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
         QgsWmsBoundingBoxProperty bbox;
-        bbox.box = QgsRectangle( nodeElement.attribute( QStringLiteral( "minx" ) ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "miny" ) ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "maxx" ) ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "maxy" ) ).toDouble()
+        bbox.box = QgsRectangle( nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
+                                 nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(),
+                                 nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(),
+                                 nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
                                );
         if ( nodeElement.hasAttribute( QStringLiteral( "CRS" ) ) || nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) )
         {
@@ -1640,11 +1632,13 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
         QgsWmsBoundingBoxProperty boundingBoxProperty;
+        // boundingBox element can conatain comma as decimal separator and layer extent is not
+        // calculated at all. Fixing by replacing comma with point.
         boundingBoxProperty.box = QgsRectangle(
-                                    nodeElement.attribute( QStringLiteral( "minx" ) ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "miny" ) ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "maxx" ) ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "maxy" ) ).toDouble()
+                                    nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
+                                    nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(),
+                                    nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(),
+                                    nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
                                   );
         if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) )
           boundingBoxProperty.crs = nodeElement.attribute( QStringLiteral( "SRS" ) );

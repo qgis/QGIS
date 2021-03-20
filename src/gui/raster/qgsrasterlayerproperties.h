@@ -45,7 +45,7 @@ class QgsWebView;
 /**
  * \ingroup gui
  * \class QgsRasterLayerProperties
- * Property sheet for a raster map layer
+ * \brief Property sheet for a raster map layer
  * \since QGIS 3.12 (in the GUI API)
  */
 

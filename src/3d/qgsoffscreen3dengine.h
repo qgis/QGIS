@@ -52,7 +52,7 @@ namespace Qt3DLogic
 
 /**
  * \ingroup 3d
- * Off-screen 3D engine implementation. It is useful for recording rendered 3D scenes of arbitrary size.
+ * \brief Off-screen 3D engine implementation. It is useful for recording rendered 3D scenes of arbitrary size.
  *
  * \note While the on-screen 3D engine also allows capturing of images, its limitation is that
  * the captured images are of the size of the on-screen window.

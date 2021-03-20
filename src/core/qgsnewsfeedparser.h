@@ -26,7 +26,7 @@ class QgsNetworkContentFetcher;
 
 /**
  * \ingroup core
- * Parser for published QGIS news feeds.
+ * \brief Parser for published QGIS news feeds.
  *
  * This class is designed to work with the specialized QGIS news feed API. See
  * https://github.com/elpaso/qgis-feed.
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
   public:
 
     /**
-     * Represents a single entry from a news feed.
+     * \brief Represents a single entry from a news feed.
      * \ingroup core
      * \since QGIS 3.10
      */

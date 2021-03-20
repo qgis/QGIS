@@ -107,7 +107,7 @@ class TestAuthManager(unittest.TestCase):
         """Run before all tests and set up authentication"""
         authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
-        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
+        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'qgis_ca.crt')
         assert os.path.isfile(cls.sslrootcert_path)
         os.chmod(cls.sslrootcert_path, stat.S_IRUSR)
 
@@ -117,8 +117,8 @@ class TestAuthManager(unittest.TestCase):
         authm.rebuildCaCertsCache()
         authm.rebuildTrustedCaCertsCache()
 
-        cls.server_cert = os.path.join(cls.certsdata_path, '127_0_0_1_ssl_cert.pem')
-        cls.server_key = os.path.join(cls.certsdata_path, '127_0_0_1_ssl_key.pem')
+        cls.server_cert = os.path.join(cls.certsdata_path, '127_0_0_1.crt')
+        cls.server_key = os.path.join(cls.certsdata_path, '127_0_0_1.key')
         cls.server_rootcert = cls.sslrootcert_path
         os.chmod(cls.server_cert, stat.S_IRUSR)
         os.chmod(cls.server_key, stat.S_IRUSR)
@@ -149,7 +149,7 @@ class TestAuthManager(unittest.TestCase):
             except KeyError:
                 pass
         cls.testdata_path = unitTestDataPath('qgis_server')
-        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys')
+        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys_2048')
         cls.project_path = os.path.join(cls.testdata_path, "test_project.qgs")
         # cls.hostname = 'localhost'
         cls.protocol = 'https'

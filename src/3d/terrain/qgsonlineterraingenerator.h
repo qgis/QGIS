@@ -28,7 +28,7 @@ class QgsDemHeightMapGenerator;
 
 /**
  * \ingroup 3d
- * Implementation of terrain generator that uses online resources to download heightmaps.
+ * \brief Implementation of terrain generator that uses online resources to download heightmaps.
  *
  * \note Not available in Python bindings
  *

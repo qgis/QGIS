@@ -28,7 +28,7 @@ class QgsDistanceArea;
 
 /**
  * \ingroup core
- * A layout item subclass for text labels.
+ * \brief A layout item subclass for text labels.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem

@@ -39,7 +39,7 @@ typedef struct PJconsts PJ;
 /**
  * \class QgsProjUtils
  * \ingroup core
- * Utility functions for working with the proj library.
+ * \brief Utility functions for working with the proj library.
  * \since QGIS 3.8
  */
 class CORE_EXPORT QgsProjUtils
@@ -157,7 +157,7 @@ typedef void PJ_CONTEXT;
 /**
  * \class QgsProjContext
  * \ingroup core
- * Used to create and store a proj context object, correctly freeing the context upon destruction.
+ * \brief Used to create and store a proj context object, correctly freeing the context upon destruction.
  * \note Not available in Python bindings
  * \since QGIS 3.8
  */

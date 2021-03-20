@@ -525,6 +525,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.compareApi(request, project,
                         'test_wfs3_collections_items_testlayer_èé.json')
 
+    def test_wfs3_collection_items_html(self):
+        """Test WFS3 API items"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items.html')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_testlayer_èé.html')
+
     def test_wfs3_collection_items_crs(self):
         """Test WFS3 API items with CRS"""
         project = QgsProject()
@@ -1143,6 +1152,23 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = self.compareApi(
             request, project, 'test_wfs3_collections_items_exclude_attribute_0.json')
         self.assertEqual(response.statusCode(), 200)
+
+    def test_wfs3_invalid_fids(self):
+        """Test exceptions for invalid fids"""
+
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/exclude_attribute/items/123456.geojson')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(bytes(response.body()).decode('utf-8'), '[{"code":"Internal server error","description":"Invalid feature [123456]"}]')
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/exclude_attribute/items/xYz@#.geojson')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(bytes(response.body()).decode('utf-8'), '[{"code":"Internal server error","description":"Invalid feature ID [xYz@]"}]')
 
     def test_wfs3_time_filters_ranges(self):
         """Test datetime filters"""
@@ -1887,6 +1913,8 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertTrue(
             h2.templatePath(ctx).endswith('/resources/server/api/ogc/templates/services/api2/handlerTwo.html'))
 
+        del(project)
+
     def testOgcApiHandlerContentType(self):
         """Test OGC API Handler content types"""
 
@@ -1936,6 +1964,8 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             'http://localhost:8000/project/7ecb/wfs3/collections/zg.grundnutzung.html')
         self.assertEqual(h3.contentTypeFromRequest(req), QgsServerOgcApi.HTML)
 
+        del(project)
+
     def testOgcApiHandlerException(self):
         """Test OGC API Handler exception"""
 
@@ -1965,6 +1995,8 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             api.executeRequest(ctx)
         self.assertEqual(
             str(ex.exception), "UTF-8 Exception 2 $ù~à^£")
+
+        del(project)
 
 
 if __name__ == '__main__':

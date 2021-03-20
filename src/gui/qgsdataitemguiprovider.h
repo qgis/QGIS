@@ -33,7 +33,7 @@ class QgsLayerItem;
  * \class QgsDataItemGuiContext
  * \ingroup gui
  *
- * Encapsulates the context in which a QgsDataItem is shown within the application GUI.
+ * \brief Encapsulates the context in which a QgsDataItem is shown within the application GUI.
  *
  * \since QGIS 3.6
  */
@@ -75,7 +75,7 @@ Q_DECLARE_METATYPE( QgsDataItemGuiContext );
  * \class QgsDataItemGuiProvider
  * \ingroup gui
  *
- * Abstract base class for providers which affect how QgsDataItem items behave
+ * \brief Abstract base class for providers which affect how QgsDataItem items behave
  * within the application GUI.
  *
  * Providers must be registered via QgsDataItemGuiProviderRegistry.

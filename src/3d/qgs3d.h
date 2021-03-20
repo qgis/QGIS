@@ -25,7 +25,7 @@ class QgsMaterialRegistry;
 
 /**
  * \ingroup gui
- * Qgs3D is a singleton class containing various registries and other global members
+ * \brief Qgs3D is a singleton class containing various registries and other global members
  * related to 3D classes.
  * \since QGIS 3.16
  */

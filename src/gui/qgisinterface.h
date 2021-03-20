@@ -72,7 +72,7 @@ class QgsAbstractMapToolHandler;
 
 /**
  * \ingroup gui
- * QgisInterface
+ * \brief QgisInterface
  * Abstract base class defining interfaces exposed by QgisApp and
  * made available to plugins.
  *

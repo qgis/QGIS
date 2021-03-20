@@ -26,7 +26,7 @@
 
 /**
  * \ingroup 3d
- * Axis-aligned bounding box - in world coords.
+ * \brief Axis-aligned bounding box - in world coords.
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */
