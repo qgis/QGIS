@@ -64,6 +64,7 @@ relevant symbology elements to render them.
       Curvature,
       Orientation,
       Margins,
+      WedgeWidth,
     };
 
     enum DrawOrder
@@ -984,6 +985,69 @@ Returns the units for the margins between the outside of the callout frame and t
 .. seealso:: :py:func:`setMarginsUnit`
 
 .. seealso:: :py:func:`margins`
+%End
+
+
+    double wedgeWidth() const;
+%Docstring
+Returns the width of the wedge shape at the side it connects with the label.
+
+Units are specified through :py:func:`~QgsBalloonCallout.wedgeWidthUnit`.
+
+.. seealso:: :py:func:`setWedgeWidth`
+
+.. seealso:: :py:func:`wedgeWidthUnit`
+%End
+
+    void setWedgeWidth( double width );
+%Docstring
+Returns the ``width`` of the wedge shape at the side it connects with the label.
+
+Units are specified through :py:func:`~QgsBalloonCallout.setWedgeWidthUnit`.
+
+.. seealso:: :py:func:`wedgeWidth`
+
+.. seealso:: :py:func:`setWedgeWidthUnit`
+%End
+
+    void setWedgeWidthUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the wedge width.
+
+.. seealso:: :py:func:`wedgeWidthUnit`
+
+.. seealso:: :py:func:`setWedgeWidth`
+%End
+
+    QgsUnitTypes::RenderUnit wedgeWidthUnit() const;
+%Docstring
+Returns the units for the wedge width.
+
+.. seealso:: :py:func:`setWedgeWidthUnit`
+
+.. seealso:: :py:func:`wedgeWidth`
+%End
+
+    void setWedgeWidthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the wedge width.
+
+.. seealso:: :py:func:`wedgeWidthMapUnitScale`
+
+.. seealso:: :py:func:`setWedgeWidthUnit`
+
+.. seealso:: :py:func:`setWedgeWidth`
+%End
+
+    const QgsMapUnitScale &wedgeWidthMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the wedge width.
+
+.. seealso:: :py:func:`setWedgeWidthMapUnitScale`
+
+.. seealso:: :py:func:`wedgeWidthUnit`
+
+.. seealso:: :py:func:`wedgeWidth`
 %End
 
   protected:
