@@ -26,6 +26,9 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsvectorlayer.h"
 
+#include <QDir>
+#include <QFileInfo>
+
 
 bool SpatiaLiteUtils::deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause )
 {
