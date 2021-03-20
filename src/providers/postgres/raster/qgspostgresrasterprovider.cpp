@@ -1098,11 +1098,11 @@ bool QgsPostgresRasterProvider::init()
         if ( hexAscii.isEmpty() || ! p.fromWkb( ptr ) )
         {
           // Try to determine extent from raster
-          const QString extentSql { QStringLiteral( "SELECT ST_Envelope( %1 ) "
-                "FROM %2 WHERE %3" )
-            .arg( quotedIdentifier( mRasterColumn ) )
-            .arg( mQuery )
-            .arg( subsetString().isEmpty() ? "'t'" : subsetString() ) };
+          const QString extentSql = QStringLiteral( "SELECT ST_Envelope( %1 ) "
+                                    "FROM %2 WHERE %3" )
+                                    .arg( quotedIdentifier( mRasterColumn ),
+                                          mQuery,
+                                          subsetString().isEmpty() ? "'t'" : subsetString() );
 
           QgsPostgresResult extentResult( connectionRO()->PQexec( extentSql ) );
           const QByteArray extentHexAscii { extentResult.PQgetvalue( 0, 0 ).toLatin1() };
