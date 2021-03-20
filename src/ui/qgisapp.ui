@@ -2531,7 +2531,8 @@ Acts on the currently active layer only.</string>
     <string>Scale Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Scale Feature(s)</string>
+    <string>Scale Feature(s)
+Ctrl+click to set the base point.</string>
    </property>
   </action>
   <action name="mActionRotateFeature">
@@ -2546,7 +2547,9 @@ Acts on the currently active layer only.</string>
     <string>Rotate Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Rotate Feature(s)</string>
+    <string>Rotate Feature(s)
+Ctrl+click to set the center of rotation.
+Shift+click to snap rotation to 45 degree steps.</string>
    </property>
   </action>
   <action name="mActionIncreaseBrightness">
