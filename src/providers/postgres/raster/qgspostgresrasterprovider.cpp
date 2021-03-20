@@ -1005,14 +1005,13 @@ bool QgsPostgresRasterProvider::init()
   {
     try
     {
-      const QString sql { QStringLiteral( "SELECT r_raster_column, srid,"
-                                            "num_bands, pixel_types, nodata_values, ST_AsBinary(extent), blocksize_x, blocksize_y,"
-                                            "out_db, spatial_index, scale_x, scale_y, same_alignment,"
-                                            "regular_blocking "
-                                            "FROM raster_columns WHERE "
-                                            "r_table_name = %1 AND r_table_schema = %2" )
-        .arg( quotedValue( mTableName ) )
-        .arg( quotedValue( mSchemaName ) )  };
+      const QString sql = QStringLiteral( "SELECT r_raster_column, srid,"
+                                          "num_bands, pixel_types, nodata_values, ST_AsBinary(extent), blocksize_x, blocksize_y,"
+                                          "out_db, spatial_index, scale_x, scale_y, same_alignment,"
+                                          "regular_blocking "
+                                          "FROM raster_columns WHERE "
+                                          "r_table_name = %1 AND r_table_schema = %2" )
+                          .arg( quotedValue( mTableName ), quotedValue( mSchemaName ) );
 
       QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
@@ -1182,10 +1181,9 @@ bool QgsPostgresRasterProvider::init()
   //
   if ( mRasterColumn.isEmpty() )
   {
-    const QString sql { QStringLiteral( "SELECT column_name FROM information_schema.columns WHERE "
-                                          "table_name = %1 AND table_schema = %2 AND udt_name = 'raster'" )
-      .arg( quotedValue( mTableName ) )
-      .arg( quotedValue( mSchemaName ) )};
+    const QString sql = QStringLiteral( "SELECT column_name FROM information_schema.columns WHERE "
+                                        "table_name = %1 AND table_schema = %2 AND udt_name = 'raster'" )
+                        .arg( quotedValue( mTableName ), quotedValue( mSchemaName ) );
 
     QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
@@ -1230,7 +1228,7 @@ bool QgsPostgresRasterProvider::init()
   // Fastest SQL: fetch all metadata in one pass
   //   0           1          3           3        4       5         6       7       8       9      10          11           12           13      14
   // encode | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands | pixeltype | nodatavalue | isoutdb | path
-  const QString sql { QStringLiteral( R"(
+  const QString sql = QStringLiteral( R"(
       WITH cte_filtered_raster AS ( SELECT %1 AS filtered_rast FROM %2 %3 ),
            cte_rast AS ( SELECT ST_Union( cte_filtered_raster.filtered_rast ) AS united_raster FROM cte_filtered_raster ),
            cte_bandno AS ( SELECT * FROM generate_series(1, ST_NumBands ( ( SELECT cte_rast.united_raster FROM cte_rast ) ) ) AS bandno ),
@@ -1238,8 +1236,7 @@ bool QgsPostgresRasterProvider::init()
                       SELECT ENCODE( ST_AsBinary( ST_Envelope( band ) ), 'hex'),
                         (ST_Metadata( band  )).*,
                         (ST_BandMetadata( band )).*
-                      FROM cte_band
-  )" ).arg( quotedIdentifier( mRasterColumn ), tableToQuery, where ) };
+                      FROM cte_band)" ).arg( quotedIdentifier( mRasterColumn ), tableToQuery, where );
 
   QgsDebugMsgLevel( QStringLiteral( "Raster information sql: %1" ).arg( sql ), 4 );
 
@@ -1403,11 +1400,10 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
     {
       const QString temporalFieldName { mAttributeFields.field( temporalFieldIndex ).name() };
       // Calculate the range
-      const QString sql { QStringLiteral( "SELECT MIN(%1::timestamp), MAX(%1::timestamp) "
-                                            "FROM %2 %3" )
-        .arg( quotedIdentifier( temporalFieldName ) )
-        .arg( mQuery )
-        .arg( where )};
+      const QString sql =  QStringLiteral( "SELECT MIN(%1::timestamp), MAX(%1::timestamp) "
+                                           "FROM %2 %3" ).arg( quotedIdentifier( temporalFieldName ),
+                                               mQuery,
+                                               where );
 
       QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
@@ -2155,11 +2151,9 @@ void QgsPostgresRasterProvider::determinePrimaryKeyFromUriKeyColumn()
   mPrimaryKeyAttrs.clear();
   const QString keyCandidate {  mUri.keyColumn() };
   QgsPostgresPrimaryKeyType pkType { QgsPostgresPrimaryKeyType::PktUnknown };
-  const QString sql { QStringLiteral( "SELECT data_type FROM information_schema.columns "
-                                        "WHERE column_name = %1 AND table_name = %2 AND table_schema = %3" )
-    .arg( keyCandidate )
-    .arg( mTableName )
-    .arg( mSchemaName ) };
+  const QString sql = QStringLiteral( "SELECT data_type FROM information_schema.columns "
+                                      "WHERE column_name = %1 AND table_name = %2 AND table_schema = %3" )
+                      .arg( keyCandidate, mTableName,  mSchemaName );
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
   if ( PGRES_TUPLES_OK == result.PQresultStatus() )
   {
@@ -2204,10 +2198,9 @@ QString QgsPostgresRasterProvider::dataComment() const
 
 void QgsPostgresRasterProvider::findOverviews()
 {
-  const QString sql { QStringLiteral( "SELECT overview_factor, o_table_schema, o_table_name, o_raster_column "
-                                        "FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2" )
-    .arg( quotedValue( mSchemaName ) )
-    .arg( quotedValue( mTableName ) ) };
+  const QString sql = QStringLiteral( "SELECT overview_factor, o_table_schema, o_table_name, o_raster_column "
+                                      "FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2" ).arg( quotedValue( mSchemaName ),
+                                          quotedValue( mTableName ) );
 
   //QgsDebugMsg( QStringLiteral( "Raster overview information sql: %1" ).arg( sql ) );
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
@@ -2340,14 +2333,11 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
                   QStringLiteral( " AND %1" ).arg( subsetString() ) );
   }
 
-  const QString sql { QStringLiteral( "SELECT (ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
-                                        "FROM %4 %5" )
-    .arg( quotedIdentifier( mRasterColumn ) )
-    .arg( bandNo )
-    .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
-    .arg( tableToQuery )
-    .arg( where )
-  };
+  const QString sql = QStringLiteral( "SELECT (ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
+                                      "FROM %4 %5" ).arg( quotedIdentifier( mRasterColumn ) )
+                      .arg( bandNo )
+                      .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
+                      .arg( tableToQuery, where );
 
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
