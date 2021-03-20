@@ -511,7 +511,7 @@ void ModelTest::rowsInserted( const QModelIndex &parent, int start, int end )
 
 void ModelTest::layoutAboutToBeChanged()
 {
-  for ( int i = 0; i < qBound( 0, model->rowCount(), 100 ); ++i )
+  for ( int i = 0; i < std::clamp( model->rowCount(), 0, 100 ); ++i )
     changing.append( QPersistentModelIndex( model->index( i, 0 ) ) );
 }
 

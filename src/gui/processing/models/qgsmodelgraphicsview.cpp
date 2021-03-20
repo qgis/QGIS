@@ -170,7 +170,7 @@ void QgsModelGraphicsView::scaleSafe( double scale )
 {
   double currentScale = transform().m11();
   scale *= currentScale;
-  scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
+  scale = std::clamp( scale, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
 }
 

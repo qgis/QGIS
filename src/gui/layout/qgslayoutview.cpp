@@ -190,7 +190,7 @@ void QgsLayoutView::scaleSafe( double scale )
 {
   double currentScale = transform().m11();
   scale *= currentScale;
-  scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
+  scale = std::clamp( scale, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
   emit zoomLevelChanged();
   viewChanged();
@@ -213,7 +213,7 @@ void QgsLayoutView::setZoomLevel( double level )
       dpi = 72;
 
     //desired pixel width for 1mm on screen
-    level = qBound( MIN_VIEW_SCALE, level, MAX_VIEW_SCALE );
+    level = std::clamp( level, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
     double mmLevel = currentLayout()->convertFromLayoutUnits( level, QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
     setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
   }
