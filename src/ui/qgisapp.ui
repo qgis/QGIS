@@ -1098,7 +1098,7 @@
     <string>&amp;Vertex Tool (All Layers)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (All Layers)
+    <string>Vertex Tool — All Layers
 Manipulate vertices on any editable layer:
 Right click to lock on a feature.
 Click and drag to select vertices by rectangle.
@@ -3323,7 +3323,7 @@ Shift+click to snap rotation to 45 degree steps.</string>
     <string>&amp;Vertex Tool (Current Layer)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (Current Layer)
+    <string>Vertex Tool — Current Layer
 Manipulate vertices on the active layer:
 Right click to lock on a feature.
 Click and drag to select vertices by rectangle.
