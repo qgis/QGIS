@@ -92,6 +92,7 @@ class CORE_EXPORT QgsCallout
       Curvature, //!< Curvature of curved line callouts (since QGIS 3.20)
       Orientation, //!< Orientation of curved line callouts (since QGIS 3.20)
       Margins, //!< Margin from text (since QGIS 3.20)
+      WedgeWidth, //!< Balloon callout wedge width (since QGIS 3.20)
     };
 
     //! Options for draw order (stacking) of callouts
@@ -990,6 +991,61 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
     */
     QgsUnitTypes::RenderUnit marginsUnit() const { return mMarginUnit; }
 
+
+    /**
+     * Returns the width of the wedge shape at the side it connects with the label.
+     *
+     * Units are specified through wedgeWidthUnit().
+     *
+     * \see setWedgeWidth()
+     * \see wedgeWidthUnit()
+     */
+    double wedgeWidth() const { return mWedgeWidth; }
+
+    /**
+     * Returns the \a width of the wedge shape at the side it connects with the label.
+     *
+     * Units are specified through setWedgeWidthUnit().
+     *
+     * \see wedgeWidth()
+     * \see setWedgeWidthUnit()
+     */
+    void setWedgeWidth( double width ) { mWedgeWidth = width; }
+
+    /**
+     * Sets the \a unit for the wedge width.
+     *
+     * \see wedgeWidthUnit()
+     * \see setWedgeWidth()
+    */
+    void setWedgeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mWedgeWidthUnit = unit; }
+
+    /**
+     * Returns the units for the wedge width.
+     *
+     * \see setWedgeWidthUnit()
+     * \see wedgeWidth()
+    */
+    QgsUnitTypes::RenderUnit wedgeWidthUnit() const { return mWedgeWidthUnit; }
+
+    /**
+     * Sets the map unit \a scale for the wedge width.
+     *
+     * \see wedgeWidthMapUnitScale()
+     * \see setWedgeWidthUnit()
+     * \see setWedgeWidth()
+     */
+    void setWedgeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWedgeWidthScale = scale; }
+
+    /**
+     * Returns the map unit scale for the wedge width.
+     *
+     * \see setWedgeWidthMapUnitScale()
+     * \see wedgeWidthUnit()
+     * \see wedgeWidth()
+     */
+    const QgsMapUnitScale &wedgeWidthMapUnitScale() const { return mWedgeWidthScale; }
+
   protected:
     void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
@@ -1010,6 +1066,10 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
 
     QgsMargins mMargins;
     QgsUnitTypes::RenderUnit mMarginUnit = QgsUnitTypes::RenderMillimeters;
+
+    double mWedgeWidth = 2.64;
+    QgsUnitTypes::RenderUnit mWedgeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mWedgeWidthScale;
 
 };
 
