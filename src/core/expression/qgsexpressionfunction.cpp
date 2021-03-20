@@ -2741,9 +2741,9 @@ static QVariant fcnSmooth( const QVariantList &values, const QgsExpressionContex
     return QVariant();
 
   int iterations = std::min( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), 10 );
-  double offset = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0.5 );
+  double offset = std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0.0, 0.5 );
   double minLength = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
-  double maxAngle = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ), 180.0 );
+  double maxAngle = std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ), 0.0, 180.0 );
 
   QgsGeometry smoothed = geom.smooth( static_cast<unsigned int>( iterations ), offset, minLength, maxAngle );
   if ( smoothed.isNull() )
@@ -4055,7 +4055,7 @@ static QVariant fcnHausdorffDistance( const QVariantList &values, const QgsExpre
   if ( values.length() == 3 && values.at( 2 ).isValid() )
   {
     double densify = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
-    densify = qBound( 0.0, densify, 1.0 );
+    densify = std::clamp( densify, 0.0, 1.0 );
     res = g1.hausdorffDistanceDensify( g2, densify );
   }
   else

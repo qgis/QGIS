@@ -40,7 +40,7 @@ void QgsLabelObstacleSettings::updateDataDefinedProperties( const QgsPropertyCol
       double factorD = exprVal.toDouble( &ok );
       if ( ok )
       {
-        factorD = qBound( 0.0, factorD, 10.0 );
+        factorD = std::clamp( factorD, 0.0, 10.0 );
         factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
         mObstacleFactor = factorD;
       }

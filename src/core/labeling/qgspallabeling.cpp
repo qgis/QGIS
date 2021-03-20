@@ -1937,8 +1937,8 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
       const QPointF maxcharanglePt = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
       if ( ok )
       {
-        maxcharanglein = qBound( 20.0, static_cast< double >( maxcharanglePt.x() ), 60.0 );
-        maxcharangleout = qBound( 20.0, static_cast< double >( maxcharanglePt.y() ), 95.0 );
+        maxcharanglein = std::clamp( static_cast< double >( maxcharanglePt.x() ), 20.0, 60.0 );
+        maxcharangleout = std::clamp( static_cast< double >( maxcharanglePt.y() ), 20.0, 95.0 );
       }
     }
     // make sure maxcharangleout is always negative
@@ -2592,7 +2592,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
       double priorityD = exprVal.toDouble( &ok );
       if ( ok )
       {
-        priorityD = qBound( 0.0, priorityD, 10.0 );
+        priorityD = std::clamp( priorityD, 0.0, 10.0 );
         priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
         ( *labelFeature )->setPriority( priorityD );
       }
