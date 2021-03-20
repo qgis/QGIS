@@ -173,7 +173,7 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
   double negativeTotal = 0;
 
   QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
-  for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
+  for ( const QString &cat : std::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
     double currentVal = expression->evaluate( &expressionContext ).toDouble();

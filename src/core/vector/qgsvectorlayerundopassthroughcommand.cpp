@@ -107,7 +107,7 @@ QgsVectorLayerUndoPassthroughCommandAddFeatures::QgsVectorLayerUndoPassthroughCo
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "add features" ) )
 {
   static int sAddedIdLowWaterMark = -1;
-  for ( const QgsFeature &f : qgis::as_const( features ) )
+  for ( const QgsFeature &f : std::as_const( features ) )
   {
     mInitialFeatures << f;
     //assign a temporary id to the feature (use negative numbers)
@@ -122,7 +122,7 @@ void QgsVectorLayerUndoPassthroughCommandAddFeatures::undo()
 {
   if ( rollBackToSavePoint() )
   {
-    for ( const QgsFeature &f : qgis::as_const( mFeatures ) )
+    for ( const QgsFeature &f : std::as_const( mFeatures ) )
     {
       mBuffer->mAddedFeatures.remove( f.id() );
       emit mBuffer->featureDeleted( f.id() );
@@ -137,7 +137,7 @@ void QgsVectorLayerUndoPassthroughCommandAddFeatures::redo()
   mBuffer->L->dataProvider()->clearErrors();
   if ( setSavePoint() && mBuffer->L->dataProvider()->addFeatures( mFeatures ) && ! mBuffer->L->dataProvider()->hasErrors() )
   {
-    for ( const QgsFeature &f : qgis::as_const( mFeatures ) )
+    for ( const QgsFeature &f : std::as_const( mFeatures ) )
     {
       mBuffer->mAddedFeatures.insert( f.id(), f );
       emit mBuffer->featureAdded( f.id() );

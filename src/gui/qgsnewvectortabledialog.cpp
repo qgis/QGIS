@@ -428,7 +428,7 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
       cbo->setEditable( false );
       cbo->setFrame( false );
       connect( cbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
-      for ( const auto &f : qgis::as_const( mTypeList ) )
+      for ( const auto &f : std::as_const( mTypeList ) )
       {
         cbo->addItem( f.mTypeDesc, f.mTypeName );
       }
@@ -719,7 +719,7 @@ QList<QgsVectorDataProvider::NativeType> QgsNewVectorTableFieldModel::nativeType
 
 QString QgsNewVectorTableFieldModel::typeDesc( const QString &typeName ) const
 {
-  for ( const auto &t : qgis::as_const( mNativeTypes ) )
+  for ( const auto &t : std::as_const( mNativeTypes ) )
   {
     if ( t.mTypeName.compare( typeName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
@@ -736,7 +736,7 @@ QVariant::Type QgsNewVectorTableFieldModel::type( const QString &typeName ) cons
 
 QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( const QString &typeName ) const
 {
-  for ( const auto &t : qgis::as_const( mNativeTypes ) )
+  for ( const auto &t : std::as_const( mNativeTypes ) )
   {
     if ( t.mTypeName.compare( typeName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {

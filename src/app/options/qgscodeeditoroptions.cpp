@@ -94,7 +94,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   }
 
   std::sort( names.begin(), names.end() );
-  for ( const QString &name : qgis::as_const( names ) )
+  for ( const QString &name : std::as_const( names ) )
   {
     mColorSchemeComboBox->addItem( name, themeNameToId.value( name ) );
   }

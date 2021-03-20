@@ -1863,7 +1863,7 @@ void QgisApp::dropEvent( QDropEvent *event )
   {
     QgsCanvasRefreshBlocker refreshBlocker;
 
-    for ( const QString &file : qgis::as_const( files ) )
+    for ( const QString &file : std::as_const( files ) )
     {
       bool handled = false;
 
@@ -2029,7 +2029,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
         std::sort( warnings.begin(), warnings.end() );
         warnings.erase( std::unique( warnings.begin(), warnings.end() ), warnings.end() );
 
-        for ( const QString &w : qgis::as_const( warnings ) )
+        for ( const QString &w : std::as_const( warnings ) )
         {
           message += QStringLiteral( "<li>%1</li>" ).arg( w.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) );
         }
@@ -2176,7 +2176,7 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
         {
           // Make sure we don't add it twice if it was already added by the form widgets check
           bool refFound = false;
-          for ( const QgsVectorLayerRef &otherRef : qgis::as_const( brokenDependencies ) )
+          for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
           {
             if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
             {
@@ -4933,7 +4933,7 @@ void QgisApp::updateRecentProjectPaths()
   }
 
   std::vector< QgsNative::RecentProjectProperties > recentProjects;
-  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : qgis::as_const( mRecentProjects ) )
+  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : std::as_const( mRecentProjects ) )
   {
     QgsNative::RecentProjectProperties project;
     project.title = recentProject.title;
@@ -4994,7 +4994,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   int pinnedCount = 0;
   int nonPinnedPos = 0;
   bool pinnedTop = true;
-  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : qgis::as_const( mRecentProjects ) )
+  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : std::as_const( mRecentProjects ) )
   {
     if ( recentProject.pin )
     {
@@ -5511,7 +5511,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
 
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayers( layersToAdd );
-  for ( QgsMapLayer *l : qgis::as_const( layersToAdd ) )
+  for ( QgsMapLayer *l : std::as_const( layersToAdd ) )
   {
     bool ok;
     l->loadDefaultStyle( ok );
@@ -5570,7 +5570,7 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
       layer.reset( nullptr );
     else
     {
-      for ( QgsMapLayer *newLayer : qgis::as_const( subLayers ) )
+      for ( QgsMapLayer *newLayer : std::as_const( subLayers ) )
       {
         askUserForDatumTransform( newLayer->crs(), QgsProject::instance()->crs(), newLayer );
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( newLayer );
@@ -6127,7 +6127,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *&parentLay
       group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, name );
 
     QgsProject::instance()->addMapLayers( result, ! addToGroup );
-    for ( QgsMapLayer *l : qgis::as_const( result ) )
+    for ( QgsMapLayer *l : std::as_const( result ) )
     {
       bool ok;
       l->loadDefaultStyle( ok );
@@ -6855,7 +6855,7 @@ void QgisApp::fileOpen()
     QStringList extensions;
     fileFilters << tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS *.QGZ)" );
     extensions << QStringLiteral( "qgs" ) << QStringLiteral( "qgz" );
-    for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
+    for ( QgsCustomProjectOpenHandler *handler : std::as_const( mCustomProjectOpenHandlers ) )
     {
       if ( handler )
       {
@@ -6941,7 +6941,7 @@ bool QgisApp::addProject( const QString &projectFile )
   bool usedCustomHandler = false;
   bool customHandlerWantsThumbnail = false;
   QIcon customHandlerIcon;
-  for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
+  for ( QgsCustomProjectOpenHandler *handler : std::as_const( mCustomProjectOpenHandlers ) )
   {
     if ( handler && handler->handleProjectOpen( projectFile ) )
     {
@@ -10456,7 +10456,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   // Count collapsed geometries
   int invalidGeometriesCount = 0;
 
-  for ( const auto &feature : qgis::as_const( compatibleFeatures ) )
+  for ( const auto &feature : std::as_const( compatibleFeatures ) )
   {
 
     QgsGeometry geom = feature.geometry();
@@ -10575,7 +10575,7 @@ void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeomet
   {
     QgsFeatureIds newIds;
     newIds.reserve( features.size() );
-    for ( const QgsFeature &f : qgis::as_const( features ) )
+    for ( const QgsFeature &f : std::as_const( features ) )
     {
       newIds << f.id();
     }
@@ -11679,7 +11679,7 @@ void QgisApp::removeLayer()
     }
   };
 
-  for ( const auto &n : qgis::as_const( selectedNodes ) )
+  for ( const auto &n : std::as_const( selectedNodes ) )
   {
     harvest( n );
   }
@@ -11839,7 +11839,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     setActiveLayer( newSelection );
 
   // display errors in message bar after duplication of layers
-  for ( QgsMessageBarItem *msgBar : qgis::as_const( msgBars ) )
+  for ( QgsMessageBarItem *msgBar : std::as_const( msgBars ) )
   {
     mInfoBar->pushItem( msgBar );
   }
@@ -12331,7 +12331,7 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
   } );
 
   int idx = sProjectPropertiesPagesMap.count();
-  for ( const QPointer< QgsOptionsWidgetFactory > &f : qgis::as_const( mProjectPropertiesWidgetFactories ) )
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : std::as_const( mProjectPropertiesWidgetFactories ) )
   {
     // remove any deleted factories
     if ( f )
@@ -12410,7 +12410,7 @@ QMap< QString, int > QgisApp::optionsPagesMap()
   } );
 
   QList< std::pair< QString, QString > > pages = sOptionsPagesList;
-  for ( const QPointer< QgsOptionsWidgetFactory > &f : qgis::as_const( mOptionsWidgetFactories ) )
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : std::as_const( mOptionsWidgetFactories ) )
   {
     // remove any deleted factories
     if ( f )
@@ -12871,7 +12871,7 @@ void QgisApp::switchToMapToolViaHandler()
     return;
 
   QgsAbstractMapToolHandler *handler = nullptr;
-  for ( QgsAbstractMapToolHandler *h : qgis::as_const( mMapToolHandlers ) )
+  for ( QgsAbstractMapToolHandler *h : std::as_const( mMapToolHandlers ) )
   {
     if ( h->action() == sourceAction )
     {
@@ -13483,7 +13483,7 @@ bool QgisApp::checkMemoryLayers()
 
 bool QgisApp::checkExitBlockers()
 {
-  for ( QgsApplicationExitBlockerInterface *blocker : qgis::as_const( mApplicationExitBlockers ) )
+  for ( QgsApplicationExitBlockerInterface *blocker : std::as_const( mApplicationExitBlockers ) )
   {
     if ( !blocker->allowExit() )
       return false;
@@ -14628,7 +14628,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   updateLayerModifiedActions();
 
   QgsAbstractMapToolHandler::Context context;
-  for ( QgsAbstractMapToolHandler *handler : qgis::as_const( mMapToolHandlers ) )
+  for ( QgsAbstractMapToolHandler *handler : std::as_const( mMapToolHandlers ) )
   {
     handler->action()->setEnabled( handler->isCompatibleWithLayer( layer, context ) );
     if ( handler->mapTool() == mMapCanvas->mapTool() )
@@ -15540,7 +15540,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
       // The first layer loaded is not useful in that case. The user can select it in
       // the list if he wants to load it.
       delete layer;
-      for ( QgsMapLayer *l : qgis::as_const( subLayers ) )
+      for ( QgsMapLayer *l : std::as_const( subLayers ) )
         askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
       layer = !subLayers.isEmpty() ? qobject_cast< QgsRasterLayer * >( subLayers.at( 0 ) ) : nullptr;
     }
@@ -16248,7 +16248,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     {
       QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mMapLayerPanelFactories ) )
       {
         rasterLayerPropertiesDialog->addPropertiesPageFactory( factory );
       }
@@ -16278,7 +16278,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     {
       QgsMeshLayerProperties meshLayerPropertiesDialog( mapLayer, mMapCanvas, this );
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mMapLayerPanelFactories ) )
       {
         meshLayerPropertiesDialog.addPropertiesPageFactory( factory );
       }
@@ -16312,7 +16312,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
           saveAsFile( clone.get() );
         }
       } );
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mMapLayerPanelFactories ) )
       {
         vectorLayerPropertiesDialog->addPropertiesPageFactory( factory );
       }
@@ -16359,7 +16359,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       else
         pointCloudLayerPropertiesDialog.restoreLastPage();
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mMapLayerPanelFactories ) )
       {
         pointCloudLayerPropertiesDialog.addPropertiesPageFactory( factory );
       }

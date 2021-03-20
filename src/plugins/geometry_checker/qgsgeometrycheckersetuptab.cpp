@@ -398,7 +398,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   // Check if output layers are editable
   QList<QgsVectorLayer *> nonEditableLayers;
-  for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+  for ( QgsVectorLayer *layer : std::as_const( processLayers ) )
   {
     if ( ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
     {
@@ -416,7 +416,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     {
       if ( ui.radioButtonOutputNew->isChecked() )
       {
-        for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+        for ( QgsVectorLayer *layer : std::as_const( processLayers ) )
         {
           QString layerPath = layer->dataProvider()->dataSourceUri();
           delete layer;
@@ -441,7 +441,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   ui.labelStatus->setText( tr( "<b>Building spatial index…</b>" ) );
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
   QMap<QString, QgsFeaturePool *> featurePools;
-  for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+  for ( QgsVectorLayer *layer : std::as_const( processLayers ) )
   {
     featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
   }
@@ -471,7 +471,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     QList<QgsMapLayer *> addLayers;
-    for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+    for ( QgsVectorLayer *layer : std::as_const( processLayers ) )
     {
       addLayers.append( layer );
     }

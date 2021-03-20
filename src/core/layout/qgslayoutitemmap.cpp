@@ -122,7 +122,7 @@ void QgsLayoutItemMap::assignFreeId()
 
   int maxId = -1;
   bool used = false;
-  for ( QgsLayoutItemMap *map : qgis::as_const( mapsList ) )
+  for ( QgsLayoutItemMap *map : std::as_const( mapsList ) )
   {
     if ( map == this )
       continue;
@@ -343,7 +343,7 @@ void QgsLayoutItemMap::setLayerStyleOverrides( const QMap<QString, QString> &ove
 void QgsLayoutItemMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();
-  for ( const QgsMapLayerRef &layerRef : qgis::as_const( mLayers ) )
+  for ( const QgsMapLayerRef &layerRef : std::as_const( mLayers ) )
   {
     if ( QgsMapLayer *layer = layerRef.get() )
     {
@@ -681,7 +681,7 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   mapElem.setAttribute( QStringLiteral( "mapFlags" ), static_cast< int>( mMapFlags ) );
 
   QDomElement labelBlockingItemsElem = doc.createElement( QStringLiteral( "labelBlockingItems" ) );
-  for ( const auto &item : qgis::as_const( mBlockingLabelItems ) )
+  for ( const auto &item : std::as_const( mBlockingLabelItems ) )
   {
     if ( !item )
       continue;
@@ -1557,7 +1557,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     jobMapSettings.setLabelBlockingRegions( createLabelBlockingRegions( jobMapSettings ) );
   }
 
-  for ( QgsRenderedFeatureHandlerInterface *handler : qgis::as_const( mRenderedFeatureHandlers ) )
+  for ( QgsRenderedFeatureHandlerInterface *handler : std::as_const( mRenderedFeatureHandlers ) )
   {
     jobMapSettings.addRenderedFeatureHandler( handler );
   }
@@ -1623,7 +1623,7 @@ void QgsLayoutItemMap::finalizeRestoreFromXml()
   assignFreeId();
 
   mBlockingLabelItems.clear();
-  for ( const QString &uuid : qgis::as_const( mBlockingLabelItemUuids ) )
+  for ( const QString &uuid : std::as_const( mBlockingLabelItemUuids ) )
   {
     QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
     if ( item )
@@ -2059,7 +2059,7 @@ QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( cons
   const QTransform mapTransform = layoutToMapCoordsTransform();
   QList< QgsLabelBlockingRegion > blockers;
   blockers.reserve( mBlockingLabelItems.count() );
-  for ( const auto &item : qgis::as_const( mBlockingLabelItems ) )
+  for ( const auto &item : std::as_const( mBlockingLabelItems ) )
   {
     // invisible items don't block labels!
     if ( !item )

@@ -203,17 +203,17 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
     return true;
   };
 
-  for ( QgsMapLayer *l : qgis::as_const( layers ) )
+  for ( QgsMapLayer *l : std::as_const( layers ) )
   {
     if ( isCompatibleType( l ) && l->id() == string )
       return l;
   }
-  for ( QgsMapLayer *l : qgis::as_const( layers ) )
+  for ( QgsMapLayer *l : std::as_const( layers ) )
   {
     if ( isCompatibleType( l ) && l->name() == string )
       return l;
   }
-  for ( QgsMapLayer *l : qgis::as_const( layers ) )
+  for ( QgsMapLayer *l : std::as_const( layers ) )
   {
     if ( isCompatibleType( l ) && normalizeLayerSource( l->source() ) == normalizeLayerSource( string ) )
       return l;

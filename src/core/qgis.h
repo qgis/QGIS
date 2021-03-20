@@ -384,23 +384,6 @@ inline double qgsRound( double number, int places )
  */
 namespace qgis
 {
-  // as_const
-
-  /**
-   * Adds const to non-const objects.
-   *
-   * To be used as a proxy for std::as_const until we target c++17 minimum.
-   *
-   * \note not available in Python bindings
-   * \since QGIS 3.0
-   */
-  template <typename T> struct QgsAddConst { typedef const T Type; };
-
-  template <typename T>
-  constexpr typename QgsAddConst<T>::Type &as_const( T &t ) noexcept { return t; }
-
-  template <typename T>
-  void as_const( const T && ) = delete;
 
   /**
    * Used for new-style Qt connects to overloaded signals, avoiding the usual horrible connect syntax required

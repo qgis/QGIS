@@ -229,7 +229,7 @@ struct _LayerRef
       {
         layers = project->mapLayers().values();
       }
-      for ( QgsMapLayer *l : qgis::as_const( layers ) )
+      for ( QgsMapLayer *l : std::as_const( layers ) )
       {
         if ( TYPE *tl = qobject_cast< TYPE *>( l ) )
         {

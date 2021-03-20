@@ -2515,7 +2515,7 @@ void QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( const Qg
   proj.reserve( recent.size() );
   QStringList wkt;
   wkt.reserve( recent.size() );
-  for ( const QgsCoordinateReferenceSystem &c : qgis::as_const( recent ) )
+  for ( const QgsCoordinateReferenceSystem &c : std::as_const( recent ) )
   {
     authids << c.authid();
     proj << c.toProj();

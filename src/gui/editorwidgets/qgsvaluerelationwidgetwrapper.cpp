@@ -79,7 +79,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
     QVariantList vl;
     //store as QVariantList because the field type supports data structure
-    for ( const QString &s : qgis::as_const( selection ) )
+    for ( const QString &s : std::as_const( selection ) )
     {
       // Convert to proper type
       const QVariant::Type type { fkType() };
@@ -111,7 +111,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( mCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : std::as_const( mCache ) )
     {
       if ( item.value == mLineEdit->text() )
       {
@@ -247,7 +247,7 @@ void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const Q
   {
     mLineEdit->clear();
     bool wasFound { false };
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : qgis::as_const( mCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : std::as_const( mCache ) )
     {
       if ( i.key == value )
       {
@@ -381,7 +381,7 @@ void QgsValueRelationWidgetWrapper::populate( )
       whileBlocking( mComboBox )->addItem( tr( "(no selection)" ), QVariant( field().type( ) ) );
     }
 
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : qgis::as_const( mCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : std::as_const( mCache ) )
     {
       whileBlocking( mComboBox )->addItem( element.value, element.key );
       if ( !element.description.isEmpty() )
@@ -404,7 +404,7 @@ void QgsValueRelationWidgetWrapper::populate( )
     whileBlocking( mTableWidget )->clear();
     int row = 0;
     int column = 0;
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : qgis::as_const( mCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : std::as_const( mCache ) )
     {
       if ( column == nofColumns )
       {
@@ -423,7 +423,7 @@ void QgsValueRelationWidgetWrapper::populate( )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : qgis::as_const( mCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : std::as_const( mCache ) )
     {
       values << i.value;
     }

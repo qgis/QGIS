@@ -122,7 +122,7 @@ QgsGeometry QgsPolygonsToLinesAlgorithm::convertToLines( const QgsGeometry &geom
     lineGeometry = std::make_unique<QgsMultiCurve>();
 
   lineGeometry->reserve( rings.size() );
-  for ( auto ring : qgis::as_const( rings ) )
+  for ( auto ring : std::as_const( rings ) )
     lineGeometry->addGeometry( ring );
 
   return QgsGeometry( lineGeometry.release() );

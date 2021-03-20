@@ -212,7 +212,7 @@ QStringList QgsWmsRenderContext::flattenedQueryLayers( const QStringList &layerN
     return _result;
   };
 
-  for ( const auto &name : qgis::as_const( layerNames ) )
+  for ( const auto &name : std::as_const( layerNames ) )
   {
     result.append( findLeaves( name ) );
   }
@@ -384,7 +384,7 @@ void QgsWmsRenderContext::initRestrictedLayers()
   QStringList restrictedLayersNames;
   QgsLayerTreeGroup *root = mProject->layerTreeRoot();
 
-  for ( const QString &l : qgis::as_const( restricted ) )
+  for ( const QString &l : std::as_const( restricted ) )
   {
     const QgsLayerTreeGroup *group = root->findGroup( l );
     if ( group )

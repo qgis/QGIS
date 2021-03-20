@@ -194,7 +194,7 @@ void QgsLegendPatchShapeButton::prepareMenu()
   QStringList patchNames = QgsStyle::defaultStyle()->symbolsOfFavorite( QgsStyle::LegendPatchShapeEntity );
   patchNames.sort();
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-  for ( const QString &name : qgis::as_const( patchNames ) )
+  for ( const QString &name : std::as_const( patchNames ) )
   {
     const QgsLegendPatchShape shape = QgsStyle::defaultStyle()->legendPatchShape( name );
     if ( shape.symbolType() == mType )

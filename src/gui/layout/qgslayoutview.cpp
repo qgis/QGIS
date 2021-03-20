@@ -918,7 +918,7 @@ void QgsLayoutView::ungroupSelectedItems()
 
   if ( !ungroupedItems.empty() )
   {
-    for ( QgsLayoutItem *item : qgis::as_const( ungroupedItems ) )
+    for ( QgsLayoutItem *item : std::as_const( ungroupedItems ) )
     {
       item->setSelected( true );
     }
@@ -1163,7 +1163,7 @@ void QgsLayoutView::invalidateCachedRenders()
   QList< QgsLayoutItem *> items;
   currentLayout()->layoutItems( items );
 
-  for ( QgsLayoutItem *item : qgis::as_const( items ) )
+  for ( QgsLayoutItem *item : std::as_const( items ) )
   {
     item->invalidateCache();
   }

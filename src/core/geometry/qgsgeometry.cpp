@@ -784,7 +784,7 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgis::as_const( results ) )
+    for ( const QgsGeometry &result : std::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -1961,7 +1961,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgis::as_const( results ) )
+    for ( const QgsGeometry &result : std::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -2019,7 +2019,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgis::as_const( results ) )
+    for ( const QgsGeometry &result : std::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -2077,7 +2077,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgis::as_const( results ) )
+    for ( const QgsGeometry &result : std::as_const( results ) )
     {
       first.addPart( result );
     }

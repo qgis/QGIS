@@ -865,7 +865,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
     for ( const QString &part : partsToMatch )
     {
       bool found = false;
-      for ( const QString &partToSearch : qgis::as_const( partsToSearch ) )
+      for ( const QString &partToSearch : std::as_const( partsToSearch ) )
       {
         if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
         {

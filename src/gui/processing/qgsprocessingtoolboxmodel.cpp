@@ -44,7 +44,7 @@ QgsProcessingToolboxModelNode *QgsProcessingToolboxModelNode::takeChild( QgsProc
 
 QgsProcessingToolboxModelGroupNode *QgsProcessingToolboxModelNode::getChildGroupNode( const QString &groupId )
 {
-  for ( QgsProcessingToolboxModelNode *node : qgis::as_const( mChildren ) )
+  for ( QgsProcessingToolboxModelNode *node : std::as_const( mChildren ) )
   {
     if ( node->nodeType() == NodeGroup )
     {
@@ -199,7 +199,7 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
     beginInsertRows( recentIndex, 0, recentAlgorithms.count() - 1 );
   }
 
-  for ( const QgsProcessingAlgorithm *algorithm : qgis::as_const( recentAlgorithms ) )
+  for ( const QgsProcessingAlgorithm *algorithm : std::as_const( recentAlgorithms ) )
   {
     std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = std::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
     mRecentNode->addChildNode( algorithmNode.release() );
@@ -750,7 +750,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
-        for ( const QString &partToSearch : qgis::as_const( partsToSearch ) )
+        for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
           if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
           {

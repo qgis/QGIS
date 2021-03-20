@@ -67,7 +67,7 @@ bool QgsLayoutItemManualTable::getTableContents( QgsLayoutTableContents &content
   QgsExpressionContext context = createExpressionContext();
 
   int rowNumber = 0;
-  for ( const QgsTableRow &row : qgis::as_const( mContents ) )
+  for ( const QgsTableRow &row : std::as_const( mContents ) )
   {
     QgsLayoutTableRow currentRow;
 
@@ -189,7 +189,7 @@ bool QgsLayoutItemManualTable::writePropertiesToElement( QDomElement &tableElem,
 
   //headers
   QDomElement headersElem = doc.createElement( QStringLiteral( "headers" ) );
-  for ( const QgsLayoutTableColumn &header : qgis::as_const( mHeaders ) )
+  for ( const QgsLayoutTableColumn &header : std::as_const( mHeaders ) )
   {
     QDomElement headerElem = doc.createElement( QStringLiteral( "header" ) );
     header.writeXml( headerElem, doc );

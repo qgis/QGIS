@@ -74,7 +74,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
   QList<QgsLabelPosition> activeLayerLabels;
   if ( const QgsVectorLayer *currentLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() ) )
   {
-    for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+    for ( const QgsLabelPosition &pos : std::as_const( labelPosList ) )
     {
       if ( pos.layerID == currentLayer->id() )
       {
@@ -87,7 +87,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
 
   // prioritize unplaced labels
   QList<QgsLabelPosition> unplacedLabels;
-  for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+  for ( const QgsLabelPosition &pos : std::as_const( labelPosList ) )
   {
     if ( pos.isUnplaced )
     {
@@ -101,7 +101,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
   {
     // multiple candidates found, so choose the smallest (i.e. most difficult to select otherwise)
     double minSize = std::numeric_limits< double >::max();
-    for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+    for ( const QgsLabelPosition &pos : std::as_const( labelPosList ) )
     {
       const double labelSize = pos.width * pos.height;
       if ( labelSize < minSize )
@@ -137,7 +137,7 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
   QList<QgsCalloutPosition> activeLayerCallouts;
   if ( const QgsVectorLayer *currentLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() ) )
   {
-    for ( const QgsCalloutPosition &pos : qgis::as_const( calloutPosList ) )
+    for ( const QgsCalloutPosition &pos : std::as_const( calloutPosList ) )
     {
       if ( pos.layerID == currentLayer->id() )
       {
@@ -846,7 +846,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   bool changed = false;
-  for ( const QgsPalLayerSettings::Property &p : qgis::as_const( mPalProperties ) )
+  for ( const QgsPalLayerSettings::Property &p : std::as_const( mPalProperties ) )
   {
     int index = -1;
 
@@ -897,7 +897,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   bool changed = false;
-  for ( const QgsDiagramLayerSettings::Property &p : qgis::as_const( mDiagramProperties ) )
+  for ( const QgsDiagramLayerSettings::Property &p : std::as_const( mDiagramProperties ) )
   {
     int index = -1;
 
@@ -946,7 +946,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   bool changed = false;
-  for ( const QgsCallout::Property &p : qgis::as_const( mCalloutProperties ) )
+  for ( const QgsCallout::Property &p : std::as_const( mCalloutProperties ) )
   {
     int index = -1;
 

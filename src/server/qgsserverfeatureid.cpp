@@ -29,7 +29,7 @@ QString QgsServerFeatureId::getServerFid( const QgsFeature &feature, const QgsAt
   }
 
   QStringList pkValues;
-  for ( const auto &attrIdx : qgis::as_const( pkAttributes ) )
+  for ( const auto &attrIdx : std::as_const( pkAttributes ) )
   {
     pkValues.append( feature.attribute( attrIdx ).toString() );
   }
@@ -64,7 +64,7 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
   else
   {
     QString fullExpression;
-    for ( const QString &exp : qgis::as_const( expList ) )
+    for ( const QString &exp : std::as_const( expList ) )
     {
       if ( !fullExpression.isEmpty() )
       {

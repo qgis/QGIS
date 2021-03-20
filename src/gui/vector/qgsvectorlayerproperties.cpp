@@ -844,7 +844,7 @@ void QgsVectorLayerProperties::onCancel()
     for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
       mLayer->removeJoin( info.joinLayerId() );
 
-    for ( const QgsVectorLayerJoinInfo &info : qgis::as_const( mOldJoins ) )
+    for ( const QgsVectorLayerJoinInfo &info : std::as_const( mOldJoins ) )
       mLayer->addJoin( info );
   }
 
@@ -1222,7 +1222,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
     if ( ! stylesSelected.isEmpty() )
     {
       int styleIndex = 0;
-      for ( const QString &styleName : qgis::as_const( stylesSelected ) )
+      for ( const QString &styleName : std::as_const( stylesSelected ) )
       {
         bool defaultLoadedFlag = false;
 

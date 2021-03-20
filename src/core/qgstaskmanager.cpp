@@ -464,7 +464,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
   }
 
   // add all subtasks, must be done before dependency resolution
-  for ( const QgsTask::SubTask &subTask : qgis::as_const( task->mSubTasks ) )
+  for ( const QgsTask::SubTask &subTask : std::as_const( task->mSubTasks ) )
   {
     switch ( subTask.dependency )
     {

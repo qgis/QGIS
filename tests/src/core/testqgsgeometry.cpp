@@ -18397,7 +18397,7 @@ void TestQgsGeometry::testRandomPointsInPolygon()
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 ))" ) );
   points = g.randomPointsInPolygon( 10000 );
   QCOMPARE( points.count(), 10000 );
-  for ( const QgsPointXY &p : qgis::as_const( points ) )
+  for ( const QgsPointXY &p : std::as_const( points ) )
     QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
 
   // valid multipolygon
@@ -18406,7 +18406,7 @@ void TestQgsGeometry::testRandomPointsInPolygon()
   QCOMPARE( points.count(), 10000 );
   bool foundp1Point = false;
   bool foundp2Point = false;
-  for ( const QgsPointXY &p : qgis::as_const( points ) )
+  for ( const QgsPointXY &p : std::as_const( points ) )
   {
     QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
     foundp1Point |= p.x() < 100;
@@ -18438,7 +18438,7 @@ void TestQgsGeometry::testRandomPointsInPolygon()
   QCOMPARE( points.count(), 10000 );
   foundp1Point = false;
   foundp2Point = false;
-  for ( const QgsPointXY &p : qgis::as_const( points ) )
+  for ( const QgsPointXY &p : std::as_const( points ) )
   {
     QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
     foundp1Point |= p.x() < 100;

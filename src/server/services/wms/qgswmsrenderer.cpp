@@ -577,7 +577,7 @@ namespace QgsWms
     // has id 0 and so on ...
     int mapId = 0;
 
-    for ( const auto &map : qgis::as_const( maps ) )
+    for ( const auto &map : std::as_const( maps ) )
     {
       QgsWmsParametersComposerMap cMapParams = mWmsParameters.composerMapParameters( mapId );
       mapId++;
@@ -682,7 +682,7 @@ namespace QgsWms
     // Labels
     QList<QgsLayoutItemLabel *> labels;
     c->layoutItems<QgsLayoutItemLabel>( labels );
-    for ( const auto &label : qgis::as_const( labels ) )
+    for ( const auto &label : std::as_const( labels ) )
     {
       bool ok = false;
       const QString labelId = label->id();
@@ -706,7 +706,7 @@ namespace QgsWms
     // HTMLs
     QList<QgsLayoutItemHtml *> htmls;
     c->layoutObjects<QgsLayoutItemHtml>( htmls );
-    for ( const auto &html : qgis::as_const( htmls ) )
+    for ( const auto &html : std::as_const( htmls ) )
     {
       if ( html->frameCount() == 0 )
         continue;
@@ -740,7 +740,7 @@ namespace QgsWms
     // legends
     QList<QgsLayoutItemLegend *> legends;
     c->layoutItems<QgsLayoutItemLegend>( legends );
-    for ( const auto &legend : qgis::as_const( legends ) )
+    for ( const auto &legend : std::as_const( legends ) )
     {
       if ( legend->autoUpdateModel() )
       {
@@ -1297,7 +1297,7 @@ namespace QgsWms
     {
       bool validLayer = false;
       bool queryableLayer = true;
-      for ( QgsMapLayer *layer : qgis::as_const( layers ) )
+      for ( QgsMapLayer *layer : std::as_const( layers ) )
       {
         if ( queryLayer == mContext.layerNickname( *layer ) )
         {
@@ -2453,7 +2453,7 @@ namespace QgsWms
         exporter.setIncludeGeometry( withGeometry );
         exporter.setTransformGeometries( false );
 
-        for ( const auto &feature : qgis::as_const( features ) )
+        for ( const auto &feature : std::as_const( features ) )
         {
           const QString id = QStringLiteral( "%1.%2" ).arg( layerName ).arg( fidMap.value( feature.id() ) );
           json["features"].push_back( exporter.exportFeatureToJsonObject( feature, QVariantMap(), id ) );

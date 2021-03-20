@@ -794,7 +794,7 @@ bool QgsMetadataWidget::checkMetadata()
   QString errors;
   if ( !results )
   {
-    for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : qgis::as_const( validationResults ) )
+    for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : std::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
       if ( ! result._identifier().isNull() )

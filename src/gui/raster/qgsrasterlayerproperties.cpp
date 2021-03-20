@@ -945,7 +945,7 @@ void QgsRasterLayerProperties::sync()
 
   mTemporalWidget->syncToLayer();
 
-  for ( QgsMapLayerConfigWidget *page : qgis::as_const( mLayerPropertiesPages ) )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mLayerPropertiesPages ) )
   {
     page->syncToLayer( mRasterLayer );
   }

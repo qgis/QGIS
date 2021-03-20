@@ -64,7 +64,7 @@ void QgsProcessingEnumModelerWidget::removeItems( const bool removeAll )
     std::sort( rowsToDelete.begin(), rowsToDelete.end(), std::greater<int>() );
 
     mItemList->setUpdatesEnabled( false );
-    for ( int i : qgis::as_const( rowsToDelete ) )
+    for ( int i : std::as_const( rowsToDelete ) )
       mModel->removeRows( i, 1 );
     mItemList->setUpdatesEnabled( true );
   }

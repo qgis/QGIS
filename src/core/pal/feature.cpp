@@ -69,7 +69,7 @@ FeaturePart::FeaturePart( const FeaturePart &other )
   : PointSet( other )
   , mLF( other.mLF )
 {
-  for ( const FeaturePart *hole : qgis::as_const( other.mHoles ) )
+  for ( const FeaturePart *hole : std::as_const( other.mHoles ) )
   {
     mHoles << new FeaturePart( *hole );
     mHoles.last()->holeOf = this;

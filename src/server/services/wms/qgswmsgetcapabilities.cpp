@@ -1988,7 +1988,7 @@ namespace QgsWms
       keywordsElem.appendChild( keywordElem );
       parent.appendChild( keywordsElem );
       QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
-      for ( const QString &keyword : qgis::as_const( keywords ) )
+      for ( const QString &keyword : std::as_const( keywords ) )
       {
         if ( !keyword.isEmpty() )
         {

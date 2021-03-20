@@ -505,7 +505,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
   }
 
   // get identify formats
-  for ( const QString &f : qgis::as_const( mCapabilities.capability.request.getFeatureInfo.format ) )
+  for ( const QString &f : std::as_const( mCapabilities.capability.request.getFeatureInfo.format ) )
   {
     // Don't use mSupportedGetFeatureFormats, there are too many possibilities
     QgsDebugMsgLevel( "supported format = " + f, 2 );
@@ -959,7 +959,7 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
     QHash<QString, QString> abstracts;
 
     // Build layer identifier - title|abstract mapping
-    for ( const QgsWmsLayerProperty &layer : qgis::as_const( mLayersSupported ) )
+    for ( const QgsWmsLayerProperty &layer : std::as_const( mLayersSupported ) )
     {
       if ( !layer.name.isEmpty() )
       {

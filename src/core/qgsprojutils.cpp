@@ -313,7 +313,7 @@ QStringList QgsProjUtils::searchPaths()
   // thin out duplicates from paths -- see https://github.com/OSGeo/proj.4/pull/1498
   QStringList res;
   res.reserve( paths.count() );
-  for ( const QString &p : qgis::as_const( paths ) )
+  for ( const QString &p : std::as_const( paths ) )
   {
     if ( existing.contains( p ) )
       continue;

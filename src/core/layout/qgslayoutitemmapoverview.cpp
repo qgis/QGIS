@@ -468,7 +468,7 @@ QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QL
 {
   QList<QgsMapLayer *> res = layers;
   res.reserve( layers.count() + mItems.count() );
-  for ( QgsLayoutItemMapItem  *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItemMapItem  *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;

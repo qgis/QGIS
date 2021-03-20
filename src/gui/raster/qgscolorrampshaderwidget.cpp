@@ -834,7 +834,7 @@ void QgsColorRampShaderWidget::changeColor()
     colorWidget->setAllowOpacity( true );
     connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & newColor )
     {
-      for ( QTreeWidgetItem *item : qgis::as_const( itemList ) )
+      for ( QTreeWidgetItem *item : std::as_const( itemList ) )
       {
         item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
       }
@@ -850,7 +850,7 @@ void QgsColorRampShaderWidget::changeColor()
     QColor newColor = QgsColorDialog::getColor( currentColor, this, QStringLiteral( "Change Color" ), true );
     if ( newColor.isValid() )
     {
-      for ( QTreeWidgetItem *item : qgis::as_const( itemList ) )
+      for ( QTreeWidgetItem *item : std::as_const( itemList ) )
       {
         item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
       }

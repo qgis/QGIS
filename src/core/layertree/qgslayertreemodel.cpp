@@ -516,7 +516,7 @@ QList<QgsLayerTreeNode *> QgsLayerTreeModel::indexes2nodes( const QModelIndexLis
 
   // remove any children of nodes if both parent node and children are selected
   QList<QgsLayerTreeNode *> nodesFinal;
-  for ( QgsLayerTreeNode *node : qgis::as_const( nodes ) )
+  for ( QgsLayerTreeNode *node : std::as_const( nodes ) )
   {
     if ( !_isChildOfNodes( node, nodes ) )
       nodesFinal << node;
@@ -1090,7 +1090,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
   QDomDocument layerTreeDoc;
   QDomElement rootLayerTreeElem = layerTreeDoc.createElement( QStringLiteral( "layer_tree_model_data" ) );
 
-  for ( QgsLayerTreeNode *node : qgis::as_const( nodesFinal ) )
+  for ( QgsLayerTreeNode *node : std::as_const( nodesFinal ) )
   {
     node->writeXml( rootLayerTreeElem, QgsReadWriteContext() );
   }
@@ -1222,7 +1222,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
 
   if ( mLegendFilterByScale > 0 )
   {
-    for ( QgsLayerTreeModelLegendNode *node : qgis::as_const( nodes ) )
+    for ( QgsLayerTreeModelLegendNode *node : std::as_const( nodes ) )
     {
       if ( node->isScaleOK( mLegendFilterByScale ) )
         filtered << node;
@@ -1232,7 +1232,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
   {
     if ( !nodes.isEmpty() && mLegendFilterMapSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
     {
-      for ( QgsLayerTreeModelLegendNode *node : qgis::as_const( nodes ) )
+      for ( QgsLayerTreeModelLegendNode *node : std::as_const( nodes ) )
       {
         switch ( node->data( QgsSymbolLegendNode::NodeTypeRole ).value<QgsLayerTreeModelLegendNode::NodeTypes>() )
         {
@@ -1656,13 +1656,13 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
 
   std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
 
-  for ( QgsLayerTreeLayer *layerNode : qgis::as_const( mInvalidatedNodes ) )
+  for ( QgsLayerTreeLayer *layerNode : std::as_const( mInvalidatedNodes ) )
   {
     const LayerLegendData &data = mLegend.value( layerNode );
 
     QList<QgsSymbolLegendNode *> symbolNodes;
     QMap<QString, int> widthMax;
-    for ( QgsLayerTreeModelLegendNode *legendNode : qgis::as_const( data.originalNodes ) )
+    for ( QgsLayerTreeModelLegendNode *legendNode : std::as_const( data.originalNodes ) )
     {
       QgsSymbolLegendNode *n = qobject_cast<QgsSymbolLegendNode *>( legendNode );
       if ( n )
@@ -1674,14 +1674,14 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
         symbolNodes.append( n );
       }
     }
-    for ( QgsSymbolLegendNode *n : qgis::as_const( symbolNodes ) )
+    for ( QgsSymbolLegendNode *n : std::as_const( symbolNodes ) )
     {
       const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
       Q_ASSERT( widthMax[parentKey] > 0 );
       const int twiceMarginWidth = 2; // a one pixel margin avoids hugly rendering of icon
       n->setIconSize( QSize( widthMax[parentKey] + twiceMarginWidth, n->iconSize().rheight() + twiceMarginWidth ) );
     }
-    for ( QgsLayerTreeModelLegendNode *legendNode : qgis::as_const( data.originalNodes ) )
+    for ( QgsLayerTreeModelLegendNode *legendNode : std::as_const( data.originalNodes ) )
       legendNode->invalidateMapBasedData();
   }
 

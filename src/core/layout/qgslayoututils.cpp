@@ -480,7 +480,7 @@ bool QgsLayoutUtils::itemIsAClippingSource( const QgsLayoutItem *item )
   // current only maps can be clipped
   QList< QgsLayoutItemMap * > maps;
   item->layout()->layoutItems( maps );
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     if ( map->itemClippingSettings()->isActive() && map->itemClippingSettings()->sourceItem() == item )
       return true;

@@ -28,7 +28,7 @@ QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
 void QgsLayoutItemGroup::cleanup()
 {
   //loop through group members and remove them from the scene
-  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -86,7 +86,7 @@ void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
 
 void QgsLayoutItemGroup::removeItems()
 {
-  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -99,7 +99,7 @@ void QgsLayoutItemGroup::removeItems()
 QList<QgsLayoutItem *> QgsLayoutItemGroup::items() const
 {
   QList<QgsLayoutItem *> val;
-  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -113,7 +113,7 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
   if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->beginMacro( tr( "Set Group Visibility" ) );
   //also set visibility for all items within the group
-  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -148,7 +148,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
   double deltaY = scenePoint.y() - pos().y();
 
   //also move all items within the group
-  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -189,7 +189,7 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includes
   newRect.setSize( newSizeLayoutUnits );
 
   //also resize all items within the group
-  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -260,7 +260,7 @@ bool QgsLayoutItemGroup::readPropertiesFromElement( const QDomElement &itemEleme
 
 void QgsLayoutItemGroup::finalizeRestoreFromXml()
 {
-  for ( const QString &uuid : qgis::as_const( mItemUuids ) )
+  for ( const QString &uuid : std::as_const( mItemUuids ) )
   {
     QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
     if ( item )
@@ -289,7 +289,7 @@ void QgsLayoutItemGroup::draw( QgsLayoutItemRenderContext & )
 void QgsLayoutItemGroup::resetBoundingRect()
 {
   mBoundingRectangle = QRectF();
-  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItem *item : std::as_const( mItems ) )
   {
     updateBoundingRect( item );
   }
