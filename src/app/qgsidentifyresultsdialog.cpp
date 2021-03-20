@@ -929,8 +929,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << ' ' + tr( "Format" ) );
       layItem->addChild( formatItem );
       lstResults->setItemWidget( formatItem, 1, formatCombo );
-      connect( formatCombo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
-               this, qgis::overload<int>::of( &QgsIdentifyResultsDialog::formatChanged ) );
+      connect( formatCombo, qOverload<int>( &QComboBox::currentIndexChanged ),
+               this, qOverload<int>( &QgsIdentifyResultsDialog::formatChanged ) );
     }
     else
     {

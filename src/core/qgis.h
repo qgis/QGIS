@@ -385,27 +385,6 @@ inline double qgsRound( double number, int places )
 namespace qgis
 {
 
-  /**
-   * Used for new-style Qt connects to overloaded signals, avoiding the usual horrible connect syntax required
-   * in these circumstances.
-   *
-   * Example usage:
-   *
-   * connect( mSpinBox, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &MyClass::mySlot );
-   *
-   * This is an alternative to qOverload, which was implemented in Qt 5.7.
-   *
-   * See https://stackoverflow.com/a/16795664/1861260
-   */
-  template<typename... Args> struct overload
-  {
-    template<typename C, typename R>
-    static constexpr auto of( R( C::*pmf )( Args... ) ) -> decltype( pmf )
-    {
-      return pmf;
-    }
-  };
-
   template<class T>
   QSet<T> listToSet( const QList<T> &list )
   {

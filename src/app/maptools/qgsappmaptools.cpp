@@ -95,7 +95,7 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
   QLabel *label = new QLabel( tr( "Streaming Tolerance" ) );
   gLayout->addWidget( label, 1, 0 );
   gLayout->addWidget( mStreamToleranceSpinBox, 1, 1 );
-  connect( mStreamToleranceSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, [ = ]( int value )
+  connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, [ = ]( int value )
   {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), value );

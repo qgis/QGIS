@@ -260,7 +260,7 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
 
   acceptedPoints = QtConcurrent::blockingMappedReduced( nodes,
                    MapIndexedPointCloudNode( request, index->scale(), index->offset(), extentGeometry, extentZRange, index, pointsLimit ),
-                   qgis::overload<const QVector<QMap<QString, QVariant>>&>::of( &QVector<QMap<QString, QVariant>>::append ),
+                   qOverload<const QVector<QMap<QString, QVariant>>&>( &QVector<QMap<QString, QVariant>>::append ),
                    QtConcurrent::UnorderedReduce );
 
   return acceptedPoints;
