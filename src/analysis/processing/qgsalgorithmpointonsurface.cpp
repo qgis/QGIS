@@ -50,6 +50,14 @@ QString QgsPointOnSurfaceAlgorithm::outputName() const
   return QObject::tr( "Point" );
 }
 
+QgsFeatureSink::SinkFlags QgsPointOnSurfaceAlgorithm::sinkFlags() const
+{
+  if ( mAllParts )
+    return QgsProcessingFeatureBasedAlgorithm::sinkFlags() | QgsFeatureSink::RegeneratePrimaryKey;
+  else
+    return QgsProcessingFeatureBasedAlgorithm::sinkFlags();
+}
+
 QString QgsPointOnSurfaceAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Returns a point guaranteed to lie on the surface of a geometry." );
