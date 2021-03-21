@@ -90,7 +90,7 @@ void Problem::reduce()
     for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
     {
       // ok[i] = true;
-      for ( j = 0; j < mFeatNbLp[i]; j++ )  // foreach candidate
+      for ( j = 0; j < mFeatNbLp[i]; j++ )  // for each candidate
       {
         if ( !ok[mFeatStartId[i] + j] )
         {
@@ -503,7 +503,7 @@ inline Chain *Problem::chain( int seed )
       {
         conflicts.clear();
       }
-    } // end foreach labelposition
+    } // end for each labelposition
 
     if ( next_seed == -1 )
     {

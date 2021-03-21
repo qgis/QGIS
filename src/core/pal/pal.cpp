@@ -311,7 +311,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     }
 
     int idlp = 0;
-    for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* foreach feature into prob */
+    for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* for each feature into prob */
     {
       std::unique_ptr< Feats > feat = std::move( features.front() );
       features.pop_front();
@@ -424,7 +424,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     double amin[2];
     double amax[2];
-    while ( !features.empty() ) // foreach feature
+    while ( !features.empty() ) // for each feature
     {
       if ( isCanceled() )
         return nullptr;
