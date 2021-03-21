@@ -28,6 +28,7 @@ QgsFieldValuesLineEdit::QgsFieldValuesLineEdit( QWidget *parent )
   QCompleter *c = new QCompleter( this );
   c->setCaseSensitivity( Qt::CaseInsensitive );
   c->setFilterMode( Qt::MatchContains );
+  c->setCompletionMode( QCompleter::UnfilteredPopupCompletion );
   setCompleter( c );
   connect( this, &QgsFieldValuesLineEdit::textEdited, this, &QgsFieldValuesLineEdit::requestCompleterUpdate );
   mShowPopupTimer.setSingleShot( true );
