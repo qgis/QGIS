@@ -209,6 +209,11 @@ QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, co
   return _decompressBinary( dataUncompressed, attributes, requestedAttributes );
 }
 
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
+{
+  return _decompressBinary( data, attributes, requestedAttributes );
+}
+
 /* *************************************************************************************** */
 
 QByteArray decompressZtdStream( const QByteArray &dataCompressed )
@@ -251,6 +256,12 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename,
 
   QByteArray dataCompressed = f.readAll();
   QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes );
+}
+
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
+{
+  QByteArray dataUncompressed = decompressZtdStream( data );
   return _decompressBinary( dataUncompressed, attributes, requestedAttributes );
 }
 
@@ -464,6 +475,29 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
            requestedAttributes,
            data
          );
+}
+
+#include <QDebug>
+
+QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
+    const QgsPointCloudAttributeCollection &attributes,
+    const QgsPointCloudAttributeCollection &requestedAttributes )
+{
+  QString filename = "/tmp/node.txt";
+  {
+    std::ofstream file( filename.toStdString(), std::ios::binary | std::ios::out );
+    if ( file.is_open() )
+    {
+      file.write( byteArrayData.constData(), byteArrayData.size() );
+      file.close();
+    }
+    else
+    {
+      qDebug() << "Couldn't open " << filename;
+      return nullptr;
+    }
+  }
+  return QgsEptDecoder::decompressLaz( filename, attributes, requestedAttributes );
 }
 
 ///@endcond

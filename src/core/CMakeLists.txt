@@ -639,6 +639,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudextentrenderer.cpp
   pointcloud/qgspointcloudrequest.cpp
   pointcloud/qgspointcloudblock.cpp
+  pointcloud/qgspointcloudblockhandle.cpp
   pointcloud/qgspointcloudlayer.cpp
   pointcloud/qgspointcloudlayerelevationproperties.cpp
   pointcloud/qgspointcloudlayerrenderer.cpp
@@ -1345,6 +1346,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudextentrenderer.h
   pointcloud/qgspointcloudrequest.h
   pointcloud/qgspointcloudblock.h
+  pointcloud/qgspointcloudblockhandle.h
   pointcloud/qgspointcloudlayer.h
   pointcloud/qgspointcloudlayerelevationproperties.h
   pointcloud/qgspointcloudlayerrenderer.h
@@ -1699,12 +1701,14 @@ if (WITH_EPT)
       providers/ept/qgseptprovider.cpp
       pointcloud/qgseptdecoder.cpp
       pointcloud/qgseptpointcloudindex.cpp
+      pointcloud/qgsremoteeptpointcloudindex.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptdataitems.h
       providers/ept/qgseptprovider.h
       pointcloud/qgseptdecoder.h
       pointcloud/qgseptpointcloudindex.h
+      pointcloud/qgsremoteeptpointcloudindex.h
   )
 endif()
 

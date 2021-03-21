@@ -31,11 +31,15 @@
 #include "qgis_sip.h"
 #include "qgspointcloudblock.h"
 #include "qgsrange.h"
+#include "qgspointcloudattribute.h"
+#include "qgsstatisticalsummary.h"
 
 #define SIP_NO_FILE
 
 class QgsPointCloudRequest;
 class QgsPointCloudAttributeCollection;
+class QgsCoordinateReferenceSystem;
+class QgsPointCloudBlockHandle;
 
 /**
  * \ingroup core
@@ -135,7 +139,6 @@ class CORE_EXPORT QgsPointCloudDataBounds
     qint32 mXMin, mYMin, mZMin, mXMax, mYMax, mZMax;
 };
 
-
 /**
  * \ingroup core
  *
@@ -149,6 +152,13 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
 {
     Q_OBJECT
   public:
+    //! The access type of the data, local is for local files and remote for remote files (over HTTP)
+    enum AccessType
+    {
+      Local,
+      Remote
+    };
+
     //! Constructs index
     explicit QgsPointCloudIndex();
     ~QgsPointCloudIndex();
@@ -158,6 +168,21 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
 
     //! Returns whether index is loaded and valid
     virtual bool isValid() const = 0;
+
+    /**
+     * Returns the access type of the data
+     * If the access type is Remote, data will be fetched from an HTTP server either synchronously or asynchronously
+     * If the access type is local, the data is stored locally as a file and will only be fetch synchronously ( blocking request with nodeData only )
+     * \note Always make sure to check before trying to use asyncNodeData since it is not supported in the case of local access type
+     */
+    virtual AccessType accessType() const = 0;
+
+    virtual QgsCoordinateReferenceSystem crs() const = 0;
+    virtual int pointCount() const = 0;
+    virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const = 0;
+    virtual QVariantList metadataClasses( const QString &attribute ) const = 0;
+    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const = 0;
+    virtual QVariantMap originalMetadata() const = 0;
 
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
@@ -182,6 +207,18 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      * May return nullptr in case the node is not present or any other problem with loading
      */
     virtual QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
+
+    /**
+     * Returns a handle responsible for loading a node data block
+     *
+     * e.g. positions (needs to be scaled and offset applied to get coordinates) or
+     * classification, intensity or custom attributes
+     *
+     * It is caller responsibility to free the handle and the block issued by the handle if the loading succeeds.
+     *
+     * May return nullptr in case the node is not present or any other problem with loading
+     */
+    virtual QgsPointCloudBlockHandle *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
 
     //! Returns extent of the data
     QgsRectangle extent() const { return mExtent; }

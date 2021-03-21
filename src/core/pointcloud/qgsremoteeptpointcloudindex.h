@@ -1,22 +1,5 @@
-/***************************************************************************
-                         qgspointcloudindex.h
-                         --------------------
-    begin                : October 2020
-    copyright            : (C) 2020 by Peter Petrik
-    email                : zilolv at gmail dot com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-#ifndef QGSEPTPOINTCLOUDINDEX_H
-#define QGSEPTPOINTCLOUDINDEX_H
+#ifndef QGSREMOTEEPTPOINTCLOUDINDEX_H
+#define QGSREMOTEEPTPOINTCLOUDINDEX_H
 
 #include <QObject>
 #include <QString>
@@ -25,6 +8,7 @@
 #include <QVector>
 #include <QList>
 #include <QFile>
+#include <QUrl>
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
@@ -35,25 +19,20 @@
 #define SIP_NO_FILE
 
 class QgsCoordinateReferenceSystem;
+class QgsTileDownloadManager;
 
-class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
+class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsPointCloudIndex
 {
     Q_OBJECT
   public:
 
-    explicit QgsEptPointCloudIndex();
-    ~QgsEptPointCloudIndex();
+    explicit QgsRemoteEptPointCloudIndex();
+    ~QgsRemoteEptPointCloudIndex();
 
     void load( const QString &fileName ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-    QgsPointCloudBlockHandle *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override
-    {
-      Q_UNUSED( n );
-      Q_UNUSED( request );
-      Q_ASSERT( false );
-      return nullptr;
-    }
+    QgsPointCloudBlockHandle *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
     QgsCoordinateReferenceSystem crs() const override;
     int pointCount() const override;
@@ -63,16 +42,20 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;
-    QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
+
+    QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Remote; }
 
   private:
-    bool loadSchema( QFile &f );
+    bool loadSchema( const QByteArray &data );
     bool loadHierarchy();
 
     bool mIsValid = false;
     QString mDataType;
-    QString mDirectory;
+    QString mUrlDirectoryPart;
+    QString mUrlFileNamePart;
     QString mWkt;
+
+    QUrl mUrl;
 
     int mPointCount = 0;
 
@@ -90,7 +73,10 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
 
     QMap< QString, QMap< int, int > > mAttributeClasses;
     QVariantMap mOriginalMetadata;
+
+    QgsTileDownloadManager *mTileDownloadManager = nullptr;
 };
 
 ///@endcond
-#endif // QGSEPTPOINTCLOUDINDEX_H
+
+#endif // QGSREMOTEEPTPOINTCLOUDINDEX_H
