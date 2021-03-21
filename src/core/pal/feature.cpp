@@ -1660,7 +1660,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     std::vector< OrientedConvexHullBoundingBox > boxes;
     boxes.reserve( shapes_final.size() );
 
-    // Compute bounding box foreach finalShape
+    // Compute bounding box for each finalShape
     while ( !shapes_final.isEmpty() )
     {
       PointSet *shape = shapes_final.takeFirst();

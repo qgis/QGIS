@@ -657,14 +657,14 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
               geometryInd->elem_info = g.eleminfo.size() == 0  ? OCI_IND_NULL : OCI_IND_NOTNULL;
               geometryInd->ordinates = g.ordinates.size() == 0 ? OCI_IND_NULL : OCI_IND_NOTNULL;
 
-              foreach ( int e, g.eleminfo )
+              for ( int e : g.eleminfo )
               {
                 OCINumber n;
                 OCI_VERIFY_E( err, OCINumberFromInt( err, &e, sizeof( int ), OCI_NUMBER_SIGNED, &n ) );
                 OCI_VERIFY_E( err, OCICollAppend( env, err, &n, nullptr, geometryObj->elem_info ) );
               }
 
-              foreach ( double o, g.ordinates )
+              for ( double o : g.ordinates )
               {
                 OCINumber n;
                 OCI_VERIFY_E( err, OCINumberFromReal( err, &o, sizeof( double ), &n ) );

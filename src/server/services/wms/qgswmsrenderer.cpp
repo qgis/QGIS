@@ -1734,8 +1734,8 @@ namespace QgsWms
         parentElem.appendChild( nameElem );
       }
 
-      QList<QgsAttributeEditorElement *> children =  container->children();
-      foreach ( const QgsAttributeEditorElement *child, children )
+      const QList<QgsAttributeEditorElement *> children =  container->children();
+      for ( const QgsAttributeEditorElement *child : children )
       {
         if ( child->type() == QgsAttributeEditorElement::AeTypeContainer )
         {
