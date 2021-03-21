@@ -30,6 +30,7 @@
 #define SIP_NO_FILE
 
 class QgsEptPointCloudIndex;
+class QgsRemoteEptPointCloudIndex;
 
 class QgsEptProvider: public QgsPointCloudDataProvider
 {
@@ -58,7 +59,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
 
   private:
-    std::unique_ptr<QgsEptPointCloudIndex> mIndex;
+    std::unique_ptr<QgsPointCloudIndex> mIndex;
 };
 
 class QgsEptProviderMetadata : public QgsProviderMetadata

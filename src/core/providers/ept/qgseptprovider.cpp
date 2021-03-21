@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgseptprovider.h"
 #include "qgseptpointcloudindex.h"
+#include "qgsremoteeptpointcloudindex.h"
 #include "qgseptdataitems.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
@@ -34,8 +35,12 @@ QgsEptProvider::QgsEptProvider(
   const QgsDataProvider::ProviderOptions &options,
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
-  , mIndex( new QgsEptPointCloudIndex )
 {
+  if ( QFileInfo::exists( uri ) )
+    mIndex.reset( new QgsEptPointCloudIndex );
+  else
+    mIndex.reset( new QgsRemoteEptPointCloudIndex );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );

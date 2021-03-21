@@ -89,7 +89,7 @@ has been processed.
 Called to start the download
 %End
 
-  protected:
+  public:
     ~QgsFileDownloader();
 
 };
