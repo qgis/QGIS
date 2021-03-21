@@ -498,7 +498,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       case PktFidMap:
       {
         QVariantList primaryKeyVals;
-        foreach ( int idx, mSource->mPrimaryKeyAttrs )
+        for ( int idx : mSource->mPrimaryKeyAttrs )
         {
           QgsField fld = mSource->mFields.at( idx );
 

@@ -134,6 +134,9 @@ HINTS[36]="Use \brief instead (works correct with Python docstrings)"
 KEYWORDS[37]="Q_FOREACH"
 HINTS[37]="Use range based for loops instead"
 
+KEYWORDS[38]="foreach"
+HINTS[38]="Use range based for loops instead"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
