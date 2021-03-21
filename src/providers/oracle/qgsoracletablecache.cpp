@@ -168,12 +168,12 @@ bool QgsOracleTableCache::saveToCache( const QString &connName, CacheFlags flags
     sqlite3_bind_text( stmtInsert, 6, item.pkCols.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
     QStringList geomTypes;
-    Q_FOREACH ( QgsWkbTypes::Type geomType, item.types )
+    for ( QgsWkbTypes::Type geomType : std::as_const( item.types ) )
       geomTypes.append( QString::number( static_cast<ulong>( geomType ) ) );
     sqlite3_bind_text( stmtInsert, 7, geomTypes.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
     QStringList geomSrids;
-    Q_FOREACH ( int geomSrid, item.srids )
+    for ( int geomSrid : std::as_const( item.srids ) )
       geomSrids.append( QString::number( geomSrid ) );
     sqlite3_bind_text( stmtInsert, 8, geomSrids.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
@@ -222,11 +222,11 @@ bool QgsOracleTableCache::loadFromCache( const QString &connName, CacheFlags fla
     layer.pkCols = pkCols.split( ",", QString::SkipEmptyParts );
 
     QString geomTypes = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 6 ) );
-    Q_FOREACH ( QString geomType, geomTypes.split( ",", QString::SkipEmptyParts ) )
+    for ( QString geomType : geomTypes.split( ",", QString::SkipEmptyParts ) )
       layer.types.append( static_cast<QgsWkbTypes::Type>( geomType.toInt() ) );
 
     QString geomSrids = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 7 ) );
-    Q_FOREACH ( QString geomSrid, geomSrids.split( ",", QString::SkipEmptyParts ) )
+    for ( QString geomSrid : geomSrids.split( ",", QString::SkipEmptyParts ) )
       layer.srids.append( geomSrid.toInt() );
 
     layers.append( layer );

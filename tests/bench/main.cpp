@@ -418,7 +418,7 @@ int main( int argc, char *argv[] )
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
                << appResources.append( "/share/gdal" )
                << appResources.append( "/gdal" );
-    Q_FOREACH ( const QString &gdalShare, gdalShares )
+    for ( const QString &gdalShare : std::as_const( gdalShares ) )
     {
       if ( QFile::exists( gdalShare ) )
       {
@@ -501,8 +501,8 @@ int main( int argc, char *argv[] )
   if ( ! myQuality.isEmpty() )
   {
     QPainter::RenderHints hints;
-    QStringList list = myQuality.split( ',' );
-    Q_FOREACH ( const QString &q, list )
+    const QStringList list = myQuality.split( ',' );
+    for ( const QString &q : list )
     {
       if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
       else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
