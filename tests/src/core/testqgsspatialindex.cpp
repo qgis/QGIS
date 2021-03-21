@@ -71,7 +71,7 @@ class TestQgsSpatialIndex : public QObject
     void testQuery()
     {
       QgsSpatialIndex index;
-      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
+      for ( const QgsFeature &f : _pointFeatures() )
       {
         QgsFeature indexFeature( f );
         index.addFeature( indexFeature );
@@ -114,7 +114,7 @@ class TestQgsSpatialIndex : public QObject
     void testCopy()
     {
       QgsSpatialIndex *index = new QgsSpatialIndex;
-      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
+      for ( const QgsFeature &f : _pointFeatures() )
       {
         QgsFeature indexFeature( f );
         index->addFeature( indexFeature );

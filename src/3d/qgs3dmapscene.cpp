@@ -561,7 +561,8 @@ void Qgs3DMapScene::createTerrainDeferred()
   onCameraChanged();  // force update of the new terrain
 
   // make sure that renderers for layers are re-created as well
-  Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
+  const QList<QgsMapLayer *> layers = mMap.layers();
+  for ( QgsMapLayer *layer : layers )
   {
     // remove old entity - if any
     removeLayerEntity( layer );
@@ -704,7 +705,8 @@ void Qgs3DMapScene::onLayersChanged()
 {
   QSet<QgsMapLayer *> layersBefore = qgis::listToSet( mLayerEntities.keys() );
   QList<QgsMapLayer *> layersAdded;
-  Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
+  const QList<QgsMapLayer *> layers = mMap.layers();
+  for ( QgsMapLayer *layer : layers )
   {
     if ( !layersBefore.contains( layer ) )
     {
@@ -717,12 +719,12 @@ void Qgs3DMapScene::onLayersChanged()
   }
 
   // what is left in layersBefore are layers that have been removed
-  Q_FOREACH ( QgsMapLayer *layer, layersBefore )
+  for ( QgsMapLayer *layer : std::as_const( layersBefore ) )
   {
     removeLayerEntity( layer );
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, layersAdded )
+  for ( QgsMapLayer *layer : std::as_const( layersAdded ) )
   {
     addLayerEntity( layer );
   }

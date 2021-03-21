@@ -98,7 +98,7 @@ void TestQgsRasterFileWriter::writeTest()
   filters << QStringLiteral( "*.tif" );
   QStringList rasterNames = dir.entryList( filters, QDir::Files );
   bool allOK = true;
-  Q_FOREACH ( const QString &rasterName, rasterNames )
+  for ( const QString &rasterName : rasterNames )
   {
     bool ok = writeTest( "raster/" + rasterName );
     if ( !ok ) allOK = false;

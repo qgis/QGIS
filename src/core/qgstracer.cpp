@@ -253,9 +253,6 @@ QVector<QgsPointXY> shortestPath( const QgsTracerGraph &g, int v1, int v2 )
   }
 
   std::reverse( path.begin(), path.end() );
-  //Q_FOREACH (int x, path)
-  //  qDebug("e: %d", x);
-
   std::reverse( points.begin(), points.end() );
   return points;
 }

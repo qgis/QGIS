@@ -237,7 +237,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   mCaps = mCapabilities->capabilities();
 
   mAvailableCRS.clear();
-  Q_FOREACH ( const QgsWfsCapabilities::FeatureType &featureType, mCaps.featureTypes )
+  for ( const QgsWfsCapabilities::FeatureType &featureType : std::as_const( mCaps.featureTypes ) )
   {
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem *titleItem = new QStandardItem( featureType.title );

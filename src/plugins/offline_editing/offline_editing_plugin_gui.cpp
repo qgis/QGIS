@@ -223,7 +223,9 @@ void QgsOfflineEditingPluginGui::buttonBox_accepted()
   }
 
   mSelectedLayerIds.clear();
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+
+  const QList<QgsLayerTreeLayer *> layers = mLayerTree->layerTreeModel()->rootGroup()->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : layers )
   {
     if ( nodeLayer->isVisible() )
     {
@@ -252,13 +254,15 @@ void QgsOfflineEditingPluginGui::restoreState()
 
 void QgsOfflineEditingPluginGui::selectAll()
 {
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  const QList<QgsLayerTreeLayer *> layers = mLayerTree->layerTreeModel()->rootGroup()->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : layers )
     nodeLayer->setItemVisibilityChecked( true );
 }
 
 void QgsOfflineEditingPluginGui::deSelectAll()
 {
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  const QList<QgsLayerTreeLayer *> layers = mLayerTree->layerTreeModel()->rootGroup()->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : layers )
     nodeLayer->setItemVisibilityChecked( false );
 }
 

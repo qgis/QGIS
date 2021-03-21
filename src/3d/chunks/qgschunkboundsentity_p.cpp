@@ -73,7 +73,7 @@ AABBMesh::AABBMesh( Qt3DCore::QNode *parent )
 void AABBMesh::setBoxes( const QList<QgsAABB> &bboxes )
 {
   QList<QVector3D> vertices;
-  Q_FOREACH ( const QgsAABB &bbox, bboxes )
+  for ( const QgsAABB &bbox : bboxes )
     vertices << bbox.verticesForLines();
   mLineMeshGeo->setVertices( vertices );
   setVertexCount( mLineMeshGeo->vertexCount() );

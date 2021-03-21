@@ -52,7 +52,8 @@ QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
     return children;
   }
 
-  Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mWcsCapabilities.capabilities().contents.coverageSummary )
+  const QVector<QgsWcsCoverageSummary> summaries = mWcsCapabilities.capabilities().contents.coverageSummary;
+  for ( const QgsWcsCoverageSummary &coverageSummary : summaries )
   {
     // Attention, the name may be empty
     QgsDebugMsgLevel( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title, 2 );
@@ -93,7 +94,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString pat
   QgsDebugMsgLevel( "uri = " + mDataSourceUri.encodedUri(), 2 );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
-  Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mCoverageSummary.coverageSummary )
+  for ( const QgsWcsCoverageSummary &coverageSummary : std::as_const( mCoverageSummary.coverageSummary ) )
   {
     // Attention, the name may be empty
     QgsDebugMsgLevel( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title, 2 );
@@ -155,7 +156,7 @@ QString QgsWCSLayerItem::createUri()
   // TODO: prefer project CRS
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
-  Q_FOREACH ( const QString &c, mCoverageSummary.supportedCrs )
+  for ( const QString &c : std::as_const( mCoverageSummary.supportedCrs ) )
   {
     testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
     if ( testCrs.isValid() )
@@ -189,7 +190,8 @@ QgsWCSRootItem::QgsWCSRootItem( QgsDataItem *parent, QString name, QString path 
 QVector<QgsDataItem *>QgsWCSRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( "WCS" ) )
+  const QStringList list = QgsOwsConnection::connectionList( "WCS" );
+  for ( const QString &connName : list )
   {
     QgsOwsConnection connection( QStringLiteral( "WCS" ), connName );
     QgsDataItem *conn = new QgsWCSConnectionItem( this, connName, mPath + '/' + connName, connection.uri().encodedUri() );
