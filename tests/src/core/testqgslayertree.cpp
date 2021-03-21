@@ -367,19 +367,19 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   //test that all nodes are initially checked
   QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
   QCOMPARE( nodes.length(), 3 );
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
   }
   //uncheck all and test that all nodes are unchecked
   static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
   }
   //check all and test that all nodes are checked
   static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->checkAllItems();
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
   }
@@ -418,7 +418,7 @@ void TestQgsLayerTree::testFindLegendNode()
   QVERIFY( !m->findLegendNode( QString( "vl" ), QString( "rule" ) ) );
 
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
-  Q_FOREACH ( const QgsLegendSymbolItem &symbol, symbolList )
+  for ( const QgsLegendSymbolItem &symbol : symbolList )
   {
     QgsLayerTreeModelLegendNode *found = m->findLegendNode( vl->id(), symbol.ruleKey() );
     QVERIFY( found );
@@ -550,7 +550,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
 
   //test initial symbol
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
-  Q_FOREACH ( const QgsLegendSymbolItem &symbol, symbolList )
+  for ( const QgsLegendSymbolItem &symbol : symbolList )
   {
     QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( m->findLegendNode( vl->id(), symbol.ruleKey() ) );
     QVERIFY( symbolNode );

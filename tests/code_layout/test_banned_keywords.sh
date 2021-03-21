@@ -131,6 +131,9 @@ HINTS[35]="Use \see instead (works correct with Python docstrings)"
 KEYWORDS[36]="@brief"
 HINTS[36]="Use \brief instead (works correct with Python docstrings)"
 
+KEYWORDS[37]="Q_FOREACH"
+HINTS[37]="Use range based for loops instead"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 

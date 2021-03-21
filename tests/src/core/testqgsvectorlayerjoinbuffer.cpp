@@ -160,7 +160,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
   fX1.setAttribute( QStringLiteral( "value_x2" ), 222 );
 
   // Commit features and layers to qgis
-  Q_FOREACH ( const QString provider, mProviders )
+  for ( const QString provider : mProviders )
   {
     QgsVectorLayer *vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "A" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fA1 << fA2 );
@@ -168,7 +168,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     mProject.addMapLayer( vl );
   }
 
-  Q_FOREACH ( const QString provider, mProviders )
+  for ( const QString provider : mProviders )
   {
     QgsVectorLayer *vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "B" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fB1 << fB2 );
@@ -176,7 +176,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     mProject.addMapLayer( vl );
   }
 
-  Q_FOREACH ( const QString provider, mProviders )
+  for ( const QString provider : mProviders )
   {
     QgsVectorLayer *vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "C" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fC1 );
@@ -184,7 +184,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     mProject.addMapLayer( vl );
   }
 
-  Q_FOREACH ( const QString provider, mProviders )
+  for ( const QString provider : mProviders )
   {
     QgsVectorLayer *vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "X" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fX1 );

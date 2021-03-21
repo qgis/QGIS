@@ -863,7 +863,8 @@ void registerQgisFunctions( sqlite3 *db )
   QStringList reservedFunctions;
   reservedFunctions << QStringLiteral( "left" ) << QStringLiteral( "right" ) << QStringLiteral( "union" );
   // register QGIS expression functions
-  Q_FOREACH ( QgsExpressionFunction *foo, QgsExpression::Functions() )
+  const QList<QgsExpressionFunction *> functions = QgsExpression::Functions();
+  for ( QgsExpressionFunction *foo : functions )
   {
     if ( foo->usesGeometry( nullptr ) || foo->lazyEval() )
     {
@@ -885,7 +886,7 @@ void registerQgisFunctions( sqlite3 *db )
       params = -1;
     }
 
-    Q_FOREACH ( QString name, names ) // for each alias
+    for ( QString name : std::as_const( names ) ) // for each alias
     {
       if ( reservedFunctions.contains( name ) ) // reserved keyword
         name = "_" + name;

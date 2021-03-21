@@ -582,7 +582,6 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
     delete item;
   }
 
-  // workaround so the Q_FOREACH macro does not get confused by the ','
   typedef QPair<QLabel *, QWidget *> LabelControlPair;
 
   if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )

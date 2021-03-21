@@ -550,7 +550,8 @@ QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QS
 QVector<QgsDataItem *> QgsPGRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  Q_FOREACH ( const QString &connName, QgsPostgresConn::connectionList() )
+  const QStringList list = QgsPostgresConn::connectionList();
+  for ( const QString &connName : list )
   {
     connections << new QgsPGConnectionItem( this, connName, mPath + '/' + connName );
   }

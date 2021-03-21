@@ -17858,7 +17858,7 @@ void TestQgsGeometry::makeValid()
   geoms << qMakePair( QStringLiteral( "MultiLineString ((356984.0625 6300089, 356984.0625 6300089))" ),
                       QStringLiteral( "MultiPoint ((356984.0625 6300089))" ) );
 
-  Q_FOREACH ( const InputAndExpectedWktPair &pair, geoms )
+  for ( const InputAndExpectedWktPair &pair : geoms )
   {
     QgsGeometry gInput = QgsGeometry::fromWkt( pair.first );
     QgsGeometry gExp = QgsGeometry::fromWkt( pair.second );

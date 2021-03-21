@@ -2616,7 +2616,7 @@ class TestQgsExpression: public QObject
       QSet<QString> refCols = exp.referencedColumns();
       // make sure we have lower case
       QSet<QString> refColsSet;
-      Q_FOREACH ( const QString &col, refCols )
+      for ( const QString &col : refCols )
         refColsSet.insert( col.toLower() );
 
       QCOMPARE( refColsSet, expectedCols );

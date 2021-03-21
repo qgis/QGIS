@@ -175,7 +175,8 @@ QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QS
 QVector<QgsDataItem *> QgsSLRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  Q_FOREACH ( const QString &connName, QgsSpatiaLiteConnection::connectionList() )
+  const QStringList list = QgsSpatiaLiteConnection::connectionList();
+  for ( const QString &connName : list )
   {
     QgsDataItem *conn = new QgsSLConnectionItem( this, connName, mPath + '/' + connName );
     connections.push_back( conn );

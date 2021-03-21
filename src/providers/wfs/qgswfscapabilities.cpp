@@ -93,7 +93,7 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
 
 QString QgsWfsCapabilities::Capabilities::getNamespaceForTypename( const QString &name ) const
 {
-  Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, featureTypes )
+  for ( const QgsWfsCapabilities::FeatureType &f : featureTypes )
   {
     if ( f.name == name )
     {
@@ -608,7 +608,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     mCaps.featureTypes.push_back( featureType );
   }
 
-  Q_FOREACH ( const FeatureType &f, mCaps.featureTypes )
+  for ( const FeatureType &f : std::as_const( mCaps.featureTypes ) )
   {
     mCaps.setAllTypenames.insert( f.name );
     QString unprefixed( QgsWFSUtils::removeNamespacePrefix( f.name ) );
