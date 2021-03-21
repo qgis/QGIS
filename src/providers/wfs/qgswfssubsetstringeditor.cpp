@@ -44,7 +44,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   d->setSupportMultipleTables( bSupportJoins, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
 
   QMap< QString, QString > mapTypenameToTitle;
-  for ( const QgsWfsCapabilities::FeatureType f : std::as_const( caps.featureTypes ) )
+  for ( const QgsWfsCapabilities::FeatureType &f : std::as_const( caps.featureTypes ) )
     mapTypenameToTitle[f.name] = f.title;
 
   QList< QgsSQLComposerDialog::PairNameTitle > tablenames;
