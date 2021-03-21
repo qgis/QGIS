@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
-    <height>554</height>
+    <width>448</width>
+    <height>556</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -255,18 +255,33 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsMessageBar</class>
-   <extends>QWidget</extends>
-   <header>qgsmessagebar.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>auth/qgsauthsettingswidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtService</tabstop>
+  <tabstop>txtHost</tabstop>
+  <tabstop>txtPort</tabstop>
+  <tabstop>txtDatabase</tabstop>
+  <tabstop>cbxSSLmode</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>cb_geometryColumnsOnly</tabstop>
+  <tabstop>cb_dontResolveType</tabstop>
+  <tabstop>cb_publicSchemaOnly</tabstop>
+  <tabstop>cb_allowGeometrylessTables</tabstop>
+  <tabstop>cb_useEstimatedMetadata</tabstop>
+  <tabstop>cb_projectsInDatabase</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

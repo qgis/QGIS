@@ -260,8 +260,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>470</width>
-                <height>383</height>
+                <width>661</width>
+                <height>508</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -473,8 +473,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>661</width>
+                <height>508</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -845,21 +845,20 @@ border-radius: 2px;</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
@@ -873,9 +872,16 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMeshStaticDatasetWidget</class>
@@ -889,20 +895,27 @@ border-radius: 2px;</string>
    <header>qgsmeshdatasetgrouptreewidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>mInformationTextBrowser</tabstop>
   <tabstop>scrollArea_3</tabstop>
+  <tabstop>mLayerOrigNameLineEd</tabstop>
+  <tabstop>leDisplayName</tabstop>
+  <tabstop>mCrsGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mTemporalStaticDatasetCheckBox</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mSimplifyMeshGroupBox</tabstop>
+  <tabstop>mSimplifyReductionFactorSpinBox</tabstop>
+  <tabstop>mSimplifyMeshResolutionSpinBox</tabstop>
+  <tabstop>mTemporalDateTimeReference</tabstop>
+  <tabstop>mTemporalReloadButton</tabstop>
+  <tabstop>mTemporalDateTimeStart</tabstop>
+  <tabstop>mTemporalDateTimeEnd</tabstop>
+  <tabstop>mComboBoxTemporalDatasetMatchingMethod</tabstop>
+  <tabstop>mTemporalProviderTimeUnitComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

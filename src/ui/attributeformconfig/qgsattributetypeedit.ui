@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>751</width>
+    <width>752</width>
     <height>620</height>
    </rect>
   </property>
@@ -300,19 +300,23 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsExpressionLineEdit</class>
    <extends>QWidget</extends>
    <header>qgsexpressionlineedit.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mAlias</tabstop>
+  <tabstop>mAliasExpressionButton</tabstop>
   <tabstop>isFieldEditableCheckBox</tabstop>
+  <tabstop>reuseLastValuesCheckBox</tabstop>
+  <tabstop>labelOnTopCheckBox</tabstop>
   <tabstop>mWidgetTypeComboBox</tabstop>
   <tabstop>notNullCheckBox</tabstop>
   <tabstop>mCheckBoxEnforceNotNull</tabstop>
@@ -322,6 +326,7 @@
   <tabstop>leConstraintExpressionDescription</tabstop>
   <tabstop>mCheckBoxEnforceExpression</tabstop>
   <tabstop>mExpressionWidget</tabstop>
+  <tabstop>mApplyDefaultValueOnUpdateCheckBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

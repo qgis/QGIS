@@ -444,9 +444,14 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -456,15 +461,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsStyleItemsListWidget</class>
@@ -480,12 +480,21 @@
   <tabstop>mRotationDDBtn</tabstop>
   <tabstop>spinWidth</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
+  <tabstop>btnMarkerColor</tabstop>
+  <tabstop>mMarkerOpacityWidget</tabstop>
+  <tabstop>mMarkerOpacityDDBtn</tabstop>
   <tabstop>spinSize</tabstop>
   <tabstop>mSizeDDBtn</tabstop>
   <tabstop>spinAngle</tabstop>
   <tabstop>mRotationDDBtn</tabstop>
+  <tabstop>btnLineColor</tabstop>
+  <tabstop>mLineOpacityWidget</tabstop>
+  <tabstop>mLineOpacityDDBtn</tabstop>
   <tabstop>spinWidth</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
+  <tabstop>btnFillColor</tabstop>
+  <tabstop>mFillOpacityWidget</tabstop>
+  <tabstop>mFillOpacityDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -169,7 +169,7 @@
            <string>Temporal Settings</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
           </property>
          </item>
@@ -303,7 +303,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>629</width>
-                <height>1168</height>
+                <height>1109</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -760,8 +760,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>619</width>
-                <height>383</height>
+                <width>643</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1296,8 +1296,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>343</width>
-                <height>474</height>
+                <width>643</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1649,8 +1649,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>86</width>
-                <height>41</height>
+                <width>643</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1867,8 +1867,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>577</width>
-                <height>190</height>
+                <width>643</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2097,8 +2097,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>343</width>
-                <height>684</height>
+                <width>643</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2549,36 +2549,9 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2587,10 +2560,14 @@ p, li { white-space: pre-wrap; }
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -2599,9 +2576,26 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsRasterBandComboBox</class>
+   <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsrasterbandcombobox.h</header>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsWebView</class>
+   <extends>QWidget</extends>
+   <header>qgswebview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleRangeWidget</class>
@@ -2615,32 +2609,53 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsWebView</class>
+   <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>
-   <header>qgswebview.h</header>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFieldComboBox</class>
+   <class>QgsRasterBandComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
+   <header>raster/qgsrasterbandcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>scrollArea_3</tabstop>
   <tabstop>mLayerOrigNameLineEd</tabstop>
   <tabstop>leDisplayName</tabstop>
+  <tabstop>mCrsGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mWmstGroup</tabstop>
+  <tabstop>mFetchModeComboBox</tabstop>
+  <tabstop>mDisableTime</tabstop>
+  <tabstop>mStaticTemporalRange</tabstop>
+  <tabstop>mStartStaticDateTimeEdit</tabstop>
+  <tabstop>mEndStaticDateTimeEdit</tabstop>
+  <tabstop>mSetEndAsStartStaticButton</tabstop>
+  <tabstop>mProjectTemporalRange</tabstop>
+  <tabstop>mReferenceTime</tabstop>
+  <tabstop>mReferenceDateTimeEdit</tabstop>
+  <tabstop>mPostgresRasterTemporalGroup</tabstop>
+  <tabstop>mPostgresRasterTemporalFieldComboBox</tabstop>
+  <tabstop>mPostgresRasterDefaultTime</tabstop>
+  <tabstop>mResetColorRenderingBtn</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mRenderTypeComboBox</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
-  <tabstop>mResetColorRenderingBtn</tabstop>
   <tabstop>mSliderBrightness</tabstop>
   <tabstop>mBrightnessSpinBox</tabstop>
   <tabstop>mSliderContrast</tabstop>
@@ -2657,6 +2672,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mZoomedInResamplingComboBox</tabstop>
   <tabstop>mZoomedOutResamplingComboBox</tabstop>
   <tabstop>mMaximumOversamplingSpinBox</tabstop>
+  <tabstop>mCbEarlyResampling</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mSrcNoDataValueCheckBox</tabstop>
@@ -2669,10 +2685,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnDefaultValues</tabstop>
   <tabstop>pbnImportTransparentPixelValues</tabstop>
   <tabstop>pbnExportTransparentPixelValues</tabstop>
+  <tabstop>scrollArea_6</tabstop>
   <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mRefreshLayerCheckBox</tabstop>
   <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
-  <tabstop>scrollArea_6</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>tePyramidDescription</tabstop>
   <tabstop>lbxPyramidResolutions</tabstop>
@@ -2696,20 +2712,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mWMSPrintLayerLineEdit</tabstop>
   <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
   <tabstop>mBackgroundLayerCheckBox</tabstop>
-  <tabstop>scrollArea_3</tabstop>
-  <tabstop>mWmstGroup</tabstop>
-  <tabstop>mFetchModeComboBox</tabstop>
-  <tabstop>mDisableTime</tabstop>
-  <tabstop>mReferenceDateTimeEdit</tabstop>
-  <tabstop>mReferenceTime</tabstop>
-  <tabstop>mStaticTemporalRange</tabstop>
-  <tabstop>mSetEndAsStartStaticButton</tabstop>
-  <tabstop>mEndStaticDateTimeEdit</tabstop>
-  <tabstop>mStartStaticDateTimeEdit</tabstop>
-  <tabstop>mProjectTemporalRange</tabstop>
-  <tabstop>mPostgresRasterTemporalGroup</tabstop>
-  <tabstop>mPostgresRasterTemporalFieldComboBox</tabstop>
-  <tabstop>mPostgresRasterDefaultTime</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
