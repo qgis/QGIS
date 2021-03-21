@@ -22,6 +22,7 @@
 #include <limits>
 #include <cmath>
 
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmaptoolrotatefeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
@@ -33,6 +34,7 @@
 #include "qgisapp.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
+#include "qgssnapindicator.h"
 #include "qgsmapmouseevent.h"
 
 
@@ -57,7 +59,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
   mAngleSpinBox->setSuffix( tr( "°" ) );
   mAngleSpinBox->setSingleStep( 1 );
   mAngleSpinBox->setValue( 0 );
-  mAngleSpinBox->setShowClearButton( false );
+  mAngleSpinBox->setClearValue( 0 );
   mAngleSpinBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   mLayout->addWidget( mAngleSpinBox );
 
@@ -139,8 +141,10 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
 //
 
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas *canvas )
-  : QgsMapToolEdit( canvas )
+  : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
+  mToolName = tr( "Rotate feature" );
 }
 
 QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
@@ -148,15 +152,19 @@ QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
   deleteRotationWidget();
   mAnchorPoint.reset();
   deleteRubberband();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 }
 
-void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent *e )
+void QgsMapToolRotateFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   if ( mRotationActive )
   {
-    const double XDistance = e->pos().x() - mStPoint.x();
-    const double YDistance = e->pos().y() - mStPoint.y();
-    double rotation = std::atan2( YDistance, XDistance ) * ( 180 / M_PI ) - mRotationOffset;
+    const QgsPointXY pt = e->mapPoint();
+    const double XDistance = pt.x() - mStartPointMapCoords.x();
+    const double YDistance = pt.y() - mStartPointMapCoords.y();
+    double rotation = std::atan2( XDistance, YDistance ) * ( 180 / M_PI ) - mRotationOffset;
 
     if ( mRotationWidget )
     {
@@ -174,7 +182,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mCanvas )
   {
@@ -187,6 +195,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     deleteRotationWidget();
     deleteRubberband();
     notifyNotVectorLayer();
+    mSnapIndicator->setMatch( QgsPointLocator::Match() );
     return;
   }
 
@@ -204,9 +213,10 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     }
-    mAnchorPoint->setCenter( toMapCoordinates( e->pos() ) );
-    mStartPointMapCoords = toMapCoordinates( e->pos() );
+    mAnchorPoint->setCenter( e->mapPoint() );
+    mStartPointMapCoords = e->mapPoint();
     mStPoint = e->pos();
+    cadDockWidget()->clear();
     return;
   }
 
@@ -220,7 +230,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     deleteRubberband();
 
-    mInitialPos = e->pos();
+    mInitialPos = e->mapPoint();
 
     if ( !vlayer->isEditable() )
     {
@@ -312,9 +322,9 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     mRubberBand->show();
 
-    double XDistance = mInitialPos.x() - mAnchorPoint->x();
-    double YDistance = mInitialPos.y() - mAnchorPoint->y();
-    mRotationOffset = std::atan2( YDistance, XDistance ) * ( 180 / M_PI );
+    double XDistance = mInitialPos.x() - mAnchorPoint->center().x();
+    double YDistance = mInitialPos.y() - mAnchorPoint->center().y();
+    mRotationOffset = std::atan2( XDistance, YDistance ) * ( 180 / M_PI );
 
     createRotationWidget();
     if ( e->modifiers() & Qt::ShiftModifier )
@@ -343,6 +353,7 @@ void QgsMapToolRotateFeature::cancel()
     mAnchorPoint.reset();
   }
   mRotationActive = false;
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 }
 
 void QgsMapToolRotateFeature::updateRubberband( double rotation )
@@ -373,6 +384,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   {
     deleteRubberband();
     notifyNotVectorLayer();
+    mSnapIndicator->setMatch( QgsPointLocator::Match() );
     return;
   }
 
@@ -421,6 +433,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
 
   deleteRotationWidget();
   deleteRubberband();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
   if ( mAutoSetAnchorPoint )
     mAnchorPoint.reset();
@@ -436,7 +449,7 @@ void QgsMapToolRotateFeature::keyReleaseEvent( QKeyEvent *e )
     cancel();
     return;
   }
-  QgsMapTool::keyReleaseEvent( e );
+  QgsMapToolAdvancedDigitizing::keyReleaseEvent( e );
 }
 
 void QgsMapToolRotateFeature::activate()
@@ -463,7 +476,7 @@ void QgsMapToolRotateFeature::activate()
 
     mStPoint = toCanvasCoordinates( mStartPointMapCoords );
   }
-  QgsMapTool::activate();
+  QgsMapToolAdvancedDigitizing::activate();
 }
 
 void QgsMapToolRotateFeature::deleteRubberband()
@@ -479,7 +492,8 @@ void QgsMapToolRotateFeature::deactivate()
   mRotationOffset = 0;
   mAnchorPoint.reset();
   deleteRubberband();
-  QgsMapTool::deactivate();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolRotateFeature::createRotationWidget()
