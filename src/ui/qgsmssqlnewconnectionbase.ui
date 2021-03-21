@@ -376,6 +376,12 @@ Untick save if you don't wish to be the case.</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsMessageBar</class>
    <extends>QWidget</extends>
    <header>qgsmessagebar.h</header>
@@ -385,12 +391,6 @@ Untick save if you don't wish to be the case.</string>
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgspasswordlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -404,9 +404,14 @@ Untick save if you don't wish to be the case.</string>
   <tabstop>chkStorePassword</tabstop>
   <tabstop>btnListDatabase</tabstop>
   <tabstop>listDatabase</tabstop>
+  <tabstop>groupBoxGeometryColumns</tabstop>
+  <tabstop>checkBoxExtentFromGeometryColumns</tabstop>
+  <tabstop>checkBoxPKFromGeometryColumns</tabstop>
   <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>
   <tabstop>mCheckNoInvalidGeometryHandling</tabstop>
+  <tabstop>groupBoxSchemasFilter</tabstop>
+  <tabstop>schemaView</tabstop>
   <tabstop>btnConnect</tabstop>
  </tabstops>
  <resources/>

@@ -550,9 +550,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -561,9 +566,10 @@
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -576,16 +582,12 @@
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboFont</tabstop>
+  <tabstop>mFontFamilyDDBtn</tabstop>
   <tabstop>mFontStyleComboBox</tabstop>
+  <tabstop>mFontStyleDDBtn</tabstop>
   <tabstop>spinSize</tabstop>
   <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>mSizeDDBtn</tabstop>
@@ -609,7 +611,9 @@
   <tabstop>mHorizontalAnchorComboBox</tabstop>
   <tabstop>mHorizontalAnchorDDBtn</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mCharLineEdit</tabstop>
   <tabstop>mCharDDBtn</tabstop>
+  <tabstop>mCharPreview</tabstop>
  </tabstops>
  <resources/>
  <connections/>

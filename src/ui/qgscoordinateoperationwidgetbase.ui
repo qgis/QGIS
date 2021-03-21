@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>651</width>
+    <width>1000</width>
     <height>433</height>
    </rect>
   </property>
@@ -196,7 +196,10 @@ file are transformed).</string>
  </customwidgets>
  <tabstops>
   <tabstop>mCoordinateOperationTableWidget</tabstop>
+  <tabstop>mInstallGridButton</tabstop>
   <tabstop>mHideDeprecatedCheckBox</tabstop>
+  <tabstop>mShowSupersededCheckBox</tabstop>
+  <tabstop>mAllowFallbackCheckBox</tabstop>
   <tabstop>mMakeDefaultCheckBox</tabstop>
  </tabstops>
  <resources/>

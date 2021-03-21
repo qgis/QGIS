@@ -212,10 +212,11 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mTemporalGroupBox</tabstop>
+  <tabstop>mModeAutomaticRadio</tabstop>
   <tabstop>mModeFixedRangeRadio</tabstop>
   <tabstop>mStartTemporalDateTimeEdit</tabstop>
   <tabstop>mEndTemporalDateTimeEdit</tabstop>
-  <tabstop>mTemporalGroupBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>
