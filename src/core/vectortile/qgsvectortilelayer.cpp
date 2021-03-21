@@ -31,6 +31,9 @@
 #include "qgsmapboxglstyleconverter.h"
 #include "qgsjsonutils.h"
 
+#include <QUrl>
+#include <QUrlQuery>
+
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
 {
@@ -119,9 +122,16 @@ bool QgsVectorTileLayer::loadDataSource()
 
 bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri )
 {
-  QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
+  QUrl url( uri );
+  // some services don't default to json format, while others do... so let's explicitly request it!
+  // (refs https://github.com/qgis/QGIS/issues/4231)
+  QUrlQuery query;
+  query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "pjson" ) );
+  url.setQuery( query );
 
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+  QNetworkRequest request = QNetworkRequest( url );
+
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
 
   QgsBlockingNetworkRequest networkRequest;
   switch ( networkRequest.get( request ) )
