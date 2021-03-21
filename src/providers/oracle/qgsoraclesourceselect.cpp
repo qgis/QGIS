@@ -59,7 +59,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     QComboBox *cb = new QComboBox( parent );
     for ( QgsWkbTypes::Type type :
           {
-            QgsWkbTypes::Poin,
+            QgsWkbTypes::Point,
             QgsWkbTypes::LineString,
             QgsWkbTypes::Polygon,
             QgsWkbTypes::MultiPoint,
