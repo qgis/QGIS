@@ -516,14 +516,14 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -534,6 +534,11 @@
  </customwidgets>
  <tabstops>
   <tabstop>mCalloutLineStyleButton</tabstop>
+  <tabstop>mCurvatureSlider</tabstop>
+  <tabstop>mCurvatureSpinBox</tabstop>
+  <tabstop>mCalloutCurvatureDDBtn</tabstop>
+  <tabstop>mOrientationComboBox</tabstop>
+  <tabstop>mCalloutOrientationDDBtn</tabstop>
   <tabstop>mMinCalloutLengthSpin</tabstop>
   <tabstop>mMinCalloutWidthUnitWidget</tabstop>
   <tabstop>mMinCalloutLengthDDBtn</tabstop>
@@ -549,6 +554,10 @@
   <tabstop>mAnchorPointDDBtn</tabstop>
   <tabstop>mLabelAnchorPointComboBox</tabstop>
   <tabstop>mLabelAnchorPointDDBtn</tabstop>
+  <tabstop>mOriginXDDBtn</tabstop>
+  <tabstop>mOriginYDDBtn</tabstop>
+  <tabstop>mDestXDDBtn</tabstop>
+  <tabstop>mDestYDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

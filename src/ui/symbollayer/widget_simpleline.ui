@@ -509,15 +509,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -531,9 +531,10 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPenStyleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspenstylecombobox.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsPenCapStyleComboBox</class>
@@ -541,10 +542,9 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsPenStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -569,6 +569,14 @@
   <tabstop>spinPatternOffset</tabstop>
   <tabstop>mPatternOffsetUnitWidget</tabstop>
   <tabstop>mPatternOffsetDDBtn</tabstop>
+  <tabstop>mCheckAlignDash</tabstop>
+  <tabstop>mCheckDashCorners</tabstop>
+  <tabstop>mTrimStartDistanceSpin</tabstop>
+  <tabstop>mTrimDistanceStartUnitWidget</tabstop>
+  <tabstop>mTrimDistanceStartDDBtn</tabstop>
+  <tabstop>mTrimDistanceEndSpin</tabstop>
+  <tabstop>mTrimDistanceEndUnitWidget</tabstop>
+  <tabstop>mTrimDistanceEndDDBtn</tabstop>
   <tabstop>mDrawInsideCheckBox</tabstop>
   <tabstop>mRingFilterComboBox</tabstop>
  </tabstops>

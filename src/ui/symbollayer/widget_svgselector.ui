@@ -209,18 +209,26 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsSvgSourceLineEdit</class>
    <extends>QWidget</extends>
    <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mSvgSourceLineEdit</tabstop>
+  <tabstop>mGroupsTreeView</tabstop>
+  <tabstop>mImagesListView</tabstop>
+  <tabstop>mParametersTreeView</tabstop>
+  <tabstop>mAddParameterButton</tabstop>
+  <tabstop>mRemoveParameterButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

@@ -57,7 +57,7 @@
        </widget>
       </item>
       <item row="5" column="2">
-       <widget class="QgsScaleWidget" name="mMinLabelScaleWidget">
+       <widget class="QgsScaleWidget" name="mMinLabelScaleWidget" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -308,20 +308,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleWidget</class>
@@ -329,20 +318,31 @@
    <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -359,7 +359,9 @@
   <tabstop>mLabelFieldComboBox</tabstop>
   <tabstop>mLabelFontButton</tabstop>
   <tabstop>mLabelColorButton</tabstop>
+  <tabstop>mLabelDistanceFactorSpinBox</tabstop>
   <tabstop>mScaleDependentLabelsCheckBox</tabstop>
+  <tabstop>mMinLabelScaleWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

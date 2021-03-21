@@ -73,6 +73,11 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mFormatComboBox</tabstop>
+  <tabstop>mDecimalsSpinBox</tabstop>
+  <tabstop>mShowTrailingZerosCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

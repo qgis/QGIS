@@ -449,14 +449,14 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -482,6 +482,10 @@
   <tabstop>mAnchorPointDDBtn</tabstop>
   <tabstop>mLabelAnchorPointComboBox</tabstop>
   <tabstop>mLabelAnchorPointDDBtn</tabstop>
+  <tabstop>mOriginXDDBtn</tabstop>
+  <tabstop>mOriginYDDBtn</tabstop>
+  <tabstop>mDestXDDBtn</tabstop>
+  <tabstop>mDestYDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

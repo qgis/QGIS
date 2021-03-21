@@ -111,6 +111,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
@@ -121,12 +126,13 @@
    <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mPercentPlacementComboBox</tabstop>
+  <tabstop>mLinePlacementDDBtn</tabstop>
+  <tabstop>mCustomPlacementSpinBox</tabstop>
+  <tabstop>mAnchorTypeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
