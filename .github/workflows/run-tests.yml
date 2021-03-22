@@ -122,7 +122,7 @@ jobs:
                      --env PUSH_TO_CDASH=true \
                      --env WITH_3D=${WITH_3D} \
                      qgis/qgis3-build-deps:${DOCKER_TAG} \
-                     /bin/bash -c "/root/QGIS/.docker/docker-qgis-build.sh; ctest -V -S /root/QGIS/.ci/config_build.ctest"
+                     /root/QGIS/.docker/docker-qgis-build.sh
 
       - name: Push artifact
         id: push_artifact
