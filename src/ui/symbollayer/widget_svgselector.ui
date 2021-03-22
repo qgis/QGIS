@@ -190,7 +190,11 @@
        </widget>
       </item>
       <item row="0" column="0" colspan="5">
-       <widget class="QTreeView" name="mParametersTreeView"/>
+       <widget class="QTreeView" name="mParametersTreeView">
+        <property name="itemsExpandable">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
