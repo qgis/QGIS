@@ -31,6 +31,8 @@ target_compile_features(wmsprovider_a PRIVATE cxx_std_17)
 if (WITH_GUI)
   include_directories (
     ${CMAKE_BINARY_DIR}/src/providers/wms
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
   )
 
   QT5_WRAP_UI(WMS_UIS_H ${WMS_UIS})
