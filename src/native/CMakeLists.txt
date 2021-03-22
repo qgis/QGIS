@@ -11,7 +11,7 @@ set(NATIVE_LINK_LIBS)
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
   if (WITH_QT6)
-    find_package(Qt6 COMPONENTS Dbus REQUIRED)
+    find_package(Qt6 COMPONENTS DBus REQUIRED)
   else()
     find_package(Qt5DBus REQUIRED)
   endif()
