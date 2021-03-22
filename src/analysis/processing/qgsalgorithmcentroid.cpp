@@ -95,7 +95,7 @@ QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsPro
 {
   QgsFeatureList list;
   QgsFeature feature = f;
-  if ( feature.hasGeometry() )
+  if ( feature.hasGeometry() && !feature.geometry().isEmpty() )
   {
     QgsGeometry geom = feature.geometry();
 
@@ -107,14 +107,15 @@ QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsPro
     {
       const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
 
-      list.reserve( geomCollection->partCount() );
-      for ( int i = 0; i < geomCollection->partCount(); ++i )
+      const int partCount = geomCollection->partCount();
+      list.reserve( partCount );
+      for ( int i = 0; i < partCount; ++i )
       {
         QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );
         QgsGeometry outputGeometry = partGeometry.centroid();
         if ( outputGeometry.isNull() )
         {
-          feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1 part %2: %3" ).arg( feature.id() ).arg( i ).arg( outputGeometry.lastError() ) );
+          feedback->reportError( QObject::tr( "Error calculating centroid for feature %1 part %2: %3" ).arg( feature.id() ).arg( i ).arg( outputGeometry.lastError() ) );
         }
         feature.setGeometry( outputGeometry );
         list << feature;
@@ -125,7 +126,7 @@ QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsPro
       QgsGeometry outputGeometry = feature.geometry().centroid();
       if ( outputGeometry.isNull() )
       {
-        feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
+        feedback->reportError( QObject::tr( "Error calculating centroid for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
       }
       feature.setGeometry( outputGeometry );
       list << feature;
