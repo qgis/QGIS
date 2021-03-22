@@ -90,6 +90,11 @@ Returns the panel currently shown in the stack.
 .. versionadded:: 3.0
 %End
 
+    virtual QSize sizeHint() const;
+
+    virtual QSize minimumSizeHint() const;
+
+
   public slots:
 
     void acceptCurrentPanel();
