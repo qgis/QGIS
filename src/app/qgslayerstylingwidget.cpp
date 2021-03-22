@@ -259,7 +259,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
   }
 
-  for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
+  for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
