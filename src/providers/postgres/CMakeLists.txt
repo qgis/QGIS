@@ -80,6 +80,9 @@ target_link_libraries (postgresprovider_a
 if (WITH_GUI)
   include_directories (
     ${CMAKE_BINARY_DIR}/src/providers/postgres
+    ${CMAKE_SOURCE_DIR}/src/providers/postgres
+    ${CMAKE_BINARY_DIR}/src/providers/postgres/raster
+    ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
   )
