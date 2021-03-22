@@ -43,7 +43,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     enum class ParentPage : int
     {
       NoParent, //!< Factory creates pages itself, not sub-components
-      Temporal, //!< Factory creates sub-components of the temporal properties page
+      Temporal, //!< Factory creates sub-components of the temporal properties page (only supported for raster layer temporal properties)
     };
 
     //! Constructor
