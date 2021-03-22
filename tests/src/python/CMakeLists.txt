@@ -312,6 +312,7 @@ ADD_PYTHON_TEST(PyQgsUnitTypes test_qgsunittypes.py)
 ADD_PYTHON_TEST(PyQgsValidityChecks test_qgsvaliditychecks.py)
 ADD_PYTHON_TEST(PyQgsValidityResultsWidget test_qgsvalidityresultswidget.py)
 ADD_PYTHON_TEST(PyQgsVectorFieldMarkerSymbolLayer test_qgsvectorfieldmarkersymbollayer.py)
+ADD_PYTHON_TEST(PyQgsVectorFileWriter test_qgsvectorfilewriter.py)
 ADD_PYTHON_TEST(PyQgsVectorFileWriterTask test_qgsvectorfilewritertask.py)
 ADD_PYTHON_TEST(PyQgsVectorLayer test_qgsvectorlayer.py)
 ADD_PYTHON_TEST(PyQgsVectorLayerFeatureCounter test_qgsvectorlayerfeaturecounter.py)
@@ -365,7 +366,7 @@ endif()
 if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsImportIntoPostGIS test_processing_importintopostgis.py)
   ADD_PYTHON_TEST(PyQgsQueryResultModel test_qgsqueryresultmodel.py)
-  ADD_PYTHON_TEST(PyQgsVectorFileWriter test_qgsvectorfilewriter.py)
+  ADD_PYTHON_TEST(PyQgsVectorFileWriterPostgres test_qgsvectorfilewriter_postgres.py)
   ADD_PYTHON_TEST(PyQgsVectorLayerUtils test_qgsvectorlayerutils.py)
   ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
   ADD_PYTHON_TEST(PyQgsPostgresRasterProvider test_provider_postgresraster.py)
@@ -390,7 +391,7 @@ if (ENABLE_PGTEST)
     ADD_PYTHON_TEST(PyQgsServerWMSGetFeatureInfo test_qgsserver_wms_getfeatureinfo.py)
     ADD_PYTHON_TEST(PyQgsServerAccessControlWMSGetPrintPG test_qgsserver_accesscontrol_wms_getprint_postgres.py)
   endif()
-  SET_TESTS_PROPERTIES(PyQgsImportIntoPostGIS PyQgsQueryResultModel PyQgsVectorFileWriter PyQgsPostgresProvider
+  SET_TESTS_PROPERTIES(PyQgsImportIntoPostGIS PyQgsQueryResultModel PyQgsVectorFileWriterPostgres PyQgsPostgresProvider
     PyQgsVectorLayerUtils PyQgsPostgresRasterProvider PyQgsPostgresDomain PyQgsPostgresTransaction
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest
