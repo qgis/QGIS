@@ -259,7 +259,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     bool mIsCurrentlyEdited = false;
 
     friend class TestQgsFeatureListComboBox;
-    friend class TestQgsRelationReferenceWidget;
 };
 
 
