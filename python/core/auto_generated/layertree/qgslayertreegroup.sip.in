@@ -131,7 +131,7 @@ Find group node with specified name. Searches recursively the whole sub-tree.
 
     QList<QgsLayerTreeGroup *> findGroups( bool recursive = false ) const;
 %Docstring
-Find group layer nodes. Searches recursively the whole sub-tree, is recursive is set.
+Find group layer nodes. Searches recursively the whole sub-tree, if recursive is set.
 %End
 
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
