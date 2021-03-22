@@ -404,7 +404,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
 
   connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
   {
-    if ( mImagesListView->selectionModel()->selectedIndexes().count() > 0 )
+    if ( !mImagesListView->selectionModel()->selectedIndexes().isEmpty() )
     {
       disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
       mImagesListView->selectionModel()->clearSelection();
