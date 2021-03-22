@@ -122,16 +122,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   initOptionsBase( false );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterLayerProperties::showHelp );
 
-  connect( mSetEndAsStartStaticButton, &QPushButton::clicked, this, &QgsRasterLayerProperties::setEndAsStartStaticButton_clicked );
-  connect( mProjectTemporalRange, &QRadioButton::toggled, this, &QgsRasterLayerProperties::passProjectTemporalRange_toggled );
-  connect( mStaticTemporalRange, &QRadioButton::toggled, this, &QgsRasterLayerProperties::staticTemporalRange_toggled );
-
-  connect( mStaticTemporalRange, &QRadioButton::toggled, mStaticWmstFrame, &QWidget::setEnabled );
-  connect( mReferenceTime, &QCheckBox::toggled, mWmstReferenceTimeFrame, &QWidget::setEnabled );
-
-  if ( mRasterLayer && mRasterLayer->temporalProperties() )
-    connect( mRasterLayer->temporalProperties(), &QgsRasterLayerTemporalProperties::changed, this, &QgsRasterLayerProperties::temporalPropertiesChange );
-
   mSourceGroupBox->hide();
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
@@ -303,9 +293,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   temporalLayout->setContentsMargins( 0, 0, 0, 0 );
   mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
   temporalLayout->addWidget( mTemporalWidget );
-
-  setSourceStaticTimeState();
-  mWmstGroup->setVisible( mRasterLayer->providerType() == QLatin1String( "wms" ) && mRasterLayer->dataProvider() && mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
 
   // This group is used to define the temporal capabilities of the PG raster layer
   if ( mRasterLayer->dataProvider() && mRasterLayer->providerType() == QLatin1String( "postgresraster" ) )
@@ -1108,8 +1095,6 @@ void QgsRasterLayerProperties::apply()
   //set the blend mode for the layer
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 
-  updateSourceStaticTime();
-
   // Update temporal field
   if ( mRasterLayer->dataProvider() )
   {
@@ -1219,209 +1204,6 @@ void QgsRasterLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->setDirty( true );
-}//apply
-
-void QgsRasterLayerProperties::updateSourceStaticTime()
-{
-  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
-                                    mRasterLayer->providerType() );
-  const QVariantMap currentUri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
-
-  QVariantMap uri = currentUri;
-
-  if ( mWmstGroup->isVisibleTo( this ) )
-    uri[ QStringLiteral( "allowTemporalUpdates" ) ] = mWmstGroup->isChecked();
-
-
-  if ( mWmstGroup->isEnabled() &&
-       mRasterLayer->dataProvider() &&
-       mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
-  {
-    bool enableTime = !mDisableTime->isChecked();
-
-    uri[ QStringLiteral( "enableTime" ) ] = enableTime;
-    qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
-          mFetchModeComboBox->currentData().toInt() ) );
-
-    // Don't do static temporal updates if temporal properties are active
-    if ( !mRasterLayer->temporalProperties()->isActive() )
-    {
-      if ( mStaticTemporalRange->isChecked() )
-      {
-        QString time = mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + '/' +
-                       mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
-        uri[ QStringLiteral( "time" ) ] = time;
-        uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "provider" );
-      }
-
-      if ( mProjectTemporalRange->isChecked() )
-      {
-        QgsDateTimeRange range;
-
-        if ( QgsProject::instance()->timeSettings() )
-          range = QgsProject::instance()->timeSettings()->temporalRange();
-        if ( range.begin().isValid() && range.end().isValid() )
-        {
-          QString time = range.begin().toString( Qt::ISODateWithMs ) + '/' +
-                         range.end().toString( Qt::ISODateWithMs );
-
-          uri[ QStringLiteral( "time" ) ] = time;
-          uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "project" );
-        }
-      }
-    }
-
-    if ( mReferenceTime->isChecked() )
-    {
-      QString referenceTime = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
-      uri[ QStringLiteral( "referenceTime" ) ] = referenceTime;
-    }
-    else
-    {
-      if ( uri.contains( QStringLiteral( "referenceTime" ) ) )
-        uri.remove( QStringLiteral( "referenceTime" ) );
-    }
-  }
-
-  if ( currentUri != uri )
-    mRasterLayer->setDataSource( metadata->encodeUri( uri ), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
-}
-
-void QgsRasterLayerProperties::setSourceStaticTimeState()
-{
-  if ( mRasterLayer->dataProvider() && mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
-  {
-    const QgsDateTimeRange availableProviderRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
-    const QgsDateTimeRange availableReferenceRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableReferenceTemporalRange();
-
-    QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
-                                      mRasterLayer->providerType() );
-
-    QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
-
-    mStartStaticDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-    mEndStaticDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-    mReferenceDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-
-    // setup maximum extents for widgets, based on provider's capabilities
-    if ( availableProviderRange.begin().isValid() && availableProviderRange.end().isValid() )
-    {
-      mStartStaticDateTimeEdit->setDateTimeRange( availableProviderRange.begin(),
-          availableProviderRange.end() );
-      mStartStaticDateTimeEdit->setDateTime( availableProviderRange.begin() );
-      mEndStaticDateTimeEdit->setDateTimeRange( availableProviderRange.begin(),
-          availableProviderRange.end() );
-      mEndStaticDateTimeEdit->setDateTime( availableProviderRange.end() );
-    }
-    if ( availableReferenceRange.begin().isValid() && availableReferenceRange.end().isValid() )
-    {
-      mReferenceDateTimeEdit->setDateTimeRange( availableReferenceRange.begin(),
-          availableReferenceRange.end() );
-      mReferenceDateTimeEdit->setDateTime( availableReferenceRange.begin() );
-    }
-
-    const QString time = uri.value( QStringLiteral( "time" ) ).toString();
-    if ( !time.isEmpty() )
-    {
-      QStringList parts = time.split( '/' );
-      mStartStaticDateTimeEdit->setDateTime( QDateTime::fromString( parts.at( 0 ), Qt::ISODateWithMs ) );
-      mEndStaticDateTimeEdit->setDateTime( QDateTime::fromString( parts.at( 1 ), Qt::ISODateWithMs ) );
-    }
-
-    const QString referenceTimeExtent = uri.value( QStringLiteral( "referenceTimeDimensionExtent" ) ).toString();
-
-    mReferenceTime->setEnabled( !referenceTimeExtent.isEmpty() );
-    mReferenceDateTimeEdit->setVisible( !referenceTimeExtent.isEmpty() );
-
-    QString referenceTimeLabelText = referenceTimeExtent.isEmpty() ?
-                                     tr( "There is no reference time in the layer's capabilities." ) : QString();
-    mReferenceTimeLabel->setText( referenceTimeLabelText );
-
-    const QString referenceTime = uri.value( QStringLiteral( "referenceTime" ) ).toString();
-
-    mReferenceTime->setChecked( !referenceTime.isEmpty() );
-
-    if ( !referenceTime.isEmpty() && !referenceTimeExtent.isEmpty() )
-    {
-      mReferenceDateTimeEdit->setDateTime( QDateTime::fromString( referenceTime, Qt::ISODateWithMs ) );
-    }
-
-    mFetchModeComboBox->addItem( tr( "Use Whole Temporal Range" ), QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange );
-    mFetchModeComboBox->addItem( tr( "Match to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
-    mFetchModeComboBox->addItem( tr( "Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
-    mFetchModeComboBox->addItem( tr( "Closest Match to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange );
-    mFetchModeComboBox->addItem( tr( "Closest Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange );
-    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->intervalHandlingMethod() ) );
-
-    const QString temporalSource = uri.value( QStringLiteral( "temporalSource" ) ).toString();
-    bool enableTime = uri.value( QStringLiteral( "enableTime" ), true ).toBool();
-
-    if ( temporalSource == QLatin1String( "provider" ) )
-      mStaticTemporalRange->setChecked( !time.isEmpty() );
-    else if ( temporalSource == QLatin1String( "project" ) )
-      mProjectTemporalRange->setChecked( !time.isEmpty() );
-
-    mDisableTime->setChecked( !enableTime );
-
-    mWmstOptions->setEnabled( !mRasterLayer->temporalProperties()->isActive() );
-
-    if ( mRasterLayer->temporalProperties()->isActive() )
-      mWmstOptionsLabel->setText( tr( "The static temporal options below are disabled because the layer "
-                                      "temporal properties are active, to enable them disable temporal properties "
-                                      "in the temporal tab. " ) );
-    QgsDateTimeRange range;
-    if ( QgsProject::instance()->timeSettings() )
-      range = QgsProject::instance()->timeSettings()->temporalRange();
-
-    if ( !range.begin().isValid() || !range.end().isValid() )
-    {
-      mProjectTemporalRange->setEnabled( false );
-      mProjectTemporalRangeLabel->setText( tr( "The option below is disabled because the project temporal range "
-                                           "is not valid, update the project temporal range in the project properties "
-                                           "with valid values in order to use it here." ) );
-    }
-
-    mWmstGroup->setChecked( uri.contains( QStringLiteral( "allowTemporalUpdates" ) ) &&
-                            uri.value( QStringLiteral( "allowTemporalUpdates" ), true ).toBool() );
-  }
-}
-
-void QgsRasterLayerProperties::staticTemporalRange_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mLabel->clear();
-  }
-}
-
-void QgsRasterLayerProperties::passProjectTemporalRange_toggled( bool checked )
-{
-  if ( checked )
-  {
-    QgsDateTimeRange range;
-    if ( QgsProject::instance()->timeSettings() )
-      range = QgsProject::instance()->timeSettings()->temporalRange();
-
-    if ( range.begin().isValid() && range.end().isValid() )
-      mLabel->setText( tr( "Project temporal range is set from %1 to %2" ).arg(
-                         range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
-                         range.end().toString( "yyyy-MM-dd HH:mm:ss" )
-                       ) );
-    else
-      mLabel->setText( tr( "Project temporal range is not valid, can't use it here" ) );
-  }
-}
-
-void QgsRasterLayerProperties::temporalPropertiesChange()
-{
-  mWmstOptions->setEnabled( !mRasterLayer->temporalProperties()->isActive() );
-
-  if ( mRasterLayer->temporalProperties()->isActive() )
-    mWmstOptionsLabel->setText( tr( "The static temporal options below are disabled because the layer "
-                                    "temporal properties are active, to enable them disable temporal properties "
-                                    "in the temporal tab. " ) );
-  else
-    mWmstOptionsLabel->clear();
 }
 
 void QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited( const QString &text )
@@ -1874,11 +1656,6 @@ void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
     //set the metadata contents (which can be expensive)
     updateInformationContent();
   }
-}
-
-void QgsRasterLayerProperties::setEndAsStartStaticButton_clicked()
-{
-  mEndStaticDateTimeEdit->setDateTime( mStartStaticDateTimeEdit->dateTime() );
 }
 
 void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
