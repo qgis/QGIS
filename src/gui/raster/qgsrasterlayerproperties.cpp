@@ -542,7 +542,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#server-properties" ) );
 }
 
-void QgsRasterLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+void QgsRasterLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
 {
   if ( !factory->supportsLayer( mRasterLayer ) || !factory->supportLayerPropertiesDialog() )
   {

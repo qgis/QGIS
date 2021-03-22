@@ -36,7 +36,7 @@ Constructor
 :param fl: windows flag
 %End
 
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 %Docstring
 Adds a properties page factory to the raster layer properties dialog.
 

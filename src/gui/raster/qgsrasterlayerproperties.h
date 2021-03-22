@@ -83,7 +83,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * Adds a properties page factory to the raster layer properties dialog.
      * \since QGIS 3.18
      */
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
