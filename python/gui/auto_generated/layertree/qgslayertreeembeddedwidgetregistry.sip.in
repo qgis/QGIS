@@ -12,7 +12,7 @@
 
 class QgsLayerTreeEmbeddedWidgetProvider
 {
-%Docstring
+%Docstring(signature="appended")
 Provider interface to be implemented in order to introduce new kinds of embedded widgets for use in layer tree.
 Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
 
@@ -52,7 +52,7 @@ Whether it makes sense to use this widget for a particular layer
 
 class QgsLayerTreeEmbeddedWidgetRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of widgets that may be embedded into layer tree view.
 Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
 Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned widgets.

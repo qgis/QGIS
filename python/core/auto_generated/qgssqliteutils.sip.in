@@ -14,7 +14,7 @@
 
 class QgsSqliteUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains utilities for working with Sqlite data sources.
 
 .. versionadded:: 3.4

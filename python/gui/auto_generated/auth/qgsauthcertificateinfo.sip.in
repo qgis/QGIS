@@ -13,7 +13,7 @@
 
 class QgsAuthCertInfo : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for viewing detailed info on a certificate and its hierarchical trust chain
 %End
 
@@ -37,7 +37,7 @@ Constructor for QgsAuthCertInfo
 
 class QgsAuthCertInfoDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain
 %End
 

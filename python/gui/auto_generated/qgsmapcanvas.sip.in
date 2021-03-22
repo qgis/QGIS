@@ -24,7 +24,7 @@
 
 class QgsMapCanvas : QGraphicsView
 {
-%Docstring
+%Docstring(signature="appended")
 Map canvas is a class for displaying all GIS data types on a canvas.
 %End
 

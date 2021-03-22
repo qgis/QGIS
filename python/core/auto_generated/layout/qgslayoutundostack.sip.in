@@ -13,7 +13,7 @@
 
 class QgsLayoutUndoStack : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 An undo stack for :py:class:`QgsLayouts`.
 
 .. versionadded:: 3.0

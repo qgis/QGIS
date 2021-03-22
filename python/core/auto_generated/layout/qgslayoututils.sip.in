@@ -11,7 +11,7 @@
 
 class QgsLayoutUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utilities for layouts.
 
 .. versionadded:: 3.0

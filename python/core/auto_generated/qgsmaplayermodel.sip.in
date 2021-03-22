@@ -12,7 +12,7 @@
 
 class QgsMapLayerModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 
 .. seealso:: :py:class:`QgsMapLayerProxyModel`

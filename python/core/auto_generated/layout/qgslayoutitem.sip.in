@@ -11,7 +11,7 @@
 
 class QgsLayoutItemRenderContext
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings and helpers relating to a render of a :py:class:`QgsLayoutItem`.
 
 .. versionadded:: 3.0
@@ -63,7 +63,7 @@ scaled by 50% in order to have a constant visible size.
 
 class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for graphical items within a :py:class:`QgsLayout`.
 
 .. versionadded:: 3.0

@@ -11,7 +11,7 @@
 
 class QgsBrowserDockWidget : QgsDockWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsBrowserDockWidget` class
 
 .. versionadded:: 3.0

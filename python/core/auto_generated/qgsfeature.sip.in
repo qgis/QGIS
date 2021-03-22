@@ -14,7 +14,7 @@
 
 class QgsFeature
 {
-%Docstring
+%Docstring(signature="appended")
 The feature class encapsulates a single feature including its id,
 geometry and a list of field/values attributes.
 

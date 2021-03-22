@@ -13,7 +13,7 @@
 
 class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A simple line symbol layer, which renders lines using a line in a variety of styles (e.g. solid, dotted, dashed).
 %End
 
@@ -573,7 +573,7 @@ that a double-length dash is drawn running into and out of the corner.
 
 class QgsTemplatedLineSymbolLayerBase : QgsLineSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Base class for templated line symbols, e.g. line symbols which draw markers or hash
 lines at intervals along the line feature.
@@ -907,7 +907,7 @@ serialized in the ``properties`` map.
 
 class QgsMarkerLineSymbolLayer : QgsTemplatedLineSymbolLayerBase
 {
-%Docstring
+%Docstring(signature="appended")
 Line symbol layer type which draws repeating marker symbols along a line feature.
 %End
 
@@ -1017,7 +1017,7 @@ Shall the marker be rotated.
 
 class QgsHashedLineSymbolLayer : QgsTemplatedLineSymbolLayerBase
 {
-%Docstring
+%Docstring(signature="appended")
 
 Line symbol layer type which draws repeating line sections along a line feature.
 

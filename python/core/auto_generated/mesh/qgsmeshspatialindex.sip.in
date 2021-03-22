@@ -13,7 +13,7 @@
 
 class QgsMeshSpatialIndex
 {
-%Docstring
+%Docstring(signature="appended")
 
 A spatial index for :py:class:`QgsMeshFace` or :py:class:`QgsMeshEdge` objects.
 

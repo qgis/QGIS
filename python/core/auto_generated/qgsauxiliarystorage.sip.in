@@ -12,7 +12,7 @@
 
 class QgsAuxiliaryLayer : QgsVectorLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 
 Class allowing to manage the auxiliary storage for a vector layer.
@@ -239,7 +239,7 @@ Returns the property definition from an auxiliary field.
 
 class QgsAuxiliaryStorage
 {
-%Docstring
+%Docstring(signature="appended")
 
 
 Class providing some utility methods to manage auxiliary storage.

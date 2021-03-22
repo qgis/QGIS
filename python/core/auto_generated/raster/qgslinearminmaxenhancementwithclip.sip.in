@@ -11,7 +11,7 @@
 
 class QgsLinearMinMaxEnhancementWithClip : QgsContrastEnhancementFunction
 {
-%Docstring
+%Docstring(signature="appended")
 A linear enhanceContrast enhancement that first clips to min max and then enhanceContrastes
 linearly between min and max.
 %End

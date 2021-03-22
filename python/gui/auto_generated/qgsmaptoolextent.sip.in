@@ -12,7 +12,7 @@
 
 class QgsMapToolExtent : QgsMapTool
 {
-%Docstring
+%Docstring(signature="appended")
 A map tool that emits an extent from a rectangle drawn onto the map canvas.
 
 .. versionadded:: 3.0

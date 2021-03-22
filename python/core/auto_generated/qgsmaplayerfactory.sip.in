@@ -12,7 +12,7 @@
 
 class QgsMapLayerFactory
 {
-%Docstring
+%Docstring(signature="appended")
 Contains utility functions for creating map layers.
 
 .. versionadded:: 3.18.1

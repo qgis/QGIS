@@ -15,7 +15,7 @@
 
 class QgsHighlight : QgsMapCanvasItem
 {
-%Docstring
+%Docstring(signature="appended")
 A class for highlight features on the map.
 
 The :py:class:`QgsHighlight` class provides a transparent overlay canvas item

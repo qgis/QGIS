@@ -13,7 +13,7 @@
 
 class QgsProjectionSelectionWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for selecting a projection.
 
 .. versionadded:: 2.7

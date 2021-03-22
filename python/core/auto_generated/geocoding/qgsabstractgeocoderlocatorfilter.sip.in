@@ -11,7 +11,7 @@
 
 class QgsAbstractGeocoderLocatorFilter : QgsLocatorFilter /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 An abstract base class which implements a locator filter populated from a :py:class:`QgsGeocoderInterface`.
 
 This base class implements the required logic to bridge a class which implements the

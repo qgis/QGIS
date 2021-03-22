@@ -13,7 +13,7 @@
 
 class QgsLocatorResult
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates properties of an individual matching result found by a :py:class:`QgsLocatorFilter`.
 
 .. versionadded:: 3.0
@@ -83,7 +83,7 @@ normally.
 
 class QgsLocatorFilter : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for filters which collect locator results.
 
 .. note::

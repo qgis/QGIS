@@ -11,7 +11,7 @@
 
 class QgsTextAnnotation: QgsAnnotation
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation item that displays formatted text from a QTextDocument document.
 
 .. versionadded:: 3.0

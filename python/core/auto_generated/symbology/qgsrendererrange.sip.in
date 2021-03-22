@@ -76,7 +76,7 @@ typedef QList<QgsRendererRange> QgsRangeList;
 
 class QgsRendererRangeLabelFormat /Deprecated/
 {
-%Docstring
+%Docstring(signature="appended")
 
 .. versionadded:: 2.6
 

@@ -13,7 +13,7 @@
 
 class QgsSingleBandGrayRenderer: QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Raster renderer pipe for single band gray.
 %End
 

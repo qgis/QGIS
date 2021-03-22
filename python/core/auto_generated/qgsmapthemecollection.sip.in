@@ -13,7 +13,7 @@
 
 class QgsMapThemeCollection : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Container class that allows storage of map themes consisting of visible
 map layers and layer styles.
 
@@ -27,7 +27,7 @@ map layers and layer styles.
 
     class MapThemeLayerRecord
 {
-%Docstring
+%Docstring(signature="appended")
 Individual record of a visible layer in a map theme record.
 
 .. versionadded:: 3.0
@@ -69,7 +69,7 @@ Sets the map layer for this record
 
     class MapThemeRecord
 {
-%Docstring
+%Docstring(signature="appended")
 Individual map theme record of visible layers and styles.
 
 .. versionadded:: 3.0

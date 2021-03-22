@@ -12,7 +12,7 @@
 
 class QgsLayerMetadata : QgsAbstractMetadataBase
 {
-%Docstring
+%Docstring(signature="appended")
 A structured metadata store for a map layer.
 
 :py:class:`QgsLayerMetadata` handles storage and management of the metadata

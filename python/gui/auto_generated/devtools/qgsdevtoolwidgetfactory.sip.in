@@ -11,7 +11,7 @@
 
 class QgsDevToolWidgetFactory
 {
-%Docstring
+%Docstring(signature="appended")
 Factory class for creating custom developer/debugging tool pages
 
 .. versionadded:: 3.14

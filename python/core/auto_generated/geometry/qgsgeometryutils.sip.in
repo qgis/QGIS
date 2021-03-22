@@ -13,7 +13,7 @@
 
 class QgsGeometryUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains various geometry utility functions.
 
 .. versionadded:: 2.10

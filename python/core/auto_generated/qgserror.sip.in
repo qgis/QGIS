@@ -12,7 +12,7 @@
 
 class QgsErrorMessage
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsErrorMessage` represents single error message.
 %End
 
@@ -52,7 +52,7 @@ Constructor.
 
 class QgsError
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsError` is container for error messages (report). It may contain chain
 (sort of traceback) of error messages (e.g. GDAL - provider - layer).
 Higher level messages are appended at the end.

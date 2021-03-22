@@ -11,7 +11,7 @@
 
 class QgsLayoutView: QGraphicsView
 {
-%Docstring
+%Docstring(signature="appended")
 A graphical widget to display and interact with :py:class:`QgsLayouts`.
 
 :py:class:`QgsLayoutView` manages the layout interaction tools and mouse/key events.
@@ -585,7 +585,7 @@ but is still in a perfectly valid state.
 
 class QgsLayoutViewMenuProvider
 {
-%Docstring
+%Docstring(signature="appended")
 
 Interface for a QgsLayoutView context menu.
 

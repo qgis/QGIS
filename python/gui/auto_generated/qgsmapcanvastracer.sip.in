@@ -10,7 +10,7 @@
 
 class QgsMapCanvasTracer : QgsTracer
 {
-%Docstring
+%Docstring(signature="appended")
 Extension of :py:class:`QgsTracer` that provides extra functionality:
 
 - automatic updates of own configuration based on canvas settings

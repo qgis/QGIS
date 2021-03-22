@@ -13,7 +13,7 @@
 
 class QgsMeshTriangulation : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 Class that handles mesh creation with Delaunay constrained triangulation
 
@@ -75,7 +75,7 @@ Sets the coordinate reference system used for the triangulation
 
 class QgsMeshZValueDatasetGroup: QgsMeshDatasetGroup
 {
-%Docstring
+%Docstring(signature="appended")
 
 Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
 

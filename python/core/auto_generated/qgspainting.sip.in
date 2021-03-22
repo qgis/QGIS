@@ -10,7 +10,7 @@
 
 class QgsPainting
 {
-%Docstring
+%Docstring(signature="appended")
 Misc painting enums and functions.
 
 .. versionadded:: 3.0

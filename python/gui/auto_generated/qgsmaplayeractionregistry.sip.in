@@ -12,7 +12,7 @@
 
 class QgsMapLayerAction : QAction
 {
-%Docstring
+%Docstring(signature="appended")
 An action which can run on map layers
 %End
 
@@ -125,7 +125,7 @@ QFlags<QgsMapLayerAction::Target> operator|(QgsMapLayerAction::Target f1, QFlags
 
 class QgsMapLayerActionRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 This class tracks map layer actions.
 
 :py:class:`QgsMapLayerActionRegistry` is not usually directly created, but rather accessed through

@@ -13,7 +13,7 @@
 
 class QgsRasterLayerTemporalPropertiesWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for configuring the temporal properties for a raster layer.
 
 .. versionadded:: 3.14

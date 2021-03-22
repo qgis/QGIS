@@ -12,7 +12,7 @@
 
 class QgsDoubleValidator : QRegularExpressionValidator
 {
-%Docstring
+%Docstring(signature="appended")
 
 :py:class:`QgsDoubleValidator` is a QLineEdit Validator that combines QDoubleValidator
 and QRegularExpressionValidator to allow users to enter doubles with both

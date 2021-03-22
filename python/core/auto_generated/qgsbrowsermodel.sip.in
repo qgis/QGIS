@@ -12,7 +12,7 @@
 
 class QgsBrowserModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 A model for showing available data sources and other items in a structured
 tree.

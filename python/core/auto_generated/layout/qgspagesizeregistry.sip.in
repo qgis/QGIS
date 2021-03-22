@@ -11,7 +11,7 @@
 
 class QgsPageSize
 {
-%Docstring
+%Docstring(signature="appended")
 A named page size for layouts.
 
 .. versionadded:: 3.0
@@ -47,7 +47,7 @@ Constructor for QgsPageSize, accepting a page ``size``.
 
 class QgsPageSizeRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 A registry for known page sizes.
 
 :py:class:`QgsPageSizeRegistry` is not usually directly created, but rather accessed through

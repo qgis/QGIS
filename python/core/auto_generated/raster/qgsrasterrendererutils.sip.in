@@ -11,7 +11,7 @@
 
 class QgsRasterRendererUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for raster renderers.
 
 .. versionadded:: 3.16
