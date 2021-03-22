@@ -46,7 +46,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         """
         Returns a string translated by the self.tr() function.
 
-        This function makes use of the QT5 ability to translate a given
+        This function makes use of the Qt library's ability to translate a given
         text strings into local languages.
         """
         return QCoreApplication.translate('Processing', string)
