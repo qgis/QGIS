@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
 
 mkdir /usr/src/qgis/build
 cd /usr/src/qgis/build || exit 1
