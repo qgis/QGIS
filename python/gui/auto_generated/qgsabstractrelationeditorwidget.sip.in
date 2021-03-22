@@ -64,6 +64,13 @@ Returns the relation
 .. versionadded:: 3.18
 %End
 
+    QgsRelation nmRelation() const;
+%Docstring
+Returns the nm relation
+
+.. versionadded:: 3.18
+%End
+
     void setFeature( const QgsFeature &feature, bool update = true );
 %Docstring
 Sets the ``feature`` being edited and updates the UI unless ``update`` is set to ``False``

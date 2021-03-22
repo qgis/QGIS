@@ -22,6 +22,7 @@
 #include "qgsfeature.h"
 #include "qgsfeatureselectiondlg.h"
 #include "qgsrelation.h"
+#include "qgsrelationmanager.h"
 #include "qgspolymorphicrelation.h"
 #include "qgsvectorlayertools.h"
 #include "qgsproject.h"
@@ -116,12 +117,16 @@ void QgsAbstractRelationEditorWidget::setFeature( const QgsFeature &feature, boo
 
 void QgsAbstractRelationEditorWidget::setNmRelationId( const QVariant &nmRelationId )
 {
-  mNmRelationId = nmRelationId;
+  QgsRelation nmrelation = QgsProject::instance()->relationManager()->relation( nmRelationId.toString() );
+  beforeSetRelations( mRelation, nmrelation );
+  mNmRelation = nmrelation;
+  afterSetRelations();
+  updateUi();
 }
 
 QVariant QgsAbstractRelationEditorWidget::nmRelationId() const
 {
-  return mNmRelationId;
+  return mNmRelation.id();
 }
 
 QString QgsAbstractRelationEditorWidget::label() const
