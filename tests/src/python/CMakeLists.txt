@@ -323,6 +323,7 @@ ADD_PYTHON_TEST(PyQgsVectorLayerRenderer test_qgsvectorlayerrenderer.py)
 ADD_PYTHON_TEST(PyQgsVectorLayerSelectedFeatureSource test_qgsvectorlayerselectedfeaturesource.py)
 ADD_PYTHON_TEST(PyQgsVectorLayerShapefile test_qgsvectorlayershapefile.py)
 ADD_PYTHON_TEST(PyQgsVectorLayerTemporalProperties test_qgsvectorlayertemporalproperties.py)
+ADD_PYTHON_TEST(PyQgsVectorLayerUtils test_qgsvectorlayerutils.py)
 ADD_PYTHON_TEST(PyQgsZonalStatistics test_qgszonalstatistics.py)
 ADD_PYTHON_TEST(PyQgsVirtualLayerProvider test_provider_virtual.py)
 ADD_PYTHON_TEST(PyQgsVirtualLayerTask test_qgsvirtuallayertask.py)
@@ -367,7 +368,7 @@ if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsImportIntoPostGIS test_processing_importintopostgis.py)
   ADD_PYTHON_TEST(PyQgsQueryResultModel test_qgsqueryresultmodel.py)
   ADD_PYTHON_TEST(PyQgsVectorFileWriterPostgres test_qgsvectorfilewriter_postgres.py)
-  ADD_PYTHON_TEST(PyQgsVectorLayerUtils test_qgsvectorlayerutils.py)
+  ADD_PYTHON_TEST(PyQgsVectorLayerUtilsPostgres test_qgsvectorlayerutils_postgres.py)
   ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
   ADD_PYTHON_TEST(PyQgsPostgresRasterProvider test_provider_postgresraster.py)
   ADD_PYTHON_TEST(PyQgsPostgresDomain test_qgspostgresdomain.py)
@@ -392,7 +393,7 @@ if (ENABLE_PGTEST)
     ADD_PYTHON_TEST(PyQgsServerAccessControlWMSGetPrintPG test_qgsserver_accesscontrol_wms_getprint_postgres.py)
   endif()
   SET_TESTS_PROPERTIES(PyQgsImportIntoPostGIS PyQgsQueryResultModel PyQgsVectorFileWriterPostgres PyQgsPostgresProvider
-    PyQgsVectorLayerUtils PyQgsPostgresRasterProvider PyQgsPostgresDomain PyQgsPostgresTransaction
+    PyQgsVectorLayerUtilsPostgres PyQgsPostgresRasterProvider PyQgsPostgresDomain PyQgsPostgresTransaction
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest
     PyQgsDbManagerPostgis PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox

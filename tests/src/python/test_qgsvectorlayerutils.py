@@ -472,43 +472,6 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 132})
         self.assertEqual(f.attributes(), ['test_5', 132, NULL])
 
-        """ test creating a feature respecting unique values of postgres provider """
-        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double",
-                               "addfeat", "memory")
-
-        # init connection string
-        dbconn = 'service=qgis_test'
-        if 'QGIS_PGTEST_DB' in os.environ:
-            dbconn = os.environ['QGIS_PGTEST_DB']
-
-        # create a vector layer
-        pg_layer = QgsVectorLayer('{} table="qgis_test"."authors" sql='.format(dbconn), "authors", "postgres")
-        self.assertTrue(pg_layer.isValid())
-        # check the default clause
-        default_clause = 'nextval(\'qgis_test.authors_pk_seq\'::regclass)'
-        self.assertEqual(pg_layer.dataProvider().defaultValueClause(0), default_clause)
-
-        # though default_clause is after the first create not unique (until save), it should fill up all the features with it
-        pg_layer.startEditing()
-        f = QgsVectorLayerUtils.createFeature(pg_layer)
-        self.assertEqual(f.attributes(), [default_clause, NULL])
-        self.assertTrue(pg_layer.addFeatures([f]))
-        self.assertTrue(QgsVectorLayerUtils.valueExists(pg_layer, 0, default_clause))
-        f = QgsVectorLayerUtils.createFeature(pg_layer)
-        self.assertEqual(f.attributes(), [default_clause, NULL])
-        self.assertTrue(pg_layer.addFeatures([f]))
-        f = QgsVectorLayerUtils.createFeature(pg_layer)
-        self.assertEqual(f.attributes(), [default_clause, NULL])
-        self.assertTrue(pg_layer.addFeatures([f]))
-        # if a unique value is passed, use it
-        f = QgsVectorLayerUtils.createFeature(pg_layer, attributes={0: 40, 1: NULL})
-        self.assertEqual(f.attributes(), [40, NULL])
-        # and if a default value is configured use it as well
-        pg_layer.setDefaultValueDefinition(0, QgsDefaultValue('11*4'))
-        f = QgsVectorLayerUtils.createFeature(pg_layer)
-        self.assertEqual(f.attributes(), [44, NULL])
-        pg_layer.rollBack()
-
     def testDuplicateFeature(self):
         """ test duplicating a feature """
 
