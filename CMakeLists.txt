@@ -432,33 +432,33 @@ if(WITH_CORE)
 
   #############################################################
   # search for Qt5
-  set(QT_MIN_VERSION 5.12.0)
+  set(QT_MIN_VERSION 6.0.0)
 
   # Use Qt5SerialPort optionally for GPS
   set (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
   if (WITH_QT5SERIALPORT)
-      find_package(Qt5 COMPONENTS SerialPort REQUIRED)
+      find_package(Qt6 COMPONENTS SerialPort REQUIRED)
       # following variable is used in qgsconfig.h
       set (HAVE_QT5SERIALPORT TRUE)
   endif()
 
-  find_package(Qt5 COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
+  find_package(Qt6 COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
   if (NOT IOS)
-    find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
+    find_package(Qt6 COMPONENTS PrintSupport REQUIRED)
   else()
     add_definitions(-DQT_NO_PRINTER)
   endif()
-  find_package(Qt5 COMPONENTS Positioning)
+  find_package(Qt6 COMPONENTS Positioning)
   if (WITH_QTWEBKIT)
     find_package(Qt5WebKit REQUIRED)
     find_package(Qt5WebKitWidgets REQUIRED)
   endif()
   if (WITH_3D)
-    find_package(Qt5 COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
+    find_package(Qt6 COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
   endif()
   if (APPLE)
-    find_package(Qt5 COMPONENTS MacExtras REQUIRED)
+    find_package(Qt6 COMPONENTS MacExtras REQUIRED)
   endif()
 
   # get the Qt plugins directory
@@ -468,9 +468,9 @@ if(WITH_CORE)
 
   message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
   if (WITH_QUICK)
-    find_package(Qt5 COMPONENTS Qml Quick REQUIRED)
+    find_package(Qt6 COMPONENTS Qml Quick REQUIRED)
     if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        find_package(Qt5 COMPONENTS AndroidExtras)
+	find_package(Qt6 COMPONENTS AndroidExtras)
     else()
         find_package(QtQmlTools)
     endif()
