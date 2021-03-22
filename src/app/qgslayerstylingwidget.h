@@ -155,7 +155,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;
     QList<const QgsMapLayerConfigWidgetFactory *> mPageFactories;
-    QMap<int, QgsMapLayerConfigWidgetFactory *> mUserPages;
+    QMap<int, const QgsMapLayerConfigWidgetFactory *> mUserPages;
     QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;
 };
 
