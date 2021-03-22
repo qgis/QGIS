@@ -104,6 +104,11 @@ QgsMimeDataUtils::Uri QgsQlrDataItem::mimeUri() const
   return u;
 }
 
+QgsMimeDataUtils::UriList QgsQlrDataItem::mimeUris() const
+{
+  return QgsMimeDataUtils::UriList() << QgsQlrDataItem::mimeUri();
+}
+
 //
 // QgsQlrDataItemProvider
 //
