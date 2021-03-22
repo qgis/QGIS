@@ -50,6 +50,14 @@ QString QgsCentroidAlgorithm::outputName() const
   return QObject::tr( "Centroids" );
 }
 
+QgsFeatureSink::SinkFlags QgsCentroidAlgorithm::sinkFlags() const
+{
+  if ( mAllParts )
+    return QgsProcessingFeatureBasedAlgorithm::sinkFlags() | QgsFeatureSink::RegeneratePrimaryKey;
+  else
+    return QgsProcessingFeatureBasedAlgorithm::sinkFlags();
+}
+
 QString QgsCentroidAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a new point layer, with points representing the centroid of the geometries in an input layer.\n\n"
