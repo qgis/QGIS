@@ -11,7 +11,7 @@
 
 class QgsLabelLineSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Contains settings related to how the label engine places and formats
 labels for line features (or polygon features which are labeled in

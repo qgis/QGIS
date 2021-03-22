@@ -14,7 +14,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
 class QgsRasterLayer : QgsMapLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a raster layer.
 

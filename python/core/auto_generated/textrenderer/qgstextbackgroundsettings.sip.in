@@ -12,7 +12,7 @@
 
 class QgsTextBackgroundSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Container for settings relating to a text background object.
 
 .. note::

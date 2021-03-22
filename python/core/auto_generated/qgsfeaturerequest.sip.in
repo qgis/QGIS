@@ -12,7 +12,7 @@
 
 class QgsFeatureRequest
 {
-%Docstring
+%Docstring(signature="appended")
 This class wraps a request for features to a vector layer (or directly its vector data provider).
 
 The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
@@ -88,7 +88,7 @@ Examples:
 
     class OrderByClause
 {
-%Docstring
+%Docstring(signature="appended")
 The OrderByClause class represents an order by clause for a QgsFeatureRequest.
 
 It can be a simple field or an expression. Multiple order by clauses can be added to
@@ -205,7 +205,7 @@ Dumps the content to an SQL equivalent
 
     class OrderBy
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a list of OrderByClauses, with the most important first and the least
 important last.
 
@@ -755,7 +755,7 @@ QFlags<QgsFeatureRequest::Flag> operator|(QgsFeatureRequest::Flag f1, QFlags<Qgs
 
 class QgsAbstractFeatureSource
 {
-%Docstring
+%Docstring(signature="appended")
 Base class that can be used for any class that is capable of returning features
 
 .. versionadded:: 2.4

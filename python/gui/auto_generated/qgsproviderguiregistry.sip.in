@@ -14,7 +14,7 @@
 
 class QgsProviderGuiRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 A registry / canonical manager of GUI parts of data providers.
 
 :py:class:`QgsProviderGuiRegistry` is not usually directly created, but rather accessed through

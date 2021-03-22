@@ -13,7 +13,7 @@
 
 class QgsEditorWidgetWrapper : QgsWidgetWrapper
 {
-%Docstring
+%Docstring(signature="appended")
 Manages an editor widget
 Widget and wrapper share the same parent
 

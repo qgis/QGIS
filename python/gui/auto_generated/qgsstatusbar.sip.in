@@ -12,7 +12,7 @@
 
 class QgsStatusBar : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A proxy widget for QStatusBar.
 
 Unlike QStatusBar, :py:class:`QgsStatusBar` allows finer control of widget placement, including

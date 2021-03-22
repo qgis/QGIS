@@ -12,7 +12,7 @@
 
 class QgsCalloutPosition
 {
-%Docstring
+%Docstring(signature="appended")
 Represents the calculated placement of a map label callout line.
 
 .. versionadded:: 3.20

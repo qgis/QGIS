@@ -12,7 +12,7 @@
 
 class QgsFields
 {
-%Docstring
+%Docstring(signature="appended")
 Container of fields for a vector layer.
 
 In addition to storing a list of :py:class:`QgsField` instances, it also:

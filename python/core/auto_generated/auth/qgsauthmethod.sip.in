@@ -12,7 +12,7 @@
 
 class QgsAuthMethod : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for authentication method plugins
 %End
 

@@ -12,7 +12,7 @@
 
 class QgsTemporalUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains utility methods for working with temporal layers and projects.
 
 .. versionadded:: 3.14

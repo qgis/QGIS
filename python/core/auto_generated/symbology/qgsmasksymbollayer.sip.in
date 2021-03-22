@@ -12,7 +12,7 @@
 
 class QgsMaskMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Special symbol layer that uses its sub symbol as a selective mask
 
 .. versionadded:: 3.12

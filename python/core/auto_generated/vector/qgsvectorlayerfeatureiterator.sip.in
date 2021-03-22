@@ -17,7 +17,7 @@
 
 class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
 {
-%Docstring
+%Docstring(signature="appended")
 Partial snapshot of vector layer's state (only the members necessary for access to features)
 %End
 
@@ -165,7 +165,7 @@ Setup the simplification of geometries to fetch using the specified simplify met
 
 class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource, QgsExpressionContextScopeGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsFeatureSource` subclass for the selected features from a :py:class:`QgsVectorLayer`.
 
 .. versionadded:: 3.0

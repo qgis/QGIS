@@ -14,7 +14,7 @@
 
 class QgsColorRampLegendNodeWidget: QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for properties relating to a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsColorRampLegendNodeSettings`).
 
 The current settings are set by a call to :py:func:`~setSettings`, and the settings defined by the
@@ -62,7 +62,7 @@ when using single band gray renderer).
 
 class QgsColorRampLegendNodeDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for configuring a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsColorRampLegendNodeSettings`).
 
 .. versionadded:: 3.18

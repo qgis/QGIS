@@ -11,7 +11,7 @@
 
 class QgsAbstractFileContentSourceLineEdit : QWidget /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
 
 This class is designed to be used by content which is managed by a :py:class:`QgsAbstractContentCache`,
@@ -97,7 +97,7 @@ Emitted whenever the file source is changed in the widget.
 
 class QgsSvgSourceLineEdit : QgsAbstractFileContentSourceLineEdit
 {
-%Docstring
+%Docstring(signature="appended")
 A line edit widget with toolbutton for setting an SVG image path.
 
 Designed for use with :py:class:`QgsSvgCache`.
@@ -122,7 +122,7 @@ Constructor for QgsSvgSourceLineEdit, with the specified ``parent`` widget.
 
 class QgsImageSourceLineEdit : QgsAbstractFileContentSourceLineEdit
 {
-%Docstring
+%Docstring(signature="appended")
 A line edit widget with toolbutton for setting a raster image path.
 
 Designed for use with :py:class:`QgsImageCache`.

@@ -13,7 +13,7 @@
 
 class QgsFeatureFilter : QgsFeatureFilterProvider
 {
-%Docstring
+%Docstring(signature="appended")
 A feature filter provider allowing to set filter expressions on a per-layer basis.
 
 .. versionadded:: 3.0

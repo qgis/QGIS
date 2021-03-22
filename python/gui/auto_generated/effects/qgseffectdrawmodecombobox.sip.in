@@ -11,7 +11,7 @@
 
 class QgsEffectDrawModeComboBox : QComboBox
 {
-%Docstring
+%Docstring(signature="appended")
 A combo box allowing selection of paint effect draw modes
 
 .. versionadded:: 2.9

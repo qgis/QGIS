@@ -13,7 +13,7 @@
 
 class QgsPaintEffectWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for effect properties widgets.
 
 .. versionadded:: 2.9

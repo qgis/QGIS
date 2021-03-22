@@ -12,7 +12,7 @@
 
 class QgsApplication : QApplication
 {
-%Docstring
+%Docstring(signature="appended")
 Extends QApplication to provide access to QGIS specific resources such
 as theme paths, database paths etc.
 

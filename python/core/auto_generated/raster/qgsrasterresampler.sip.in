@@ -12,7 +12,7 @@
 
 class QgsRasterResampler
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for resampling rasters (e.g. to have a smoother appearance)
 %End
 
@@ -69,7 +69,7 @@ in order to avoid rendering artifacts at the edges of raster tile boundaries.
 
 class QgsRasterResamplerV2 : QgsRasterResampler
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for resampling rasters (V2) (e.g. to have a smoother appearance),
 which provides a more efficient interface vs QgsRasterResampler.
 

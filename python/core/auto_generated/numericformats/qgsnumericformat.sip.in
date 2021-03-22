@@ -12,7 +12,7 @@
 
 class QgsNumericFormatContext
 {
-%Docstring
+%Docstring(signature="appended")
 A context for numeric formats
 
 .. versionadded:: 3.12
@@ -142,7 +142,7 @@ Sets the exponential ``character``.
 
 class QgsNumericFormat
 {
-%Docstring
+%Docstring(signature="appended")
 A numeric formatter allows for formatting a numeric value for display, using
 a variety of different formatting techniques (e.g. as scientific notation, currency values,
 percentage values, etc)

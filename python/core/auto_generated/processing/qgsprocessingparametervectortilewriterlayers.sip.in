@@ -11,7 +11,7 @@
 
 class QgsProcessingParameterVectorTileWriterLayers : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A parameter for processing algorithms that need a list of input vector layers for writing
 of vector tiles - this parameter provides processing framework's adapter for QList<:py:class:`QgsVectorTileWriter`.Layer>.
 

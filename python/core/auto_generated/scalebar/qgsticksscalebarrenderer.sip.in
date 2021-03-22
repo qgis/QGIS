@@ -10,7 +10,7 @@
 
 class QgsTicksScaleBarRenderer: QgsScaleBarRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 A scale bar that draws segments using short ticks.
 
 .. versionadded:: 3.0

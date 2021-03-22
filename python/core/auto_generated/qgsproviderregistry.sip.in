@@ -15,7 +15,7 @@
 
 class QgsProviderRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 A registry / canonical manager of data providers.
 
 This is a Singleton class that manages data provider access.
@@ -285,7 +285,7 @@ Returns metadata of the provider or ``None`` if not found
 
     class ProviderCandidateDetails
 {
-%Docstring
+%Docstring(signature="appended")
 
 Contains information pertaining to a candidate provider.
 
@@ -342,7 +342,7 @@ all of these providers will be returned.
 
     class UnusableUriDetails
 {
-%Docstring
+%Docstring(signature="appended")
 
 Contains information about unusable URIs which aren't handled by any registered providers.
 
@@ -384,7 +384,7 @@ options for opening the URI.
 
     class UnusableUriHandlerInterface
 {
-%Docstring
+%Docstring(signature="appended")
 
 An interface used to handle unusable URIs which aren't handled by any registered providers, and construct
 user-friendly warnings as to why the URI is unusable.

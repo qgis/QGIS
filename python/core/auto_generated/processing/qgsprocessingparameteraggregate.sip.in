@@ -10,7 +10,7 @@
 
 class QgsProcessingParameterAggregate : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A parameter for "aggregate" configurations, which consist of a definition
 of desired output fields, types, and aggregate used to populate then.
 

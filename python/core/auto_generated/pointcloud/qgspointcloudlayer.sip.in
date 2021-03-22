@@ -14,7 +14,7 @@
 
 class QgsPointCloudLayer : QgsMapLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a map layer supporting display of point clouds
 

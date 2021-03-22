@@ -15,7 +15,7 @@
 
 class QgsLineString: QgsCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Line string geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 2.10

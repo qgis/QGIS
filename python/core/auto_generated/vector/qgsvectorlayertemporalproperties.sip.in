@@ -13,7 +13,7 @@
 
 class QgsVectorLayerTemporalContext
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates the context in which a :py:class:`QgsVectorLayer`'s temporal capabilities
 will be applied
 
@@ -43,7 +43,7 @@ Sets the associated ``layer``.
 
 class QgsVectorLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of map layer temporal properties for vector layers.
 
 .. versionadded:: 3.14

@@ -13,7 +13,7 @@
 
 class QgsPointCloudRenderContext
 {
-%Docstring
+%Docstring(signature="appended")
 
 Encapsulates the render context for a 2D point cloud rendering operation.
 
@@ -143,7 +143,7 @@ Returns any constant offset which must be applied to z values taken from the poi
 
 class QgsPointCloudRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract base class for 2d point cloud renderers.
 

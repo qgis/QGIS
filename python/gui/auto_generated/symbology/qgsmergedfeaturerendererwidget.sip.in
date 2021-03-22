@@ -10,7 +10,7 @@
 
 class QgsMergedFeatureRendererWidget : QgsRendererWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget used represent options of a :py:class:`QgsMergedFeatureRenderer`
 
 .. versionadded:: 3.18

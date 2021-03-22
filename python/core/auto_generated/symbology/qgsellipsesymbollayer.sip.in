@@ -11,7 +11,7 @@
 
 class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
 %End
 

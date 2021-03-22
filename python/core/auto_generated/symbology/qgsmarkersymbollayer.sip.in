@@ -12,7 +12,7 @@
 
 class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
 leaves the actual drawing of the symbols to subclasses.
 
@@ -194,7 +194,7 @@ Derived classes must implement :py:func:`~QgsSimpleMarkerSymbolLayerBase.draw` t
 
 class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
-%Docstring
+%Docstring(signature="appended")
 Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
 %End
 
@@ -496,7 +496,7 @@ Prepares cache image
 
 class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
-%Docstring
+%Docstring(signature="appended")
 Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
 the symbol to support advanced styling of the interior and stroke of the shape.
 
@@ -772,7 +772,7 @@ Calculates the marker aspect ratio between width and height.
 
 class QgsRasterMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Raster marker symbol layer class.
 
 .. versionadded:: 3.6

@@ -12,7 +12,7 @@
 
 class QgsDatabaseSchemaModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model containing schemas from a database connection.
 
 This class does not automatically subscribe to database updates. Schemas are queried

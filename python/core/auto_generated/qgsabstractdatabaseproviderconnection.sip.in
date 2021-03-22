@@ -11,7 +11,7 @@
 
 class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsAbstractDatabaseProviderConnection` class provides common functionality
 for DB based connections.
 

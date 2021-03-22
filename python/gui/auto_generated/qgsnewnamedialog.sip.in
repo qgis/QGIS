@@ -11,7 +11,7 @@
 
 class QgsNewNameDialog : QgsDialog
 {
-%Docstring
+%Docstring(signature="appended")
 New name, for example new layer name dialog. If existing names are provided,
 the dialog warns users if an entered name already exists.
 

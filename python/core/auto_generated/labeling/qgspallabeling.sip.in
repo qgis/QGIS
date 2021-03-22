@@ -14,7 +14,7 @@
 
 class QgsPalLayerSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings for how a map layer will be labeled.
 %End
 
@@ -661,7 +661,7 @@ Returns a pixmap preview for label ``settings``.
 
 class QgsLabelCandidate
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a label candidate.
 %End
 
@@ -677,7 +677,7 @@ Represents a label candidate.
 
 class QgsPalLabeling
 {
-%Docstring
+%Docstring(signature="appended")
 PAL labeling utilities.
 %End
 

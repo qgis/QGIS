@@ -11,7 +11,7 @@
 
 class QgsMapLayerConfigWidgetFactory
 {
-%Docstring
+%Docstring(signature="appended")
 Factory class for creating custom map layer property pages
 
 .. versionadded:: 2.16

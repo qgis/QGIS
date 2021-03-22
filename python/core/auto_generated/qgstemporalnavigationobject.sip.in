@@ -14,7 +14,7 @@
 
 class QgsTemporalNavigationObject : QgsTemporalController, QgsExpressionContextScopeGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Implements a temporal controller based on a frame by frame navigation and animation.
 
 .. versionadded:: 3.14

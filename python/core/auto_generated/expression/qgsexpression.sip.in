@@ -13,7 +13,7 @@
 
 class QgsExpression
 {
-%Docstring
+%Docstring(signature="appended")
 Class for parsing and evaluation of expressions (formerly called "search strings").
 The expressions try to follow both syntax and semantics of SQL expressions.
 

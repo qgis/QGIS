@@ -12,7 +12,7 @@
 
 class QgsAnnotationPointTextItem : QgsAnnotationItem
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation item which renders a text string at a point location.
 
 .. versionadded:: 3.16

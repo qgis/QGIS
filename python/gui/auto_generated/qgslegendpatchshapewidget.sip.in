@@ -11,7 +11,7 @@
 
 class QgsLegendPatchShapeWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for configuring a custom legend patch shape.
 
 .. versionadded:: 3.14
@@ -52,7 +52,7 @@ Emitted whenever the patch shape defined by the widget is changed.
 
 class QgsLegendPatchShapeDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for configuring a custom legend patch shape.
 
 .. versionadded:: 3.14

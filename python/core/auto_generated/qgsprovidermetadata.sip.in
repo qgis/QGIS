@@ -16,7 +16,7 @@
 
 class QgsMeshDriverMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Holds metadata about mesh driver
 
 .. versionadded:: 3.12
@@ -86,7 +86,7 @@ QFlags<QgsMeshDriverMetadata::MeshDriverCapability> operator|(QgsMeshDriverMetad
 
 class QgsProviderMetadata : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Holds data provider key, description, and associated shared library file or function pointer information.
 
 Provider metadata refers either to providers which are loaded via libraries or

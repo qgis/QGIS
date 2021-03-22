@@ -9,7 +9,7 @@
 
 class QgsRelationReferenceFieldFormatter : QgsFieldFormatter
 {
-%Docstring
+%Docstring(signature="appended")
 Field formatter for a relation reference field.
 
 A value relation field formatter looks up the values from

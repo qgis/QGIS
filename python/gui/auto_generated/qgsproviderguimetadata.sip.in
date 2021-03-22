@@ -13,7 +13,7 @@
 
 class QgsProviderGuiMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Holds data for GUI part of the data providers
 
 .. versionadded:: 3.10

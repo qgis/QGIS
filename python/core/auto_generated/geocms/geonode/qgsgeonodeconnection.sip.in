@@ -10,7 +10,7 @@
 
 class QgsGeoNodeConnection
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates settings related to a single GeoNode connection.
 
 .. versionadded:: 3.0
@@ -72,7 +72,7 @@ Adds uri parameters relating to the settings for a WFS layer on the connection t
 
 class QgsGeoNodeConnectionUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains various utilities for managing the known collection of
 GeoNode servers associated with a QGIS install.
 

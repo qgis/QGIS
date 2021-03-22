@@ -11,7 +11,7 @@
 
 class QgsLayoutObject: QObject, QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 A base class for objects which belong to a layout.
 
 .. versionadded:: 3.0

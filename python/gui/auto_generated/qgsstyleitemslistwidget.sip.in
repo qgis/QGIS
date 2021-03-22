@@ -14,7 +14,7 @@
 
 class QgsStyleItemsListWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A reusable widget for showing a filtered list of entities from a :py:class:`QgsStyle` database.
 
 .. versionadded:: 3.10

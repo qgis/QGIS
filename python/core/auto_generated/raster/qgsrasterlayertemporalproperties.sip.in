@@ -12,7 +12,7 @@
 
 class QgsRasterLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of map layer temporal properties for raster layers.
 
 .. versionadded:: 3.14

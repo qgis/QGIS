@@ -10,7 +10,7 @@
 
 class QgsMapTip : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A maptip is a class to display a tip on a map canvas
 when a mouse is hovered over a feature.
 
