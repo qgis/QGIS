@@ -55,6 +55,7 @@ class TestQgsLayerTree : public QObject
     void testFindLayer();
     void testLayerDeleted();
     void testFindGroups();
+    void testFindNestedGroups();
     void testUtilsCollectMapLayers();
     void testUtilsCountMapLayers();
     void testSymbolText();
@@ -713,6 +714,29 @@ void TestQgsLayerTree::testFindGroups()
   QVERIFY( groups.contains( group1 ) );
   QVERIFY( groups.contains( group2 ) );
   QVERIFY( groups.contains( group3 ) );
+}
+
+void TestQgsLayerTree::testFindNestedGroups()
+{
+  QgsProject project;
+  QgsLayerTreeGroup *group1 = project.layerTreeRoot()->addGroup( QStringLiteral( "Group_One" ) );
+  QVERIFY( group1 );
+  QgsLayerTreeGroup *group2 = group1->addGroup( QStringLiteral( "Group_Two" ) );
+  QVERIFY( group2 );
+  QgsLayerTreeGroup *group3 = group2->addGroup( QStringLiteral( "Group_Three" ) );
+  QVERIFY( group3 );
+
+  QList<QgsLayerTreeGroup *> groups = project.layerTreeRoot()->findGroups();
+
+  QVERIFY( groups.contains( group1 ) );
+  QVERIFY( groups.contains( group2 ) == 0 );
+  QVERIFY( groups.contains( group3 ) == 0 );
+
+  QList<QgsLayerTreeGroup *> all = project.layerTreeRoot()->findAllGroups();
+
+  QVERIFY( all.contains( group1 ) );
+  QVERIFY( all.contains( group2 ) );
+  QVERIFY( all.contains( group3 ) );
 }
 
 void TestQgsLayerTree::testUtilsCollectMapLayers()

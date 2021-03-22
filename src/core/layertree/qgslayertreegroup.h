@@ -142,9 +142,14 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup *findGroup( const QString &name );
 
     /**
-     * Find all group layer nodes
+     * Find child group layer nodes. Does not search recursively the whole sub-tree.
     */
     QList<QgsLayerTreeGroup *> findGroups() const;
+
+    /**
+     * Find all group layer nodes. Searches recursively the whole sub-tree.
+    */
+    QList<QgsLayerTreeGroup *> findAllGroups() const;
 
     /**
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).

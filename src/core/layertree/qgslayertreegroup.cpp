@@ -265,6 +265,22 @@ QList<QgsLayerTreeGroup *> QgsLayerTreeGroup::findGroups() const
   return list;
 }
 
+QList<QgsLayerTreeGroup *> QgsLayerTreeGroup::findAllGroups() const
+{
+  QList<QgsLayerTreeGroup *> list;
+
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
+  {
+    if ( QgsLayerTree::isGroup( child ) )
+    {
+      QgsLayerTreeGroup *childGroup = QgsLayerTree::toGroup( child );
+      list << childGroup;
+      list << childGroup->findAllGroups( );
+    }
+  }
+  return list;
+}
+
 QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.tagName() != QLatin1String( "layer-tree-group" ) )
