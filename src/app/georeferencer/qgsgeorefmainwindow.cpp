@@ -2179,7 +2179,7 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand( const QgsGeorefT
       gdalCommand << QStringLiteral( "-tps" );
   }
 
-  for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
+  for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
     gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
                 .arg( pt->transCoords().x() ).arg( pt->transCoords().y() );
