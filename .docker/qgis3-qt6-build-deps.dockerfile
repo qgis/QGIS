@@ -5,6 +5,7 @@ RUN dnf -y install \
     bison \
     clang \
     clazy \
+    dbus-devel \
     exiv2-devel \
     fcgi-devel \
     flex \
