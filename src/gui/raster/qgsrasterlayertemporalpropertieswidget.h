@@ -65,6 +65,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      * The corresponding map layer with temporal attributes
      */
     QgsRasterLayer *mLayer = nullptr;
+    QVBoxLayout *mExtraWidgetLayout = nullptr;
 
     QList< QgsMapLayerConfigWidget * > mExtraWidgets;
 
