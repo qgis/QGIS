@@ -142,7 +142,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup *findGroup( const QString &name );
 
     /**
-     * Find group layer nodes. Searches recursively the whole sub-tree, is recursive is set.
+     * Find group layer nodes. Searches recursively the whole sub-tree, if recursive is set.
     */
     QList<QgsLayerTreeGroup *> findGroups( bool recursive = false ) const;
 
