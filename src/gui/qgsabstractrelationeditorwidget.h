@@ -349,7 +349,7 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
     /**
      * \brief Set the nm relation for this widget.
      *
-     * \param config The nm relation
+     * \param nmRelation The nm relation
      */
     virtual void setNmRelation( const QgsRelation &nmRelation );
 

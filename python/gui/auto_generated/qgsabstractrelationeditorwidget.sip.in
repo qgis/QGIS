@@ -320,7 +320,7 @@ Returns the relation for which this configuration widget applies
 %Docstring
 Set the nm relation for this widget.
 
-:param config: The nm relation
+:param nmRelation: The nm relation
 %End
 
     virtual QgsRelation nmRelation() const;
