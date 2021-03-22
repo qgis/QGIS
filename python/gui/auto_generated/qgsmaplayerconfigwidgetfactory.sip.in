@@ -24,7 +24,7 @@ Factory class for creating custom map layer property pages
 
     enum class ParentPage
     {
-      None,
+      NoParent,
       Temporal,
     };
 
@@ -132,7 +132,7 @@ Check if the layer is supported for this widget.
 %Docstring
 Returns the associated parent page, for factories which create sub-components of a standard page.
 
-The default implementation returns QgsMapLayerConfigWidgetFactory.ParentPage.None, indicating that the
+The default implementation returns QgsMapLayerConfigWidgetFactory.ParentPage.NoParent, indicating that the
 factory creates top-level pages which are not subcomponents.
 
 .. versionadded:: 3.20

@@ -52,7 +52,7 @@
         <height>413</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout" rowstretch="0,1">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -65,6 +65,9 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item row="1" column="0">
+        <widget class="QWidget" name="mExtraWidgetContainer" native="true"/>
+       </item>
        <item row="0" column="0">
         <widget class="QGroupBox" name="mTemporalGroupBox">
          <property name="enabled">
@@ -91,6 +94,19 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
             </property>
            </widget>
           </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QRadioButton" name="mModeAutomaticRadio">
+            <property name="toolTip">
+             <string>Delegates temporal handling to the data provider</string>
+            </property>
+            <property name="text">
+             <string>Automatic</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="0" colspan="2">
            <widget class="QFrame" name="mFixedTimeRangeFrame">
             <property name="enabled">
@@ -105,7 +121,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
             <property name="lineWidth">
              <number>0</number>
             </property>
-            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,2,0,2">
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0">
              <property name="topMargin">
               <number>0</number>
              </property>
@@ -129,6 +145,19 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                </property>
               </widget>
              </item>
+             <item row="1" column="3">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
              <item row="0" column="1" colspan="2">
               <widget class="QgsDateTimeEdit" name="mStartTemporalDateTimeEdit">
                <property name="displayFormat">
@@ -146,47 +175,8 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                </property>
               </widget>
              </item>
-             <item row="1" column="3">
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
             </layout>
            </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QRadioButton" name="mModeAutomaticRadio">
-            <property name="toolTip">
-             <string>Delegates temporal handling to the data provider</string>
-            </property>
-            <property name="text">
-             <string>Automatic</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>

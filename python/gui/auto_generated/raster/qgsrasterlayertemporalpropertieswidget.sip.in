@@ -39,6 +39,13 @@ Save widget temporal properties inputs.
 Updates the widget state to match the current layer state.
 %End
 
+    void addWidget( QgsMapLayerConfigWidget *widget /Transfer/ );
+%Docstring
+Adds a child ``widget`` to the properties widget.
+
+.. versionadded:: 3.20
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *
