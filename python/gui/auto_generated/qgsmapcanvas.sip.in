@@ -1048,7 +1048,7 @@ Emitted when the scale locked state of the map changes
 
 .. seealso:: :py:func:`setScaleLocked`
 
-.. versionadded:: 3.18
+.. versionadded:: 3.16
 %End
 
 
