@@ -433,7 +433,7 @@ if(WITH_CORE)
   #############################################################
   # search for Qt
 
-  set (WITH_QT6 TRUE CACHE BOOL "Enable (broken, experimental) Qt6 support")
+  set (WITH_QT6 FALSE CACHE BOOL "Enable (broken, experimental) Qt6 support")
   if (WITH_QT6)
     set(QT_MIN_VERSION 6.0.0)
   else()
