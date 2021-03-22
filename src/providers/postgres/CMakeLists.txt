@@ -26,7 +26,7 @@ if (WITH_GUI)
     raster/qgspostgresrastertemporalsettingswidget.cpp
   )
 
-  set(PG_UIS raster/qgspostgresrastertemporalsettingswidgetbase.ui)
+  set(PG_UIS qgspostgresrastertemporalsettingswidgetbase.ui)
 endif()
 
 set(PG_HDRS
@@ -36,11 +36,6 @@ set(PG_HDRS
 
 ########################################################
 # Build
-
-include_directories(
-
-  ${CMAKE_BINARY_DIR}/src/ui
-)
 
 include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
@@ -56,7 +51,13 @@ if (WITH_GUI)
     ${QSCINTILLA_INCLUDE_DIR}
   )
   include_directories (
-    ${CMAKE_BINARY_DIR}/src/providers/postgres/raster
+      ${CMAKE_BINARY_DIR}/src/providers/postgres
+      ${CMAKE_SOURCE_DIR}/src/providers/postgres
+      ${CMAKE_BINARY_DIR}/src/providers/postgres/raster
+      ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
+      ${CMAKE_CURRENT_SOURCE_DIR}
+      ${CMAKE_CURRENT_BINARY_DIR}
+      ${CMAKE_BINARY_DIR}/src/ui
   )
 endif()
 
@@ -78,15 +79,6 @@ target_link_libraries (postgresprovider_a
 )
 
 if (WITH_GUI)
-  include_directories (
-    ${CMAKE_BINARY_DIR}/src/providers/postgres
-    ${CMAKE_SOURCE_DIR}/src/providers/postgres
-    ${CMAKE_BINARY_DIR}/src/providers/postgres/raster
-    ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-  )
-
   QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
 
   add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
