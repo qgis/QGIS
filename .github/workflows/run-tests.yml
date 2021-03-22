@@ -35,7 +35,13 @@ jobs:
     strategy:
       matrix:
         # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14) and 21.04 (Qt 5.15)
-        ubuntu-base: ['20.04', '20.10', '21.04']
+        include:
+          - ubuntu-base: '20.04'
+            run-tests: true
+          - ubuntu-base: '20.10'
+            run-tests: false
+          - ubuntu-base: '21.04'
+            run-tests: false
       fail-fast: false
 
     outputs:
@@ -126,11 +132,11 @@ jobs:
 
       - name: Push artifact
         id: push_artifact
-        if: ${{ matrix.ubuntu-base == env.DEFAULT_UBUNTU_BASE }}
+        if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
       - uses: actions/upload-artifact@v2
-        if: ${{ matrix.ubuntu-base == env.DEFAULT_UBUNTU_BASE }}
+        if: ${{ matrix.run-tests }}
         with:
           name: build.tgz
           path: ./build.tgz
