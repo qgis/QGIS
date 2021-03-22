@@ -2,14 +2,6 @@
 <ui version="4.0">
  <class>QgsTemporalControllerWidgetBase</class>
  <widget class="QgsPanelWidget" name="QgsTemporalControllerWidgetBase">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>747</width>
-    <height>131</height>
-   </rect>
-  </property>
   <property name="windowTitle">
    <string>QgsDockWidget</string>
   </property>
@@ -122,14 +114,8 @@
    </item>
    <item>
     <widget class="QStackedWidget" name="mNavigationModeStackedWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="p1">
       <layout class="QVBoxLayout" name="verticalLayoutP1">
@@ -524,6 +510,19 @@
           </spacer>
          </item>
         </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
