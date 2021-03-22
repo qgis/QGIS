@@ -550,13 +550,24 @@ void QgsRasterLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfig
   }
 
   QgsMapLayerConfigWidget *page = factory->createWidget( mRasterLayer, nullptr, false, this );
-  mLayerPropertiesPages << page;
+  switch ( factory->parentPage() )
+  {
+    case QgsMapLayerConfigWidgetFactory::ParentPage::NoParent:
+    {
+      mLayerPropertiesPages << page;
 
-  const QString beforePage = factory->layerPropertiesPagePositionHint();
-  if ( beforePage.isEmpty() )
-    addPage( factory->title(), factory->title(), factory->icon(), page );
-  else
-    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+      const QString beforePage = factory->layerPropertiesPagePositionHint();
+      if ( beforePage.isEmpty() )
+        addPage( factory->title(), factory->title(), factory->icon(), page );
+      else
+        insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+      break;
+    }
+
+    case QgsMapLayerConfigWidgetFactory::ParentPage::Temporal:
+      mTemporalWidget->addWidget( page );
+      break;
+  }
 }
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )

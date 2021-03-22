@@ -34,5 +34,5 @@ bool QgsMapLayerConfigWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 
 QgsMapLayerConfigWidgetFactory::ParentPage QgsMapLayerConfigWidgetFactory::parentPage() const
 {
-  return ParentPage::None;
+  return ParentPage::NoParent;
 }

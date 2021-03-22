@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      */
     enum class ParentPage : int
     {
-      None, //!< Factory creates pages itself, not sub-components
+      NoParent, //!< Factory creates pages itself, not sub-components
       Temporal, //!< Factory creates sub-components of the temporal properties page
     };
 
@@ -130,7 +130,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     /**
      * Returns the associated parent page, for factories which create sub-components of a standard page.
      *
-     * The default implementation returns QgsMapLayerConfigWidgetFactory::ParentPage::None, indicating that the
+     * The default implementation returns QgsMapLayerConfigWidgetFactory::ParentPage::NoParent, indicating that the
      * factory creates top-level pages which are not subcomponents.
      *
      * \since QGIS 3.20
