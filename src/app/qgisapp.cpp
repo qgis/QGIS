@@ -16242,13 +16242,17 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     return; //don't show properties of embedded layers
   }
 
+  // collect factories from registered data providers
+  QList<const QgsMapLayerConfigWidgetFactory *> providerFactories = QgsGui::providerGuiRegistry()->mapLayerConfigWidgetFactories( mapLayer );
+  providerFactories.append( mMapLayerPanelFactories );
+
   switch ( mapLayer->type() )
   {
     case QgsMapLayerType::RasterLayer:
     {
       QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mMapLayerPanelFactories ) )
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
         rasterLayerPropertiesDialog->addPropertiesPageFactory( factory );
       }
@@ -16280,7 +16284,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     {
       QgsMeshLayerProperties meshLayerPropertiesDialog( mapLayer, mMapCanvas, this );
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mMapLayerPanelFactories ) )
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
         meshLayerPropertiesDialog.addPropertiesPageFactory( factory );
       }
@@ -16319,7 +16323,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
           saveAsFile( clone.get() );
         }
       } );
-      for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mMapLayerPanelFactories ) )
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
         vectorLayerPropertiesDialog->addPropertiesPageFactory( factory );
       }
@@ -16368,7 +16372,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       else
         pointCloudLayerPropertiesDialog.restoreLastPage();
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : std::as_const( mMapLayerPanelFactories ) )
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
         pointCloudLayerPropertiesDialog.addPropertiesPageFactory( factory );
       }

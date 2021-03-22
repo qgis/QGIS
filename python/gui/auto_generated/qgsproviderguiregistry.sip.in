@@ -103,6 +103,15 @@ Returns all source widget providers registered in provider with ``providerKey``
 .. versionadded:: 3.18
 %End
 
+    virtual QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories( QgsMapLayer *layer = 0 );
+%Docstring
+Returns all map layer config widget factories associated with the registered providers.
+
+The optional ``layer`` argument can be used to only return factories which support the specified layer.
+
+.. versionadded:: 3.20
+%End
+
 
 };
 
