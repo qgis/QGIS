@@ -14,7 +14,7 @@
 
 class QgsZonalStatistics
 {
-%Docstring
+%Docstring(signature="appended")
 A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
 %End
 

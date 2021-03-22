@@ -10,7 +10,7 @@
 
 class QgsAbstractProviderConnection
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsAbstractProviderConnection` provides an interface for data provider connections.
 
 Connections objects can be constructed loading them from the connections stored

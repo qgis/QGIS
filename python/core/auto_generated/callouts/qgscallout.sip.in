@@ -12,7 +12,7 @@
 
 class QgsCallout
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for callout renderers.
 
 Implementations of :py:class:`QgsCallout` are responsible for performing the actual render of
@@ -201,7 +201,7 @@ The default order is QgsCallout.OrderBelowIndividualLabels.
 
     class QgsCalloutContext
 {
-%Docstring
+%Docstring(signature="appended")
 Contains additional contextual information about the context in which a callout is
 being rendered.
 
@@ -446,7 +446,7 @@ The ``pinned`` argument will be set to ``True`` if the callout anchor point is p
 
 class QgsSimpleLineCallout : QgsCallout
 {
-%Docstring
+%Docstring(signature="appended")
 A simple direct line callout style.
 
 .. versionadded:: 3.10
@@ -710,7 +710,7 @@ The base class method returns a straight line.
 
 class QgsManhattanLineCallout : QgsSimpleLineCallout
 {
-%Docstring
+%Docstring(signature="appended")
 Draws straight (right angled) lines as callouts.
 
 .. versionadded:: 3.10
@@ -748,7 +748,7 @@ serialized in the ``properties`` map (corresponding to the output from
 
 class QgsCurvedLineCallout : QgsSimpleLineCallout
 {
-%Docstring
+%Docstring(signature="appended")
 Draws curved lines as callouts.
 
 .. versionadded:: 3.20
@@ -827,7 +827,7 @@ Sets the callout line's curve ``orientation``.
 
 class QgsBalloonCallout : QgsCallout
 {
-%Docstring
+%Docstring(signature="appended")
 A cartoon talking bubble callout style.
 
 .. versionadded:: 3.20

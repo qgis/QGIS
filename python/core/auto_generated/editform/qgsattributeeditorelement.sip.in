@@ -10,7 +10,7 @@
 
 class QgsAttributeEditorElement /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 This is an abstract base class for any elements of a drag and drop form.
 
 This can either be a container which will be represented on the screen

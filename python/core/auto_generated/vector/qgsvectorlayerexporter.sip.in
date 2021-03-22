@@ -13,7 +13,7 @@
 
 class QgsVectorLayerExporter : QgsFeatureSink
 {
-%Docstring
+%Docstring(signature="appended")
 A convenience class for exporting vector layers to a destination data provider.
 
 :py:class:`QgsVectorLayerExporter` can be used in two ways:
@@ -140,7 +140,7 @@ Returns the number of error messages encountered during the export.
 
 class QgsVectorLayerExporterTask : QgsTask
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsTask` task which performs a :py:class:`QgsVectorLayerExporter` layer export operation as a background
 task. This can be used to export a vector layer out to a provider without blocking the
 QGIS interface.

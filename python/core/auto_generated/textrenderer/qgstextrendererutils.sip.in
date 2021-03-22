@@ -10,7 +10,7 @@
 
 class QgsTextRendererUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for text rendering.
 
 .. versionadded:: 3.10

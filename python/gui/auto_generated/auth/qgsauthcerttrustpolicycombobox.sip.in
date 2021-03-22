@@ -10,7 +10,7 @@
 
 class QgsAuthCertTrustPolicyComboBox : QComboBox
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for editing the trust policy associated with a Certificate (Intermediate) Authority
 %End
 

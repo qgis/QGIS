@@ -12,7 +12,7 @@
 
 class QgsIdentifyMenu : QMenu
 {
-%Docstring
+%Docstring(signature="appended")
 The QgsIdentifyMenu class builds a menu to be used with identify results (:py:class:`QgsMapToolIdentify`).
 It is customizable and can display attribute actions (:py:class:`QgsAction`) as well as map layer actions (\see QgsMapLayerAction).
 It can also embed custom map layer actions, defined for this menu exclusively.

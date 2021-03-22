@@ -18,7 +18,7 @@
 
 class QgsAbstractRelationEditorWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class to build new relation widgets.
 
 .. versionadded:: 3.18
@@ -266,7 +266,7 @@ Check :py:class:`QgsRealationEditorWidget` as an example.
 
 class QgsAbstractRelationEditorConfigWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 This class should be subclassed for every configurable relation widget type.
 
 It implements the GUI configuration widget and transforms this to/from a configuration.
@@ -331,7 +331,7 @@ Returns the relation for which this configuration widget applies
 
 class QgsAbstractRelationEditorWidgetFactory
 {
-%Docstring
+%Docstring(signature="appended")
 Factory class for creating relation widgets and their corresponding config widgets
 
 .. versionadded:: 3.18

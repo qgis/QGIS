@@ -13,7 +13,7 @@
 
 class QgsRuleBasedRenderer : QgsFeatureRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Rule based renderer.
 
 When drawing a vector layer with rule-based renderer, it goes through
@@ -72,7 +72,7 @@ Feature to render
 
     class Rule
 {
-%Docstring
+%Docstring(signature="appended")
 This class keeps data about a rules for rule-based renderer.
 
 A rule consists of a symbol, filter expression and range of scales.

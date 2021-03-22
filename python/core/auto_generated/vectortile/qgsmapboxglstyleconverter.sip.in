@@ -11,7 +11,7 @@
 
 class QgsMapBoxGlStyleConversionContext
 {
-%Docstring
+%Docstring(signature="appended")
 Context for a MapBox GL style conversion operation.
 
 .. warning::
@@ -140,7 +140,7 @@ Sets the layer ID of the layer currently being converted.
 
 class QgsMapBoxGlStyleConverter
 {
-%Docstring
+%Docstring(signature="appended")
 Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
 settings.
 

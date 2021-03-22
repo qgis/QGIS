@@ -14,7 +14,7 @@
 
 class QgsAccessControl : QgsFeatureFilterProvider
 {
-%Docstring
+%Docstring(signature="appended")
 A helper class that centralizes restrictions given by all the access control filter plugins.
 
 .. versionadded:: 2.14

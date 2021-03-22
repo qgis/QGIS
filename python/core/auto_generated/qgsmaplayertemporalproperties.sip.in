@@ -14,7 +14,7 @@
 
 class QgsMapLayerTemporalProperties : QgsTemporalProperty
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for storage of map layer temporal properties.
 
 :py:class:`QgsMapLayerTemporalProperties` exposes user-configurable settings for controlling

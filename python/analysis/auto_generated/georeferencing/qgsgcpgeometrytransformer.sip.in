@@ -12,7 +12,7 @@
 
 class QgsGcpGeometryTransformer : QgsAbstractGeometryTransformer
 {
-%Docstring
+%Docstring(signature="appended")
 A geometry transformer which uses an underlying Ground Control Points (GCP) based transformation to modify geometries.
 
 .. versionadded:: 3.18

@@ -11,7 +11,7 @@
 
 class QgsFileUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Class for file utilities.
 
 .. versionadded:: 3.0

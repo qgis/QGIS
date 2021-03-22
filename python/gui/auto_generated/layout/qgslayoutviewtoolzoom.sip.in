@@ -10,7 +10,7 @@
 
 class QgsLayoutViewToolZoom : QgsLayoutViewTool
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for zooming into and out of the layout.
 
 .. versionadded:: 3.0

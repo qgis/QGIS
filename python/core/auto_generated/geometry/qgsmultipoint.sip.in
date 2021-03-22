@@ -10,7 +10,7 @@
 
 class QgsMultiPoint: QgsGeometryCollection
 {
-%Docstring
+%Docstring(signature="appended")
 Multi point geometry collection.
 
 .. versionadded:: 2.10

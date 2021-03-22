@@ -9,7 +9,7 @@
 
 class QgsFeatureStore : QgsFeatureSink
 {
-%Docstring
+%Docstring(signature="appended")
 A container for features with the same fields and crs.
 %End
 

@@ -13,7 +13,7 @@
 
 class QgsRectangle
 {
-%Docstring
+%Docstring(signature="appended")
 A rectangle specified with double values.
 
 :py:class:`QgsRectangle` is used to store a rectangle when double values are required.

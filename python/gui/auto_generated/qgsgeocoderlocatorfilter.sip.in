@@ -11,7 +11,7 @@
 
 class QgsGeocoderLocatorFilter : QgsAbstractGeocoderLocatorFilter
 {
-%Docstring
+%Docstring(signature="appended")
 An adapter class which implements a locator filter populated from a :py:class:`QgsGeocoderInterface`.
 
 This class implements the required logic to bridge a class which implements the

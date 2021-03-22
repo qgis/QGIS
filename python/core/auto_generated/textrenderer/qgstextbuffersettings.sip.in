@@ -12,7 +12,7 @@
 
 class QgsTextBufferSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Container for settings relating to a text buffer.
 
 .. note::

@@ -16,7 +16,7 @@
 
 class QgsGraphDirector : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Determine making the graph. :py:class:`QgsGraphBuilder` and :py:class:`QgsGraphDirector` implemented
 using "builder" design patter.
 %End

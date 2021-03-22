@@ -11,7 +11,7 @@
 
 class QgsGeometrySnapperSingleSource
 {
-%Docstring
+%Docstring(signature="appended")
 
 Makes sure that any two vertices of the vector layer are at least at distance given by the threshold value.
 

@@ -10,7 +10,7 @@
 
 class QgsLabelObstacleSettingsWidget : QgsLabelSettingsWidgetBase
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for customising label obstacle settings.
 
 .. versionadded:: 3.12

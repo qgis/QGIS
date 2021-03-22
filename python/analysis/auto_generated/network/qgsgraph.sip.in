@@ -13,7 +13,7 @@
 
 class QgsGraphEdge
 {
-%Docstring
+%Docstring(signature="appended")
 This class implements a graph edge
 
 .. versionadded:: 3.0
@@ -62,7 +62,7 @@ typedef QList< int > QgsGraphEdgeIds;
 
 class QgsGraphVertex
 {
-%Docstring
+%Docstring(signature="appended")
 This class implements a graph vertex
 
 .. versionadded:: 3.0
@@ -108,7 +108,7 @@ Returns point associated with graph vertex.
 
 class QgsGraph
 {
-%Docstring
+%Docstring(signature="appended")
 Mathematical graph representation
 
 .. versionadded:: 3.0

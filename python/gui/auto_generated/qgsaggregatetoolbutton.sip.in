@@ -11,7 +11,7 @@
 
 class QgsAggregateToolButton : QToolButton
 {
-%Docstring
+%Docstring(signature="appended")
 
 Offers a toolbutton to choose between different aggregate functions.
 Functions are filtered based on the type.

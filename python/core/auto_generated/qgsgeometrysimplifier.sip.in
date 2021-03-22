@@ -12,7 +12,7 @@
 
 class QgsAbstractGeometrySimplifier
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for simplify geometries using a specific algorithm
 %End
 
@@ -52,7 +52,7 @@ Returns whether the device-geometry can be replaced by its BBOX when is applied 
 
 class QgsTopologyPreservingSimplifier : QgsAbstractGeometrySimplifier
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
 
 Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.

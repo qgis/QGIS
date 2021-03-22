@@ -12,7 +12,7 @@
 
 class QgsCoordinateTransform
 {
-%Docstring
+%Docstring(signature="appended")
 Class for doing transforms between two map coordinate systems.
 
 This class can convert map coordinates to a different coordinate reference system.

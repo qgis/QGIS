@@ -10,7 +10,7 @@
 
 class QgsVector
 {
-%Docstring
+%Docstring(signature="appended")
 A class to represent a vector.
 Currently no Z axis / 2.5D support is implemented.
 %End

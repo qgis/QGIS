@@ -11,7 +11,7 @@
 
 class QgsPointClusterRenderer: QgsPointDistanceRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 A renderer that automatically clusters points with the same geographic position.
 
 .. versionadded:: 3.0

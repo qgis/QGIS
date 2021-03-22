@@ -15,7 +15,7 @@
 
 class QgsMapRendererJob : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for map rendering implementations.
 
 The API is designed in a way that rendering is done asynchronously, therefore
@@ -199,7 +199,7 @@ emitted when asynchronous rendering is finished (or canceled).
 
 class QgsMapRendererQImageJob : QgsMapRendererJob
 {
-%Docstring
+%Docstring(signature="appended")
 Intermediate base class adding functionality that allows client to query the rendered image.
 
 The image can be queried even while the rendering is still in progress to get intermediate result

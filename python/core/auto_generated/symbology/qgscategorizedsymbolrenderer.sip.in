@@ -11,7 +11,7 @@
 
 class QgsRendererCategory
 {
-%Docstring
+%Docstring(signature="appended")
 Represents an individual category (class) from a :py:class:`QgsCategorizedSymbolRenderer`.
 %End
 

@@ -11,7 +11,7 @@
 
 class QgsMapRendererSequentialJob : QgsMapRendererQImageJob
 {
-%Docstring
+%Docstring(signature="appended")
 Job implementation that renders everything sequentially in one thread.
 
 The resulting map image can be retrieved with :py:func:`~renderedImage` function.

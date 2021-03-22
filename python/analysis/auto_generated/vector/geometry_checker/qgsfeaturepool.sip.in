@@ -12,7 +12,7 @@
 
 class QgsFeaturePool : QgsFeatureSink /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 A feature pool is based on a vector layer and caches features.
 
 .. note::

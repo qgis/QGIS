@@ -12,7 +12,7 @@
 
 class QgsPoint: QgsAbstractGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 Point geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 3.0

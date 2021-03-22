@@ -12,7 +12,7 @@
 
 class QgsSettings : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 This class is a composition of two QSettings instances:
 

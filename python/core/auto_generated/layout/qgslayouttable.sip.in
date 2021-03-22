@@ -24,7 +24,7 @@ typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 
 class QgsLayoutTableStyle
 {
-%Docstring
+%Docstring(signature="appended")
 Styling option for a layout table cell
 
 .. versionadded:: 3.0
@@ -67,7 +67,7 @@ Reads the style's properties from XML.
 
 class QgsLayoutTable: QgsLayoutMultiFrame
 {
-%Docstring
+%Docstring(signature="appended")
 A class to display a table in the print layout, and allow
 the table to span over multiple frames
 

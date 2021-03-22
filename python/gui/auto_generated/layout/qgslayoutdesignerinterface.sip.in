@@ -11,7 +11,7 @@
 
 class QgsLayoutDesignerInterface: QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A common interface for layout designer dialogs and widgets.
 
 Provides a common interface and stable API for layout designer dialogs and widgets.

@@ -12,7 +12,7 @@
 
 class QgsColorRampLegendNodeSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Settings for a color ramp legend node.
 
 .. versionadded:: 3.18

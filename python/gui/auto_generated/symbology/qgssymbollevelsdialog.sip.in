@@ -11,7 +11,7 @@
 
 class QgsSymbolLevelsWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allows the user to modify the rendering order of symbol layers.
 
 .. seealso:: :py:class:`QgsSymbolLevelsDialog`
@@ -58,7 +58,7 @@ Apply button
 
 class QgsSymbolLevelsDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog which allows the user to modify the rendering order of symbol layers.
 
 .. seealso:: :py:class:`QgsSymbolLevelsWidget`

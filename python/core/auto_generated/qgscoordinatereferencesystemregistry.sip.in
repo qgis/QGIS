@@ -11,7 +11,7 @@
 
 class QgsCoordinateReferenceSystemRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A registry for known coordinate reference system (CRS) definitions, including
 any user-defined CRSes.
 
@@ -33,7 +33,7 @@ Constructor for QgsCoordinateReferenceSystemRegistry, with the specified ``paren
 
     class UserCrsDetails
 {
-%Docstring
+%Docstring(signature="appended")
 Contains details of a custom (user defined) CRS.
 
 .. versionadded:: 3.18

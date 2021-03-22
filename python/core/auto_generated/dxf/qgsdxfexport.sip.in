@@ -16,7 +16,7 @@
 
 class QgsDxfExport
 {
-%Docstring
+%Docstring(signature="appended")
 Exports QGIS layers to the DXF format.
 %End
 

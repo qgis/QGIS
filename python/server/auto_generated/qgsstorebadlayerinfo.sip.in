@@ -11,7 +11,7 @@
 
 class QgsStoreBadLayerInfo: QgsProjectBadLayerHandler
 {
-%Docstring
+%Docstring(signature="appended")
 Stores layer ids of bad layers
 
 .. versionadded:: 3.6

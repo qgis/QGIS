@@ -13,7 +13,7 @@
 
 class QgsMessageBar: QFrame
 {
-%Docstring
+%Docstring(signature="appended")
 A bar for displaying non-blocking messages to the user.
 
 :py:class:`QgsMessageBar` is a reusable widget which allows for providing feedback to users in

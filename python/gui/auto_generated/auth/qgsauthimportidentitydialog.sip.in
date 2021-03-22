@@ -12,7 +12,7 @@
 
 class QgsAuthImportIdentityDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for importing an identity certificate/key bundle into the authentication database
 %End
 
