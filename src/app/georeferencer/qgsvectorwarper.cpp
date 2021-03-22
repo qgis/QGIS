@@ -37,7 +37,7 @@ QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod &m
 {
   QVector<QgsPointXY> srcPts;
   QVector<QgsPointXY> destPts;
-  for ( QgsGeorefDataPoint *pt : qgis::as_const( points ) )
+  for ( QgsGeorefDataPoint *pt : std::as_const( points ) )
   {
     srcPts << pt->pixelCoords();
     destPts << pt->transCoords();
