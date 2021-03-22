@@ -294,49 +294,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
   temporalLayout->addWidget( mTemporalWidget );
 
-  // This group is used to define the temporal capabilities of the PG raster layer
-  if ( mRasterLayer->dataProvider() && mRasterLayer->providerType() == QLatin1String( "postgresraster" ) )
-  {
-    mPostgresRasterTemporalGroup->setEnabled( true );
-    mPostgresRasterTemporalGroup->setVisible( true );
-    mPostgresRasterTemporalGroup->setChecked( false );
-    const QgsFields fields { mRasterLayer->dataProvider()->fields() };
-    mPostgresRasterTemporalFieldComboBox->setFields( fields );
-    mPostgresRasterTemporalFieldComboBox->setFilters( QgsFieldProxyModel::Filter::Date |
-        QgsFieldProxyModel::Filter::DateTime |
-        QgsFieldProxyModel::Filter::String );
-    mPostgresRasterTemporalFieldComboBox->setAllowEmptyFieldName( true );
-    connect( mPostgresRasterTemporalFieldComboBox, &QgsFieldComboBox::fieldChanged, this, [ = ]( const QString & fieldName )
-    {
-      mPostgresRasterDefaultTime->setEnabled( ! fieldName.isEmpty() );
-    } );
-    mPostgresRasterDefaultTime->setAllowNull( true );
-    mPostgresRasterDefaultTime->setEmpty();
-    if ( mRasterLayer->dataProvider()->uri().hasParam( QStringLiteral( "temporalFieldIndex" ) ) )
-    {
-      bool ok;
-      const int fieldIdx {  mRasterLayer->dataProvider()->uri().param( QStringLiteral( "temporalFieldIndex" ) ).toInt( &ok ) };
-      if ( ok && fields.exists( fieldIdx ) )
-      {
-        mPostgresRasterTemporalGroup->setChecked( true );
-        mPostgresRasterTemporalFieldComboBox->setField( fields.field( fieldIdx ).name() );
-        if ( mRasterLayer->dataProvider()->uri().hasParam( QStringLiteral( "temporalDefaultTime" ) ) )
-        {
-          const QDateTime defaultDateTime { QDateTime::fromString( mRasterLayer->dataProvider()->uri().param( QStringLiteral( "temporalDefaultTime" ) ), Qt::DateFormat::ISODate ) };
-          if ( defaultDateTime.isValid() )
-          {
-            mPostgresRasterDefaultTime->setDateTime( defaultDateTime );
-          }
-        }
-      }
-    }
-  }
-  else
-  {
-    mPostgresRasterTemporalGroup->setEnabled( false );
-    mPostgresRasterTemporalGroup->setVisible( false );
-  }
-
   QgsDebugMsgLevel( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), 2 );
   QgsDebugMsgLevel( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier(), 2 );
   mCrsSelector->setCrs( mRasterLayer->crs() );
@@ -1094,41 +1051,6 @@ void QgsRasterLayerProperties::apply()
 
   //set the blend mode for the layer
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
-
-  // Update temporal field
-  if ( mRasterLayer->dataProvider() )
-  {
-    QgsDataSourceUri uri { mRasterLayer->dataProvider()->uri() };
-    if ( mPostgresRasterTemporalGroup->isEnabled() &&
-         mPostgresRasterTemporalGroup->isChecked() &&
-         ! mPostgresRasterTemporalFieldComboBox->currentField().isEmpty() )
-    {
-      const QString originaUri { uri.uri() };
-      const int fieldIdx { mRasterLayer->dataProvider()->fields().lookupField( mPostgresRasterTemporalFieldComboBox->currentField() ) };
-      uri.removeParam( QStringLiteral( "temporalFieldIndex" ) );
-      uri.removeParam( QStringLiteral( "temporalDefaultTime" ) );
-      if ( fieldIdx >= 0 )
-      {
-        uri.setParam( QStringLiteral( "temporalFieldIndex" ), QString::number( fieldIdx ) );
-        if ( mPostgresRasterDefaultTime->dateTime().isValid() )
-        {
-          QDateTime defaultDateTime  { mPostgresRasterDefaultTime->dateTime() };
-          const QTime defaultTime { defaultDateTime.time() };
-          // Set secs to 0
-          defaultDateTime.setTime( { defaultTime.hour(), defaultTime.minute(), 0 } );
-          uri.setParam( QStringLiteral( "temporalDefaultTime" ), defaultDateTime.toString( Qt::DateFormat::ISODate ) );
-        }
-        if ( uri.uri( ) != originaUri )
-          mRasterLayer->setDataSource( uri.uri(), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
-      }
-    }
-    else if ( uri.hasParam( QStringLiteral( "temporalFieldIndex" ) ) )
-    {
-      uri.removeParam( QStringLiteral( "temporalFieldIndex" ) );
-      uri.removeParam( QStringLiteral( "temporalDefaultTime" ) );
-      mRasterLayer->setDataSource( uri.uri(), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
-    }
-  }
 
   // Update temporal properties
   mTemporalWidget->saveTemporalProperties();

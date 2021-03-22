@@ -23,7 +23,10 @@ if (WITH_GUI)
     qgspgsourceselect.cpp
     qgspgnewconnection.cpp
     qgspostgresprojectstoragedialog.cpp
+    raster/qgspostgresrastertemporalsettingswidget.cpp
   )
+
+  set(PG_UIS raster/qgspostgresrastertemporalsettingswidgetbase.ui)
 endif()
 
 set(PG_HDRS
@@ -52,6 +55,9 @@ if (WITH_GUI)
   include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
   )
+  include_directories (
+    ${CMAKE_BINARY_DIR}/src/providers/postgres/raster
+  )
 endif()
 
 # static library
@@ -72,7 +78,13 @@ target_link_libraries (postgresprovider_a
 )
 
 if (WITH_GUI)
-  add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS})
+  include_directories (
+    ${CMAKE_BINARY_DIR}/src/providers/postgres
+  )
+
+  QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
+
+  add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
 
   # require c++17
   target_compile_features(postgresprovider_gui_a PRIVATE cxx_std_17)

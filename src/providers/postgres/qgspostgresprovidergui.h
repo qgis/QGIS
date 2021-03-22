@@ -29,6 +29,12 @@ class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
     QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override;
+    QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories() override;
+
+  private:
+
+    std::unique_ptr< QgsMapLayerConfigWidgetFactory > mRasterTemporalWidgetFactory;
+
 };
 
 #endif // QGSPOSTGRESPROVIDERGUI_H
