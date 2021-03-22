@@ -716,7 +716,7 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
       field.isAutoIncrement = rsmd->isAutoIncrement( i );
       field.isUnique = isColumnUnique( schema, field.tableName, field.name );
       field.size = static_cast<int>( rsmd->getColumnLength( i ) );
-      field.precision = -1;
+      field.precision = static_cast<int>( rsmd->getScale( i ) );
       if ( field.isGeometry() )
         field.srid = getColumnSrid( schema, field.tableName, field.name );
       // As field comments cannot be retrieved via ODBC, we get it from SYS.TABLE_COLUMNS.
@@ -778,6 +778,7 @@ void QgsHanaConnection::readTableFields( const QString &schemaName, const QStrin
       field.type = rsColumns->getShort( 5/*DATA_TYPE*/ );
       field.typeName =  rsColumns->getString( 6/*TYPE_NAME*/ );
       field.size = rsColumns->getInt( 7/*COLUMN_SIZE*/ );
+      field.precision = static_cast<int>( rsColumns->getShort( 9/*DECIMAL_DIGITS*/ ) );
       field.isSigned = field.type == SQLDataTypes::SmallInt || field.type == SQLDataTypes::Integer ||
                        field.type == SQLDataTypes::BigInt || field.type == SQLDataTypes::Decimal ||
                        field.type == SQLDataTypes::Numeric || field.type == SQLDataTypes::Real ||
@@ -785,7 +786,6 @@ void QgsHanaConnection::readTableFields( const QString &schemaName, const QStrin
       field.isNullable = rsColumns->getString( 18/*IS_NULLABLE*/ ) == QLatin1String( "TRUE" );
       field.isAutoIncrement = isColumnAutoIncrement( field.name );
       field.isUnique = isColumnUnique( field.name );
-      field.precision = -1;
       if ( field.isGeometry() )
         field.srid = getColumnSrid( schemaName, tableName, field.name );
       field.comment = rsColumns->getString( 12/*REMARKS*/ );

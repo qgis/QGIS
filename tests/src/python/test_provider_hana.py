@@ -216,6 +216,37 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         expected = {1: True, 2: False, 3: NULL}
         self.assertEqual(values, expected)
 
+    def testDecimalAndFloatTypes(self):
+        create_sql = f'CREATE TABLE "{self.schemaName}"."decimal_and_float_type" ( ' \
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"decimal_field" DECIMAL(15,4),' \
+            '"float_field" FLOAT(12))'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."decimal_and_float_type" ("id", "decimal_field", ' \
+                     f'"float_field") VALUES (?, ?, ?) '
+        insert_args = [[1, 1.1234, 1.76543]]
+        self.prepareTestTable('decimal_and_float_type', create_sql, insert_sql, insert_args)
+
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."decimal_and_float_type" sql=', 'testdecimalfloat')
+
+        fields = vl.dataProvider().fields()
+        decimal_field = fields.at(fields.indexFromName('decimal_field'))
+        self.assertEqual(decimal_field.type(), QVariant.Double)
+        self.assertEqual(decimal_field.length(), 15)
+        self.assertEqual(decimal_field.precision(), 4)
+        float_field = fields.at(fields.indexFromName('float_field'))
+        self.assertEqual(float_field.type(), QVariant.Double)
+        self.assertEqual(float_field.length(), 7)
+        self.assertEqual(float_field.precision(), 0)
+
+        feat = next(vl.getFeatures(QgsFeatureRequest()))
+
+        decimal_idx = vl.fields().lookupField('decimal_field')
+        self.assertIsInstance(feat.attributes()[decimal_idx], float)
+        self.assertEqual(feat.attributes()[decimal_idx], 1.1234)
+        float_idx = vl.fields().lookupField('float_field')
+        self.assertIsInstance(feat.attributes()[float_idx], float)
+        self.assertAlmostEqual(feat.attributes()[float_idx], 1.76543, 5)
+
     def testDateTimeTypes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."date_time_type" ( ' \
             '"id" INTEGER NOT NULL PRIMARY KEY,' \
