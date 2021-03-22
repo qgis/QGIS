@@ -253,29 +253,18 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::findGroup( const QString &name )
   return nullptr;
 }
 
-QList<QgsLayerTreeGroup *> QgsLayerTreeGroup::findGroups() const
+QList<QgsLayerTreeGroup *> QgsLayerTreeGroup::findGroups( bool recursive ) const
 {
   QList<QgsLayerTreeGroup *> list;
 
   for ( QgsLayerTreeNode *child : mChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
-      list << QgsLayerTree::toGroup( child );
-  }
-  return list;
-}
-
-QList<QgsLayerTreeGroup *> QgsLayerTreeGroup::findAllGroups() const
-{
-  QList<QgsLayerTreeGroup *> list;
-
-  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
-  {
-    if ( QgsLayerTree::isGroup( child ) )
     {
       QgsLayerTreeGroup *childGroup = QgsLayerTree::toGroup( child );
       list << childGroup;
-      list << childGroup->findAllGroups( );
+      if ( recursive )
+        list << childGroup->findGroups( recursive );
     }
   }
   return list;

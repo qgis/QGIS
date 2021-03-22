@@ -732,7 +732,7 @@ void TestQgsLayerTree::testFindNestedGroups()
   QVERIFY( groups.contains( group2 ) == 0 );
   QVERIFY( groups.contains( group3 ) == 0 );
 
-  QList<QgsLayerTreeGroup *> all = project.layerTreeRoot()->findAllGroups();
+  QList<QgsLayerTreeGroup *> all = project.layerTreeRoot()->findGroups( true );
 
   QVERIFY( all.contains( group1 ) );
   QVERIFY( all.contains( group2 ) );
