@@ -20,6 +20,7 @@
 #include <QMainWindow>
 
 #include "qgsproviderguimetadata.h"
+#include <memory>
 
 class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
 {
