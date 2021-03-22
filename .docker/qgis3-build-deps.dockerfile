@@ -45,7 +45,7 @@ RUN  apt-get update \
     libqwt-qt5-6 \
     libspatialindex6 \
     libsqlite3-mod-spatialite \
-    libzip5 \
+    'libzip4|libzip5' \
     lighttpd \
     locales \
     pdal \
