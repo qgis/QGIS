@@ -351,10 +351,24 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
      */
     QgsRelation relation() const;
 
+    /**
+     * \brief Set the nm relation for this widget.
+     *
+     * \param config The nm relation
+     */
+    virtual void setNmRelation( const QgsRelation &nmRelation );
+
+    /**
+     * Returns the nm relation for which this configuration widget applies
+     *
+     * \returns The nm relation
+     */
+    virtual QgsRelation nmRelation() const;
 
   private:
     QgsVectorLayer *mLayer = nullptr;
     QgsRelation mRelation;
+    QgsRelation mNmRelation;
 };
 
 

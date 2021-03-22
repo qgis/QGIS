@@ -323,6 +323,19 @@ Returns the relation for which this configuration widget applies
 :return: The relation
 %End
 
+    virtual void setNmRelation( const QgsRelation &nmRelation );
+%Docstring
+Set the nm relation for this widget.
+
+:param config: The nm relation
+%End
+
+    virtual QgsRelation nmRelation() const;
+%Docstring
+Returns the nm relation for which this configuration widget applies
+
+:return: The nm relation
+%End
 
 };
 
