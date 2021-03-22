@@ -274,17 +274,16 @@ void QgsRelationWidgetWrapper::setNmRelationId( const QVariant &nmRelationId )
 
     // If this widget is already embedded by the same relation, reduce functionality
     const QgsAttributeEditorContext *ctx = &context();
-    do
+    while ( ctx && ctx->relation().isValid() )
     {
-      if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-           || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+      if ( ( ctx->relation().id() == mRelation.id() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+           || ( mNmRelation.isValid() && ctx->relation().id() == mNmRelation.id() ) )
       {
         mWidget->setVisible( false );
         break;
       }
       ctx = ctx->parentContext();
     }
-    while ( ctx );
 
     mWidget->setRelations( mRelation, mNmRelation );
   }
