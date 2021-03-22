@@ -31,7 +31,10 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   Q_ASSERT( mLayer );
   setupUi( this );
 
-  mExtraWidgetContainer->setLayout( new QVBoxLayout() );
+  mExtraWidgetLayout = new QVBoxLayout();
+  mExtraWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
+  mExtraWidgetLayout->addStretch();
+  mExtraWidgetContainer->setLayout( mExtraWidgetLayout );
 
   connect( mModeFixedRangeRadio, &QRadioButton::toggled, mFixedTimeRangeFrame, &QWidget::setEnabled );
 
@@ -96,5 +99,5 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
 void QgsRasterLayerTemporalPropertiesWidget::addWidget( QgsMapLayerConfigWidget *widget )
 {
   mExtraWidgets << widget;
-  mExtraWidgetContainer->layout()->addWidget( widget );
+  mExtraWidgetLayout->insertWidget( mExtraWidgetLayout->count() - 1, widget );
 }
