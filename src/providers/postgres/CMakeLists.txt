@@ -80,6 +80,8 @@ target_link_libraries (postgresprovider_a
 if (WITH_GUI)
   include_directories (
     ${CMAKE_BINARY_DIR}/src/providers/postgres
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
   )
 
   QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
