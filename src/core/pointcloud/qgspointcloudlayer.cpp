@@ -32,13 +32,16 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerfactory.h"
 #include <QUrl>
+#include "qgseptprovider.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
+                                        const QString &dataSourceType,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
+  , mDataSourceType( dataSourceType )
 {
 
   if ( !path.isEmpty() && !providerLib.isEmpty() )
@@ -62,7 +65,7 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
   options.transformContext = transformContext();
   options.skipCrsValidation = true;
 
-  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
+  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mDataSourceType, mProviderKey, options );
   QgsMapLayer::clone( layer );
 
   if ( mRenderer )
@@ -299,7 +302,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     flags |= QgsDataProvider::FlagTrustDataSource;
   }
 
-  mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
+  mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createEptDataProvider( provider, dataSource, mDataSourceType, options, flags ) ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( QStringLiteral( "Unable to get point cloud data provider" ) );

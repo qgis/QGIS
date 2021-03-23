@@ -4,12 +4,22 @@
 #include <QObject>
 
 #include "qgspointcloudattribute.h"
+#include "qgstiledownloadmanager.h"
 
-class QgsTileDownloadManagerReply;
+#define SIP_NO_FILE
+
 class QgsPointCloudAttributeCollection;
 class QgsPointCloudBlock;
 
-class QgsPointCloudBlockHandle : public QObject
+/**
+ * \ingroup core
+ * \brief Base class for handling loading QgsPointCloudBlock asynchronously
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsPointCloudBlockHandle : public QObject
 {
     Q_OBJECT
   public:

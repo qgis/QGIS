@@ -90,6 +90,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     explicit QgsPointCloudLayer( const QString &path = QString(),
                                  const QString &baseName = QString(),
+                                 const QString &dataSourceType = QString(),
                                  const QString &providerLib = QStringLiteral( "pointcloud" ),
                                  const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
 
@@ -185,6 +186,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
+
+    QString mDataSourceType;
 };
 
 

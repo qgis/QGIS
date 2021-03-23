@@ -131,7 +131,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * Emitted when a point cloud layer has been selected for addition.
      * \since QGIS 3.18
      */
-    void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
+    void addPointCloudLayer( const QString &url, const QString &baseName, const QString &dataSourceType, const QString &providerKey );
 
     /**
      * Emitted when one or more OGR supported layers are selected for addition

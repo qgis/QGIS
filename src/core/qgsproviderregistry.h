@@ -39,6 +39,7 @@ class QgsCoordinateReferenceSystem;
 class QgsDataItemProvider;
 class QgsDataItem;
 class QgsRasterDataProvider;
+class QgsEptProvider;
 
 /**
  * \ingroup core
@@ -177,6 +178,8 @@ class CORE_EXPORT QgsProviderRegistry
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
+
+    SIP_SKIP QgsEptProvider *createEptDataProvider( const QString &providerKey, const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
 
     /**
      * Returns list of raster pyramid resampling methods
