@@ -32,7 +32,7 @@
       <bool>true</bool>
      </property>
      <property name="title">
-      <string>WMS-T Temporal Range</string>
+      <string>Static WMS-T Temporal Range</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
