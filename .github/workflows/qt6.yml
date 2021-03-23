@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-**
+      - qt-for-python
     paths:
     - 'src/**'
     - 'tests/**'
