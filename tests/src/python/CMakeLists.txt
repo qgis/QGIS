@@ -268,6 +268,7 @@ ADD_PYTHON_TEST(PyQgsReport test_qgsreport.py)
 ADD_PYTHON_TEST(PyQgsRulebasedRenderer test_qgsrulebasedrenderer.py)
 ADD_PYTHON_TEST(PyQgsScaleBarRendererRegistry test_qgsscalebarrendererregistry.py)
 ADD_PYTHON_TEST(PyQgsScaleWidget test_qgsscalewidget.py)
+ADD_PYTHON_TEST(PyQgsServerWMSGetFeatureInfo test_qgsserver_wms_getfeatureinfo.py)
 ADD_PYTHON_TEST(PyQgsSingleSymbolRenderer test_qgssinglesymbolrenderer.py)
 ADD_PYTHON_TEST(PyQgsShapefileProvider test_provider_shapefile.py)
 ADD_PYTHON_TEST(PyQgsSvgCache test_qgssvgcache.py)
@@ -388,8 +389,6 @@ if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsProviderConnectionPostgres test_qgsproviderconnection_postgres.py)
   if (WITH_SERVER)
     ADD_PYTHON_TEST(PyQgsServerWMSGetFeatureInfoPG test_qgsserver_wms_getfeatureinfo_postgres.py)
-    # project contains connection to Postgres database
-    ADD_PYTHON_TEST(PyQgsServerWMSGetFeatureInfo test_qgsserver_wms_getfeatureinfo.py)
     ADD_PYTHON_TEST(PyQgsServerAccessControlWMSGetPrintPG test_qgsserver_accesscontrol_wms_getprint_postgres.py)
   endif()
   SET_TESTS_PROPERTIES(PyQgsImportIntoPostGIS PyQgsQueryResultModel PyQgsVectorFileWriterPostgres PyQgsPostgresProvider
@@ -397,7 +396,7 @@ if (ENABLE_PGTEST)
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest
     PyQgsDbManagerPostgis PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox
-    PyQgsProviderConnectionPostgres PyQgsServerWMSGetFeatureInfoPG PyQgsServerAccessControlWMSGetPrintPG PyQgsServerWMSGetFeatureInfo
+    PyQgsProviderConnectionPostgres PyQgsServerWMSGetFeatureInfoPG PyQgsServerAccessControlWMSGetPrintPG
     PROPERTIES LABELS "POSTGRES")
 endif()
 
