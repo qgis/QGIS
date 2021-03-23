@@ -88,7 +88,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mTemporalExtent = uri.param( QStringLiteral( "timeDimensionExtent" ) );
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
 
-    if ( mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.size() > 0 )
+    if ( !mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.empty() )
     {
       QDateTime begin = mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
       QDateTime end = mTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
@@ -97,6 +97,18 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     }
     else
       mFixedRange = QgsDateTimeRange();
+
+    mAllRanges.clear();
+    mAllRanges.reserve( mTimeDimensionExtent.datesResolutionList.size() );
+    for ( const QgsWmstExtentPair &extent : std::as_const( mTimeDimensionExtent.datesResolutionList ) )
+    {
+      if ( extent.dates.dateTimes.empty() )
+        continue;
+
+      const QDateTime begin = extent.dates.dateTimes.first();
+      const QDateTime end = extent.dates.dateTimes.last();
+      mAllRanges.append( QgsDateTimeRange( begin, end ) );
+    }
 
     if ( uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) ) != QString() )
     {

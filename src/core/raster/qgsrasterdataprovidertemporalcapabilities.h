@@ -75,18 +75,42 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     void setIntervalHandlingMethod( IntervalHandlingMethod method );
 
     /**
-     * Sets the datetime \a range extent from which temporal data is available from the provider.
+     * Sets the overall datetime \a range extent from which temporal data is available from the provider.
      *
      * \see availableTemporalRange()
     */
     void setAvailableTemporalRange( const QgsDateTimeRange &range );
 
     /**
-     * Returns the datetime range extent from which temporal data is available from the provider.
+     * Returns the overall datetime range extent from which temporal data is available from the provider.
      *
      * \see setAvailableTemporalRange()
     */
     const QgsDateTimeRange &availableTemporalRange() const;
+
+    /**
+     * Sets a list of all valid datetime \a ranges for which temporal data is available from the provider.
+     *
+     * As opposed to setAvailableTemporalRange(), this method is useful when a provider
+     * contains a set of non-contiguous datetime ranges.
+     *
+     * \see allAvailableTemporalRanges()
+     * \see setAvailableTemporalRange()
+     * \since QGIS 3.20
+    */
+    void setAllAvailableTemporalRanges( const QList< QgsDateTimeRange > &ranges );
+
+    /**
+     * Returns a list of all valid datetime ranges for which temporal data is available from the provider.
+     *
+     * As opposed to availableTemporalRange(), this method is useful when a provider
+     * contains a set of non-contiguous datetime ranges.
+     *
+     * \see setAllAvailableTemporalRanges()
+     * \see availableTemporalRange()
+     * \since QGIS 3.20
+    */
+    QList< QgsDateTimeRange > allAvailableTemporalRanges() const;
 
     /**
      * Sets the available reference datetime \a range. This is to be used for
@@ -133,6 +157,12 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      */
     QgsDateTimeRange mAvailableTemporalRange;
+
+    /**
+     * A list of all valid temporal ranges for the provider. Used when a provider
+     * has a non-contiguous set of available temporal ranges.
+     */
+    QList< QgsDateTimeRange > mAllAvailableTemporalRanges;
 
     //! Represents the requested temporal range.
     QgsDateTimeRange mRequestedRange;
