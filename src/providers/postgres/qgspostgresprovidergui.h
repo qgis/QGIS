@@ -18,6 +18,7 @@
 
 #include <QList>
 #include <QMainWindow>
+#include <memory>
 
 #include "qgsproviderguimetadata.h"
 

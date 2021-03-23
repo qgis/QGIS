@@ -32,6 +32,7 @@ if (WITH_GUI)
   include_directories (
     ${CMAKE_BINARY_DIR}/src/providers/wms
     ${CMAKE_SOURCE_DIR}/src/providers/wms
+    ${CMAKE_BINARY_DIR}/src/ui
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
   )
