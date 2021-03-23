@@ -3046,9 +3046,10 @@ QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const 
 }
 
 QgsProcessingParameterGeometry::QgsProcessingParameterGeometry( const QString &name, const QString &description,
-    const QVariant &defaultValue, bool optional, const QList<int> &geometryTypes )
+    const QVariant &defaultValue, bool optional, const QList<int> &geometryTypes, bool allowMultipart )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional ),
-    mGeomTypes( geometryTypes )
+    mGeomTypes( geometryTypes ),
+    mAllowMultipart( allowMultipart )
 {
 
 }
@@ -3072,12 +3073,14 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
 
   if ( input.canConvert< QgsGeometry >() )
   {
-    return anyTypeAllowed || mGeomTypes.contains( input.value<QgsGeometry>().type() );
+    return ( anyTypeAllowed || mGeomTypes.contains( input.value<QgsGeometry>().type() ) ) &&
+           ( mAllowMultipart || !input.value<QgsGeometry>().isMultipart() );
   }
 
   if ( input.canConvert< QgsReferencedGeometry >() )
   {
-    return anyTypeAllowed || mGeomTypes.contains( input.value<QgsReferencedGeometry>().type() );
+    return ( anyTypeAllowed || mGeomTypes.contains( input.value<QgsReferencedGeometry>().type() ) ) &&
+           ( mAllowMultipart || !input.value<QgsReferencedGeometry>().isMultipart() );
   }
 
   if ( input.canConvert< QgsPointXY >() )
@@ -3115,7 +3118,7 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
     QgsGeometry g = QgsGeometry::fromWkt( match.captured( 2 ) );
     if ( ! g.isNull() )
     {
-      return anyTypeAllowed || mGeomTypes.contains( g.type() );
+      return ( anyTypeAllowed || mGeomTypes.contains( g.type() ) ) && ( mAllowMultipart || !g.isMultipart() );
     }
     else
     {
@@ -3210,7 +3213,7 @@ QString QgsProcessingParameterGeometry::asScriptCode() const
         break;
 
       default:
-        code += QLatin1String( "unknown" );
+        code += QLatin1String( "unknown " );
         break;
     }
   }
@@ -3262,6 +3265,11 @@ QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::Pyt
         code += QStringLiteral( ", geometryTypes=[%1 ]" ).arg( options.join( ',' ) );
       }
 
+      if ( ! mAllowMultipart )
+      {
+        code += QStringLiteral( ", allowMultipart=False" );
+      }
+
       QgsProcessingContext c;
       code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
       return code;
@@ -3279,6 +3287,7 @@ QVariantMap QgsProcessingParameterGeometry::toVariantMap() const
     types << type;
   }
   map.insert( QStringLiteral( "geometrytypes" ), types );
+  map.insert( QStringLiteral( "multipart" ), mAllowMultipart );
   return map;
 }
 
@@ -3291,6 +3300,7 @@ bool QgsProcessingParameterGeometry::fromVariantMap( const QVariantMap &map )
   {
     mGeomTypes << val.toInt();
   }
+  mAllowMultipart = map.value( QStringLiteral( "multipart" ) ).toBool();
   return true;
 }
 
