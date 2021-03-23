@@ -280,30 +280,108 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
+      case QVariant::StringList:
+      {
+        QStringList list;
+        char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+        const int count = CSLCount( lst );
+        if ( count > 0 )
+        {
+          list.reserve( count );
+          for ( int i = 0; i < count; i++ )
+          {
+            if ( encoding )
+              list << encoding->toUnicode( lst[i] );
+            else
+              list << QString::fromUtf8( lst[i] );
+          }
+        }
+        value = list;
+        break;
+      }
+
       case QVariant::List:
       {
-        if ( field.subType() == QVariant::String )
+        switch ( field.subType() )
         {
-          QStringList list;
-          char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
-          const int count = CSLCount( lst );
-          if ( count > 0 )
+          case QVariant::String:
           {
-            for ( int i = 0; i < count; i++ )
+            QStringList list;
+            char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+            const int count = CSLCount( lst );
+            if ( count > 0 )
             {
-              if ( encoding )
-                list << encoding->toUnicode( lst[i] );
-              else
-                list << QString::fromUtf8( lst[i] );
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                if ( encoding )
+                  list << encoding->toUnicode( lst[i] );
+                else
+                  list << QString::fromUtf8( lst[i] );
+              }
             }
+            value = list;
+            break;
           }
-          value = list;
-        }
-        else
-        {
-          Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
-          if ( ok )
-            *ok = false;
+
+          case QVariant::Int:
+          {
+            QVariantList list;
+            int count = 0;
+            const int *lst = OGR_F_GetFieldAsIntegerList( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          case QVariant::Double:
+          {
+            QVariantList list;
+            int count = 0;
+            const double *lst = OGR_F_GetFieldAsDoubleList( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          case QVariant::LongLong:
+          {
+            QVariantList list;
+            int count = 0;
+            const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          default:
+          {
+            Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
+            if ( ok )
+              *ok = false;
+            break;
+          }
         }
         break;
       }
