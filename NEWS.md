@@ -35,9 +35,9 @@ This release has following new features:
 - Expressions: Support for min, max, majority, sum, mean, and median functions on numerical arrays
 - Expressions: Negative index for array_get function
 - Expressions: Add map_credits function
-- Digitising: Select features context menu
-- Digitising: Curve tracing settings added to UI
-- Digitising: Feature scaling tool
+- Digitizing: Select features context menu
+- Digitizing: Curve tracing settings added to UI
+- Digitizing: Feature scaling tool
 - Data Management: New export to spreadsheet algorithm
 - Data Management: Reproject coordinates in the Georeferencer
 - Data Management: Polymorphic relations/ Document management system
@@ -94,8 +94,8 @@ This release has following new features:
 - Symbology: Expose option to offset simple line dash patterns by a preset amount
 - Symbology: Add options to dynamically tweak dash pattern in simple line symbol layers
 - Symbology: Manage 3D symbols through style manager
-- Labelling: Add option to allow users to control the placement of labels along line features
-- Labelling: Control anchor point for line labels
+- Labeling: Add option to allow users to control the placement of labels along line features
+- Labeling: Control anchor point for line labels
 - Diagrams: Render axis for stacked bar diagram
 - Mesh: In-memory mesh datasets with persistence
 - Mesh: Multi identify for mesh layer
@@ -125,8 +125,8 @@ This release has following new features:
 - Expressions: Add to_decimal() function to convert DMS to DD
 - Expressions: Add "main_angle" function to return the estimated main angle of a geometry
 - Expressions: Port refFunctions to core
-- Digitising: Add option to calculate bearing based on travel direction
-- Digitising: Digitizing and splitting curved features
+- Digitizing: Add option to calculate bearing based on travel direction
+- Digitizing: Digitizing and splitting curved features
 - Data Management: Rescale raster algorithm for Processing
 - Forms and Widgets: Multiple widgets for a single relation
 - Forms and Widgets: Show related features in identify results tree
@@ -197,10 +197,10 @@ This release has following new features:
 - Symbology: Add percentage size unit for Raster Image Marker and Raster fill layers symbology.
 - Symbology: Add data-defined property to font family/style for font markers
 - Symbology: New font style setting for font markers
-- Labelling: Respect HTML colors in labels
-- Labelling: Automatic placement of labels outside polygons
-- Labelling: Vector tile layer - part 4 (labeling)
-- Labelling: Add control over anchor point for callout on label
+- Labeling: Respect HTML colors in labels
+- Labeling: Automatic placement of labels outside polygons
+- Labeling: Vector tile layer - part 4 (labeling)
+- Labeling: Add control over anchor point for callout on label
 - Mesh: Use only specified dataset group
 - Mesh: Scalar color settings depending on classification
 - Mesh: Snap on mesh elements
@@ -216,7 +216,7 @@ This release has following new features:
 - Print Layouts: Temporal settings for layout map items
 - Print Layouts: Allow sorting attribute table by field not listed in the table
 - Print Layouts: Expose control over layer legend splitting behavior on a layer-by-layer basis
-- Print Layouts: Allow customisation of division and subdivision symbols as distinct from scalebar tick horizontal symbol
+- Print Layouts: Allow customization of division and subdivision symbols as distinct from scalebar tick horizontal symbol
 - Print Layouts: Allow overriding the default symbol for a legend node
 - Print Layouts: Allow placing manual column breaks in legends
 - Print Layouts: Add subdivisions in ticks scalebar right segments
@@ -237,10 +237,10 @@ This release has following new features:
 - Expressions: Feature browser for preview in expression builder
 - Expressions: Ability to remove custom functions
 - Expressions: Add ability to edit, import and export user expressions
-- Digitising: Dedicated avoid geometry intersection/overlap mode
-- Digitising: New snapping modes: Centroid and middle of a segment (midpoint)
-- Digitising: Snapping to the currently digitized feature
-- Digitising: Tracing now supports curved geometries
+- Digitizing: Dedicated avoid geometry intersection/overlap mode
+- Digitizing: New snapping modes: Centroid and middle of a segment (midpoint)
+- Digitizing: Snapping to the currently digitized feature
+- Digitizing: Tracing now supports curved geometries
 - Forms and Widgets: Allow editing of links in file widget
 - Forms and Widgets: Expression controlled labels (aliases)
 - Forms and Widgets: Add description to value relation widget
