@@ -1018,7 +1018,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     std::unique_ptr< QgsCoordinateTransform > mCoordinateTransform;
 
     bool mUsingTransaction = false;
-    bool supportsStringList = false;
+    QSet< QVariant::Type > mSupportedListSubTypes;
 
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
     gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );
