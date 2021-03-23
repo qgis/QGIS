@@ -236,7 +236,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     /**
      * Emitted when the current feature changes
-     * \since QGIS 3.16.5
+     * \since QGIS 3.16.6
      */
     void currentFeatureChanged();
 
