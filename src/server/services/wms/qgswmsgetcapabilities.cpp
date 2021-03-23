@@ -1065,36 +1065,36 @@ namespace QgsWms
 
             //Ex_GeographicBoundingBox
             QgsRectangle extent = l->extent();  // layer extent by default
-            QgsRectangle wgs84Extent = l->wgs84Extent();
-            if ( l->type() == QgsMapLayerType::VectorLayer )
+            QgsRectangle wgs84Extent;
+            if ( extent.isEmpty() )
             {
-              QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
-              if ( vl && vl->featureCount() == 0 )
+              // if the extent is empty (not only Null), use the wms extent
+              // defined in the project...
+              extent = QgsServerProjectUtils::wmsExtent( *project );
+              if ( extent.isNull() )
               {
-                // if there's no feature, use the wms extent defined in the
-                // project...
-                wgs84Extent = QgsRectangle();
-                extent = QgsServerProjectUtils::wmsExtent( *project );
-                if ( extent.isNull() )
-                {
-                  // or the CRS extent otherwise
-                  extent = vl->crs().bounds();
-                }
+                // or the CRS extent otherwise
+                extent = l->crs().bounds();
+              }
+              else if ( l->crs() != project->crs() )
+              {
                 // If CRS is different transform it to layer's CRS
-                else if ( vl->crs() != project->crs() )
+                try
                 {
-                  try
-                  {
-                    QgsCoordinateTransform ct( project->crs(), vl->crs(), project->transformContext() );
-                    extent = ct.transform( extent );
-                  }
-                  catch ( QgsCsException &cse )
-                  {
-                    QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( vl->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
-                    continue;
-                  }
+                  QgsCoordinateTransform ct( project->crs(), l->crs(), project->transformContext() );
+                  extent = ct.transform( extent );
+                }
+                catch ( QgsCsException &cse )
+                {
+                  QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( l->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+                  continue;
                 }
               }
+            }
+            else
+            {
+              // Get the wgs84 extent from layer
+              wgs84Extent = l->wgs84Extent();
             }
 
             appendLayerBoundingBoxes( doc, layerElem, extent, l->crs(), crsList, outputCrsList, project, wgs84Extent );
