@@ -78,7 +78,7 @@
        <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
         <property name="dateTime">
          <datetime>
-          <hour>14</hour>
+          <hour>4</hour>
           <minute>20</minute>
           <second>36</second>
           <year>2020</year>
@@ -187,7 +187,7 @@
            <number>0</number>
           </property>
           <item row="2" column="0">
-           <widget class="QFrame" name="mStaticWmstFrame">
+           <widget class="QFrame" name="mStaticWmstRangeFrame">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -210,10 +210,20 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="2" column="1" colspan="2">
-              <widget class="QPushButton" name="mSetEndAsStartStaticButton">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_13">
                <property name="text">
-                <string>Set end same as start</string>
+                <string>Start date</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="3">
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;If the capabilities of this layer move out of this time range the range will be reset to layer's advertised default layer time range.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -221,7 +231,7 @@
               <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                <property name="dateTime">
                 <datetime>
-                 <hour>17</hour>
+                 <hour>7</hour>
                  <minute>3</minute>
                  <second>57</second>
                  <year>2020</year>
@@ -243,20 +253,6 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_13">
-               <property name="text">
-                <string>Start date</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_4">
-               <property name="text">
-                <string>End date</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="1" colspan="2">
               <widget class="QgsDateTimeEdit" name="mEndStaticDateTimeEdit">
                <property name="displayFormat">
@@ -270,13 +266,17 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0" colspan="3">
-              <widget class="QLabel" name="label_10">
+             <item row="2" column="1" colspan="2">
+              <widget class="QPushButton" name="mSetEndAsStartStaticButton">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;If the capabilities of this layer move out of this time range the range will be reset to layer's advertised default layer time range.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>Set end same as start</string>
                </property>
-               <property name="wordWrap">
-                <bool>true</bool>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>End date</string>
                </property>
               </widget>
              </item>
@@ -336,6 +336,33 @@
             <property name="text">
              <string>Predefined range</string>
             </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QFrame" name="mStaticWmstChoiceFrame">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QComboBox" name="mStaticWmstRangeCombo"/>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
