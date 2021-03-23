@@ -38,7 +38,11 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
   {
     mEndStaticDateTimeEdit->setDateTime( mStartStaticDateTimeEdit->dateTime() );
   } );
-  connect( mStaticTemporalRangeRadio, &QRadioButton::toggled, mStaticWmstFrame, &QWidget::setEnabled );
+  connect( mStaticTemporalRangeRadio, &QRadioButton::toggled, mStaticWmstRangeFrame, &QWidget::setEnabled );
+  connect( mStaticTemporalRangeRadio, &QRadioButton::toggled, mStaticWmstChoiceFrame, &QWidget::setEnabled );
+
+  mStaticWmstRangeFrame->setEnabled( false );
+  mStaticWmstChoiceFrame->setEnabled( false );
 
   syncToLayer( mRasterLayer );
 
@@ -72,6 +76,24 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
     const QgsDateTimeRange availableProviderRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
     const QgsDateTimeRange availableReferenceRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableReferenceTemporalRange();
 
+    const QList< QgsDateTimeRange > allAvailableRanges = mRasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
+    // determine if available ranges are a set of non-contiguous instants, and if so, we show a combobox to users instead of the free-form date widgets
+    if ( std::all_of( allAvailableRanges.cbegin(), allAvailableRanges.cend(), []( const QgsDateTimeRange & range ) { return range.isInstant(); } ) )
+    {
+      mStaticWmstRangeFrame->hide();
+      mStaticWmstChoiceFrame->show();
+      mStaticWmstRangeCombo->clear();
+      for ( const QgsDateTimeRange &range : allAvailableRanges )
+      {
+        mStaticWmstRangeCombo->addItem( range.begin().toString( Qt::ISODate ), QVariant::fromValue( range ) );
+      }
+    }
+    else
+    {
+      mStaticWmstRangeFrame->show();
+      mStaticWmstChoiceFrame->hide();
+    }
+
     QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
                                       mRasterLayer->providerType() );
 
@@ -101,9 +123,20 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
     const QString time = uri.value( QStringLiteral( "time" ) ).toString();
     if ( !time.isEmpty() )
     {
-      QStringList parts = time.split( '/' );
-      mStartStaticDateTimeEdit->setDateTime( QDateTime::fromString( parts.at( 0 ), Qt::ISODateWithMs ) );
-      mEndStaticDateTimeEdit->setDateTime( QDateTime::fromString( parts.at( 1 ), Qt::ISODateWithMs ) );
+      const QStringList parts = time.split( '/' );
+      const QgsDateTimeRange range( QDateTime::fromString( parts.at( 0 ), Qt::ISODateWithMs ), QDateTime::fromString( parts.at( 1 ), Qt::ISODateWithMs ) );
+
+      mStartStaticDateTimeEdit->setDateTime( range.begin() );
+      mEndStaticDateTimeEdit->setDateTime( range.end() );
+
+      if ( const int index = mStaticWmstRangeCombo->findData( QVariant::fromValue( range ) ); index >= 0 )
+        mStaticWmstRangeCombo->setCurrentIndex( index );
+      else if ( mStaticWmstRangeCombo->count() > 0 )
+        mStaticWmstRangeCombo->setCurrentIndex( 0 );
+    }
+    else if ( mStaticWmstRangeCombo->count() > 0 )
+    {
+      mStaticWmstRangeCombo->setCurrentIndex( 0 );
     }
 
     const QString referenceTimeExtent = uri.value( QStringLiteral( "referenceTimeDimensionExtent" ) ).toString();
@@ -189,8 +222,9 @@ void QgsWmstSettingsWidget::apply()
     {
       if ( mStaticTemporalRangeRadio->isChecked() )
       {
-        QString time = mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + '/' +
-                       mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
+        const QString time = mStaticWmstRangeCombo->count() > 0
+                             ? ( mStaticWmstRangeCombo->currentData().value< QgsDateTimeRange >().begin().toString( Qt::ISODateWithMs ) + '/' + mStaticWmstRangeCombo->currentData().value< QgsDateTimeRange >().end().toString( Qt::ISODateWithMs ) )
+                             : ( mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + '/' + mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) );
         uri[ QStringLiteral( "time" ) ] = time;
         uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "provider" );
       }
