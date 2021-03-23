@@ -87,11 +87,13 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
       {
         mStaticWmstRangeCombo->addItem( range.begin().toString( Qt::ISODate ), QVariant::fromValue( range ) );
       }
+      mStaticTemporalRangeRadio->setText( tr( "Predefined date" ) );
     }
     else
     {
       mStaticWmstRangeFrame->show();
       mStaticWmstChoiceFrame->hide();
+      mStaticTemporalRangeRadio->setText( tr( "Predefined range" ) );
     }
 
     QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
