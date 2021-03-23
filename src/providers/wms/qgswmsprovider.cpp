@@ -1116,7 +1116,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   QString format { QStringLiteral( "yyyy-MM-ddThh:mm:ssZ" ) };
   bool dateOnly = false;
 
-  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "wms" ) );
 
   QVariantMap uri = metadata->decodeUri( dataSourceUri() );
 
@@ -1141,7 +1141,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 
   if ( !uri.value( QStringLiteral( "enableTime" ), true ).toBool() )
   {
-    format = "yyyy-MM-dd";
+    format = QStringLiteral( "yyyy-MM-dd" );
     dateOnly = true;
   }
 
