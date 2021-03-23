@@ -35,6 +35,16 @@ const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableTemp
   return mAvailableTemporalRange;
 }
 
+void QgsRasterDataProviderTemporalCapabilities::setAllAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges )
+{
+  mAllAvailableTemporalRanges = ranges;
+}
+
+QList<QgsDateTimeRange> QgsRasterDataProviderTemporalCapabilities::allAvailableTemporalRanges() const
+{
+  return mAllAvailableTemporalRanges;
+}
+
 void QgsRasterDataProviderTemporalCapabilities::setAvailableReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !hasTemporalCapabilities() )
