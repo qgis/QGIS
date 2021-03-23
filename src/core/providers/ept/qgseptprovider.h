@@ -38,9 +38,13 @@ class QgsEptProvider: public QgsPointCloudDataProvider
   public:
     QgsEptProvider( const QString &uri,
                     const QgsDataProvider::ProviderOptions &providerOptions,
+                    const QString &dataSourceType,
                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsEptProvider();
+
+    static QgsEptProvider *create( const QString &providerKey, const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
+
     QgsCoordinateReferenceSystem crs() const override;
 
     QgsRectangle extent() const override;
@@ -68,6 +72,7 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
     QgsEptProviderMetadata();
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QgsEptProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsEptProvider *createEptDataProvider( const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     int priorityForUri( const QString &uri ) const override;
     QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;

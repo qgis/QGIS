@@ -43,6 +43,7 @@ class QgsTransaction;
 class QgsRasterDataProvider;
 class QgsMeshDataProvider;
 class QgsAbstractDatabaseProviderConnection;
+class QgsEptProvider;
 
 struct QgsMesh;
 
@@ -384,6 +385,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
+
+    SIP_SKIP virtual QgsEptProvider *createEptDataProvider( const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
 
     /**
      * Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)

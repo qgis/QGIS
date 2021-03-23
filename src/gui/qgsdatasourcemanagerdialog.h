@@ -137,7 +137,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
      * Emitted when a point cloud layer was selected for addition: for signal forwarding to QgisApp
      * \since QGIS 3.18
      */
-    void addPointCloudLayer( const QString &pointCloudLayerPath, const QString &baseName, const QString &providerKey );
+    void addPointCloudLayer( const QString &pointCloudLayerPath, const QString &baseName, const QString &dataSourceType, const QString &providerKey );
 
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
     void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );

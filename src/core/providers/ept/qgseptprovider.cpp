@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgis.h"
+#include "qgslogger.h"
+#include "qgsproviderregistry.h"
 #include "qgseptprovider.h"
 #include "qgseptpointcloudindex.h"
 #include "qgsremoteeptpointcloudindex.h"
@@ -33,19 +35,31 @@
 QgsEptProvider::QgsEptProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
+  const QString &dataSourceType,
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
-  if ( QFileInfo::exists( uri ) )
-    mIndex.reset( new QgsEptPointCloudIndex );
-  else
+  if ( dataSourceType == QStringLiteral( "remote" ) )
     mIndex.reset( new QgsRemoteEptPointCloudIndex );
+  else
+    mIndex.reset( new QgsEptPointCloudIndex );
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   loadIndex( );
+}
+
+QgsEptProvider *QgsEptProvider::create( const QString &providerKey, const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  QgsEptProvider *ret = QgsProviderRegistry::instance()->createEptDataProvider( providerKey, uri, dataSourceType, options, flags );
+  if ( !ret )
+  {
+    QgsDebugMsg( "Cannot resolve 'createEptDataProviderFunction' function in " + providerKey + " provider" );
+  }
+
+  return ret;
 }
 
 QgsEptProvider::~QgsEptProvider() = default;
@@ -130,7 +144,12 @@ QgsEptProviderMetadata::QgsEptProviderMetadata():
 
 QgsEptProvider *QgsEptProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsEptProvider( uri, options, flags );
+  return new QgsEptProvider( uri, options, "", flags );
+}
+
+QgsEptProvider *QgsEptProviderMetadata::createEptDataProvider( const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsEptProvider( uri, options, dataSourceType, flags );
 }
 
 QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const

@@ -1161,7 +1161,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * in the Map Legend so it should be formed in a meaningful way.
      * \since QGIS 3.18
      */
-    QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
+    QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &dataSourceType, const QString &providerKey );
 
     /**
      * \brief overloaded version of the private addLayer method that takes a list of
@@ -2114,6 +2114,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open a point cloud layer - this is the generic function which takes all parameters
     QgsPointCloudLayer *addPointCloudLayerPrivate( const QString &uri,
+        const QString &dataSourceType,
         const QString &baseName,
         const QString &providerKey,
         bool guiWarning = true );

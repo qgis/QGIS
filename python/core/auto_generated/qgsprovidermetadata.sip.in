@@ -313,6 +313,7 @@ Creates a new instance of the raster data provider.
 .. versionadded:: 3.10
 %End
 
+
     virtual bool createMeshData(
       const QgsMesh &mesh,
       const QString uri,
