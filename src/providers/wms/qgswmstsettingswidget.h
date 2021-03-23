@@ -34,7 +34,6 @@ class QgsWmstSettingsWidget : public QgsMapLayerConfigWidget, private Ui::QgsWms
     void syncToLayer( QgsMapLayer *layer ) override;
     void apply() override;
   private slots:
-    void passProjectTemporalRange_toggled( bool checked );
     void temporalPropertiesChange();
 
   private:
