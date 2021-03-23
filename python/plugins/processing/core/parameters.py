@@ -140,6 +140,8 @@ def getParameterFromString(s, context=''):
                         params[4] = [int(p) for p in params[4].split(';')]
                     except:
                         params[4] = [getattr(QgsWkbTypes, p.split(".")[1]) for p in params[4].split(';')]
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
             elif clazz == QgsProcessingParameterCrs:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
