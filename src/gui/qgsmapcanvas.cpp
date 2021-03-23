@@ -1885,8 +1885,15 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
 
 void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
 {
+  // use shift+middle mouse button for zooming, map tools won't receive any events in that case
+  if ( e->button() == Qt::MiddleButton &&
+       e->modifiers() & Qt::ShiftModifier )
+  {
+    beginZoomRect( e->pos() );
+    return;
+  }
   //use middle mouse button for panning, map tools won't receive any events in that case
-  if ( e->button() == Qt::MiddleButton )
+  else if ( e->button() == Qt::MiddleButton )
   {
     mCanvasProperties->panSelectorDown = true;
     panActionStart( mCanvasProperties->mouseLastXY );
@@ -1927,8 +1934,15 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
 
 void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
 {
+  // if using shift+middle mouse button for zooming, end zooming and return
+  if ( mZoomDragging &&
+       e->button() == Qt::MiddleButton )
+  {
+    endZoomRect( e->pos() );
+    return;
+  }
   //use middle mouse button for panning, map tools won't receive any events in that case
-  if ( e->button() == Qt::MiddleButton )
+  else if ( e->button() == Qt::MiddleButton )
   {
     mCanvasProperties->panSelectorDown = false;
     panActionEnd( mCanvasProperties->mouseLastXY );
