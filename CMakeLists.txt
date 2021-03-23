@@ -451,12 +451,17 @@ if(WITH_CORE)
   endif()
 
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
+  if (WITH_QT6)
+    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+  else()
+    # TODO only available starting from Qt 6.2
+    find_package(${QT_VERSION_BASE} COMPONENTS Positioning)
+  endif()
   if (NOT IOS)
     find_package(${QT_VERSION_BASE} COMPONENTS PrintSupport REQUIRED)
   else()
     add_definitions(-DQT_NO_PRINTER)
   endif()
-  find_package(${QT_VERSION_BASE} COMPONENTS Positioning)
   if (WITH_QTWEBKIT AND NOT WITH_QT6)
     find_package(Qt5WebKit REQUIRED)
     find_package(Qt5WebKitWidgets REQUIRED)
@@ -506,18 +511,14 @@ if(WITH_CORE)
   endif()
 
   # Password helper
-  if (WITH_QT6)
-    # nope, not yet!
-  else()
-    find_package(QtKeychain REQUIRED)
-    # Master password hash and authentication encryption
-    find_package(QCA REQUIRED)
-    # Check for runtime dependency of qca-ossl plugin
-    # REQUIRED if unit tests are to be run from build directory
-    if(NOT MSVC)
-      include(QCAMacros)
-      FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
-    endif()
+  find_package(QtKeychain REQUIRED)
+  # Master password hash and authentication encryption
+  find_package(QCA REQUIRED)
+  # Check for runtime dependency of qca-ossl plugin
+  # REQUIRED if unit tests are to be run from build directory
+  if(NOT MSVC)
+    include(QCAMacros)
+    FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
   endif()
 
   if (APPLE)
