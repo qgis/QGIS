@@ -1687,8 +1687,9 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
      *
      * The \a geometryTypes argument allows for specifying a list of geometry types (see QgsWkbTypes::GeometryType) acceptable for this
      * parameter. Passing a empty list will allow for any type of geometry.
+     * The \a allowMultiPart argument allows specifying a multi part geometry
      */
-    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >() );
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >(), bool allowMultipart = true );
 
     /**
      * Returns the type name for the parameter class.
@@ -1716,6 +1717,20 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
     void setGeometryTypes( const QList<int> &geometryTypes ) { mGeomTypes = geometryTypes; }
 
     /**
+    * Returns the parameter allow multipart geometries.
+    * \see setAllowMultipart()
+    */
+    bool  allowMultipart() const { return mAllowMultipart; }
+
+    /**
+     * Sets the allow multipart geometries
+     * \see allowMultipart()
+     */
+    void setAllowMultipart( bool allowMultipart ) { mAllowMultipart = allowMultipart; }
+
+
+
+    /**
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
@@ -1723,6 +1738,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
   private:
 
     QList<int> mGeomTypes;
+    bool mAllowMultipart;
 
 };
 

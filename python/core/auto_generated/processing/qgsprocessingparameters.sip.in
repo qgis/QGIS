@@ -1650,12 +1650,13 @@ A geometry parameter for processing algorithms.
 %End
   public:
 
-    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >() );
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >(), bool allowMultipart = true );
 %Docstring
 Constructor for QgsProcessingParameterGeometry.
 
 The ``geometryTypes`` argument allows for specifying a list of geometry types (see QgsWkbTypes.GeometryType) acceptable for this
 parameter. Passing a empty list will allow for any type of geometry.
+The ``allowMultiPart`` argument allows specifying a multi part geometry
 %End
 
     static QString typeName();
@@ -1691,6 +1692,22 @@ Sets the allowed  ``geometryTypes``, as a list of QgsWkbTypes.GeometryType value
 
 .. seealso:: :py:func:`geometryTypes`
 %End
+
+    bool  allowMultipart() const;
+%Docstring
+Returns the parameter allow multipart geometries.
+
+.. seealso:: :py:func:`setAllowMultipart`
+%End
+
+    void setAllowMultipart( bool allowMultipart );
+%Docstring
+Sets the allow multipart geometries
+
+.. seealso:: :py:func:`allowMultipart`
+%End
+
+
 
     static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
