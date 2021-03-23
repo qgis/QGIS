@@ -217,12 +217,13 @@ class GdalUtils:
 
     @staticmethod
     def escapeAndJoin(strList):
-        escChars = [' ', '&', '(', ')', '"']
+        escChars = [' ', '&', '(', ')', '"', ';']
         joined = ''
         for s in strList:
             if not isinstance(s, str):
                 s = str(s)
-            if s and s[0] != '-' and any(c in s for c in escChars):
+            # don't escape if command starts with - and isn't a negative number, e.g. -9999
+            if s and re.match(r'^([^-]|-\d)', s) and any(c in s for c in escChars):
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
                           + '"'
             else:
