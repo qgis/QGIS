@@ -633,6 +633,8 @@ class QgsTemporalRange
  */
 typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
 
+Q_DECLARE_METATYPE( QgsDateRange )
+
 /**
  * QgsRange which stores a range of date times.
  *
@@ -644,5 +646,7 @@ typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
  * \since QGIS 3.0
  */
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange SIP_DOC_TEMPLATE;
+
+Q_DECLARE_METATYPE( QgsDateTimeRange )
 
 #endif // QGSRANGE_H
