@@ -2273,6 +2273,8 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( theSQL == mSubsetString && mFeaturesCounted != QgsVectorDataProvider::Uncounted )
     return true;
 
+  const bool subsetStringHasChanged { theSQL != mSubsetString };
+
   if ( !theSQL.isEmpty() )
   {
     QMutex *mutex = nullptr;
@@ -2354,10 +2356,13 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
   mRefreshFeatureCount = updateFeatureCount;
 
-  // check the validity of the layer
-  QgsDebugMsgLevel( QStringLiteral( "checking validity" ), 4 );
-  loadFields();
-  QgsDebugMsgLevel( QStringLiteral( "Done checking validity" ), 4 );
+  // check the validity of the layer if subset string has changed
+  if ( subsetStringHasChanged )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "checking validity" ), 4 );
+    loadFields();
+    QgsDebugMsgLevel( QStringLiteral( "Done checking validity" ), 4 );
+  }
 
   invalidateCachedExtent( false );
 
