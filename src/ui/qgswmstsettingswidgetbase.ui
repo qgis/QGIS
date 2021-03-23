@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>QgsWmstSettingsWidgetBase</class>
  <widget class="QWidget" name="QgsWmstSettingsWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>327</width>
+    <height>564</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>WMS-T Settings</string>
   </property>
@@ -19,6 +27,93 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>WMS-T Settings</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="mFetchModeComboBox"/>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="mDisableTime">
+        <property name="toolTip">
+         <string>If checked the time component of temporal queries will be discarded and only the data component will be used in server requests</string>
+        </property>
+        <property name="text">
+         <string>Ignore time components (use dates only)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Time slice mode</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mReferenceTimeGroupBox">
+     <property name="title">
+      <string>WMS-T Reference Time</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="mReferenceTimeExtentLabel">
+        <property name="text">
+         <string>No reference time is reported in the layer's capabilities.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
+        <property name="dateTime">
+         <datetime>
+          <hour>14</hour>
+          <minute>20</minute>
+          <second>36</second>
+          <year>2020</year>
+          <month>1</month>
+          <day>23</day>
+         </datetime>
+        </property>
+        <property name="date">
+         <date>
+          <year>2020</year>
+          <month>1</month>
+          <day>23</day>
+         </date>
+        </property>
+        <property name="currentSection">
+         <enum>QDateTimeEdit::MonthSection</enum>
+        </property>
+        <property name="displayFormat">
+         <string>M/d/yyyy H:mm:ss AP</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>false</bool>
+        </property>
+        <property name="timeSpec">
+         <enum>Qt::UTC</enum>
+        </property>
+        <property name="allowNull" stdset="0">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="mWmstGroup">
      <property name="enabled">
       <bool>true</bool>
@@ -33,95 +128,7 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_15">
-      <item row="0" column="0" colspan="3">
-       <widget class="QLabel" name="mLabel">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" rowspan="2" colspan="2">
-       <widget class="QComboBox" name="mFetchModeComboBox"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="mDisableTime">
-        <property name="text">
-         <string>Use dates only</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_16">
-        <property name="text">
-         <string>Time slice mode</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0">
-       <widget class="QFrame" name="mWmstReferenceTimeFrame">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_17">
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <item row="1" column="0">
-          <widget class="QLabel" name="mReferenceTimeLabel">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
-           <property name="dateTime">
-            <datetime>
-             <hour>0</hour>
-             <minute>20</minute>
-             <second>36</second>
-             <year>2020</year>
-             <month>1</month>
-             <day>24</day>
-            </datetime>
-           </property>
-           <property name="date">
-            <date>
-             <year>2020</year>
-             <month>1</month>
-             <day>24</day>
-            </date>
-           </property>
-           <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
-           </property>
-           <property name="displayFormat">
-            <string>M/d/yyyy H:mm:ss AP</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>false</bool>
-           </property>
-           <property name="timeSpec">
-            <enum>Qt::UTC</enum>
-           </property>
-           <property name="allowNull" stdset="0">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="3">
+      <item row="1" column="0" colspan="2">
        <widget class="QLabel" name="mWmstOptionsLabel">
         <property name="text">
          <string/>
@@ -131,14 +138,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QCheckBox" name="mReferenceTime">
-        <property name="text">
-         <string>Reference time</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="3">
+      <item row="2" column="0" colspan="2">
        <widget class="QFrame" name="mWmstOptions">
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
@@ -216,12 +216,12 @@
              <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
               <property name="dateTime">
                <datetime>
-                <hour>3</hour>
+                <hour>17</hour>
                 <minute>3</minute>
                 <second>57</second>
                 <year>2020</year>
                 <month>4</month>
-                <day>28</day>
+                <day>27</day>
                </datetime>
               </property>
               <property name="currentSection">

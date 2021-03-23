@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>611</width>
+    <width>577</width>
     <height>413</height>
    </rect>
   </property>
@@ -48,7 +48,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>611</width>
+        <width>577</width>
         <height>413</height>
        </rect>
       </property>
@@ -124,7 +124,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
             <property name="lineWidth">
              <number>0</number>
             </property>
-            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0">
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,2,0,3">
              <property name="topMargin">
               <number>0</number>
              </property>

@@ -39,16 +39,8 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
     mEndStaticDateTimeEdit->setDateTime( mStartStaticDateTimeEdit->dateTime() );
   } );
   connect( mProjectTemporalRange, &QRadioButton::toggled, this, &QgsWmstSettingsWidget::passProjectTemporalRange_toggled );
-  connect( mStaticTemporalRange, &QRadioButton::toggled, this, [ = ]( bool checked )
-  {
-    if ( checked )
-    {
-      mLabel->clear();
-    }
-  } );
 
   connect( mStaticTemporalRange, &QRadioButton::toggled, mStaticWmstFrame, &QWidget::setEnabled );
-  connect( mReferenceTime, &QCheckBox::toggled, mWmstReferenceTimeFrame, &QWidget::setEnabled );
 
   syncToLayer( mRasterLayer );
 
@@ -99,18 +91,20 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
     }
 
     const QString referenceTimeExtent = uri.value( QStringLiteral( "referenceTimeDimensionExtent" ) ).toString();
-
-    mReferenceTime->setEnabled( !referenceTimeExtent.isEmpty() );
-    mReferenceDateTimeEdit->setVisible( !referenceTimeExtent.isEmpty() );
-
-    QString referenceTimeLabelText = referenceTimeExtent.isEmpty() ?
-                                     tr( "There is no reference time in the layer's capabilities." ) : QString();
-    mReferenceTimeLabel->setText( referenceTimeLabelText );
-
     const QString referenceTime = uri.value( QStringLiteral( "referenceTime" ) ).toString();
 
-    mReferenceTime->setChecked( !referenceTime.isEmpty() );
-
+    if ( referenceTimeExtent.isEmpty() )
+    {
+      mReferenceTimeExtentLabel->setText( tr( "No reference time is reported in the layer's capabilities." ) );
+      mReferenceTimeGroupBox->setChecked( false );
+      mReferenceTimeGroupBox->setEnabled( false );
+    }
+    else
+    {
+      mReferenceTimeExtentLabel->setText( tr( "Reported reference time extent: <i>%1</i>" ).arg( referenceTimeExtent ) );
+      mReferenceTimeGroupBox->setEnabled( true );
+      mReferenceTimeGroupBox->setChecked( !referenceTime.isEmpty() );
+    }
     if ( !referenceTime.isEmpty() && !referenceTimeExtent.isEmpty() )
     {
       mReferenceDateTimeEdit->setDateTime( QDateTime::fromString( referenceTime, Qt::ISODateWithMs ) );
@@ -204,7 +198,7 @@ void QgsWmstSettingsWidget::apply()
       }
     }
 
-    if ( mReferenceTime->isChecked() )
+    if ( mReferenceTimeGroupBox->isChecked() )
     {
       QString referenceTime = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
       uri[ QStringLiteral( "referenceTime" ) ] = referenceTime;
@@ -229,12 +223,14 @@ void QgsWmstSettingsWidget::passProjectTemporalRange_toggled( bool checked )
       range = QgsProject::instance()->timeSettings()->temporalRange();
 
     if ( range.begin().isValid() && range.end().isValid() )
-      mLabel->setText( tr( "Project temporal range is set from %1 to %2" ).arg(
-                         range.begin().toString( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) ),
-                         range.end().toString( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) )
-                       ) );
+      mProjectTemporalRangeLabel->setText( tr( "Project temporal range is set from %1 to %2" ).arg(
+                                             range.begin().toString( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) ),
+                                             range.end().toString( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) )
+                                           ) );
     else
-      mLabel->setText( tr( "Project temporal range is not valid, can't use it here" ) );
+      mProjectTemporalRangeLabel->setText( tr( "The option below is disabled because the project temporal range "
+                                           "is not valid, update the project temporal range in the project properties "
+                                           "with valid values in order to use it here." ) );
   }
 }
 
