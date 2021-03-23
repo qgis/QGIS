@@ -228,9 +228,6 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QPlainTextEdit" name="plainTextEdit"/>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
