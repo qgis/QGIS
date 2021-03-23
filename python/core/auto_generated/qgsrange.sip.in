@@ -396,6 +396,7 @@ typedef QgsTemporalRange< QDate > QgsDateRange;
 @DOCSTRINGSTEMPLATE@.. versionadded:: 3.0
 @DOCSTRINGSTEMPLATE@%End
 
+
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
 @DOCSTRINGSTEMPLATE@%Docstring
 @DOCSTRINGSTEMPLATE@:py:class:`QgsRange` which stores a range of date times.
@@ -409,6 +410,7 @@ typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
 @DOCSTRINGSTEMPLATE@
 @DOCSTRINGSTEMPLATE@.. versionadded:: 3.0
 @DOCSTRINGSTEMPLATE@%End
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
