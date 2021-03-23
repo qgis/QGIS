@@ -180,11 +180,17 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
     if ( mRasterLayer->temporalProperties()->isActive() )
     {
       mStaticWmstStackedWidget->setCurrentIndex( 0 );
+      // why do we hide this widget? well, the second page of the stacked widget is considerably higher
+      // then the first and we don't want to show a whole bunch of empty vertical space which Qt will give
+      // in order to accomodate the vertical height of the non-visible second page!
+      mStaticStackedWidgetFrame->hide();
     }
     else
     {
       mStaticWmstStackedWidget->setCurrentIndex( 1 );
+      mStaticStackedWidgetFrame->show();
     }
+    mStaticWmstStackedWidget->updateGeometry();
   }
 }
 
@@ -258,9 +264,19 @@ void QgsWmstSettingsWidget::apply()
 void QgsWmstSettingsWidget::temporalPropertiesChange()
 {
   if ( mRasterLayer->temporalProperties()->isActive() )
+  {
     mStaticWmstStackedWidget->setCurrentIndex( 0 );
+    // why do we hide this widget? well, the second page of the stacked widget is considerably higher
+    // then the first and we don't want to show a whole bunch of empty vertical space which Qt will give
+    // in order to accomodate the vertical height of the non-visible second page!
+    mStaticStackedWidgetFrame->hide();
+  }
   else
+  {
     mStaticWmstStackedWidget->setCurrentIndex( 1 );
+    mStaticStackedWidgetFrame->show();
+  }
+  mStaticWmstStackedWidget->updateGeometry();
 }
 
 
