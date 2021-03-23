@@ -1499,6 +1499,11 @@ target_link_libraries(qgis_gui
   ${Qt5QuickWidgets_LIBRARIES}
 )
 
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+  target_link_libraries(qgis_gui ${Boost_LIBRARIES})
+endif()
+
 if (FORCE_STATIC_PROVIDERS)
   include_directories(
     ${CMAKE_SOURCE_DIR}/src/providers/wms

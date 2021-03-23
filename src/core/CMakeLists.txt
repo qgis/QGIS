@@ -1869,6 +1869,12 @@ target_link_libraries(qgis_core
   embeddedGLEW.lib
 )
 
+if(Boost_FOUND)
+include_directories(${Boost_INCLUDE_DIRS})
+target_link_libraries(qgis_core ${Boost_LIBRARIES})
+endif()
+
+
 if (WITH_EPT)
   target_link_libraries(qgis_core
     ${ZSTD_LIBRARY}

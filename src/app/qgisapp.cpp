@@ -18274,7 +18274,7 @@ void QgisApp::openPointCloudFiles()
 		this,
 		tr("Open point clouds or meshes"),
 		m_currPointCloudFileDir.path(),
-		tr("Data sets (*.las *.laz *.txt *.xyz *.ply);;All files (*)"),
+		tr("Data sets (*.las *.laz *.txt *.xyz *.ply *.hsp);;All files (*)"),
 		0,
 		QFileDialog::ReadOnly
 	);
@@ -18294,7 +18294,7 @@ void QgisApp::addPointCloudFiles()
 		this,
 		tr("Add point clouds or meshes"),
 		m_currPointCloudFileDir.path(),
-		tr("Data sets (*.las *.laz *.txt *.xyz *.ply);;All files (*)"),
+		tr("Data sets (*.las *.laz *.txt *.xyz *.ply *.hsp);;All files (*)"),
 		0,
 		QFileDialog::ReadOnly
 	);

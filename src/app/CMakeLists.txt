@@ -632,6 +632,11 @@ target_link_libraries(qgis_app
   embeddedGLEW.lib
 )
 
+if(Boost_FOUND)
+include_directories(${Boost_INCLUDE_DIRS})
+target_link_libraries(qgis_app ${Boost_LIBRARIES})
+endif()
+
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
 
 if(ENABLE_MODELTEST)
