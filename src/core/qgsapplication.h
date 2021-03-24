@@ -403,6 +403,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the short name regular expression for line edit validator
     static QRegExp shortNameRegExp();
 
+    //! Returns the short name regular expression for line edit validator
+    static QRegularExpression shortNameRegularExpression();
+
     /**
      * Returns the user's operating system login account name.
      * \see userFullName()

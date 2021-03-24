@@ -47,6 +47,7 @@
 #include <QDomNode>
 #include <QFile>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 #include <ogr_srs_api.h>
 
@@ -346,7 +347,7 @@ void QgsOfflineEditing::synchronize()
 
       // disable offline project
       QString projectTitle = QgsProject::instance()->title();
-      projectTitle.remove( QRegExp( " \\(offline\\)$" ) );
+      projectTitle.remove( QRegularExpression( " \\(offline\\)$" ) );
       QgsProject::instance()->setTitle( projectTitle );
       QgsProject::instance()->removeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
       remoteLayer->reload(); //update with other changes

@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QDateTime>
+#include <QRegularExpression>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -209,14 +210,14 @@ void QgsInterval::setSeconds( double seconds )
 QgsInterval QgsInterval::fromString( const QString &string )
 {
   double seconds = 0;
-  QRegExp rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
-  QStringList list;
-  int pos = 0;
 
-  while ( ( pos = rx.indexIn( string, pos ) ) != -1 )
+  QRegularExpression rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", QRegularExpression::CaseInsensitiveOption );
+  QStringList list;
+
+  QRegularExpressionMatchIterator i = rx.globalMatch( string );
+  while ( i.hasNext() )
   {
-    list << rx.cap( 1 );
-    pos += rx.matchedLength();
+    list << i.next().captured( 1 );
   }
 
   QMap<int, QStringList> map;
@@ -228,10 +229,10 @@ QgsInterval QgsInterval::fromString( const QString &string )
   map.insert( 0 + MONTHS, QStringList() << QStringLiteral( "month" ) << QStringLiteral( "months" ) << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
   map.insert( 0 + YEARS, QStringList() << QStringLiteral( "year" ) << QStringLiteral( "years" ) << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
 
-  const auto constList = list;
+  const auto constList = QRegularExpression( "([-+]?\\d*\\.?\\d+\\s+\\S+)", QRegularExpression::CaseInsensitiveOption ).match( string ).capturedTexts();
   for ( const QString &match : constList )
   {
-    QStringList split = match.split( QRegExp( "\\s+" ) );
+    QStringList split = match.split( QRegularExpression( "\\s+" ) );
     bool ok;
     double value = split.at( 0 ).toDouble( &ok );
     if ( !ok )

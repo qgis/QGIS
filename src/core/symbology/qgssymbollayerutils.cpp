@@ -45,12 +45,11 @@
 #include <QIcon>
 #include <QPainter>
 #include <QSettings>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QPicture>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QMimeData>
-#include <QRegularExpression>
 
 #define POINTS_TO_MM 2.83464567
 
@@ -3243,7 +3242,7 @@ QList<QColor> QgsSymbolLayerUtils::parseColorList( const QString &colorStr )
   QList<QColor> colors;
 
   //try splitting string at commas, spaces or newlines
-  QStringList components = colorStr.simplified().split( QRegExp( "(,|\\s)" ) );
+  QStringList components = colorStr.simplified().split( QRegularExpression( "(,|\\s)" ) );
   QStringList::iterator it = components.begin();
   for ( ; it != components.end(); ++it )
   {
@@ -3259,7 +3258,7 @@ QList<QColor> QgsSymbolLayerUtils::parseColorList( const QString &colorStr )
   }
 
   //try splitting string at commas or newlines
-  components = colorStr.split( QRegExp( "(,|\n)" ) );
+  components = colorStr.split( QRegularExpression( "(,|\n)" ) );
   it = components.begin();
   for ( ; it != components.end(); ++it )
   {
@@ -3579,10 +3578,10 @@ QgsNamedColorList QgsSymbolLayerUtils::importColorsFromGpl( QFile &file, bool &o
   }
   if ( line.startsWith( QLatin1String( "Name:" ) ) )
   {
-    QRegExp nameRx( "Name:\\s*(\\S.*)$" );
-    if ( nameRx.indexIn( line ) != -1 )
+    QRegularExpressionMatch match = QRegularExpression( "Name:\\s*(\\S.*)$" ).match( line );
+    if ( match.hasMatch() )
     {
-      name = nameRx.cap( 1 );
+      name = match.captured( 1 );
     }
   }
 
@@ -3598,17 +3597,19 @@ QgsNamedColorList QgsSymbolLayerUtils::importColorsFromGpl( QFile &file, bool &o
   }
 
   //ready to start reading colors
-  QRegExp rx( "^\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)(\\s.*)?$" );
+  QRegularExpression rx( "^\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)(\\s.*)?$" );
+  QRegularExpressionMatch match;
   while ( !in.atEnd() )
   {
     line = in.readLine();
-    if ( rx.indexIn( line ) == -1 )
+    match = rx.match( line );
+    if ( !match.hasMatch() )
     {
       continue;
     }
-    int red = rx.cap( 1 ).toInt();
-    int green = rx.cap( 2 ).toInt();
-    int blue = rx.cap( 3 ).toInt();
+    int red = match.captured( 1 ).toInt();
+    int green = match.captured( 2 ).toInt();
+    int blue = match.captured( 3 ).toInt();
     QColor color = QColor( red, green, blue );
     if ( !color.isValid() )
     {
@@ -3617,9 +3618,9 @@ QgsNamedColorList QgsSymbolLayerUtils::importColorsFromGpl( QFile &file, bool &o
 
     //try to read color name
     QString label;
-    if ( rx.captureCount() > 3 )
+    if ( match.capturedTexts().length() > 3 )
     {
-      label = rx.cap( 4 ).simplified();
+      label = match.captured( 4 ).simplified();
     }
     else
     {
@@ -3644,8 +3645,8 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
 {
   QColor parsedColor;
 
-  QRegExp hexColorAlphaRx( "^\\s*#?([0-9a-fA-F]{6})([0-9a-fA-F]{2})\\s*$" );
-  int hexColorIndex = hexColorAlphaRx.indexIn( colorStr );
+  QRegularExpressionMatch match = QRegularExpression( "^\\s*#?([0-9a-fA-F]{6})([0-9a-fA-F]{2})\\s*$" ).match( colorStr );
+  int hexColorIndex = match.capturedStart();
 
   //color in hex format "#aabbcc", but not #aabbccdd
   if ( hexColorIndex == -1 && QColor::isValidColor( colorStr ) )
@@ -3662,10 +3663,10 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   //color in hex format, with alpha
   if ( hexColorIndex > -1 )
   {
-    QString hexColor = hexColorAlphaRx.cap( 1 );
+    QString hexColor = match.captured( 1 );
     parsedColor.setNamedColor( QStringLiteral( "#" ) + hexColor );
     bool alphaOk;
-    int alphaHex = hexColorAlphaRx.cap( 2 ).toInt( &alphaOk, 16 );
+    int alphaHex = match.captured( 2 ).toInt( &alphaOk, 16 );
 
     if ( parsedColor.isValid() && alphaOk )
     {
@@ -3678,8 +3679,8 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   if ( !strictEval )
   {
     //color in hex format, without #
-    QRegExp hexColorRx2( "^\\s*(?:[0-9a-fA-F]{3}){1,2}\\s*$" );
-    if ( hexColorRx2.indexIn( colorStr ) != -1 )
+    match = QRegularExpression( "^\\s*(?:[0-9a-fA-F]{3}){1,2}\\s*$" ).match( colorStr );
+    if ( match.hasMatch() )
     {
       //add "#" and parse
       parsedColor.setNamedColor( QStringLiteral( "#" ) + colorStr );
@@ -3692,12 +3693,12 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in (rrr,ggg,bbb) format, brackets and rgb prefix optional
-  QRegExp rgbFormatRx( "^\\s*(?:rgb)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*\\)?\\s*;?\\s*$" );
-  if ( rgbFormatRx.indexIn( colorStr ) != -1 )
+  match = QRegularExpression( "^\\s*(?:rgb)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*\\)?\\s*;?\\s*$" ).match( colorStr );
+  if ( match.hasMatch() )
   {
-    int r = rgbFormatRx.cap( 1 ).toInt();
-    int g = rgbFormatRx.cap( 2 ).toInt();
-    int b = rgbFormatRx.cap( 3 ).toInt();
+    int r = match.captured( 1 ).toInt();
+    int g = match.captured( 2 ).toInt();
+    int b = match.captured( 3 ).toInt();
     parsedColor.setRgb( r, g, b );
     if ( parsedColor.isValid() )
     {
@@ -3708,7 +3709,7 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
 
   //color in hsl(h,s,l) format, brackets optional
   const QRegularExpression hslFormatRx( "^\\s*hsl\\(?\\s*(\\d+)\\s*,\\s*(\\d+)\\s*%\\s*,\\s*(\\d+)\\s*%\\s*\\)?\\s*;?\\s*$" );
-  QRegularExpressionMatch match = hslFormatRx.match( colorStr );
+  match = hslFormatRx.match( colorStr );
   if ( match.hasMatch() )
   {
     int h = match.captured( 1 ).toInt();
@@ -3723,12 +3724,12 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in (r%,g%,b%) format, brackets and rgb prefix optional
-  QRegExp rgbPercentFormatRx( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*\\)?\\s*;?\\s*$" );
-  if ( rgbPercentFormatRx.indexIn( colorStr ) != -1 )
+  match = QRegularExpression( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*\\)?\\s*;?\\s*$" ).match( colorStr );
+  if ( match.hasMatch() )
   {
-    int r = std::round( rgbPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
-    int g = std::round( rgbPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
-    int b = std::round( rgbPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
+    int r = std::round( match.captured( 1 ).toDouble() * 2.55 );
+    int g = std::round( match.captured( 2 ).toDouble() * 2.55 );
+    int b = std::round( match.captured( 3 ).toDouble() * 2.55 );
     parsedColor.setRgb( r, g, b );
     if ( parsedColor.isValid() )
     {
@@ -3738,13 +3739,13 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in (r,g,b,a) format, brackets and rgba prefix optional
-  QRegExp rgbaFormatRx( "^\\s*(?:rgba)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
-  if ( rgbaFormatRx.indexIn( colorStr ) != -1 )
+  match = QRegularExpression( "^\\s*(?:rgba)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" ).match( colorStr );
+  if ( match.hasMatch() )
   {
-    int r = rgbaFormatRx.cap( 1 ).toInt();
-    int g = rgbaFormatRx.cap( 2 ).toInt();
-    int b = rgbaFormatRx.cap( 3 ).toInt();
-    int a = std::round( rgbaFormatRx.cap( 4 ).toDouble() * 255.0 );
+    int r = match.captured( 1 ).toInt();
+    int g = match.captured( 2 ).toInt();
+    int b = match.captured( 3 ).toInt();
+    int a = std::round( match.captured( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
     if ( parsedColor.isValid() )
     {
@@ -3754,13 +3755,13 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in (r%,g%,b%,a) format, brackets and rgba prefix optional
-  QRegExp rgbaPercentFormatRx( "^\\s*(?:rgba)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
-  if ( rgbaPercentFormatRx.indexIn( colorStr ) != -1 )
+  match = QRegularExpression( "^\\s*(?:rgba)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" ).match( colorStr );
+  if ( match.hasMatch() )
   {
-    int r = std::round( rgbaPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
-    int g = std::round( rgbaPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
-    int b = std::round( rgbaPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
-    int a = std::round( rgbaPercentFormatRx.cap( 4 ).toDouble() * 255.0 );
+    int r = std::round( match.captured( 1 ).toDouble() * 2.55 );
+    int g = std::round( match.captured( 2 ).toDouble() * 2.55 );
+    int b = std::round( match.captured( 3 ).toDouble() * 2.55 );
+    int a = std::round( match.captured( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
     if ( parsedColor.isValid() )
     {

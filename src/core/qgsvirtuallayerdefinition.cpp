@@ -15,7 +15,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include <QUrl>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QStringList>
 #include <QUrlQuery>
 #include <QtEndian>
@@ -106,21 +106,21 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       // geometry field definition, optional
       // geometry_column(:wkb_type:srid)?
-      QRegExp reGeom( "(" + columnNameRx + ")(?::([a-zA-Z0-9]+):(\\d+))?" );
-      int pos = reGeom.indexIn( value );
+      QRegularExpressionMatch matches = QRegularExpression( "(" + columnNameRx + ")(?::([a-zA-Z0-9]+):(\\d+))?" ).match( value );
+      int pos = matches.capturedStart();
       if ( pos >= 0 )
       {
-        def.setGeometryField( reGeom.cap( 1 ) );
-        if ( reGeom.captureCount() > 1 )
+        def.setGeometryField( matches.captured( 1 ) );
+        if ( matches.capturedTexts().length() > 1 )
         {
           // not used by the spatialite provider for now ...
-          QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( reGeom.cap( 2 ) );
+          QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( matches.captured( 2 ) );
           if ( wkbType == QgsWkbTypes::Unknown )
           {
-            wkbType = static_cast<QgsWkbTypes::Type>( reGeom.cap( 2 ).toLong() );
+            wkbType = static_cast<QgsWkbTypes::Type>( matches.captured( 2 ).toLong() );
           }
           def.setGeometryWkbType( wkbType );
-          def.setGeometrySrid( reGeom.cap( 3 ).toLong() );
+          def.setGeometrySrid( matches.captured( 3 ).toLong() );
         }
       }
     }
@@ -140,12 +140,12 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     else if ( key == QLatin1String( "field" ) )
     {
       // field_name:type (int, real, text)
-      QRegExp reField( "(" + columnNameRx + "):(int|real|text)" );
-      int pos = reField.indexIn( value );
+      QRegularExpressionMatch matches = QRegularExpression( "(" + columnNameRx + "):(int|real|text)" ).match( value );
+      int pos = matches.capturedStart();
       if ( pos >= 0 )
       {
-        QString fieldName( reField.cap( 1 ) );
-        QString fieldType( reField.cap( 2 ) );
+        QString fieldName( matches.captured( 1 ) );
+        QString fieldType( matches.captured( 2 ) );
         if ( fieldType == QLatin1String( "int" ) )
         {
           fields.append( QgsField( fieldName, QVariant::LongLong, fieldType ) );

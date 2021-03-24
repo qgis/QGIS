@@ -100,14 +100,14 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      *
      * \see caseSensitivity()
      */
-    void setFilterCaseSensitivity( Qt::CaseSensitivity sensitivity );
+    void setFilterCaseSensitivity( QRegularExpression::PatternOption sensitivity );
 
     /**
      * Returns whether item filtering is case sensitive.
      *
      * \see setFilterCaseSensitivity()
      */
-    Qt::CaseSensitivity caseSensitivity() const;
+    QRegularExpression::PatternOption caseSensitivity() const;
 
     /**
      * Returns TRUE if the model is filtered by map layer type.
@@ -209,9 +209,9 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     QStringList mHiddenDataItemsKeys;
     QStringList mShownDataItemsKeys;
     QString mFilter; //filter string provided
-    QVector<QRegExp> mREList; //list of filters, separated by "|"
+    QVector<QRegularExpression> mREList; //list of filters, separated by "|"
     FilterSyntax mPatternSyntax = Normal;
-    Qt::CaseSensitivity mCaseSensitivity = Qt::CaseInsensitive;
+    QRegularExpression::PatternOption mCaseSensitivity = QRegularExpression::CaseInsensitiveOption;
 
     bool mFilterByLayerType = false;
     bool mShowLayers = true;

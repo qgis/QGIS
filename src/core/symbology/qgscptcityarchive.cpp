@@ -978,12 +978,11 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
     else
     {
-      QRegExp rxVariant( "^(.*[^\\d])(\\d{1,3})$" );
-      int pos = rxVariant.indexIn( schemeName );
-      if ( pos > -1 )
+      QRegularExpressionMatch matches = QRegularExpression( "^(.*[^\\d])(\\d{1,3})$" ).match( schemeName );
+      if ( matches.hasMatch() )
       {
-        curName = rxVariant.cap( 1 );
-        curVariant = rxVariant.cap( 2 );
+        curName = matches.captured( 1 );
+        curVariant = matches.captured( 2 );
       }
     }
 

@@ -23,7 +23,7 @@
 #include "qgsapplication.h"
 
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
 
@@ -219,8 +219,8 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 
 QString QgsDataSourceUri::removePassword( const QString &aUri )
 {
-  QRegExp regexp;
-  regexp.setMinimal( true );
+  QRegularExpression regexp;
+  regexp.setPatternOptions( QRegularExpression::InvertedGreedinessOption );
   QString safeName( aUri );
   if ( aUri.contains( QLatin1String( " password=" ) ) )
   {
