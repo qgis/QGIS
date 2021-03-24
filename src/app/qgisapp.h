@@ -2114,8 +2114,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open a point cloud layer - this is the generic function which takes all parameters
     QgsPointCloudLayer *addPointCloudLayerPrivate( const QString &uri,
-        const QString &dataSourceType,
         const QString &baseName,
+        const QString &dataSourceType,
         const QString &providerKey,
         bool guiWarning = true );
 
