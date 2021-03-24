@@ -83,7 +83,9 @@
 
 #include "layout/qgspagesizeregistry.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
+#endif
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -101,6 +103,7 @@
 #include <QStandardPaths>
 #include <QRegularExpression>
 #include <QTextStream>
+#include <QScreen>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -1854,8 +1857,13 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
   QFontMetrics fm( ( QFont() ) );
   const double scale = 1.1 * standardSize / 24;
   int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   if ( applyDevicePixelRatio && QApplication::desktop() )
     scaledIconSize *= QApplication::desktop()->devicePixelRatio();
+#else
+  if ( applyDevicePixelRatio && !QApplication::topLevelWidgets().isEmpty() )
+    scaledIconSize *= QApplication::topLevelWidgets().first()->screen()->devicePixelRatio();
+#endif
   return scaledIconSize;
 }
 
