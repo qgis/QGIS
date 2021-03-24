@@ -192,6 +192,7 @@ class gdalcalc(GdalAlgorithm):
             noData = None
 
         arguments = [
+            '-overwrite',
             f'--calc "{formula}"',
             '--format',
             GdalUtils.getFormatShortNameFromFilename(out),
