@@ -259,8 +259,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   mDataSource = mne.text();
 
   // if the layer needs authentication, ensure the master password is set
-  QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
-  if ( ( rx.indexIn( mDataSource ) != -1 )
+  QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
+  if ( ( rx.match( mDataSource ).hasMatch() )
        && !QgsApplication::authManager()->setMasterPassword( true ) )
   {
     return false;
@@ -2036,7 +2036,7 @@ QString QgsMapLayer::generateId( const QString &layerName )
   // underscore) with an underscore.
   // Note that the first backslash in the regular expression is
   // there for the compiler, so the pattern is actually \W
-  id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
+  id.replace( QRegularExpression( "[\\W]" ), QStringLiteral( "_" ) );
   return id;
 }
 

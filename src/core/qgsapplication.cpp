@@ -1125,6 +1125,12 @@ QRegExp QgsApplication::shortNameRegExp()
   return regexp;
 }
 
+QRegularExpression QgsApplication::shortNameRegularExpression()
+{
+  const thread_local QRegularExpression regexp( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) );
+  return regexp;
+}
+
 QString QgsApplication::userLoginName()
 {
   if ( !sUserName()->isEmpty() )

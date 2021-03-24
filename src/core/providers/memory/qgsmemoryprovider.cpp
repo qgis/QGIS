@@ -25,7 +25,8 @@
 
 #include <QUrl>
 #include <QUrlQuery>
-#include <QRegExp>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 ///@cond PRIVATE
 
@@ -119,12 +120,12 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
   {
     QList<QgsField> attributes;
-    QRegExp reFieldDef( "\\:"
-                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary|bool|boolean)" // type
-                        "(?:\\((\\-?\\d+)"                // length
-                        "(?:\\,(\\-?\\d+))?"                  // precision
-                        "\\))?(\\[\\])?"                  // array
-                        "$", Qt::CaseInsensitive );
+    QRegularExpression reFieldDef( "\\:"
+                                   "(int|integer|long|int8|real|double|string|date|time|datetime|binary|bool|boolean)" // type
+                                   "(?:\\((\\-?\\d+)"                // length
+                                   "(?:\\,(\\-?\\d+))?"                  // precision
+                                   "\\))?(\\[\\])?"                  // array
+                                   "$", QRegularExpression::CaseInsensitiveOption );
     QStringList fields = query.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {
@@ -135,11 +136,12 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
       int length = 255;
       int precision = 0;
 
-      int pos = reFieldDef.indexIn( name );
+      QRegularExpressionMatch matches = reFieldDef.match( name );
+      int pos = matches.capturedStart();
       if ( pos >= 0 )
       {
         name = name.mid( 0, pos );
-        typeName = reFieldDef.cap( 1 ).toLower();
+        typeName = matches.captured( 1 ).toLower();
         if ( typeName == QLatin1String( "int" ) || typeName == QLatin1String( "integer" ) )
         {
           type = QVariant::Int;
@@ -190,15 +192,15 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
           length = -1;
         }
 
-        if ( !reFieldDef.cap( 2 ).isEmpty() )
+        if ( !matches.captured( 2 ).isEmpty() )
         {
-          length = reFieldDef.cap( 2 ).toInt();
+          length = matches.captured( 2 ).toInt();
         }
-        if ( !reFieldDef.cap( 3 ).isEmpty() )
+        if ( !matches.captured( 3 ).isEmpty() )
         {
-          precision = reFieldDef.cap( 3 ).toInt();
+          precision = matches.captured( 3 ).toInt();
         }
-        if ( !reFieldDef.cap( 4 ).isEmpty() )
+        if ( !matches.captured( 4 ).isEmpty() )
         {
           //array
           subType = type;

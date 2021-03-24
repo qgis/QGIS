@@ -15,7 +15,7 @@
 
 #include "qgis_core.h"
 #include <QString>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QList>
 #include <QDomDocument>
 #include <QFont> // for enum values
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsStringReplacement
 
     bool mWholeWordOnly;
 
-    QRegExp mRx;
+    QRegularExpression mRx;
 };
 
 

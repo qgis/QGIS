@@ -1822,10 +1822,10 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     QgsDebugMsgLevel( QStringLiteral( "Beautifying layer name %1" ).arg( name() ), 3 );
 
     // adjust the display name for postgres layers
-    QRegExp reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
-    if ( reg.indexIn( name() ) >= 0 )
+    QRegularExpressionMatch match = QRegularExpression( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" ).match( name() );
+    if ( match.hasMatch() )
     {
-      QStringList stuff = reg.capturedTexts();
+      QStringList stuff = match.capturedTexts();
       QString lName = stuff[1];
 
       const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();

@@ -21,7 +21,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QTransform>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include "qgsgeometry.h"
 #include "qgspointxy.h"

@@ -19,6 +19,7 @@
 #include <QString>
 #include <QDir>
 #include <QLibrary>
+#include <QRegularExpression>
 
 #include "qgis.h"
 #include "qgsauthconfig.h"
@@ -79,7 +80,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 
   // auth method file regex pattern, only files matching the pattern are loaded if the variable is defined
   QString filePattern = getenv( "QGIS_AUTHMETHOD_FILE" );
-  QRegExp fileRegexp;
+  QRegularExpression fileRegexp;
   if ( !filePattern.isEmpty() )
   {
     fileRegexp.setPattern( filePattern );
@@ -90,9 +91,9 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
   {
     QFileInfo fi( it.next() );
 
-    if ( !fileRegexp.isEmpty() )
+    if ( !fileRegexp.pattern().isEmpty() )
     {
-      if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
+      if ( not( fileRegexp.match( fi.fileName() ).hasMatch() ) )
       {
         QgsDebugMsg( "auth method " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
         continue;

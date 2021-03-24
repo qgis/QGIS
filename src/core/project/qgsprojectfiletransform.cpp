@@ -1120,11 +1120,11 @@ int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &ba
   QDomElement rasterBandElem = rasterPropertiesElem.firstChildElement( bandName );
   if ( !rasterBandElem.isNull() )
   {
-    QRegExp re( "(\\d+)" );
-
-    if ( re.indexIn( rasterBandElem.text() ) >= 0 )
+    QRegularExpression re( "(\\d+)" );
+    QRegularExpressionMatch matches = re.match( rasterBandElem.text() );
+    if ( matches.hasMatch() )
     {
-      return re.cap( 1 ).toInt();
+      return matches.captured( 1 ).toInt();
     }
   }
   return band;

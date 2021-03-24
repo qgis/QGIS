@@ -15,6 +15,7 @@
 
 #include "qgsbrowserproxymodel.h"
 #include "qgsbrowsermodel.h"
+#include <QRegularExpression>
 
 QgsBrowserProxyModel::QgsBrowserProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -63,13 +64,13 @@ QString QgsBrowserProxyModel::filterString() const
   return mFilter;
 }
 
-void QgsBrowserProxyModel::setFilterCaseSensitivity( Qt::CaseSensitivity sensitivity )
+void QgsBrowserProxyModel::setFilterCaseSensitivity( QRegularExpression::PatternOption sensitivity )
 {
   mCaseSensitivity = sensitivity;
   updateFilter();
 }
 
-Qt::CaseSensitivity QgsBrowserProxyModel::caseSensitivity() const
+QRegularExpression::PatternOption QgsBrowserProxyModel::caseSensitivity() const
 {
   return mCaseSensitivity;
 }
@@ -84,9 +85,9 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        QRegExp rx( QStringLiteral( "*%1*" ).arg( f.trimmed() ) );
-        rx.setPatternSyntax( QRegExp::Wildcard );
-        rx.setCaseSensitivity( mCaseSensitivity );
+        QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( f.trimmed() ) ) );
+        // rx.setPatternSyntax( QRegularExpression::Wildcard );
+        rx.setPatternOptions( mCaseSensitivity );
         mREList.append( rx );
       }
       break;
@@ -96,18 +97,17 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        QRegExp rx( f.trimmed() );
-        rx.setPatternSyntax( QRegExp::Wildcard );
-        rx.setCaseSensitivity( mCaseSensitivity );
+        QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( f.trimmed() ) );
+        //rx.setPatternSyntax( QRegularExpression::Wildcard );
+        rx.setPatternOptions( mCaseSensitivity );
         mREList.append( rx );
       }
       break;
     }
     case RegularExpression:
     {
-      QRegExp rx( mFilter.trimmed() );
-      rx.setPatternSyntax( QRegExp::RegExp );
-      rx.setCaseSensitivity( mCaseSensitivity );
+      QRegularExpression rx( QRegularExpression::anchoredPattern( mFilter.trimmed() ) );
+      rx.setPatternOptions( mCaseSensitivity );
       mREList.append( rx );
       break;
     }
@@ -122,9 +122,9 @@ bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
     case Normal:
     case Wildcards:
     {
-      for ( const QRegExp &rx : mREList )
+      for ( const QRegularExpression &rx : mREList )
       {
-        if ( rx.exactMatch( value ) )
+        if ( rx.match( value ).hasMatch() )
           return true;
       }
       break;
@@ -132,9 +132,9 @@ bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
 
     case RegularExpression:
     {
-      for ( const QRegExp &rx : mREList )
+      for ( const QRegularExpression &rx : mREList )
       {
-        if ( rx.indexIn( value ) != -1 )
+        if ( rx.match( value ).hasMatch() )
           return true;
       }
       break;

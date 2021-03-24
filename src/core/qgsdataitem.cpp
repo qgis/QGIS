@@ -399,7 +399,7 @@ QgsDataItem::~QgsDataItem()
 
 QString QgsDataItem::pathComponent( const QString &string )
 {
-  return QString( string ).replace( QRegExp( "[\\\\/]" ), QStringLiteral( "|" ) );
+  return QString( string ).replace( QRegularExpression( "[\\\\/]" ), QStringLiteral( "|" ) );
 }
 
 QVariant QgsDataItem::sortKey() const
