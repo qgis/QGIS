@@ -876,14 +876,14 @@ const QString QgsAuthManager::uniqueConfigId() const
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
           id += ( '0' + qrand() % 10 );
 #else
-          id += ( '0' + QRandomGenerator::system()->generate() % 10 );
+          id += static_cast<char>( '0' + QRandomGenerator::system()->generate() % 10 );
 #endif
           break;
         case 1:
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
           id += ( 'a' + qrand() % 26 );
 #else
-          id += ( 'a' + QRandomGenerator::system()->generate() % 26 );
+          id += static_cast<char>( 'a' + QRandomGenerator::system()->generate() % 26 );
 #endif
           break;
       }
