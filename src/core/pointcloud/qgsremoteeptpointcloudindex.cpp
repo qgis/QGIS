@@ -60,11 +60,11 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
 {
   mUrl = QUrl( url );
 
-  QStringList splittedUrl = url.split( '/' );
+  QStringList splitUrl = url.split( '/' );
 
-  mUrlFileNamePart = splittedUrl.back();
-  splittedUrl.pop_back();
-  mUrlDirectoryPart = splittedUrl.join( '/' );
+  mUrlFileNamePart = splitUrl.back();
+  splitUrl.pop_back();
+  mUrlDirectoryPart = splitUrl.join( '/' );
 
   QNetworkRequest nr( url );
 
