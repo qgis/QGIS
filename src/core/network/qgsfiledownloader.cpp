@@ -101,10 +101,10 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
     QStringList errorMessages;
     errorMessages.reserve( errors.size() + 1 );
     errorMessages <<  QStringLiteral( "SSL Errors: " );
-    for ( auto end = errors.size(), i = 0; i != end; ++i )
-    {
-      errorMessages << errors[i].errorString();
-    }
+
+    for ( const QSslError &error : errors )
+      errorMessages << error.errorString();
+
     error( errorMessages );
   }
 }
@@ -113,10 +113,9 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
 
 void QgsFileDownloader::error( const QStringList &errorMessages )
 {
-  for ( auto end = errorMessages.size(), i = 0; i != end; ++i )
-  {
-    mErrors << errorMessages[i];
-  }
+  for ( const QString &error : errorMessages )
+    mErrors << error;
+
   if ( mReply )
     mReply->abort();
   emit downloadError( mErrors );
