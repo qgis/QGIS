@@ -376,8 +376,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
 
-  const auto constMNativeTypes = mNativeTypes;
-  for ( const NativeType &nativeType : constMNativeTypes )
+  for ( const NativeType &nativeType : mNativeTypes )
   {
     QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
                       .arg( QVariant::typeToName( nativeType.mType ) )
