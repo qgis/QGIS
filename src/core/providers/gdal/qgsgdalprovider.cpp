@@ -71,7 +71,11 @@
 #define PROVIDER_DESCRIPTION QStringLiteral( "GDAL data provider" )
 
 // To avoid potential races when destroying related instances ("main" and clones)
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGdalProviderMutex, ( QMutex::Recursive ) )
+#else
+Q_GLOBAL_STATIC( QRecursiveMutex, sGdalProviderMutex )
+#endif
 
 QHash< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
 
@@ -146,7 +150,11 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &options, bool update, GDALDatasetH dataset )
   : QgsRasterDataProvider( uri, options )
   , mpRefCounter( new QAtomicInt( 1 ) )
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   , mpMutex( new QMutex( QMutex::Recursive ) )
+#else
+  , mpMutex( new QRecursiveMutex() )
+#endif
   , mpParent( new QgsGdalProvider * ( this ) )
   , mpLightRefCounter( new QAtomicInt( 1 ) )
   , mUpdate( update )
@@ -238,7 +246,12 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
 
     mpRefCounter = new QAtomicInt( 1 );
     mpLightRefCounter = other.mpLightRefCounter;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     mpMutex = new QMutex( QMutex::Recursive );
+#else
+    mpMutex = new QRecursiveMutex();
+#endif
+
     mpParent = other.mpParent;
 
     if ( getCachedGdalHandles( const_cast<QgsGdalProvider *>( &other ), mGdalBaseDataset, mGdalDataset ) )
