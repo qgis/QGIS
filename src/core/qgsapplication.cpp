@@ -260,15 +260,21 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
     qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
     qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+// TODO Qt6: verify what we need here
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+#endif
     qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
     qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
     qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
+    // TODO Qt6: verify what we need here
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMetaType::registerComparators<QgsProcessingModelChildDependency>();
     QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
     QMetaType::registerEqualsComparator<QgsProperty>();
     QMetaType::registerEqualsComparator<QgsDateTimeRange>();
     QMetaType::registerEqualsComparator<QgsDateRange>();
+#endif
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
   } );
