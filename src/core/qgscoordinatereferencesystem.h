@@ -983,6 +983,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     friend class TestQgsCoordinateReferenceSystem;
     friend class QgsPostgresProvider;
     friend class QgsCoordinateReferenceSystemRegistry;
+    friend bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+    friend bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+    friend bool operator>= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+    friend bool operator<= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
 
     bool createFromPostgisSrid( const long id );
 };
@@ -1035,6 +1039,11 @@ inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateReferenc
   // Using streams we need to use local 8 Bit
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
+
+bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+bool operator>= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+bool operator<= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
 #endif
 
 #endif // QGSCOORDINATEREFERENCESYSTEM_H
