@@ -177,11 +177,17 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      */
     virtual AccessType accessType() const = 0;
 
+    //! Returns the coordinate reference system of the point cloud index
     virtual QgsCoordinateReferenceSystem crs() const = 0;
+    //! Returns the number of points in the point cloud
     virtual int pointCount() const = 0;
+    //! Returns the statistic \a statistic of \a attribute
     virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const = 0;
+    //! Returns the classes of \a attribute
     virtual QVariantList metadataClasses( const QString &attribute ) const = 0;
+    //! Returns the statistic \a statistic of the class \a value of the attribute \a attribute
     virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const = 0;
+    //! Returns the original metadata map
     virtual QVariantMap originalMetadata() const = 0;
 
     //! Returns root node of the index

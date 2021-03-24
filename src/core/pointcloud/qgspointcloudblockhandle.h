@@ -23,9 +23,12 @@ class CORE_EXPORT QgsPointCloudBlockHandle : public QObject
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsPointCloudBlockHandle( const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, QgsTileDownloadManagerReply *tileDownloadManagerReply );
   signals:
+    //! Emitted when the block is loaded successfully
     void blockLoadingSucceeded( QgsPointCloudBlock *block );
+    //! Emitted when the block loading has failed
     void blockLoadingFailed( const QString &errorStr );
   private:
     QString mDataType;
