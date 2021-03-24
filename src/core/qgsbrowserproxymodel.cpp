@@ -64,16 +64,27 @@ QString QgsBrowserProxyModel::filterString() const
   return mFilter;
 }
 
-void QgsBrowserProxyModel::setFilterCaseSensitivity( QRegularExpression::PatternOption sensitivity )
+void QgsBrowserProxyModel::setFilterCaseSensitivity( Qt::CaseSensitivity sensitivity )
 {
-  mCaseSensitivity = sensitivity;
+  setFilterPatternOption( sensitivity == Qt::CaseSensitive ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption );
+}
+
+void QgsBrowserProxyModel::setFilterPatternOption( QRegularExpression::PatternOption pattern )
+{
+  mPatternOption = pattern;
   updateFilter();
 }
 
-QRegularExpression::PatternOption QgsBrowserProxyModel::caseSensitivity() const
+Qt::CaseSensitivity QgsBrowserProxyModel::caseSensitivity() const
 {
-  return mCaseSensitivity;
+  return mPatternOption == QRegularExpression::NoPatternOption ? Qt::CaseSensitive : Qt::CaseInsensitive;
 }
+
+QRegularExpression::PatternOption QgsBrowserProxyModel::filterPatternOption()
+{
+  return mPatternOption;
+}
+
 
 void QgsBrowserProxyModel::updateFilter()
 {
@@ -87,7 +98,7 @@ void QgsBrowserProxyModel::updateFilter()
       {
         QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( f.trimmed() ) ) );
         // rx.setPatternSyntax( QRegularExpression::Wildcard );
-        rx.setPatternOptions( mCaseSensitivity );
+        rx.setPatternOptions( mPatternOption );
         mREList.append( rx );
       }
       break;
@@ -99,7 +110,7 @@ void QgsBrowserProxyModel::updateFilter()
       {
         QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( f.trimmed() ) );
         //rx.setPatternSyntax( QRegularExpression::Wildcard );
-        rx.setPatternOptions( mCaseSensitivity );
+        rx.setPatternOptions( mPatternOption );
         mREList.append( rx );
       }
       break;
@@ -107,7 +118,7 @@ void QgsBrowserProxyModel::updateFilter()
     case RegularExpression:
     {
       QRegularExpression rx( QRegularExpression::anchoredPattern( mFilter.trimmed() ) );
-      rx.setPatternOptions( mCaseSensitivity );
+      rx.setPatternOptions( mPatternOption );
       mREList.append( rx );
       break;
     }

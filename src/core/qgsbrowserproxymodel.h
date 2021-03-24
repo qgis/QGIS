@@ -97,17 +97,32 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
 
     /**
      * Sets whether item filtering should be case sensitive.
-     *
-     * \see caseSensitivity()
+     * \deprecated since QGIS 3.20 use setFilterPatternOption instead
      */
-    void setFilterCaseSensitivity( QRegularExpression::PatternOption sensitivity );
+    Q_DECL_DEPRECATED void setFilterCaseSensitivity( Qt::CaseSensitivity sensitivity ) SIP_DEPRECATED;
+
+    /**
+     * Sets whether item filtering should be case sensitive.
+     *
+     * \see filterPatternOption()
+     * \since QGIS 3.20
+     */
+    void setFilterPatternOption( QRegularExpression::PatternOption pattern );
 
     /**
      * Returns whether item filtering is case sensitive.
      *
      * \see setFilterCaseSensitivity()
      */
-    QRegularExpression::PatternOption caseSensitivity() const;
+    Q_DECL_DEPRECATED Qt::CaseSensitivity caseSensitivity() const SIP_DEPRECATED;
+
+    /**
+     * Sets whether item filtering should be case sensitive.
+     *
+     * \see filterPatternOption()
+     * \since QGIS 3.20
+     */
+    QRegularExpression::PatternOption filterPatternOption();
 
     /**
      * Returns TRUE if the model is filtered by map layer type.
@@ -211,7 +226,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     QString mFilter; //filter string provided
     QVector<QRegularExpression> mREList; //list of filters, separated by "|"
     FilterSyntax mPatternSyntax = Normal;
-    QRegularExpression::PatternOption mCaseSensitivity = QRegularExpression::CaseInsensitiveOption;
+    QRegularExpression::PatternOption mPatternOption = QRegularExpression::CaseInsensitiveOption;
 
     bool mFilterByLayerType = false;
     bool mShowLayers = true;
