@@ -383,6 +383,11 @@ Returns the path to user's style.
 Returns the short name regular expression for line edit validator
 %End
 
+    static QRegularExpression shortNameRegularExpression();
+%Docstring
+Returns the short name regular expression for line edit validator
+%End
+
     static QString userLoginName();
 %Docstring
 Returns the user's operating system login account name.
