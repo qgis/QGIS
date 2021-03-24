@@ -171,6 +171,7 @@ set(TESTS
  testqgsproperty.cpp
  testqgsprovidermetadata.cpp
  testqgis.cpp
+ testqgsrange.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
  testqgsrastermarker.cpp

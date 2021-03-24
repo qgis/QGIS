@@ -599,6 +599,53 @@ class QgsTemporalRange
       return changed;
     }
 
+#ifndef SIP_RUN
+
+    /**
+     * Merges a list of temporal ranges.
+     *
+     * Any overlapping ranges will be converted to a single range which covers the entire
+     * range of the input ranges.
+     *
+     * The returned value will be a list of non-contiguous ranges which completely encompass
+     * the input \a ranges, sorted in ascending order.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.20
+     */
+    static QList< QgsTemporalRange<T> > mergeRanges( const QList< QgsTemporalRange<T> > &ranges )
+    {
+      QList< QgsTemporalRange<T > > res;
+
+      QList< QgsTemporalRange<T> > queue = ranges;
+      while ( !queue.empty() )
+      {
+        QgsTemporalRange<T> range = queue.back();
+        queue.pop_back();
+
+        bool extended = false;
+        for ( int i = 0; i < res.count(); ++i )
+        {
+          if ( res[i].overlaps( range ) )
+          {
+            QgsTemporalRange< T > other = res.takeAt( i );
+            other.extend( range );
+            queue.push_back( other );
+            extended = true;
+            break;
+          }
+        }
+
+        if ( !extended )
+          res.push_back( range );
+      }
+
+      std::sort( res.begin(), res.end(), []( const QgsTemporalRange< T > &a, const QgsTemporalRange< T > &b ) -> bool { return a.begin() < b.begin(); } );
+      return res;
+    }
+#endif
+
     bool operator==( const QgsTemporalRange<T> &other ) const
     {
       return mLower == other.mLower &&
