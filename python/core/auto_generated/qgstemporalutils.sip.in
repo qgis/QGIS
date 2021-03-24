@@ -31,6 +31,19 @@ This method considers the temporal range available from layers contained within 
 returns the maximal combined temporal extent of these layers.
 %End
 
+    static QList< QgsDateTimeRange > usedTemporalRangesForProject( QgsProject *project );
+%Docstring
+Calculates all temporal ranges which are in use for a ``project``.
+
+This method considers the temporal range available from layers contained within the project and
+returns a list of ranges which cover only the temporal ranges which are actually in use by layers
+in the project.
+
+The returned list may be non-contiguous and have gaps in the ranges. The ranges are sorted in ascending order.
+
+.. versionadded:: 3.20
+%End
+
     struct AnimationExportSettings
     {
       QgsDateTimeRange animationRange;

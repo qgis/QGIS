@@ -81,6 +81,17 @@ Sets the layers temporal settings to appropriate defaults based on
 a provider's temporal ``capabilities``.
 %End
 
+
+    virtual QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const;
+%Docstring
+Attempts to calculate the overall list of all temporal extents which are contained in the specified ``layer``, using
+the settings defined by the temporal properties object.
+
+May return an empty list if the ranges could not be calculated.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 /************************************************************************

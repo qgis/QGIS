@@ -16,9 +16,9 @@ from qgis.core import (QgsProject,
                        QgsTemporalUtils,
                        QgsRasterLayer,
                        QgsDateTimeRange,
-                       QgsDateTimeRange,
                        QgsInterval,
-                       QgsUnitTypes)
+                       QgsUnitTypes,
+                       QgsRasterLayerTemporalProperties)
 
 from qgis.PyQt.QtCore import (QDate,
                               QTime,
@@ -54,6 +54,39 @@ class TestQgsTemporalUtils(unittest.TestCase):
         range = QgsTemporalUtils.calculateTemporalRangeForProject(p)
         self.assertEqual(range.begin(), QDateTime(QDate(2019, 1, 1), QTime(), Qt.UTC))
         self.assertEqual(range.end(), QDateTime(QDate(2020, 7, 31), QTime(), Qt.UTC))
+
+    def testUsedTemporalRangesForProject(self):
+        p = QgsProject()
+        r1 = QgsRasterLayer('', '', 'wms')
+        r2 = QgsRasterLayer('', '', 'wms')
+        r3 = QgsRasterLayer('', '', 'wms')
+        r4 = QgsRasterLayer('', '', 'wms')
+        r1.temporalProperties().setIsActive(True)
+        r1.temporalProperties().setMode(QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider)
+        r1.dataProvider().temporalCapabilities().setAvailableTemporalRange(QgsDateTimeRange(QDateTime(QDate(2020, 1, 1), QTime(), Qt.UTC),
+                                                                                            QDateTime(QDate(2020, 3, 31), QTime(), Qt.UTC)))
+        r2.temporalProperties().setIsActive(True)
+        r2.temporalProperties().setMode(QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider)
+        r2.dataProvider().temporalCapabilities().setAllAvailableTemporalRanges([QgsDateTimeRange(QDateTime(QDate(2020, 4, 1), QTime(), Qt.UTC),
+                                                                                                 QDateTime(QDate(2020, 7, 31), QTime(), Qt.UTC))])
+        r3.temporalProperties().setIsActive(True)
+        r3.temporalProperties().setMode(QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider)
+        r3.dataProvider().temporalCapabilities().setAllAvailableTemporalRanges([QgsDateTimeRange(QDateTime(QDate(2019, 1, 1), QTime(), Qt.UTC),
+                                                                                                 QDateTime(QDate(2020, 2, 28), QTime(), Qt.UTC))])
+        r4.temporalProperties().setIsActive(True)
+        r4.temporalProperties().setMode(QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider)
+        r4.dataProvider().temporalCapabilities().setAllAvailableTemporalRanges([QgsDateTimeRange(QDateTime(QDate(2021, 1, 1), QTime(), Qt.UTC),
+                                                                                                 QDateTime(QDate(2021, 2, 28), QTime(), Qt.UTC))])
+
+        p.addMapLayers([r1, r2, r3, r4])
+
+        ranges = QgsTemporalUtils.usedTemporalRangesForProject(p)
+        self.assertEqual(ranges, [QgsDateTimeRange(QDateTime(QDate(2019, 1, 1), QTime(), Qt.UTC),
+                                                   QDateTime(QDate(2020, 3, 31), QTime(), Qt.UTC)),
+                                  QgsDateTimeRange(QDateTime(QDate(2020, 4, 1), QTime(), Qt.UTC),
+                                                   QDateTime(QDate(2020, 7, 31), QTime(), Qt.UTC)),
+                                  QgsDateTimeRange(QDateTime(QDate(2021, 1, 1), QTime(), Qt.UTC),
+                                                   QDateTime(QDate(2021, 2, 28), QTime(), Qt.UTC))])
 
     def testFrameTimeCalculation(self):
         expected = {QgsUnitTypes.TemporalMilliseconds: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 10), Qt.UTC),
