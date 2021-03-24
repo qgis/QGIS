@@ -275,9 +275,9 @@ CORE_EXPORT uint qHash( const QVariant &variant );
  */
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
+  QString str = QString::number( a, 'f', precision );
   if ( precision )
   {
-    QString str = QString::number( a, 'f', precision );
     if ( str.contains( QLatin1Char( '.' ) ) )
     {
       // remove ending 0s
@@ -289,22 +289,14 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
       if ( idx < str.length() - 1 )
         str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
     }
-    return str;
   }
-  else
+  // avoid printing -0
+  // see https://bugreports.qt.io/browse/QTBUG-71439
+  if ( str == QLatin1String( "-0" ) )
   {
-    // avoid printing -0
-    // see https://bugreports.qt.io/browse/QTBUG-71439
-    const QString str( QString::number( a, 'f', precision ) );
-    if ( str == QLatin1String( "-0" ) )
-    {
-      return QLatin1String( "0" );
-    }
-    else
-    {
-      return str;
-    }
+    return QLatin1String( "0" );
   }
+  return str;
 }
 
 /**
