@@ -307,6 +307,18 @@ Write a tuple of group code and integer value
    available in Python bindings as writeGroupInt
 %End
 
+    void writeGroup( int code, long long i ) /PyName=writeGroupLong/;
+%Docstring
+Write a tuple of group code and long value
+
+:param code: group code
+:param i: integer value
+
+.. note::
+
+   available in Python bindings as writeGroupInt
+%End
+
     void writeGroup( int code, double d ) /PyName=writeGroupDouble/;
 %Docstring
 Write a group code with a floating point value
