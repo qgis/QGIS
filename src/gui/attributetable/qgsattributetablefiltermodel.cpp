@@ -333,7 +333,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     disconnectFilterModeConnections();
     connectFilterModeConnections( filterMode );
     mFilterMode = filterMode;
-    invalidateFilter();
+    invalidate();
   }
 }
 
