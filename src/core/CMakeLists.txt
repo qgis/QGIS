@@ -136,6 +136,7 @@ set(QGIS_CORE_SRCS
   auth/qgsauthconfig.cpp
   auth/qgsauthcrypto.cpp
   auth/qgsauthmanager.cpp
+  auth/qgsauthmethod.cpp
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
 

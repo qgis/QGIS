@@ -102,6 +102,9 @@
 #include <QRegularExpression>
 #include <QTextStream>
 #include <QScreen>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#include <QRecursiveMutex>
+#endif
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -2570,7 +2573,11 @@ QgsApplication::ApplicationMembers *QgsApplication::members()
   }
   else
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     static QMutex sMemberMutex( QMutex::Recursive );
+#else
+    static QRecursiveMutex sMemberMutex;
+#endif
     QMutexLocker lock( &sMemberMutex );
     if ( !sApplicationMembers )
       sApplicationMembers = new ApplicationMembers();

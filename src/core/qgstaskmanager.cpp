@@ -389,7 +389,11 @@ class QgsTaskRunnableWrapper : public QRunnable
 
 QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   , mTaskMutex( new QMutex( QMutex::Recursive ) )
+#else
+  , mTaskMutex( new QRecursiveMutex() )
+#endif
 {
 
 }
