@@ -133,7 +133,7 @@ Returns the current frame number.
 .. seealso:: :py:func:`setCurrentFrameNumber`
 %End
 
-    void setFrameDuration( QgsInterval duration );
+    void setFrameDuration( const QgsInterval &duration );
 %Docstring
 Sets the frame ``duration``, which dictates the temporal length of each frame in the animation.
 

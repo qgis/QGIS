@@ -155,7 +155,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see frameDuration()
      */
-    void setFrameDuration( QgsInterval duration );
+    void setFrameDuration( const QgsInterval &duration );
 
     /**
      * Returns the current set frame duration, which dictates the temporal length of each frame in the animation.

@@ -140,10 +140,11 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
           QgsUnitTypes::TemporalMonths,
           QgsUnitTypes::TemporalYears,
           QgsUnitTypes::TemporalDecades,
-          QgsUnitTypes::TemporalCenturies
+          QgsUnitTypes::TemporalCenturies,
+          QgsUnitTypes::TemporalIrregularStep,
         } )
   {
-    mTimeStepsComboBox->addItem( QgsUnitTypes::toString( u ), u );
+    mTimeStepsComboBox->addItem( u != QgsUnitTypes::TemporalIrregularStep ? QgsUnitTypes::toString( u ) : tr( "source timestamps" ), u );
   }
 
   // TODO: might want to choose an appropriate default unit based on the range
@@ -290,8 +291,9 @@ void QgsTemporalControllerWidget::updateFrameDuration()
     return;
 
   // save new settings into project
-  QgsProject::instance()->timeSettings()->setTimeStepUnit( static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) );
-  QgsProject::instance()->timeSettings()->setTimeStep( mStepSpinBox->value() );
+  QgsUnitTypes::TemporalUnit unit = static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() );
+  QgsProject::instance()->timeSettings()->setTimeStepUnit( unit );
+  QgsProject::instance()->timeSettings()->setTimeStep( unit == QgsUnitTypes::TemporalIrregularStep ? 1 : mStepSpinBox->value() );
 
   if ( !mBlockFrameDurationUpdates )
   {
@@ -302,6 +304,20 @@ void QgsTemporalControllerWidget::updateFrameDuration()
   }
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
+
+  if ( unit == QgsUnitTypes::TemporalIrregularStep )
+  {
+    mStepSpinBox->setEnabled( false );
+    mStepSpinBox->setValue( 1 );
+    mSlider->setTickInterval( 1 );
+    mSlider->setTickPosition( QSlider::TicksBothSides );
+  }
+  else
+  {
+    mStepSpinBox->setEnabled( true );
+    mSlider->setTickInterval( 0 );
+    mSlider->setTickPosition( QSlider::NoTicks );
+  }
 }
 
 void QgsTemporalControllerWidget::setWidgetStateFromProject()
