@@ -75,7 +75,11 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
         continue;
 
       QColor c = QgsSymbolLayerUtils::decodeColor( stop.mid( i + 1 ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       stops.append( QgsGradientStop( stop.leftRef( i ).toDouble(), c ) );
+#else
+      stops.append( QgsGradientStop( QStringView {stop}.left( i ).toDouble(), c ) );
+#endif
     }
   }
 

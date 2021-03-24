@@ -4739,7 +4739,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     }
     i += stringRe.cap( 1 ).length() + 2;
     jumpSpace( txt, i );
-    if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
+    if ( !QStringView{txt}.mid( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsMessageLog::logMessage( tr( "Cannot find separator: %1" ).arg( txt.mid( i ) ), tr( "PostGIS" ) );
       return QString();
@@ -4752,14 +4752,14 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     int start = i;
     for ( ; i < txt.length(); i++ )
     {
-      if ( txt.midRef( i ).startsWith( sep ) )
+      if ( QStringView{txt}.mid( i ).startsWith( sep ) )
       {
-        QStringRef r( txt.midRef( start, i - start ) );
+        QStringView v( QStringView{txt}.mid( start, i - start ) );
         i += sep.length();
-        return r.trimmed().toString();
+        return v.trimmed().toString();
       }
     }
-    return txt.midRef( start, i - start ).trimmed().toString();
+    return QStringView{txt}.mid( start, i - start ).trimmed().toString();
   }
 }
 
