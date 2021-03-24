@@ -120,6 +120,7 @@ Helper functions for various unit types.
       TemporalYears,
       TemporalDecades,
       TemporalCenturies,
+      TemporalIrregularStep,
       TemporalUnknownUnit
     };
 
