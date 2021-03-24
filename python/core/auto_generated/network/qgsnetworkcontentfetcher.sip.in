@@ -11,6 +11,7 @@
 
 
 
+
 class QgsNetworkContentFetcher : QObject
 {
 %Docstring(signature="appended")
