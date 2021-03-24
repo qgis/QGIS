@@ -209,7 +209,7 @@ may span multiple records.  The default type is csv.
   escape themselves within quotes.  Elsewhere they are treated as
   quote characters.  The defaults for delimiter, quote, and escape
   are ',', '"', '"'.
-- "regexp" splits each record using a regular expression (see QRegExp
+- "regexp" splits each record using a regular expression (see QRegularExpression
   documentation for details).
 - "whitespace" splits each record based on whitespace (on or more whitespace
   characters.  Leading whitespace in the record is ignored.

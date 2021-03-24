@@ -81,14 +81,14 @@ Returns the filter string used when filtering items in the model.
 .. seealso:: :py:func:`setFilterString`
 %End
 
-    void setFilterCaseSensitivity( Qt::CaseSensitivity sensitivity );
+    void setFilterCaseSensitivity( QRegularExpression::PatternOption sensitivity );
 %Docstring
 Sets whether item filtering should be case sensitive.
 
 .. seealso:: :py:func:`caseSensitivity`
 %End
 
-    Qt::CaseSensitivity caseSensitivity() const;
+    QRegularExpression::PatternOption caseSensitivity() const;
 %Docstring
 Returns whether item filtering is case sensitive.
 
