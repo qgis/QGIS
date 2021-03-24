@@ -336,7 +336,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * Write a tuple of group code and long value
      * \param code group code
      * \param i integer value
-     * \note available in Python bindings as writeGroupInt
+     * \note available in Python bindings as writeGroupLong
      */
     void writeGroup( int code, long long i ) SIP_PYNAME( writeGroupLong );
 

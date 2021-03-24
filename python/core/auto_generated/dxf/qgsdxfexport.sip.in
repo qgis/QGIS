@@ -316,7 +316,7 @@ Write a tuple of group code and long value
 
 .. note::
 
-   available in Python bindings as writeGroupInt
+   available in Python bindings as writeGroupLong
 %End
 
     void writeGroup( int code, double d ) /PyName=writeGroupDouble/;
