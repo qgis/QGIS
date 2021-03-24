@@ -78,6 +78,7 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( int &v ) const { read( v ); return *this; } SIP_SKIP
+    //! Reads an integer value into a qsizetype
     inline const QgsWkbPtr &operator>>( qsizetype &r ) const { int v; read( v ); r = v; return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
