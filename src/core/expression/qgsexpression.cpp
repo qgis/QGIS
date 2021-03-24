@@ -432,7 +432,7 @@ void QgsExpression::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QgsDistanceArea *distanceArea )
 {
   QString expr_action;
-  static const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+  thread_local const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
   int index = 0;
   while ( index < action.size() )
   {
