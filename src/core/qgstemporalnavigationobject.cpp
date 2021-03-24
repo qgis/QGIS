@@ -169,6 +169,16 @@ QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
   return mTemporalExtents;
 }
 
+void QgsTemporalNavigationObject::setAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges )
+{
+  mAllRanges = ranges;
+}
+
+QList<QgsDateTimeRange> QgsTemporalNavigationObject::availableTemporalRanges() const
+{
+  return mAllRanges;
+}
+
 void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
 {
   if ( mCurrentFrameNumber != frameNumber )

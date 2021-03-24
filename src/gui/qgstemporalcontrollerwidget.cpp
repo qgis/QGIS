@@ -410,6 +410,7 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
             {
               mHasTemporalLayersLoaded = true;
               firstTemporalLayerLoaded( layer );
+              mNavigationObject->setAvailableTemporalRanges( QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() ) );
             }
           } );
         }
@@ -418,6 +419,8 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
       }
     }
   }
+
+  mNavigationObject->setAvailableTemporalRanges( QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() ) );
 }
 
 void QgsTemporalControllerWidget::firstTemporalLayerLoaded( QgsMapLayer *layer )
@@ -636,6 +639,8 @@ void QgsTemporalControllerWidget::setDatesToAllLayers()
 {
   QgsDateTimeRange range;
   range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
+  mNavigationObject->setAvailableTemporalRanges( QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() ) );
+
   setDates( range );
 }
 
@@ -652,6 +657,8 @@ void QgsTemporalControllerWidget::setDatesToProjectTime()
   {
     range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
   }
+
+  mNavigationObject->setAvailableTemporalRanges( QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() ) );
 
   setDates( range );
 }
