@@ -333,6 +333,14 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     void writeGroup( int code, int i ) SIP_PYNAME( writeGroupInt );
 
     /**
+     * Write a tuple of group code and long value
+     * \param code group code
+     * \param i integer value
+     * \note available in Python bindings as writeGroupInt
+     */
+    void writeGroup( int code, long long i ) SIP_PYNAME( writeGroupLong );
+
+    /**
      * Write a group code with a floating point value
      * \param code group code
      * \param d floating point value

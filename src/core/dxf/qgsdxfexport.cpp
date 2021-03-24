@@ -105,6 +105,12 @@ void QgsDxfExport::writeGroup( int code, int i )
   writeInt( i );
 }
 
+void QgsDxfExport::writeGroup( int code, long long i )
+{
+  writeGroupCode( code );
+  writeInt( i );
+}
+
 void QgsDxfExport::writeGroup( int code, double d )
 {
   writeGroupCode( code );
@@ -190,7 +196,11 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   }
 
   mTextStream.setDevice( d );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mTextStream.setCodec( encoding.toLocal8Bit() );
+#else
+  mTextStream.setEncoding( QStringConverter::encodingForName( encoding.toLocal8Bit() ).value_or( QStringConverter::Utf8 ) );
+#endif
 
   if ( mCrs.isValid() )
     mMapSettings.setDestinationCrs( mCrs );
@@ -1488,12 +1498,14 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, const Q
 
 void QgsDxfExport::writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color )
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   if ( !mTextStream.codec()->canEncode( text ) )
   {
     // TODO return error
     QgsDebugMsg( QStringLiteral( "could not encode:%1" ).arg( text ) );
     return;
   }
+#endif
 
   writeGroup( 0, QStringLiteral( "MTEXT" ) );
   writeHandle();
