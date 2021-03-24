@@ -297,12 +297,14 @@ bool QgsPointCloudLayerRenderer::render()
     }
   }
 
+#ifdef QGISDEBUG
   qDebug() << QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
            .arg( context.pointsRendered() )
            .arg( t.elapsed() );
   QgsDebugMsgLevel( QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
                     .arg( context.pointsRendered() )
                     .arg( t.elapsed() ), 2 );
+#endif
 
   mRenderer->stopRender( context );
 
