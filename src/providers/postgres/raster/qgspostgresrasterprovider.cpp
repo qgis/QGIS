@@ -1432,6 +1432,29 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
                                          QStringLiteral( "PostGIS" ), Qgis::Warning );
             }
           }
+
+          // Set temporal ranges
+          QList< QgsDateTimeRange > allRanges;
+          const QString sql =  QStringLiteral( "SELECT DISTINCT %1::timestamp "
+                                               "FROM %2 %3 ORDER BY %1::timestamp" ).arg( quotedIdentifier( temporalFieldName ),
+                                                   mQuery,
+                                                   where );
+
+          QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+          if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() > 0 )
+          {
+            for ( qlonglong row = 0; row < result.PQntuples(); ++row )
+            {
+              const QDateTime date = QDateTime::fromString( result.PQgetvalue( row, 0 ), Qt::DateFormat::ISODate );
+              allRanges.push_back( QgsDateTimeRange( date, date ) );
+            }
+            temporalCapabilities()->setAllAvailableTemporalRanges( allRanges );
+          }
+          else
+          {
+            QgsMessageLog::logMessage( tr( "No temporal ranges detected in raster temporal capabilities for field %1: %2" ).arg( temporalFieldName, mUri.param( QStringLiteral( "temporalDefaultTime" ) ) ),
+                                       QStringLiteral( "PostGIS" ), Qgis::Info );
+          }
         }
         else
         {
