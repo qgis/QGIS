@@ -26,15 +26,6 @@ QString crsToKey( const QgsCoordinateReferenceSystem &crs )
   return crs.authid().isEmpty() ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : crs.authid();
 }
 
-template<>
-bool qMapLessThanKey<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>>( const QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem> &key1,
-    const QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem> &key2 )
-{
-  const QPair< QString, QString > key1String = qMakePair( crsToKey( key1.first ), crsToKey( key1.second ) );
-  const QPair< QString, QString > key2String = qMakePair( crsToKey( key2.first ), crsToKey( key2.second ) );
-  return key1String < key2String;
-}
-
 QgsCoordinateTransformContext::QgsCoordinateTransformContext()
   : d( new QgsCoordinateTransformContextPrivate() )
 {}
