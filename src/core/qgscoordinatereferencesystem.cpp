@@ -2584,3 +2584,20 @@ void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
   }
   sCrsStringLock()->unlock();
 }
+
+bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
+{
+  return c1.d->mSrsId > c2.d->mSrsId;
+}
+bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
+{
+  return c1.d->mSrsId < c2.d->mSrsId;
+}
+bool operator>= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
+{
+  return c1.d->mSrsId >= c2.d->mSrsId;
+}
+bool operator<= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
+{
+  return c1.d->mSrsId <= c2.d->mSrsId;
+}
