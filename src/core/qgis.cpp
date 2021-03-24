@@ -253,7 +253,10 @@ uint qHash( const QVariant &variant )
       return qHash( variant.toDateTime() );
     case QVariant::Url:
     case QVariant::Locale:
+    case QVariant::RegularExpression:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     case QVariant::RegExp:
+#endif
       return qHash( variant.toString() );
     default:
       break;
