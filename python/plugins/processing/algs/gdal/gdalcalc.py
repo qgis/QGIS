@@ -87,10 +87,11 @@ class gdalcalc(GdalAlgorithm):
                 self.tr('Input layer C'),
                 optional=True))
         self.addParameter(
-            QgsProcessingParameterBand(self.BAND_C,
-                                       self.tr('Number of raster band for C'),
-                                       parentLayerParameterName=self.INPUT_C,
-                                       optional=True))
+            QgsProcessingParameterBand(
+                self.BAND_C,
+                self.tr('Number of raster band for C'),
+                parentLayerParameterName=self.INPUT_C,
+                optional=True))
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_D,
