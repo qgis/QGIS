@@ -521,7 +521,7 @@ void QgsBrowserDockWidget::setCaseSensitive( bool caseSensitive )
 {
   if ( ! mProxyModel )
     return;
-  mProxyModel->setFilterCaseSensitivity( caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
+  mProxyModel->setFilterPatternOption( caseSensitive ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption );
 }
 
 int QgsBrowserDockWidget::selectedItemsCount()

@@ -111,8 +111,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
 
     /**
      * Returns whether item filtering is case sensitive.
-     *
-     * \see setFilterCaseSensitivity()
+     * \deprecated since QGIS 3.20 use filterPatternOption instead
      */
     Q_DECL_DEPRECATED Qt::CaseSensitivity caseSensitivity() const SIP_DEPRECATED;
 

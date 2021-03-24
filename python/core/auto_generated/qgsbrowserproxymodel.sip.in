@@ -102,7 +102,8 @@ Sets whether item filtering should be case sensitive.
 %Docstring
 Returns whether item filtering is case sensitive.
 
-.. seealso:: :py:func:`setFilterCaseSensitivity`
+.. deprecated:: QGIS 3.20
+   use filterPatternOption instead
 %End
 
     QRegularExpression::PatternOption filterPatternOption();

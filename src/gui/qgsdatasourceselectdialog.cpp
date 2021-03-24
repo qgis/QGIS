@@ -257,7 +257,7 @@ void QgsDataSourceSelectWidget::setFilterSyntax( QAction *action )
 
 void QgsDataSourceSelectWidget::setCaseSensitive( bool caseSensitive )
 {
-  mBrowserProxyModel.setFilterCaseSensitivity( caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
+  mBrowserProxyModel.setFilterPatternOption( caseSensitive ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption );
 }
 
 void QgsDataSourceSelectWidget::setLayerTypeFilter( QgsMapLayerType layerType )
