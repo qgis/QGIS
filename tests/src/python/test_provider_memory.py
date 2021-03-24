@@ -355,7 +355,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             'test',
             'memory')
 
-        self.assertEqual(myMemoryLayer.fields().field('a').type(), QVariant.List)
+        self.assertEqual(myMemoryLayer.fields().field('a').type(), QVariant.StringList)
         self.assertEqual(myMemoryLayer.fields().field('a').subType(), QVariant.String)
 
         myMemoryLayer = QgsVectorLayer(
@@ -408,7 +408,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                     QgsField('TestTime', QVariant.Time, 'time'),
                     QgsField('TestDateTime', QVariant.DateTime, 'datetime'),
                     QgsField("vallist", QVariant.List, subType=QVariant.Int),
-                    QgsField("stringlist", QVariant.List, subType=QVariant.String),
+                    QgsField("stringlist", QVariant.StringList, subType=QVariant.String),
+                    QgsField("stringlist2", QVariant.List, subType=QVariant.String),
                     QgsField("reallist", QVariant.List, subType=QVariant.Double),
                     QgsField("longlist", QVariant.List, subType=QVariant.LongLong)]
         self.assertTrue(myMemoryLayer.startEditing())
@@ -434,7 +435,12 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         importedFields = myImportedLayer.fields()
         for f in myFields:
             self.assertEqual(f.name(), importedFields.field(f.name()).name())
-            self.assertEqual(f.type(), importedFields.field(f.name()).type())
+            if f.name() != 'stringlist2':
+                self.assertEqual(f.type(), importedFields.field(f.name()).type())
+            else:
+                # we automatically convert List with String subtype to StringList, to match other data providers
+                self.assertEqual(importedFields.field(f.name()).type(), QVariant.StringList)
+
             self.assertEqual(f.subType(), importedFields.field(f.name()).subType())
             self.assertEqual(f.precision(), importedFields.field(f.name()).precision())
             self.assertEqual(f.length(), importedFields.field(f.name()).length())
@@ -545,7 +551,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fields.append(QgsField("binaryfield", QVariant.ByteArray))
         fields.append(QgsField("boolfield", QVariant.Bool))
         fields.append(QgsField("vallist", QVariant.List, subType=QVariant.Int))
-        fields.append(QgsField("stringlist", QVariant.List, subType=QVariant.String))
+        fields.append(QgsField("stringlist", QVariant.StringList, subType=QVariant.String))
+        fields.append(QgsField("stringlist2", QVariant.List, subType=QVariant.String))
         fields.append(QgsField("reallist", QVariant.List, subType=QVariant.Double))
         fields.append(QgsField("longlist", QVariant.List, subType=QVariant.LongLong))
 
@@ -555,7 +562,11 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(layer.fields()), len(fields))
         for i in range(len(fields)):
             self.assertEqual(layer.fields()[i].name(), fields[i].name())
-            self.assertEqual(layer.fields()[i].type(), fields[i].type())
+            if layer.fields()[i].name() != 'stringlist2':
+                self.assertEqual(layer.fields()[i].type(), fields[i].type())
+            else:
+                # we automatically convert List with String subtype to StringList, to match other data providers
+                self.assertEqual(layer.fields()[i].type(), QVariant.StringList)
             self.assertEqual(layer.fields()[i].length(), fields[i].length())
             self.assertEqual(layer.fields()[i].precision(), fields[i].precision(), fields[i].name())
 
