@@ -1646,7 +1646,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
   int maxLineLength = 0;
   for ( const QString &line : std::as_const( textLines ) )
   {
-    maxLineLength = std::max( maxLineLength, line.length() );
+    maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
   }
   double actualLabelHeight = fontMetrics->ascent() / fontScale + ( fontMetrics->ascent() / fontScale + letterSpacing ) * ( maxLineLength - 1 );
   double ascentOffset = fontMetrics->ascent() / fontScale;

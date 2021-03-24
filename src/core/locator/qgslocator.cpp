@@ -151,7 +151,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
 
   QList< QgsLocatorFilter * > activeFilters;
   QString searchString = string;
-  QString prefix = searchString.left( std::max( searchString.indexOf( ' ' ), 0 ) );
+  QString prefix = searchString.left( std::max( static_cast<int>( searchString.indexOf( ' ' ) ), 0 ) );
   if ( !prefix.isEmpty() )
   {
     for ( QgsLocatorFilter *filter : std::as_const( mFilters ) )
