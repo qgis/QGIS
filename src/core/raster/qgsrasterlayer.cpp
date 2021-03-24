@@ -75,7 +75,6 @@ email                : tim at linfiniti.com
 #include <QImage>
 #include <QLabel>
 #include <QList>
-#include <QMatrix>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPixmap>

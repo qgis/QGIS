@@ -2747,7 +2747,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
     }
   }
 
-  QMatrix transform;
+  QTransform transform;
   // move to the desired position
   transform.translate( point.x() + outputOffset.x(), point.y() + outputOffset.y() );
 
@@ -3154,7 +3154,7 @@ QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
   double angle = 0.0;
   calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
 
-  QMatrix transform;
+  QTransform transform;
 
   // move to the desired position
   transform.translate( point.x() + outputOffset.x(), point.y() + outputOffset.y() );
@@ -3606,7 +3606,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
   scaledSize = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
 
-  QMatrix transform;
+  QTransform transform;
 
   // move to the desired position
   transform.translate( point.x() + offset.x(), point.y() + offset.y() );
