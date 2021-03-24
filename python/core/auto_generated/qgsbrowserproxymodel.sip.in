@@ -81,18 +81,37 @@ Returns the filter string used when filtering items in the model.
 .. seealso:: :py:func:`setFilterString`
 %End
 
-    void setFilterCaseSensitivity( QRegularExpression::PatternOption sensitivity );
+ void setFilterCaseSensitivity( Qt::CaseSensitivity sensitivity ) /Deprecated/;
 %Docstring
 Sets whether item filtering should be case sensitive.
 
-.. seealso:: :py:func:`caseSensitivity`
+.. deprecated:: QGIS 3.20
+   use setFilterPatternOption instead
 %End
 
-    QRegularExpression::PatternOption caseSensitivity() const;
+    void setFilterPatternOption( QRegularExpression::PatternOption pattern );
+%Docstring
+Sets whether item filtering should be case sensitive.
+
+.. seealso:: :py:func:`filterPatternOption`
+
+.. versionadded:: 3.20
+%End
+
+ Qt::CaseSensitivity caseSensitivity() const /Deprecated/;
 %Docstring
 Returns whether item filtering is case sensitive.
 
 .. seealso:: :py:func:`setFilterCaseSensitivity`
+%End
+
+    QRegularExpression::PatternOption filterPatternOption();
+%Docstring
+Sets whether item filtering should be case sensitive.
+
+.. seealso:: :py:func:`filterPatternOption`
+
+.. versionadded:: 3.20
 %End
 
     bool filterByLayerType() const;
