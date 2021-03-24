@@ -402,7 +402,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'MASK': mask,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with NODATA value
@@ -412,7 +412,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NODATA': 9999,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -dstnodata 9999.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value
@@ -422,7 +422,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NODATA': 0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value and custom data type
@@ -433,7 +433,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DATA_TYPE': 6,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-ot Float32 -of JPEG -cutline ' +
+                 '-overwrite -ot Float32 -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with creation options
@@ -443,7 +443,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
@@ -455,7 +455,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-nosrcalpha -wm 2048 -nomd',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -multi -nosrcalpha -wm 2048 -nomd ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
@@ -659,7 +659,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'FORMULA': formula,
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
             # check that formula is not escaped and formula is returned as it is
             formula = 'A * 2'  # <--- add spaces in the formula
@@ -669,7 +669,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'FORMULA': formula,
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
             # additional creation options
             formula = 'A*2'
@@ -680,7 +680,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {}'.format(formula, source, output)])
+                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {}'.format(formula, source, output)])
 
             # additional parameters
             formula = 'A*2'
@@ -691,7 +691,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '--debug --quiet',
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --debug --quiet --outfile {}'.format(formula, source, output)])
+                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --debug --quiet --outfile {}'.format(formula, source, output)])
 
     def testGdalInfo(self):
         context = QgsProcessingContext()
@@ -2550,7 +2550,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest ' +
+                              '-overwrite -resolution average -separate -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # custom resolution
@@ -2561,7 +2561,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution lowest -separate -r nearest ' +
+                              '-overwrite -resolution lowest -separate -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # single layer
@@ -2572,7 +2572,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -r nearest ' +
+                              '-overwrite -resolution average -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # projection difference
@@ -2583,7 +2583,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -allow_projection_difference -r nearest ' +
+                              '-overwrite -resolution average -separate -allow_projection_difference -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # add alpha band
@@ -2594,7 +2594,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -addalpha -r nearest ' +
+                              '-overwrite -resolution average -separate -addalpha -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # assign CRS
@@ -2605,7 +2605,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -a_srs EPSG:3111 -r nearest ' +
+                              '-overwrite -resolution average -separate -a_srs EPSG:3111 -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 
@@ -2617,7 +2617,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -a_srs EPSG:20936 -r nearest ' +
+                              '-overwrite -resolution average -separate -a_srs EPSG:20936 -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # source NODATA
@@ -2628,7 +2628,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest -srcnodata -9999 ' +
+                              '-overwrite -resolution average -separate -r nearest -srcnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 
@@ -2639,7 +2639,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest -srcnodata "-9999 9999" ' +
+                              '-overwrite -resolution average -separate -r nearest -srcnodata "-9999 9999" ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 
@@ -2650,7 +2650,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest ' +
+                              '-overwrite -resolution average -separate -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # additional parameters
@@ -2661,7 +2661,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest -overwrite -optim RASTER -vrtnodata -9999 ' +
+                              '-overwrite -resolution average -separate -r nearest -overwrite -optim RASTER -vrtnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 
