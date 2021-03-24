@@ -264,6 +264,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
         QgsDebugMsgLevel( QStringLiteral( "Test font '%1 %2' %3 from filesystem [%4]" )
                           .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ), 2 );
         QFontDatabase db;
+        Q_UNUSED( db )
         QgsDebugMsgLevel( QStringLiteral( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ), 2 );
       }
       else
