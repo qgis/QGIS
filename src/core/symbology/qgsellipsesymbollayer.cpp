@@ -272,7 +272,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     return;
   }
 
-  QMatrix transform;
+  QTransform transform;
   transform.translate( point.x() + offset.x(), point.y() + offset.y() );
   if ( !qgsDoubleNear( angle, 0.0 ) )
   {
@@ -773,7 +773,7 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &con
   double angle = 0;
   calculateOffsetAndRotation( context, size.width(), size.height(), hasDataDefinedRotation, offset, angle );
 
-  QMatrix transform;
+  QTransform transform;
 
   // move to the desired position
   transform.translate( point.x() + offset.x(), point.y() + offset.y() );
