@@ -386,6 +386,10 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
 
+    /**
+     * Creates a new instance of EPT point cloud data provider
+     * \since QGIS 3.20
+     */
     SIP_SKIP virtual QgsEptProvider *createEptDataProvider( const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
 
     /**
