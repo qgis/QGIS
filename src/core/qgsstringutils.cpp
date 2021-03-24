@@ -635,13 +635,21 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
       }
       if ( strHit > -1 )
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
         newstr.append( lines.at( i ).midRef( strCurrent, strHit - strCurrent ) );
+#else
+        newstr.append( QStringView {lines.at( i )}.mid( strCurrent, strHit - strCurrent ) );
+#endif
         newstr.append( '\n' );
         strCurrent = strHit + delimiterLength;
       }
       else
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
         newstr.append( lines.at( i ).midRef( strCurrent ) );
+#else
+        newstr.append( QStringView {lines.at( i )}.mid( strCurrent ) );
+#endif
         strCurrent = strLength;
       }
     }
