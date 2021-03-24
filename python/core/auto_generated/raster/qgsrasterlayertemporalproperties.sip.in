@@ -32,6 +32,8 @@ The ``enabled`` argument specifies whether the temporal properties are initially
 
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
 
+    virtual QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const;
+
 
     enum TemporalMode
     {

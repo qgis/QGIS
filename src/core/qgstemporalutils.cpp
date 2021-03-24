@@ -30,15 +30,13 @@
 
 QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject *project )
 {
-  const QMap<QString, QgsMapLayer *> &mapLayers = project->mapLayers();
-  QgsMapLayer *currentLayer = nullptr;
-
+  QMap<QString, QgsMapLayer *> mapLayers = project->mapLayers();
   QDateTime minDate;
   QDateTime maxDate;
 
-  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
-    currentLayer = it.value();
+    QgsMapLayer *currentLayer = it.value();
 
     if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
       continue;
@@ -51,6 +49,24 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
   }
 
   return QgsDateTimeRange( minDate, maxDate );
+}
+
+QList< QgsDateTimeRange > QgsTemporalUtils::usedTemporalRangesForProject( QgsProject *project )
+{
+  QMap<QString, QgsMapLayer *> mapLayers = project->mapLayers();
+
+  QList< QgsDateTimeRange > ranges;
+  for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    QgsMapLayer *currentLayer = it.value();
+
+    if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
+      continue;
+
+    ranges.append( currentLayer->temporalProperties()->allTemporalRanges( currentLayer ) );
+  }
+
+  return QgsDateTimeRange::mergeRanges( ranges );
 }
 
 bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const QgsTemporalUtils::AnimationExportSettings &settings, QString &error, QgsFeedback *feedback )

@@ -31,3 +31,8 @@ QgsDateTimeRange QgsMapLayerTemporalProperties::calculateTemporalExtent( QgsMapL
 {
   return QgsDateTimeRange();
 }
+
+QList<QgsDateTimeRange> QgsMapLayerTemporalProperties::allTemporalRanges( QgsMapLayer *layer ) const
+{
+  return { calculateTemporalExtent( layer ) };
+}

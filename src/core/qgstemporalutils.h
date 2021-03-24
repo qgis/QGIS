@@ -45,6 +45,19 @@ class CORE_EXPORT QgsTemporalUtils
      */
     static QgsDateTimeRange calculateTemporalRangeForProject( QgsProject *project );
 
+    /**
+     * Calculates all temporal ranges which are in use for a \a project.
+     *
+     * This method considers the temporal range available from layers contained within the project and
+     * returns a list of ranges which cover only the temporal ranges which are actually in use by layers
+     * in the project.
+     *
+     * The returned list may be non-contiguous and have gaps in the ranges. The ranges are sorted in ascending order.
+     *
+     * \since QGIS 3.20
+     */
+    static QList< QgsDateTimeRange > usedTemporalRangesForProject( QgsProject *project );
+
     //! Contains settings relating to exporting animations
     struct AnimationExportSettings
     {
