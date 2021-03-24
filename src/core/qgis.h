@@ -561,11 +561,14 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+
 /**
  * Compares two QVariantList values and returns whether the first is less than the second.
  */
 template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
-
+#endif
 
 CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 
