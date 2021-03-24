@@ -355,7 +355,7 @@ class QgsThreadStackOverflowGuard
       QStringList dumpStack;
       const QStack<QString> &stack = mStorage.localData();
 
-      int dumpSize = std::min( stack.size(), 10 );
+      int dumpSize = std::min( static_cast<int>( stack.size() ), 10 );
       for ( int i = 0; i < dumpSize; ++i )
       {
         dumpStack += stack.at( i );

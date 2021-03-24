@@ -272,7 +272,7 @@ bool QgsGeometryCollection::insertGeometry( QgsAbstractGeometry *g, int index )
     return false;
   }
 
-  index = std::min( mGeometries.count(), index );
+  index = std::min( static_cast<int>( mGeometries.count() ), index );
 
   mGeometries.insert( index, g );
   clearCache(); //set bounding box invalid

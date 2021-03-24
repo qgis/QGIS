@@ -417,7 +417,7 @@ void QgsAbstractReportSection::insertChild( int index, QgsAbstractReportSection 
 {
   section->setParentSection( this );
   index = std::max( 0, index );
-  index = std::min( index, mChildren.count() );
+  index = std::min( index, static_cast<int>( mChildren.count() ) );
   mChildren.insert( index, section );
 }
 
