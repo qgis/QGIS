@@ -1759,6 +1759,68 @@ void QgsPostgresConn::deduceEndian()
   // version 7.4, binary cursors return data in XDR whereas previous versions
   // return data in the endian of the server
 
+  QgsPostgresResult resOID;
+  int queryCounter = 0;
+  int errorCounter = 0;
+  int oidStatus = 0;
+  int oidSelectSet = 1 << 0;
+  int oidBinaryCursorSet = 1 << 1;
+  qint64 oidSelect = 0;
+  qint64 oidBinaryCursor = 0;
+
+  if ( 0 == PQsendQuery( QStringLiteral(
+                 /* 1 */   "SELECT regclass('pg_class')::oid AS oidselect;"
+                 /* 2 */   "BEGIN;"
+                 /* 3 */   "DECLARE oidcursor BINARY CURSOR FOR SELECT regclass('pg_class')::oid AS oidbinarycursor;"
+                 /* 4 */   "FETCH FORWARD 1 FROM oidcursor;"
+                 /* 5 */   "CLOSE oidcursor;"
+                 /* 6 */   "COMMIT;" ) ) )
+    QgsDebugMsg( QStringLiteral( "PQsendQuery(...) error %1" ).arg( PQerrorMessage() ) );
+
+  for ( ;; )
+  {
+    // PQgetResult() must be called repeatedly until it returns a null pointer
+    resOID = PQgetResult();
+
+    if ( resOID.result() == nullptr )
+      break;
+
+    queryCounter++;
+    if ( resOID.PQresultStatus() == PGRES_FATAL_ERROR )
+    {
+      errorCounter++;
+      QgsDebugMsg( QStringLiteral( "QUERY #%1 PGRES_FATAL_ERROR %2" )
+                   .arg( queryCounter )
+                   .arg( PQerrorMessage().trimmed() ) );
+      continue;
+    }
+
+    if ( resOID.PQresultStatus() == PGRES_TUPLES_OK && resOID.PQnfields() && resOID.PQntuples() )
+    {
+      if ( resOID.PQfname( 0 ) == QLatin1String( "oidselect" ) )
+      {
+        oidSelect = resOID.PQgetvalue( 0, 0 ).toLongLong();
+        oidStatus |= oidSelectSet;
+      }
+      if ( resOID.PQfname( 0 ) == QLatin1String( "oidbinarycursor" ) )
+      {
+        oidBinaryCursor = getBinaryInt( resOID, 0, 0 );
+        oidStatus |= oidBinaryCursorSet;
+      }
+    }
+  }
+
+  if ( errorCounter == 0 && oidStatus == ( oidSelectSet | oidBinaryCursorSet ) )
+  {
+    mSwapEndian = mSwapEndian == ( oidSelect == oidBinaryCursor );
+    return;
+  }
+
+  QgsDebugMsg( QStringLiteral( "Back to old deduceEndian(): PQstatus() - %1, queryCounter = %2, errorCounter = %3" )
+               .arg( PQstatus() )
+               .arg( queryCounter )
+               .arg( errorCounter ) );
+
   QgsPostgresResult res( PQexec( QStringLiteral( "select regclass('pg_class')::oid" ) ) );
   QString oidValue = res.PQgetvalue( 0, 0 );
 
