@@ -306,7 +306,7 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
 
   if ( field.isNumeric() )
   {
-    QVariant maxVal = existingValues.isEmpty() ? 0 : *std::max_element( existingValues.begin(), existingValues.end() );
+    QVariant maxVal = existingValues.isEmpty() ? 0 : *std::max_element( existingValues.begin(), existingValues.end(), []( const QVariant & a, const QVariant & b ) { return a.toLongLong() < b.toLongLong(); } );
     QVariant newVar( maxVal.toLongLong() + 1 );
     if ( field.convertCompatible( newVar ) )
       return newVar;

@@ -360,9 +360,9 @@ QPair<int, int> QgsLayoutTable::rowRange( QgsRenderContext &context, const int f
   }
 
   //using zero based indexes
-  int firstVisible = std::min( rowsAlreadyShown, mTableContents.length() );
+  int firstVisible = std::min( rowsAlreadyShown, static_cast<int>( mTableContents.length() ) );
   int possibleRowsVisible = rowsVisible( context, frameIndex, rowsAlreadyShown, false );
-  int lastVisible = std::min( firstVisible + possibleRowsVisible, mTableContents.length() );
+  int lastVisible = std::min( firstVisible + possibleRowsVisible, static_cast<int>( mTableContents.length() ) );
 
   return qMakePair( firstVisible, lastVisible );
 }

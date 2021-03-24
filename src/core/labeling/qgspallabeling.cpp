@@ -1586,7 +1586,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       int maxLineLength = 0;
       for ( const auto &line : multiLineSplit )
       {
-        maxLineLength = std::max( maxLineLength, line.length() );
+        maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
       }
       h = fm->ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
       break;
@@ -1612,7 +1612,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       int maxLineLength = 0;
       for ( const auto &line : multiLineSplit )
       {
-        maxLineLength = std::max( maxLineLength, line.length() );
+        maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
       }
       heightVertical = fm->ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
 
