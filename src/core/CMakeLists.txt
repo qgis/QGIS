@@ -1745,6 +1745,7 @@ target_compile_features(qgis_core PRIVATE cxx_std_17)
 target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}Core_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Gui_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Xml_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Widgets_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS}
@@ -1907,9 +1908,9 @@ if (ADD_CLAZY_CHECKS)
 endif()
 
 target_link_libraries(qgis_core
-  ${QtXml_LIBRARIES}
   ${${QT_VERSION_BASE}Core_LIBRARIES}
   ${${QT_VERSION_BASE}Gui_LIBRARIES}
+  ${${QT_VERSION_BASE}Xml_LIBRARIES}
   ${${QT_VERSION_BASE}Widgets_LIBRARIES}
   ${${QT_VERSION_BASE}Svg_LIBRARIES}
   ${${QT_VERSION_BASE}PrintSupport_LIBRARIES}
