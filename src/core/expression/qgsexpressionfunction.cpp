@@ -669,7 +669,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     if ( !isStatic )
     {
       cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5%6:%7" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
-                 QString::number( context->feature().id() ), QString( qHash( context->feature() ) ), orderBy );
+                 QString::number( context->feature().id() ), QString::number( qHash( context->feature() ) ), orderBy );
     }
     else
     {
@@ -914,7 +914,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   if ( !isStatic )
   {
     cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5%6:%7" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
-               QString::number( context->feature().id() ), QString( qHash( context->feature() ) ), orderBy );
+               QString::number( context->feature().id() ), QString::number( qHash( context->feature() ) ), orderBy );
   }
   else
   {
