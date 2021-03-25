@@ -635,7 +635,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
   mAuthConfigId.clear();
 
   QUrl url;
-  url.setQuery( QString::fromLatin1( uri ) );
+  url.setQuery( QString::fromUtf8( uri ) );
   const QUrlQuery query( url );
 
   const auto constQueryItems = query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded );
@@ -654,7 +654,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
 
 void QgsDataSourceUri::setEncodedUri( const QString &uri )
 {
-  setEncodedUri( uri.toLatin1() );
+  setEncodedUri( uri.toUtf8() );
 }
 
 QString QgsDataSourceUri::quotedTablename() const
