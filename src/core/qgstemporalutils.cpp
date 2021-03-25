@@ -28,6 +28,8 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <QRegularExpression>
+
 QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject *project )
 {
   QMap<QString, QgsMapLayer *> mapLayers = project->mapLayers();
@@ -222,7 +224,11 @@ QList<QDateTime> QgsTemporalUtils::calculateDateTimesUsingDuration( const QDateT
     ok = false;
     return {};
   }
+  return calculateDateTimesUsingDuration( start, end, timeDuration, maxValuesExceeded, maxValues );
+}
 
+QList<QDateTime> QgsTemporalUtils::calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QgsTimeDuration &timeDuration, bool &maxValuesExceeded, int maxValues )
+{
   QList<QDateTime> res;
   QDateTime current = start;
   maxValuesExceeded = false;
@@ -271,6 +277,86 @@ QList<QDateTime> QgsTemporalUtils::calculateDateTimesFromISO8601( const QString 
 //
 // QgsTimeDuration
 //
+
+QString QgsTimeDuration::toString() const
+{
+  QString text( "P" );
+
+  if ( years )
+  {
+    text.append( QString::number( years ) );
+    text.append( 'Y' );
+  }
+  if ( months )
+  {
+    text.append( QString::number( months ) );
+    text.append( 'M' );
+  }
+  if ( days )
+  {
+    text.append( QString::number( days ) );
+    text.append( 'D' );
+  }
+
+  if ( hours )
+  {
+    if ( !text.contains( 'T' ) )
+      text.append( 'T' );
+    text.append( QString::number( hours ) );
+    text.append( 'H' );
+  }
+  if ( minutes )
+  {
+    if ( !text.contains( 'T' ) )
+      text.append( 'T' );
+    text.append( QString::number( minutes ) );
+    text.append( 'M' );
+  }
+  if ( seconds )
+  {
+    if ( !text.contains( 'T' ) )
+      text.append( 'T' );
+    text.append( QString::number( seconds ) );
+    text.append( 'S' );
+  }
+  return text;
+}
+
+long long QgsTimeDuration::toSeconds() const
+{
+  long long secs = 0.0;
+
+  if ( years )
+    secs += years * QgsInterval::YEARS;
+  if ( months )
+    secs += months * QgsInterval::MONTHS;
+  if ( days )
+    secs += days * QgsInterval::DAY;
+  if ( hours )
+    secs += hours * QgsInterval::HOUR;
+  if ( minutes )
+    secs += minutes * QgsInterval::MINUTE;
+  if ( seconds )
+    secs += seconds;
+
+  return secs;
+}
+
+QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime )
+{
+  QDateTime resultDateTime = dateTime;
+
+  if ( years )
+    resultDateTime = resultDateTime.addYears( years );
+  if ( months )
+    resultDateTime = resultDateTime.addMonths( months );
+  if ( weeks || days )
+    resultDateTime = resultDateTime.addDays( weeks * 7 + days );
+  if ( hours || minutes || seconds )
+    resultDateTime = resultDateTime.addSecs( hours * 60LL * 60 + minutes * 60 + seconds );
+
+  return resultDateTime;
+}
 
 QgsTimeDuration QgsTimeDuration::fromString( const QString &string, bool &ok )
 {

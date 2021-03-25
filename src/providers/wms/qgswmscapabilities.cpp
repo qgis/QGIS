@@ -109,11 +109,10 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       const QDateTime begin = extent.dates.dateTimes.first();
       const QDateTime end = extent.dates.dateTimes.last();
 
-      bool ok = false;
-      bool maxValuesExceeded = false;
-      const QList< QDateTime > dates = QgsTemporalUtils::calculateDateTimesFromISO8601( extent.originalString, ok, maxValuesExceeded );
-      if ( ok )
+      if ( !extent.resolution.isNull() )
       {
+        bool maxValuesExceeded = false;
+        const QList< QDateTime > dates = QgsTemporalUtils::calculateDateTimesUsingDuration( begin, end, extent.resolution, maxValuesExceeded );
         for ( const QDateTime &dt : dates )
           mAllRanges.append( QgsDateTimeRange( dt, dt ) );
       }
@@ -123,7 +122,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       }
     }
 
-    if ( uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) ) != QString() )
+    if ( !uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) ).isEmpty() )
     {
       QString referenceExtent = uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) );
 
@@ -259,7 +258,7 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &exten
     {
       const QStringList itemParts = item.split( '/' );
 
-      QgsWmstResolution itemResolution;
+      QgsTimeDuration itemResolution;
       QgsWmstDates itemDatesList;
 
       for ( const QString &itemPart : itemParts )
@@ -276,11 +275,11 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &exten
         }
       }
 
-      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution, item ) );
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution ) );
     }
     else
     {
-      QgsWmstResolution resolution;
+      QgsTimeDuration resolution;
       QgsWmstDates datesList;
       if ( item.startsWith( 'P' ) )
       {
@@ -291,7 +290,7 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &exten
         datesList.dateTimes.append( parseWmstDateTimes( item ) );
       }
 
-      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, resolution, item ) );
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, resolution ) );
     }
   }
 
@@ -306,26 +305,6 @@ void QgsWmsSettings::setTimeDimensionExtent( const QgsWmstDimensionExtent &timeD
 QgsWmstDimensionExtent QgsWmsSettings::timeDimensionExtent() const
 {
   return mTimeDimensionExtent;
-}
-
-QDateTime QgsWmsSettings::addTime( const QDateTime &dateTime, const QgsWmstResolution &resolution )
-{
-  QDateTime resultDateTime = QDateTime( dateTime );
-
-  if ( resolution.year != -1 )
-    resultDateTime = resultDateTime.addYears( resolution.year );
-  if ( resolution.month != -1 )
-    resultDateTime = resultDateTime.addMonths( resolution.month );
-  if ( resolution.day != -1 )
-    resultDateTime = resultDateTime.addDays( resolution.day );
-  if ( resolution.hour != -1 )
-    resultDateTime = resultDateTime.addSecs( resolution.hour * 60 * 60 );
-  if ( resolution.minutes != -1 )
-    resultDateTime = resultDateTime.addSecs( resolution.minutes * 60 );
-  if ( resolution.seconds != -1 )
-    resultDateTime = resultDateTime.addSecs( resolution.seconds );
-
-  return resultDateTime;
 }
 
 QDateTime QgsWmsSettings::findLeastClosestDateTime( const QDateTime &dateTime, bool dateOnly ) const
@@ -366,7 +345,7 @@ QDateTime QgsWmsSettings::findLeastClosestDateTime( const QDateTime &dateTime, b
       if ( seconds == endSeconds )
         break;
 
-      long long resolutionSeconds = pair.resolution.interval();
+      long long resolutionSeconds = pair.resolution.toSeconds();
 
       if ( resolutionSeconds <= 0 )
         continue;
@@ -380,84 +359,10 @@ QDateTime QgsWmsSettings::findLeastClosestDateTime( const QDateTime &dateTime, b
   return closest;
 }
 
-QgsWmstResolution QgsWmsSettings::parseWmstResolution( const QString &itemText )
+QgsTimeDuration QgsWmsSettings::parseWmstResolution( const QString &itemText )
 {
-  QString item = itemText;
-  QgsWmstResolution resolution;
-  bool found = false;
-
-  for ( char datesSymbol : { 'Y', 'M', 'D' } )
-  {
-    QString number = item.left( item.indexOf( datesSymbol ) );
-    int resolutionValue = number.remove( 'P' ).toInt();
-
-    if ( datesSymbol  == 'Y' && item.contains( 'Y' ) )
-    {
-      resolution.year = resolutionValue;
-      found = true;
-    }
-    if ( datesSymbol  == 'M' && item.contains( 'M' ) )
-    {
-      // Symbol M is used to both represent either month or minutes
-      // The check below is for determining whether it means month or minutes
-      if ( item.contains( 'T' ) &&
-           item.indexOf( 'T' ) < item.indexOf( 'M' ) )
-        continue;
-      resolution.month = resolutionValue;
-      found = true;
-    }
-    if ( datesSymbol  == 'D' && item.contains( 'D' ) )
-    {
-      resolution.day = resolutionValue;
-      found = true;
-    }
-
-    if ( found )
-    {
-      int symbolIndex = item.indexOf( datesSymbol );
-      item.remove( symbolIndex, 1 );
-      item.remove( symbolIndex - number.length(),
-                   number.length() );
-      found = false;
-    }
-  }
-  if ( !item.contains( 'T' ) )
-    return resolution;
-  else
-    item.remove( 'T' );
-
-  bool foundTime = false;
-
-  for ( char timeSymbol : { 'H', 'M', 'S' } )
-  {
-    QString number = item.left( item.indexOf( timeSymbol ) );
-    int resolutionValue = number.remove( 'P' ).toInt();
-
-    if ( timeSymbol == 'H' && item.contains( 'H' ) )
-    {
-      resolution.hour = resolutionValue;
-      foundTime = true;
-    }
-    if ( timeSymbol == 'M' && item.contains( 'M' ) )
-    {
-      resolution.minutes = resolutionValue;
-      foundTime = true;
-    }
-    if ( timeSymbol == 'S' && item.contains( 'S' ) )
-    {
-      resolution.seconds = resolutionValue;
-      foundTime = true;
-    }
-
-    if ( foundTime )
-    {
-      int symbolIndex = item.indexOf( timeSymbol );
-      item.remove( symbolIndex, 1 );
-      item.remove( symbolIndex - number.length(),
-                   number.length() );
-      foundTime = false;
-    }
-  }
+  bool ok = false;
+  QgsTimeDuration resolution = QgsTimeDuration::fromString( itemText, ok );
   return resolution;
 }
 
