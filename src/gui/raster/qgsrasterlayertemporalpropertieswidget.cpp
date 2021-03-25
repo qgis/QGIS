@@ -38,6 +38,8 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
 
   connect( mModeFixedRangeRadio, &QRadioButton::toggled, mFixedTimeRangeFrame, &QWidget::setEnabled );
 
+  connect( mTemporalGroupBox, &QGroupBox::toggled, this, &QgsRasterLayerTemporalPropertiesWidget::temporalGroupBoxChecked );
+
   mStartTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
   mEndTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
 
@@ -100,4 +102,12 @@ void QgsRasterLayerTemporalPropertiesWidget::addWidget( QgsMapLayerConfigWidget 
 {
   mExtraWidgets << widget;
   mExtraWidgetLayout->insertWidget( mExtraWidgetLayout->count() - 1, widget );
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::temporalGroupBoxChecked( bool checked )
+{
+  for ( QgsMapLayerConfigWidget *widget : std::as_const( mExtraWidgets ) )
+  {
+    widget->emit dynamicTemporalControlToggled( checked );
+  }
 }
