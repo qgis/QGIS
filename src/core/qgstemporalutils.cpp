@@ -368,13 +368,13 @@ QgsTimeDuration QgsTimeDuration::fromString( const QString &string, bool &ok )
   if ( match.hasMatch() )
   {
     ok = true;
-    duration.years = match.capturedView( 1 ).toInt();
-    duration.months = match.capturedView( 2 ).toInt();
-    duration.weeks = match.capturedView( 3 ).toInt();
-    duration.days = match.capturedView( 4 ).toInt();
-    duration.hours = match.capturedView( 5 ).toInt();
-    duration.minutes = match.capturedView( 6 ).toInt();
-    duration.seconds = match.capturedView( 7 ).toDouble();
+    duration.years = match.captured( 1 ).toInt();
+    duration.months = match.captured( 2 ).toInt();
+    duration.weeks = match.captured( 3 ).toInt();
+    duration.days = match.captured( 4 ).toInt();
+    duration.hours = match.captured( 5 ).toInt();
+    duration.minutes = match.captured( 6 ).toInt();
+    duration.seconds = match.captured( 7 ).toDouble();
   }
   return duration;
 }
