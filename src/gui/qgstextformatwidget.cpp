@@ -468,7 +468,7 @@ void QgsTextFormatWidget::initWidget()
   {
     updateShadowFrameStatus();
   } );
-  connect( mCalloutDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateCalloutFrameStatus );
+  connect( mCalloutDrawDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updateCalloutFrameStatus );
   connect( mCalloutsDrawCheckBox, &QCheckBox::stateChanged, this, [ = ]( int )
   {
     updateCalloutFrameStatus();
@@ -809,7 +809,6 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::ZIndex );
 
   registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::CalloutDraw );
-  mCalloutDrawDDBtn->registerCheckedWidget( mCalloutsDrawCheckBox );
 
   registerDataDefinedButton( mLabelAllPartsDDBtn, QgsPalLayerSettings::LabelAllParts );
 }
