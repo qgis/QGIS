@@ -57,6 +57,45 @@ class CORE_EXPORT QgsTimeDuration
     double seconds = 0;
 
     /**
+     * Returns TRUE if the duration is null, i.e. an empty duration.
+     */
+    bool isNull() const
+    {
+      return !years && !months && !days &&
+             !hours && !minutes && !seconds;
+    }
+
+    bool operator==( const QgsTimeDuration &other ) const
+    {
+      return years == other.years && months == other.months &&
+             days == other.days && hours == other.hours &&
+             minutes == other.minutes && seconds == other.seconds;
+    }
+
+    bool operator!=( const QgsTimeDuration &other ) const
+    {
+      return !( *this == other );
+    }
+
+    /**
+     * Converts the duration to an ISO8601 duration string.
+     */
+    QString toString() const;
+
+    /**
+     * Returns the total duration in seconds.
+     *
+     * \warning If the duration contains year or month intervals then the returned
+     * value is approximate only, due to the variable length of these intervals.
+     */
+    long long toSeconds() const;
+
+    /**
+     * Adds this duration to a starting \a dateTime value.
+     */
+    QDateTime addToDateTime( const QDateTime &dateTime );
+
+    /**
      * Creates a QgsTimeDuration from a \a string value.
      */
     static QgsTimeDuration fromString( const QString &string, bool &ok );
@@ -178,6 +217,22 @@ class CORE_EXPORT QgsTemporalUtils
      * \since QGIS 3.20
      */
     static QList< QDateTime > calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QString &duration, bool &ok SIP_OUT, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
+
+#ifndef SIP_RUN
+
+    /**
+     * Calculates a complete list of datetimes between \a start and \a end, using the specified ISO8601 \a duration string (eg "PT12H").
+     * \param start start date time
+     * \param end end date time
+     * \param duration ISO8601 duration
+     * \param maxValuesExceeded will be set to TRUE if the maximum number of values to return was exceeded
+     * \param maxValues maximum number of values to return, or -1 to return all values
+     * \returns calculated list of date times
+     * \note Not available in Python bindings
+     * \since QGIS 3.20
+     */
+    static QList< QDateTime > calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QgsTimeDuration &duration, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
+#endif
 
     /**
      * Calculates a complete list of datetimes from a ISO8601 \a string containing a duration (eg "2021-03-23T00:00:00Z/2021-03-24T12:00:00Z/PT12H").
