@@ -209,3 +209,86 @@ QDateTime QgsTemporalUtils::calculateFrameTime( const QDateTime &start, const lo
   }
 }
 
+QList<QDateTime> QgsTemporalUtils::calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QString &duration, bool &ok, bool &maxValuesExceeded, int maxValues )
+{
+  ok = false;
+  const QgsTimeDuration timeDuration( QgsTimeDuration::fromString( duration, ok ) );
+  if ( !ok )
+    return {};
+
+  if ( timeDuration.years == 0 && timeDuration.months == 0 && timeDuration.weeks == 0 && timeDuration.days == 0
+       && timeDuration.hours == 0 && timeDuration.minutes == 0 && timeDuration.seconds == 0 )
+  {
+    ok = false;
+    return {};
+  }
+
+  QList<QDateTime> res;
+  QDateTime current = start;
+  maxValuesExceeded = false;
+  while ( current <= end )
+  {
+    res << current;
+
+    if ( maxValues >= 0 && res.size() > maxValues )
+    {
+      maxValuesExceeded = true;
+      break;
+    }
+
+    if ( timeDuration.years )
+      current = current.addYears( timeDuration.years );
+    if ( timeDuration.months )
+      current = current.addMonths( timeDuration.months );
+    if ( timeDuration.weeks || timeDuration.days )
+      current = current.addDays( timeDuration.weeks * 7 + timeDuration.days );
+    if ( timeDuration.hours || timeDuration.minutes || timeDuration.seconds )
+      current = current.addSecs( timeDuration.hours * 60LL * 60 + timeDuration.minutes * 60 + timeDuration.seconds );
+  }
+  return res;
+}
+
+QList<QDateTime> QgsTemporalUtils::calculateDateTimesFromISO8601( const QString &string, bool &ok, bool &maxValuesExceeded, int maxValues )
+{
+  ok = false;
+  maxValuesExceeded = false;
+  const QStringList parts = string.split( '/' );
+  if ( parts.length() != 3 )
+  {
+    return {};
+  }
+
+  const QDateTime start = QDateTime::fromString( parts.at( 0 ), Qt::ISODate );
+  if ( !start.isValid() )
+    return {};
+  const QDateTime end = QDateTime::fromString( parts.at( 1 ), Qt::ISODate );
+  if ( !end.isValid() )
+    return {};
+
+  return calculateDateTimesUsingDuration( start, end, parts.at( 2 ), ok, maxValuesExceeded, maxValues );
+}
+
+//
+// QgsTimeDuration
+//
+
+QgsTimeDuration QgsTimeDuration::fromString( const QString &string, bool &ok )
+{
+  ok = false;
+  thread_local QRegularExpression sRx( QStringLiteral( R"(P(?:([\d]+)Y)?(?:([\d]+)M)?(?:([\d]+)W)?(?:([\d]+)D)?(?:T(?:([\d]+)H)?(?:([\d]+)M)?(?:([\d\.]+)S)?)?$)" ) );
+
+  const QRegularExpressionMatch match = sRx.match( string );
+  QgsTimeDuration duration;
+  if ( match.hasMatch() )
+  {
+    ok = true;
+    duration.years = match.capturedView( 1 ).toInt();
+    duration.months = match.capturedView( 2 ).toInt();
+    duration.weeks = match.capturedView( 3 ).toInt();
+    duration.days = match.capturedView( 4 ).toInt();
+    duration.hours = match.capturedView( 5 ).toInt();
+    duration.minutes = match.capturedView( 6 ).toInt();
+    duration.seconds = match.capturedView( 7 ).toDouble();
+  }
+  return duration;
+}
