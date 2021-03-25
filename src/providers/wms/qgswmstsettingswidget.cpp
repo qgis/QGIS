@@ -78,7 +78,7 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
 
     const QList< QgsDateTimeRange > allAvailableRanges = mRasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
     // determine if available ranges are a set of non-contiguous instants, and if so, we show a combobox to users instead of the free-form date widgets
-    if ( std::all_of( allAvailableRanges.cbegin(), allAvailableRanges.cend(), []( const QgsDateTimeRange & range ) { return range.isInstant(); } ) )
+    if ( allAvailableRanges.size() < 50 && std::all_of( allAvailableRanges.cbegin(), allAvailableRanges.cend(), []( const QgsDateTimeRange & range ) { return range.isInstant(); } ) )
     {
       mStaticWmstRangeFrame->hide();
       mStaticWmstChoiceFrame->show();

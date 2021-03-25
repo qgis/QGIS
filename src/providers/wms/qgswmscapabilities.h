@@ -525,7 +525,10 @@ struct QgsWmstExtentPair
   {
   }
 
-  QgsWmstExtentPair( QgsWmstDates otherDates, QgsWmstResolution otherResolution )
+  QgsWmstExtentPair( QgsWmstDates otherDates, QgsWmstResolution otherResolution, const QString &originalString )
+    : dates( otherDates )
+    , resolution( otherResolution )
+    , originalString( originalString )
   {
     dates = otherDates;
     resolution = otherResolution;
@@ -539,6 +542,8 @@ struct QgsWmstExtentPair
 
   QgsWmstDates dates;
   QgsWmstResolution resolution;
+  QString originalString;
+
 };
 
 

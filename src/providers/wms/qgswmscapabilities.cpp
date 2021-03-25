@@ -29,6 +29,7 @@
 #include "qgsunittypes.h"
 #include "qgsexception.h"
 #include "qgsapplication.h"
+#include "qgstemporalutils.h"
 
 // %%% copied from qgswmsprovider.cpp
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
@@ -107,7 +108,19 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
       const QDateTime begin = extent.dates.dateTimes.first();
       const QDateTime end = extent.dates.dateTimes.last();
-      mAllRanges.append( QgsDateTimeRange( begin, end ) );
+
+      bool ok = false;
+      bool maxValuesExceeded = false;
+      const QList< QDateTime > dates = QgsTemporalUtils::calculateDateTimesFromISO8601( extent.originalString, ok, maxValuesExceeded );
+      if ( ok )
+      {
+        for ( const QDateTime &dt : dates )
+          mAllRanges.append( QgsDateTimeRange( dt, dt ) );
+      }
+      else
+      {
+        mAllRanges.append( QgsDateTimeRange( begin, end ) );
+      }
     }
 
     if ( uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) ) != QString() )
@@ -263,7 +276,7 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &exten
         }
       }
 
-      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution ) );
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution, item ) );
     }
     else
     {
@@ -278,7 +291,7 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &exten
         datesList.dateTimes.append( parseWmstDateTimes( item ) );
       }
 
-      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, resolution ) );
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, resolution, item ) );
     }
   }
 
