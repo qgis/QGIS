@@ -106,7 +106,7 @@ class PointsAlongLines(GdalAlgorithm):
         )
 
         other_fields = ',*' if other_fields_exist else ''
-        
+
         arguments = [
             output,
             ogrLayer,
