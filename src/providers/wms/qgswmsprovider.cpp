@@ -173,6 +173,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       temporalCapabilities()->setHasTemporalCapabilities( true );
       temporalCapabilities()->setAvailableTemporalRange( mSettings.mFixedRange );
       temporalCapabilities()->setAllAvailableTemporalRanges( mSettings.mAllRanges );
+      temporalCapabilities()->setDefaultInterval( mSettings.mDefaultInterval );
 
       temporalCapabilities()->setIntervalHandlingMethod(
         QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );

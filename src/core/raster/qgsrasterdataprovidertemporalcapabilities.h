@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrange.h"
+#include "qgsinterval.h"
 #include "qgsdataprovidertemporalcapabilities.h"
 
 /**
@@ -134,6 +135,24 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     */
     const QgsDateTimeRange &requestedTemporalRange() const;
 
+    /**
+     * Returns the default time step interval corresponding to the available
+     * datetime values for the provider.
+     *
+     * \see setDefaultInterval()
+     * \since QGIS 3.20
+     */
+    QgsInterval defaultInterval() const;
+
+    /**
+     * Sets the default time step \a interval corresponding to the available
+     * datetime values for the provider.
+     *
+     * \see defaultInterval()
+     * \since QGIS 3.20
+     */
+    void setDefaultInterval( const QgsInterval &interval );
+
   private:
 
     /**
@@ -171,6 +190,8 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * Stores the available reference temporal range
      */
     QgsDateTimeRange mAvailableReferenceRange;
+
+    QgsInterval mDefaultInterval;
 
     //! Interval handling method
     IntervalHandlingMethod mIntervalMatchMethod = MatchUsingWholeRange;

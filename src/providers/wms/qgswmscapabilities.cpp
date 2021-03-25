@@ -124,10 +124,13 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
         {
           mAllRanges.append( QgsDateTimeRange( begin, end ) );
         }
+
+        mDefaultInterval = extent.resolution.toInterval();
       }
       else
       {
         mAllRanges.append( QgsDateTimeRange( begin, end ) );
+        mDefaultInterval = QgsInterval( 1, QgsUnitTypes::TemporalIrregularStep );
       }
     }
 
