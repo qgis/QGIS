@@ -23,6 +23,7 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgstemporalutils.h"
 
 QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -43,6 +44,8 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
 
   mStaticWmstRangeFrame->setEnabled( false );
   mStaticWmstChoiceFrame->setEnabled( false );
+  mReferenceTimeCombo->hide();
+  mReferenceDateTimeEdit->show();
 
   syncToLayer( mRasterLayer );
 
@@ -155,10 +158,35 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
       mReferenceTimeExtentLabel->setText( tr( "Reported reference time extent: <i>%1</i>" ).arg( referenceTimeExtent ) );
       mReferenceTimeGroupBox->setEnabled( true );
       mReferenceTimeGroupBox->setChecked( !referenceTime.isEmpty() );
+
+      bool ok = false;
+      bool maxValuesExceeded = false;
+      const QList< QDateTime > availableReferenceTimes = QgsTemporalUtils::calculateDateTimesFromISO8601( referenceTimeExtent, ok, maxValuesExceeded, 30 );
+      mReferenceTimeCombo->clear();
+      if ( ok && !maxValuesExceeded )
+      {
+        mReferenceTimeCombo->show();
+        mReferenceDateTimeEdit->hide();
+        for ( const QDateTime &date : availableReferenceTimes )
+        {
+          mReferenceTimeCombo->addItem( date.toString( Qt::ISODate ), QVariant::fromValue( date ) );
+        }
+      }
+      else
+      {
+        mReferenceTimeCombo->hide();
+        mReferenceDateTimeEdit->show();
+      }
     }
     if ( !referenceTime.isEmpty() && !referenceTimeExtent.isEmpty() )
     {
-      mReferenceDateTimeEdit->setDateTime( QDateTime::fromString( referenceTime, Qt::ISODateWithMs ) );
+      const QDateTime referenceDateTime = QDateTime::fromString( referenceTime, Qt::ISODateWithMs );
+      mReferenceDateTimeEdit->setDateTime( referenceDateTime );
+
+      if ( const int index = mReferenceTimeCombo->findData( QVariant::fromValue( referenceDateTime ) ); index >= 0 )
+        mReferenceTimeCombo->setCurrentIndex( index );
+      else if ( mReferenceTimeCombo->count() > 0 )
+        mReferenceTimeCombo->setCurrentIndex( 0 );
     }
 
     mFetchModeComboBox->addItem( tr( "Use Whole Temporal Range" ), QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange );
@@ -217,7 +245,8 @@ void QgsWmstSettingsWidget::apply()
 
     if ( mReferenceTimeGroupBox->isChecked() )
     {
-      QString referenceTime = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
+      const QString referenceTime = mReferenceTimeCombo->count() > 0  ? mReferenceTimeCombo->currentData().value< QDateTime >().toString( Qt::ISODateWithMs )
+                                    : mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
       uri[ QStringLiteral( "referenceTime" ) ] = referenceTime;
     }
     else

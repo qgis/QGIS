@@ -197,7 +197,7 @@
                  <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                   <property name="dateTime">
                    <datetime>
-                    <hour>21</hour>
+                    <hour>11</hour>
                     <minute>3</minute>
                     <second>57</second>
                     <year>2020</year>
@@ -331,21 +331,11 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="mReferenceTimeExtentLabel">
-        <property name="text">
-         <string>No reference time is reported in the layer's capabilities.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0" colspan="2">
        <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
         <property name="dateTime">
          <datetime>
-          <hour>18</hour>
+          <hour>8</hour>
           <minute>20</minute>
           <second>36</second>
           <year>2020</year>
@@ -376,6 +366,19 @@
          <bool>false</bool>
         </property>
        </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="mReferenceTimeExtentLabel">
+        <property name="text">
+         <string>No reference time is reported in the layer's capabilities.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QComboBox" name="mReferenceTimeCombo"/>
       </item>
      </layout>
     </widget>
