@@ -616,32 +616,30 @@ class QgsTemporalRange
      */
     static QList< QgsTemporalRange<T> > mergeRanges( const QList< QgsTemporalRange<T> > &ranges )
     {
-      QList< QgsTemporalRange<T > > res;
+      if ( ranges.empty() )
+        return {};
 
-      QList< QgsTemporalRange<T> > queue = ranges;
-      while ( !queue.empty() )
+      QList< QgsTemporalRange<T > > sortedRanges = ranges;
+      std::sort( sortedRanges.begin(), sortedRanges.end(), []( const QgsTemporalRange< T > &a, const QgsTemporalRange< T > &b ) -> bool { return a.begin() < b.begin(); } );
+      QList< QgsTemporalRange<T>> res;
+      res.reserve( sortedRanges.size() );
+
+      QgsTemporalRange<T> prevRange;
+      auto it = sortedRanges.constBegin();
+      prevRange = *it++;
+      for ( ; it != sortedRanges.constEnd(); ++it )
       {
-        QgsTemporalRange<T> range = queue.back();
-        queue.pop_back();
-
-        bool extended = false;
-        for ( int i = 0; i < res.count(); ++i )
+        if ( prevRange.overlaps( *it ) )
         {
-          if ( res[i].overlaps( range ) )
-          {
-            QgsTemporalRange< T > other = res.takeAt( i );
-            other.extend( range );
-            queue.push_back( other );
-            extended = true;
-            break;
-          }
+          prevRange.extend( *it );
         }
-
-        if ( !extended )
-          res.push_back( range );
+        else
+        {
+          res << prevRange;
+          prevRange = *it;
+        }
       }
-
-      std::sort( res.begin(), res.end(), []( const QgsTemporalRange< T > &a, const QgsTemporalRange< T > &b ) -> bool { return a.begin() < b.begin(); } );
+      res << prevRange;
       return res;
     }
 #endif
