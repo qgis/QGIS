@@ -122,6 +122,26 @@ Returns the requested temporal range.
 Intended to be used by the provider in fetching data.
 %End
 
+    QgsInterval defaultInterval() const;
+%Docstring
+Returns the default time step interval corresponding to the available
+datetime values for the provider.
+
+.. seealso:: :py:func:`setDefaultInterval`
+
+.. versionadded:: 3.20
+%End
+
+    void setDefaultInterval( const QgsInterval &interval );
+%Docstring
+Sets the default time step ``interval`` corresponding to the available
+datetime values for the provider.
+
+.. seealso:: :py:func:`defaultInterval`
+
+.. versionadded:: 3.20
+%End
+
 };
 
 /************************************************************************

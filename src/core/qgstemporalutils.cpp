@@ -278,6 +278,11 @@ QList<QDateTime> QgsTemporalUtils::calculateDateTimesFromISO8601( const QString 
 // QgsTimeDuration
 //
 
+QgsInterval QgsTimeDuration::toInterval() const
+{
+  return QgsInterval( years, months, weeks, days, hours, minutes, seconds );
+}
+
 QString QgsTimeDuration::toString() const
 {
   QString text( "P" );

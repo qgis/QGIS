@@ -63,6 +63,16 @@ void QgsRasterDataProviderTemporalCapabilities::setRequestedTemporalRange( const
   mRequestedRange = dateTimeRange;
 }
 
+QgsInterval QgsRasterDataProviderTemporalCapabilities::defaultInterval() const
+{
+  return mDefaultInterval;
+}
+
+void QgsRasterDataProviderTemporalCapabilities::setDefaultInterval( const QgsInterval &defaultInterval )
+{
+  mDefaultInterval = defaultInterval;
+}
+
 const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemporalRange() const
 {
   return mRequestedRange;

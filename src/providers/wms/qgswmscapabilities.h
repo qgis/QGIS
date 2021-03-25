@@ -786,6 +786,8 @@ class QgsWmsSettings
     //! All available temporal ranges
     QList< QgsDateTimeRange > mAllRanges;
 
+    QgsInterval mDefaultInterval;
+
     //! Fixed reference temporal range for the data provider
     QgsDateTimeRange mFixedReferenceRange;
 

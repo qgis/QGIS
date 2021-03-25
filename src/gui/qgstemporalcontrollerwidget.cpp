@@ -25,6 +25,9 @@
 #include "qgstemporalutils.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 
 #include <QAction>
 #include <QMenu>
@@ -443,13 +446,22 @@ void QgsTemporalControllerWidget::firstTemporalLayerLoaded( QgsMapLayer *layer )
 {
   setDatesToProjectTime();
 
-  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-  if ( meshLayer )
+  if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer ) )
   {
     mBlockFrameDurationUpdates++;
     setTimeStep( meshLayer->firstValidTimeStep() );
     mBlockFrameDurationUpdates--;
     updateFrameDuration();
+  }
+  else if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer ) )
+  {
+    if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
+    {
+      mBlockFrameDurationUpdates++;
+      setTimeStep( rasterLayer->dataProvider()->temporalCapabilities()->defaultInterval() );
+      mBlockFrameDurationUpdates--;
+      updateFrameDuration();
+    }
   }
 }
 
@@ -560,37 +572,45 @@ void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
   if ( ! timeStep.isValid() || timeStep.seconds() <= 0 )
     return;
 
-  // Search the time unit the most appropriate :
-  // the one that gives the smallest time step value for double spin box with round value (if possible) and/or the less signifiant digits
-
   int selectedUnit = -1;
-  int stringSize = std::numeric_limits<int>::max();
-  int precision = mStepSpinBox->decimals();
   double selectedValue = std::numeric_limits<double>::max();
-  for ( int i = 0; i < mTimeStepsComboBox->count(); ++i )
+  if ( timeStep.originalUnit() != QgsUnitTypes::TemporalIrregularStep )
   {
-    QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
-    double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
-    QString string = QString::number( value, 'f', precision );
-    string.remove( QRegExp( "0+$" ) ); //remove trailing zero
-    string.remove( QRegExp( "[.]+$" ) ); //remove last point if present
+    // Search the time unit the most appropriate :
+    // the one that gives the smallest time step value for double spin box with round value (if possible) and/or the less signifiant digits
 
-    if ( value >= 1
-         && string.size() <= stringSize // less significant digit than currently selected
-         && value < selectedValue ) // less than currently selected
+    int stringSize = std::numeric_limits<int>::max();
+    int precision = mStepSpinBox->decimals();
+    for ( int i = 0; i < mTimeStepsComboBox->count(); ++i )
     {
-      selectedUnit = i;
-      selectedValue = value;
-      stringSize = string.size();
+      QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
+      double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
+      QString string = QString::number( value, 'f', precision );
+      string.remove( QRegExp( "0+$" ) ); //remove trailing zero
+      string.remove( QRegExp( "[.]+$" ) ); //remove last point if present
+
+      if ( value >= 1
+           && string.size() <= stringSize // less significant digit than currently selected
+           && value < selectedValue ) // less than currently selected
+      {
+        selectedUnit = i;
+        selectedValue = value;
+        stringSize = string.size();
+      }
+      else if ( string != '0'
+                && string.size() < precision + 2 //round value (ex: 0.xx with precision=3)
+                && string.size() < stringSize ) //less significant digit than currently selected
+      {
+        selectedUnit = i ;
+        selectedValue = value ;
+        stringSize = string.size();
+      }
     }
-    else if ( string != '0'
-              && string.size() < precision + 2 //round value (ex: 0.xx with precision=3)
-              && string.size() < stringSize ) //less significant digit than currently selected
-    {
-      selectedUnit = i ;
-      selectedValue = value ;
-      stringSize = string.size();
-    }
+  }
+  else
+  {
+    selectedUnit = mTimeStepsComboBox->findData( static_cast< int >( timeStep.originalUnit() ) );
+    selectedValue = 1;
   }
 
   if ( selectedUnit >= 0 )
