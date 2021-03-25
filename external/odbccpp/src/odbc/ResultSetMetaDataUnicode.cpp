@@ -29,6 +29,18 @@ u16string ResultSetMetaDataUnicode::getTableName(unsigned short columnIndex)
     return getStringColAttribute(columnIndex, SQL_DESC_TABLE_NAME);
 }
 //------------------------------------------------------------------------------
+u16string ResultSetMetaDataUnicode::getBaseTableName(
+    unsigned short columnIndex)
+{
+    return getStringColAttribute(columnIndex, SQL_DESC_BASE_TABLE_NAME);
+}
+//------------------------------------------------------------------------------
+u16string ResultSetMetaDataUnicode::getBaseColumnName(
+    unsigned short columnIndex)
+{
+    return getStringColAttribute(columnIndex, SQL_DESC_BASE_COLUMN_NAME);
+}
+//------------------------------------------------------------------------------
 u16string ResultSetMetaDataUnicode::getColumnLabel(unsigned short columnIndex)
 {
   return getStringColAttribute(columnIndex, SQL_DESC_LABEL);
