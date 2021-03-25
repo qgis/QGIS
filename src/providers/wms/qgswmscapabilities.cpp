@@ -112,9 +112,18 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       if ( !extent.resolution.isNull() )
       {
         bool maxValuesExceeded = false;
-        const QList< QDateTime > dates = QgsTemporalUtils::calculateDateTimesUsingDuration( begin, end, extent.resolution, maxValuesExceeded );
-        for ( const QDateTime &dt : dates )
-          mAllRanges.append( QgsDateTimeRange( dt, dt ) );
+        const QList< QDateTime > dates = QgsTemporalUtils::calculateDateTimesUsingDuration( begin, end, extent.resolution, maxValuesExceeded, 1000 );
+        // if we have a manageable number of distinct dates, then we'll use those. If not we just use the overall range.
+        // (some servers eg may have data for every minute for decades!)
+        if ( !maxValuesExceeded )
+        {
+          for ( const QDateTime &dt : dates )
+            mAllRanges.append( QgsDateTimeRange( dt, dt ) );
+        }
+        else
+        {
+          mAllRanges.append( QgsDateTimeRange( begin, end ) );
+        }
       }
       else
       {
