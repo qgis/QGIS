@@ -82,9 +82,13 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def canBeActivated(self):
         version = SagaUtils.getInstalledVersion(True)
-        if version is not None and (version.startswith(REQUIRED_VERSION) or version.startswith(BETA_SUPPORT_VERSION)):
-            return True
-        return False
+        return bool(
+            version is not None
+            and (
+                version.startswith(REQUIRED_VERSION)
+                or version.startswith(BETA_SUPPORT_VERSION)
+            )
+        )
 
     def warningMessage(self):
         version = SagaUtils.getInstalledVersion(True)
