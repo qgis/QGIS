@@ -140,8 +140,8 @@ class CORE_EXPORT Q_DECL_DEPRECATED QgsRendererRangeLabelFormat SIP_DEPRECATED
     // values used to manage number formatting - precision and trailing zeroes
     double mNumberScale = 1.0;
     QString mNumberSuffix;
-    QRegularExpression mReTrailingZeroes;
-    QRegularExpression mReNegativeZero;
+    QRegularExpression mReTrailingZeroes = QRegularExpression( "[.,]?0*$" ) SIP_SKIP;
+    QRegularExpression mReNegativeZero = QRegularExpression( QRegularExpression::anchoredPattern( "^\\-0(?:[.,]0*)?$" ) ) SIP_SKIP;
 };
 
 

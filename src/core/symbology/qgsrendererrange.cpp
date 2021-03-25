@@ -162,14 +162,10 @@ const int QgsRendererRangeLabelFormat::MIN_PRECISION = -6;
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
   : mFormat( QStringLiteral( "%1 - %2" ) )
-  , mReTrailingZeroes( "[.,]?0*$" )
-  , mReNegativeZero( QRegularExpression::anchoredPattern( "^\\-0(?:[.,]0*)?$" ) )
 {
 }
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat( const QString &format, int precision, bool trimTrailingZeroes )
-  : mReTrailingZeroes( "[.,]?0*$" )
-  , mReNegativeZero( QRegularExpression::anchoredPattern( "^\\-0(?:[.,]0*)?$" ) )
 {
   setFormat( format );
   setPrecision( precision );

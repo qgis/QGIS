@@ -93,7 +93,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 
     if ( !fileRegexp.pattern().isEmpty() )
     {
-      if ( not( fileRegexp.match( fi.fileName() ).hasMatch() ) )
+      if ( !( fileRegexp.match( fi.fileName() ).hasMatch() ) )
       {
         QgsDebugMsg( "auth method " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
         continue;

@@ -535,7 +535,11 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         bool matches;
         if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+          QString esc_regexp = QRegExp::escape( regexp );
+#else
           QString esc_regexp = QRegularExpression::escape( regexp );
+#endif
           // manage escape % and _
           if ( esc_regexp.startsWith( '%' ) )
           {

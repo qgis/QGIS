@@ -3309,9 +3309,14 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
         {
           oprValue.replace( 0, 1, QStringLiteral( "%" ) );
         }
-        QRegularExpression rx( "[^" + QRegularExpression::escape( escape ) + "](" + QRegularExpression::escape( wildCard ) + ")" );
         int pos = 0;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        QRegExp rx( "[^" + QRegExp::escape( escape ) + "](" + QRegExp::escape( wildCard ) + ")" );
+        while ( ( pos = rx.indexIn( oprValue, pos ) ) != -1 )
+#else
+        QRegularExpression rx( "[^" + QRegularExpression::escape( escape ) + "](" + QRegularExpression::escape( wildCard ) + ")" );
         while ( ( pos = rx.match( oprValue.mid( pos ) ).capturedStart() ) != -1 )
+#endif
         {
           oprValue.replace( pos + 1, 1, QStringLiteral( "%" ) );
           pos += 1;
