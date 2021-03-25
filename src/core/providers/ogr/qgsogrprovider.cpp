@@ -2305,9 +2305,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   // check the validity of the layer if subset string has changed
   if ( subsetStringHasChanged )
   {
-    QgsDebugMsgLevel( QStringLiteral( "checking validity" ), 4 );
     loadFields();
-    QgsDebugMsgLevel( QStringLiteral( "Done checking validity" ), 4 );
   }
 
   invalidateCachedExtent( false );
