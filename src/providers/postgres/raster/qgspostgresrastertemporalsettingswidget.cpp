@@ -48,6 +48,7 @@ QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget
   } );
   mPostgresRasterDefaultTime->setAllowNull( true );
   mPostgresRasterDefaultTime->setEmpty();
+  mDefaultTimeStackedWidget->setCurrentIndex( 0 );
 
   syncToLayer( mRasterLayer );
 }
@@ -58,6 +59,9 @@ void QgsPostgresRasterTemporalSettingsWidget::syncToLayer( QgsMapLayer *layer )
   const QgsFields fields { mRasterLayer->dataProvider()->fields() };
   mPostgresRasterTemporalFieldComboBox->setFields( fields );
 
+  mDefaultTimeStackedWidget->setCurrentIndex( 0 );
+  mDefaultTimeComboBox->clear();
+
   if ( mRasterLayer->dataProvider()->uri().hasParam( QStringLiteral( "temporalFieldIndex" ) ) )
   {
     bool ok;
@@ -66,12 +70,30 @@ void QgsPostgresRasterTemporalSettingsWidget::syncToLayer( QgsMapLayer *layer )
     {
       mPostgresRasterTemporalGroup->setChecked( true );
       mPostgresRasterTemporalFieldComboBox->setField( fields.field( fieldIdx ).name() );
+
+      const QList< QgsDateTimeRange > allRanges = mRasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
+      if ( !allRanges.empty() && allRanges.size() < 50 )
+      {
+        // if an appropriate number of unique ranges is known, show a combo box with these options instead of the free-form
+        // date picker widget
+        mDefaultTimeStackedWidget->setCurrentIndex( 1 );
+        for ( const QgsDateTimeRange &range : allRanges )
+        {
+          mDefaultTimeComboBox->addItem( range.begin().toString( Qt::ISODate ), QVariant::fromValue( range.begin() ) );
+        }
+      }
+
       if ( mRasterLayer->dataProvider()->uri().hasParam( QStringLiteral( "temporalDefaultTime" ) ) )
       {
         const QDateTime defaultDateTime { QDateTime::fromString( mRasterLayer->dataProvider()->uri().param( QStringLiteral( "temporalDefaultTime" ) ), Qt::DateFormat::ISODate ) };
         if ( defaultDateTime.isValid() )
         {
           mPostgresRasterDefaultTime->setDateTime( defaultDateTime );
+
+          if ( const int index = mDefaultTimeComboBox->findData( QVariant::fromValue( defaultDateTime ) ); index >= 0 )
+            mDefaultTimeComboBox->setCurrentIndex( index );
+          else if ( mDefaultTimeComboBox->count() > 0 )
+            mDefaultTimeComboBox->setCurrentIndex( 0 );
         }
       }
     }
@@ -92,14 +114,31 @@ void QgsPostgresRasterTemporalSettingsWidget::apply()
     if ( fieldIdx >= 0 )
     {
       uri.setParam( QStringLiteral( "temporalFieldIndex" ), QString::number( fieldIdx ) );
-      if ( mPostgresRasterDefaultTime->dateTime().isValid() )
+
+      QDateTime defaultDateTime;
+      if ( mDefaultTimeStackedWidget->currentIndex() == 0 )
       {
-        QDateTime defaultDateTime  { mPostgresRasterDefaultTime->dateTime() };
+        if ( mPostgresRasterDefaultTime->dateTime().isValid() )
+        {
+          defaultDateTime = mPostgresRasterDefaultTime->dateTime();
+        }
+      }
+      else
+      {
+        if ( mDefaultTimeComboBox->currentData().isValid() )
+        {
+          defaultDateTime = mDefaultTimeComboBox->currentData().value< QDateTime >();
+        }
+      }
+
+      if ( defaultDateTime.isValid() )
+      {
         const QTime defaultTime { defaultDateTime.time() };
         // Set secs to 0
         defaultDateTime.setTime( { defaultTime.hour(), defaultTime.minute(), 0 } );
         uri.setParam( QStringLiteral( "temporalDefaultTime" ), defaultDateTime.toString( Qt::DateFormat::ISODate ) );
       }
+
       if ( uri.uri( ) != originaUri )
         mRasterLayer->setDataSource( uri.uri(), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
     }

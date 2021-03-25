@@ -45,13 +45,6 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Default time</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
        <widget class="QgsFieldComboBox" name="mPostgresRasterTemporalFieldComboBox">
         <property name="sizePolicy">
@@ -62,16 +55,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Temporal field</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QgsDateTimeEdit" name="mPostgresRasterDefaultTime"/>
-      </item>
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="label_14">
         <property name="text">
@@ -79,6 +62,65 @@
         </property>
         <property name="wordWrap">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QStackedWidget" name="mDefaultTimeStackedWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="widget">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QgsDateTimeEdit" name="mPostgresRasterDefaultTime"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_2">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QComboBox" name="mDefaultTimeComboBox"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Temporal field</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Default time</string>
         </property>
        </widget>
       </item>
