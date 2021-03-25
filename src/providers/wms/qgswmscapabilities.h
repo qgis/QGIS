@@ -764,7 +764,7 @@ struct QgsWmsAuthorization
     }
     else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
     {
-      request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
+      request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
     }
 
     if ( !mReferer.isEmpty() )
