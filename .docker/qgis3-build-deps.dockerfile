@@ -1,7 +1,9 @@
 
 ARG UBUNTU_BASE=20.04
 
-FROM      ubuntu:${UBUNTU_BASE} as binary-only
+# Oracle Docker image is too large, so we add as less dependencies as possible
+# so there is enough space on GitHub runner
+FROM      ubuntu:${UBUNTU_BASE} as binary-for-oracle
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
@@ -21,7 +23,6 @@ RUN  apt-get update \
     dh-python \
     gdal-bin \
     graphviz \
-    grass \
     libaio1 \
     libexiv2-27 \
     libfcgi0ldbl \
@@ -50,7 +51,6 @@ RUN  apt-get update \
     locales \
     pdal \
     poppler-utils \
-    postgresql-client \
     python3-future \
     python3-gdal \
     python3-mock \
@@ -73,7 +73,6 @@ RUN  apt-get update \
     qt3d-scene2d-plugin \
     qt5-image-formats-plugins \
     saga \
-    spawn-fcgi \
     supervisor \
     unzip \
     xauth \
@@ -84,7 +83,6 @@ RUN  apt-get update \
     xvfb \
     ocl-icd-libopencl1 \
   && pip3 install \
-    psycopg2 \
     numpy \
     nose2 \
     pyyaml \
@@ -114,6 +112,24 @@ RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
 ENV PATH="/instantclient_19_9:${PATH}"
 ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
 
+# Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
+RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+RUN locale-gen
+
+RUN echo "alias python=python3" >> ~/.bash_aliases
+
+FROM binary-for-oracle as binary-only
+
+RUN  apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    grass \
+    postgresql-client \
+    spawn-fcgi \
+  && pip3 install \
+    psycopg2 \
+  && apt-get clean
+
 # HANA: client side
 # Install hdbsql tool
 RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt" https://tools.hana.ondemand.com/additional/hanaclient-latest-linux-x64.tar.gz --output hanaclient-latest-linux-x64.tar.gz \
@@ -130,16 +146,10 @@ RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list | tee /etc
 RUN apt-get update
 RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17 mssql-tools
 
-# Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
-RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
-RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-RUN locale-gen
-
-RUN echo "alias python=python3" >> ~/.bash_aliases
-
 # OTB: download and install otb packages for QGIS tests
 RUN curl -k https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
+
 
 FROM binary-only
 
