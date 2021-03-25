@@ -78,6 +78,11 @@ class CORE_EXPORT QgsTimeDuration
     }
 
     /**
+     * Converts the duration to an interval value.
+     */
+    QgsInterval toInterval() const;
+
+    /**
      * Converts the duration to an ISO8601 duration string.
      */
     QString toString() const;
