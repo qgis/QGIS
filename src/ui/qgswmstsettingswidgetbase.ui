@@ -44,7 +44,7 @@
       <item row="1" column="0">
        <widget class="QStackedWidget" name="mStaticWmstStackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -63,7 +63,7 @@
           <item>
            <widget class="QLabel" name="mWmstOptionsLabel">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The static WMS-T options are disabled because the layer is set to &lt;span style=&quot; font-weight:600;&quot;&gt;Dynamic Temporal Control&lt;/span&gt;. To enable them first disable &lt;span style=&quot; font-weight:600;&quot;&gt;Dynamic Temporal Control&lt;/span&gt; and click Apply.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The static WMS-T options are disabled because the layer is set to &lt;span style=&quot; font-weight:600;&quot;&gt;Dynamic Temporal Control&lt;/span&gt;. To enable them first disable &lt;span style=&quot; font-weight:600;&quot;&gt;Dynamic Temporal Control&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -197,7 +197,7 @@
                  <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                   <property name="dateTime">
                    <datetime>
-                    <hour>21</hour>
+                    <hour>11</hour>
                     <minute>3</minute>
                     <second>57</second>
                     <year>2020</year>
@@ -345,7 +345,7 @@
        <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
         <property name="dateTime">
          <datetime>
-          <hour>18</hour>
+          <hour>8</hour>
           <minute>20</minute>
           <second>36</second>
           <year>2020</year>

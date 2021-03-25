@@ -66,6 +66,24 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
                                          "with valid values in order to use it here." ) );
     mProjectTemporalRangeLabel->setEnabled( false );
   }
+
+  connect( this, &QgsMapLayerConfigWidget::dynamicTemporalControlToggled, this, [ = ]( bool checked )
+  {
+    if ( checked )
+    {
+      mStaticWmstStackedWidget->setCurrentIndex( 0 );
+      // why do we hide this widget? well, the second page of the stacked widget is considerably higher
+      // then the first and we don't want to show a whole bunch of empty vertical space which Qt will give
+      // in order to accommodate the vertical height of the non-visible second page!
+      mStaticStackedWidgetFrame->hide();
+    }
+    else
+    {
+      mStaticWmstStackedWidget->setCurrentIndex( 1 );
+      mStaticStackedWidgetFrame->show();
+    }
+    mStaticWmstStackedWidget->updateGeometry();
+  } );
 }
 
 void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )

@@ -60,6 +60,9 @@ Called when changes to the layer need to be made.
 Will be called when live update is enabled.
 %End
 
+  signals:
+
+
   protected:
 };
 
