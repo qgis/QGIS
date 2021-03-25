@@ -544,7 +544,6 @@ CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
 
-
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
@@ -552,6 +551,31 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  * \see qgsVariantLessThan()
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
+
+/**
+ * Compares two QVariant values and returns whether the first is greater than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ * \see qgsVariantLessThan()
+ */
+inline bool operator> ( const QVariant &v1, const QVariant &v2 )
+{
+  return qgsVariantGreaterThan( v1, v2 );
+}
+
+/**
+ * Compares two QVariant values and returns whether the first is less than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * Invalid < NULL < Values
+ *
+ * \see qgsVariantGreaterThan()
+ */
+inline bool operator< ( const QVariant &v1, const QVariant &v2 )
+{
+  return qgsVariantLessThan( v1, v2 );
+}
 
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
