@@ -552,6 +552,8 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
@@ -576,6 +578,7 @@ inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 {
   return qgsVariantLessThan( v1, v2 );
 }
+#endif
 
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)

@@ -259,6 +259,7 @@ QVariant data types (such as strings, numeric values, dates and times)
 .. seealso:: :py:func:`qgsVariantLessThan`
 %End
 
+
 bool operator> ( const QVariant &v1, const QVariant &v2 );
 
 bool operator< ( const QVariant &v1, const QVariant &v2 );
