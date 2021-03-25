@@ -25,6 +25,46 @@ class QgsMapSettings;
 class QgsFeedback;
 class QgsMapDecoration;
 
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \class QgsTimeDuration
+ * \brief Contains utility methods for working with temporal layers and projects.
+ *
+ * Designed for storage of ISO8601 duration values.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsTimeDuration
+{
+  public:
+
+    //! Years
+    int years = 0;
+    //! Months
+    int months = 0;
+    //! Weeks
+    int weeks = 0;
+    //! Days
+    int days = 0;
+    //! Hours
+    int hours = 0;
+    //! Minutes
+    int minutes = 0;
+    //! Seconds
+    double seconds = 0;
+
+    /**
+     * Creates a QgsTimeDuration from a \a string value.
+     */
+    static QgsTimeDuration fromString( const QString &string, bool &ok );
+
+};
+#endif
+
+
 /**
  * \ingroup core
  * \class QgsTemporalUtils
@@ -125,6 +165,31 @@ class CORE_EXPORT QgsTemporalUtils
      * \since QGIS 3.18
      */
     static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval interval );
+
+    /**
+     * Calculates a complete list of datetimes between \a start and \a end, using the specified ISO8601 \a duration string (eg "PT12H").
+     * \param start start date time
+     * \param end end date time
+     * \param duration ISO8601 duration string
+     * \param ok will be set to TRUE if \a duration was successfully parsed and date times could be calculated
+     * \param maxValuesExceeded will be set to TRUE if the maximum number of values to return was exceeded
+     * \param maxValues maximum number of values to return, or -1 to return all values
+     * \returns calculated list of date times
+     * \since QGIS 3.20
+     */
+    static QList< QDateTime > calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QString &duration, bool &ok SIP_OUT, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
+
+    /**
+     * Calculates a complete list of datetimes from a ISO8601 \a string containing a duration (eg "2021-03-23T00:00:00Z/2021-03-24T12:00:00Z/PT12H").
+     * \param string ISO8601 compatible string
+     * \param ok will be set to TRUE if \a string was successfully parsed and date times could be calculated
+     * \param maxValuesExceeded will be set to TRUE if the maximum number of values to return was exceeded
+     * \param maxValues maximum number of values to return, or -1 to return all values
+     * \returns calculated list of date times
+     * \since QGIS 3.20
+     */
+    static QList< QDateTime > calculateDateTimesFromISO8601( const QString &string, bool &ok SIP_OUT, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
+
 };
 
 
