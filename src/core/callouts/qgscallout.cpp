@@ -134,9 +134,6 @@ QgsCallout::DrawOrder QgsCallout::drawOrder() const
 
 void QgsCallout::render( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
-  if ( !mEnabled )
-    return;
-
 #if 0 // for debugging
   QPainter *painter = context.painter();
   painter->save();
