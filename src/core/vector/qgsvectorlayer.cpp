@@ -1201,7 +1201,7 @@ static const QgsPointSequence vectorPointXY2pointSequence( const QVector<QgsPoin
 {
   QgsPointSequence pts;
   pts.reserve( points.size() );
-  QVector<const QgsPointXY>::iterator it = points.constBegin();
+  QVector<QgsPointXY>::const_iterator it = points.constBegin();
   while ( it != points.constEnd() )
   {
     pts.append( QgsPoint( *it ) );
