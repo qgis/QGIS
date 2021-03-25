@@ -1925,6 +1925,10 @@ target_link_libraries(qgis_core
   ${ZLIB_LIBRARIES}
 )
 
+if (WITH_QT6)
+  target_link_libraries(qgis_core Qt6::Core5Compat)
+endif()
+
 if (WITH_EPT)
   target_link_libraries(qgis_core
     ${ZSTD_LIBRARY}
