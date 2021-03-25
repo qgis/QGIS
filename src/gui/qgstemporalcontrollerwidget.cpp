@@ -489,19 +489,19 @@ void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 
 void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &range )
 {
-  QString timeFrameFormat = "yyyy-MM-dd HH:mm:ss";
+  QString timeFrameFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
   // but if timesteps are < 1 second (as: in milliseconds), add milliseconds to the format
   if ( mTimeStepsComboBox->currentIndex() == mTimeStepsComboBox->findData( QgsUnitTypes::TemporalMilliseconds ) )
-    timeFrameFormat = "yyyy-MM-dd HH:mm:ss.zzz";
+    timeFrameFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss.zzz" );
   switch ( mNavigationObject->navigationMode() )
   {
     case QgsTemporalNavigationObject::Animated:
-      mCurrentRangeLabel->setText( tr( "Frame: %1 to %2" ).arg(
+      mCurrentRangeLabel->setText( tr( "Frame: %1 ≤ <i>t</i> &lt; %2" ).arg(
                                      range.begin().toString( timeFrameFormat ),
                                      range.end().toString( timeFrameFormat ) ) );
       break;
     case QgsTemporalNavigationObject::FixedRange:
-      mCurrentRangeLabel->setText( tr( "Range: %1 to %2" ).arg(
+      mCurrentRangeLabel->setText( tr( "Range: %1 ≤ <i>t</i> &lt; %2" ).arg(
                                      range.begin().toString( timeFrameFormat ),
                                      range.end().toString( timeFrameFormat ) ) );
       break;
@@ -627,10 +627,10 @@ void QgsTemporalControllerWidget::updateTimeStepInputs( const QgsInterval &timeS
   if ( ! timeStep.isValid() || timeStep.seconds() <= 0.0001 )
     return;
 
-  QString timeDisplayFormat = "yyyy-MM-dd HH:mm:ss";
+  QString timeDisplayFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
   if ( QgsUnitTypes::TemporalMilliseconds == timeStep.originalUnit() )
   {
-    timeDisplayFormat = "yyyy-MM-dd HH:mm:ss.zzz";
+    timeDisplayFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss.zzz" );
     // very big change that you have to update the range too, as defaulting to NOT handling millis
     updateTemporalExtent();
   }
