@@ -406,7 +406,13 @@ double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem 
   // is used in all other cases
 
   // TODO - ifdef this out if Qt fixes upstream
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   return !qgsDoubleNear( style->matrix.m11(), 0.0 ) ? style->matrix.m11() : style->matrix.m12();
+#else
+  // TODO Qt6: this workaround is no longer available
+  Q_UNUSED( style )
+  return 1;
+#endif
 }
 
 QgsMapLayer *QgsLayoutUtils::mapLayerFromString( const QString &string, QgsProject *project )
