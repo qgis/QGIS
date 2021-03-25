@@ -257,6 +257,11 @@ jobs:
 
     steps:
 
+      - name: Print disk space
+        run: |
+          echo "DF -H"
+          sudo df -h
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -290,6 +295,13 @@ jobs:
           docker build --target binary-only --build-arg UBUNTU_BASE=${UBUNTU_BASE} --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps-bin-only:${DOCKER_TAG} -f qgis3-build-deps.dockerfile .
           popd
 
+      - name: Print disk space
+        run: |
+          echo "DOCKER IMAGES"
+          docker images
+          echo "DF -H"
+          sudo df -h
+
       - name: Download build artifact
         uses: actions/download-artifact@v2
         with:
@@ -300,6 +312,11 @@ jobs:
         run: |
           tar xvzf build.tgz
           rm -Rf build.tgz
+
+      - name: Print disk space
+        run: |
+          echo "DF -H"
+          sudo df -h
 
       - name: Run tests
         id: tests
