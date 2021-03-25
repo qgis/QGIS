@@ -281,8 +281,13 @@ void QgsTemporalControllerWidget::togglePause()
 
 void QgsTemporalControllerWidget::updateTemporalExtent()
 {
-  QgsDateTimeRange temporalExtent = QgsDateTimeRange( mStartDateTime->dateTime(),
-                                    mEndDateTime->dateTime() );
+  // TODO - consider whether the overall time range set for animations should include the end date time or not.
+  // (currently it DOES include the end date time).
+  const QDateTime start = mStartDateTime->dateTime();
+  const QDateTime end = mEndDateTime->dateTime();
+  const bool isTimeInstant = start == end;
+  QgsDateTimeRange temporalExtent = QgsDateTimeRange( start, end,
+                                    true, !isTimeInstant && mNavigationObject->navigationMode() == QgsTemporalNavigationObject::FixedRange ? false : true );
   mNavigationObject->setTemporalExtents( temporalExtent );
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
