@@ -522,10 +522,10 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   QString converted = string;
 
   // http://alanstorm.com/url_regex_explained
-  // note - there's more robust implementations available, but we need one which works within the limitation of QRegularExpression
-  static QRegularExpressionMatchIterator urlRegEx = QRegularExpression( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" ).globalMatch( converted );
-  static QRegularExpression protoRegEx( "^(?:f|ht)tps?://|file://" );
-  static QRegularExpressionMatchIterator emailRegEx = QRegularExpression( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" ).globalMatch( converted );
+  // TODO - there's more robust implementations available, but we need one which works within the limitation of QRegularExpression
+  thread_local QRegularExpressionMatchIterator urlRegEx = QRegularExpression( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" ).globalMatch( converted );
+  thread_local QRegularExpression protoRegEx( "^(?:f|ht)tps?://|file://" );
+  thread_local QRegularExpressionMatchIterator emailRegEx = QRegularExpression( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" ).globalMatch( converted );
 
   bool found = false;
   QString url;
