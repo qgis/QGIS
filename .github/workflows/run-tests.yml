@@ -297,7 +297,9 @@ jobs:
           path: .
 
       - name: Extract build artifact
-        run: tar xvzf build.tgz
+        run: |
+          tar xvzf build.tgz
+          rm -Rf build.tgz
 
       - name: Run tests
         id: tests
