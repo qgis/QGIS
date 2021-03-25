@@ -1481,7 +1481,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
             labelSettings.distUnits = context.targetUnit();
             labelSettings.dist = std::abs( textOffset.y() ) - textSize;
             labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? QgsLabeling::BelowLine : QgsLabeling::AboveLine );
-            if ( !textSizeProperty )
+            if ( textSizeProperty && !textOffsetProperty )
             {
               ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( textSizeProperty.asExpression() ) );
             }
