@@ -38,7 +38,11 @@
 #include <QFontMetrics>
 #include <QTime>
 #include <QPainter>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
+#else
+#include <QScreen>
+#endif
 #include <QTextBoundaryFinder>
 
 #include "diagram/qgsdiagram.h"
@@ -1302,7 +1306,13 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   context.setMapToPixel( newCoordXForm );
   context.setFlag( QgsRenderContext::Antialiasing, true );
 
-  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  const double logicalDpiX = QgsApplication::desktop()->logicalDpiX();
+#else
+  const double logicalDpiX = QApplication::topLevelWidgets().first()->screen()->devicePixelRatio();
+#endif
+  context.setScaleFactor( logicalDpiX / 25.4 );
+
   context.setUseAdvancedEffects( true );
   context.setPainter( &painter );
 
