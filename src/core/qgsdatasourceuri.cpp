@@ -635,7 +635,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
   mAuthConfigId.clear();
 
   QUrl url;
-  url.setQuery( QString::fromUtf8( uri ) );
+  url.setQuery( QString::fromLatin1( uri ) );
   const QUrlQuery query( url );
 
   const auto constQueryItems = query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded );
