@@ -59,6 +59,9 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      */
     void addWidget( QgsMapLayerConfigWidget *widget SIP_TRANSFER );
 
+  private slots:
+    void temporalGroupBoxChecked( bool checked );
+
   private:
 
     /**
