@@ -3058,7 +3058,6 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   }
   else if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::BufferDraw ) && exprVal.isNull() )
   {
-    drawBuffer = false;
     dataDefinedValues.insert( QgsPalLayerSettings::BufferDraw, QVariant( drawBuffer ) );
   }
 

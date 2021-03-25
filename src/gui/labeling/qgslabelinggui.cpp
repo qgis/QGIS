@@ -32,6 +32,7 @@
 #include "callouts/qgscalloutwidget.h"
 #include "qgslabelobstaclesettingswidget.h"
 #include "qgslabellineanchorwidget.h"
+
 #include <mutex>
 
 #include <QButtonGroup>
@@ -242,6 +243,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
 
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
+  connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateUi );
   connect( mEnableMaskChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mShapeDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mCalloutsDrawCheckBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -625,11 +627,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
 void QgsLabelingGui::syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f )
 {
-  if ( ddBtn->isActive() && !chkBx->isChecked() )
-  {
-    chkBx->setChecked( true );
-  }
-  f->setEnabled( chkBx->isChecked() );
+  f->setEnabled( chkBx->isChecked() || ddBtn->isActive() );
 }
 
 bool QgsLabelingGui::eventFilter( QObject *object, QEvent *event )
