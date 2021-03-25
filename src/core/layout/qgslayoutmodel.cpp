@@ -28,6 +28,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QIcon>
+#include <QIODevice>
 
 QgsLayoutModel::QgsLayoutModel( QgsLayout *layout, QObject *parent )
   : QAbstractItemModel( parent )
