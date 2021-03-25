@@ -95,7 +95,8 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   browseLayerTree( project->layerTreeRoot(), owsNames, encodingMessages );
 
   QStringList duplicateNames, regExpMessages;
-  QRegularExpression snRegExp( QRegularExpression::anchoredPattern( QgsApplication::shortNameRegularExpression().pattern() ) );
+  const thread_local QRegularExpression shortNameRegularExpression( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) );
+  QRegularExpression snRegExp( QRegularExpression::anchoredPattern( shortNameRegularExpression.pattern() ) );
   const auto constOwsNames = owsNames;
   for ( const QString &name : constOwsNames )
   {
