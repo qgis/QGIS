@@ -1361,7 +1361,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
     mTranslator.reset( new QTranslator() );
-    mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() );
+    ( void )mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() );
   }
 
   profile.switchTask( tr( "Reading project file" ) );

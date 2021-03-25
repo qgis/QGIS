@@ -2,8 +2,8 @@
 
 set -e
 
-mkdir -p /usr/src/qgis/build
-cd /usr/src/qgis/build || exit 1
+mkdir -p /usr/src/qgis/build-qt6
+cd /usr/src/qgis/build-qt6 || exit 1
 
 CLANG_WARNINGS="-Wrange-loop-construct"
 
@@ -41,4 +41,4 @@ cmake -GNinja \
  -DWERROR=TRUE \
  ..
 
-ninja
+ninja qgis_core
