@@ -10,7 +10,7 @@ target_include_directories(qgispython PUBLIC
   ${CMAKE_BINARY_DIR}/src/python
 )
 target_include_directories(qgispython SYSTEM PRIVATE
-  ${Python_INCLUDE_DIR}
+  ${Python_INCLUDE_DIRS}
 )
 
 set_target_properties(qgispython PROPERTIES
