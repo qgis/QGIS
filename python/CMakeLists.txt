@@ -267,7 +267,7 @@ if(WITH_ANALYSIS)
   BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
 endif()
 
-set(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
+set(QGIS_PYTHON_DIR ${Python_SITEARCH}/qgis)
 
 if(WITH_QSCIAPI)
   # wait until after python module builds for api files to be available

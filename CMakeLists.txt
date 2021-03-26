@@ -940,6 +940,7 @@ set(Python_FIND_FRAMEWORK "LAST")
 find_package(Python 3.7 REQUIRED COMPONENTS Interpreter Development)
 message("-- Found Python executable: ${Python_EXECUTABLE}")
 message("-- Python library: ${Python_LIBRARIES}")
+message("-- Python site-packges: ${Python_SITEARCH}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   # python support: check for interpreter, sip, pyqt5
@@ -958,7 +959,7 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   set(SIP_CONCAT_PARTS 11)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
-    set(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
+    set(Python_SITEARCH ${QGIS_DATA_DIR}/python)
   endif()
 
   if (WITH_CUSTOM_WIDGETS)
