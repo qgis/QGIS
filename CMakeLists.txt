@@ -932,17 +932,14 @@ endif()
 set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required system libs in the output package")
 
 #############################################################
-# Python build dependency
+# Python
 set(Python_FIND_FRAMEWORK "LAST")
-find_package(Python 3.7 REQUIRED COMPONENTS Interpreter)
-message("Found Python executable: ${Python_EXECUTABLE}")
-message("Python library: ${Python_LIBRARY}")
-execute_process ( COMMAND python -c "import distutils.sysconfig; sysconfig.get_python_lib(plat_specific=1)" OUTPUT_VARIABLE PYTHON_SITE_PACKAGES_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-#############################################################
-# Python bindings
+find_package(Python 3.7 REQUIRED COMPONENTS Interpreter Development)
+message("-- Found Python executable: ${Python_EXECUTABLE}")
+message("-- Python library: ${Python_LIBRARIES}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
+  find_package(Python 3.7 REQUIRED COMPONENTS Interpreter Development)
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
@@ -965,8 +962,8 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   if (WITH_CUSTOM_WIDGETS)
     set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
   endif()
-
 endif()
+
 
 #############################################################
 # create qgsconfig.h

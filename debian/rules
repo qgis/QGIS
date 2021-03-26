@@ -74,9 +74,9 @@ TESTMAKE=ninja $(NINJA_OPTS)
 endif
 
 ifeq (,$(findstring $(DISTRIBUTION),"focal groovy sid"))
-PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
+Python_LIBRARY=$(shell python3-config --ldflags | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
 else
-PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
+Python_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
 endif
 
 CMAKE_OPTS := \
@@ -96,7 +96,7 @@ CMAKE_OPTS := \
 	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
-	-DPYTHON_LIBRARY=$(PYTHON_LIBRARY) \
+	-DPython_LIBRARY=$(Python_LIBRARY) \
 	-DDOXYGEN_ON_DEMAND=TRUE \
 	-DWITH_QSPATIALITE=TRUE \
 	-DWITH_3D=TRUE \

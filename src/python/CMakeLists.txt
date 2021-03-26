@@ -27,7 +27,7 @@ endif()
 
 target_link_libraries(qgispython
   qgis_core
-  ${Python_LIBRARY}
+  ${Python_LIBRARIES}
   ${OPENPTY_LIBRARY}
 )
 
