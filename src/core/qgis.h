@@ -377,6 +377,28 @@ inline double qgsRound( double number, int places )
 namespace qgis
 {
 
+  /**
+   * Use qgis::down_cast<Derived*>(pointer_to_base) as equivalent of
+   * static_cast<Derived*>(pointer_to_base) with safe checking in debug
+   * mode.
+   *
+   * Only works if no virtual inheritance is involved.
+   *
+   * Ported from GDAL's cpl::down_cast method.
+   *
+   * \param f pointer to a base class
+   * \return pointer to a derived class
+   */
+  template<typename To, typename From> inline To down_cast( From *f )
+  {
+    static_assert(
+      ( std::is_base_of<From,
+        typename std::remove_pointer<To>::type>::value ),
+      "target type not derived from source type" );
+    Q_ASSERT( f == nullptr || dynamic_cast<To>( f ) != nullptr );
+    return static_cast<To>( f );
+  }
+
   template<class T>
   QSet<T> listToSet( const QList<T> &list )
   {
