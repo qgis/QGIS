@@ -514,9 +514,9 @@ void TestQgsLayoutMap::dataDefinedTemporalRange()
   map->dataDefinedProperties().setProperty( QgsLayoutObject::EndDateTime, QgsProperty::fromValue( dt2 ) );
   map->refreshDataDefinedProperty( QgsLayoutObject::StartDateTime );
   map->refreshDataDefinedProperty( QgsLayoutObject::EndDateTime );
-  QCOMPARE( map->temporalRange(), QgsDateTimeRange( dt1, dt2 ) );
+  QCOMPARE( map->temporalRange(), QgsDateTimeRange( dt1, dt2, true, false ) );
   QgsMapSettings ms = map->mapSettings( map->extent(), map->rect().size(), 300, false );
-  QCOMPARE( ms.temporalRange(), QgsDateTimeRange( dt1, dt2 ) );
+  QCOMPARE( ms.temporalRange(), QgsDateTimeRange( dt1, dt2, true, false ) );
 }
 
 void TestQgsLayoutMap::rasterized()
@@ -1937,7 +1937,7 @@ void TestQgsLayoutMap::testTemporal()
   settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
   renderContext = QgsRenderContext::fromMapSettings( settings );
   QVERIFY( renderContext.isTemporal() );
-  QCOMPARE( renderContext.temporalRange(), QgsDateTimeRange( begin, end ) );
+  QCOMPARE( renderContext.temporalRange(), QgsDateTimeRange( begin, end, true, false ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )
