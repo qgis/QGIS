@@ -7306,7 +7306,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
   QgsAbstractProviderConnection *conn = md->createConnection( QStringLiteral( "%1 sslmode=disable" ).arg( dbConn ), QVariantMap() );
   md->saveConnection( conn, QStringLiteral( "aa" ) );
 
-  const QStringList schemas = static_cast<QgsAbstractDatabaseProviderConnection *>( conn )->schemas();
+  const QStringList schemas = dynamic_cast<QgsAbstractDatabaseProviderConnection *>( conn )->schemas();
   QVERIFY( !schemas.isEmpty() );
 
   auto testWrapper = [&schemas]( QgsProcessingGui::WidgetType type )
@@ -7506,7 +7506,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
   QgsAbstractProviderConnection *conn = md->createConnection( QStringLiteral( "%1 sslmode=disable" ).arg( dbConn ), QVariantMap() );
   md->saveConnection( conn, QStringLiteral( "aa" ) );
 
-  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables = static_cast<QgsAbstractDatabaseProviderConnection *>( conn )->tables( QStringLiteral( "qgis_test" ) );
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables = dynamic_cast<QgsAbstractDatabaseProviderConnection *>( conn )->tables( QStringLiteral( "qgis_test" ) );
   QStringList tableNames;
   for ( const QgsAbstractDatabaseProviderConnection::TableProperty &prop : tables )
     tableNames << prop.tableName();
@@ -9655,7 +9655,7 @@ void TestProcessingGui::testModelGraphicsView()
     }
   }
   QVERIFY( layerItem );
-  QCOMPARE( static_cast<  QgsProcessingModelParameter * >( layerItem->component() )->parameterName(), QStringLiteral( "LAYER" ) );
+  QCOMPARE( dynamic_cast<  QgsProcessingModelParameter * >( layerItem->component() )->parameterName(), QStringLiteral( "LAYER" ) );
   QCOMPARE( layerItem->itemRect().size(), QSizeF( 500, 400 ) );
   QCOMPARE( layerItem->scenePos(), QPointF( 101, 102 ) );
 
@@ -9669,7 +9669,7 @@ void TestProcessingGui::testModelGraphicsView()
     }
   }
   QVERIFY( algItem );
-  QCOMPARE( static_cast<  QgsProcessingModelChildAlgorithm * >( algItem->component() )->algorithmId(), QStringLiteral( "native:buffer" ) );
+  QCOMPARE( dynamic_cast<  QgsProcessingModelChildAlgorithm * >( algItem->component() )->algorithmId(), QStringLiteral( "native:buffer" ) );
 
   QgsModelOutputGraphicItem *outputItem = nullptr;
   for ( QGraphicsItem *item : items )
@@ -9681,7 +9681,7 @@ void TestProcessingGui::testModelGraphicsView()
     }
   }
   QVERIFY( outputItem );
-  QCOMPARE( static_cast< QgsProcessingModelOutput * >( outputItem->component() )->childOutputName(), QStringLiteral( "my_output" ) );
+  QCOMPARE( dynamic_cast< QgsProcessingModelOutput * >( outputItem->component() )->childOutputName(), QStringLiteral( "my_output" ) );
 
 
   layerCommentItem = nullptr;
