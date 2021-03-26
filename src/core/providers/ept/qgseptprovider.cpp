@@ -35,11 +35,10 @@
 QgsEptProvider::QgsEptProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  const QString &dataSourceType,
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
-  if ( dataSourceType == QStringLiteral( "remote" ) )
+  if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
     mIndex.reset( new QgsRemoteEptPointCloudIndex );
   else
     mIndex.reset( new QgsEptPointCloudIndex );
@@ -133,7 +132,7 @@ QgsEptProviderMetadata::QgsEptProviderMetadata():
 
 QgsEptProvider *QgsEptProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsEptProvider( uri, options, "", flags );
+  return new QgsEptProvider( uri, options, flags );
 }
 
 QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
