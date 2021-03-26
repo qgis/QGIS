@@ -223,10 +223,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsDebugMsgLevel( QStringLiteral( "creating point cloud layer" ), 2 );
       QgsPointCloudLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
-      QString dataSourceType = QStringLiteral( "remote" );
-      if ( QFileInfo::exists( layerItem->uri() ) )
-        dataSourceType = QStringLiteral( "file" );
-      mLayer = std::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), dataSourceType, layerItem->providerKey(), options );
+      mLayer = std::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 

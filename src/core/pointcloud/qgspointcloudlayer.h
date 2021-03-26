@@ -90,7 +90,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     explicit QgsPointCloudLayer( const QString &path = QString(),
                                  const QString &baseName = QString(),
-                                 const QString &dataSourceType = QString(),
                                  const QString &providerLib = QStringLiteral( "pointcloud" ),
                                  const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
 
