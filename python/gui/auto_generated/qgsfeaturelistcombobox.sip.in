@@ -227,7 +227,7 @@ Determines if a NULL value should be available in the list.
 %Docstring
 Emitted when the current feature changes
 
-.. versionadded:: 3.16.5
+.. versionadded:: 3.16.6
 %End
 
 };
