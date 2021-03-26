@@ -2898,8 +2898,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
     {
       if ( details.outputFields.at( i ).type() == QVariant::LongLong )
       {
-        QVariant min = layer->minimumValue( i );
-        QVariant max = layer->maximumValue( i );
+        QVariant min;
+        QVariant max;
+        layer->minimumAndMaximumValue( i, min, max );
         if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < std::numeric_limits<int>::max() )
         {
           details.outputFields[i].setType( QVariant::Int );
