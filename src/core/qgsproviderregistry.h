@@ -39,7 +39,6 @@ class QgsCoordinateReferenceSystem;
 class QgsDataItemProvider;
 class QgsDataItem;
 class QgsRasterDataProvider;
-class QgsEptProvider;
 
 /**
  * \ingroup core

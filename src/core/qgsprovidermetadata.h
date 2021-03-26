@@ -43,7 +43,6 @@ class QgsTransaction;
 class QgsRasterDataProvider;
 class QgsMeshDataProvider;
 class QgsAbstractDatabaseProviderConnection;
-class QgsEptProvider;
 
 struct QgsMesh;
 

@@ -5654,11 +5654,7 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
   return layer.release();
 }
 
-QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate(
-  const QString &uri,
-  const QString &baseName,
-  const QString &providerKey,
-  bool guiWarning )
+QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarning )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -7458,10 +7454,8 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         break;
 
       case QgsMapLayerType::PointCloudLayer:
-      {
         ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) );
-      }
-      break;
+        break;
     }
   }
 

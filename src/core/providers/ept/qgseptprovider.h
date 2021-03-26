@@ -38,7 +38,6 @@ class QgsEptProvider: public QgsPointCloudDataProvider
   public:
     QgsEptProvider( const QString &uri,
                     const QgsDataProvider::ProviderOptions &providerOptions,
-                    const QString &dataSourceType,
                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsEptProvider();
