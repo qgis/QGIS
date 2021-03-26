@@ -1,0 +1,26 @@
+include(${CMAKE_CURRENT_LIST_DIR}/config.ctest)
+
+# Requires a track on the CDash server
+ctest_start(Experimental)
+
+ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL ${PARALLEL_LEVEL} RETURN_VALUE TESTRES)
+IF(NOT ${TESTRES} EQUAL 0)
+  ctest_submit (RETRY_COUNT 3 RETRY_DELAY 30)
+  MESSAGE("")
+  MESSAGE("  ${Yellow}Test results submitted to:${ColorReset} ${SHORTURL}" )
+  MESSAGE("")
+  SET(LEVEL "")
+  IF(NOT ${TESTRES} EQUAL 0)
+    SET(TESTRES_MESSAGE "  Tests failed.")
+    SET(LEVEL FATAL_ERROR)
+  ENDIF(NOT ${TESTRES} EQUAL 0)
+  MESSAGE( ${LEVEL} "  ${Red}${TESTRES_MESSAGE} ${ColorReset}" )
+ENDIF(NOT ${TESTRES} EQUAL 0)
+
+IF(NOT ${TESTRES} EQUAL 0)
+  MESSAGE("")
+  MESSAGE("  ${BoldGreen}Success${ColorReset}")
+  MESSAGE("  ${Green}All tests passed successfully.${ColorReset}")
+  MESSAGE("")
+  MESSAGE("")
+ENDIF(NOT ${TESTRES} EQUAL 0)
