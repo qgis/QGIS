@@ -51,17 +51,6 @@ QgsEptProvider::QgsEptProvider(
   loadIndex( );
 }
 
-QgsEptProvider *QgsEptProvider::create( const QString &providerKey, const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
-{
-  QgsEptProvider *ret = QgsProviderRegistry::instance()->createEptDataProvider( providerKey, uri, dataSourceType, options, flags );
-  if ( !ret )
-  {
-    QgsDebugMsg( "Cannot resolve 'createEptDataProviderFunction' function in " + providerKey + " provider" );
-  }
-
-  return ret;
-}
-
 QgsEptProvider::~QgsEptProvider() = default;
 
 QgsCoordinateReferenceSystem QgsEptProvider::crs() const

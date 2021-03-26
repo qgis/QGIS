@@ -168,9 +168,9 @@ QgsVectorTileLayer *QgisAppInterface::addVectorTileLayer( const QString &url, co
   return qgis->addVectorTileLayer( url, baseName );
 }
 
-QgsPointCloudLayer *QgisAppInterface::addPointCloudLayer( const QString &url, const QString &dataSourceType, const QString &baseName, const QString &providerKey )
+QgsPointCloudLayer *QgisAppInterface::addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
-  return qgis->addPointCloudLayer( url, baseName, dataSourceType, providerKey );
+  return qgis->addPointCloudLayer( url, baseName, providerKey );
 }
 
 bool QgisAppInterface::addProject( const QString &projectName )

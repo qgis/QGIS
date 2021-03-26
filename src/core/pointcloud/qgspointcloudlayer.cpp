@@ -36,14 +36,15 @@
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
-                                        const QString &dataSourceType,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
-  , mDataSourceType( dataSourceType )
 {
-
+  if ( path.startsWith( QStringLiteral( "http" ) ) )
+    mDataSourceType = "remote";
+  else
+    mDataSourceType = "file";
   if ( !path.isEmpty() && !providerLib.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
@@ -65,7 +66,7 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
   options.transformContext = transformContext();
   options.skipCrsValidation = true;
 
-  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mDataSourceType, mProviderKey, options );
+  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
 
   if ( mRenderer )

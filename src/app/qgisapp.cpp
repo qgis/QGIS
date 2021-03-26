@@ -2008,9 +2008,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
-      QString dataSourceType = QStringLiteral( "remote" );
-      if ( QFileInfo::exists( uri ) ) dataSourceType = QStringLiteral( "file" );
-      addPointCloudLayer( uri, u.name, dataSourceType, u.providerKey );
+      addPointCloudLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
@@ -5609,9 +5607,9 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QStri
   return addVectorTileLayerPrivate( url, baseName );
 }
 
-QgsPointCloudLayer *QgisApp::addPointCloudLayer( const QString &url, const QString &baseName, const QString &dataSourceType, const QString &providerKey )
+QgsPointCloudLayer *QgisApp::addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
-  return addPointCloudLayerPrivate( url, baseName, dataSourceType, providerKey );
+  return addPointCloudLayerPrivate( url, baseName, providerKey );
 }
 
 QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, const QString &baseName, const bool guiWarning )
@@ -5659,7 +5657,6 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
 QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate(
   const QString &uri,
   const QString &baseName,
-  const QString &dataSourceType,
   const QString &providerKey,
   bool guiWarning )
 {
@@ -5676,7 +5673,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate(
   QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
-  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, dataSourceType, providerKey ) );
+  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, providerKey ) );
 
   if ( !layer || !layer->isValid() )
   {
@@ -7462,10 +7459,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 
       case QgsMapLayerType::PointCloudLayer:
       {
-        QString dataSourceType = "remote";
-        if ( QFileInfo::exists( fileName ) )
-          dataSourceType = "file";
-        ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), dataSourceType, candidateProviders.at( 0 ).metadata()->key(), false ) );
+        ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) );
       }
       break;
     }

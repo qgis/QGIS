@@ -43,8 +43,6 @@ class QgsEptProvider: public QgsPointCloudDataProvider
 
     ~QgsEptProvider();
 
-    static QgsEptProvider *create( const QString &providerKey, const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
-
     QgsCoordinateReferenceSystem crs() const override;
 
     QgsRectangle extent() const override;

@@ -726,7 +726,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Adds a point cloud layer to the current project.
      * \since QGIS 3.18
      */
-    virtual QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &dataSourceType, const QString &baseName, const QString &providerKey ) = 0;
+    virtual QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;

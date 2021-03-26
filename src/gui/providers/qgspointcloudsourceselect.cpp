@@ -82,7 +82,7 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       if ( preferredProviders.empty() )
         continue;
       qDebug() << "preferredProviders.at( 0 ).metadata()->key(): " << preferredProviders.at( 0 ).metadata()->key();
-      emit addPointCloudLayer( path, QFileInfo( path ).baseName(), mDataSourceType, preferredProviders.at( 0 ).metadata()->key() ) ;
+      emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
     }
   }
   else if ( mDataSourceType == QStringLiteral( "remote" ) )
@@ -99,7 +99,7 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
     if ( !preferredProviders.empty() )
-      emit addPointCloudLayer( mPath, QFileInfo( mPath ).baseName(), mDataSourceType, preferredProviders.at( 0 ).metadata()->key() ) ;
+      emit addPointCloudLayer( mPath, QFileInfo( mPath ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
   }
 }
 

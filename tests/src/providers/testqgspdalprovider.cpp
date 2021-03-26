@@ -162,7 +162,6 @@ void TestQgsPdalProvider::brokenPath()
   std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >(
         QStringLiteral( "not valid" ),
         QStringLiteral( "layer" ),
-        QStringLiteral( "file" ),
         QStringLiteral( "pdal" ) );
   QVERIFY( !layer->isValid() );
 }
@@ -175,7 +174,6 @@ void TestQgsPdalProvider::validLayer()
   std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >(
         mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ),
         QStringLiteral( "layer" ),
-        QStringLiteral( "file" ),
         QStringLiteral( "pdal" ),
         options
       );
