@@ -117,6 +117,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D CMAKE_LINKER="%CMAKE_COMPILER_PATH:\=/%/link.exe" ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="%OSGEO4W_CXXFLAGS%" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
+	-D SUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" ^
 	-D BUILDNAME="%BUILDNAME%" ^
 	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
@@ -158,8 +159,6 @@ cmake -G "%CMAKEGEN%" ^
 if errorlevel 1 (echo cmake failed & goto error)
 
 if "%CONFIGONLY%"=="1" (echo Exiting after configuring build directory: %CD% & goto end)
-
-copy %BUILDDIR%\CTestConfig.cmake %SRCDIR%
 
 :skipcmake
 if exist ..\noclean (echo skip clean & goto skipclean)
