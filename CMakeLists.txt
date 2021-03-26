@@ -933,13 +933,16 @@ set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required s
 
 #############################################################
 # Python
+
+set(MIN_PYTHON_VERSION "3.7")
 set(Python_FIND_FRAMEWORK "LAST")
+
 find_package(Python 3.7 REQUIRED COMPONENTS Interpreter Development)
 message("-- Found Python executable: ${Python_EXECUTABLE}")
 message("-- Python library: ${Python_LIBRARIES}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
-  find_package(Python 3.7 REQUIRED COMPONENTS Interpreter Development)
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
