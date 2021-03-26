@@ -4235,30 +4235,31 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString &sub
 QVariant QgsVectorLayer::minimumValue( int index ) const
 {
   QVariant minimum;
-  QVariant maximum;
-  minimumOrMaximumValue( index, minimum, maximum, true, false );
+  minimumOrMaximumValue( index, &minimum, nullptr );
   return minimum;
 }
 
 QVariant QgsVectorLayer::maximumValue( int index ) const
 {
-  QVariant minimum;
   QVariant maximum;
-  minimumOrMaximumValue( index, minimum, maximum, false, true );
+  minimumOrMaximumValue( index, nullptr, &maximum );
   return maximum;
 }
 
 void QgsVectorLayer::minimumAndMaximumValue( int index, QVariant &minimum, QVariant &maximum ) const
 {
-  minimumOrMaximumValue( index, minimum, maximum, true, true );
+  minimumOrMaximumValue( index, &minimum, &maximum );
 }
 
-void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant &minimum, QVariant &maximum, bool calculateMinimum, bool calculateMaximum ) const
+void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVariant *maximum ) const
 {
+  if ( minimum )
+    *minimum = QVariant();
+  if ( maximum )
+    *maximum = QVariant();
+
   if ( !mDataProvider )
   {
-    minimum = QVariant();
-    maximum = QVariant();
     return;
   }
 
@@ -4268,15 +4269,15 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant &minimum, QVaria
   {
     case QgsFields::OriginUnknown:
     {
-      minimum = QVariant();
-      maximum = QVariant();
       return;
     }
 
     case QgsFields::OriginProvider: //a provider field
     {
-      minimum = calculateMinimum ? mDataProvider->minimumValue( index ) : QVariant();
-      maximum = calculateMaximum ? mDataProvider->maximumValue( index ) : QVariant();
+      if ( minimum )
+        *minimum = mDataProvider->minimumValue( index );
+      if ( maximum )
+        *maximum = mDataProvider->maximumValue( index );
       if ( mEditBuffer && ! mDataProvider->transaction() )
       {
         const QgsFeatureMap added = mEditBuffer->addedFeatures();
@@ -4285,10 +4286,10 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant &minimum, QVaria
         {
           addedIt.next();
           const QVariant v = addedIt.value().attribute( index );
-          if ( calculateMinimum && v.isValid() && qgsVariantLessThan( v, minimum ) )
-            minimum = v;
-          if ( calculateMaximum && v.isValid() && qgsVariantGreaterThan( v, maximum ) )
-            maximum = v;
+          if ( minimum && v.isValid() && qgsVariantLessThan( v, *minimum ) )
+            *minimum = v;
+          if ( maximum && v.isValid() && qgsVariantGreaterThan( v, *maximum ) )
+            *maximum = v;
         }
 
         QMapIterator< QgsFeatureId, QgsAttributeMap > it( mEditBuffer->changedAttributeValues() );
@@ -4296,10 +4297,10 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant &minimum, QVaria
         {
           it.next();
           const QVariant v = it.value().value( index );
-          if ( calculateMinimum && v.isValid() && qgsVariantLessThan( v, minimum ) )
-            minimum = v;
-          if ( calculateMaximum && v.isValid() && qgsVariantGreaterThan( v, maximum ) )
-            maximum = v;
+          if ( minimum && v.isValid() && qgsVariantLessThan( v, *minimum ) )
+            *minimum = v;
+          if ( maximum && v.isValid() && qgsVariantGreaterThan( v, *maximum ) )
+            *maximum = v;
         }
       }
       return;
@@ -4313,8 +4314,10 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant &minimum, QVaria
                                              !mEditBuffer->deletedAttributeIds().contains( index ) &&
                                              mEditBuffer->changedAttributeValues().isEmpty() ) )
       {
-        minimum = calculateMinimum ? mDataProvider->minimumValue( index ) : QVariant();
-        maximum = calculateMaximum ? mDataProvider->maximumValue( index ) : QVariant();
+        if ( minimum )
+          *minimum = mDataProvider->minimumValue( index );
+        if ( maximum )
+          *maximum = mDataProvider->maximumValue( index );
         return;
       }
     }
@@ -4323,9 +4326,6 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant &minimum, QVaria
     case QgsFields::OriginExpression:
     case QgsFields::OriginJoin:
     {
-      minimum = QVariant();
-      maximum = QVariant();
-
       // we need to go through each feature
       QgsAttributeList attList;
       attList << index;
@@ -4344,16 +4344,18 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant &minimum, QVaria
 
         if ( firstValue )
         {
-          minimum = currentValue;
-          maximum = currentValue;
+          if ( minimum )
+            *minimum = currentValue;
+          if ( maximum )
+            *maximum = currentValue;
           firstValue = false;
         }
         else
         {
-          if ( calculateMinimum && currentValue.isValid() && qgsVariantLessThan( currentValue, minimum ) )
-            minimum = currentValue;
-          if ( calculateMaximum && currentValue.isValid() && qgsVariantGreaterThan( currentValue, maximum ) )
-            maximum = currentValue;
+          if ( minimum && currentValue.isValid() && qgsVariantLessThan( currentValue, *minimum ) )
+            *minimum = currentValue;
+          if ( maximum && currentValue.isValid() && qgsVariantGreaterThan( currentValue, *maximum ) )
+            *maximum = currentValue;
         }
       }
       return;
