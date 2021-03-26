@@ -262,8 +262,6 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
   {
     publishedAttributes = accessControl->layerAttributes( vLayer, publishedAttributes );
   }
-#else
-  ( void )context;
 #endif
 
   QgsFields publishedFields;
