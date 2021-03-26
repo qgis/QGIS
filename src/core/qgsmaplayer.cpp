@@ -1969,18 +1969,18 @@ void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
 {
   QgsDataProvider *lDataProvider = dataProvider();
 
-  if ( !lDataProvider || !lDataProvider->isValid() || !( providerType() == QStringLiteral("postgres") ) )
+  if ( !lDataProvider || !lDataProvider->isValid() )
     return;
 
   if ( enabled && !isRefreshOnNotifyEnabled() )
   {
     lDataProvider->setListening( enabled );
-    connect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotified );
+    connect( lDataProvider, &QgsDataProvider::notify, this, &QgsMapLayer::onNotified );
   }
   else if ( !enabled && isRefreshOnNotifyEnabled() )
   {
     // we don't want to disable provider listening because someone else could need it (e.g. actions)
-    disconnect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotified );
+    disconnect( lDataProvider, &QgsDataProvider::notify, this, &QgsMapLayer::onNotified );
   }
   mIsRefreshOnNofifyEnabled = enabled;
 }
