@@ -6,9 +6,10 @@ set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-cmake_policy (SET CMP0048 NEW)
-cmake_policy (SET CMP0053 NEW)
-cmake_policy (SET CMP0071 NEW)
+cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0053 NEW)
+cmake_policy(SET CMP0071 NEW)
+cmake_policy(SET CMP0094 NEW)
 
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
@@ -932,8 +933,11 @@ set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required s
 
 #############################################################
 # Python build dependency
-find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter)
-execute_process ( COMMAND python -c "distutils.sysconfig.get_python_lib(plat_specific=1)" OUTPUT_VARIABLE PYTHON_SITE_PACKAGES_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+set(Python_FIND_FRAMEWORK "LAST")
+find_package(Python 3.7 REQUIRED COMPONENTS Interpreter)
+message("Found Python executable: ${Python_EXECUTABLE}")
+message("Python library: ${Python_LIBRARY}")
+execute_process ( COMMAND python -c "import distutils.sysconfig; sysconfig.get_python_lib(plat_specific=1)" OUTPUT_VARIABLE PYTHON_SITE_PACKAGES_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 #############################################################
 # Python bindings
