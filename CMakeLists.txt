@@ -939,7 +939,7 @@ set(Python_FIND_FRAMEWORK "LAST")
 
 find_package(Python 3.7 REQUIRED COMPONENTS Interpreter Development)
 message("-- Found Python executable: ${Python_EXECUTABLE}")
-message("-- Python library: ${Python_LIBRARIES}")
+message("-- Python library: ${Python_LIBRARIES} ${Python_INCLUDE_DIRS}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
