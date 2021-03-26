@@ -992,8 +992,13 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   Q_ASSERT( method );
 
   int attrNum = mLayer->fields().lookupField( attrName );
-  double minimum = mLayer->minimumValue( attrNum ).toDouble();
-  double maximum = mLayer->maximumValue( attrNum ).toDouble();
+
+  QVariant minVal;
+  QVariant maxVal;
+  mLayer->minimumAndMaximumValue( attrNum, minVal, maxVal );
+
+  double minimum = minVal.toDouble();
+  double maximum = maxVal.toDouble();
   mSymmetryPointValidator->setBottom( minimum );
   mSymmetryPointValidator->setTop( maximum );
   mSymmetryPointValidator->setDecimals( spinPrecision->value() );
