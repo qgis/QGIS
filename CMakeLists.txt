@@ -932,12 +932,8 @@ set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required s
 
 #############################################################
 # Python build dependency
-
-find_package(PythonLibrary REQUIRED)
-set(MIN_PYTHON_VERSION "3.7")
-if(${PYTHON_SHORT_VERSION} VERSION_LESS ${MIN_PYTHON_VERSION})
-    message(FATAL_ERROR "Python version ${PYTHON_SHORT_VERSION} is too old. Minimum Python version is ${MIN_PYTHON_VERSION}.")
-endif()
+find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter)
+execute_process ( COMMAND python -c "distutils.sysconfig.get_python_lib(plat_specific=1)" OUTPUT_VARIABLE PYTHON_SITE_PACKAGES_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 #############################################################
 # Python bindings

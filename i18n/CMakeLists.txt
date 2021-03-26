@@ -30,7 +30,7 @@ if (UNIX AND NOT APPLE AND PYQT5_FOUND)
   add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-    COMMAND ${PYTHON_EXECUTABLE}
+    COMMAND ${Python_EXECUTABLE}
     ARGS ${CMAKE_SOURCE_DIR}/scripts/ts2appinfo.py "${CMAKE_BINARY_DIR}"
     COMMENT "Updating appinfo files..."
     DEPENDS ${QM_FILES} ${CMAKE_SOURCE_DIR}/linux/org.qgis.qgis.desktop.in ${CMAKE_SOURCE_DIR}/linux/org.qgis.qgis.appdata.xml.in
