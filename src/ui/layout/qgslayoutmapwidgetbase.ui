@@ -88,9 +88,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-376</y>
         <width>548</width>
-        <height>1336</height>
+        <height>1398</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -445,11 +445,8 @@
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
            <widget class="QLabel" name="mStartDateTimeLabel">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
             <property name="text">
-             <string>Start</string>
+             <string>Start (inclusive)</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -484,11 +481,8 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="mEndDateTimeLabel">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
             <property name="text">
-             <string>End</string>
+             <string>End (exclusive)</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -1011,14 +1005,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -1027,10 +1022,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
@@ -1125,8 +1119,6 @@
   <tabstop>mOverviewStackingLayerComboBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
