@@ -864,9 +864,9 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   setIsTemporal( itemElem.attribute( QStringLiteral( "isTemporal" ) ).toInt() );
   if ( isTemporal() )
   {
-    QDateTime begin = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
-    QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeEnd" ) ), Qt::ISODate );
-    setTemporalRange( QgsDateTimeRange( begin, end ) );
+    const QDateTime begin = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    const QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeEnd" ) ), Qt::ISODate );
+    setTemporalRange( QgsDateTimeRange( begin, end, true, begin == end ) );
   }
 
   mUpdatesEnabled = true;
@@ -1922,7 +1922,7 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
     if ( property == QgsLayoutObject::EndDateTime || property == QgsLayoutObject::AllProperties )
       end = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::EndDateTime, context, temporalRange().end() );
 
-    setTemporalRange( QgsDateTimeRange( begin, end ) );
+    setTemporalRange( QgsDateTimeRange( begin, end, true, begin == end ) );
   }
 
   //force redraw

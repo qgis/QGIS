@@ -525,9 +525,6 @@ void QgsLayoutMapWidget::mTemporalCheckBox_toggled( bool checked )
     return;
   }
 
-  mStartDateTime->setEnabled( checked );
-  mEndDateTime->setEnabled( checked );
-
   mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Toggle Temporal Range" ) );
   mMapItem->setIsTemporal( checked );
   mMapItem->layout()->undoStack()->endCommand();
@@ -548,7 +545,9 @@ void QgsLayoutMapWidget::updateTemporalExtent()
     return;
   }
 
-  QgsDateTimeRange range = QgsDateTimeRange( mStartDateTime->dateTime(), mEndDateTime->dateTime() );
+  const QDateTime begin = mStartDateTime->dateTime();
+  const QDateTime end = mEndDateTime->dateTime();
+  QgsDateTimeRange range = QgsDateTimeRange( begin, end, true, begin == end );
 
   mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Set Temporal Range" ) );
   mMapItem->setTemporalRange( range );
