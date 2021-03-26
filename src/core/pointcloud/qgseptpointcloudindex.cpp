@@ -286,6 +286,14 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   }
 }
 
+QgsPointCloudBlockHandle *QgsEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+{
+  Q_UNUSED( n );
+  Q_UNUSED( request );
+  Q_ASSERT( false );
+  return nullptr; // unsupported
+}
+
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
 {
   return QgsCoordinateReferenceSystem::fromWkt( mWkt );

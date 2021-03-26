@@ -155,8 +155,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! The access type of the data, local is for local files and remote for remote files (over HTTP)
     enum AccessType
     {
-      Local,
-      Remote
+      Local, //! Local means the source is a local file on the machine
+      Remote //! Remote means it's loaded through a protocol like HTTP
     };
 
     //! Constructs index

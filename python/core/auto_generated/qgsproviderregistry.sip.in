@@ -127,7 +127,6 @@ Creates new instance of raster data provider
 .. versionadded:: 3.10
 %End
 
-
     QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
 %Docstring
 Returns list of raster pyramid resampling methods

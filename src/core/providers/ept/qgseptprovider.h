@@ -70,7 +70,6 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
     QgsEptProviderMetadata();
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QgsEptProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-    QgsEptProvider *createEptDataProvider( const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     int priorityForUri( const QString &uri ) const override;
     QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;

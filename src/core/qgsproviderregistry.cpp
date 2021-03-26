@@ -570,15 +570,6 @@ QgsRasterDataProvider *QgsProviderRegistry::createRasterDataProvider( const QStr
     return nullptr;
 }
 
-QgsEptProvider *QgsProviderRegistry::createEptDataProvider( const QString &providerKey, const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
-{
-  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
-  if ( meta )
-    return meta->createEptDataProvider( uri, dataSourceType, options, flags );
-
-  return nullptr;
-}
-
 QList<QPair<QString, QString> > QgsProviderRegistry::pyramidResamplingMethods( const QString &providerKey )
 {
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );

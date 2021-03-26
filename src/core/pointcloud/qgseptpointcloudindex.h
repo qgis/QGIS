@@ -47,13 +47,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     void load( const QString &fileName ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-    QgsPointCloudBlockHandle *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override
-    {
-      Q_UNUSED( n );
-      Q_UNUSED( request );
-      Q_ASSERT( false );
-      return nullptr;
-    }
+    QgsPointCloudBlockHandle *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
     QgsCoordinateReferenceSystem crs() const override;
     int pointCount() const override;

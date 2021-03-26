@@ -316,7 +316,8 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
   {
     return nullptr;  // unsupported
   }
-  std::unique_ptr<QgsFileDownloader> downloader( new QgsFileDownloader( fileUrl, fileName ) );
+
+  QgsFileDownloader downloader( fileUrl, fileName );
 
   int timeout = 10000;
   QTimer timer;
@@ -325,20 +326,20 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
 
   QUrl downloadedUrl;
   QStringList errorMessages;
-  connect( downloader.get(), &QgsFileDownloader::downloadCompleted, [&]( const QUrl & url )
+  connect( &downloader, &QgsFileDownloader::downloadCompleted, [&]( const QUrl & url )
   {
     downloadedUrl = url;
     loop.quit();
   } );
-  connect( downloader.get(), &QgsFileDownloader::downloadCanceled, &loop, &QEventLoop::quit );
-  connect( downloader.get(), &QgsFileDownloader::downloadError, [&]( QStringList errorMessagesList )
+  connect( &downloader, &QgsFileDownloader::downloadCanceled, &loop, &QEventLoop::quit );
+  connect( &downloader, &QgsFileDownloader::downloadError, [&]( QStringList errorMessagesList )
   {
     errorMessages = errorMessagesList;
     loop.exit();
   } );
 
   connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
-  downloader->startDownload();
+  downloader.startDownload();
   timer.start( timeout );
   loop.exec();
 
