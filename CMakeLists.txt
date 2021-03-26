@@ -942,7 +942,6 @@ message("-- Found Python executable: ${Python_EXECUTABLE}")
 message("-- Python library: ${Python_LIBRARIES}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
-  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
