@@ -940,7 +940,7 @@ set(Python_FIND_FRAMEWORK "LAST")
 find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
 message("-- Found Python executable: ${Python_EXECUTABLE}")
 message("-- Python library: ${Python_LIBRARIES}")
-message("-- Python site-packges: ${Python_SITEARCH}")
+message("-- Python site-packages: ${Python_SITEARCH}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   # python support: check for interpreter, sip, pyqt5
