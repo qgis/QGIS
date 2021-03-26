@@ -303,7 +303,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     flags |= QgsDataProvider::FlagTrustDataSource;
   }
 
-  mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createEptDataProvider( provider, dataSource, mDataSourceType, options, flags ) ) );
+  mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( QStringLiteral( "Unable to get point cloud data provider" ) );

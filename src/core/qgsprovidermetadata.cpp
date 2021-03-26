@@ -181,15 +181,6 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   return nullptr;
 }
 
-QgsEptProvider *QgsProviderMetadata::createEptDataProvider(
-  const QString &,
-  const QString &,
-  const QgsDataProvider::ProviderOptions &,
-  QgsDataProvider::ReadFlags )
-{
-  return nullptr;
-}
-
 bool QgsProviderMetadata::createMeshData(
   const QgsMesh &,
   const QString,

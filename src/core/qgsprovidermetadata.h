@@ -387,12 +387,6 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
 
     /**
-     * Creates a new instance of EPT point cloud data provider
-     * \since QGIS 3.20
-     */
-    SIP_SKIP virtual QgsEptProvider *createEptDataProvider( const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
-
-    /**
      * Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
      * \since QGIS 3.16
      */

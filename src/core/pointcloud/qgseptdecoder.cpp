@@ -477,8 +477,6 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
          );
 }
 
-#include <QDebug>
-
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes )
@@ -493,7 +491,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayDat
     }
     else
     {
-      qDebug() << "Couldn't open " << filename;
+      QgsDebugMsg( QStringLiteral( "Couldn't open %1" ).arg( filename ) );
       return nullptr;
     }
   }

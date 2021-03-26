@@ -18,7 +18,6 @@
 #include <QElapsedTimer>
 #include <QPointer>
 #include <QTimer>
-#include <QDebug>
 
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudlayer.h"
@@ -240,14 +239,14 @@ bool QgsPointCloudLayerRenderer::render()
         }
         else
         {
-          qDebug() << "Unable to load node " << n.toString();
+          QgsDebugMsg( QStringLiteral( "Unable to load node %1" ).arg( n.toString() ) );
         }
         finishedLoadingBlock[ i ] = true;
         checkIfFinished();
       } );
       QObject::connect( blockHandle, &QgsPointCloudBlockHandle::blockLoadingFailed, [ &, i ]( const QString & errorStr )
       {
-        qDebug() << "Unable to load node " << n.toString() << ", error: " << errorStr;
+        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), errorStr ) );
         finishedLoadingBlock[ i ] = true;
         checkIfFinished();
       } );
@@ -256,7 +255,7 @@ bool QgsPointCloudLayerRenderer::render()
     // Wait for all point cloud nodes to finish loading
     loop.exec();
 
-    qDebug() << "Downloaded in : " << downloadTimer.elapsed() << "ms";
+    QgsDebugMsg( QStringLiteral( "Downloaded in : %1ms" ).arg( downloadTimer.elapsed() ) );
 
     // Render all the point cloud blocks sequentially
     for ( int i = 0; i < nodes.size(); ++i )
@@ -298,9 +297,6 @@ bool QgsPointCloudLayerRenderer::render()
   }
 
 #ifdef QGISDEBUG
-  qDebug() << QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
-           .arg( context.pointsRendered() )
-           .arg( t.elapsed() );
   QgsDebugMsgLevel( QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
                     .arg( context.pointsRendered() )
                     .arg( t.elapsed() ), 2 );

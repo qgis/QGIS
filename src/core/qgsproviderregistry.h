@@ -180,12 +180,6 @@ class CORE_EXPORT QgsProviderRegistry
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
 
     /**
-     * Creates new instance of EPT point cloud data provider
-     * \since QGIS 3.10
-     */
-    SIP_SKIP QgsEptProvider *createEptDataProvider( const QString &providerKey, const QString &uri, const QString &dataSourceType, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
-
-    /**
      * Returns list of raster pyramid resampling methods
      *
      * \since QGIS 3.10
