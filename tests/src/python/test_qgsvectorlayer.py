@@ -1751,14 +1751,17 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # strings
         self.assertEqual(layer.minimumValue(2), "foo")
         self.assertEqual(layer.maximumValue(2), "qar")
+        self.assertEqual(layer.minimumAndMaximumValue(2), ("foo", "qar"))
 
         # numbers
         self.assertEqual(layer.minimumValue(3), 111)
         self.assertEqual(layer.maximumValue(3), 321)
+        self.assertEqual(layer.minimumAndMaximumValue(3), (111, 321))
 
         # dates (maximumValue also tests we properly handle null values by skipping those)
         self.assertEqual(layer.minimumValue(4), QDateTime(QDate(2010, 1, 1)))
         self.assertEqual(layer.maximumValue(4), QDateTime(QDate(2010, 1, 1)))
+        self.assertEqual(layer.minimumAndMaximumValue(4), (QDateTime(QDate(2010, 1, 1)), QDateTime(QDate(2010, 1, 1))))
 
         self.assertEqual(set(layer.uniqueValues(3)), set([111, 321]))
 
@@ -1977,6 +1980,63 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
         self.assertEqual(layer.maximumValue(1), 1001)
 
+    def testMinAndMaxValue(self):
+        """ test retrieving minimum and maximum values at once"""
+        layer = createLayerWithFivePoints()
+
+        # test layer with just provider features
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 888))
+
+        # add feature with new value
+        layer.startEditing()
+        f1 = QgsFeature()
+        f1.setAttributes(["test2", 999])
+        self.assertTrue(layer.addFeature(f1))
+
+        # should be new maximum value
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 999))
+        # add it again, should be no change
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", 999])
+        self.assertTrue(layer.addFeature(f1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 999))
+
+        # add another feature
+        f3 = QgsFeature()
+        f3.setAttributes(["test2", 1000])
+        self.assertTrue(layer.addFeature(f3))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 1000))
+
+        # add feature with new minimum value
+        layer.startEditing()
+        f1 = QgsFeature()
+        f1.setAttributes(["test2", -999])
+        self.assertTrue(layer.addFeature(f1))
+
+        # should be new minimum value
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-999, 1000))
+        # add it again, should be no change
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", -999])
+        self.assertTrue(layer.addFeature(f1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-999, 1000))
+
+        # add another feature
+        f3 = QgsFeature()
+        f3.setAttributes(["test2", -1000])
+        self.assertTrue(layer.addFeature(f3))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1000, 1000))
+
+        # change an attribute value to a new maximum value
+        it = layer.getFeatures()
+        f1_id = next(it).id()
+        self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1000, 1001))
+
+        f1_id = next(it).id()
+        self.assertTrue(layer.changeAttributeValue(f1_id, 1, -1001))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1001, 1001))
+
     def testMinMaxInVirtualField(self):
         """
         Test minimum and maximum values in a virtual field
@@ -1998,6 +2058,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(len(layer.getFeature(1).attributes()), 2)
         self.assertEqual(layer.minimumValue(1), QDate(2010, 1, 1))
         self.assertEqual(layer.maximumValue(1), QDate(2020, 1, 1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (QDate(2010, 1, 1), QDate(2020, 1, 1)))
 
     def test_InvalidOperations(self):
         layer = createLayerWithOnePoint()

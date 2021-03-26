@@ -234,8 +234,11 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   }
   else
   {
-    minimum = layer->minimumValue( fieldIndex ).toDouble();
-    maximum = layer->maximumValue( fieldIndex ).toDouble();
+    QVariant minVal;
+    QVariant maxVal;
+    layer->minimumAndMaximumValue( fieldIndex, minVal, maxVal );
+    minimum = minVal.toDouble();
+    maximum = maxVal.toDouble();
   }
 
   // get the breaks, minimum and maximum might be updated by implementation
