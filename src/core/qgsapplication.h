@@ -402,8 +402,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString userStylePath();
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    //! Returns the short name regular expression for line edit validator
-    static QRegExp shortNameRegExp();
+
+    /**
+     * Returns the short name regular expression for line edit validator
+     *
+     * \deprecated since QGIS 3.20 for incompatibility with Qt6
+     */
+    static Q_DECL_DEPRECATED QRegExp shortNameRegExp();
 #endif
 
     /**

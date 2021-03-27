@@ -377,9 +377,13 @@ colors are specified then the ``size`` argument also must be set.
 Returns the path to user's style.
 %End
 
+
     static QRegExp shortNameRegExp();
 %Docstring
 Returns the short name regular expression for line edit validator
+
+.. deprecated:: QGIS 3.20
+   for incompatibility with Qt6
 %End
 
     static QString userLoginName();
