@@ -103,6 +103,12 @@
       </item>
       <item row="2" column="1" colspan="2">
        <widget class="QSlider" name="mLodSlider">
+        <property name="toolTip">
+         <string>Need mesh simplification</string>
+        </property>
+        <property name="value">
+         <number>99</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -407,6 +413,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorRampShaderWidget</class>
+   <extends>QWidget</extends>
+   <header>raster/qgscolorrampshaderwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -421,12 +433,6 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorRampShaderWidget</class>
-   <extends>QWidget</extends>
-   <header>raster/qgscolorrampshaderwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
