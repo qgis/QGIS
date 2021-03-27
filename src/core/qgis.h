@@ -22,6 +22,7 @@
 #include <cfloat>
 #include <memory>
 #include <cmath>
+#include <qcompilerdetection.h>
 
 #include "qgstolerance.h"
 #include "qgis_core.h"
@@ -840,3 +841,9 @@ QString CORE_EXPORT geoEpsgCrsAuthId();
 QString CORE_EXPORT geoNone();
 
 #endif
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#  undef Q_DECL_DEPRECATED
+#  define Q_DECL_DEPRECATED __attribute__ ((__deprecated__))
+#endif
+

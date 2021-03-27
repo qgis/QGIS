@@ -312,6 +312,8 @@ QString geoEpsgCrsAuthId();
 //! Constant that holds the string representation for "No ellips/No CRS"
 QString geoNone();
 
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
