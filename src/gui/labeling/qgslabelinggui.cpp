@@ -636,7 +636,7 @@ bool QgsLabelingGui::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == mLblNoObstacle1 )
   {
-    if ( event->type() == QEvent::MouseButtonPress && dynamic_cast< QMouseEvent * >( event )->button() == Qt::LeftButton )
+    if ( event->type() == QEvent::MouseButtonPress && qgis::down_cast< QMouseEvent * >( event )->button() == Qt::LeftButton )
     {
       // clicking the obstacle label toggles the checkbox, just like a "normal" checkbox label...
       mChkNoObstacle->setChecked( !mChkNoObstacle->isChecked() );

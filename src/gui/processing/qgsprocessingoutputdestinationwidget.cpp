@@ -283,7 +283,7 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
     connect( actionSaveToDatabase, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToDatabase );
     mMenu->addAction( actionSaveToDatabase );
 
-    if ( mParameter->algorithm() && dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter )->supportsAppend() )
+    if ( mParameter->algorithm() && qgis::down_cast< const QgsProcessingParameterFeatureSink * >( mParameter )->supportsAppend() )
     {
       mMenu->addSeparator();
       QAction *actionAppendToLayer = new QAction( tr( "Append to Layer…" ), this );
