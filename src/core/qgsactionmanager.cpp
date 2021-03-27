@@ -262,7 +262,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
     for ( int i = 0; i < defaultActionNodes.size(); ++i )
     {
       QDomElement defaultValueElem = defaultActionNodes.at( i ).toElement();
-      mDefaultActions.insert( defaultValueElem.attribute( QStringLiteral( "key" ) ), defaultValueElem.attribute( QStringLiteral( "value" ) ) );
+      mDefaultActions.insert( defaultValueElem.attribute( QStringLiteral( "key" ) ), QUuid( defaultValueElem.attribute( QStringLiteral( "value" ) ) ) );
     }
   }
   return true;
