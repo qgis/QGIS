@@ -20,6 +20,7 @@
 #include "qgslayertreelayer.h"
 #include "qgsprojectservervalidator.h"
 #include "qgsvectorlayer.h"
+#include <QRegularExpression>
 
 
 QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValidator::ValidationError error )
@@ -94,11 +95,10 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   browseLayerTree( project->layerTreeRoot(), owsNames, encodingMessages );
 
   QStringList duplicateNames, regExpMessages;
-  QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  const auto constOwsNames = owsNames;
-  for ( const QString &name : constOwsNames )
+  QRegularExpression snRegExp( QRegularExpression::anchoredPattern( QgsApplication::shortNameRegularExpression().pattern() ) );
+  for ( const QString &name : std::as_const( owsNames ) )
   {
-    if ( !snRegExp.exactMatch( name ) )
+    if ( !snRegExp.match( name ).hasMatch() )
     {
       regExpMessages << name;
     }
@@ -146,7 +146,7 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
       results << ValidationResult( QgsProjectServerValidator::ProjectRootNameConflict, rootLayerName );
     }
 
-    if ( !snRegExp.exactMatch( rootLayerName ) )
+    if ( !snRegExp.match( rootLayerName ).hasMatch() )
     {
       result = false;
       results << ValidationResult( QgsProjectServerValidator::ProjectShortName, rootLayerName );
