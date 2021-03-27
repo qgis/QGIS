@@ -560,7 +560,7 @@ void TestQgsLegendRenderer::testOverrideSymbol()
   sym2->setColor( Qt::red );
 
   QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
-  dynamic_cast< QgsSymbolLegendNode * >( embeddedNode )->setCustomSymbol( sym2.release() );
+  qgis::down_cast< QgsSymbolLegendNode * >( embeddedNode )->setCustomSymbol( sym2.release() );
 
   std::unique_ptr< QgsMarkerSymbol > sym3 = std::make_unique< QgsMarkerSymbol >();
   sym3->setColor( QColor( 0, 150, 0 ) );
