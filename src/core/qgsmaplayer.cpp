@@ -1969,7 +1969,7 @@ void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
 {
   QgsDataProvider *lDataProvider = dataProvider();
 
-  if ( !lDataProvider || !lDataProvider->isValid() )
+  if ( !lDataProvider )
     return;
 
   if ( enabled && !isRefreshOnNotifyEnabled() )

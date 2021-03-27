@@ -294,6 +294,9 @@ QgsPostgresConn *QgsPostgresProvider::connectionRO() const
 
 void QgsPostgresProvider::setListening( bool isListening )
 {
+  if ( !mValid )
+    return;
+
   if ( isListening && !mListener )
   {
     mListener.reset( QgsPostgresListener::create( mUri.connectionInfo( false ) ).release() );
