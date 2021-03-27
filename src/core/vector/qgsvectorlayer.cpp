@@ -1286,10 +1286,12 @@ QgsGeometry::OperationResult QgsVectorLayer::addPart( const QList<QgsPointXY> &p
   return addPart( pts );
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QgsGeometry::OperationResult QgsVectorLayer::addPart( const QVector<QgsPointXY> &points )
 {
   return addPart( vectorPointXY2pointSequence( points ) );
 }
+#endif
 
 QgsGeometry::OperationResult QgsVectorLayer::addPart( const QgsPointSequence &points )
 {
