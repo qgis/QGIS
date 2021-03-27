@@ -1078,15 +1078,15 @@ QString QgsPostgresConn::postgisVersion() const
   if ( mPostgisVersionMajor > 1 )
   {
     result = PQexec( QStringLiteral(
-                        "SELECT has_schema_privilege(n.oid, 'usage')"
-                          " AND has_table_privilege(t.oid, 'select')"
-                          " AND has_table_privilege(l.oid, 'select')"
-                         " FROM pg_namespace n, pg_class t, pg_class l"
-                        " WHERE n.nspname = 'topology'"
-                          " AND t.relnamespace = n.oid"
-                          " AND l.relnamespace = n.oid"
-                          " AND t.relname = 'topology'"
-                          " AND l.relname = 'layer'"
+                       "SELECT has_schema_privilege(n.oid, 'usage')"
+                       " AND has_table_privilege(t.oid, 'select')"
+                       " AND has_table_privilege(l.oid, 'select')"
+                       " FROM pg_namespace n, pg_class t, pg_class l"
+                       " WHERE n.nspname = 'topology'"
+                       " AND t.relnamespace = n.oid"
+                       " AND l.relnamespace = n.oid"
+                       " AND t.relname = 'topology'"
+                       " AND l.relname = 'layer'"
                      ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
@@ -1109,15 +1109,15 @@ QString QgsPostgresConn::postgisVersion() const
   {
     QgsDebugMsgLevel( QStringLiteral( "Checking for pointcloud support" ), 2 );
     result = PQexec( QStringLiteral(
-                        "SELECT has_table_privilege(c.oid, 'select')"
-                          " AND has_table_privilege(f.oid, 'select')"
-                         " FROM pg_class c, pg_class f, pg_namespace n, pg_extension e"
-                        " WHERE c.relnamespace = n.oid"
-                          " AND c.relname = 'pointcloud_columns'"
-                          " AND f.relnamespace = n.oid"
-                          " AND f.relname = 'pointcloud_formats'"
-                          " AND n.oid = e.extnamespace"
-                          " AND e.extname = 'pointcloud'"
+                       "SELECT has_table_privilege(c.oid, 'select')"
+                       " AND has_table_privilege(f.oid, 'select')"
+                       " FROM pg_class c, pg_class f, pg_namespace n, pg_extension e"
+                       " WHERE c.relnamespace = n.oid"
+                       " AND c.relname = 'pointcloud_columns'"
+                       " AND f.relnamespace = n.oid"
+                       " AND f.relname = 'pointcloud_formats'"
+                       " AND n.oid = e.extnamespace"
+                       " AND e.extname = 'pointcloud'"
                      ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
@@ -1130,12 +1130,12 @@ QString QgsPostgresConn::postgisVersion() const
   if ( mPostgisVersionMajor >= 2 )
   {
     result = PQexec( QStringLiteral(
-                        "SELECT has_table_privilege(c.oid, 'select')"
-                         " FROM pg_class c, pg_namespace n, pg_type t"
-                        " WHERE c.relnamespace = n.oid"
-                          " AND n.oid = t.typnamespace"
-                          " AND c.relname = 'raster_columns'"
-                          " AND t.typname = 'raster'"
+                       "SELECT has_table_privilege(c.oid, 'select')"
+                       " FROM pg_class c, pg_namespace n, pg_type t"
+                       " WHERE c.relnamespace = n.oid"
+                       " AND n.oid = t.typnamespace"
+                       " AND c.relname = 'raster_columns'"
+                       " AND t.typname = 'raster'"
                      ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
@@ -1769,12 +1769,12 @@ void QgsPostgresConn::deduceEndian()
   qint64 oidBinaryCursor = 0;
 
   if ( 0 == PQsendQuery( QStringLiteral(
-                 /* 1 */   "SELECT regclass('pg_class')::oid AS oidselect;"
-                 /* 2 */   "BEGIN;"
-                 /* 3 */   "DECLARE oidcursor BINARY CURSOR FOR SELECT regclass('pg_class')::oid AS oidbinarycursor;"
-                 /* 4 */   "FETCH FORWARD 1 FROM oidcursor;"
-                 /* 5 */   "CLOSE oidcursor;"
-                 /* 6 */   "COMMIT;" ) ) )
+                           "SELECT regclass('pg_class')::oid AS oidselect;"
+                           "BEGIN;"
+                           "DECLARE oidcursor BINARY CURSOR FOR SELECT regclass('pg_class')::oid AS oidbinarycursor;"
+                           "FETCH FORWARD 1 FROM oidcursor;"
+                           "CLOSE oidcursor;"
+                           "COMMIT;" ) ) )
     QgsDebugMsg( QStringLiteral( "PQsendQuery(...) error %1" ).arg( PQerrorMessage() ) );
 
   for ( ;; )
