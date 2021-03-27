@@ -281,7 +281,7 @@ bool QgsMapToolAddPart::checkSelection()
   else
   {
     // Only one selected feature
-    // For single-type layers only allow feaetures without geometry
+    // For single-type layers only allow features without geometry
     QgsFeatureIterator selectedFeatures = vlayer->getSelectedFeatures();
     QgsFeature selectedFeature;
     selectedFeatures.nextFeature( selectedFeature );
