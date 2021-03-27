@@ -75,18 +75,14 @@ typedef QList<QgsRendererRange> QgsRangeList;
 
 
 class QgsRendererRangeLabelFormat /Deprecated/
-{
-%Docstring(signature="appended")
+%Docstring
 
 .. versionadded:: 2.6
 
 .. deprecated:: QGIS 3.10
   use :py:class:`QgsClassificationMethod` instead
 %End
-
-%TypeHeaderCode
-#include "qgsrendererrange.h"
-%End
+{
   public:
     QgsRendererRangeLabelFormat();
     QgsRendererRangeLabelFormat( const QString &format, int precision = 4, bool trimTrailingZeroes = false );
