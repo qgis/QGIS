@@ -28,6 +28,7 @@
 #include "nlohmann/json.hpp"
 
 #include <QUrl>
+#include <QUrlQuery>
 
 QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
 {
