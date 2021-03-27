@@ -187,12 +187,20 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     vlayer->beginEditCommand( mMode == Move ? tr( "Feature moved" ) : tr( "Feature copied and moved" ) );
 
+    QgsFeatureRequest request;
+    request.setFilterFids( mMovedFeatures );
     switch ( mMode )
     {
       case Move:
-        for ( QgsFeatureId id : std::as_const( mMovedFeatures ) )
+      {
+        QgsFeatureIterator fi = vlayer->getFeatures( request );
+        QgsFeature f;
+        while ( fi.nextFeature( f ) )
         {
-          vlayer->translateFeature( id, dx, dy );
+          QgsGeometry geom = f.geometry();
+          QgsFeatureId id = f.id();
+          geom.translate( dx, dy );
+          vlayer->changeGeometry( id, geom );
 
           if ( QgsProject::instance()->topologicalEditing() )
           {
@@ -208,10 +216,9 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         mSnapIndicator->setMatch( QgsPointLocator::Match() );
         cadDockWidget()->clear();
         break;
-
+      }
       case CopyMove:
-        QgsFeatureRequest request;
-        request.setFilterFids( mMovedFeatures );
+      {
         QString *errorMsg = new QString();
         if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg, QgsProject::instance()->topologicalEditing(), mSnapIndicator->match().layer() ) )
         {
@@ -221,6 +228,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mSnapIndicator->setMatch( QgsPointLocator::Match() );
         }
         break;
+      }
     }
 
     vlayer->endEditCommand();
