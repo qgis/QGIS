@@ -10514,7 +10514,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   int nTotalFeatures = features.count();
   QgsExpressionContext context = pasteVectorLayer->createExpressionContext();
 
-  QgsFeatureList compatibleFeatures( QgsVectorLayerUtils::makeFeaturesCompatible( features, pasteVectorLayer ) );
+  QgsFeatureList compatibleFeatures( QgsVectorLayerUtils::makeFeaturesCompatible( features, pasteVectorLayer, QgsFeatureSink::RegeneratePrimaryKey ) );
   QgsVectorLayerUtils::QgsFeaturesDataList newFeaturesDataList;
   newFeaturesDataList.reserve( compatibleFeatures.size() );
 
