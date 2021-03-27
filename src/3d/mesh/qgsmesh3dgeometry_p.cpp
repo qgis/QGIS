@@ -218,15 +218,6 @@ QgsMeshDataset3dGeometry::QgsMeshDataset3dGeometry(
   prepareData();
 }
 
-QgsMeshDataset3dGeometry::~QgsMeshDataset3dGeometry()
-{
-//  if ( mBuilder && mBuilder->isBuilding() )
-//  {
-//    mBuilder->cancel();
-//    mBuilder->waitForFinished();
-//  }
-}
-
 void QgsMeshDataset3dGeometry::getData()
 {
   const QByteArray indexData = mBuilder->indexData();

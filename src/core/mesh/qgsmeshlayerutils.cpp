@@ -369,7 +369,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( const QVector<doubl
     activeFace = *active;
   else
   {
-    activeFace = QgsMeshDataBlock();
+    activeFace = QgsMeshDataBlock( QgsMeshDataBlock::ActiveFlagInteger, nativeMesh.faceCount() );
     activeFace.setValid( true );
   }
 

@@ -93,7 +93,7 @@ class QgsMesh3DGeometryBuilder: public QObject
 
 
 /**
-* Abstract class for creating attributes and vertex/index buffers for a mesh layer
+* Base class for creating attributes and vertex/index buffers for a mesh layer
 */
 class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
 {
@@ -134,7 +134,7 @@ class QgsMeshDataset3DGeometryBuilder;
  *  Base class for creating attributes and vertex/index buffers for mesh dataset
  *
  *  On creation, the instance prepare all needed data from the mesh layer but 3D geometry is not defined.
- *  Then the instance launches immediatly another thread that constructs 3D vertices, faces  and scalar value on vertices
+ *  Then the instance launches immediately another thread that constructs 3D vertices, faces  and scalar value on vertices
  *  depending on the dataset chosen for vertical magnitude and the one for scalar magnitude (color rendering).
  *
  *  When this job is finished, the mesh datset 3D geometry node is updated and can be rendered in the 3D scene.
@@ -150,8 +150,6 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
                                        const QgsVector3D &origin,
                                        const QgsMesh3DSymbol *symbol,
                                        QNode *parent );
-
-    ~QgsMeshDataset3dGeometry();
 
     //! Data sended to the other thread to consctruct the 3D geometry
     struct VertexData
@@ -204,7 +202,7 @@ class QgsMeshDataset3DGeometryBuilder: public QgsMesh3DGeometryBuilder
 /**
  *  Base class for creating attributes and vertex/index buffers for a mesh dataset
  *
- *  On creation, the instance launches immediatly another thread that constructs 3D vertices, faces of the mesh based on the mesh vertices z value.
+ *  On creation, the instance launches immediately another thread that constructs 3D vertices, faces of the mesh based on the mesh vertices z value.
  *  When this job is finished, the mesh terrain 3D geometry node is updated and can be rendered in the 3D scene.
  */
 class QgsMeshTerrain3dGeometry: public  QgsMesh3dGeometry
