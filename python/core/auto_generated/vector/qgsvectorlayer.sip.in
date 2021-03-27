@@ -1429,6 +1429,7 @@ Adds a new part polygon to a multipart feature
    - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
+
  QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) /PyName=addPartV2,Deprecated/;
 %Docstring
 Adds a new part polygon to a multipart feature
