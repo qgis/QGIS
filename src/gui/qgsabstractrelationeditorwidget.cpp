@@ -213,6 +213,16 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
   const QgsVectorLayerTools *vlTools = mEditorContext.vectorLayerTools();
 
+  // Fields of the linking table
+  const QgsFields fields = mRelation.referencingLayer()->fields();
+
+  // For generated relations insert the referenced layer field
+  if ( mRelation.type() == QgsRelation::Generated )
+  {
+    QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+    keyAttrs.insert( fields.indexFromName( polyRel.referencedLayerField() ), polyRel.layerRepresentation( mRelation.referencedLayer() ) );
+  }
+
   if ( mNmRelation.isValid() )
   {
     // only normal relations support m:n relation
@@ -224,13 +234,10 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
     if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &f ) )
       return;
 
-    // Fields of the linking table
-    const QgsFields fields = mRelation.referencingLayer()->fields();
-
     // Expression context for the linking table
     QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
 
-    QgsAttributeMap linkAttributes;
+    QgsAttributeMap linkAttributes = keyAttrs;
     const auto constFieldPairs = mRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
@@ -250,13 +257,6 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
   }
   else
   {
-    QgsFields fields = mRelation.referencingLayer()->fields();
-    if ( mRelation.type() == QgsRelation::Generated )
-    {
-      QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
-      keyAttrs.insert( fields.indexFromName( polyRel.referencedLayerField() ), polyRel.layerRepresentation( mRelation.referencedLayer() ) );
-    }
-
     const auto constFieldPairs = mRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
@@ -440,6 +440,16 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
 
     QgsAttributeMap linkAttributes;
+
+    if ( mRelation.type() == QgsRelation::Generated )
+    {
+      QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+      Q_ASSERT( polyRel.isValid() );
+
+      linkAttributes.insert( fields.indexFromName( polyRel.referencedLayerField() ),
+                             polyRel.layerRepresentation( mRelation.referencedLayer() ) );
+    }
+
     const auto constFieldPairs = mRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
@@ -486,7 +496,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
       {
         QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 
-        Q_ASSERT( mRelation.polymorphicRelation().isValid() );
+        Q_ASSERT( polyRel.isValid() );
 
         mRelation.referencingLayer()->changeAttributeValue( fid,
             referencingLayer->fields().indexFromName( polyRel.referencedLayerField() ),
