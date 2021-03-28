@@ -1,14 +1,15 @@
 #############################################################
 # CMake settings
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.12.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-cmake_policy (SET CMP0048 NEW)
-cmake_policy (SET CMP0053 NEW)
-cmake_policy (SET CMP0071 NEW)
+cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0053 NEW)
+cmake_policy(SET CMP0071 NEW)
+cmake_policy(SET CMP0094 NEW)
 
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
@@ -932,16 +933,15 @@ endif()
 set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required system libs in the output package")
 
 #############################################################
-# Python build dependency
+# Python
 
-find_package(PythonLibrary REQUIRED)
 set(MIN_PYTHON_VERSION "3.7")
-if(${PYTHON_SHORT_VERSION} VERSION_LESS ${MIN_PYTHON_VERSION})
-    message(FATAL_ERROR "Python version ${PYTHON_SHORT_VERSION} is too old. Minimum Python version is ${MIN_PYTHON_VERSION}.")
-endif()
+set(Python_FIND_FRAMEWORK "LAST")
 
-#############################################################
-# Python bindings
+find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
+message("-- Python library: ${Python_LIBRARIES}")
+message("-- Python site-packages: ${Python_SITEARCH}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   # python support: check for interpreter, sip, pyqt5
@@ -960,14 +960,14 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   set(SIP_CONCAT_PARTS 11)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
-    set(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
+    set(Python_SITEARCH ${QGIS_DATA_DIR}/python)
   endif()
 
   if (WITH_CUSTOM_WIDGETS)
     set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
   endif()
-
 endif()
+
 
 #############################################################
 # create qgsconfig.h
