@@ -196,6 +196,7 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     deleteRubberband();
     notifyNotVectorLayer();
     mSnapIndicator->setMatch( QgsPointLocator::Match() );
+    mCadDockWidget->clear();
     return;
   }
 
@@ -354,6 +355,7 @@ void QgsMapToolRotateFeature::cancel()
   }
   mRotationActive = false;
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  mCadDockWidget->clear();
 }
 
 void QgsMapToolRotateFeature::updateRubberband( double rotation )
@@ -385,6 +387,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
     deleteRubberband();
     notifyNotVectorLayer();
     mSnapIndicator->setMatch( QgsPointLocator::Match() );
+    mCadDockWidget->clear();
     return;
   }
 
@@ -434,6 +437,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   deleteRotationWidget();
   deleteRubberband();
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  mCadDockWidget->clear();
 
   if ( mAutoSetAnchorPoint )
     mAnchorPoint.reset();
