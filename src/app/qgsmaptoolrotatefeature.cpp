@@ -395,12 +395,14 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
 
   vlayer->beginEditCommand( tr( "Features Rotated" ) );
 
-  const auto constMRotatedFeatures = mRotatedFeatures;
-  for ( QgsFeatureId id : constMRotatedFeatures )
+  QgsFeatureRequest request;
+  request.setFilterFids( mRotatedFeatures ).setNoAttributes();
+  QgsFeatureIterator fi = vlayer->getFeatures( request );
+  QgsFeature f;
+  while ( fi.nextFeature( f ) )
   {
-    QgsFeature feat;
-    vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
-    QgsGeometry geom = feat.geometry();
+    QgsFeatureId id = f.id();
+    QgsGeometry geom = f.geometry();
     geom.rotate( mRotation, anchorPoint );
     vlayer->changeGeometry( id, geom );
   }
