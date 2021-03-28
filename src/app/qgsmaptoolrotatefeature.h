@@ -99,17 +99,17 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolAdvancedDigitizing
     void createRotationWidget();
     void deleteRotationWidget();
 
-    //! Start point of the move in map coordinates
+    //! Start point of the rotation in map coordinates
     QgsPointXY mStartPointMapCoords;
     QgsPointXY mInitialPos;
 
-    //! Rubberband that shows the feature being moved
+    //! Rubberband that shows the feature being rotated
     QgsRubberBand *mRubberBand = nullptr;
 
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
-    //! Id of moved feature
+    //! Id of rotated feature
     QgsFeatureIds mRotatedFeatures;
     double mRotation = 0;
     double mRotationOffset = 0;
