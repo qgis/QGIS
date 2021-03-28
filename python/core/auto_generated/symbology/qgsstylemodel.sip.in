@@ -12,7 +12,7 @@
 
 class QgsStyleModel: QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 A QAbstractItemModel subclass for showing symbol and color ramp entities contained
 within a :py:class:`QgsStyle` database.
@@ -91,7 +91,7 @@ corresponds exactly to the view's icon size in which this model is used.
 
 class QgsStyleProxyModel: QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 A QSortFilterProxyModel subclass for showing filtered symbol and color ramps entries from a :py:class:`QgsStyle` database.
 

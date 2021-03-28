@@ -129,7 +129,7 @@ void TestQgsDataItem::testDirItemChildren()
   QgsSettings settings;
   QStringList tmpSettings;
   tmpSettings << QString() << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
-  Q_FOREACH ( const QString &tmpSetting, tmpSettings )
+  for ( const QString &tmpSetting : tmpSettings )
   {
     settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
     QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );

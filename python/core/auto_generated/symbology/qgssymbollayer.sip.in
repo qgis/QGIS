@@ -146,6 +146,8 @@ class QgsSymbolLayer
       PropertyFontFamily,
       PropertyFontStyle,
       PropertyDashPatternOffset,
+      PropertyTrimStart,
+      PropertyTrimEnd,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -583,7 +585,7 @@ Copies paint effect of this layer to another symbol layer
 
 class QgsMarkerSymbolLayer : QgsSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for marker symbol layers.
 %End
 

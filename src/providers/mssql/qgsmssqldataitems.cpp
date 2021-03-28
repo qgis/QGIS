@@ -283,7 +283,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     else
     {
       //set all as populated -- we also need to do this for newly created items, because they won't yet be children of this item
-      for ( QgsDataItem *child : qgis::as_const( children ) )
+      for ( QgsDataItem *child : std::as_const( children ) )
       {
         child->setState( Populated );
       }

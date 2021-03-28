@@ -11,7 +11,7 @@
 
 class QgsInterpolatedLineColor
 {
-%Docstring
+%Docstring(signature="appended")
 
 Class defining color to render mesh datasets. The color can vary depending on the dataset value.
 
@@ -93,7 +93,7 @@ Returns the break values, graduated colors and the associated gradients between 
 
 class QgsInterpolatedLineWidth
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a width than can vary depending on values
 
@@ -194,7 +194,7 @@ Reads configuration from the given DOM element
 
 class QgsInterpolatedLineRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a line with width and color varying depending on values.
 
 .. versionadded:: 3.14

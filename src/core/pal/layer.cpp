@@ -144,7 +144,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     }
 
     // polygons: reorder coordinates
-    if ( type == GEOS_POLYGON && GeomFunction::reorderPolygon( fpart->nbPoints, fpart->x, fpart->y ) != 0 )
+    if ( type == GEOS_POLYGON && !GeomFunction::reorderPolygon( fpart->x, fpart->y ) )
     {
       continue;
     }
@@ -234,7 +234,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       }
 
       // polygons: reorder coordinates
-      if ( type == GEOS_POLYGON && GeomFunction::reorderPolygon( fpart->nbPoints, fpart->x, fpart->y ) != 0 )
+      if ( type == GEOS_POLYGON && !GeomFunction::reorderPolygon( fpart->x, fpart->y ) )
       {
         continue;
       }

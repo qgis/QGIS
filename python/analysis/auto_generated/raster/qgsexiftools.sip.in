@@ -11,7 +11,7 @@
 
 class QgsExifTools
 {
-%Docstring
+%Docstring(signature="appended")
 Contains utilities for working with EXIF tags in images.
 
 .. versionadded:: 3.6
@@ -47,7 +47,7 @@ Returns ``True`` if the image at ``imagePath`` contains a valid geotag.
 
     class GeoTagDetails
 {
-%Docstring
+%Docstring(signature="appended")
 Extended image geotag details.
 
 .. versionadded:: 3.6

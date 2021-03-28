@@ -237,7 +237,7 @@ std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( co
     return nullptr;
   std::unique_ptr< QgsMultiCurve > multiCurve = std::make_unique< QgsMultiCurve >();
   multiCurve->reserve( pathsList.size() );
-  for ( const QVariant &pathData : qgis::as_const( pathsList ) )
+  for ( const QVariant &pathData : std::as_const( pathsList ) )
   {
     std::unique_ptr< QgsCompoundCurve > curve = convertCompoundCurve( pathData.toList(), pointType );
     if ( !curve )

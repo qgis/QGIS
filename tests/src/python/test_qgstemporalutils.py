@@ -16,9 +16,9 @@ from qgis.core import (QgsProject,
                        QgsTemporalUtils,
                        QgsRasterLayer,
                        QgsDateTimeRange,
-                       QgsDateTimeRange,
                        QgsInterval,
-                       QgsUnitTypes)
+                       QgsUnitTypes,
+                       QgsRasterLayerTemporalProperties)
 
 from qgis.PyQt.QtCore import (QDate,
                               QTime,
@@ -54,6 +54,39 @@ class TestQgsTemporalUtils(unittest.TestCase):
         range = QgsTemporalUtils.calculateTemporalRangeForProject(p)
         self.assertEqual(range.begin(), QDateTime(QDate(2019, 1, 1), QTime(), Qt.UTC))
         self.assertEqual(range.end(), QDateTime(QDate(2020, 7, 31), QTime(), Qt.UTC))
+
+    def testUsedTemporalRangesForProject(self):
+        p = QgsProject()
+        r1 = QgsRasterLayer('', '', 'wms')
+        r2 = QgsRasterLayer('', '', 'wms')
+        r3 = QgsRasterLayer('', '', 'wms')
+        r4 = QgsRasterLayer('', '', 'wms')
+        r1.temporalProperties().setIsActive(True)
+        r1.temporalProperties().setMode(QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider)
+        r1.dataProvider().temporalCapabilities().setAvailableTemporalRange(QgsDateTimeRange(QDateTime(QDate(2020, 1, 1), QTime(), Qt.UTC),
+                                                                                            QDateTime(QDate(2020, 3, 31), QTime(), Qt.UTC)))
+        r2.temporalProperties().setIsActive(True)
+        r2.temporalProperties().setMode(QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider)
+        r2.dataProvider().temporalCapabilities().setAllAvailableTemporalRanges([QgsDateTimeRange(QDateTime(QDate(2020, 4, 1), QTime(), Qt.UTC),
+                                                                                                 QDateTime(QDate(2020, 7, 31), QTime(), Qt.UTC))])
+        r3.temporalProperties().setIsActive(True)
+        r3.temporalProperties().setMode(QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider)
+        r3.dataProvider().temporalCapabilities().setAllAvailableTemporalRanges([QgsDateTimeRange(QDateTime(QDate(2019, 1, 1), QTime(), Qt.UTC),
+                                                                                                 QDateTime(QDate(2020, 2, 28), QTime(), Qt.UTC))])
+        r4.temporalProperties().setIsActive(True)
+        r4.temporalProperties().setMode(QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider)
+        r4.dataProvider().temporalCapabilities().setAllAvailableTemporalRanges([QgsDateTimeRange(QDateTime(QDate(2021, 1, 1), QTime(), Qt.UTC),
+                                                                                                 QDateTime(QDate(2021, 2, 28), QTime(), Qt.UTC))])
+
+        p.addMapLayers([r1, r2, r3, r4])
+
+        ranges = QgsTemporalUtils.usedTemporalRangesForProject(p)
+        self.assertEqual(ranges, [QgsDateTimeRange(QDateTime(QDate(2019, 1, 1), QTime(), Qt.UTC),
+                                                   QDateTime(QDate(2020, 3, 31), QTime(), Qt.UTC)),
+                                  QgsDateTimeRange(QDateTime(QDate(2020, 4, 1), QTime(), Qt.UTC),
+                                                   QDateTime(QDate(2020, 7, 31), QTime(), Qt.UTC)),
+                                  QgsDateTimeRange(QDateTime(QDate(2021, 1, 1), QTime(), Qt.UTC),
+                                                   QDateTime(QDate(2021, 2, 28), QTime(), Qt.UTC))])
 
     def testFrameTimeCalculation(self):
         expected = {QgsUnitTypes.TemporalMilliseconds: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 10), Qt.UTC),
@@ -110,6 +143,122 @@ class TestQgsTemporalUtils(unittest.TestCase):
                                                     1,
                                                     QgsInterval(0.2, unit))
             self.assertEqual(f, expected3[unit])
+
+    def testCalculateDateTimesUsingDuration(self):
+        # invalid duration string
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 3, 24), QTime(12, 0, 0)), 'xT12H')
+        self.assertFalse(ok)
+        # null duration string
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 3, 24), QTime(12, 0, 0)), '')
+        self.assertFalse(ok)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 3, 24), QTime(12, 0, 0)), 'P')
+        self.assertFalse(ok)
+
+        # valid durations
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 3, 24), QTime(12, 0, 0)), 'PT12H')
+        self.assertEqual(vals, [QDateTime(2021, 3, 23, 0, 0),
+                                QDateTime(2021, 3, 23, 12, 0),
+                                QDateTime(2021, 3, 24, 0, 0),
+                                QDateTime(2021, 3, 24, 12, 0)])
+        self.assertTrue(ok)
+        self.assertFalse(exceeded)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 3, 24), QTime(12, 0, 0)), 'PT12H', maxValues=2)
+        self.assertEqual(vals, [QDateTime(2021, 3, 23, 0, 0),
+                                QDateTime(2021, 3, 23, 12, 0),
+                                QDateTime(2021, 3, 24, 0, 0)])
+        self.assertTrue(ok)
+        self.assertTrue(exceeded)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 3, 24), QTime(12, 0, 0)), 'PT10H2M5S')
+        self.assertEqual(vals, [QDateTime(2021, 3, 23, 0, 0), QDateTime(2021, 3, 23, 10, 2, 5),
+                                QDateTime(2021, 3, 23, 20, 4, 10), QDateTime(2021, 3, 24, 6, 6, 15)])
+        self.assertTrue(ok)
+        self.assertFalse(exceeded)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2010, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 5, 24), QTime(12, 0, 0)), 'P2Y')
+        self.assertEqual(vals,
+                         [QDateTime(2010, 3, 23, 0, 0), QDateTime(2012, 3, 23, 0, 0), QDateTime(2014, 3, 23, 0, 0),
+                          QDateTime(2016, 3, 23, 0, 0), QDateTime(2018, 3, 23, 0, 0), QDateTime(2020, 3, 23, 0, 0)])
+        self.assertTrue(ok)
+        self.assertFalse(exceeded)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2020, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 5, 24), QTime(12, 0, 0)), 'P2M')
+        self.assertEqual(vals,
+                         [QDateTime(2020, 3, 23, 0, 0), QDateTime(2020, 5, 23, 0, 0), QDateTime(2020, 7, 23, 0, 0),
+                          QDateTime(2020, 9, 23, 0, 0), QDateTime(2020, 11, 23, 0, 0), QDateTime(2021, 1, 23, 0, 0),
+                          QDateTime(2021, 3, 23, 0, 0), QDateTime(2021, 5, 23, 0, 0)])
+        self.assertTrue(ok)
+        self.assertFalse(exceeded)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 5, 24), QTime(12, 0, 0)), 'P2W')
+        self.assertEqual(vals, [QDateTime(2021, 3, 23, 0, 0), QDateTime(2021, 4, 6, 0, 0), QDateTime(2021, 4, 20, 0, 0),
+                                QDateTime(2021, 5, 4, 0, 0), QDateTime(2021, 5, 18, 0, 0)])
+        self.assertTrue(ok)
+        self.assertFalse(exceeded)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 4, 7), QTime(12, 0, 0)), 'P2D')
+        self.assertEqual(vals,
+                         [QDateTime(2021, 3, 23, 0, 0), QDateTime(2021, 3, 25, 0, 0), QDateTime(2021, 3, 27, 0, 0),
+                          QDateTime(2021, 3, 29, 0, 0), QDateTime(2021, 3, 31, 0, 0), QDateTime(2021, 4, 2, 0, 0),
+                          QDateTime(2021, 4, 4, 0, 0), QDateTime(2021, 4, 6, 0, 0)])
+        self.assertTrue(ok)
+        self.assertFalse(exceeded)
+
+        # complex mix
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesUsingDuration(
+            QDateTime(QDate(2010, 3, 23), QTime(0, 0, 0)),
+            QDateTime(QDate(2021, 5, 24), QTime(12, 0, 0)), 'P2Y1M3W4DT5H10M22S')
+        self.assertEqual(vals, [QDateTime(2010, 3, 23, 0, 0), QDateTime(2012, 5, 18, 5, 10, 22),
+                                QDateTime(2014, 7, 13, 10, 20, 44), QDateTime(2016, 9, 7, 15, 31, 6),
+                                QDateTime(2018, 11, 1, 20, 41, 28), QDateTime(2020, 12, 27, 1, 51, 50)])
+        self.assertTrue(ok)
+        self.assertFalse(exceeded)
+
+    def testCalculateDateTimesFromISO8601(self):
+        # invalid duration string
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesFromISO8601('x')
+        self.assertFalse(ok)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesFromISO8601(
+            'a-03-23T00:00:00Z/2021-03-24T12:00:00Z/PT12H')
+        self.assertFalse(ok)
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesFromISO8601(
+            '2021-03-23T00:00:00Z/b-03-24T12:00:00Z/PT12H')
+        self.assertFalse(ok)
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesFromISO8601(
+            '2021-03-23T00:00:00Z/2021-03-24T12:00:00Z/xc')
+        self.assertFalse(ok)
+
+        vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesFromISO8601(
+            '2021-03-23T00:00:00Z/2021-03-24T12:00:00Z/PT12H')
+        self.assertEqual(vals, [QDateTime(2021, 3, 23, 0, 0, 0, 0, Qt.TimeSpec(1)),
+                                QDateTime(2021, 3, 23, 12, 0, 0, 0, Qt.TimeSpec(1)),
+                                QDateTime(2021, 3, 24, 0, 0, 0, 0, Qt.TimeSpec(1)),
+                                QDateTime(2021, 3, 24, 12, 0, 0, 0, Qt.TimeSpec(1))])
+        self.assertTrue(ok)
+        self.assertFalse(exceeded)
 
 
 if __name__ == '__main__':

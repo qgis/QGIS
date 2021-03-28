@@ -275,9 +275,9 @@ CORE_EXPORT uint qHash( const QVariant &variant );
  */
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
+  QString str = QString::number( a, 'f', precision );
   if ( precision )
   {
-    QString str = QString::number( a, 'f', precision );
     if ( str.contains( QLatin1Char( '.' ) ) )
     {
       // remove ending 0s
@@ -289,22 +289,14 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
       if ( idx < str.length() - 1 )
         str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
     }
-    return str;
   }
-  else
+  // avoid printing -0
+  // see https://bugreports.qt.io/browse/QTBUG-71439
+  if ( str == QLatin1String( "-0" ) )
   {
-    // avoid printing -0
-    // see https://bugreports.qt.io/browse/QTBUG-71439
-    const QString str( QString::number( a, 'f', precision ) );
-    if ( str == QLatin1String( "-0" ) )
-    {
-      return QLatin1String( "0" );
-    }
-    else
-    {
-      return str;
-    }
+    return QLatin1String( "0" );
   }
+  return str;
 }
 
 /**
@@ -384,44 +376,28 @@ inline double qgsRound( double number, int places )
  */
 namespace qgis
 {
-  // as_const
 
   /**
-   * Adds const to non-const objects.
+   * Use qgis::down_cast<Derived*>(pointer_to_base) as equivalent of
+   * static_cast<Derived*>(pointer_to_base) with safe checking in debug
+   * mode.
    *
-   * To be used as a proxy for std::as_const until we target c++17 minimum.
+   * Only works if no virtual inheritance is involved.
    *
-   * \note not available in Python bindings
-   * \since QGIS 3.0
+   * Ported from GDAL's cpl::down_cast method.
+   *
+   * \param f pointer to a base class
+   * \return pointer to a derived class
    */
-  template <typename T> struct QgsAddConst { typedef const T Type; };
-
-  template <typename T>
-  constexpr typename QgsAddConst<T>::Type &as_const( T &t ) noexcept { return t; }
-
-  template <typename T>
-  void as_const( const T && ) = delete;
-
-  /**
-   * Used for new-style Qt connects to overloaded signals, avoiding the usual horrible connect syntax required
-   * in these circumstances.
-   *
-   * Example usage:
-   *
-   * connect( mSpinBox, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &MyClass::mySlot );
-   *
-   * This is an alternative to qOverload, which was implemented in Qt 5.7.
-   *
-   * See https://stackoverflow.com/a/16795664/1861260
-   */
-  template<typename... Args> struct overload
+  template<typename To, typename From> inline To down_cast( From *f )
   {
-    template<typename C, typename R>
-    static constexpr auto of( R( C::*pmf )( Args... ) ) -> decltype( pmf )
-    {
-      return pmf;
-    }
-  };
+    static_assert(
+      ( std::is_base_of<From,
+        typename std::remove_pointer<To>::type>::value ),
+      "target type not derived from source type" );
+    Q_ASSERT( f == nullptr || dynamic_cast<To>( f ) != nullptr );
+    return static_cast<To>( f );
+  }
 
   template<class T>
   QSet<T> listToSet( const QList<T> &list )
@@ -590,7 +566,6 @@ CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
 
-
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
@@ -599,11 +574,42 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+
+/**
+ * Compares two QVariant values and returns whether the first is greater than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ * \see qgsVariantLessThan()
+ */
+inline bool operator> ( const QVariant &v1, const QVariant &v2 )
+{
+  return qgsVariantGreaterThan( v1, v2 );
+}
+
+/**
+ * Compares two QVariant values and returns whether the first is less than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * Invalid < NULL < Values
+ *
+ * \see qgsVariantGreaterThan()
+ */
+inline bool operator< ( const QVariant &v1, const QVariant &v2 )
+{
+  return qgsVariantLessThan( v1, v2 );
+}
+#endif
+
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+
 /**
  * Compares two QVariantList values and returns whether the first is less than the second.
  */
 template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
-
+#endif
 
 CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 

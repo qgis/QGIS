@@ -172,7 +172,7 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   // Apply DPI parameter if present. This is an extension of QGIS Server
   // compared to WMS 1.3.
   // Because of backwards compatibility, this parameter is optional
-  int dpm = 1 / OGC_PX_M;
+  qreal dpm = 1 / OGC_PX_M;
 
   if ( !mParameters.dpi().isEmpty() )
   {
@@ -212,7 +212,7 @@ QStringList QgsWmsRenderContext::flattenedQueryLayers( const QStringList &layerN
     return _result;
   };
 
-  for ( const auto &name : qgis::as_const( layerNames ) )
+  for ( const auto &name : std::as_const( layerNames ) )
   {
     result.append( findLeaves( name ) );
   }
@@ -384,7 +384,7 @@ void QgsWmsRenderContext::initRestrictedLayers()
   QStringList restrictedLayersNames;
   QgsLayerTreeGroup *root = mProject->layerTreeRoot();
 
-  for ( const QString &l : qgis::as_const( restricted ) )
+  for ( const QString &l : std::as_const( restricted ) )
   {
     const QgsLayerTreeGroup *group = root->findGroup( l );
     if ( group )

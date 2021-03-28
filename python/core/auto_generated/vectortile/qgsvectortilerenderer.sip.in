@@ -14,7 +14,7 @@
 
 class QgsVectorTileRendererData
 {
-%Docstring
+%Docstring(signature="appended")
 Contains decoded features of a single vector tile and any other data necessary
 for rendering of it.
 
@@ -66,7 +66,7 @@ Returns list of all features within a single sub-layer
 
 class QgsVectorTileRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for all vector tile renderer implementations.
 
 For rendering it is expected that client code calls:

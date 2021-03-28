@@ -12,7 +12,7 @@
 
 class QgsDataSourceUri
 {
-%Docstring
+%Docstring(signature="appended")
 Class for storing the component parts of a RDBMS data source URI (e.g. a Postgres data source).
 
 This structure stores the database connection information, including host, database,

@@ -563,7 +563,7 @@ void QgsHandleBadLayers::autoFind()
 
   QProgressDialog progressDialog( QObject::tr( "Searching files" ), QObject::tr( "Cancel" ), 1, layersToFind.size(), this, Qt::Dialog );
 
-  for ( int i : qgis::as_const( layersToFind ) )
+  for ( int i : std::as_const( layersToFind ) )
   {
     const int idx = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Index ) ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );

@@ -12,7 +12,7 @@
 
 class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
 {
-%Docstring
+%Docstring(signature="appended")
 A collection of overviews which are drawn above the map content in a
 :py:class:`QgsLayoutItemMap`. The overview stack controls which overviews are drawn and the
 order they are drawn in.
@@ -114,7 +114,7 @@ temporary layers which represent overview extents as required.
 
 class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
 {
-%Docstring
+%Docstring(signature="appended")
 An individual overview which is drawn above the map content in a
 :py:class:`QgsLayoutItemMap`, and shows the extent of another :py:class:`QgsLayoutItemMap`.
 

@@ -9,7 +9,7 @@
 
 class QgsFractionNumericFormat : QgsNumericFormat
 {
-%Docstring
+%Docstring(signature="appended")
 A numeric formatter which returns a vulgar fractional representation of a decimal value (e.g. "1/2" instead of 0.5).
 
 .. versionadded:: 3.14

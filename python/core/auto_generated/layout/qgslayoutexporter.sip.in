@@ -11,7 +11,7 @@
 
 class QgsLayoutExporter
 {
-%Docstring
+%Docstring(signature="appended")
 Handles rendering and exports of layouts to various formats.
 
 .. versionadded:: 3.0

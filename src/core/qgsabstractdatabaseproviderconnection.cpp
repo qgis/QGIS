@@ -267,7 +267,7 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryColumnType
 {
   // Do not add the type if it's already present
   const QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType toAdd { type, crs };
-  for ( const auto &t : qgis::as_const( mGeometryColumnTypes ) )
+  for ( const auto &t : std::as_const( mGeometryColumnTypes ) )
   {
     if ( t == toAdd )
     {
@@ -330,7 +330,7 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setFlag( const QgsAbs
 int QgsAbstractDatabaseProviderConnection::TableProperty::maxCoordinateDimensions() const
 {
   int res = 0;
-  for ( const TableProperty::GeometryColumnType &ct : qgis::as_const( mGeometryColumnTypes ) )
+  for ( const TableProperty::GeometryColumnType &ct : std::as_const( mGeometryColumnTypes ) )
   {
     res = std::max( res, QgsWkbTypes::coordDimensions( ct.wkbType ) );
   }
@@ -399,7 +399,7 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setFlags( const QgsAb
 QList<QgsCoordinateReferenceSystem> QgsAbstractDatabaseProviderConnection::TableProperty::crsList() const
 {
   QList<QgsCoordinateReferenceSystem> crss;
-  for ( const auto &t : qgis::as_const( mGeometryColumnTypes ) )
+  for ( const auto &t : std::as_const( mGeometryColumnTypes ) )
   {
     crss.push_back( t.crs );
   }

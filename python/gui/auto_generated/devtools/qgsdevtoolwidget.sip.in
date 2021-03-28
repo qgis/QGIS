@@ -9,7 +9,7 @@
 
 class QgsDevToolWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A panel widget that can be shown in the developer tools panel.
 
 .. versionadded:: 3.14

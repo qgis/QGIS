@@ -12,7 +12,7 @@ class QgsSymbolLayerWidget /External/;
 
 class QgsSymbolLayerAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about one symbol layer class.
 
 .. note::
@@ -63,7 +63,7 @@ instances the paths are always absolute
 
 class QgsSymbolLayerMetadata : QgsSymbolLayerAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Convenience metadata class that uses static functions to create symbol layer and its widget.
 %End
 
@@ -88,7 +88,7 @@ Convenience metadata class that uses static functions to create symbol layer and
 
 class QgsSymbolLayerRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of available symbol layer classes.
 
 :py:class:`QgsSymbolLayerRegistry` is not usually directly created, but rather accessed through

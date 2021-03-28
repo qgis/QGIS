@@ -11,7 +11,7 @@
 
 class QgsMapRendererAbstractCustomPainterJob : QgsMapRendererJob
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for map renderer jobs which use custom painters.
 
 .. versionadded:: 3.10
@@ -41,7 +41,7 @@ The ``backgroundColor`` argument specifies the color to use for the map's backgr
 
 class QgsMapRendererCustomPainterJob : QgsMapRendererAbstractCustomPainterJob
 {
-%Docstring
+%Docstring(signature="appended")
 Job implementation that renders everything sequentially using a custom painter.
 
 Also supports synchronous rendering in main thread for cases when rendering in background

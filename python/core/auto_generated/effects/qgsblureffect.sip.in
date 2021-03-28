@@ -11,7 +11,7 @@
 
 class QgsBlurEffect : QgsPaintEffect /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which blurs a source picture, using a number of different blur
 methods.
 

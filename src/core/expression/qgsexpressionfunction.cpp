@@ -2741,9 +2741,9 @@ static QVariant fcnSmooth( const QVariantList &values, const QgsExpressionContex
     return QVariant();
 
   int iterations = std::min( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), 10 );
-  double offset = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0.5 );
+  double offset = std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0.0, 0.5 );
   double minLength = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
-  double maxAngle = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ), 180.0 );
+  double maxAngle = std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ), 0.0, 180.0 );
 
   QgsGeometry smoothed = geom.smooth( static_cast<unsigned int>( iterations ), offset, minLength, maxAngle );
   if ( smoothed.isNull() )
@@ -2766,7 +2766,7 @@ static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpre
 
   QVector< QgsGeometry > parts;
   parts.reserve( list.size() );
-  for ( const QVariant &value : qgis::as_const( list ) )
+  for ( const QVariant &value : std::as_const( list ) )
   {
     if ( value.canConvert<QgsGeometry>() )
     {
@@ -4055,7 +4055,7 @@ static QVariant fcnHausdorffDistance( const QVariantList &values, const QgsExpre
   if ( values.length() == 3 && values.at( 2 ).isValid() )
   {
     double densify = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
-    densify = qBound( 0.0, densify, 1.0 );
+    densify = std::clamp( densify, 0.0, 1.0 );
     res = g1.hausdorffDistanceDensify( g2, densify );
   }
   else
@@ -4338,7 +4338,7 @@ static QVariant fcnOrderParts( const QVariantList &values, const QgsExpressionCo
   while ( orderedGeom->partCount() )
     orderedGeom->removeGeometry( 0 );
 
-  for ( const QgsFeature &feature : qgis::as_const( partFeatures ) )
+  for ( const QgsFeature &feature : std::as_const( partFeatures ) )
   {
     orderedGeom->addGeometry( feature.geometry().constGet()->clone() );
   }
@@ -6328,8 +6328,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
   // crashes in the WFS provider may occur, since it can parse expressions
   // in parallel.
   // The mutex needs to be recursive.
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   static QMutex sFunctionsMutex( QMutex::Recursive );
   QMutexLocker locker( &sFunctionsMutex );
+#else
+  static QRecursiveMutex sFunctionsMutex;
+  QMutexLocker locker( &sFunctionsMutex );
+#endif
 
   QList<QgsExpressionFunction *> &functions = *sFunctions();
 
@@ -7146,7 +7151,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "layer_property" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "property" ) ),
-                                            fcnGetLayerProperty, QStringLiteral( "General" ) )
+                                            fcnGetLayerProperty, QStringLiteral( "Map Layers" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "decode_uri" ),
                                             QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
@@ -7295,7 +7300,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     QgsExpressionContextUtils::registerContextFunctions();
 
     //QgsExpression has ownership of all built-in functions
-    for ( QgsExpressionFunction *func : qgis::as_const( functions ) )
+    for ( QgsExpressionFunction *func : std::as_const( functions ) )
     {
       *sOwnedFunctions() << func;
       *sBuiltinFunctions() << func->name();
@@ -7351,7 +7356,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
 
 
 QgsArrayForeachExpressionFunction::QgsArrayForeachExpressionFunction()
-  : QgsExpressionFunction( QStringLiteral( "array_foreach" ), QgsExpressionFunction::ParameterList()
+  : QgsExpressionFunction( QStringLiteral( "array_foreach" ), QgsExpressionFunction::ParameterList()  // skip-keyword-check
                            << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) )
                            << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
                            QStringLiteral( "Arrays" ) )

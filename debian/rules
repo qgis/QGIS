@@ -103,7 +103,8 @@ CMAKE_OPTS := \
 	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
 	-DWITH_HANA=TRUE \
 	-DWITH_PDAL=TRUE \
-	-DWITH_EPT=TRUE
+	-DWITH_EPT=TRUE \
+	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS"
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -256,7 +257,6 @@ test-stamp:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Code to run the package test suite
 	rm -f $(QGIS_BUILDDIR)/.error
-	cp -u $(QGIS_BUILDDIR)/CTestConfig.cmake .
 	mkdir -p debian/tmp/locale/
 	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
 	LOCPATH=$(CURDIR)/debian/tmp/locale/ \

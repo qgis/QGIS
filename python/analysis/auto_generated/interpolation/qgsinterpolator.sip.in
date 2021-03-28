@@ -32,7 +32,7 @@ Constructor for :py:class:`QgsInterpolatorVertexData`
 
 class QgsInterpolator
 {
-%Docstring
+%Docstring(signature="appended")
 Interface class for interpolations.
 
 Interpolators take

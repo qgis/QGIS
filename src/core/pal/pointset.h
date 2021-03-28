@@ -52,7 +52,10 @@ namespace pal
 
   class PointSet;
 
-  struct CHullBox
+  /**
+   * Represents the minimum area, oriented bounding box surrounding a convex hull.
+   */
+  struct OrientedConvexHullBoundingBox
   {
     double x[4];
     double y[4];
@@ -112,17 +115,16 @@ namespace pal
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
       /**
-       * Computes a con???? hull. Maybe convex, maybe concave. The person who wrote this
-       * had no care for anyone else ever reading their code.
+       * Computes an oriented bounding box for the shape's convex hull.
        */
-      CHullBox compute_chull_bbox();
+      OrientedConvexHullBoundingBox computeConvexHullOrientedBoundingBox( bool &ok );
 
       /**
-       * Split a concave shape into several convex shapes.
+       * Split a polygon using some random logic into some other polygons.
+       *
+       * \warning this code is completely unreadable and cannot be understood by mortals
        */
-      static void splitPolygons( QLinkedList<PointSet *> &inputShapes,
-                                 QLinkedList<PointSet *> &outputShapes,
-                                 double xrm, double yrm );
+      static QLinkedList<PointSet *> splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight );
 
       /**
        * Extends linestrings by the specified amount at the start and end of the line,
@@ -198,6 +200,11 @@ namespace pal
        */
       bool isClosed() const;
 
+      /**
+       * Returns a WKT representation of the point set.
+       */
+      QString toWkt() const;
+
       int nbPoints;
       std::vector< double > x;
       std::vector< double > y;   // points order is counterclockwise
@@ -206,8 +213,7 @@ namespace pal
       mutable GEOSGeometry *mGeos = nullptr;
       mutable bool mOwnsGeom = false;
 
-      int *cHull = nullptr;
-      int cHullSize = 0;
+      std::vector< int > convexHull;
 
       int type;
 

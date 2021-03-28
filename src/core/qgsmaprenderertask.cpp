@@ -196,11 +196,20 @@ bool QgsMapRendererTask::run()
       QPrinter printer;
       printer.setOutputFileName( component.sourcePdfPath );
       printer.setOutputFormat( QPrinter::PdfFormat );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       printer.setOrientation( QPrinter::Portrait );
       // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
       QSizeF outputSize = mMapSettings.outputSize();
       printer.setPaperSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPrinter::Millimeter );
       printer.setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
+#else
+      printer.setPageOrientation( QPageLayout::Orientation::Portrait );
+      // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
+      QSizeF outputSize = mMapSettings.outputSize();
+      QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
+      printer.setPageSize( pageSize );
+      printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
+#endif
       printer.setResolution( mMapSettings.outputDpi() );
 
       QPainter p( &printer );
@@ -472,11 +481,20 @@ void QgsMapRendererTask::prepare()
     mPrinter.reset( new QPrinter() );
     mPrinter->setOutputFileName( mFileName );
     mPrinter->setOutputFormat( QPrinter::PdfFormat );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     mPrinter->setOrientation( QPrinter::Portrait );
     // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
     QSizeF outputSize = mMapSettings.outputSize();
     mPrinter->setPaperSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPrinter::Millimeter );
     mPrinter->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
+#else
+    mPrinter->setPageOrientation( QPageLayout::Orientation::Portrait );
+    // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
+    QSizeF outputSize = mMapSettings.outputSize();
+    QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
+    mPrinter->setPageSize( pageSize );
+    mPrinter->setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
+#endif
     mPrinter->setResolution( mMapSettings.outputDpi() );
 
     if ( !mForceRaster )

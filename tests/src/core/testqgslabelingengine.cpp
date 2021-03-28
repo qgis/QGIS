@@ -2039,6 +2039,11 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
   f.setAttributes( QgsAttributes() << 2 << -3424024 << 7849709 << -2713442 << 7628322 << -2567040 << 6974872 );
   f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -2995532, 7242679 ) ) );
   QVERIFY( vl3->dataProvider()->addFeature( f ) );
+
+  f.setAttributes( QgsAttributes() << 3 << -4024024 << 7849709 << QVariant() << QVariant() << QVariant() << QVariant() );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -2995532, 7242679 ) ) );
+  QVERIFY( vl3->dataProvider()->addFeature( f ) );
+
   vl3->updateExtents();
 
   vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2081,6 +2086,8 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
   QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7628322.0, 10 );
   QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -2567040.0, 10 );
   QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 6974872.0, 10 );
+  QVERIFY( callouts.at( 0 ).originIsPinned() );
+  QVERIFY( callouts.at( 0 ).destinationIsPinned() );
 
   callouts = results->calloutsWithinRectangle( QgsRectangle( -2567340, 6974572, -2566740, 6975172 ) );
   QCOMPARE( callouts.count(), 1 );
@@ -2090,6 +2097,8 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
   QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7628322.0, 10 );
   QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -2567040.0, 10 );
   QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 6974872.0, 10 );
+  QVERIFY( callouts.at( 0 ).originIsPinned() );
+  QVERIFY( callouts.at( 0 ).destinationIsPinned() );
 
   callouts = results->calloutsWithinRectangle( QgsRectangle( -1242625, 7967227, -1242025, 7967827 ) );
   QCOMPARE( callouts.count(), 1 );
@@ -2099,6 +2108,8 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
   QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7967527.0, 10 );
   QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -424572.0, 10 );
   QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 7567578.0, 10 );
+  QVERIFY( callouts.at( 0 ).originIsPinned() );
+  QVERIFY( callouts.at( 0 ).destinationIsPinned() );
 
   callouts = results->calloutsWithinRectangle( QgsRectangle( -424872, 7567278, -424272, 7567878 ) );
   QCOMPARE( callouts.count(), 1 );
@@ -2108,22 +2119,49 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
   QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7967527.0, 10 );
   QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -424572.0, 10 );
   QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 7567578.0, 10 );
+  QVERIFY( callouts.at( 0 ).originIsPinned() );
+  QVERIFY( callouts.at( 0 ).destinationIsPinned() );
+
+  callouts = results->calloutsWithinRectangle( QgsRectangle( -4104024, 7609709, -3804024, 8249709 ) );
+  QCOMPARE( callouts.count(), 1 );
+  QCOMPARE( callouts.at( 0 ).featureId, 2 );
+  QCOMPARE( callouts.at( 0 ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().x(), -3856062.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).origin().y(), 7849709.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().x(), -2995532.0, 10 );
+  QGSCOMPARENEAR( callouts.at( 0 ).destination().y(), 7242679.0, 10 );
+  QVERIFY( !callouts.at( 0 ).originIsPinned() );
+  QVERIFY( !callouts.at( 0 ).destinationIsPinned() );
 
   callouts = results->calloutsWithinRectangle( mapSettings.visibleExtent() );
-  QCOMPARE( callouts.count(), 2 );
-  bool callout1IsFirstLayer = callouts.at( 0 ).layerID == vl2->id();
-  QCOMPARE( callouts.at( callout1IsFirstLayer ? 0 : 1 ).featureId, 1 );
-  QCOMPARE( callouts.at( callout1IsFirstLayer ? 0 : 1 ).layerID, vl2->id() );
-  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).origin().x(), -1242325.0, 10 );
-  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).origin().y(), 7967527.0, 10 );
-  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).destination().x(), -424572.0, 10 );
-  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).destination().y(), 7567578.0, 10 );
-  QCOMPARE( callouts.at( callout1IsFirstLayer ? 1 : 0 ).featureId, 1 );
-  QCOMPARE( callouts.at( callout1IsFirstLayer ? 1 : 0 ).layerID, vl3->id() );
-  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).origin().x(), -2713442.0, 10 );
-  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).origin().y(), 7628322.0, 10 );
-  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).destination().x(), -2567040.0, 10 );
-  QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 1 : 0 ).destination().y(), 6974872.0, 10 );
+  QCOMPARE( callouts.count(), 3 );
+  int callout1Index = callouts.at( 0 ).layerID == vl2->id() ? 0 : callouts.at( 1 ).layerID == vl2->id() ? 1 : 2;
+  int callout2Index = callouts.at( 0 ).layerID == vl3->id() && callouts.at( 0 ).featureId == 1 ? 0 :  callouts.at( 1 ).layerID == vl3->id() && callouts.at( 1 ).featureId == 1 ? 1 : 2;
+  int callout3Index = callouts.at( 0 ).layerID == vl3->id() && callouts.at( 0 ).featureId == 2 ? 0 :  callouts.at( 1 ).layerID == vl3->id() && callouts.at( 1 ).featureId == 2 ? 1 : 2;
+  QCOMPARE( callouts.at( callout1Index ).featureId, 1 );
+  QCOMPARE( callouts.at( callout1Index ).layerID, vl2->id() );
+  QGSCOMPARENEAR( callouts.at( callout1Index ).origin().x(), -1242325.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1Index ).origin().y(), 7967527.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1Index ).destination().x(), -424572.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout1Index ).destination().y(), 7567578.0, 10 );
+  QVERIFY( callouts.at( callout1Index ).originIsPinned() );
+  QVERIFY( callouts.at( callout1Index ).destinationIsPinned() );
+  QCOMPARE( callouts.at( callout2Index ).featureId, 1 );
+  QCOMPARE( callouts.at( callout2Index ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( callout2Index ).origin().x(), -2713442.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout2Index ).origin().y(), 7628322.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout2Index ).destination().x(), -2567040.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout2Index ).destination().y(), 6974872.0, 10 );
+  QVERIFY( callouts.at( callout2Index ).originIsPinned() );
+  QVERIFY( callouts.at( callout2Index ).destinationIsPinned() );
+  QCOMPARE( callouts.at( callout3Index ).featureId, 2 );
+  QCOMPARE( callouts.at( callout3Index ).layerID, vl3->id() );
+  QGSCOMPARENEAR( callouts.at( callout3Index ).origin().x(), -3856062.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout3Index ).origin().y(), 7849709.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout3Index ).destination().x(), -2995532.0, 10 );
+  QGSCOMPARENEAR( callouts.at( callout3Index ).destination().y(), 7242679.0, 10 );
+  QVERIFY( !callouts.at( callout3Index ).originIsPinned() );
+  QVERIFY( !callouts.at( callout3Index ).destinationIsPinned() );
 
   // with rotation
   mapSettings.setRotation( 60 );
@@ -2172,7 +2210,7 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
 
   callouts = results->calloutsWithinRectangle( mapSettings.visibleExtent() );
   QCOMPARE( callouts.count(), 2 );
-  callout1IsFirstLayer = callouts.at( 0 ).layerID == vl2->id();
+  bool callout1IsFirstLayer = callouts.at( 0 ).layerID == vl2->id();
   QCOMPARE( callouts.at( callout1IsFirstLayer ? 0 : 1 ).featureId, 1 );
   QCOMPARE( callouts.at( callout1IsFirstLayer ? 0 : 1 ).layerID, vl2->id() );
   QGSCOMPARENEAR( callouts.at( callout1IsFirstLayer ? 0 : 1 ).origin().x(), -1242325.0, 10 );

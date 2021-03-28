@@ -108,10 +108,10 @@ void QgsPolymorphicRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "relationStrength" ), qgsEnumValueToKey<QgsRelation::RelationStrength>( d->mRelationStrength ) );
 
   // note that a layer id can store a comma in theory. Luckyly, this is not easy to achieve, e.g. you need to modify the .qgs file manually
-  for ( const QString &layerId : qgis::as_const( d->mReferencedLayerIds ) )
+  for ( const QString &layerId : std::as_const( d->mReferencedLayerIds ) )
     Q_ASSERT( ! layerId.contains( "," ) );
 
-  for ( const QgsRelation::FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const QgsRelation::FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     QDomElement referenceElem = doc.createElement( QStringLiteral( "fieldRef" ) );
     referenceElem.setAttribute( QStringLiteral( "referencingField" ), pair.first );
@@ -195,7 +195,7 @@ QgsAttributeList QgsPolymorphicRelation::referencedFields( const QString &layerI
 
     if ( vl && vl->isValid() )
     {
-      for ( const QgsRelation::FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+      for ( const QgsRelation::FieldPair &pair : std::as_const( d->mFieldPairs ) )
       {
         attrs << vl->fields().lookupField( pair.second );
       }
@@ -209,7 +209,7 @@ QgsAttributeList QgsPolymorphicRelation::referencingFields() const
 {
   QgsAttributeList attrs;
 
-  for ( const QgsRelation::FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const QgsRelation::FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     attrs << d->mReferencingLayer->fields().lookupField( pair.first );
   }
@@ -288,7 +288,7 @@ void QgsPolymorphicRelation::updateRelationStatus()
     return;
   }
 
-  for ( const QgsRelation::FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const QgsRelation::FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     if ( d->mReferencingLayer->fields().lookupField( pair.first ) == -1 )
     {
@@ -389,10 +389,10 @@ QList<QgsRelation> QgsPolymorphicRelation::generateRelations() const
     QgsRelation relation;
     QString referencedLayerName = d->mReferencedLayersMap[referencedLayerId]->name();
 
+    relation.setId( QStringLiteral( "%1_%2" ).arg( d->mRelationId, referencedLayerName ) );
     relation.setReferencedLayer( referencedLayerId );
     relation.setReferencingLayer( d->mReferencingLayerId );
     relation.setName( QStringLiteral( "Generated for \"%1\"" ).arg( referencedLayerName ) );
-    relation.setId( QStringLiteral( "%1_%2" ).arg( d->mRelationId, referencedLayerName ) );
     relation.setPolymorphicRelationId( d->mRelationId );
     relation.setStrength( d->mRelationStrength );
 

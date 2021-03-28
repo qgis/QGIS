@@ -23,6 +23,7 @@
 #include "qgsguiutils.h"
 #include "qgsproperty.h"
 
+#include <QSortFilterProxyModel>
 #include <QAbstractListModel>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -42,6 +43,7 @@ class QPushButton;
 class QTreeView;
 
 class QgsExpressionContextGenerator;
+class QgsSvgSelectorListModel;
 
 
 #ifndef SIP_RUN
@@ -266,6 +268,32 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 
 ///@endcond
 #endif
+
+/**
+ * \ingroup gui
+ * \class QgsSvgSelectorFilterModel
+ * \brief A model for displaying SVG files with a preview icon which can be filtered by file name.
+ * Population of the model is performed in a background thread to ensure that
+ * initial creation of the model is responsive and does not block the GUI.
+ * \since QGIS 3.20
+ */
+class GUI_EXPORT QgsSvgSelectorFilterModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for creating a model for SVG files in a specific path.
+     * \param parent parent object
+     * \param path initial path, which is recursively searched
+     * \param iconSize desired size of SVG icons to create
+     */
+    QgsSvgSelectorFilterModel( QObject *parent SIP_TRANSFERTHIS, const QString &path = QString(), int iconSize = 30 );
+
+  private:
+    QgsSvgSelectorListModel *mModel = nullptr;
+};
 
 /**
  * \ingroup gui

@@ -10,7 +10,7 @@
 
 class QgsRendererWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for renderer settings widgets.
 
 WORKFLOW:
@@ -160,7 +160,7 @@ This can be overwritten in subclasses.
 
 class QgsDataDefinedValueDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Utility classes for "en masse" size definition.
 %End
 

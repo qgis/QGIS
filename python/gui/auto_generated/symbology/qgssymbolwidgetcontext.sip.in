@@ -12,7 +12,7 @@
 
 class QgsSymbolWidgetContext
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings which reflect the context in which a symbol (or renderer) widget is shown, e.g., the
 map canvas and relevant expression contexts.
 

@@ -11,7 +11,7 @@
 
 class QgsSymbolLayerId
 {
-%Docstring
+%Docstring(signature="appended")
 We may need stable references to symbol layers, when pointers to symbol layers is not usable
 (when a symbol or a feature renderer is cloned for example).
 
@@ -77,7 +77,7 @@ Returns the symbol layer index path inside the symbol
 
 class QgsSymbolLayerReference
 {
-%Docstring
+%Docstring(signature="appended")
 
 Type used to refer to a specific symbol layer in a symbol of a layer.
 

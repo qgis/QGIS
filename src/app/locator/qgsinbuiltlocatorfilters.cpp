@@ -159,7 +159,7 @@ void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
   QList<QAction *> found;
 
-  for ( QWidget *object : qgis::as_const( mActionParents ) )
+  for ( QWidget *object : std::as_const( mActionParents ) )
   {
     searchActions( string, object, found );
   }
@@ -381,13 +381,14 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   fieldRestriction( searchString );
 
   // propose available fields for restriction
-  for ( const QString &field : qgis::as_const( mFieldsCompletion ) )
+  for ( const QString &field : std::as_const( mFieldsCompletion ) )
   {
     QgsLocatorResult result;
     result.displayString = QStringLiteral( "@%1" ).arg( field );
     result.description = tr( "Limit the search to the field '%1'" ).arg( field );
     result.userData = QVariantMap( {{QStringLiteral( "type" ), QVariant::fromValue( ResultType::FieldRestriction )},
-      {QStringLiteral( "search_text" ), QStringLiteral( "%1 @%2 " ).arg( prefix(), field ) } } );
+      {QStringLiteral( "search_text" ), QStringLiteral( "%1 @%2 " ).arg( prefix(), field ) }
+    } );
     result.score = 1;
     emit resultFetched( result );
   }
@@ -598,7 +599,7 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
   QgsFeature f;
 
   // we cannot used const loop since iterator::nextFeature is not const
-  for ( auto preparedLayer : qgis::as_const( mPreparedLayers ) )
+  for ( auto preparedLayer : std::as_const( mPreparedLayers ) )
   {
     foundInCurrentLayer = 0;
 

@@ -13,7 +13,7 @@
 
 class QgsLocalizedDataPathRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 A registry class to hold localized data paths which can be used for basemaps, logos, etc.
 Paths are meant to be absolute paths and are stored by order of preference.
 

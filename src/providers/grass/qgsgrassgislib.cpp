@@ -455,7 +455,7 @@ QgsGrassGisLib::Raster QgsGrassGisLib::raster( QString name )
 {
   QgsDebugMsg( "name = " + name );
 
-  foreach ( Raster raster, mRasters )
+  for ( Raster raster : mRasters )
   {
     if ( raster.name == name ) return raster;
   }

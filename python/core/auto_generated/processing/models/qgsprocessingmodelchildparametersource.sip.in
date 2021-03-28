@@ -12,7 +12,7 @@
 
 class QgsProcessingModelChildParameterSource
 {
-%Docstring
+%Docstring(signature="appended")
 Source for the value of a parameter for a child algorithm within a model.
 
 .. versionadded:: 3.0

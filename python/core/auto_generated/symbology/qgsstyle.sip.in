@@ -1116,7 +1116,7 @@ name or tag changes.
 
 class QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 An interface for entities which can be placed in a QgsStyle database.
 
 .. versionadded:: 3.10
@@ -1163,7 +1163,7 @@ Returns the type of style entity.
 
 class QgsStyleSymbolEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A symbol entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
@@ -1193,7 +1193,7 @@ Returns the entity's symbol.
 
 class QgsStyleColorRampEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A color ramp entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
@@ -1223,7 +1223,7 @@ Returns the entity's color ramp.
 
 class QgsStyleTextFormatEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A text format entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
@@ -1251,7 +1251,7 @@ Returns the entity's text format.
 
 class QgsStyleLabelSettingsEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A label settings entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
@@ -1280,7 +1280,7 @@ Returns the entity's label settings.
 
 class QgsStyleLegendPatchShapeEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A legend patch shape entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.14
@@ -1309,7 +1309,7 @@ Returns the entity's legend patch shape.
 
 class QgsStyleSymbol3DEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A 3d symbol entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.16

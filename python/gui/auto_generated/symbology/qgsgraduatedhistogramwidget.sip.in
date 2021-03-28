@@ -12,7 +12,7 @@
 
 class QgsGraduatedHistogramWidget : QgsHistogramWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Graphical histogram for displaying distribution of field values and
 editing range breaks for a :py:class:`QgsGraduatedSymbolRenderer` renderer.
 

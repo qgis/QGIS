@@ -46,8 +46,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>467</width>
-        <height>715</height>
+        <width>481</width>
+        <height>690</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -479,15 +479,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
@@ -498,6 +498,9 @@
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mRootPath</tabstop>
+  <tabstop>mRootPathExpression</tabstop>
+  <tabstop>mRootPathButton</tabstop>
+  <tabstop>mRootPathPropertyOverrideButton</tabstop>
   <tabstop>mRelativeGroupBox</tabstop>
   <tabstop>mRelativeProject</tabstop>
   <tabstop>mRelativeDefault</tabstop>
@@ -508,13 +511,16 @@
   <tabstop>mFileWidgetFilterLineEdit</tabstop>
   <tabstop>mUseLink</tabstop>
   <tabstop>mFullUrl</tabstop>
-  <tabstop>mDocumentViewerGroupBox</tabstop>
   <tabstop>mDocumentViewerContentComboBox</tabstop>
+  <tabstop>mDocumentViewerContentExpression</tabstop>
+  <tabstop>mDocumentViewerContentPropertyOverrideButton</tabstop>
+  <tabstop>mDocumentViewerWidth</tabstop>
+  <tabstop>mDocumentViewerHeight</tabstop>
  </tabstops>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="mRelativeButtonGroup"/>
   <buttongroup name="mStorageButtonGroup"/>
+  <buttongroup name="mRelativeButtonGroup"/>
  </buttongroups>
 </ui>

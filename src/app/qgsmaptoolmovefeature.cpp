@@ -190,7 +190,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     switch ( mMode )
     {
       case Move:
-        for ( QgsFeatureId id : qgis::as_const( mMovedFeatures ) )
+        for ( QgsFeatureId id : std::as_const( mMovedFeatures ) )
         {
           vlayer->translateFeature( id, dx, dy );
 

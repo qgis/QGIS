@@ -49,6 +49,19 @@ jobs:
       matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
 
     steps:
+      - name: Free additional space
+        run: |
+          df -h
+          rm -rf /tmp/workspace
+          rm -rf /usr/share/dotnet/sdk
+          sudo apt remove llvm-* ghc-* google-chrome-* dotnet-sdk-*
+          dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+          du -a /usr/share | sort -n -r | head -n 10
+          du -a /usr/local/share | sort -n -r | head -n 10
+          df -h
+          sudo apt clean
+          df -h
+
       - name: Cache
         id: cache
         uses: actions/cache@v2.1.4

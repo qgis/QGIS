@@ -475,7 +475,7 @@ void QgsRasterBlock::setData( const QByteArray &data, int offset )
 
   if ( mData )
   {
-    int len = std::min( data.size(), typeSize( mDataType ) * mWidth * mHeight - offset );
+    int len = std::min( static_cast<int>( data.size() ), typeSize( mDataType ) * mWidth * mHeight - offset );
     ::memcpy( static_cast<char *>( mData ) + offset, data.constData(), len );
   }
   else if ( mImage && mImage->constBits() )

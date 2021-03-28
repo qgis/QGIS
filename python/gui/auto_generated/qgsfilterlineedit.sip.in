@@ -12,7 +12,7 @@
 
 class QgsFilterLineEdit : QLineEdit
 {
-%Docstring
+%Docstring(signature="appended")
 QLineEdit subclass with built in support for clearing the widget's value and
 handling custom null value representations.
 

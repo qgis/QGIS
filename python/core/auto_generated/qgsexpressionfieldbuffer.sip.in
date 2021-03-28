@@ -12,7 +12,7 @@
 
 class QgsExpressionFieldBuffer
 {
-%Docstring
+%Docstring(signature="appended")
 Buffers information about expression fields for a vector layer.
 
 .. versionadded:: 2.6

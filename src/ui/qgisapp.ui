@@ -1678,7 +1678,7 @@
    <property name="shortcut">
     <string>F6</string>
    </property>
- </action>
+  </action>
   <action name="mActionOpenTableSelected">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2317,11 +2317,11 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Highlight Pinned Labels and Diagrams</string>
+    <string>Highlight Pinned Labels, Diagrams and Callouts</string>
    </property>
    <property name="toolTip">
-    <string>Highlight Pinned Labels and Diagrams
-Shows highlight rectangles around labels and diagrams which are fixed in place, e.g. due to manual placement.</string>
+    <string>Highlight Pinned Labels, Diagrams and Callouts
+Shows highlight rectangles around labels, diagrams and callout points which are fixed in place, e.g. due to manual placement.</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -2531,7 +2531,8 @@ Acts on the currently active layer only.</string>
     <string>Scale Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Scale Feature(s)</string>
+    <string>Scale Feature(s)
+Ctrl+click to set the base point.</string>
    </property>
   </action>
   <action name="mActionRotateFeature">
@@ -2546,7 +2547,9 @@ Acts on the currently active layer only.</string>
     <string>Rotate Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Rotate Feature(s)</string>
+    <string>Rotate Feature(s)
+Ctrl+click to set the center of rotation.
+Shift+click to snap rotation to 45 degree steps.</string>
    </property>
   </action>
   <action name="mActionIncreaseBrightness">

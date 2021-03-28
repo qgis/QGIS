@@ -346,7 +346,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE when rectangle intersects with other rectangle.
      */
-    bool intersects( const QgsRectangle &rect ) const
+    bool intersects( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
       double x1 = ( mXmin > rect.mXmin ? mXmin : rect.mXmin );
       double x2 = ( mXmax < rect.mXmax ? mXmax : rect.mXmax );
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE when rectangle contains other rectangle.
      */
-    bool contains( const QgsRectangle &rect ) const
+    bool contains( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
       return ( rect.mXmin >= mXmin && rect.mXmax <= mXmax && rect.mYmin >= mYmin && rect.mYmax <= mYmax );
     }
@@ -368,10 +368,21 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE when rectangle contains a point.
      */
-    bool contains( const QgsPointXY &p ) const
+    bool contains( const QgsPointXY &p ) const SIP_HOLDGIL
     {
       return mXmin <= p.x() && p.x() <= mXmax &&
              mYmin <= p.y() && p.y() <= mYmax;
+    }
+
+    /**
+     * Returns TRUE when rectangle contains the point at (\a x, \a y).
+     *
+     * \since QGIS 3.20
+     */
+    bool contains( double x, double y ) const SIP_HOLDGIL
+    {
+      return mXmin <= x && x <= mXmax &&
+             mYmin <= y && y <= mYmax;
     }
 
     /**

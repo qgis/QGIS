@@ -1035,7 +1035,7 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag );
 
   //write the log messages written before creating QgsApplication
-  for ( const QString &preApplicationLogMessage : qgis::as_const( preApplicationLogMessages ) )
+  for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage );
 
   // Settings migration is only supported on the default profile for now.
@@ -1399,7 +1399,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  for ( const QString &layerName : qgis::as_const( sFileList ) )
+  for ( const QString &layerName : std::as_const( sFileList ) )
   {
     QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
@@ -1434,7 +1434,11 @@ int main( int argc, char *argv[] )
         break;
       }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       coords[i] = myInitialExtent.midRef( posOld, pos - posOld ).toDouble( &ok );
+#else
+      coords[i] = QStringView {myInitialExtent}.mid( posOld, pos - posOld ).toDouble( &ok );
+#endif
       if ( !ok )
         break;
 
@@ -1443,7 +1447,13 @@ int main( int argc, char *argv[] )
 
     // parse last coordinate
     if ( ok )
+    {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       coords[3] = myInitialExtent.midRef( posOld ).toDouble( &ok );
+#else
+      coords[3] = QStringView {myInitialExtent}.mid( posOld ).toDouble( &ok );
+#endif
+    }
 
     if ( !ok )
     {

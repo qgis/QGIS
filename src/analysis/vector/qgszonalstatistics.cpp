@@ -179,7 +179,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
   QString shortName = fieldName.mid( 0, 10 );
 
   bool found = false;
-  for ( const QgsField &field : qgis::as_const( allFields ) )
+  for ( const QgsField &field : std::as_const( allFields ) )
   {
     if ( shortName == field.name() )
     {
@@ -199,7 +199,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
   while ( found )
   {
     found = false;
-    for ( const QgsField &field : qgis::as_const( allFields ) )
+    for ( const QgsField &field : std::as_const( allFields ) )
     {
       if ( shortName == field.name() )
       {

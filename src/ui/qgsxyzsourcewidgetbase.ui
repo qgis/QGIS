@@ -157,6 +157,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>auth/qgsauthsettingswidget.h</header>
@@ -168,12 +173,16 @@
    <header>qgsprovidersourcewidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mEditUrl</tabstop>
+  <tabstop>mCheckBoxZMin</tabstop>
+  <tabstop>mSpinZMin</tabstop>
+  <tabstop>mCheckBoxZMax</tabstop>
+  <tabstop>mSpinZMax</tabstop>
+  <tabstop>mEditReferer</tabstop>
+  <tabstop>mComboTileResolution</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

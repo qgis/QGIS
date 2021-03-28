@@ -5,11 +5,52 @@ set -e
 # Temporarily uncomment to debug ccache issues
 # cat /tmp/cache.debug
 
-##################################
-# Prepare HANA database connection
-##################################
+if [ $# -eq 1 ] && [ $1 = "HANA" ]; then
+  LABELS_TO_RUN="HANA"
+  RUN_HANA=YES
 
-if [ ${HANA_TESTS_ENABLED:-"OFF"} == "ON" ] ; then
+elif [ $# -eq 1 ] && [ $1 = "POSTGRES" ]; then
+  LABELS_TO_RUN="POSTGRES"
+  RUN_POSTGRES=YES
+
+elif [ $# -eq 1 ] && [ $1 = "ORACLE" ]; then
+  LABELS_TO_RUN="ORACLE"
+  RUN_ORACLE=YES
+
+elif [ $# -eq 1 ] && [ $1 = "SQLSERVER" ]; then
+  LABELS_TO_RUN="SQLSERVER"
+  RUN_SQLSERVER=YES
+
+elif [ $# -eq 1 ] && [ $1 = "ALL_BUT_PROVIDERS" ]; then
+  LABELS_TO_EXCLUDE="HANA|POSTGRES|ORACLE|SQLSERVER"
+
+elif [ $# -gt 0 ] &&  [ $1 != "ALL" ]; then
+  echo "Invalid argument, expected values: ALL, ALL_BUT_PROVIDERS, POSTGRES, HANA, ORACLE, SQLSERVER"
+  exit 1
+
+else
+  RUN_HANA=YES
+  RUN_POSTGRES=YES
+  RUN_ORACLE=YES
+  RUN_SQLSERVER=YES
+fi
+
+if [ -n "$LABELS_TO_RUN" ]; then
+  echo "Only following test labels will be run: $LABELS_TO_RUN"
+  CTEST_OPTIONS="-L $LABELS_TO_RUN"
+fi
+
+if [ -n "$LABELS_TO_EXCLUDE" ]; then
+  echo "Following test labels will be excluded: $LABELS_TO_EXCLUDE"
+  CTEST_OPTIONS="$CTEST_OPTIONS -LE $LABELS_TO_EXCLUDE"
+fi
+
+if [ ${RUN_HANA:-"NO"} == "YES" ]; then
+
+  ##################################
+  # Prepare HANA database connection
+  ##################################
+
   echo "::group::hana"
   echo "${bold}Load HANA database...${endbold}"
 
@@ -32,90 +73,104 @@ if [ ${HANA_TESTS_ENABLED:-"OFF"} == "ON" ] ; then
   echo "::endgroup::"
 fi
 
-############################
-# Restore postgres test data
-############################
-echo "${bold}Load Postgres database...🐘${endbold}"
+if [ ${RUN_POSTGRES:-"NO"} == "YES" ]; then
 
-printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=qgis_test\nuser=docker\npassword=docker" > ~/.pg_service.conf
-export PGUSER=docker
-export PGHOST=postgres
-export PGPASSWORD=docker
-export PGDATABASE=qgis_test
+  ############################
+  # Restore postgres test data
+  ############################
+  echo "${bold}Load Postgres database...🐘${endbold}"
 
-# wait for the DB to be available
-echo "Wait a moment while loading PostGreSQL database."
-while ! PGPASSWORD='docker' psql -h postgres -U docker -p 5432 -l &> /dev/null
-do
-  printf "🐘"
-  sleep 1
-done
-echo " done 🥩"
+  printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=qgis_test\nuser=docker\npassword=docker" > ~/.pg_service.conf
+  export PGUSER=docker
+  export PGHOST=postgres
+  export PGPASSWORD=docker
+  export PGDATABASE=qgis_test
 
-pushd /root/QGIS > /dev/null
-echo "Restoring postgres test data ..."
-/root/QGIS/tests/testdata/provider/testdata_pg.sh
-echo "Postgres test data restored ..."
-popd > /dev/null # /root/QGIS
+  # wait for the DB to be available
+  echo "Wait a moment while loading PostGreSQL database."
+  while ! PGPASSWORD='docker' psql -h postgres -U docker -p 5432 -l &> /dev/null
+  do
+    printf "🐘"
+    sleep 1
+  done
+  echo " done 🥩"
 
-##############################
-# Restore Oracle test data
-##############################
-
-echo "${bold}Load Oracle database...🙏${endbold}"
-
-export ORACLE_HOST="oracle"
-export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
-export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
-
-echo "Wait a moment while loading Oracle database."
-COUNT=0
-while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
-do
-  printf "🙏"
-  sleep 5
-  if [[ $(( COUNT++ )) -eq 200 ]]; then
-    break
-  fi
-done
-if [[ ${COUNT} -eq 201 ]]; then
-  echo "timeout, no oracle, no 🙏"
-else
-  echo " done 👀"
   pushd /root/QGIS > /dev/null
-  /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
+  echo "Restoring postgres test data ..."
+  /root/QGIS/tests/testdata/provider/testdata_pg.sh
+  echo "Postgres test data restored ..."
   popd > /dev/null # /root/QGIS
+
 fi
 
-##############################
-# Restore SQL Server test data
-##############################
+if [ ${RUN_ORACLE:-"NO"} == "YES" ]; then
 
-# echo "Importing SQL Server test data..."
+  ##############################
+  # Restore Oracle test data
+  ##############################
 
-# export SQLUSER=sa
-# export SQLHOST=mssql
-# export SQLPORT=1433
-# export SQLPASSWORD='<YourStrong!Passw0rd>'
-# export SQLDATABASE=qgis_test
+  echo "${bold}Load Oracle database...🙏${endbold}"
 
-# export PATH=$PATH:/opt/mssql-tools/bin
+  export ORACLE_HOST="oracle"
+  export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
+  export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
 
-# pushd /root/QGIS > /dev/null
-# /root/QGIS/tests/testdata/provider/testdata_mssql.sh
-# popd > /dev/null # /root/QGIS
+  echo "Wait a moment while loading Oracle database."
+  COUNT=0
+  while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
+  do
+    printf "🙏"
+    sleep 5
+    if [[ $(( COUNT++ )) -eq 40 ]]; then
+      break
+    fi
+  done
+  if [[ ${COUNT} -eq 41 ]]; then
+    echo "timeout, no oracle, no 🙏"
+  else
+    echo " done 👀"
+    pushd /root/QGIS > /dev/null
+    /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
+    popd > /dev/null # /root/QGIS
+  fi
 
-# echo "Setting up DSN for test SQL Server"
+fi
 
-# cat <<EOT > /etc/odbc.ini
-# [ODBC Data Sources]
-# testsqlserver = ODBC Driver 17 for SQL Server
+if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
 
-# [testsqlserver]
-# Driver       = ODBC Driver 17 for SQL Server
-# Description  = Test SQL Server
-# Server       = mssql
-# EOT
+  ##############################
+  # Restore SQL Server test data
+  ##############################
+
+  echo "Importing SQL Server test data..."
+
+  export SQLUSER=sa
+  export SQLHOST=mssql
+  export SQLPORT=1433
+  export SQLPASSWORD='<YourStrong!Passw0rd>'
+  export SQLDATABASE=qgis_test
+
+  export PATH=$PATH:/opt/mssql-tools/bin
+
+  pushd /root/QGIS > /dev/null
+  /root/QGIS/tests/testdata/provider/testdata_mssql.sh
+  popd > /dev/null # /root/QGIS
+
+  echo "Setting up DSN for test SQL Server"
+
+  cat <<EOT > /etc/odbc.ini
+[ODBC Data Sources]
+testsqlserver = ODBC Driver 17 for SQL Server
+
+[testsqlserver]
+Driver       = ODBC Driver 17 for SQL Server
+Description  = Test SQL Server
+Server       = mssql
+EOT
+
+fi
+
+
 
 ###########
 # Run tests
@@ -128,5 +183,8 @@ else
   echo "Flaky tests are run!"
 fi
 echo "List of skipped tests: $EXCLUDE_TESTS"
-python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config.ctest --output-on-failure
 
+echo "Print disk space"
+df -h
+
+python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config_test.ctest --output-on-failure

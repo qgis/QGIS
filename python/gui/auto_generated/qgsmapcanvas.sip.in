@@ -24,7 +24,7 @@
 
 class QgsMapCanvas : QGraphicsView
 {
-%Docstring
+%Docstring(signature="appended")
 Map canvas is a class for displaying all GIS data types on a canvas.
 %End
 
@@ -106,9 +106,12 @@ Resets the ``flags`` for the canvas' map settings.
 .. versionadded:: 3.0
 %End
 
-    const QgsLabelingResults *labelingResults() const;
+    const QgsLabelingResults *labelingResults( bool allowOutdatedResults = true ) const;
 %Docstring
-Gets access to the labeling results (may be ``None``)
+Gets access to the labeling results (may be ``None``).
+
+Since QGIS 3.20, if the ``allowOutdatedResults`` flag is ``False`` then outdated labeling results (e.g.
+as a result of an ongoing canvas render) will not be returned, and instead ``None`` will be returned.
 
 .. versionadded:: 2.4
 %End

@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsrelationmanager.h"
 #include "qgsapplication.h"
+#include "qgsmaplayermodel.h"
 
 
 //! Returns a HTML formatted string for use as a \a relation item help.
@@ -411,7 +412,8 @@ void QgsExpressionTreeView::loadLayers()
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    registerItemForAllGroups( QStringList() << tr( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ) );
+    QIcon icon = QgsMapLayerModel::iconForLayer( layerIt.value() );
+    registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 99, icon );
   }
 }
 
@@ -544,7 +546,7 @@ void QgsExpressionTreeView::loadUserExpressions( )
   QString expression;
   int i = 0;
   mUserExpressionLabels = settings.childGroups();
-  for ( const auto &label : qgis::as_const( mUserExpressionLabels ) )
+  for ( const auto &label : std::as_const( mUserExpressionLabels ) )
   {
     settings.beginGroup( label );
     expression = settings.value( QStringLiteral( "expression" ) ).toString();
@@ -576,7 +578,7 @@ QJsonDocument QgsExpressionTreeView::exportUserExpressions()
 
   mUserExpressionLabels = settings.childGroups();
 
-  for ( const QString &label : qgis::as_const( mUserExpressionLabels ) )
+  for ( const QString &label : std::as_const( mUserExpressionLabels ) )
   {
     settings.beginGroup( label );
 
@@ -747,7 +749,7 @@ const QList<QgsExpressionItem *> QgsExpressionTreeView::findExpressions( const Q
 {
   QList<QgsExpressionItem *> result;
   const QList<QStandardItem *> found { mModel->findItems( label, Qt::MatchFlag::MatchRecursive ) };
-  for ( const auto &item : qgis::as_const( found ) )
+  for ( const auto &item : std::as_const( found ) )
   {
     result.push_back( static_cast<QgsExpressionItem *>( item ) );
   }

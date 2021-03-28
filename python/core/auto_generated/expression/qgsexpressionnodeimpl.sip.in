@@ -11,7 +11,7 @@
 
 class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 A unary node is either negative as in boolean (not) or as in numbers (minus).
 %End
 
@@ -73,7 +73,7 @@ I.e. "NOT" or "-"
 
 class QgsExpressionNodeBinaryOperator : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 A binary expression operator, which operates on two values.
 %End
 
@@ -183,7 +183,7 @@ I.e. "AND", "OR", ...
 
 class QgsExpressionNodeIndexOperator : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 A indexing expression operator, which allows use of square brackets [] to reference map and array items.
 
 .. versionadded:: 3.6
@@ -240,7 +240,7 @@ Returns the index node, representing an array element index or map key.
 
 class QgsExpressionNodeInOperator : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node for value IN or NOT IN clauses.
 %End
 
@@ -294,7 +294,7 @@ Returns the list of nodes to search for matching values within.
 
 class QgsExpressionNodeFunction : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node for expression functions.
 %End
 
@@ -351,7 +351,7 @@ Tests whether the provided argument list is valid for the matching function
 
 class QgsExpressionNodeLiteral : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node for literal values.
 %End
 
@@ -395,7 +395,7 @@ The value of the literal.
 
 class QgsExpressionNodeColumnRef : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node which takes it value from a feature's field.
 %End
 
@@ -442,7 +442,7 @@ The name of the column.
 
 class QgsExpressionNodeCondition : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node for CASE WHEN clauses.
 %End
 
@@ -453,7 +453,7 @@ An expression node for CASE WHEN clauses.
 
     class WhenThen
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
 %End
 

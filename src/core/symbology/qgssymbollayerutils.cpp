@@ -4189,6 +4189,24 @@ bool QgsSymbolLayerUtils::pointInPolygon( const QPolygonF &points, QPointF point
   return inside;
 }
 
+double QgsSymbolLayerUtils::polylineLength( const QPolygonF &polyline )
+{
+  if ( polyline.size() < 2 )
+    return 0;
+
+  double totalLength = 0;
+  auto it = polyline.begin();
+  QPointF p1 = *it++;
+  for ( ; it != polyline.end(); ++it )
+  {
+    QPointF p2 = *it;
+    const double segmentLength = std::sqrt( std::pow( p1.x() - p2.x(), 2.0 ) + std::pow( p1.y() - p2.y(), 2.0 ) );
+    totalLength += segmentLength;
+    p1 = p2;
+  }
+  return totalLength;
+}
+
 QPolygonF QgsSymbolLayerUtils::polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset )
 {
   if ( polyline.size() < 2 )

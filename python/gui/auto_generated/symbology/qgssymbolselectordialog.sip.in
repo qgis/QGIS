@@ -19,7 +19,7 @@
 
 class QgsSymbolSelectorWidget: QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Symbol selector widget that can be used to select and build a symbol
 %End
 

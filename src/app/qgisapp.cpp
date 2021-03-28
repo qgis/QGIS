@@ -97,6 +97,7 @@
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -1862,7 +1863,7 @@ void QgisApp::dropEvent( QDropEvent *event )
   {
     QgsCanvasRefreshBlocker refreshBlocker;
 
-    for ( const QString &file : qgis::as_const( files ) )
+    for ( const QString &file : std::as_const( files ) )
     {
       bool handled = false;
 
@@ -2028,7 +2029,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
         std::sort( warnings.begin(), warnings.end() );
         warnings.erase( std::unique( warnings.begin(), warnings.end() ), warnings.end() );
 
-        for ( const QString &w : qgis::as_const( warnings ) )
+        for ( const QString &w : std::as_const( warnings ) )
         {
           message += QStringLiteral( "<li>%1</li>" ).arg( w.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) );
         }
@@ -2175,7 +2176,7 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
         {
           // Make sure we don't add it twice if it was already added by the form widgets check
           bool refFound = false;
-          for ( const QgsVectorLayerRef &otherRef : qgis::as_const( brokenDependencies ) )
+          for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
           {
             if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
             {
@@ -2711,7 +2712,7 @@ void QgisApp::createActions()
   connect( mActionSetLayerCRS, &QAction::triggered, this, &QgisApp::setLayerCrs );
   connect( mActionSetProjectCRSFromLayer, &QAction::triggered, this, &QgisApp::setProjectCrsFromLayer );
   connect( mActionLayerProperties, &QAction::triggered, this, &QgisApp::layerProperties );
-  connect( mActionLayerSubsetString, &QAction::triggered, this, qgis::overload<>::of( &QgisApp::layerSubsetString ) );
+  connect( mActionLayerSubsetString, &QAction::triggered, this, qOverload<>( &QgisApp::layerSubsetString ) );
   connect( mActionAddToOverview, &QAction::triggered, this, &QgisApp::isInOverview );
   connect( mActionAddAllToOverview, &QAction::triggered, this, &QgisApp::addAllToOverview );
   connect( mActionRemoveAllFromOverview, &QAction::triggered, this, &QgisApp::removeAllFromOverview );
@@ -4932,7 +4933,7 @@ void QgisApp::updateRecentProjectPaths()
   }
 
   std::vector< QgsNative::RecentProjectProperties > recentProjects;
-  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : qgis::as_const( mRecentProjects ) )
+  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : std::as_const( mRecentProjects ) )
   {
     QgsNative::RecentProjectProperties project;
     project.title = recentProject.title;
@@ -4993,7 +4994,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   int pinnedCount = 0;
   int nonPinnedPos = 0;
   bool pinnedTop = true;
-  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : qgis::as_const( mRecentProjects ) )
+  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : std::as_const( mRecentProjects ) )
   {
     if ( recentProject.pin )
     {
@@ -5510,7 +5511,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
 
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayers( layersToAdd );
-  for ( QgsMapLayer *l : qgis::as_const( layersToAdd ) )
+  for ( QgsMapLayer *l : std::as_const( layersToAdd ) )
   {
     bool ok;
     l->loadDefaultStyle( ok );
@@ -5569,7 +5570,7 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
       layer.reset( nullptr );
     else
     {
-      for ( QgsMapLayer *newLayer : qgis::as_const( subLayers ) )
+      for ( QgsMapLayer *newLayer : std::as_const( subLayers ) )
       {
         askUserForDatumTransform( newLayer->crs(), QgsProject::instance()->crs(), newLayer );
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( newLayer );
@@ -6126,7 +6127,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *&parentLay
       group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, name );
 
     QgsProject::instance()->addMapLayers( result, ! addToGroup );
-    for ( QgsMapLayer *l : qgis::as_const( result ) )
+    for ( QgsMapLayer *l : std::as_const( result ) )
     {
       bool ok;
       l->loadDefaultStyle( ok );
@@ -6854,7 +6855,7 @@ void QgisApp::fileOpen()
     QStringList extensions;
     fileFilters << tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS *.QGZ)" );
     extensions << QStringLiteral( "qgs" ) << QStringLiteral( "qgz" );
-    for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
+    for ( QgsCustomProjectOpenHandler *handler : std::as_const( mCustomProjectOpenHandlers ) )
     {
       if ( handler )
       {
@@ -6940,7 +6941,7 @@ bool QgisApp::addProject( const QString &projectFile )
   bool usedCustomHandler = false;
   bool customHandlerWantsThumbnail = false;
   QIcon customHandlerIcon;
-  for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
+  for ( QgsCustomProjectOpenHandler *handler : std::as_const( mCustomProjectOpenHandlers ) )
   {
     if ( handler && handler->handleProjectOpen( projectFile ) )
     {
@@ -8752,7 +8753,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   } );
 
   // when an error occurs:
-  connect( writerTask, qgis::overload< int, const QString &>::of( &QgsRasterFileWriterTask::errorOccurred ), this, [ = ]( int error, const QString & errorMessage )
+  connect( writerTask, qOverload< int, const QString &>( &QgsRasterFileWriterTask::errorOccurred ), this, [ = ]( int error, const QString & errorMessage )
   {
     if ( error != QgsRasterFileWriter::WriteCanceled )
     {
@@ -10035,6 +10036,7 @@ void QgisApp::mergeSelectedFeatures()
 
   //merge the attributes together
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
+  d.setWindowTitle( tr( "Merge Features" ) );
   if ( d.exec() == QDialog::Rejected )
   {
     return;
@@ -10070,13 +10072,8 @@ void QgisApp::mergeSelectedFeatures()
     }
   }
 
-  vl->beginEditCommand( tr( "Merged features" ) );
-
-  //create new feature
-  QgsFeature newFeature;
-  newFeature.setGeometry( unionGeom );
-
   QgsAttributes attrs = d.mergedAttributes();
+  QgsAttributeMap newAttributes;
   QString errorMessage;
   for ( int i = 0; i < attrs.count(); ++i )
   {
@@ -10093,9 +10090,13 @@ void QgisApp::mergeSelectedFeatures()
         tr( "Could not store value '%1' in field of type %2: %3" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName(), errorMessage ),
         Qgis::Warning );
     }
-    attrs[i] = val;
+    newAttributes[ i ] = val;
   }
-  newFeature.setAttributes( attrs );
+
+  vl->beginEditCommand( tr( "Merged features" ) );
+
+  //create new feature
+  QgsFeature newFeature = QgsVectorLayerUtils::createFeature( vl, unionGeom, newAttributes );
 
   QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
   for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )
@@ -10448,14 +10449,14 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   int nTotalFeatures = features.count();
   QgsExpressionContext context = pasteVectorLayer->createExpressionContext();
 
-  QgsFeatureList compatibleFeatures( QgsVectorLayerUtils::makeFeaturesCompatible( features, pasteVectorLayer ) );
+  QgsFeatureList compatibleFeatures( QgsVectorLayerUtils::makeFeaturesCompatible( features, pasteVectorLayer, QgsFeatureSink::RegeneratePrimaryKey ) );
   QgsVectorLayerUtils::QgsFeaturesDataList newFeaturesDataList;
   newFeaturesDataList.reserve( compatibleFeatures.size() );
 
   // Count collapsed geometries
   int invalidGeometriesCount = 0;
 
-  for ( const auto &feature : qgis::as_const( compatibleFeatures ) )
+  for ( const auto &feature : std::as_const( compatibleFeatures ) )
   {
 
     QgsGeometry geom = feature.geometry();
@@ -10574,7 +10575,7 @@ void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeomet
   {
     QgsFeatureIds newIds;
     newIds.reserve( features.size() );
-    for ( const QgsFeature &f : qgis::as_const( features ) )
+    for ( const QgsFeature &f : std::as_const( features ) )
     {
       newIds << f.id();
     }
@@ -11678,7 +11679,7 @@ void QgisApp::removeLayer()
     }
   };
 
-  for ( const auto &n : qgis::as_const( selectedNodes ) )
+  for ( const auto &n : std::as_const( selectedNodes ) )
   {
     harvest( n );
   }
@@ -11838,7 +11839,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     setActiveLayer( newSelection );
 
   // display errors in message bar after duplication of layers
-  for ( QgsMessageBarItem *msgBar : qgis::as_const( msgBars ) )
+  for ( QgsMessageBarItem *msgBar : std::as_const( msgBars ) )
   {
     mInfoBar->pushItem( msgBar );
   }
@@ -12330,7 +12331,7 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
   } );
 
   int idx = sProjectPropertiesPagesMap.count();
-  for ( const QPointer< QgsOptionsWidgetFactory > &f : qgis::as_const( mProjectPropertiesWidgetFactories ) )
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : std::as_const( mProjectPropertiesWidgetFactories ) )
   {
     // remove any deleted factories
     if ( f )
@@ -12409,7 +12410,7 @@ QMap< QString, int > QgisApp::optionsPagesMap()
   } );
 
   QList< std::pair< QString, QString > > pages = sOptionsPagesList;
-  for ( const QPointer< QgsOptionsWidgetFactory > &f : qgis::as_const( mOptionsWidgetFactories ) )
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : std::as_const( mOptionsWidgetFactories ) )
   {
     // remove any deleted factories
     if ( f )
@@ -12870,7 +12871,7 @@ void QgisApp::switchToMapToolViaHandler()
     return;
 
   QgsAbstractMapToolHandler *handler = nullptr;
-  for ( QgsAbstractMapToolHandler *h : qgis::as_const( mMapToolHandlers ) )
+  for ( QgsAbstractMapToolHandler *h : std::as_const( mMapToolHandlers ) )
   {
     if ( h->action() == sourceAction )
     {
@@ -13482,7 +13483,7 @@ bool QgisApp::checkMemoryLayers()
 
 bool QgisApp::checkExitBlockers()
 {
-  for ( QgsApplicationExitBlockerInterface *blocker : qgis::as_const( mApplicationExitBlockers ) )
+  for ( QgsApplicationExitBlockerInterface *blocker : std::as_const( mApplicationExitBlockers ) )
   {
     if ( !blocker->allowExit() )
       return false;
@@ -14448,7 +14449,31 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( vlayer )
   {
-    showStatusMessage( tr( "%n feature(s) selected on layer %1.", "number of selected features", vlayer->selectedFeatureCount() ).arg( vlayer->name() ) );
+    const int selectedCount = vlayer->selectedFeatureCount();
+    if ( selectedCount == 1 )
+    {
+      QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
+      QgsExpression exp = vlayer->displayExpression();
+      exp.prepare( &context );
+
+      QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( exp.referencedColumns(), vlayer->fields() );
+      if ( !exp.needsGeometry() )
+        request.setFlags( request.flags() | QgsFeatureRequest::NoGeometry );
+
+      QgsFeature feat;
+      QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( request );
+      while ( featureIt.nextFeature( feat ) )
+      {
+        context.setFeature( feat );
+        QString featureTitle = exp.evaluate( &context ).toString();
+        showStatusMessage( tr( "1 feature selected on layer %1 (%2)." ).arg( vlayer->name(), featureTitle ) );
+        break;
+      }
+    }
+    else
+    {
+      showStatusMessage( tr( "%n features selected on layer %1.", "number of selected features", selectedCount ).arg( vlayer->name() ) );
+    }
   }
   if ( layer == activeLayer() )
   {
@@ -14603,7 +14628,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   updateLayerModifiedActions();
 
   QgsAbstractMapToolHandler::Context context;
-  for ( QgsAbstractMapToolHandler *handler : qgis::as_const( mMapToolHandlers ) )
+  for ( QgsAbstractMapToolHandler *handler : std::as_const( mMapToolHandlers ) )
   {
     handler->action()->setEnabled( handler->isCompatibleWithLayer( layer, context ) );
     if ( handler->mapTool() == mMapCanvas->mapTool() )
@@ -15515,7 +15540,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
       // The first layer loaded is not useful in that case. The user can select it in
       // the list if he wants to load it.
       delete layer;
-      for ( QgsMapLayer *l : qgis::as_const( subLayers ) )
+      for ( QgsMapLayer *l : std::as_const( subLayers ) )
         askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
       layer = !subLayers.isEmpty() ? qobject_cast< QgsRasterLayer * >( subLayers.at( 0 ) ) : nullptr;
     }
@@ -16217,19 +16242,25 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     return; //don't show properties of embedded layers
   }
 
+  // collect factories from registered data providers
+  QList<const QgsMapLayerConfigWidgetFactory *> providerFactories = QgsGui::providerGuiRegistry()->mapLayerConfigWidgetFactories( mapLayer );
+  providerFactories.append( mMapLayerPanelFactories );
+
   switch ( mapLayer->type() )
   {
     case QgsMapLayerType::RasterLayer:
     {
       QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
         rasterLayerPropertiesDialog->addPropertiesPageFactory( factory );
       }
 
       if ( !page.isEmpty() )
         rasterLayerPropertiesDialog->setCurrentPage( page );
+      else
+        rasterLayerPropertiesDialog->restoreLastPage();
 
       // Cannot use exec here due to raster transparency map tool:
       // in order to pass focus to the canvas, the dialog needs to
@@ -16253,10 +16284,15 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     {
       QgsMeshLayerProperties meshLayerPropertiesDialog( mapLayer, mMapCanvas, this );
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
         meshLayerPropertiesDialog.addPropertiesPageFactory( factory );
       }
+
+      if ( !page.isEmpty() )
+        meshLayerPropertiesDialog.setCurrentPage( page );
+      else
+        meshLayerPropertiesDialog.restoreLastPage();
 
       mMapStyleWidget->blockUpdates( true );
       if ( meshLayerPropertiesDialog.exec() )
@@ -16287,7 +16323,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
           saveAsFile( clone.get() );
         }
       } );
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
         vectorLayerPropertiesDialog->addPropertiesPageFactory( factory );
       }
@@ -16314,6 +16350,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       QgsVectorTileLayerProperties vectorTileLayerPropertiesDialog( qobject_cast<QgsVectorTileLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
       if ( !page.isEmpty() )
         vectorTileLayerPropertiesDialog.setCurrentPage( page );
+      else
+        vectorTileLayerPropertiesDialog.restoreLastPage();
 
       mMapStyleWidget->blockUpdates( true );
       if ( vectorTileLayerPropertiesDialog.exec() )
@@ -16334,7 +16372,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       else
         pointCloudLayerPropertiesDialog.restoreLastPage();
 
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
         pointCloudLayerPropertiesDialog.addPropertiesPageFactory( factory );
       }
@@ -16383,7 +16421,7 @@ void QgisApp::namSetup()
   connect( nam, &QNetworkAccessManager::proxyAuthenticationRequired,
            this, &QgisApp::namProxyAuthenticationRequired );
 
-  connect( nam, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestTimedOut ),
+  connect( nam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestTimedOut ),
            this, &QgisApp::namRequestTimedOut );
 
   nam->setAuthHandler( std::make_unique<QgsAppAuthRequestHandler>() );

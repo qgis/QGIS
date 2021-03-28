@@ -16,7 +16,7 @@
 
 class QgsTemporalController : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A controller base class for temporal objects, contains a signal for notifying
 updates of the objects temporal range.
 

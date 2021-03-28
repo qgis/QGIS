@@ -283,6 +283,42 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
   return index;
 }
 
+int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorLayer *layer )
+{
+  int index = -1;
+
+  if ( layer && layer->labeling() && layer->labeling()->settings().callout() && layer->auxiliaryLayer() )
+  {
+    // property definition are identical whatever the provider id
+    const QgsPropertyDefinition def = layer->labeling()->settings().callout()->propertyDefinitions()[property];
+    const QString fieldName = nameFromProperty( def, true );
+
+    layer->auxiliaryLayer()->addAuxiliaryField( def );
+
+    if ( layer->auxiliaryLayer()->indexOfPropertyDefinition( def ) >= 0 )
+    {
+      const QgsProperty prop = QgsProperty::fromField( fieldName );
+
+      const QStringList subProviderIds = layer->labeling()->subProviders();
+      for ( const QString &providerId : subProviderIds )
+      {
+        QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
+        if ( settings->callout() )
+        {
+          QgsPropertyCollection c = settings->callout()->dataDefinedProperties();
+          c.setProperty( property, prop );
+          settings->callout()->setDataDefinedProperties( c );
+        }
+        layer->labeling()->setSettings( settings, providerId );
+      }
+    }
+
+    index = layer->fields().lookupField( fieldName );
+  }
+
+  return index;
+}
+
 bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
 {
   bool hidden = false;

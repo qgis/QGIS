@@ -15,7 +15,7 @@
 
 class QgsProcessingAbstractParameterDefinitionWidget : QWidget, QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for widgets which allow users to specify the properties of a
 Processing parameter.
 
@@ -95,7 +95,7 @@ a Processing context for the widget when required.
 
 class QgsProcessingParameterDefinitionWidget: QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allow users to specify the properties of a Processing parameter.
 
 .. versionadded:: 3.10
@@ -147,7 +147,7 @@ a Processing context for the widget when required.
 
 class QgsProcessingParameterDefinitionDialog: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog which allow users to specify the properties of a Processing parameter.
 
 .. versionadded:: 3.10

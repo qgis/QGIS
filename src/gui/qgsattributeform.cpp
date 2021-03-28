@@ -167,7 +167,7 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
   }
 
   //update all form editor widget modes to match
-  for ( QgsAttributeFormWidget *w : qgis::as_const( mFormWidgets ) )
+  for ( QgsAttributeFormWidget *w : std::as_const( mFormWidgets ) )
   {
     switch ( mode )
     {
@@ -201,7 +201,7 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
     }
   }
   //update all form editor widget modes to match
-  for ( QgsWidgetWrapper *w : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *w : std::as_const( mWidgets ) )
   {
     QgsAttributeEditorContext newContext = w->context();
     newContext.setAttributeFormMode( mMode );
@@ -343,7 +343,7 @@ bool QgsAttributeForm::saveEdits( QString *error )
     QgsAttributes src = mFeature.attributes();
     QgsAttributes dst = mFeature.attributes();
 
-    for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+    for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
     {
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
@@ -489,7 +489,7 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
   if ( mFeature.isValid() || mMode == QgsAttributeEditorContext::AddFeatureMode )
   {
     QgsAttributes dst = mFeature.attributes();
-    for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+    for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
     {
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
@@ -524,7 +524,7 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
 
     // go through depending fields and update the fields with defaultexpression
     QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx );
-    for ( QgsWidgetWrapper *ww : qgis::as_const( relevantWidgets ) )
+    for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
     {
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
@@ -752,7 +752,7 @@ bool QgsAttributeForm::saveWithDetails( QString *error )
   if ( mIsSaving )
     return true;
 
-  for ( QgsWidgetWrapper *wrapper : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *wrapper : std::as_const( mWidgets ) )
   {
     wrapper->notifyAboutToSave();
   }
@@ -850,7 +850,7 @@ void QgsAttributeForm::clearMultiEditMessages()
 QString QgsAttributeForm::createFilterExpression() const
 {
   QStringList filters;
-  for ( QgsAttributeFormWidget *w : qgis::as_const( mFormWidgets ) )
+  for ( QgsAttributeFormWidget *w : std::as_const( mFormWidgets ) )
   {
     QString filter = w->currentFilterExpression();
     if ( !filter.isEmpty() )
@@ -1086,7 +1086,7 @@ bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature )
   feature = QgsFeature( mFeature );
   QgsAttributes dst = feature.attributes();
 
-  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
 
@@ -1150,7 +1150,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields, 
 {
   bool valid( true );
 
-  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
@@ -1245,7 +1245,7 @@ QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEdi
   QString name = w->field().name();
 
   // for each widget in the current form
-  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     // get the wrapper
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
@@ -1311,7 +1311,7 @@ void QgsAttributeForm::refreshFeature()
 
 void QgsAttributeForm::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
 {
-  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
@@ -1327,7 +1327,7 @@ void QgsAttributeForm::synchronizeEnabledState()
                       || mMode == QgsAttributeEditorContext::AddFeatureMode
                       || mMode == QgsAttributeEditorContext::MultiEditMode ) && mLayer->isEditable();
 
-  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
@@ -2182,7 +2182,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
 void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper *eww )
 {
-  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *meww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( meww )
@@ -2371,7 +2371,7 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
   fit.nextFeature( firstFeature );
 
   const auto constMixedValueFields = mixedValueFields;
-  for ( int fieldIndex : qgis::as_const( mixedValueFields ) )
+  for ( int fieldIndex : std::as_const( mixedValueFields ) )
   {
     if ( QgsAttributeFormEditorWidget *w = mFormEditorWidgets.value( fieldIndex, nullptr ) )
     {
@@ -2544,7 +2544,7 @@ void QgsAttributeForm::updateDefaultValueDependencies()
 {
   mDefaultValueDependencies.clear();
   //create defaultValueDependencies
-  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )

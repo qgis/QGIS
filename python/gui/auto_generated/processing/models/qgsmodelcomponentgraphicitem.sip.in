@@ -12,7 +12,7 @@
 
 class QgsModelComponentGraphicItem : QGraphicsObject
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for graphic items representing model components in the model designer.
 
 .. warning::
@@ -309,7 +309,7 @@ QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicIte
 
 class QgsModelParameterGraphicItem : QgsModelComponentGraphicItem
 {
-%Docstring
+%Docstring(signature="appended")
 A graphic item representing a model parameter (input) in the model designer.
 
 .. warning::
@@ -363,7 +363,7 @@ Ownership of ``parameter`` is transferred to the item.
 
 class QgsModelChildAlgorithmGraphicItem : QgsModelComponentGraphicItem
 {
-%Docstring
+%Docstring(signature="appended")
 A graphic item representing a child algorithm in the model designer.
 
 .. warning::
@@ -434,7 +434,7 @@ Sets the inputs used for this child algorithm for the last model execution throu
 
 class QgsModelOutputGraphicItem : QgsModelComponentGraphicItem
 {
-%Docstring
+%Docstring(signature="appended")
 A graphic item representing a model output in the model designer.
 
 .. warning::
@@ -488,7 +488,7 @@ Ownership of ``output`` is transferred to the item.
 
 class QgsModelCommentGraphicItem : QgsModelComponentGraphicItem
 {
-%Docstring
+%Docstring(signature="appended")
 A graphic item representing a model comment in the model designer.
 
 .. warning::
@@ -550,7 +550,7 @@ Returns the parent model component item.
 
 class QgsModelGroupBoxGraphicItem : QgsModelComponentGraphicItem
 {
-%Docstring
+%Docstring(signature="appended")
 A graphic item representing a group box in the model designer.
 
 .. warning::

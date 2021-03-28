@@ -13,7 +13,7 @@
 
 class QgsAnalysis
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsAnalysis` is a singleton class containing various registry and other global members
 related to analysis classes.
 

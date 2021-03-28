@@ -14,7 +14,7 @@
 
 class QgsRenderContext : QgsTemporalRangeObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains information about the context of a rendering operation.
 
 The context of a rendering operation defines properties such as

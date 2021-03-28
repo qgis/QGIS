@@ -11,7 +11,7 @@
 
 class QgsMapToolEdit: QgsMapTool
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for map tools that edit vector geometry
 %End
 

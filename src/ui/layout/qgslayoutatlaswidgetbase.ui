@@ -109,10 +109,10 @@
          </property>
          <property name="geometry">
           <rect>
-           <x>-122</x>
-           <y>-223</y>
-           <width>525</width>
-           <height>673</height>
+           <x>0</x>
+           <y>0</y>
+           <width>417</width>
+           <height>354</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
@@ -326,30 +326,32 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mUseAtlasCheckBox</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mConfigurationGroup</tabstop>
   <tabstop>mAtlasCoverageLayerComboBox</tabstop>
   <tabstop>mAtlasHideCoverageCheckBox</tabstop>
@@ -357,41 +359,14 @@
   <tabstop>mAtlasFeatureFilterEdit</tabstop>
   <tabstop>mAtlasFeatureFilterButton</tabstop>
   <tabstop>mAtlasSortFeatureCheckBox</tabstop>
-  <tabstop>mAtlasSortExpressionWidget</tabstop>
   <tabstop>mAtlasSortFeatureDirectionButton</tabstop>
   <tabstop>mOutputGroup</tabstop>
   <tabstop>mAtlasFilenamePatternEdit</tabstop>
   <tabstop>mAtlasFilenameExpressionButton</tabstop>
   <tabstop>mAtlasSingleFileCheckBox</tabstop>
-  <tabstop>scrollArea</tabstop>
+  <tabstop>mAtlasFileFormat</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

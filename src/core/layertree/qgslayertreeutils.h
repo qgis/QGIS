@@ -24,7 +24,6 @@
 
 class QDomElement;
 class QDomDocument;
-class QStringList;
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;

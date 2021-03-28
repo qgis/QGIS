@@ -1305,7 +1305,7 @@ void QgsGeoreferencerMainWindow::saveGCPs()
     QTextStream points( &pointFile );
     points << QStringLiteral( "#CRS: %1" ).arg( mProjection.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) ) << endl;
     points << "mapX,mapY,pixelX,pixelY,enable,dX,dY,residual" << endl;
-    for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
+    for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
     {
       points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
              .arg( qgsDoubleToString( pt->transCoords().x() ),
@@ -1890,7 +1890,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
     gdalCommand << QStringLiteral( "-co TFW=YES" );
   }
 
-  for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
+  for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
     gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
                 .arg( pt->transCoords().x() ).arg( pt->transCoords().y() );

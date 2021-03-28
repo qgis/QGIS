@@ -13,7 +13,7 @@
 
 class QgsPoint3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
 
 .. warning::

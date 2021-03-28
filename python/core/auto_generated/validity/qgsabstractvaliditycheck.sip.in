@@ -10,7 +10,7 @@
 
 class QgsValidityCheckResult
 {
-%Docstring
+%Docstring(signature="appended")
 Represents an individual result from a validity check run by a :py:class:`QgsAbstractValidityCheck` subclass.
 
 Results can either be warnings or critical errors, as dictated by the type member. Critical error
@@ -43,7 +43,7 @@ result will be communicated to users, but not prevent them from proceeding.
 
 class QgsAbstractValidityCheck
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for individual validity checks.
 
 Validity checks represent objects which can run a test using a :py:class:`QgsValidityCheckContext`, and return

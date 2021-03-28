@@ -129,7 +129,7 @@ json QgsMultiPoint::asJsonObject( int precision ) const
     { "type", "MultiPoint" },
     { "coordinates", json::array() },
   };
-  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     const QgsPoint *point = static_cast<const QgsPoint *>( geom );
     if ( point->is3D() )

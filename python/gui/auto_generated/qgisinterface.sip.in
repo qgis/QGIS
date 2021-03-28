@@ -14,7 +14,7 @@
 
 class QgisInterface : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 QgisInterface
 Abstract base class defining interfaces exposed by QgisApp and
 made available to plugins.

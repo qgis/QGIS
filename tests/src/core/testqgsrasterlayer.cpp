@@ -491,7 +491,7 @@ void TestQgsRasterLayer::checkScaleOffset()
   if ( identifyResult.isValid() )
   {
     QMap<int, QVariant> values = identifyResult.results();
-    Q_FOREACH ( int bandNo, values.keys() )
+    for ( int bandNo : values.keys() )
     {
       QString valueString;
       if ( values.value( bandNo ).isNull() )

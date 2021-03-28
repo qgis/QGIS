@@ -163,7 +163,7 @@ bool QgsBackgroundCachedSharedData::createCache()
 
   QgsFields cacheFields;
   std::set<QString> setSQLiteColumnNameUpperCase;
-  for ( const QgsField &field : qgis::as_const( mFields ) )
+  for ( const QgsField &field : std::as_const( mFields ) )
   {
     QVariant::Type type = field.type();
     // Map DateTime to int64 milliseconds from epoch
@@ -263,7 +263,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     mCacheTablename = QStringLiteral( "features" );
     sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
 
-    for ( const QgsField &field : qgis::as_const( cacheFields ) )
+    for ( const QgsField &field : std::as_const( cacheFields ) )
     {
       QString type( QStringLiteral( "VARCHAR" ) );
       if ( field.type() == QVariant::Int )

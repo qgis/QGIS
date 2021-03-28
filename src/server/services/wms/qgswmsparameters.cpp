@@ -570,7 +570,11 @@ namespace QgsWms
     const QRegExp composerParamRegExp( QStringLiteral( "^MAP\\d+:" ), Qt::CaseInsensitive );
     if ( key.contains( composerParamRegExp ) )
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       const int mapId = key.midRef( 3, key.indexOf( ':' ) - 3 ).toInt();
+#else
+      const int mapId = QStringView {key}.mid( 3, key.indexOf( ':' ) - 3 ).toInt();
+#endif
       const QString theKey = key.mid( key.indexOf( ':' ) + 1 );
       const QgsWmsParameter::Name name = QgsWmsParameter::name( theKey );
 
@@ -1576,6 +1580,9 @@ namespace QgsWms
       QgsWmsParametersLayer param;
       param.mNickname = layer;
 
+      if ( i < opacities.count() )
+        param.mOpacity = opacities[i];
+
       if ( isExternalLayer( layer ) )
       {
         const QgsWmsParametersExternalLayer extParam = externalLayerParameter( layer );
@@ -1586,9 +1593,6 @@ namespace QgsWms
       {
         if ( i < styles.count() )
           param.mStyle = styles[i];
-
-        if ( i < opacities.count() )
-          param.mOpacity = opacities[i];
 
         if ( filters.contains( layer ) )
         {
@@ -1779,7 +1783,7 @@ namespace QgsWms
     QStringList layers;
     QList<QgsWmsParametersExternalLayer> eParams;
 
-    for ( const auto &layer : qgis::as_const( allLayers ) )
+    for ( const auto &layer : std::as_const( allLayers ) )
     {
       if ( isExternalLayer( layer ) )
       {

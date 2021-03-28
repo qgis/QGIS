@@ -16,7 +16,7 @@
 
 class QgsCircle : QgsEllipse
 {
-%Docstring
+%Docstring(signature="appended")
 Circle geometry type.
 
 A circle is defined by a center point with a radius and an azimuth.

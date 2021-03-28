@@ -13,7 +13,7 @@
 
 class QgsTextMaskSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Container for settings relating to a selective masking around a text.
 A selective masking only makes sense in contexts where the text is rendered over some other map layers, especially for labeling.
 

@@ -14,7 +14,7 @@
 
 class QgsNetworkRequestParameters
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates parameters and properties of a network request.
 
 .. versionadded:: 3.6
@@ -102,7 +102,7 @@ QgsNetworkRequestParameters.AttributeInitiatorRequestId attribute set.
 
 class QgsNetworkAccessManager : QNetworkAccessManager
 {
-%Docstring
+%Docstring(signature="appended")
 network access manager for QGIS
 
 This class implements the QGIS network access manager.  It's a singleton

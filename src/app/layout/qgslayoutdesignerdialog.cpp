@@ -1550,7 +1550,7 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
 
   connect( timer, &QTimer::timeout, this, [this, timer, files, layoutPoint]
   {
-    for ( const QString &file : qgis::as_const( files ) )
+    for ( const QString &file : std::as_const( files ) )
     {
       const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
       for ( QgsLayoutCustomDropHandler *handler : handlers )
@@ -4080,7 +4080,7 @@ bool QgsLayoutDesignerDialog::containsWmsLayers() const
   QList< QgsLayoutItemMap *> maps;
   mLayout->layoutItems( maps );
 
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     if ( map->containsWmsLayer() )
       return true;
@@ -4137,7 +4137,7 @@ bool QgsLayoutDesignerDialog::requiresRasterization() const
   QList< QgsLayoutItem *> items;
   mLayout->layoutItems( items );
 
-  for ( QgsLayoutItem *currentItem : qgis::as_const( items ) )
+  for ( QgsLayoutItem *currentItem : std::as_const( items ) )
   {
     if ( currentItem->requiresRasterization() )
       return true;
@@ -4150,7 +4150,7 @@ bool QgsLayoutDesignerDialog::containsAdvancedEffects() const
   QList< QgsLayoutItem *> items;
   mLayout->layoutItems( items );
 
-  for ( QgsLayoutItem *currentItem : qgis::as_const( items ) )
+  for ( QgsLayoutItem *currentItem : std::as_const( items ) )
   {
     if ( currentItem->containsAdvancedEffects() )
       return true;
@@ -4625,7 +4625,7 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
     // and we hit a feature with no geometry attached, then warn the user
     QList< QgsLayoutItemMap * > maps;
     mLayout->layoutItems( maps );
-    for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
+    for ( const QgsLayoutItemMap *map : std::as_const( maps ) )
     {
       if ( map->atlasDriven() )
       {

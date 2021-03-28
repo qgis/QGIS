@@ -180,7 +180,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         QVariantList pkValues;
         pkValues.reserve( mSource->mPrimaryKeyAttrs.size() );
-        for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
+        for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
         {
           QVariant v = mResultSet->getValue( paramIndex );
           pkValues << v;
@@ -201,7 +201,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   // Read attributes
   if ( mHasAttributes )
   {
-    for ( int idx : qgis::as_const( mAttributesToFetch ) )
+    for ( int idx : std::as_const( mAttributesToFetch ) )
     {
       feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
       ++paramIndex;
@@ -337,13 +337,13 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
 
   QStringList sqlFields;
   // Add feature id column
-  for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
+  for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
   {
     QString fieldName = mSource->mFields.at( idx ).name();
     sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
   }
 
-  for ( int idx : qgis::as_const( attrIds ) )
+  for ( int idx : std::as_const( attrIds ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;

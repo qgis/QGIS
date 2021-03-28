@@ -389,7 +389,11 @@ class QgsTaskRunnableWrapper : public QRunnable
 
 QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   , mTaskMutex( new QMutex( QMutex::Recursive ) )
+#else
+  , mTaskMutex( new QRecursiveMutex() )
+#endif
 {
 
 }
@@ -464,7 +468,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
   }
 
   // add all subtasks, must be done before dependency resolution
-  for ( const QgsTask::SubTask &subTask : qgis::as_const( task->mSubTasks ) )
+  for ( const QgsTask::SubTask &subTask : std::as_const( task->mSubTasks ) )
   {
     switch ( subTask.dependency )
     {

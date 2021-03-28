@@ -82,7 +82,7 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
   }
   else
   {
-    for ( QgsStyle::StyleEntity e : qgis::as_const( possibleEntities ) )
+    for ( QgsStyle::StyleEntity e : std::as_const( possibleEntities ) )
     {
       switch ( e )
       {

@@ -2922,7 +2922,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
     polygons.append( QPolygonF() << p5 << p6 );
   }
 
-  for ( const QPolygonF &polygon : qgis::as_const( polygons ) )
+  for ( const QPolygonF &polygon : std::as_const( polygons ) )
   {
     fillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
   }
@@ -4583,7 +4583,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
   int pointNum = 0;
   const bool needsExpressionContext = hasDataDefinedProperties();
 
-  for ( const QgsPointXY &p : qgis::as_const( randomPoints ) )
+  for ( const QgsPointXY &p : std::as_const( randomPoints ) )
   {
     if ( needsExpressionContext )
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );

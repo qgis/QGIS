@@ -13,7 +13,7 @@
 
 class QgsRelationWidgetRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Keeps track of the registered relations widgets. New widgets can be registered, old ones deleted.
 The default {:py:class:`QgsRelationEditorWidget`} is protected from removing.
 

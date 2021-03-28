@@ -50,6 +50,8 @@
 #include "qgssettings.h"
 #include "qgspropertycollection.h"
 
+#include "qgsrelationmanager.h"
+#include "qgsmapthemecollection.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -59,11 +61,9 @@ class QDomNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
-class QgsMapThemeCollection;
 class QgsPathResolver;
 class QgsProjectBadLayerHandler;
 class QgsProjectStorage;
-class QgsRelationManager;
 class QgsTolerance;
 class QgsTransactionGroup;
 class QgsVectorLayer;

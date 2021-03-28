@@ -81,7 +81,7 @@ namespace QgsWfs
   QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName )
   {
     QStringList layerIds = QgsServerProjectUtils::wfsLayerIds( *project );
-    for ( const QString &layerId : qgis::as_const( layerIds ) )
+    for ( const QString &layerId : std::as_const( layerIds ) )
     {
       QgsMapLayer *layer = project->mapLayer( layerId );
       if ( !layer )
