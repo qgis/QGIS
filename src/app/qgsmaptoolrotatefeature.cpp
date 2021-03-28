@@ -391,47 +391,18 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
     return;
   }
 
-  //calculations for affine transformation
-  double angle = -1 * mRotation * ( M_PI / 180 );
   QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
-  double a = std::cos( angle );
-  double b = -1 * std::sin( angle );
-  double c = anchorPoint.x() - std::cos( angle ) * anchorPoint.x() + std::sin( angle ) * anchorPoint.y();
-  double d = std::sin( angle );
-  double ee = std::cos( angle );
-  double f = anchorPoint.y() - std::sin( angle ) * anchorPoint.x() - std::cos( angle ) * anchorPoint.y();
 
   vlayer->beginEditCommand( tr( "Features Rotated" ) );
 
-  int start;
-  if ( vlayer->geometryType() == 2 )
-  {
-    start = 1;
-  }
-  else
-  {
-    start = 0;
-  }
-
-  int i = 0;
   const auto constMRotatedFeatures = mRotatedFeatures;
   for ( QgsFeatureId id : constMRotatedFeatures )
   {
     QgsFeature feat;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
     QgsGeometry geom = feat.geometry();
-    i = start;
-
-    QgsPointXY vertex = geom.vertexAt( i );
-    while ( !vertex.isEmpty() )
-    {
-      double newX = a * vertex.x() + b * vertex.y() + c;
-      double newY = d * vertex.x() + ee * vertex.y() + f;
-
-      vlayer->moveVertex( newX, newY, id, i );
-      i = i + 1;
-      vertex = geom.vertexAt( i );
-    }
+    geom.rotate( mRotation, anchorPoint );
+    vlayer->changeGeometry( id, geom );
   }
 
   deleteRotationWidget();
