@@ -1,0 +1,1304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph DataVirtualized="True" GraphDirection="LeftToRight" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="(Name=00007ffa5e854379 @1 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3923.79588688161,456.185216695978,142.203333333333,25.24" CodeSchemaProperty_IsExternal="True" Label="00007ffa5e854379">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="ExternalCallStackEntry" />
+    </Node>
+    <Node Id="(Name=Geometry::initializeBboxGL @3 @19 OverloadingParameters=[(Type=&quot;unsigned int&quot; Name=bboxShader)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3023.48317490103,77.109279546158,127.16,25.24" Label="initializeBboxGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/geometry.cpp StartLineNumber=130 StartCharacterOffset=0 EndLineNumber=130 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(Name=PointArray::getPointByIndex @7 Type=Imath::Vec3&lt;float&gt; OverloadingParameters=[(Type=&quot;unsigned __int64&quot; Name=inds)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1958.12430828624,996.647372476453,130.356666666666,25.24" Label="getPointByIndex" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/pointarray.h StartLineNumber=56 StartCharacterOffset=0 EndLineNumber=56 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(Name=QDomNodePrivate::insertAfter @52 Type=&quot;QDomNodePrivate *&quot; OverloadingParameters=[(Type=&quot;QDomNodePrivate *&quot; Name=newChild),(Type=&quot;QDomNodePrivate *&quot; Name=refChild)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2842.62263349919,611.123741575574,96.4699999999998,25.24" Label="insertAfter" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/xml/dom/qdom.cpp StartLineNumber=1630 StartCharacterOffset=0 EndLineNumber=1630 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(Name=QgsDisplazPointCloudIndex::RootNode @3 Type=&quot;OctreeNode *&quot; @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1578.65400828624,1005.91497775733,95.4366666666665,25.2399999999997" Label="RootNode" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(Name=QgsDisplazPointCloudIndex::load @3 @4 OverloadingParameters=[(@76 Name=fileName)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2739.14383911318,963.919203872603,61.1333333333332,25.24" Label="load" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=70 StartCharacterOffset=0 EndLineNumber=70 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(Name=QgsdisplazfileLoader::QgsdisplazfileLoader @3 @19 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="959.778780890355,520.565329489613,155.67,25.2399999999998" Label="QgsdisplazfileLoader" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=55 StartCharacterOffset=0 EndLineNumber=55 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(Name=QtPrivate::RefCount::ref @3 @4 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1962.63097495291,1051.88747247645,51.5533333333333,25.2399999999998" Label="ref" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qrefcount.h StartLineNumber=54 StartCharacterOffset=0 EndLineNumber=54 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(Name=std::_Ref_count_base::_Decref @3 @19 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1849.22420828624,992.407642569327,78.9000000000001,25.2399999999998" CodeSchemaProperty_IsExternal="True" Label="_Decref" SourceLocation="(Assembly=&quot;file:///c:/program files (x86)/microsoft visual studio 14.0/vc/include/memory&quot; StartLineNumber=109 StartCharacterOffset=0 EndLineNumber=109 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="ExternalCallStackEntry" />
+    </Node>
+    <Node Id="@101" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1187.78848610635,35.219107978638,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@102" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="931.111033499192,758.331047071438,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@103" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1030.30780016586,750.412664885365,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@104" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1518.87742021494,520.565329489612,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3347 StartCharacterOffset=0 EndLineNumber=3347 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@105" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1377.85065354828,575.805329489612,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3718 StartCharacterOffset=0 EndLineNumber=3718 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@106" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1027.35490823436,356.487772713331,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3203 StartCharacterOffset=0 EndLineNumber=3203 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@107" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1136.817528247,354.845329489612,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@108" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1277.84419491367,410.085329489612,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@109" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1145.44878089036,465.325329489612,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@110" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1225.74844156769,299.605329489613,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@111" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1889.76894156769,266.875895441882,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@112" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1988.96570823436,236.833544615044,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@113" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2581.90287490103,96.6168514644085,155.073333333333,25.24" Label="initializeGLGeometry" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=202 StartCharacterOffset=0 EndLineNumber=202 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@115" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="839.158186106348,108.050429299521,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@117" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="989.394952773016,78.6453294896128,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@118" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="479.857300165859,769.557719120182,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@119" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="740.620833499192,767.612848905888,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@12" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="125.839653548276,536.059116603791,61.72,25.2399999999998" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1335 StartCharacterOffset=0 EndLineNumber=1335 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@120" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1418.87086158033,465.325329489612,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@121" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1033.99712021494,575.805329489612,216.07,25.24" Label="sendThroughObjectEventFilters" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1172 StartCharacterOffset=0 EndLineNumber=1172 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@122" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1618.074102099,473.794540394303,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@123" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1142.6927311752,189.125329489613,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@124" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1027.35490823436,301.247672713331,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@125" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="992.456064508533,133.885329489612,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@126" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="928.158141567691,289.67466708839,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@127" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1292.92939784187,244.365329489613,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@128" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1126.55167490102,299.605329489612,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@129" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="678.724608234356,315.014223376787,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@130" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="828.961374901024,323.936499545838,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@131" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1366.77520823436,333.936195177497,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@132" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1790.57217490103,298.795697262548,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@133" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3705.24578688161,456.120196764959,188.55,25.24" Label="applyLayerNodeProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaplayerlegend.cpp StartLineNumber=249 StartCharacterOffset=0 EndLineNumber=249 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@135" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2560.73707244651,962.579977640282,148.406666666667,25.24" Label="QgsDisplazProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazprovider.cpp StartLineNumber=53 StartCharacterOffset=0 EndLineNumber=53 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@136" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="470.646138872467,620.582892989256,155.22,25.24" Label="showLayerProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=16372 StartCharacterOffset=0 EndLineNumber=16372 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@137" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1456.26724161957,981.008451913184,92.3866666666665,25.2399999999998" Label="nodeData" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=78 StartCharacterOffset=0 EndLineNumber=78 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@139" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="804.876920214943,635.237329581656,117.673333333333,25.24" Label="activateAction" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1448 StartCharacterOffset=0 EndLineNumber=1448 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@14" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="333.53318688161,573.391507810088,61.72,25.24" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/dialogs/qdialog.cpp StartLineNumber=546 StartCharacterOffset=0 EndLineNumber=546 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@140" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="952.550353548277,645.356151688498,117.673333333333,25.24" Label="activateAction" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1448 StartCharacterOffset=0 EndLineNumber=1448 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@142" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="929.816841619574,1000.64145515228,104.08,25.2399999999998" Label="runIteration" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentmapkernel.h StartLineNumber=68 StartCharacterOffset=0 EndLineNumber=68 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@144" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2305.12223349919,633.717457620386,86.7066666666669,25.24" Label="writeXml" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@145" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2157.88213349919,644.062070622207,117.24,25.24" Label="writeLayerXml" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaplayer.cpp StartLineNumber=549 StartCharacterOffset=0 EndLineNumber=549 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@146" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1704.09077495291,1002.77450684357,115.133333333333,25.2399999999999" Label="renderDisplaz" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudclassifiedrenderer.cpp StartLineNumber=182 StartCharacterOffset=0 EndLineNumber=182 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@147" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="669.118086106349,151.290273052974,140.04,25.2399999999998" Label="sendPostedEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1742 StartCharacterOffset=0 EndLineNumber=1742 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@148" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2411.29363911318,957.820474917043,119.443333333333,25.24" Label="createProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazprovider.cpp StartLineNumber=209 StartCharacterOffset=0 EndLineNumber=209 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@149" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2167.51251943968,68.3632345315424,138.396666666667,25.24" Label="geometryInserted" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=226 StartCharacterOffset=0 EndLineNumber=226 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@15" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="675.057435432335,506.237842880156,83.4633333333334,25.2399999999998" Label="instance" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=44 StartCharacterOffset=0 EndLineNumber=44 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@151" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1456.22716415311,869.814542885601,152.47,25.24" Label="addPointCloudLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=5848 StartCharacterOffset=0 EndLineNumber=5848 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@152" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1594.03545277302,20.6818605150917,114.806666666667,25.24" Label="addGeometry" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/geometrycollection.cpp StartLineNumber=135 StartCharacterOffset=0 EndLineNumber=135 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@153" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="790.183408286242,996.817760379051,109.633333333333,25.2399999999998" Label="runIterations" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentmapkernel.h StartLineNumber=77 StartCharacterOffset=0 EndLineNumber=77 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@154" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="160.51318688161,749.608097346684,137.436666666667,25.24" Label="qt_static_metacall" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/.moc/release/moc_qwidget.cpp StartLineNumber=397 StartCharacterOffset=0 EndLineNumber=397 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@155" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1426.59868610635,20.9638470230424,137.436666666667,25.24" Label="qt_static_metacall" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/build/src/moc_geometrycollection.cpp StartLineNumber=95 StartCharacterOffset=0 EndLineNumber=95 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@156" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2000.07575277302,46.079296698715,137.436666666667,25.24" Label="qt_static_metacall" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/build/src/render/moc_view3d.cpp StartLineNumber=285 StartCharacterOffset=0 EndLineNumber=285 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@16" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1457.41368050846,1036.24855191318,91.24,25.2399999999998" Label="attributes" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudblock.cpp StartLineNumber=47 StartCharacterOffset=0 EndLineNumber=47 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@162" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="630.094066832526,755.367216451407,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@163" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2721.05508688161,445.693732417865,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@164" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1889.54898610635,34.4431044453603,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3771 StartCharacterOffset=0 EndLineNumber=3771 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@165" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2878.22185354828,517.782273010969,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@166" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="-294.890546451724,725.352560034491,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3771 StartCharacterOffset=0 EndLineNumber=3771 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@167" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2022.03782021494,490.852756467774,80.5266666666669,25.2400000000001" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@168" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2261.85020577984,948.268403259115,119.443333333333,25.24" Label="createProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproviderregistry.cpp StartLineNumber=476 StartCharacterOffset=0 EndLineNumber=476 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@169" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1665.91569471554,895.644908158767,191.803333333334,25.24" Label="addPointCloudLayerPrivate" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=5905 StartCharacterOffset=0 EndLineNumber=5905 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@17" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="617.973308286241,971.726814470632,142.21,25.2399999999998" Label="forThreadFunction" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentiteratekernel.h StartLineNumber=254 StartCharacterOffset=0 EndLineNumber=254 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@170" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="120.27764156769,275.173270724371,128.47,25.2399999999998" Label="qt_internal_proc" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventdispatcher_win.cpp StartLineNumber=237 StartCharacterOffset=0 EndLineNumber=237 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@172" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="-86.3637797850566,631.121718689738,87.74,25.2399999999998" Label="WinMain" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/mainwin.cpp StartLineNumber=194 StartCharacterOffset=0 EndLineNumber=194 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@173" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1902.08989736337,918.686380414042,153.493333333333,25.24" Label="QgsPointCloudLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=43 StartCharacterOffset=0 EndLineNumber=43 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@174" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="438.476720214943,678.702933247646,153.2,25.24" Label="activateCausedStack" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1370 StartCharacterOffset=0 EndLineNumber=1370 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@175" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="621.676820214944,689.912536981509,153.2,25.24" Label="activateCausedStack" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1370 StartCharacterOffset=0 EndLineNumber=1370 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@176" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2581.02243349919,619.323681933133,92.2799999999997,25.24" Label="writeStyle" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=234 StartCharacterOffset=0 EndLineNumber=234 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@177" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2421.82900016586,625.484024553808,129.193333333334,25.24" Label="writeSymbology" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=221 StartCharacterOffset=0 EndLineNumber=221 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@178" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2097.87221453025,935.203641728369,119.07,25.24" Label="setDataSource" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=288 StartCharacterOffset=0 EndLineNumber=288 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@18" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="464.546541619574,940.540827032092,123.426666666667,25.2399999999998" Label="threadFunction" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentiteratekernel.h StartLineNumber=216 StartCharacterOffset=0 EndLineNumber=216 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@184" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2922.87528688161,454.803999077834,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@185" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2680.01681959461,556.173932417865,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@186" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="84.4464202149428,691.008282179701,61.2933333333333,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@187" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2831.58185354828,445.693732417865,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@188" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="839.817600165859,783.861458774327,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=419 StartCharacterOffset=0 EndLineNumber=419 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@189" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2132.56458688161,482.014012391445,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@190" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="217.559753548277,506.595643482458,85.9733333333334,25.2399999999998" Label="QgisApp" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=992 StartCharacterOffset=0 EndLineNumber=992 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@191" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1443.16606450853,189.125329489613,134.113333333333,25.24" Label="sendMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=2693 StartCharacterOffset=0 EndLineNumber=2693 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@192" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1607.27939784187,247.931705566003,134.113333333333,25.24" Label="sendMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=2693 StartCharacterOffset=0 EndLineNumber=2693 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@20" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1738.84221943968,26.0368807232082,120.706666666667,25.24" Label="endInsertRows" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/itemmodels/qabstractitemmodel.cpp StartLineNumber=2731 StartCharacterOffset=0 EndLineNumber=2731 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@21" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="293.806341619574,866.122862405907,55.37,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/thread/qthreadpool.cpp StartLineNumber=97 StartCharacterOffset=0 EndLineNumber=97 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@22" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2895.22974156769,80.8229853803864,98.2533333333331,25.24" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/geometry.cpp StartLineNumber=71 StartCharacterOffset=0 EndLineNumber=71 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@23" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2766.97630823436,88.6429318338112,98.2533333333331,25.24" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/pointarray.cpp StartLineNumber=712 StartCharacterOffset=0 EndLineNumber=712 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@24" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3163.04548688161,454.600376487662,157.7,25.24" Label="layerLegendChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=841 StartCharacterOffset=0 EndLineNumber=841 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@25" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2721.05508688161,500.933832417865,127.166666666667,25.24" Label="legendChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayer.cpp StartLineNumber=748 StartCharacterOffset=0 EndLineNumber=748 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@26" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2554.19832021494,459.222872193101,136.856666666667,25.24" Label="rendererChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayer.cpp StartLineNumber=736 StartCharacterOffset=0 EndLineNumber=736 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@27" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3014.16872021494,452.534779175015,118.876666666667,25.24" Label="itemsChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayerlegend.cpp StartLineNumber=126 StartCharacterOffset=0 EndLineNumber=126 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@28" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1063.89694161957,975.498293745489,92.4133333333332,25.2399999999998" Label="doRender" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprenderercustompainterjob.cpp StartLineNumber=317 StartCharacterOffset=0 EndLineNumber=317 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@29" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="621.158472926849,893.210128164085,55.3699999999999,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentrunbase.h StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@30" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="756.35794947918,916.486714470632,99.23,25.2399999999998" Label="runFunctor">
+      <Category Ref="CallStackEntry" />
+    </Node>
+    <Node Id="@32" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2321.36145354828,469.418287866013,67.5033333333336,25.24" Label="apply" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/gui/pointcloud/qgspointcloudrendererpropertieswidget.cpp StartLineNumber=168 StartCharacterOffset=0 EndLineNumber=168 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@34" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2358.19600823436,153.008865078551,65.4533333333334,25.24" Label="glInit" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/opengl/qgl.cpp StartLineNumber=4541 StartCharacterOffset=0 EndLineNumber=4541 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@35" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="516.404102099002,450.997842880157,128.653333333333,25.2399999999998" Label="createLasViewer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=17220 StartCharacterOffset=0 EndLineNumber=17220 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@36" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1493.67486683253,709.268691042604,73.7,25.24" Label="fileExit" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=6592 StartCharacterOffset=0 EndLineNumber=6592 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@37" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="175.739853548276,668.621346207741,122.21,25.24" Label="layerProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=9401 StartCharacterOffset=0 EndLineNumber=9401 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@38" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2223.85802021494,475.073386809111,67.5033333333331,25.24" Label="apply" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/pointcloud/qgspointcloudlayerproperties.cpp StartLineNumber=149 StartCharacterOffset=0 EndLineNumber=149 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@39" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2453.64944156769,127.264582682285,98.2533333333331,25.24" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=444 StartCharacterOffset=0 EndLineNumber=444 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@40" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1797.91762021494,515.310082322714,60.9533333333334,25.24" Label="click" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=407 StartCharacterOffset=0 EndLineNumber=407 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@41" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1888.87105354828,503.098440834558,103.166666666667,25.24" Label="emitClicked" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=414 StartCharacterOffset=0 EndLineNumber=414 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@42" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="619.358041567691,395.757842880157,107.876666666667,25.2399999999998" Label="show_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=7986 StartCharacterOffset=0 EndLineNumber=7986 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@44" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="499.078086106348,206.865416165614,140.04,25.2399999999998" Label="sendPostedEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/platformsupport/eventdispatchers/qwindowsguieventdispatcher.cpp StartLineNumber=81 StartCharacterOffset=0 EndLineNumber=81 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@46" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="379.176441619574,916.265245951734,55.37,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/concurrent/qtconcurrentthreadengine.cpp StartLineNumber=297 StartCharacterOffset=0 EndLineNumber=297 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@48" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1328.81525277302,25.1166409373074,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=1249 StartCharacterOffset=0 EndLineNumber=1249 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@49" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2227.77590823436,179.824839781268,100.42,25.24" Label="resizeEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/opengl/qgl.cpp StartLineNumber=4427 StartCharacterOffset=0 EndLineNumber=4427 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@5" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1352.41047495291,997.426480673886,73.8566666666668,25.2399999999998" Label="render" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayerrenderer.cpp StartLineNumber=141 StartCharacterOffset=0 EndLineNumber=141 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@51" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="327.949953548276,714.824608316594,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qaction.cpp StartLineNumber=1166 StartCharacterOffset=0 EndLineNumber=1166 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@53" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2703.30253349919,614.858644322661,109.32,25.24" Label="appendChild" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/xml/dom/qdom.cpp StartLineNumber=2605 StartCharacterOffset=0 EndLineNumber=2605 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@54" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="475.044608234358,395.757842880157,114.313333333333,25.2399999999998" Label="showChildren" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8408 StartCharacterOffset=0 EndLineNumber=8408 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@55" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="354.487841567691,455.291322051554,90.5566666666667,25.2399999999998" Label="setVisible" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8341 StartCharacterOffset=0 EndLineNumber=8341 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@56" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="202.096341619574,804.848197346684,61.71,25.2399999999998" Label="start" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/thread/qthread_win.cpp StartLineNumber=379 StartCharacterOffset=0 EndLineNumber=379 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@57" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="788.520253548277,561.477842880156,67.7833333333334,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qframe.cpp StartLineNumber=550 StartCharacterOffset=0 EndLineNumber=550 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@59" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1286.47544755702,520.565329489612,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=3064 StartCharacterOffset=0 EndLineNumber=3064 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@6" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1826.43516683253,674.030441229383,64.53,25.24" Label="write" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=2170 StartCharacterOffset=0 EndLineNumber=2170 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@60" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1618.07418688161,529.034640394303,149.843333333333,25.24" Label="mouseReleaseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=1011 StartCharacterOffset=0 EndLineNumber=1011 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@61" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1100.22378688161,631.045329489612,149.843333333333,25.24" Label="mouseReleaseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=2945 StartCharacterOffset=0 EndLineNumber=2945 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@63" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="498.234508234357,285.277842880157,150.49,25.2399999999998" Label="processMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/gui/kernel/qguiapplication.cpp StartLineNumber=2081 StartCharacterOffset=0 EndLineNumber=2081 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@64" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1366.90143349919,720.207483698868,96.7733333333335,25.24" Label="closeEvent" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=13707 StartCharacterOffset=0 EndLineNumber=13707 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@65" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="516.97338688161,561.477842880156,143.763333333333,25.24" Label="contextMenuEvent" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/gui/layertree/qgslayertreeview.cpp StartLineNumber=186 StartCharacterOffset=0 EndLineNumber=186 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@66" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1171.33456683253,742.159917317133,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=2278 StartCharacterOffset=0 EndLineNumber=2278 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@68" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1269.11800016586,730.341072413237,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@69" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="886.30368688161,575.805329489612,117.693333333333,25.24" Label="viewportEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/itemviews/qabstractitemview.cpp StartLineNumber=1750 StartCharacterOffset=0 EndLineNumber=1750 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@70" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="690.736820214943,561.477842880156,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@72" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1280.06722021494,575.805329489612,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@73" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1517.01197490103,339.653825450972,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidgetwindow.cpp StartLineNumber=274 StartCharacterOffset=0 EndLineNumber=274 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@74" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2129.99247490103,207.913826934716,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9071 StartCharacterOffset=0 EndLineNumber=9071 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@75" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1614.79540823436,332.172044265931,145.776666666667,25.24" Label="handleMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidgetwindow.cpp StartLineNumber=556 StartCharacterOffset=0 EndLineNumber=556 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@77" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2003.72203349919,656.811105627156,124.16,25.24" Label="writeProjectFile" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=2313 StartCharacterOffset=0 EndLineNumber=2313 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@78" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1920.96526683253,663.914946909509,52.7566666666667,25.24" Label="zip" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=3346 StartCharacterOffset=0 EndLineNumber=3346 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@8" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1716.40840016586,685.20872577674,80.0266666666666,25.24" Label="fileSave" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=7409 StartCharacterOffset=0 EndLineNumber=7409 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@80" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="462.482020263043,340.517842880157,116.933333333333,25.2399999999998" Label="processEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventdispatcher_win.cpp StartLineNumber=629 StartCharacterOffset=0 EndLineNumber=629 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@81" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="278.74774156769,283.787081565956,189.486666666667,25.2399999999998" Label="sendWindowSystemEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/gui/kernel/qwindowsysteminterface.cpp StartLineNumber=1032 StartCharacterOffset=0 EndLineNumber=1032 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@82" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="207.554408234358,449.399313260827,116.933333333333,25.2399999999998" Label="processEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/platformsupport/eventdispatchers/qwindowsguieventdispatcher.cpp StartLineNumber=74 StartCharacterOffset=0 EndLineNumber=74 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@83" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="333.53318688161,516.230643638715,61.72,25.2399999999998" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventloop.cpp StartLineNumber=211 StartCharacterOffset=0 EndLineNumber=211 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@84" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1030.30825016586,808.519581761213,155.506666666667,25.24" Label="addLayersFromItems" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/browser/qgsinbuiltdataitemproviders.cpp StartLineNumber=608 StartCharacterOffset=0 EndLineNumber=608 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@85" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1186.31037495291,1002.14326884151,136.1,25.2399999999998" Label="renderLayerStatic" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprendererparalleljob.cpp StartLineNumber=350 StartCharacterOffset=0 EndLineNumber=350 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@86" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1232.81827304194,841.424607236237,140.223333333333,25.24" Label="handleDropUriList" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=2203 StartCharacterOffset=0 EndLineNumber=2203 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@87" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="342.823866832526,770.064708316594,107.033333333333,25.24" Label="close_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8497 StartCharacterOffset=0 EndLineNumber=8497 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@88" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3529.69235354828,455.939934925968,145.553333333333,25.24" Label="addLegendToLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=1325 StartCharacterOffset=0 EndLineNumber=1325 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@89" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3350.74558688161,455.366700731712,148.946666666667,25.24" Label="refreshLayerLegend" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=563 StartCharacterOffset=0 EndLineNumber=563 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@9" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1597.37496683253,697.456658750585,89.0333333333333,25.24" Label="saveDirty" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=13492 StartCharacterOffset=0 EndLineNumber=13492 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@90" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2418.86488688161,464.293107781293,105.333333333333,25.24" Label="setRenderer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=597 StartCharacterOffset=0 EndLineNumber=597 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@91" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="926.453508286241,941.577660379051,107.443333333333,25.2399999999998" Label="staticRender" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprenderercustompainterjob.cpp StartLineNumber=264 StartCharacterOffset=0 EndLineNumber=264 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@92" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1849.22420828624,1051.88747247645,83.4066666666668,25.2399999999998" Label="QVector" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qvector.h StartLineNumber=357 StartCharacterOffset=0 EndLineNumber=357 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@93" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="425.25328688161,536.020196724182,61.72,25.24" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=2675 StartCharacterOffset=0 EndLineNumber=2675 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@94" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="31.3762202149431,559.535201752891,64.4633333333334,25.2399999999998" Label="main" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/main.cpp StartLineNumber=1611 StartCharacterOffset=0 EndLineNumber=1611 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@95" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="757.234808234358,379.176599545838,240.12,25.2399999999998" Label="sendPendingMoveAndResizeEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=7935 StartCharacterOffset=0 EndLineNumber=7935 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@99" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1088.59171943968,52.2286599400782,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="ExternalCodeRootNode" Category="ExternalCallStackEntry" Bounds="-184.363779785057,712.934445884367,68,25.2399999999998" Label="外部代码">
+      <Category Ref="CallStackEntry" />
+    </Node>
+  </Nodes>
+  <Links>
+    <Link Source="@101" Target="@48" Category="CallStackDirectCall" Bounds="1298.81515277302,41.3628508895295,21.0321403798732,1.77945921067279" />
+    <Link Source="@102" Target="@103" Category="CallStackDirectCall" Bounds="1000.30770016586,767.284428742189,21.0195940247357,1.38571918058494" />
+    <Link Source="@103" Target="@66" Category="CallStackDirectCall" Bounds="1141.33446683253,757.742917450644,21.0215195984381,1.4529136087699" />
+    <Link Source="@104" Target="@105" Category="CallStackDirectCall" Bounds="1468.98114657698,545.805329489612,57.0541562954563,26.2394907778478" />
+    <Link Source="@105" Target="@121" Category="CallStackDirectCall" Bounds="1258.48449707031,600.695495605469,133.072387695313,7.67486572265625" />
+    <Link Source="@106" Target="@107" Category="CallStackDirectCall" Bounds="1096.55157490102,368.27803273084,31.2666674072157,0.393884517958497" />
+    <Link Source="@106" Target="@108" Category="CallStackDirectCall" Bounds="1096.55157490102,375.940332942526,172.752631119385,34.1155958439733" />
+    <Link Source="@106" Target="@109" Category="CallStackDirectCall" Bounds="1078.07168473088,381.727772713331,99.685629196365,78.0492649148218" />
+    <Link Source="@106" Target="@110" Category="CallStackDirectCall" Bounds="1096.55157490102,327.104907365254,127.342439130591,33.0290342729438" />
+    <Link Source="@107" Target="@59" Category="CallStackDirectCall" Bounds="1202.08114825882,380.085329489612,103.033192952225,133.358016839217" />
+    <Link Source="@108" Target="@59" Category="CallStackDirectCall" Bounds="1322.90198790852,435.325329489612,8.97166067723833,76.3015766735746" />
+    <Link Source="@109" Target="@72" Category="CallStackDirectCall" Bounds="1213.86960219385,490.565329489612,80.7465734836876,78.9481082391995" />
+    <Link Source="@110" Target="@73" Category="CallStackDirectCall" Bounds="1336.77514648438,316.480621337891,181.548706054688,19.3810729980469" />
+    <Link Source="@111" Target="@112" Category="CallStackDirectCall" Bounds="1958.96560823436,264.257351029046,26.326608972415,6.58481050424666" />
+    <Link Source="@112" Target="@74" Category="CallStackDirectCall" Bounds="2096.58509525248,230.860866451356,24.6602764690215,5.97267816368759" />
+    <Link Source="@113" Target="@23" Category="CallStackDirectCall" Bounds="2736.97620823436,104.220894515176,21.0117353141623,1.06946391464578" />
+    <Link Source="@115" Target="@117" Category="CallStackDirectCall" Bounds="952.802118927802,101.488098207665,27.8330194715616,6.56233109185563" />
+    <Link Source="@117" Target="@99" Category="CallStackDirectCall" Bounds="1058.59161943968,76.3784283929044,21.3032045842631,5.67316591819628" />
+    <Link Source="@118" Target="@119" Category="CallStackDirectCall" Bounds="600.093966832525,780.593294527999,131.527174231101,1.0873977274" />
+    <Link Source="@119" Target="@102" Category="CallStackDirectCall" Bounds="809.817500165859,773.074894388748,112.304198295828,5.47212042277636" />
+    <Link Source="@12" Target="@83" Category="CallStackDirectCall" Bounds="187.559653548277,532.652183185655,137.014270296737,13.0807334768975" />
+    <Link Source="@120" Target="@122" Category="CallStackDirectCall" Bounds="1539.107528247,480.876843449843,69.9772547787352,3.41225858915692" />
+    <Link Source="@121" Target="@69" Category="CallStackDirectCall" Bounds="1012.99702021494,588.425329489612,21.0001,0" />
+    <Link Source="@122" Target="@104" Category="CallStackDirectCall" Bounds="1588.3821712172,499.034540394303,37.5243671757319,17.6925702531299" />
+    <Link Source="@123" Target="@124" Category="CallStackDirectCall" Bounds="1084.84913101102,214.365329489613,102.107593725405,81.277293872674" />
+    <Link Source="@124" Target="@106" Category="CallStackDirectCall" Bounds="1061.95324156769,326.487672713331,0,21.0001000000001" />
+    <Link Source="@125" Target="@126" Category="CallStackDirectCall" Bounds="974.527568462297,159.125329489612,70.7709643878807,122.752356124694" />
+    <Link Source="@126" Target="@106" Category="CallStackDirectCall" Bounds="981.49326588872,314.91466708839,54.2585005971669,36.5453336158752" />
+    <Link Source="@127" Target="@128" Category="CallStackDirectCall" Bounds="1204.37846556899,269.605329489613,104.828764818498,30.1761838537238" />
+    <Link Source="@128" Target="@106" Category="CallStackDirectCall" Bounds="1091.76858962869,324.845329489612,47.3735173203852,27.1654157674292" />
+    <Link Source="@129" Target="@130" Category="CallStackDirectCall" Bounds="798.961274901023,331.935107589546,21.0230430422218,1.50399501967433" />
+    <Link Source="@130" Target="@106" Category="CallStackDirectCall" Bounds="898.158041567691,342.233195658614,120.315616031967,19.7406962715441" />
+    <Link Source="@131" Target="@132" Category="CallStackDirectCall" Bounds="1487.01187490103,315.259362321479,294.595128221398,25.9925136410973" />
+    <Link Source="@132" Target="@111" Category="CallStackDirectCall" Bounds="1859.42142724176,293.274080293943,22.1275558810476,7.12026432143864" />
+    <Link Source="@133" Target="(Name=00007ffa5e854379 @1 @2)" Category="CallStackDirectCall" Bounds="3893.79578688161,468.771570781949,21.0001004983792,0.0069886768477545" />
+    <Link Source="@135" Target="(Name=QgsDisplazPointCloudIndex::load @3 @4 OverloadingParameters=[(@76 Name=fileName)] @2)" Category="CallStackDirectCall" Bounds="2709.14373911318,975.93734483468,21.0005443254049,0.208684862989685" />
+    <Link Source="@136" Target="@14" Category="CallStackDirectCall" Bounds="403.970624850596,596.169694107956,95.1165725865836,24.4131988813004" />
+    <Link Source="@137" Target="(Name=std::_Ref_count_base::_Decref @3 @19 @2)" Category="CallStackDirectCall" Bounds="1548.65393066406,994.4609375,291.576171875,8.80426025390625" />
+    <Link Source="@139" Target="@174" Category="CallStackDirectCall" Bounds="600.607580076498,655.192673255469,204.269340138445,25.4668712017191" />
+    <Link Source="@14" Target="@83" Category="CallStackDirectCall" Bounds="364.39318688161,550.470643638715,0,22.9208641713724" />
+    <Link Source="@140" Target="@175" Category="CallStackDirectCall" Bounds="783.517855528157,666.348760403757,169.032498020119,24.0537584174024" />
+    <Link Source="@142" Target="@85" Category="CallStackDirectCall" Bounds="1033.89684161957,1013.54825651383,143.413670008767,0.790377321743449" />
+    <Link Source="@144" Target="@177" Category="CallStackDirectCall" Bounds="2391.82890016586,642.495624121372,21.0160871850303,1.25432708754329" />
+    <Link Source="@145" Target="@144" Category="CallStackDirectCall" Bounds="2275.12213349919,650.438966989281,21.0276215154736,1.64823026447255" />
+    <Link Source="@146" Target="(Name=PointArray::getPointByIndex @7 Type=Imath::Vec3&lt;float&gt; OverloadingParameters=[(Type=&quot;unsigned __int64&quot; Name=inds)] @2)" Category="CallStackDirectCall" Bounds="1819.22412109375,1020.53137207031,153.692993164063,6.9869384765625" />
+    <Link Source="@147" Target="@115" Category="CallStackDirectCall" Bounds="785.876160373909,135.636546717475,57.973456737928,15.6537263354994" />
+    <Link Source="@148" Target="@135" Category="CallStackDirectCall" Bounds="2530.73697244651,972.174470718396,21.0038911439851,0.609839964095727" />
+    <Link Source="@149" Target="@113" Category="CallStackDirectCall" Bounds="2305.90918610635,85.6081943561697,267.013723599698,17.846206473269" />
+    <Link Source="@15" Target="(Name=QgsdisplazfileLoader::QgsdisplazfileLoader @3 @19 @2)" Category="CallStackDirectCall" Bounds="758.520768765668,520.721508411154,192.266973362174,8.58631728913463" />
+    <Link Source="@151" Target="@169" Category="CallStackDirectCall" Bounds="1608.69716415311,891.020255877459,48.5061454852398,5.46284309670796" />
+    <Link Source="@152" Target="@20" Category="CallStackDirectCall" Bounds="1708.84211943968,35.3822796860575,21.0060048981286,0.761302397575058" />
+    <Link Source="@153" Target="@142" Category="CallStackDirectCall" Bounds="899.816741619575,1010.96930468573,21.0036106879453,0.586828100374873" />
+    <Link Source="@154" Target="@87" Category="CallStackDirectCall" Bounds="297.949853548276,770.640236128866,35.9406989198915,4.39967229379954" />
+    <Link Source="@155" Target="@152" Category="CallStackDirectCall" Bounds="1564.03535277302,33.4217979225592,21.0001146805118,0.0379303227970951" />
+    <Link Source="@156" Target="@149" Category="CallStackDirectCall" Bounds="2137.51241943968,67.8187854690969,21.0783199673983,2.79726665239077" />
+    <Link Source="@16" Target="@92" Category="CallStackDirectCall" Bounds="1548.65368050846,1050.70783741786,291.577833635027,11.7556966876623" />
+    <Link Source="@162" Target="@188" Category="CallStackDirectCall" Bounds="692.038391113281,780.607238769531,138.788940429688,20.7263793945313" />
+    <Link Source="@163" Target="@184" Category="CallStackDirectCall" Bounds="2801.58178710938,466.956115722656,112.404296875,11.196044921875" />
+    <Link Source="@163" Target="@187" Category="CallStackDirectCall" Bounds="2801.58175354828,458.313732417865,21.0001000000002,0" />
+    <Link Source="@164" Target="@156" Category="CallStackDirectCall" Bounds="1970.07565277302,50.4341357587789,21.0314792599161,1.76085210247596" />
+    <Link Source="@165" Target="@185" Category="CallStackDirectCall" Bounds="2750.16040564389,537.840265171103,128.061447904387,23.6572575261575" />
+    <Link Source="@166" Target="@154" Category="CallStackDirectCall" Bounds="-214.363879785057,739.990935888229,365.888353693673,18.3417555656678" />
+    <Link Source="@166" Target="@186" Category="CallStackDirectCall" Bounds="-214.363876342773,711.227661132813,289.972496032715,36.0197143554688" />
+    <Link Source="@167" Target="@189" Category="CallStackDirectCall" Bounds="2102.56448688161,498.103668389832,21.0344268659801,1.84241137270374" />
+    <Link Source="@168" Target="@148" Category="CallStackDirectCall" Bounds="2381.29353911318,964.705671283589,21.0184284503966,1.34344835512036" />
+    <Link Source="@169" Target="@173" Category="CallStackDirectCall" Bounds="1857.66694380959,918.441498373985,35.4732553798726,3.76628436408907" />
+    <Link Source="@17" Target="@153" Category="CallStackDirectCall" Bounds="759.631791483371,995.700287872035,21.6659301509454,3.48648359427011" />
+    <Link Source="@170" Target="@44" Category="CallStackDirectCall" Bounds="248.222393853453,233.240483355609,243.432202567925,43.2370276204152" />
+    <Link Source="@170" Target="@81" Category="CallStackDirectCall" Bounds="248.74764156769,290.721161117203,21.0094347481538,0.957629363399519" />
+    <Link Source="@172" Target="@94" Category="CallStackDirectCall" Bounds="-23.7890978054237,589.808906305865,61.2316178545627,41.3128123838725" />
+    <Link Source="@173" Target="@178" Category="CallStackDirectCall" Bounds="2055.5832306967,938.405221935792,33.327239214253,3.08267185814077" />
+    <Link Source="@174" Target="@51" Category="CallStackDirectCall" Bounds="417.203089894633,703.942933247646,46.5632598812622,11.452428323424" />
+    <Link Source="@175" Target="@51" Category="CallStackDirectCall" Bounds="417.451094001849,708.314044090143,204.225726213094,15.4142622436939" />
+    <Link Source="@176" Target="@53" Category="CallStackDirectCall" Bounds="2673.30243349919,629.651585329092,21.0053392273912,0.717045550202556" />
+    <Link Source="@177" Target="@176" Category="CallStackDirectCall" Bounds="2551.02233349919,634.356898194873,21.00870961194,0.919595158345146" />
+    <Link Source="@178" Target="@168" Category="CallStackDirectCall" Bounds="2216.94221453025,952.56163215582,35.9363573194241,2.85993309778928" />
+    <Link Source="@18" Target="@17" Category="CallStackDirectCall" Bounds="587.167180968271,964.826916930044,27.1842503957743,5.20682869876998" />
+    <Link Source="@184" Target="@24" Category="CallStackDirectCall" Bounds="2983.03491210938,478.870483398438,171.210205078125,9.84713745117188" />
+    <Link Source="@185" Target="@25" Category="CallStackDirectCall" Bounds="2727.56359445253,531.558778655804,32.9634518005523,24.615153762061" />
+    <Link Source="@186" Target="@37" Category="CallStackDirectCall" Bounds="145.739753548276,694.0265545929,21.5725069714462,3.96661457608752" />
+    <Link Source="@187" Target="@27" Category="CallStackDirectCall" Bounds="2892.87524414063,446.823272705078,133.588134765625,8.05136108398438" />
+    <Link Source="@188" Target="@84" Category="CallStackDirectCall" Bounds="901.110933499193,799.66200511385,120.245396006329,12.4792055942728" />
+    <Link Source="@189" Target="@38" Category="CallStackDirectCall" Bounds="2193.85792021494,490.834913008508,21.0243283427353,1.54580945884658" />
+    <Link Source="@190" Target="@35" Category="CallStackDirectCall" Bounds="303.53308688161,476.259480936913,204.395258011756,35.4918247891599" />
+    <Link Source="@190" Target="@55" Category="CallStackDirectCall" Bounds="294.792137829678,483.643355659882,62.2834839448549,22.9522878225765" />
+    <Link Source="@191" Target="@123" Category="CallStackDirectCall" Bounds="1271.92939784187,201.745329489613,171.236666666667,2.8421709430404E-14" />
+    <Link Source="@191" Target="@125" Category="CallStackDirectCall" Bounds="1121.62787640814,154.8403629163,321.538188100391,38.8109563981054" />
+    <Link Source="@192" Target="@127" Category="CallStackDirectCall" Bounds="1422.16551009127,257.752553094099,185.113887750599,2.05480769821941" />
+    <Link Source="@20" Target="@164" Category="CallStackDirectCall" Bounds="1859.54888610635,42.541095861318,21.0186810384332,1.3527186414324" />
+    <Link Source="@21" Target="@29" Category="CallStackDirectCall" Bounds="349.176341619574,881.033701171858,263.012785456342,21.7634056299061" />
+    <Link Source="@21" Target="@46" Category="CallStackDirectCall" Bounds="342.977569154317,891.362862405907,34.6372463880704,20.3442902534014" />
+    <Link Source="@22" Target="(Name=Geometry::initializeBboxGL @3 @19 OverloadingParameters=[(Type=&quot;unsigned int&quot; Name=bboxShader)] @2)" Category="CallStackDirectCall" Bounds="2993.48307490103,91.6179738534385,21.0031459156098,0.546571878445945" />
+    <Link Source="@23" Target="@22" Category="CallStackDirectCall" Bounds="2865.22964156769,96.9861027001659,21.0167829639645,1.28144809171935" />
+    <Link Source="@24" Target="@89" Category="CallStackDirectCall" Bounds="3320.74548688161,467.549983377216,21.000178631396,0.0877844458944423" />
+    <Link Source="@25" Target="@163" Category="CallStackDirectCall" Bounds="2770.14633273372,479.225171968828,9.16446497510969,21.7086604490372" />
+    <Link Source="@26" Target="@163" Category="CallStackDirectCall" Bounds="2691.05498688161,463.115137116904,21.0426172833545,2.05267058965029" />
+    <Link Source="@27" Target="@165" Category="CallStackDirectCall" Bounds="2956.78445243994,477.774779175015,86.8193344349038,36.518023603698" />
+    <Link Source="@28" Target="@5" Category="CallStackDirectCall" Bounds="1156.31030273438,990.02490234375,188.143188476563,7.76336669921875" />
+    <Link Source="@29" Target="@30" Category="CallStackDirectCall" Bounds="676.528472926849,909.931282868066,70.9266301580905,10.506811735973" />
+    <Link Source="@30" Target="@91" Category="CallStackDirectCall" Bounds="855.58794947918,936.252933629778,61.9574862785064,8.92394992433731" />
+    <Link Source="@32" Target="@90" Category="CallStackDirectCall" Bounds="2388.86478688161,479.627524466484,21.0088087646659,0.924887281175245" />
+    <Link Source="@34" Target="@39" Category="CallStackDirectCall" Bounds="2423.64934156769,153.10632600385,21.6811031051266,4.99014133377159" />
+    <Link Source="@35" Target="@15" Category="CallStackDirectCall" Bounds="611.814334418577,476.237842880156,65.5522828426915,26.6143794026845" />
+    <Link Source="@36" Target="@9" Category="CallStackDirectCall" Bounds="1567.37486683253,715.747539282272,21.0503001557622,2.23268424359287" />
+    <Link Source="@37" Target="@136" Category="CallStackDirectCall" Bounds="297.949853548276,646.398440488539,164.765595897352,25.4168193111273" />
+    <Link Source="@38" Target="@32" Category="CallStackDirectCall" Bounds="2291.36135354828,484.516964854431,21.0151993798959,1.21885996974055" />
+    <Link Source="@39" Target="@113" Category="CallStackDirectCall" Bounds="2551.90277490103,123.584749031119,34.1939512414051,6.68928929122853" />
+    <Link Source="@40" Target="@41" Category="CallStackDirectCall" Bounds="1858.87095354828,522.314679136797,21.0530677400038,2.29423778371415" />
+    <Link Source="@41" Target="@167" Category="CallStackDirectCall" Bounds="1992.03772021494,508.419221939821,21.0452103133055,2.11505819956915" />
+    <Link Source="@42" Target="@54" Category="CallStackDirectCall" Bounds="598.357941567691,408.377842880157,21.0001000000001,5.6843418860808E-14" />
+    <Link Source="@42" Target="@95" Category="CallStackDirectCall" Bounds="727.234708234358,402.284090871542,21.0328758706393,1.70957799593356" />
+    <Link Source="@44" Target="@147" Category="CallStackDirectCall" Bounds="607.710758603667,179.326247476441,84.2599763425883,27.5391686891731" />
+    <Link Source="@46" Target="@18" Category="CallStackDirectCall" Bounds="434.546441619574,934.514042272146,22.7119171821272,4.61769029670495" />
+    <Link Source="@48" Target="@155" Category="CallStackDirectCall" Bounds="1396.59858610635,36.0175222002966,21.0045098191888,0.657773431656025" />
+    <Link Source="@49" Target="@34" Category="CallStackDirectCall" Bounds="2327.33964163509,175.478736976763,22.0998242236665,5.24743486826989" />
+    <Link Source="@5" Target="(Name=QgsDisplazPointCloudIndex::RootNode @3 Type=&quot;OctreeNode *&quot; @2)" Category="CallStackDirectCall" Bounds="1426.26714161957,1011.36893511899,143.392632167824,5.1350875246485" />
+    <Link Source="@5" Target="@137" Category="CallStackDirectCall" Bounds="1426.26714161957,1001.62544187882,21.0934182149442,3.06141211474312" />
+    <Link Source="@5" Target="@146" Category="CallStackDirectCall" Bounds="1426.26708984375,1015.05780029297,269.175415039063,25.5808715820313" />
+    <Link Source="@5" Target="@16" Category="CallStackDirectCall" Bounds="1424.89396161207,1022.1870870914,32.6634449610199,11.1532082530433" />
+    <Link Source="@51" Target="@162" Category="CallStackDirectCall" Bounds="408.476620214943,732.847263783851,212.697391528988,28.5403773130734" />
+    <Link Source="@51" Target="@166" Category="CallStackDirectCall" Bounds="-205.374099731445,728.596496582031,533.32405090332,12.6951293945313" />
+    <Link Source="@53" Target="(Name=QDomNodePrivate::insertAfter @52 Type=&quot;QDomNodePrivate *&quot; OverloadingParameters=[(Type=&quot;QDomNodePrivate *&quot; Name=newChild),(Type=&quot;QDomNodePrivate *&quot; Name=refChild)] @2)" Category="CallStackDirectCall" Bounds="2812.62253349919,625.352182305527,21.0036521884467,0.590289621343914" />
+    <Link Source="@54" Target="@55" Category="CallStackDirectCall" Bounds="436.04871282649,420.997842880156,68.0787625039056,30.6034094401012" />
+    <Link Source="@55" Target="@42" Category="CallStackDirectCall" Bounds="445.03546201018,421.872700337169,166.257967479892,36.1858224212278" />
+    <Link Source="@56" Target="@21" Category="CallStackDirectCall" Bounds="251.186852151048,830.088197346684,44.668378636729,30.9130329761027" />
+    <Link Source="@57" Target="@70" Category="CallStackDirectCall" Bounds="767.520153548276,574.097842880156,21.0001000000002,0" />
+    <Link Source="@59" Target="@72" Category="CallStackDirectCall" Bounds="1316.46000329689,545.805329489612,2.44310243554219,21.0599548572766" />
+    <Link Source="@6" Target="@78" Category="CallStackDirectCall" Bounds="1890.96516683253,680.565502598821,21.0581332823633,2.40303674614995" />
+    <Link Source="@60" Target="@40" Category="CallStackDirectCall" Bounds="1767.91752021494,531.926953395493,21.0459829090541,2.13330987292807" />
+    <Link Source="@61" Target="@139" Category="CallStackDirectCall" Bounds="931.541137695313,640.903076171875,168.6826171875,3.90142822265625" />
+    <Link Source="@61" Target="@140" Category="CallStackDirectCall" Bounds="1079.18951605566,650.212721454021,21.0342708259543,1.8381814221483" />
+    <Link Source="@63" Target="@129" Category="CallStackDirectCall" Bounds="643.659082675274,310.517842880157,26.4365940600503,4.75394471533468" />
+    <Link Source="@64" Target="@36" Category="CallStackDirectCall" Bounds="1463.67476683253,726.237156268131,21.0403759930996,1.99724720725726" />
+    <Link Source="@65" Target="@93" Category="CallStackDirectCall" Bounds="495.812203440379,556.25378358465,27.2393942396812,5.22405929550598" />
+    <Link Source="@66" Target="@68" Category="CallStackDirectCall" Bounds="1239.11790016586,748.137423605954,21.0651287101816,2.54609068856848" />
+    <Link Source="@68" Target="@64" Category="CallStackDirectCall" Bounds="1336.90133349919,738.003577242082,21.036533674202,1.89863336975372" />
+    <Link Source="@69" Target="@57" Category="CallStackDirectCall" Bounds="865.242888028256,579.097581765112,21.0607988533536,2.45846639362242" />
+    <Link Source="@70" Target="@65" Category="CallStackDirectCall" Bounds="669.736720214943,574.097842880156,21.0001,0" />
+    <Link Source="@72" Target="@60" Category="CallStackDirectCall" Bounds="1346.7177734375,550.084655761719,262.401489257813,26.37255859375" />
+    <Link Source="@72" Target="@61" Category="CallStackDirectCall" Bounds="1215.22064787228,600.975168532375,67.2015582470849,26.7424700076024" />
+    <Link Source="@73" Target="@75" Category="CallStackDirectCall" Bounds="1584.79530823436,349.270547219183,21.0135339416086,1.14942643612312" />
+    <Link Source="@74" Target="@49" Category="CallStackDirectCall" Bounds="2197.77580823436,206.64991976665,22.5068900864858,5.54063065780764" />
+    <Link Source="@75" Target="@120" Category="CallStackDirectCall" Bounds="1506.35606649571,357.412044265931,161.54802656876,103.072412786586" />
+    <Link Source="@75" Target="@191" Category="CallStackDirectCall" Bounds="1532.88587104625,220.013498356114,139.141740601539,112.158545909817" />
+    <Link Source="@75" Target="@192" Category="CallStackDirectCall" Bounds="1677.74413048274,282.060813907938,7.94000273714641,50.1112303579928" />
+    <Link Source="@77" Target="@145" Category="CallStackDirectCall" Bounds="2127.88203349919,662.399925749245,21.0321343935379,1.77929157055632" />
+    <Link Source="@78" Target="@77" Category="CallStackDirectCall" Bounds="1973.72193349919,673.692738756311,21.0162397790145,1.26032421281388" />
+    <Link Source="@8" Target="@6" Category="CallStackDirectCall" Bounds="1796.43506683253,691.15458126572,21.0533752063727,2.30097989448177" />
+    <Link Source="@80" Target="@170" Category="CallStackIndirectCall" Bounds="237.447387695313,302.010772705078,225.172546386719,40.6079711914063" Label="外部代码" LabelBounds="312.947660674161,326.315274650489,48,15.2399999999998" />
+    <Link Source="@81" Target="@63" Category="CallStackDirectCall" Bounds="468.234408234357,297.113320890689,21.0003500350467,0.156541600407195" />
+    <Link Source="@82" Target="@80" Category="CallStackDirectCall" Bounds="295.568677928005,369.292876841555,187.555719748235,80.106436419272" />
+    <Link Source="@83" Target="@82" Category="CallStackDirectCall" Bounds="292.041543101038,479.696909805727,53.7756847778799,36.5337338329888" />
+    <Link Source="@84" Target="@86" Category="CallStackDirectCall" Bounds="1182.79906264898,833.759581761213,41.9808107845101,7.08878380870601" />
+    <Link Source="@85" Target="@5" Category="CallStackDirectCall" Bounds="1322.41037495291,1011.65124314085,21.0055900836978,0.734035181131958" />
+    <Link Source="@86" Target="@151" Category="CallStackDirectCall" Bounds="1373.04160637528,862.716442791151,74.2536199249523,9.18413741906409" />
+    <Link Source="@87" Target="@118" Category="CallStackDirectCall" Bounds="449.857200165859,782.421686088215,21.0001560640801,0.0741243069937809" />
+    <Link Source="@88" Target="@133" Category="CallStackDirectCall" Bounds="3675.24568688161,468.626510608038,21.0001037658167,0.0192107758680891" />
+    <Link Source="@89" Target="@88" Category="CallStackDirectCall" Bounds="3499.69225354828,468.227550588648,21.0001470652437,0.0679153488895281" />
+    <Link Source="@9" Target="@8" Category="CallStackDirectCall" Bounds="1686.40830016586,703.064790846905,21.0511261935769,2.25122288937939" />
+    <Link Source="@90" Target="@26" Category="CallStackDirectCall" Bounds="2524.19822021494,474.440932758808,21.0051629244226,0.704861538164778" />
+    <Link Source="@91" Target="@28" Category="CallStackDirectCall" Bounds="1028.51439111533,966.817660379051,27.6285363808604,7.21302819546906" />
+    <Link Source="@92" Target="(Name=QtPrivate::RefCount::ref @3 @4 @2)" Category="CallStackDirectCall" Bounds="1932.63087495291,1064.50747247645,21.0001000000002,0" />
+    <Link Source="@93" Target="@83" Category="CallStackDirectCall" Bounds="404.050742099505,537.407168263354,21.2025447821051,4.57466668170287" />
+    <Link Source="@94" Target="@12" Category="CallStackDirectCall" Bounds="95.8395535482765,558.662198122256,21.2733167084554,5.36475149558305" />
+    <Link Source="@94" Target="@190" Category="CallStackDirectCall" Bounds="77.8295364379883,521.623291015625,130.739860534668,37.9119262695313" />
+    <Link Source="@95" Target="@131" Category="CallStackDirectCall" Bounds="916.153686523438,346.420959472656,441.62158203125,32.7556457519531" />
+    <Link Source="@99" Target="@101" Category="CallStackDirectCall" Bounds="1157.78838610635,56.962531886938,21.0890107407206,2.98650693403882" />
+    <Link Source="ExternalCodeRootNode" Target="@172" Category="CallStackIndirectCall" Bounds="-133.724322249783,661.800366330279,67.4202333871294,51.1340795540877" />
+    <Link Source="ExternalCodeRootNode" Target="@56" Category="CallStackIndirectCall" Bounds="-116.363779785057,733.707183345564,309.708211634535,74.2638158539171" />
+  </Links>
+  <Categories>
+    <Category Id="CallStackDirectCall" Label="调用堆栈直接调用" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="调用堆栈直接调用" OutgoingActionLabel="调用堆栈直接调用" />
+    <Category Id="CallStackEntry" Label="调用堆栈入口" CanBeDataDriven="True" IsProviderRoot="False" NavigationActionLabel="调用堆栈入口" />
+    <Category Id="CallStackIndirectCall" Label="调用堆栈间接调用" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="调用堆栈间接调用" OutgoingActionLabel="调用堆栈间接调用" />
+    <Category Id="CodeSchema_CallStackUnresolvedMethod" Label="未解析的方法" CanBeDataDriven="True" DefaultAction="Microsoft.AllOutBoundLinks" IsProviderRoot="False" NavigationActionLabel="未解析的方法" />
+    <Category Id="CodeSchema_SourceLocation" Label="源位置" Icon="File" />
+    <Category Id="ExternalCallStackEntry" Label="外部调用堆栈入口" CanBeDataDriven="True" IsProviderRoot="False" NavigationActionLabel="外部调用堆栈入口" />
+  </Categories>
+  <Properties>
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="CanBeDataDriven" Label="CanBeDataDriven" Description="CanBeDataDriven" DataType="System.Boolean" />
+    <Property Id="CanLinkedNodesBeDataDriven" Label="CanLinkedNodesBeDataDriven" Description="CanLinkedNodesBeDataDriven" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsExternal" Label="是外部的" Description="一个标志，用于指示此节点是否被认为是外部的" DataType="System.Boolean" />
+    <Property Id="DataVirtualized" Label="已虚拟化数据" Description="如果为 true，则图中可以包含表示虚拟化节点/链接(即，不在图中实际创建)的数据的节点和链接。" DataType="System.Boolean" />
+    <Property Id="DefaultAction" Label="DefaultAction" Description="DefaultAction" DataType="System.String" />
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="Icon" Label="图标" Description="图标" DataType="System.String" />
+    <Property Id="IncomingActionLabel" Label="IncomingActionLabel" Description="IncomingActionLabel" DataType="System.String" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="IsProviderRoot" Label="IsProviderRoot" Description="IsProviderRoot" DataType="System.Boolean" />
+    <Property Id="Label" Label="标签" Description="可批注对象的可显示标签" DataType="System.String" />
+    <Property Id="LabelBounds" DataType="System.Windows.Rect" />
+    <Property Id="Layout" DataType="System.String" />
+    <Property Id="NavigationActionLabel" Label="NavigationActionLabel" Description="NavigationActionLabel" DataType="System.String" />
+    <Property Id="OutgoingActionLabel" Label="OutgoingActionLabel" Description="OutgoingActionLabel" DataType="System.String" />
+    <Property Id="SourceLocation" Label="起始行号" DataType="Microsoft.VisualStudio.GraphModel.CodeSchema.SourceLocation" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+    <Property Id="Visibility" Label="Visibility" Description="Defines whether a node in the graph is visible or not" DataType="System.Windows.Visibility" />
+    <Property Id="ZoomLevel" DataType="System.String" />
+  </Properties>
+  <QualifiedNames>
+    <Name Id="Assembly" Label="程序集" ValueType="Uri" />
+    <Name Id="IsUnresolved" Label="是无法解析的" ValueType="System.String" />
+    <Name Id="Name" Label="名称" ValueType="System.String" />
+    <Name Id="OverloadingParameters" Label="参数" ValueType="Microsoft.VisualStudio.GraphModel.GraphNodeIdCollection" Formatter="NameValueNoEscape" />
+    <Name Id="Type" Label="类型" ValueType="System.Object" />
+  </QualifiedNames>
+  <IdentifierAliases>
+    <Alias n="1" Uri="Assembly=vcruntime140.dll" />
+    <Alias n="2" Id="IsUnresolved=True" />
+    <Alias n="3" Uri="Assembly=qgis_core.dll" />
+    <Alias n="4" Id="Type=bool" />
+    <Alias n="5" Id="(Name=QgsPointCloudLayerRenderer::render @3 @4 @2)" />
+    <Alias n="6" Id="(Name=QgsProject::write @3 @4 @2)" />
+    <Alias n="7" Uri="Assembly=qgis_app.dll" />
+    <Alias n="8" Id="(Name=QgisApp::fileSave @7 @4 @2)" />
+    <Alias n="9" Id="(Name=QgisApp::saveDirty @7 @4 @2)" />
+    <Alias n="10" Uri="Assembly=Qt5Core.dll" />
+    <Alias n="11" Id="Type=int" />
+    <Alias n="12" Id="(Name=QCoreApplication::exec @10 @11 @2)" />
+    <Alias n="13" Uri="Assembly=Qt5Widgets.dll" />
+    <Alias n="14" Id="(Name=QDialog::exec @13 @11 @2)" />
+    <Alias n="15" Id="(Name=QgsdisplazfileLoader::instance @3 Type=&quot;QgsdisplazfileLoader *&quot; @2)" />
+    <Alias n="16" Id="(Name=QgsPointCloudBlock::attributes @3 Type=QgsPointCloudAttributeCollection @2)" />
+    <Alias n="17" Id="(Name=&quot;QtConcurrent::IterateKernel&lt;QList&lt;LayerRenderJob&gt;::iterator,void&gt;::forThreadFunction&quot; @3 Type=QtConcurrent::ThreadFunctionResult @2)" />
+    <Alias n="18" Id="(Name=&quot;QtConcurrent::IterateKernel&lt;QList&lt;LayerRenderJob&gt;::iterator,void&gt;::threadFunction&quot; @3 Type=QtConcurrent::ThreadFunctionResult @2)" />
+    <Alias n="19" Id="Type=void" />
+    <Alias n="20" Id="(Name=QAbstractItemModel::endInsertRows @10 @19 @2)" />
+    <Alias n="21" Id="(Name=QThreadPoolThread::run @10 @19 @2)" />
+    <Alias n="22" Id="(Name=Geometry::initializeGL @3 @19 @2)" />
+    <Alias n="23" Id="(Name=PointArray::initializeGL @3 @19 @2)" />
+    <Alias n="24" Id="(Name=QgsLayerTreeModel::layerLegendChanged @3 @19 @2)" />
+    <Alias n="25" Id="(Name=QgsMapLayer::legendChanged @3 @19 @2)" />
+    <Alias n="26" Id="(Name=QgsMapLayer::rendererChanged @3 @19 @2)" />
+    <Alias n="27" Id="(Name=QgsMapLayerLegend::itemsChanged @3 @19 @2)" />
+    <Alias n="28" Id="(Name=QgsMapRendererCustomPainterJob::doRender @3 @19 @2)" />
+    <Alias n="29" Id="(Name=QtConcurrent::RunFunctionTask&lt;void&gt;::run @3 @19 @2)" />
+    <Alias n="30" Id="(Name=&quot;QtConcurrent::StoredFunctorCall1&lt;void,void (__cdecl*)(QgsMapRendererCustomPainterJob * __ptr64),QgsMapRendererCustomPainterJob * __ptr64&gt;::runFunctor&quot; @3 @19 @2)" />
+    <Alias n="31" Uri="Assembly=qgis_gui.dll" />
+    <Alias n="32" Id="(Name=QgsPointCloudRendererPropertiesWidget::apply @31 @19 @2)" />
+    <Alias n="33" Uri="Assembly=Qt5OpenGL.dll" />
+    <Alias n="34" Id="(Name=QGLWidget::glInit @33 @19 @2)" />
+    <Alias n="35" Id="(Name=QgisApp::createLasViewer @7 @19 @2)" />
+    <Alias n="36" Id="(Name=QgisApp::fileExit @7 @19 @2)" />
+    <Alias n="37" Id="(Name=QgisApp::layerProperties @7 @19 @2)" />
+    <Alias n="38" Id="(Name=QgsPointCloudLayerProperties::apply @7 @19 @2)" />
+    <Alias n="39" Id="(Name=View3D::initializeGL @7 @19 @2)" />
+    <Alias n="40" Id="(Name=QAbstractButtonPrivate::click @13 @19 @2)" />
+    <Alias n="41" Id="(Name=QAbstractButtonPrivate::emitClicked @13 @19 @2)" />
+    <Alias n="42" Id="(Name=QWidgetPrivate::show_helper @13 @19 @2)" />
+    <Alias n="43" Uri="Assembly=qwindows.dll" />
+    <Alias n="44" Id="(Name=QWindowsGuiEventDispatcher::sendPostedEvents @43 @19 @2)" />
+    <Alias n="45" Uri="Assembly=Qt5Concurrent.dll" />
+    <Alias n="46" Id="(Name=QtConcurrent::ThreadEngineBase::run @45 @19 @2)" />
+    <Alias n="47" Id="Name=e" />
+    <Alias n="48" Id="(Name=QObject::event @10 @4 OverloadingParameters=[(@47)] @2)" />
+    <Alias n="49" Id="(Name=QGLWidget::resizeEvent @33 @19 OverloadingParameters=[(@47)] @2)" />
+    <Alias n="50" Id="Name=event" />
+    <Alias n="51" Id="(Name=QAction::activate @13 @19 OverloadingParameters=[(@50)] @2)" />
+    <Alias n="52" Uri="Assembly=Qt5Xml.dll" />
+    <Alias n="53" Id="(Name=QDomNode::appendChild @52 Type=QDomNode OverloadingParameters=[(Name=newChild)] @2)" />
+    <Alias n="54" Id="(Name=QWidgetPrivate::showChildren @13 @19 OverloadingParameters=[(Name=spontaneous)] @2)" />
+    <Alias n="55" Id="(Name=QWidget::setVisible @13 @19 OverloadingParameters=[(Name=visible)] @2)" />
+    <Alias n="56" Id="(Name=QThreadPrivate::start @10 Type=&quot;unsigned int&quot; OverloadingParameters=[(Type=&quot;void *&quot; Name=arg)] @2)" />
+    <Alias n="57" Id="(Name=QFrame::event @13 @4 OverloadingParameters=[(Type=&quot;QEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @47)] @2)" />
+    <Alias n="58" Id="(Type=&quot;QEvent * {Qt5Gui.dll!QMouseEvent}&quot; @47)" />
+    <Alias n="59" Id="(Name=QMenu::event @13 @4 OverloadingParameters=[@58] @2)" />
+    <Alias n="60" Id="(Name=QAbstractButton::mouseReleaseEvent @13 @19 OverloadingParameters=[(Type=&quot;QMouseEvent * {Qt5Gui.dll!QMouseEvent}&quot; @47)] @2)" />
+    <Alias n="61" Id="(Name=QMenu::mouseReleaseEvent @13 @19 OverloadingParameters=[(Type=&quot;QMouseEvent * {Qt5Gui.dll!QMouseEvent}&quot; @47)] @2)" />
+    <Alias n="62" Uri="Assembly=Qt5Gui.dll" />
+    <Alias n="63" Id="(Name=QGuiApplicationPrivate::processMouseEvent @62 @19 OverloadingParameters=[(Type=&quot;QWindowSystemInterfacePrivate::MouseEvent *&quot; @47)] @2)" />
+    <Alias n="64" Id="(Name=QgisApp::closeEvent @7 @19 OverloadingParameters=[(Type=&quot;QCloseEvent * {Qt5Gui.dll!QCloseEvent}&quot; @50)] @2)" />
+    <Alias n="65" Id="(Name=QgsLayerTreeView::contextMenuEvent @31 @19 OverloadingParameters=[(Type=&quot;QContextMenuEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @50)] @2)" />
+    <Alias n="66" Id="(Name=QgisApp::event @7 @4 OverloadingParameters=[(Type=&quot;QEvent * {Qt5Gui.dll!QCloseEvent}&quot; @50)] @2)" />
+    <Alias n="67" Id="Name=QWidget::event" />
+    <Alias n="68" Id="(@67 @13 @4 OverloadingParameters=[(Type=&quot;QEvent * {Qt5Gui.dll!QCloseEvent}&quot; @50)] @2)" />
+    <Alias n="69" Id="(Name=QAbstractItemView::viewportEvent @13 @4 OverloadingParameters=[(Type=&quot;QEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @50)] @2)" />
+    <Alias n="70" Id="(@67 @13 @4 OverloadingParameters=[(Type=&quot;QEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @50)] @2)" />
+    <Alias n="71" Id="(Type=&quot;QEvent * {Qt5Gui.dll!QMouseEvent}&quot; @50)" />
+    <Alias n="72" Id="(@67 @13 @4 OverloadingParameters=[@71] @2)" />
+    <Alias n="73" Id="(Name=QWidgetWindow::event @13 @4 OverloadingParameters=[@71] @2)" />
+    <Alias n="74" Id="(@67 @13 @4 OverloadingParameters=[(Type=&quot;QEvent * {Qt5Gui.dll!QResizeEvent}&quot; @50)] @2)" />
+    <Alias n="75" Id="(Name=QWidgetWindow::handleMouseEvent @13 @19 OverloadingParameters=[(Type=&quot;QMouseEvent * {Qt5Gui.dll!QMouseEvent}&quot; @50)] @2)" />
+    <Alias n="76" Id="Type=&quot;const QString &amp;&quot;" />
+    <Alias n="77" Id="(Name=QgsProject::writeProjectFile @3 @4 OverloadingParameters=[(@76 Name=filename)] @2)" />
+    <Alias n="78" Id="(Name=QgsProject::zip @3 @4 OverloadingParameters=[(@76 Name=filename)] @2)" />
+    <Alias n="79" Id="OverloadingParameters=[(Type=&quot;QFlags&lt;enum QEventLoop::ProcessEventsFlag&gt;&quot; Name=flags)]" />
+    <Alias n="80" Id="(Name=QEventDispatcherWin32::processEvents @10 @4 @79 @2)" />
+    <Alias n="81" Id="(Name=QWindowSystemInterface::sendWindowSystemEvents @62 @4 @79 @2)" />
+    <Alias n="82" Id="(Name=QWindowsGuiEventDispatcher::processEvents @43 @4 @79 @2)" />
+    <Alias n="83" Id="(Name=QEventLoop::exec @10 @11 @79 @2)" />
+    <Alias n="84" Id="(Name=QgsLayerItemGuiProvider::addLayersFromItems @7 @19 OverloadingParameters=[(Type=&quot;const QList&lt;QgsDataItem *&gt; &amp;&quot; Name=items)] @2)" />
+    <Alias n="85" Id="(Name=QgsMapRendererParallelJob::renderLayerStatic @3 @19 OverloadingParameters=[(Type=&quot;LayerRenderJob &amp;&quot; Name=job)] @2)" />
+    <Alias n="86" Id="(Name=QgisApp::handleDropUriList @7 @19 OverloadingParameters=[(Type=&quot;const QList&lt;QgsMimeDataUtils::Uri&gt; &amp;&quot; Name=lst)] @2)" />
+    <Alias n="87" Id="(Name=QWidgetPrivate::close_helper @13 @4 OverloadingParameters=[(Type=QWidgetPrivate::CloseMode Name=mode)] @2)" />
+    <Alias n="88" Id="(Name=QgsLayerTreeModel::addLegendToLayer @3 @19 OverloadingParameters=[(Type=&quot;QgsLayerTreeLayer *&quot; Name=nodeL)] @2)" />
+    <Alias n="89" Id="(Name=QgsLayerTreeModel::refreshLayerLegend @3 @19 OverloadingParameters=[(Type=&quot;QgsLayerTreeLayer *&quot; Name=nodeLayer)] @2)" />
+    <Alias n="90" Id="(Name=QgsPointCloudLayer::setRenderer @3 @19 OverloadingParameters=[(Type=&quot;QgsPointCloudRenderer * {qgis_gui.dll!QgsPointCloudClassifiedRenderer}&quot; Name=renderer)] @2)" />
+    <Alias n="91" Id="(Name=QgsMapRendererCustomPainterJob::staticRender @3 @19 OverloadingParameters=[(Type=&quot;QgsMapRendererCustomPainterJob *&quot; Name=self)] @2)" />
+    <Alias n="92" Id="(Name=QVector&lt;QgsPointCloudAttribute&gt;::QVector&lt;QgsPointCloudAttribute&gt; @3 @19 OverloadingParameters=[(Type=&quot;const QVector&lt;QgsPointCloudAttribute&gt; &amp;&quot; Name=v)] @2)" />
+    <Alias n="93" Id="(Name=QMenu::exec @13 Type=&quot;QAction *&quot; OverloadingParameters=[(Type=&quot;const QPoint &amp;&quot; Name=p),(Name=action)] @2)" />
+    <Alias n="94" Id="(Name=main @7 @11 OverloadingParameters=[(@11 Name=argc),(Type=&quot;char * *&quot; Name=argv)] @2)" />
+    <Alias n="95" Id="(Name=QWidgetPrivate::sendPendingMoveAndResizeEvents @13 @19 OverloadingParameters=[(Name=recursive),(@4 Name=disableUpdates)] @2)" />
+    <Alias n="96" Id="Name=QApplication::notify" />
+    <Alias n="97" Id="Name=receiver" />
+    <Alias n="98" Id="(@97)" />
+    <Alias n="99" Id="(@96 @13 @4 OverloadingParameters=[@98,(Type=&quot;QEvent * {Qt5Core.dll!QMetaCallEvent}&quot; @47)] @2)" />
+    <Alias n="100" Id="Name=QApplicationPrivate::notify_helper" />
+    <Alias n="101" Id="(@100 @13 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_core.dll!GeometryCollection}&quot; @97),(Type=&quot;QEvent * {Qt5Core.dll!QMetaCallEvent}&quot; @47)] @2)" />
+    <Alias n="102" Id="(@96 @13 @4 OverloadingParameters=[@98,(Type=&quot;QEvent * {Qt5Gui.dll!QCloseEvent}&quot; @47)] @2)" />
+    <Alias n="103" Id="(@100 @13 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!QgisApp}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QCloseEvent}&quot; @47)] @2)" />
+    <Alias n="104" Id="(@96 @13 @4 OverloadingParameters=[@98,(Type=&quot;QEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @47)] @2)" />
+    <Alias n="105" Id="(@100 @13 @4 OverloadingParameters=[(Type=&quot;QObject * {QWidget}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @47)] @2)" />
+    <Alias n="106" Id="(@96 @13 @4 OverloadingParameters=[@98,@58] @2)" />
+    <Alias n="107" Id="(@100 @13 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!QMenu}&quot; @97),@58] @2)" />
+    <Alias n="108" Id="(@100 @13 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_gui.dll!QMenu}&quot; @97),@58] @2)" />
+    <Alias n="109" Id="(@100 @13 @4 OverloadingParameters=[(Type=&quot;QObject * {QPushButton}&quot; @97),@58] @2)" />
+    <Alias n="110" Id="(@100 @13 @4 OverloadingParameters=[(Type=&quot;QObject * {QWidgetWindow}&quot; @97),@58] @2)" />
+    <Alias n="111" Id="(@96 @13 @4 OverloadingParameters=[@98,(Type=&quot;QEvent * {Qt5Gui.dll!QResizeEvent}&quot; @47)] @2)" />
+    <Alias n="112" Id="(@100 @13 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!View3D}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QResizeEvent}&quot; @47)] @2)" />
+    <Alias n="113" Id="(Name=View3D::initializeGLGeometry @7 @19 OverloadingParameters=[(@11 Name=begin),(@11 Name=end)] @2)" />
+    <Alias n="114" Id="Name=QCoreApplication::notifyInternal2" />
+    <Alias n="115" Id="(@114 @10 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_core.dll!GeometryCollection}&quot; @97),(Type=&quot;QEvent * {QMetaCallEvent}&quot; @50)] @2)" />
+    <Alias n="116" Id="Name=QgsApplication::notify" />
+    <Alias n="117" Id="(@116 @3 @4 OverloadingParameters=[(Type=&quot;QObject * {GeometryCollection}&quot; @97),(Type=&quot;QEvent * {Qt5Core.dll!QMetaCallEvent}&quot; @50)] @2)" />
+    <Alias n="118" Id="(@114 @10 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!QgisApp}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QCloseEvent}&quot; @50)] @2)" />
+    <Alias n="119" Id="(@116 @3 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!QgisApp}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QCloseEvent}&quot; @50)] @2)" />
+    <Alias n="120" Id="(@114 @10 @4 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QWidget}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @50)] @2)" />
+    <Alias n="121" Id="(Name=QCoreApplicationPrivate::sendThroughObjectEventFilters @10 @4 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QWidget}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @50)] @2)" />
+    <Alias n="122" Id="(@116 @3 @4 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QWidget}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QContextMenuEvent}&quot; @50)] @2)" />
+    <Alias n="123" Id="(@114 @10 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!QMenu}&quot; @97),@71] @2)" />
+    <Alias n="124" Id="(@116 @3 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!QMenu}&quot; @97),@71] @2)" />
+    <Alias n="125" Id="(@114 @10 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_gui.dll!QMenu}&quot; @97),@71] @2)" />
+    <Alias n="126" Id="(@116 @3 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_gui.dll!QMenu}&quot; @97),@71] @2)" />
+    <Alias n="127" Id="(@114 @10 @4 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QPushButton}&quot; @97),@71] @2)" />
+    <Alias n="128" Id="(@116 @3 @4 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QPushButton}&quot; @97),@71] @2)" />
+    <Alias n="129" Id="(@114 @10 @4 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QWidgetWindow}&quot; @97),@71] @2)" />
+    <Alias n="130" Id="(@116 @3 @4 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QWidgetWindow}&quot; @97),@71] @2)" />
+    <Alias n="131" Id="(@114 @10 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!View3D}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QResizeEvent}&quot; @50)] @2)" />
+    <Alias n="132" Id="(@116 @3 @4 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!View3D}&quot; @97),(Type=&quot;QEvent * {Qt5Gui.dll!QResizeEvent}&quot; @50)] @2)" />
+    <Alias n="133" Id="(Name=QgsMapLayerLegendUtils::applyLayerNodeProperties @3 @19 OverloadingParameters=[(Type=&quot;QgsLayerTreeLayer *&quot; Name=nodeLayer),(Type=&quot;QList&lt;QgsLayerTreeModelLegendNode *&gt; &amp;&quot; Name=nodes)] @2)" />
+    <Alias n="134" Id="(Type=&quot;const QgsDataProvider::ProviderOptions &amp;&quot; Name=options)" />
+    <Alias n="135" Id="(Name=QgsDisplazProvider::QgsDisplazProvider @3 @19 OverloadingParameters=[(@76 Name=uri),@134] @2)" />
+    <Alias n="136" Id="(Name=QgisApp::showLayerProperties @7 @19 OverloadingParameters=[(Type=&quot;QgsMapLayer * {QgsPointCloudLayer}&quot; Name=mapLayer),(@76 Name=page)] @2)" />
+    <Alias n="137" Id="(Name=QgsDisplazPointCloudIndex::nodeData @3 Type=&quot;QgsPointCloudBlock *&quot; OverloadingParameters=[(Type=&quot;const IndexedPointCloudNode &amp;&quot; Name=n),(Type=&quot;const QgsPointCloudRequest &amp;&quot; Name=request)] @2)" />
+    <Alias n="138" Id="(Type=QAction::ActionEvent Name=action_e)" />
+    <Alias n="139" Id="(Name=QMenuPrivate::activateAction @13 @19 OverloadingParameters=[(Type=&quot;QAction *&quot; Name=action),@138,(Name=self)] @2)" />
+    <Alias n="140" Id="(Name=QMenuPrivate::activateAction @13 @19 OverloadingParameters=[(Type=&quot;QAction * {qgis_app.dll!QAction}&quot; Name=action),@138,(Name=self)] @2)" />
+    <Alias n="141" Id="Name=__formal" />
+    <Alias n="142" Id="(Name=&quot;QtConcurrent::MapKernel&lt;QList&lt;LayerRenderJob&gt;::iterator,QtConcurrent::FunctionWrapper1&lt;void,LayerRenderJob &amp; __ptr64&gt; &gt;::runIteration&quot; @3 @4 OverloadingParameters=[(Type=QList&lt;LayerRenderJob&gt;::iterator Name=it),(@11 @141),(Type=&quot;void *&quot; @141)] @2)" />
+    <Alias n="143" Id="(Type=&quot;const QgsReadWriteContext &amp;&quot; Name=context)" />
+    <Alias n="144" Id="(Name=QgsPointCloudLayer::writeXml @3 @4 OverloadingParameters=[(Type=&quot;QDomNode &amp;&quot; Name=layerNode),(Type=&quot;QDomDocument &amp;&quot; Name=doc),@143] @2)" />
+    <Alias n="145" Id="(Name=QgsMapLayer::writeLayerXml @3 @4 OverloadingParameters=[(Type=&quot;QDomElement &amp;&quot; Name=layerElement),(Type=&quot;QDomDocument &amp;&quot; Name=document),@143] @2)" />
+    <Alias n="146" Id="(Name=QgsPointCloudClassifiedRenderer::renderDisplaz @3 @19 OverloadingParameters=[(Type=DrawCount Name=mdrawlist),(Type=std::shared_ptr&lt;Geometry&gt; Name=m_geom),(Type=&quot;QgsPointCloudRenderContext &amp;&quot; Name=context)] @2)" />
+    <Alias n="147" Id="(Name=QCoreApplicationPrivate::sendPostedEvents @10 @19 OverloadingParameters=[(Type=&quot;QObject *&quot; @97),(Name=event_type),(Type=&quot;QThreadData *&quot; Name=data)] @2)" />
+    <Alias n="148" Id="(Name=QgsDisplazProviderMetadata::createProvider @3 Type=&quot;QgsDisplazProvider *&quot; OverloadingParameters=[(@76 Name=uri),@134,(Type=&quot;QFlags&lt;enum QgsDataProvider::ReadFlag&gt;&quot; Name=flags)] @2)" />
+    <Alias n="149" Id="(Name=View3D::geometryInserted @7 @19 OverloadingParameters=[(Type=&quot;const QModelIndex &amp;&quot; @141),(@11 Name=firstRow),(@11 Name=lastRow)] @2)" />
+    <Alias n="150" Id="(@76 Name=baseName)" />
+    <Alias n="151" Id="(Name=QgisApp::addPointCloudLayer @7 Type=&quot;QgsPointCloudLayer *&quot; OverloadingParameters=[(@76 Name=url),@150,(@76 Name=providerKey)] @2)" />
+    <Alias n="152" Id="(Name=GeometryCollection::addGeometry @3 @19 OverloadingParameters=[(Type=std::shared_ptr&lt;Geometry&gt; Name=geom),(@4 Name=replaceLabel),(@4 Name=reloaded)] @2)" />
+    <Alias n="153" Id="(Name=&quot;QtConcurrent::MapKernel&lt;QList&lt;LayerRenderJob&gt;::iterator,QtConcurrent::FunctionWrapper1&lt;void,LayerRenderJob &amp; __ptr64&gt; &gt;::runIterations&quot; @3 @4 OverloadingParameters=[(Type=QList&lt;LayerRenderJob&gt;::iterator Name=sequenceBeginIterator),(@11 Name=beginIndex),(@11 Name=endIndex),(Type=&quot;void *&quot; @141)] @2)" />
+    <Alias n="154" Id="(Name=QWidget::qt_static_metacall @13 @19 OverloadingParameters=[(Name=_o),(Name=_c),(Name=_id),(Type=&quot;void * *&quot; Name=_a)] @2)" />
+    <Alias n="155" Id="(Name=GeometryCollection::qt_static_metacall @3 @19 OverloadingParameters=[(Type=&quot;QObject * {GeometryCollection}&quot; Name=_o),(Type=QMetaObject::Call Name=_c),(@11 Name=_id),(Type=&quot;void * *&quot; Name=_a)] @2)" />
+    <Alias n="156" Id="(Name=View3D::qt_static_metacall @7 @19 OverloadingParameters=[(Type=&quot;QObject * {View3D}&quot; Name=_o),(Type=QMetaObject::Call Name=_c),(@11 Name=_id),(Type=&quot;void * *&quot; Name=_a)] @2)" />
+    <Alias n="157" Id="Name=QMetaObject::activate" />
+    <Alias n="158" Id="Name=sender" />
+    <Alias n="159" Id="(Name=signalOffset)" />
+    <Alias n="160" Id="(Name=local_signal_index)" />
+    <Alias n="161" Id="(Type=&quot;void * *&quot; Name=argv)" />
+    <Alias n="162" Id="(@157 @10 @19 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!QAction}&quot; @158),@159,@160,@161] @2)" />
+    <Alias n="163" Id="(@157 @10 @19 OverloadingParameters=[(Type=&quot;QObject * {qgis_app.dll!QgsPointCloudLayer}&quot; @158),@159,@160,@161] @2)" />
+    <Alias n="164" Id="(@157 @10 @19 OverloadingParameters=[(Type=&quot;QObject * {qgis_core.dll!GeometryCollection}&quot; @158),@159,@160,@161] @2)" />
+    <Alias n="165" Id="(@157 @10 @19 OverloadingParameters=[(Type=&quot;QObject * {qgis_core.dll!QgsDefaultPointCloudLayerLegend}&quot; @158),@159,@160,@161] @2)" />
+    <Alias n="166" Id="(@157 @10 @19 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QAction}&quot; @158),@159,@160,@161] @2)" />
+    <Alias n="167" Id="(@157 @10 @19 OverloadingParameters=[(Type=&quot;QObject * {Qt5Widgets.dll!QPushButton}&quot; @158),@159,@160,@161] @2)" />
+    <Alias n="168" Id="(Name=QgsProviderRegistry::createProvider @3 Type=&quot;QgsDataProvider *&quot; OverloadingParameters=[(@76 Name=providerKey),(@76 Name=dataSource),@134,(Type=&quot;QFlags&lt;enum QgsDataProvider::ReadFlag&gt;&quot; Name=flags)] @2)" />
+    <Alias n="169" Id="(Name=QgisApp::addPointCloudLayerPrivate @7 Type=&quot;QgsPointCloudLayer *&quot; OverloadingParameters=[(@76 Name=uri),@150,(@76 Name=providerKey),(@4 Name=guiWarning)] @2)" />
+    <Alias n="170" Id="(Name=qt_internal_proc @10 Type=__int64 OverloadingParameters=[(Type=&quot;HWND__ *&quot; Name=hwnd),(Type=&quot;unsigned int&quot; Name=message),(Type=&quot;unsigned __int64&quot; Name=wp),(Type=__int64 Name=lp)] @2)" />
+    <Alias n="171" Uri="Assembly=qgis.exe" />
+    <Alias n="172" Id="(Name=WinMain @171 @11 OverloadingParameters=[(Type=&quot;HINSTANCE__ *&quot; Name=hInstance),(Type=&quot;HINSTANCE__ *&quot; Name=hPrevInstance),(Type=&quot;char *&quot; Name=lpCmdLine),(@11 Name=nCmdShow)] @2)" />
+    <Alias n="173" Id="(Name=QgsPointCloudLayer::QgsPointCloudLayer @3 @19 OverloadingParameters=[(@76 Name=path),@150,(@76 Name=providerLib),(Type=&quot;const QgsPointCloudLayer::LayerOptions &amp;&quot; Name=options)] @2)" />
+    <Alias n="174" Id="(Name=QMenuPrivate::activateCausedStack @13 @19 OverloadingParameters=[(Type=&quot;const QVector&lt;QPointer&lt;QWidget&gt; &gt; &amp;&quot; Name=causedStack),(Type=&quot;QAction *&quot; Name=action),@138,(@4 Name=self)] @2)" />
+    <Alias n="175" Id="(Name=QMenuPrivate::activateCausedStack @13 @19 OverloadingParameters=[(Type=&quot;const QVector&lt;QPointer&lt;QWidget&gt; &gt; &amp;&quot; Name=causedStack),(Type=&quot;QAction * {qgis_app.dll!QAction}&quot; Name=action),@138,(@4 Name=self)] @2)" />
+    <Alias n="176" Id="(Name=QgsPointCloudLayer::writeStyle @3 @4 OverloadingParameters=[(Type=&quot;QDomNode &amp;&quot; Name=node),(Type=&quot;QDomDocument &amp;&quot; Name=doc),(Type=&quot;QString &amp;&quot; @141),@143,(Type=&quot;QFlags&lt;enum QgsMapLayer::StyleCategory&gt;&quot; Name=categories)] @2)" />
+    <Alias n="177" Id="(Name=QgsPointCloudLayer::writeSymbology @3 @4 OverloadingParameters=[(Type=&quot;QDomNode &amp;&quot; Name=node),(Type=&quot;QDomDocument &amp;&quot; Name=doc),(Type=&quot;QString &amp;&quot; Name=errorMessage),@143,(Type=&quot;QFlags&lt;enum QgsMapLayer::StyleCategory&gt;&quot; Name=categories)] @2)" />
+    <Alias n="178" Id="(Name=QgsPointCloudLayer::setDataSource @3 @19 OverloadingParameters=[(@76 Name=dataSource),@150,(@76 Name=provider),@134,(@4 Name=loadDefaultStyleFlag)] @2)" />
+    <Alias n="179" Id="(@11 Name=which)" />
+    <Alias n="180" Id="(Type=&quot;QtPrivate::QSlotObjectBase *&quot; Name=this_)" />
+    <Alias n="181" Id="Name=r" />
+    <Alias n="182" Id="(Type=&quot;void * *&quot; Name=a)" />
+    <Alias n="183" Id="(Type=&quot;bool *&quot; Name=ret)" />
+    <Alias n="184" Id="(Name=&quot;QtPrivate::QSlotObject&lt;void (__cdecl QgsLayerTreeModel::*)(void) __ptr64,QtPrivate::List&lt;&gt;,void&gt;::impl&quot; @3 @19 OverloadingParameters=[@179,@180,(Type=&quot;QObject * {qgis_app.dll!QgsLayerTreeModel}&quot; @181),@182,@183] @2)" />
+    <Alias n="185" Id="(Name=&quot;QtPrivate::QSlotObject&lt;void (__cdecl QgsMapLayer::*)(void) __ptr64,QtPrivate::List&lt;&gt;,void&gt;::impl&quot; @3 @19 OverloadingParameters=[@179,@180,(Type=&quot;QObject * {qgis_app.dll!QgsPointCloudLayer}&quot; @181),@182,@183] @2)" />
+    <Alias n="186" Id="(Name=&quot;QtPrivate::QSlotObject&lt;void (__cdecl QgisApp::*)(void) __ptr64,QtPrivate::List&lt;&gt;,void&gt;::impl&quot; @7 @19 OverloadingParameters=[@179,@180,(Type=&quot;QObject * {QgisApp}&quot; @181),@182,@183] @2)" />
+    <Alias n="187" Id="(Name=&quot;QtPrivate::QSlotObject&lt;void (__cdecl QgsMapLayerLegend::*)(void) __ptr64,QtPrivate::List&lt;&gt;,void&gt;::impl&quot; @3 @19 OverloadingParameters=[@179,@180,(Type=&quot;QObject * {QgsDefaultPointCloudLayerLegend}&quot; @181),@182,@183] @2)" />
+    <Alias n="188" Id="(Name=&quot;QtPrivate::QFunctorSlotObject&lt;&lt;lambda_793b075ff30fce109cc183ff89fdb4e0&gt;,0,QtPrivate::List&lt;&gt;,void&gt;::impl&quot; @7 @19 OverloadingParameters=[@179,@180,(Type=&quot;QObject * {QgsLayerItemGuiProvider}&quot; @181),@182,@183] @2)" />
+    <Alias n="189" Id="(Name=&quot;QtPrivate::QSlotObject&lt;void (__cdecl QgsPointCloudLayerProperties::*)(void) __ptr64,QtPrivate::List&lt;&gt;,void&gt;::impl&quot; @7 @19 OverloadingParameters=[@179,@180,(Type=&quot;QObject * {QgsPointCloudLayerProperties}&quot; @181),@182,@183] @2)" />
+    <Alias n="190" Id="(Name=QgisApp::QgisApp @7 @19 OverloadingParameters=[(Type=&quot;QSplashScreen *&quot; Name=splash),(@4 Name=restorePlugins),(@4 Name=skipVersionCheck),(@76 Name=rootProfileLocation),(@76 Name=activeProfile),(Type=&quot;QWidget *&quot; Name=parent),(Type=&quot;QFlags&lt;enum Qt::WindowType&gt;&quot; Name=fl)] @2)" />
+    <Alias n="191" Id="(Name=QApplicationPrivate::sendMouseEvent @13 @4 OverloadingParameters=[@98,(Type=&quot;QMouseEvent * {Qt5Gui.dll!QMouseEvent}&quot; @50),(Type=&quot;QWidget *&quot; Name=alienWidget),(Name=nativeWidget),(Name=buttonDown),(Type=&quot;QPointer&lt;QWidget&gt; &amp;&quot; Name=lastMouseReceiver),(@4 Name=spontaneous)] @2)" />
+    <Alias n="192" Id="(Name=QApplicationPrivate::sendMouseEvent @13 @4 OverloadingParameters=[@98,(Type=&quot;QMouseEvent * {Qt5Gui.dll!QMouseEvent}&quot; @50),(Type=&quot;QWidget * {QPushButton}&quot; Name=alienWidget),(Name=nativeWidget),(Name=buttonDown),(Type=&quot;QPointer&lt;QWidget&gt; &amp;&quot; Name=lastMouseReceiver),(@4 Name=spontaneous)] @2)" />
+  </IdentifierAliases>
+  <Styles>
+    <Style TargetType="Link" GroupLabel="Current Call Stack Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CurrentCallStackCall')" />
+      <Setter Property="Stroke" Value="#FFD93701" />
+      <Setter Property="Weight" Value="1" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Call Stack Indirect Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CallStackIndirectCall')" />
+      <Setter Property="Stroke" Value="#FFB8B8B8" />
+      <Setter Property="StrokeDashArray" Value="4 1" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Call Stack Direct Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CallStackDirectCall')" />
+      <Setter Property="Stroke" Value="#FFB8B8B8" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="当前调用堆栈(无源)" ValueLabel="True">
+      <Condition Expression="HasCategory('CurrentCallStackEntry') And !HasCategory('CodeSchema_SourceLocation')" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#FFA5A5A5" />
+      <Setter Property="Stroke" Value="#FF0072C6" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="External And Current" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('ExternalCallStackEntry') And HasCategory('CurrentCallStackEntry')" />
+      <Setter Property="Background" Value="#FFFFF8F0" />
+      <Setter Property="Stroke" Value="#FFCE5100" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="当前调用堆栈(源)" ValueLabel="True">
+      <Condition Expression="HasCategory('CurrentCallStackEntry') And !HasCategory('QueryResult')" />
+      <Setter Property="Background" Value="#FFFFE3C6" />
+      <Setter Property="Stroke" Value="#FFD93701" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="外部调用堆栈" ValueLabel="True">
+      <Condition Expression="HasCategory('ExternalCallStackEntry')" />
+      <Setter Property="Background" Value="#FFF7F7F7" />
+      <Setter Property="StrokeDashArray" Value="1 3" />
+      <Setter Property="Foreground" Value="#FFA5A5A5" />
+      <Setter Property="Stroke" Value="#FFA5A5A5" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="结果" ValueLabel="True">
+      <Condition Expression="HasCategory('QueryResult')" />
+      <Setter Property="Background" Value="#FFBCFFBE" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="测试项目" ValueLabel="测试项目">
+      <Condition Expression="HasCategory('CodeMap_TestProject')" />
+      <Setter Property="Icon" Value="CodeMap_TestProject" />
+      <Setter Property="Background" Value="#FF307A69" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Web 项目" ValueLabel="Web 项目">
+      <Condition Expression="HasCategory('CodeMap_WebProject')" />
+      <Setter Property="Icon" Value="CodeMap_WebProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Windows 应用商店项目" ValueLabel="Windows 应用商店项目">
+      <Condition Expression="HasCategory('CodeMap_WindowsStoreProject')" />
+      <Setter Property="Icon" Value="CodeMap_WindowsStoreProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="电话项目" ValueLabel="电话项目">
+      <Condition Expression="HasCategory('CodeMap_PhoneProject')" />
+      <Setter Property="Icon" Value="CodeMap_PhoneProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="可移植库" ValueLabel="可移植库">
+      <Condition Expression="HasCategory('CodeMap_PortableLibraryProject')" />
+      <Setter Property="Icon" Value="CodeMap_PortableLibraryProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="WPF 项目" ValueLabel="WPF 项目">
+      <Condition Expression="HasCategory('CodeMap_WpfProject')" />
+      <Setter Property="Icon" Value="CodeMap_WpfProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="VSIX 项目" ValueLabel="VSIX 项目">
+      <Condition Expression="HasCategory('CodeMap_VsixProject')" />
+      <Setter Property="Icon" Value="CodeMap_VsixProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="建模项目" ValueLabel="建模项目">
+      <Condition Expression="HasCategory('CodeMap_ModelingProject')" />
+      <Setter Property="Icon" Value="CodeMap_ModelingProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="程序集" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Assembly')" />
+      <Setter Property="Background" Value="#FF094167" />
+      <Setter Property="Stroke" Value="#FF094167" />
+      <Setter Property="Icon" Value="CodeSchema_Assembly" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="命名空间" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Namespace')" />
+      <Setter Property="Background" Value="#FF0E619A" />
+      <Setter Property="Stroke" Value="#FF0E619A" />
+      <Setter Property="Icon" Value="CodeSchema_Namespace" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="接口" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Interface')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Interface" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="结构" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Struct')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Struct" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="枚举" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Enum')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Enum" />
+      <Setter Property="LayoutSettings" Value="List" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="委托" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Delegate')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Delegate" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="类" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Type')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Class" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="属性" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Property')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Property" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="方法" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Method') Or HasCategory('CodeSchema_CallStackUnresolvedMethod')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Method" />
+      <Setter Property="LayoutSettings" Value="List" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="事件" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Event')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Event" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="字段" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Field')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Field" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Out 参数" ValueLabel="具有类别">
+      <Condition Expression="CodeSchemaProperty_IsOut = 'True'" />
+      <Setter Property="Icon" Value="CodeSchema_OutParameter" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="参数" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_Parameter')" />
+      <Setter Property="Icon" Value="CodeSchema_Parameter" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="局部变量" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('CodeSchema_LocalExpression')" />
+      <Setter Property="Icon" Value="CodeSchema_LocalExpression" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="外部" ValueLabel="具有类别">
+      <Condition Expression="HasCategory('Externals')" />
+      <Setter Property="Background" Value="#FF424242" />
+      <Setter Property="Stroke" Value="#FF424242" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="继承自" ValueLabel="True">
+      <Condition Expression="HasCategory('InheritsFrom')" />
+      <Setter Property="Stroke" Value="#FF00A600" />
+      <Setter Property="StrokeDashArray" Value="2 0" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="实现" ValueLabel="True">
+      <Condition Expression="HasCategory('Implements')" />
+      <Setter Property="Stroke" Value="#8000A600" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="调用" ValueLabel="True">
+      <Condition Expression="HasCategory('CodeSchema_Calls')" />
+      <Setter Property="Stroke" Value="#FFFF00FF" />
+      <Setter Property="StrokeDashArray" Value="2 0" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="函数指针" ValueLabel="True">
+      <Condition Expression="HasCategory('CodeSchema_FunctionPointer')" />
+      <Setter Property="Stroke" Value="#FFFF00FF" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="字段读取" ValueLabel="True">
+      <Condition Expression="HasCategory('CodeSchema_FieldRead')" />
+      <Setter Property="Stroke" Value="#FF00AEEF" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="字段写入" ValueLabel="True">
+      <Condition Expression="HasCategory('CodeSchema_FieldWrite')" />
+      <Setter Property="Stroke" Value="#FF00AEEF" />
+      <Setter Property="DrawArrow" Value="true" />
+      <Setter Property="IsHidden" Value="false" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Inherits From" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('InheritsFrom') And Target.HasCategory('CodeSchema_Class')" />
+      <Setter Property="TargetDecorator" Value="OpenArrow" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Implements" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('Implements') And Target.HasCategory('CodeSchema_Interface')" />
+      <Setter Property="TargetDecorator" Value="OpenArrow" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Comment Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="Source.HasCategory('Comment')" />
+      <Setter Property="Stroke" Value="#FFE5C365" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Cursor Location Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="IsCursorLocation" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Disabled Breakpoint Location Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="DisabledBreakpointCount" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Enabled Breakpoint Location Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="EnabledBreakpointCount" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Instruction Pointer Location Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="IsInstructionPointerLocation" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Current Callstack Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="IsCurrentCallstackFrame" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="返回" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CodeSchema_ReturnTypeLink')" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="引用" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('References')" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="使用特性" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CodeSchema_AttributeUse')" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="解决方案文件夹" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CodeMap_SolutionFolder')" />
+      <Setter Property="Background" Value="#FFDEBA83" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="项目引用" ValueLabel="项目引用">
+      <Condition Expression="HasCategory('CodeMap_ProjectReference')" />
+      <Setter Property="Stroke" Value="#9A9A9A" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="外部引用" ValueLabel="外部引用">
+      <Condition Expression="HasCategory('CodeMap_ExternalReference')" />
+      <Setter Property="Stroke" Value="#9A9A9A" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="注释" ValueLabel="包含注释">
+      <Condition Expression="HasCategory('Comment')" />
+      <Setter Property="Background" Value="#FFFFFACD" />
+      <Setter Property="Stroke" Value="#FFE5C365" />
+      <Setter Property="StrokeThickness" Value="1" />
+      <Setter Property="NodeRadius" Value="2" />
+      <Setter Property="MaxWidth" Value="250" />
+    </Style>
+  </Styles>
+</DirectedGraph>
