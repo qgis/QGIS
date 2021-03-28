@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include <QSpinBox>
 #include <QMessageBox>
+#include <QTimer>
 
 QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent )
   : QDialog( parent )
@@ -121,7 +122,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   } );
 
   // Enable/disable geometry options and call validate
-  connect( mGeomTypeCbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  connect( mGeomTypeCbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
   {
     const bool hasGeom { index != 0 };
     mGeomColumn->setEnabled( hasGeom );
@@ -426,8 +427,8 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
       QComboBox *cbo = new QComboBox { parent };
       cbo->setEditable( false );
       cbo->setFrame( false );
-      connect( cbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
-      for ( const auto &f : qgis::as_const( mTypeList ) )
+      connect( cbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
+      for ( const auto &f : std::as_const( mTypeList ) )
       {
         cbo->addItem( f.mTypeDesc, f.mTypeName );
       }
@@ -718,7 +719,7 @@ QList<QgsVectorDataProvider::NativeType> QgsNewVectorTableFieldModel::nativeType
 
 QString QgsNewVectorTableFieldModel::typeDesc( const QString &typeName ) const
 {
-  for ( const auto &t : qgis::as_const( mNativeTypes ) )
+  for ( const auto &t : std::as_const( mNativeTypes ) )
   {
     if ( t.mTypeName.compare( typeName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
@@ -735,7 +736,7 @@ QVariant::Type QgsNewVectorTableFieldModel::type( const QString &typeName ) cons
 
 QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( const QString &typeName ) const
 {
-  for ( const auto &t : qgis::as_const( mNativeTypes ) )
+  for ( const auto &t : std::as_const( mNativeTypes ) )
   {
     if ( t.mTypeName.compare( typeName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {

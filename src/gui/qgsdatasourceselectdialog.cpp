@@ -27,6 +27,8 @@
 #include <QMenu>
 #include <QDesktopServices>
 #include <QDialogButtonBox>
+#include <QFileInfo>
+#include <QUrl>
 
 QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   QgsBrowserGuiModel *browserModel,
@@ -286,7 +288,7 @@ void QgsDataSourceSelectWidget::onLayerSelected( const QModelIndex &index )
                           ( layerItem->mapLayerType() == mBrowserProxyModel.layerType() ) ) )
       {
         isLayerCompatible = true;
-        mUri = layerItem->mimeUri();
+        mUri = layerItem->mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : layerItem->mimeUris().first();
         // Store last viewed item
         QgsSettings().setValue( QStringLiteral( "datasourceSelectLastSelectedItem" ),  mBrowserProxyModel.data( index, QgsBrowserGuiModel::PathRole ).toString(), QgsSettings::Section::Gui );
       }

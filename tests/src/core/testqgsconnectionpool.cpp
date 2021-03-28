@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QTemporaryFile>
 #include <QtConcurrentMap>
+#include <QFutureWatcher>
 #include "qgstest.h"
 
 class TestQgsConnectionPool: public QObject

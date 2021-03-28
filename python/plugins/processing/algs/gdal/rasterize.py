@@ -47,6 +47,7 @@ class rasterize(GdalAlgorithm):
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     BURN = 'BURN'
+    USE_Z = 'USE_Z'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
     UNITS = 'UNITS'
@@ -82,6 +83,10 @@ class rasterize(GdalAlgorithm):
                                                        type=QgsProcessingParameterNumber.Double,
                                                        defaultValue=0.0,
                                                        optional=True))
+        self.addParameter(QgsProcessingParameterBoolean(self.USE_Z,
+                                                        self.tr('Burn value extracted from the "Z" values of the feature'),
+                                                        defaultValue=False,
+                                                        optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.UNITS,
                                                      self.tr('Output raster size units'),
                                                      self.units))
@@ -171,7 +176,10 @@ class rasterize(GdalAlgorithm):
             layerName
         ]
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        if fieldName:
+        use_z = self.parameterAsBoolean(parameters, self.USE_Z, context)
+        if use_z:
+            arguments.append('-3d')
+        elif fieldName:
             arguments.append('-a')
             arguments.append(fieldName)
         else:

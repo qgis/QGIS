@@ -21,6 +21,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 set(MODULE_WMS_SRCS
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrequest.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrenderer.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrestorer.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgsmaprendererjobproxy.cpp
@@ -61,6 +62,7 @@ endmacro (ADD_QGIS_TEST)
 
 set(TESTS
   test_qgsserver_wms_dxf.cpp
+  test_qgsserver_wms_request.cpp
   test_qgsserver_wms_restorer.cpp
   test_qgsserver_wms_exceptions.cpp
   test_qgsserver_wms_parameters.cpp

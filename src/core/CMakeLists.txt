@@ -45,6 +45,7 @@ set(QGIS_CORE_SRCS
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscptcityarchive.cpp
   symbology/qgsellipsesymbollayer.cpp
+  symbology/qgsembeddedsymbolrenderer.cpp
   symbology/qgsfeaturerenderergenerator.cpp
   symbology/qgsfillsymbollayer.cpp
   symbology/qgsgeometrygeneratorsymbollayer.cpp
@@ -135,6 +136,7 @@ set(QGIS_CORE_SRCS
   auth/qgsauthconfig.cpp
   auth/qgsauthcrypto.cpp
   auth/qgsauthmanager.cpp
+  auth/qgsauthmethod.cpp
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
 
@@ -357,6 +359,7 @@ set(QGIS_CORE_SRCS
   qgsmaphittest.cpp
   qgsmaplayer.cpp
   qgsmaplayerelevationproperties.cpp
+  qgsmaplayerfactory.cpp
   qgsmaplayerlegend.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
@@ -424,6 +427,7 @@ set(QGIS_CORE_SRCS
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
   qgsscaleutils.cpp
+  qgsshapegenerator.cpp
   qgssimplifymethod.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
@@ -800,7 +804,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
 endif()
 
-if (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+if (QT_MOBILITY_LOCATION_FOUND OR ${QT_VERSION_BASE}Positioning_FOUND)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp
   )
@@ -952,6 +956,7 @@ set(QGIS_CORE_HDRS
   qgsmaphittest.h
   qgsmaplayer.h
   qgsmaplayerdependency.h
+  qgsmaplayerfactory.h
   qgsmaplayerlegend.h
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
@@ -1027,6 +1032,7 @@ set(QGIS_CORE_HDRS
   qgsscalecalculator.h
   qgsscaleutils.h
   qgssettings.h
+  qgsshapegenerator.h
   qgssimplifymethod.h
   qgssnappingconfig.h
   qgssnappingutils.h
@@ -1505,6 +1511,7 @@ set(QGIS_CORE_HDRS
   symbology/qgscolorbrewerpalette.h
   symbology/qgscptcityarchive.h
   symbology/qgsellipsesymbollayer.h
+  symbology/qgsembeddedsymbolrenderer.h
   symbology/qgsfeaturerenderergenerator.h
   symbology/qgsfillsymbollayer.h
   symbology/qgsgeometrygeneratorsymbollayer.h
@@ -1613,7 +1620,7 @@ if (NOT WITH_QTWEBKIT)
   )
 endif()
 
-if (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+if (QT_MOBILITY_LOCATION_FOUND OR ${QT_VERSION_BASE}Positioning_FOUND)
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
   )
@@ -1648,7 +1655,7 @@ endif()
 # install qgsconfig.h and plugin.h here so they can get into
 # the OS X framework target
 
-if (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+if (QT_MOBILITY_LOCATION_FOUND OR ${QT_VERSION_BASE}Positioning_FOUND)
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
     gps/qgsgpsconnectionregistry.h
@@ -1731,7 +1738,15 @@ add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS
 target_compile_features(qgis_core PRIVATE cxx_std_17)
 
 target_include_directories(qgis_core SYSTEM PUBLIC
-  ${QT_INCLUDE_DIR}
+  ${${QT_VERSION_BASE}Core_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Gui_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Xml_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Widgets_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Network_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Sql_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
   ${PROJ_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
@@ -1742,7 +1757,7 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${SPATIALITE_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
-  ${Qt5SerialPort_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
 )
@@ -1815,7 +1830,7 @@ GENERATE_EXPORT_HEADER(
 set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_core ${Qt5Test_LIBRARIES})
+  target_link_libraries(qgis_core ${${QT_VERSION_BASE}Test_LIBRARIES})
 endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
@@ -1887,16 +1902,16 @@ if (ADD_CLAZY_CHECKS)
 endif()
 
 target_link_libraries(qgis_core
-  ${Qt5Xml_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Widgets_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${Qt5PrintSupport_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
+  ${${QT_VERSION_BASE}Core_LIBRARIES}
+  ${${QT_VERSION_BASE}Gui_LIBRARIES}
+  ${${QT_VERSION_BASE}Xml_LIBRARIES}
+  ${${QT_VERSION_BASE}Widgets_LIBRARIES}
+  ${${QT_VERSION_BASE}Svg_LIBRARIES}
+  ${${QT_VERSION_BASE}PrintSupport_LIBRARIES}
+  ${${QT_VERSION_BASE}Network_LIBRARIES}
+  ${${QT_VERSION_BASE}Sql_LIBRARIES}
+  ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
-  ${Qt5Sql_LIBRARIES}
-  ${Qt5Concurrent_LIBRARIES}
   ${QCA_LIBRARY}
   ${QTKEYCHAIN_LIBRARY}
   ${PROJ_LIBRARY}
@@ -1910,6 +1925,10 @@ target_link_libraries(qgis_core
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
 )
+
+if (WITH_QT6)
+  target_link_libraries(qgis_core Qt6::Core5Compat)
+endif()
 
 if (WITH_EPT)
   target_link_libraries(qgis_core
@@ -1940,15 +1959,15 @@ if (MSVC)
   set(TARGET_LINK_LIBRARIES qgis_core odbc32 odbccp32)
 endif()
 
-if (Qt5SerialPort_FOUND)
+if (${QT_VERSION_BASE}SerialPort_FOUND)
   target_link_libraries(qgis_core
-    Qt5::SerialPort
+    ${QT_VERSION_BASE}::SerialPort
   )
 endif()
 
-if (Qt5Positioning_FOUND)
+if (${QT_VERSION_BASE}Positioning_FOUND)
   target_link_libraries(qgis_core
-    Qt5::Positioning
+    ${QT_VERSION_BASE}::Positioning
   )
 endif()
 

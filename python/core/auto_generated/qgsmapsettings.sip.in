@@ -13,7 +13,7 @@
 
 class QgsLabelBlockingRegion
 {
-%Docstring
+%Docstring(signature="appended")
 
 Label blocking region (in map coordinates and CRS).
 
@@ -37,7 +37,7 @@ Constructor for a label blocking region
 
 class QgsMapSettings : QgsTemporalRangeObject
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapSettings` class contains configuration for rendering of the map.
 The rendering itself is done by :py:class:`QgsMapRendererJob` subclasses.
 

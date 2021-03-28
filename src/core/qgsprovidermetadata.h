@@ -154,6 +154,17 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     Q_DECLARE_FLAGS( ProviderMetadataCapabilities, ProviderMetadataCapability )
 
     /**
+     * Provider capabilities
+     *
+     * \since QGIS 3.18.1
+     */
+    enum ProviderCapability
+    {
+      FileBasedUris = 1 << 0, //!< Indicates that the provider can utilize URIs which are based on paths to files (as opposed to database or internet paths)
+    };
+    Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
+
+    /**
      * Typedef for data provider creation function.
      * \since QGIS 3.0
      */
@@ -198,6 +209,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.18
      */
     virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
+
+    /**
+     * Returns the provider's capabilities.
+     *
+     * \since QGIS 3.18.1
+     */
+    virtual QgsProviderMetadata::ProviderCapabilities providerCapabilities() const;
 
     /**
      * This returns the library file name
@@ -530,7 +548,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \throws QgsProviderConnectionException
      * \see findConnection()
      */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
 
     /**
      * Removes the connection with the given \a name from the settings.

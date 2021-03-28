@@ -11,7 +11,7 @@
 
 class QgsPanelWidgetStack : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A stack widget to manage panels in the interface. Handles the open and close events
 for added panels.
 Any widgets that want to have a non blocking panel based interface should use this
@@ -89,6 +89,11 @@ Returns the panel currently shown in the stack.
 
 .. versionadded:: 3.0
 %End
+
+    virtual QSize sizeHint() const;
+
+    virtual QSize minimumSizeHint() const;
+
 
   public slots:
 

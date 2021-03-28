@@ -40,6 +40,9 @@
 #include <QNetworkReply>
 #include <QPainter>
 #include <QNetworkCacheMetaData>
+#include <QUrlQuery>
+#include <QDir>
+#include <QTimer>
 
 const QString QgsAmsProvider::AMS_PROVIDER_KEY = QStringLiteral( "arcgismapserver" );
 const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Map Service data provider" );
@@ -161,7 +164,7 @@ void QgsAmsLegendFetcher::handleFinished()
 
     typedef QPair<QString, QImage> LegendEntry_t;
     QSize maxImageSize( 0, 0 );
-    for ( const LegendEntry_t &legendEntry : qgis::as_const( legendEntries ) )
+    for ( const LegendEntry_t &legendEntry : std::as_const( legendEntries ) )
     {
       maxImageSize.setWidth( std::max( maxImageSize.width(), legendEntry.second.width() ) );
       maxImageSize.setHeight( std::max( maxImageSize.height(), legendEntry.second.height() ) );
@@ -175,7 +178,7 @@ void QgsAmsLegendFetcher::handleFinished()
     QPainter painter( &mLegendImage );
     painter.setFont( font );
     int i = 0;
-    for ( const LegendEntry_t &legendEntry : qgis::as_const( legendEntries ) )
+    for ( const LegendEntry_t &legendEntry : std::as_const( legendEntries ) )
     {
       QImage symbol = legendEntry.second.scaled( legendEntry.second.width() * scaleFactor, legendEntry.second.height() * scaleFactor, Qt::KeepAspectRatio, Qt::SmoothTransformation );
       painter.drawImage( 0, verticalPadding + i * ( verticalSize + verticalPadding ) + ( verticalSize - symbol.height() ), symbol );
@@ -581,7 +584,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     tileImages.reserve( requests.size() );
     missing.reserve( requests.size() );
     requestsFinal.reserve( requests.size() );
-    for ( const TileRequest &r : qgis::as_const( requests ) )
+    for ( const TileRequest &r : std::as_const( requests ) )
     {
       QImage localImage;
       if ( QgsTileCache::tile( r.url, localImage ) )
@@ -615,7 +618,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         TileRequests otherRequests;
         getRequests( otherLevel, otherRequests );
         QList<QRectF> missingRectsToDelete;
-        for ( const TileRequest &r : qgis::as_const( otherRequests ) )
+        for ( const TileRequest &r : std::as_const( otherRequests ) )
         {
           QImage localImage;
           if ( ! QgsTileCache::tile( r.url, localImage ) )
@@ -624,7 +627,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
           otherResTiles << TileImage( r.rect, localImage, false );
 
           // see if there are any missing rects that are completely covered by this tile
-          for ( const QRectF &missingRect : qgis::as_const( missingRects ) )
+          for ( const QRectF &missingRect : std::as_const( missingRects ) )
           {
             // we need to do a fuzzy "contains" check because the coordinates may not align perfectly
             // due to numerical errors and/or transform of coords from double to floats
@@ -637,7 +640,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
 
         // remove all the rectangles we have completely covered by tiles from this resolution
         // so we will not use tiles from multiple resolutions for one missing tile (to save time)
-        for ( const QRectF &rectToDelete : qgis::as_const( missingRectsToDelete ) )
+        for ( const QRectF &rectToDelete : std::as_const( missingRectsToDelete ) )
         {
           missingRects.removeOne( rectToDelete );
         }
@@ -670,7 +673,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     }
 
     // draw composite in this resolution
-    for ( const TileImage &ti : qgis::as_const( tileImages ) )
+    for ( const TileImage &ti : std::as_const( tileImages ) )
     {
       if ( ti.smooth )
         p.setRenderHint( QPainter::SmoothPixmapTransform, true );

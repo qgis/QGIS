@@ -81,6 +81,18 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
+bool QgsMapToolReshape::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  switch ( technique )
+  {
+    case QgsMapToolCapture::StraightSegments:
+    case QgsMapToolCapture::CircularString:
+    case QgsMapToolCapture::Streaming:
+      return true;
+  }
+  return false;
+}
+
 bool QgsMapToolReshape::isBindingLine( QgsVectorLayer *vlayer, const QgsRectangle &bbox ) const
 {
   if ( vlayer->geometryType() != QgsWkbTypes::LineGeometry )
@@ -121,9 +133,18 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
     bbox.combineExtentWith( pointsZM().at( i ).x(), pointsZM().at( i ).y() );
   }
 
-
+  const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
   QgsPointSequence pts;
-  captureCurve()->points( pts );
+  if ( !hasCurvedSegments )
+  {
+    captureCurve()->points( pts );
+  }
+  else
+  {
+    std::unique_ptr< QgsLineString > segmented( captureCurve()->curveToLine() );
+    segmented->points( pts );
+  }
+
   QgsLineString reshapeLineString( pts );
 
   //query all the features that intersect bounding box of capture line

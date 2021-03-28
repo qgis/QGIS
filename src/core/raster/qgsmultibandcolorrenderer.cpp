@@ -146,7 +146,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
                     && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
                     && mAlphaBand < 1 );
 
-  QSet<int> bands;
+  QList<int> bands;
   if ( mRedBand > 0 )
   {
     bands << mRedBand;
@@ -173,7 +173,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
 
   QMap<int, QgsRasterBlock *> bandBlocks;
   QgsRasterBlock *defaultPointer = nullptr;
-  QSet<int>::const_iterator bandIt = bands.constBegin();
+  QList<int>::const_iterator bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
     bandBlocks.insert( *bandIt, defaultPointer );

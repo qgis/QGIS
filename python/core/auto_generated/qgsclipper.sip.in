@@ -16,7 +16,7 @@
 
 class QgsClipper
 {
-%Docstring
+%Docstring(signature="appended")
 A class to trim lines and polygons to within a rectangular region.
 
 The functions in this class are likely to be called from within a

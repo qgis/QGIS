@@ -85,7 +85,7 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
 
   if ( document && curvedLabeling )
   {
-    for ( const QgsTextBlock &block : qgis::as_const( *document ) )
+    for ( const QgsTextBlock &block : std::as_const( *document ) )
     {
       for ( const QgsTextFragment &fragment : block )
       {

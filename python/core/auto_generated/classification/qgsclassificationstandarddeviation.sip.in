@@ -10,7 +10,7 @@
 
 class QgsClassificationStandardDeviation : QgsClassificationMethod
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsClassificationCustom` is an implementation of :py:class:`QgsClassificationMethod`
 based on standard deviation
 

@@ -293,7 +293,7 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
   QObject::connect( copyAsCurlAction, &QAction::triggered, copyAsCurlAction, [ = ]
   {
     QString curlHeaders;
-    for ( const QPair< QString, QString > &header : qgis::as_const( mHeaders ) )
+    for ( const QPair< QString, QString > &header : std::as_const( mHeaders ) )
       curlHeaders += QStringLiteral( "-H '%1: %2' " ).arg( header.first, header.second );
 
     QString curlData;

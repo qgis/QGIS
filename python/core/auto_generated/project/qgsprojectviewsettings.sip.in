@@ -10,7 +10,7 @@
 
 class QgsProjectViewSettings : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings and properties relating to how a :py:class:`QgsProject` should be displayed inside
 map canvas, e.g. map scales and default view extent for the project.
 

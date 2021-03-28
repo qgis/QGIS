@@ -305,11 +305,11 @@ void QgsOgrDbSourceSelect::addButtonClicked()
   else
   {
     // Use OGR
-    for ( const LayerInfo &info : qgis::as_const( selectedVectors ) )
+    for ( const LayerInfo &info : std::as_const( selectedVectors ) )
     {
       emit addVectorLayer( info.first, info.second );
     }
-    for ( const LayerInfo &info : qgis::as_const( selectedRasters ) )
+    for ( const LayerInfo &info : std::as_const( selectedRasters ) )
     {
       emit addRasterLayer( info.first, info.second, QStringLiteral( "gdal" ) );
     }

@@ -65,6 +65,8 @@
 #include <QNetworkDiskCache>
 #include <QTimer>
 #include <QStringBuilder>
+#include <QUrlQuery>
+#include <QJsonArray>
 
 #include <ogr_api.h>
 
@@ -170,6 +172,9 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
       temporalCapabilities()->setHasTemporalCapabilities( true );
       temporalCapabilities()->setAvailableTemporalRange( mSettings.mFixedRange );
+      temporalCapabilities()->setAllAvailableTemporalRanges( mSettings.mAllRanges );
+      temporalCapabilities()->setDefaultInterval( mSettings.mDefaultInterval );
+
       temporalCapabilities()->setIntervalHandlingMethod(
         QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
 
@@ -182,7 +187,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     if ( mSettings.mCrsId.isEmpty() && !mSettings.mActiveSubLayers.empty() )
     {
       // if crs not specified via layer uri, use the first available from server capabilities
-      for ( const QgsWmsLayerProperty &property : qgis::as_const( mCaps.mLayersSupported ) )
+      for ( const QgsWmsLayerProperty &property : std::as_const( mCaps.mLayersSupported ) )
       {
         if ( property.name == mSettings.mActiveSubLayers[0] )
         {
@@ -394,7 +399,7 @@ bool QgsWmsProvider::addLayers()
   }
 
   // Set the visibility of these new layers on by default
-  for ( const QString &layer : qgis::as_const( mSettings.mActiveSubLayers ) )
+  for ( const QString &layer : std::as_const( mSettings.mActiveSubLayers ) )
   {
     mActiveSubLayerVisibility[ layer ] = true;
     QgsDebugMsgLevel( QStringLiteral( "set visibility of layer '%1' to true." ).arg( layer ), 3 );
@@ -1114,7 +1119,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   QString format { QStringLiteral( "yyyy-MM-ddThh:mm:ssZ" ) };
   bool dateOnly = false;
 
-  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "wms" ) );
 
   QVariantMap uri = metadata->decodeUri( dataSourceUri() );
 
@@ -1139,7 +1144,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 
   if ( !uri.value( QStringLiteral( "enableTime" ), true ).toBool() )
   {
-    format = "yyyy-MM-dd";
+    format = QStringLiteral( "yyyy-MM-dd" );
     dateOnly = true;
   }
 
@@ -1600,7 +1605,7 @@ static const QgsWmsLayerProperty *_findNestedLayerProperty( const QString &layer
   if ( prop->name == layerName )
     return prop;
 
-  for ( const QgsWmsLayerProperty &child : qgis::as_const( prop->layer ) )
+  for ( const QgsWmsLayerProperty &child : std::as_const( prop->layer ) )
   {
     if ( const QgsWmsLayerProperty *res = _findNestedLayerProperty( layerName, &child ) )
       return res;
@@ -1613,7 +1618,7 @@ static const QgsWmsLayerProperty *_findNestedLayerProperty( const QString &layer
 bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QString &crs, QgsRectangle &extent ) const
 {
   const QgsWmsLayerProperty *layerProperty = nullptr;
-  for ( const QgsWmsLayerProperty &toplevelLayer : qgis::as_const( mCaps.mCapabilities.capability.layers ) )
+  for ( const QgsWmsLayerProperty &toplevelLayer : std::as_const( mCaps.mCapabilities.capability.layers ) )
   {
     layerProperty = _findNestedLayerProperty( layerName, &toplevelLayer );
     if ( layerProperty )
@@ -2133,7 +2138,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
                 tr( "Extent" ) %
                 QStringLiteral( "</th></tr>" );
 
-    for ( const QgsWmsDimensionProperty &d : qgis::as_const( layer.dimensions ) )
+    for ( const QgsWmsDimensionProperty &d : std::as_const( layer.dimensions ) )
     {
       metadata += QStringLiteral( "<tr><td>" ) % d.name % QStringLiteral( "</td><td>" ) % d.units %  QStringLiteral( "</td><td>" ) % d.extent % QStringLiteral( "</td></tr>" );
     }
@@ -2153,7 +2158,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
                 tr( "URL" ) %
                 QStringLiteral( "</th></tr>" );
 
-    for ( const QgsWmsMetadataUrlProperty &l : qgis::as_const( layer.metadataUrl ) )
+    for ( const QgsWmsMetadataUrlProperty &l : std::as_const( layer.metadataUrl ) )
     {
       metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
     }
@@ -2511,7 +2516,7 @@ QString QgsWmsProvider::htmlMetadata()
 
                                 "<table width=\"100%\" class=\"tabular-view\">" );  // Nested table 3
 
-    for ( const QgsWmtsTileLayer &l : qgis::as_const( mCaps.mTileLayersSupported ) )
+    for ( const QgsWmtsTileLayer &l : std::as_const( mCaps.mTileLayersSupported ) )
     {
       metadata += QStringLiteral( "<tr><th class=\"strong\">" ) %
                   tr( "Identifier" ) %
@@ -2578,7 +2583,7 @@ QString QgsWmsProvider::htmlMetadata()
                     QStringLiteral( "</td>"
                                     "<td class=\"strong\">" );
         QStringList styles;
-        for ( const QgsWmtsStyle &style : qgis::as_const( l.styles ) )
+        for ( const QgsWmtsStyle &style : std::as_const( l.styles ) )
         {
           styles << style.identifier;
         }
@@ -2610,7 +2615,7 @@ QString QgsWmsProvider::htmlMetadata()
                   tr( "Available Tilesets" ) %
                   QStringLiteral( "</td><td class=\"strong\">" );
 
-      for ( const QgsWmtsTileMatrixSetLink &setLink : qgis::as_const( l.setLinks ) )
+      for ( const QgsWmtsTileMatrixSetLink &setLink : std::as_const( l.setLinks ) )
       {
         metadata += setLink.tileMatrixSet + "<br>";
       }
@@ -3487,6 +3492,23 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
             params.insert( QStringLiteral( "featureType" ), QStringLiteral( "%1_%2" ).arg( count ).arg( i ) );
             params.insert( QStringLiteral( "getFeatureInfoUrl" ), requestUrl.toString() );
             featureStore.setParams( params );
+
+            // Try to parse and set feature id if matches "<some string>.<integer>"
+            if ( f.value( QLatin1String( "id" ) ).isString() )
+            {
+              const thread_local QRegularExpression re{ R"raw(\.(\d+)$)raw" };
+              const QString idVal { f.value( QLatin1String( "id" ) ).toString() };
+              const QRegularExpressionMatch match { re.match( idVal ) };
+              if ( match.hasMatch() )
+              {
+                bool ok;
+                QgsFeatureId id { match.captured( 1 ).toLongLong( &ok ) };
+                if ( ok )
+                {
+                  feature.setId( id );
+                }
+              }
+            }
 
             feature.setValid( true );
             featureStore.addFeature( feature );

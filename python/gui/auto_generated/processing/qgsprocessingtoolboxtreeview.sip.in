@@ -12,7 +12,7 @@
 
 class QgsProcessingToolboxTreeView : QTreeView
 {
-%Docstring
+%Docstring(signature="appended")
 Processing toolbox tree view, showing algorithms and providers in a tree structure.
 
 .. warning::

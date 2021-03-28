@@ -600,7 +600,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         QString delim;
         expr = QStringLiteral( "%1 IN (" ).arg( ( pkType == PktOid ? QStringLiteral( "oid" ) : QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ) );
 
-        for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
+        for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
         {
           expr += delim + FID_TO_STRING( ( pkType == PktOid ? featureId : FID2PKINT( featureId ) ) );
           delim = ',';
@@ -621,7 +621,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         QString delim;
         expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
 
-        for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
+        for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
         {
           QVariantList pkVals = sharedData->lookupKey( featureId );
           if ( !pkVals.isEmpty() )
@@ -642,7 +642,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     {
       //complex primary key, need to build up where string
       QStringList whereClauses;
-      for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
+      for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
       {
         whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
       }
@@ -902,7 +902,7 @@ bool QgsPostgresProvider::loadFields()
     if ( !attroids.isEmpty() )
     {
       QStringList attroidsList;
-      for ( Oid attroid : qgis::as_const( attroids ) )
+      for ( Oid attroid : std::as_const( attroids ) )
       {
         attroidsList.append( QString::number( attroid ) );
       }
@@ -4739,7 +4739,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     }
     i += stringRe.cap( 1 ).length() + 2;
     jumpSpace( txt, i );
-    if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
+    if ( !QStringView{txt}.mid( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsMessageLog::logMessage( tr( "Cannot find separator: %1" ).arg( txt.mid( i ) ), tr( "PostGIS" ) );
       return QString();
@@ -4752,14 +4752,14 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     int start = i;
     for ( ; i < txt.length(); i++ )
     {
-      if ( txt.midRef( i ).startsWith( sep ) )
+      if ( QStringView{txt}.mid( i ).startsWith( sep ) )
       {
-        QStringRef r( txt.midRef( start, i - start ) );
+        QStringView v( QStringView{txt}.mid( start, i - start ) );
         i += sep.length();
-        return r.trimmed().toString();
+        return v.trimmed().toString();
       }
     }
-    return txt.midRef( start, i - start ).trimmed().toString();
+    return QStringView{txt}.mid( start, i - start ).trimmed().toString();
   }
 }
 

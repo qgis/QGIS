@@ -10,9 +10,10 @@
 
 
 
+
 class QgsAuthMethod : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for authentication method plugins
 %End
 
@@ -153,7 +154,6 @@ Construct a default authentication method
    Non-public since this is an abstract base class
 %End
 
-
     static QString authMethodTag();
 %Docstring
 Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
@@ -172,7 +172,6 @@ Sets the support expansions (points in providers where the authentication is inj
 %Docstring
 Sets list of data providers this auth method supports
 %End
-
 
 };
 QFlags<QgsAuthMethod::Expansion> operator|(QgsAuthMethod::Expansion f1, QFlags<QgsAuthMethod::Expansion> f2);

@@ -51,7 +51,6 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     void keyPressEvent( QKeyEvent *e ) override;
 
   private:
-    QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mLayer = nullptr;
 };
 

@@ -75,7 +75,7 @@ void QgsActionManager::addAction( const QgsAction &action )
 
 void QgsActionManager::onNotifyRunActions( const QString &message )
 {
-  for ( const QgsAction &act : qgis::as_const( mActions ) )
+  for ( const QgsAction &act : std::as_const( mActions ) )
   {
     if ( !act.notificationMessage().isEmpty() && QRegularExpression( act.notificationMessage() ).match( message ).hasMatch() )
     {
@@ -99,7 +99,7 @@ void QgsActionManager::onNotifyRunActions( const QString &message )
 void QgsActionManager::removeAction( QUuid actionId )
 {
   int i = 0;
-  for ( const QgsAction &action : qgis::as_const( mActions ) )
+  for ( const QgsAction &action : std::as_const( mActions ) )
   {
     if ( action.id() == actionId )
     {
@@ -112,7 +112,7 @@ void QgsActionManager::removeAction( QUuid actionId )
   if ( mOnNotifyConnected )
   {
     bool hasActionOnNotify = false;
-    for ( const QgsAction &action : qgis::as_const( mActions ) )
+    for ( const QgsAction &action : std::as_const( mActions ) )
       hasActionOnNotify |= !action.notificationMessage().isEmpty();
     if ( !hasActionOnNotify && mLayer && mLayer->dataProvider() )
     {
@@ -177,7 +177,7 @@ QList<QgsAction> QgsActionManager::actions( const QString &actionScope ) const
   {
     QList<QgsAction> actions;
 
-    for ( const QgsAction &action : qgis::as_const( mActions ) )
+    for ( const QgsAction &action : std::as_const( mActions ) )
     {
       if ( action.actionScopes().contains( actionScope ) )
         actions.append( action );
@@ -232,7 +232,7 @@ bool QgsActionManager::writeXml( QDomNode &layer_node ) const
     aActions.appendChild( defaultActionElement );
   }
 
-  for ( const QgsAction &action : qgis::as_const( mActions ) )
+  for ( const QgsAction &action : std::as_const( mActions ) )
   {
     action.writeXml( aActions );
   }
@@ -262,7 +262,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
     for ( int i = 0; i < defaultActionNodes.size(); ++i )
     {
       QDomElement defaultValueElem = defaultActionNodes.at( i ).toElement();
-      mDefaultActions.insert( defaultValueElem.attribute( QStringLiteral( "key" ) ), defaultValueElem.attribute( QStringLiteral( "value" ) ) );
+      mDefaultActions.insert( defaultValueElem.attribute( QStringLiteral( "key" ) ), QUuid( defaultValueElem.attribute( QStringLiteral( "value" ) ) ) );
     }
   }
   return true;
@@ -270,7 +270,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
 
 QgsAction QgsActionManager::action( QUuid id )
 {
-  for ( const QgsAction &action : qgis::as_const( mActions ) )
+  for ( const QgsAction &action : std::as_const( mActions ) )
   {
     if ( action.id() == id )
       return action;

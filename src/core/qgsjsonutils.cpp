@@ -30,6 +30,7 @@
 
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QTextCodec>
 #include <nlohmann/json.hpp>
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
@@ -194,7 +195,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     if ( mLayer && mIncludeRelatedAttributes )
     {
       QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
-      for ( const auto &relation : qgis::as_const( relations ) )
+      for ( const auto &relation : std::as_const( relations ) )
       {
         QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
         req.setFlags( QgsFeatureRequest::NoGeometry );
@@ -240,7 +241,7 @@ json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features
     { "type", "FeatureCollection" },
     { "features", json::array() }
   };
-  for ( const QgsFeature &feature : qgis::as_const( features ) )
+  for ( const QgsFeature &feature : std::as_const( features ) )
   {
     data["features"].push_back( exportFeatureToJsonObject( feature ) );
   }

@@ -527,6 +527,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.compareApi(request, project,
                         'test_wfs3_collections_items_testlayer_èé.json')
 
+    def test_wfs3_collection_items_html(self):
+        """Test WFS3 API items"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items.html')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_testlayer_èé.html')
+
     def test_wfs3_collection_items_crs(self):
         """Test WFS3 API items with CRS"""
         project = QgsProject()
@@ -1163,7 +1172,6 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.server.handleRequest(request, response, project)
         self.assertEqual(bytes(response.body()).decode('utf-8'), '[{"code":"Internal server error","description":"Invalid feature ID [xYz@]"}]')
 
-    @unittest.skip('Failing')
     def test_wfs3_time_filters_ranges(self):
         """Test datetime filters"""
 

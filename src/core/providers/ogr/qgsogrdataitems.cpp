@@ -452,13 +452,16 @@ bool QgsOgrDataCollectionItem::hasDragEnabled() const
   return true;
 }
 
-QgsMimeDataUtils::Uri QgsOgrDataCollectionItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsOgrDataCollectionItem::mimeUris() const
 {
-  QgsMimeDataUtils::Uri u;
-  u.providerKey = QStringLiteral( "ogr" );
-  u.uri = path();
-  u.layerType = QStringLiteral( "vector" );
-  return u;
+  QgsMimeDataUtils::Uri vectorUri;
+  vectorUri.providerKey = QStringLiteral( "ogr" );
+  vectorUri.uri = path();
+  vectorUri.layerType = QStringLiteral( "vector" );
+  QgsMimeDataUtils::Uri rasterUri { vectorUri };
+  rasterUri.layerType = QStringLiteral( "raster" );
+  rasterUri.providerKey = QStringLiteral( "gdal" );
+  return { vectorUri, rasterUri };
 }
 
 QgsAbstractDatabaseProviderConnection *QgsOgrDataCollectionItem::databaseConnection() const
@@ -574,7 +577,14 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
 
-// GDAL 3.1 Shapefile driver directly handles .shp.zip files
+  if ( suffix == QLatin1String( "txt" ) )
+  {
+    // never ever show .txt files as datasets in browser -- they are only used for geospatial data in extremely rare cases
+    // and are predominantly just noise in the browser
+    return nullptr;
+  }
+
+  // GDAL 3.1 Shapefile driver directly handles .shp.zip files
   if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) &&
        GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
   {

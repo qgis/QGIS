@@ -25,6 +25,9 @@
 #include "qgstemporalutils.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 
 #include <QAction>
 #include <QMenu>
@@ -77,8 +80,8 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::startEndDateTime_changed );
   connect( mFixedRangeStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::fixedRangeStartEndDateTime_changed );
   connect( mFixedRangeEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::fixedRangeStartEndDateTime_changed );
-  connect( mStepSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
-  connect( mTimeStepsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
+  connect( mStepSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
+  connect( mTimeStepsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
   connect( mSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
 
   mStepSpinBox->setClearValue( 1 );
@@ -140,10 +143,11 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
           QgsUnitTypes::TemporalMonths,
           QgsUnitTypes::TemporalYears,
           QgsUnitTypes::TemporalDecades,
-          QgsUnitTypes::TemporalCenturies
+          QgsUnitTypes::TemporalCenturies,
+          QgsUnitTypes::TemporalIrregularStep,
         } )
   {
-    mTimeStepsComboBox->addItem( QgsUnitTypes::toString( u ), u );
+    mTimeStepsComboBox->addItem( u != QgsUnitTypes::TemporalIrregularStep ? QgsUnitTypes::toString( u ) : tr( "source timestamps" ), u );
   }
 
   // TODO: might want to choose an appropriate default unit based on the range
@@ -290,8 +294,9 @@ void QgsTemporalControllerWidget::updateFrameDuration()
     return;
 
   // save new settings into project
-  QgsProject::instance()->timeSettings()->setTimeStepUnit( static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) );
-  QgsProject::instance()->timeSettings()->setTimeStep( mStepSpinBox->value() );
+  QgsUnitTypes::TemporalUnit unit = static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() );
+  QgsProject::instance()->timeSettings()->setTimeStepUnit( unit );
+  QgsProject::instance()->timeSettings()->setTimeStep( unit == QgsUnitTypes::TemporalIrregularStep ? 1 : mStepSpinBox->value() );
 
   if ( !mBlockFrameDurationUpdates )
   {
@@ -302,6 +307,20 @@ void QgsTemporalControllerWidget::updateFrameDuration()
   }
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
+
+  if ( unit == QgsUnitTypes::TemporalIrregularStep )
+  {
+    mStepSpinBox->setEnabled( false );
+    mStepSpinBox->setValue( 1 );
+    mSlider->setTickInterval( 1 );
+    mSlider->setTickPosition( QSlider::TicksBothSides );
+  }
+  else
+  {
+    mStepSpinBox->setEnabled( true );
+    mSlider->setTickInterval( 0 );
+    mSlider->setTickPosition( QSlider::NoTicks );
+  }
 }
 
 void QgsTemporalControllerWidget::setWidgetStateFromProject()
@@ -410,6 +429,7 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
             {
               mHasTemporalLayersLoaded = true;
               firstTemporalLayerLoaded( layer );
+              mNavigationObject->setAvailableTemporalRanges( QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() ) );
             }
           } );
         }
@@ -418,19 +438,30 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
       }
     }
   }
+
+  mNavigationObject->setAvailableTemporalRanges( QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() ) );
 }
 
 void QgsTemporalControllerWidget::firstTemporalLayerLoaded( QgsMapLayer *layer )
 {
   setDatesToProjectTime();
 
-  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-  if ( meshLayer )
+  if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer ) )
   {
     mBlockFrameDurationUpdates++;
     setTimeStep( meshLayer->firstValidTimeStep() );
     mBlockFrameDurationUpdates--;
     updateFrameDuration();
+  }
+  else if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer ) )
+  {
+    if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
+    {
+      mBlockFrameDurationUpdates++;
+      setTimeStep( rasterLayer->dataProvider()->temporalCapabilities()->defaultInterval() );
+      mBlockFrameDurationUpdates--;
+      updateFrameDuration();
+    }
   }
 }
 
@@ -541,37 +572,45 @@ void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
   if ( ! timeStep.isValid() || timeStep.seconds() <= 0 )
     return;
 
-  // Search the time unit the most appropriate :
-  // the one that gives the smallest time step value for double spin box with round value (if possible) and/or the less signifiant digits
-
   int selectedUnit = -1;
-  int stringSize = std::numeric_limits<int>::max();
-  int precision = mStepSpinBox->decimals();
   double selectedValue = std::numeric_limits<double>::max();
-  for ( int i = 0; i < mTimeStepsComboBox->count(); ++i )
+  if ( timeStep.originalUnit() != QgsUnitTypes::TemporalIrregularStep )
   {
-    QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
-    double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
-    QString string = QString::number( value, 'f', precision );
-    string.remove( QRegExp( "0+$" ) ); //remove trailing zero
-    string.remove( QRegExp( "[.]+$" ) ); //remove last point if present
+    // Search the time unit the most appropriate :
+    // the one that gives the smallest time step value for double spin box with round value (if possible) and/or the less signifiant digits
 
-    if ( value >= 1
-         && string.size() <= stringSize // less significant digit than currently selected
-         && value < selectedValue ) // less than currently selected
+    int stringSize = std::numeric_limits<int>::max();
+    int precision = mStepSpinBox->decimals();
+    for ( int i = 0; i < mTimeStepsComboBox->count(); ++i )
     {
-      selectedUnit = i;
-      selectedValue = value;
-      stringSize = string.size();
+      QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
+      double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
+      QString string = QString::number( value, 'f', precision );
+      string.remove( QRegExp( "0+$" ) ); //remove trailing zero
+      string.remove( QRegExp( "[.]+$" ) ); //remove last point if present
+
+      if ( value >= 1
+           && string.size() <= stringSize // less significant digit than currently selected
+           && value < selectedValue ) // less than currently selected
+      {
+        selectedUnit = i;
+        selectedValue = value;
+        stringSize = string.size();
+      }
+      else if ( string != '0'
+                && string.size() < precision + 2 //round value (ex: 0.xx with precision=3)
+                && string.size() < stringSize ) //less significant digit than currently selected
+      {
+        selectedUnit = i ;
+        selectedValue = value ;
+        stringSize = string.size();
+      }
     }
-    else if ( string != '0'
-              && string.size() < precision + 2 //round value (ex: 0.xx with precision=3)
-              && string.size() < stringSize ) //less significant digit than currently selected
-    {
-      selectedUnit = i ;
-      selectedValue = value ;
-      stringSize = string.size();
-    }
+  }
+  else
+  {
+    selectedUnit = mTimeStepsComboBox->findData( static_cast< int >( timeStep.originalUnit() ) );
+    selectedValue = 1;
   }
 
   if ( selectedUnit >= 0 )
@@ -636,6 +675,8 @@ void QgsTemporalControllerWidget::setDatesToAllLayers()
 {
   QgsDateTimeRange range;
   range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
+  mNavigationObject->setAvailableTemporalRanges( QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() ) );
+
   setDates( range );
 }
 
@@ -652,6 +693,8 @@ void QgsTemporalControllerWidget::setDatesToProjectTime()
   {
     range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
   }
+
+  mNavigationObject->setAvailableTemporalRanges( QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() ) );
 
   setDates( range );
 }

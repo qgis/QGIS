@@ -59,13 +59,13 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point
-        , QgsWkbTypes::LineString
-        , QgsWkbTypes::Polygon
-        , QgsWkbTypes::MultiPoint
-        , QgsWkbTypes::MultiLineString
-        , QgsWkbTypes::MultiPolygon
-        , QgsWkbTypes::NoGeometry };
+    static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point,
+        QgsWkbTypes::LineString,
+        QgsWkbTypes::Polygon,
+        QgsWkbTypes::MultiPoint,
+        QgsWkbTypes::MultiLineString,
+        QgsWkbTypes::MultiPolygon,
+        QgsWkbTypes::NoGeometry };
     for ( QgsWkbTypes::Type type : types )
     {
       cb->addItem( QgsLayerItem::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
@@ -534,7 +534,7 @@ void QgsPgSourceSelect::addButtonClicked()
     }
     if ( ! rasterTables.isEmpty() )
     {
-      for ( const auto &u : qgis::as_const( rasterTables ) )
+      for ( const auto &u : std::as_const( rasterTables ) )
       {
         // Use "gdal" to proxy rasters to GDAL provider, or "postgresraster" for native PostGIS raster provider
         emit addRasterLayer( u.second, u.first, QLatin1String( "postgresraster" ) );

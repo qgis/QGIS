@@ -16,9 +16,10 @@
 
 
 
+
 class QgsPointLocator : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 The class defines interface for querying point location:
 
 - query nearest vertices / edges to a point
@@ -94,6 +95,7 @@ Configure render context  - if not ``None``, it will use to index only visible f
       Area,
       Centroid,
       MiddleOfSegment,
+      LineEndpoint,
       All
     };
 
@@ -134,23 +136,30 @@ construct invalid match
         bool isValid() const;
         bool hasVertex() const;
 %Docstring
-Returns true if the Match is a vertex
+Returns ``True`` if the Match is a vertex
 %End
         bool hasEdge() const;
 %Docstring
-Returns true if the Match is an edge
+Returns ``True`` if the Match is an edge
 %End
         bool hasCentroid() const;
 %Docstring
-Returns true if the Match is a centroid
+Returns ``True`` if the Match is a centroid
 %End
         bool hasArea() const;
 %Docstring
-Returns true if the Match is an area
+Returns ``True`` if the Match is an area
 %End
         bool hasMiddleSegment() const;
 %Docstring
-Returns true if the Match is the middle of a segment
+Returns ``True`` if the Match is the middle of a segment
+%End
+
+        bool hasLineEndpoint() const;
+%Docstring
+Returns ``True`` if the Match is a line endpoint (start or end vertex).
+
+.. versionadded:: 3.20
 %End
 
         double distance() const;
@@ -231,6 +240,15 @@ Optional filter may discard unwanted matches.
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
 
 .. versionadded:: 3.12
+%End
+
+    Match nearestLineEndpoints( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest line endpoint (start or end vertex) to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. versionadded:: 3.20
 %End
 
     Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );

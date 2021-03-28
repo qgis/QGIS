@@ -11,7 +11,7 @@
 
 class QgsRemappingSinkDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 Defines the parameters used to remap features when creating a :py:class:`QgsRemappingProxyFeatureSink`.
 
 The definition includes parameters required to correctly map incoming features to the structure
@@ -146,7 +146,7 @@ You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 class QgsRemappingProxyFeatureSink : QgsFeatureSink
 {
-%Docstring
+%Docstring(signature="appended")
 A :py:class:`QgsFeatureSink` which proxies incoming features to a destination feature sink, after applying
 transformations and field value mappings.
 

@@ -39,6 +39,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QByteArray>
+#include <QFileInfo>
 
 #include <sqlite3.h>
 #include "qgssqliteutils.h"
@@ -2424,7 +2425,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
         {
           QStringList dummy = symbols;
           symbols.clear();
-          for ( const QString &result : qgis::as_const( resultNames ) )
+          for ( const QString &result : std::as_const( resultNames ) )
           {
             if ( dummy.contains( result ) )
               symbols << result;

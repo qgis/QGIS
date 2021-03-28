@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
+    <width>581</width>
     <height>491</height>
    </rect>
   </property>
@@ -542,9 +542,10 @@ enhancement</string>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPointCloudAttributeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspointcloudattributecombobox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorRampShaderWidget</class>
@@ -553,12 +554,33 @@ enhancement</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
+   <class>QgsPointCloudAttributeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspointcloudattributecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mRenderingStyleComboBox</tabstop>
+  <tabstop>mSingleColorBtn</tabstop>
+  <tabstop>mPointSizeSpinBox</tabstop>
+  <tabstop>mMaxScreenErrorSpinBox</tabstop>
+  <tabstop>mPointBudgetSpinBox</tabstop>
+  <tabstop>mShowBoundingBoxesCheckBox</tabstop>
+  <tabstop>mRenderingParameterComboBox</tabstop>
+  <tabstop>mColorRampShaderMinEdit</tabstop>
+  <tabstop>mColorRampShaderMaxEdit</tabstop>
+  <tabstop>mScalarRecalculateMinMaxButton</tabstop>
+  <tabstop>mContrastEnhancementAlgorithmComboBox</tabstop>
+  <tabstop>mRedMinLineEdit</tabstop>
+  <tabstop>mRedAttributeComboBox</tabstop>
+  <tabstop>mGreenAttributeComboBox</tabstop>
+  <tabstop>mBlueAttributeComboBox</tabstop>
+  <tabstop>mRedMaxLineEdit</tabstop>
+  <tabstop>mGreenMinLineEdit</tabstop>
+  <tabstop>mBlueMinLineEdit</tabstop>
+  <tabstop>mBlueMaxLineEdit</tabstop>
+  <tabstop>mGreenMaxLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -11,7 +11,7 @@
 
 class QgsMultiPolygon: QgsMultiSurface
 {
-%Docstring
+%Docstring(signature="appended")
 Multi polygon geometry collection.
 
 .. versionadded:: 2.10

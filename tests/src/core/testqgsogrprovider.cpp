@@ -26,6 +26,7 @@
 #include <qgsnetworkaccessmanager.h>
 
 #include <QObject>
+#include <QThread>
 
 #include <cpl_conv.h>
 
@@ -48,6 +49,7 @@ class TestQgsOgrProvider : public QObject
     void decodeUri();
     void encodeUri();
     void testThread();
+    void testCsvFeatureAddition();
 
   private:
     QString mTestDataDir;
@@ -349,6 +351,48 @@ void TestQgsOgrProvider::testThread()
   thread->wait();
   qInstallMessageHandler( 0 );
 
+}
+
+void TestQgsOgrProvider::testCsvFeatureAddition()
+{
+  QString csvFilename = QDir::tempPath() + "/csvfeatureadditiontest.csv";
+  QFile csvFile( csvFilename );
+  if ( csvFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    QTextStream textStream( &csvFile );
+    textStream << QLatin1String( "col1,col2,col3\n0,0,\"csv0\"\n" );
+    csvFile.close();
+  }
+
+  QgsVectorLayer *csvLayer = new QgsVectorLayer( csvFilename, QStringLiteral( "csv" ) );
+  QVERIFY( csvLayer->isValid() );
+  QCOMPARE( csvLayer->featureCount(), 1 );
+
+  QgsFeature f1( csvLayer->fields() );
+  f1.setAttribute( 0, 1 );
+  f1.setAttribute( 1, 1 );
+  f1.setAttribute( 2, QLatin1String( "csv1" ) );
+  QgsFeature f2( csvLayer->fields() );
+  f2.setAttribute( 0, 2 );
+  f2.setAttribute( 1, 2 );
+  f2.setAttribute( 2, QLatin1String( "csv2" ) );
+
+  QgsFeatureList features;
+  features << f1 << f2;
+  csvLayer->dataProvider()->addFeatures( features );
+  QCOMPARE( features.at( 0 ).id(), 2 );
+  QCOMPARE( features.at( 1 ).id(), 3 );
+
+  csvLayer->setSubsetString( QStringLiteral( "col1 = '2'" ) );
+  QCOMPARE( csvLayer->featureCount(), 1 );
+
+  features.clear();
+  features << f1;
+  csvLayer->dataProvider()->addFeatures( features );
+  QCOMPARE( features.at( 0 ).id(), 4 );
+
+  delete csvLayer;
+  QFile::remove( csvFilename );
 }
 
 

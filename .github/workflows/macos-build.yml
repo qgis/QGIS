@@ -1,4 +1,4 @@
-name: Mac OS build
+name: 🍏 Mac OS build
 on:
   push:
     branches:
@@ -141,13 +141,12 @@ jobs:
           mkdir -p ${BUILD_DIR}
           cd ${BUILD_DIR}
 
-          # FIXME: PDAL disable because of #39971
           PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH \
           cmake -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
                -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
                -DWITH_BINDINGS=TRUE \
                -DWITH_3D=TRUE \
-               -DWITH_PDAL=FALSE \
+               -DWITH_PDAL=TRUE \
                -DWITH_EPT=TRUE \
                ../QGIS
 

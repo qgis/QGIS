@@ -191,6 +191,10 @@
   <tabstop>mTargetFieldComboBox</tabstop>
   <tabstop>mCacheInMemoryCheckBox</tabstop>
   <tabstop>mCreateIndexCheckBox</tabstop>
+  <tabstop>mDynamicFormCheckBox</tabstop>
+  <tabstop>mEditableJoinLayer</tabstop>
+  <tabstop>mUpsertOnEditCheckBox</tabstop>
+  <tabstop>mDeleteCascadeCheckBox</tabstop>
   <tabstop>mUseJoinFieldsSubset</tabstop>
   <tabstop>mJoinFieldsSubsetView</tabstop>
   <tabstop>mUseCustomPrefix</tabstop>

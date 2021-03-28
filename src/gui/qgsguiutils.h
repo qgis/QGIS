@@ -15,7 +15,6 @@
 #ifndef QGSGUIUTILS_H
 #define QGSGUIUTILS_H
 
-#include <Qt>
 #include <QPair>
 #include <QWidget>
 #include <QStringList>

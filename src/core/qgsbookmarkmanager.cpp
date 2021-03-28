@@ -19,6 +19,7 @@
 #include "qgssqliteutils.h"
 #include "qgsapplication.h"
 #include <QUuid>
+#include <QTextStream>
 #include <sqlite3.h>
 
 //
@@ -133,7 +134,7 @@ QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
   else
   {
     // check for duplicate ID
-    for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+    for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
     {
       if ( b.id() == bookmark.id() )
       {
@@ -166,7 +167,7 @@ bool QgsBookmarkManager::removeBookmark( const QString &id )
   QString group;
   int pos = -1;
   int i = 0;
-  for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+  for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
   {
     if ( b.id() == id )
     {
@@ -197,7 +198,7 @@ bool QgsBookmarkManager::updateBookmark( const QgsBookmark &bookmark )
 {
   // check for duplicate ID
   int i = 0;
-  for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+  for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
   {
     if ( b.id() == bookmark.id() )
     {
@@ -410,7 +411,9 @@ bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const Qg
   }
 
   QTextStream out( &f );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   out.setCodec( "UTF-8" );
+#endif
   doc.save( out, 2 );
   f.close();
 
@@ -485,7 +488,9 @@ void QgsBookmarkManager::store()
     doc.appendChild( elem );
 
     QTextStream out( &f );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     out.setCodec( "UTF-8" );
+#endif
     doc.save( out, 2 );
     f.close();
   }

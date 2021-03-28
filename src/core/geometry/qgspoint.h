@@ -529,6 +529,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
     QgsPoint *toCurveType() const override SIP_FACTORY;
     double segmentLength( QgsVertexId startVertex ) const override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;

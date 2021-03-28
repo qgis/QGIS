@@ -260,7 +260,7 @@ void QgsImageOperation::BrightnessContrastPixelOperation::operator()( QRgb &rgb,
 
 int QgsImageOperation::adjustColorComponent( int colorComponent, int brightness, double contrastFactor )
 {
-  return qBound( 0, static_cast< int >( ( ( ( ( ( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255 );
+  return std::clamp( static_cast< int >( ( ( ( ( ( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 0, 255 );
 }
 
 //hue/saturation
@@ -348,7 +348,7 @@ void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, co
 {
   Q_UNUSED( x )
   Q_UNUSED( y )
-  rgb = qRgba( qRed( rgb ), qGreen( rgb ), qBlue( rgb ), qBound( 0.0, std::round( mFactor * qAlpha( rgb ) ), 255.0 ) );
+  rgb = qRgba( qRed( rgb ), qGreen( rgb ), qBlue( rgb ), std::clamp( std::round( mFactor * qAlpha( rgb ) ), 0.0, 255.0 ) );
 }
 
 // overlay color
@@ -694,7 +694,7 @@ inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurVertical( cons
 
   for ( int i = 0; i <= mRadius * 2; ++i )
   {
-    y = qBound( 0, posy + ( i - mRadius ), height - 1 );
+    y = std::clamp( posy + ( i - mRadius ), 0, height - 1 );
     ref = sourceFirstLine + sourceBpl * y;
 
     QRgb *refRgb = reinterpret_cast< QRgb * >( ref );
@@ -718,7 +718,7 @@ inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurHorizontal( co
 
   for ( int i = 0; i <= mRadius * 2; ++i )
   {
-    x = qBound( 0, posx + ( i - mRadius ), width - 1 );
+    x = std::clamp( posx + ( i - mRadius ), 0, width - 1 );
     ref = sourceFirstLine + x * 4;
 
     QRgb *refRgb = reinterpret_cast< QRgb * >( ref );

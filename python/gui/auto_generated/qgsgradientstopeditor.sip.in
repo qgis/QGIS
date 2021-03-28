@@ -12,7 +12,7 @@
 
 class QgsGradientStopEditor : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 An interactive editor for previewing a gradient color ramp and modifying the position of color
 stops along the gradient.
 

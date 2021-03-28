@@ -12,10 +12,9 @@
 
 
 
-
 class QgsFeature
 {
-%Docstring
+%Docstring(signature="appended")
 The feature class encapsulates a single feature including its id,
 geometry and a list of field/values attributes.
 
@@ -577,6 +576,22 @@ before this method can be used.
         sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
       }
     }
+%End
+
+    const QgsSymbol *embeddedSymbol() const;
+%Docstring
+Returns the feature's embedded symbology, or ``None`` if the feature has no embedded symbol.
+
+.. versionadded:: 3.20
+%End
+
+    void setEmbeddedSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the feature's embedded ``symbol``.
+
+Ownership of ``symbol`` is transferred to the feature.
+
+.. versionadded:: 3.20
 %End
 
     int fieldNameIndex( const QString &fieldName ) const;

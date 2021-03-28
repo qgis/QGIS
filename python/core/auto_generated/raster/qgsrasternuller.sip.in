@@ -12,7 +12,7 @@
 
 class QgsRasterNuller : QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Raster pipe that deals with null values.
 %End
 

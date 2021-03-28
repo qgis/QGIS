@@ -13,7 +13,7 @@
 
 class QgsProjectionSelectionTreeWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for selecting a coordinate reference system from a tree.
 
 This widget implements a tree view of projections, as seen in the

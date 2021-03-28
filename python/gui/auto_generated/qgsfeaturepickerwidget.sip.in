@@ -13,7 +13,7 @@
 
 class QgsFeaturePickerWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 This offers a combobox with autocompleter that allows selecting features from a layer.
 
 It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression

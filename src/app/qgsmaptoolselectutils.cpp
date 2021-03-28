@@ -243,6 +243,8 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   {
     // a zero width buffer is safer than calling make valid here!
     selectGeomTrans = selectGeomTrans.buffer( 0, 1 );
+    if ( selectGeomTrans.isEmpty() )
+      return newSelectedFeatures;
   }
 
   std::unique_ptr< QgsGeometryEngine > selectionGeometryEngine( QgsGeometry::createGeometryEngine( selectGeomTrans.constGet() ) );

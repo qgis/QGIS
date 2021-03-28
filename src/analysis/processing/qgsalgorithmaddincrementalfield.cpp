@@ -131,7 +131,7 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
 {
   if ( !mGroupedFieldNames.empty() && mGroupedFields.empty() )
   {
-    for ( const QString &field : qgis::as_const( mGroupedFieldNames ) )
+    for ( const QString &field : std::as_const( mGroupedFieldNames ) )
     {
       int idx = mFields.lookupField( field );
       if ( idx >= 0 )
@@ -150,7 +150,7 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
   {
     QgsAttributes groupAttributes;
     groupAttributes.reserve( mGroupedFields.size() );
-    for ( int index : qgis::as_const( mGroupedFields ) )
+    for ( int index : std::as_const( mGroupedFields ) )
     {
       groupAttributes << f.attribute( index );
     }

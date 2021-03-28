@@ -32,6 +32,7 @@
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QSpinBox>
+#include <QRegularExpression>
 #include "gdal.h"
 
 static const int COLUMN_IDX_NAME = 0;
@@ -227,7 +228,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
         {
           QComboBox *cb = new QComboBox();
           cb->setObjectName( it.key() );
-          for ( const QString &val : qgis::as_const( opt->values ) )
+          for ( const QString &val : std::as_const( opt->values ) )
           {
             cb->addItem( val, val );
           }
@@ -581,7 +582,6 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
     delete item;
   }
 
-  // workaround so the Q_FOREACH macro does not get confused by the ','
   typedef QPair<QLabel *, QWidget *> LabelControlPair;
 
   if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )

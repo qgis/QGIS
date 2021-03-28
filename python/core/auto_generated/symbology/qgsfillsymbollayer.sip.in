@@ -753,7 +753,7 @@ Returns the units used for the offset of the shapeburst fill.
 
 class QgsImageFillSymbolLayer: QgsFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for polygon renderers generating texture images
 %End
 
@@ -851,7 +851,7 @@ Returns ``True`` if the image brush should be transformed using the render conte
 
 class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A class for filling symbols with a repeated raster image.
 
 .. versionadded:: 2.7
@@ -1133,7 +1133,7 @@ Returns the map unit scale for the image's width.
 
 class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A class for filling symbols with a repeated SVG file.
 %End
 
@@ -1429,7 +1429,7 @@ Sets the dynamic SVG parameters
 
 class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A symbol fill consisting of repeated parallel lines.
 %End
 
@@ -2022,7 +2022,7 @@ Returns the unit scale for the vertical offset between rows in the pattern.
 
 class QgsRandomMarkerFillSymbolLayer : QgsFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 A fill symbol layer which places markers at random locations within polygons.
 

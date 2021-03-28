@@ -36,6 +36,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsfields.h"
 
 #include "qgsgeometry.h"
+#include "qgssymbol.h"
 
 class QgsFeaturePrivate : public QSharedData
 {
@@ -54,6 +55,7 @@ class QgsFeaturePrivate : public QSharedData
       , geometry( other.geometry )
       , valid( other.valid )
       , fields( other.fields )
+      , symbol( other.symbol ? other.symbol->clone() : nullptr )
     {
     }
 
@@ -75,6 +77,8 @@ class QgsFeaturePrivate : public QSharedData
 
     //! Optional field map for name-based attribute lookups
     QgsFields fields;
+
+    std::unique_ptr< QgsSymbol > symbol;
 
   private:
     QgsFeaturePrivate &operator=( const QgsFeaturePrivate & ) = delete;

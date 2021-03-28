@@ -441,7 +441,7 @@ void QgsRubberBand::paint( QPainter *p )
 
   QVector< QVector<QPolygonF> > shapes;
   shapes.reserve( mPoints.size() );
-  for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
+  for ( const QgsPolygonXY &poly : std::as_const( mPoints ) )
   {
     QVector<QPolygonF> rings;
     rings.reserve( poly.size() );
@@ -466,7 +466,7 @@ void QgsRubberBand::paint( QPainter *p )
     context.setFlag( QgsRenderContext::Antialiasing, true );
 
     lineSymbol->startRender( context );
-    for ( const QVector<QPolygonF> &shape : qgis::as_const( shapes ) )
+    for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
     {
       drawShape( p, shape );
       for ( const QPolygonF &ring : shape )
@@ -495,7 +495,7 @@ void QgsRubberBand::paint( QPainter *p )
         p->setPen( mPen );
       }
 
-      for ( const QVector<QPolygonF> &shape : qgis::as_const( shapes ) )
+      for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
       {
         drawShape( p, shape );
       }
@@ -633,7 +633,7 @@ void QgsRubberBand::updateRect()
   qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
   QgsRectangle r;  // in canvas units
-  for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
+  for ( const QgsPolygonXY &poly : std::as_const( mPoints ) )
   {
     for ( const QgsPointXY &point : poly.at( 0 ) )
     {
@@ -698,7 +698,7 @@ int QgsRubberBand::partSize( int geometryIndex ) const
 int QgsRubberBand::numberOfVertices() const
 {
   int count = 0;
-  for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
+  for ( const QgsPolygonXY &poly : std::as_const( mPoints ) )
   {
     for ( const QgsPolylineXY &ring : poly )
     {
@@ -735,7 +735,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
     {
       QgsMultiPointXY multiPoint;
 
-      for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
+      for ( const QgsPolygonXY &poly : std::as_const( mPoints ) )
       {
         if ( poly.isEmpty() )
           continue;
@@ -753,7 +753,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
         if ( mPoints.size() > 1 )
         {
           QgsMultiPolylineXY multiPolyline;
-          for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
+          for ( const QgsPolygonXY &poly : std::as_const( mPoints ) )
           {
             if ( poly.isEmpty() )
               continue;

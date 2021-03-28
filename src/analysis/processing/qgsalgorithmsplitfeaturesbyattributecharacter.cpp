@@ -21,6 +21,7 @@
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometrycollection.h"
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 

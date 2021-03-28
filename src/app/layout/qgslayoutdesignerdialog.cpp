@@ -38,6 +38,7 @@
 #include "qgslayoutimageexportoptionsdialog.h"
 #include "qgslayoutpdfexportoptionsdialog.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoututils.h"
 #include "qgsprintlayout.h"
 #include "qgsmapcanvas.h"
 #include "qgsrendercontext.h"
@@ -93,6 +94,8 @@
 #include <QWidgetAction>
 #include <QProgressBar>
 #include <QClipboard>
+#include <QRegularExpression>
+#include <QUrl>
 
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
@@ -1547,7 +1550,7 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
 
   connect( timer, &QTimer::timeout, this, [this, timer, files, layoutPoint]
   {
-    for ( const QString &file : qgis::as_const( files ) )
+    for ( const QString &file : std::as_const( files ) )
     {
       const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
       for ( QgsLayoutCustomDropHandler *handler : handlers )
@@ -2076,7 +2079,7 @@ void QgsLayoutDesignerDialog::print()
 
   QgsLayoutExporter::PrintExportSettings printSettings;
   printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
-  printSettings.predefinedMapScales = predefinedScales();
+  printSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
   QgsApplication::taskManager()->addTask( proxyTask );
@@ -2663,7 +2666,7 @@ void QgsLayoutDesignerDialog::printAtlas()
 
   QgsLayoutExporter::PrintExportSettings printSettings;
   printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
-  printSettings.predefinedMapScales = predefinedScales();
+  printSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
@@ -3760,7 +3763,7 @@ void QgsLayoutDesignerDialog::printReport()
   QgsLayoutExporter::PrintExportSettings printSettings;
   if ( mLayout )
     printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
-  printSettings.predefinedMapScales = predefinedScales();
+  printSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
@@ -4077,7 +4080,7 @@ bool QgsLayoutDesignerDialog::containsWmsLayers() const
   QList< QgsLayoutItemMap *> maps;
   mLayout->layoutItems( maps );
 
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     if ( map->containsWmsLayer() )
       return true;
@@ -4134,7 +4137,7 @@ bool QgsLayoutDesignerDialog::requiresRasterization() const
   QList< QgsLayoutItem *> items;
   mLayout->layoutItems( items );
 
-  for ( QgsLayoutItem *currentItem : qgis::as_const( items ) )
+  for ( QgsLayoutItem *currentItem : std::as_const( items ) )
   {
     if ( currentItem->requiresRasterization() )
       return true;
@@ -4147,7 +4150,7 @@ bool QgsLayoutDesignerDialog::containsAdvancedEffects() const
   QList< QgsLayoutItem *> items;
   mLayout->layoutItems( items );
 
-  for ( QgsLayoutItem *currentItem : qgis::as_const( items ) )
+  for ( QgsLayoutItem *currentItem : std::as_const( items ) )
   {
     if ( currentItem->containsAdvancedEffects() )
       return true;
@@ -4283,7 +4286,7 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     settings.imageSize = imageSize;
   }
   settings.generateWorldFile = imageDlg.generateWorldFile();
-  settings.predefinedMapScales = predefinedScales();
+  settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
   settings.flags |= QgsLayoutRenderContext::FlagUseAdvancedEffects;
   if ( imageDlg.antialiasing() )
     settings.flags |= QgsLayoutRenderContext::FlagAntialiasing;
@@ -4398,7 +4401,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
   settings.simplifyGeometries = simplify;
-  settings.predefinedMapScales = predefinedScales();
+  settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   if ( disableRasterTiles )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
@@ -4524,7 +4527,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.useOgcBestPracticeFormatGeoreferencing = useOgcBestPracticeFormat;
   settings.useIso32000ExtensionFormatGeoreferencing = !useOgcBestPracticeFormat;
   settings.exportThemes = exportThemes;
-  settings.predefinedMapScales = predefinedScales();
+  settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   if ( disableRasterTiles )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
@@ -4622,7 +4625,7 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
     // and we hit a feature with no geometry attached, then warn the user
     QList< QgsLayoutItemMap * > maps;
     mLayout->layoutItems( maps );
-    for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
+    for ( const QgsLayoutItemMap *map : std::as_const( maps ) )
     {
       if ( map->atlasDriven() )
       {
@@ -4636,32 +4639,7 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
 void QgsLayoutDesignerDialog::loadPredefinedScalesFromProject()
 {
   if ( mLayout )
-    mLayout->renderContext().setPredefinedScales( predefinedScales() );
-}
-
-QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
-{
-  QgsProject *project = mMasterLayout->layoutProject();
-  // first look at project's scales
-  QVector< double > projectMapScales = project->viewSettings()->mapScales();
-  bool hasProjectScales( project->viewSettings()->useProjectScales() );
-  if ( !hasProjectScales || projectMapScales.isEmpty() )
-  {
-    // default to global map tool scales
-    QgsSettings settings;
-    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
-    const QStringList scales = scalesStr.split( ',' );
-
-    for ( const QString &scale : scales )
-    {
-      QStringList parts( scale.split( ':' ) );
-      if ( parts.size() == 2 )
-      {
-        projectMapScales.push_back( parts[1].toDouble() );
-      }
-    }
-  }
-  return projectMapScales;
+    mLayout->renderContext().setPredefinedScales( QgsLayoutUtils::predefinedScales( mLayout ) );
 }
 
 QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()

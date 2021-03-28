@@ -67,3 +67,6 @@ set(TESTS
 foreach(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})
 endforeach(TESTSRC)
+
+SET_TESTS_PROPERTIES(qgis_processingtest
+  PROPERTIES LABELS "POSTGRES")

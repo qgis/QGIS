@@ -535,7 +535,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   std::sort( values.begin(), values.end() );
 
   mValuesModel->clear();
-  for ( const QVariant &value : qgis::as_const( values ) )
+  for ( const QVariant &value : std::as_const( values ) )
   {
     QString strValue;
     if ( value.isNull() )

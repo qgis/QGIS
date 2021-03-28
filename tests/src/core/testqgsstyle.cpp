@@ -17,6 +17,7 @@
 #include <QStringList>
 #include <QApplication>
 #include <QFileInfo>
+#include <QSignalSpy>
 
 // clazy:excludeall=qcolor-from-literal
 
@@ -552,7 +553,7 @@ void TestStyle::testLoadColorRamps()
 
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
 
-  Q_FOREACH ( const QString &name, colorRampsTest )
+  for ( const QString &name : colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
@@ -580,7 +581,7 @@ void TestStyle::testSaveLoad()
 
   QStringList colorRampsTest = QStringList() << QStringLiteral( "test_gradient" );
 
-  Q_FOREACH ( const QString &name, colorRampsTest )
+  for ( const QString &name : colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );

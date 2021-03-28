@@ -295,6 +295,7 @@ QString Qgis::devVersion()
   return QString::fromUtf8( QGIS_DEV_VERSION );
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 template<>
 bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
 {
@@ -302,3 +303,4 @@ bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList
   // this breaks QMap< QVariantList, ... >, where key matching incorrectly becomes case-insensitive..!!?!
   return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
 }
+#endif

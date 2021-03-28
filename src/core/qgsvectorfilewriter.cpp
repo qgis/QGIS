@@ -45,6 +45,7 @@
 #include <QSet>
 #include <QMetaType>
 #include <QMutex>
+#include <QRegularExpression>
 
 #include <cassert>
 #include <cstdlib> // size_t
@@ -2883,7 +2884,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
 
   if ( !details.attributes.isEmpty() )
   {
-    for ( int attrIdx : qgis::as_const( details.attributes ) )
+    for ( int attrIdx : std::as_const( details.attributes ) )
     {
       details.outputFields.append( details.sourceFields.at( attrIdx ) );
     }
@@ -2897,8 +2898,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
     {
       if ( details.outputFields.at( i ).type() == QVariant::LongLong )
       {
-        QVariant min = layer->minimumValue( i );
-        QVariant max = layer->maximumValue( i );
+        QVariant min;
+        QVariant max;
+        layer->minimumAndMaximumValue( i, min, max );
         if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < std::numeric_limits<int>::max() )
         {
           details.outputFields[i].setType( QVariant::Int );
@@ -3408,7 +3410,7 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
   }
 
   results.reserve( writableDrivers.count() );
-  for ( const QString &drvName : qgis::as_const( writableDrivers ) )
+  for ( const QString &drvName : std::as_const( writableDrivers ) )
   {
     MetaData metadata;
     if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )

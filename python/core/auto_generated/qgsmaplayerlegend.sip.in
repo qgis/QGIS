@@ -14,7 +14,7 @@
 
 class QgsMapLayerLegend : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapLayerLegend` class is abstract interface for implementations
 of legends for one map layer.
 
@@ -85,7 +85,7 @@ Emitted when existing items/nodes got invalid and should be replaced by new ones
 
 class QgsMapLayerLegendUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Miscellaneous utility functions for handling of map layer legend
 
 .. versionadded:: 2.6
@@ -231,7 +231,7 @@ update according to layer node's custom properties (order of items, user labels 
 
 class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
 {
-%Docstring
+%Docstring(signature="appended")
 Default legend implementation for vector layers
 
 .. versionadded:: 2.6
@@ -303,7 +303,7 @@ the keys are rule keys of legend items, the values are labels to be shown.
 
 class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
 {
-%Docstring
+%Docstring(signature="appended")
 Default legend implementation for raster layers
 
 .. versionadded:: 2.6
@@ -323,7 +323,7 @@ Default legend implementation for raster layers
 
 class QgsDefaultMeshLayerLegend : QgsMapLayerLegend
 {
-%Docstring
+%Docstring(signature="appended")
 Default legend implementation for mesh layers
 
 .. versionadded:: 3.4
@@ -345,7 +345,7 @@ Creates an instance for the given mesh layer
 
 class QgsDefaultPointCloudLayerLegend : QgsMapLayerLegend
 {
-%Docstring
+%Docstring(signature="appended")
 Default legend implementation for point cloud layers
 
 .. versionadded:: 3.18

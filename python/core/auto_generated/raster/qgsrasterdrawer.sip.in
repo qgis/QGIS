@@ -12,7 +12,7 @@
 
 class QgsRasterDrawer
 {
-%Docstring
+%Docstring(signature="appended")
 The drawing pipe for raster layers.
 %End
 

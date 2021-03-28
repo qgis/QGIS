@@ -279,7 +279,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
 
       bool isMatch = false;
 
-      for ( Predicate predicate : qgis::as_const( predicates ) )
+      for ( Predicate predicate : std::as_const( predicates ) )
       {
         switch ( predicate )
         {

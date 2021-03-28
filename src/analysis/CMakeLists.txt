@@ -37,6 +37,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmassignprojection.cpp
   processing/qgsalgorithmattributeindex.cpp
   processing/qgsalgorithmbatchgeocode.cpp
+  processing/qgsalgorithmbatchnominatimgeocode.cpp
   processing/qgsalgorithmboundary.cpp
   processing/qgsalgorithmboundingbox.cpp
   processing/qgsalgorithmbuffer.cpp
@@ -321,6 +322,7 @@ set(QGIS_ANALYSIS_HDRS
   network/qgsvectorlayerdirector.h
 
   processing/qgsalgorithmbatchgeocode.h
+  processing/qgsalgorithmbatchnominatimgeocode.h
   processing/qgsalgorithmfiledownloader.h
   processing/qgsalgorithmimportphotos.h
   processing/qgsnativealgorithms.h

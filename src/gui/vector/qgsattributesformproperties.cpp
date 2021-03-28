@@ -253,6 +253,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   mAttributeTypeDialog->setComment( cfg.mComment );
   mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
   mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
+  mAttributeTypeDialog->setReuseLastValues( cfg.mReuseLastValues );
   mAttributeTypeDialog->setNotNull( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull );
   mAttributeTypeDialog->setNotNullEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrengthHard );
   mAttributeTypeDialog->setUnique( constraints.constraints() & QgsFieldConstraints::ConstraintUnique );
@@ -296,6 +297,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mComment = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).comment();
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
+  cfg.mReuseLastValues = mAttributeTypeDialog->reuseLastValues();
   cfg.mAlias = mAttributeTypeDialog->alias();
   cfg.mDataDefinedProperties = mAttributeTypeDialog->dataDefinedProperties();
 
@@ -812,6 +814,7 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
+    editFormConfig.setReuseLastValue( idx, cfg.mReuseLastValues );
 
     if ( cfg.mDataDefinedProperties.count() > 0 )
     {
@@ -913,6 +916,7 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
+  mReuseLastValues = layer->editFormConfig().reuseLastValue( idx );
   mFieldConstraints = layer->fields().at( idx ).constraints();
   const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
@@ -1184,7 +1188,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
-      connect( qmlObjectTemplate, qgis::overload<int>::of( &QComboBox::activated ), qmlCode, [ = ]( int index )
+      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [ = ]( int index )
       {
         qmlCode->clear();
         switch ( index )

@@ -19,7 +19,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include <QObject>
-#include <QtTest>
+#include <QTest>
 
 class TestQgsPageSizeRegistry : public QObject
 {

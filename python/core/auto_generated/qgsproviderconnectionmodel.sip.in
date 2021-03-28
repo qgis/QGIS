@@ -12,7 +12,7 @@
 
 class QgsProviderConnectionModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model containing registered connection names for a specific data provider.
 
 .. warning::

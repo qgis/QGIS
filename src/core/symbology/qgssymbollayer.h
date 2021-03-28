@@ -188,7 +188,9 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyDensityArea, //!< Density area
       PropertyFontFamily, //!< Font family
       PropertyFontStyle, //!< Font style
-      PropertyDashPatternOffset, //!< Dash pattern offset
+      PropertyDashPatternOffset, //!< Dash pattern offset,
+      PropertyTrimStart, //!< Trim distance from start of line (since QGIS 3.20)
+      PropertyTrimEnd, //!< Trim distance from end of line (since QGIS 3.20)
     };
 
     /**

@@ -28,6 +28,8 @@
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 
+#include <QPointer>
+
 
 QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder() = default;
 

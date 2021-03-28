@@ -74,6 +74,7 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 ///@endcond

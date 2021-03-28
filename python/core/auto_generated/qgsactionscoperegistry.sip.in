@@ -9,7 +9,7 @@
 
 class QgsActionScopeRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 The action scope registry is an application wide registry that
 contains a list of available action scopes.
 

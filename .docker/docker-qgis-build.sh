@@ -47,7 +47,7 @@ cmake \
  -GNinja \
  -DUSE_CCACHE=OFF \
  -DWITH_QUICK=OFF \
- -DWITH_3D=ON \
+ -DWITH_3D=${WITH_3D} \
  -DWITH_STAGED_PLUGINS=ON \
  -DWITH_GRASS=OFF \
  -DSUPPRESS_QT_WARNINGS=ON \
@@ -84,7 +84,7 @@ echo "::endgroup::"
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-${CTEST_BUILD_COMMAND}
+ctest -V -S /root/QGIS/.ci/config_build.ctest
 echo "::endgroup::"
 
 ########################
@@ -97,4 +97,3 @@ popd > /dev/null # build
 popd > /dev/null # /root/QGIS
 
 [ -r /tmp/ctest-important.log ] && cat /tmp/ctest-important.log || true
-

@@ -34,6 +34,7 @@
 #include "qgsattributeform.h"
 
 #include "qgis_gui.h"
+#include <QTimer>
 
 class QgsVectorLayer;
 class QgsAttributeEditorContext;

@@ -12,7 +12,7 @@
 
 class QgsAuthSslErrorsDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for reporting SSL errors and offering an option to store an SSL server exception into the authentication database
 %End
 

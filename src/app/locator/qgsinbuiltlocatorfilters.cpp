@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDesktopServices>
 #include <QClipboard>
 #include <QMap>
 #include <QSpinBox>
 #include <QString>
 #include <QToolButton>
 #include <QUrl>
+#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
@@ -32,6 +34,8 @@
 #include "qgsfeedback.h"
 #include "qgisapp.h"
 #include "qgsmaplayermodel.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
 #include "qgsfeatureaction.h"
@@ -155,7 +159,7 @@ void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
   QList<QAction *> found;
 
-  for ( QWidget *object : qgis::as_const( mActionParents ) )
+  for ( QWidget *object : std::as_const( mActionParents ) )
   {
     searchActions( string, object, found );
   }
@@ -377,13 +381,14 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   fieldRestriction( searchString );
 
   // propose available fields for restriction
-  for ( const QString &field : qgis::as_const( mFieldsCompletion ) )
+  for ( const QString &field : std::as_const( mFieldsCompletion ) )
   {
     QgsLocatorResult result;
     result.displayString = QStringLiteral( "@%1" ).arg( field );
     result.description = tr( "Limit the search to the field '%1'" ).arg( field );
     result.userData = QVariantMap( {{QStringLiteral( "type" ), QVariant::fromValue( ResultType::FieldRestriction )},
-      {QStringLiteral( "search_text" ), QStringLiteral( "%1 @%2 " ).arg( prefix(), field ) } } );
+      {QStringLiteral( "search_text" ), QStringLiteral( "%1 @%2 " ).arg( prefix(), field ) }
+    } );
     result.score = 1;
     emit resultFetched( result );
   }
@@ -594,7 +599,7 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
   QgsFeature f;
 
   // we cannot used const loop since iterator::nextFeature is not const
-  for ( auto preparedLayer : qgis::as_const( mPreparedLayers ) )
+  for ( auto preparedLayer : std::as_const( mPreparedLayers ) )
   {
     foundInCurrentLayer = 0;
 
@@ -1187,4 +1192,31 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
   }
 
   mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
+}
+
+QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas )
+  : QgsGeocoderLocatorFilter( QStringLiteral( "nominatimgeocoder" ), tr( "Nominatim Geocoder" ), QStringLiteral( ">" ), geocoder, canvas )
+{
+  setFetchResultsDelay( 1000 );
+  setUseWithoutPrefix( false );
+}
+
+void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+
+  QgsSettings settings;
+  if ( !settings.value( "locator_filters/nominatim_geocoder/attribution_shown", false, QgsSettings::App ).toBool() )
+  {
+    settings.setValue( "locator_filters/nominatim_geocoder/attribution_shown", true, QgsSettings::App );
+
+    QgsMessageBarItem *messageWidget = QgisApp::instance()->messageBar()->createMessage( tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors." ) );
+    QPushButton *learnMoreButton = new QPushButton( tr( "Learn more" ) );
+    connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [ = ]
+    {
+      QDesktopServices::openUrl( QStringLiteral( "https://nominatim.org/" ) );
+    } );
+    messageWidget->layout()->addWidget( learnMoreButton );
+    QgisApp::instance()->messageBar()->pushWidget( messageWidget, Qgis::Info );
+  }
+  QgsGeocoderLocatorFilter::triggerResult( result );
 }

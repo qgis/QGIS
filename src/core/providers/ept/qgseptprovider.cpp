@@ -22,6 +22,8 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 
+#include <QFileInfo>
+
 ///@cond PRIVATE
 
 #define PROVIDER_KEY QStringLiteral( "ept" )
@@ -190,6 +192,11 @@ QString QgsEptProviderMetadata::filters( QgsProviderMetadata::FilterType type )
       return QObject::tr( "Entwine Point Clouds" ) + QStringLiteral( " (ept.json EPT.JSON)" );
   }
   return QString();
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsEptProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
 }
 
 QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const

@@ -12,7 +12,7 @@
 
 class QgsPointCloudDataProvider: QgsDataProvider
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for providing data for :py:class:`QgsPointCloudLayer`
 
 Responsible for reading native point cloud data and returning the indexed data.

@@ -23,6 +23,8 @@
 #include "qgsexception.h"
 #include "qgscoordinateformatter.h"
 #include "qgsrectangle.h"
+#include <QRegularExpression>
+
 ///@cond NOT_STABLE_API
 
 int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project )

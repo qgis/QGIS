@@ -32,11 +32,11 @@
 
 #include <QDomDocument>
 #include <QGraphicsView>
-#include <QtCore>
 
 #include "qgsmapsettings.h" // TEMPORARY
 #include "qgsprevieweffect.h" //for QgsPreviewEffect::PreviewMode
 
+#include <QTimer>
 #include <QGestureEvent>
 #include "qgis_gui.h"
 
@@ -161,10 +161,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
     /**
-     * Gets access to the labeling results (may be NULLPTR)
+     * Gets access to the labeling results (may be NULLPTR).
+     *
+     * Since QGIS 3.20, if the \a allowOutdatedResults flag is FALSE then outdated labeling results (e.g.
+     * as a result of an ongoing canvas render) will not be returned, and instead NULLPTR will be returned.
+     *
      * \since QGIS 2.4
      */
-    const QgsLabelingResults *labelingResults() const;
+    const QgsLabelingResults *labelingResults( bool allowOutdatedResults = true ) const;
 
     /**
      * Set whether to cache images of rendered layers
@@ -953,6 +957,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the scale of the map changes
     void scaleChanged( double );
 
+    /**
+     * Emitted when the scale locked state of the map changes
+     * \param locked true if the scale is locked
+     * \see setScaleLocked
+     * \since QGIS 3.18
+     */
+    void scaleLockChanged( bool locked );
+
+
     //! Emitted when the extents of the map change
     void extentsChanged();
 
@@ -1245,6 +1258,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Labeling results from the recently rendered map
     std::unique_ptr< QgsLabelingResults > mLabelingResults;
+
+    //! TRUE if the labeling results stored in mLabelingResults are outdated (e.g. as a result of an ongoing canvas render)
+    bool mLabelingResultsOutdated = false;
 
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering = false;

@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QUrl>
 
 QIcon QgsBookmarksItem::iconBookmarks()
 {
@@ -101,6 +102,11 @@ QgsMimeDataUtils::Uri QgsQlrDataItem::mimeUri() const
   u.name = name();
   u.uri = path();
   return u;
+}
+
+QgsMimeDataUtils::UriList QgsQlrDataItem::mimeUris() const
+{
+  return QgsMimeDataUtils::UriList() << QgsQlrDataItem::mimeUri();
 }
 
 //

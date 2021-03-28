@@ -93,6 +93,11 @@ QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
   return QgsMapToolCapture::NoCapabilities;
 }
 
+bool QgsMapToolCapture::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  return technique == StraightSegments;
+}
+
 void QgsMapToolCapture::activate()
 {
   if ( mTempRubberBand )
@@ -359,6 +364,16 @@ void QgsMapToolCapture::setCircularDigitizingEnabled( bool enable )
     mTempRubberBand->setStringType( mDigitizingType );
 }
 
+void QgsMapToolCapture::setStreamDigitizingEnabled( bool enable )
+{
+  mStreamingEnabled = enable;
+  mStartNewCurve = true;
+  if ( enable )
+  {
+    QgsSettings settings;
+    mStreamingToleranceInPixels = settings.value( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 2 ).toInt();
+  }
+}
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
@@ -373,8 +388,20 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     bool hasTrace = false;
 
+    if ( mStreamingEnabled )
+    {
+      if ( !mCaptureCurve.isEmpty() )
+      {
+        QgsPoint prevPoint = mCaptureCurve.curveAt( mCaptureCurve.nCurves() - 1 )->endPoint();
+        if ( QgsPointXY( toCanvasCoordinates( toMapCoordinates( mCanvas->currentLayer(), prevPoint ) ) ).distance( toCanvasCoordinates( point ) ) < mStreamingToleranceInPixels )
+          return;
+      }
 
-    if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
+      mAllowAddingStreamingPoints = true;
+      addVertex( mapPoint );
+      mAllowAddingStreamingPoints = false;
+    }
+    else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
     {
       // Store the intermediate point for circular string to retrieve after tracing mouse move if
       // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
@@ -402,7 +429,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       }
     }
 
-    if ( !hasTrace )
+    if ( !mStreamingEnabled && !hasTrace )
     {
       if ( mCaptureCurve.numPoints() > 0 )
       {
@@ -462,8 +489,8 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsVectorLayer *sourceLayer = match.layer();
-  if ( match.isValid() && ( match.hasVertex() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer )
-
+  if ( match.isValid() && ( match.hasVertex() || match.hasLineEndpoint() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer &&
+       ( sourceLayer->crs() == vlayer->crs() ) )
   {
     QgsFeature f;
     QgsFeatureRequest request;
@@ -483,34 +510,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
           return 2;
         QgsLineString line( geom.constGet()->vertexAt( vId ), geom.constGet()->vertexAt( vId2 ) );
 
-        QgsPoint pt( match.point() );
-        // Transform point to sourceLayer crs, since vId and vId2 coordinates are in sourceLayer crs
-        if ( sourceLayer->crs() != QgsProject::instance()->crs() )
-        {
-          try
-          {
-            pt.transform( QgsCoordinateTransform( QgsProject::instance()->crs(), sourceLayer->crs(), sourceLayer->transformContext() ) );
-          }
-          catch ( QgsCsException &cse )
-          {
-            Q_UNUSED( cse )
-            QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
-            return 2;
-          }
-        }
-        layerPoint = QgsGeometryUtils::closestPoint( line,  pt );
-        // (re)Transform layerPoint to vlayer crs
-        try
-        {
-          layerPoint.transform( QgsCoordinateTransform( sourceLayer->crs(), vlayer->crs(), vlayer->transformContext() ) );
-        }
-        catch ( QgsCsException &cse )
-        {
-          Q_UNUSED( cse )
-          QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
-          return 2;
-        }
-
+        layerPoint = QgsGeometryUtils::closestPoint( line,  QgsPoint( match.point() ) );
       }
       else
       {
@@ -557,6 +557,9 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     QgsDebugMsg( QStringLiteral( "invalid capture mode" ) );
     return 2;
   }
+
+  if ( mCapturing && mStreamingEnabled && !mAllowAddingStreamingPoints )
+    return 0;
 
   int res;
   QgsPoint layerPoint;
@@ -689,7 +692,12 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   //if there is only one point, this the first digitized point that are in the this first curve added --> remove the point
   if ( mCaptureCurve.numPoints() == 1 )
     mCaptureCurve.removeCurve( 0 );
-  mCaptureCurve.addCurve( c );
+
+  // we set the extendPrevious option to true to avoid creating compound curves with many 2 vertex linestrings -- instead we prefer
+  // to extend linestring curves so that they continue the previous linestring wherever possible...
+  mCaptureCurve.addCurve( c, !mStartNewCurve );
+  mStartNewCurve = false;
+
   int countAfter = mCaptureCurve.vertexCount();
   int addedPoint = countAfter - countBefore;
 
@@ -714,7 +722,7 @@ QList<QgsPointLocator::Match> QgsMapToolCapture::snappingMatches() const
   return mSnappingMatches;
 }
 
-void QgsMapToolCapture::undo()
+void QgsMapToolCapture::undo( bool isAutoRepeat )
 {
   mTracingStartPoint = QgsPointXY();
 
@@ -722,6 +730,10 @@ void QgsMapToolCapture::undo()
   {
     if ( size() <= 1 && mTempRubberBand->pointsCount() != 0 )
       return;
+
+    if ( isAutoRepeat && mIgnoreSubsequentAutoRepeatUndo )
+      return;
+    mIgnoreSubsequentAutoRepeatUndo = false;
 
     QgsPoint lastPoint = mTempRubberBand->lastPoint();
 
@@ -746,12 +758,22 @@ void QgsMapToolCapture::undo()
     }
     else
     {
+      const int curvesBefore = mCaptureCurve.nCurves();
+      const bool lastCurveIsLineString = qgsgeometry_cast< QgsLineString * >( mCaptureCurve.curveAt( curvesBefore - 1 ) );
+
       int pointsCountBefore = mCaptureCurve.numPoints();
       mCaptureCurve.deleteVertex( vertexToRemove );
       int pointsCountAfter = mCaptureCurve.numPoints();
       for ( ; pointsCountAfter < pointsCountBefore; pointsCountAfter++ )
         if ( !mSnappingMatches.empty() )
           mSnappingMatches.removeLast();
+
+      // if we have removed the last point in a linestring curve, then we "stick" here and ignore subsequent
+      // autorepeat undo actions until the user releases the undo key and holds it down again. This allows
+      // users to selectively remove portions of the geometry captured with the streaming mode by holding down
+      // the undo key, without risking accidental undo of non-streamed portions.
+      if ( mCaptureCurve.nCurves() < curvesBefore && lastCurveIsLineString )
+        mIgnoreSubsequentAutoRepeatUndo = true;
     }
 
     updateExtraSnapLayer();
@@ -777,7 +799,7 @@ void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
-    undo();
+    undo( e->isAutoRepeat() );
 
     // Override default shortcut management in MapCanvas
     e->ignore();

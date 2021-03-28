@@ -15,10 +15,11 @@
 #ifndef QGSFEATUREFILTERMODELBASE_H
 #define QGSFEATUREFILTERMODELBASE_H
 
-#include <QAbstractItemModel>
-
 #include "qgsconditionalstyle.h"
 #include "qgsfeatureexpressionvaluesgatherer.h"
+
+#include <QAbstractItemModel>
+#include <QTimer>
 
 /**
  * \ingroup core
@@ -176,6 +177,14 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     void setFetchLimit( int fetchLimit );
 
   signals:
+
+    /**
+     * Emitted when the current feature in the model has changed
+     * This emitted both when the extra value changes and when the extra value status changes.
+     * It allows being notified when the feature is fetched after the extra value has been set.
+     * \since QGIS 3.16.5
+     */
+    void currentFeatureChanged();
 
     /**
      * The source layer from which features will be fetched.

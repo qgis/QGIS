@@ -14,7 +14,7 @@
 
 class QgsGeometryCollection: QgsAbstractGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 Geometry collection
 
 .. versionadded:: 2.10
@@ -101,6 +101,8 @@ Returns a geometry from within the collection.
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
 
     void reserve( int size ) /HoldGIL/;

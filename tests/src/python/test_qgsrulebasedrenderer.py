@@ -46,7 +46,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsRenderContext,
                        QgsSymbolLayer,
                        QgsSimpleMarkerSymbolLayer,
-                       QgsProperty
+                       QgsProperty,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsEmbeddedSymbolRenderer
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -455,6 +458,42 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.assertCountEqual(renderer.usedAttributes(ctx), {'Class', 'Heading'})
 
         QgsProject.instance().removeMapLayer(points_layer)
+
+    def testConvertFromEmbedded(self):
+        """
+        Test converting an embedded symbol renderer to a rule based renderer
+        """
+        points_layer = QgsVectorLayer('Point', 'Polys', 'memory')
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('Point(-100 30)'))
+        f.setEmbeddedSymbol(
+            QgsMarkerSymbol.createSimple({'name': 'triangle', 'size': 10, 'color': '#ff0000', 'outline_style': 'no'}))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+        f.setGeometry(QgsGeometry.fromWkt('Point(-110 40)'))
+        f.setEmbeddedSymbol(
+            QgsMarkerSymbol.createSimple({'name': 'square', 'size': 7, 'color': '#00ff00', 'outline_style': 'no'}))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+        f.setGeometry(QgsGeometry.fromWkt('Point(-90 50)'))
+        f.setEmbeddedSymbol(None)
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+
+        renderer = QgsEmbeddedSymbolRenderer(defaultSymbol=QgsMarkerSymbol.createSimple({'name': 'star', 'size': 10, 'color': '#ff00ff', 'outline_style': 'no'}))
+        points_layer.setRenderer(renderer)
+
+        rule_based = QgsRuleBasedRenderer.convertFromRenderer(renderer, points_layer)
+        self.assertEqual(len(rule_based.rootRule().children()), 3)
+        rule_0 = rule_based.rootRule().children()[0]
+        self.assertEqual(rule_0.filterExpression(), '$id=1')
+        self.assertEqual(rule_0.label(), '1')
+        self.assertEqual(rule_0.symbol().color().name(), '#ff0000')
+        rule_1 = rule_based.rootRule().children()[1]
+        self.assertEqual(rule_1.filterExpression(), '$id=2')
+        self.assertEqual(rule_1.label(), '2')
+        self.assertEqual(rule_1.symbol().color().name(), '#00ff00')
+        rule_2 = rule_based.rootRule().children()[2]
+        self.assertEqual(rule_2.filterExpression(), 'ELSE')
+        self.assertEqual(rule_2.label(), 'All other features')
+        self.assertEqual(rule_2.symbol().color().name(), '#ff00ff')
 
 
 if __name__ == '__main__':

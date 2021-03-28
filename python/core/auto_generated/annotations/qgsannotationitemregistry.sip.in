@@ -10,7 +10,7 @@
 
 class QgsAnnotationItemAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about one annotation item class.
 
 A companion class, :py:class:`QgsAnnotationItemAbstractGuiMetadata`, handles the
@@ -67,7 +67,7 @@ Creates a new, default, annotation item of this class.
 
 class QgsAnnotationItemRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of available annotation item types.
 
 :py:class:`QgsAnnotationItemRegistry` is not usually directly created, but rather accessed through

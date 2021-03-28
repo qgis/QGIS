@@ -208,7 +208,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
 
   if ( layer->geometryOptions()->geometryChecks().empty() )
   {
-    for ( QMetaObject::Connection connection : qgis::as_const( checkInformation.connections ) )
+    for ( QMetaObject::Connection connection : std::as_const( checkInformation.connections ) )
     {
       disconnect( connection );
     }
@@ -248,7 +248,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
   }
 
   QList<QgsSingleGeometryCheck *> singleGeometryChecks;
-  for ( QgsGeometryCheck *check : qgis::as_const( layerChecks ) )
+  for ( QgsGeometryCheck *check : std::as_const( layerChecks ) )
   {
     Q_ASSERT( dynamic_cast<QgsSingleGeometryCheck *>( check ) );
     singleGeometryChecks.append( dynamic_cast<QgsSingleGeometryCheck *>( check ) );

@@ -12,7 +12,7 @@
 
 class QgsSourceSelectProviderRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 This class keeps a list of source select providers that may add items to the :py:class:`QgsDataSourceManagerDialog`
 When created, it automatically adds providers from data provider plugins (e.g. PostGIS, WMS, ...)
 

@@ -23,12 +23,14 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
 #include "qgscalloutposition.h"
+#include "qgscallout.h"
 #include "qgis_app.h"
 
 class QgsRubberBand;
 
 typedef QMap<QgsPalLayerSettings::Property, int> QgsPalIndexes;
 typedef QMap<QgsDiagramLayerSettings::Property, int> QgsDiagramIndexes;
+typedef QMap<QgsCallout::Property, int> QgsCalloutIndexes;
 
 //! Base class for map tools that modify label properties
 class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
@@ -111,6 +113,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
 
     //! Currently hovered label position
     LabelDetails mCurrentHoverLabel;
+
+    QgsCalloutPosition mCurrentCallout;
 
     /**
      * Returns label position for mouse click location
@@ -220,6 +224,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes, bool overwriteExpression = true ) const;
     bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
     bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
+    bool createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes, bool overwriteExpression = true );
+    bool createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes, bool overwriteExpression = true );
 
     void updateHoveredLabel( QgsMapMouseEvent *e );
     void clearHoveredLabel();
@@ -228,6 +234,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
 
     QList<QgsPalLayerSettings::Property> mPalProperties;
     QList<QgsDiagramLayerSettings::Property> mDiagramProperties;
+    QList<QgsCallout::Property> mCalloutProperties;
 
     friend class TestQgsMapToolLabel;
 };

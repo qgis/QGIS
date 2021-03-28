@@ -26,6 +26,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 
+#include <QRegularExpression>
+
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
 QgsMimeDataUtils::Uri::Uri( const QString &encData )

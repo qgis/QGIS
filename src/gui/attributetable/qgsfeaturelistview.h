@@ -23,6 +23,7 @@
 
 #include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
+#include <QTimer>
 
 class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;

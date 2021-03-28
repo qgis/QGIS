@@ -55,7 +55,7 @@ const QString QgsCrashReport::toHtml() const
     else
     {
       reportData.append( QStringLiteral( "<pre>" ) );
-      Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace->lines )
+      for ( const QgsStackTrace::StackLine &line : mStackTrace->lines )
       {
         QFileInfo fileInfo( line.fileName );
         QString filename( fileInfo.fileName() );
@@ -98,7 +98,7 @@ const QString QgsCrashReport::toHtml() const
   }
 
   QString report;
-  Q_FOREACH ( const QString &line, reportData )
+  for ( const QString &line : std::as_const( reportData ) )
   {
     report += line + "<br>";
   }
@@ -115,7 +115,7 @@ const QString QgsCrashReport::crashID() const
   QString data = QString();
 
   // Hashes the full stack.
-  Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace->lines )
+  for ( const QgsStackTrace::StackLine &line : mStackTrace->lines )
   {
 #if 0
     QFileInfo fileInfo( line.fileName );

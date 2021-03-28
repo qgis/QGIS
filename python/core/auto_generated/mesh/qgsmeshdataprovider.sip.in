@@ -86,7 +86,7 @@ Compare two faces, return ``True`` if they are equivalent : same indexes and sam
 
 class QgsMeshDataSourceInterface /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 
 Interface for mesh data sources
 
@@ -152,7 +152,7 @@ Populates the mesh vertices, edges and faces
 
 class QgsMeshDatasetSourceInterface /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for mesh datasets and dataset groups
 
 Dataset is a  collection of vector or scalar values on vertices or faces of the mesh.
@@ -377,7 +377,7 @@ Returns the dataset index of the dataset in a specific dataet group at ``time`` 
 
 class QgsMeshDataProvider: QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for providing data for :py:class:`QgsMeshLayer`
 
 Responsible for reading native mesh data

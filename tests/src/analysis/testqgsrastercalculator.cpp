@@ -612,7 +612,7 @@ void TestQgsRasterCalculator::testRasterEntries()
   QgsProject::instance()->addMapLayers( layers );
   QVector<QgsRasterCalculatorEntry> availableRasterBands = QgsRasterCalculatorEntry::rasterEntries();
   QMap<QString, QgsRasterCalculatorEntry> entryMap;
-  for ( const auto &rb : qgis::as_const( availableRasterBands ) )
+  for ( const auto &rb : std::as_const( availableRasterBands ) )
   {
     entryMap[rb.ref] = rb;
   }

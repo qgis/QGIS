@@ -40,7 +40,7 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  for ( const QgsWeakMapLayerPointer &layer : qgis::as_const( mConnectedLayers ) )
+  for ( const QgsWeakMapLayerPointer &layer : std::as_const( mConnectedLayers ) )
   {
     if ( layer.data() )
     {

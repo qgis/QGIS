@@ -1,0 +1,9 @@
+!table
+!version 450
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 2
+    Field1 Char (10) ;
+    Field2 Integer ;

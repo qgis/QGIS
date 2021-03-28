@@ -14,7 +14,7 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
 class QgsSymbol
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract base class for all rendered symbols.
 %End
@@ -40,6 +40,20 @@ Abstract base class for all rendered symbols.
       Fill,
       Hybrid
     };
+
+    static QString symbolTypeToString( SymbolType type );
+%Docstring
+Returns a translated string version of the specified symbol ``type``.
+
+.. versionadded:: 3.20
+%End
+
+    static SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
+%Docstring
+Returns the default symbol type required for the specified geometry ``type``.
+
+.. versionadded:: 3.20
+%End
 
     enum ScaleMethod
     {
@@ -907,7 +921,7 @@ Sets the symbol patch ``shape``, to use if rendering symbol preview icons.
 
 class QgsMarkerSymbol : QgsSymbol
 {
-%Docstring
+%Docstring(signature="appended")
 
 A marker symbol type, for rendering Point and MultiPoint geometries.
 %End
@@ -1154,7 +1168,7 @@ and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and o
 
 class QgsLineSymbol : QgsSymbol
 {
-%Docstring
+%Docstring(signature="appended")
 
 A line symbol type, for rendering LineString and MultiLineString geometries.
 %End
@@ -1265,7 +1279,7 @@ style and colors instead of the symbol's normal style.
 
 class QgsFillSymbol : QgsSymbol
 {
-%Docstring
+%Docstring(signature="appended")
 
 A fill symbol type, for rendering Polygon and MultiPolygon geometries.
 %End

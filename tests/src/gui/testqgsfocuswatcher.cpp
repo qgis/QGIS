@@ -19,6 +19,7 @@
 #include "qgsfocuswatcher.h"
 #include <QApplication>
 #include <QLineEdit>
+#include <QSignalSpy>
 
 class TestQgsFocusWatcher: public QObject
 {

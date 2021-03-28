@@ -25,6 +25,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QImageReader>
+#include <QRegularExpression>
 
 QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders )
 {

@@ -88,7 +88,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     QgsWmsCapabilitiesProperty capabilitiesProperty = caps.capabilitiesProperty();
     const QgsWmsCapabilityProperty &capabilityProperty = capabilitiesProperty.capability;
 
-    for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( capabilityProperty.layers ) )
+    for ( const QgsWmsLayerProperty &layerProperty : std::as_const( capabilityProperty.layers ) )
     {
       // Attention, the name may be empty
       QgsDebugMsgLevel( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title, 2 );
@@ -127,7 +127,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
         children << layerItem;
       }
 
-      for ( const QgsWmtsStyle &style : qgis::as_const( l.styles ) )
+      for ( const QgsWmtsStyle &style : std::as_const( l.styles ) )
       {
         QString styleName = style.title.isEmpty() ? style.identifier : style.title;
         if ( layerItem == this )
@@ -159,7 +159,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
           }
         }
 
-        for ( const QgsWmtsTileMatrixSetLink &setLink : qgis::as_const( l.setLinks ) )
+        for ( const QgsWmtsTileMatrixSetLink &setLink : std::as_const( l.setLinks ) )
         {
           QString linkName = setLink.tileMatrixSet;
           if ( styleItem == layerItem )
@@ -191,7 +191,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
             }
           }
 
-          for ( const QString &format : qgis::as_const( l.formats ) )
+          for ( const QString &format : std::as_const( l.formats ) )
           {
             QString name = format;
             if ( linkItem == styleItem )
@@ -282,7 +282,7 @@ QString QgsWMSItemBase::createUri()
   mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
 
   // Check for layer dimensions
-  for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( mLayerProperty.dimensions ) )
+  for ( const QgsWmsDimensionProperty &dimension : std::as_const( mLayerProperty.dimensions ) )
   {
     // add temporal dimensions only
     if ( dimension.name == QLatin1String( "time" ) || dimension.name == QLatin1String( "reference_time" ) )
@@ -319,7 +319,7 @@ QString QgsWMSItemBase::createUri()
   QString crs;
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
-  for ( const QString &c : qgis::as_const( mLayerProperty.crs ) )
+  for ( const QString &c : std::as_const( mLayerProperty.crs ) )
   {
     testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
     if ( testCrs.isValid() )
@@ -349,7 +349,7 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
   mUri = createUri();
 
   // Populate everything, it costs nothing, all info about layers is collected
-  for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperty.layer ) )
+  for ( const QgsWmsLayerProperty &layerProperty : std::as_const( mLayerProperty.layer ) )
   {
     // Attention, the name may be empty
     QgsDebugMsgLevel( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title, 2 );
@@ -416,7 +416,8 @@ bool QgsWMSLayerCollectionItem::hasDragEnabled() const
   return false;
 }
 
-QgsMimeDataUtils::Uri QgsWMSLayerCollectionItem::mimeUri() const
+
+QgsMimeDataUtils::UriList QgsWMSLayerCollectionItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
 
@@ -427,7 +428,7 @@ QgsMimeDataUtils::Uri QgsWMSLayerCollectionItem::mimeUri() const
   u.supportedCrs = mLayerProperty.crs;
   u.supportedFormats = mCapabilitiesProperty.capability.request.getMap.format;
 
-  return u;
+  return { u };
 }
 
 // ---------------------------------------------------------------------------

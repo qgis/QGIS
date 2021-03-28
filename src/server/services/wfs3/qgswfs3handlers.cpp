@@ -35,6 +35,8 @@
 #include "qgsvectorlayerutils.h"
 #include "qgslogger.h"
 
+#include <QTextCodec>
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsfilterrestorer.h"
 #include "qgsaccesscontrol.h"
@@ -260,6 +262,8 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
   {
     publishedAttributes = accessControl->layerAttributes( vLayer, publishedAttributes );
   }
+#else
+  ( void )context;
 #endif
 
   QgsFields publishedFields;

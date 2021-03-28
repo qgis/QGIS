@@ -11,7 +11,7 @@
 
 class QgsProjectStorageGuiProvider
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract interface for project storage GUI - to be implemented by various backends
 and registered in :py:class:`QgsProjectStorageGuiRegistry`.
 

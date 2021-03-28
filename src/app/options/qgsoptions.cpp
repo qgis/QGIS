@@ -78,6 +78,7 @@
 #include <QStyleFactory>
 #include <QMessageBox>
 #include <QNetworkDiskCache>
+#include <QStandardPaths>
 
 #include <limits>
 #include <sqlite3.h>
@@ -111,7 +112,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
   connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
-  connect( cboGlobalLocale, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateSampleLocaleText( ); } );
+  connect( cboGlobalLocale, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateSampleLocaleText( ); } );
   connect( cbShowGroupSeparator, &QCheckBox::toggled, this, [ = ]( bool ) { updateSampleLocaleText(); } );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -1075,12 +1076,23 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
-  mDefaultSnapModeComboBox->addItem( tr( "No Snapping" ), QgsSnappingConfig::NoSnapFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::VertexFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::SegmentFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), QgsSnappingConfig::CentroidFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), QgsSnappingConfig::MiddleOfSegmentFlag );
-  mDefaultSnapModeComboBox->addItem( tr( "Area" ), QgsSnappingConfig::AreaFlag );
+
+  for ( QgsSnappingConfig::SnappingTypes type :
+        {
+          QgsSnappingConfig::NoSnapFlag,
+          QgsSnappingConfig::VertexFlag,
+          QgsSnappingConfig::SegmentFlag,
+          QgsSnappingConfig::CentroidFlag,
+          QgsSnappingConfig::MiddleOfSegmentFlag,
+          QgsSnappingConfig::LineEndpointFlag,
+          QgsSnappingConfig::AreaFlag,
+        } )
+  {
+    mDefaultSnapModeComboBox->addItem( QgsSnappingConfig::snappingTypeFlagToIcon( type ),
+                                       QgsSnappingConfig::snappingTypeFlagToString( type ),
+                                       type );
+  }
+
   QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = mSettings->flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  QgsSnappingConfig::VertexFlag );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
@@ -1184,7 +1196,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // ensure advanced factory is always last
   QgsAdvancedSettingsOptionsFactory advancedFactory;
   factories << &advancedFactory;
-  for ( QgsOptionsWidgetFactory *factory : qgis::as_const( factories ) )
+  for ( QgsOptionsWidgetFactory *factory : std::as_const( factories ) )
   {
     QgsOptionsPageWidget *page = factory->createWidget( this );
     if ( !page )
@@ -1230,7 +1242,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
         {
           mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
         };
-        connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
+        connect( mOpenClDevicesCombo, qOverload< int >( &QComboBox::currentIndexChanged ), infoUpdater );
         mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
         infoUpdater( -1 );
         mOpenClContainerWidget->show();
@@ -2394,11 +2406,11 @@ void QgsOptions::loadGdalDriverList()
   // sort list case insensitive - no existing function for this!
   QMap<QString, QString> strMap;
 
-  for ( const QString &str : qgis::as_const( myDrivers ) )
+  for ( const QString &str : std::as_const( myDrivers ) )
     strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  for ( const QString &myName : qgis::as_const( myDrivers ) )
+  for ( const QString &myName : std::as_const( myDrivers ) )
   {
     QTreeWidgetItem *mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
@@ -2437,13 +2449,13 @@ void QgsOptions::loadGdalDriverList()
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
   strMap.clear();
-  for ( const QString &str : qgis::as_const( myGdalWriteDrivers ) )
+  for ( const QString &str : std::as_const( myGdalWriteDrivers ) )
     strMap.insert( str.toLower(), str );
   myGdalWriteDrivers = strMap.values();
   myGdalWriteDrivers.removeAll( QStringLiteral( "Gtiff" ) );
   myGdalWriteDrivers.prepend( QStringLiteral( "GTiff" ) );
   cmbEditCreateOptions->clear();
-  for ( const QString &myName : qgis::as_const( myGdalWriteDrivers ) )
+  for ( const QString &myName : std::as_const( myGdalWriteDrivers ) )
   {
     cmbEditCreateOptions->addItem( myName );
   }
@@ -2831,7 +2843,7 @@ void QgsOptions::showHelp()
   QString link;
 
   // give first priority to created pages which have specified a help key
-  for ( const QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalOptionWidgets ) )
+  for ( const QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
   {
     if ( widget == activeTab )
     {

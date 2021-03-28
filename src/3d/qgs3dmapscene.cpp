@@ -36,6 +36,7 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <QSurface>
+#include <QUrl>
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -249,7 +250,7 @@ int Qgs3DMapScene::terrainPendingJobsCount() const
 int Qgs3DMapScene::totalPendingJobsCount() const
 {
   int count = 0;
-  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
     count += entity->pendingJobsCount();
   return count;
 }
@@ -294,7 +295,7 @@ void Qgs3DMapScene::onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent
   if ( !vlayer )
     return;
 
-  for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
+  for ( Qgs3DMapScenePickHandler *pickHandler : std::as_const( mPickHandlers ) )
   {
     pickHandler->handlePickOnVectorLayer( vlayer, fid, pickEvent->worldIntersection(), pickEvent );
   }
@@ -382,7 +383,7 @@ void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt
 void Qgs3DMapScene::updateScene()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
-  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
@@ -446,7 +447,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
     // Also involve all the other chunked entities to make sure that they will not get
     // clipped by the near or far plane
-    for ( QgsChunkedEntity *e : qgis::as_const( mChunkEntities ) )
+    for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
     {
       if ( e != mTerrain )
         _updateNearFarPlane( e->activeNodes(), viewMatrix, fnear, ffar );
@@ -484,7 +485,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
-  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
@@ -560,7 +561,8 @@ void Qgs3DMapScene::createTerrainDeferred()
   onCameraChanged();  // force update of the new terrain
 
   // make sure that renderers for layers are re-created as well
-  Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
+  const QList<QgsMapLayer *> layers = mMap.layers();
+  for ( QgsMapLayer *layer : layers )
   {
     // remove old entity - if any
     removeLayerEntity( layer );
@@ -584,10 +586,10 @@ void Qgs3DMapScene::onBackgroundColorChanged()
 
 void Qgs3DMapScene::updateLights()
 {
-  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightEntities ) )
+  for ( Qt3DCore::QEntity *entity : std::as_const( mLightEntities ) )
     entity->deleteLater();
   mLightEntities.clear();
-  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightOriginEntities ) )
+  for ( Qt3DCore::QEntity *entity : std::as_const( mLightOriginEntities ) )
     entity->deleteLater();
   mLightOriginEntities.clear();
 
@@ -703,7 +705,8 @@ void Qgs3DMapScene::onLayersChanged()
 {
   QSet<QgsMapLayer *> layersBefore = qgis::listToSet( mLayerEntities.keys() );
   QList<QgsMapLayer *> layersAdded;
-  Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
+  const QList<QgsMapLayer *> layers = mMap.layers();
+  for ( QgsMapLayer *layer : layers )
   {
     if ( !layersBefore.contains( layer ) )
     {
@@ -716,12 +719,12 @@ void Qgs3DMapScene::onLayersChanged()
   }
 
   // what is left in layersBefore are layers that have been removed
-  Q_FOREACH ( QgsMapLayer *layer, layersBefore )
+  for ( QgsMapLayer *layer : std::as_const( layersBefore ) )
   {
     removeLayerEntity( layer );
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, layersAdded )
+  for ( QgsMapLayer *layer : std::as_const( layersAdded ) )
   {
     addLayerEntity( layer );
   }
@@ -955,7 +958,7 @@ void Qgs3DMapScene::updateSceneState()
     return;
   }
 
-  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() && entity->pendingJobsCount() > 0 )
     {
@@ -1000,10 +1003,7 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
 
 void Qgs3DMapScene::onShadowSettingsChanged()
 {
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine == nullptr )
-    return;
-  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
 
   QList<QgsDirectionalLightSettings> directionalLights = mMap.directionalLights();
   QgsShadowSettings shadowSettings = mMap.shadowSettings();
@@ -1022,28 +1022,19 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
 {
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine == nullptr )
-    return;
-  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
   shadowRenderingFrameGraph->setupShadowMapDebugging( mMap.debugShadowMapEnabled(), mMap.debugShadowMapCorner(), mMap.debugShadowMapSize() );
 }
 
 void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
 {
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine == nullptr )
-    return;
-  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
   shadowRenderingFrameGraph->setupDepthMapDebugging( mMap.debugDepthMapEnabled(), mMap.debugDepthMapCorner(), mMap.debugDepthMapSize() );
 }
 
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine == nullptr )
-    return;
-  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
 
   bool edlEnabled = mMap.eyeDomeLightingEnabled();
   double edlStrength = mMap.eyeDomeLightingStrength();

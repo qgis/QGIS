@@ -10,7 +10,7 @@
 
 class QgsPythonRunner
 {
-%Docstring
+%Docstring(signature="appended")
 Utility class for running Python commands from various parts of QGIS.
 
 There is no direct Python support in the core library, so it is expected

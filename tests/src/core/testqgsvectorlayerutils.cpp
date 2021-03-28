@@ -16,6 +16,7 @@
 
 #include "qgsvectorlayerutils.h"
 #include "qgsvectorlayer.h"
+#include <QThread>
 
 /**
  * \ingroup UnitTests

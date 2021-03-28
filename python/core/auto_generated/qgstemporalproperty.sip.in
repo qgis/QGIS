@@ -14,7 +14,7 @@
 
 class QgsTemporalProperty : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for temporal property.
 
 .. versionadded:: 3.14

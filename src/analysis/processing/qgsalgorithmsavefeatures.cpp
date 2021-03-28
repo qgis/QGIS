@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmsavefeatures.h"
 #include "qgsvectorfilewriter.h"
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 

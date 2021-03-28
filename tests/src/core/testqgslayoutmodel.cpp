@@ -27,6 +27,7 @@
 #include <QObject>
 #include "qgstest.h"
 #include <QList>
+#include <QSignalSpy>
 
 class TestQgsLayoutModel : public QObject
 {

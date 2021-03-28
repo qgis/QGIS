@@ -40,6 +40,7 @@
 #include <QUrl>
 #include <QEventLoop>
 #include <QFile>
+#include <QUrlQuery>
 
 #ifdef QGISDEBUG
 #include <QDir>

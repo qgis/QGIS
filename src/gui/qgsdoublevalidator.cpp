@@ -19,6 +19,7 @@
 
 #include <limits>
 #include <QRegExpValidator>
+#include <QRegularExpression>
 #include <QLocale>
 #include "qgis_gui.h"
 

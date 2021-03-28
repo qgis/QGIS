@@ -25,6 +25,8 @@
 #include <QPushButton>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QtEndian>
+#include <QUrlQuery>
 
 QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &baseKey, const QString &connectionName, QgsNewHttpConnection::Flags flags, Qt::WindowFlags fl )
   : QDialog( parent, fl )

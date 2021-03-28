@@ -12,7 +12,7 @@
 
 class QgsAbstractMetadataBase
 {
-%Docstring
+%Docstring(signature="appended")
 An abstract base class for metadata stores.
 
 :py:class:`QgsAbstractMetadataBase` is the base class for handling storage and management of the metadata

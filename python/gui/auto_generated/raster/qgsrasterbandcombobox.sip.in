@@ -11,7 +11,7 @@
 
 class QgsRasterBandComboBox : QComboBox
 {
-%Docstring
+%Docstring(signature="appended")
 A combobox widget which displays the bands present in a raster layer.
 
 .. versionadded:: 3.0

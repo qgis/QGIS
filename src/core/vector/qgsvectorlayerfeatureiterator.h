@@ -148,6 +148,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     {
       const QgsVectorLayerJoinInfo *joinInfo;//!< Canonical source of information about the join
       QgsAttributeList attributes;      //!< Attributes to fetch
+      QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP; //!< Mapping from original attribute index to the joined layer index
       int indexOffset;                  //!< At what position the joined fields start
       QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
       int targetField;                  //!< Index of field (of this layer) that drives the join

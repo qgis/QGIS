@@ -233,6 +233,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     void setShape();
     void updateAssistantSymbol();
     void penJoinStyleChanged();
+    void penCapStyleChanged();
 
   private:
 

@@ -31,6 +31,8 @@
 #include <QAction>
 #include <mutex>
 #include <QMessageBox>
+#include <QUrlQuery>
+#include <QUrl>
 
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );
@@ -181,6 +183,14 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     tmpPath.chop( 3 );
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
+
+  if ( suffix == QLatin1String( "txt" ) )
+  {
+    // never ever show .txt files as datasets in browser -- they are only used for geospatial data in extremely rare cases
+    // and are predominantly just noise in the browser
+    return nullptr;
+  }
+
   // extract basename with extension
   info.setFile( path );
   QString name = info.fileName();

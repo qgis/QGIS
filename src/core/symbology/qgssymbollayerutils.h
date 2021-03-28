@@ -20,8 +20,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QMap>
-#include <Qt>
-#include <QtCore>
 #include <QFont>
 #include <QColor>
 #include <QPainter>
@@ -30,6 +28,8 @@
 #include "qgsmapunitscale.h"
 #include "qgscolorramp.h"
 #include "qgsarrowsymbollayer.h"
+
+#include <QFile>
 
 class QgsExpression;
 class QgsPathResolver;
@@ -46,6 +46,7 @@ class QIcon;
 class QPixmap;
 class QPointF;
 class QSize;
+class QMimeData;
 
 /**
  * \ingroup core
@@ -655,6 +656,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     //! Calculate whether a point is within of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
+
+    /**
+     * Returns the total length of a \a polyline.
+     *
+     * \since QGIS 3.20
+     */
+    static double polylineLength( const QPolygonF &polyline );
 
     /**
      * Returns the substring of a \a polyline which starts at \a startOffset from the beginning of the line

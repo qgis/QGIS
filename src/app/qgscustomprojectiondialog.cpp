@@ -32,6 +32,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
+#include <QRegularExpression>
 
 //proj includes
 #include "qgsprojutils.h"
@@ -88,7 +89,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
   connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
   connect( teParameters, &QPlainTextEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
-  connect( mFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsCustomProjectionDialog::formatChanged );
+  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsCustomProjectionDialog::formatChanged );
 }
 
 void QgsCustomProjectionDialog::populateList()
@@ -284,7 +285,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem crs;
-  for ( const Definition &def : qgis::as_const( mDefinitions ) )
+  for ( const Definition &def : std::as_const( mDefinitions ) )
   {
     if ( !def.wkt.isEmpty() )
       crs.createFromWkt( def.wkt );
@@ -349,7 +350,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
 
   //Modify the CRS changed:
   bool saveSuccess = true;
-  for ( const Definition &def : qgis::as_const( mDefinitions ) )
+  for ( const Definition &def : std::as_const( mDefinitions ) )
   {
     if ( !def.wkt.isEmpty() )
       crs.createFromWkt( def.wkt );

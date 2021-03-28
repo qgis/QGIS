@@ -9,7 +9,7 @@
 
 class QgsQueryBuilder : QgsSubsetStringEditorInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Query Builder for layers.
 
 The query builder allows interactive creation of a SQL for limiting the

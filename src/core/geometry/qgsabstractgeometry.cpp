@@ -307,6 +307,11 @@ bool QgsAbstractGeometry::hasCurvedSegments() const
   return false;
 }
 
+bool QgsAbstractGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  return boundingBox().intersects( rectangle );
+}
+
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   Q_UNUSED( tolerance )

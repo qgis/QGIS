@@ -59,7 +59,7 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
     QUrl requestUrl( const QString &address, const QgsRectangle &bounds = QgsRectangle() ) const;
 
     /**
-     * Converts a JSON result returned from the Google Maps service to a geocoder result object.
+     * Converts a JSON result returned from the Nominatim service to a geocoder result object.
      */
     QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
 
@@ -116,7 +116,6 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
     double mRequestsPerSecond = 1;
 
     static QMutex sMutex;
-    static QMap< QUrl, QList< QgsGeocoderResult > > sCachedResults;
 
     static qint64 sLastRequestTimestamp;
 

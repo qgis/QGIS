@@ -11,7 +11,7 @@
 
 class QgsAttributeEditorHtmlElement : QgsAttributeEditorElement
 {
-%Docstring
+%Docstring(signature="appended")
 An attribute editor widget that will represent arbitrary HTML code.
 
 .. versionadded:: 3.4

@@ -23,7 +23,12 @@
 #include "qgstextrendererutils.h"
 #include "qgspallabeling.h"
 #include <QFontDatabase>
+#include <QMimeData>
+#include <QWidget>
+#include <QScreen>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
+#endif
 
 QgsTextFormat::QgsTextFormat()
 {
@@ -592,6 +597,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
 QMimeData *QgsTextFormat::toMimeData() const
 {
   //set both the mime color data, and the text (format settings).
+
   QMimeData *mimeData = new QMimeData;
   mimeData->setColorData( QVariant( color() ) );
 
@@ -954,7 +960,13 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
   context.setMapToPixel( newCoordXForm );
 
-  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  const double logicalDpiX = QgsApplication::desktop()->logicalDpiX();
+#else
+  const double logicalDpiX = QApplication::topLevelWidgets().first()->screen()->devicePixelRatio();
+#endif
+  context.setScaleFactor( logicalDpiX / 25.4 );
+
   context.setUseAdvancedEffects( true );
   context.setFlag( QgsRenderContext::Antialiasing, true );
   context.setPainter( &painter );

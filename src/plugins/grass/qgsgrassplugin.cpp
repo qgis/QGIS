@@ -428,7 +428,7 @@ void QgsGrassPlugin::onFieldsChanged()
   QString uri = grassProvider->dataSourceUri();
   uri.remove( QRegExp( "[^_]*$" ) );
   QgsDebugMsg( "uri = " + uri );
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
     {
@@ -792,7 +792,7 @@ void QgsGrassPlugin::unload()
   disconnect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
               this, &QgsGrassPlugin::onCurrentLayerChanged );
 
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
     {

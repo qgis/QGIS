@@ -102,6 +102,7 @@ include_directories(SYSTEM
 )
 
 add_executable(untwine ${UNTWINE_SRCS} ${UNTWINE_HDRS})
+target_compile_features(untwine PRIVATE cxx_std_17)
 
 set_target_properties(untwine PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
@@ -115,8 +116,7 @@ target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
 
 add_library (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 
-# require c++14 only -- untwine is not compatible with c++17
-target_compile_features(pdalprovider PRIVATE cxx_std_14)
+target_compile_features(pdalprovider PRIVATE cxx_std_17)
 
 target_link_libraries (pdalprovider
   qgis_core

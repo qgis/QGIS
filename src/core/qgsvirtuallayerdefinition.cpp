@@ -17,6 +17,8 @@ email                : hugo dot mercier at oslandia dot com
 #include <QUrl>
 #include <QRegExp>
 #include <QStringList>
+#include <QUrlQuery>
+#include <QtEndian>
 
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvectorlayer.h"

@@ -19,6 +19,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswmsrequest.h"
+
 namespace QgsWms
 {
 
@@ -26,7 +28,7 @@ namespace QgsWms
    * Output GetMap response in DXF format
    */
   void writeGetMap( QgsServerInterface *serverIface, const QgsProject *project,
-                    const QString &version,  const QgsServerRequest &request,
+                    const QgsWmsRequest &request,
                     QgsServerResponse &response );
 
 } // namespace QgsWms

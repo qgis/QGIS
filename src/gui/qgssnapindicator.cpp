@@ -78,7 +78,11 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     mSnappingMarker->setColor( color );
 
     int iconType;
-    if ( match.hasVertex() )
+    if ( match.hasLineEndpoint() )
+    {
+      iconType = QgsVertexMarker::ICON_INVERTED_TRIANGLE; // line endpoint snap
+    }
+    else if ( match.hasVertex() )
     {
       if ( match.layer() )
         iconType = QgsVertexMarker::ICON_BOX;  // vertex snap

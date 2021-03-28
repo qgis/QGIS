@@ -37,7 +37,7 @@ class QgsField;
 class QgsGeometry;
 class QgsRectangle;
 class QgsAbstractGeometry;
-
+class QgsSymbol;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -561,6 +561,22 @@ class CORE_EXPORT QgsFeature
     }
     % End
 #endif
+
+    /**
+     * Returns the feature's embedded symbology, or NULLPTR if the feature has no embedded symbol.
+     *
+     * \since QGIS 3.20
+     */
+    const QgsSymbol *embeddedSymbol() const;
+
+    /**
+     * Sets the feature's embedded \a symbol.
+     *
+     * Ownership of \a symbol is transferred to the feature.
+     *
+     * \since QGIS 3.20
+     */
+    void setEmbeddedSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
     /**
      * Utility method to get attribute index from name. Field map must be associated using setFields()

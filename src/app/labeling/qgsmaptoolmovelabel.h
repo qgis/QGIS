@@ -43,7 +43,6 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 
     bool canModifyCallout( const QgsCalloutPosition &position, bool isOrigin, int &xCol, int &yCol ) override;
 
-    QgsCalloutPosition mCurrentCallout;
     bool mCurrentCalloutMoveOrigin = false;
 
     QgsRubberBand *mCalloutMoveRubberBand = nullptr;
@@ -56,6 +55,8 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 
   private:
     bool currentCalloutDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol );
+
+    QgsPointXY snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const;
 
 };
 

@@ -180,11 +180,12 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>cmbDatabaseTypes</tabstop>
   <tabstop>txtName</tabstop>
   <tabstop>txtHost</tabstop>
   <tabstop>txtDatabase</tabstop>
   <tabstop>txtPort</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>btnConnect</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -10,7 +10,7 @@
 
 class QgsLayoutViewToolTemporaryMousePan : QgsLayoutViewTool
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for temporarily panning a layout while a mouse button is depressed.
 
 .. versionadded:: 3.0

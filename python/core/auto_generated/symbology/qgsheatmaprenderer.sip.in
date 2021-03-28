@@ -10,7 +10,7 @@
 
 class QgsHeatmapRenderer : QgsFeatureRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 A renderer which draws points as a live heatmap
 
 .. versionadded:: 2.7

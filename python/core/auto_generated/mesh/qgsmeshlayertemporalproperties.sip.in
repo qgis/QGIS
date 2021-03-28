@@ -13,7 +13,7 @@
 
 class QgsMeshLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of map layer temporal properties for mesh layers.
 
 The time in a mesh layer is defined by :

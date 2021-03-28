@@ -12,7 +12,7 @@
 
 class QgsPointCloudRendererPropertiesWidget : QgsMapLayerConfigWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A generic widget for setting the 2D renderer for a point cloud layer.
 
 .. versionadded:: 3.18

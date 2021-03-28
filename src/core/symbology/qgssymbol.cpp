@@ -251,6 +251,39 @@ void QgsSymbol::_getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRende
   }
 }
 
+QString QgsSymbol::symbolTypeToString( QgsSymbol::SymbolType type )
+{
+  switch ( type )
+  {
+    case QgsSymbol::Marker:
+      return QObject::tr( "Marker" );
+    case QgsSymbol::Line:
+      return QObject::tr( "Line" );
+    case QgsSymbol::Fill:
+      return QObject::tr( "Fill" );
+    case QgsSymbol::Hybrid:
+      return QObject::tr( "Hybrid" );
+  }
+  return QString();
+}
+
+QgsSymbol::SymbolType QgsSymbol::symbolTypeForGeometryType( QgsWkbTypes::GeometryType type )
+{
+  switch ( type )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return Marker;
+    case QgsWkbTypes::LineGeometry:
+      return Line;
+    case QgsWkbTypes::PolygonGeometry:
+      return Fill;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      return Hybrid;
+  }
+  return Hybrid;
+}
+
 const QgsPropertiesDefinition &QgsSymbol::propertyDefinitions()
 {
   QgsSymbol::initPropertyDefinitions();
@@ -584,7 +617,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     context->setExpressionContext( expContext );
   }
 
-  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
   {
     if ( !layer->enabled()  || ( customContext && !customContext->isSymbolLayerEnabled( layer ) ) )
       continue;
@@ -1222,7 +1255,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case QgsSymbol::Marker:
       {
         int geometryPartNumber = 0;
-        for ( const PointInfo &point : qgis::as_const( pointsToRender ) )
+        for ( const PointInfo &point : std::as_const( pointsToRender ) )
         {
           if ( context.renderingStopped() )
             break;
@@ -1244,7 +1277,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           break;
 
         int geometryPartNumber = 0;
-        for ( const LineInfo &line : qgis::as_const( linesToRender ) )
+        for ( const LineInfo &line : std::as_const( linesToRender ) )
         {
           if ( context.renderingStopped() )
             break;
@@ -1263,7 +1296,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case QgsSymbol::Fill:
       {
         int geometryPartNumber = 0;
-        for ( const PolygonInfo &info : qgis::as_const( polygonsToRender ) )
+        for ( const PolygonInfo &info : std::as_const( polygonsToRender ) )
         {
           if ( context.renderingStopped() )
             break;
@@ -1293,7 +1326,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     case QgsSymbol::Marker:
     {
       markers.reserve( pointsToRender.size() );
-      for ( const PointInfo &info : qgis::as_const( pointsToRender ) )
+      for ( const PointInfo &info : std::as_const( pointsToRender ) )
       {
         if ( context.hasRenderedFeatureHandlers() || context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
         {
@@ -1322,7 +1355,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
     case QgsSymbol::Line:
     {
-      for ( const LineInfo &info : qgis::as_const( linesToRender ) )
+      for ( const LineInfo &info : std::as_const( linesToRender ) )
       {
         if ( context.hasRenderedFeatureHandlers() && !info.renderLine.empty() )
         {
@@ -1341,7 +1374,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     case QgsSymbol::Fill:
     {
       int i = 0;
-      for ( const PolygonInfo &info : qgis::as_const( polygonsToRender ) )
+      for ( const PolygonInfo &info : std::as_const( polygonsToRender ) )
       {
         if ( context.hasRenderedFeatureHandlers() && !info.renderExterior.empty() )
         {
@@ -1610,7 +1643,7 @@ void QgsMarkerSymbol::setAngle( double symbolAngle )
 
 double QgsMarkerSymbol::angle() const
 {
-  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
   {
     if ( layer->type() != QgsSymbol::Marker )
       continue;
@@ -1637,7 +1670,7 @@ void QgsMarkerSymbol::setDataDefinedAngle( const QgsProperty &property )
   const double symbolRotation = angle();
 
 
-  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
   {
     if ( layer->type() != QgsSymbol::Marker )
       continue;
@@ -1995,7 +2028,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   }
 
 
-  for ( QgsSymbolLayer *symbolLayer : qgis::as_const( mLayers ) )
+  for ( QgsSymbolLayer *symbolLayer : std::as_const( mLayers ) )
   {
     if ( context.renderingStopped() )
       break;

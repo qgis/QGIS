@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterstatistics.h"
-
+#include <QTextStream>
 
 ///@cond PRIVATE
 

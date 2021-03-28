@@ -15,7 +15,7 @@
 
 class QgsLineString: QgsCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Line string geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 2.10
@@ -421,6 +421,10 @@ segment in the line.
     virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+    virtual bool isClosed() const /HoldGIL/;
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
 
     QVector< QgsVertexId > collectDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) const;

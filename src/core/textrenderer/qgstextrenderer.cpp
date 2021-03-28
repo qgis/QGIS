@@ -24,6 +24,8 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
 
+#include <QTextBoundaryFinder>
+
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
@@ -1400,7 +1402,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     }
   }
 
-  for ( const QString &line : qgis::as_const( textLines ) )
+  for ( const QString &line : std::as_const( textLines ) )
   {
     const QgsTextBlock block = document.at( i );
 
@@ -1642,9 +1644,9 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
   }
 
   int maxLineLength = 0;
-  for ( const QString &line : qgis::as_const( textLines ) )
+  for ( const QString &line : std::as_const( textLines ) )
   {
-    maxLineLength = std::max( maxLineLength, line.length() );
+    maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
   }
   double actualLabelHeight = fontMetrics->ascent() / fontScale + ( fontMetrics->ascent() / fontScale + letterSpacing ) * ( maxLineLength - 1 );
   double ascentOffset = fontMetrics->ascent() / fontScale;

@@ -11,7 +11,7 @@
 
 class QgsCoordinateOperationWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for selecting the coordinate operation to use when transforming between
 a source and destination coordinate reference system.
 

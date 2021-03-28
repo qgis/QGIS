@@ -38,6 +38,7 @@ set(QGIS_GUI_SRCS
   symbology/qgsdashspacedialog.cpp
   symbology/qgsdatadefinedsizelegendwidget.cpp
   symbology/qgsellipsesymbollayerwidget.cpp
+  symbology/qgsembeddedsymbolrendererwidget.cpp
   symbology/qgsgraduatedhistogramwidget.cpp
   symbology/qgsgraduatedsymbolrendererwidget.cpp
   symbology/qgsheatmaprendererwidget.cpp
@@ -1193,6 +1194,7 @@ set(QGIS_GUI_HDRS
   symbology/qgsdashspacedialog.h
   symbology/qgsdatadefinedsizelegendwidget.h
   symbology/qgsellipsesymbollayerwidget.h
+  symbology/qgsembeddedsymbolrendererwidget.h
   symbology/qgsgraduatedhistogramwidget.h
   symbology/qgsgraduatedsymbolrendererwidget.h
   symbology/qgsheatmaprendererwidget.h
@@ -1322,7 +1324,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshdatasetgrouptreewidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshstaticdatasetwidgetbase.h
-
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstemporalcontrollerwidgetbase.h
 )
 
 if(ENABLE_MODELTEST)

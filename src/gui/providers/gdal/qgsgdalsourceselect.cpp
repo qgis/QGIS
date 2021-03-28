@@ -168,13 +168,7 @@ void QgsGdalSourceSelect::addButtonClicked()
     return;
   }
 
-  for ( const QString &dataSource : mDataSources )
-  {
-    if ( QFile::exists( dataSource ) )
-      emit addRasterLayer( dataSource, QFileInfo( dataSource ).completeBaseName(), QStringLiteral( "gdal" ) );
-    else
-      emit addRasterLayer( dataSource, dataSource, QStringLiteral( "gdal" ) );
-  }
+  emit addRasterLayers( mDataSources );
 }
 
 void QgsGdalSourceSelect::computeDataSources()
@@ -329,7 +323,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
     else if ( !options.isEmpty() )
     {
       QComboBox *cb = new QComboBox();
-      for ( const QString &val : qgis::as_const( options ) )
+      for ( const QString &val : std::as_const( options ) )
       {
         cb->addItem( val, val );
       }

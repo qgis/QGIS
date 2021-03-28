@@ -33,6 +33,7 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
+#include <QBuffer>
 
 QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )

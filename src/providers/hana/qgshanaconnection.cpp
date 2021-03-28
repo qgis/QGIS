@@ -530,7 +530,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
     if ( values.size() == 1 )
       values[0].isUnique = true;
 
-    for ( const QgsHanaLayerProperty &lp : qgis::as_const( values ) )
+    for ( const QgsHanaLayerProperty &lp : std::as_const( values ) )
       list << lp;
   }
 

@@ -69,7 +69,7 @@ FeaturePart::FeaturePart( const FeaturePart &other )
   : PointSet( other )
   , mLF( other.mLF )
 {
-  for ( const FeaturePart *hole : qgis::as_const( other.mHoles ) )
+  for ( const FeaturePart *hole : std::as_const( other.mHoles ) )
   {
     mHoles << new FeaturePart( *hole );
     mHoles.last()->holeOf = this;
@@ -104,7 +104,7 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
         hole->holeOf = nullptr;
         // possibly not needed. it's not done for the exterior ring, so I'm not sure
         // why it's just done here...
-        GeomFunction::reorderPolygon( hole->nbPoints, hole->x, hole->y );
+        GeomFunction::reorderPolygon( hole->x, hole->y );
 
         mHoles << hole;
       }
@@ -1629,8 +1629,6 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   const std::size_t targetPolygonCandidates = maxPolygonCandidates > 0 ? std::min( maxPolygonCandidates,  static_cast< std::size_t>( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * area() ) ) )
       : 0;
 
-  QLinkedList<PointSet *> shapes_toProcess;
-  QLinkedList<PointSet *> shapes_final;
   const double totalArea = area();
 
   mapShape->parent = nullptr;
@@ -1638,9 +1636,14 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   if ( pal->isCanceled() )
     return 0;
 
-  shapes_toProcess.append( mapShape );
-
-  splitPolygons( shapes_toProcess, shapes_final, labelWidth, labelHeight );
+  QLinkedList<PointSet *> shapes_final = splitPolygons( mapShape, labelWidth, labelHeight );
+#if 0
+  QgsDebugMsg( QStringLiteral( "PAL split polygons resulted in:" ) );
+  for ( PointSet *ps : shapes_final )
+  {
+    QgsDebugMsg( ps->toWkt() );
+  }
+#endif
 
   std::size_t nbp = 0;
 
@@ -1654,14 +1657,17 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     double beta;
     double diago = std::sqrt( labelWidth * labelWidth / 4.0 + labelHeight * labelHeight / 4 );
     double rx, ry;
-    std::vector< CHullBox > boxes;
+    std::vector< OrientedConvexHullBoundingBox > boxes;
     boxes.reserve( shapes_final.size() );
 
-    // Compute bounding box foreach finalShape
+    // Compute bounding box for each finalShape
     while ( !shapes_final.isEmpty() )
     {
       PointSet *shape = shapes_final.takeFirst();
-      boxes.emplace_back( shape->compute_chull_bbox() );
+      bool ok = false;
+      OrientedConvexHullBoundingBox box = shape->computeConvexHullOrientedBoundingBox( ok );
+      if ( ok )
+        boxes.emplace_back( box );
 
       if ( shape->parent )
         delete shape;
@@ -1682,7 +1688,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
 
     do
     {
-      for ( CHullBox &box : boxes )
+      for ( OrientedConvexHullBoundingBox &box : boxes )
       {
         // there is two possibilities here:
         // 1. no maximum candidates for polygon setting is in effect (i.e. maxPolygonCandidates == 0). In that case,

@@ -73,7 +73,11 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testTopologicalEditingZ();
     void testCloseLine();
     void testSelfSnapping();
-    void testDifferentCrs();
+    void testLineString();
+    void testCompoundCurve();
+    void testStream();
+    void testUndo();
+    void testStreamTolerance();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -90,8 +94,6 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLine2D = nullptr;
     QgsVectorLayer *mLayerCloseLine = nullptr;
     QgsVectorLayer *mLayerSelfSnapLine = nullptr;
-    QgsVectorLayer *mLayerCRS3946Line = nullptr;
-    QgsVectorLayer *mLayerCRS3945Line = nullptr;
     QgsFeatureId mFidLineF1 = 0;
     QgsFeatureId mFidCurvedF1 = 0;
 };
@@ -111,6 +113,8 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QgsSettings settings;
+  settings.clear();
 
   mQgisApp = new QgisApp();
 
@@ -238,19 +242,8 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerSelfSnapLine );
   mLayerSelfSnapLine->startEditing();
 
-  // make layers with different CRS
-  mLayerCRS3946Line = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
-  QVERIFY( mLayerCRS3946Line ->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3946Line );
-  mLayerCRS3946Line->startEditing();
-
-  mLayerCRS3945Line = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3945" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
-  QVERIFY( mLayerCRS3945Line ->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3945Line );
-  mLayerCRS3945Line->startEditing();
-
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine << mLayerCRS3946Line << mLayerCRS3945Line );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -797,78 +790,256 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
   QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
   QCOMPARE( mLayerSelfSnapLine->getFeature( newFid2 ).geometry(), QgsGeometry::fromWkt( targetWkt ) );
   mLayerSelfSnapLine->undoStack()->undo();
-
 }
 
-void TestQgsMapToolAddFeatureLine::testDifferentCrs()
+void TestQgsMapToolAddFeatureLine::testLineString()
 {
-
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLine );
+
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
-
-  // Prepare geometries
-  QgsPolylineXY line1;
-  line1 << QgsPointXY( 0, 0 ) << QgsPointXY( 0, 10 );
-  QgsFeature lineF1;
-  lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
-
-  mLayerCRS3946Line->startEditing();
-  mLayerCRS3946Line->addFeature( lineF1 );
-  QgsFeatureId mFidLine3946 = lineF1.id();
-  QCOMPARE( mLayerCRS3946Line->featureCount(), ( long )1 );
-  // just one added feature
-  QCOMPARE( mLayerCRS3946Line->undoStack()->index(), 1 );
-
-  // Draw the line to avoid some error with the projections
-  mLayerCRS3945Line->startEditing();
-  mCanvas->setCurrentLayer( mLayerCRS3945Line );
-  utils.mouseClick( 8, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 8, 8, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 8, 8, Qt::RightButton );
-  QgsFeatureId mFidLine3945 = utils.newFeatureId( oldFids );
-  QCOMPARE( mLayerCRS3945Line->featureCount(), ( long )1 );
-  // just one added feature
-  QCOMPARE( mLayerCRS3945Line->undoStack()->index(), 1 );
-
-
-  mCanvas->setCurrentLayer( mLayerCRS3946Line );
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
-  cfg.setEnabled( true );
-  cfg.setMode( QgsSnappingConfig::AllLayers );
-  cfg.setTypeFlag( QgsSnappingConfig::SegmentFlag );
-  cfg.setTolerance( 50 );
-  cfg.setUnits( QgsTolerance::Pixels );
-
-  bool topologicalEditing = cfg.project()->topologicalEditing();
-  cfg.project()->setTopologicalEditing( true );
-
+  cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
 
-  utils.mouseClick( -2, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 0, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 2, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 2, 4, Qt::RightButton );
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 5, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
+  utils.mouseClick( 7.25, 6.5, Qt::LeftButton );
+  utils.mouseClick( 7.5, 6.5, Qt::LeftButton );
 
-  QString new3946Wkt = "LineString (0 0, 0 4, 0 10)";
+  // check capture curve initially
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt(), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5, 7.25 6.5, 7.5 6.5))" ) );
 
-  QCOMPARE( mLayerCRS3946Line->getFeature( mFidLine3946 ).geometry().asWkt( 0 ), new3946Wkt ); // use wkt to avoid float rounding errors
-  mLayerCRS3946Line->undoStack()->undo();
+  utils.mouseClick( 8, 6.5, Qt::RightButton );
 
-  // same test with a layer with a different CRS
-  mCanvas->setCurrentLayer( mLayerCRS3945Line );
-  utils.mouseClick( 0, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 8, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 8, 4, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  // (2 2, 8 2, 8 4, 8 8) transformed from 3946 to 3945
-  QString new3945Wkt = "LineString (17441.5859966475982219 -862119.21677098423242569, 17441.58100318093784153 -862117.23846332356333733, 17441.57101624645292759 -862113.28184797242283821)";
-  QCOMPARE( mLayerCRS3945Line->getFeature( mFidLine3945 ).geometry().asWkt( 2 ), QgsGeometry::fromWkt( new3945Wkt ).asWkt( 2 ) );
-  mLayerCRS3945Line->undoStack()->undo();
+  QString wkt = "LineStringZ (5 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
-  cfg.project()->setTopologicalEditing( topologicalEditing );
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mLayerLine->undoStack()->undo();
+}
+
+void TestQgsMapToolAddFeatureLine::testCompoundCurve()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLineCurved );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 5, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
+  mCaptureTool->setCircularDigitizingEnabled( true );
+  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
+  utils.mouseClick( 7.25, 6.5, Qt::LeftButton );
+  mCaptureTool->setCircularDigitizingEnabled( false );
+  utils.mouseClick( 7.5, 6.5, Qt::LeftButton );
+  utils.mouseClick( 7.5, 6.0, Qt::LeftButton );
+  utils.mouseClick( 7.7, 6.0, Qt::LeftButton );
+
+  // check capture curve initially
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5),CircularString (6.25 6.5, 6.75 6.5, 7.25 6.5),(7.25 6.5, 7.5 6.5, 7.5 6, 7.7 6))" ) );
+
+  utils.mouseClick( 8, 6.5, Qt::RightButton );
+
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "CompoundCurve ((5 6.5, 6.25 6.5),CircularString (6.25 6.5, 6.75 6.5, 7.25 6.5),(7.25 6.5, 7.5 6.5),(7.5 6.5, 7.5 6),(7.5 6, 7.703125 6))";
+  QCOMPARE( mLayerLineCurved->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLineCurved->undoStack()->undo();
+}
+
+void TestQgsMapToolAddFeatureLine::testStream()
+{
+  // test streaming mode digitizing
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLine );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 5, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
+
+  mCaptureTool->setStreamDigitizingEnabled( true );
+  utils.mouseMove( 7.0, 6.6 );
+  utils.mouseMove( 7.1, 6.7 );
+  utils.mouseMove( 7.2, 6.6 );
+  utils.mouseMove( 7.3, 6.5 );
+  utils.mouseMove( 7.5, 6.9 );
+  utils.mouseMove( 7.6, 6.3 );
+  utils.mouseClick( 7.75, 6.5, Qt::LeftButton );
+  mCaptureTool->setStreamDigitizingEnabled( false );
+  utils.mouseClick( 7.5, 5.0, Qt::LeftButton );
+  mCaptureTool->setStreamDigitizingEnabled( true );
+  utils.mouseMove( 7.4, 5.0 );
+  utils.mouseMove( 7.3, 5.1 );
+  utils.mouseMove( 7.2, 5.0 );
+  utils.mouseMove( 7.1, 4.9 );
+
+  // check capture curve initially -- the streamed sections MUST become their own curve in the geometry, and not be compined with the straight line segments!
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5, 7.09 4.91))" ) );
+  utils.mouseClick( 7.0, 5.0, Qt::RightButton );
+  mCaptureTool->setStreamDigitizingEnabled( false );
+
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineString (5 6.5, 6.25 6.5, 6.75 6.5, 7 6.59375, 7.09375 6.703125, 7.203125 6.59375, 7.296875 6.5, 7.5 6.90625, 7.59375 6.296875, 7.5 5, 7.40625 5, 7.296875 5.09375, 7.203125 5, 7.09375 4.90625)";
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
+}
+
+void TestQgsMapToolAddFeatureLine::testUndo()
+{
+  // test undo logic
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLine );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 5, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
+
+  mCaptureTool->setStreamDigitizingEnabled( true );
+  utils.mouseMove( 7.0, 6.6 );
+  utils.mouseMove( 7.1, 6.7 );
+  utils.mouseMove( 7.2, 6.6 );
+  utils.mouseMove( 7.3, 6.5 );
+  utils.mouseMove( 7.5, 6.9 );
+  utils.mouseMove( 7.6, 6.3 );
+  utils.mouseClick( 7.75, 6.5, Qt::LeftButton );
+  mCaptureTool->setStreamDigitizingEnabled( false );
+  utils.mouseClick( 7.5, 5.0, Qt::LeftButton );
+  mCaptureTool->setStreamDigitizingEnabled( true );
+  utils.mouseMove( 7.4, 5.0 );
+  utils.mouseMove( 7.3, 5.1 );
+  utils.mouseMove( 7.2, 5.0 );
+  utils.mouseMove( 7.1, 4.9 );
+
+  // check capture curve initially -- the streamed sections MUST become their own curve in the geometry, and not be compined with the straight line segments!
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5, 7.09 4.91))" ) );
+
+  // now lets try undoing...
+  utils.keyClick( Qt::Key_Backspace );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5))" ) );
+  // simulate auto repeating undo from a held-down backspace key
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  // we've now finished undoing the streamed digitizing section, so undo should pause until the user releases the backspace key and then re-presses it
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), false );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), false );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91))" ) );
+  // simulate holding down another key
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  // should get "stuck" here again
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))" ) );
+  // release and repress
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), false );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5))" ) );
+  utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
+
+  utils.mouseClick( 7.0, 5.0, Qt::RightButton );
+  mCaptureTool->setStreamDigitizingEnabled( false );
+}
+
+void TestQgsMapToolAddFeatureLine::testStreamTolerance()
+{
+  // test streaming mode digitizing with tolerance
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 10 );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLine );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 5, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
+
+  mCaptureTool->setStreamDigitizingEnabled( true );
+  utils.mouseMove( 7.0, 6.6 );
+  utils.mouseMove( 7.1, 6.7 );
+  utils.mouseMove( 7.2, 6.6 );
+  utils.mouseMove( 7.3, 6.5 );
+  utils.mouseMove( 7.5, 6.9 );
+  utils.mouseMove( 7.6, 6.3 );
+  utils.mouseClick( 7.75, 6.5, Qt::LeftButton );
+  mCaptureTool->setStreamDigitizingEnabled( false );
+  utils.mouseClick( 7.5, 5.0, Qt::LeftButton );
+  mCaptureTool->setStreamDigitizingEnabled( true );
+  utils.mouseMove( 7.4, 5.0 );
+  utils.mouseMove( 7.3, 5.1 );
+  utils.mouseMove( 7.2, 5.0 );
+  utils.mouseMove( 7.1, 4.9 );
+
+  // check capture curve initially -- the streamed sections MUST become their own curve in the geometry, and not be compined with the straight line segments!
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.2 6.59, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.3 5.09, 7.09 4.91))" ) );
+  utils.mouseClick( 7.0, 5.0, Qt::RightButton );
+  mCaptureTool->setStreamDigitizingEnabled( false );
+
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineString (5 6.5, 6.25 6.5, 6.75 6.5, 7 6.59375, 7.203125 6.59375, 7.5 6.90625, 7.59375 6.296875, 7.5 5, 7.296875 5.09375, 7.09375 4.90625)";
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )

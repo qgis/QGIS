@@ -31,7 +31,7 @@
 
 #include <QFile>
 #include <QTextStream>
-
+#include <QRegularExpression>
 ///@cond NOT_STABLE
 
 QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group, const QString &groupId )
@@ -293,7 +293,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   while ( executedAlg && executed.count() < toExecute.count() )
   {
     executedAlg = false;
-    for ( const QString &childId : qgis::as_const( toExecute ) )
+    for ( const QString &childId : std::as_const( toExecute ) )
     {
       if ( feedback && feedback->isCanceled() )
         break;
@@ -398,7 +398,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       {
         // check if any dependent algorithms should be canceled based on the outputs of this algorithm run
         // first find all direct dependencies of this algorithm by looking through all remaining child algorithms
-        for ( const QString &candidateId : qgis::as_const( toExecute ) )
+        for ( const QString &candidateId : std::as_const( toExecute ) )
         {
           if ( executed.contains( candidateId ) )
             continue;
@@ -802,7 +802,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         }
 
         bool found = false;
-        for ( const QString &line : qgis::as_const( lines ) )
+        for ( const QString &line : std::as_const( lines ) )
         {
           if ( line.contains( it.key() ) )
           {
@@ -865,7 +865,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingOutputString::typeName()
       << QgsProcessingOutputBoolean::typeName() );
 
-  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
+  for ( const QgsProcessingModelChildParameterSource &source : std::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -910,7 +910,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
                                       << QgsProcessingOutputRasterLayer::typeName()
                                       << QgsProcessingOutputMapLayer::typeName() );
 
-  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
+  for ( const QgsProcessingModelChildParameterSource &source : std::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -969,7 +969,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
   sources = availableSourcesForChild( childId, QStringList()
                                       << QgsProcessingParameterFeatureSource::typeName() );
-  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
+  for ( const QgsProcessingModelChildParameterSource &source : std::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -1183,7 +1183,7 @@ bool QgsProcessingModelAlgorithm::validate( QStringList &issues ) const
     QStringList childIssues;
     res = validateChildAlgorithm( it->childId(), childIssues ) && res;
 
-    for ( const QString &issue : qgis::as_const( childIssues ) )
+    for ( const QString &issue : std::as_const( childIssues ) )
     {
       issues << QStringLiteral( "<b>%1</b>: %2" ).arg( it->description(), issue );
     }
@@ -1439,7 +1439,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
   QSet< QString > loadedParams;
   // first add parameters respecting mParameterOrder
-  for ( const QString &name : qgis::as_const( mParameterOrder ) )
+  for ( const QString &name : std::as_const( mParameterOrder ) )
   {
     if ( paramDefMap.contains( name ) )
     {

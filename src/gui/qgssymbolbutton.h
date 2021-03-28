@@ -27,6 +27,7 @@ class QgsVectorLayer;
 class QgsExpressionContextGenerator;
 class QgsPanelWidget;
 class QgsMessageBar;
+class QMimeData;
 
 /**
  * \ingroup gui

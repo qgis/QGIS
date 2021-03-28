@@ -20,6 +20,7 @@
 
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
+#include "qgsgeocoderlocatorfilter.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -255,6 +256,18 @@ class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
+};
+
+class APP_EXPORT QgsNominatimLocatorFilter : public QgsGeocoderLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas );
+
     void triggerResult( const QgsLocatorResult &result ) override;
 
 };

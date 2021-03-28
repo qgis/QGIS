@@ -235,7 +235,12 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QAtomicInt *mpRefCounter = nullptr;
 
     // mutex to protect access to mGdalDataset among main and shared provider instances
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QMutex *mpMutex = nullptr;
+#else
+    QRecursiveMutex *mpMutex = nullptr;
+#endif
+
 
     // pointer to a QgsGdalProvider* that is the parent. Note when *mpParent == this, we are the parent.
     QgsGdalProvider **mpParent = nullptr;
@@ -377,6 +382,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QString filters( FilterType type ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QList<QPair<QString, QString> > pyramidResamplingMethods() override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 ///@endcond

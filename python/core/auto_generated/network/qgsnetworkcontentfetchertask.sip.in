@@ -13,7 +13,7 @@
 
 class QgsNetworkContentFetcherTask : QgsTask
 {
-%Docstring
+%Docstring(signature="appended")
 Handles HTTP network content fetching in a background task.
 
 Provides a simple method for fetching remote HTTP content in a :py:class:`QgsTask`.

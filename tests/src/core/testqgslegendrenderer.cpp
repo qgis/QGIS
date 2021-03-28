@@ -15,6 +15,7 @@
 
 #include "qgstest.h"
 #include <QObject>
+#include <QJsonArray>
 
 #include "qgsapplication.h"
 #include "qgsblureffect.h"
@@ -57,7 +58,7 @@ static void _setStandardTestFont( QgsLegendSettings &settings, const QString &st
          << QgsLegendStyle::Group
          << QgsLegendStyle::Subgroup
          << QgsLegendStyle::SymbolLabel;
-  Q_FOREACH ( QgsLegendStyle::Style st, styles )
+  for ( QgsLegendStyle::Style st : styles )
   {
     QFont font( QgsFontUtils::getStandardTestFont( style ) );
     font.setPointSizeF( settings.style( st ).font().pointSizeF() );
@@ -559,7 +560,7 @@ void TestQgsLegendRenderer::testOverrideSymbol()
   sym2->setColor( Qt::red );
 
   QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
-  dynamic_cast< QgsSymbolLegendNode * >( embeddedNode )->setCustomSymbol( sym2.release() );
+  qgis::down_cast< QgsSymbolLegendNode * >( embeddedNode )->setCustomSymbol( sym2.release() );
 
   std::unique_ptr< QgsMarkerSymbol > sym3 = std::make_unique< QgsMarkerSymbol >();
   sym3->setColor( QColor( 0, 150, 0 ) );
@@ -944,7 +945,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   _renderLegend( testName, &legendModel, settings );
   bool result = _verifyImage( testName, mReport );
 
-  Q_FOREACH ( QgsVectorLayer *l, layers )
+  for ( QgsVectorLayer *l : layers )
   {
     QgsProject::instance()->removeMapLayer( l );
   }

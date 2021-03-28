@@ -25,6 +25,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgscallout.h"
+#include "qgsstatusbar.h"
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -36,6 +37,11 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigit
 
   mDiagramProperties << QgsDiagramLayerSettings::PositionX;
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
+
+  mCalloutProperties << QgsCallout::OriginX;
+  mCalloutProperties << QgsCallout::OriginY;
+  mCalloutProperties << QgsCallout::DestinationX;
+  mCalloutProperties << QgsCallout::DestinationY;
 }
 
 QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
@@ -67,7 +73,15 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   else if ( mCalloutMoveRubberBand )
   {
     const int index = mCurrentCalloutMoveOrigin ? 0 : 1;
-    mCalloutMoveRubberBand->movePoint( index, e->mapPoint() );
+
+    QgsPointXY mapPoint = e->mapPoint();
+    if ( e->modifiers() & Qt::ShiftModifier )
+    {
+      // shift modifier = snap to common angles
+      mapPoint = snapCalloutPointToCommonAngle( mapPoint, true );
+    }
+
+    mCalloutMoveRubberBand->movePoint( index, mapPoint );
     mCalloutMoveRubberBand->update();
   }
   else
@@ -91,8 +105,19 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
     int xCol = 0;
     int yCol = 0;
-    if ( calloutAtPosition( e, calloutPosition, mCurrentCalloutMoveOrigin ) && canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+    if ( calloutAtPosition( e, calloutPosition, mCurrentCalloutMoveOrigin ) )
     {
+      if ( !canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+      {
+        QgsCalloutIndexes indexes;
+
+        if ( createAuxiliaryFields( calloutPosition, indexes ) )
+          return;
+
+        if ( !canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+          return;
+      }
+
       // callouts are a smaller target, so they take precedence over labels
       mCurrentLabel = LabelDetails();
       mCurrentCallout = calloutPosition;
@@ -231,9 +256,16 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       case Qt::LeftButton:
       {
         // second click drops label/callout
+        const bool isCalloutMove = !mCurrentCallout.layerID.isEmpty();
+        QgsPointXY releaseCoords = e->mapPoint();
+        if ( isCalloutMove && e->modifiers() & Qt::ShiftModifier )
+        {
+          // shift modifier = snap to common angles
+          releaseCoords = snapCalloutPointToCommonAngle( releaseCoords, false );
+        }
+
         deleteRubberBands();
 
-        const bool isCalloutMove = !mCurrentCallout.layerID.isEmpty();
         QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
         if ( !vlayer )
         {
@@ -241,7 +273,6 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         }
         const QgsFeatureId featureId = !isCalloutMove ? mCurrentLabel.pos.featureId : mCurrentCallout.featureId;
 
-        QgsPointXY releaseCoords = e->mapPoint();
         double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
         double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
 
@@ -293,8 +324,30 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
         else
           vlayer->beginEditCommand( tr( "Moved callout" ) );
-        bool success = vlayer->changeAttributeValue( featureId, xCol, xPosNew );
-        success = vlayer->changeAttributeValue( featureId, yCol, yPosNew ) && success;
+
+        // Try to convert to the destination field type
+        QVariant xNewPos( xPosNew );
+        QVariant yNewPos( yPosNew );
+
+        if ( xCol < vlayer->fields().count() )
+        {
+          if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
+          {
+            xNewPos = xPosNew; // revert and hope for the best
+          }
+        }
+
+        if ( yCol < vlayer->fields().count() )
+        {
+          if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
+          {
+            yNewPos = yPosNew; // revert and hope for the best
+          }
+        }
+
+        bool success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
+        success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
+
         if ( !success )
         {
           // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
@@ -525,6 +578,42 @@ bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xS
     y = attributes.at( yCol ).toDouble( &ySuccess );
 
   return true;
+}
+
+QgsPointXY QgsMapToolMoveLabel::snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const
+{
+  const int index = mCurrentCalloutMoveOrigin ? 0 : 1;
+
+  QgsPointXY start = *mCalloutMoveRubberBand->getPoint( 0, index == 0 ? 1 : 0 );
+  const double cursorDistance = start.distance( mapPoint );
+
+  // snap to common angles (15 degree increments)
+  double closestDist = std::numeric_limits< double >::max();
+  double closestX = 0;
+  double closestY = 0;
+  int bestAngle = 0;
+
+  const double angleOffset = -canvas()->rotation();
+
+  for ( int angle = 0; angle < 360; angle += 15 )
+  {
+    const QgsPointXY end = start.project( cursorDistance * 2, angle + angleOffset );
+    double minDistX = 0;
+    double minDistY = 0;
+    const double angleDist = QgsGeometryUtils::sqrDistToLine( mapPoint.x(), mapPoint.y(), start.x(), start.y(), end.x(), end.y(), minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() );
+    if ( angleDist < closestDist )
+    {
+      closestDist = angleDist;
+      closestX = minDistX;
+      closestY = minDistY;
+      bestAngle = angle;
+    }
+  }
+
+  if ( showStatusMessage )
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "Callout angle: %1°" ).arg( bestAngle ), 2000 );
+
+  return QgsPointXY( closestX, closestY );
 }
 
 

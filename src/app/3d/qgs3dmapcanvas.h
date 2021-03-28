@@ -27,6 +27,11 @@ namespace Qt3DExtras
   class Qt3DWindow;
 }
 
+namespace Qt3DLogic
+{
+  class QFrameAction;
+}
+
 class Qgs3DMapSettings;
 class Qgs3DMapScene;
 class Qgs3DMapTool;
@@ -95,7 +100,7 @@ class Qgs3DMapCanvas : public QWidget
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
-    void savedAsImage( QString fileName );
+    void savedAsImage( const QString &fileName );
 
     //! Emitted when the the map setting is changed
     void mapSettingsChanged();
@@ -123,9 +128,6 @@ class Qgs3DMapCanvas : public QWidget
   private:
     QgsWindow3DEngine *mEngine = nullptr;
 
-    QString mCaptureFileName;
-    QString mCaptureFileFormat;
-
     //! Container QWidget that encapsulates mWindow3D so we can use it embedded in ordinary widgets app
     QWidget *mContainer = nullptr;
     //! Description of the 3D scene
@@ -135,6 +137,9 @@ class Qgs3DMapCanvas : public QWidget
 
     //! Active map tool that receives events (if NULLPTR then mouse/keyboard events are used for camera manipulation)
     Qgs3DMapTool *mMapTool = nullptr;
+
+    QString mCaptureFileName;
+    QString mCaptureFileFormat;
 
     //! On-Screen Navigation widget.
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;

@@ -12,7 +12,7 @@
 
 class QgsHueSaturationFilter : QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Color and saturation filter pipe for rasters.
 %End
 
