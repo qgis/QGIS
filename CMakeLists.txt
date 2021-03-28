@@ -938,7 +938,7 @@ set(MIN_PYTHON_VERSION "3.7")
 set(Python_FIND_FRAMEWORK "LAST")
 
 find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
-message("-- Found Python executable: ${Python_EXECUTABLE}")
+message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
 message("-- Python library: ${Python_LIBRARIES}")
 message("-- Python site-packages: ${Python_SITEARCH}")
 
