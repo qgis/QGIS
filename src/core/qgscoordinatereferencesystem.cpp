@@ -2585,19 +2585,69 @@ void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
   sCrsStringLock()->unlock();
 }
 
+// invalid < regular < user
 bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
 {
-  return c1.d->mSrsId > c2.d->mSrsId;
+  if ( c1.d == c2.d )
+    return false;
+
+  if ( !c1.d->mIsValid && !c2.d->mIsValid )
+    return false;
+
+  if ( !c1.d->mIsValid && c2.d->mIsValid )
+    return false;
+
+  if ( c1.d->mIsValid && !c2.d->mIsValid )
+    return true;
+
+  const bool c1IsUser = c1.d->mSrsId >= USER_CRS_START_ID;
+  const bool c2IsUser = c2.d->mSrsId >= USER_CRS_START_ID;
+
+  if ( c1IsUser && !c2IsUser )
+    return true;
+
+  if ( !c1IsUser && c2IsUser )
+    return false;
+
+  if ( !c1IsUser && !c2IsUser )
+    return c1.d->mAuthId > c2.d->mAuthId;
+
+  return c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) > c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
 }
+
 bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
 {
-  return c1.d->mSrsId < c2.d->mSrsId;
+  if ( c1.d == c2.d )
+    return false;
+
+  if ( !c1.d->mIsValid && !c2.d->mIsValid )
+    return false;
+
+  if ( c1.d->mIsValid && !c2.d->mIsValid )
+    return false;
+
+  if ( !c1.d->mIsValid && c2.d->mIsValid )
+    return true;
+
+  const bool c1IsUser = c1.d->mSrsId >= USER_CRS_START_ID;
+  const bool c2IsUser = c2.d->mSrsId >= USER_CRS_START_ID;
+
+  if ( !c1IsUser && c2IsUser )
+    return true;
+
+  if ( c1IsUser && !c2IsUser )
+    return false;
+
+  if ( !c1IsUser && !c2IsUser )
+    return c1.d->mAuthId < c2.d->mAuthId;
+
+  return c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) < c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
 }
 bool operator>= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
 {
-  return c1.d->mSrsId >= c2.d->mSrsId;
+  return !( c1 < c2 );
 }
 bool operator<= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
 {
-  return c1.d->mSrsId <= c2.d->mSrsId;
+  return !( c1 > c2 );
 }
