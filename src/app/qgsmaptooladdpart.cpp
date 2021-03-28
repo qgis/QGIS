@@ -255,7 +255,14 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       errorMessage = tr( "Base geometry is not valid." );
       break;
 
-    default:
+    case QgsGeometry::OperationResult::AddRingCrossesExistingRings:
+    case QgsGeometry::OperationResult::AddRingNotClosed:
+    case QgsGeometry::OperationResult::AddRingNotInExistingFeature:
+    case QgsGeometry::OperationResult::AddRingNotValid:
+    case QgsGeometry::OperationResult::GeometryEngineError:
+    case QgsGeometry::OperationResult::LayerNotEditable:
+    case QgsGeometry::OperationResult::NothingHappened:
+    case QgsGeometry::OperationResult::SplitCannotSplitPoint:
       // Should not reach here
       // Other OperationResults should not be returned by addPart
       errorMessage = tr( "Unexpected OperationResult: %1" ).arg( errorCode );
