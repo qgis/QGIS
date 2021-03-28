@@ -17924,7 +17924,10 @@ void QgisApp::setLockAxesZ()
 void QgisApp::setProgressReadlas(int per)
 {
 	showProgress(per, 100);
-
+  if (per  == 100) // 如果完全加载成功
+  {
+    refreshMapCanvas();
+  }
 }
 
 void QgisApp::setStatusBarText(QString text)
@@ -18472,5 +18475,5 @@ void QgisApp::updateTitle()
 			break;
 		}
 	}
-	setWindowTitle(tr("Displaz - %1").arg(labels.join(", ")));
+	setWindowTitle(tr("HSL - %1").arg(labels.join(", ")));
 }

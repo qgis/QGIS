@@ -27,10 +27,7 @@ target_link_libraries(qgiscrashhandler
   ${Qt5Widgets_LIBRARIES}
   dbghelp
 )
-if(Boost_FOUND)
-include_directories(${Boost_INCLUDE_DIRS})
-target_link_libraries(qgiscrashhandler ${Boost_LIBRARIES})
-endif()
+
 
 install(CODE "message(\"Installing crashhandler ...\")")
 install(TARGETS qgiscrashhandler RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR})
