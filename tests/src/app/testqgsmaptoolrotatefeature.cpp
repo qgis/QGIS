@@ -47,6 +47,7 @@ class TestQgsMapToolRotateFeature: public QObject
     void testRotateFeatureManualAnchor();
     void testCancelManualAnchor();
     void testRotateFeatureManualAnchorAfterStartRotate();
+    void testRotateFeatureManualAnchorSnapping();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -112,6 +113,7 @@ void TestQgsMapToolRotateFeature::initTestCase()
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBase );
   mCanvas->setCurrentLayer( mLayerBase );
+  mCanvas->snappingUtils()->locatorForLayer( mLayerBase )->init();
 
   // create the tool
   mRotateTool = new QgsMapToolRotateFeature( mCanvas );
@@ -204,6 +206,41 @@ void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorAfterStartRotate(
 
   mLayerBase->undoStack()->undo();
 }
+
+void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorSnapping()
+{
+  // test rotating around a fixed anchor point
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  const double tolerance = cfg.tolerance();
+  const QgsTolerance::UnitType units = cfg.units();
+  cfg.setTolerance( 0.5 );
+  cfg.setUnits( QgsTolerance::LayerUnits );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // set anchor point, should snap to (1.1, 5)
+  utils.mouseMove( 1, 5.1 );
+  utils.mouseClick( 1, 5.1, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // source point should snap to (1, 1)
+  utils.mouseMove( 0.9, 0.9 );
+  utils.mouseClick( 0.9, 0.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  // target point should snap to (2.1, 1)
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.37 -0.11, 1.11 0.85, 2.07 1.12, 2.34 0.15, 1.37 -0.11))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+
+  mLayerBase->undoStack()->undo();
+
+  // restore tolerance setting
+  cfg.setTolerance( tolerance );
+  cfg.setUnits( units );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
+
 
 QGSTEST_MAIN( TestQgsMapToolRotateFeature )
 #include "testqgsmaptoolrotatefeature.moc"
