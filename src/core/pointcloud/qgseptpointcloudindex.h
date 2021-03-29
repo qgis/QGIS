@@ -60,7 +60,16 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
 
   protected:
+    bool loadSchema( const QByteArray &dataJson );
+    void loadManifest( const QByteArray &manifestJson );
+    bool loadSchema( QFile &f );
+    bool loadHierarchy();
+
+    bool mIsValid = false;
+    QString mDataType;
+    QString mDirectory;
     QString mWkt;
+    int mPointCount = 0;
 
     struct AttributeStatistics
     {
@@ -76,17 +85,6 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
 
     QMap< QString, QMap< int, int > > mAttributeClasses;
     QVariantMap mOriginalMetadata;
-
-  private:
-    bool loadSchema( QFile &f );
-    bool loadHierarchy();
-
-    bool mIsValid = false;
-    QString mDataType;
-    QString mDirectory;
-
-    int mPointCount = 0;
-
 };
 
 ///@endcond

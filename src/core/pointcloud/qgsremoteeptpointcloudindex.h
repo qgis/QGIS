@@ -61,12 +61,8 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Remote; }
 
   private:
-    bool loadSchema( const QByteArray &data );
-
     bool loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const;
 
-    bool mIsValid = false;
-    QString mDataType;
     QString mUrlDirectoryPart;
     QString mUrlFileNamePart;
 

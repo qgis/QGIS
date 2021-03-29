@@ -98,209 +98,22 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
   QgsNetworkReplyContent reply = req.reply();
   bool success = loadSchema( reply.content() );
 
+  if ( success )
+  {
+    // try to import the metadata too!
+    QNetworkRequest nr( QStringLiteral( "%1/ept-sources/manifest.json" ).arg( mUrlDirectoryPart ) );
+
+    QgsBlockingNetworkRequest req;
+    QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
+    if ( errCode == QgsBlockingNetworkRequest::NoError )
+    {
+      QgsNetworkReplyContent reply = req.reply();
+      const QByteArray manifestJson = reply.content();
+      loadManifest( manifestJson );
+    }
+  }
+
   mIsValid = success;
-}
-
-bool QgsRemoteEptPointCloudIndex::loadSchema( const QByteArray &data )
-{
-  QJsonParseError err;
-  const QJsonDocument doc = QJsonDocument::fromJson( data, &err );
-  if ( err.error != QJsonParseError::NoError )
-    return false;
-  const QJsonObject result = doc.object();
-  mDataType = result.value( QLatin1String( "dataType" ) ).toString();  // "binary" or "laszip"
-  if ( mDataType != QLatin1String( "laszip" ) && mDataType != QLatin1String( "binary" ) && mDataType != QLatin1String( "zstandard" ) )
-    return false;
-
-  const QString hierarchyType = result.value( QLatin1String( "hierarchyType" ) ).toString();  // "json" or "gzip"
-  if ( hierarchyType != QLatin1String( "json" ) )
-    return false;
-
-  mSpan = result.value( QLatin1String( "span" ) ).toInt();
-  mPointCount = result.value( QLatin1String( "points" ) ).toInt();
-
-  // WKT
-  const QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
-  mWkt = srs.value( QLatin1String( "wkt" ) ).toString();
-
-  // rectangular
-  const QJsonArray bounds = result.value( QLatin1String( "bounds" ) ).toArray();
-  if ( bounds.size() != 6 )
-    return false;
-
-  const QJsonArray boundsConforming = result.value( QLatin1String( "boundsConforming" ) ).toArray();
-  if ( boundsConforming.size() != 6 )
-    return false;
-  mExtent.set( boundsConforming[0].toDouble(), boundsConforming[1].toDouble(),
-               boundsConforming[3].toDouble(), boundsConforming[4].toDouble() );
-  mZMin = boundsConforming[2].toDouble();
-  mZMax = boundsConforming[5].toDouble();
-
-  const QJsonArray schemaArray = result.value( QLatin1String( "schema" ) ).toArray();
-  QgsPointCloudAttributeCollection attributes;
-
-  for ( const QJsonValue &schemaItem : schemaArray )
-  {
-    const QJsonObject schemaObj = schemaItem.toObject();
-    const QString name = schemaObj.value( QLatin1String( "name" ) ).toString();
-    const QString type = schemaObj.value( QLatin1String( "type" ) ).toString();
-
-    int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
-
-    if ( type == QLatin1String( "float" ) && ( size == 4 ) )
-    {
-      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Float ) );
-    }
-    else if ( type == QLatin1String( "float" ) && ( size == 8 ) )
-    {
-      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Double ) );
-    }
-    else if ( size == 1 )
-    {
-      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Char ) );
-    }
-    else if ( type == QLatin1String( "unsigned" ) && size == 2 )
-    {
-      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::UShort ) );
-    }
-    else if ( size == 2 )
-    {
-      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Short ) );
-    }
-    else if ( size == 4 )
-    {
-      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Int32 ) );
-    }
-    else
-    {
-      // unknown attribute type
-      return false;
-    }
-
-    double scale = 1.f;
-    if ( schemaObj.contains( QLatin1String( "scale" ) ) )
-      scale = schemaObj.value( QLatin1String( "scale" ) ).toDouble();
-
-    double offset = 0.f;
-    if ( schemaObj.contains( QLatin1String( "offset" ) ) )
-      offset = schemaObj.value( QLatin1String( "offset" ) ).toDouble();
-
-    if ( name == QLatin1String( "X" ) )
-    {
-      mOffset.set( offset, mOffset.y(), mOffset.z() );
-      mScale.set( scale, mScale.y(), mScale.z() );
-    }
-    else if ( name == QLatin1String( "Y" ) )
-    {
-      mOffset.set( mOffset.x(), offset, mOffset.z() );
-      mScale.set( mScale.x(), scale, mScale.z() );
-    }
-    else if ( name == QLatin1String( "Z" ) )
-    {
-      mOffset.set( mOffset.x(), mOffset.y(), offset );
-      mScale.set( mScale.x(), mScale.y(), scale );
-    }
-
-    // store any metadata stats which are present for the attribute
-    AttributeStatistics stats;
-    if ( schemaObj.contains( QLatin1String( "count" ) ) )
-      stats.count = schemaObj.value( QLatin1String( "count" ) ).toInt();
-    if ( schemaObj.contains( QLatin1String( "minimum" ) ) )
-      stats.minimum = schemaObj.value( QLatin1String( "minimum" ) ).toDouble();
-    if ( schemaObj.contains( QLatin1String( "maximum" ) ) )
-      stats.maximum = schemaObj.value( QLatin1String( "maximum" ) ).toDouble();
-    if ( schemaObj.contains( QLatin1String( "count" ) ) )
-      stats.mean = schemaObj.value( QLatin1String( "mean" ) ).toDouble();
-    if ( schemaObj.contains( QLatin1String( "stddev" ) ) )
-      stats.stDev = schemaObj.value( QLatin1String( "stddev" ) ).toDouble();
-    if ( schemaObj.contains( QLatin1String( "variance" ) ) )
-      stats.variance = schemaObj.value( QLatin1String( "variance" ) ).toDouble();
-    mMetadataStats.insert( name, stats );
-
-    if ( schemaObj.contains( QLatin1String( "counts" ) ) )
-    {
-      QMap< int, int >  classCounts;
-      const QJsonArray counts = schemaObj.value( QLatin1String( "counts" ) ).toArray();
-      for ( const QJsonValue &count : counts )
-      {
-        const QJsonObject countObj = count.toObject();
-        classCounts.insert( countObj.value( QLatin1String( "value" ) ).toInt(), countObj.value( QLatin1String( "count" ) ).toInt() );
-      }
-      mAttributeClasses.insert( name, classCounts );
-    }
-  }
-  setAttributes( attributes );
-
-  // try to import the metadata too!
-
-  QNetworkRequest nr( QStringLiteral( "%1/ept-sources/manifest.json" ).arg( mUrlDirectoryPart ) );
-
-  QgsBlockingNetworkRequest req;
-  QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
-  if ( errCode == QgsBlockingNetworkRequest::NoError )
-  {
-    QgsNetworkReplyContent reply = req.reply();
-    const QByteArray manifestJson = reply.content();
-    const QJsonDocument manifestDoc = QJsonDocument::fromJson( manifestJson, &err );
-    if ( err.error == QJsonParseError::NoError )
-    {
-      const QJsonArray manifestArray = manifestDoc.array();
-      // TODO how to handle multiple?
-      if ( ! manifestArray.empty() )
-      {
-        const QJsonObject sourceObject = manifestArray.at( 0 ).toObject();
-        const QString metadataPath = sourceObject.value( QStringLiteral( "metadataPath" ) ).toString();
-
-        QNetworkRequest metadataFileNetworkRequest( QStringLiteral( "%1/ept-sources/%2" ).arg( mUrlDirectoryPart, metadataPath ) );
-        QgsBlockingNetworkRequest::ErrorCode errCode = req.get( metadataFileNetworkRequest );
-        if ( errCode == QgsBlockingNetworkRequest::NoError )
-        {
-          QgsNetworkReplyContent reply = req.reply();
-          const QByteArray metadataJson = reply.content();
-          const QJsonDocument metadataDoc = QJsonDocument::fromJson( metadataJson, &err );
-          if ( err.error == QJsonParseError::NoError )
-          {
-            const QJsonObject metadataObject = metadataDoc.object().value( QStringLiteral( "metadata" ) ).toObject();
-            if ( !metadataObject.empty() )
-            {
-              const QJsonObject sourceMetadata = metadataObject.constBegin().value().toObject();
-              mOriginalMetadata = sourceMetadata.toVariantMap();
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // save mRootBounds
-
-  // bounds (cube - octree volume)
-  double xmin = bounds[0].toDouble();
-  double ymin = bounds[1].toDouble();
-  double zmin = bounds[2].toDouble();
-  double xmax = bounds[3].toDouble();
-  double ymax = bounds[4].toDouble();
-  double zmax = bounds[5].toDouble();
-
-  mRootBounds = QgsPointCloudDataBounds(
-                  ( xmin - mOffset.x() ) / mScale.x(),
-                  ( ymin - mOffset.y() ) / mScale.y(),
-                  ( zmin - mOffset.z() ) / mScale.z(),
-                  ( xmax - mOffset.x() ) / mScale.x(),
-                  ( ymax - mOffset.y() ) / mScale.y(),
-                  ( zmax - mOffset.z() ) / mScale.z()
-                );
-
-
-#ifdef QGIS_DEBUG
-  double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl1 %1" ).arg( dx / mSpan / 2 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
-#endif
-
-  return true;
 }
 
 QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
