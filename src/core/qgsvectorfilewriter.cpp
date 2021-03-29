@@ -67,7 +67,7 @@ static OGRDataSourceH myOGROpen( const char *pszName, int bUpdate, OGRSFDriverH 
   if ( hDS && bUpdate )
   {
     QString drvName = OGR_Dr_GetName( hDriver );
-    if ( drvName == "BNA" )
+    if ( drvName == QLatin1String( "BNA" ) )
     {
       OGR_DS_Destroy( hDS );
       if ( phDriver )
@@ -108,7 +108,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   SymbologyExport symbologyExport,
   QgsFeatureSink::SinkFlags sinkFlags,
   QString *newLayer,
-  QgsCoordinateTransformContext transformContext,
+  const QgsCoordinateTransformContext &transformContext,
   FieldNameSource fieldNameSource
 )
   : mError( NoError )
@@ -136,7 +136,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &layerName,
   ActionOnExistingFile action,
   QString *newLayer,
-  QgsCoordinateTransformContext transformContext,
+  const QgsCoordinateTransformContext &transformContext,
   QgsFeatureSink::SinkFlags sinkFlags,
   FieldNameSource fieldNameSource
 )
@@ -2112,7 +2112,7 @@ class QgsVectorFileWriterMetadataContainer
                                QStringList()
                                << QStringLiteral( "CRLF" )
                                << QStringLiteral( "LF" ),
-                               QString( "LF" ), // Default value
+                               QStringLiteral( "LF" ), // Default value
                                false // Allow None
                              ) );
 
@@ -2174,7 +2174,7 @@ class QgsVectorFileWriterMetadataContainer
       layerOptions.insert( QStringLiteral( "POSTGIS_VERSION" ), new QgsVectorFileWriter::StringOption(
                              QObject::tr( "Can be set to 2.0 or 2.2 for PostGIS 2.0/2.2 compatibility. "
                                           "Important to set it correctly if using non-linear geometry types" ),
-                             QString( "2.2" ) // Default value
+                             QStringLiteral( "2.2" ) // Default value
                            ) );
 
       driverMetadata.insert( QStringLiteral( "PGDUMP" ),
@@ -2502,7 +2502,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             if ( count > 0 )
             {
               int pos = 0;
-              for ( QString string : list )
+              for ( const QString &string : list )
               {
                 lst[pos] = mCodec->fromUnicode( string ).data();
                 pos++;
@@ -2755,7 +2755,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   options.includeZ = includeZ;
   options.attributes = attributes;
   options.fieldValueConverter = fieldValueConverter;
-  return writeAsVectorFormatV2( layer, fileName, layer->transformContext(), options, newFilename, newLayer, errorMessage );
+  return writeAsVectorFormatV3( layer, fileName, layer->transformContext(), options, errorMessage, newFilename, newLayer );
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
@@ -2796,7 +2796,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   options.includeZ = includeZ;
   options.attributes = attributes;
   options.fieldValueConverter = fieldValueConverter;
-  return writeAsVectorFormatV2( layer, fileName, layer->transformContext(), options, newFilename, newLayer, errorMessage );
+  return writeAsVectorFormatV3( layer, fileName, layer->transformContext(), options, errorMessage, newFilename, newLayer );
 }
 
 
@@ -2962,7 +2962,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
   // Special rules for OGR layers
   if ( details.providerType == QLatin1String( "ogr" ) && !details.dataSourceUri.isEmpty() )
   {
-    QString srcFileName( details.providerUriParams.value( QLatin1String( "path" ) ).toString() );
+    QString srcFileName( details.providerUriParams.value( QStringLiteral( "path" ) ).toString() );
     if ( QFile::exists( srcFileName ) && QFileInfo( fileName ).canonicalFilePath() == QFileInfo( srcFileName ).canonicalFilePath() )
     {
       // Check the layer name too if it's a GPKG/SpatiaLite/SQLite OGR driver (pay attention: camel case in layerName)
@@ -2970,7 +2970,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
       if ( !( ( options.driverName == QLatin1String( "GPKG" ) ||
                 options.driverName == QLatin1String( "SpatiaLite" ) ||
                 options.driverName == QLatin1String( "SQLite" ) ) &&
-              options.layerName != details.providerUriParams.value( QLatin1String( "layerName" ) ) ) )
+              options.layerName != details.providerUriParams.value( QStringLiteral( "layerName" ) ) ) )
       {
         if ( errorMessage )
           *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
@@ -3185,6 +3185,16 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Qgs
   if ( err != NoError )
     return err;
 
+  return writeAsVectorFormatV2( details, fileName, transformContext, options, errorMessage, newFilename, newLayer );
+}
+
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV3( QgsVectorLayer *layer, const QString &fileName, const QgsCoordinateTransformContext &transformContext, const QgsVectorFileWriter::SaveVectorOptions &options, QString *errorMessage, QString *newFilename, QString *newLayer )
+{
+  QgsVectorFileWriter::PreparedWriterDetails details;
+  WriterError err = prepareWriteAsVectorFormat( layer, options, details );
+  if ( err != NoError )
+    return err;
+
   return writeAsVectorFormatV2( details, fileName, transformContext, options, newFilename, newLayer, errorMessage );
 }
 
@@ -3194,10 +3204,9 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString &fileName )
   QDir dir = fi.dir();
 
   QStringList filter;
-  const char *suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix", ".qpj", ".cpg", ".sbn", ".sbx", ".idm", ".ind" };
-  for ( std::size_t i = 0; i < sizeof( suffixes ) / sizeof( *suffixes ); i++ )
+  for ( const char *suffix : { ".shp", ".shx", ".dbf", ".prj", ".qix", ".qpj", ".cpg", ".sbn", ".sbx", ".idm", ".ind" } )
   {
-    filter << fi.completeBaseName() + suffixes[i];
+    filter << fi.completeBaseName() + suffix;
   }
 
   bool ok = true;

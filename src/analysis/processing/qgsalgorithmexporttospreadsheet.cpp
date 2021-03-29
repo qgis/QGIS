@@ -261,7 +261,7 @@ bool QgsExportToSpreadsheetAlgorithm::exportVectorLayer( QgsVectorLayer *layer, 
   QString error;
   QString newFilename;
   QString newLayer;
-  if ( QgsVectorFileWriter::writeAsVectorFormatV2( layer, path, context.transformContext(), options, &newFilename, &newLayer, &error ) != QgsVectorFileWriter::NoError )
+  if ( QgsVectorFileWriter::writeAsVectorFormatV3( layer, path, context.transformContext(), options, &error, &newFilename, &newLayer ) != QgsVectorFileWriter::NoError )
   {
     feedback->reportError( QObject::tr( "Exporting layer failed: %1" ).arg( error ) );
     return false;
