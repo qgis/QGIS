@@ -1077,17 +1077,19 @@ QString QgsPostgresConn::postgisVersion() const
   mTopologyAvailable = false;
   if ( mPostgisVersionMajor > 1 )
   {
-    result = PQexec( QStringLiteral(
-                       "SELECT has_schema_privilege(n.oid, 'usage')"
-                       " AND has_table_privilege(t.oid, 'select')"
-                       " AND has_table_privilege(l.oid, 'select')"
-                       " FROM pg_namespace n, pg_class t, pg_class l"
-                       " WHERE n.nspname = 'topology'"
-                       " AND t.relnamespace = n.oid"
-                       " AND l.relnamespace = n.oid"
-                       " AND t.relname = 'topology'"
-                       " AND l.relname = 'layer'"
-                     ), false );
+    QgsPostgresResult result(
+      PQexec(
+        QStringLiteral(
+          "SELECT has_schema_privilege(n.oid, 'usage')"
+          " AND has_table_privilege(t.oid, 'select')"
+          " AND has_table_privilege(l.oid, 'select')"
+          " FROM pg_namespace n, pg_class t, pg_class l"
+          " WHERE n.nspname = 'topology'"
+          " AND t.relnamespace = n.oid"
+          " AND l.relnamespace = n.oid"
+          " AND t.relname = 'topology'"
+          " AND l.relname = 'layer'"
+        ) ) );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mTopologyAvailable = true;
@@ -1360,7 +1362,7 @@ int QgsPostgresConn::PQCancel()
 bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
-  QString preStr = "";
+  QString preStr;
 
   if ( mOpenCursors++ == 0 && !mTransaction )
   {
@@ -1378,7 +1380,7 @@ bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql 
 bool QgsPostgresConn::closeCursor( const QString &cursorName )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
-  QString postStr = "";
+  QString postStr;
 
   if ( --mOpenCursors == 0 && !mTransaction )
   {
@@ -1775,7 +1777,7 @@ void QgsPostgresConn::deduceEndian()
                            "FETCH FORWARD 1 FROM oidcursor;"
                            "CLOSE oidcursor;"
                            "COMMIT;" ) ) )
-    QgsDebugMsg( QStringLiteral( "PQsendQuery(...) error %1" ).arg( PQerrorMessage() ) );
+    QgsDebugMsgLevel( QStringLiteral( "PQsendQuery(...) error %1" ).arg( PQerrorMessage() ), 2 );
 
   for ( ;; )
   {
@@ -1789,9 +1791,9 @@ void QgsPostgresConn::deduceEndian()
     if ( resOID.PQresultStatus() == PGRES_FATAL_ERROR )
     {
       errorCounter++;
-      QgsDebugMsg( QStringLiteral( "QUERY #%1 PGRES_FATAL_ERROR %2" )
-                   .arg( queryCounter )
-                   .arg( PQerrorMessage().trimmed() ) );
+      QgsDebugMsgLevel( QStringLiteral( "QUERY #%1 PGRES_FATAL_ERROR %2" )
+                        .arg( queryCounter )
+                        .arg( PQerrorMessage().trimmed() ), 2 );
       continue;
     }
 
@@ -1816,10 +1818,10 @@ void QgsPostgresConn::deduceEndian()
     return;
   }
 
-  QgsDebugMsg( QStringLiteral( "Back to old deduceEndian(): PQstatus() - %1, queryCounter = %2, errorCounter = %3" )
-               .arg( PQstatus() )
-               .arg( queryCounter )
-               .arg( errorCounter ) );
+  QgsDebugMsgLevel( QStringLiteral( "Back to old deduceEndian(): PQstatus() - %1, queryCounter = %2, errorCounter = %3" )
+                    .arg( PQstatus() )
+                    .arg( queryCounter )
+                    .arg( errorCounter ), 2 );
 
   QgsPostgresResult res( PQexec( QStringLiteral( "select regclass('pg_class')::oid" ) ) );
   QString oidValue = res.PQgetvalue( 0, 0 );
