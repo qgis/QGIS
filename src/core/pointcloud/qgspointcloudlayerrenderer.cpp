@@ -181,119 +181,11 @@ bool QgsPointCloudLayerRenderer::render()
 
   if ( pc->accessType() == QgsPointCloudIndex::AccessType::Local )
   {
-    for ( const IndexedPointCloudNode &n : nodes )
-    {
-      if ( context.renderContext().renderingStopped() )
-      {
-        QgsDebugMsgLevel( "canceled", 2 );
-        canceled = true;
-        break;
-      }
-      std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
-
-      if ( !block )
-        continue;
-
-      context.setAttributes( block->attributes() );
-
-      mRenderer->renderBlock( block.get(), context );
-      ++nodesDrawn;
-
-      // as soon as first block is rendered, we can start showing layer updates.
-      // but if we are blocking render updates (so that a previously cached image is being shown), we wait
-      // at most e.g. 3 seconds before we start forcing progressive updates.
-      if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
-      {
-        mReadyToCompose = true;
-      }
-    }
+    nodesDrawn += renderNodesSync( nodes, pc, context, request, canceled );
   }
-  else
+  else if ( pc->accessType() == QgsPointCloudIndex::AccessType::Remote )
   {
-    QElapsedTimer downloadTimer;
-    downloadTimer.start();
-
-    // Async loading of nodes
-    QVector<QgsPointCloudBlock *> blocks( nodes.size(), nullptr );
-    QVector<QgsPointCloudBlockHandle *> blockHandles( nodes.size(), nullptr );
-    QVector<bool> finishedLoadingBlock( nodes.size(), false );
-    QTimer timer;
-    QEventLoop loop;
-    QObject::connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
-    // Note: All capture by reference warnings here shouldn't be an issue since we have an event loop, so locals won't be deallocated
-    auto checkIfFinished = [&]()
-    {
-      // If all blocks are loaded, exit the event loop
-      if ( !finishedLoadingBlock.contains( false ) ) loop.exit();
-    };
-    for ( int i = 0; i < nodes.size(); ++i )
-    {
-      const IndexedPointCloudNode &n = nodes[i];
-      QgsPointCloudBlockHandle *blockHandle = pc->asyncNodeData( n, request );
-      blockHandles[ i ] = blockHandle;
-      QObject::connect( blockHandle, &QgsPointCloudBlockHandle::blockLoadingSucceeded, [ &, i ]( QgsPointCloudBlock * block )
-      {
-        if ( block )
-        {
-          blocks[ i ] = block;
-        }
-        else
-        {
-          QgsDebugMsg( QStringLiteral( "Unable to load node %1" ).arg( n.toString() ) );
-        }
-        finishedLoadingBlock[ i ] = true;
-        checkIfFinished();
-      } );
-      QObject::connect( blockHandle, &QgsPointCloudBlockHandle::blockLoadingFailed, [ &, i ]( const QString & errorStr )
-      {
-        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), errorStr ) );
-        finishedLoadingBlock[ i ] = true;
-        checkIfFinished();
-      } );
-    }
-    timer.start( 100000 );
-    // Wait for all point cloud nodes to finish loading
-    loop.exec();
-
-    QgsDebugMsg( QStringLiteral( "Downloaded in : %1ms" ).arg( downloadTimer.elapsed() ) );
-
-    // Render all the point cloud blocks sequentially
-    for ( int i = 0; i < nodes.size(); ++i )
-    {
-      if ( context.renderContext().renderingStopped() )
-      {
-        QgsDebugMsgLevel( "canceled", 2 );
-        canceled = true;
-        break;
-      }
-
-      if ( !blocks[ i ] )
-        continue;
-
-      context.setAttributes( blocks[ i ]->attributes() );
-
-      mRenderer->renderBlock( blocks[ i ], context );
-      ++nodesDrawn;
-
-      // as soon as first block is rendered, we can start showing layer updates.
-      // but if we are blocking render updates (so that a previously cached image is being shown), we wait
-      // at most e.g. 3 seconds before we start forcing progressive updates.
-      if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
-      {
-        mReadyToCompose = true;
-      }
-    }
-
-    for ( int i = 0; i < nodes.size(); ++i )
-    {
-      if ( blocks[ i ] )
-        delete blocks[ i ];
-      if ( blockHandles[ i ] )
-      {
-        blockHandles[ i ]->disconnect();
-        delete blockHandles[ i ];
-      }
-    }
+    nodesDrawn += renderNodesAsync( nodes, pc, context, request, canceled );
   }
 
 #ifdef QGISDEBUG
@@ -306,6 +198,129 @@ bool QgsPointCloudLayerRenderer::render()
 
   mReadyToCompose = true;
   return !canceled;
+}
+
+int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
+{
+  int nodesDrawn = 0;
+  for ( const IndexedPointCloudNode &n : nodes )
+  {
+    if ( context.renderContext().renderingStopped() )
+    {
+      QgsDebugMsgLevel( "canceled", 2 );
+      canceled = true;
+      break;
+    }
+    std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+
+    if ( !block )
+      continue;
+
+    context.setAttributes( block->attributes() );
+
+    mRenderer->renderBlock( block.get(), context );
+    ++nodesDrawn;
+
+    // as soon as first block is rendered, we can start showing layer updates.
+    // but if we are blocking render updates (so that a previously cached image is being shown), we wait
+    // at most e.g. 3 seconds before we start forcing progressive updates.
+    if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+    {
+      mReadyToCompose = true;
+    }
+  }
+  return nodesDrawn;
+}
+
+int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
+{
+  int nodesDrawn = 0;
+
+  QElapsedTimer downloadTimer;
+  downloadTimer.start();
+
+  // Async loading of nodes
+  QVector<QgsPointCloudBlock *> blocks( nodes.size(), nullptr );
+  QVector<QgsPointCloudBlockHandle *> blockHandles( nodes.size(), nullptr );
+  QVector<bool> finishedLoadingBlock( nodes.size(), false );
+  QTimer timer;
+  QEventLoop loop;
+  QObject::connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+  // Note: All capture by reference warnings here shouldn't be an issue since we have an event loop, so locals won't be deallocated
+  auto checkIfFinished = [&]()
+  {
+    // If all blocks are loaded, exit the event loop
+    if ( !finishedLoadingBlock.contains( false ) ) loop.exit();
+  };
+  for ( int i = 0; i < nodes.size(); ++i )
+  {
+    const IndexedPointCloudNode &n = nodes[i];
+    QgsPointCloudBlockHandle *blockHandle = pc->asyncNodeData( n, request );
+    blockHandles[ i ] = blockHandle;
+    QObject::connect( blockHandle, &QgsPointCloudBlockHandle::blockLoadingSucceeded, [ &, i ]( QgsPointCloudBlock * block )
+    {
+      if ( block )
+      {
+        blocks[ i ] = block;
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Unable to load node %1" ).arg( n.toString() ) );
+      }
+      finishedLoadingBlock[ i ] = true;
+      checkIfFinished();
+    } );
+    QObject::connect( blockHandle, &QgsPointCloudBlockHandle::blockLoadingFailed, [ &, i ]( const QString & errorStr )
+    {
+      QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), errorStr ) );
+      finishedLoadingBlock[ i ] = true;
+      checkIfFinished();
+    } );
+  }
+  timer.start( 100000 );
+  // Wait for all point cloud nodes to finish loading
+  loop.exec();
+
+  QgsDebugMsg( QStringLiteral( "Downloaded in : %1ms" ).arg( downloadTimer.elapsed() ) );
+
+  // Render all the point cloud blocks sequentially
+  for ( int i = 0; i < nodes.size(); ++i )
+  {
+    if ( context.renderContext().renderingStopped() )
+    {
+      QgsDebugMsgLevel( "canceled", 2 );
+      canceled = true;
+      break;
+    }
+
+    if ( !blocks[ i ] )
+      continue;
+
+    context.setAttributes( blocks[ i ]->attributes() );
+
+    mRenderer->renderBlock( blocks[ i ], context );
+    ++nodesDrawn;
+
+    // as soon as first block is rendered, we can start showing layer updates.
+    // but if we are blocking render updates (so that a previously cached image is being shown), we wait
+    // at most e.g. 3 seconds before we start forcing progressive updates.
+    if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+    {
+      mReadyToCompose = true;
+    }
+  }
+
+  for ( int i = 0; i < nodes.size(); ++i )
+  {
+    if ( blocks[ i ] )
+      delete blocks[ i ];
+    if ( blockHandles[ i ] )
+    {
+      blockHandles[ i ]->disconnect();
+      delete blockHandles[ i ];
+    }
+  }
+  return nodesDrawn;
 }
 
 bool QgsPointCloudLayerRenderer::forceRasterRender() const
