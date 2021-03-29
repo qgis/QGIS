@@ -35,11 +35,7 @@
        </property>
       </column>
      </widget>
-     <widget class="QTextEdit" name="text">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
+     <widget class="QgsCodeEditorPython" name="text" native="true"/>
     </widget>
    </item>
    <item>
@@ -54,6 +50,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
