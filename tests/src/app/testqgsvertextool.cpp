@@ -61,6 +61,7 @@ class TestQgsVertexTool : public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
+    void testSelectVerticesByPolygon();
     void testTopologicalEditingMoveVertexZ();
     void testTopologicalEditingMoveVertexOnSegmentZ();
     void testMoveVertex();
@@ -80,6 +81,7 @@ class TestQgsVertexTool : public QObject
     void testActiveLayerPriority();
     void testSelectedFeaturesPriority();
     void testVertexToolCompoundCurve();
+
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -1193,6 +1195,32 @@ void TestQgsVertexTool::testVertexToolCompoundCurve()
   // verifying that it's not possible to add a extra vertex to a CircularString
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
   QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 10 10, 17 10))" ) );
+}
+
+void TestQgsVertexTool::testSelectVerticesByPolygon()
+{
+  // Test selecting vertices by polygon
+  mouseClick( 1.2, 7.7, Qt::LeftButton, Qt::AltModifier );
+  mouseClick( 1.2, 6.5, Qt::LeftButton );
+  mouseClick( 1.5, 6.5, Qt::LeftButton );
+  mouseClick( 1.5, 5.2, Qt::LeftButton );
+  mouseClick( 1.9, 5.2, Qt::LeftButton );
+  mouseClick( 1.9, 6.5, Qt::LeftButton );
+  mouseClick( 1.9, 6.5, Qt::RightButton );
+
+  mouseMove( 1.25, 7 );
+  mouseClick( 1.25, 7, Qt::LeftButton );
+  mouseMove( 1.25, 7.25 );
+  mouseClick( 1.25, 7.25, Qt::LeftButton );
+
+  QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 2 );
+  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6.25, 1.75 5.75, 1.25 5.5),(1.25 7.25, 1.75 7, 1.75 7.5, 1.25 7.75, 1.25 7.25)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
+
+  // Undo and reset vertex selection
+  mLayerMultiPolygon->undoStack()->undo();
+  mouseClick( 0.5, 7, Qt::RightButton );
+  QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
+  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
 }
 
 QGSTEST_MAIN( TestQgsVertexTool )
