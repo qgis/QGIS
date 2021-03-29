@@ -68,8 +68,6 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
 
     QUrl mUrl;
 
-    int mPointCount = 0;
-
     QgsTileDownloadManager *mTileDownloadManager = nullptr;
 };
 
