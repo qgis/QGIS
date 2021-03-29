@@ -342,7 +342,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       saveOptions.fileEncoding = layer->dataProvider()->encoding();
       saveOptions.driverName = outputDriverName;
       saveOptions.onlySelectedFeatures = selectedOnly;
-      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormatV2( layer, outputPath, layer->transformContext(), saveOptions, nullptr, nullptr, &errMsg );
+      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormatV3( layer, outputPath, layer->transformContext(), saveOptions, &errMsg, nullptr, nullptr );
       if ( err != QgsVectorFileWriter::NoError )
       {
         createErrors.append( errMsg );
