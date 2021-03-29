@@ -398,6 +398,7 @@ QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QSt
 
 double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style )
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   // workaround Qt bug 66185
 
   // Refs #18027 - if a QGraphicsItem is rotated by 90 or 270 degrees, then the item
@@ -407,6 +408,15 @@ double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem 
 
   // TODO - ifdef this out if Qt fixes upstream
   return !qgsDoubleNear( style->matrix.m11(), 0.0 ) ? style->matrix.m11() : style->matrix.m12();
+#else
+  Q_UNUSED( style )
+  return 1;
+#endif
+}
+
+double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style, QPainter *painter )
+{
+  return style->levelOfDetailFromTransform( painter->worldTransform() );
 }
 
 QgsMapLayer *QgsLayoutUtils::mapLayerFromString( const QString &string, QgsProject *project )
