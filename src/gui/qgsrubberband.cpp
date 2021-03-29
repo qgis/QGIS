@@ -468,13 +468,27 @@ void QgsRubberBand::paint( QPainter *p )
     lineSymbol->startRender( context );
     for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
     {
-      drawShape( p, shape );
       for ( const QPolygonF &ring : shape )
       {
         lineSymbol->renderPolyline( ring, nullptr, context );
       }
     }
     lineSymbol->stopRender( context );
+  }
+  else if ( QgsFillSymbol *fillSymbol = dynamic_cast< QgsFillSymbol * >( mSymbol.get() ) )
+  {
+    QgsRenderContext context( QgsRenderContext::fromQPainter( p ) );
+    context.setFlag( QgsRenderContext::Antialiasing, true );
+
+    fillSymbol->startRender( context );
+    for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
+    {
+      for ( const QPolygonF &ring : shape )
+      {
+        fillSymbol->renderPolygon( ring, nullptr, nullptr, context );
+      }
+    }
+    fillSymbol->stopRender( context );
   }
   else
   {
