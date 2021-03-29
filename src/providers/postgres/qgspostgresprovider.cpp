@@ -587,6 +587,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
 
 QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
 {
+  Q_UNUSED(conn);
   switch ( pkType )
   {
     case PktOid:
@@ -642,11 +643,34 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     {
       //complex primary key, need to build up where string
       QStringList whereClauses;
+      QString wherePreClauses;
+      QString delim;
+      for ( int i = 0; i < pkAttrs.size(); i++ )
+      {
+        wherePreClauses += delim + QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[i] ).name() );
+        delim = QStringLiteral( "," );
+      }
       for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
       {
-        whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
+        QVariantList pkVals = sharedData->lookupKey( featureId );
+        if ( !pkVals.isEmpty() )
+        {
+          Q_ASSERT( pkVals.size() == pkAttrs.size() );
+
+          QString delim;
+          QString whereInValue;
+          for ( int i = 0; i < pkAttrs.size(); i++ )
+          {
+            whereInValue += delim + QgsPostgresConn::quotedValue( pkVals[i] );
+            delim = QStringLiteral( "," );
+          }
+          whereClauses << whereInValue;
+        }
       }
-      return whereClauses.isEmpty() ? QString() : whereClauses.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
+
+      return whereClauses.isEmpty() ? QString() :
+                                   wherePreClauses.prepend( "( (" ).append( ") IN " )
+                                     + whereClauses.join( QLatin1String( "),(" ) ).prepend( "( VALUES (" ).append( ") ) )" );
     }
   }
   return QString(); //avoid warning
