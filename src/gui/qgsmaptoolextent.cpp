@@ -34,8 +34,7 @@ void QgsMapToolExtent::activate()
 
 void QgsMapToolExtent::deactivate()
 {
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-
+  clearRubberBand();
   QgsMapTool::deactivate();
 }
 
@@ -95,6 +94,11 @@ QgsRectangle QgsMapToolExtent::extent() const
   }
 }
 
+void QgsMapToolExtent::clearRubberBand()
+{
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+}
+
 void QgsMapToolExtent::calculateEndPoint( QgsPointXY &point )
 {
   if ( mRatio.width() > 0 && mRatio.height() > 0 )
@@ -111,8 +115,6 @@ void QgsMapToolExtent::drawExtent()
 {
   if ( qgsDoubleNear( mStartPoint.x(), mEndPoint.x() ) && qgsDoubleNear( mStartPoint.y(), mEndPoint.y() ) )
     return;
-
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
 
   QgsRectangle rect( mStartPoint, mEndPoint );
 

@@ -59,6 +59,13 @@ If the aspect ratio isn't fixed, the width and height will be set to zero.
 Returns the current extent drawn onto the canvas.
 %End
 
+    void clearRubberBand();
+%Docstring
+Removes the tool's rubber band from the canvas.
+
+.. versionadded:: 3.20
+%End
+
   signals:
 
     void extentChanged( const QgsRectangle &extent );
