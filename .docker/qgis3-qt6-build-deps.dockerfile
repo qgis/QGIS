@@ -19,6 +19,7 @@ RUN dnf -y install \
     proj-devel \
     protobuf-devel \
     protobuf-lite-devel \
+    python3-devel \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
     qt6-qttools-static \
