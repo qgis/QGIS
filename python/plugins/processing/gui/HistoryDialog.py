@@ -23,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 import warnings
+import re
 
 from qgis.core import QgsApplication
 from qgis.gui import QgsGui, QgsHelp
@@ -30,6 +31,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.Qsci import QsciScintilla
+
 from processing.gui import TestTools
 from processing.core.ProcessingLog import ProcessingLog, LOG_SEPARATOR
 
@@ -48,6 +51,13 @@ class HistoryDialog(BASE, WIDGET):
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
+
+        self.text.setReadOnly(True)
+        self.text.setCaretLineVisible(False)
+        self.text.setLineNumbersVisible(False)  # NO linenumbers for the input line
+        self.text.setFoldingVisible(False)
+        self.text.setEdgeMode(QsciScintilla.EdgeNone)
+        self.text.setWrapMode(QsciScintilla.SC_WRAP_WORD)
 
         self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
 
@@ -105,12 +115,29 @@ class HistoryDialog(BASE, WIDGET):
     def fillTree(self):
         self.tree.clear()
         entries = ProcessingLog.getLogEntries()
+        names = {}
+        icons = {}
         groupItem = QTreeWidgetItem()
         groupItem.setText(0, 'ALGORITHM')
         groupItem.setIcon(0, self.groupIcon)
         for entry in entries:
-            item = TreeLogEntryItem(entry, True)
-            item.setIcon(0, self.keyIcon)
+            icon = self.keyIcon
+            name = ''
+            match = re.search('processing.run\\("(.*?)"', entry.text)
+            if match.group:
+                algorithm_id = match.group(1)
+                if algorithm_id not in names:
+                    algorithm = QgsApplication.processingRegistry().algorithmById(algorithm_id)
+                    if algorithm:
+                        names[algorithm_id] = algorithm.displayName()
+                        icons[algorithm_id] = QgsApplication.processingRegistry().algorithmById(algorithm_id).icon()
+                    else:
+                        names[algorithm_id] = ''
+                        icons[algorithm_id] = self.keyIcon
+                name = names[algorithm_id]
+                icon = icons[algorithm_id]
+            item = TreeLogEntryItem(entry, True, name)
+            item.setIcon(0, icon)
             groupItem.insertChild(0, item)
         self.tree.addTopLevelItem(groupItem)
         groupItem.setExpanded(True)
@@ -131,7 +158,8 @@ class HistoryDialog(BASE, WIDGET):
     def changeText(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-            self.text.setText(item.entry.text.replace(LOG_SEPARATOR, '\n'))
+            self.text.setText('"""\n' + self.tr('Double-click on the history item or paste the command below to re-run the algorithm') + '\n"""\n\n' +
+                              item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(').replace(LOG_SEPARATOR, '\n'))
 
     def createTest(self):
         item = self.tree.currentItem()
@@ -152,8 +180,8 @@ class HistoryDialog(BASE, WIDGET):
 
 class TreeLogEntryItem(QTreeWidgetItem):
 
-    def __init__(self, entry, isAlg):
+    def __init__(self, entry, isAlg, algName):
         QTreeWidgetItem.__init__(self)
         self.entry = entry
         self.isAlg = isAlg
-        self.setText(0, '[' + entry.date + '] ' + entry.text.split(LOG_SEPARATOR)[0])
+        self.setText(0, '[' + entry.date + '] ' + algName + ' - ' + entry.text.split(LOG_SEPARATOR)[0])
