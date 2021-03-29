@@ -141,6 +141,8 @@ class ShellOutputScintilla(QgsCodeEditorPython):
                                              "Use iface to access QGIS API interface or type help(iface) for more info\n"
                                              "Security warning: typing commands from an untrusted source can harm your computer")
 
+        txtInit = '\n'.join(['# ' + line for line in txtInit.split('\n')])
+
         # some translation string for the console header ends without '\n'
         # and the first command in console will be appended at the header text.
         # The following code add a '\n' at the end of the string if not present.
