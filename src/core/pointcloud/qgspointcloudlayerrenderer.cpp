@@ -272,6 +272,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
     } );
     QObject::connect( blockHandle, &QgsPointCloudBlockHandle::blockLoadingFailed, [ &, i ]( const QString & errorStr )
     {
+      Q_UNUSED( errorStr );
       QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), errorStr ) );
       finishedLoadingBlock[ i ] = true;
       checkIfFinished();
