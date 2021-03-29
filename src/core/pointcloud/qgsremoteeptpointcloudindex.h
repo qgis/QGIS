@@ -46,6 +46,8 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsPointCloudIndex
     explicit QgsRemoteEptPointCloudIndex();
     ~QgsRemoteEptPointCloudIndex();
 
+    QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
+
     void load( const QString &fileName ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
@@ -64,7 +66,8 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsPointCloudIndex
 
   private:
     bool loadSchema( const QByteArray &data );
-    bool loadHierarchy();
+
+    bool loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const;
 
     bool mIsValid = false;
     QString mDataType;

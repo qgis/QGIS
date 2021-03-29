@@ -67,6 +67,12 @@ class CORE_EXPORT IndexedPointCloudNode
       return mD == other.d() && mX == other.x() && mY == other.y() && mZ == other.z();
     }
 
+    /**
+     * Returns the parent of the node
+     * \since QGIS 3.20
+     */
+    IndexedPointCloudNode parentNode() const;
+
     //! Creates node from string
     static IndexedPointCloudNode fromString( const QString &str );
 
@@ -197,7 +203,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     bool hasNode( const IndexedPointCloudNode &n ) const { return mHierarchy.contains( n ); }
 
     //! Returns all children of node
-    QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const;
+    virtual QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const;
 
     //! Returns all attributes that are stored in the file
     QgsPointCloudAttributeCollection attributes() const;
@@ -277,7 +283,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsRectangle mExtent;  //!< 2D extent of data
     double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
 
-    QHash<IndexedPointCloudNode, int> mHierarchy; //!< Data hierarchy
+    mutable QHash<IndexedPointCloudNode, int> mHierarchy; //!< Data hierarchy
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)

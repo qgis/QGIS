@@ -53,6 +53,27 @@ QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsPointCloudIndex(
 
 QgsRemoteEptPointCloudIndex::~QgsRemoteEptPointCloudIndex() = default;
 
+QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
+{
+  // Potential bug: what if loadNodeHierarchy fails and returns false
+  Q_ASSERT( loadNodeHierarchy( n ) );
+
+  QList<IndexedPointCloudNode> lst;
+  int d = n.d() + 1;
+  int x = n.x() * 2;
+  int y = n.y() * 2;
+  int z = n.z() * 2;
+
+  for ( int i = 0; i < 8; ++i )
+  {
+    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
+    IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
+    if ( mHierarchy.contains( n2 ) )
+      lst.append( n2 );
+  }
+  return lst;
+}
+
 void QgsRemoteEptPointCloudIndex::load( const QString &url )
 {
   mUrl = QUrl( url );
@@ -76,10 +97,10 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
 
   QgsNetworkReplyContent reply = req.reply();
   bool success = loadSchema( reply.content() );
-  if ( success )
-  {
-    success = loadHierarchy();
-  }
+//  if ( success )
+//  {
+//    success = loadHierarchy();
+//  }
 
   mIsValid = success;
 }
@@ -288,9 +309,9 @@ bool QgsRemoteEptPointCloudIndex::loadSchema( const QByteArray &data )
 
 QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
-  qDebug() << __PRETTY_FUNCTION__;
-  if ( !mHierarchy.contains( n ) )
+  if ( !loadNodeHierarchy( n ) )
     return nullptr;
+
   QString fileUrl;
   QString fileName;
   if ( mDataType == QLatin1String( "binary" ) )
@@ -364,8 +385,9 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
 
 QgsPointCloudBlockHandle *QgsRemoteEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
-  if ( !mHierarchy.contains( n ) )
+  if ( !loadNodeHierarchy( n ) )
     return nullptr;
+
   QgsPointCloudBlockHandle *handle = nullptr;
 
   QString fileUrl;
@@ -463,14 +485,29 @@ QVariant QgsRemoteEptPointCloudIndex::metadataClassStatistic( const QString &att
   return values.value( value.toInt() );
 }
 
-bool QgsRemoteEptPointCloudIndex::loadHierarchy()
+bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const
 {
-  QQueue<QString> queue;
-  queue.enqueue( QStringLiteral( "0-0-0-0" ) );
-  while ( !queue.isEmpty() )
+  if ( mHierarchy.contains( nodeId ) )
+    return true;
+  QVector<IndexedPointCloudNode> nodePathToRoot;
   {
-    //const QString filename = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mDirectory, queue.dequeue() );
-    const QString fileUrl = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, queue.dequeue() );
+    nodePathToRoot.push_back( nodeId );
+    IndexedPointCloudNode currentNode = nodeId;
+    while ( currentNode.d() != 0 )
+    {
+      currentNode = currentNode.parentNode();
+      nodePathToRoot.push_back( currentNode );
+    }
+  }
+
+  for ( int i = nodePathToRoot.size() - 1; i >= 0 && mHierarchy.find( nodeId ) == mHierarchy.end(); --i )
+  {
+    IndexedPointCloudNode node = nodePathToRoot[i];
+    //! The hierarchy of the node is found => No need to load its file
+    if ( mHierarchy.find( node ) != mHierarchy.end() )
+      continue;
+
+    const QString fileUrl = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, node.toString() );
     QNetworkRequest nr( fileUrl );
 
     QgsBlockingNetworkRequest req;
@@ -497,18 +534,15 @@ bool QgsRemoteEptPointCloudIndex::loadHierarchy()
     {
       QString nodeIdStr = it.key();
       int nodePointCount = it.value().toInt();
-      if ( nodePointCount < 0 )
-      {
-        queue.enqueue( nodeIdStr );
-      }
-      else
+      if ( nodePointCount > 0 )
       {
         IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
         mHierarchy[nodeId] = nodePointCount;
       }
     }
   }
-  return true;
+
+  return mHierarchy.contains( nodeId );
 }
 
 bool QgsRemoteEptPointCloudIndex::isValid() const
