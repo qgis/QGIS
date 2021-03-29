@@ -295,6 +295,7 @@ void QgsBlockingNetworkRequest::replyFinished()
 {
   if ( !mIsAborted && mReply )
   {
+
     if ( mReply->error() == QNetworkReply::NoError && ( !mFeedback || !mFeedback->isCanceled() ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
@@ -408,6 +409,7 @@ void QgsBlockingNetworkRequest::replyFinished()
         QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
       }
       mReplyContent = QgsNetworkReplyContent( mReply );
+      mReplyContent.setContent( mReply->readAll() );
     }
   }
   if ( mTimedout )
