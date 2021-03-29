@@ -138,7 +138,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
                                              "Python Console\n"
-                                             "Use iface to access QGIS API interface or Type help(iface) for more info\n"
+                                             "Use iface to access QGIS API interface or type help(iface) for more info\n"
                                              "Security warning: typing commands from an untrusted source can harm your computer")
 
         # some translation string for the console header ends without '\n'
