@@ -30,6 +30,7 @@
 #include "qgs25drendererwidget.h"
 #include "qgsnullsymbolrendererwidget.h"
 #include "qgsembeddedsymbolrendererwidget.h"
+#include "qgsinterpolatedlinerendererwidget.h"
 #include "qgspanelwidget.h"
 #include "qgspainteffect.h"
 
@@ -80,6 +81,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( QStringLiteral( "25dRenderer" ), Qgs25DRendererWidget::create, QStringLiteral( "renderer25dSymbol.svg" ) );
   _initRenderer( QStringLiteral( "nullSymbol" ), QgsNullSymbolRendererWidget::create, QStringLiteral( "rendererNullSymbol.svg" ) );
   _initRenderer( QStringLiteral( "embeddedSymbol" ), QgsEmbeddedSymbolRendererWidget::create );
+  _initRenderer( QStringLiteral( "interpolatedLineRenderer" ), QgsInterpolatedLineRendererWidget::create );
   sInitialized = true;
 }
 

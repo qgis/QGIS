@@ -361,6 +361,11 @@ QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
   return QgsLegendSymbolList();
 }
 
+QList<QgsLayerTreeModelLegendNode *> QgsFeatureRenderer::extraLegendNodes( QgsLayerTreeLayer * ) const
+{
+  return QList<QgsLayerTreeModelLegendNode *>();
+}
+
 void QgsFeatureRenderer::setVertexMarkerAppearance( int type, double size )
 {
   mCurrentVertexMarkerType = type;

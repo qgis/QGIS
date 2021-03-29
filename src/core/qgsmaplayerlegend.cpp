@@ -400,6 +400,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     }
   }
 
+  const QList<QgsLayerTreeModelLegendNode *> extraNodes = r->extraLegendNodes( nodeLayer );
+  for ( QgsLayerTreeModelLegendNode *extraNode : extraNodes )
+    nodes.append( extraNode );
 
   return nodes;
 }

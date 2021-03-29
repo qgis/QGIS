@@ -26,6 +26,7 @@
 #include "qgsheatmaprenderer.h"
 #include "qgs25drenderer.h"
 #include "qgsembeddedsymbolrenderer.h"
+#include "qgsinterpolatedlinerenderer.h"
 #include "qgsnullsymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
@@ -100,6 +101,10 @@ QgsRendererRegistry::QgsRendererRegistry()
   addRenderer( new QgsRendererMetadata( QStringLiteral( "embeddedSymbol" ),
                                         QObject::tr( "Embedded Symbols" ),
                                         QgsEmbeddedSymbolRenderer::create ) );
+
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "interpolatedLineRenderer" ),
+                                        QObject::tr( "Interpolated Lines" ),
+                                        QgsInterpolatedLineFeatureRenderer::create ) );
 }
 
 QgsRendererRegistry::~QgsRendererRegistry()

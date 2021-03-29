@@ -16,11 +16,19 @@
 #include <QPainter>
 
 #include "qgsinterpolatedlinerenderer.h"
+#include "qgscolorramplegendnode.h"
 #include "qgssymbollayerutils.h"
+
+QgsSymbol *QgsInterpolatedLineRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const {return nullptr;}
 
 void QgsInterpolatedLineRenderer::setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth )
 {
   mStrokeWidth = strokeWidth;
+}
+
+QgsInterpolatedLineWidth QgsInterpolatedLineRenderer::interpolatedLineWidth() const
+{
+  return mStrokeWidth;
 }
 
 void QgsInterpolatedLineRenderer::setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring )
@@ -28,18 +36,31 @@ void QgsInterpolatedLineRenderer::setInterpolatedColor( const QgsInterpolatedLin
   mStrokeColoring = strokeColoring;
 }
 
+QgsInterpolatedLineColor QgsInterpolatedLineRenderer::interpolatedColor() const
+{
+  return mStrokeColoring;
+}
+
 void QgsInterpolatedLineRenderer::setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit )
 {
   mStrokeWidthUnit = strokeWidthUnit;
 }
 
-void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPointXY point1, QgsPointXY point2, QgsRenderContext &context ) const
+QgsUnitTypes::RenderUnit QgsInterpolatedLineRenderer::widthUnit() const
+{
+  return mStrokeWidthUnit;
+}
+
+void QgsInterpolatedLineRenderer::render( double value1, double value2, const QgsPointXY &pt1, const QgsPointXY &pt2, QgsRenderContext &context ) const
 {
   QPainter *painter = context.painter();
   QgsScopedQPainterState painterState( painter );
   context.setPainterFlagsUsingContext( painter );
 
   const QgsMapToPixel &mapToPixel = context.mapToPixel();
+
+  QgsPointXY point1 = pt1;
+  QgsPointXY point2 = pt2;
 
   if ( value1 > value2 )
   {
@@ -59,6 +80,7 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
   QList<QLinearGradient> gradients;
 
   mStrokeColoring.graduatedColors( value1, value2, breakValues, breakColors, gradients );
+  QColor selelectedColor = context.selectionColor();;
 
   if ( gradients.isEmpty() && !breakValues.empty() && !breakColors.isEmpty() ) //exact colors to render
   {
@@ -67,7 +89,7 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
     {
       double value = breakValues.at( i );
       double width = context.convertToPainterUnits( mStrokeWidth.strokeWidth( value ), mStrokeWidthUnit );
-      QPen pen( breakColors.at( i ) );
+      QPen pen( mSelected ? selelectedColor : breakColors.at( i ) );
       pen.setWidthF( width );
       pen.setCapStyle( Qt::PenCapStyle::RoundCap );
       painter->setPen( pen );
@@ -97,7 +119,7 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
       {
         width1 = context.convertToPainterUnits( width1, mStrokeWidthUnit );
         QRectF capBox1( p1.x() - width1 / 2, p1.y() - width1 / 2, width1, width1 );
-        brush.setColor( mStrokeColoring.color( value1 ) );
+        brush.setColor( mSelected ? selelectedColor : mStrokeColoring.color( value1 ) );
         painter->setBrush( brush );
         pen.setBrush( brush );
         painter->setPen( pen );
@@ -108,14 +130,14 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
       {
         width2 = context.convertToPainterUnits( width2, mStrokeWidthUnit ) ;
         QRectF capBox2( p2.x() - width2 / 2, p2.y() - width2 / 2, width2, width2 );
-        brush.setColor( mStrokeColoring.color( value2 ) );
+        brush.setColor( mSelected ? selelectedColor : mStrokeColoring.color( value2 ) );
         pen.setBrush( brush );
         painter->setBrush( brush );
         painter->setPen( pen );
         painter->drawPie( capBox2, ( startAngle + 179 ) * 16, 182 * 16 );
       }
 
-      if ( gradients.isEmpty() && breakValues.empty() && breakColors.count() == 1 ) //only one color to render
+      if ( ( gradients.isEmpty() && breakValues.empty() && breakColors.count() == 1 ) || mSelected ) //only one color to render
       {
         double startAdjusting = 0;
         if ( outOfRange1 )
@@ -139,7 +161,7 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
         varLine.append( pointStartAdjusted - orthu * semiWidth1 );
 
         QBrush brush( Qt::SolidPattern );
-        brush.setColor( breakColors.first() );
+        brush.setColor( mSelected ? selelectedColor : breakColors.first() );
         painter->setBrush( brush );
         painter->setPen( pen );
 
@@ -208,6 +230,11 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
       }
     }
   }
+}
+
+void QgsInterpolatedLineRenderer::setSelected( bool selected )
+{
+  mSelected = selected;
 }
 
 void QgsInterpolatedLineRenderer::adjustLine( const double &value, const double &value1, const double &value2, double &width, double &adjusting ) const
@@ -381,6 +408,12 @@ void QgsInterpolatedLineWidth::updateLinearFormula() const
   mNeedUpdateFormula = false;
 }
 
+QgsInterpolatedLineColor::QgsInterpolatedLineColor()
+{
+  mColorRampShader.setMinimumValue( std::numeric_limits<double>::quiet_NaN() );
+  mColorRampShader.setMaximumValue( std::numeric_limits<double>::quiet_NaN() );
+}
+
 QgsInterpolatedLineColor::QgsInterpolatedLineColor( const QgsColorRampShader &colorRampShader )
 {
   setColor( colorRampShader );
@@ -390,6 +423,8 @@ QgsInterpolatedLineColor::QgsInterpolatedLineColor( const QColor &color )
 {
   setColor( color );
   mColoringMethod = SingleColor;
+  mColorRampShader.setMinimumValue( std::numeric_limits<double>::quiet_NaN() );
+  mColorRampShader.setMaximumValue( std::numeric_limits<double>::quiet_NaN() );
 }
 
 void QgsInterpolatedLineColor::setColor( const QgsColorRampShader &colorRampShader )
@@ -735,5 +770,296 @@ void QgsInterpolatedLineColor::graduatedColorsDiscrete( double value1, double va
   breakColors.append( lastColor );
   breakValues.append( value2 );
   gradients.append( makeSimpleLinearGradient( lastColor, lastColor ) );
+
+}
+
+
+QgsInterpolatedLineFeatureRenderer::QgsInterpolatedLineFeatureRenderer(): QgsFeatureRenderer( QStringLiteral( "interpolatedLineRenderer" ) )
+{
+}
+
+QgsInterpolatedLineFeatureRenderer *QgsInterpolatedLineFeatureRenderer::clone() const
+{
+  std::unique_ptr<QgsInterpolatedLineFeatureRenderer> newRenderer = std::make_unique<QgsInterpolatedLineFeatureRenderer>();
+  newRenderer->mFirstExpressionString = mFirstExpressionString;
+  newRenderer->mSecondExpressionString = mSecondExpressionString;
+
+  newRenderer->mStrokeWidth = mStrokeWidth;
+  newRenderer->mStrokeColoring = mStrokeColoring;
+  newRenderer->mStrokeWidthUnit = mStrokeWidthUnit;
+
+  return newRenderer.release();
+}
+
+QgsSymbol *QgsInterpolatedLineFeatureRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
+{
+  return nullptr;
+}
+
+QSet<QString> QgsInterpolatedLineFeatureRenderer::usedAttributes( const QgsRenderContext & ) const
+{
+  QSet<QString> attributes;
+
+  // mFirstValueExpression and mSecondValueExpression can contain either attribute name or an expression.
+  // Sometimes it is not possible to distinguish between those two,
+  // e.g. "a - b" can be both a valid attribute name or expression.
+  // Since we do not have access to fields here, try both options.
+  attributes << mFirstExpressionString;
+  attributes << mSecondExpressionString;
+
+  QgsExpression testExprFirst( mFirstExpressionString );
+  if ( !testExprFirst.hasParserError() )
+    attributes.unite( testExprFirst.referencedColumns() );
+
+  QgsExpression testExprSecond( mSecondExpressionString );
+  if ( !testExprSecond.hasParserError() )
+    attributes.unite( testExprSecond.referencedColumns() );
+
+  return attributes;
+}
+
+
+QgsFeatureRenderer *QgsInterpolatedLineFeatureRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+{
+  std::unique_ptr<QgsInterpolatedLineFeatureRenderer> newRender = std::make_unique<QgsInterpolatedLineFeatureRenderer>();
+
+  QDomElement strokeWidthElem = element.firstChildElement( QStringLiteral( "mesh-stroke-width" ) );
+  if ( !strokeWidthElem.isNull() )
+    newRender->mStrokeWidth.readXml( strokeWidthElem, context );
+
+  QDomElement strokeColorElem = element.firstChildElement( QStringLiteral( "mesh-stroke-color" ) );
+  if ( !strokeColorElem.isNull() )
+    newRender->mStrokeColoring.readXml( strokeColorElem, context );
+
+  newRender->mStrokeWidthUnit = static_cast<QgsUnitTypes::RenderUnit>( element.attribute( QStringLiteral( "width-unit" ) ).toInt() );
+
+  newRender->mFirstExpressionString = element.attribute( QStringLiteral( "first-expression" ) );
+  newRender->mSecondExpressionString = element.attribute( QStringLiteral( "second-expression" ) );
+
+  return newRender.release();
+}
+
+QgsInterpolatedLineFeatureRenderer *QgsInterpolatedLineFeatureRenderer::convertFromRenderer( QgsFeatureRenderer *renderer )
+{
+  if ( renderer->type() == QStringLiteral( "interpolatedLineRenderer" ) )
+    return static_cast<QgsInterpolatedLineFeatureRenderer *>( renderer )->clone();
+  else
+    return new QgsInterpolatedLineFeatureRenderer();
+}
+
+void QgsInterpolatedLineFeatureRenderer::setExpressionsString( QString first, QString second )
+{
+  mFirstExpressionString = first;
+  mSecondExpressionString = second;
+}
+
+QString QgsInterpolatedLineFeatureRenderer::firstExpression() const
+{
+  return mFirstExpressionString;
+}
+
+QString QgsInterpolatedLineFeatureRenderer::secondExpression() const
+{
+  return mSecondExpressionString;
+}
+
+bool QgsInterpolatedLineFeatureRenderer::prepareForRendering(
+  const QgsFeature &feature,
+  QgsRenderContext &context,
+  QVector<QgsPolylineXY> &lineStrings,
+  double &val1,
+  double &val2,
+  double &variationPerMapUnit ) const
+{
+  QgsGeometry geom = feature.geometry();
+
+  if ( geom.isEmpty() )
+    return false;
+
+  switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
+  {
+    case QgsWkbTypes::Unknown:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Triangle:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::GeometryCollection:
+    case QgsWkbTypes::CurvePolygon:
+    case QgsWkbTypes::MultiSurface:
+    case QgsWkbTypes::NoGeometry:
+      return false;
+      break;
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::CircularString:
+    case QgsWkbTypes::CompoundCurve:
+      lineStrings.append( geom.asPolyline() );
+      break;
+    case QgsWkbTypes::MultiCurve:
+    case QgsWkbTypes::MultiLineString:
+      lineStrings = geom.asMultiPolyline();
+      break;
+    default:
+      return false;
+      break;
+  }
+
+  QgsExpressionContext expressionContext = context.expressionContext();
+  expressionContext.setFeature( feature );
+
+  QVariant val1Variant;
+  QVariant val2Variant;
+  bool ok = true;
+
+  if ( mFirstExpression )
+  {
+    val1Variant = mFirstExpression->evaluate( &expressionContext );
+    ok |= mFirstExpression->hasEvalError();
+  }
+  else
+    val1Variant = feature.attribute( mFirstAttributeIndex );
+
+  if ( mSecondExpression )
+  {
+    val2Variant = mSecondExpression->evaluate( &expressionContext );
+    ok |= mSecondExpression->hasEvalError();
+  }
+  else
+    val2Variant = feature.attribute( mSecondAttributeIndex );
+
+  if ( !ok )
+    return false;
+
+  val1 = val1Variant.toDouble( &ok );
+  if ( !ok )
+    return false;
+
+  val2 = val2Variant.toDouble( &ok );
+  if ( !ok )
+    return false;
+
+  double totalLength = geom.length();
+
+  if ( totalLength == 0 )
+    return false;
+
+  variationPerMapUnit = ( val2 - val1 ) / totalLength;
+
+  return true;
+}
+
+
+QDomElement QgsInterpolatedLineFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
+{
+  QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "interpolatedLineRenderer" ) );
+
+  rendererElem.appendChild( mStrokeWidth.writeXml( doc, context ) );
+  rendererElem.appendChild( mStrokeColoring.writeXml( doc, context ) );
+  rendererElem.setAttribute( QStringLiteral( "width-unit" ), QString::number( mStrokeWidthUnit ) );
+  rendererElem.setAttribute( QStringLiteral( "first-expression" ), mFirstExpressionString );
+  rendererElem.setAttribute( QStringLiteral( "second-expression" ), mSecondExpressionString );
+
+  return rendererElem;
+}
+
+void QgsInterpolatedLineFeatureRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
+{
+  QgsFeatureRenderer::startRender( context, fields );
+
+  // find out classification attribute index from name
+  mFirstAttributeIndex = fields.lookupField( mFirstExpressionString );
+  mSecondAttributeIndex = fields.lookupField( mSecondExpressionString );
+  if ( mFirstAttributeIndex == -1 )
+  {
+    mFirstExpression.reset( new QgsExpression( mFirstExpressionString ) );
+    mFirstExpression->prepare( &context.expressionContext() );
+  }
+  if ( mFirstAttributeIndex == -1 )
+  {
+    mSecondExpression.reset( new QgsExpression( mSecondExpressionString ) );
+    mSecondExpression->prepare( &context.expressionContext() );
+  }
+}
+
+void QgsInterpolatedLineFeatureRenderer::stopRender( QgsRenderContext &context )
+{
+  QgsFeatureRenderer::stopRender( context );
+  mFirstExpression.reset();
+  mSecondExpression.reset();
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsInterpolatedLineFeatureRenderer::extraLegendNodes( QgsLayerTreeLayer *nodeLayer ) const
+{
+
+  const QgsColorRampShader rampShader = mStrokeColoring.colorRampShader();
+
+  QList<QgsLayerTreeModelLegendNode *> res;
+
+  switch ( rampShader.colorRampType() )
+  {
+    case QgsColorRampShader::Interpolated:
+      if ( !rampShader.colorRampItemList().isEmpty() )
+      {
+        res << new QgsColorRampLegendNode( nodeLayer, rampShader.createColorRamp(),
+                                           rampShader.legendSettings() ? *rampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
+                                           rampShader.minimumValue(), rampShader.maximumValue() );
+      }
+      break;
+    case QgsColorRampShader::Discrete:
+    case QgsColorRampShader::Exact:
+    {
+      // for all others we use itemised lists
+      QList< QPair< QString, QColor > > items;
+      rampShader.legendSymbologyItems( items );
+      res.reserve( items.size() );
+      for ( const QPair< QString, QColor > &item : std::as_const( items ) )
+        res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      break;
+    }
+  }
+
+  return res;
+}
+
+bool QgsInterpolatedLineFeatureRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+{
+  QVector<QgsPolylineXY> lineStrings;
+
+  double val1;
+  double val2;
+  double variationPerMapUnit;
+  return prepareForRendering( feature, context, lineStrings, val1, val2, variationPerMapUnit );
+}
+
+bool QgsInterpolatedLineFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int, bool selected, bool )
+{
+  QVector<QgsPolylineXY> lineStrings;
+
+  double val1;
+  double val2;
+  double variationPerMapUnit;
+
+  if ( !prepareForRendering( feature, context, lineStrings, val1, val2, variationPerMapUnit ) )
+    return false;
+
+  setSelected( selected );
+
+  for ( const QgsPolylineXY &poly : std::as_const( lineStrings ) )
+  {
+    double lengthFromStart = 0;
+    for ( int i = 1; i < poly.count(); ++i )
+    {
+      QgsPointXY p1 = poly.at( i - 1 );
+      QgsPointXY p2 = poly.at( i );
+
+      double v1 = val1 + variationPerMapUnit * lengthFromStart;
+      lengthFromStart += p1.distance( p2 );
+      double v2 = val1 + variationPerMapUnit * lengthFromStart;
+      render( v1, v2, p1, p2, context );
+    }
+  }
+
+  return true;
 
 }

@@ -39,6 +39,8 @@ class QgsVectorLayer;
 class QgsPaintEffect;
 class QgsReadWriteContext;
 class QgsStyleEntityVisitorInterface;
+class QgsLayerTreeModelLegendNode;
+class QgsLayerTreeLayer;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -129,6 +131,8 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_QgsNullSymbolRenderer;
     else if ( type == QLatin1String( "embeddedSymbol" ) )
       sipType = sipType_QgsEmbeddedSymbolRenderer;
+    else if ( type == QLatin1String( "interpolatedLineRenderer" ) )
+      sipType = sipType_QgsInterpolatedLineFeatureRenderer;
     else
       sipType = 0;
     SIP_END
@@ -356,6 +360,12 @@ class CORE_EXPORT QgsFeatureRenderer
      * \since QGIS 2.6
      */
     virtual QgsLegendSymbolList legendSymbolItems() const;
+
+    /**
+     * Returns a list of extra legend nodes that are not based on QgsSymbol
+     * \since QGIS 3.20
+     */
+    virtual QList<QgsLayerTreeModelLegendNode *> extraLegendNodes( QgsLayerTreeLayer *nodeLayer ) const;
 
     /**
      * If supported by the renderer, return classification attribute for the use in legend

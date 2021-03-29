@@ -394,6 +394,7 @@
 %Include auto_generated/symbology/qgsgraduatedhistogramwidget.sip
 %Include auto_generated/symbology/qgsgraduatedsymbolrendererwidget.sip
 %Include auto_generated/symbology/qgsheatmaprendererwidget.sip
+%Include auto_generated/symbology/qgsinterpolatedlinerendererwidget.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrendererwidget.sip
 %Include auto_generated/symbology/qgslayerpropertieswidget.sip
 %Include auto_generated/symbology/qgsmergedfeaturerendererwidget.sip

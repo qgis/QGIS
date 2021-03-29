@@ -77,6 +77,8 @@ class QgsFeatureRenderer
       sipType = sipType_QgsNullSymbolRenderer;
     else if ( type == QLatin1String( "embeddedSymbol" ) )
       sipType = sipType_QgsEmbeddedSymbolRenderer;
+    else if ( type == QLatin1String( "interpolatedLineRenderer" ) )
+      sipType = sipType_QgsInterpolatedLineFeatureRenderer;
     else
       sipType = 0;
 %End
@@ -325,6 +327,13 @@ Sets the symbol to be used for a legend symbol item.
 Returns a list of symbology items for the legend
 
 .. versionadded:: 2.6
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> extraLegendNodes( QgsLayerTreeLayer *nodeLayer ) const;
+%Docstring
+Returns a list of extra legend nodes that are not based on :py:class:`QgsSymbol`
+
+.. versionadded:: 3.20
 %End
 
     virtual QString legendClassificationAttribute() const;

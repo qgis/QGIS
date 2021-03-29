@@ -9,6 +9,7 @@
 
 
 
+
 class QgsInterpolatedLineColor
 {
 %Docstring(signature="appended")
@@ -195,7 +196,7 @@ Reads configuration from the given DOM element
 class QgsInterpolatedLineRenderer
 {
 %Docstring(signature="appended")
-Represents a line with width and color varying depending on values.
+Represents a simple line renderer with width and color varying depending on values.
 
 .. versionadded:: 3.14
 %End
@@ -204,9 +205,19 @@ Represents a line with width and color varying depending on values.
 #include "qgsinterpolatedlinerenderer.h"
 %End
   public:
+
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+    QgsFeatureRenderer *clone() const;
+
     void setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth );
 %Docstring
-Sets the stroke width used to plot
+Sets the stroke width used to render
+%End
+
+    QgsInterpolatedLineWidth interpolatedLineWidth() const;
+%Docstring
+Returns the stroke width used to render
 %End
 
     void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
@@ -214,16 +225,103 @@ Sets the stroke width used to plot
 Sets the unit of the stroke width
 %End
 
-    void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
+    QgsUnitTypes::RenderUnit widthUnit() const;
 %Docstring
-Sets the stroke color used to plot
+Returns the unit of the stroke width
 %End
 
-    void render( double value1, double value2, QgsPointXY point1, QgsPointXY point2, QgsRenderContext &context ) const;
+    void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
+%Docstring
+Sets the stroke color used to render
+%End
+
+    QgsInterpolatedLineColor interpolatedColor() const;
+%Docstring
+Returns the stroke color used to render
+%End
+
+    void render( double value1, double value2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
 %Docstring
 Render a line in the ``context`` between ``point1`` and ``point2``
 with color and width that vary depending on ``value1`` and ``value2``
 %End
+
+    void setSelected( bool selected );
+%Docstring
+Sets if the rendering must be done as the element is selected
+%End
+
+  protected:
+
+};
+
+class QgsInterpolatedLineFeatureRenderer : QgsInterpolatedLineRenderer, QgsFeatureRenderer
+{
+%Docstring(signature="appended")
+A renderer which draws vector layer line feature as interpolated line
+The interpolation is done between two values defined at the extremities
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+
+    QgsInterpolatedLineFeatureRenderer();
+%Docstring
+Constructor
+%End
+
+    virtual QgsInterpolatedLineFeatureRenderer *clone() const /Factory/;
+
+
+
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+%Docstring
+Direct copies are forbidden. Use :py:func:`~QgsInterpolatedLineFeatureRenderer.clone` instead.
+%End
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
+    virtual void stopRender( QgsRenderContext &context );
+
+    virtual QList<QgsLayerTreeModelLegendNode *> extraLegendNodes( QgsLayerTreeLayer *nodeLayer ) const;
+
+    virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a new heatmap renderer instance from XML
+%End
+
+    static QgsInterpolatedLineFeatureRenderer *convertFromRenderer( QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+Creates an new renderer from ``renderer``
+%End
+
+    void setExpressionsString( QString first, QString second );
+%Docstring
+Sets the expressions (as string) that define the extremety values af the line feature
+%End
+
+    QString firstExpression() const;
+%Docstring
+Returns the epression related to the first extremity value
+%End
+
+    QString secondExpression() const;
+%Docstring
+Returns the expression related to the second extremity value
+%End
+
 
 };
 
