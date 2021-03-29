@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 
 #include <QFile>
+#include <QDir>
 #include <iostream>
 #include <memory>
 #include <cstring>
@@ -481,19 +482,17 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayDat
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  QString filename = "/tmp/node.txt";
+  QString filename = QDir::tempPath() + QDir::separator() + QStringLiteral( "node.txt" );
+  std::ofstream file( filename.toStdString(), std::ios::binary | std::ios::out );
+  if ( file.is_open() )
   {
-    std::ofstream file( filename.toStdString(), std::ios::binary | std::ios::out );
-    if ( file.is_open() )
-    {
-      file.write( byteArrayData.constData(), byteArrayData.size() );
-      file.close();
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "Couldn't open %1" ).arg( filename ) );
-      return nullptr;
-    }
+    file.write( byteArrayData.constData(), byteArrayData.size() );
+    file.close();
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Couldn't open %1" ).arg( filename ) );
+    return nullptr;
   }
   return QgsEptDecoder::decompressLaz( filename, attributes, requestedAttributes );
 }
