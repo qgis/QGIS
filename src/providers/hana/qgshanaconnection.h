@@ -31,15 +31,15 @@ struct AttributeField
   QString schemaName;
   QString tableName;
   QString name;
-  short type;
-  int srid;
+  short type = 0;
+  int srid = -1;
   QString typeName;
-  int size;
-  int precision;
-  bool isAutoIncrement;
-  bool isNullable;
-  bool isSigned;
-  bool isUnique;
+  int size = 0;
+  int precision = 0;
+  bool isAutoIncrement = false;
+  bool isNullable = false;
+  bool isSigned = false;
+  bool isUnique = false;
   QString comment;
 
   bool isGeometry() const { return type == 29812; /* ST_GEOMETRY, ST_POINT */ }
@@ -93,6 +93,7 @@ class QgsHanaConnection : public QObject
     QgsWkbTypes::Type getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName );
     QString getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName );
     int getColumnSrid( const QString &schemaName, const QString &tableName, const QString &columnName );
+    int getColumnSrid( const QString &sql, const QString &columnName );
     QgsHanaResultSetRef getColumns( const QString &schemaName, const QString &tableName, const QString &fieldName );
     bool isTable( const QString &schemaName, const QString &tableName );
 

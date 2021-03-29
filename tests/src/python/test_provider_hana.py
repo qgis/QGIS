@@ -26,6 +26,7 @@ from qgis.core import (
     QgsDataProvider,
     QgsFeatureRequest,
     QgsFeature,
+    QgsFieldConstraints,
     QgsProviderRegistry,
     QgsRectangle,
     QgsSettings)
@@ -199,6 +200,32 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(self.source.defaultValue(4), NULL)
         self.source.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
 
+    def testCompositeUniqueConstraints(self):
+        create_sql = f'CREATE TABLE "{self.schemaName}"."unique_composite_constraints" ( ' \
+            '"ID" INTEGER PRIMARY KEY,' \
+            '"VAL1" INTEGER,' \
+            '"VAL2" INTEGER,' \
+            '"VAL3" INTEGER,' \
+            'UNIQUE (VAL1, VAL2))'
+        QgsHanaProviderUtils.executeSQL(self.conn, create_sql)
+
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."unique_composite_constraints" sql=',
+                                    'testcompositeuniqueconstraints')
+
+        fields = vl.dataProvider().fields()
+        id_field_idx = fields.indexFromName('ID')
+        val1_field_idx = vl.fields().indexFromName('VAL1')
+        val2_field_idx = vl.fields().indexFromName('VAL2')
+        val3_field_idx = vl.fields().indexFromName('VAL3')
+        self.assertTrue(id_field_idx >= 0)
+        self.assertTrue(val1_field_idx >= 0)
+        self.assertTrue(val2_field_idx >= 0)
+        self.assertTrue(val3_field_idx >= 0)
+        self.assertTrue(bool(vl.fieldConstraints(id_field_idx) & QgsFieldConstraints.ConstraintUnique))
+        self.assertFalse(bool(vl.fieldConstraints(val1_field_idx) & QgsFieldConstraints.ConstraintUnique))
+        self.assertFalse(bool(vl.fieldConstraints(val2_field_idx) & QgsFieldConstraints.ConstraintUnique))
+        self.assertFalse(bool(vl.fieldConstraints(val3_field_idx) & QgsFieldConstraints.ConstraintUnique))
+
     def testBooleanType(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."boolean_type" ( ' \
             '"id" INTEGER NOT NULL PRIMARY KEY,' \
@@ -222,7 +249,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             '"decimal_field" DECIMAL(15,4),' \
             '"float_field" FLOAT(12))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."decimal_and_float_type" ("id", "decimal_field", ' \
-                     f'"float_field") VALUES (?, ?, ?) '
+            f'"float_field") VALUES (?, ?, ?) '
         insert_args = [[1, 1.1234, 1.76543]]
         self.prepareTestTable('decimal_and_float_type', create_sql, insert_sql, insert_args)
 
@@ -334,7 +361,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             'GEOM1 ST_GEOMETRY(4326),' \
             'GEOM2 ST_GEOMETRY(4326))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."geometry_attribute" (ID, GEOM1, GEOM2) ' \
-                     f'VALUES (?, ST_GeomFromText(?, 4326), ST_GeomFromText(?, 4326)) '
+            f'VALUES (?, ST_GeomFromText(?, 4326), ST_GeomFromText(?, 4326)) '
         insert_args = [[1, 'POINT (1 2)', 'LINESTRING (0 0,1 1)']]
         self.prepareTestTable('geometry_attribute', create_sql, insert_sql, insert_args)
 
