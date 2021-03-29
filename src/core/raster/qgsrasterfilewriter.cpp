@@ -818,7 +818,7 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
     myPyramidList = destProvider->buildPyramidList( mPyramidsList );
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
-    myPyramidList[myCounterInt].build = true;
+    myPyramidList[myCounterInt].setBuild( true );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "building pyramids : %1 pyramids, %2 resampling, %3 format, %4 options" ).arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( mPyramidsFormat ).arg( mPyramidsConfigOptions.count() ), 4 );

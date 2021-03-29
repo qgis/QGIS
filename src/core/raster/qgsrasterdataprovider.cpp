@@ -374,22 +374,8 @@ QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods(
 
 bool QgsRasterDataProvider::hasPyramids()
 {
-  QList<QgsRasterPyramid> myPyramidList = buildPyramidList();
-
-  if ( myPyramidList.isEmpty() )
-    return false;
-
-  QList<QgsRasterPyramid>::iterator myRasterPyramidIterator;
-  for ( myRasterPyramidIterator = myPyramidList.begin();
-        myRasterPyramidIterator != myPyramidList.end();
-        ++myRasterPyramidIterator )
-  {
-    if ( myRasterPyramidIterator->exists )
-    {
-      return true;
-    }
-  }
-  return false;
+  const QList<QgsRasterPyramid> pyramidList = buildPyramidList();
+  return std::any_of( pyramidList.constBegin(), pyramidList.constEnd(), []( QgsRasterPyramid pyramid ) { return pyramid.getExists(); } );
 }
 
 void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRangeList &noData )

@@ -245,24 +245,21 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
 
     // build pyramid list
-    QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
-    QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
+    const QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
 
-    for ( myRasterPyramidIterator = myPyramidList.begin();
-          myRasterPyramidIterator != myPyramidList.end();
-          ++myRasterPyramidIterator )
+    for ( const QgsRasterPyramid &pyramid : myPyramidList )
     {
-      if ( myRasterPyramidIterator->exists )
+      if ( pyramid.getExists() )
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
-                                        QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( " x " ) +
-                                        QString::number( myRasterPyramidIterator->yDim ) ) );
+                                        QString::number( pyramid.getXDim() ) + QStringLiteral( " x " ) +
+                                        QString::number( pyramid.getYDim() ) ) );
       }
       else
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap,
-                                        QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( " x " ) +
-                                        QString::number( myRasterPyramidIterator->yDim ) ) );
+                                        QString::number( pyramid.getXDim() ) + QStringLiteral( " x " ) +
+                                        QString::number( pyramid.getYDim() ) ) );
       }
     }
   }
@@ -1149,7 +1146,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   {
     QListWidgetItem *myItem = lbxPyramidResolutions->item( myCounterInt );
     //mark to be pyramided
-    myPyramidList[myCounterInt].build = myItem->isSelected() || myPyramidList[myCounterInt].exists;
+    myPyramidList[myCounterInt].setBuild( myItem->isSelected() || myPyramidList[myCounterInt].getExists() );
   }
 
   // keep it in sync with qgsrasterpyramidsoptionwidget.cpp
@@ -1218,21 +1215,19 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.svg" ) );
 
   QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
-  for ( myRasterPyramidIterator = myPyramidList.begin();
-        myRasterPyramidIterator != myPyramidList.end();
-        ++myRasterPyramidIterator )
+  for ( const QgsRasterPyramid &pyramid : std::as_const( myPyramidList ) )
   {
-    if ( myRasterPyramidIterator->exists )
+    if ( pyramid.getExists() )
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
-                                      QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( " x " ) +
-                                      QString::number( myRasterPyramidIterator->yDim ) ) );
+                                      QString::number( pyramid.getXDim() ) + QStringLiteral( " x " ) +
+                                      QString::number( pyramid.getYDim() ) ) );
     }
     else
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap,
-                                      QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( " x " ) +
-                                      QString::number( myRasterPyramidIterator->yDim ) ) );
+                                      QString::number( pyramid.getXDim() ) + QStringLiteral( " x " ) +
+                                      QString::number( pyramid.getYDim() ) ) );
     }
   }
   //update the legend pixmap

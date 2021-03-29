@@ -189,7 +189,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
                            QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
                            const QStringList &createOptions = QStringList(),
                            QgsRasterBlockFeedback *feedback = nullptr ) override;
-    QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
+    QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() ) override;
 
     static QMap<QString, QString> supportedMimes();
 
