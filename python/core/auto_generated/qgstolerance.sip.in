@@ -12,7 +12,7 @@
 
 class QgsTolerance
 {
-%Docstring
+%Docstring(signature="appended")
 This is the class is providing tolerance value in map unit values.
 %End
 

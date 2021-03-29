@@ -24,7 +24,7 @@ class QgsOracleExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsOracleExpressionCompiler( QgsOracleFeatureSource *source );
+    explicit QgsOracleExpressionCompiler( QgsOracleFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:
     Result compileNode( const QgsExpressionNode *node, QString &result ) override;

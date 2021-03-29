@@ -12,7 +12,7 @@
 
 class QgsAnnotationPolygonItem : QgsAnnotationItem
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation item which renders a fill symbol for a polygon geometry.
 
 .. versionadded:: 3.16

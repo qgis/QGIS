@@ -27,7 +27,7 @@ class QgsPointXY;
 
 /**
  * \ingroup analysis
- * This represents an error reported by a geometry check.
+ * \brief This represents an error reported by a geometry check.
  *
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4

@@ -13,8 +13,9 @@
 
 class QgsDataItem : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for all items in the model.
+
 Parent/children hierarchy is not based on QObject.
 %End
 
@@ -238,21 +239,35 @@ double-click behavior for items.
 %Docstring
 Returns ``True`` if the item may be dragged.
 Default implementation returns ``False``.
-A draggable item has to implement :py:func:`~QgsDataItem.mimeUri` that will be used to pass data.
+A draggable item has to implement :py:func:`~QgsDataItem.mimeUris` that will be used to pass data.
 
-.. seealso:: :py:func:`mimeUri`
+.. seealso:: :py:func:`mimeUris`
 
 .. versionadded:: 3.0
 %End
 
-    virtual QgsMimeDataUtils::Uri mimeUri() const;
+ virtual QgsMimeDataUtils::Uri mimeUri() const /Deprecated/;
 %Docstring
 Returns mime URI for the data item.
 Items that return valid URI will be returned in mime data when dragging a selection from browser model.
 
 .. seealso:: :py:func:`hasDragEnabled`
 
+.. deprecated:: QGIS 3.18
+  use :py:func:`~QgsDataItem.mimeUris` instead
+
 .. versionadded:: 3.0
+%End
+
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
+%Docstring
+Returns mime URIs for the data item, most data providers will only return a single URI
+but some data collection items (e.g. GPKG, OGR) may report multiple URIs (e.g. for vector and
+raster layer types).
+
+Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+
+.. versionadded:: 3.18
 %End
 
     enum Capability
@@ -502,7 +517,7 @@ QFlags<QgsDataItem::Capability> operator|(QgsDataItem::Capability f1, QFlags<Qgs
 
 class QgsLayerItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 Item that represents a layer that can be opened with one of the providers
 %End
 
@@ -536,7 +551,7 @@ Item that represents a layer that can be opened with one of the providers
 
     virtual bool hasDragEnabled() const;
 
-    virtual QgsMimeDataUtils::Uri mimeUri() const;
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
 
 
 
@@ -646,7 +661,7 @@ Returns icon for point cloud layer
 
 class QgsDataCollectionItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
 %End
 
@@ -710,7 +725,7 @@ Shared home directory icon.
 
 class QgsDatabaseSchemaItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A Collection that represents a database schema item
 
 .. versionadded:: 3.16
@@ -752,7 +767,7 @@ Returns the standard browser data collection icon.
 
 class QgsConnectionsRootItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A Collection that represents a root group of connections from a single data provider
 
 .. versionadded:: 3.16
@@ -782,7 +797,7 @@ The optional ``providerKey`` string can be used to specify the key for the :py:c
 
 class QgsDirectoryItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A directory: contains subdirectories and layers
 %End
 
@@ -841,7 +856,7 @@ Returns the full path to the directory the item represents.
  virtual QWidget *paramWidget() /Factory,Deprecated/;
 
     virtual bool hasDragEnabled() const;
-    virtual QgsMimeDataUtils::Uri mimeUri() const;
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
 
 
     static bool hiddenPath( const QString &path );
@@ -861,7 +876,7 @@ Check if the given path is hidden from the browser model
 
 class QgsProjectItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 Data item that can be used to represent QGIS projects.
 %End
 
@@ -882,14 +897,14 @@ A data item holding a reference to a QGIS project file.
 
     virtual bool hasDragEnabled() const;
 
-    virtual QgsMimeDataUtils::Uri mimeUri() const;
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
 
 
 };
 
 class QgsErrorItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 Data item that can be used to report problems (e.g. network error)
 %End
 
@@ -906,7 +921,7 @@ Data item that can be used to report problems (e.g. network error)
 
 class QgsDirectoryParamWidget : QTreeWidget
 {
-%Docstring
+%Docstring(signature="appended")
 
 Browser parameter widget implementation for directory items.
 %End
@@ -927,7 +942,7 @@ Browser parameter widget implementation for directory items.
 
 class QgsFavoritesItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 Contains various Favorites directories
 
 .. versionadded:: 3.0
@@ -981,7 +996,7 @@ Icon for favorites group
 
 class QgsZipItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
 %End
 
@@ -1030,7 +1045,7 @@ Creates a new data item from the specified path.
 
 class QgsFieldsItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 A collection of field items with some internal logic to retrieve
 the fields and a the vector layer instance from a connection URI,
 the schema and the table name.
@@ -1100,7 +1115,7 @@ Returns the (possibly NULL) properties of the table this fields belong to.
 
 class QgsFieldItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 A layer field item, information about the connection URI, the schema and the
 table as well as the layer instance the field belongs to can be retrieved
 from the parent QgsFieldsItem object.

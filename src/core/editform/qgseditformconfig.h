@@ -34,6 +34,7 @@ class QgsAttributeEditorContainer;
 /**
  * \ingroup core
  * \class QgsEditFormConfig
+ * \brief Contains configuration settings for an editor form.
  */
 class CORE_EXPORT QgsEditFormConfig
 {
@@ -235,6 +236,23 @@ class CORE_EXPORT QgsEditFormConfig
      */
     void setLabelOnTop( int idx, bool onTop );
 
+    /**
+     * If this returns TRUE, the widget at the given \a index will remember the previously
+     * entered value from this QGIS session when creating new features.
+     *
+     * \see setReuseLastValue()
+     * \since QGIS 3.20
+     */
+    bool reuseLastValue( int index ) const;
+
+    /**
+     * Sets whether the widget at the given \a index will remember the previously
+     * entered value from this QGIS session when creating new features.
+     *
+     * \see reuseLastValue()
+     * \since QGIS 3.20
+     */
+    void setReuseLastValue( int index, bool reuse );
 
     // Python form init function stuff
 

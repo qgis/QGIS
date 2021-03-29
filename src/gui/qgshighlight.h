@@ -24,6 +24,7 @@
 #include <QPen>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPointer>
 #include "qgis_gui.h"
 
 class QgsMapLayer;
@@ -39,7 +40,7 @@ class QgsSymbol;
 
 /**
  * \ingroup gui
- * A class for highlight features on the map.
+ * \brief A class for highlight features on the map.
  *
  * The QgsHighlight class provides a transparent overlay canvas item
  * for highlighting features or geometries on a map canvas.
@@ -195,7 +196,7 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     QPen mPen;
     QgsGeometry mOriginalGeometry;
     QgsGeometry mGeometry;
-    QgsMapLayer *mLayer = nullptr;
+    QPointer< QgsMapLayer > mLayer;
     QgsFeature mFeature;
     double mBuffer = 0; // line / stroke buffer in pixels
     double mMinWidth = 0; // line / stroke minimum width in pixels

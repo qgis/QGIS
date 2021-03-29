@@ -41,7 +41,7 @@ class QgsMeshDatasetGroupStore;
 /**
  * \ingroup core
  *
- * Represents a mesh layer supporting display of data on structured or unstructured meshes
+ * \brief Represents a mesh layer supporting display of data on structured or unstructured meshes
  *
  * The QgsMeshLayer is instantiated by specifying the name of a data provider,
  * such as mdal, and url defining the specific data set to connect to.

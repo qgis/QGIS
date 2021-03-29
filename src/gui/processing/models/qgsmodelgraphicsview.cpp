@@ -31,6 +31,8 @@
 #include <QScrollBar>
 #include <QApplication>
 #include <QClipboard>
+#include <QMimeData>
+#include <QTimer>
 
 ///@cond NOT_STABLE
 
@@ -168,7 +170,7 @@ void QgsModelGraphicsView::scaleSafe( double scale )
 {
   double currentScale = transform().m11();
   scale *= currentScale;
-  scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
+  scale = std::clamp( scale, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
 }
 
@@ -228,7 +230,7 @@ void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MidButton )
+    if ( event->button() == Qt::MiddleButton )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
@@ -774,17 +776,17 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
 
       if ( !offset.isNull() )
       {
-        for ( QgsProcessingModelGroupBox pastedGroup : qgis::as_const( pastedGroups ) )
+        for ( QgsProcessingModelGroupBox pastedGroup : std::as_const( pastedGroups ) )
         {
           pastedGroup.setPosition( pastedGroup.position() + offset );
           modelScene()->model()->addGroupBox( pastedGroup );
         }
-        for ( const QString &pastedParam : qgis::as_const( pastedParameters ) )
+        for ( const QString &pastedParam : std::as_const( pastedParameters ) )
         {
           modelScene()->model()->parameterComponent( pastedParam ).setPosition( modelScene()->model()->parameterComponent( pastedParam ).position() + offset );
           modelScene()->model()->parameterComponent( pastedParam ).comment()->setPosition( modelScene()->model()->parameterComponent( pastedParam ).comment()->position() + offset );
         }
-        for ( const QString &pastedAlg : qgis::as_const( pastedAlgorithms ) )
+        for ( const QString &pastedAlg : std::as_const( pastedAlgorithms ) )
         {
           modelScene()->model()->childAlgorithm( pastedAlg ).setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).position() + offset );
           modelScene()->model()->childAlgorithm( pastedAlg ).comment()->setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).comment()->position() + offset );
@@ -810,11 +812,7 @@ QgsModelViewSnapMarker::QgsModelViewSnapMarker()
 {
   QFont f;
   QFontMetrics fm( f );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mSize = fm.width( QStringLiteral( "X" ) );
-#else
   mSize = fm.horizontalAdvance( 'X' );
-#endif
   setPen( QPen( Qt::transparent, mSize ) );
 
   setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );

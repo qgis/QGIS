@@ -11,6 +11,9 @@
 
 class QgsPieDiagram: QgsDiagram /NoDefaultCtors/
 {
+%Docstring(signature="appended")
+A pie chart diagram.
+%End
 
 %TypeHeaderCode
 #include "qgspiediagram.h"

@@ -33,6 +33,7 @@
 #include <QDesktopWidget>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QStandardPaths>
 
 #include <cstdio>
 #include <cstdlib>
@@ -886,16 +887,14 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
-#endif
 
   // Set up an OpenGL Context to be shared between threads beforehand
   // for plugins that depend on Qt WebEngine module.
   // As suggested by Qt documentation at:
   //   - https://doc.qt.io/qt-5/qtwebengine.html
   //   - https://code.qt.io/cgit/qt/qtwebengine.git/plain/src/webenginewidgets/api/qtwebenginewidgetsglobal.cpp
-#if defined(QT_OS_WIN) && !defined(QT_NO_OPENGL) && (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) )
+#if defined(QT_OS_WIN) && !defined(QT_NO_OPENGL)
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
 #endif
 
@@ -1036,7 +1035,7 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag );
 
   //write the log messages written before creating QgsApplication
-  for ( const QString &preApplicationLogMessage : qgis::as_const( preApplicationLogMessages ) )
+  for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage );
 
   // Settings migration is only supported on the default profile for now.
@@ -1400,7 +1399,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  for ( const QString &layerName : qgis::as_const( sFileList ) )
+  for ( const QString &layerName : std::as_const( sFileList ) )
   {
     QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
@@ -1435,7 +1434,11 @@ int main( int argc, char *argv[] )
         break;
       }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       coords[i] = myInitialExtent.midRef( posOld, pos - posOld ).toDouble( &ok );
+#else
+      coords[i] = QStringView {myInitialExtent}.mid( posOld, pos - posOld ).toDouble( &ok );
+#endif
       if ( !ok )
         break;
 
@@ -1444,7 +1447,13 @@ int main( int argc, char *argv[] )
 
     // parse last coordinate
     if ( ok )
+    {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       coords[3] = myInitialExtent.midRef( posOld ).toDouble( &ok );
+#else
+      coords[3] = QStringView {myInitialExtent}.mid( posOld ).toDouble( &ok );
+#endif
+    }
 
     if ( !ok )
     {

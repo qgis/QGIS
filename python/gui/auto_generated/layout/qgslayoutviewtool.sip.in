@@ -15,7 +15,7 @@
 
 class QgsLayoutViewTool : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for all layout view tools.
 Layout view tools are user interactive tools for manipulating and adding items
 to :py:class:`QgsLayoutView` widgets.

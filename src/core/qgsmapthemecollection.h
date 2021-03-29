@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * \ingroup core
-     * Individual record of a visible layer in a map theme record.
+     * \brief Individual record of a visible layer in a map theme record.
      * \since QGIS 3.0
      */
     class CORE_EXPORT MapThemeLayerRecord
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * \ingroup core
-     * Individual map theme record of visible layers and styles.
+     * \brief Individual map theme record of visible layers and styles.
      *
      * \since QGIS 3.0, Previously called PresetRecord
      */

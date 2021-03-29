@@ -17,8 +17,11 @@
 
 #include "qgslayoututils.h"
 #include "qgslayout.h"
-#include "qgsrendercontext.h"
 #include "qgslayoutitemmap.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsrendercontext.h"
+#include "qgssettings.h"
+
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <cmath>
@@ -228,11 +231,7 @@ double QgsLayoutUtils::textWidthMM( const QFont &font, const QString &text )
   double maxWidth = 0;
   for ( const QString &line : multiLineSplit )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    maxWidth = std::max( maxWidth, ( fontMetrics.width( line ) / FONT_WORKAROUND_SCALE ) );
-#else
     maxWidth = std::max( maxWidth, ( fontMetrics.horizontalAdvance( line ) / FONT_WORKAROUND_SCALE ) );
-#endif
   }
   return maxWidth;
 }
@@ -481,7 +480,7 @@ bool QgsLayoutUtils::itemIsAClippingSource( const QgsLayoutItem *item )
   // current only maps can be clipped
   QList< QgsLayoutItemMap * > maps;
   item->layout()->layoutItems( maps );
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     if ( map->itemClippingSettings()->isActive() && map->itemClippingSettings()->sourceItem() == item )
       return true;
@@ -499,4 +498,30 @@ double QgsLayoutUtils::mmToPoints( const double mmSize )
 {
   //conversion to points based on 1 point = 1/72 inch
   return ( mmSize / 0.3527 );
+}
+
+QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
+{
+  QVector< double > mapScales;
+  if ( layout->project() )
+    mapScales = layout->project()->viewSettings()->mapScales();
+
+  bool hasProjectScales( layout->project()->viewSettings()->useProjectScales() );
+  if ( !hasProjectScales || mapScales.isEmpty() )
+  {
+    // default to global map tool scales
+    QgsSettings settings;
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
+    const QStringList scales = scalesStr.split( ',' );
+    for ( const QString &scale : scales )
+    {
+      QStringList parts( scale.split( ':' ) );
+      if ( parts.size() == 2 )
+      {
+        mapScales.push_back( parts[1].toDouble() );
+      }
+    }
+  }
+
+  return mapScales;
 }

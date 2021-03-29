@@ -42,6 +42,7 @@ class QgsLineSegment2D;
  */
 class CORE_EXPORT QgsLineString: public QgsCurve
 {
+
   public:
 
     /**
@@ -144,9 +145,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     {
       std::unique_ptr< QgsPoint > p;
       if ( a0 >= 0 )
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
       else // negative index, count backwards from end
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End
@@ -589,6 +590,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    bool isClosed() const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     /**
      * Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.
@@ -723,9 +726,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     {
       std::unique_ptr< QgsPoint > p;
       if ( a0 >= 0 )
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
       else
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End

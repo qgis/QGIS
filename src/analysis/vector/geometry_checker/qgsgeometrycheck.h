@@ -34,7 +34,7 @@ class QgsFeaturePool;
 
 /**
  * \ingroup analysis
- * This class implements a geometry check.
+ * \brief This class implements a geometry check.
  *
  * Geometry checks run over a set of features and can detect errors like topological
  * or other issues which are reported in the geometry validation panel in QGIS and

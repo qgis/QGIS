@@ -26,7 +26,7 @@ class QgsRasterLayer;
 
 /**
  * \ingroup gui
- * A widget to select format-specific raster saving options
+ * \brief A widget to select format-specific raster saving options
  */
 class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
 {

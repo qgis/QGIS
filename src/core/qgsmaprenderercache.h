@@ -27,7 +27,7 @@
 
 /**
  * \ingroup core
- * This class is responsible for keeping cache of rendered images resulting from
+ * \brief This class is responsible for keeping cache of rendered images resulting from
  * a map rendering job.
  *
  * Once a job has a rendered image stored in the cache (using setCacheImage(...)),
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * \returns flag whether the parameters are the same as last time
      * \deprecated since QGIS 3.18 - will be removed in QGIS 4.0. Use the updateParameters() and clear()
      */
-    bool Q_DECL_DEPRECATED init( const QgsRectangle &extent, double scale ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED bool init( const QgsRectangle &extent, double scale ) SIP_DEPRECATED;
 
     /**
      * Sets extent and scale parameters

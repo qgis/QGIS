@@ -31,8 +31,10 @@ class QgsGraduatedSymbolRenderer;
 
 /**
  * \ingroup core
-When drawing a vector layer with rule-based renderer, it goes through
-the rules and draws features with symbols from rules that match.
+ * \brief Rule based renderer.
+ *
+ * When drawing a vector layer with rule-based renderer, it goes through
+ * the rules and draws features with symbols from rules that match.
  */
 class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 {
@@ -100,9 +102,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         zIndex = rh.zIndex;
         qDeleteAll( jobs );
         jobs.clear();
-        for ( RenderJob *job :  qgis::as_const( rh.jobs ) )
+        for ( auto it = rh.jobs.constBegin(); it != rh.jobs.constEnd(); ++it )
         {
-          jobs << new RenderJob( *job );
+          jobs << new RenderJob( *( *it ) );
         }
         return *this;
       }
@@ -110,9 +112,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
         : zIndex( other.zIndex ), jobs()
       {
-        for ( RenderJob *job : qgis::as_const( other.jobs ) )
+        for ( auto it = other.jobs.constBegin(); it != other.jobs.constEnd(); ++it )
         {
-          jobs << new RenderJob( *job );
+          jobs << new RenderJob( * ( *it ) );
         }
       }
 
@@ -126,12 +128,13 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /**
      * \ingroup core
-      This class keeps data about a rules for rule-based renderer.
-      A rule consists of a symbol, filter expression and range of scales.
-      If filter is empty, it matches all features.
-      If scale range has both values zero, it matches all scales.
-      If one of the min/max scale denominators is zero, there is no lower/upper bound for scales.
-      A rule matches if both filter and scale range match.
+     * \brief  This class keeps data about a rules for rule-based renderer.
+     *
+     * A rule consists of a symbol, filter expression and range of scales.
+     * If filter is empty, it matches all features.
+     * If scale range has both values zero, it matches all scales.
+     * If one of the min/max scale denominators is zero, there is no lower/upper bound for scales.
+     * A rule matches if both filter and scale range match.
      */
     class CORE_EXPORT Rule
     {
@@ -542,11 +545,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     static void refineRuleScales( QgsRuleBasedRenderer::Rule *initialRule, QList<int> scales );
 
     /**
-     * creates a QgsRuleBasedRenderer from an existing renderer.
+     * Creates a new QgsRuleBasedRenderer from an existing \a renderer.
+     *
+     * Since QGIS 3.20, the optional \a layer parameter is required for conversions of some renderer types.
+     *
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      * \since QGIS 2.5
      */
-    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
     static void convertToDataDefinedSymbology( QgsSymbol *symbol, const QString &sizeScaleField, const QString &rotationField = QString() );

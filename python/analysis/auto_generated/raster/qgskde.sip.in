@@ -13,7 +13,7 @@
 
 class QgsKernelDensityEstimation
 {
-%Docstring
+%Docstring(signature="appended")
 Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
 
 .. versionadded:: 3.0

@@ -88,7 +88,7 @@ void QgsReportOrganizerWidget::setEditedSection( QgsAbstractReportSection *secti
 
 void QgsReportOrganizerWidget::addLayoutSection()
 {
-  std::unique_ptr< QgsReportSectionLayout > section = qgis::make_unique< QgsReportSectionLayout >();
+  std::unique_ptr< QgsReportSectionLayout > section = std::make_unique< QgsReportSectionLayout >();
   QgsAbstractReportSection *newSection = section.get();
   mSectionModel->addSection( mViewSections->currentIndex(), std::move( section ) );
   QModelIndex newIndex = mSectionModel->indexForSection( newSection );
@@ -97,7 +97,7 @@ void QgsReportOrganizerWidget::addLayoutSection()
 
 void QgsReportOrganizerWidget::addFieldGroupSection()
 {
-  std::unique_ptr< QgsReportSectionFieldGroup > section = qgis::make_unique< QgsReportSectionFieldGroup >();
+  std::unique_ptr< QgsReportSectionFieldGroup > section = std::make_unique< QgsReportSectionFieldGroup >();
   QgsAbstractReportSection *newSection = section.get();
   mSectionModel->addSection( mViewSections->currentIndex(), std::move( section ) );
   QModelIndex newIndex = mSectionModel->indexForSection( newSection );

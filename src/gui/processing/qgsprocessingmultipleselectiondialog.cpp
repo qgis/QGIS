@@ -28,6 +28,7 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QFileDialog>
+#include <QDirIterator>
 
 ///@cond NOT_STABLE
 
@@ -174,7 +175,7 @@ void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList
     remainingOptions.removeAll( option );
   }
 
-  for ( const QVariant &option : qgis::as_const( remainingOptions ) )
+  for ( const QVariant &option : std::as_const( remainingOptions ) )
   {
     addOption( option, mValueFormatter( option ), false );
   }
@@ -201,7 +202,7 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
     }
   }
 
-  std::unique_ptr< QStandardItem > item = qgis::make_unique< QStandardItem >( title );
+  std::unique_ptr< QStandardItem > item = std::make_unique< QStandardItem >( title );
   item->setData( value, Qt::UserRole );
   item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
   item->setCheckable( true );

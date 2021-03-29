@@ -31,6 +31,8 @@
 #include <QVector>
 #include <memory>
 #include <set>
+#include <QRegularExpression>
+#include <QTextStream>
 
 const int QgsPalettedRasterRenderer::MAX_FLOAT_CLASSES = 65536;
 
@@ -388,11 +390,18 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
 
   QRegularExpression linePartRx( QStringLiteral( "[\\s,:]+" ) );
 
-  QStringList parts = string.split( '\n', QString::SkipEmptyParts );
-  const auto constParts = parts;
-  for ( const QString &part : constParts )
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+  const QStringList parts = string.split( '\n', QString::SkipEmptyParts );
+#else
+  const QStringList parts = string.split( '\n', Qt::SkipEmptyParts );
+#endif
+  for ( const QString &part : parts )
   {
-    QStringList lineParts = part.split( linePartRx, QString::SkipEmptyParts );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QStringList lineParts = part.split( linePartRx, QString::SkipEmptyParts );
+#else
+    const QStringList lineParts = part.split( linePartRx, Qt::SkipEmptyParts );
+#endif
     bool ok = false;
     switch ( lineParts.count() )
     {
@@ -566,6 +575,11 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
         }
       }
     }
+    // must be sorted
+    std::sort( data.begin(), data.end(), []( const Class & a, const Class & b ) -> bool
+    {
+      return a.value < b.value;
+    } );
   }
   else
   {
@@ -600,7 +614,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
   }
 
   // assign colors from ramp
-  if ( ramp )
+  if ( ramp && numClasses > 0 )
   {
     int i = 0;
 

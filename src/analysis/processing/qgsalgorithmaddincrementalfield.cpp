@@ -86,13 +86,13 @@ void QgsAddIncrementalFieldAlgorithm::initParameters( const QVariantMap & )
                 QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
 
   // sort params
-  std::unique_ptr< QgsProcessingParameterExpression > sortExp = qgis::make_unique< QgsProcessingParameterExpression >( QStringLiteral( "SORT_EXPRESSION" ), QObject::tr( "Sort expression" ), QVariant(), QStringLiteral( "INPUT" ), true );
+  std::unique_ptr< QgsProcessingParameterExpression > sortExp = std::make_unique< QgsProcessingParameterExpression >( QStringLiteral( "SORT_EXPRESSION" ), QObject::tr( "Sort expression" ), QVariant(), QStringLiteral( "INPUT" ), true );
   sortExp->setFlags( sortExp->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( sortExp.release() );
-  std::unique_ptr< QgsProcessingParameterBoolean > sortAscending = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SORT_ASCENDING" ), QObject::tr( "Sort ascending" ), true );
+  std::unique_ptr< QgsProcessingParameterBoolean > sortAscending = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SORT_ASCENDING" ), QObject::tr( "Sort ascending" ), true );
   sortAscending->setFlags( sortAscending->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( sortAscending.release() );
-  std::unique_ptr< QgsProcessingParameterBoolean > sortNullsFirst = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SORT_NULLS_FIRST" ), QObject::tr( "Sort nulls first" ), false );
+  std::unique_ptr< QgsProcessingParameterBoolean > sortNullsFirst = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SORT_NULLS_FIRST" ), QObject::tr( "Sort nulls first" ), false );
   sortNullsFirst->setFlags( sortNullsFirst->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( sortNullsFirst.release() );
 }
@@ -131,7 +131,7 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
 {
   if ( !mGroupedFieldNames.empty() && mGroupedFields.empty() )
   {
-    for ( const QString &field : qgis::as_const( mGroupedFieldNames ) )
+    for ( const QString &field : std::as_const( mGroupedFieldNames ) )
     {
       int idx = mFields.lookupField( field );
       if ( idx >= 0 )
@@ -150,7 +150,7 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
   {
     QgsAttributes groupAttributes;
     groupAttributes.reserve( mGroupedFields.size() );
-    for ( int index : qgis::as_const( mGroupedFields ) )
+    for ( int index : std::as_const( mGroupedFields ) )
     {
       groupAttributes << f.attribute( index );
     }

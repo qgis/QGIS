@@ -38,7 +38,12 @@
 #include <QFontMetrics>
 #include <QTime>
 #include <QPainter>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
+#else
+#include <QScreen>
+#endif
+#include <QTextBoundaryFinder>
 
 #include "diagram/qgsdiagram.h"
 #include "qgsdiagramrenderer.h"
@@ -1301,7 +1306,13 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   context.setMapToPixel( newCoordXForm );
   context.setFlag( QgsRenderContext::Antialiasing, true );
 
-  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  const double logicalDpiX = QgsApplication::desktop()->logicalDpiX();
+#else
+  const double logicalDpiX = QApplication::topLevelWidgets().first()->screen()->devicePixelRatio();
+#endif
+  context.setScaleFactor( logicalDpiX / 25.4 );
+
   context.setUseAdvancedEffects( true );
   context.setPainter( &painter );
 
@@ -1331,11 +1342,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   textRect.setTop( bottom - textHeight );
   textRect.setBottom( bottom );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  const double iconWidth = QFontMetricsF( QFont() ).width( 'X' ) * Qgis::UI_SCALE_FACTOR;
-#else
   const double iconWidth = QFontMetricsF( QFont() ).horizontalAdvance( 'X' ) * Qgis::UI_SCALE_FACTOR;
-#endif
 
   if ( settings.callout() && settings.callout()->enabled() )
   {
@@ -1524,11 +1531,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   {
     QString dirSym = leftDirSymb;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    if ( fm->width( rightDirSymb ) > fm->width( dirSym ) )
-#else
     if ( fm->horizontalAdvance( rightDirSymb ) > fm->horizontalAdvance( dirSym ) )
-#endif
       dirSym = rightDirSymb;
 
     switch ( placeDirSymb )
@@ -1569,11 +1572,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
       for ( const auto &line : multiLineSplit )
       {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-        w = std::max( w, fm->width( line ) );
-#else
         w = std::max( w, fm->horizontalAdvance( line ) );
-#endif
       }
       break;
     }
@@ -1587,7 +1586,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       int maxLineLength = 0;
       for ( const auto &line : multiLineSplit )
       {
-        maxLineLength = std::max( maxLineLength, line.length() );
+        maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
       }
       h = fm->ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
       break;
@@ -1598,11 +1597,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       double widthHorizontal = 0.0;
       for ( const auto &line : multiLineSplit )
       {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-        widthHorizontal = std::max( w, fm->width( line ) );
-#else
         widthHorizontal = std::max( w, fm->horizontalAdvance( line ) );
-#endif
       }
 
       double widthVertical = 0.0;
@@ -1617,7 +1612,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       int maxLineLength = 0;
       for ( const auto &line : multiLineSplit )
       {
-        maxLineLength = std::max( maxLineLength, line.length() );
+        maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
       }
       heightVertical = fm->ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
 
@@ -1952,8 +1947,8 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
       const QPointF maxcharanglePt = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
       if ( ok )
       {
-        maxcharanglein = qBound( 20.0, static_cast< double >( maxcharanglePt.x() ), 60.0 );
-        maxcharangleout = qBound( 20.0, static_cast< double >( maxcharanglePt.y() ), 95.0 );
+        maxcharanglein = std::clamp( static_cast< double >( maxcharanglePt.x() ), 20.0, 60.0 );
+        maxcharangleout = std::clamp( static_cast< double >( maxcharanglePt.y() ), 20.0, 95.0 );
       }
     }
     // make sure maxcharangleout is always negative
@@ -2497,6 +2492,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setLineAnchorPercent( lineSettings.lineAnchorPercent() );
   ( *labelFeature )->setLineAnchorType( lineSettings.anchorType() );
   ( *labelFeature )->setLabelAllParts( labelAll );
+  ( *labelFeature )->setOriginalFeatureCrs( context.coordinateTransform().sourceCrs() );
   if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
   {
     //register symbol size
@@ -2606,7 +2602,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
       double priorityD = exprVal.toDouble( &ok );
       if ( ok )
       {
-        priorityD = qBound( 0.0, priorityD, 10.0 );
+        priorityD = std::clamp( priorityD, 0.0, 10.0 );
         priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
         ( *labelFeature )->setPriority( priorityD );
       }
@@ -3065,7 +3061,6 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   }
   else if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::BufferDraw ) && exprVal.isNull() )
   {
-    drawBuffer = false;
     dataDefinedValues.insert( QgsPalLayerSettings::BufferDraw, QVariant( drawBuffer ) );
   }
 
@@ -3649,7 +3644,7 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
   {
     QStringList autoWrappedLines;
     autoWrappedLines.reserve( multiLineSplit.count() );
-    for ( const QString &line : qgis::as_const( multiLineSplit ) )
+    for ( const QString &line : std::as_const( multiLineSplit ) )
     {
       autoWrappedLines.append( QgsStringUtils::wordWrap( line, autoWrapLength, useMaxLineLengthWhenAutoWrapping ).split( '\n' ) );
     }
@@ -4294,7 +4289,6 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
   }
 }
 
-
 void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates )
 {
   QgsPointXY outPt = xform->transform( lp->getX(), lp->getY() );
@@ -4352,52 +4346,4 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *p
   // show all parts of the multipart label
   if ( lp->nextPart() )
     drawLabelCandidateRect( lp->nextPart(), painter, xform, candidates );
-}
-
-QgsLabelingResults::QgsLabelingResults()
-  : mLabelSearchTree( qgis::make_unique< QgsLabelSearchTree >() )
-{
-}
-
-QgsLabelingResults::~QgsLabelingResults() = default;
-
-QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPointXY &p ) const
-{
-  QList<QgsLabelPosition> positions;
-
-  QList<QgsLabelPosition *> positionPointers;
-  if ( mLabelSearchTree )
-  {
-    mLabelSearchTree->label( p, positionPointers );
-    QList<QgsLabelPosition *>::const_iterator pointerIt = positionPointers.constBegin();
-    for ( ; pointerIt != positionPointers.constEnd(); ++pointerIt )
-    {
-      positions.push_back( QgsLabelPosition( **pointerIt ) );
-    }
-  }
-
-  return positions;
-}
-
-QList<QgsLabelPosition> QgsLabelingResults::labelsWithinRect( const QgsRectangle &r ) const
-{
-  QList<QgsLabelPosition> positions;
-
-  QList<QgsLabelPosition *> positionPointers;
-  if ( mLabelSearchTree )
-  {
-    mLabelSearchTree->labelsInRect( r, positionPointers );
-    QList<QgsLabelPosition *>::const_iterator pointerIt = positionPointers.constBegin();
-    for ( ; pointerIt != positionPointers.constEnd(); ++pointerIt )
-    {
-      positions.push_back( QgsLabelPosition( **pointerIt ) );
-    }
-  }
-
-  return positions;
-}
-
-void QgsLabelingResults::setMapSettings( const QgsMapSettings &settings )
-{
-  mLabelSearchTree->setMapSettings( settings );
 }

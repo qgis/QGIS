@@ -157,7 +157,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 line = lines.readline().strip('\n').strip()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = list()
+        commands = []
         self.exportedLayers = {}
 
         self.preProcessInputs()
@@ -230,9 +230,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     self.exportedLayers[param.name()] = files
                 else:
                     for layer in layers:
-                        temp_params = {}
-                        temp_params[param.name()] = layer
-
+                        temp_params = {param.name(): layer}
                         if not crs:
                             source = self.parameterAsSource(temp_params, param.name(), context)
                             if source is None:
@@ -256,7 +254,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         command += ' ' + ' '.join(self.hardcoded_strings)
 
         for param in self.parameterDefinitions():
-            if not param.name() in parameters or parameters[param.name()] is None:
+            if param.name() not in parameters or parameters[param.name()] is None:
                 continue
             if param.isDestination():
                 continue
@@ -274,7 +272,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
             elif isinstance(param, QgsProcessingParameterMatrix):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
-                    f.write('\t'.join([col for col in param.headers()]) + '\n')
+                    f.write('\t'.join(param.headers()) + '\n')
                     values = self.parameterAsMatrix(parameters, param.name(), context)
                     for i in range(0, len(values), 3):
                         s = '{}\t{}\t{}\n'.format(values[i], values[i + 1], values[i + 2])
@@ -287,11 +285,12 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 offset = [halfcell, -halfcell, halfcell, -halfcell]
                 rect = self.parameterAsExtent(parameters, param.name(), context)
 
-                values = []
-                values.append(rect.xMinimum())
-                values.append(rect.xMaximum())
-                values.append(rect.yMinimum())
-                values.append(rect.yMaximum())
+                values = [
+                    rect.xMinimum(),
+                    rect.xMaximum(),
+                    rect.yMinimum(),
+                    rect.yMaximum(),
+                ]
 
                 for i in range(4):
                     command += ' -{} {}'.format(param.name().split(' ')[i], float(values[i]) + offset[i])
@@ -328,18 +327,17 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
         # special treatment for RGB algorithm
         # TODO: improve this and put this code somewhere else
-        for out in self.destinationParameterDefinitions():
-            if isinstance(out, QgsProcessingParameterRasterDestination):
-                filename = self.parameterAsOutputLayer(parameters, out.name(), context)
-                filename2 = os.path.splitext(filename)[0] + '.sgrd'
-                if self.cmdname == 'RGB Composite':
+        if self.cmdname == 'RGB Composite':
+            for out in self.destinationParameterDefinitions():
+                if isinstance(out, QgsProcessingParameterRasterDestination):
+                    filename = self.parameterAsOutputLayer(parameters, out.name(), context)
+                    filename2 = os.path.splitext(filename)[0] + '.sgrd'
                     commands.append('io_grid_image 0 -COLOURING 4 -GRID:"{}" -FILE:"{}"'.format(filename2, filename))
 
         # 3: Run SAGA
         commands = self.editCommands(commands)
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
-        loglines = []
-        loglines.append(self.tr('SAGA execution commands'))
+        loglines = [self.tr('SAGA execution commands')]
         for line in commands:
             feedback.pushCommandInfo(line)
             loglines.append(line)
@@ -364,11 +362,11 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 oldPath = os.path.join(oldFolder, f)
                 shutil.move(oldPath, newPath)
 
-        result = {}
-        for o in self.outputDefinitions():
-            if o.name() in output_files:
-                result[o.name()] = output_files[o.name()]
-        return result
+        return {
+            o.name(): output_files[o.name()]
+            for o in self.outputDefinitions()
+            if o.name() in output_files
+        }
 
     def preProcessInputs(self):
         name = self.name().replace('.', '_')

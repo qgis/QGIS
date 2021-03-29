@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QUrl>
 
 QIcon QgsBookmarksItem::iconBookmarks()
 {
@@ -101,6 +102,11 @@ QgsMimeDataUtils::Uri QgsQlrDataItem::mimeUri() const
   u.name = name();
   u.uri = path();
   return u;
+}
+
+QgsMimeDataUtils::UriList QgsQlrDataItem::mimeUris() const
+{
+  return QgsMimeDataUtils::UriList() << QgsQlrDataItem::mimeUri();
 }
 
 //
@@ -392,7 +398,7 @@ void QgsStyleXmlDataItem::browseStyle( const QString &xmlPath )
   QgsStyle s;
   s.createMemoryDatabase();
 
-  auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+  auto cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
   if ( s.importXml( xmlPath ) )
   {
     cursorOverride.reset();

@@ -37,7 +37,7 @@ class QgsField;
 class QgsGeometry;
 class QgsRectangle;
 class QgsAbstractGeometry;
-
+class QgsSymbol;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -48,7 +48,7 @@ class QgsAbstractGeometry;
 
 /**
  * \ingroup core
- * The feature class encapsulates a single feature including its id,
+ * \brief The feature class encapsulates a single feature including its id,
  * geometry and a list of field/values attributes.
  * \note QgsFeature objects are implicitly shared.
  */
@@ -245,10 +245,14 @@ class CORE_EXPORT QgsFeature
 
     /**
      * Sets the feature's attributes.
-     * The feature will be valid after.
-     * \param attrs attribute list
+     * The feature will be valid after. The number of provided attributes need to match exactly the
+     * number of the feature's fields.
+     * \param attrs List of attribute values
      * \see setAttribute
      * \see attributes
+     * \warning Method will return false if the number of provided attributes does not exactly match
+     * the number of the feature's fields and it will not be possible to add this feature to the data
+     * provider.
      */
     void setAttributes( const QgsAttributes &attrs );
 
@@ -557,6 +561,22 @@ class CORE_EXPORT QgsFeature
     }
     % End
 #endif
+
+    /**
+     * Returns the feature's embedded symbology, or NULLPTR if the feature has no embedded symbol.
+     *
+     * \since QGIS 3.20
+     */
+    const QgsSymbol *embeddedSymbol() const;
+
+    /**
+     * Sets the feature's embedded \a symbol.
+     *
+     * Ownership of \a symbol is transferred to the feature.
+     *
+     * \since QGIS 3.20
+     */
+    void setEmbeddedSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
     /**
      * Utility method to get attribute index from name. Field map must be associated using setFields()

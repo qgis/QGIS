@@ -16,9 +16,11 @@
  ***************************************************************************/
 #include "qgsdb2geometrycolumns.h"
 #include "qgsdb2tablemodel.h" // needed for QgsDB2LayerProperty
-#include <QtSql>
 #include "qgslogger.h"
 
+#include <QSqlError>
+#include <QSqlIndex>
+#include <QSqlField>
 
 QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
   : mDatabase( db )

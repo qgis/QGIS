@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QAbstractListModel>
+#include <QSortFilterProxyModel>
 #include <QCheckBox>
 #include <QDir>
 #include <QFileDialog>
@@ -216,19 +217,25 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 
 ///@endcond
 
+
+
+
+QgsSvgSelectorFilterModel::QgsSvgSelectorFilterModel( QObject *parent, const QString &path, int iconSize )
+  : QSortFilterProxyModel( parent )
+{
+  mModel = new QgsSvgSelectorListModel( parent, path, iconSize );
+  setFilterCaseSensitivity( Qt::CaseInsensitive );
+  setSourceModel( mModel );
+  setFilterRole( Qt::UserRole );
+}
+
 //,
 // QgsSvgSelectorListModel
 //
 
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, int iconSize )
-  : QAbstractListModel( parent )
-  , mSvgLoader( new QgsSvgSelectorLoader( this ) )
-  , mIconSize( iconSize )
-{
-  mSvgLoader->setPath( QString() );
-  connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
-  mSvgLoader->start();
-}
+  : QgsSvgSelectorListModel( parent, QString(), iconSize )
+{}
 
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString &path, int iconSize )
   : QAbstractListModel( parent )
@@ -388,16 +395,24 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
 
   connect( mSvgSourceLineEdit, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 3 ) ) );
-#else
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
-#endif
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
   mImagesListView->setUniformItemSizes( false );
 
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
+
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
+  {
+    if ( !mImagesListView->selectionModel()->selectedIndexes().isEmpty() )
+    {
+      disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+      mImagesListView->selectionModel()->clearSelection();
+      connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+    }
+    qobject_cast<QgsSvgSelectorFilterModel *>( mImagesListView->model() )->setFilterFixedString( filterText );
+  } );
+
 
   mParametersModel = new QgsSvgParametersModel( this );
   mParametersTreeView->setModel( mParametersModel );
@@ -488,8 +503,9 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView, path, mIconSize );
+  QgsSvgSelectorFilterModel *m = new QgsSvgSelectorFilterModel( mImagesListView, path, mIconSize );
   mImagesListView->setModel( m );
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, m, &QSortFilterProxyModel::setFilterFixedString );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 
   connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -517,7 +533,7 @@ void QgsSvgSelectorWidget::populateList()
 
   // Initially load the icons in the List view without any grouping
   QAbstractItemModel *oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView );
+  QgsSvgSelectorFilterModel *m = new QgsSvgSelectorFilterModel( mImagesListView );
   mImagesListView->setModel( m );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 }
@@ -575,7 +591,7 @@ void QgsSvgParametersModel::setParameters( const QMap<QString, QgsProperty> &par
 QMap<QString, QgsProperty> QgsSvgParametersModel::parameters() const
 {
   QMap<QString, QgsProperty> params;
-  for ( const Parameter &param : qgis::as_const( mParameters ) )
+  for ( const Parameter &param : std::as_const( mParameters ) )
   {
     if ( !param.name.isEmpty() )
       params.insert( param.name, param.property );
@@ -647,7 +663,7 @@ bool QgsSvgParametersModel::setData( const QModelIndex &index, const QVariant &v
     {
       QString oldName = mParameters.at( index.row() ).name;
       QString newName = value.toString();
-      for ( const Parameter &param : qgis::as_const( mParameters ) )
+      for ( const Parameter &param : std::as_const( mParameters ) )
       {
         if ( param.name == newName && param.name != oldName )
         {
@@ -741,3 +757,5 @@ void QgsSvgParameterValueDelegate::updateEditorGeometry( QWidget *editor, const 
 }
 
 ///@endcond
+
+

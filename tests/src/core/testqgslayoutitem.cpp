@@ -1439,8 +1439,8 @@ void TestQgsLayoutItem::itemVariablesFunction()
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
 
-  std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
-  std::unique_ptr< QgsVectorLayer > layer2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() );
   QgsExpression e5( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_layer_ids' )" ) );
   r = e5.evaluate( &c );
@@ -1497,17 +1497,17 @@ void TestQgsLayoutItem::mapCreditsFunction()
   QCOMPARE( r.toString(), QString() );
 
   // with layers
-  std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsLayerMetadata metadata;
   metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
   layer->setMetadata( metadata );
-  std::unique_ptr< QgsVectorLayer > layer2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   metadata.setRights( QStringList() << QStringLiteral( "CC NC" ) );
   layer2->setMetadata( metadata );
-  std::unique_ptr< QgsVectorLayer > layer3 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer3 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
   metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
   layer3->setMetadata( metadata );
-  std::unique_ptr< QgsVectorLayer > layer4 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer4 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
 
   map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() << layer3.get()  << layer4.get() );
   e.prepare( &c );
@@ -1618,7 +1618,7 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item2->pos().y(), 16.0 );
 
   // test that refresh rotation doesn't move item (#18037)
-  item2 = qgis::make_unique< TestItem >( &l );
+  item2 = std::make_unique< TestItem >( &l );
   item2->setReferencePoint( QgsLayoutItem::Middle );
   item2->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
   item2->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
@@ -2144,7 +2144,7 @@ std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *l
   original->writeXml( rootNode, doc, QgsReadWriteContext() );
 
   //create new item and restore settings from xml
-  std::unique_ptr< TestItem > copy = qgis::make_unique< TestItem >( layout );
+  std::unique_ptr< TestItem > copy = std::make_unique< TestItem >( layout );
   copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() );
 
   return std::move( copy );

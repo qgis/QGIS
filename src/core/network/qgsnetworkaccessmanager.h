@@ -45,7 +45,7 @@ constexpr int sFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 
 /**
  * \class QgsNetworkRequestParameters
  * \ingroup core
- * Encapsulates parameters and properties of a network request.
+ * \brief Encapsulates parameters and properties of a network request.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsNetworkRequestParameters
@@ -143,7 +143,7 @@ class QgsNetworkAccessManager;
  * \brief SSL error handler, used for responding to SSL errors encountered during network requests.
  * \ingroup core
  *
- * QgsSslErrorHandler responds to SSL errors encountered during network requests. The
+ * \brief QgsSslErrorHandler responds to SSL errors encountered during network requests. The
  * base QgsSslErrorHandler class responds to SSL errors only by logging the errors,
  * and uses the default Qt response, which is to abort the request.
  *
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsSslErrorHandler
  * \brief Network authentication handler, used for responding to network authentication requests during network requests.
  * \ingroup core
  *
- * QgsNetworkAuthenticationHandler responds to authentication requests encountered during network requests. The
+ * \brief QgsNetworkAuthenticationHandler responds to authentication requests encountered during network requests. The
  * base QgsNetworkAuthenticationHandler class responds to requests only by logging the request,
  * but does not provide any username or password to allow the request to proceed.
  *
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsNetworkAuthenticationHandler
  * \brief network access manager for QGIS
  * \ingroup core
  *
- * This class implements the QGIS network access manager.  It's a singleton
+ * \brief This class implements the QGIS network access manager.  It's a singleton
  * that can be used across QGIS.
  *
  * Plugins can insert proxy factories and thereby redirect requests to

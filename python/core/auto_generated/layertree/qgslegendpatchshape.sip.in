@@ -10,7 +10,7 @@
 
 class QgsLegendPatchShape
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a patch shape for use in map legends.
 
 .. versionadded:: 3.14

@@ -13,7 +13,7 @@
 
 class QgsLocator : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Handles the management of :py:class:`QgsLocatorFilter` objects and async collection of search results from them.
 
 :py:class:`QgsLocator` acts as both a registry for :py:class:`QgsLocatorFilter` objects and a means of firing up

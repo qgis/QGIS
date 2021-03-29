@@ -11,8 +11,7 @@
 
 class Qgs3DMapExportSettings
 {
-%Docstring
-The Qgs3DMapExportSettings class
+%Docstring(signature="appended")
 Manages the various settings the user can choose from when exporting a 3D scene
 
 .. versionadded:: 3.16

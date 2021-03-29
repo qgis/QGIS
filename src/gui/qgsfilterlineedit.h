@@ -29,7 +29,7 @@ class QgsAnimatedIcon;
 /**
  * \class QgsFilterLineEdit
  * \ingroup gui
- * QLineEdit subclass with built in support for clearing the widget's value and
+ * \brief QLineEdit subclass with built in support for clearing the widget's value and
  * handling custom null value representations.
  *
  * When using QgsFilterLineEdit the value(), setValue() and clearValue() methods should be used

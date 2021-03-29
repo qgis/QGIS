@@ -19,9 +19,9 @@
 #include "qgshanautils.h"
 #include "qgssqlexpressioncompiler.h"
 
-QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source )
+QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger |
-                              QgsSqlExpressionCompiler::NoNullInBooleanLogic )
+                              QgsSqlExpressionCompiler::NoNullInBooleanLogic, ignoreStaticNodes )
   , mGeometryColumn( source->mGeometryColumn )
 {
 }
@@ -90,6 +90,10 @@ QString QgsHanaExpressionCompiler::castToText( const QString &value ) const
 QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
   const QgsExpressionNode *node, QString &result )
 {
+  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntFunction:

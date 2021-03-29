@@ -11,6 +11,8 @@ set (dummy_SRCS
 
 add_library (dummy MODULE ${dummy_SRCS})
 
+# require c++17
+target_compile_features(dummy PRIVATE cxx_std_17)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/server

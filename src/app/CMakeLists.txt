@@ -204,6 +204,8 @@ set(QGIS_APP_SRCS
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
+  maptools/qgsappmaptools.cpp
+
   options/qgsadvancedoptions.cpp
   options/qgscodeeditoroptions.cpp
   options/qgsoptions.cpp
@@ -243,7 +245,6 @@ if (WITH_GEOREFERENCER)
     georeferencer/qgsgeoreftooldeletepoint.cpp
     georeferencer/qgsgeoreftoolmovepoint.cpp
     georeferencer/qgsgeorefvalidators.cpp
-    georeferencer/qgsleastsquares.cpp
     georeferencer/qgsmapcoordsdialog.cpp
     georeferencer/qgsresidualplotitem.cpp
     georeferencer/qgstransformsettingsdialog.cpp
@@ -443,13 +444,22 @@ endif()
 #############
 if (ANDROID)
   add_library(${QGIS_APP_NAME} SHARED ${QGIS_APPMAIN_SRCS})
+
+  # require c++17
+  target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
 else()
   add_executable(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS})
+
+  # require c++17
+  target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
 endif()
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
 add_library(qgis_app SHARED ${QGIS_APP_SRCS})
+
+# require c++17
+target_compile_features(qgis_app PRIVATE cxx_std_17)
 
 target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
@@ -462,6 +472,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
   ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/maptools
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud

@@ -4,6 +4,10 @@
 set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
 
+  georeferencing/qgsgcpgeometrytransformer.cpp
+  georeferencing/qgsgcptransformer.cpp
+  georeferencing/qgsleastsquares.cpp
+
   interpolation/qgsgridfilewriter.cpp
   interpolation/qgsidwinterpolator.cpp
   interpolation/qgsinterpolator.cpp
@@ -33,6 +37,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmassignprojection.cpp
   processing/qgsalgorithmattributeindex.cpp
   processing/qgsalgorithmbatchgeocode.cpp
+  processing/qgsalgorithmbatchnominatimgeocode.cpp
   processing/qgsalgorithmboundary.cpp
   processing/qgsalgorithmboundingbox.cpp
   processing/qgsalgorithmbuffer.cpp
@@ -283,6 +288,9 @@ set(QGIS_ANALYSIS_SRCS
 set(QGIS_ANALYSIS_HDRS
   qgsanalysis.h
 
+  georeferencing/qgsgcpgeometrytransformer.h
+  georeferencing/qgsgcptransformer.h
+
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h
   interpolation/qgsdualedgetriangulation.h
@@ -314,6 +322,7 @@ set(QGIS_ANALYSIS_HDRS
   network/qgsvectorlayerdirector.h
 
   processing/qgsalgorithmbatchgeocode.h
+  processing/qgsalgorithmbatchnominatimgeocode.h
   processing/qgsalgorithmfiledownloader.h
   processing/qgsalgorithmimportphotos.h
   processing/qgsnativealgorithms.h
@@ -391,6 +400,7 @@ find_package(EXIV2 REQUIRED)
 include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
+include_directories(SYSTEM ${GSL_INCLUDE_DIR})
 include_directories(BEFORE raster)
 include_directories(BEFORE mesh)
 
@@ -435,8 +445,17 @@ endif()
 
 add_library(qgis_analysis ${LIBRARY_TYPE} ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
 
+# require c++17
+target_compile_features(qgis_analysis PRIVATE cxx_std_17)
+
+# Exiv still uses std::auto_ptr
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_definitions(qgis_analysis PUBLIC _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR)
+endif()
+
 target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis
+  ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/analysis/network
@@ -497,6 +516,7 @@ target_link_libraries(
   qgis_analysis
   qgis_core
   ${EXIV2_LIBRARY}
+  ${GSL_LIBRARIES}
   )
 
 if(HAVE_OPENCL)

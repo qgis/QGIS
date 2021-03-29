@@ -38,6 +38,7 @@ set(QGIS_GUI_SRCS
   symbology/qgsdashspacedialog.cpp
   symbology/qgsdatadefinedsizelegendwidget.cpp
   symbology/qgsellipsesymbollayerwidget.cpp
+  symbology/qgsembeddedsymbolrendererwidget.cpp
   symbology/qgsgraduatedhistogramwidget.cpp
   symbology/qgsgraduatedsymbolrendererwidget.cpp
   symbology/qgsheatmaprendererwidget.cpp
@@ -1193,6 +1194,7 @@ set(QGIS_GUI_HDRS
   symbology/qgsdashspacedialog.h
   symbology/qgsdatadefinedsizelegendwidget.h
   symbology/qgsellipsesymbollayerwidget.h
+  symbology/qgsembeddedsymbolrendererwidget.h
   symbology/qgsgraduatedhistogramwidget.h
   symbology/qgsgraduatedsymbolrendererwidget.h
   symbology/qgsheatmaprendererwidget.h
@@ -1322,7 +1324,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshdatasetgrouptreewidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshstaticdatasetwidgetbase.h
-
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstemporalcontrollerwidgetbase.h
 )
 
 if(ENABLE_MODELTEST)
@@ -1362,6 +1364,9 @@ endif()
 add_library(qgis_gui SHARED
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
 )
+
+# require c++17
+target_compile_features(qgis_gui PRIVATE cxx_std_17)
 
 target_include_directories(qgis_gui SYSTEM PUBLIC
   ${QWT_INCLUDE_DIR}

@@ -22,6 +22,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
+#include "qgsapplication.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QPushButton>
 
@@ -123,7 +124,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     {
       if ( mParameterItems.contains( it.key() ) && mParameterItems.contains( otherName ) )
       {
-        std::unique_ptr< QgsModelArrowItem > arrow = qgis::make_unique< QgsModelArrowItem >( mParameterItems.value( otherName ), QgsModelArrowItem::Marker::Circle, mParameterItems.value( it.key() ), QgsModelArrowItem::Marker::ArrowHead );
+        std::unique_ptr< QgsModelArrowItem > arrow = std::make_unique< QgsModelArrowItem >( mParameterItems.value( otherName ), QgsModelArrowItem::Marker::Circle, mParameterItems.value( it.key() ), QgsModelArrowItem::Marker::ArrowHead );
         arrow->setPenStyle( Qt::DotLine );
         addItem( arrow.release() );
       }
@@ -409,6 +410,20 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
           LinkSource l;
           l.item = mChildAlgorithmItems.value( source.outputChildId() );
           l.edge = Qt::BottomEdge;
+
+          // do sanity check of linked index
+          if ( i >= model->childAlgorithm( source.outputChildId() ).algorithm()->outputDefinitions().length() )
+          {
+            QString short_message = tr( "Check output links for alg: %1" ).arg( model->childAlgorithm( source.outputChildId() ).algorithm()->name() );
+            QString long_message = tr( "Cannot link output for alg: %1" ).arg( model->childAlgorithm( source.outputChildId() ).algorithm()->name() );
+            QString title( tr( "Algorithm link error" ) );
+            if ( messageBar() )
+              showWarning( const_cast<QString &>( short_message ), const_cast<QString &>( title ), const_cast<QString &>( long_message ) );
+            else
+              QgsMessageLog::logMessage( long_message, "QgsModelGraphicsScene", Qgis::Warning, true );
+            break;
+          }
+
           l.linkIndex = i;
           res.append( l );
         }
@@ -452,7 +467,7 @@ void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgori
   connect( commentItem, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
   connect( commentItem, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
 
-  std::unique_ptr< QgsModelArrowItem > arrow = qgis::make_unique< QgsModelArrowItem >( parentItem, QgsModelArrowItem::Circle, commentItem, QgsModelArrowItem::Circle );
+  std::unique_ptr< QgsModelArrowItem > arrow = std::make_unique< QgsModelArrowItem >( parentItem, QgsModelArrowItem::Circle, commentItem, QgsModelArrowItem::Circle );
   arrow->setPenStyle( Qt::DotLine );
   addItem( arrow.release() );
 }
@@ -467,7 +482,7 @@ void QgsModelGraphicsScene::setMessageBar( QgsMessageBar *messageBar )
   mMessageBar = messageBar;
 }
 
-void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level )
+void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level ) const
 {
   QgsMessageBarItem *messageWidget = mMessageBar->createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
@@ -484,4 +499,3 @@ void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QStr
 }
 
 ///@endcond
-

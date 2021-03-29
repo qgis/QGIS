@@ -110,7 +110,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   }
 
   // Check input layers and bands
-  for ( const auto &entry : qgis::as_const( mRasterEntries ) )
+  for ( const auto &entry : std::as_const( mRasterEntries ) )
   {
     if ( !entry.raster ) // no raster layer in entry
     {
@@ -173,12 +173,12 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       layerRef.chop( 1 );
       if ( ! inputBlocks.count( layerRef ) )
       {
-        for ( const QgsRasterCalculatorEntry &ref : qgis::as_const( mRasterEntries ) )
+        for ( const QgsRasterCalculatorEntry &ref : std::as_const( mRasterEntries ) )
         {
           if ( ref.ref == layerRef )
           {
             uniqueRasterEntries[layerRef] = ref;
-            inputBlocks[layerRef ] = qgis::make_unique<QgsRasterBlock>();
+            inputBlocks[layerRef ] = std::make_unique<QgsRasterBlock>();
           }
         }
       }
@@ -365,7 +365,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
 
   QList<const QgsRasterCalcNode *> nodeList( calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ) );
   QSet<QString> capturedTexts;
-  for ( const auto &r : qgis::as_const( nodeList ) )
+  for ( const auto &r : std::as_const( nodeList ) )
   {
     QString s( r->toString().remove( 0, 1 ) );
     s.chop( 1 );
@@ -702,7 +702,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
     while ( true )
     {
       bool unique( true );
-      for ( const auto &ref : qgis::as_const( availableEntries ) )
+      for ( const auto &ref : std::as_const( availableEntries ) )
       {
         // Safety belt
         if ( !( entry.raster && ref.raster ) )

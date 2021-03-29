@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include <QAbstractNetworkCache>
 #include <QImage>
+#include <QUrl>
 
 QCache<QUrl, QImage> QgsTileCache::sTileCache( 256 );
 QMutex QgsTileCache::sTileCacheMutex;
@@ -58,4 +59,16 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
     }
   }
   return success;
+}
+
+int QgsTileCache::totalCost()
+{
+  QMutexLocker locker( &sTileCacheMutex );
+  return sTileCache.totalCost();
+}
+
+int QgsTileCache::maxCost()
+{
+  QMutexLocker locker( &sTileCacheMutex );
+  return sTileCache.maxCost();
 }

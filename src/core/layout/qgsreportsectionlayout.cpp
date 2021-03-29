@@ -30,7 +30,7 @@ QIcon QgsReportSectionLayout::icon() const
 
 QgsReportSectionLayout *QgsReportSectionLayout::clone() const
 {
-  std::unique_ptr< QgsReportSectionLayout > copy = qgis::make_unique< QgsReportSectionLayout >( nullptr );
+  std::unique_ptr< QgsReportSectionLayout > copy = std::make_unique< QgsReportSectionLayout >( nullptr );
   copyCommonProperties( copy.get() );
 
   if ( mBody )
@@ -91,7 +91,7 @@ bool QgsReportSectionLayout::readPropertiesFromElement( const QDomElement &eleme
   if ( !bodyElement.isNull() )
   {
     const QDomElement bodyLayoutElem = bodyElement.firstChild().toElement();
-    std::unique_ptr< QgsLayout > body = qgis::make_unique< QgsLayout >( project() );
+    std::unique_ptr< QgsLayout > body = std::make_unique< QgsLayout >( project() );
     body->readXml( bodyLayoutElem, doc, context );
     mBody = std::move( body );
   }

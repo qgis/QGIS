@@ -81,7 +81,6 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 #include <QList>
-#include <QtCore>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -225,7 +224,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
   projectionSelector->setPreviewRect( g.boundingBox() );
 
-  mMapTileRenderingCheckBox->setChecked( mMapCanvas->mapSettings().testFlag( QgsMapSettings::RenderMapTile ) );
+  mMapTileRenderingCheckBox->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), false ) );
 
   // see end of constructor for updating of projection selector
 
@@ -1052,6 +1051,7 @@ QgsExpressionContext QgsProjectProperties::createExpressionContext() const
 void QgsProjectProperties::apply()
 {
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), mMapTileRenderingCheckBox->isChecked() );
 
   // important - set the transform context first, as changing the project CRS may otherwise change this and
   // cause loss of user changes
@@ -1593,7 +1593,7 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->displaySettings()->setBearingFormat( mBearingFormat->clone() );
 
-  for ( QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalProjectPropertiesWidgets ) )
+  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
   {
     widget->apply();
   }
@@ -1909,7 +1909,7 @@ void QgsProjectProperties::mRemoveWMSPrintLayoutButton_clicked()
 
 void QgsProjectProperties::mAddLayerRestrictionButton_clicked()
 {
-  QgsProjectLayerGroupDialog d( this, QgsProject::instance()->fileName() );
+  QgsProjectLayerGroupDialog d( QgsProject::instance(), this );
   d.setWindowTitle( tr( "Select Restricted Layers and Groups" ) );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -2002,7 +2002,7 @@ void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
   QString errors;
   if ( !results )
   {
-    for ( const QgsProjectServerValidator::ValidationResult &result : qgis::as_const( validationResults ) )
+    for ( const QgsProjectServerValidator::ValidationResult &result : std::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % QgsProjectServerValidator::displayValidationError( result.error ) % QLatin1String( " :</b> " );
       errors += result.identifier.toString();
@@ -2413,7 +2413,7 @@ void QgsProjectProperties::populateEllipsoidList()
   }
   // Add all items to selector
 
-  for ( const EllipsoidDefs &i : qgis::as_const( mEllipsoidList ) )
+  for ( const EllipsoidDefs &i : std::as_const( mEllipsoidList ) )
   {
     cmbEllipsoid->addItem( i.description );
   }
@@ -2595,7 +2595,7 @@ void QgsProjectProperties::showHelp()
   }
 
   // give first priority to created pages which have specified a help key
-  for ( const QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalProjectPropertiesWidgets ) )
+  for ( const QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
   {
     if ( widget == activeTab )
     {

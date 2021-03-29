@@ -28,6 +28,8 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
+#include <QThread>
+
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
 #define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
 
@@ -382,16 +384,12 @@ class QgsExpressionUtils
         }
       };
 
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
       // Make sure we only deal with the vector layer on the main thread where it lives.
       // Anything else risks a crash.
       if ( QThread::currentThread() == qApp->thread() )
         getFeatureSource();
       else
         QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
-#else
-      getFeatureSource();
-#endif
 
       return featureSource;
     }

@@ -11,7 +11,7 @@
 
 class QgsProjectTimeSettings : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains temporal settings and properties for the project,
 this may be used when animating maps or showing temporal layers.
 

@@ -31,7 +31,7 @@ class QImage;
 
 /**
  * \ingroup core
- * This is a helper class for unit tests that need to
+ * \brief This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
  */
@@ -98,9 +98,15 @@ class CORE_EXPORT QgsRenderChecker
      * suffixed).
      *
      * The path to the image will be constructed like this:
-     * controlImagePath() + '/' + control name + '/' + control name + '.png'
+     * controlImagePath() + '/' + control name + '/' + control name + '.' + extension ('png' by default)
      */
     void setControlName( const QString &name );
+
+    /**
+     * Sets file extension for the control image. By default it is "png"
+     * \since QGIS 3.20
+     */
+    void setControlExtension( const QString &extension ) { mControlExtension = extension; }
 
     /**
      * Sets the path prefix where the control images are kept.
@@ -237,6 +243,7 @@ class CORE_EXPORT QgsRenderChecker
     int mMaxSizeDifferenceY = 0;
     int mElapsedTimeTarget = 0;
     QgsMapSettings mMapSettings;
+    QString mControlExtension = QStringLiteral( "png" );
     QString mControlPathPrefix;
     QString mControlPathSuffix;
     QVector<QgsDartMeasurement> mDashMessages;

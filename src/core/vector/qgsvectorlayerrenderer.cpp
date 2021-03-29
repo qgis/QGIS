@@ -43,6 +43,7 @@
 #include "qgsfeaturerenderergenerator.h"
 
 #include <QPicture>
+#include <QTimer>
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -51,7 +52,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mLabeling( false )
   , mDiagrams( false )
 {
-  mSource = qgis::make_unique< QgsVectorLayerFeatureSource >( layer );
+  mSource = std::make_unique< QgsVectorLayerFeatureSource >( layer );
 
   std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
 
@@ -67,7 +68,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   bool insertedMainRenderer = false;
   double prevLevel = std::numeric_limits< double >::lowest();
   mRenderer = mainRenderer.get();
-  for ( const QgsFeatureRendererGenerator *generator : qgis::as_const( generators ) )
+  for ( const QgsFeatureRendererGenerator *generator : std::as_const( generators ) )
   {
     if ( generator->level() >= 0 && prevLevel < 0 && !insertedMainRenderer )
     {
@@ -249,7 +250,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   QgsScopedQPainterState painterState( context.painter() );
 
   // MUST be created in the thread doing the rendering
-  mInterruptionChecker = qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( context );
+  mInterruptionChecker = std::make_unique< QgsVectorLayerRendererInterruptionChecker >( context );
   bool usingEffect = false;
   if ( renderer->paintEffect() && renderer->paintEffect()->enabled() )
   {
@@ -310,6 +311,11 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   if ( !mTemporalFilter.isEmpty() )
   {
     featureRequest.combineFilterExpression( mTemporalFilter );
+  }
+
+  if ( renderer->usesEmbeddedSymbols() )
+  {
+    featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::EmbeddedSymbols );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
@@ -532,7 +538,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   }
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
+  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
 
   std::unique_ptr< QgsGeometryEngine > clipEngine;

@@ -38,7 +38,7 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
 {
   mToolName = tr( "Select features" );
 
-  mSelectionHandler = qgis::make_unique<QgsMapToolSelectionHandler>( canvas );
+  mSelectionHandler = std::make_unique<QgsMapToolSelectionHandler>( canvas );
   connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelect::selectFeatures );
   setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
 }

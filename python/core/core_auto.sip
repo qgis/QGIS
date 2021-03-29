@@ -106,6 +106,7 @@
 %Include auto_generated/qgsmaphittest.sip
 %Include auto_generated/qgsmaplayer.sip
 %Include auto_generated/qgsmaplayerdependency.sip
+%Include auto_generated/qgsmaplayerfactory.sip
 %Include auto_generated/qgsmaplayerlegend.sip
 %Include auto_generated/qgsmaplayermodel.sip
 %Include auto_generated/qgsmaplayerproxymodel.sip
@@ -325,10 +326,13 @@
 %Include auto_generated/gps/qgsgpsdconnection.sip
 %Include auto_generated/gps/qgsgpsdetector.sip
 %Include auto_generated/gps/qgsnmeaconnection.sip
+%Include auto_generated/labeling/qgscalloutposition.sip
 %Include auto_generated/labeling/qgslabeling.sip
 %Include auto_generated/labeling/qgslabelingenginesettings.sip
+%Include auto_generated/labeling/qgslabelingresults.sip
 %Include auto_generated/labeling/qgslabellinesettings.sip
 %Include auto_generated/labeling/qgslabelobstaclesettings.sip
+%Include auto_generated/labeling/qgslabelposition.sip
 %Include auto_generated/labeling/qgslabelsearchtree.sip
 %Include auto_generated/labeling/qgslabelthinningsettings.sip
 %Include auto_generated/labeling/qgspallabeling.sip
@@ -556,6 +560,7 @@
 %Include auto_generated/symbology/qgscolorbrewerpalette.sip
 %Include auto_generated/symbology/qgscptcityarchive.sip
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
+%Include auto_generated/symbology/qgsembeddedsymbolrenderer.sip
 %Include auto_generated/symbology/qgsfeaturerenderergenerator.sip
 %Include auto_generated/symbology/qgsfillsymbollayer.sip
 %Include auto_generated/symbology/qgsgeometrygeneratorsymbollayer.sip

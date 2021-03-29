@@ -26,6 +26,7 @@
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
 #include "qgslogger.h"
+#include "qgslabelingresults.h"
 
 
 QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
@@ -153,6 +154,20 @@ void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition &labelpos,
   mHighlights.insert( id, rb );
 }
 
+void QgsMapToolPinLabels::highlightCallout( bool isOrigin, const QgsCalloutPosition &calloutPosition, const QString &id, const QColor &color )
+{
+  double scaleFactor = mCanvas->fontMetrics().xHeight();
+
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, QgsWkbTypes::PointGeometry );
+  rb->setWidth( 2 );
+  rb->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
+  rb->setColor( color );
+  rb->setIcon( QgsRubberBand::ICON_X );
+  rb->setIconSize( scaleFactor );
+  rb->addPoint( isOrigin ? calloutPosition.origin() : calloutPosition.destination() );
+  mHighlights.insert( id, rb );
+}
+
 // public slot to render highlight rectangles around pinned labels
 void QgsMapToolPinLabels::highlightPinnedLabels()
 {
@@ -163,27 +178,24 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
     return;
   }
 
-  QgsDebugMsg( QStringLiteral( "Highlighting pinned labels" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Highlighting pinned labels" ), 2 );
 
   // get list of all drawn labels from all layers within given extent
-  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false );
   if ( !labelingResults )
   {
-    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return;
   }
 
   QgsRectangle ext = mCanvas->extent();
-  QgsDebugMsg( QStringLiteral( "Getting labels from canvas extent" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Getting labels from canvas extent" ), 2 );
 
-  QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
+  const QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QList<QgsLabelPosition>::const_iterator it;
-  for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )
+  for ( const QgsLabelPosition &pos : labelPosList )
   {
-    const QgsLabelPosition &pos = *it;
-
     mCurrentLabel = LabelDetails( pos );
 
     if ( isPinned() )
@@ -216,14 +228,38 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       highlightLabel( pos, labelStringID, lblcolor );
     }
   }
+
+  // highlight pinned callouts
+  const QList<QgsCalloutPosition> calloutPosList = labelingResults->calloutsWithinRectangle( ext );
+  const QColor calloutColor = QColor( 54, 129, 255, 160 );
+  for ( const QgsCalloutPosition &callout : calloutPosList )
+  {
+    if ( callout.originIsPinned() )
+    {
+      QString calloutStringID = QStringLiteral( "callout|%1|%2|origin" ).arg( callout.layerID, QString::number( callout.featureId ) );
+      // don't highlight again
+      if ( mHighlights.contains( calloutStringID ) )
+        continue;
+
+      highlightCallout( true, callout, calloutStringID, calloutColor );
+    }
+    if ( callout.destinationIsPinned() )
+    {
+      QString calloutStringID = QStringLiteral( "callout|%1|%2|destination" ).arg( callout.layerID, QString::number( callout.featureId ) );
+      // don't highlight again
+      if ( mHighlights.contains( calloutStringID ) )
+        continue;
+
+      highlightCallout( false, callout, calloutStringID, calloutColor );
+    }
+  }
   QApplication::restoreOverrideCursor();
 }
 
 void QgsMapToolPinLabels::removePinnedHighlights()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
-  const auto constMHighlights = mHighlights;
-  for ( QgsRubberBand *rb : constMHighlights )
+  for ( QgsRubberBand *rb : std::as_const( mHighlights ) )
   {
     delete rb;
   }
@@ -237,10 +273,9 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
   bool toggleUnpinOrPin = e->modifiers() & Qt::ControlModifier;
 
   // get list of all drawn labels from all layers within, or touching, chosen extent
-  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false );
   if ( !labelingResults )
   {
-    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return;
   }
 

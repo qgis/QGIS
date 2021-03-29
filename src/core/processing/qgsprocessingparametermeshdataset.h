@@ -21,7 +21,8 @@
 #include "qgsmeshdataset.h"
 
 /**
- * A parameter for processing algorithms that need a list of mesh dataset groups
+ * \brief A parameter for processing algorithms that need a list of mesh dataset groups.
+ *
  * A valid value for this parameter is a list (QVariantList) of dataset groups index in the mesh layer scope
  * Dataset group index can be evaluated with the method valueAsDatasetGroup()
  *
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
 ///@cond PRIVATE
 
 /**
- * Parameter type definition for QgsProcessingParameterMeshDatasetGroups.
+ * \brief Parameter type definition for QgsProcessingParameterMeshDatasetGroups.
  *
  * \ingroup core
  * \since QGIS 3.18
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 
     QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "Mesh dataset groups" );
+      return QCoreApplication::translate( "Processing", "Mesh Dataset Groups" );
     }
 
     QString id() const override
@@ -126,7 +127,8 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 #endif //SIP_RUN
 
 /**
- * A parameter for processing algorithms that need a list of mesh dataset index from time parameter
+ * \brief A parameter for processing algorithms that need a list of mesh dataset index from time parameter.
+ *
  * A valid value for this parameter is a map (QVariantMap) with in this form:
  *
  * - "type" : the type of time settings "current-context-time", "defined-date-time", "dataset-time-step" or "none" if all the dataset groups are static
@@ -207,7 +209,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
 ///@cond PRIVATE
 
 /**
- * Parameter type definition for QgsProcessingParameterMeshDatasetTime.
+ * \brief Parameter type definition for QgsProcessingParameterMeshDatasetTime.
  *
  * \ingroup core
  * \since QGIS 3.18
@@ -227,7 +229,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
 
     QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "Mesh dataset time" );
+      return QCoreApplication::translate( "Processing", "Mesh Dataset Time" );
     }
 
     QString id() const override

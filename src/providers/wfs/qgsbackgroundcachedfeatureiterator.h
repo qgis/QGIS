@@ -28,6 +28,7 @@ class QPushButton;
 #include <QThread>
 #include <QWaitCondition>
 #include <QProgressDialog>
+#include <QTimer>
 
 struct QgsBackgroundCachedFeatureIteratorConstants
 {

@@ -48,6 +48,7 @@
 #include <QNetworkReply>
 #include <QEventLoop>
 #include <QCoreApplication>
+#include <QUrl>
 
 QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
   : QgsLayoutItem( layout )

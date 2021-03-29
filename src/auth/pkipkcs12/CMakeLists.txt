@@ -30,6 +30,9 @@ QT5_WRAP_UI (AUTH_PKCS12_UIS_H ${AUTH_PKCS12_UIS})
 
 add_library (pkcs12authmethod MODULE ${AUTH_PKCS12_SRCS} ${AUTH_PKCS12_HDRS} ${AUTH_PKCS12_UIS_H})
 
+# require c++17
+target_compile_features(pkcs12authmethod PRIVATE cxx_std_17)
+
 target_link_libraries (pkcs12authmethod
   qgis_core
   qgis_gui

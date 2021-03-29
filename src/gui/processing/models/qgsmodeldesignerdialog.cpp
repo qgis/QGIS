@@ -46,6 +46,8 @@
 #include <QMessageBox>
 #include <QUndoView>
 #include <QPushButton>
+#include <QUrl>
+#include <QTextStream>
 
 ///@cond NOT_STABLE
 
@@ -88,7 +90,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   QgsGui::enableAutoGeometryRestore( this );
 
-  mModel = qgis::make_unique< QgsProcessingModelAlgorithm >();
+  mModel = std::make_unique< QgsProcessingModelAlgorithm >();
   mModel->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
 
   mUndoStack = new QUndoStack( this );
@@ -416,7 +418,7 @@ void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
   if ( mActiveCommand )
     endUndoCommand();
 
-  mActiveCommand = qgis::make_unique< QgsModelUndoCommand >( mModel.get(), text, id );
+  mActiveCommand = std::make_unique< QgsModelUndoCommand >( mModel.get(), text, id );
 }
 
 void QgsModelDesignerDialog::endUndoCommand()
@@ -457,7 +459,7 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
 void QgsModelDesignerDialog::loadModel( const QString &path )
 {
-  std::unique_ptr< QgsProcessingModelAlgorithm > alg = qgis::make_unique< QgsProcessingModelAlgorithm >();
+  std::unique_ptr< QgsProcessingModelAlgorithm > alg = std::make_unique< QgsProcessingModelAlgorithm >();
   if ( alg->fromFile( path ) )
   {
     alg->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
@@ -507,7 +509,7 @@ void QgsModelDesignerDialog::updateVariablesGui()
 {
   mBlockUndoCommands++;
 
-  std::unique_ptr< QgsExpressionContextScope > variablesScope = qgis::make_unique< QgsExpressionContextScope >( tr( "Model Variables" ) );
+  std::unique_ptr< QgsExpressionContextScope > variablesScope = std::make_unique< QgsExpressionContextScope >( tr( "Model Variables" ) );
   const QVariantMap modelVars = mModel->variables();
   for ( auto it = modelVars.constBegin(); it != modelVars.constEnd(); ++it )
   {
@@ -941,7 +943,7 @@ bool QgsModelDesignerDialog::isDirty() const
 void QgsModelDesignerDialog::fillInputsTree()
 {
   const QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconModelInput.svg" ) );
-  std::unique_ptr< QTreeWidgetItem > parametersItem = qgis::make_unique< QTreeWidgetItem >();
+  std::unique_ptr< QTreeWidgetItem > parametersItem = std::make_unique< QTreeWidgetItem >();
   parametersItem->setText( 0, tr( "Parameters" ) );
   QList<QgsProcessingParameterType *> available = QgsApplication::processingRegistry()->parameterTypes();
   std::sort( available.begin(), available.end(), []( const QgsProcessingParameterType * a, const QgsProcessingParameterType * b ) -> bool
@@ -949,11 +951,11 @@ void QgsModelDesignerDialog::fillInputsTree()
     return QString::localeAwareCompare( a->name(), b->name() ) < 0;
   } );
 
-  for ( QgsProcessingParameterType *param : qgis::as_const( available ) )
+  for ( QgsProcessingParameterType *param : std::as_const( available ) )
   {
     if ( param->flags() & QgsProcessingParameterType::ExposeToModeler )
     {
-      std::unique_ptr< QTreeWidgetItem > paramItem = qgis::make_unique< QTreeWidgetItem >();
+      std::unique_ptr< QTreeWidgetItem > paramItem = std::make_unique< QTreeWidgetItem >();
       paramItem->setText( 0, param->name() );
       paramItem->setData( 0, Qt::UserRole, param->id() );
       paramItem->setIcon( 0, icon );

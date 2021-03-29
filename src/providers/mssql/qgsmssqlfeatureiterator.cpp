@@ -173,7 +173,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
   }
 
-  for ( int i : qgis::as_const( attrs ) )
+  for ( int i : std::as_const( attrs ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( i ) )
       continue;
@@ -330,7 +330,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
+    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
@@ -364,7 +364,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
       break;
     }
 
-    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
+    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsExpression expression = clause.expression();
     if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
     {
@@ -498,7 +498,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       case PktFidMap:
       {
         QVariantList primaryKeyVals;
-        foreach ( int idx, mSource->mPrimaryKeyAttrs )
+        for ( int idx : mSource->mPrimaryKeyAttrs )
         {
           QgsField fld = mSource->mFields.at( idx );
 

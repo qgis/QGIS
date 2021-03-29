@@ -475,6 +475,19 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertIn('testDataItems.gpkg|layername=Layer1', children[0].uri())
         self.assertIn('testDataItems.gpkg|layername=Layer2', children[1].uri())
 
+    def testDataItemsRaster(self):
+
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+
+        # Multiple layer (geopackage)
+        path = os.path.join(unitTestDataPath(), 'two_raster_layers.gpkg')
+        item = ogrprovider.createDataItem(path, None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        self.assertIn('GPKG:' + path + ':layer01', children[0].uri())
+        self.assertIn('GPKG:' + path + ':layer02', children[1].uri())
+
     def testOSM(self):
         """ Test that opening several layers of the same OSM datasource works properly """
 
@@ -542,7 +555,6 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertIsInstance(features[2]['DATA'], QByteArray)
         self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
 
-    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0), "GDAL 2.4 required")
     def testStringListField(self):
         source = os.path.join(TEST_DATA_DIR, 'stringlist.gml')
         vl = QgsVectorLayer(source)
@@ -900,6 +912,48 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         vl = QgsVectorLayer(os.path.join(d.path(), 'writetest.shp'))
         self.assertEqual(vl.featureCount(), 1)
+
+    def testEmbeddedSymbolsKml(self):
+        """
+        Test retrieving embedded symbols from a KML file
+        """
+        layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'embedded_symbols', 'samples.kml') + '|layername=Paths', 'Lines')
+        self.assertTrue(layer.isValid())
+
+        # symbols should not be fetched by default
+        self.assertFalse(any(f.embeddedSymbol() for f in layer.getFeatures()))
+
+        symbols = [f.embeddedSymbol().clone() if f.embeddedSymbol() else None for f in layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.EmbeddedSymbols))]
+        self.assertCountEqual([s.color().name() for s in symbols if s is not None], ['#ff00ff', '#ffff00', '#000000', '#ff0000'])
+        self.assertCountEqual([s.color().alpha() for s in symbols if s is not None], [127, 135, 255, 127])
+        self.assertEqual(len([s for s in symbols if s is None]), 2)
+
+    def testDecodeEncodeUriVsizip(self):
+        """Test decodeUri/encodeUri for /vsizip/ prefixed URIs"""
+
+        uri = '/vsizip//my/file.zip/shapefile.shp'
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': None, 'layerId': None, 'vsiPrefix': '/vsizip/', 'vsiSuffix': '/shapefile.shp'})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
+
+        uri = '/my/file.zip'
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': None, 'layerId': None})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
+
+        uri = '/vsizip//my/file.zip|layername=shapefile'
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': 'shapefile', 'layerId': None, 'vsiPrefix': '/vsizip/'})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
+
+        uri = '/vsizip//my/file.zip|layername=shapefile|subset="field"=\'value\''
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': 'shapefile', 'layerId': None, 'subset': '"field"=\'value\'', 'vsiPrefix': '/vsizip/'})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
 
 
 if __name__ == '__main__':

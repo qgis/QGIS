@@ -34,7 +34,7 @@
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
   , mMode( mode )
 {
   mToolName = tr( "Move feature" );
@@ -138,11 +138,13 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mRubberBand->addGeometry( feat.geometry(), vlayer, false );
 
         if ( allFeaturesInView && !viewRect.intersects( feat.geometry().boundingBox() ) )
           allFeaturesInView = false;
       }
+      mRubberBand->updatePosition();
+      mRubberBand->update();
 
       if ( !allFeaturesInView )
       {
@@ -188,7 +190,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     switch ( mMode )
     {
       case Move:
-        for ( QgsFeatureId id : qgis::as_const( mMovedFeatures ) )
+        for ( QgsFeatureId id : std::as_const( mMovedFeatures ) )
         {
           vlayer->translateFeature( id, dx, dy );
 

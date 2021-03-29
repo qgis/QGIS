@@ -22,6 +22,7 @@
 #include <QGridLayout>
 #include <QUrl>
 #include <QDropEvent>
+#include <QRegularExpression>
 
 #include "qgssettings.h"
 #include "qgsfilterlineedit.h"
@@ -80,7 +81,11 @@ QString QgsFileWidget::filePath()
 QStringList QgsFileWidget::splitFilePaths( const QString &path )
 {
   QStringList paths;
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts );
+#else
+  const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), Qt::SkipEmptyParts );
+#endif
   for ( const auto &pathsPart : pathParts )
   {
     QString cleaned = pathsPart;
@@ -500,7 +505,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   }
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
-  for ( const QgsMimeDataUtils::Uri &u : qgis::as_const( lst ) )
+  for ( const QgsMimeDataUtils::Uri &u : std::as_const( lst ) )
   {
     if ( !rawPaths.contains( u.uri ) )
       rawPaths.append( u.uri );
@@ -510,7 +515,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
     rawPaths.append( event->mimeData()->text() );
 
   paths.reserve( rawPaths.count() );
-  for ( const QString &path : qgis::as_const( rawPaths ) )
+  for ( const QString &path : std::as_const( rawPaths ) )
   {
     QFileInfo file( path );
     switch ( mStorageMode )

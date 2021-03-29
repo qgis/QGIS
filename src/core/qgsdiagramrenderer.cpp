@@ -284,7 +284,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
   }
   else
   {
-    mAxisLineSymbol = qgis::make_unique< QgsLineSymbol >();
+    mAxisLineSymbol = std::make_unique< QgsLineSymbol >();
   }
 
   mShowAxis = elem.attribute( QStringLiteral( "showAxis" ), QStringLiteral( "0" ) ).toInt();
@@ -486,7 +486,7 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
   std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
   {
-    effectPainter = qgis::make_unique< QgsEffectPainter >( c, effect );
+    effectPainter = std::make_unique< QgsEffectPainter >( c, effect );
   }
 
   mDiagram->renderDiagram( feature, c, s, pos );
@@ -834,7 +834,7 @@ void QgsDiagramSettings::setPaintEffect( QgsPaintEffect *effect )
 }
 
 QgsDiagramSettings::QgsDiagramSettings()
-  : mAxisLineSymbol( qgis::make_unique< QgsLineSymbol >() )
+  : mAxisLineSymbol( std::make_unique< QgsLineSymbol >() )
 {
 }
 

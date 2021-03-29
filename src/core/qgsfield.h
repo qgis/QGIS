@@ -40,7 +40,8 @@ class QgsFieldPrivate;
 /**
  * \class QgsField
   * \ingroup core
-  * Encapsulate a field in an attribute table or data source.
+  * \brief Encapsulate a field in an attribute table or data source.
+  *
   * QgsField stores metadata about an attribute field, including name, type
   * length, and if applicable, precision.
   * \note QgsField objects are implicitly shared.
@@ -75,11 +76,7 @@ class CORE_EXPORT QgsField
        * \note Flags are expressed in the negative forms so that default flags is None.
        * \since QGIS 3.16
        */
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
-    enum ConfigurationFlag
-#else
     enum class ConfigurationFlag : int
-#endif
     {
       None = 0, //!< No flag is defined
       NotSearchable = 1 << 1, //!< Defines if the field is searchable (used in the locator search for instance)
@@ -88,12 +85,7 @@ class CORE_EXPORT QgsField
     };
     Q_ENUM( ConfigurationFlag )
     Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
-    // https://bugreports.qt.io/browse/QTBUG-47652
-    Q_ENUM( ConfigurationFlags )
-#else
     Q_FLAG( ConfigurationFlags )
-#endif
 #endif
 
     /**

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QElapsedTimer>
+#include <QPointer>
 
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudlayer.h"
@@ -120,7 +121,7 @@ bool QgsPointCloudLayerRenderer::render()
   if ( !context.renderContext().zRange().isInfinite() )
     rendererAttributes.insert( QStringLiteral( "Z" ) );
 
-  for ( const QString &attribute : qgis::as_const( rendererAttributes ) )
+  for ( const QString &attribute : std::as_const( rendererAttributes ) )
   {
     if ( mAttributes.indexOf( attribute ) >= 0 )
       continue; // don't re-add attributes we are already going to fetch

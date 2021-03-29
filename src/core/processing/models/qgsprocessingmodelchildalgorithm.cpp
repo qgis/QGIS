@@ -260,7 +260,7 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
 
   lines << baseIndent + QStringLiteral( "alg_params = {" );
   lines.reserve( lines.size() + paramParts.size() );
-  for ( const QString &p : qgis::as_const( paramParts ) )
+  for ( const QString &p : std::as_const( paramParts ) )
   {
     lines << baseIndent + lineIndent + p + ',';
   }

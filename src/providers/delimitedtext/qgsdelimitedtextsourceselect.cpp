@@ -31,12 +31,13 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <QUrl>
+#include <QUrlQuery>
 
 const int MAX_SAMPLE_LENGTH = 200;
 
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mFile( qgis::make_unique<QgsDelimitedTextFile>() )
+  , mFile( std::make_unique<QgsDelimitedTextFile>() )
   , mSettingsKey( QStringLiteral( "/Plugin-DelimitedText" ) )
 {
 

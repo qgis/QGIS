@@ -134,7 +134,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       throw InternalException::UnknownGeometry();
     }
 
-    std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom );
+    std::unique_ptr<FeaturePart> fpart = std::make_unique<FeaturePart>( lf, geom );
 
     // ignore invalid geometries
     if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -144,7 +144,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     }
 
     // polygons: reorder coordinates
-    if ( type == GEOS_POLYGON && GeomFunction::reorderPolygon( fpart->nbPoints, fpart->x, fpart->y ) != 0 )
+    if ( type == GEOS_POLYGON && !GeomFunction::reorderPolygon( fpart->x, fpart->y ) )
     {
       continue;
     }
@@ -224,7 +224,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
         throw InternalException::UnknownGeometry();
       }
 
-      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom.get() );
+      std::unique_ptr<FeaturePart> fpart = std::make_unique<FeaturePart>( lf, geom.get() );
 
       // ignore invalid geometries
       if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -234,7 +234,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       }
 
       // polygons: reorder coordinates
-      if ( type == GEOS_POLYGON && GeomFunction::reorderPolygon( fpart->nbPoints, fpart->x, fpart->y ) != 0 )
+      if ( type == GEOS_POLYGON && !GeomFunction::reorderPolygon( fpart->x, fpart->y ) )
       {
         continue;
       }

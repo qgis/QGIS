@@ -32,7 +32,7 @@ class QgsInterval;
 
 /**
  * \ingroup gui
- * A widget for controlling playback properties of a QgsTemporalController.
+ * \brief A widget for controlling playback properties of a QgsTemporalController.
  *
  * \since QGIS 3.14
  */
@@ -51,7 +51,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      *
      * The dock widget retains ownership of the returned object.
      */
-    QgsTemporalController *temporalController();
+    QgsTemporalNavigationObject *temporalController();
 
 #ifndef SIP_RUN
 

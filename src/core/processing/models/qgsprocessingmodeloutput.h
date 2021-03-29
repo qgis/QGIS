@@ -27,7 +27,7 @@
 ///@cond NOT_STABLE
 
 /**
- * Represents a final output created by the model.
+ * \brief Represents a final output created by the model.
  * \ingroup core
  * \since QGIS 3.0
  */

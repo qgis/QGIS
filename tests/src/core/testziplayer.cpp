@@ -170,7 +170,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
   QgsDebugMsg( QStringLiteral( "has %1 items" ).arg( myChildren.size() ) );
   if ( !myChildren.isEmpty() )
   {
-    Q_FOREACH ( QgsDataItem *item, myChildren )
+    for ( QgsDataItem *item : std::as_const( myChildren ) )
     {
       QgsDebugMsg( QStringLiteral( "child name=%1" ).arg( item->name() ) );
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
@@ -264,7 +264,7 @@ int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString
 bool TestZipLayer::testZipItemTransparency( const QString &myFileName, const QString &myProviderKey, int myTarget )
 {
   int myTransparency;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     myTransparency = getLayerTransparency( myFileName, myProviderKey, s );
     if ( myTransparency != myTarget )
@@ -319,7 +319,7 @@ void TestZipLayer::testPassthruVectorZip()
   QString myFileName = mDataDir + "points2.zip";
   QgsDebugMsg( "GDAL: " + QString( GDAL_RELEASE_NAME ) );
   QgsDebugMsg( "FILE: " + QString( myFileName ) );
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -331,7 +331,7 @@ void TestZipLayer::testPassthruVectorTar()
 {
   QgsSettings settings;
   QString myFileName = mDataDir + "points2.tar";
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -342,7 +342,7 @@ void TestZipLayer::testPassthruVectorTar()
 void TestZipLayer::testPassthruVectorGzip()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -353,7 +353,7 @@ void TestZipLayer::testPassthruVectorGzip()
 void TestZipLayer::testPassthruRasterZip()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -364,7 +364,7 @@ void TestZipLayer::testPassthruRasterZip()
 void TestZipLayer::testPassthruRasterTar()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -375,7 +375,7 @@ void TestZipLayer::testPassthruRasterTar()
 void TestZipLayer::testPassthruRasterGzip()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -386,7 +386,7 @@ void TestZipLayer::testPassthruRasterGzip()
 void TestZipLayer::testZipItemRaster()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -397,7 +397,7 @@ void TestZipLayer::testZipItemRaster()
 void TestZipLayer::testTarItemRaster()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -408,7 +408,7 @@ void TestZipLayer::testTarItemRaster()
 void TestZipLayer::testZipItemVector()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -419,7 +419,7 @@ void TestZipLayer::testZipItemVector()
 void TestZipLayer::testTarItemVector()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -450,25 +450,16 @@ void TestZipLayer::testTarItemAll()
 #if 0
 void TestZipLayer::testZipItemVectorTransparency()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QVERIFY( testZipItemTransparency( mDataDir + "points2.zip", "ogr", 250 ) );
 }
 
 void TestZipLayer::testTarItemVectorTransparency()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QVERIFY( testZipItemTransparency( mDataDir + "points2.tar", "ogr", 250 ) );
 }
 
 void TestZipLayer::testGzipItemVectorTransparency()
 {
-#if GDAL_VERSION_NUM < 1700
-  QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
-#endif
   QVERIFY( testZipItemTransparency( mDataDir + "points3.geojson.gz", "ogr", 250 ) );
 }
 #endif
@@ -491,7 +482,7 @@ void TestZipLayer::testGzipItemRasterTransparency()
 void TestZipLayer::testZipItemSubfolder()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -502,7 +493,7 @@ void TestZipLayer::testZipItemSubfolder()
 void TestZipLayer::testTarItemSubfolder()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -514,7 +505,7 @@ void TestZipLayer::testTarItemSubfolder()
 void TestZipLayer::testZipItemVRT()
 {
   QgsSettings settings;
-  Q_FOREACH ( const QString &s, mScanZipSettings )
+  for ( const QString &s : std::as_const( mScanZipSettings ) )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );

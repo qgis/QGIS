@@ -23,7 +23,10 @@ if (WITH_GUI)
     qgspgsourceselect.cpp
     qgspgnewconnection.cpp
     qgspostgresprojectstoragedialog.cpp
+    raster/qgspostgresrastertemporalsettingswidget.cpp
   )
+
+  set(PG_UIS qgspostgresrastertemporalsettingswidgetbase.ui)
 endif()
 
 set(PG_HDRS
@@ -33,11 +36,6 @@ set(PG_HDRS
 
 ########################################################
 # Build
-
-include_directories(
-
-  ${CMAKE_BINARY_DIR}/src/ui
-)
 
 include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
@@ -52,10 +50,23 @@ if (WITH_GUI)
   include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
   )
+  include_directories (
+      ${CMAKE_BINARY_DIR}/src/providers/postgres
+      ${CMAKE_SOURCE_DIR}/src/providers/postgres
+      ${CMAKE_BINARY_DIR}/src/providers/postgres/raster
+      ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
+      ${CMAKE_CURRENT_SOURCE_DIR}
+      ${CMAKE_CURRENT_BINARY_DIR}
+      ${CMAKE_BINARY_DIR}/src/ui
+  )
 endif()
 
 # static library
 add_library (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS})
+
+# require c++17
+target_compile_features(postgresprovider_a PRIVATE cxx_std_17)
+
 target_link_libraries (postgresprovider_a
   qgis_core
   ${POSTGRES_LIBRARY}
@@ -68,7 +79,13 @@ target_link_libraries (postgresprovider_a
 )
 
 if (WITH_GUI)
-  add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS})
+  QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
+
+  add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
+
+  # require c++17
+  target_compile_features(postgresprovider_gui_a PRIVATE cxx_std_17)
+
   target_link_libraries(postgresprovider_gui_a
     qgis_gui
     postgresprovider_a
@@ -98,6 +115,10 @@ set(PGRASTER_SRCS
 
 # static library
 add_library (postgresrasterprovider_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
+
+# require c++17
+target_compile_features(postgresrasterprovider_a PRIVATE cxx_std_17)
+
 target_link_libraries (postgresrasterprovider_a
     qgis_core
     ${POSTGRES_LIBRARY}
@@ -131,6 +152,10 @@ else()
   # dynamically loaded module
   add_library(postgresprovider MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
   add_library(postgresrasterprovider MODULE ${PGRASTER_SRCS} ${PG_HDRS})
+
+  # require c++17
+  target_compile_features(postgresprovider PRIVATE cxx_std_17)
+  target_compile_features(postgresrasterprovider PRIVATE cxx_std_17)
 
   target_link_libraries(postgresprovider
     ${POSTGRES_LIBRARY}

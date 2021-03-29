@@ -59,6 +59,7 @@
 #include "pal/labelposition.h"
 
 #include <QIODevice>
+#include <QTextCodec>
 
 QgsDxfExport::QgsDxfExport() = default;
 
@@ -99,6 +100,12 @@ void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
 }
 
 void QgsDxfExport::writeGroup( int code, int i )
+{
+  writeGroupCode( code );
+  writeInt( i );
+}
+
+void QgsDxfExport::writeGroup( int code, long long i )
 {
   writeGroupCode( code );
   writeInt( i );
@@ -189,7 +196,11 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   }
 
   mTextStream.setDevice( d );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mTextStream.setCodec( encoding.toLocal8Bit() );
+#else
+  mTextStream.setEncoding( QStringConverter::encodingForName( encoding.toLocal8Bit() ).value_or( QStringConverter::Utf8 ) );
+#endif
 
   if ( mCrs.isValid() )
     mMapSettings.setDestinationCrs( mCrs );
@@ -326,7 +337,7 @@ void QgsDxfExport::writeTables()
   writeDefaultLinetypes();
 
   // Add custom linestyles
-  for ( const auto &symbolLayer : qgis::as_const( slList ) )
+  for ( const auto &symbolLayer : std::as_const( slList ) )
   {
     writeSymbolLayerLinetype( symbolLayer.first );
   }
@@ -352,7 +363,7 @@ void QgsDxfExport::writeTables()
   }
 
   int i = 0;
-  for ( const auto &symbolLayer : qgis::as_const( slList ) )
+  for ( const auto &symbolLayer : std::as_const( slList ) )
   {
     QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer *>( symbolLayer.first );
     if ( !ml )
@@ -500,7 +511,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 6, QStringLiteral( "CONTINUOUS" ) );
   writeHandle( 390, DXF_HANDPLOTSTYLE );
 
-  for ( const QString &layerName : qgis::as_const( layerNames ) )
+  for ( const QString &layerName : std::as_const( layerNames ) )
   {
     writeGroup( 0, QStringLiteral( "LAYER" ) );
     writeHandle();
@@ -576,7 +587,7 @@ void QgsDxfExport::writeBlocks()
     slList = symbolLayers( ct );
   }
 
-  for ( const auto &symbolLayer : qgis::as_const( slList ) )
+  for ( const auto &symbolLayer : std::as_const( slList ) )
   {
     QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer *>( symbolLayer.first );
     if ( !ml )
@@ -634,7 +645,7 @@ void QgsDxfExport::writeEntities()
   mBlockHandle = QString::number( mBlockHandles[ QStringLiteral( "*Model_Space" )], 16 );
 
   // iterate through the maplayers
-  for ( DxfLayerJob *job : qgis::as_const( mJobs ) )
+  for ( DxfLayerJob *job : std::as_const( mJobs ) )
   {
     QgsSymbolRenderContext sctx( mRenderContext, QgsUnitTypes::RenderMillimeters, 1.0, false, QgsSymbol::RenderHints(), nullptr );
 
@@ -759,7 +770,7 @@ void QgsDxfExport::prepareRenderers()
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
 
-  mLabelingEngine = qgis::make_unique<QgsDefaultLabelingEngine>();
+  mLabelingEngine = std::make_unique<QgsDefaultLabelingEngine>();
   mLabelingEngine->setMapSettings( mMapSettings );
   mRenderContext.setLabelingEngine( mLabelingEngine.get() );
 
@@ -842,7 +853,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   }
 
   // export symbol layers and symbology
-  for ( const QgsSymbolLevel &level : qgis::as_const( levels ) )
+  for ( const QgsSymbolLevel &level : std::as_const( levels ) )
   {
     for ( const QgsSymbolLevelItem &item : level )
     {
@@ -1487,12 +1498,14 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, const Q
 
 void QgsDxfExport::writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color )
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   if ( !mTextStream.codec()->canEncode( text ) )
   {
     // TODO return error
     QgsDebugMsg( QStringLiteral( "could not encode:%1" ).arg( text ) );
     return;
   }
+#endif
 
   writeGroup( 0, QStringLiteral( "MTEXT" ) );
   writeHandle();

@@ -30,7 +30,7 @@ SIP_NO_FILE
 
 /**
  * \ingroup core
- * An undo command subclass for layout item undo commands.
+ * \brief An undo command subclass for layout item undo commands.
  *
  * QgsLayoutItemUndoCommand is a specific layout undo command which is
  * designed for use with QgsLayoutItems. It automatically handles
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
 
 /**
  * \ingroup core
- * An undo command subclass for layout item deletion undo commands.
+ * \brief An undo command subclass for layout item deletion undo commands.
  *
  * QgsLayoutItemDeleteUndoCommand is a specific layout undo command which handles
  * layout item deletion. When applied (e.g. as a result of a 'redo' action),
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoComman
 
 /**
  * \ingroup core
- * An undo command subclass for layout item addition undo commands.
+ * \brief An undo command subclass for layout item addition undo commands.
  *
  * QgsLayoutItemAddItemCommand is a specific layout undo command which handles
  * layout item creation. When applied (e.g. as a result of a 'redo' action),

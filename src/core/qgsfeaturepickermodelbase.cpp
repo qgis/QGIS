@@ -28,6 +28,11 @@ QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   mReloadTimer.setInterval( 100 );
   mReloadTimer.setSingleShot( true );
   connect( &mReloadTimer, &QTimer::timeout, this, &QgsFeaturePickerModelBase::scheduledReload );
+
+  // The fact that the feature changed is a combination of the 2 signals:
+  // If the extra value is set to a feature currently not fetched, it will go through an intermediate step while the extra value does not exist (as it call reloadFeature)
+  connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueChanged, this, &QgsFeaturePickerModelBase::currentFeatureChanged );
+  connect( this, &QgsFeaturePickerModelBase::extraValueDoesNotExistChanged, this, &QgsFeaturePickerModelBase::currentFeatureChanged );
 }
 
 
@@ -513,11 +518,13 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValueUnguarded( const QVariant
       if ( !isNull )
       {
         mEntries.prepend( createEntry( identifierValue ) );
+        setExtraValueDoesNotExist( true );
         reloadCurrentFeature();
       }
       else
       {
         mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry( mSourceLayer ) );
+        setExtraValueDoesNotExist( false );
       }
       endInsertRows();
 

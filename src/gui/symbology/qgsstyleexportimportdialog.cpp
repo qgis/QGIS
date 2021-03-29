@@ -39,7 +39,8 @@
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QStandardItemModel>
-
+#include <QTemporaryFile>
+#include <QUrl>
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
   : QDialog( parent )
@@ -59,7 +60,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::clearSelection );
 
-  mTempStyle = qgis::make_unique< QgsStyle >();
+  mTempStyle = std::make_unique< QgsStyle >();
   mTempStyle->createMemoryDatabase();
 
   // TODO validate
@@ -118,11 +119,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     dialogStyle = mStyle;
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
-#else
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
-#endif
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
 
   mModel = new QgsStyleProxyModel( dialogStyle, this );
@@ -169,7 +166,7 @@ void QgsStyleExportImportDialog::doExportImport()
 
     mFileName = fileName;
 
-    mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    mCursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     moveStyles( &selection, mStyle, mTempStyle.get() );
     if ( !mTempStyle->exportXml( mFileName ) )
     {
@@ -189,7 +186,7 @@ void QgsStyleExportImportDialog::doExportImport()
   }
   else // import
   {
-    mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    mCursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     moveStyles( &selection, mTempStyle.get(), mStyle );
 
     accept();

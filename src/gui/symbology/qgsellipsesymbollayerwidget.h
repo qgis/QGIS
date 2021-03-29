@@ -73,6 +73,7 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, priva
     void mVerticalAnchorComboBox_currentIndexChanged( int index );
 
     void penJoinStyleChanged();
+    void penCapStyleChanged();
 
     void setOffset();
 };

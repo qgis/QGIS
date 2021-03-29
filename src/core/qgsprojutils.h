@@ -29,17 +29,15 @@
 #include <QThreadStorage>
 #endif
 
-#if PROJ_VERSION_MAJOR>=6
 #ifndef SIP_RUN
 struct PJconsts;
 typedef struct PJconsts PJ;
-#endif
 #endif
 
 /**
  * \class QgsProjUtils
  * \ingroup core
- * Utility functions for working with the proj library.
+ * \brief Utility functions for working with the proj library.
  * \since QGIS 3.8
  */
 class CORE_EXPORT QgsProjUtils
@@ -49,10 +47,7 @@ class CORE_EXPORT QgsProjUtils
     /**
      * Returns the proj library major version number.
      */
-    static int projVersionMajor()
-    {
-      return PROJ_VERSION_MAJOR;
-    }
+    static int projVersionMajor();
 
     /**
      * Returns the current list of Proj file search paths.
@@ -70,8 +65,6 @@ class CORE_EXPORT QgsProjUtils
       FlagMatchBoundCrsToUnderlyingSourceCrs = 1 << 0, //!< Allow matching a BoundCRS object to its underlying SourceCRS
     };
     Q_DECLARE_FLAGS( IdentifyFlags, IdentifyFlag )
-
-#if PROJ_VERSION_MAJOR >= 6
 
     /**
      * Destroys Proj PJ objects.
@@ -139,7 +132,6 @@ class CORE_EXPORT QgsProjUtils
     static QStringList nonAvailableGrids( const QString &projDef );
 #endif
 #endif
-#endif
 };
 
 #ifndef SIP_RUN
@@ -147,17 +139,15 @@ class CORE_EXPORT QgsProjUtils
 #if PROJ_VERSION_MAJOR>=8
 struct pj_ctx;
 typedef struct pj_ctx PJ_CONTEXT;
-#elif PROJ_VERSION_MAJOR>=6
+#else
 struct projCtx_t;
 typedef struct projCtx_t PJ_CONTEXT;
-#else
-typedef void PJ_CONTEXT;
 #endif
 
 /**
  * \class QgsProjContext
  * \ingroup core
- * Used to create and store a proj context object, correctly freeing the context upon destruction.
+ * \brief Used to create and store a proj context object, correctly freeing the context upon destruction.
  * \note Not available in Python bindings
  * \since QGIS 3.8
  */

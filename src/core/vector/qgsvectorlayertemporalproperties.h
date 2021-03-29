@@ -32,7 +32,7 @@ class QgsFields;
 /**
  * \class QgsVectorLayerTemporalContext
  * \ingroup core
- * Encapsulates the context in which a QgsVectorLayer's temporal capabilities
+ * \brief Encapsulates the context in which a QgsVectorLayer's temporal capabilities
  * will be applied
  *
  * \since QGIS 3.14
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsVectorLayerTemporalContext
 /**
  * \class QgsVectorLayerTemporalProperties
  * \ingroup core
- * Implementation of map layer temporal properties for vector layers.
+ * \brief Implementation of map layer temporal properties for vector layers.
  *
  * \since QGIS 3.14
  */

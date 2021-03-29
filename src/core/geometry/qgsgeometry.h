@@ -102,7 +102,7 @@ struct QgsGeometryPrivate;
 
 /**
  * \ingroup core
- * A geometry is the spatial representation of a feature.
+ * \brief A geometry is the spatial representation of a feature.
  *
  * QgsGeometry acts as a generic container for geometry objects. QgsGeometry objects are implicitly shared,
  * so making copies of geometries is inexpensive. The geometry container class can also be stored inside
@@ -2016,7 +2016,7 @@ class CORE_EXPORT QgsGeometry
      * \returns 0 in case of success,
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
-     *          3 other error during intersection removal
+     *          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
      * \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
@@ -2053,6 +2053,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * \ingroup core
+     * \brief A geometry error.
      */
     class CORE_EXPORT Error
     {
@@ -2488,7 +2489,6 @@ class CORE_EXPORT QgsGeometry
      */
     void reset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
 
-    static void convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output );
     static void convertPolygon( const QgsPolygon &input, QgsPolygonXY &output );
 
     //! Try to convert the geometry to a point

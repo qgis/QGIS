@@ -38,6 +38,7 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QStringListModel>
 
 QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, item )
@@ -314,6 +315,9 @@ void QgsLayoutMapWidget::followVisibilityPresetSelected( int currentIndex )
   if ( !mMapItem )
     return;
 
+  if ( mBlockThemeComboChanges != 0 )
+    return;
+
   if ( currentIndex == -1 )
     return;  // doing combo box model reset
 
@@ -361,6 +365,7 @@ void QgsLayoutMapWidget::onMapThemesChanged()
 {
   if ( QStringListModel *model = qobject_cast<QStringListModel *>( mFollowVisibilityPresetCombo->model() ) )
   {
+    mBlockThemeComboChanges++;
     QStringList lst;
     lst.append( tr( "(none)" ) );
     lst += QgsProject::instance()->mapThemeCollection()->mapThemes();
@@ -371,6 +376,7 @@ void QgsLayoutMapWidget::onMapThemesChanged()
     mFollowVisibilityPresetCombo->blockSignals( true );
     mFollowVisibilityPresetCombo->setCurrentIndex( presetModelIndex != -1 ? presetModelIndex : 0 ); // 0 == none
     mFollowVisibilityPresetCombo->blockSignals( false );
+    mBlockThemeComboChanges--;
   }
 }
 
@@ -2000,7 +2006,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mAtlasClippingTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  connect( mAtlasClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     if ( !mBlockUpdates )
     {
@@ -2058,7 +2064,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mItemClippingTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  connect( mItemClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     if ( !mBlockUpdates )
     {

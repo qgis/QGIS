@@ -390,6 +390,7 @@
 %Include auto_generated/symbology/qgsdashspacedialog.sip
 %Include auto_generated/symbology/qgsdatadefinedsizelegendwidget.sip
 %Include auto_generated/symbology/qgsellipsesymbollayerwidget.sip
+%Include auto_generated/symbology/qgsembeddedsymbolrendererwidget.sip
 %Include auto_generated/symbology/qgsgraduatedhistogramwidget.sip
 %Include auto_generated/symbology/qgsgraduatedsymbolrendererwidget.sip
 %Include auto_generated/symbology/qgsheatmaprendererwidget.sip

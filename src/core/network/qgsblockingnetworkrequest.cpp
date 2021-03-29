@@ -30,7 +30,7 @@
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest()
 {
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QNetworkReply * >::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
+  connect( QgsNetworkAccessManager::instance(), qOverload< QNetworkReply * >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
 }
 
 QgsBlockingNetworkRequest::~QgsBlockingNetworkRequest()
@@ -218,7 +218,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
 
   if ( requestMadeFromMainThread )
   {
-    std::unique_ptr<DownloaderThread> downloaderThread = qgis::make_unique<DownloaderThread>( downloaderFunction );
+    std::unique_ptr<DownloaderThread> downloaderThread = std::make_unique<DownloaderThread>( downloaderFunction );
     downloaderThread->start();
 
     while ( true )

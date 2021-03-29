@@ -12,7 +12,7 @@
 
 class QgsLayoutSize
 {
-%Docstring
+%Docstring(signature="appended")
 This class provides a method of storing sizes, consisting of a width and height,
 for use in QGIS layouts. Measurement units are stored alongside the size.
 

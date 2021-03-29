@@ -12,7 +12,7 @@
 
 class QgsRasterBlock
 {
-%Docstring
+%Docstring(signature="appended")
 Raster data container.
 %End
 

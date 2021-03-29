@@ -89,7 +89,7 @@ typedef QSet<int> QgsAttributeIds;
 
 /**
  * \ingroup core
- * Represents a vector layer which manages a vector based data sets.
+ * \brief Represents a vector layer which manages a vector based data sets.
  *
  * The QgsVectorLayer is instantiated by specifying the name of a data provider,
  * such as postgres or wfs, and url defining the specific data set to connect to.
@@ -98,7 +98,12 @@ typedef QSet<int> QgsAttributeIds;
  * connects to the data source.
  *
  * The QgsVectorLayer provides a common interface to the different data types. It also
- * manages editing transactions.
+ * manages editing transactions by buffering layer edits until they are written to the
+ * underlying QgsVectorDataProvider. Before edits can be made a call to startEditing()
+ * is required. Any edits made to a QgsVectorLayer are then held in memory only, and
+ * are not written to the underlying QgsVectorDataProvider until a call to commitChanges()
+ * is made. Buffered edits can be rolled back and discarded without altering the
+ * underlying provider by calling rollBack().
  *
  *  Sample usage of the QgsVectorLayer class:
  *
@@ -1420,6 +1425,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring ) SIP_DEPRECATED;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+
     /**
      * Adds a new part polygon to a multipart feature
      * \returns QgsGeometry::OperationResult
@@ -1441,6 +1448,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) SIP_PYNAME( addPartV2 ) SIP_DEPRECATED;
+#endif
 
     /**
      * Adds a new part polygon to a multipart feature
@@ -2229,23 +2237,57 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the minimum value for an attribute column or an invalid variant in case of error.
-     * Note that in some circumstances when unsaved changes are present for the layer then the
+     *
+     * \note In some circumstances when unsaved changes are present for the layer then the
      * returned value may be outdated (for instance when the attribute value in a saved feature has
      * been changed inside the edit buffer then the previous saved value may be returned as the minimum).
+     *
+     * \note If both the minimum and maximum value are required it is more efficient to call minimumAndMaximumValue()
+     * instead of separate calls to minimumValue() and maximumValue().
+     *
      * \see maximumValue()
+     * \see minimumAndMaximumValue()
      * \see uniqueValues()
      */
     QVariant minimumValue( int index ) const FINAL;
 
     /**
      * Returns the maximum value for an attribute column or an invalid variant in case of error.
-     * Note that in some circumstances when unsaved changes are present for the layer then the
+     *
+     * \note In some circumstances when unsaved changes are present for the layer then the
      * returned value may be outdated (for instance when the attribute value in a saved feature has
      * been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+     *
+     * \note If both the minimum and maximum value are required it is more efficient to call minimumAndMaximumValue()
+     * instead of separate calls to minimumValue() and maximumValue().
+     *
      * \see minimumValue()
+     * \see minimumAndMaximumValue()
      * \see uniqueValues()
      */
     QVariant maximumValue( int index ) const FINAL;
+
+
+    /**
+     * Calculates both the minimum and maximum value for an attribute column.
+     *
+     * This is more efficient then calling both minimumValue() and maximumValue() when both the minimum
+     * and maximum values are required.
+     *
+     * \param index index of field to calculate minimum and maximum value for.
+     * \param minimum will be set to minimum attribute value or an invalid variant in case of error.
+     * \param maximum will be set to maximum attribute value or an invalid variant in case of error.
+     *
+     * \note In some circumstances when unsaved changes are present for the layer then the
+     * calculated values may be outdated (for instance when the attribute value in a saved feature has
+     * been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+     *
+     * \see minimumValue()
+     * \see maximumValue()
+     *
+     * \since QGIS 3.20
+     */
+    void minimumAndMaximumValue( int index, QVariant &minimum SIP_OUT, QVariant &maximum SIP_OUT ) const;
 
     /**
      * Calculates an aggregated value from the layer's features.
@@ -2829,9 +2871,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayer( const QgsVectorLayer &rhs );
 #endif
     //! Returns the minimum or maximum value
-    QVariant minimumOrMaximumValue( int index, bool minimum ) const;
+    void minimumOrMaximumValue( int index, QVariant *minimum, QVariant *maximum ) const;
 
-  private:                       // Private attributes
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider

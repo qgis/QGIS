@@ -47,11 +47,11 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( c
   validator.run();
 
   QList<QgsSingleGeometryCheckError *> result;
-  for ( const auto &error : qgis::as_const( errors ) )
+  for ( const auto &error : std::as_const( errors ) )
   {
     QgsGeometry errorGeometry;
     if ( error.hasWhere() )
-      errorGeometry = QgsGeometry( qgis::make_unique<QgsPoint>( error.where() ) );
+      errorGeometry = QgsGeometry( std::make_unique<QgsPoint>( error.where() ) );
 
     result << new QgsGeometryIsValidCheckError( this, geometry, errorGeometry, error.what() );
   }

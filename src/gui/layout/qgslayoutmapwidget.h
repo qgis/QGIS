@@ -37,7 +37,7 @@ class QgsBookmarkManagerProxyModel;
 
 /**
  * \ingroup gui
- * Input widget for the configuration of QgsLayoutItemMap
+ * \brief Input widget for the configuration of QgsLayoutItemMap
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -152,6 +152,7 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
     QMenu *mBookmarkMenu = nullptr;
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
     QString mReportTypeString;
+    int mBlockThemeComboChanges = 0;
 
     //! Sets extent of composer map from line edits
     void updateComposerExtentFromGui();
@@ -190,7 +191,7 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
 
 /**
  * \ingroup gui
- * Model for label blocking items
+ * \brief Model for label blocking items
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -220,7 +221,7 @@ class GUI_EXPORT QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyMode
 
 /**
  * \ingroup gui
- * Allows configuration of layout map labeling settings.
+ * \brief Allows configuration of layout map labeling settings.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -249,7 +250,7 @@ class GUI_EXPORT QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, pri
 
 /**
  * \ingroup gui
- * Allows configuration of layout map clipping settings.
+ * \brief Allows configuration of layout map clipping settings.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.16

@@ -348,7 +348,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
     {
       if ( provider->doesStrictFeatureTypeCheck() )
       {
-        for ( const QgsFeature &f : qgis::as_const( mAddedFeatures ) )
+        for ( const QgsFeature &f : std::as_const( mAddedFeatures ) )
         {
           if ( ( ! f.hasGeometry() ) ||
                ( f.geometry().wkbType() == provider->wkbType() ) )
@@ -581,7 +581,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
       {
         commitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
         // TODO[MD]: we should not need this here
-        for ( QgsFeatureId id : qgis::as_const( mDeletedFeatureIds ) )
+        for ( QgsFeatureId id : std::as_const( mDeletedFeatureIds ) )
         {
           mChangedAttributeValues.remove( id );
           mChangedGeometries.remove( id );

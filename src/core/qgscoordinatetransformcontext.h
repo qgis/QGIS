@@ -38,7 +38,7 @@ class QDomElement;
 /**
  * \class QgsCoordinateTransformContext
  * \ingroup core
- * Contains information about the context in which a coordinate transform is executed.
+ * \brief Contains information about the context in which a coordinate transform is executed.
  *
  * The context stores various information regarding which coordinate operations should
  * be used when transforming points from a source to destination coordinate reference

@@ -28,7 +28,7 @@ class QgsAbstractMaterialSettings;
 
 /**
  * \ingroup 3d
- * 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
+ * \brief 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.

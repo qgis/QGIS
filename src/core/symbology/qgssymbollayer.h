@@ -188,7 +188,9 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyDensityArea, //!< Density area
       PropertyFontFamily, //!< Font family
       PropertyFontStyle, //!< Font style
-      PropertyDashPatternOffset, //!< Dash pattern offset
+      PropertyDashPatternOffset, //!< Dash pattern offset,
+      PropertyTrimStart, //!< Trim distance from start of line (since QGIS 3.20)
+      PropertyTrimEnd, //!< Trim distance from end of line (since QGIS 3.20)
     };
 
     /**
@@ -360,6 +362,16 @@ class CORE_EXPORT QgsSymbolLayer
 
     //! Returns if the layer can be used below the specified symbol
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
+
+    /**
+     * Returns TRUE if the symbol layer rendering can cause visible artifacts across a single feature
+     * when the feature is rendered as a series of adjacent map tiles each containing a portion of the feature's geometry.
+     *
+     * The default implementation returns FALSE.
+     *
+     * \since QGIS 3.18
+     */
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }

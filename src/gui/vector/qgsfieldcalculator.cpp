@@ -289,7 +289,7 @@ void QgsFieldCalculator::accept()
     }
     QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
 
-    std::unique_ptr< QgsScopedProxyProgressTask > task = qgis::make_unique< QgsScopedProxyProgressTask >( tr( "Calculating field" ) );
+    std::unique_ptr< QgsScopedProxyProgressTask > task = std::make_unique< QgsScopedProxyProgressTask >( tr( "Calculating field" ) );
     long long count = mOnlyUpdateSelectedCheckBox->isChecked() ? mVectorLayer->selectedFeatureCount() : mVectorLayer->featureCount();
     long long i = 0;
     while ( fit.nextFeature( feature ) )

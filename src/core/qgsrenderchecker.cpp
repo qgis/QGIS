@@ -26,7 +26,7 @@
 #include <QByteArray>
 #include <QDebug>
 #include <QBuffer>
-
+#include <QUuid>
 
 QgsRenderChecker::QgsRenderChecker()
   : mBasePath( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/control_images/" ) ) //defined in CmakeLists.txt
@@ -46,7 +46,7 @@ void QgsRenderChecker::setControlImagePath( const QString &path )
 void QgsRenderChecker::setControlName( const QString &name )
 {
   mControlName = name;
-  mExpectedImageFile = controlImagePath() + name + '/' + mControlPathSuffix + name + ".png";
+  mExpectedImageFile = controlImagePath() + name + '/' + mControlPathSuffix + name + "." + mControlExtension;
 }
 
 void QgsRenderChecker::setControlPathSuffix( const QString &name )

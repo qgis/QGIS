@@ -24,6 +24,9 @@ QT5_WRAP_UI (GPS_UIS_H  ${GPS_UIS})
 
 add_library (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_RCCS} ${GPS_UIS_H})
 
+# require c++17
+target_compile_features(gpsimporterplugin PRIVATE cxx_std_17)
+
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
 

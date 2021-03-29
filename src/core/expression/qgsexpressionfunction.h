@@ -35,8 +35,8 @@ class QgsExpressionContextScope;
 
 /**
  * \ingroup core
-  * A abstract base class for defining QgsExpression functions.
-  */
+ * \brief A abstract base class for defining QgsExpression functions.
+ */
 class CORE_EXPORT QgsExpressionFunction
 {
   public:
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsExpressionFunction
 
     /**
      * \ingroup core
-      * Represents a single parameter passed to a function.
+      * \brief Represents a single parameter passed to a function.
       * \since QGIS 2.16
       */
     class CORE_EXPORT Parameter
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsExpressionFunction
 
 /**
  * \ingroup core
-  * c++ helper class for defining QgsExpression functions.
+  * \brief c++ helper class for defining QgsExpression functions.
   * \note not available in Python bindings
   */
 #ifndef SIP_RUN
@@ -364,6 +364,28 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  const QStringList &aliases = QStringList(),
                                  bool handlesNull = false )
       : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull )
+      , mFnc( fcn )
+      , mAliases( aliases )
+      , mUsesGeometry( usesGeometry )
+      , mReferencedColumns( referencedColumns )
+    {
+    }
+
+    /**
+     * Static function for evaluation against a QgsExpressionContext, using an unnamed list of parameter values and list
+     * of groups.
+     */
+    QgsStaticExpressionFunction( const QString &fnname,
+                                 int params,
+                                 FcnEval fcn,
+                                 const QStringList &groups,
+                                 const QString &helpText = QString(),
+                                 bool usesGeometry = false,
+                                 const QSet<QString> &referencedColumns = QSet<QString>(),
+                                 bool lazyEval = false,
+                                 const QStringList &aliases = QStringList(),
+                                 bool handlesNull = false )
+      : QgsExpressionFunction( fnname, params, groups, helpText, lazyEval, handlesNull )
       , mFnc( fcn )
       , mAliases( aliases )
       , mUsesGeometry( usesGeometry )
@@ -500,7 +522,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
 };
 
 /**
- * Handles the ``array_foreach(array, expression)`` expression function.
+ * \brief Handles the array looping``array_Foreach(array, expression)`` expression function.
  * It temporarily appends a new scope to the expression context.
  *
  * \ingroup core
@@ -523,7 +545,7 @@ class QgsArrayForeachExpressionFunction : public QgsExpressionFunction
 };
 
 /**
- * Handles the ``array_filter(array, expression)`` expression function.
+ * \brief Handles the ``array_filter(array, expression)`` expression function.
  * It temporarily appends a new scope to the expression context.
  *
  * \ingroup core
@@ -546,7 +568,7 @@ class QgsArrayFilterExpressionFunction : public QgsExpressionFunction
 };
 
 /**
- * Handles the ``with_variable(name, value, node)`` expression function.
+ * \brief Handles the ``with_variable(name, value, node)`` expression function.
  * It temporarily appends a new scope to the expression context for all nested
  * nodes.
  *

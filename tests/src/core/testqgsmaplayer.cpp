@@ -19,6 +19,7 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
+#include <QSignalSpy>
 
 //qgis includes...
 #include <qgsmaplayer.h>

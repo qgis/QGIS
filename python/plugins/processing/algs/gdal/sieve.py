@@ -97,9 +97,10 @@ class sieve(GdalAlgorithm):
         return 'gdal_sieve'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
-        arguments.append('-st')
-        arguments.append(str(self.parameterAsInt(parameters, self.THRESHOLD, context)))
+        arguments = [
+            '-st',
+            str(self.parameterAsInt(parameters, self.THRESHOLD, context)),
+        ]
 
         if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):
             arguments.append('-8')
@@ -130,11 +131,4 @@ class sieve(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(out)
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

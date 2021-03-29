@@ -46,8 +46,8 @@ class QgsExpressionFunction;
 
 /**
  * \ingroup core
-Class for parsing and evaluation of expressions (formerly called "search strings").
-The expressions try to follow both syntax and semantics of SQL expressions.
+ * \brief Class for parsing and evaluation of expressions (formerly called "search strings").
+ * The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
 \code{.py}
@@ -240,6 +240,14 @@ class CORE_EXPORT QgsExpression
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
+     * \warning If the expression has been prepared via a call to QgsExpression::prepare(),
+     * or a call to QgsExpressionNode::prepare() for a node has been made, then parts of
+     * the expression may have been determined to evaluate to a static pre-calculatable value.
+     * In this case the results will omit attribute indices which are used by these
+     * pre-calculated nodes, regardless of their actual referenced columns.
+     * If you are seeking to use these functions to introspect an expression you must
+     * take care to do this with an unprepared expression.
+     *
      * \see referencedAttributeIndexes()
      */
     QSet<QString> referencedColumns() const;
@@ -249,12 +257,20 @@ class CORE_EXPORT QgsExpression
      * If the list contains a NULL QString, there is a variable name used
      * which is determined at runtime.
      *
+     * \note In contrast to the referencedColumns() function this method
+     * is not affected by any previous calls to QgsExpression::prepare(),
+     * or QgsExpressionNode::prepare().
+     *
      * \since QGIS 3.0
      */
     QSet<QString> referencedVariables() const;
 
     /**
      * Returns a list of the names of all functions which are used in this expression.
+     *
+     * \note In contrast to the referencedColumns() function this method
+     * is not affected by any previous calls to QgsExpression::prepare(),
+     * or QgsExpressionNode::prepare().
      *
      * \since QGIS 3.2
      */
@@ -293,6 +309,14 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Returns a list of field name indexes obtained from the provided fields.
+     *
+     * \warning If the expression has been prepared via a call to QgsExpression::prepare(),
+     * or a call to QgsExpressionNode::prepare() for a node has been made, then parts of
+     * the expression may have been determined to evaluate to a static pre-calculatable value.
+     * In this case the results will omit attribute indices which are used by these
+     * pre-calculated nodes, regardless of their actual referenced columns.
+     * If you are seeking to use these functions to introspect an expression you must
+     * take care to do this with an unprepared expression.
      *
      * \since QGIS 3.0
      */

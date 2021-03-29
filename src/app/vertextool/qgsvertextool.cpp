@@ -423,11 +423,11 @@ void QgsVertexTool::clearDragBands()
   mDragPointMarkers.clear();
   mDragPointMarkersOffset.clear();
 
-  for ( const StraightBand &b : qgis::as_const( mDragStraightBands ) )
+  for ( const StraightBand &b : std::as_const( mDragStraightBands ) )
     delete b.band;
   mDragStraightBands.clear();
 
-  for ( const CircularBand &b : qgis::as_const( mDragCircularBands ) )
+  for ( const CircularBand &b : std::as_const( mDragCircularBands ) )
     delete b.band;
   mDragCircularBands.clear();
 }
@@ -447,7 +447,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     QgsPointLocator::Match m = snapToEditableLayer( e );
     if ( m.hasVertex() )
     {
-      for ( const Vertex &selectedVertex : qgis::as_const( mSelectedVertices ) )
+      for ( const Vertex &selectedVertex : std::as_const( mSelectedVertices ) )
       {
         if ( selectedVertex.layer == m.layer() && selectedVertex.fid == m.featureId() && selectedVertex.vertexId == m.vertexIndex() )
         {
@@ -601,9 +601,10 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
         QgsGeometry g = f.geometry();
-        for ( int i = 0; i < g.constGet()->nCoordinates(); ++i )
+        int i = 0;
+        for ( auto it = g.constGet()->vertices_begin(); it != g.constGet()->vertices_end(); ++it )
         {
-          QgsPoint pt = g.vertexAt( i );
+          QgsPoint pt = *it;
           if ( layerRubberBandEngine->contains( &pt ) )
           {
             // we don't want to select invisible features,
@@ -618,6 +619,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
             if ( isFeatureSelected )
               selectedVertices << Vertex( vlayer, f.id(), i );
           }
+          i++;
         }
       }
       if ( r )
@@ -1093,7 +1095,7 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
     // keep only corrsesponding vertices
     // todo: it might be nice to keep other vertices in memory, so we could select them when switching lokcked feature
     QList<Vertex> vertices;
-    for ( const Vertex &v : qgis::as_const( mSelectedVertices ) )
+    for ( const Vertex &v : std::as_const( mSelectedVertices ) )
       if ( v.layer == alternative.first && v.fid == alternative.second )
         vertices << v;
     setHighlightedVertices( vertices, ModeReset );
@@ -1229,7 +1231,7 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPoint( pX ), QgsPoint( p0 ), QgsPoint( p1 ), points );
       mEdgeBand->reset();
-      for ( const QgsPoint &pt : qgis::as_const( points ) )
+      for ( const QgsPoint &pt : std::as_const( points ) )
         mEdgeBand->addPoint( pt );
     }
     else if ( isCircularVertex( geom, m.vertexIndex() + 1 ) )
@@ -1240,7 +1242,7 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPoint( p0 ), QgsPoint( p1 ), QgsPoint( pX ), points );
       mEdgeBand->reset();
-      for ( const QgsPoint &pt : qgis::as_const( points ) )
+      for ( const QgsPoint &pt : std::as_const( points ) )
         mEdgeBand->addPoint( pt );
     }
     else
@@ -1602,7 +1604,7 @@ void QgsVertexTool::deleteVertexEditorSelection()
   QgsVectorLayer *layer = mLockedFeature->layer();
   QgsFeatureId fid = mLockedFeature->featureId();
   QgsGeometry geometry = cachedGeometry( layer, fid );
-  for ( QgsVertexEntry *vertex : qgis::as_const( selFeatureVertices ) )
+  for ( QgsVertexEntry *vertex : std::as_const( selFeatureVertices ) )
   {
     if ( vertex->isSelected() )
     {
@@ -1684,7 +1686,7 @@ QSet<Vertex> QgsVertexTool::findCoincidentVertices( const QSet<Vertex> &vertices
   QSet<Vertex> topoVertices;
   const auto editableLayers = editableVectorLayers();
 
-  for ( const Vertex &v : qgis::as_const( vertices ) )
+  for ( const Vertex &v : std::as_const( vertices ) )
   {
     QgsPointXY origPointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
     QgsPointXY mapPointV = toMapCoordinates( v.layer, origPointV );
@@ -1704,7 +1706,7 @@ QSet<Vertex> QgsVertexTool::findCoincidentVertices( const QSet<Vertex> &vertices
 
 void QgsVertexTool::buildExtraVertices( const QSet<Vertex> &vertices, const QgsPointXY &anchorPoint, QgsVectorLayer *anchorLayer )
 {
-  for ( const Vertex &v : qgis::as_const( vertices ) )
+  for ( const Vertex &v : std::as_const( vertices ) )
   {
     if ( mDraggingVertex && v == *mDraggingVertex )
       continue;
@@ -1741,7 +1743,7 @@ void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 
   QSet<Vertex> movingVertices;
   movingVertices << *mDraggingVertex;
-  for ( const Vertex &v : qgis::as_const( mSelectedVertices ) )
+  for ( const Vertex &v : std::as_const( mSelectedVertices ) )
     movingVertices << v;
 
   if ( QgsProject::instance()->topologicalEditing() )
@@ -1768,7 +1770,7 @@ void QgsVertexTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertice
   // i.e. every circular band is defined by its middle circular vertex
   QSet<Vertex> verticesInCircularBands;
 
-  for ( const Vertex &v : qgis::as_const( movingVertices ) )
+  for ( const Vertex &v : std::as_const( movingVertices ) )
   {
     int v0idx, v1idx;
     QgsGeometry geom = cachedGeometry( v.layer, v.fid );
@@ -2307,7 +2309,7 @@ void QgsVertexTool::deleteVertex()
   {
     // if topo editing is enabled, delete all the vertices that are on the same location
     QSet<Vertex> topoVerticesToDelete;
-    for ( const Vertex &vertexToDelete : qgis::as_const( toDelete ) )
+    for ( const Vertex &vertexToDelete : std::as_const( toDelete ) )
     {
       QgsPointXY layerPt = cachedGeometryForVertex( vertexToDelete ).vertexAt( vertexToDelete.vertexId );
       QgsPointXY mapPt = toMapCoordinates( vertexToDelete.layer, layerPt );
@@ -2327,7 +2329,7 @@ void QgsVertexTool::deleteVertex()
 
   // switch from a plain list to dictionary { layer: { fid: [vertexNr1, vertexNr2, ...] } }
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > > toDeleteGrouped;
-  for ( const Vertex &vertex : qgis::as_const( toDelete ) )
+  for ( const Vertex &vertex : std::as_const( toDelete ) )
   {
     toDeleteGrouped[vertex.layer][vertex.fid].append( vertex.vertexId );
   }
@@ -2511,7 +2513,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
   if ( mode == ModeSubtract )
   {
     // rebuild markers for remaining selection
-    for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
+    for ( const Vertex &vertex : std::as_const( mSelectedVertices ) )
     {
       createMarkerForVertex( vertex );
     }
@@ -2522,7 +2524,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
     disconnect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
 
     mLockedFeature->deselectAllVertices();
-    for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
+    for ( const Vertex &vertex : std::as_const( mSelectedVertices ) )
     {
       // we should never be able to select vertices that are not from the locked feature
       // cppcheck-suppress assertWithSideEffect
@@ -2536,7 +2538,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
 
 void QgsVertexTool::setHighlightedVerticesVisible( bool visible )
 {
-  for ( QgsVertexMarker *marker : qgis::as_const( mSelectedVerticesMarkers ) )
+  for ( QgsVertexMarker *marker : std::as_const( mSelectedVerticesMarkers ) )
     marker->setVisible( visible );
 }
 
@@ -2570,7 +2572,7 @@ void QgsVertexTool::initSelectionRubberBand()
 {
   if ( !mSelectionRubberBand )
   {
-    mSelectionRubberBand = qgis::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
+    mSelectionRubberBand = std::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
     QColor fillColor = QColor( 0, 120, 215, 63 );
     QColor strokeColor = QColor( 0, 102, 204, 100 );
     mSelectionRubberBand->setFillColor( fillColor );
@@ -2631,7 +2633,7 @@ void QgsVertexTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
   QgsGeometryUtils::segmentizeArc( QgsPoint( v0 ), QgsPoint( v1 ), QgsPoint( v2 ), points );
   // it would be useful to have QgsRubberBand::setPoints() call
   band->reset();
-  for ( const QgsPoint &p : qgis::as_const( points ) )
+  for ( const QgsPoint &p : std::as_const( points ) )
     band->addPoint( p );
 }
 

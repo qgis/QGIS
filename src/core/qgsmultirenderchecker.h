@@ -23,7 +23,8 @@ class QgsLayout;
 
 /**
  * \ingroup core
- * This class allows checking rendered images against comparison images.
+ * \brief This class allows checking rendered images against comparison images.
+ *
  * Its main purpose is for the unit testing framework.
  *
  * It will either
@@ -154,7 +155,7 @@ SIP_IF_FEATURE( TESTS )
 /**
  * \ingroup core
  * \class QgsLayoutChecker
- * Renders a layout to an image and compares with an expected output
+ * \brief Renders a layout to an image and compares with an expected output
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker

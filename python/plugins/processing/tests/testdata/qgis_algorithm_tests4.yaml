@@ -2282,6 +2282,32 @@ tests:
       OUTPUT:
         name: expected/overlap_analysis_1.gml
         type: vector
+        compare:
+          fields:
+            custom_overlay1_a.geojson_area:
+              precision: 5
+            custom_overlay1_a.geojson_pc:
+              precision: 5
+            custom_overlay1_b.geojson_area:
+              precision: 5
+            custom_overlay1_b.geojson_pc:
+              precision: 5
+            custom_overlay2_a.geojson_area:
+              precision: 5
+            custom_overlay2_a.geojson_pc:
+              precision: 5
+            custom_overlay2_b.geojson_area:
+              precision: 5
+            custom_overlay2_b.geojson_pc:
+              precision: 5
+            custom_overlay3_a.geojson_area:
+              precision: 5
+            custom_overlay3_a.geojson_pc:
+              precision: 5
+            custom_overlay3_b.geojson_area:
+              precision: 4
+            custom_overlay3_b.geojson_pc:
+              precision: 3
 
   - algorithm: native:calculatevectoroverlaps
     name: Overlap analysis reprojected
@@ -2313,13 +2339,29 @@ tests:
         compare:
           fields:
             custom_overlay2_a.geojson_area:
-              precision: 13
+              precision: 8
             custom_overlay2_a.geojson_pc:
-              precision: 13
+              precision: 7
             custom_overlay2_b.geojson_area:
               precision: 8
             custom_overlay2_b.geojson_pc:
               precision: 7
+            custom_overlay1_a.geojson_area:
+              precision: 5
+            custom_overlay1_a.geojson_pc:
+              precision: 5
+            custom_overlay1_b.geojson_area:
+              precision: 5
+            custom_overlay1_b.geojson_pc:
+              precision: 5
+            custom_overlay3_a.geojson_area:
+              precision: 5
+            custom_overlay3_a.geojson_pc:
+              precision: 5
+            custom_overlay3_b.geojson_area:
+              precision: 4
+            custom_overlay3_b.geojson_pc:
+              precision: 3
 
   - algorithm: native:calculatevectoroverlaps
     name: Overlap analysis 3, reordered inputs
@@ -2371,7 +2413,7 @@ tests:
             custom_overlay3_a.geojson_pc:
               precision: 3
             custom_overlay3_b.geojson_area:
-              precision: 8
+              precision: 4
             custom_overlay3_b.geojson_pc:
               precision: 3
 

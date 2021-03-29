@@ -18,6 +18,7 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <memory>
+#include <QSignalSpy>
 
 //qgis includes...
 #include "qgis.h"
@@ -341,7 +342,7 @@ void TestQgis::testQgsAsConst()
   ConstTester ct;
   ct.doSomething();
   QCOMPARE( ct.mVal, 1 );
-  qgis::as_const( ct ).doSomething();
+  std::as_const( ct ).doSomething();
   QCOMPARE( ct.mVal, 2 );
 }
 

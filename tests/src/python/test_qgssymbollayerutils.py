@@ -270,6 +270,17 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/pixel")
         self.assertEqual(decode, (QgsUnitTypes.RenderPixels, 1.0))
 
+    def testPolylineLength(self):
+        """
+        Test QgsSymbolLayerUtils.polylineLength
+        """
+        self.assertEqual(QgsSymbolLayerUtils.polylineLength(QPolygonF()), 0.0)
+        self.assertEqual(
+            QgsSymbolLayerUtils.polylineLength(QPolygonF([QPointF(11, 12), QPointF(11, 12)])), 0.0)
+        self.assertEqual(
+            QgsSymbolLayerUtils.polylineLength(QPolygonF([QPointF(11, 2), QPointF(11, 12), QPointF(11, 12)])), 10.0)
+        self.assertEqual(QgsSymbolLayerUtils.polylineLength(QPolygonF([QPointF(11, 2), QPointF(11, 12), QPointF(111, 12)])), 110.0)
+
     def testPolylineSubstring(self):
         res = QgsSymbolLayerUtils.polylineSubstring(QPolygonF(), 1, 2)  # no crash
         self.assertFalse(res)

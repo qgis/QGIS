@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 from urllib.parse import parse_qs
 
+from qgis.PyQt.QtCore import QVariant, QByteArray, QDate, QDateTime, QTime
 from qgis.core import (
     QgsField,
     QgsFields,
@@ -29,22 +30,18 @@ from qgis.core import (
     QgsRectangle,
     QgsTestUtils,
     QgsFeatureSource,
-    QgsProjUtils,
     QgsFeatureSink,
 )
-
 from qgis.testing import (
     start_app,
     unittest
 )
 
+from providertestbase import ProviderTestCase
 from utilities import (
     unitTestDataPath,
     compareWkt
 )
-
-from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QVariant, QByteArray, QDate, QDateTime, QTime
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -60,22 +57,30 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         assert (vl.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
+        f1.setAttributes(
+            [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2),
+             QTime(12, 13, 1)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
         f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
+        f3.setAttributes(
+            [1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3),
+             QTime(12, 13, 14)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
+        f4.setAttributes(
+            [2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4),
+             QTime(12, 14, 14)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
+        f5.setAttributes(
+            [4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4),
+             QTime(13, 13, 14)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
@@ -264,24 +269,47 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
         provider.addAttributes([QgsField("name", QVariant.String),
                                 QgsField("age", QVariant.Int),
-                                QgsField("size", QVariant.Double)])
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     (3, len(provider.fields())))
-
-        assert len(provider.fields()) == 3, myMessage
+                                QgsField("size", QVariant.Double),
+                                QgsField("vallist", QVariant.List, subType=QVariant.Int),
+                                QgsField("stringlist", QVariant.List, subType=QVariant.String),
+                                QgsField("reallist", QVariant.List, subType=QVariant.Double),
+                                QgsField("longlist", QVariant.List, subType=QVariant.LongLong)])
+        self.assertEqual(len(provider.fields()), 7)
+        self.assertEqual(provider.fields()[0].name(), "name")
+        self.assertEqual(provider.fields()[0].type(), QVariant.String)
+        self.assertEqual(provider.fields()[0].subType(), QVariant.Invalid)
+        self.assertEqual(provider.fields()[1].name(), "age")
+        self.assertEqual(provider.fields()[1].type(), QVariant.Int)
+        self.assertEqual(provider.fields()[1].subType(), QVariant.Invalid)
+        self.assertEqual(provider.fields()[2].name(), "size")
+        self.assertEqual(provider.fields()[2].type(), QVariant.Double)
+        self.assertEqual(provider.fields()[2].subType(), QVariant.Invalid)
+        self.assertEqual(provider.fields()[3].name(), "vallist")
+        self.assertEqual(provider.fields()[3].type(), QVariant.List)
+        self.assertEqual(provider.fields()[3].subType(), QVariant.Int)
+        self.assertEqual(provider.fields()[4].name(), "stringlist")
+        self.assertEqual(provider.fields()[4].type(), QVariant.List)
+        self.assertEqual(provider.fields()[4].subType(), QVariant.String)
+        self.assertEqual(provider.fields()[5].name(), "reallist")
+        self.assertEqual(provider.fields()[5].type(), QVariant.List)
+        self.assertEqual(provider.fields()[5].subType(), QVariant.Double)
+        self.assertEqual(provider.fields()[6].name(), "longlist")
+        self.assertEqual(provider.fields()[6].type(), QVariant.List)
+        self.assertEqual(provider.fields()[6].subType(), QVariant.LongLong)
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes(["Johny",
                           20,
-                          0.3])
+                          0.3,
+                          [1, 2, 3],
+                          ['a', 'b', 'c'],
+                          [1.1, 2.2, 3.3],
+                          [1, 2, 3]])
         provider.addFeatures([ft])
 
         for f in provider.getFeatures(QgsFeatureRequest()):
-            myMessage = ('Expected: %s\nGot: %s\n' %
-                         ("Johny", f['name']))
-
-            self.assertEqual(f["name"], "Johny", myMessage)
+            self.assertEqual(f.attributes(), ['Johny', 20, 0.3, [1, 2, 3], ['a', 'b', 'c'], [1.1, 2.2, 3.3], [1, 2, 3]])
 
     def testFromUri(self):
         """Test we can construct the mem provider from a uri"""
@@ -291,9 +319,9 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             'test',
             'memory')
 
-        assert myMemoryLayer is not None, 'Provider not initialized'
+        self.assertIsNotNone(myMemoryLayer)
         myProvider = myMemoryLayer.dataProvider()
-        assert myProvider is not None
+        self.assertIsNotNone(myProvider)
 
     def testLengthPrecisionFromUri(self):
         """Test we can assign length and precision from a uri"""
@@ -320,6 +348,40 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(myMemoryLayer.fields().field('size').length(), -1)
 
+    def testListFromUri(self):
+        """Test we can create list type fields from a uri"""
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=a:string(-1)[]&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('a').type(), QVariant.StringList)
+        self.assertEqual(myMemoryLayer.fields().field('a').subType(), QVariant.String)
+
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=a:double(-1,-1)[]&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('a').type(), QVariant.List)
+        self.assertEqual(myMemoryLayer.fields().field('a').subType(), QVariant.Double)
+
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=a:long(-1,-1)[]&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('a').type(), QVariant.List)
+        self.assertEqual(myMemoryLayer.fields().field('a').subType(), QVariant.LongLong)
+
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=a:int(-1,-1)[]&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('a').type(), QVariant.List)
+        self.assertEqual(myMemoryLayer.fields().field('a').subType(), QVariant.Int)
+
     def testFromUriWithEncodedField(self):
         """Test we can construct the mem provider from a uri when a field name is encoded"""
         layer = QgsVectorLayer(
@@ -344,28 +406,44 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                     QgsField('TestString', QVariant.String, 'string', 50, 0),
                     QgsField('TestDate', QVariant.Date, 'date'),
                     QgsField('TestTime', QVariant.Time, 'time'),
-                    QgsField('TestDateTime', QVariant.DateTime, 'datetime')]
-        assert myMemoryLayer.startEditing()
+                    QgsField('TestDateTime', QVariant.DateTime, 'datetime'),
+                    QgsField("vallist", QVariant.List, subType=QVariant.Int),
+                    QgsField("stringlist", QVariant.StringList, subType=QVariant.String),
+                    QgsField("stringlist2", QVariant.List, subType=QVariant.String),
+                    QgsField("reallist", QVariant.List, subType=QVariant.Double),
+                    QgsField("longlist", QVariant.List, subType=QVariant.LongLong)]
+        self.assertTrue(myMemoryLayer.startEditing())
         for f in myFields:
             assert myMemoryLayer.addAttribute(f)
-        assert myMemoryLayer.commitChanges()
+        self.assertTrue(myMemoryLayer.commitChanges())
         myMemoryLayer.updateFields()
+
+        for f in myFields:
+            self.assertEqual(f, myMemoryLayer.fields().field(f.name()))
 
         # Export the layer to a layer-definition-XML
         qlr = QgsLayerDefinition.exportLayerDefinitionLayers([myMemoryLayer], QgsReadWriteContext())
-        assert qlr is not None
+        self.assertIsNotNone(qlr)
 
         # Import the layer from the layer-definition-XML
         layers = QgsLayerDefinition.loadLayerDefinitionLayers(qlr, QgsReadWriteContext())
-        assert layers is not None
+        self.assertTrue(layers)
         myImportedLayer = layers[0]
-        assert myImportedLayer is not None
+        self.assertIsNotNone(myImportedLayer)
 
         # Check for the presence of the fields
         importedFields = myImportedLayer.fields()
-        assert importedFields is not None
         for f in myFields:
-            assert f == importedFields.field(f.name())
+            self.assertEqual(f.name(), importedFields.field(f.name()).name())
+            if f.name() != 'stringlist2':
+                self.assertEqual(f.type(), importedFields.field(f.name()).type())
+            else:
+                # we automatically convert List with String subtype to StringList, to match other data providers
+                self.assertEqual(importedFields.field(f.name()).type(), QVariant.StringList)
+
+            self.assertEqual(f.subType(), importedFields.field(f.name()).subType())
+            self.assertEqual(f.precision(), importedFields.field(f.name()).precision())
+            self.assertEqual(f.length(), importedFields.field(f.name()).length())
 
     def testRenameAttributes(self):
         layer = QgsVectorLayer("Point", "test", "memory")
@@ -446,17 +524,18 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(layer.crs().authid(), 'EPSG:3111')
 
         # custom CRS
-        if QgsProjUtils.projVersionMajor() >= 6:
-            crs = QgsCoordinateReferenceSystem.fromProj('+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs')
-            layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, crs)
-            self.assertTrue(layer.isValid())
-            self.assertTrue(layer.crs().isValid())
-            self.assertEqual(layer.crs().toProj(), '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
+        crs = QgsCoordinateReferenceSystem.fromProj(
+            '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs')
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, crs)
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.crs().isValid())
+        self.assertEqual(layer.crs().toProj(),
+                         '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
 
-            # clone it, just to check
-            layer2 = layer.clone()
-            self.assertEqual(layer2.crs().toProj(),
-                             '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
+        # clone it, just to check
+        layer2 = layer.clone()
+        self.assertEqual(layer2.crs().toProj(),
+                         '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
 
         # fields
         fields = QgsFields()
@@ -471,13 +550,23 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fields.append(QgsField("complex/name", QVariant.String))
         fields.append(QgsField("binaryfield", QVariant.ByteArray))
         fields.append(QgsField("boolfield", QVariant.Bool))
+        fields.append(QgsField("vallist", QVariant.List, subType=QVariant.Int))
+        fields.append(QgsField("stringlist", QVariant.StringList, subType=QVariant.String))
+        fields.append(QgsField("stringlist2", QVariant.List, subType=QVariant.String))
+        fields.append(QgsField("reallist", QVariant.List, subType=QVariant.Double))
+        fields.append(QgsField("longlist", QVariant.List, subType=QVariant.LongLong))
+
         layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
         self.assertTrue(layer.isValid())
         self.assertFalse(layer.fields().isEmpty())
         self.assertEqual(len(layer.fields()), len(fields))
         for i in range(len(fields)):
             self.assertEqual(layer.fields()[i].name(), fields[i].name())
-            self.assertEqual(layer.fields()[i].type(), fields[i].type())
+            if layer.fields()[i].name() != 'stringlist2':
+                self.assertEqual(layer.fields()[i].type(), fields[i].type())
+            else:
+                # we automatically convert List with String subtype to StringList, to match other data providers
+                self.assertEqual(layer.fields()[i].type(), QVariant.StringList)
             self.assertEqual(layer.fields()[i].length(), fields[i].length())
             self.assertEqual(layer.fields()[i].precision(), fields[i].precision(), fields[i].name())
 
@@ -505,6 +594,27 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(layer.fields()[i].type(), fields[i].type())
             self.assertEqual(layer.fields()[i].length(), fields[i].length())
             self.assertEqual(layer.fields()[i].precision(), fields[i].precision())
+
+    def testAddChangeFeatureConvertAttribute(self):
+        """
+        Test add features with attribute values which require conversion
+        """
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=dt:datetime', 'test', 'memory')
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        # string value specified for datetime field -- must be converted when adding the feature
+        f.setAttributes([5, -200, '2021-02-10 00:00'])
+        self.assertTrue(provider.addFeatures([f]))
+
+        saved_feature = next(provider.getFeatures())
+        # saved feature must have a QDateTime value for field, not string
+        self.assertEqual(saved_feature.attributes(), [5, -200, QDateTime(2021, 2, 10, 0, 0)])
+
+        self.assertTrue(provider.changeAttributeValues({saved_feature.id(): {2: '2021-02-12 00:00'}}))
+        saved_feature = next(provider.getFeatures())
+        # saved feature must have a QDateTime value for field, not string
+        self.assertEqual(saved_feature.attributes(), [5, -200, QDateTime(2021, 2, 12, 0, 0)])
 
     def testThreadSafetyWithIndex(self):
         layer = QgsVectorLayer(
@@ -820,22 +930,30 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
         cls.source = cls.vl.dataProvider()
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
+        f1.setAttributes(
+            [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2),
+             QTime(12, 13, 1)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
         f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
+        f3.setAttributes(
+            [1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3),
+             QTime(12, 13, 14)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
+        f4.setAttributes(
+            [2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4),
+             QTime(12, 14, 14)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
+        f5.setAttributes(
+            [4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4),
+             QTime(13, 13, 14)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         cls.source.addFeatures([f1, f2, f3, f4, f5])

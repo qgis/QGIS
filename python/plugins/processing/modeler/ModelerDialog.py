@@ -41,6 +41,7 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsProcessingModelParameter,
                        QgsSettings,
+                       QgsProcessingContext
                        )
 from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
@@ -152,6 +153,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.setLastRunChildAlgorithmInputs(dlg.results().get('CHILD_INPUTS', {}))
 
         dlg = AlgorithmDialog(self.model().create(), parent=self)
+        dlg.setLogLevel(QgsProcessingContext.Verbose)
         dlg.setParameters(self.model().designerParameterValues())
         dlg.algorithmFinished.connect(on_finished)
         dlg.exec_()
@@ -235,8 +237,9 @@ class ModelerDialog(QgsModelDesignerDialog):
             scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
 
         context = createContext()
-        scene.createItems(self.model(), context)
         self.setModelScene(scene)
+        # create items later that setModelScene to setup link to messageBar to the scene
+        scene.createItems(self.model(), context)
 
     def create_widget_context(self):
         """

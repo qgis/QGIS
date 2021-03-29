@@ -15,6 +15,7 @@
 
 
 #include "qgstest.h"
+#include <QTemporaryFile>
 
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrasterlayersaveasdialog.h"

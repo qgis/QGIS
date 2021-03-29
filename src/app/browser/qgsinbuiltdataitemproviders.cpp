@@ -49,6 +49,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QUrl>
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -566,7 +567,7 @@ bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemG
 
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
-    const QgsMimeDataUtils::UriList layerUriList = QgsMimeDataUtils::UriList() << layerItem->mimeUri();
+    const QgsMimeDataUtils::UriList layerUriList = layerItem->mimeUris();
     QgisApp::instance()->handleDropUriList( layerUriList );
     return true;
   }
@@ -602,7 +603,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
     if ( item && item->type() == QgsDataItem::Layer )
     {
       if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
-        layerUriList << layerItem->mimeUri();
+        layerUriList.append( layerItem->mimeUris() );
     }
   }
   if ( !layerUriList.isEmpty() )
@@ -924,7 +925,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                                             geometryType != QgsWkbTypes::Unknown };
             const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
             // This flag tells to the provider that field types do not need conversion
-            QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
+            // also prevents  GDAL to create a spatial index by default for GPKG, we are
+            // going to create it afterwards in a unified manner for all providers.
+            QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true },
+              { QStringLiteral( "layerOptions" ), QStringLiteral( "SPATIAL_INDEX=NO" ) } };
 
             if ( ! geometryColumn.isEmpty() )
             {

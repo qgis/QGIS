@@ -545,7 +545,8 @@ QgsOracleRootItem::QgsOracleRootItem( QgsDataItem *parent, const QString &name, 
 QVector<QgsDataItem *> QgsOracleRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  Q_FOREACH ( QString connName, QgsOracleConn::connectionList() )
+  const QStringList list = QgsOracleConn::connectionList();
+  for ( QString connName : list )
   {
     connections << new QgsOracleConnectionItem( this, connName, mPath + '/' + connName );
   }

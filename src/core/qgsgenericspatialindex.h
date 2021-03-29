@@ -35,7 +35,7 @@ class QgsRectangle;
  * \ingroup core
  * \class QgsGenericSpatialIndex
  *
- * A generic rtree spatial index based on a libspatialindex backend.
+ * \brief A generic rtree spatial index based on a libspatialindex backend.
  *
  * \note Not available in Python bindings.
  * \since QGIS 3.12

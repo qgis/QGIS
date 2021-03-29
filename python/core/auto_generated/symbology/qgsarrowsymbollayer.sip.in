@@ -12,7 +12,7 @@
 
 class QgsArrowSymbolLayer : QgsLineSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Line symbol layer used for representing lines as arrows.
 
 .. versionadded:: 2.16
@@ -211,6 +211,8 @@ Sets the arrow type
     virtual void setColor( const QColor &c );
 
     virtual QColor color() const;
+
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
   private:

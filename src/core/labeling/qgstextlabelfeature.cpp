@@ -85,7 +85,7 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
 
   if ( document && curvedLabeling )
   {
-    for ( const QgsTextBlock &block : qgis::as_const( *document ) )
+    for ( const QgsTextBlock &block : std::as_const( *document ) )
     {
       for ( const QgsTextFragment &fragment : block )
       {
@@ -109,11 +109,7 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
   {
     // reconstruct how Qt creates word spacing, then adjust per individual stored character
     // this will allow PAL to create each candidate width = character width + correct spacing
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    charWidth = fm->width( mClusters[i] );
-#else
     charWidth = fm->horizontalAdvance( mClusters[i] );
-#endif
     if ( curvedLabeling )
     {
       wordSpaceFix = qreal( 0.0 );
@@ -125,23 +121,14 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
       }
       // this workaround only works for clusters with a single character. Not sure how it should be handled
       // with multi-character clusters.
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-      if ( mClusters[i].length() == 1 &&
-           !qgsDoubleNear( fm->width( QString( mClusters[i].at( 0 ) ) ), fm->width( mClusters[i].at( 0 ) ) + letterSpacing ) )
-#else
       if ( mClusters[i].length() == 1 &&
            !qgsDoubleNear( fm->horizontalAdvance( QString( mClusters[i].at( 0 ) ) ), fm->horizontalAdvance( mClusters[i].at( 0 ) ) + letterSpacing ) )
-#endif
       {
         // word spacing applied when it shouldn't be
         wordSpaceFix -= wordSpacing;
       }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-      charWidth = fm->width( QString( mClusters[i] ) ) + wordSpaceFix;
-#else
       charWidth = fm->horizontalAdvance( QString( mClusters[i] ) ) + wordSpaceFix;
-#endif
     }
 
     double labelWidth = mapScale * charWidth;

@@ -10,7 +10,7 @@ endif()
 set(NATIVE_LINK_LIBS)
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
-  find_package(Qt5DBus REQUIRED)
+  find_package(${QT_VERSION_BASE} COMPONENTS DBus REQUIRED)
 endif()
 
 if(APPLE)
@@ -88,6 +88,9 @@ endif()
 add_library(qgis_native SHARED ${QGIS_NATIVE_SRCS} ${QGIS_NATIVE_HDRS})
 set_property(TARGET qgis_native PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# require c++17
+target_compile_features(qgis_native PRIVATE cxx_std_17)
+
 target_include_directories(qgis_native PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -131,28 +134,28 @@ if(NOT ANDROID)
   )
 endif()
 
-target_link_libraries(qgis_native
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-    "${NATIVE_LINK_LIBS}"
-    )
+if (WITH_QT6)
+  target_link_libraries(qgis_native ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} "${NATIVE_LINK_LIBS}")
+else()
+  target_link_libraries(qgis_native ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} "${NATIVE_LINK_LIBS}")
+endif()
 
 if (UNIX AND NOT APPLE AND NOT ANDROID)
-  target_link_libraries(qgis_native Qt5::DBus)
+  target_link_libraries(qgis_native ${QT_VERSION_BASE}::DBus)
 endif()
 
 if (APPLE)
-  find_package(Qt5MacExtras)
+  find_package(${QT_VERSION_BASE}MacExtras)
 
-  target_link_libraries(qgis_native Qt5::MacExtras)
+  target_link_libraries(qgis_native ${QT_VERSION_BASE}::MacExtras)
 endif()
 
 if (MSVC)
-  find_package(Qt5WinExtras)
+  find_package(${QT_VERSION_BASE}WinExtras)
 
   target_link_libraries(qgis_native shell32)
-  target_link_libraries(qgis_native ${Qt5Widget_LIBRARIES} ${QT_QTMAIN_LIBRARY})
-  target_link_libraries(qgis_native Qt5::WinExtras)
+  target_link_libraries(qgis_native ${${QT_VERSION_BASE}Widget_LIBRARIES} ${QT_QTMAIN_LIBRARY})
+  target_link_libraries(qgis_native ${QT_VERSION_BASE}::WinExtras)
 endif()
 # install
 

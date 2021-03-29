@@ -283,7 +283,7 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 /**
  * \ingroup core
  * \class QgsCptCitySelectionItem
- * A selection: contains subdirectories and color ramps
+ * \brief A selection: contains subdirectories and color ramps
 */
 class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 {
@@ -304,7 +304,7 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 
 /**
  * \ingroup core
- * An "All ramps item", which contains all items in a flat hierarchy
+ * \brief An "All ramps item", which contains all items in a flat hierarchy
 */
 class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 {

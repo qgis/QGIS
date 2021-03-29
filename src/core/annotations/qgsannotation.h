@@ -26,6 +26,8 @@
 #include "qgsmargins.h"
 #include "qgsmaplayer.h"
 
+#include <QPointer>
+
 class QgsRenderContext;
 
 /**
@@ -373,12 +375,6 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
   private:
 
-    //! Check where to attach the balloon connection between frame and map point
-    void updateBalloon();
-
-    //! Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)
-    QLineF segment( int index, QgsRenderContext *context ) const;
-
     //! Draws the annotation frame to a destination painter
     void drawFrame( QgsRenderContext &context ) const;
 
@@ -412,15 +408,6 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     //! Fill symbol used for drawing annotation
     std::unique_ptr<QgsFillSymbol> mFillSymbol;
-
-    //! Segment number where the connection to the map point is attached. -1 if no balloon needed (e.g. if point is contained in frame)
-    int mBalloonSegment = -1;
-
-    //! First segment point for drawing the connection (ccw direction) (always in mm)
-    QPointF mBalloonSegmentPoint1;
-
-    //! Second segment point for drawing the balloon connection (ccw direction) (always in mm)
-    QPointF mBalloonSegmentPoint2;
 
     //! Associated layer (or NULLPTR if not attached to a layer)
     QgsWeakMapLayerPointer mMapLayer;

@@ -20,7 +20,7 @@
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mFeedback( qgis::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayerOpacity( layer->opacity() )
 {
   // clone items from layer
@@ -50,7 +50,7 @@ bool QgsAnnotationLayerRenderer::render()
   QgsRenderContext &context = *renderContext();
 
   bool canceled = false;
-  for ( QgsAnnotationItem *item : qgis::as_const( mItems ) )
+  for ( QgsAnnotationItem *item : std::as_const( mItems ) )
   {
     if ( mFeedback->isCanceled() )
     {

@@ -13,7 +13,7 @@
 
 class QgsMeshLayer : QgsMapLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a mesh layer supporting display of data on structured or unstructured meshes
 

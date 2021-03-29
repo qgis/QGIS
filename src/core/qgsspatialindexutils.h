@@ -41,7 +41,7 @@ namespace SpatialIndex
  * \ingroup core
  * \class QgsSpatialIndexUtils
  *
- * Contains utility functions for working with spatial indexes.
+ * \brief Contains utility functions for working with spatial indexes.
  *
  * \note Not available in Python bindings.
  * \since QGIS 3.12

@@ -23,13 +23,12 @@
 #include <QString>
 
 class QIODevice;
-class QStringList;
 
 class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * Abstract interface for project storage - to be implemented by various backends
+ * \brief Abstract interface for project storage - to be implemented by various backends
  * and registered in QgsProjectStorageRegistry.
  *
  * \since QGIS 3.2
@@ -40,7 +39,7 @@ class CORE_EXPORT QgsProjectStorage
 
     /**
      * \ingroup core
-     * Metadata associated with a project
+     * \brief Metadata associated with a project
      * \since QGIS 3.2
      */
     class Metadata

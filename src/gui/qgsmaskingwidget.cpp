@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+
+///@cond PRIVATE
+
 #include <QSet>
 #include <QCheckBox>
 
@@ -75,68 +78,8 @@ void QgsMaskingWidget::showEvent( QShowEvent *event )
   }
 }
 
-/**
- * \ingroup gui
- * Generic visitor that collects symbol layers of a vector layer's renderer
- * and call a callback function on them with their corresponding QgsSymbolLayerId
- *
- * \note This class is not a part of public API
- * \since QGIS 3.14
- */
-class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
-{
-  public:
-    typedef std::function<void( const QgsSymbolLayer *, const QgsSymbolLayerId & )> SymbolLayerCallback;
 
-    //! constructor
-    SymbolLayerVisitor( SymbolLayerCallback callback ) :
-      mCallback( callback )
-    {}
 
-    bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
-    {
-      if ( node.type != QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
-        return false;
-
-      mSymbolKey = node.identifier;
-      return true;
-    }
-
-    //! Process a symbol
-    void visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath )
-    {
-      for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
-      {
-        QVector<int> indexPath = rootPath;
-        indexPath.push_back( idx );
-
-        const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
-
-        mCallback( sl, QgsSymbolLayerId( mSymbolKey + leafIdentifier, indexPath ) );
-
-        // recurse over sub symbols
-        const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
-        if ( subSymbol )
-          visitSymbol( subSymbol, leafIdentifier, indexPath );
-      }
-    }
-
-    bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
-    {
-      if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
-      {
-        auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
-        if ( symbolEntity->symbol() )
-          visitSymbol( symbolEntity->symbol(), leaf.identifier, {} );
-      }
-      return true;
-    }
-
-  private:
-    QString mSymbolKey;
-    QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> mMasks;
-    SymbolLayerCallback mCallback;
-};
 
 /**
  * Symbol layer masks collector. It is an enhanced version of QgsVectorLayerUtils::symbolLayerMasks.
@@ -337,3 +280,47 @@ bool QgsMaskingWidget::hasBeenPopulated()
 {
   return !mMustPopulate;
 }
+
+SymbolLayerVisitor::SymbolLayerVisitor( SymbolLayerVisitor::SymbolLayerCallback callback ) :
+  mCallback( callback )
+{}
+
+bool SymbolLayerVisitor::visitEnter( const QgsStyleEntityVisitorInterface::Node &node )
+{
+  if ( node.type != QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
+    return false;
+
+  mSymbolKey = node.identifier;
+  return true;
+}
+
+void SymbolLayerVisitor::visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath )
+{
+  for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+  {
+    QVector<int> indexPath = rootPath;
+    indexPath.push_back( idx );
+
+    const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+
+    mCallback( sl, QgsSymbolLayerId( mSymbolKey + leafIdentifier, indexPath ) );
+
+    // recurse over sub symbols
+    const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
+    if ( subSymbol )
+      visitSymbol( subSymbol, leafIdentifier, indexPath );
+  }
+}
+
+bool SymbolLayerVisitor::visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf )
+{
+  if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+  {
+    auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+    if ( symbolEntity->symbol() )
+      visitSymbol( symbolEntity->symbol(), leaf.identifier, {} );
+  }
+  return true;
+}
+
+///@endcond

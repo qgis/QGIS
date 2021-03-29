@@ -81,7 +81,9 @@
 
 #include "layout/qgspagesizeregistry.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
+#endif
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -95,6 +97,14 @@
 #include <QThreadPool>
 #include <QLocale>
 #include <QStyle>
+#include <QLibraryInfo>
+#include <QStandardPaths>
+#include <QRegularExpression>
+#include <QTextStream>
+#include <QScreen>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#include <QRecursiveMutex>
+#endif
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -118,9 +128,7 @@
 #include <sqlite3.h>
 #include <mutex>
 
-#if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
-#endif
 
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
@@ -259,6 +267,8 @@ void QgsApplication::init( QString profileFolder )
     QMetaType::registerComparators<QgsProcessingModelChildDependency>();
     QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
     QMetaType::registerEqualsComparator<QgsProperty>();
+    QMetaType::registerEqualsComparator<QgsDateTimeRange>();
+    QMetaType::registerEqualsComparator<QgsDateRange>();
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
   } );
@@ -347,7 +357,6 @@ void QgsApplication::init( QString profileFolder )
   }
   *sSystemEnvVars() = systemEnvVarMap;
 
-#if PROJ_VERSION_MAJOR>=6
   // append local user-writable folder as a proj search path
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
@@ -371,7 +380,6 @@ void QgsApplication::init( QString profileFolder )
     CPLFree( newPaths[i] );
   }
   delete [] newPaths;
-#endif // PROJ_VERSION_MAJOR>=6
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
@@ -1032,19 +1040,11 @@ QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-#if PROJ_VERSION_MAJOR>=6
     QString tempCopy = QDir::tempPath() + "/srs6.db";
-#else
-    QString tempCopy = QDir::tempPath() + "/srs.db";
-#endif
 
     if ( !QFile( tempCopy ).exists() )
     {
-#if PROJ_VERSION_MAJOR>=6
       QFile f( buildSourcePath() + "/resources/srs6.db" );
-#else
-      QFile f( buildSourcePath() + "/resources/srs.db" );
-#endif
       if ( !f.copy( tempCopy ) )
       {
         qFatal( "Could not create temporary copy" );
@@ -1090,7 +1090,7 @@ QStringList QgsApplication::svgPaths()
       if ( !paths.contains( path ) )
         paths.append( path );
     }
-    for ( const QString &path : qgis::as_const( *sDefaultSvgPaths() ) )
+    for ( const QString &path : std::as_const( *sDefaultSvgPaths() ) )
     {
       if ( !paths.contains( path ) )
         paths.append( path );
@@ -1411,7 +1411,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "body{"
                             "  background: white;"
                             "  color: black;"
-                            "  font-family: 'Lato', 'Ubuntu', 'Lucida Grande', 'Segoe UI', 'Arial', sans-serif;"
+                            "  font-family: 'Lato', 'Open Sans', 'Lucida Grande', 'Segoe UI', 'Arial', sans-serif;"
                             "  width: 100%;"
                             "}"
                             "h1{  background-color: #F6F6F6;"
@@ -1861,8 +1861,13 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
   QFontMetrics fm( ( QFont() ) );
   const double scale = 1.1 * standardSize / 24;
   int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   if ( applyDevicePixelRatio && QApplication::desktop() )
     scaledIconSize *= QApplication::desktop()->devicePixelRatio();
+#else
+  if ( applyDevicePixelRatio && !QApplication::topLevelWidgets().isEmpty() )
+    scaledIconSize *= QApplication::topLevelWidgets().first()->screen()->devicePixelRatio();
+#endif
   return scaledIconSize;
 }
 
@@ -2568,7 +2573,11 @@ QgsApplication::ApplicationMembers *QgsApplication::members()
   }
   else
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     static QMutex sMemberMutex( QMutex::Recursive );
+#else
+    static QRecursiveMutex sMemberMutex;
+#endif
     QMutexLocker lock( &sMemberMutex );
     if ( !sApplicationMembers )
       sApplicationMembers = new ApplicationMembers();

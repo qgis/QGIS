@@ -159,7 +159,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
 
 /**
  * \ingroup core
- * Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
+ * \brief Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
  * settings.
  *
  * Conversions are performed by calling convert() with either a JSON map or JSON
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      *
-     * \param jsonLayer fill layer to parse
+     * \param jsonLayer line layer to parse
      * \param style generated QGIS vector tile style
      * \param context conversion context
      * \returns TRUE if the layer was successfully parsed.
@@ -290,11 +290,23 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
 
     /**
+     * Parses a circle layer.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     *
+     * \param jsonLayer circle layer to parse
+     * \param style generated QGIS vector tile style
+     * \param context conversion context
+     * \returns TRUE if the layer was successfully parsed.
+     */
+    static bool parseCircleLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
+
+    /**
      * Parses a symbol layer as renderer or labeling.
      *
      * \warning This is private API only, and may change in future QGIS versions
      *
-     * \param jsonLayer fill layer to parse
+     * \param jsonLayer symbol layer to parse
      * \param rendererStyle generated QGIS vector tile style
      * \param hasRenderer will be set to TRUE if symbol layer generated a renderer style
      * \param labelingStyle generated QGIS vector tile labeling

@@ -34,7 +34,7 @@ class QgsFeedback;
  * \ingroup analysis
  * \class QgsMeshTriangulation
  *
- * Class that handles mesh creation with Delaunay constrained triangulation
+ * \brief Class that handles mesh creation with Delaunay constrained triangulation
  *
  * \since QGIS 3.16
  */
@@ -96,7 +96,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
  * \ingroup analysis
  * \class QgsMeshZValueDataset
  *
- * Convenient class that can be used to obtain a dataset that represents the Z values of mesh vertices
+ * \brief Convenient class that can be used to obtain a dataset that represents the Z values of mesh vertices
  *
  * \since QGIS 3.16
  */
@@ -126,7 +126,7 @@ class QgsMeshZValueDataset: public QgsMeshDataset
  * \ingroup analysis
  * \class QgsMeshZValueDatasetGroup
  *
- * Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
+ * \brief Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
  *
  * \since QGIS 3.16
  */

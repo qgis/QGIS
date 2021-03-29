@@ -21,6 +21,9 @@ include_directories(
 
 add_library(wcsprovider MODULE ${WCS_SRCS})
 
+# require c++17
+target_compile_features(wcsprovider PRIVATE cxx_std_17)
+
 target_link_libraries(wcsprovider
   qgis_core
 )

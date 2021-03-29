@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <QDir>
 #include <QTimer>
+#include <QUrlQuery>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
@@ -121,7 +122,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
   }
   else
   {
-    Q_FOREACH ( const QgsOgcUtils::LayerProperties layerProperties, mShared->mLayerPropertiesList )
+    for ( const QgsOgcUtils::LayerProperties &layerProperties : std::as_const( mShared->mLayerPropertiesList ) )
     {
       if ( !typenames.isEmpty() )
         typenames += QLatin1Char( ',' );

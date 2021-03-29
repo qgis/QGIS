@@ -1026,6 +1026,23 @@
           36.717145
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Patrice Pineault",
+        "Committer": "No",
+        "First Commit Message": "Zoom to multiple selected layer(s) in layer tree",
+        "First Commit Date": "04-12-2020",
+        "GIT Nickname": "TurboGraphxBeige"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.88926,
+          45.40171
+        ]
+      }
     }
   ]
 }

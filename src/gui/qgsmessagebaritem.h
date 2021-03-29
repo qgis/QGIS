@@ -31,7 +31,7 @@ class QgsMessageBar;
 /**
  * \ingroup gui
  * \class QgsMessageBarItem
- * Represents an item shown within a QgsMessageBar widget.
+ * \brief Represents an item shown within a QgsMessageBar widget.
  *
  * QgsMessageBarItem represents a single item (or message) which can be shown in a QgsMessageBar widget.
  */

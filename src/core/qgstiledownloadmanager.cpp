@@ -144,7 +144,9 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 
 
 QgsTileDownloadManager::QgsTileDownloadManager()
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   : mMutex( QMutex::Recursive )
+#endif
 {
 }
 
@@ -309,11 +311,7 @@ void QgsTileDownloadManager::removeEntry( const QNetworkRequest &request )
 
 void QgsTileDownloadManager::signalQueueModified()
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  QMetaObject::invokeMethod( mWorker, "queueUpdated", Qt::QueuedConnection );
-#else
   QMetaObject::invokeMethod( mWorker, &QgsTileDownloadManagerWorker::queueUpdated, Qt::QueuedConnection );
-#endif
 }
 
 

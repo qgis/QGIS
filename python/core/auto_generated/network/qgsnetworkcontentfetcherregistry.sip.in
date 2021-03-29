@@ -10,10 +10,9 @@
 
 
 
-
 class QgsFetchedContent : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 FetchedContent holds useful information about a network content being fetched
 
 .. seealso:: :py:class:`QgsNetworkContentFetcherRegistry`
@@ -81,7 +80,7 @@ Emitted when the file is fetched and accessible
 
 class QgsNetworkContentFetcherRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Registry for temporary fetched files
 
 This provides a simple way of downloading and accessing

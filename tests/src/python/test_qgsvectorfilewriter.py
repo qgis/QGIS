@@ -172,48 +172,6 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         del vl
         os.unlink(filename + '.gpkg')
 
-    def testWriteWithBoolField(self):
-
-        # init connection string
-        dbconn = 'service=qgis_test'
-        if 'QGIS_PGTEST_DB' in os.environ:
-            dbconn = os.environ['QGIS_PGTEST_DB']
-
-        # create a vector layer
-        vl = QgsVectorLayer('{} table="qgis_test"."boolean_table" sql='.format(dbconn), "testbool", "postgres")
-        self.assertTrue(vl.isValid())
-
-        # check that 1 of its fields is a bool
-        fields = vl.fields()
-        self.assertEqual(fields.at(fields.indexFromName('fld1')).type(), QVariant.Bool)
-
-        # write a gpkg package with a bool field
-        crs = QgsCoordinateReferenceSystem('EPSG:4326')
-        filename = os.path.join(str(QDir.tempPath()), 'with_bool_field')
-        rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(vl,
-                                                             filename,
-                                                             'utf-8',
-                                                             crs,
-                                                             'GPKG')
-
-        self.assertEqual(rc, QgsVectorFileWriter.NoError)
-
-        # open the resulting geopackage
-        vl = QgsVectorLayer(filename + '.gpkg', '', 'ogr')
-        self.assertTrue(vl.isValid())
-        fields = vl.fields()
-
-        # test type of converted field
-        idx = fields.indexFromName('fld1')
-        self.assertEqual(fields.at(idx).type(), QVariant.Bool)
-
-        # test values
-        self.assertEqual(vl.getFeature(1).attributes()[idx], 1)
-        self.assertEqual(vl.getFeature(2).attributes()[idx], 0)
-
-        del vl
-        os.unlink(filename + '.gpkg')
-
     def testDateTimeWriteShapefile(self):
         """Check writing date and time fields to an ESRI shapefile."""
         ml = QgsVectorLayer(
@@ -1095,7 +1053,6 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f.geometry().asWkt(), 'Point (10 10)')
 
-    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0), "GDAL 2.4.0 required")
     def testWriteWithStringListField(self):
         """
         Test writing with a string list field

@@ -56,23 +56,23 @@ void QgsServiceAreaFromPointAlgorithm::initAlgorithm( const QVariantMap & )
   addCommonParams();
   addParameter( new QgsProcessingParameterPoint( QStringLiteral( "START_POINT" ), QObject::tr( "Start point" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > travelCost = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), QgsProcessingParameterNumber::Double, 0, true, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > travelCost = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), QgsProcessingParameterNumber::Double, 0, true, 0 );
   travelCost->setFlags( travelCost->flags() | QgsProcessingParameterDefinition::FlagHidden );
   addParameter( travelCost.release() );
 
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ),
                 QgsProcessingParameterNumber::Double, 0, false, 0 ) );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > includeBounds = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
+  std::unique_ptr< QgsProcessingParameterBoolean > includeBounds = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
   includeBounds->setFlags( includeBounds->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( includeBounds.release() );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > outputLines = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT_LINES" ),  QObject::tr( "Service area (lines)" ),
+  std::unique_ptr< QgsProcessingParameterFeatureSink > outputLines = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT_LINES" ),  QObject::tr( "Service area (lines)" ),
       QgsProcessing::TypeVectorLine, QVariant(), true );
   outputLines->setCreateByDefault( true );
   addParameter( outputLines.release() );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > outputPoints = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ),  QObject::tr( "Service area (boundary nodes)" ),
+  std::unique_ptr< QgsProcessingParameterFeatureSink > outputPoints = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ),  QObject::tr( "Service area (boundary nodes)" ),
       QgsProcessing::TypeVectorPoint, QVariant(), true );
   outputPoints->setCreateByDefault( false );
   addParameter( outputPoints.release() );

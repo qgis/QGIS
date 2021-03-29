@@ -44,7 +44,7 @@ void QgsCellStatisticsAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, false );
+  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, false );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( output_nodata_parameter.release() );
 
@@ -92,7 +92,7 @@ bool QgsCellStatisticsAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
       // add projector if necessary
       if ( layer->crs() != mCrs )
       {
-        input.projector = qgis::make_unique< QgsRasterProjector >();
+        input.projector = std::make_unique< QgsRasterProjector >();
         input.projector->setInput( input.sourceDataProvider.get() );
         input.projector->setCrs( layer->crs(), mCrs, context.transformContext() );
         input.interface = input.projector.get();
@@ -104,7 +104,7 @@ bool QgsCellStatisticsAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
   //determine output raster data type
   //initially raster data type to most primitive data type that is possible
   mDataType = Qgis::Byte;
-  for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+  for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
   {
     for ( int band : i.bands )
     {
@@ -126,7 +126,7 @@ QVariantMap QgsCellStatisticsAlgorithmBase::processAlgorithm( const QVariantMap 
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
   mOutputRasterDataProvider = writer->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs );
@@ -163,7 +163,7 @@ QString QgsCellStatisticsAlgorithm::displayName() const
 
 QString QgsCellStatisticsAlgorithm::name() const
 {
-  return QObject::tr( "cellstatistics" );
+  return QStringLiteral( "cellstatistics" );
 }
 
 QStringList QgsCellStatisticsAlgorithm::tags() const
@@ -275,7 +275,7 @@ void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feed
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -377,7 +377,7 @@ QString QgsCellStatisticsPercentileAlgorithm::displayName() const
 
 QString QgsCellStatisticsPercentileAlgorithm::name() const
 {
-  return QObject::tr( "cellstackpercentile" );
+  return QStringLiteral( "cellstackpercentile" );
 }
 
 QStringList QgsCellStatisticsPercentileAlgorithm::tags() const
@@ -452,7 +452,7 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -520,7 +520,7 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::displayName() const
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::name() const
 {
-  return QObject::tr( "cellstackpercentrankfromvalue" );
+  return QStringLiteral( "cellstackpercentrankfromvalue" );
 }
 
 QStringList QgsCellStatisticsPercentRankFromValueAlgorithm::tags() const
@@ -590,7 +590,7 @@ void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProc
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -656,7 +656,7 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::displayName() const
 
 QString QgsCellStatisticsPercentRankFromRasterAlgorithm::name() const
 {
-  return QObject::tr( "cellstackpercentrankfromrasterlayer" );
+  return QStringLiteral( "cellstackpercentrankfromrasterlayer" );
 }
 
 QStringList QgsCellStatisticsPercentRankFromRasterAlgorithm::tags() const
@@ -735,7 +735,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
     std::unique_ptr< QgsRasterBlock > valueBlock( mValueRasterInterface->block( mValueRasterBand, blockExtent, iterCols, iterRows ) );
 
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded

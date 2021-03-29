@@ -26,6 +26,8 @@
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
 
+#include <QPointer>
+
 class QProgressDialog;
 class QgsVectorDataProvider;
 class QgsFields;
@@ -33,7 +35,7 @@ class QgsFields;
 /**
  * \class QgsVectorLayerExporter
  * \ingroup core
- * A convenience class for exporting vector layers to a destination data provider.
+ * \brief A convenience class for exporting vector layers to a destination data provider.
  *
  * QgsVectorLayerExporter can be used in two ways:
  *
@@ -177,7 +179,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 /**
  * \class QgsVectorLayerExporterTask
  * \ingroup core
- * QgsTask task which performs a QgsVectorLayerExporter layer export operation as a background
+ * \brief QgsTask task which performs a QgsVectorLayerExporter layer export operation as a background
  * task. This can be used to export a vector layer out to a provider without blocking the
  * QGIS interface.
  * \see QgsVectorFileWriterTask

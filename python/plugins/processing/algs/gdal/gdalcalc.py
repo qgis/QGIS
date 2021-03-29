@@ -87,10 +87,11 @@ class gdalcalc(GdalAlgorithm):
                 self.tr('Input layer C'),
                 optional=True))
         self.addParameter(
-            QgsProcessingParameterBand(self.BAND_C,
-                                       self.tr('Number of raster band for C'),
-                                       parentLayerParameterName=self.INPUT_C,
-                                       optional=True))
+            QgsProcessingParameterBand(
+                self.BAND_C,
+                self.tr('Number of raster band for C'),
+                parentLayerParameterName=self.INPUT_C,
+                optional=True))
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_D,
@@ -179,7 +180,7 @@ class gdalcalc(GdalAlgorithm):
         return 'rastermiscellaneous'
 
     def commandName(self):
-        return 'gdal_calc' if isWindows() else 'gdal_calc.py'
+        return 'gdal_calc'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -190,12 +191,15 @@ class gdalcalc(GdalAlgorithm):
         else:
             noData = None
 
-        arguments = []
-        arguments.append('--calc "{}"'.format(formula))
-        arguments.append('--format')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.append('--type')
-        arguments.append(self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)])
+        arguments = [
+            '--overwrite',
+            f'--calc "{formula}"',
+            '--format',
+            GdalUtils.getFormatShortNameFromFilename(out),
+            '--type',
+            self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)]
+        ]
+
         if noData is not None:
             arguments.append('--NoDataValue')
             arguments.append(noData)
@@ -265,4 +269,4 @@ class gdalcalc(GdalAlgorithm):
         arguments.append('--outfile')
         arguments.append(out)
 
-        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

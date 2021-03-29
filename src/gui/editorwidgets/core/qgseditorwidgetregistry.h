@@ -36,7 +36,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * This class manages all known edit widget factories.
+ * \brief This class manages all known edit widget factories.
  *
  * QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
  * QgsGui::editorWidgetRegistry().

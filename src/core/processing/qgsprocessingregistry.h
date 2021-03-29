@@ -29,7 +29,7 @@ class QgsProcessingAlgorithmConfigurationWidgetFactory;
 /**
  * \class QgsProcessingRegistry
  * \ingroup core
- * Registry for various processing components, including providers, algorithms
+ * \brief Registry for various processing components, including providers, algorithms
  * and various parameters and outputs.
  *
  * QgsProcessingRegistry is not usually directly created, but rather accessed through

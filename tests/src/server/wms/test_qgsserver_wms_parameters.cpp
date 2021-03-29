@@ -29,6 +29,9 @@ class TestQgsServerWmsParameters : public QObject
     void cleanupTestCase();
 
     void external_layers();
+    void percent_encoding();
+    void version_negotiation();
+    void get_capabilities_version();
 };
 
 void TestQgsServerWmsParameters::initTestCase()
@@ -50,6 +53,8 @@ void TestQgsServerWmsParameters::external_layers()
   query.addQueryItem( "external_layer_1:layers", "layer_1_name" );
   query.addQueryItem( "external_layer_2:url", "http://url_2" );
   query.addQueryItem( "external_layer_2:layers", "layer_2_name" );
+  query.addQueryItem( "external_layer_2:opacities", "100" );
+  query.addQueryItem( "OPACITIES", "255,200,125" );
 
   QgsWms::QgsWmsParameters parameters( query );
 
@@ -65,7 +70,100 @@ void TestQgsServerWmsParameters::external_layers()
 
   layer_params = layers_params[2];
   QCOMPARE( layer_params.mNickname, QString( "external_layer_2" ) );
-  QCOMPARE( layer_params.mExternalUri, QString( "layers=layer_2_name&url=http://url_2" ) );
+  QCOMPARE( layer_params.mExternalUri, QString( "layers=layer_2_name&opacities=100&url=http://url_2" ) );
+
+  //test if opacities are also applied to external layers
+  QCOMPARE( layers_params[0].mOpacity, 255 );
+  QCOMPARE( layers_params[1].mOpacity, 200 );
+  QCOMPARE( layers_params[2].mOpacity, 125 );
+}
+
+void TestQgsServerWmsParameters::percent_encoding()
+{
+  // '+' in its encoded ('%2B') form is transformed in '+' sign and
+  // forwarded to parameters subclasses
+  QUrlQuery query;
+  query.addQueryItem( "MYPARAM", QString( "my%1value" ).arg( QLatin1String( "%2B" ) ) );
+
+  QgsServerParameters params;
+  params.load( query );
+  QCOMPARE( params.value( "MYPARAM" ), QString( "my+value" ) );
+
+  QgsWms::QgsWmsParameters wmsParams( params );
+  QCOMPARE( wmsParams.value( "MYPARAM" ), QString( "my+value" ) );
+}
+
+void TestQgsServerWmsParameters::version_negotiation()
+{
+  QUrlQuery query;
+
+  query.addQueryItem( "VERSION", "1.3.0" );
+  QgsWms::QgsWmsParameters parameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.1" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.0" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "33.33.33" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.1" );
+  query.addQueryItem( "REQUEST", "GetProjectSettings" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "REQUEST", "GetProjectSettings" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+
+  query.clear();
+  query.addQueryItem( "WMTVER", "1.1.1" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+
+  query.clear();
+  query.addQueryItem( "WMTVER", "1.1.1" );
+  query.addQueryItem( "VERSION", "1.3.0" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+}
+
+void TestQgsServerWmsParameters::get_capabilities_version()
+{
+  QUrlQuery query;
+
+  query.addQueryItem( "VERSION", "1.3.0" );
+  query.addQueryItem( "REQUEST", "capabilities" );
+  QgsWms::QgsWmsParameters parameters( query );
+  QCOMPARE( parameters.request(), QStringLiteral( "capabilities" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.1" );
+  query.addQueryItem( "REQUEST", "capabilities" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.request(), QStringLiteral( "GetCapabilities" ) );
+
+  query.clear();
+  query.addQueryItem( "VERSION", "1.1.0" );
+  query.addQueryItem( "REQUEST", "capabilities" );
+  parameters = QgsWms::QgsWmsParameters( query );
+  QCOMPARE( parameters.request(), QStringLiteral( "GetCapabilities" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )

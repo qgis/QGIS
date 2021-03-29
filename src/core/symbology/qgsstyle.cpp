@@ -39,6 +39,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QByteArray>
+#include <QFileInfo>
 
 #include <sqlite3.h>
 #include "qgssqliteutils.h"
@@ -72,17 +73,17 @@ QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
 QgsStyle::QgsStyle()
 {
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = qgis::make_unique< QgsSimpleMarkerSymbolLayer >( QgsSimpleMarkerSymbolLayerBase::Circle,
+  std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( QgsSimpleMarkerSymbolLayerBase::Circle,
       1.6, 0, QgsSymbol::ScaleArea, QColor( 84, 176, 74 ), QColor( 61, 128, 53 ) );
   simpleMarker->setStrokeWidth( 0.4 );
-  mPatchMarkerSymbol = qgis::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << simpleMarker.release() );
+  mPatchMarkerSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << simpleMarker.release() );
 
-  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = qgis::make_unique< QgsSimpleLineSymbolLayer >( QColor( 84, 176, 74 ), 0.6 );
-  mPatchLineSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << simpleLine.release() );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 84, 176, 74 ), 0.6 );
+  mPatchLineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << simpleLine.release() );
 
-  std::unique_ptr< QgsGradientFillSymbolLayer > gradientFill = qgis::make_unique< QgsGradientFillSymbolLayer >( QColor( 66, 150, 63 ), QColor( 84, 176, 74 ) );
-  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleOutline = qgis::make_unique< QgsSimpleLineSymbolLayer >( QColor( 56, 128, 54 ), 0.26 );
-  mPatchFillSymbol = qgis::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << gradientFill.release() << simpleOutline.release() );
+  std::unique_ptr< QgsGradientFillSymbolLayer > gradientFill = std::make_unique< QgsGradientFillSymbolLayer >( QColor( 66, 150, 63 ), QColor( 84, 176, 74 ) );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleOutline = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 56, 128, 54 ), 0.26 );
+  mPatchFillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << gradientFill.release() << simpleOutline.release() );
 }
 
 QgsStyle::~QgsStyle()
@@ -1168,7 +1169,7 @@ QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF s
   switch ( type )
   {
     case QgsSymbol::Marker:
-      geom = QgsGeometry( qgis::make_unique< QgsPoint >( static_cast< int >( size.width() ) / 2, static_cast< int >( size.height() ) / 2 ) );
+      geom = QgsGeometry( std::make_unique< QgsPoint >( static_cast< int >( size.width() ) / 2, static_cast< int >( size.height() ) / 2 ) );
       break;
 
     case QgsSymbol::Line:
@@ -1176,14 +1177,14 @@ QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF s
       // we're adding 0.5 to get rid of blurred preview:
       // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
       double y = static_cast< int >( size.height() ) / 2 + 0.5;
-      geom = QgsGeometry( qgis::make_unique< QgsLineString >( ( QVector< double >() << 0 << size.width() ),
+      geom = QgsGeometry( std::make_unique< QgsLineString >( ( QVector< double >() << 0 << size.width() ),
                           ( QVector< double >() << y << y ) ) );
       break;
     }
 
     case QgsSymbol::Fill:
     {
-      geom = QgsGeometry( qgis::make_unique< QgsPolygon >(
+      geom = QgsGeometry( std::make_unique< QgsPolygon >(
                             new QgsLineString( QVector< double >() << 0 << static_cast< int >( size.width() ) << static_cast< int >( size.width() ) << 0 << 0,
                                 QVector< double >() << static_cast< int >( size.height() ) << static_cast< int >( size.height() ) << 0 << 0 << static_cast< int >( size.height() ) ) ) );
       break;
@@ -2424,7 +2425,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
         {
           QStringList dummy = symbols;
           symbols.clear();
-          for ( const QString &result : qgis::as_const( resultNames ) )
+          for ( const QString &result : std::as_const( resultNames ) )
           {
             if ( dummy.contains( result ) )
               symbols << result;

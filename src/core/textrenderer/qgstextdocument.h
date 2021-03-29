@@ -29,7 +29,7 @@ class QgsTextFragment;
  * \class QgsTextDocument
  * \ingroup core
  *
- * Represents a document consisting of one or more QgsTextBlock objects.
+ * \brief Represents a document consisting of one or more QgsTextBlock objects.
  *
  * \warning This API is not considered stable and may change in future QGIS versions.
  *

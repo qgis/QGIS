@@ -15,7 +15,7 @@
 
 class QgsAuthManager : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Singleton offering an interface to manage the authentication configuration database
 and to utilize configurations through various authentication method plugins
 
@@ -818,6 +818,9 @@ Clear an authentication config from its associated authentication method cache
   protected:
 
 
+
+  public:
+  protected:
 
 };
 

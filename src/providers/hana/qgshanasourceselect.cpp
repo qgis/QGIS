@@ -30,6 +30,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 
+#include <QComboBox>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QInputDialog>
@@ -211,10 +212,8 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( btnLoad, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnLoad_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsHanaSourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsHanaSourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
-           this, &QgsHanaSourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
-           this, &QgsHanaSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsHanaSourceSelect::mSearchColumnComboBox_currentTextChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsHanaSourceSelect::mSearchModeComboBox_currentTextChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ),
            this, &QgsHanaSourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsHanaSourceSelect::mTablesTreeView_clicked );
@@ -412,7 +411,7 @@ void QgsHanaSourceSelect::mSearchTableEdit_textChanged( const QString &text )
     mProxyModel._setFilterRegExp( text );
 }
 
-void QgsHanaSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QString &text )
+void QgsHanaSourceSelect::mSearchColumnComboBox_currentTextChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -452,7 +451,7 @@ void QgsHanaSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStri
   }
 }
 
-void QgsHanaSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
+void QgsHanaSourceSelect::mSearchModeComboBox_currentTextChanged( const QString &text )
 {
   Q_UNUSED( text );
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
@@ -573,8 +572,8 @@ void QgsHanaSourceSelect::btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( mConnectionName, uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
-  mColumnTypeTask = qgis::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
+  mColumnTypeThread = std::make_unique<QgsHanaColumnTypeThread>( mConnectionName, uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
+  mColumnTypeTask = std::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
   QgsApplication::taskManager()->addTask( mColumnTypeTask.get() );
 
   connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::setLayerType,
@@ -603,9 +602,12 @@ void QgsHanaSourceSelect::finishList()
 
 void QgsHanaSourceSelect::columnThreadFinished()
 {
+  QString errorMsg = mColumnTypeThread->errorMessage();
   mColumnTypeThread.reset( nullptr );
   QgsProxyProgressTask *task = mColumnTypeTask.release();
-  task->finalize( true );
+  task->finalize( errorMsg.isEmpty() );
+  if ( !errorMsg.isEmpty() )
+    pushMessage( tr( "Failed to retrieve tables for %1" ).arg( mConnectionName ), errorMsg, Qgis::MessageLevel::Warning );
 
   btnConnect->setText( tr( "Connect" ) );
 

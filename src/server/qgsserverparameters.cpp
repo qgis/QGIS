@@ -76,14 +76,22 @@ QStringList QgsServerParameterDefinition::toStringList( const char delimiter, co
 {
   if ( skipEmptyParts )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     return toString().split( delimiter, QString::SkipEmptyParts );
+#else
+    return toString().split( delimiter, Qt::SkipEmptyParts );
+#endif
   }
   else
   {
     QStringList list;
     if ( !toString().isEmpty() )
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       list = toString().split( delimiter, QString::KeepEmptyParts );
+#else
+      list = toString().split( delimiter, Qt::KeepEmptyParts );
+#endif
     }
     return list;
   }
@@ -446,7 +454,8 @@ QUrlQuery QgsServerParameters::urlQuery() const
     const auto constMap( toMap().toStdMap() );
     for ( const auto &param : constMap )
     {
-      query.addQueryItem( param.first, param.second );
+      const QString value = QString( param.second ).replace( '+', QLatin1String( "%2B" ) );
+      query.addQueryItem( param.first, value );
     }
   }
 

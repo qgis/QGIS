@@ -25,7 +25,7 @@
 
 class QgsMapTool : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for all map tools.
 Map tools are user interactive tools for manipulating the
 map canvas. For example map pan and zoom features are

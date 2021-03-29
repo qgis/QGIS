@@ -28,7 +28,7 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsBinaryWidgetWrapper
- * Widget wrapper for binary (BLOB) fields.
+ * \brief Widget wrapper for binary (BLOB) fields.
  * \note not available in Python bindings
  * \since QGIS 3.6
  */

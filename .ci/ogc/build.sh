@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir /usr/src/qgis/build
-cd /usr/src/qgis/build || exit -1
+cd /usr/src/qgis/build || exit 1
 
 cmake -GNinja \
  -DWITH_QUICK=OFF \
@@ -18,7 +18,10 @@ cmake -GNinja \
  -DWITH_QWTPOLAR=OFF \
  -DWITH_APIDOC=OFF \
  -DWITH_ASTYLE=OFF \
+ -DWITH_GEOREFERENCER=OFF \
+ -DWITH_ANALYSIS=ON \
  -DWITH_DESKTOP=OFF \
+ -DWITH_GUI=OFF \
  -DWITH_BINDINGS=ON \
  -DWITH_SERVER=ON \
  -DWITH_SERVER_PLUGINS=ON \

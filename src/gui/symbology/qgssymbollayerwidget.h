@@ -233,6 +233,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     void setShape();
     void updateAssistantSymbol();
     void penJoinStyleChanged();
+    void penCapStyleChanged();
 
   private:
 
@@ -517,7 +518,7 @@ class QgsHashedLineSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsHashedLineSymbolLayerWidget
- * Widget for controlling the properties of a QgsHashedLineSymbolLayer.
+ * \brief Widget for controlling the properties of a QgsHashedLineSymbolLayer.
  * \since QGIS 3.8
  */
 class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
@@ -918,7 +919,7 @@ class QgsRandomMarkerFillSymbolLayer;
  * \ingroup gui
  * \class QgsRandomMarkerFillSymbolLayerWidget
  *
- * Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
+ * \brief Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
  *
  * \since QGIS 3.12
  */

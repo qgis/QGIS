@@ -48,6 +48,19 @@ QgsMapToolCapture::Capabilities QgsMapToolDigitizeFeature::capabilities() const
   return QgsMapToolCapture::SupportsCurves;
 }
 
+bool QgsMapToolDigitizeFeature::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  switch ( technique )
+  {
+    case QgsMapToolCapture::StraightSegments:
+      return true;
+    case QgsMapToolCapture::CircularString:
+    case QgsMapToolCapture::Streaming:
+      return mode() != QgsMapToolCapture::CapturePoint;
+  }
+  return false;
+}
+
 void QgsMapToolDigitizeFeature::digitized( const QgsFeature &f )
 {
   emit digitizingCompleted( f );
@@ -183,11 +196,11 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsGeometry g;
       if ( layerWKBType == QgsWkbTypes::Point )
       {
-        g = QgsGeometry( qgis::make_unique<QgsPoint>( savePoint ) );
+        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint ) );
       }
       else if ( !QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
       {
-        g = QgsGeometry( qgis::make_unique<QgsPoint>( savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
+        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
       }
       else if ( QgsWkbTypes::isMultiType( layerWKBType ) && !QgsWkbTypes::hasZ( layerWKBType ) )
       {
@@ -202,7 +215,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else
       {
         // if layer supports more types (mCheckGeometryType is false)
-        g = QgsGeometry( qgis::make_unique<QgsPoint>( savePoint ) );
+        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint ) );
       }
 
       if ( QgsWkbTypes::hasM( layerWKBType ) )
@@ -341,9 +354,9 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           QgsGeometry featGeom = f->geometry();
           int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
           f->setGeometry( featGeom );
-          if ( avoidIntersectionsReturn == 1 )
+          if ( avoidIntersectionsReturn == 3 )
           {
-            //not a polygon type. Impossible to get there
+            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
           }
           if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
           {

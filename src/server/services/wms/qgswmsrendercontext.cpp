@@ -150,6 +150,11 @@ int QgsWmsRenderContext::tileBuffer() const
   return tileBuffer;
 }
 
+bool QgsWmsRenderContext::renderMapTiles() const
+{
+  return QgsServerProjectUtils::wmsRenderMapTiles( *mProject );
+}
+
 int QgsWmsRenderContext::precision() const
 {
   int precision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );
@@ -167,7 +172,7 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   // Apply DPI parameter if present. This is an extension of QGIS Server
   // compared to WMS 1.3.
   // Because of backwards compatibility, this parameter is optional
-  int dpm = 1 / OGC_PX_M;
+  qreal dpm = 1 / OGC_PX_M;
 
   if ( !mParameters.dpi().isEmpty() )
   {
@@ -177,7 +182,7 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   return dpm / 1000.0;
 }
 
-QStringList QgsWmsRenderContext::flattenedQueryLayers() const
+QStringList QgsWmsRenderContext::flattenedQueryLayers( const QStringList &layerNames ) const
 {
   QStringList result;
   std::function <QStringList( const QString &name )> findLeaves = [ & ]( const QString & name ) -> QStringList
@@ -206,8 +211,8 @@ QStringList QgsWmsRenderContext::flattenedQueryLayers() const
     }
     return _result;
   };
-  const auto constNicks { mParameters.queryLayersNickname() };
-  for ( const auto &name : constNicks )
+
+  for ( const auto &name : std::as_const( layerNames ) )
   {
     result.append( findLeaves( name ) );
   }
@@ -379,7 +384,7 @@ void QgsWmsRenderContext::initRestrictedLayers()
   QStringList restrictedLayersNames;
   QgsLayerTreeGroup *root = mProject->layerTreeRoot();
 
-  for ( const QString &l : qgis::as_const( restricted ) )
+  for ( const QString &l : std::as_const( restricted ) )
   {
     const QgsLayerTreeGroup *group = root->findGroup( l );
     if ( group )
@@ -424,7 +429,21 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
-    const QStringList queryLayerNames { flattenedQueryLayers() };
+    const QStringList queryLayerNames = flattenedQueryLayers( mParameters.queryLayersNickname() );
+    for ( const QString &layerName : queryLayerNames )
+    {
+      const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
+      for ( QgsMapLayer *lyr : layers )
+        if ( !mLayersToRender.contains( lyr ) )
+        {
+          mLayersToRender.append( lyr );
+        }
+    }
+  }
+
+  if ( mFlags & AddAllLayers )
+  {
+    const QStringList queryLayerNames = flattenedQueryLayers( mParameters.allLayersNickname() );
     for ( const QString &layerName : queryLayerNames )
     {
       const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
@@ -499,7 +518,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
     if ( ! param.mExternalUri.isEmpty() && ( mFlags & AddExternalLayers ) )
     {
-      std::unique_ptr<QgsMapLayer> layer = qgis::make_unique< QgsRasterLayer >( param.mExternalUri, param.mNickname, QStringLiteral( "wms" ) );
+      std::unique_ptr<QgsMapLayer> layer = std::make_unique< QgsRasterLayer >( param.mExternalUri, param.mNickname, QStringLiteral( "wms" ) );
 
       if ( layer->isValid() )
       {

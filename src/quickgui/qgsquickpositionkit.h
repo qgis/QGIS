@@ -27,7 +27,7 @@
 
 /**
  * \ingroup quick
- * Convenient set of tools to read GPS position and accuracy.
+ * \brief Convenient set of tools to read GPS position and accuracy.
  *
  * Also, if one can use use_simulated_location to specify simulated position.
  * Simulated position source generates random points in circles around the selected

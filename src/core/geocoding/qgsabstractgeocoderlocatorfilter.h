@@ -24,7 +24,7 @@ class QgsGeocoderResult;
 
 /**
  * \ingroup core
- * An abstract base class which implements a locator filter populated from a QgsGeocoderInterface.
+ * \brief An abstract base class which implements a locator filter populated from a QgsGeocoderInterface.
  *
  * This base class implements the required logic to bridge a class which implements the
  * QgsGeocoderInterface interface to a QgsLocatorFilter. It allows easy creation of a locator
@@ -57,10 +57,14 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
      * The \a geocoder must specify an instance of a class which implements the QgsGeocoderInterface
      * interface. Ownership of \a geocoder is not transferred, and the caller must ensure that \a geocoder
      * exists for the lifetime of this filter.
+     *
+     * The \a boundingBox argument specifies the geographic bounding box, in WGS84, covered by the
+     * filter.
      */
     QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName,
                                       const QString &prefix,
-                                      QgsGeocoderInterface *geocoder );
+                                      QgsGeocoderInterface *geocoder,
+                                      const QgsRectangle &boundingBox = QgsRectangle() );
 
     QString name() const override;
     QString displayName() const override;
@@ -72,6 +76,11 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
      * Returns the geocoder attached to the filter.
      */
     QgsGeocoderInterface *geocoder() const;
+
+    /**
+     * Returns the WGS84 bounding box attached to the filter.
+     */
+    const QgsRectangle boundingBox() { return mBoundingBox; }
 
     /**
      * Converts a locator \a result to a geocoder result.
@@ -98,6 +107,7 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
     QString mDisplayName;
     QString mPrefix;
     QgsGeocoderInterface *mGeocoder = nullptr;
+    QgsRectangle mBoundingBox;
 
 };
 

@@ -21,12 +21,13 @@
 #include "qgis.h"
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings()
-  : mNumericFormat( qgis::make_unique< QgsBasicNumericFormat >() )
+  : mNumericFormat( std::make_unique< QgsBasicNumericFormat >() )
 {
 }
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other )
-  : mMinimumLabel( other.mMinimumLabel )
+  : mUseContinuousLegend( other.mUseContinuousLegend )
+  , mMinimumLabel( other.mMinimumLabel )
   , mMaximumLabel( other.mMaximumLabel )
   , mPrefix( other.mPrefix )
   , mSuffix( other.mSuffix )
@@ -40,6 +41,7 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRa
 
 QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const QgsColorRampLegendNodeSettings &other )
 {
+  mUseContinuousLegend = other.mUseContinuousLegend;
   mMinimumLabel = other.mMinimumLabel;
   mMaximumLabel = other.mMaximumLabel;
   mPrefix = other.mPrefix;
@@ -97,6 +99,7 @@ void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &e
 {
   QDomElement settingsElement = doc.createElement( QStringLiteral( "rampLegendSettings" ) );
 
+  settingsElement.setAttribute( QStringLiteral( "useContinuousLegend" ),  mUseContinuousLegend );
   settingsElement.setAttribute( QStringLiteral( "minimumLabel" ), mMinimumLabel );
   settingsElement.setAttribute( QStringLiteral( "maximumLabel" ), mMaximumLabel );
   settingsElement.setAttribute( QStringLiteral( "prefix" ), mPrefix );
@@ -121,6 +124,7 @@ void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const 
   const QDomElement settingsElement = element.firstChildElement( QStringLiteral( "rampLegendSettings" ) );
   if ( !settingsElement.isNull() )
   {
+    mUseContinuousLegend = settingsElement.attribute( QStringLiteral( "useContinuousLegend" ), QStringLiteral( "1" ) ).toInt( );
     mMinimumLabel = settingsElement.attribute( QStringLiteral( "minimumLabel" ) );
     mMaximumLabel = settingsElement.attribute( QStringLiteral( "maximumLabel" ) );
     mPrefix = settingsElement.attribute( QStringLiteral( "prefix" ) );
@@ -184,4 +188,14 @@ Qt::Orientation QgsColorRampLegendNodeSettings::orientation() const
 void QgsColorRampLegendNodeSettings::setOrientation( Qt::Orientation orientation )
 {
   mOrientation = orientation;
+}
+
+bool QgsColorRampLegendNodeSettings::useContinuousLegend() const
+{
+  return mUseContinuousLegend;
+}
+
+void QgsColorRampLegendNodeSettings::setUseContinuousLegend( bool useContinuousLegend )
+{
+  mUseContinuousLegend = useContinuousLegend;
 }

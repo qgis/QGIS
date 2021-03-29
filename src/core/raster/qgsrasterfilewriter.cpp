@@ -30,6 +30,7 @@
 #include <QProgressDialog>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 #include <cmath>
 

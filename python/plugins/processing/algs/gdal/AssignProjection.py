@@ -82,22 +82,16 @@ class AssignProjection(GdalAlgorithm):
 
         crs = self.parameterAsCrs(parameters, self.CRS, context)
 
-        arguments = []
-        arguments.append('-a_srs')
-        arguments.append(GdalUtils.gdal_crs_string(crs))
+        arguments = [
+            '-a_srs',
+            GdalUtils.gdal_crs_string(crs),
 
-        arguments.append(fileName)
-
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
+            fileName
+        ]
 
         self.setOutputValue(self.OUTPUT, fileName)
 
-        return commands
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]
 
     def postProcessAlgorithm(self, context, feedback):
         # get output value

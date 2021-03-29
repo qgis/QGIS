@@ -41,6 +41,8 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
 
     QgsMapCanvas *canvas() const { return mMapCanvas; }
 
+    void setPointColor( const QColor &color );
+
   private:
 
     QgsGeorefDataPoint *mDataPoint = nullptr;

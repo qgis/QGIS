@@ -28,6 +28,7 @@
 #include <QScrollBar>
 #include <QToolButton>
 #include <QCheckBox>
+#include <QTextStream>
 
 #include <nlohmann/json.hpp>
 

@@ -41,24 +41,9 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
   mLabelHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height();
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "." ) );
-#else
   mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( '.' );
-#endif
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mSwatchSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "X" ) ) * 1.75;
-#else
   mSwatchSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 1.75;
-#endif
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mSwatchOutlineSize = std::max( fontMetrics().width( QStringLiteral( "." ) ) * 0.4, 1.0 );
-#else
   mSwatchOutlineSize = std::max( fontMetrics().horizontalAdvance( '.' ) * 0.4, 1.0 );
-#endif
 
   mSwatchSpacing = mSwatchSize * 0.3;
   mSwatchMargin = mLabelMargin;
@@ -137,11 +122,7 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
     QString colorName = mColors.at( colorIdx ).second;
 
     // create very large preview swatch, because the grid itself has only tiny preview icons
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
-#else
     int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-#endif
     int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
     int margin = static_cast< int >( height * 0.1 );
     QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );

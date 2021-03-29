@@ -201,7 +201,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( !mAnchorPoint )
     {
-      mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+      mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     }
     mAnchorPoint->setCenter( toMapCoordinates( e->pos() ) );
@@ -236,7 +236,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     mAutoSetAnchorPoint = false;
     if ( !mAnchorPoint )
     {
-      mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+      mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
       mAutoSetAnchorPoint = true;
     }
@@ -304,8 +304,10 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeatureIterator it = vlayer->getSelectedFeatures();
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mRubberBand->addGeometry( feat.geometry(), vlayer, false );
       }
+      mRubberBand->updatePosition();
+      mRubberBand->update();
     }
 
     mRubberBand->show();
@@ -455,7 +457,7 @@ void QgsMapToolRotateFeature::activate()
     QgsRectangle bound = vlayer->boundingBoxOfSelected();
     mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
 
-    mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+    mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     mAnchorPoint->setCenter( mStartPointMapCoords );
 

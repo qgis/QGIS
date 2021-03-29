@@ -40,7 +40,7 @@ int QgisEvent = QEvent::User + 1;
 
 /**
  * \ingroup core
- * The Qgis class provides global constants for use throughout the application.
+ * \brief The Qgis class provides global constants for use throughout the application.
  */
 class CORE_EXPORT Qgis
 {
@@ -211,7 +211,7 @@ class CORE_EXPORT Qgis
 
 /**
  * \ingroup core
- * RAII signal blocking class. Used for temporarily blocking signals from a QObject
+ * \brief RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
  * \see whileBlocking()
  * \note not available in Python bindings
@@ -275,9 +275,9 @@ CORE_EXPORT uint qHash( const QVariant &variant );
  */
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
+  QString str = QString::number( a, 'f', precision );
   if ( precision )
   {
-    QString str = QString::number( a, 'f', precision );
     if ( str.contains( QLatin1Char( '.' ) ) )
     {
       // remove ending 0s
@@ -289,22 +289,14 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
       if ( idx < str.length() - 1 )
         str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
     }
-    return str;
   }
-  else
+  // avoid printing -0
+  // see https://bugreports.qt.io/browse/QTBUG-71439
+  if ( str == QLatin1String( "-0" ) )
   {
-    // avoid printing -0
-    // see https://bugreports.qt.io/browse/QTBUG-71439
-    const QString str( QString::number( a, 'f', precision ) );
-    if ( str == QLatin1String( "-0" ) )
-    {
-      return QLatin1String( "0" );
-    }
-    else
-    {
-      return str;
-    }
+    return QLatin1String( "0" );
   }
+  return str;
 }
 
 /**
@@ -384,80 +376,28 @@ inline double qgsRound( double number, int places )
  */
 namespace qgis
 {
-  // as_const
 
   /**
-   * Adds const to non-const objects.
+   * Use qgis::down_cast<Derived*>(pointer_to_base) as equivalent of
+   * static_cast<Derived*>(pointer_to_base) with safe checking in debug
+   * mode.
    *
-   * To be used as a proxy for std::as_const until we target c++17 minimum.
+   * Only works if no virtual inheritance is involved.
    *
-   * \note not available in Python bindings
-   * \since QGIS 3.0
+   * Ported from GDAL's cpl::down_cast method.
+   *
+   * \param f pointer to a base class
+   * \return pointer to a derived class
    */
-  template <typename T> struct QgsAddConst { typedef const T Type; };
-
-  template <typename T>
-  constexpr typename QgsAddConst<T>::Type &as_const( T &t ) noexcept { return t; }
-
-  template <typename T>
-  void as_const( const T && ) = delete;
-
-  // make_unique - from https://stackoverflow.com/a/17902439/1861260
-
-  template<class T> struct _Unique_if
+  template<typename To, typename From> inline To down_cast( From *f )
   {
-    typedef std::unique_ptr<T> _Single_object;
-  };
-
-  template<class T> struct _Unique_if<T[]>
-  {
-    typedef std::unique_ptr<T[]> _Unknown_bound;
-  };
-
-  template<class T, size_t N> struct _Unique_if<T[N]>
-  {
-    typedef void _Known_bound;
-  };
-
-  template<class T, class... Args>
-  typename _Unique_if<T>::_Single_object
-  make_unique( Args &&... args )
-  {
-    return std::unique_ptr<T>( new T( std::forward<Args>( args )... ) );
+    static_assert(
+      ( std::is_base_of<From,
+        typename std::remove_pointer<To>::type>::value ),
+      "target type not derived from source type" );
+    Q_ASSERT( f == nullptr || dynamic_cast<To>( f ) != nullptr );
+    return static_cast<To>( f );
   }
-
-  template<class T>
-  typename _Unique_if<T>::_Unknown_bound
-  make_unique( size_t n )
-  {
-    typedef typename std::remove_extent<T>::type U;
-    return std::unique_ptr<T>( new U[n]() );
-  }
-
-  template<class T, class... Args>
-  typename _Unique_if<T>::_Known_bound
-  make_unique( Args &&... ) = delete;
-
-  /**
-   * Used for new-style Qt connects to overloaded signals, avoiding the usual horrible connect syntax required
-   * in these circumstances.
-   *
-   * Example usage:
-   *
-   * connect( mSpinBox, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &MyClass::mySlot );
-   *
-   * This is an alternative to qOverload, which was implemented in Qt 5.7.
-   *
-   * See https://stackoverflow.com/a/16795664/1861260
-   */
-  template<typename... Args> struct overload
-  {
-    template<typename C, typename R>
-    static constexpr auto of( R( C::*pmf )( Args... ) ) -> decltype( pmf )
-    {
-      return pmf;
-    }
-  };
 
   template<class T>
   QSet<T> listToSet( const QList<T> &list )
@@ -626,7 +566,6 @@ CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
 
-
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
@@ -635,11 +574,42 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+
+/**
+ * Compares two QVariant values and returns whether the first is greater than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ * \see qgsVariantLessThan()
+ */
+inline bool operator> ( const QVariant &v1, const QVariant &v2 )
+{
+  return qgsVariantGreaterThan( v1, v2 );
+}
+
+/**
+ * Compares two QVariant values and returns whether the first is less than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * Invalid < NULL < Values
+ *
+ * \see qgsVariantGreaterThan()
+ */
+inline bool operator< ( const QVariant &v1, const QVariant &v2 )
+{
+  return qgsVariantLessThan( v1, v2 );
+}
+#endif
+
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+
 /**
  * Compares two QVariantList values and returns whether the first is less than the second.
  */
 template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
-
+#endif
 
 CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 
@@ -679,25 +649,9 @@ void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 */
 CONSTLATIN1STRING geoWkt()
 {
-#if PROJ_VERSION_MAJOR>=6
   return QLatin1String(
            R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
          );
-#else
-  return QLatin1String(
-           "GEOGCS[\"WGS 84\", "
-           "  DATUM[\"WGS_1984\", "
-           "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-           "      AUTHORITY[\"EPSG\",\"7030\"]], "
-           "    TOWGS84[0,0,0,0,0,0,0], "
-           "    AUTHORITY[\"EPSG\",\"6326\"]], "
-           "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], "
-           "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]], "
-           "  AXIS[\"Lat\",NORTH], "
-           "  AXIS[\"Long\",EAST], "
-           "  AUTHORITY[\"EPSG\",\"4326\"]]"
-         );
-#endif
 }
 
 //! PROJ4 string that represents a geographic coord sys

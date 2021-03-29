@@ -118,6 +118,10 @@ add_library (oauth2authmethod_static STATIC
   ${OAUTH2_UIS_H}
 )
 
+# require c++17
+target_compile_features(oauth2authmethod PRIVATE cxx_std_17)
+target_compile_features(oauth2authmethod_static PRIVATE cxx_std_17)
+
 # Common linked libs
 set(OAUTH2_TARGET_LIBS ${QTKEYCHAIN_LIBRARY})
 

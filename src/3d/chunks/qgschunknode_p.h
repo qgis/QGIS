@@ -81,9 +81,10 @@ struct QgsChunkNodeId
 
 /**
  * \ingroup 3d
- * Data structure for keeping track of chunks of data for 3D entities that use "out of core" rendering,
- * i.e. not all of the data are available in the memory all the time. This is useful for large datasets
- * where it may be impossible to load all data into memory or the rendering would get very slow.
+ * \brief Data structure for keeping track of chunks of data for 3D entities that use "out of core" rendering,
+ * i.e. not all of the data are available in the memory all the time.
+ *
+ * This is useful for large datasets where it may be impossible to load all data into memory or the rendering would get very slow.
  * This is currently used for rendering of terrain, but it is not limited to it and may be used for
  * other data as well.
  *

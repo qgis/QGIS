@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFileDialog>
+#include <QMimeData>
 
 
 ///@cond NOT_STABLE
@@ -233,7 +234,7 @@ void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const
 
 QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
 {
-  auto feedback = qgis::make_unique< QgsProcessingAlgorithmDialogFeedback >();
+  auto feedback = std::make_unique< QgsProcessingAlgorithmDialogFeedback >();
   connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmDialogBase::setPercentage );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushCommandInfo );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushConsoleInfo );
@@ -397,6 +398,16 @@ void QgsProcessingAlgorithmDialogBase::closeClicked()
 {
   reject();
   close();
+}
+
+QgsProcessingContext::LogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
+{
+  return mLogLevel;
+}
+
+void QgsProcessingAlgorithmDialogBase::setLogLevel( QgsProcessingContext::LogLevel level )
+{
+  mLogLevel = level;
 }
 
 void QgsProcessingAlgorithmDialogBase::reportError( const QString &error, bool fatalError )

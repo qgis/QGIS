@@ -10,7 +10,7 @@
 
 class QgsIdentifyContext
 {
-%Docstring
+%Docstring(signature="appended")
 Identify contexts are used to encapsulate the settings to be used to perform
 an identify action.
 

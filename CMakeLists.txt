@@ -1,14 +1,15 @@
 #############################################################
 # CMake settings
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.12.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-cmake_policy (SET CMP0048 NEW)
-cmake_policy (SET CMP0053 NEW)
-cmake_policy (SET CMP0071 NEW)
+cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0053 NEW)
+cmake_policy(SET CMP0071 NEW)
+cmake_policy(SET CMP0094 NEW)
 
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
@@ -16,7 +17,7 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "17")
+set(CPACK_PACKAGE_VERSION_MINOR "19")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -431,48 +432,66 @@ if(WITH_CORE)
   endif()
 
   #############################################################
-  # search for Qt5
-  set(QT_MIN_VERSION 5.9.0)
+  # search for Qt
+
+  set (WITH_QT6 FALSE CACHE BOOL "Enable (broken, experimental) Qt6 support")
+  if (WITH_QT6)
+    set(QT_MIN_VERSION 6.0.0)
+    set(QT_VERSION_BASE "Qt6")
+  else()
+    set(QT_MIN_VERSION 5.12.0)
+    set(QT_VERSION_BASE "Qt5")    
+  endif()
 
   # Use Qt5SerialPort optionally for GPS
   set (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
   if (WITH_QT5SERIALPORT)
-      find_package(Qt5 COMPONENTS SerialPort REQUIRED)
+      find_package(${QT_VERSION_BASE} COMPONENTS SerialPort REQUIRED)
       # following variable is used in qgsconfig.h
       set (HAVE_QT5SERIALPORT TRUE)
   endif()
 
-  find_package(Qt5 COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
+  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
+  if (WITH_QT6)
+    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+  else()
+    # TODO only available starting from Qt 6.2
+    find_package(${QT_VERSION_BASE} COMPONENTS Positioning)
+  endif()
   if (NOT IOS)
-    find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS PrintSupport REQUIRED)
   else()
     add_definitions(-DQT_NO_PRINTER)
   endif()
-  find_package(Qt5 COMPONENTS Positioning)
-  if (WITH_QTWEBKIT)
+  if (WITH_QTWEBKIT AND NOT WITH_QT6)
     find_package(Qt5WebKit REQUIRED)
     find_package(Qt5WebKitWidgets REQUIRED)
   endif()
   if (WITH_3D)
-    find_package(Qt5 COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
   endif()
   if (APPLE)
-    find_package(Qt5 COMPONENTS MacExtras REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS MacExtras REQUIRED)
   endif()
 
   # get the Qt plugins directory
-  get_target_property(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
+  get_target_property(QMAKE_EXECUTABLE ${QT_VERSION_BASE}::qmake LOCATION)
+
   EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
   set (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
-  message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+  if (WITH_QT6)
+    message(STATUS "Found Qt version: ${Qt6Core_VERSION_STRING}")
+  else()
+    message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+  endif()
   if (WITH_QUICK)
-    find_package(Qt5 COMPONENTS Qml Quick REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
     if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        find_package(Qt5 COMPONENTS AndroidExtras)
+      find_package(${QT_VERSION_BASE} COMPONENTS AndroidExtras)
     else()
-        find_package(QtQmlTools)
+      find_package(QtQmlTools)
     endif()
 
     # following variable is used in qgsconfig.h
@@ -499,8 +518,8 @@ if(WITH_CORE)
   # Check for runtime dependency of qca-ossl plugin
   # REQUIRED if unit tests are to be run from build directory
   if(NOT MSVC)
-  include(QCAMacros)
-  FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
+    include(QCAMacros)
+    FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
   endif()
 
   if (APPLE)
@@ -558,15 +577,6 @@ if (WITH_CORE)
 # ModelTest
   set(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
 endif()
-
-#############################################################
-# enable use of c++11 features where available
-# full c++11 support in clang 3.3+: http://clang.llvm.org/cxx_status.html
-# for Mac, this is probably Apple LLVM 4.2 (based on LLVM 3.2svn, in XCode 4.6+)
-#   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
-#   https://gist.github.com/yamaya/2924292
-
-set(CMAKE_CXX_STANDARD 11)
 
 #############################################################
 # enable warnings
@@ -687,7 +697,7 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
 
-if (WITH_GEOREFERENCER)
+if (WITH_GEOREFERENCER OR WITH_ANALYSIS)
   find_package(GSL REQUIRED)
   set(HAVE_GEOREFERENCER TRUE)
 endif()
@@ -923,23 +933,17 @@ endif()
 set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required system libs in the output package")
 
 #############################################################
-# Python build dependency
+# Python
 
-find_package(PythonLibrary REQUIRED)
-set(MIN_PYTHON_VERSION "3.6")
-if(${PYTHON_SHORT_VERSION} VERSION_LESS ${MIN_PYTHON_VERSION})
-    message(FATAL_ERROR "Python version ${PYTHON_SHORT_VERSION} is too old. Minimum Python version is ${MIN_PYTHON_VERSION}.")
-endif()
+set(MIN_PYTHON_VERSION "3.7")
+set(Python_FIND_FRAMEWORK "LAST")
 
-set(MIN_PYTHON_VERSION "3.6")
-if(${PYTHON_SHORT_VERSION} VERSION_LESS ${MIN_PYTHON_VERSION})
-    message(FATAL_ERROR "Python version ${PYTHON_SHORT_VERSION} is too old. Minimum Python version is ${MIN_PYTHON_VERSION}.")
-endif()
+find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
+message("-- Python library: ${Python_LIBRARIES}")
+message("-- Python site-packages: ${Python_SITEARCH}")
 
-#############################################################
-# Python bindings
-
-if (WITH_CORE AND WITH_BINDINGS)
+if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
@@ -956,14 +960,14 @@ if (WITH_CORE AND WITH_BINDINGS)
   set(SIP_CONCAT_PARTS 11)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
-    set(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
+    set(Python_SITEARCH ${QGIS_DATA_DIR}/python)
   endif()
 
   if (WITH_CUSTOM_WIDGETS)
     set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
   endif()
-
 endif()
+
 
 #############################################################
 # create qgsconfig.h

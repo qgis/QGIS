@@ -132,8 +132,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEdit->setShowSearchIcon( true );
   txtSearchEdit->setPlaceholderText( tr( "Search…" ) );
 
-  mValuesModel = qgis::make_unique<QStandardItemModel>();
-  mProxyValues = qgis::make_unique<QSortFilterProxyModel>();
+  mValuesModel = std::make_unique<QStandardItemModel>();
+  mProxyValues = std::make_unique<QSortFilterProxyModel>();
   mProxyValues->setSourceModel( mValuesModel.get() );
   mValuesListView->setModel( mProxyValues.get() );
   txtSearchEditValues->setShowSearchIcon( true );
@@ -535,7 +535,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   std::sort( values.begin(), values.end() );
 
   mValuesModel->clear();
-  for ( const QVariant &value : qgis::as_const( values ) )
+  for ( const QVariant &value : std::as_const( values ) )
   {
     QString strValue;
     if ( value.isNull() )

@@ -15,8 +15,9 @@
 
 class QgsField
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulate a field in an attribute table or data source.
+
 :py:class:`QgsField` stores metadata about an attribute field, including name, type
 length, and if applicable, precision.
 

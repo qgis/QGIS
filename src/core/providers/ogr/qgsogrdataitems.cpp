@@ -221,13 +221,13 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   if ( !rlayer.dataProvider()->subLayers( ).empty() )
   {
     const QStringList layers( rlayer.dataProvider()->subLayers( ) );
-    for ( const QString &uri : layers )
+    for ( const QString &sublayer : layers )
     {
-      // Split on ':' since this is what comes out from the provider
-      QStringList pieces = uri.split( ':' );
-      QString name = pieces.value( pieces.length() - 1 );
-      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2" ).arg( name, uri ), 3 );
-      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster, driver ) );
+      const QStringList parts = sublayer.split( QgsDataProvider::sublayerSeparator() );
+      const QString uri = parts[0];
+      const QString desc = parts[1];
+      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2" ).arg( desc, uri ), 3 );
+      children.append( new QgsOgrDbLayerInfo( path, uri, desc, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster, driver ) );
     }
   }
   else if ( rlayer.isValid( ) )
@@ -452,13 +452,16 @@ bool QgsOgrDataCollectionItem::hasDragEnabled() const
   return true;
 }
 
-QgsMimeDataUtils::Uri QgsOgrDataCollectionItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsOgrDataCollectionItem::mimeUris() const
 {
-  QgsMimeDataUtils::Uri u;
-  u.providerKey = QStringLiteral( "ogr" );
-  u.uri = path();
-  u.layerType = QStringLiteral( "vector" );
-  return u;
+  QgsMimeDataUtils::Uri vectorUri;
+  vectorUri.providerKey = QStringLiteral( "ogr" );
+  vectorUri.uri = path();
+  vectorUri.layerType = QStringLiteral( "vector" );
+  QgsMimeDataUtils::Uri rasterUri { vectorUri };
+  rasterUri.layerType = QStringLiteral( "raster" );
+  rasterUri.providerKey = QStringLiteral( "gdal" );
+  return { vectorUri, rasterUri };
 }
 
 QgsAbstractDatabaseProviderConnection *QgsOgrDataCollectionItem::databaseConnection() const
@@ -574,7 +577,14 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
 
-// GDAL 3.1 Shapefile driver directly handles .shp.zip files
+  if ( suffix == QLatin1String( "txt" ) )
+  {
+    // never ever show .txt files as datasets in browser -- they are only used for geospatial data in extremely rare cases
+    // and are predominantly just noise in the browser
+    return nullptr;
+  }
+
+  // GDAL 3.1 Shapefile driver directly handles .shp.zip files
   if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) &&
        GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
   {

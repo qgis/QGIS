@@ -12,7 +12,7 @@
 
 class QgsTextFormat
 {
-%Docstring
+%Docstring(signature="appended")
 Container for all settings relating to text rendering.
 
 .. note::

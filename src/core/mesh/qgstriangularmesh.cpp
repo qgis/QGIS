@@ -524,7 +524,7 @@ std::unique_ptr< QgsPolygon > QgsMeshUtils::toPolygon( const QgsMeshFace &face, 
     const QgsPoint &vertex = vertices[vertexId];
     ring.append( vertex );
   }
-  std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
   polygon->setExteriorRing( new QgsLineString( ring ) );
   return polygon;
 }

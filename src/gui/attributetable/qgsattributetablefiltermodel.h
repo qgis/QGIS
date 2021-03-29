@@ -19,6 +19,7 @@
 
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
+#include <QTimer>
 
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"

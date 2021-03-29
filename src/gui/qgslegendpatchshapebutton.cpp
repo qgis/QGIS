@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgsguiutils.h"
 #include <QMenu>
+#include <QBuffer>
 
 QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -193,7 +194,7 @@ void QgsLegendPatchShapeButton::prepareMenu()
   QStringList patchNames = QgsStyle::defaultStyle()->symbolsOfFavorite( QgsStyle::LegendPatchShapeEntity );
   patchNames.sort();
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-  for ( const QString &name : qgis::as_const( patchNames ) )
+  for ( const QString &name : std::as_const( patchNames ) )
   {
     const QgsLegendPatchShape shape = QgsStyle::defaultStyle()->legendPatchShape( name );
     if ( shape.symbolType() == mType )
@@ -287,11 +288,7 @@ void QgsLegendPatchShapeButton::updatePreview()
   // set tooltip
   // create very large preview image
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
-#else
   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-#endif
   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
   QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( mPreviewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, &mShape );

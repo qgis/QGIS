@@ -1,5 +1,4 @@
 add_definitions(-DQT_PLUGIN)
-add_definitions(-DQT_NO_DEBUG)
 add_definitions(-DQT_SHARED)
 
 find_package(Qt5UiPlugin REQUIRED)
@@ -105,6 +104,9 @@ QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 # qgis_customwidgets library
 
 add_library(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
+
+# require c++17
+target_compile_features(qgis_customwidgets PRIVATE cxx_std_17)
 
 set_target_properties(qgis_customwidgets PROPERTIES
   VERSION ${COMPLETE_VERSION}

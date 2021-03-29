@@ -24,7 +24,7 @@
  * \class QgsMapClippingRegion
  * \ingroup core
  *
- * A map clipping region (in map coordinates and CRS).
+ * \brief A map clipping region (in map coordinates and CRS).
  *
  * \since QGIS 3.16
 */

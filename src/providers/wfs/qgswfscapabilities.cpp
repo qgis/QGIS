@@ -93,7 +93,7 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
 
 QString QgsWfsCapabilities::Capabilities::getNamespaceForTypename( const QString &name ) const
 {
-  Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, featureTypes )
+  for ( const QgsWfsCapabilities::FeatureType &f : featureTypes )
   {
     if ( f.name == name )
     {
@@ -576,8 +576,13 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         QDomElement upperCorner = WGS84BoundingBox.firstChildElement( QStringLiteral( "UpperCorner" ) );
         if ( !lowerCorner.isNull() && !upperCorner.isNull() )
         {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
           QStringList lowerCornerList = lowerCorner.text().split( QStringLiteral( " " ), QString::SkipEmptyParts );
           QStringList upperCornerList = upperCorner.text().split( QStringLiteral( " " ), QString::SkipEmptyParts );
+#else
+          QStringList lowerCornerList = lowerCorner.text().split( QStringLiteral( " " ), Qt::SkipEmptyParts );
+          QStringList upperCornerList = upperCorner.text().split( QStringLiteral( " " ), Qt::SkipEmptyParts );
+#endif
           if ( lowerCornerList.size() == 2 && upperCornerList.size() == 2 )
           {
             featureType.bbox = QgsRectangle(
@@ -603,7 +608,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     mCaps.featureTypes.push_back( featureType );
   }
 
-  Q_FOREACH ( const FeatureType &f, mCaps.featureTypes )
+  for ( const FeatureType &f : std::as_const( mCaps.featureTypes ) )
   {
     mCaps.setAllTypenames.insert( f.name );
     QString unprefixed( QgsWFSUtils::removeNamespacePrefix( f.name ) );

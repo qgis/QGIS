@@ -32,7 +32,7 @@ class QgsMapClippingRegion;
  * \class QgsMapClippingUtils
  * \ingroup core
  *
- * Utility functions for use when clipping map renders.
+ * \brief Utility functions for use when clipping map renders.
  *
  * \since QGIS 3.16
 */

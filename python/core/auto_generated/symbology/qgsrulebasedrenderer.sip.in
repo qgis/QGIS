@@ -13,7 +13,9 @@
 
 class QgsRuleBasedRenderer : QgsFeatureRenderer
 {
-%Docstring
+%Docstring(signature="appended")
+Rule based renderer.
+
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
 %End
@@ -70,8 +72,9 @@ Feature to render
 
     class Rule
 {
-%Docstring
+%Docstring(signature="appended")
 This class keeps data about a rules for rule-based renderer.
+
 A rule consists of a symbol, filter expression and range of scales.
 If filter is empty, it matches all features.
 If scale range has both values zero, it matches all scales.
@@ -543,9 +546,11 @@ take a rule and create a list of new rules based on the ranges from graduated sy
 take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
 %End
 
-    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 ) /Factory/;
 %Docstring
-creates a QgsRuleBasedRenderer from an existing renderer.
+Creates a new QgsRuleBasedRenderer from an existing ``renderer``.
+
+Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of some renderer types.
 
 :return: a new renderer if the conversion was possible, otherwise ``None``.
 

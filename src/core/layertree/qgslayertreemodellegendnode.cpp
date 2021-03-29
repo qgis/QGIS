@@ -37,7 +37,9 @@
 #include "qgsexpression.h"
 #include "qgstextrenderer.h"
 #include "qgssettings.h"
+#include "qgsfileutils.h"
 
+#include <QBuffer>
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )
@@ -453,7 +455,7 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
     return nullptr;
 
   // setup temporary render context
-  std::unique_ptr<QgsRenderContext> context = qgis::make_unique<QgsRenderContext>( );
+  std::unique_ptr<QgsRenderContext> context = std::make_unique<QgsRenderContext>( );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
@@ -611,7 +613,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     context = ctx->context;
   else
   {
-    tempRenderContext = qgis::make_unique< QgsRenderContext >();
+    tempRenderContext = std::make_unique< QgsRenderContext >();
     // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
@@ -1286,7 +1288,8 @@ QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
 
 void QgsWmsLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
 {
-  QString msg = QStringLiteral( "Downloading... %1/%2" ).arg( cur ).arg( tot );
+  const QString msg = tot > 0 ? tr( "Downloading: %1% (%2)" ).arg( static_cast< int >( std::round( 100 * cur / tot ) ) ).arg( QgsFileUtils::representFileSize( tot ) )
+                      : tr( "Downloading: %1" ).arg( QgsFileUtils::representFileSize( cur ) );
   mImage = renderMessage( msg );
   emit dataChanged();
 }
@@ -1370,7 +1373,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
     context = ctx->context;
   else
   {
-    tempRenderContext = qgis::make_unique< QgsRenderContext >();
+    tempRenderContext = std::make_unique< QgsRenderContext >();
     // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );

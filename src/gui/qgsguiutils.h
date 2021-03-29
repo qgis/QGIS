@@ -15,7 +15,6 @@
 #ifndef QGSGUIUTILS_H
 #define QGSGUIUTILS_H
 
-#include <Qt>
 #include <QPair>
 #include <QWidget>
 #include <QStringList>
@@ -29,7 +28,7 @@ class QFont;
 /**
  * \ingroup gui
  * \namespace QgsGuiUtils
- * The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
+ * \brief The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
  * \note not available in Python bindings
  */
 namespace QgsGuiUtils

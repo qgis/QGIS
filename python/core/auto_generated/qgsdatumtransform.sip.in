@@ -12,7 +12,7 @@
 
 class QgsDatumTransform
 {
-%Docstring
+%Docstring(signature="appended")
 Contains methods and classes relating the datum transformations.
 
 .. seealso:: :py:class:`QgsCoordinateTransformContext`

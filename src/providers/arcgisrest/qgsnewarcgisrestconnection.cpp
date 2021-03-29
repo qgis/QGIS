@@ -25,6 +25,8 @@
 #include <QPushButton>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QtEndian>
+#include <QUrlQuery>
 
 QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *parent, const QString &baseKey, const QString &connectionName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

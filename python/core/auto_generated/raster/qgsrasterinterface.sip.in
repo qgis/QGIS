@@ -13,7 +13,7 @@
 
 class QgsRasterBlockFeedback : QgsFeedback
 {
-%Docstring
+%Docstring(signature="appended")
 Feedback object tailored for raster block reading.
 
 .. versionadded:: 3.0
@@ -87,7 +87,7 @@ Returns a list of any errors encountered while retrieving the raster block.
 
 class QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for processing filters like renderers, reprojector, resampler etc.
 %End
 

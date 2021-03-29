@@ -184,6 +184,13 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      */
     bool isFeatureDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }
 
+    /**
+     * Updates \a fields
+     * \note Not available in Python bindings
+     * \since QGIS 3.18
+     */
+    void updateFields( QgsFields &fields ) SIP_SKIP;
+
     //QString dumpEditBuffer();
 
   protected slots:
@@ -236,8 +243,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     //! Constructor for QgsVectorLayerEditBuffer
     QgsVectorLayerEditBuffer() = default;
 
-    void updateFields( QgsFields &fields );
-
     //! Update feature with uncommitted geometry updates
     void updateFeatureGeometry( QgsFeature &f );
 
@@ -257,7 +262,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
   protected:
     QgsVectorLayer *L = nullptr;
-    friend class QgsVectorLayer;
 
     friend class QgsVectorLayerUndoCommand;
     friend class QgsVectorLayerUndoCommandAddFeature;

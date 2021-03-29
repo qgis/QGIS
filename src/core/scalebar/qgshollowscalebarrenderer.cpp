@@ -177,15 +177,15 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
 bool QgsHollowScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &settings ) const
 {
   // null the fill symbols by default
-  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
-  std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = qgis::make_unique< QgsSimpleFillSymbolLayer >();
+  std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
   fillSymbolLayer->setColor( QColor( 0, 0, 0 ) );
   fillSymbolLayer->setBrushStyle( Qt::NoBrush );
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer->clone() );
   settings.setFillSymbol( fillSymbol.release() );
 
-  fillSymbol = qgis::make_unique< QgsFillSymbol >();
+  fillSymbol = std::make_unique< QgsFillSymbol >();
   fillSymbolLayer->setColor( QColor( 255, 255, 255 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
   settings.setAlternateFillSymbol( fillSymbol.release() );

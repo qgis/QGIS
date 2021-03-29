@@ -31,7 +31,7 @@ class QgsFeedback;
 /**
  * \ingroup analysis
  *
- * Contains utilities required for geometry checks.
+ * \brief Contains utilities required for geometry checks.
  *
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
@@ -43,7 +43,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
     /**
      * \ingroup analysis
      *
-     * A layer feature combination to uniquely identify and access a feature in
+     * \brief A layer feature combination to uniquely identify and access a feature in
      * a set of layers.
      *
      * \since QGIS 3.4
@@ -105,7 +105,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
     /**
      * \ingroup analysis
      *
-     * Contains a set of layers and feature ids in those layers to pass to a geometry check.
+     * \brief Contains a set of layers and feature ids in those layers to pass to a geometry check.
      *
      * \since QGIS 3.4
      */
@@ -135,7 +135,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         /**
          * \ingroup analysis
          *
-         * An iterator over all features in a QgsGeometryCheckerUtils::LayerFeatures.
+         * \brief An iterator over all features in a QgsGeometryCheckerUtils::LayerFeatures.
          *
          * \since QGIS 3.4
          */

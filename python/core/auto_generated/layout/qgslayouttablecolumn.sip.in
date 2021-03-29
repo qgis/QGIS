@@ -12,8 +12,9 @@
 
 class QgsLayoutTableColumn
 {
-%Docstring
+%Docstring(signature="appended")
 Stores properties of a column for a :py:class:`QgsLayoutTable`.
+
 Some properties of a :py:class:`QgsLayoutTableColumn` are applicable only in certain contexts.
 For instance, the attribute and setAttribute methods only have an effect
 for :py:class:`QgsLayoutItemAttributeTables`, and have no effect for :py:class:`QgsLayoutItemTextTables`.

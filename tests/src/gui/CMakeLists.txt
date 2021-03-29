@@ -50,6 +50,7 @@ macro (ADD_QGIS_TEST testname testsrc)
   set(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   set(qgis_${testname}_MOC_CPPS ${testsrc})
   add_executable(qgis_${testname} ${qgis_${testname}_SRCS})
+  target_compile_features(qgis_${testname} PRIVATE cxx_std_17)
   set_target_properties(qgis_${testname} PROPERTIES AUTORCC TRUE)
   target_link_libraries(qgis_${testname}
     ${Qt5Xml_LIBRARIES}
@@ -126,3 +127,10 @@ ADD_QGIS_TEST(singlebandpseudocolorrendererwidget testqgssinglebandpseudocolorre
 ADD_QGIS_TEST(doublevalidator testqgsdoublevalidator.cpp)
 ADD_QGIS_TEST(meshlayerpropertiesdialog testqgsmeshlayerpropertiesdialog.cpp)
 ADD_QGIS_TEST(externalresourcewidgetwrapper testqgsexternalresourcewidgetwrapper.cpp)
+
+SET_TESTS_PROPERTIES(qgis_listwidgettest PROPERTIES LABELS "POSTGRES")
+if (ENABLE_PGTEST)
+  SET_TESTS_PROPERTIES(qgis_processingguitest qgis_valuerelationwidgetwrapper qgis_texteditwrapper
+    qgis_newdatabasetablewidget
+    PROPERTIES LABELS "POSTGRES")
+endif()

@@ -49,14 +49,6 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         shutil.rmtree(cls.basetestpath, True)
 
     def testFidSupport(self):
-
-        # We do not use @unittest.expectedFailure since the test might actually succeed
-        # on Linux 64bit with GDAL 1.11, where "long" is 64 bit...
-        # GDAL 2.0 is guaranteed to properly support it on all platforms
-        version_num = int(gdal.VersionInfo('VERSION_NUM'))
-        if version_num < GDAL_COMPUTE_VERSION(2, 0, 0):
-            return
-
         tmpfile = os.path.join(self.basetestpath, 'testFidSupport.sqlite')
         ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])

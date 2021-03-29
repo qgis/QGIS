@@ -172,7 +172,7 @@ void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext &context, const Q
     mExpression->prepare( &context.expressionContext() );
   }
 
-  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
+  for ( const QgsRendererRange &range : std::as_const( mRanges ) )
   {
     if ( !range.symbol() )
       continue;
@@ -185,7 +185,7 @@ void QgsGraduatedSymbolRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
 
-  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
+  for ( const QgsRendererRange &range : std::as_const( mRanges ) )
   {
     if ( !range.symbol() )
       continue;
@@ -343,7 +343,7 @@ QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) c
   Q_UNUSED( context )
   QgsSymbolList lst;
   lst.reserve( mRanges.count() );
-  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
+  for ( const QgsRendererRange &range : std::as_const( mRanges ) )
   {
     lst.append( range.symbol() );
   }
@@ -352,7 +352,7 @@ QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) c
 
 bool QgsGraduatedSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
+  for ( const QgsRendererRange &range : std::as_const( mRanges ) )
   {
     QgsStyleSymbolEntity entity( range.symbol() );
     if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "%1 - %2" ).arg( range.lowerValue() ).arg( range.upperValue() ), range.label() ) ) )
@@ -588,7 +588,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    for ( const QgsRendererRange &range : qgis::as_const( r->mRanges ) )
+    for ( const QgsRendererRange &range : std::as_const( r->mRanges ) )
     {
       convertSymbolRotation( range.symbol(), rotationElem.attribute( QStringLiteral( "field" ) ) );
     }
@@ -600,7 +600,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QDomElement sizeScaleElem = element.firstChildElement( QStringLiteral( "sizescale" ) );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    for ( const QgsRendererRange &range : qgis:: as_const( r->mRanges ) )
+    for ( const QgsRendererRange &range : std::as_const( r->mRanges ) )
     {
       convertSymbolSizeScale( range.symbol(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
@@ -901,7 +901,7 @@ void QgsGraduatedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp )
 
   if ( mSourceColorRamp )
   {
-    for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
+    for ( const QgsRendererRange &range : std::as_const( mRanges ) )
     {
       QgsSymbol *symbol = range.symbol() ? range.symbol()->clone() : nullptr;
       if ( symbol )
@@ -923,7 +923,7 @@ void QgsGraduatedSymbolRenderer::updateSymbols( QgsSymbol *sym )
     return;
 
   int i = 0;
-  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
+  for ( const QgsRendererRange &range : std::as_const( mRanges ) )
   {
     std::unique_ptr<QgsSymbol> symbol( sym->clone() );
     if ( mGraduatedMethod == GraduatedColor )
@@ -1078,7 +1078,7 @@ void QgsGraduatedSymbolRenderer::calculateLabelPrecision( bool updateRanges )
 {
   // Find the minimum size of a class
   double minClassRange = 0.0;
-  for ( const QgsRendererRange &rendererRange : qgis::as_const( mRanges ) )
+  for ( const QgsRendererRange &rendererRange : std::as_const( mRanges ) )
   {
     double range = rendererRange.upperValue() - rendererRange.lowerValue();
     if ( range <= 0.0 )
@@ -1249,7 +1249,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
     const QgsCategorizedSymbolRenderer *categorizedSymbolRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer );
     if ( categorizedSymbolRenderer )
     {
-      r = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
+      r = std::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
       if ( categorizedSymbolRenderer->sourceSymbol() )
         r->setSourceSymbol( categorizedSymbolRenderer->sourceSymbol()->clone() );
       if ( categorizedSymbolRenderer->sourceColorRamp() )
@@ -1280,7 +1280,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
 
   if ( !r )
   {
-    r = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
+    r = std::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
     QgsRenderContext context;
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )

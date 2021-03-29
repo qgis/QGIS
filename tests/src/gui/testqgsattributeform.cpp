@@ -32,7 +32,7 @@
 #include "qgsmultiedittoolbutton.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorcontainer.h"
-
+#include <QSignalSpy>
 
 class TestQgsAttributeForm : public QObject
 {

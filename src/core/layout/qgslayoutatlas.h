@@ -27,7 +27,7 @@ class QgsLayout;
 
 /**
  * \ingroup core
- * Class used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
+ * \brief Class used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
  *
  * QgsLayoutAtlas implement the QgsAbstractLayoutIterator interface, allowing them to be used
  * directly with QgsLayoutExporter to automatically output all pages from the atlas.
@@ -366,8 +366,8 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     bool mEnabled = false;
     bool mHideCoverage = false;
     QString mFilenameExpressionString;
+    QString mFilenameExpressionError;
 
-    QgsExpression mFilenameExpression;
     QgsVectorLayerRef mCoverageLayer;
 
     QString mCurrentFilename;

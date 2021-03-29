@@ -64,6 +64,8 @@ QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::ava
          << Diamond
          << Pentagon
          << Hexagon
+         << Octagon
+         << SquareWithCorners
          << Triangle
          << EquilateralTriangle
          << Star
@@ -73,6 +75,9 @@ QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::ava
          << CrossFill
          << Cross2
          << Line
+         << HalfArc
+         << ThirdArc
+         << QuarterArc
          << ArrowHead
          << ArrowHeadFilled
          << SemiCircle
@@ -82,7 +87,9 @@ QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::ava
          << HalfSquare
          << DiagonalHalfSquare
          << RightHalfTriangle
-         << LeftHalfTriangle;
+         << LeftHalfTriangle
+         << AsteriskFill;
+
   return shapes;
 }
 
@@ -105,6 +112,8 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBa
     case Diamond:
     case Pentagon:
     case Hexagon:
+    case Octagon:
+    case SquareWithCorners:
     case Triangle:
     case EquilateralTriangle:
     case Star:
@@ -120,12 +129,16 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBa
     case DiagonalHalfSquare:
     case RightHalfTriangle:
     case LeftHalfTriangle:
+    case AsteriskFill:
       return true;
 
     case Cross:
     case Cross2:
     case Line:
     case ArrowHead:
+    case HalfArc:
+    case ThirdArc:
+    case QuarterArc:
       return false;
   }
   return true;
@@ -299,12 +312,16 @@ QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShap
 
   if ( cleaned == QLatin1String( "square" ) || cleaned == QLatin1String( "rectangle" ) )
     return Square;
+  else if ( cleaned == QLatin1String( "square_with_corners" ) )
+    return SquareWithCorners;
   else if ( cleaned == QLatin1String( "diamond" ) )
     return Diamond;
   else if ( cleaned == QLatin1String( "pentagon" ) )
     return Pentagon;
   else if ( cleaned == QLatin1String( "hexagon" ) )
     return Hexagon;
+  else if ( cleaned == QLatin1String( "octagon" ) )
+    return Octagon;
   else if ( cleaned == QLatin1String( "triangle" ) )
     return Triangle;
   else if ( cleaned == QLatin1String( "equilateral_triangle" ) )
@@ -343,6 +360,14 @@ QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShap
     return RightHalfTriangle;
   else if ( cleaned == QLatin1String( "left_half_triangle" ) )
     return LeftHalfTriangle;
+  else if ( cleaned == QLatin1String( "asterisk_fill" ) )
+    return AsteriskFill;
+  else if ( cleaned == QLatin1String( "half_arc" ) )
+    return HalfArc;
+  else if ( cleaned == QLatin1String( "third_arc" ) )
+    return ThirdArc;
+  else if ( cleaned == QLatin1String( "quarter_arc" ) )
+    return QuarterArc;
 
   if ( ok )
     *ok = false;
@@ -367,6 +392,10 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( QgsSimpleMarkerSymbolLayerB
       return QStringLiteral( "pentagon" );
     case Hexagon:
       return QStringLiteral( "hexagon" );
+    case Octagon:
+      return QStringLiteral( "octagon" );
+    case SquareWithCorners:
+      return QStringLiteral( "square_with_corners" );
     case Triangle:
       return QStringLiteral( "triangle" );
     case EquilateralTriangle:
@@ -399,6 +428,14 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( QgsSimpleMarkerSymbolLayerB
       return QStringLiteral( "third_circle" );
     case QuarterCircle:
       return QStringLiteral( "quarter_circle" );
+    case AsteriskFill:
+      return QStringLiteral( "asterisk_fill" );
+    case HalfArc:
+      return QStringLiteral( "half_arc" );
+    case ThirdArc:
+      return QStringLiteral( "third_arc" );
+    case QuarterArc:
+      return QStringLiteral( "quarter_arc" );
   }
   return QString();
 }
@@ -417,6 +454,22 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
     case Square:
       polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 1, 1 ) ) );
       return true;
+
+    case SquareWithCorners:
+    {
+      static constexpr double VERTEX_OFFSET_FROM_ORIGIN = 0.6072;
+
+      polygon << QPointF( - VERTEX_OFFSET_FROM_ORIGIN, 1 )
+              << QPointF( VERTEX_OFFSET_FROM_ORIGIN, 1 )
+              << QPointF( 1, VERTEX_OFFSET_FROM_ORIGIN )
+              << QPointF( 1, -VERTEX_OFFSET_FROM_ORIGIN )
+              << QPointF( VERTEX_OFFSET_FROM_ORIGIN, -1 )
+              << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, -1 )
+              << QPointF( -1, -VERTEX_OFFSET_FROM_ORIGIN )
+              << QPointF( -1, VERTEX_OFFSET_FROM_ORIGIN )
+              << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 );
+      return true;
+    }
 
     case QuarterSquare:
       polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 0 ) ) );
@@ -466,6 +519,22 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
               << QPointF( 0, -1 )
               << QPointF( -0.8660, -0.5 );
       return true;
+
+    case Octagon:
+    {
+      static constexpr double VERTEX_OFFSET_FROM_ORIGIN = 1.0 / ( 1 + M_SQRT2 );
+
+      polygon << QPointF( - VERTEX_OFFSET_FROM_ORIGIN, 1 )
+              << QPointF( VERTEX_OFFSET_FROM_ORIGIN, 1 )
+              << QPointF( 1, VERTEX_OFFSET_FROM_ORIGIN )
+              << QPointF( 1, -VERTEX_OFFSET_FROM_ORIGIN )
+              << QPointF( VERTEX_OFFSET_FROM_ORIGIN, -1 )
+              << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, -1 )
+              << QPointF( -1, -VERTEX_OFFSET_FROM_ORIGIN )
+              << QPointF( -1, VERTEX_OFFSET_FROM_ORIGIN )
+              << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 );
+      return true;
+    }
 
     case Triangle:
       polygon << QPointF( -1, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 ) << QPointF( -1, 1 );
@@ -540,6 +609,42 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
               << QPointF( -1, -0.2 );
       return true;
 
+    case AsteriskFill:
+    {
+      static constexpr double THICKNESS = 0.3;
+      static constexpr double HALF_THICKNESS = THICKNESS / 2.0;
+      static constexpr double INTERSECTION_POINT = THICKNESS / M_SQRT2;
+      static constexpr double DIAGONAL1 = M_SQRT1_2 - INTERSECTION_POINT * 0.5;
+      static constexpr double DIAGONAL2 = M_SQRT1_2 + INTERSECTION_POINT * 0.5;
+
+      polygon << QPointF( -HALF_THICKNESS, -1 )
+              << QPointF( HALF_THICKNESS, -1 )
+              << QPointF( HALF_THICKNESS, -HALF_THICKNESS - INTERSECTION_POINT )
+              << QPointF( DIAGONAL1, -DIAGONAL2 )
+              << QPointF( DIAGONAL2, -DIAGONAL1 )
+              << QPointF( HALF_THICKNESS + INTERSECTION_POINT, -HALF_THICKNESS )
+              << QPointF( 1, -HALF_THICKNESS )
+              << QPointF( 1, HALF_THICKNESS )
+              << QPointF( HALF_THICKNESS + INTERSECTION_POINT, HALF_THICKNESS )
+              << QPointF( DIAGONAL2, DIAGONAL1 )
+              << QPointF( DIAGONAL1, DIAGONAL2 )
+              << QPointF( HALF_THICKNESS, HALF_THICKNESS + INTERSECTION_POINT )
+              << QPointF( HALF_THICKNESS, 1 )
+              << QPointF( -HALF_THICKNESS, 1 )
+              << QPointF( -HALF_THICKNESS, HALF_THICKNESS + INTERSECTION_POINT )
+              << QPointF( -DIAGONAL1, DIAGONAL2 )
+              << QPointF( -DIAGONAL2, DIAGONAL1 )
+              << QPointF( -HALF_THICKNESS - INTERSECTION_POINT, HALF_THICKNESS )
+              << QPointF( -1, HALF_THICKNESS )
+              << QPointF( -1, -HALF_THICKNESS )
+              << QPointF( -HALF_THICKNESS - INTERSECTION_POINT, -HALF_THICKNESS )
+              << QPointF( -DIAGONAL2, -DIAGONAL1 )
+              << QPointF( -DIAGONAL1, -DIAGONAL2 )
+              << QPointF( -HALF_THICKNESS, -HALF_THICKNESS - INTERSECTION_POINT )
+              << QPointF( -HALF_THICKNESS, -1 );
+      return true;
+    }
+
     case Circle:
     case Cross:
     case Cross2:
@@ -548,6 +653,9 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
     case SemiCircle:
     case ThirdCircle:
     case QuarterCircle:
+    case HalfArc:
+    case ThirdArc:
+    case QuarterArc:
       return false;
   }
 
@@ -580,6 +688,21 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLay
       mPath.lineTo( 0, 0 );
       return true;
 
+    case HalfArc:
+      mPath.moveTo( 1, 0 );
+      mPath.arcTo( -1, -1, 2, 2, 0, 180 );
+      return true;
+
+    case ThirdArc:
+      mPath.moveTo( 0, -1 );
+      mPath.arcTo( -1, -1, 2, 2, 90, 120 );
+      return true;
+
+    case QuarterArc:
+      mPath.moveTo( 0, -1 );
+      mPath.arcTo( -1, -1, 2, 2, 90, 90 );
+      return true;
+
     case Cross:
       mPath.moveTo( -1, 0 );
       mPath.lineTo( 1, 0 ); // horizontal
@@ -606,12 +729,14 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLay
       return true;
 
     case Square:
+    case SquareWithCorners:
     case QuarterSquare:
     case HalfSquare:
     case DiagonalHalfSquare:
     case Diamond:
     case Pentagon:
     case Hexagon:
+    case Octagon:
     case Triangle:
     case EquilateralTriangle:
     case LeftHalfTriangle:
@@ -620,6 +745,7 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLay
     case Arrow:
     case ArrowHeadFilled:
     case CrossFill:
+    case AsteriskFill:
       return false;
   }
   return false;
@@ -804,6 +930,11 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
     m->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
   }
 
+  if ( props.contains( QStringLiteral( "cap_style" ) ) )
+  {
+    m->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( props[QStringLiteral( "cap_style" )].toString() ) );
+  }
+
   m->restoreOldDataDefinedProperties( props );
 
   return m;
@@ -828,6 +959,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
   mPen.setStyle( mStrokeStyle );
+  mPen.setCapStyle( mPenCapStyle );
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 
@@ -1023,6 +1155,16 @@ void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
       mSelPen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( style ) );
     }
   }
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCapStyle ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
+    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext(), QString(), &ok );
+    if ( ok )
+    {
+      mPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
+      mSelPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
+    }
+  }
 
   if ( shapeIsFilled( shape ) )
   {
@@ -1093,6 +1235,7 @@ QVariantMap QgsSimpleMarkerSymbolLayer::properties() const
   map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( mStrokeWidthUnit );
   map[QStringLiteral( "outline_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
   map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[QStringLiteral( "cap_style" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
   map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
   return map;
@@ -1112,6 +1255,7 @@ QgsSimpleMarkerSymbolLayer *QgsSimpleMarkerSymbolLayer::clone() const
   m->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  m->setPenCapStyle( mPenCapStyle );
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
   return m;
@@ -2603,7 +2747,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
     }
   }
 
-  QMatrix transform;
+  QTransform transform;
   // move to the desired position
   transform.translate( point.x() + outputOffset.x(), point.y() + outputOffset.y() );
 
@@ -3010,7 +3154,7 @@ QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
   double angle = 0.0;
   calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
 
-  QMatrix transform;
+  QTransform transform;
 
   // move to the desired position
   transform.translate( point.x() + outputOffset.x(), point.y() + outputOffset.y() );
@@ -3129,11 +3273,7 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   // (if we set a <=1 pixel size here Qt will reset the font to a default size, leading to much too large symbols)
   mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
   mFontMetrics.reset( new QFontMetrics( mFont ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mChrWidth = mFontMetrics->width( mString );
-#else
   mChrWidth = mFontMetrics->horizontalAdvance( mString );
-#endif
   mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
   mOrigSize = mSize; // save in case the size would be data defined
 
@@ -3166,11 +3306,7 @@ QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &con
     stringToRender = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCharacter, context.renderContext().expressionContext(), mString );
     if ( stringToRender != mString )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-      charWidth = mFontMetrics->width( stringToRender );
-#else
       charWidth = mFontMetrics->horizontalAdvance( stringToRender );
-#endif
       charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
     }
   }
@@ -3325,7 +3461,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   {
     context.setOriginalValueVariable( mFontStyle );
     QString fontStyle = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFontStyle, context.renderContext().expressionContext(), mFontStyle, &ok );
-    mFont.setStyleName( QgsFontUtils::translateNamedStyle( ok ? fontStyle : mFontStyle ) );
+    QgsFontUtils::updateFontViaStyle( mFont, QgsFontUtils::translateNamedStyle( ok ? fontStyle : mFontStyle ) );
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontFamily ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) )
   {
@@ -3470,7 +3606,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
   scaledSize = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
 
-  QMatrix transform;
+  QTransform transform;
 
   // move to the desired position
   transform.translate( point.x() + offset.x(), point.y() + offset.y() );

@@ -16,7 +16,7 @@
 
 class QgsImageFetcher : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Handles asynchronous download of images
 
 .. versionadded:: 2.8
@@ -61,7 +61,7 @@ Emitted when an error occurs
 
 class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for raster data providers.
 %End
 

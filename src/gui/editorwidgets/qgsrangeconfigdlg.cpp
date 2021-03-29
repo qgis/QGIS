@@ -66,8 +66,9 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
       rangeWidget->addItem( tr( "Slider" ), QStringLiteral( "Slider" ) );
       rangeWidget->addItem( tr( "Dial" ), QStringLiteral( "Dial" ) );
 
-      QVariant min = vl->minimumValue( fieldIdx );
-      QVariant max = vl->maximumValue( fieldIdx );
+      QVariant min;
+      QVariant max;
+      vl->minimumAndMaximumValue( fieldIdx, min, max );
 
       text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString(), max.toString() );
       break;

@@ -13,7 +13,7 @@
 
 class QgsFeatureFilter : QgsFeatureFilterProvider
 {
-%Docstring
+%Docstring(signature="appended")
 A feature filter provider allowing to set filter expressions on a per-layer basis.
 
 .. versionadded:: 3.0
@@ -36,6 +36,9 @@ Filter the features of the layer
 :param layer: the layer to control
 :param filterFeatures: the request to fill
 %End
+
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
 
     virtual QgsFeatureFilterProvider *clone() const /Factory/;
 

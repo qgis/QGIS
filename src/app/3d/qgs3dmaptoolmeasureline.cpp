@@ -221,7 +221,7 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   lineSymbol->setWidth( 4 );
   lineSymbol->setAltitudeClamping( Qgs3DTypes::AltClampAbsolute );
 
-  std::unique_ptr< QgsPhongMaterialSettings > phongMaterial = qgis::make_unique< QgsPhongMaterialSettings >();
+  std::unique_ptr< QgsPhongMaterialSettings > phongMaterial = std::make_unique< QgsPhongMaterialSettings >();
   QgsSettings settings;
   int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
   int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();

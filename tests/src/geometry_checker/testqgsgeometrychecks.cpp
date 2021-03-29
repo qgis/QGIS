@@ -571,7 +571,7 @@ void TestQgsGeometryChecks::testAllowedGaps()
   auto testContext = createTestContext( dir, layers );
 
   // Allowed gaps layer
-  std::unique_ptr<QgsVectorLayer> allowedGaps = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> allowedGaps = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( allowedGaps.get(), true, false );
 
   // Test detection

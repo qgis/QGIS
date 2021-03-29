@@ -11,7 +11,7 @@
 
 class QgsProcessingLayerOutputDestinationWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allows users to select the destination path for an output style Processing parameter.
 
 .. note::

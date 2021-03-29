@@ -35,10 +35,12 @@ class QgsSourceSelectProvider;
 class QgsProjectStorageGuiProvider;
 class QgsSubsetStringEditorProvider;
 class QgsProviderSourceWidgetProvider;
+class QgsMapLayerConfigWidgetFactory;
+class QgsMapLayer;
 
 /**
  * \ingroup gui
- * A registry / canonical manager of GUI parts of data providers.
+ * \brief A registry / canonical manager of GUI parts of data providers.
  *
  * QgsProviderGuiRegistry is not usually directly created, but rather accessed through
  * QgsGui::providerGuiRegistry().
@@ -101,6 +103,15 @@ class GUI_EXPORT QgsProviderGuiRegistry
      * \since QGIS 3.18
      */
     virtual QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders( const QString &providerKey ) SIP_FACTORY;
+
+    /**
+     * Returns all map layer config widget factories associated with the registered providers.
+     *
+     * The optional \a layer argument can be used to only return factories which support the specified layer.
+     *
+     * \since QGIS 3.20
+     */
+    virtual QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories( QgsMapLayer *layer = nullptr );
 
     //! Type for data provider metadata associative container
     SIP_SKIP typedef std::map<QString, QgsProviderGuiMetadata *> GuiProviders;

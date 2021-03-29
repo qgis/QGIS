@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsapplication.h"
+#include <QRegularExpression>
 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -316,7 +317,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
         QgsSpatiaLiteProviderConnection::TableProperty property;
         property.setTableName( tableName );
         // Create a layer and get information from it
-        std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique<QgsVectorLayer>( dsUri.uri(), QString(), QLatin1String( "spatialite" ) );
+        std::unique_ptr< QgsVectorLayer > vl = std::make_unique<QgsVectorLayer>( dsUri.uri(), QString(), QLatin1String( "spatialite" ) );
         if ( vl->isValid() )
         {
           if ( vl->isSpatial() )
@@ -429,7 +430,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
         QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
         iterator->setFields( fields );
 
-        for ( const auto &f : qgis::as_const( fields ) )
+        for ( const auto &f : std::as_const( fields ) )
         {
           results.appendColumn( f.name() );
         }
@@ -552,7 +553,7 @@ void QgsSpatiaLiteProviderConnection::deleteField( const QString &fieldName, con
 {
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
-  std::unique_ptr<QgsVectorLayer> vl { qgis::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( pathFromUri(), tableName ), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options ) };
+  std::unique_ptr<QgsVectorLayer> vl { std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( pathFromUri(), tableName ), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options ) };
   if ( ! vl->isValid() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not create a valid layer for table '%1'" ).arg( tableName ) );

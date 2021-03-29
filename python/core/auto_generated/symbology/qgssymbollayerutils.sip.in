@@ -10,6 +10,7 @@
 
 
 
+
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
 
@@ -731,6 +732,13 @@ Calculate a point on the surface of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
 %Docstring
 Calculate whether a point is within of a QPolygonF
+%End
+
+    static double polylineLength( const QPolygonF &polyline );
+%Docstring
+Returns the total length of a ``polyline``.
+
+.. versionadded:: 3.20
 %End
 
     static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );

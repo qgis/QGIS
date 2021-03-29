@@ -11,7 +11,7 @@
 
 class QgsFeatureRendererGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 An interface for objects which generate feature renderers for vector layers.
 
 .. versionadded:: 3.18

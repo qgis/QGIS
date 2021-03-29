@@ -14,7 +14,7 @@
 
 class QgsCoordinateTransformContext
 {
-%Docstring
+%Docstring(signature="appended")
 Contains information about the context in which a coordinate transform is executed.
 
 The context stores various information regarding which coordinate operations should

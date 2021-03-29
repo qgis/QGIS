@@ -29,7 +29,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * Widget for viewing and editing authentication identities database
+ * \brief Widget for viewing and editing authentication identities database
  */
 class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthIdentitiesEditor
 {

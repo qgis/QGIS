@@ -21,6 +21,7 @@ set (WMS_SRCS
   qgswmsparameters.cpp
   qgswmsrestorer.cpp
   qgswmsrendercontext.cpp
+  qgswmsrequest.cpp
 )
 
 set (WMS_HDRS
@@ -33,6 +34,8 @@ set (WMS_HDRS
 
 add_library (wms MODULE ${WMS_SRCS} ${WMS_HDRS})
 
+# require c++17
+target_compile_features(wms PRIVATE cxx_std_17)
 
 include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}

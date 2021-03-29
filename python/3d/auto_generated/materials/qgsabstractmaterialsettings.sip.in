@@ -25,7 +25,7 @@ enum class QgsMaterialSettingsRenderingTechnique
 
 class QgsMaterialContext
 {
-%Docstring
+%Docstring(signature="appended")
 Context settings for a material.
 
 .. warning::
@@ -74,7 +74,7 @@ Sets the color for representing materials in a selected state.
 
 class QgsAbstractMaterialSettings /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for material settings.
 
 .. warning::

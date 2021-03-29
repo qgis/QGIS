@@ -48,8 +48,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>492</width>
-        <height>1225</height>
+        <width>493</width>
+        <height>1620</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1111,14 +1111,19 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1128,19 +1133,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>
@@ -1148,20 +1149,19 @@
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -1198,6 +1198,14 @@
   <tabstop>mGridFramePenColorButton</tabstop>
   <tabstop>mGridFrameFill1ColorButton</tabstop>
   <tabstop>mGridFrameFill2ColorButton</tabstop>
+  <tabstop>mFrameDivisionsLeftComboBox</tabstop>
+  <tabstop>mFrameDivisionsLeftDDBtn</tabstop>
+  <tabstop>mFrameDivisionsRightComboBox</tabstop>
+  <tabstop>mFrameDivisionsRightDDBtn</tabstop>
+  <tabstop>mFrameDivisionsTopComboBox</tabstop>
+  <tabstop>mFrameDivisionsTopDDBtn</tabstop>
+  <tabstop>mFrameDivisionsBottomComboBox</tabstop>
+  <tabstop>mFrameDivisionsBottomDDBtn</tabstop>
   <tabstop>mCheckGridLeftSide</tabstop>
   <tabstop>mCheckGridRightSide</tabstop>
   <tabstop>mCheckGridTopSide</tabstop>
@@ -1209,12 +1217,20 @@
   <tabstop>mDrawAnnotationGroupBox</tabstop>
   <tabstop>mAnnotationFormatComboBox</tabstop>
   <tabstop>mAnnotationFormatButton</tabstop>
+  <tabstop>mAnnotationDisplayLeftComboBox</tabstop>
+  <tabstop>mAnnotationDisplayLeftDDBtn</tabstop>
   <tabstop>mAnnotationPositionLeftComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxLeft</tabstop>
+  <tabstop>mAnnotationDisplayRightComboBox</tabstop>
+  <tabstop>mAnnotationDisplayRightDDBtn</tabstop>
   <tabstop>mAnnotationPositionRightComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxRight</tabstop>
+  <tabstop>mAnnotationDisplayTopComboBox</tabstop>
+  <tabstop>mAnnotationDisplayTopDDBtn</tabstop>
   <tabstop>mAnnotationPositionTopComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxTop</tabstop>
+  <tabstop>mAnnotationDisplayBottomComboBox</tabstop>
+  <tabstop>mAnnotationDisplayBottomDDBtn</tabstop>
   <tabstop>mAnnotationPositionBottomComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxBottom</tabstop>
   <tabstop>mAnnotationFontButton</tabstop>

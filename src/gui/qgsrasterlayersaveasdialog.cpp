@@ -35,6 +35,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
     QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent,
@@ -965,5 +966,5 @@ void QgsRasterLayerSaveAsDialog::accept()
 
 void QgsRasterLayerSaveAsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#save-layer-from-an-existing-file" ) );
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
 }

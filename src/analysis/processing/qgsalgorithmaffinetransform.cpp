@@ -70,7 +70,7 @@ QgsAffineTransformationAlgorithm *QgsAffineTransformationAlgorithm::createInstan
 
 void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterDistance > xOffset = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DELTA_X" ),
+  std::unique_ptr< QgsProcessingParameterDistance > xOffset = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DELTA_X" ),
       QObject::tr( "Translation (x-axis)" ),
       0.0, QStringLiteral( "INPUT" ) );
   xOffset->setIsDynamic( true );
@@ -78,7 +78,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   xOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( xOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterDistance > yOffset = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DELTA_Y" ),
+  std::unique_ptr< QgsProcessingParameterDistance > yOffset = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DELTA_Y" ),
       QObject::tr( "Translation (y-axis)" ),
       0.0, QStringLiteral( "INPUT" ) );
   yOffset->setIsDynamic( true );
@@ -86,7 +86,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   yOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( yOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > zOffset = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_Z" ),
+  std::unique_ptr< QgsProcessingParameterNumber > zOffset = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_Z" ),
       QObject::tr( "Translation (z-axis)" ), QgsProcessingParameterNumber::Double,
       0.0 );
   zOffset->setIsDynamic( true );
@@ -94,7 +94,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   zOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( zOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > mOffset = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_M" ),
+  std::unique_ptr< QgsProcessingParameterNumber > mOffset = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_M" ),
       QObject::tr( "Translation (m values)" ), QgsProcessingParameterNumber::Double,
       0.0 );
   mOffset->setIsDynamic( true );
@@ -102,7 +102,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   mOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( mOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > xScale = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE_X" ),
+  std::unique_ptr< QgsProcessingParameterNumber > xScale = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE_X" ),
       QObject::tr( "Scale factor (x-axis)" ), QgsProcessingParameterNumber::Double,
       1.0 );
   xScale->setIsDynamic( true );
@@ -110,7 +110,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   xScale->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( xScale.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > yScale = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE_Y" ),
+  std::unique_ptr< QgsProcessingParameterNumber > yScale = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE_Y" ),
       QObject::tr( "Scale factor (y-axis)" ), QgsProcessingParameterNumber::Double,
       1.0 );
   yScale->setIsDynamic( true );
@@ -118,7 +118,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   yScale->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( yScale.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > zScale = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE_Z" ),
+  std::unique_ptr< QgsProcessingParameterNumber > zScale = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE_Z" ),
       QObject::tr( "Scale factor (z-axis)" ), QgsProcessingParameterNumber::Double,
       1.0 );
   zScale->setIsDynamic( true );
@@ -126,7 +126,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   zScale->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( zScale.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > mScale = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE_M" ),
+  std::unique_ptr< QgsProcessingParameterNumber > mScale = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE_M" ),
       QObject::tr( "Scale factor (m values)" ), QgsProcessingParameterNumber::Double,
       1.0 );
   mScale->setIsDynamic( true );
@@ -134,7 +134,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   mScale->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( mScale.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > rotation = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ROTATION_Z" ),
+  std::unique_ptr< QgsProcessingParameterNumber > rotation = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ROTATION_Z" ),
       QObject::tr( "Rotation around z-axis (degrees counter-clockwise)" ), QgsProcessingParameterNumber::Double,
       0.0 );
   rotation->setIsDynamic( true );

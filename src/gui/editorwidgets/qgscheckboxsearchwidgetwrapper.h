@@ -30,7 +30,7 @@ class QgsCheckboxWidgetFactory;
 /**
  * \ingroup gui
  * \class QgsCheckboxSearchWidgetWrapper
- * Wraps a checkbox edit widget for searching.
+ * \brief Wraps a checkbox edit widget for searching.
  * \since QGIS 2.16
  */
 

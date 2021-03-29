@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include <QObject>
+#include <QUuid>
 
 #include "qgscompositionconverter.h"
 #include "qgsreadwritecontext.h"
@@ -125,7 +126,7 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
 
   QDomElement parentElement = composerElement.parentNode().toElement();
 
-  std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( project );
+  std::unique_ptr< QgsPrintLayout > layout = std::make_unique< QgsPrintLayout >( project );
   layout->undoStack()->blockCommands( true );
 
   layout->mCustomProperties.readXml( composerElement );
@@ -166,7 +167,7 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
       // Not necessary: double y2 = snapLineElem.attribute( QStringLiteral( "y2" ) ).toDouble();
       Qt::Orientation orientation( x1 == x2 ? Qt::Orientation::Vertical : Qt::Orientation::Horizontal );
       QgsLayoutMeasurement position( x1 == x2 ? x1 : y1 );
-      std::unique_ptr< QgsLayoutGuide > guide = qgis::make_unique< QgsLayoutGuide >( orientation, position, page );
+      std::unique_ptr< QgsLayoutGuide > guide = std::make_unique< QgsLayoutGuide >( orientation, position, page );
       layout->guides().addGuide( guide.release() );
     }
   }
@@ -1102,8 +1103,8 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
     layoutItem->alternateFillSymbol()->setColor( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
   }
 
-  std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
   lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
   lineSymbolLayer->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );

@@ -145,6 +145,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
                          const QgsCoordinateReferenceSystem &crs ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 #endif //QGSMDALPROVIDER_H

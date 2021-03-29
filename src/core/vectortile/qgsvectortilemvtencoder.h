@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * Handles conversion of vector features to Mapbox vector tiles encoding.
+ * \brief Handles conversion of vector features to Mapbox vector tiles encoding.
  *
  * Geometries are stored as a series of MoveTo / LineTo / ClosePath commands
  * with coordinates in integer values (see resolution(), called "extent" in the spec).

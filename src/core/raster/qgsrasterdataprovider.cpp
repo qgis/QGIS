@@ -48,7 +48,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   QgsDebugMsgLevel( QStringLiteral( "bandNo = %1 width = %2 height = %3" ).arg( bandNo ).arg( width ).arg( height ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "boundingBox = %1" ).arg( boundingBox.toString() ), 4 );
 
-  std::unique_ptr< QgsRasterBlock > block = qgis::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+  std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
   {
     block->setNoDataValue( sourceNoDataValue( bandNo ) );
@@ -147,7 +147,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     QgsDebugMsgLevel( QStringLiteral( "Reading smaller block tmpWidth = %1 height = %2" ).arg( tmpWidth ).arg( tmpHeight ), 4 );
     QgsDebugMsgLevel( QStringLiteral( "tmpExtent = %1" ).arg( tmpExtent.toString() ), 4 );
 
-    std::unique_ptr< QgsRasterBlock > tmpBlock = qgis::make_unique< QgsRasterBlock >( dataType( bandNo ), tmpWidth, tmpHeight );
+    std::unique_ptr< QgsRasterBlock > tmpBlock = std::make_unique< QgsRasterBlock >( dataType( bandNo ), tmpWidth, tmpHeight );
     if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
     {
       tmpBlock->setNoDataValue( sourceNoDataValue( bandNo ) );
@@ -229,7 +229,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 QgsRasterDataProvider::QgsRasterDataProvider()
   : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() )
   , QgsRasterInterface( nullptr )
-  , mTemporalCapabilities( qgis::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
+  , mTemporalCapabilities( std::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
 {
 
 }
@@ -238,7 +238,7 @@ QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const Provider
     QgsDataProvider::ReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , QgsRasterInterface( nullptr )
-  , mTemporalCapabilities( qgis::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
+  , mTemporalCapabilities( std::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
 {
 }
 

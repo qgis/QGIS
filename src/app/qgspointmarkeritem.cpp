@@ -121,7 +121,7 @@ double QgsMapCanvasSymbolItem::opacity() const
 QgsMapCanvasMarkerSymbolItem::QgsMapCanvasMarkerSymbolItem( QgsMapCanvas *canvas )
   : QgsMapCanvasSymbolItem( canvas )
 {
-  setSymbol( qgis::make_unique< QgsMarkerSymbol >() );
+  setSymbol( std::make_unique< QgsMarkerSymbol >() );
 }
 
 
@@ -164,7 +164,7 @@ QgsMarkerSymbol *QgsMapCanvasMarkerSymbolItem::markerSymbol()
 QgsMapCanvasLineSymbolItem::QgsMapCanvasLineSymbolItem( QgsMapCanvas *canvas )
   : QgsMapCanvasSymbolItem( canvas )
 {
-  setSymbol( qgis::make_unique< QgsLineSymbol >() );
+  setSymbol( std::make_unique< QgsLineSymbol >() );
 }
 
 void QgsMapCanvasLineSymbolItem::setLine( const QPolygonF &line )

@@ -28,7 +28,7 @@
 /**
  * \class QgsRasterLayerTemporalProperties
  * \ingroup core
- * Implementation of map layer temporal properties for raster layers.
+ * \brief Implementation of map layer temporal properties for raster layers.
  *
  * \since QGIS 3.14
  */
@@ -47,6 +47,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
     QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
+    QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const override;
 
     /**
      * Mode of the raster temporal properties

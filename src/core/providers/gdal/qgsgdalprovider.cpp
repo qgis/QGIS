@@ -56,6 +56,7 @@
 #include <QTime>
 #include <QTextDocument>
 #include <QDebug>
+#include <QRegularExpression>
 
 #include <gdalwarper.h>
 #include <gdal.h>
@@ -70,7 +71,11 @@
 #define PROVIDER_DESCRIPTION QStringLiteral( "GDAL data provider" )
 
 // To avoid potential races when destroying related instances ("main" and clones)
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGdalProviderMutex, ( QMutex::Recursive ) )
+#else
+Q_GLOBAL_STATIC( QRecursiveMutex, sGdalProviderMutex )
+#endif
 
 QHash< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
 
@@ -145,7 +150,11 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &options, bool update, GDALDatasetH dataset )
   : QgsRasterDataProvider( uri, options )
   , mpRefCounter( new QAtomicInt( 1 ) )
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   , mpMutex( new QMutex( QMutex::Recursive ) )
+#else
+  , mpMutex( new QRecursiveMutex() )
+#endif
   , mpParent( new QgsGdalProvider * ( this ) )
   , mpLightRefCounter( new QAtomicInt( 1 ) )
   , mUpdate( update )
@@ -167,7 +176,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   if ( !CPLGetConfigOption( "AAIGRID_DATATYPE", nullptr ) )
   {
@@ -237,7 +246,12 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
 
     mpRefCounter = new QAtomicInt( 1 );
     mpLightRefCounter = other.mpLightRefCounter;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     mpMutex = new QMutex( QMutex::Recursive );
+#else
+    mpMutex = new QRecursiveMutex();
+#endif
+
     mpParent = other.mpParent;
 
     if ( getCachedGdalHandles( const_cast<QgsGdalProvider *>( &other ), mGdalBaseDataset, mGdalDataset ) )
@@ -302,46 +316,6 @@ QgsGdalProvider *QgsGdalProvider::clone() const
 {
   return new QgsGdalProvider( *this );
 }
-
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
-bool QgsGdalProvider::crsFromWkt( const char *wkt )
-{
-
-  OGRSpatialReferenceH hCRS = OSRNewSpatialReference( nullptr );
-
-  if ( OSRImportFromWkt( hCRS, ( char ** ) &wkt ) == OGRERR_NONE )
-  {
-    if ( OSRAutoIdentifyEPSG( hCRS ) == OGRERR_NONE )
-    {
-      QString authid = QStringLiteral( "%1:%2" )
-                       .arg( OSRGetAuthorityName( hCRS, nullptr ),
-                             OSRGetAuthorityCode( hCRS, nullptr ) );
-      QgsDebugMsgLevel( "authid recognized as " + authid, 2 );
-      mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
-    }
-    else
-    {
-      // get the proj4 text
-      char *pszProj4 = nullptr;
-      OSRExportToProj4( hCRS, &pszProj4 );
-      QgsDebugMsgLevel( pszProj4, 2 );
-      CPLFree( pszProj4 );
-
-      char *pszWkt = nullptr;
-      OSRExportToWkt( hCRS, &pszWkt );
-      QString myWktString = QString( pszWkt );
-      CPLFree( pszWkt );
-
-      // create CRS from Wkt
-      mCrs = QgsCoordinateReferenceSystem::fromWkt( myWktString );
-    }
-  }
-
-  OSRRelease( hCRS );
-
-  return mCrs.isValid();
-}
-#endif
 
 bool QgsGdalProvider::getCachedGdalHandles( QgsGdalProvider *provider,
     GDALDatasetH &gdalBaseDataset,
@@ -656,7 +630,7 @@ QString QgsGdalProvider::htmlMetadata()
 
 QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  std::unique_ptr< QgsRasterBlock > block = qgis::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+  std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
   if ( !initIfNeeded() )
     return block.release();
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
@@ -1681,13 +1655,21 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
 
   if ( metadata )
   {
-    for ( int i = 0; metadata[i]; i++ )
+    const int subdatasetCount = CSLCount( metadata ) / 2;
+    for ( int i = 1; i <= subdatasetCount; i++ )
     {
-      QString layer = QString::fromUtf8( metadata[i] );
-      int pos = layer.indexOf( QLatin1String( "_NAME=" ) );
-      if ( pos >= 0 )
+      const char *name = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_NAME", i ) );
+      const char *desc = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_DESC", i ) );
+      if ( name && desc )
       {
-        subLayers << layer.mid( pos + 6 );
+        // For GeoPackage, desc is often "table - identifier" where table=identifier
+        // In that case, just keep one.
+        const char *sepPtr = strstr( desc, " - " );
+        if ( sepPtr && strncmp( desc, sepPtr + 3, strlen( sepPtr + 3 ) ) == 0 )
+        {
+          desc = sepPtr + 3;
+        }
+        subLayers << QString::fromUtf8( name ) + QgsDataProvider::sublayerSeparator() + QString::fromUtf8( desc );
       }
     }
   }
@@ -2564,7 +2546,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
   // can't forget the all supported case
   QStringList exts;
-  for ( const QString &ext : qgis::as_const( extensions ) )
+  for ( const QString &ext : std::as_const( extensions ) )
     exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
   fileFiltersString.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QLatin1Char( ' ' ) ) ) );
 
@@ -2874,6 +2856,10 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
     QgsDebugMsgLevel( QStringLiteral( "STDDEV %1" ).arg( myRasterBandStats.stdDev ), 2 );
 #endif
   }
+  else
+  {
+    myRasterBandStats.statsGathered = QgsRasterBandStats::Stats::None;
+  }
 
   mStatistics.append( myRasterBandStats );
   return myRasterBandStats;
@@ -3021,7 +3007,6 @@ void QgsGdalProvider::initBaseDataset()
   // Get the layer's projection info and set up the
   // QgsCoordinateTransform for this layer
   // NOTE: we must do this before metadata is called
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,0,0)
   QString crsWkt;
   if ( OGRSpatialReferenceH spatialRefSys = GDALGetSpatialRef( mGdalDataset ) )
   {
@@ -3040,11 +3025,6 @@ void QgsGdalProvider::initBaseDataset()
   }
   else
   {
-#else
-  if ( !crsFromWkt( GDALGetProjectionRef( mGdalDataset ) ) &&
-       !crsFromWkt( GDALGetGCPProjection( mGdalDataset ) ) )
-  {
-#endif
     if ( mGdalBaseDataset != mGdalDataset &&
          GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
     {
@@ -3554,6 +3534,11 @@ QList<QPair<QString, QString> > QgsGdalProviderMetadata::pyramidResamplingMethod
   }
 
   return methods;
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsGdalProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
 }
 
 QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const

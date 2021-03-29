@@ -28,7 +28,9 @@
 #include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
+#include <QTimer>
 #include <mutex>
+#include <QRegularExpression>
 
 #include "qgis.h"
 #include "qgsdataitem.h"
@@ -193,7 +195,7 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
     try
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
-      mTableProperty = qgis::make_unique<QgsAbstractDatabaseProviderConnection::TableProperty>( conn->table( schema, tableName ) );
+      mTableProperty = std::make_unique<QgsAbstractDatabaseProviderConnection::TableProperty>( conn->table( schema, tableName ) );
     }
     catch ( QgsProviderConnectionException &ex )
     {
@@ -817,6 +819,11 @@ bool QgsDataItem::handleDoubleClick()
   return false;
 }
 
+QgsMimeDataUtils::Uri QgsDataItem::mimeUri() const
+{
+  return mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : mimeUris().first();
+}
+
 bool QgsDataItem::rename( const QString & )
 {
   return false;
@@ -1004,7 +1011,7 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName && mUri == o->mUri && mProviderKey == o->mProviderKey );
 }
 
-QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
 
@@ -1064,7 +1071,7 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
   u.uri = uri();
   u.supportedCrs = supportedCrs();
   u.supportedFormats = supportedFormats();
-  return u;
+  return { u };
 }
 
 // ---------------------------------------------------------------------
@@ -1347,13 +1354,13 @@ QWidget *QgsDirectoryItem::paramWidget()
   return new QgsDirectoryParamWidget( mPath );
 }
 
-QgsMimeDataUtils::Uri QgsDirectoryItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsDirectoryItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
   u.layerType = QStringLiteral( "directory" );
   u.name = mName;
   u.uri = mDirPath;
-  return u;
+  return { u };
 }
 
 QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *parent )
@@ -1505,13 +1512,13 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,
   setState( Populated ); // no more children
 }
 
-QgsMimeDataUtils::Uri QgsProjectItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsProjectItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
   u.layerType = QStringLiteral( "project" );
   u.name = mName;
   u.uri = mPath;
-  return u;
+  return { u };
 }
 
 QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path )

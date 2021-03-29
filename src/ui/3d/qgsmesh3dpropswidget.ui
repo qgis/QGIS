@@ -407,6 +407,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -415,12 +421,6 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -435,6 +435,7 @@
   <tabstop>mGroupBoxWireframe</tabstop>
   <tabstop>mSpinBoxWireframeLineWidth</tabstop>
   <tabstop>mColorButtonWireframe</tabstop>
+  <tabstop>mLodSlider</tabstop>
   <tabstop>mSpinBoxVerticaleScale</tabstop>
   <tabstop>mComboBoxDatasetVertical</tabstop>
   <tabstop>mCheckBoxVerticalMagnitudeRelative</tabstop>

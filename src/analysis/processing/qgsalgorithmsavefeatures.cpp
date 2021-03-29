@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmsavefeatures.h"
 #include "qgsvectorfilewriter.h"
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 
@@ -63,13 +64,13 @@ void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector features" ) ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Saved features" ), QgsVectorFileWriter::fileFilterString(), QVariant(), false ) );
 
-  std::unique_ptr< QgsProcessingParameterString > param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ), QVariant(), false, true );
+  std::unique_ptr< QgsProcessingParameterString > param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
-  param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "DATASOURCE_OPTIONS" ), QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
+  param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "DATASOURCE_OPTIONS" ), QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
-  param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_OPTIONS" ), QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
+  param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_OPTIONS" ), QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
 
@@ -88,9 +89,13 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
     createOptions[QStringLiteral( "layerName" )] = layerName;
   }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList datasourceOptions = parameterAsString( parameters, QStringLiteral( "DATASOURCE_OPTIONS" ), context ).trimmed().split( ';', QString::SkipEmptyParts );
   QStringList layerOptions = parameterAsString( parameters, QStringLiteral( "LAYER_OPTIONS" ), context ).trimmed().split( ';', QString::SkipEmptyParts );
-
+#else
+  QStringList datasourceOptions = parameterAsString( parameters, QStringLiteral( "DATASOURCE_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
+  QStringList layerOptions = parameterAsString( parameters, QStringLiteral( "LAYER_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
+#endif
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),

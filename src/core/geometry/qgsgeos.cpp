@@ -1117,7 +1117,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, geos );
       unsigned int nPoints = 0;
       GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
-      return  nPoints > 0 ? std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() ) : qgis::make_unique< QgsPoint >();
+      return  nPoints > 0 ? std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() ) : std::make_unique< QgsPoint >();
     }
     case GEOS_LINESTRING:
     {
@@ -2274,12 +2274,20 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
 
 QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg ) const
 {
-  if ( !mGeos || other.isNull() )
+  if ( !mGeos || other.isEmpty() )
   {
     return QgsGeometry();
   }
 
-  geos::unique_ptr otherGeom( asGeos( other.constGet(), mPrecision ) );
+  return shortestLine( other.constGet(), errorMsg );
+}
+
+QgsGeometry QgsGeos::shortestLine( const QgsAbstractGeometry *other, QString *errorMsg ) const
+{
+  if ( !other || other->isEmpty() )
+    return QgsGeometry();
+
+  geos::unique_ptr otherGeom( asGeos( other, mPrecision ) );
   if ( !otherGeom )
   {
     return QgsGeometry();
@@ -2292,6 +2300,13 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg )
   try
   {
     geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosinit()->ctxt, mGeos.get(), otherGeom.get() ) );
+
+    if ( !nearestCoord )
+    {
+      if ( errorMsg )
+        *errorMsg = QStringLiteral( "GEOS returned no nearest points" );
+      return QgsGeometry();
+    }
 
     ( void )GEOSCoordSeq_getX_r( geosinit()->ctxt, nearestCoord.get(), 0, &nx1 );
     ( void )GEOSCoordSeq_getY_r( geosinit()->ctxt, nearestCoord.get(), 0, &ny1 );
@@ -2587,7 +2602,7 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
     bool alreadyAdded = false;
     double distance = 0;
     double bufferDistance = std::pow( 10.0L, geomDigits( currentGeom ) - 11 );
-    for ( const GEOSGeometry *other : qgis::as_const( resultLineParts ) )
+    for ( const GEOSGeometry *other : std::as_const( resultLineParts ) )
     {
       GEOSHausdorffDistance_r( geosinit()->ctxt, currentGeom, other, &distance );
       if ( distance < bufferDistance )

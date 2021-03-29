@@ -58,7 +58,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QgsFieldExpressionWidget" name="mVisibilityExpressionWidget"/>
+       <widget class="QgsFieldExpressionWidget" name="mVisibilityExpressionWidget" native="true"/>
       </item>
      </layout>
     </widget>
@@ -112,11 +112,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -125,8 +120,23 @@
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mShowLabelCheckBox</tabstop>
+  <tabstop>mShowAsGroupBoxCheckBox</tabstop>
+  <tabstop>mTitleLineEdit</tabstop>
+  <tabstop>mColumnCountSpinBox</tabstop>
+  <tabstop>mControlVisibilityGroupBox</tabstop>
+  <tabstop>mBackgroundColorButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

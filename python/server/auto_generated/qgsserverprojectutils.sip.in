@@ -167,6 +167,21 @@ Returns the tile buffer in pixels for WMS images defined in a QGIS project.
 .. versionadded:: 3.10
 %End
 
+  bool wmsRenderMapTiles( const QgsProject &project );
+%Docstring
+Returns ``True`` if WMS requests should use the :py:class:`QgsMapSettings`.RenderMapTile flag,
+so that no visible artifacts are visible between adjacent tiles.
+
+This flag can slow down rendering considerably, so it is only used if the corresponding
+setting is enabled in the project.
+
+:param project: the QGIS project
+
+:return: ``True`` if the flag should be used, or ``False`` if not.
+
+.. versionadded:: 3.18
+%End
+
   int wmsMaxAtlasFeatures( const QgsProject &project );
 %Docstring
 Returns the maximum number of atlas features which can be printed in a request

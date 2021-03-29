@@ -119,7 +119,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   QMenu *mapsMenu = new QMenu( tr( "Map Properties" ), menu );
   QList< QgsLayoutItemMap * > maps;
   layout->layoutItems( maps );
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     // these expressions require the map to have a non-empty ID set
     if ( map->id().isEmpty() )

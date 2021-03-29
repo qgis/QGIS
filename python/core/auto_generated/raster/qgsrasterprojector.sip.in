@@ -15,7 +15,7 @@
 
 class QgsRasterProjector : QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsRasterProjector` implements approximate projection support for
 it calculates grid of points in source CRS for target CRS + extent
 which are used to calculate affine transformation matrices.

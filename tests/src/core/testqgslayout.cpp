@@ -34,6 +34,7 @@
 #include "qgslayoutitemattributetable.h"
 #include "qgsrasterlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include <QSignalSpy>
 
 class TestQgsLayout: public QObject
 {

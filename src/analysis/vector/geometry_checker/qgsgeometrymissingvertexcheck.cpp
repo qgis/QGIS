@@ -129,7 +129,7 @@ QString QgsGeometryMissingVertexCheck::description() const
 void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polygon, QgsFeaturePool *featurePool, QList<QgsGeometryCheckError *> &errors, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, QgsFeedback *feedback ) const
 {
   const QgsFeature &currentFeature = layerFeature.feature();
-  std::unique_ptr<QgsMultiPolygon> boundaries = qgis::make_unique<QgsMultiPolygon>();
+  std::unique_ptr<QgsMultiPolygon> boundaries = std::make_unique<QgsMultiPolygon>();
 
   std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( polygon->exteriorRing()->clone(), mContext->tolerance );
   boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
@@ -170,7 +170,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
           if ( closestVertex.distance( pt ) > mContext->tolerance )
           {
             bool alreadyReported = false;
-            for ( QgsGeometryCheckError *error : qgis::as_const( errors ) )
+            for ( QgsGeometryCheckError *error : std::as_const( errors ) )
             {
               // Only list missing vertices once
               if ( error->featureId() == currentFeature.id() && error->location() == QgsPointXY( pt ) )
@@ -181,7 +181,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
             }
             if ( !alreadyReported )
             {
-              std::unique_ptr<QgsGeometryMissingVertexCheckError> error = qgis::make_unique<QgsGeometryMissingVertexCheckError>( this, layerFeature, QgsPointXY( pt ) );
+              std::unique_ptr<QgsGeometryMissingVertexCheckError> error = std::make_unique<QgsGeometryMissingVertexCheckError>( this, layerFeature, QgsPointXY( pt ) );
               error->setAffectedAreaBBox( contextBoundingBox( polygon, vertexId, pt ) );
               QMap<QString, QgsFeatureIds> involvedFeatures;
               involvedFeatures[layerFeature.layerId()].insert( layerFeature.feature().id() );

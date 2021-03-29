@@ -54,14 +54,14 @@ QList<int> QgsFilterVerticesAlgorithmBase::inputLayerTypes() const
 
 void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
 {
-  auto min = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MIN" ),
+  auto min = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MIN" ),
              QObject::tr( "Minimum" ), QgsProcessingParameterNumber::Double, QVariant(), true );
   min->setIsDynamic( true );
   min->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Minimum" ), QObject::tr( "Minimum value" ), QgsPropertyDefinition::Double ) );
   min->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( min.release() );
 
-  auto max = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX" ),
+  auto max = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX" ),
              QObject::tr( "Maximum" ), QgsProcessingParameterNumber::Double, QVariant(), true );
   max->setIsDynamic( true );
   max->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Maximum" ), QObject::tr( "Maximum value" ), QgsPropertyDefinition::Double ) );

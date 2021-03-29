@@ -83,7 +83,7 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       bool firstWord = true;
       int i = 0;
       int lastWord = parts.count() - 1;
-      for ( const QString &word : qgis::as_const( parts ) )
+      for ( const QString &word : std::as_const( parts ) )
       {
         if ( newPhraseSeparators.contains( word.trimmed() ) )
         {
@@ -635,13 +635,21 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
       }
       if ( strHit > -1 )
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
         newstr.append( lines.at( i ).midRef( strCurrent, strHit - strCurrent ) );
+#else
+        newstr.append( QStringView {lines.at( i )}.mid( strCurrent, strHit - strCurrent ) );
+#endif
         newstr.append( '\n' );
         strCurrent = strHit + delimiterLength;
       }
       else
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
         newstr.append( lines.at( i ).midRef( strCurrent ) );
+#else
+        newstr.append( QStringView {lines.at( i )}.mid( strCurrent ) );
+#endif
         strCurrent = strLength;
       }
     }

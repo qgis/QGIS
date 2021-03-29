@@ -30,7 +30,7 @@ class QMenu;
 /**
  * \ingroup gui
  * \class QgsMapLayerStyleGuiUtils
- * Various GUI utility functions for dealing with map layer's style manager
+ * \brief Various GUI utility functions for dealing with map layer's style manager
  * \note not available in Python bindings
  * \since QGIS 3.12 (in the GUI API)
  */

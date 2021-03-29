@@ -27,7 +27,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestPyQgsDatumTransform(unittest.TestCase):
 
-    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Not a proj6 build')
     def testOperations(self):
         ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem(),
                                            QgsCoordinateReferenceSystem())

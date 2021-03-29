@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * Interface for classes that handle missing layer files when reading project file.
+ * \brief Interface for classes that handle missing layer files when reading project file.
  */
 class CORE_EXPORT QgsProjectBadLayerHandler
 {

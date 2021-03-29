@@ -189,7 +189,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       // should copy code from addLayer() to split uri ?
       QgsRasterLayer::LayerOptions options;
       options.skipCrsValidation = true;
-      mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      mLayer = std::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
@@ -198,7 +198,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
       QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
-      mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      mLayer = std::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
@@ -207,14 +207,14 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
-      mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      mLayer = std::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
     case QgsMapLayerType::VectorTileLayer:
     {
       QgsDebugMsgLevel( QStringLiteral( "creating vector tile layer" ), 2 );
-      mLayer = qgis::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
+      mLayer = std::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
       break;
     }
 
@@ -223,7 +223,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsDebugMsgLevel( QStringLiteral( "creating point cloud layer" ), 2 );
       QgsPointCloudLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
-      mLayer = qgis::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      mLayer = std::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 

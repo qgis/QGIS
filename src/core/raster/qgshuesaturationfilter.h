@@ -26,7 +26,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * Color and saturation filter pipe for rasters.
+  * \brief Color and saturation filter pipe for rasters.
   */
 class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 {

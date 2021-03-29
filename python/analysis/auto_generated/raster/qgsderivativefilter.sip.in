@@ -11,8 +11,10 @@
 
 class QgsDerivativeFilter : QgsNineCellFilter
 {
-%Docstring
-Adds the ability to calculate derivatives in x- and y-directions. Needs to be subclassed (e.g. for slope and aspect).
+%Docstring(signature="appended")
+Adds the ability to calculate derivatives in x- and y-directions.
+
+Needs to be subclassed (e.g. for slope and aspect).
 %End
 
 %TypeHeaderCode

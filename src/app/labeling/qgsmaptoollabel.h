@@ -22,12 +22,15 @@
 #include "qgspallabeling.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgscalloutposition.h"
+#include "qgscallout.h"
 #include "qgis_app.h"
 
 class QgsRubberBand;
 
 typedef QMap<QgsPalLayerSettings::Property, int> QgsPalIndexes;
 typedef QMap<QgsDiagramLayerSettings::Property, int> QgsDiagramIndexes;
+typedef QMap<QgsCallout::Property, int> QgsCalloutIndexes;
 
 //! Base class for map tools that modify label properties
 class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
@@ -37,6 +40,10 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
   public:
     QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolLabel() override;
+
+
+
+    void deactivate() override;
 
     /**
      * Returns TRUE if label move can be applied to a layer
@@ -84,6 +91,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
 
   protected:
+    QgsRubberBand *mHoverRubberBand = nullptr;
+    QgsRubberBand *mCalloutOtherPointsRubberBand = nullptr;
     QgsRubberBand *mLabelRubberBand = nullptr;
     QgsRubberBand *mFeatureRubberBand = nullptr;
     //! Shows label fixpoint (left/bottom by default)
@@ -102,6 +111,10 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     //! Currently dragged label position
     LabelDetails mCurrentLabel;
 
+    //! Currently hovered label position
+    LabelDetails mCurrentHoverLabel;
+
+    QgsCalloutPosition mCurrentCallout;
 
     /**
      * Returns label position for mouse click location
@@ -110,6 +123,15 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \returns TRUE in case of success, FALSE if no label at this location
     */
     bool labelAtPosition( QMouseEvent *e, QgsLabelPosition &p );
+
+    /**
+     * Returns callout position for a mouse event.
+     * \param e mouse event
+     * \param p out: callout position
+     * \param isOrigin set to TRUE if the origin is at the position, or FALSE if the callout destination is at the position
+     * \returns TRUE in case of success, FALSE if no callout at this location
+    */
+    bool calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, bool &isOrigin );
 
     /**
      * Finds out rotation point of current label position
@@ -122,7 +144,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     void createRubberBands();
 
     //! Removes label / feature / fixpoint rubber bands
-    void deleteRubberBands();
+    virtual void deleteRubberBands();
 
     /**
      * Returns current label's text
@@ -202,9 +224,17 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes, bool overwriteExpression = true ) const;
     bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
     bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
+    bool createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes, bool overwriteExpression = true );
+    bool createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes, bool overwriteExpression = true );
+
+    void updateHoveredLabel( QgsMapMouseEvent *e );
+    void clearHoveredLabel();
+    virtual bool canModifyLabel( const LabelDetails &label );
+    virtual bool canModifyCallout( const QgsCalloutPosition &callout, bool isOrigin, int &xCol, int &yCol );
 
     QList<QgsPalLayerSettings::Property> mPalProperties;
     QList<QgsDiagramLayerSettings::Property> mDiagramProperties;
+    QList<QgsCallout::Property> mCalloutProperties;
 
     friend class TestQgsMapToolLabel;
 };

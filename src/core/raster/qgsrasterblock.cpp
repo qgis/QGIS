@@ -463,11 +463,7 @@ QByteArray QgsRasterBlock::data() const
   if ( mData )
     return QByteArray::fromRawData( static_cast<const char *>( mData ), typeSize( mDataType ) * mWidth * mHeight );
   else if ( mImage && mImage->constBits() )
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    return QByteArray::fromRawData( reinterpret_cast<const char *>( mImage->constBits() ), mImage->byteCount() );
-#else
     return QByteArray::fromRawData( reinterpret_cast<const char *>( mImage->constBits() ), mImage->sizeInBytes() );
-#endif
   else
     return QByteArray();
 }
@@ -479,16 +475,12 @@ void QgsRasterBlock::setData( const QByteArray &data, int offset )
 
   if ( mData )
   {
-    int len = std::min( data.size(), typeSize( mDataType ) * mWidth * mHeight - offset );
+    int len = std::min( static_cast<int>( data.size() ), typeSize( mDataType ) * mWidth * mHeight - offset );
     ::memcpy( static_cast<char *>( mData ) + offset, data.constData(), len );
   }
   else if ( mImage && mImage->constBits() )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    int len = std::min( data.size(), mImage->byteCount() - offset );
-#else
     qsizetype len = std::min( static_cast< qsizetype >( data.size() ), mImage->sizeInBytes() - offset );
-#endif
     ::memcpy( mImage->bits() + offset, data.constData(), len );
   }
 }

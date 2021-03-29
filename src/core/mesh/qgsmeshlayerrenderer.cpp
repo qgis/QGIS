@@ -20,6 +20,7 @@
 #include <QPair>
 #include <QLinearGradient>
 #include <QBrush>
+#include <QPointer>
 #include <algorithm>
 
 #include "qgsmeshlayerrenderer.h"
@@ -361,8 +362,7 @@ static QPainter *_painterForMeshFrame( QgsRenderContext &context, const QgsMeshR
   pen.setCapStyle( Qt::FlatCap );
   pen.setJoinStyle( Qt::MiterJoin );
 
-  double penWidth = context.convertToPainterUnits( settings.lineWidth(),
-                    QgsUnitTypes::RenderUnit::RenderMillimeters );
+  double penWidth = context.convertToPainterUnits( settings.lineWidth(), settings.lineWidthUnit() );
   pen.setWidthF( penWidth );
   pen.setColor( settings.color() );
   painter->setPen( pen );

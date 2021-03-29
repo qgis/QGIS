@@ -12,7 +12,7 @@
 
 class QgsGeometryCheck
 {
-%Docstring
+%Docstring(signature="appended")
 This class implements a geometry check.
 
 Geometry checks run over a set of features and can detect errors like topological

@@ -58,7 +58,6 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
     /**
      * Mapping for coordinate operation Proj string to use for source/destination CRS pairs.
      */
-#if PROJ_VERSION_MAJOR>=6
     class OperationDetails
     {
       public:
@@ -71,9 +70,6 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
         }
     };
     QMap< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem >, OperationDetails > mSourceDestDatumTransforms;
-#else
-    QMap< QPair< QString, QString >, QgsDatumTransform::TransformPair > mSourceDestDatumTransforms;
-#endif
 
     //! Mutex for making QgsCoordinateTransformContextPrivate thread safe
     mutable QReadWriteLock mLock{};

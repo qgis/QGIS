@@ -86,17 +86,18 @@ class ClipVectorByExtent(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        arguments = []
-        arguments.append('-spat')
-        arguments.append(str(extent.xMinimum()))
-        arguments.append(str(extent.yMaximum()))
-        arguments.append(str(extent.xMaximum()))
-        arguments.append(str(extent.yMinimum()))
-        arguments.append('-clipsrc spat_extent')
+        arguments = [
+            '-spat',
+            str(extent.xMinimum()),
+            str(extent.yMaximum()),
+            str(extent.xMaximum()),
+            str(extent.yMinimum()),
+            '-clipsrc spat_extent',
 
-        arguments.append(output)
-        arguments.append(ogrLayer)
-        arguments.append(layerName)
+            output,
+            ogrLayer,
+            layerName
+        ]
 
         if options:
             arguments.append(options)

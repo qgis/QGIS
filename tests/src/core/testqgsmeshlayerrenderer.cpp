@@ -23,6 +23,7 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
+#include <QSignalSpy>
 #include <QDesktopServices>
 
 //qgis includes...

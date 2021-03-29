@@ -59,7 +59,7 @@ QgsClassificationMethod *QgsClassificationMethodRegistry::method( const QString 
 QMap<QString, QString> QgsClassificationMethodRegistry::methodNames() const
 {
   QMap<QString, QString> methods;
-  for ( const QgsClassificationMethod *method : qgis::as_const( mMethods ) )
+  for ( const QgsClassificationMethod *method : std::as_const( mMethods ) )
     methods.insert( method->name(), method->id() );
   return methods;
 }

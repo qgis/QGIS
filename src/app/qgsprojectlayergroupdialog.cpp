@@ -81,6 +81,33 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
 }
 
+QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( const QgsProject *project, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+{
+
+  // Preconditions
+  Q_ASSERT( project );
+  Q_ASSERT( project->layerTreeRoot() );
+
+  setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mRootGroup = project->layerTreeRoot()->clone();
+  QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
+  mTreeView->setModel( model );
+
+  mProjectFileWidget->hide();
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+
+  removeEmbeddedNodes( mRootGroup );
+
+  connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectLayerGroupDialog::onTreeViewSelectionChanged );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
+
+}
+
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 {
   delete mRootGroup;
@@ -168,7 +195,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   if ( QgsZipUtils::isZipFile( mProjectFileWidget->filePath() ) )
   {
 
-    archive = qgis::make_unique<QgsProjectArchive>();
+    archive = std::make_unique<QgsProjectArchive>();
 
     // unzip the archive
     if ( !archive->unzip( mProjectFileWidget->filePath() ) )

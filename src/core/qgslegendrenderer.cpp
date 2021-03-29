@@ -169,7 +169,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext &context )
   // until now. BUUUUUUUUUUUUT. Because everything sucks, we can't even start the actual render of items
   // at the same time we calculate this -- legend items REQUIRE the REAL width of the columns in order to
   // correctly align right or center-aligned symbols/text. Bah -- A triple iteration it is!
-  for ( const LegendComponentGroup &group : qgis::as_const( componentGroups ) )
+  for ( const LegendComponentGroup &group : std::as_const( componentGroups ) )
   {
     const QSizeF actualSize = drawGroup( group, context, ColumnContext() );
     maxEqualColumnWidth = std::max( actualSize.width(), maxEqualColumnWidth );
@@ -200,7 +200,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext &context )
   columnContext.right = std::max( mLegendSize.width() - mSettings.boxSpace(), mSettings.boxSpace() );
   double currentY = columnTop;
 
-  for ( const LegendComponentGroup &group : qgis::as_const( componentGroups ) )
+  for ( const LegendComponentGroup &group : std::as_const( componentGroups ) )
   {
     if ( group.column > column )
     {
@@ -443,7 +443,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   qreal maxGroupHeight = 0;
   int forcedColumnBreaks = 0;
   double totalSpaceAboveGroups = 0;
-  for ( const LegendComponentGroup &group : qgis::as_const( componentGroups ) )
+  for ( const LegendComponentGroup &group : std::as_const( componentGroups ) )
   {
     totalHeight += spaceAboveGroup( group );
     totalSpaceAboveGroups += spaceAboveGroup( group );
@@ -649,7 +649,7 @@ QSizeF QgsLegendRenderer::drawGroup( const LegendComponentGroup &group, QgsRende
   bool first = true;
   QSizeF size = QSizeF( group.size );
   double currentY = top;
-  for ( const LegendComponent &component : qgis::as_const( group.components ) )
+  for ( const LegendComponent &component : std::as_const( group.components ) )
   {
     if ( QgsLayerTreeGroup *groupItem = qobject_cast<QgsLayerTreeGroup *>( component.item ) )
     {

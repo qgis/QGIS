@@ -71,6 +71,9 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ${GRASS_LIBRARY_UIS_H}
     )
 
+    # require c++17
+    target_compile_features(qgisgrass${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+
     if(GRASS_OFF_T_SIZE)
       set(GRASS_OFF_T_SIZE_DEF "\"-DGRASS_OFF_T_SIZE=${GRASS_OFF_T_SIZE}\"")
     else()
@@ -155,6 +158,10 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
     #
     set (GRASS_VECTOR_PROVIDER_SRCS ../qgsgrassprovidermodule.cpp)
     add_library(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS})
+
+    # require c++17
+    target_compile_features(grassprovider${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+
     set_target_properties(grassprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
@@ -176,6 +183,10 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassrasterprovidermodule.cpp
     )
     add_library(grassrasterprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_RASTER_PROVIDER_SRCS})
+
+    # require c++17
+    target_compile_features(grassrasterprovider${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+
     set_target_properties(grassrasterprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
@@ -765,6 +776,9 @@ if(WITH_GRASS_DIRECT)
     set (FAKE_LIB_GRASS_GIS "grass_gis.${GRASS_VERSION}")
   endif()
   add_library(${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
+
+  # require c++17
+  target_compile_features(${FAKE_LIB_GRASS_GIS} PRIVATE cxx_std_17)
 
   # GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same
   # on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed

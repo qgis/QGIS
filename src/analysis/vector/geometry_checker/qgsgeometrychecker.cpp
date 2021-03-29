@@ -18,6 +18,7 @@
 #include <QFutureWatcher>
 #include <QMutex>
 #include <QTimer>
+#include <QTextStream>
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
@@ -66,7 +67,7 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
   if ( totalSteps )
   {
     *totalSteps = 0;
-    for ( QgsGeometryCheck *check : qgis::as_const( mChecks ) )
+    for ( QgsGeometryCheck *check : std::as_const( mChecks ) )
     {
       for ( auto it = mFeaturePools.constBegin(); it != mFeaturePools.constEnd(); ++it )
       {
@@ -173,7 +174,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     }
   }
   // - Determine extent to recheck for gaps
-  for ( QgsGeometryCheckError *err : qgis::as_const( mCheckErrors ) )
+  for ( QgsGeometryCheckError *err : std::as_const( mCheckErrors ) )
   {
     if ( err->check()->checkType() == QgsGeometryCheck::LayerCheck )
     {
@@ -194,7 +195,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
 
   // Recheck feature / changed area to detect new errors
   QList<QgsGeometryCheckError *> recheckErrors;
-  for ( const QgsGeometryCheck *check : qgis::as_const( mChecks ) )
+  for ( const QgsGeometryCheck *check : std::as_const( mChecks ) )
   {
     if ( check->checkType() == QgsGeometryCheck::LayerCheck )
     {
@@ -213,7 +214,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   }
 
   // Go through error list, update other errors of the checked feature
-  for ( QgsGeometryCheckError *err : qgis::as_const( mCheckErrors ) )
+  for ( QgsGeometryCheckError *err : std::as_const( mCheckErrors ) )
   {
     if ( err == error || err->status() == QgsGeometryCheckError::StatusObsolete )
     {
@@ -227,7 +228,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     // Check if this error now matches one found when rechecking the feature/area
     QgsGeometryCheckError *matchErr = nullptr;
     int nMatch = 0;
-    for ( QgsGeometryCheckError *recheckErr : qgis::as_const( recheckErrors ) )
+    for ( QgsGeometryCheckError *recheckErr : std::as_const( recheckErrors ) )
     {
       if ( recheckErr->isEqual( err ) || recheckErr->closeMatch( err ) )
       {
@@ -263,7 +264,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   }
 
   // Add new errors
-  for ( QgsGeometryCheckError *recheckErr : qgis::as_const( recheckErrors ) )
+  for ( QgsGeometryCheckError *recheckErr : std::as_const( recheckErrors ) )
   {
     emit errorAdded( recheckErr );
     mCheckErrors.append( recheckErr );
@@ -290,7 +291,7 @@ void QgsGeometryChecker::runCheck( const QMap<QString, QgsFeaturePool *> &featur
   mCheckErrors.append( errors );
   mMessages.append( messages );
   mErrorListMutex.unlock();
-  for ( QgsGeometryCheckError *error : qgis::as_const( errors ) )
+  for ( QgsGeometryCheckError *error : std::as_const( errors ) )
   {
     emit errorAdded( error );
   }

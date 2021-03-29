@@ -88,6 +88,11 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
                                 "The data points will be transformed from the layer coordinate reference system." ) );
 
+
+  if ( ! QgsVectorFileWriter::supportedFormatExtensions().contains( QStringLiteral( "gpkg" ) ) )
+  {
+    bar->pushMessage( tr( "GDAL/OGR not built with GPKG (sqlite3) support. You will not be able to export the DWG in a GPKG." ), Qgis::Critical );
+  }
   pbLoadDatabase_clicked();
   updateUI();
 }

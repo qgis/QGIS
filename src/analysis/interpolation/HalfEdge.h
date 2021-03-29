@@ -24,6 +24,7 @@
 /**
  * \ingroup analysis
  * \class HalfEdge
+ * \brief HalfEdge
  * \note Not available in Python bindings.
  */
 class ANALYSIS_EXPORT HalfEdge

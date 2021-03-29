@@ -27,7 +27,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * This is a container for configuration of the snapping of the project
+ * \brief This is a container for configuration of the snapping of the project
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSnappingConfig
@@ -70,11 +70,12 @@ class CORE_EXPORT QgsSnappingConfig
     enum SnappingTypes
     {
       NoSnapFlag = 0, //!< No snapping
-      VertexFlag = 1, //!< On vertices
-      SegmentFlag = 2, //!< On segments
-      AreaFlag = 4, //!< On Area
-      CentroidFlag = 8, //!< On centroid
-      MiddleOfSegmentFlag = 16, //!< On Middle segment
+      VertexFlag = 1 << 0, //!< On vertices
+      SegmentFlag = 1 << 1, //!< On segments
+      AreaFlag = 1 << 2, //!< On Area
+      CentroidFlag = 1 << 3, //!< On centroid
+      MiddleOfSegmentFlag = 1 << 4, //!< On Middle segment
+      LineEndpointFlag = 1 << 5, //!< Start or end points of lines, or first vertex in polygon rings only (since QGIS 3.20)
     };
     Q_ENUM( SnappingTypes )
     Q_DECLARE_FLAGS( SnappingTypeFlag, SnappingTypes )
@@ -94,28 +95,23 @@ class CORE_EXPORT QgsSnappingConfig
 
     /**
      * Convenient method to returns the translated name of the enum type
-     * QgsSnappingConfig::SnappingTypeFlag
+     * QgsSnappingConfig::SnappingTypeFlag.
      *
      * \since QGIS 3.12
      */
-    static const QString snappingTypeFlagToString( SnappingTypeFlag type )
-    {
-      switch ( type )
-      {
-        case QgsSnappingConfig::NoSnapFlag: return QObject::tr( "No Snapping" );
-        case QgsSnappingConfig::VertexFlag: return QObject::tr( "Vertex" );
-        case QgsSnappingConfig::SegmentFlag: return QObject::tr( "Segment" );
-        case QgsSnappingConfig::AreaFlag: return QObject::tr( "Area" );
-        case QgsSnappingConfig::CentroidFlag: return QObject::tr( "Centroid" );
-        case QgsSnappingConfig::MiddleOfSegmentFlag: return QObject::tr( "Middle of Segments" );
-      }
-      return QString();
-    }
+    static QString snappingTypeFlagToString( SnappingTypeFlag type );
 
+    /**
+     * Convenient method to return an icon corresponding to the enum type
+     * QgsSnappingConfig::SnappingTypeFlag.
+     *
+     * \since QGIS 3.20
+     */
+    static QIcon snappingTypeFlagToIcon( SnappingTypeFlag type );
 
     /**
      * \ingroup core
-     * This is a container of advanced configuration (per layer) of the snapping of the project
+     * \brief This is a container of advanced configuration (per layer) of the snapping of the project
      * \since QGIS 3.0
      */
     class CORE_EXPORT IndividualLayerSettings

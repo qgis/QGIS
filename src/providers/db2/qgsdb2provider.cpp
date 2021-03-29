@@ -26,6 +26,9 @@
 #include "qgscredentials.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include <QThread>
+#include <QSqlRecord>
+#include <QSqlField>
 
 const QString QgsDb2Provider::DB2_PROVIDER_KEY = QStringLiteral( "DB2" );
 const QString QgsDb2Provider::DB2_PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );

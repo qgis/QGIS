@@ -46,7 +46,7 @@ class QgsVectorLayerFeatureIterator;
 
 /**
  * \ingroup core
- * Partial snapshot of vector layer's state (only the members necessary for access to features)
+ * \brief Partial snapshot of vector layer's state (only the members necessary for access to features)
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
@@ -148,6 +148,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     {
       const QgsVectorLayerJoinInfo *joinInfo;//!< Canonical source of information about the join
       QgsAttributeList attributes;      //!< Attributes to fetch
+      QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP; //!< Mapping from original attribute index to the joined layer index
       int indexOffset;                  //!< At what position the joined fields start
       QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
       int targetField;                  //!< Index of field (of this layer) that drives the join
@@ -306,7 +307,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 /**
  * \class QgsVectorLayerSelectedFeatureSource
  * \ingroup core
- * QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
+ * \brief QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource, public QgsExpressionContextScopeGenerator

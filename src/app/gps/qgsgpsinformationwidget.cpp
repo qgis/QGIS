@@ -69,7 +69,7 @@
 #include <QFileDialog>
 #include <QPixmap>
 #include <QPen>
-
+#include <QTimeZone>
 
 const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
 const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
@@ -85,7 +85,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mRecenterButton, &QPushButton::clicked, this, &QgsGpsInformationWidget::recenter );
   connect( mConnectButton, &QAbstractButton::toggled, mRecenterButton, &QWidget::setEnabled );
   connect( mBtnTrackColor, &QgsColorButton::colorChanged, this, &QgsGpsInformationWidget::trackColorChanged );
-  connect( mSpinTrackWidth, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
+  connect( mSpinTrackWidth, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
@@ -381,9 +381,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mCboTimestampFormat->addItem( tr( "UTC" ), Qt::TimeSpec::UTC );
   mCboTimestampFormat->addItem( tr( "Time Zone" ), Qt::TimeSpec::TimeZone );
   mCboTimestampFormat->setCurrentIndex( mySettings.value( QStringLiteral( "gps/timeStampFormat" ), Qt::LocalTime ).toInt() );
-  connect( mCboTimestampFormat, qgis::overload< int >::of( &QComboBox::currentIndexChanged ),
+  connect( mCboTimestampFormat, qOverload< int >( &QComboBox::currentIndexChanged ),
            this, &QgsGpsInformationWidget::timestampFormatChanged );
-  connect( mCboTimestampField, qgis::overload< int >::of( &QComboBox::currentIndexChanged ),
+  connect( mCboTimestampField, qOverload< int >( &QComboBox::currentIndexChanged ),
            this, [ = ]( int index )
   {
     const bool enabled { index > 0 };
@@ -427,9 +427,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsGpsInformationWidget::switchAcquisition );
-  connect( mCboAcquisitionInterval, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
+  connect( mCboAcquisitionInterval, qOverload< const QString & >( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
-  connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
+  connect( mCboDistanceThreshold, qOverload< const QString & >( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
 
   mMapCanvas->installInteractionBlocker( this );
@@ -1198,7 +1198,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   int idx { vlayer->fields().indexOf( mCboTimestampField->currentText() ) };
   if ( idx != -1 )
   {
-    QVariant ts { timestamp( vlayer, idx ) };
+    QVariant ts = timestamp( vlayer, idx );
     if ( ts.isValid() )
     {
       attrMap[ idx ] = ts;
@@ -1322,7 +1322,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         }
         else if ( avoidIntersectionsReturn == 3 )
         {
-          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "An error was reported during intersection removal." ) );
+          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ) );
           connectGpsSlot();
           return;
         }

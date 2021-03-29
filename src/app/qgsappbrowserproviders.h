@@ -34,6 +34,7 @@ class QgsQlrDataItem : public QgsLayerItem
     QgsQlrDataItem( QgsDataItem *parent, const QString &name, const QString &path );
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 
 };
 

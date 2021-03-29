@@ -100,7 +100,7 @@ bool QgsDistanceWidget::eventFilter( QObject *obj, QEvent *ev )
 QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode )
   : mCanvas( canvas )
   , mSelectionMode( selectionMode )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator >( canvas ) )
   , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
 {
   mIdentifyMenu->setAllowMultipleReturn( false );
@@ -389,7 +389,7 @@ void QgsMapToolSelectionHandler::selectRadiusReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::initRubberBand()
 {
-  mSelectionRubberBand = qgis::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mSelectionRubberBand = std::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
   mSelectionRubberBand->setFillColor( mFillColor );
   mSelectionRubberBand->setStrokeColor( mStrokeColor );
 }

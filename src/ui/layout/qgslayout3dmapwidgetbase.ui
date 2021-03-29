@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-128</y>
-        <width>510</width>
-        <height>698</height>
+        <y>0</y>
+        <width>538</width>
+        <height>590</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -222,6 +222,17 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mCopySettingsButton</tabstop>
+  <tabstop>mCenterXSpinBox</tabstop>
+  <tabstop>mCenterYSpinBox</tabstop>
+  <tabstop>mCenterZSpinBox</tabstop>
+  <tabstop>mDistanceToCenterSpinBox</tabstop>
+  <tabstop>mPitchAngleSpinBox</tabstop>
+  <tabstop>mHeadingAngleSpinBox</tabstop>
+  <tabstop>mPoseFromViewButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

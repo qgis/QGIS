@@ -12,7 +12,7 @@
 
 class QgsMapToolPan : QgsMapTool
 {
-%Docstring
+%Docstring(signature="appended")
 A map tool for panning the map.
 
 .. seealso:: :py:class:`QgsMapTool`

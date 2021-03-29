@@ -12,7 +12,7 @@
 
 class QgsMessageBarItem : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Represents an item shown within a :py:class:`QgsMessageBar` widget.
 
 :py:class:`QgsMessageBarItem` represents a single item (or message) which can be shown in a :py:class:`QgsMessageBar` widget.

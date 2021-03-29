@@ -29,7 +29,9 @@ if (WITH_GUI)
   )
 endif()
 
-QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+if (WITH_GUI)
+  QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+endif()
 
 include_directories(
 
@@ -38,8 +40,6 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR} # ui_xxx_dlg.h
 )
 
-if (WITH_GUI)
-endif()
 
 include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
@@ -53,6 +53,9 @@ add_library(virtuallayerprovider MODULE
   ${vlayer_provider_UI_H}
   ${QGIS_VLAYER_SQL_FUNCTIONS_RCCS}
 )
+
+# require c++17
+target_compile_features(virtuallayerprovider PRIVATE cxx_std_17)
 
 target_link_libraries( virtuallayerprovider
   qgis_core

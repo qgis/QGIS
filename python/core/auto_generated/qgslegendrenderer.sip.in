@@ -13,7 +13,7 @@
 
 class QgsLegendRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsLegendRenderer` class handles automatic layout and rendering of legend.
 The content is given by :py:class:`QgsLayerTreeModel` instance. Various layout properties can be configured
 within :py:class:`QgsLegendRenderer`.

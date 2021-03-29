@@ -208,8 +208,8 @@ void TestQgsCentroidFillSymbol::opacityWithDataDefinedColor()
 
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
-  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
-  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
+  qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
+  qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
   mCentroidFill->subSymbol()->setOpacity( 0.5 );
   mFillSymbol->setOpacity( 0.5 );
 
@@ -222,8 +222,8 @@ void TestQgsCentroidFillSymbol::dataDefinedOpacity()
 
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
-  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
-  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
+  qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
+  qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
   mCentroidFill->subSymbol()->setOpacity( 0.5 );
   mFillSymbol->setOpacity( 1.0 );
   mFillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );

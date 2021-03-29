@@ -79,7 +79,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
   if ( !linesToProcess.empty() )
   {
     std::unique_ptr< QgsLineString > secondline;
-    for ( QgsLineString *line : qgis::as_const( linesToProcess ) )
+    for ( QgsLineString *line : std::as_const( linesToProcess ) )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 
@@ -260,14 +260,12 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
     int numGeom = gc->numGeometries();
     double maxDist = 0;
     QgsPoint bestPoint;
-    bool found = false;
     for ( int i = 0; i < numGeom; ++i )
     {
       const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( gc->geometryN( i ) );
       if ( !surface )
         continue;
 
-      found = true;
       double dist = std::numeric_limits<double>::max();
       QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
       if ( dist > maxDist )
@@ -277,7 +275,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
       }
     }
 
-    if ( !found )
+    if ( bestPoint.isEmpty() )
       return QgsGeometry();
 
     if ( distanceFromBoundary )
@@ -292,6 +290,9 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
 
     double dist = std::numeric_limits<double>::max();
     QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
+    if ( p.isEmpty() )
+      return QgsGeometry();
+
     if ( distanceFromBoundary )
       *distanceFromBoundary = dist;
     return QgsGeometry( new QgsPoint( p ) );
@@ -522,7 +523,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -681,7 +682,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -717,7 +718,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -988,7 +989,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
             // close ring
             points.append( points.at( 0 ) );
 
-            std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+            std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
             poly->setExteriorRing( new QgsLineString( points ) );
             if ( poly->area() > 0 )
               parts << QgsGeometry( std::move( poly ) );
@@ -1200,7 +1201,7 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
 std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString, double distanceTolerance,
     double pointSpacingAngleTolerance )
 {
-  std::unique_ptr< QgsCompoundCurve > out = qgis::make_unique< QgsCompoundCurve >();
+  std::unique_ptr< QgsCompoundCurve > out = std::make_unique< QgsCompoundCurve >();
 
   /* Minimum number of edges, per quadrant, required to define an arc */
   const unsigned int minQuadEdges = 2;
@@ -1348,7 +1349,7 @@ std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString
       {
         points.append( lineString->pointN( j ) );
       }
-      std::unique_ptr< QgsCurve > straightSegment = qgis::make_unique< QgsLineString >( points );
+      std::unique_ptr< QgsCurve > straightSegment = std::make_unique< QgsLineString >( points );
       out->addCurve( straightSegment.release() );
     }
     else
@@ -1358,7 +1359,7 @@ std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString
       points.append( lineString->pointN( start ) );
       points.append( lineString->pointN( ( start + end + 1 ) / 2 ) );
       points.append( lineString->pointN( end + 1 ) );
-      std::unique_ptr< QgsCircularString > curvedSegment = qgis::make_unique< QgsCircularString >();
+      std::unique_ptr< QgsCircularString > curvedSegment = std::make_unique< QgsCircularString >();
       curvedSegment->setPoints( points );
       out->addCurve( curvedSegment.release() );
     }
@@ -1392,7 +1393,7 @@ std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstrac
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsCurvePolygon > result = qgis::make_unique< QgsCurvePolygon>();
+    std::unique_ptr< QgsCurvePolygon > result = std::make_unique< QgsCurvePolygon>();
 
     result->setExteriorRing( lineToCurve( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                                           distanceTolerance, angleTolerance ).release() );
@@ -1437,7 +1438,7 @@ QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
       first.addPart( g );
     }

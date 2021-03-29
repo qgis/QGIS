@@ -25,7 +25,7 @@ class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source );
+    explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:
 

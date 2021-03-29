@@ -25,6 +25,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpression_p.h"
 
+#include <QRegularExpression>
+
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
 
@@ -278,8 +280,8 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
     // actually don't do it right away, cos it's expensive to create and only a very small number of expression
     // functions actually require it. Let's lazily construct it when needed
     d->mDaEllipsoid = context->variable( QStringLiteral( "project_ellipsoid" ) ).toString();
-    d->mDaCrs = qgis::make_unique<QgsCoordinateReferenceSystem>( context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>() );
-    d->mDaTransformContext = qgis::make_unique<QgsCoordinateTransformContext>( context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>() );
+    d->mDaCrs = std::make_unique<QgsCoordinateReferenceSystem>( context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>() );
+    d->mDaTransformContext = std::make_unique<QgsCoordinateTransformContext>( context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>() );
   }
 
   // Set the distance units from the context if it has not been set by setDistanceUnits()
@@ -450,7 +452,11 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       expr_action += action.midRef( start, index - start );
+#else
+      expr_action += QStringView {action}.mid( start, index - start );
+#endif
       continue;
     }
 
@@ -465,7 +471,11 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       expr_action += action.midRef( start, index - start );
+#else
+      expr_action += QStringView {action}.mid( start, index - start );
+#endif
       continue;
     }
 
@@ -473,7 +483,11 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     expr_action += action.mid( start, pos - start ) + result.toString();
   }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
   expr_action += action.midRef( index );
+#else
+  expr_action += QStringView {action}.mid( index ).toString();
+#endif
 
   return expr_action;
 }
@@ -550,7 +564,7 @@ QString QgsExpression::helpText( QString name )
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),
                               f.mDescription ) );
 
-  for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+  for ( const HelpVariant &v : std::as_const( f.mVariants ) )
   {
     if ( f.mVariants.size() > 1 )
     {
@@ -584,7 +598,7 @@ QString QgsExpression::helpText( QString name )
         helpContents += '(';
 
         QString delim;
-        for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
+        for ( const HelpArg &a : std::as_const( v.mArguments ) )
         {
           if ( !a.mDescOnly )
           {
@@ -626,7 +640,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
 
-      for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
+      for ( const HelpArg &a : std::as_const( v.mArguments ) )
       {
         if ( a.mSyntaxOnly )
           continue;
@@ -641,7 +655,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
 
-      for ( const HelpExample &e : qgis::as_const( v.mExamples ) )
+      for ( const HelpExample &e : std::as_const( v.mExamples ) )
       {
         helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
 
@@ -673,7 +687,7 @@ QStringList QgsExpression::tags( const QString &name )
   {
     const Help &f = ( *sFunctionHelpTexts() )[ name ];
 
-    for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+    for ( const HelpVariant &v : std::as_const( f.mVariants ) )
     {
       tags << v.mTags;
     }

@@ -17,7 +17,7 @@
 
 class QgsRubberBand : QgsMapCanvasItem
 {
-%Docstring
+%Docstring(signature="appended")
 A class for drawing transient features (e.g. digitizing lines) on the map.
 
 The :py:class:`QgsRubberBand` class provides a transparent overlay widget
@@ -68,6 +68,7 @@ Creates a new RubberBand.
 :param geometryType: Defines how the data should be drawn onto the screen.
                      :py:class:`QgsWkbTypes`.LineGeometry, :py:class:`QgsWkbTypes`.PolygonGeometry or :py:class:`QgsWkbTypes`.PointGeometry
 %End
+    ~QgsRubberBand();
 
     void setColor( const QColor &color );
 %Docstring
@@ -273,7 +274,7 @@ Sets this rubber band to a map canvas rectangle
 :param rect: rectangle in canvas coordinates
 %End
 
-    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
+    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate = true );
 %Docstring
 Adds the geometry of an existing feature to a rubberband
 This is useful for multi feature highlighting.
@@ -281,17 +282,24 @@ As of 2.0, this method does not change the GeometryType any more. You need to se
 of the rubberband explicitly by calling :py:func:`~QgsRubberBand.reset` or :py:func:`~QgsRubberBand.setToGeometry` with appropriate arguments.
 :py:func:`~QgsRubberBand.setToGeometry` is also to be preferred for backwards-compatibility.
 
+If additional geometries are to be added then set ``doUpdate`` to ``False`` to defer costly repaint and bounding rectangle calculations for better performance.
+After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should be called.
+
 :param geometry: the geometry object. Will be treated as a collection of vertices.
 :param layer: the layer containing the feature, used for coord transformation to map
               crs. If ``layer`` is ``None``, the coordinates are not going to be transformed.
+:param doUpdate: set to ``False`` to defer updates of the rubber band.
 %End
 
-    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), bool doUpdate = true );
 %Docstring
 Adds a ``geometry`` to the rubberband.
 
 If ``crs`` is specified, the geometry will be automatically reprojected from ``crs``
 to the canvas CRS.
+
+If additional geometries are to be added then set ``doUpdate`` to ``False`` to defer costly repaint and bounding rectangle calculations for better performance.
+After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should be called.
 
 .. versionadded:: 3.0
 %End
@@ -337,6 +345,36 @@ Returns the rubberband as a Geometry
 
     virtual void updatePosition();
 
+
+    QgsSymbol *symbol() const;
+%Docstring
+Returns the symbol used for rendering the rubberband, if set.
+
+.. seealso:: :py:func:`setSymbol`
+
+.. versionadded:: 3.20
+%End
+
+    void setSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used for rendering the rubberband.
+
+Ownership of ``symbol`` is transferred to the rubberband.
+
+.. warning::
+
+   Only line and fill symbols are currently supported.
+
+.. note::
+
+   Setting a symbol for the rubberband overrides any other appearance setting,
+   such as the :py:func:`~QgsRubberBand.strokeColor` or :py:func:`~QgsRubberBand.width`.
+
+
+.. seealso:: :py:func:`setSymbol`
+
+.. versionadded:: 3.20
+%End
 
   protected:
 

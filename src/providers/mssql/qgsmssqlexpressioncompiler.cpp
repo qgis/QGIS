@@ -16,16 +16,20 @@
 #include "qgsmssqlexpressioncompiler.h"
 #include "qgsexpressionnodeimpl.h"
 
-QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source )
+QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields,
                               QgsSqlExpressionCompiler::LikeIsCaseInsensitive |
                               QgsSqlExpressionCompiler::CaseInsensitiveStringMatch |
-                              QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+                              QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
 {
 }
 
 QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntBinaryOperator:

@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A point in polygon check.
  */
 class ANALYSIS_EXPORT QgsGeometryPointInPolygonCheck : public QgsGeometryCheck
 {

@@ -71,10 +71,12 @@ class QgsGeometryEditUtils
      * Alters a geometry so that it avoids intersections with features from all open vector layers.
      * \param geom geometry to alter
      * \param avoidIntersectionsLayers list of layers to check for intersections
+     * \param haveInvalidGeometry returns true if at least one geometry intersected is invalid. In this case, the algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
      * \param ignoreFeatures map of layer to feature id of features to ignore
      */
     static std::unique_ptr< QgsAbstractGeometry > avoidIntersections( const QgsAbstractGeometry &geom,
         const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+        bool &haveInvalidGeometry,
         const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 };
 

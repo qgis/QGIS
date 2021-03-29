@@ -1,4 +1,4 @@
-name: Mac OS build
+name: 🍏 Mac OS build
 on:
   push:
     branches:
@@ -29,7 +29,7 @@ on:
 
 env:
   QT_VERSION: 5.14.2
-  QGIS_DEPS_VERSION: 0.6.0
+  QGIS_DEPS_VERSION: 0.7.0
   CCACHE_DIR: /Users/runner/work/ccache
   BUILD_DIR: /Users/runner/work/QGIS/build-QGIS
   # apparently we cannot cache /opt directory as it fails to restore
@@ -53,7 +53,7 @@ jobs:
           # The base_ref or target branch of the pull request in a workflow run.
           restore-keys: |
             build-mac-ccache-${{ github.actor }}-${{ github.head_ref }}-
-            build-mac-ccache-${{ github.base_ref }}-
+            build-mac-ccache-refs/heads/${{ github.base_ref }}-
             build-mac-ccache-refs/heads/master-
 
       - name: Prepare build cache for branch/tag
@@ -141,13 +141,12 @@ jobs:
           mkdir -p ${BUILD_DIR}
           cd ${BUILD_DIR}
 
-          # FIXME: PDAL disable because of #39971
           PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH \
           cmake -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
                -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
                -DWITH_BINDINGS=TRUE \
                -DWITH_3D=TRUE \
-               -DWITH_PDAL=FALSE \
+               -DWITH_PDAL=TRUE \
                -DWITH_EPT=TRUE \
                ../QGIS
 

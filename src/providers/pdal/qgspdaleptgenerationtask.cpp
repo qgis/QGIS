@@ -28,8 +28,8 @@
 #include "qgsmessagelog.h"
 #include "qgis.h"
 
-QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file, const QString &outputDir )
-  : QgsTask( tr( "Generate EPT Index" ) )
+QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file, const QString &outputDir, const QString &name )
+  : QgsTask( tr( "Indexing Point Cloud (%1)" ).arg( name ) )
   , mOutputDir( outputDir )
   , mFile( file )
 {

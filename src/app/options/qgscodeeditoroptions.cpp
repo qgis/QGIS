@@ -94,7 +94,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   }
 
   std::sort( names.begin(), names.end() );
-  for ( const QString &name : qgis::as_const( names ) )
+  for ( const QString &name : std::as_const( names ) )
   {
     mColorSchemeComboBox->addItem( name, themeNameToId.value( name ) );
   }
@@ -112,7 +112,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     mColorSchemeComboBox->setCurrentIndex( mColorSchemeComboBox->findData( QStringLiteral( "custom" ) ) );
   }
 
-  connect( mColorSchemeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  connect( mColorSchemeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     const QString theme = mColorSchemeComboBox->currentData().toString();
     if ( theme != QLatin1String( "custom" ) )
@@ -147,11 +147,11 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   mSizeSpin->setValue( font.pointSize() );
   mOverrideFontGroupBox->setChecked( !settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString().isEmpty() );
 
-  connect( mFontComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  connect( mFontComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     updatePreview();
   } );
-  connect( mSizeSpin, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]
+  connect( mSizeSpin, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]
   {
     updatePreview();
   } );

@@ -25,7 +25,7 @@ class QLineEdit;
 
 /**
  * \ingroup gui
- * New name, for example new layer name dialog. If existing names are provided,
+ * \brief New name, for example new layer name dialog. If existing names are provided,
  * the dialog warns users if an entered name already exists.
  * \since QGIS 2.10
  */

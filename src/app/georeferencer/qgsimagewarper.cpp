@@ -97,11 +97,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   if ( crs.isValid() )
   {
     OGRSpatialReference oTargetSRS;
-#if PROJ_VERSION_MAJOR>=6
     oTargetSRS.importFromWkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().data() );
-#else
-    oTargetSRS.importFromProj4( crs.toProj().toLatin1().data() );
-#endif
 
     char *wkt = nullptr;
     OGRErr err = oTargetSRS.exportToWkt( &wkt );
@@ -244,7 +240,7 @@ int QgsImageWarper::warpFile( const QString &input,
   progressDialog->raise();
   progressDialog->activateWindow();
 
-  eErr = oOperation.ChunkAndWarpMulti( 0, 0, destPixels, destLines );
+  eErr = oOperation.ChunkAndWarpImage( 0, 0, destPixels, destLines );
 
   destroyGeoToPixelTransform( psWarpOptions->pTransformerArg );
   delete progressDialog;

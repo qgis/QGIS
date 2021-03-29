@@ -35,7 +35,9 @@
 
 #define QGIS_SERVER_MODULE_SUBDIR "${QGIS_SERVER_MODULE_SUBDIR}"
 
+#if !defined(QSCINTILLA_VERSION_STR)
 #define QSCINTILLA_VERSION_STR "${QSCINTILLA_VERSION_STR}"
+#endif
 
 #if defined( __APPLE__ )
 //used by Mac to find system or bundle resources relative to amount of bundling

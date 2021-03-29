@@ -11,7 +11,7 @@
 
 class QgsEffectStack : QgsPaintEffect /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which consists of a stack of other chained paint effects
 
 Effect stacks can be used to apply multiple paint effects to a QPicture. For

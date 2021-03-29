@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+#include <QSignalSpy>
+#include <QTemporaryFile>
 
 #include "qgsdataitemguiprovider.h"
 #include "qgsdataitemguiproviderregistry.h"

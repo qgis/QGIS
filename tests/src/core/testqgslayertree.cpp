@@ -29,6 +29,7 @@
 #include <qgslayertreeutils.h>
 #include <qgssettings.h>
 #include "qgslegendsettings.h"
+#include <QSignalSpy>
 
 class TestQgsLayerTree : public QObject
 {
@@ -54,6 +55,7 @@ class TestQgsLayerTree : public QObject
     void testFindLayer();
     void testLayerDeleted();
     void testFindGroups();
+    void testFindNestedGroups();
     void testUtilsCollectMapLayers();
     void testUtilsCountMapLayers();
     void testSymbolText();
@@ -366,19 +368,19 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   //test that all nodes are initially checked
   QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
   QCOMPARE( nodes.length(), 3 );
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
   }
   //uncheck all and test that all nodes are unchecked
   static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
   }
   //check all and test that all nodes are checked
   static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->checkAllItems();
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
   }
@@ -417,7 +419,7 @@ void TestQgsLayerTree::testFindLegendNode()
   QVERIFY( !m->findLegendNode( QString( "vl" ), QString( "rule" ) ) );
 
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
-  Q_FOREACH ( const QgsLegendSymbolItem &symbol, symbolList )
+  for ( const QgsLegendSymbolItem &symbol : symbolList )
   {
     QgsLayerTreeModelLegendNode *found = m->findLegendNode( vl->id(), symbol.ruleKey() );
     QVERIFY( found );
@@ -549,7 +551,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
 
   //test initial symbol
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
-  Q_FOREACH ( const QgsLegendSymbolItem &symbol, symbolList )
+  for ( const QgsLegendSymbolItem &symbol : symbolList )
   {
     QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( m->findLegendNode( vl->id(), symbol.ruleKey() ) );
     QVERIFY( symbolNode );
@@ -714,6 +716,29 @@ void TestQgsLayerTree::testFindGroups()
   QVERIFY( groups.contains( group3 ) );
 }
 
+void TestQgsLayerTree::testFindNestedGroups()
+{
+  QgsProject project;
+  QgsLayerTreeGroup *group1 = project.layerTreeRoot()->addGroup( QStringLiteral( "Group_One" ) );
+  QVERIFY( group1 );
+  QgsLayerTreeGroup *group2 = group1->addGroup( QStringLiteral( "Group_Two" ) );
+  QVERIFY( group2 );
+  QgsLayerTreeGroup *group3 = group2->addGroup( QStringLiteral( "Group_Three" ) );
+  QVERIFY( group3 );
+
+  QList<QgsLayerTreeGroup *> groups = project.layerTreeRoot()->findGroups();
+
+  QVERIFY( groups.contains( group1 ) );
+  QVERIFY( groups.contains( group2 ) == 0 );
+  QVERIFY( groups.contains( group3 ) == 0 );
+
+  QList<QgsLayerTreeGroup *> all = project.layerTreeRoot()->findGroups( true );
+
+  QVERIFY( all.contains( group1 ) );
+  QVERIFY( all.contains( group2 ) );
+  QVERIFY( all.contains( group3 ) );
+}
+
 void TestQgsLayerTree::testUtilsCollectMapLayers()
 {
   QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
@@ -852,10 +877,10 @@ void TestQgsLayerTree::testRasterSymbolNode()
   QgsLayerTreeNode *secondGroup = mRoot->children()[1];
   QCOMPARE( secondGroup->depth(), 1 );
 
-  std::unique_ptr< QgsRasterLayer > rl = qgis::make_unique< QgsRasterLayer >( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ), QStringLiteral( "gdal" ) );
   QVERIFY( rl->isValid() );
 
-  std::unique_ptr< QgsLayerTreeLayer > n = qgis::make_unique< QgsLayerTreeLayer >( rl.get() );
+  std::unique_ptr< QgsLayerTreeLayer > n = std::make_unique< QgsLayerTreeLayer >( rl.get() );
 
   // not checkable
   QgsRasterSymbolLegendNode rasterNode( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, false, QStringLiteral( "key" ) );

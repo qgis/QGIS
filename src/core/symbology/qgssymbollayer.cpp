@@ -107,6 +107,8 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyClipPoints, QgsPropertyDefinition( "clipPoints", QObject::tr( "Clip markers" ), QgsPropertyDefinition::Boolean, origin )},
     { QgsSymbolLayer::PropertyClipPoints, QgsPropertyDefinition( "densityArea", QObject::tr( "Density area" ), QgsPropertyDefinition::DoublePositive, origin )},
     { QgsSymbolLayer::PropertyDashPatternOffset, QgsPropertyDefinition( "dashPatternOffset", QObject::tr( "Dash pattern offset" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { QgsSymbolLayer::PropertyTrimStart, QgsPropertyDefinition( "trimStart", QObject::tr( "Start trim distance" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { QgsSymbolLayer::PropertyTrimEnd, QgsPropertyDefinition( "trimEnd", QObject::tr( "End trim distance" ), QgsPropertyDefinition::DoublePositive, origin )},
   };
 }
 
@@ -232,6 +234,11 @@ bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
     return true;
 
   return symbol->type() == mType;
+}
+
+bool QgsSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return false;
 }
 
 bool QgsSymbolLayer::usesMapUnits() const
@@ -374,7 +381,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QVariantMap &stringM
       //get data defined property name by stripping "_dd_expression" from property key
       propertyName = propIt.key().left( propIt.key().length() - 14 );
 
-      prop = qgis::make_unique<QgsProperty>( propertyFromMap( stringMap, propertyName ) );
+      prop = std::make_unique<QgsProperty>( propertyFromMap( stringMap, propertyName ) );
     }
     else if ( propIt.key().endsWith( QLatin1String( "_expression" ) ) )
     {
@@ -383,7 +390,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QVariantMap &stringM
       //get data defined property name by stripping "_expression" from property key
       propertyName = propIt.key().left( propIt.key().length() - 11 );
 
-      prop = qgis::make_unique<QgsProperty>( QgsProperty::fromExpression( propIt.value().toString() ) );
+      prop = std::make_unique<QgsProperty>( QgsProperty::fromExpression( propIt.value().toString() ) );
     }
 
     if ( !prop || !OLD_PROPS.contains( propertyName ) )
@@ -469,9 +476,9 @@ void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSi
 
   std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
-    effectPainter = qgis::make_unique< QgsEffectPainter >( context.renderContext(), effect );
+    effectPainter = std::make_unique< QgsEffectPainter >( context.renderContext(), effect );
 
-  for ( QPointF point : qgis::as_const( points ) )
+  for ( QPointF point : std::as_const( points ) )
     renderPoint( point, context );
 
   effectPainter.reset();
@@ -672,7 +679,7 @@ void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
 
   std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
-    effectPainter = qgis::make_unique< QgsEffectPainter >( context.renderContext(), effect );
+    effectPainter = std::make_unique< QgsEffectPainter >( context.renderContext(), effect );
 
   for ( const QList< QPolygonF > &line : points )
     renderPolyline( line.value( 0 ), context );
@@ -701,7 +708,7 @@ void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVe
       case AllRings:
       case InteriorRingsOnly:
       {
-        for ( const QPolygonF &ring : qgis::as_const( *rings ) )
+        for ( const QPolygonF &ring : std::as_const( *rings ) )
           renderPolyline( ring, context );
       }
       break;
@@ -733,7 +740,7 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
 
   std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
-    effectPainter = qgis::make_unique< QgsEffectPainter >( context.renderContext(), effect );
+    effectPainter = std::make_unique< QgsEffectPainter >( context.renderContext(), effect );
 
   for ( const QList< QPolygonF > &poly : polys )
   {

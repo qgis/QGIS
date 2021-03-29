@@ -26,6 +26,7 @@
 #include "qgsogrguiprovider.h"
 #include "qgsvectortileproviderguimetadata.h"
 #include "qgspointcloudproviderguimetadata.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 
 #ifdef HAVE_EPT
 #include "qgseptproviderguimetadata.h"
@@ -227,6 +228,21 @@ QList<QgsProviderSourceWidgetProvider *> QgsProviderGuiRegistry::sourceWidgetPro
   if ( meta )
     return meta->sourceWidgetProviders();
   return QList<QgsProviderSourceWidgetProvider *>();
+}
+
+QList<const QgsMapLayerConfigWidgetFactory *> QgsProviderGuiRegistry::mapLayerConfigWidgetFactories( QgsMapLayer *layer )
+{
+  QList<const QgsMapLayerConfigWidgetFactory *> res;
+  for ( GuiProviders::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    const QList<const QgsMapLayerConfigWidgetFactory *> providerFactories = ( *it ).second->mapLayerConfigWidgetFactories();
+    for ( const QgsMapLayerConfigWidgetFactory *factory : providerFactories )
+    {
+      if ( !layer || factory->supportsLayer( layer ) )
+        res << factory;
+    }
+  }
+  return res;
 }
 
 QStringList QgsProviderGuiRegistry::providerList() const

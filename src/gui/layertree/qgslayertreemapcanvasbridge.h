@@ -31,7 +31,7 @@ class QgsLayerTree;
 
 /**
  * \ingroup gui
- * The QgsLayerTreeMapCanvasBridge class takes care of updates of layer set
+ * \brief The QgsLayerTreeMapCanvasBridge class takes care of updates of layer set
  * for QgsMapCanvas from a layer tree. The class listens to the updates in the layer tree
  * and updates the list of layers for rendering whenever some layers are added, removed,
  * or their visibility changes.

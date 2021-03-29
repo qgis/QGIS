@@ -10,7 +10,7 @@
 
 class QgsMapToolDigitizeFeature : QgsMapToolCapture
 {
-%Docstring
+%Docstring(signature="appended")
 This tool digitizes geometry of new point/line/polygon features on already existing vector layers
 Once the map tool is enabled, user can digitize the feature geometry.
 A signal will then be emitted.
@@ -33,6 +33,8 @@ QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
 %End
 
     virtual QgsMapToolCapture::Capabilities capabilities() const;
+
+    virtual bool supportsTechnique( CaptureTechnique technique ) const;
 
 
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );

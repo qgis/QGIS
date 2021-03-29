@@ -72,6 +72,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     /**
      * Returns the number of curves in the geometry.
@@ -84,9 +85,15 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     const QgsCurve *curveAt( int i ) const SIP_HOLDGIL;
 
     /**
-     * Adds a curve to the geometry (takes ownership)
+     * Adds a curve to the geometry (takes ownership).
+     *
+     * Since QGIS 3.20, if \a extendPrevious is TRUE, then adding a LineString when the last existing curve
+     * in the compound curve is also a LineString will cause the existing linestring to be
+     * extended with the newly added LineString vertices instead of appending a whole new
+     * LineString curve to the compound curve. This can result in simplified compound curves with lesser number
+     * of component curves while still being topologically identical to the desired result.
      */
-    void addCurve( QgsCurve *c SIP_TRANSFER );
+    void addCurve( QgsCurve *c SIP_TRANSFER, bool extendPrevious = false );
 
     /**
      * Removes a curve from the geometry.

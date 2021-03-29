@@ -929,8 +929,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << ' ' + tr( "Format" ) );
       layItem->addChild( formatItem );
       lstResults->setItemWidget( formatItem, 1, formatCombo );
-      connect( formatCombo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
-               this, qgis::overload<int>::of( &QgsIdentifyResultsDialog::formatChanged ) );
+      connect( formatCombo, qOverload<int>( &QComboBox::currentIndexChanged ),
+               this, qOverload<int>( &QgsIdentifyResultsDialog::formatChanged ) );
     }
     else
     {
@@ -1020,7 +1020,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
         const auto links { QgsStringUtils::insertLinks( formattedValue, &foundLinks ) };
         if ( foundLinks )
         {
-          auto valueLabel { qgis::make_unique<QLabel>( links ) };
+          auto valueLabel { std::make_unique<QLabel>( links ) };
           attrItem->setText( 1, QString( ) );
           valueLabel->setOpenExternalLinks( true );
           lstResults->setItemWidget( attrItem, 1, valueLabel.release() );
@@ -1035,12 +1035,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 #ifdef WITH_QTWEBKIT
     attrItem->webView()->page()->setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
-#else
     const int horizontalDpi = logicalDpiX();
-#endif
-
 
     // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
     if ( horizontalDpi > 96 )
@@ -1109,7 +1104,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QString links = QgsStringUtils::insertLinks( it.value(), &foundLinks );
     if ( foundLinks )
     {
-      auto valueLabel { qgis::make_unique<QLabel>( links ) };
+      auto valueLabel { std::make_unique<QLabel>( links ) };
       valueLabel->setOpenExternalLinks( true );
       tblResults->setCellWidget( j, 3, valueLabel.release() );
     }

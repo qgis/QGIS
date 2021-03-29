@@ -21,6 +21,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
 #include "qgsgeos.h"
+#include "qgslabelingresults.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -313,7 +314,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   {
     context.expressionContext().setOriginalValueVariable( mSettings.priority() );
     double priorityD = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Priority, context.expressionContext(), mSettings.priority() );
-    priorityD = qBound( 0.0, priorityD, 10.0 );
+    priorityD = std::clamp( priorityD, 0.0, 10.0 );
     priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
     lf->setPriority( priorityD );
   }

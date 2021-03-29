@@ -15,6 +15,7 @@ email                : matthias@opengis.ch
 
 #include <QButtonGroup>
 #include <QToolButton>
+#include <QPropertyAnimation>
 
 #include "qgsgeometryvalidationdock.h"
 #include "qgsgeometryvalidationmodel.h"
@@ -384,6 +385,6 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     errorAnimation->setDuration( 2000 );
     errorAnimation->start();
 
-    mErrorLocationRubberband->setToGeometry( QgsGeometry( qgis::make_unique<QgsPoint>( locationGeometry ) ) );
+    mErrorLocationRubberband->setToGeometry( QgsGeometry( std::make_unique<QgsPoint>( locationGeometry ) ) );
   }
 }

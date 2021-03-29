@@ -25,7 +25,7 @@ class QgsLayerTreeLayer;
 
 /**
  * \ingroup core
- * Layer tree group node serves as a container for layers and further groups.
+ * \brief Layer tree group node serves as a container for layers and further groups.
  *
  * Group names do not need to be unique within one tree nor within one parent.
  *
@@ -142,9 +142,9 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup *findGroup( const QString &name );
 
     /**
-     * Find all group layer nodes
+     * Find group layer nodes. Searches recursively the whole sub-tree, if recursive is set.
     */
-    QList<QgsLayerTreeGroup *> findGroups() const;
+    QList<QgsLayerTreeGroup *> findGroups( bool recursive = false ) const;
 
     /**
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).

@@ -84,15 +84,16 @@ class ClipVectorByMask(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        arguments = []
-        arguments.append('-clipsrc')
-        arguments.append(maskLayer)
-        arguments.append('-clipsrclayer')
-        arguments.append(maskLayerName)
+        arguments = [
+            '-clipsrc',
+            maskLayer,
+            '-clipsrclayer',
+            maskLayerName,
 
-        arguments.append(output)
-        arguments.append(inLayer)
-        arguments.append(inLayerName)
+            output,
+            inLayer,
+            inLayerName,
+        ]
 
         if options:
             arguments.append(options)

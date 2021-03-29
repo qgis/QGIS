@@ -62,7 +62,7 @@ bool QgsCompoundCurve::equals( const QgsCurve &other ) const
 
 QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsCompoundCurve >();
+  auto result = std::make_unique< QgsCompoundCurve >();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -213,7 +213,7 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
   //if so, update the type dimensionality of the compound curve to match
   bool hasZ = false;
   bool hasM = false;
-  for ( const QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( const QgsCurve *curve : std::as_const( mCurves ) )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -444,7 +444,7 @@ bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
   QgsPoint lastEnd;
   for ( QgsCurve *curve : curves )
   {
-    result = result || curve->removeDuplicateNodes( epsilon, useZValues );
+    result = curve->removeDuplicateNodes( epsilon, useZValues ) || result;
     if ( curve->numPoints() == 0 || qgsDoubleNear( curve->length(), 0.0, epsilon ) )
     {
       // empty curve, remove it
@@ -465,6 +465,35 @@ bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
+bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  if ( mCurves.empty() )
+    return false;
+
+  // if we already have the bounding box calculated, then this check is trivial!
+  if ( !mBoundingBox.isNull() )
+  {
+    return mBoundingBox.intersects( rectangle );
+  }
+
+  // otherwise loop through each member curve and test the bounding box intersection.
+  // This gives us a chance to use optimisations which may be present on the individual
+  // curve subclasses, and at worst it will cause a calculation of the bounding box
+  // of each individual member curve which we would have to do anyway... (and these
+  // bounding boxes are cached, so would be reused without additional expense)
+  for ( const QgsCurve *curve : mCurves )
+  {
+    if ( curve->boundingBoxIntersects( rectangle ) )
+      return true;
+  }
+
+  // even if we don't intersect the bounding box of any member curves, we may still intersect the
+  // bounding box of the overall compound curve.
+  // so here we fall back to the non-optimised base class check which has to first calculate
+  // the overall bounding box of the compound curve..
+  return QgsAbstractGeometry::boundingBoxIntersects( rectangle );
+}
+
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
 {
   if ( i < 0 || i >= mCurves.size() )
@@ -474,35 +503,49 @@ const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
   return mCurves.at( i );
 }
 
-void QgsCompoundCurve::addCurve( QgsCurve *c )
+void QgsCompoundCurve::addCurve( QgsCurve *c, const bool extendPrevious )
 {
-  if ( c )
+  if ( !c )
+    return;
+
+  if ( mCurves.empty() )
   {
-    if ( mCurves.empty() )
-    {
-      setZMTypeFromSubGeometry( c, QgsWkbTypes::CompoundCurve );
-    }
-
-    mCurves.append( c );
-
-    if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( c->wkbType() ) )
-    {
-      c->addZValue();
-    }
-    else if ( !QgsWkbTypes::hasZ( mWkbType ) && QgsWkbTypes::hasZ( c->wkbType() ) )
-    {
-      c->dropZValue();
-    }
-    if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( c->wkbType() ) )
-    {
-      c->addMValue();
-    }
-    else if ( !QgsWkbTypes::hasM( mWkbType ) && QgsWkbTypes::hasM( c->wkbType() ) )
-    {
-      c->dropMValue();
-    }
-    clearCache();
+    setZMTypeFromSubGeometry( c, QgsWkbTypes::CompoundCurve );
   }
+
+  if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( c->wkbType() ) )
+  {
+    c->addZValue();
+  }
+  else if ( !QgsWkbTypes::hasZ( mWkbType ) && QgsWkbTypes::hasZ( c->wkbType() ) )
+  {
+    c->dropZValue();
+  }
+  if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( c->wkbType() ) )
+  {
+    c->addMValue();
+  }
+  else if ( !QgsWkbTypes::hasM( mWkbType ) && QgsWkbTypes::hasM( c->wkbType() ) )
+  {
+    c->dropMValue();
+  }
+
+  QgsLineString *previousLineString = !mCurves.empty() ? qgsgeometry_cast< QgsLineString * >( mCurves.constLast() ) : nullptr;
+  const QgsLineString *newLineString = qgsgeometry_cast< const QgsLineString * >( c );
+  const bool canExtendPrevious = extendPrevious && previousLineString && newLineString;
+  if ( canExtendPrevious )
+  {
+    previousLineString->append( newLineString );
+    // we are taking ownership, so delete the input curve
+    delete c;
+    c = nullptr;
+  }
+  else
+  {
+    mCurves.append( c );
+  }
+
+  clearCache();
 }
 
 void QgsCompoundCurve::removeCurve( int i )
@@ -559,7 +602,7 @@ void QgsCompoundCurve::draw( QPainter &p ) const
 
 void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->transform( ct, d, transformZ );
   }
@@ -568,7 +611,7 @@ void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinat
 
 void QgsCompoundCurve::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
@@ -819,7 +862,7 @@ double QgsCompoundCurve::yAt( int index ) const
 bool QgsCompoundCurve::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
   bool res = true;
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     if ( !curve->transform( transformer ) )
     {
@@ -839,7 +882,7 @@ bool QgsCompoundCurve::transform( QgsAbstractGeometryTransformer *transformer, Q
 
 void QgsCompoundCurve::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->filterVertices( filter );
   }
@@ -848,7 +891,7 @@ void QgsCompoundCurve::filterVertices( const std::function<bool ( const QgsPoint
 
 void QgsCompoundCurve::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->transformVertices( transform );
   }
@@ -958,7 +1001,7 @@ QgsCompoundCurve *QgsCompoundCurve::curveSubstring( double startDistance, double
     return createEmptyWithSameType();
 
   endDistance = std::max( startDistance, endDistance );
-  std::unique_ptr< QgsCompoundCurve > substring = qgis::make_unique< QgsCompoundCurve >();
+  std::unique_ptr< QgsCompoundCurve > substring = std::make_unique< QgsCompoundCurve >();
 
   double distanceTraversed = 0;
   for ( const QgsCurve *curve : mCurves )
@@ -990,7 +1033,7 @@ bool QgsCompoundCurve::addZValue( double zValue )
 
   mWkbType = QgsWkbTypes::addZ( mWkbType );
 
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->addZValue( zValue );
   }
@@ -1005,7 +1048,7 @@ bool QgsCompoundCurve::addMValue( double mValue )
 
   mWkbType = QgsWkbTypes::addM( mWkbType );
 
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->addMValue( mValue );
   }
@@ -1019,7 +1062,7 @@ bool QgsCompoundCurve::dropZValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->dropZValue();
   }
@@ -1033,7 +1076,7 @@ bool QgsCompoundCurve::dropMValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->dropMValue();
   }
@@ -1043,7 +1086,7 @@ bool QgsCompoundCurve::dropMValue()
 
 void QgsCompoundCurve::swapXy()
 {
-  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->swapXy();
   }

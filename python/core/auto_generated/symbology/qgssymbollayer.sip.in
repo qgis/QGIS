@@ -146,6 +146,8 @@ class QgsSymbolLayer
       PropertyFontFamily,
       PropertyFontStyle,
       PropertyDashPatternOffset,
+      PropertyTrimStart,
+      PropertyTrimEnd,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -336,6 +338,16 @@ Sets layer's subsymbol. takes ownership of the passed symbol
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 %Docstring
 Returns if the layer can be used below the specified symbol
+%End
+
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
+%Docstring
+Returns ``True`` if the symbol layer rendering can cause visible artifacts across a single feature
+when the feature is rendered as a series of adjacent map tiles each containing a portion of the feature's geometry.
+
+The default implementation returns ``False``.
+
+.. versionadded:: 3.18
 %End
 
     void setLocked( bool locked );
@@ -573,7 +585,7 @@ Copies paint effect of this layer to another symbol layer
 
 class QgsMarkerSymbolLayer : QgsSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for marker symbol layers.
 %End
 

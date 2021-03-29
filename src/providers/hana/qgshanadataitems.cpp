@@ -100,7 +100,7 @@ bool QgsHanaConnectionItem::equal( const QgsDataItem *other )
 
 void QgsHanaConnectionItem::refreshSchema( const QString &schema )
 {
-  for ( QgsDataItem *child : qgis::as_const( mChildren ) )
+  for ( QgsDataItem *child : std::as_const( mChildren ) )
   {
     if ( child->name() == schema || schema.isEmpty() )
       child->refresh();
@@ -310,13 +310,22 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
     return items;
   }
 
-  QgsHanaSettings settings( mConnectionName, true );
-  const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( mSchemaName,
-      settings.allowGeometrylessTables(), settings.userTablesOnly() );
+  try
+  {
+    QgsHanaSettings settings( mConnectionName, true );
+    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( mSchemaName,
+        settings.allowGeometrylessTables(), settings.userTablesOnly() );
 
-  items.reserve( layers.size() );
-  for ( const QgsHanaLayerProperty &layerInfo : layers )
-    items.append( createLayer( layerInfo ) );
+    items.reserve( layers.size() );
+    for ( const QgsHanaLayerProperty &layerInfo : layers )
+      items.append( createLayer( layerInfo ) );
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    QgsErrorItem *itemError = new QgsErrorItem( this, tr( "Server error occurred" ), mPath + "/error" );
+    itemError->setToolTip( ex.what() );
+    items.append( itemError );
+  }
 
   setName( mSchemaName );
 

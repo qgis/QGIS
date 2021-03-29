@@ -251,6 +251,39 @@ void QgsSymbol::_getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRende
   }
 }
 
+QString QgsSymbol::symbolTypeToString( QgsSymbol::SymbolType type )
+{
+  switch ( type )
+  {
+    case QgsSymbol::Marker:
+      return QObject::tr( "Marker" );
+    case QgsSymbol::Line:
+      return QObject::tr( "Line" );
+    case QgsSymbol::Fill:
+      return QObject::tr( "Fill" );
+    case QgsSymbol::Hybrid:
+      return QObject::tr( "Hybrid" );
+  }
+  return QString();
+}
+
+QgsSymbol::SymbolType QgsSymbol::symbolTypeForGeometryType( QgsWkbTypes::GeometryType type )
+{
+  switch ( type )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return Marker;
+    case QgsWkbTypes::LineGeometry:
+      return Line;
+    case QgsWkbTypes::PolygonGeometry:
+      return Fill;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      return Hybrid;
+  }
+  return Hybrid;
+}
+
 const QgsPropertiesDefinition &QgsSymbol::propertyDefinitions()
 {
   QgsSymbol::initPropertyDefinitions();
@@ -372,13 +405,13 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        s = qgis::make_unique< QgsMarkerSymbol >();
+        s = std::make_unique< QgsMarkerSymbol >();
         break;
       case QgsWkbTypes::LineGeometry:
-        s = qgis::make_unique< QgsLineSymbol >();
+        s = std::make_unique< QgsLineSymbol >();
         break;
       case QgsWkbTypes::PolygonGeometry:
-        s = qgis::make_unique< QgsFillSymbol >();
+        s = std::make_unique< QgsFillSymbol >();
         break;
       default:
         QgsDebugMsg( QStringLiteral( "unknown layer's geometry type" ) );
@@ -584,7 +617,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     context->setExpressionContext( expContext );
   }
 
-  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
   {
     if ( !layer->enabled()  || ( customContext && !customContext->isSymbolLayerEnabled( layer ) ) )
       continue;
@@ -610,7 +643,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 
         std::unique_ptr< QgsEffectPainter > effectPainter;
         if ( effect && effect->enabled() )
-          effectPainter = qgis::make_unique< QgsEffectPainter >( symbolContext.renderContext(), effect );
+          effectPainter = std::make_unique< QgsEffectPainter >( symbolContext.renderContext(), effect );
 
         for ( const QList< QPolygonF > &poly : polys )
         {
@@ -813,10 +846,19 @@ bool QgsSymbol::hasDataDefinedProperties() const
   if ( mDataDefinedProperties.hasActiveProperties() )
     return true;
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+  for ( QgsSymbolLayer *layer : mLayers )
   {
     if ( layer->hasDataDefinedProperties() )
+      return true;
+  }
+  return false;
+}
+
+bool QgsSymbol::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  for ( QgsSymbolLayer *layer : mLayers )
+  {
+    if ( layer->canCauseArtifactsBetweenAdjacentTiles() )
       return true;
   }
   return false;
@@ -908,7 +950,17 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
   }
 
-  bool tileMapRendering = context.testFlag( QgsRenderContext::RenderMapTile );
+  bool clippingEnabled = clipFeaturesToExtent();
+  if ( clippingEnabled && context.testFlag( QgsRenderContext::RenderMapTile ) )
+  {
+    // If the "avoid artifacts between adjacent tiles" flag is set (RenderMapTile), then we'll force disable
+    // the geometry clipping IF (and only if) this symbol can potentially have rendering artifacts when rendered as map tiles.
+    // If the symbol won't have any artifacts anyway, then it's pointless and incredibly expensive to skip the clipping!
+    if ( canCauseArtifactsBetweenAdjacentTiles() )
+    {
+      clippingEnabled = false;
+    }
+  }
 
   mSymbolRenderContext->setGeometryPartCount( geom.constGet()->partCount() );
   mSymbolRenderContext->setGeometryPartNum( 1 );
@@ -964,7 +1016,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   QVector< PolygonInfo > polygonsToRender;
 
   std::function< void ( const QgsAbstractGeometry * )> getPartGeometry;
-  getPartGeometry = [&pointsToRender, &linesToRender, &polygonsToRender, &getPartGeometry, &context, &tileMapRendering, &markers, &feature, &usingSegmentizedGeometry, this]( const QgsAbstractGeometry * part )
+  getPartGeometry = [&pointsToRender, &linesToRender, &polygonsToRender, &getPartGeometry, &context, &clippingEnabled, &markers, &feature, &usingSegmentizedGeometry, this]( const QgsAbstractGeometry * part )
   {
     Q_UNUSED( feature )
 
@@ -1069,7 +1121,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         LineInfo info;
         info.originalGeometry = qgsgeometry_cast<const QgsCurve *>( part );
-        info.renderLine = _getLineString( context, *qgsgeometry_cast<const QgsCurve *>( processedGeometry ), !tileMapRendering && clipFeaturesToExtent() );
+        info.renderLine = _getLineString( context, *qgsgeometry_cast<const QgsCurve *>( processedGeometry ), clippingEnabled );
         linesToRender << info;
         break;
       }
@@ -1092,7 +1144,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           break;
         }
 
-        _getPolygon( info.renderExterior, info.renderRings, context, *qgsgeometry_cast<const QgsPolygon *>( processedGeometry ), !tileMapRendering && clipFeaturesToExtent(), mForceRHR );
+        _getPolygon( info.renderExterior, info.renderRings, context, *qgsgeometry_cast<const QgsPolygon *>( processedGeometry ), clippingEnabled, mForceRHR );
         polygonsToRender << info;
         break;
       }
@@ -1203,7 +1255,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case QgsSymbol::Marker:
       {
         int geometryPartNumber = 0;
-        for ( const PointInfo &point : qgis::as_const( pointsToRender ) )
+        for ( const PointInfo &point : std::as_const( pointsToRender ) )
         {
           if ( context.renderingStopped() )
             break;
@@ -1225,7 +1277,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           break;
 
         int geometryPartNumber = 0;
-        for ( const LineInfo &line : qgis::as_const( linesToRender ) )
+        for ( const LineInfo &line : std::as_const( linesToRender ) )
         {
           if ( context.renderingStopped() )
             break;
@@ -1244,7 +1296,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case QgsSymbol::Fill:
       {
         int geometryPartNumber = 0;
-        for ( const PolygonInfo &info : qgis::as_const( polygonsToRender ) )
+        for ( const PolygonInfo &info : std::as_const( polygonsToRender ) )
         {
           if ( context.renderingStopped() )
             break;
@@ -1274,7 +1326,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     case QgsSymbol::Marker:
     {
       markers.reserve( pointsToRender.size() );
-      for ( const PointInfo &info : qgis::as_const( pointsToRender ) )
+      for ( const PointInfo &info : std::as_const( pointsToRender ) )
       {
         if ( context.hasRenderedFeatureHandlers() || context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
         {
@@ -1303,7 +1355,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
     case QgsSymbol::Line:
     {
-      for ( const LineInfo &info : qgis::as_const( linesToRender ) )
+      for ( const LineInfo &info : std::as_const( linesToRender ) )
       {
         if ( context.hasRenderedFeatureHandlers() && !info.renderLine.empty() )
         {
@@ -1322,7 +1374,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     case QgsSymbol::Fill:
     {
       int i = 0;
-      for ( const PolygonInfo &info : qgis::as_const( polygonsToRender ) )
+      for ( const PolygonInfo &info : std::as_const( polygonsToRender ) )
       {
         if ( context.hasRenderedFeatureHandlers() && !info.renderExterior.empty() )
         {
@@ -1591,7 +1643,7 @@ void QgsMarkerSymbol::setAngle( double symbolAngle )
 
 double QgsMarkerSymbol::angle() const
 {
-  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
   {
     if ( layer->type() != QgsSymbol::Marker )
       continue;
@@ -1618,7 +1670,7 @@ void QgsMarkerSymbol::setDataDefinedAngle( const QgsProperty &property )
   const double symbolRotation = angle();
 
 
-  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
   {
     if ( layer->type() != QgsSymbol::Marker )
       continue;
@@ -1976,7 +2028,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   }
 
 
-  for ( QgsSymbolLayer *symbolLayer : qgis::as_const( mLayers ) )
+  for ( QgsSymbolLayer *symbolLayer : std::as_const( mLayers ) )
   {
     if ( context.renderingStopped() )
       break;

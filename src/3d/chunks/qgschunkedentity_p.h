@@ -55,7 +55,7 @@ namespace Qt3DRender
 
 /**
  * \ingroup 3d
- * Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
+ * \brief Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
  * based on data error and unloading of data when data are not necessary anymore
  * \since QGIS 3.0
  */

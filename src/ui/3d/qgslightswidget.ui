@@ -494,6 +494,9 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mLightsListView</tabstop>
+  <tabstop>btnAddLight</tabstop>
+  <tabstop>btnRemoveLight</tabstop>
   <tabstop>spinPositionX</tabstop>
   <tabstop>spinPositionY</tabstop>
   <tabstop>spinPositionZ</tabstop>
@@ -502,6 +505,10 @@
   <tabstop>spinA0</tabstop>
   <tabstop>spinA1</tabstop>
   <tabstop>spinA2</tabstop>
+  <tabstop>dialAzimuth</tabstop>
+  <tabstop>spinBoxAzimuth</tabstop>
+  <tabstop>spinBoxAltitude</tabstop>
+  <tabstop>sliderAltitude</tabstop>
   <tabstop>btnDirectionalColor</tabstop>
   <tabstop>spinDirectionalIntensity</tabstop>
  </tabstops>

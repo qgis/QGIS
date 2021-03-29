@@ -25,7 +25,7 @@
 /**
  * \ingroup gui
  * \class QgsCoordinateOperationWidget
- * A widget for selecting the coordinate operation to use when transforming between
+ * \brief A widget for selecting the coordinate operation to use when transforming between
  * a source and destination coordinate reference system.
  *
  * \since QGIS 3.12
@@ -194,11 +194,8 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      */
     QString formatScope( const QString &scope );
 
-#if PROJ_VERSION_MAJOR>=6
     QList< QgsDatumTransform::TransformDetails > mDatumTransforms;
-#else
-    QList< QgsDatumTransform::TransformPair > mDatumTransforms;
-#endif
+
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
     OperationDetails mPreviousOp;

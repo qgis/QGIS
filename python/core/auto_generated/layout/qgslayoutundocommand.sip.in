@@ -13,7 +13,7 @@
 
 class QgsAbstractLayoutUndoCommand: QUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for commands to undo/redo layout and layout object changes.
 
 .. versionadded:: 3.0
@@ -108,7 +108,7 @@ Manually sets the after state for the command. Generally this should not be call
 
 class QgsLayoutUndoObjectInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for layout objects which support undo/redo commands.
 
 .. versionadded:: 3.0

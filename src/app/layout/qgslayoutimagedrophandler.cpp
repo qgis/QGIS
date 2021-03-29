@@ -20,6 +20,8 @@
 #include "qgslayoutitempicture.h"
 
 #include <QImageReader>
+#include <QFileInfo>
+#include <QMimeData>
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )
@@ -56,7 +58,7 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
   if ( !iface->layout() )
     return false;
 
-  std::unique_ptr< QgsLayoutItemPicture > item = qgis::make_unique< QgsLayoutItemPicture >( iface->layout() );
+  std::unique_ptr< QgsLayoutItemPicture > item = std::make_unique< QgsLayoutItemPicture >( iface->layout() );
 
   QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
 
@@ -90,7 +92,7 @@ bool QgsLayoutImageDropHandler::handlePaste( QgsLayoutDesignerInterface *iface, 
     return false;
 
   QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( pastePoint, iface->layout()->units() );
-  std::unique_ptr< QgsLayoutItemPicture > item = qgis::make_unique< QgsLayoutItemPicture >( iface->layout() );
+  std::unique_ptr< QgsLayoutItemPicture > item = std::make_unique< QgsLayoutItemPicture >( iface->layout() );
 
   const QByteArray imageData = data->data( QStringLiteral( "application/x-qt-image" ) );
   if ( imageData.isEmpty() )

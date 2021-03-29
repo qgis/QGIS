@@ -36,7 +36,7 @@ class QgsDataProviderTemporalCapabilities;
 
 /**
  * \ingroup core
- * Abstract base class for spatial data provider implementations.
+ * \brief Abstract base class for spatial data provider implementations.
  */
 class CORE_EXPORT QgsDataProvider : public QObject
 {

@@ -29,7 +29,7 @@ class QNetworkReply;
 
 /**
  * \ingroup core
- * Utility functions for querying ArcGIS REST services.
+ * \brief Utility functions for querying ArcGIS REST services.
  *
  * \since QGIS 3.18
  */

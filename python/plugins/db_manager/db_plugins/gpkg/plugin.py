@@ -209,11 +209,20 @@ class GPKGTable(Table):
         # QGIS has no provider to load Geopackage vectors, let's use OGR
         return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
 
-    def toMapLayer(self):
+    def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import QgsVectorLayer
 
         provider = "ogr"
         uri = self.ogrUri()
+
+        if geometryType:
+            geom_mapping = {
+                'POINT': 'Point',
+                'LINESTRING': 'LineString',
+                'POLYGON': 'Polygon',
+            }
+            geometryType = geom_mapping[geometryType]
+            uri = "{}|geometrytype={}".format(uri, geometryType)
 
         return QgsVectorLayer(uri, self.name, provider)
 

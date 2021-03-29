@@ -12,7 +12,7 @@
 
 class QgsStringReplacement
 {
-%Docstring
+%Docstring(signature="appended")
 A representation of a single string replacement.
 
 .. versionadded:: 3.0
@@ -87,7 +87,7 @@ Creates a new QgsStringReplacement from an encoded properties map.
 
 class QgsStringReplacementCollection
 {
-%Docstring
+%Docstring(signature="appended")
 A collection of string replacements (specified using QgsStringReplacement objects).
 
 .. versionadded:: 3.0
@@ -157,7 +157,7 @@ Reads the collection state from an XML element.
 
 class QgsStringUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for working with strings.
 
 .. versionadded:: 2.11

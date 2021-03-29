@@ -298,8 +298,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
-                <height>821</height>
+                <width>685</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -954,8 +954,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>692</width>
-                <height>673</height>
+                <width>685</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1007,8 +1007,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>692</width>
-                <height>673</height>
+                <width>685</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1067,8 +1067,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>692</width>
-                <height>673</height>
+                <width>685</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1179,7 +1179,7 @@
                      </sizepolicy>
                     </property>
                     <property name="sizeAdjustPolicy">
-                     <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+                     <enum>QComboBox::AdjustToContents</enum>
                     </property>
                    </widget>
                   </item>
@@ -1202,7 +1202,7 @@
                      </sizepolicy>
                     </property>
                     <property name="sizeAdjustPolicy">
-                     <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+                     <enum>QComboBox::AdjustToContents</enum>
                     </property>
                    </widget>
                   </item>
@@ -1265,7 +1265,7 @@
                      </sizepolicy>
                     </property>
                     <property name="sizeAdjustPolicy">
-                     <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+                     <enum>QComboBox::AdjustToContents</enum>
                     </property>
                    </widget>
                   </item>
@@ -1278,7 +1278,7 @@
                      </sizepolicy>
                     </property>
                     <property name="sizeAdjustPolicy">
-                     <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+                     <enum>QComboBox::AdjustToContents</enum>
                     </property>
                    </widget>
                   </item>
@@ -1643,8 +1643,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>692</width>
-                <height>673</height>
+                <width>685</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1705,8 +1705,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>3591</height>
+                <width>671</width>
+                <height>3119</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -3156,15 +3156,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3173,9 +3178,20 @@
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelectionTreeWidget</class>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
-   <header>qgsprojectionselectiontreewidget.h</header>
+   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3184,9 +3200,21 @@
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionTreeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectiontreewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3196,32 +3224,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDatumTransformTableWidget</class>
    <extends>QWidget</extends>
    <header>qgsdatumtransformtablewidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorPython</class>
@@ -3229,14 +3235,9 @@
    <header>qgscodeeditorpython.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mProjectFileLineEdit</tabstop>
@@ -3257,7 +3258,19 @@
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
+  <tabstop>mCustomizeBearingFormatButton</tabstop>
+  <tabstop>cbtsLocale</tabstop>
+  <tabstop>generateTsFileButton</tabstop>
+  <tabstop>grpProjectScales</tabstop>
+  <tabstop>lstScales</tabstop>
+  <tabstop>pbnAddScale</tabstop>
+  <tabstop>pbnRemoveScale</tabstop>
+  <tabstop>pbnImportScales</tabstop>
+  <tabstop>pbnExportScales</tabstop>
+  <tabstop>mExtentGroupBox</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleMarker</tabstop>
@@ -3279,6 +3292,10 @@
   <tabstop>mAutoTransaction</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
   <tabstop>mTrustProjectCheckBox</tabstop>
+  <tabstop>mLayerCapabilitiesTree</tabstop>
+  <tabstop>mLayerCapabilitiesToggleSelectionButton</tabstop>
+  <tabstop>mShowSpatialLayersCheckBox</tabstop>
+  <tabstop>mLayerCapabilitiesTreeFilterLineEdit</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>grpPythonMacros</tabstop>
   <tabstop>scrollArea_5</tabstop>
@@ -3286,6 +3303,8 @@
   <tabstop>mWMSName</tabstop>
   <tabstop>mWMSTitle</tabstop>
   <tabstop>mWMSContactOrganization</tabstop>
+  <tabstop>mWMSOnlineResourceLineEdit</tabstop>
+  <tabstop>mWMSOnlineResourceExpressionButton</tabstop>
   <tabstop>mWMSContactPerson</tabstop>
   <tabstop>mWMSContactPositionCb</tabstop>
   <tabstop>mWMSContactMail</tabstop>
@@ -3301,7 +3320,6 @@
   <tabstop>mWMSExtMaxY</tabstop>
   <tabstop>pbnWMSExtCanvas</tabstop>
   <tabstop>grpWMSList</tabstop>
-  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>pbnWMSAddSRS</tabstop>
   <tabstop>pbnWMSRemoveSRS</tabstop>
   <tabstop>pbnWMSSetUsedSRS</tabstop>
@@ -3323,6 +3341,7 @@
   <tabstop>mWMSInspireTemporalReference</tabstop>
   <tabstop>mWMSInspireMetadataDate</tabstop>
   <tabstop>mWmsUseLayerIDs</tabstop>
+  <tabstop>mUseAttributeFormSettingsCheckBox</tabstop>
   <tabstop>mAddWktGeometryCheckBox</tabstop>
   <tabstop>mSegmentizeFeatureInfoGeometryCheckBox</tabstop>
   <tabstop>mWMSPrecisionSpinBox</tabstop>
@@ -3330,6 +3349,10 @@
   <tabstop>mMaxWidthLineEdit</tabstop>
   <tabstop>mMaxHeightLineEdit</tabstop>
   <tabstop>mWMSImageQualitySpinBox</tabstop>
+  <tabstop>mWMSMaxAtlasFeaturesSpinBox</tabstop>
+  <tabstop>mWMSTileBufferSpinBox</tabstop>
+  <tabstop>twWmtsLayers</tabstop>
+  <tabstop>twWmtsGrids</tabstop>
   <tabstop>mWMTSMinScaleSpinBox</tabstop>
   <tabstop>mWMTSUrlLineEdit</tabstop>
   <tabstop>twWFSLayers</tabstop>
@@ -3342,6 +3365,9 @@
   <tabstop>mWCSUrlLineEdit</tabstop>
   <tabstop>pbnLaunchOWSChecker</tabstop>
   <tabstop>teOWSChecker</tabstop>
+  <tabstop>mStartDateTimeEdit</tabstop>
+  <tabstop>mEndDateTimeEdit</tabstop>
+  <tabstop>mCalculateFromLayerButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

@@ -12,7 +12,7 @@
 
 class QgsEllipse
 {
-%Docstring
+%Docstring(signature="appended")
 Ellipse geometry type.
 
 An ellipse is defined by a center point with a semi-major axis, a semi-minor axis and an azimuth.

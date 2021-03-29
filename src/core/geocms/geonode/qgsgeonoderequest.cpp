@@ -272,7 +272,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
 
   QString wmsURLFormat, wfsURLFormat, xyzURLFormat;
 
-  for ( const QVariant &layer : qgis::as_const( layerList ) )
+  for ( const QVariant &layer : std::as_const( layerList ) )
   {
     QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
     const QVariantMap layerMap = layer.toMap();
@@ -543,7 +543,7 @@ bool QgsGeoNodeRequest::requestBlocking( const QString &endPoint )
 QNetworkReply *QgsGeoNodeRequest::requestUrl( const QString &url )
 {
   QNetworkRequest request( url );
-  request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, 1 );
 
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGeoNodeRequest" ) );
   // Add authentication check here

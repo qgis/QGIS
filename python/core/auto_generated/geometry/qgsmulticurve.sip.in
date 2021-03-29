@@ -10,7 +10,7 @@
 
 class QgsMultiCurve: QgsGeometryCollection
 {
-%Docstring
+%Docstring(signature="appended")
 Multi curve geometry collection.
 
 .. versionadded:: 2.10

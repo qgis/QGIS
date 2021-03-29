@@ -283,7 +283,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     else
     {
       //set all as populated -- we also need to do this for newly created items, because they won't yet be children of this item
-      for ( QgsDataItem *child : qgis::as_const( children ) )
+      for ( QgsDataItem *child : std::as_const( children ) )
       {
         child->setState( Populated );
       }
@@ -342,8 +342,13 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
       return; // already added
   }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList typeList = layerProperty.type.split( ',', QString::SkipEmptyParts );
   QStringList sridList = layerProperty.srid.split( ',', QString::SkipEmptyParts );
+#else
+  QStringList typeList = layerProperty.type.split( ',', Qt::SkipEmptyParts );
+  QStringList sridList = layerProperty.srid.split( ',', Qt::SkipEmptyParts );
+#endif
   Q_ASSERT( typeList.size() == sridList.size() );
 
   for ( int i = 0; i < typeList.size(); i++ )

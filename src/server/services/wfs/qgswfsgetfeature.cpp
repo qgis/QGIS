@@ -333,7 +333,7 @@ namespace QgsWfs
         accessControl->filterFeatures( vlayer, featureRequest );
 
         QStringList attributes = QStringList();
-        for ( int idx : qgis::as_const( attrIndexes ) )
+        for ( int idx : std::as_const( attrIndexes ) )
         {
           attributes.append( vlayer->fields().field( idx ).name() );
         }

@@ -36,7 +36,8 @@ class QgsMessageOutput;
 
 /**
  * \ingroup core
- * A class that executes an external program/script.
+ * \brief A class that executes an external program/script.
+ *
  * It can optionally capture the standard output and error from the
  * process and displays them in a dialog box.
  *
@@ -93,7 +94,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
 #if QT_CONFIG(process)
 
 /**
- * A thread safe class for performing blocking (sync) execution of external processes.
+ * \brief A thread safe class for performing blocking (sync) execution of external processes.
  *
  * This class should be used whenever a blocking process run is required. Unlike implementations
  * which rely on QApplication::processEvents() or creation of a QEventLoop, this class is completely
@@ -184,6 +185,13 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
      */
     QProcess::ExitStatus exitStatus() const;
 
+    /**
+     * After a call to run(), returns the process' reported error.
+     *
+     * Returns QProcess::UnknownError if no error occurred.
+     */
+    QProcess::ProcessError processError() const;
+
   private:
 
     QString mProcess;
@@ -192,6 +200,7 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
     std::function< void( const QByteArray & ) > mStderrHandler;
 
     QProcess::ExitStatus mExitStatus = QProcess::NormalExit;
+    QProcess::ProcessError mProcessError = QProcess::UnknownError;
 };
 
 #endif // QT_CONFIG(process)

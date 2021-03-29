@@ -24,7 +24,7 @@
 class QgsHanaExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
-    explicit QgsHanaExpressionCompiler( QgsHanaFeatureSource *source );
+    explicit QgsHanaExpressionCompiler( QgsHanaFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:
     QString quotedIdentifier( const QString &identifier ) override;

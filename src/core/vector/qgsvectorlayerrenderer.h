@@ -50,7 +50,7 @@ class QgsVectorLayerDiagramProvider;
 
 /**
  * \ingroup core
- * Interruption checker used by QgsVectorLayerRenderer::render()
+ * \brief Interruption checker used by QgsVectorLayerRenderer::render()
  * \note not available in Python bindings
  */
 class QgsVectorLayerRendererInterruptionChecker: public QgsFeedback
@@ -68,7 +68,7 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsFeedback
 
 /**
  * \ingroup core
- * Implementation of threaded rendering for vector layers.
+ * \brief Implementation of threaded rendering for vector layers.
  *
  * \note not available in Python bindings
  * \since QGIS 2.4

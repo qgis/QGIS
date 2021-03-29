@@ -28,7 +28,7 @@ class QgsMeshLayer;
 /**
  * \ingroup core
  *
- * Class that can be used to store and access extra dataset group, like memory dataset (temporary)
+ * \brief Class that can be used to store and access extra dataset group, like memory dataset (temporary)
  * Derived from QgsMeshDatasetSourceInterface, this class has same methods as QgsMeshDataProvider to access to the datasets.
  *
  * \since QGIS 3.16
@@ -98,7 +98,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
 /**
  * \ingroup core
  *
- * Class used to register and access all the dataset groups related to a mesh layer
+ * \brief Class used to register and access all the dataset groups related to a mesh layer
  *
  * The registered dataset group are :
  *

@@ -108,6 +108,12 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   // blob
                   << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
 
+                  // list types
+                  << QgsVectorDataProvider::NativeType( tr( "String list" ), QStringLiteral( "stringlist" ), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
+                  << QgsVectorDataProvider::NativeType( tr( "Integer list" ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal (real) list" ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+                  << QgsVectorDataProvider::NativeType( tr( "Integer (64bit) list" ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+
                 );
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
@@ -196,7 +202,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
         {
           //array
           subType = type;
-          type = ( subType == QVariant::String ? QVariant::StringList : QVariant::List );
+          type = type == QVariant::String ? QVariant::StringList : QVariant::List;
+          typeName += QStringLiteral( "list" );
         }
       }
       if ( !name.isEmpty() )
@@ -270,9 +277,38 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
   QgsAttributeList attrs = const_cast<QgsMemoryProvider *>( this )->attributeIndexes();
   for ( int i = 0; i < attrs.size(); i++ )
   {
-    QgsField field = mFields.at( attrs[i] );
+    const QgsField field = mFields.at( attrs[i] );
     QString fieldDef = field.name();
-    fieldDef.append( QStringLiteral( ":%2(%3,%4)" ).arg( field.typeName() ).arg( field.length() ).arg( field.precision() ) );
+
+    QString typeName = field.typeName();
+    bool isList = false;
+    if ( field.type() == QVariant::List || field.type() == QVariant::StringList )
+    {
+      switch ( field.subType() )
+      {
+        case QVariant::Int:
+          typeName = QStringLiteral( "integer" );
+          break;
+
+        case QVariant::LongLong:
+          typeName = QStringLiteral( "long" );
+          break;
+
+        case QVariant::Double:
+          typeName = QStringLiteral( "double" );
+          break;
+
+        case QVariant::String:
+          typeName = QStringLiteral( "string" );
+          break;
+
+        default:
+          break;
+      }
+      isList = true;
+    }
+
+    fieldDef.append( QStringLiteral( ":%2(%3,%4)%5" ).arg( typeName ).arg( field.length() ).arg( field.precision() ).arg( isList ? QStringLiteral( "[]" ) : QString() ) );
     query.addQueryItem( QStringLiteral( "field" ), fieldDef );
   }
   uri.setQuery( query );
@@ -430,7 +466,8 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     QString errorMessage;
     for ( int i = 0; i < mFields.count(); ++i )
     {
-      QVariant attrValue { it->attribute( i ) };
+      const QVariant originalValue = it->attribute( i );
+      QVariant attrValue = originalValue;
       if ( ! attrValue.isNull() && ! mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
       {
         // Push first conversion error only
@@ -442,6 +479,11 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         result = false;
         conversionError = true;
         continue;
+      }
+      else if ( attrValue.type() != originalValue.type() )
+      {
+        // convertCompatible has resulted in a data type conversion
+        it->setAttribute( i, attrValue );
       }
     }
 
@@ -614,7 +656,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
     // Break on errors
     for ( QgsAttributeMap::const_iterator it2 = attrs.constBegin(); it2 != attrs.constEnd(); ++it2 )
     {
-      QVariant attrValue { it2.value() };
+      QVariant attrValue = it2.value();
       // Check attribute conversion
       const bool conversionError { ! attrValue.isNull()
                                    && ! mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
@@ -631,7 +673,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         break;
       }
       rollBackAttrs.insert( it2.key(), fit->attribute( it2.key() ) );
-      fit->setAttribute( it2.key(), it2.value() );
+      fit->setAttribute( it2.key(), attrValue );
     }
     rollBackMap.insert( it.key(), rollBackAttrs );
   }

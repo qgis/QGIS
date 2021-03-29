@@ -30,7 +30,7 @@ class QgsFeedback;
 /**
  * \class QgsFeatureSource
  * \ingroup core
- * An interface for objects which provide features via a getFeatures method.
+ * \brief An interface for objects which provide features via a getFeatures method.
  *
  * \since QGIS 3.0
  */

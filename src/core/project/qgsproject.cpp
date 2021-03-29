@@ -24,6 +24,7 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsmaplayerfactory.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
@@ -75,7 +76,9 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QUrl>
-
+#include <QStandardPaths>
+#include <QUuid>
+#include <QRegularExpression>
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
@@ -422,18 +425,18 @@ QgsProject::QgsProject( QObject *parent )
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this, this );
   connect( this, &QgsProject::layersAdded, this, &QgsProject::onMapLayersAdded );
   connect( this, &QgsProject::layersRemoved, this, [ = ] { cleanTransactionGroups(); } );
-  connect( this, qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsProject::layersWillBeRemoved ), this, &QgsProject::onMapLayersRemoved );
+  connect( this, qOverload< const QList<QgsMapLayer *> & >( &QgsProject::layersWillBeRemoved ), this, &QgsProject::onMapLayersRemoved );
 
   // proxy map layer store signals to this
-  connect( mLayerStore.get(), qgis::overload<const QStringList &>::of( &QgsMapLayerStore::layersWillBeRemoved ),
+  connect( mLayerStore.get(), qOverload<const QStringList &>( &QgsMapLayerStore::layersWillBeRemoved ),
   this, [ = ]( const QStringList & layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
-  connect( mLayerStore.get(), qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsMapLayerStore::layersWillBeRemoved ),
+  connect( mLayerStore.get(), qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersWillBeRemoved ),
   this, [ = ]( const QList<QgsMapLayer *> &layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
-  connect( mLayerStore.get(), qgis::overload< const QString & >::of( &QgsMapLayerStore::layerWillBeRemoved ),
+  connect( mLayerStore.get(), qOverload< const QString & >( &QgsMapLayerStore::layerWillBeRemoved ),
   this, [ = ]( const QString & layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
-  connect( mLayerStore.get(), qgis::overload< QgsMapLayer * >::of( &QgsMapLayerStore::layerWillBeRemoved ),
+  connect( mLayerStore.get(), qOverload< QgsMapLayer * >( &QgsMapLayerStore::layerWillBeRemoved ),
   this, [ = ]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
-  connect( mLayerStore.get(), qgis::overload<const QStringList & >::of( &QgsMapLayerStore::layersRemoved ), this,
+  connect( mLayerStore.get(), qOverload<const QStringList & >( &QgsMapLayerStore::layersRemoved ), this,
   [ = ]( const QStringList & layers ) { mProjectScope.reset(); emit layersRemoved( layers ); } );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerRemoved, this,
   [ = ]( const QString & layer ) { mProjectScope.reset(); emit layerRemoved( layer ); } );
@@ -449,7 +452,7 @@ QgsProject::QgsProject( QObject *parent )
     connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
   }
 
-  connect( mLayerStore.get(), qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsMapLayerStore::layersWillBeRemoved ), this,
+  connect( mLayerStore.get(), qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersWillBeRemoved ), this,
            [ = ]( const QList<QgsMapLayer *> &layers )
   {
     for ( const auto &layer : layers )
@@ -458,7 +461,7 @@ QgsProject::QgsProject( QObject *parent )
     }
   }
          );
-  connect( mLayerStore.get(),  qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsMapLayerStore::layersAdded ), this,
+  connect( mLayerStore.get(),  qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersAdded ), this,
            [ = ]( const QList<QgsMapLayer *> &layers )
   {
     for ( const auto &layer : layers )
@@ -847,6 +850,7 @@ void QgsProject::clear()
   mTimeSettings->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
+  mAvoidIntersectionsMode = AvoidIntersectionsMode::AllowIntersections;
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
 
@@ -1171,41 +1175,59 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   std::unique_ptr<QgsMapLayer> mapLayer;
 
   QgsScopedRuntimeProfile profile( tr( "Create layer" ), QStringLiteral( "projectload" ) );
-  if ( type == QLatin1String( "vector" ) )
+
+  bool ok = false;
+  const QgsMapLayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
+  if ( !ok )
   {
-    mapLayer = qgis::make_unique<QgsVectorLayer>();
-    // apply specific settings to vector layer
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+    QgsDebugMsg( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
+    return false;
+  }
+
+  switch ( layerType )
+  {
+    case QgsMapLayerType::VectorLayer:
     {
-      vl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+      mapLayer = std::make_unique<QgsVectorLayer>();
+      // apply specific settings to vector layer
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+      {
+        vl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+      }
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+      mapLayer = std::make_unique<QgsRasterLayer>();
+      break;
+
+    case QgsMapLayerType::MeshLayer:
+      mapLayer = std::make_unique<QgsMeshLayer>();
+      break;
+
+    case QgsMapLayerType::VectorTileLayer:
+      mapLayer = std::make_unique<QgsVectorTileLayer>();
+      break;
+
+    case QgsMapLayerType::PointCloudLayer:
+      mapLayer = std::make_unique<QgsPointCloudLayer>();
+      break;
+
+    case QgsMapLayerType::PluginLayer:
+    {
+      QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
+      mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
+      break;
+    }
+
+    case QgsMapLayerType::AnnotationLayer:
+    {
+      QgsAnnotationLayer::LayerOptions options( mTransformContext );
+      mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
+      break;
     }
   }
-  else if ( type == QLatin1String( "raster" ) )
-  {
-    mapLayer =  qgis::make_unique<QgsRasterLayer>();
-  }
-  else if ( type == QLatin1String( "mesh" ) )
-  {
-    mapLayer = qgis::make_unique<QgsMeshLayer>();
-  }
-  else if ( type == QLatin1String( "vector-tile" ) )
-  {
-    mapLayer = qgis::make_unique<QgsVectorTileLayer>();
-  }
-  else if ( type == QLatin1String( "point-cloud" ) )
-  {
-    mapLayer = qgis::make_unique<QgsPointCloudLayer>();
-  }
-  else if ( type == QLatin1String( "plugin" ) )
-  {
-    QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-    mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
-  }
-  else if ( type == QLatin1String( "annotation" ) )
-  {
-    QgsAnnotationLayer::LayerOptions options( mTransformContext );
-    mapLayer = qgis::make_unique<QgsAnnotationLayer>( QString(), options );
-  }
+
   if ( !mapLayer )
   {
     QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );
@@ -1927,14 +1949,14 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   // MUCH cheaper to clone than build
   if ( mProjectScope )
   {
-    std::unique_ptr< QgsExpressionContextScope > projectScope = qgis::make_unique< QgsExpressionContextScope >( *mProjectScope );
+    std::unique_ptr< QgsExpressionContextScope > projectScope = std::make_unique< QgsExpressionContextScope >( *mProjectScope );
     // we can't cache these
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_distance_units" ), QgsUnitTypes::toString( distanceUnits() ), true, true ) );
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_area_units" ), QgsUnitTypes::toString( areaUnits() ), true, true ) );
     return projectScope.release();
   }
 
-  mProjectScope = qgis::make_unique< QgsExpressionContextScope >( QObject::tr( "Project" ) );
+  mProjectScope = std::make_unique< QgsExpressionContextScope >( QObject::tr( "Project" ) );
 
   const QVariantMap vars = customVariables();
 

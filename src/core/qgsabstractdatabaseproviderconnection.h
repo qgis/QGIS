@@ -28,7 +28,7 @@
 class QgsFeedback;
 
 /**
- * The QgsAbstractDatabaseProviderConnection class provides common functionality
+ * \brief The QgsAbstractDatabaseProviderConnection class provides common functionality
  * for DB based connections.
  *
  * This class performs low level DB operations without asking

@@ -101,6 +101,13 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey );
 
     /**
+     * Emitted when one or more GDAL supported layers are selected for addition
+     * \param layersList list of layers protocol URIs
+     * \since 3.20
+     */
+    void addRasterLayers( const QStringList &layersList );
+
+    /**
      * Emitted when a vector layer has been selected for addition.
      *
      * If \a providerKey is not specified, the default provider key associated with the source

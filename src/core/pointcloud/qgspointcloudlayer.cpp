@@ -30,6 +30,8 @@
 #include "qgspointcloudrendererregistry.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerfactory.h"
+#include <QUrl>
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
@@ -120,7 +122,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "point-cloud" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
 
   if ( mDataProvider )
   {
@@ -275,6 +277,7 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+  invalidateWgs84Extent();
 }
 
 void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
@@ -327,7 +330,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
 
     bool defaultLoadedFlag = false;
 
@@ -358,6 +361,34 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   triggerRepaint();
 }
 
+QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( providerType(), source );
+  if ( parts.contains( QStringLiteral( "path" ) ) )
+  {
+    parts.insert( QStringLiteral( "path" ), context.pathResolver().writePath( parts.value( QStringLiteral( "path" ) ).toString() ) );
+    return QgsProviderRegistry::instance()->encodeUri( providerType(), parts );
+  }
+  else
+  {
+    return source;
+  }
+}
+
+QString QgsPointCloudLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( dataProvider, source );
+  if ( parts.contains( QStringLiteral( "path" ) ) )
+  {
+    parts.insert( QStringLiteral( "path" ), context.pathResolver().readPath( parts.value( QStringLiteral( "path" ) ).toString() ) );
+    return QgsProviderRegistry::instance()->encodeUri( dataProvider, parts );
+  }
+  else
+  {
+    return source;
+  }
+}
+
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
 {
   if ( state == QgsPointCloudDataProvider::Indexed )
@@ -369,7 +400,7 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
     }
     triggerRepaint();
 
-    emit renderer3DChanged();
+    emit rendererChanged();
   }
 }
 

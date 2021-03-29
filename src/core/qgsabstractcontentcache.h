@@ -24,20 +24,27 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetchertask.h"
 
 #include <QObject>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QMutex>
+#else
+#include <QRecursiveMutex>
+#endif
 #include <QCache>
 #include <QSet>
 #include <QDateTime>
 #include <QList>
-#include "qgsnetworkcontentfetchertask.h"
+#include <QFile>
 #include <QNetworkReply>
+#include <QFileInfo>
+#include <QUrl>
 
 /**
  * \class QgsAbstractContentCacheEntry
  * \ingroup core
- * Base class for entries in a QgsAbstractContentCache.
+ * \brief Base class for entries in a QgsAbstractContentCache.
  *
  * Subclasses must take care to correctly implement the isEqual() method, applying their
  * own logic for testing extra cache properties (e.g. image size for an image-based cache).
@@ -121,7 +128,7 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
  * \class QgsAbstractContentCacheBase
  * \ingroup core
  *
- * A QObject derived base class for QgsAbstractContentCache.
+ * \brief A QObject derived base class for QgsAbstractContentCache.
  *
  * Required because template based class (such as QgsAbstractContentCache) cannot use the Q_OBJECT macro.
  *
@@ -176,7 +183,7 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
  * \class QgsAbstractContentCache
  * \ingroup core
  *
- * Abstract base class for file content caches, such as SVG or raster image caches.
+ * \brief Abstract base class for file content caches, such as SVG or raster image caches.
  *
  * Handles trimming the maximum cached content size to a desired limit, fetching remote
  * content (via HTTP), and automatically invalidating cached content when the corresponding
@@ -207,7 +214,9 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
                              long maxCacheSize = 20000000,
                              int fileModifiedCheckTimeout = 30000 )
       : QgsAbstractContentCacheBase( parent )
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
       , mMutex( QMutex::Recursive )
+#endif
       , mMaxCacheSize( maxCacheSize )
       , mFileModifiedCheckTimeout( fileModifiedCheckTimeout )
       , mTypeString( typeString.isEmpty() ? QObject::tr( "Content" ) : typeString )
@@ -545,8 +554,11 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
       return currentEntry;
     }
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     mutable QMutex mMutex;
+#else
+    mutable QRecursiveMutex mMutex;
+#endif
     //! Estimated total size of all cached content
     long mTotalSize = 0;
 

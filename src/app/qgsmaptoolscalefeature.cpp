@@ -168,7 +168,7 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( !mAnchorPoint )
     {
-      mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+      mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     }
     mAnchorPoint->setCenter( e->mapPoint() );
@@ -199,7 +199,7 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     mAutoSetAnchorPoint = false;
     if ( !mAnchorPoint )
     {
-      mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+      mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
       mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
       mAutoSetAnchorPoint = true;
     }
@@ -266,9 +266,11 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeatureIterator it = vlayer->getSelectedFeatures();
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mRubberBand->addGeometry( feat.geometry(), vlayer, false );
         mOriginalGeometries << feat.geometry();
       }
+      mRubberBand->updatePosition();
+      mRubberBand->update();
     }
 
     mScalingActive = true;
@@ -345,7 +347,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
   t.scale( mScaling, mScaling );
   t.translate( -mFeatureCenterMapCoords.x(), -mFeatureCenterMapCoords.y() );
 
-  for ( QgsFeatureId id : qgis::as_const( mScaledFeatures ) )
+  for ( QgsFeatureId id : std::as_const( mScaledFeatures ) )
   {
     QgsFeature feat;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
@@ -392,7 +394,7 @@ void QgsMapToolScaleFeature::activate()
     mExtent = vlayer->boundingBoxOfSelected();
     mFeatureCenterMapCoords = mExtent.center();
 
-    mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
+    mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     mAnchorPoint->setCenter( mFeatureCenterMapCoords );
   }

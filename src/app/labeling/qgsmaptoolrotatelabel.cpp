@@ -80,6 +80,10 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
       mRotationItem->update();
     }
   }
+  else
+  {
+    updateHoveredLabel( e );
+  }
 }
 
 void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
@@ -91,6 +95,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
     // first click starts rotation tool
     deleteRubberBands();
+    clearHoveredLabel();
 
     QgsLabelPosition labelPos;
     if ( !labelAtPosition( e, labelPos ) )
@@ -286,6 +291,17 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
       }
     }
   }
+}
+
+bool QgsMapToolRotateLabel::canModifyLabel( const QgsMapToolLabel::LabelDetails &label )
+{
+  // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+
+  if ( !label.pos.isPinned
+       && label.settings.placement != QgsPalLayerSettings::OverPoint )
+    return false;
+
+  return true;
 }
 
 int QgsMapToolRotateLabel::roundTo15Degrees( double n )

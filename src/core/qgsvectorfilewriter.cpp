@@ -45,6 +45,7 @@
 #include <QSet>
 #include <QMetaType>
 #include <QMutex>
+#include <QRegularExpression>
 
 #include <cassert>
 #include <cstdlib> // size_t
@@ -175,7 +176,6 @@ bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
   {
     return true;
   }
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   GDALDriverH gdalDriver = GDALGetDriverByName( driverName.toLocal8Bit().constData() );
   if ( !gdalDriver )
     return false;
@@ -185,9 +185,6 @@ bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
     return false;
 
   return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES, false );
-#else
-  return driverName == QLatin1String( "DXF" ) || driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "MapInfo File" );
-#endif
 }
 
 void QgsVectorFileWriter::init( QString vectorFileName,
@@ -548,21 +545,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       QString layerName = vectorFileName.left( vectorFileName.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
-#if PROJ_VERSION_MAJOR<6
-      if ( prjFile.open( QIODevice::WriteOnly  | QIODevice::Truncate ) )
-      {
-        QTextStream prjStream( &prjFile );
-        prjStream << srs.toWkt().toLocal8Bit().constData() << endl;
-        prjFile.close();
-      }
-      else
-      {
-        QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
-      }
-#else
       if ( prjFile.exists() )
         prjFile.remove();
-#endif
     }
   }
 
@@ -701,7 +685,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             ogrType = OFTBinary;
             break;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
           case QVariant::List:
             // only string list supported at the moment, fall through to default for other types
             if ( attrField.subType() == QVariant::String )
@@ -721,7 +704,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             }
             //intentional fall-through
             FALLTHROUGH
-#endif
 
           default:
             //assert(0 && "invalid variant type!");
@@ -996,7 +978,6 @@ class QgsVectorFileWriterMetadataContainer
                              QStringLiteral( "COMMA" ) // Default value
                            ) );
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
       layerOptions.insert( QStringLiteral( "STRING_QUOTING" ), new QgsVectorFileWriter::SetOption(
                              QObject::tr( "Double-quote strings. IF_AMBIGUOUS means that string values that look like numbers will be quoted." ),
                              QStringList()
@@ -1005,7 +986,6 @@ class QgsVectorFileWriterMetadataContainer
                              << QStringLiteral( "ALWAYS" ),
                              QStringLiteral( "IF_AMBIGUOUS" ) // Default value
                            ) );
-#endif
 
       layerOptions.insert( QStringLiteral( "WRITE_BOM" ), new QgsVectorFileWriter::BoolOption(
                              QObject::tr( "Write a UTF-8 Byte Order Mark (BOM) at the start of the file." ),
@@ -1052,9 +1032,7 @@ class QgsVectorFileWriterMetadataContainer
                              QObject::tr( " POINTM, ARCM, POLYGONM or MULTIPOINTM for measured geometries"
                                           " and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured"
                                           " geometries." ) +
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
                              QObject::tr( " MULTIPATCH files are supported since GDAL 2.2." ) +
-#endif
                              ""
                              , QStringList()
                              << QStringLiteral( "NULL" )
@@ -1074,9 +1052,7 @@ class QgsVectorFileWriterMetadataContainer
                              << QStringLiteral( "ARCZM" )
                              << QStringLiteral( "POLYGONZM" )
                              << QStringLiteral( "MULTIPOINTZM" )
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
                              << QStringLiteral( "MULTIPATCH" )
-#endif
                              << QString(),
                              QString(), // Default value
                              true  // Allow None
@@ -1564,13 +1540,11 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "relativeToGround" ) // Default value
                              ) );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
       datasetOptions.insert( QStringLiteral( "DOCUMENT_ID" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "The DOCUMENT_ID datasource creation option can be used to specified "
                                             "the id of the root <Document> node. The default value is root_doc." ),
                                QStringLiteral( "root_doc" )  // Default value
                              ) );
-#endif
 
       driverMetadata.insert( QStringLiteral( "KML" ),
                              QgsVectorFileWriter::MetaData(
@@ -2516,7 +2490,6 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       case QVariant::Invalid:
         break;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
       case QVariant::List:
         // only string list supported at the moment, fall through to default for other types
         if ( field.subType() == QVariant::String )
@@ -2546,7 +2519,6 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         }
         //intentional fall-through
         FALLTHROUGH
-#endif
 
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
@@ -2912,7 +2884,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
 
   if ( !details.attributes.isEmpty() )
   {
-    for ( int attrIdx : qgis::as_const( details.attributes ) )
+    for ( int attrIdx : std::as_const( details.attributes ) )
     {
       details.outputFields.append( details.sourceFields.at( attrIdx ) );
     }
@@ -2926,8 +2898,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
     {
       if ( details.outputFields.at( i ).type() == QVariant::LongLong )
       {
-        QVariant min = layer->minimumValue( i );
-        QVariant max = layer->maximumValue( i );
+        QVariant min;
+        QVariant max;
+        layer->minimumAndMaximumValue( i, min, max );
         if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < std::numeric_limits<int>::max() )
         {
           details.outputFields[i].setType( QVariant::Int );
@@ -3272,7 +3245,6 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
     {
       QString drvName = OGR_Dr_GetName( drv );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
       GDALDriverH gdalDriver = GDALGetDriverByName( drvName.toLocal8Bit().constData() );
       char **metadata = nullptr;
       if ( gdalDriver )
@@ -3281,9 +3253,6 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
       }
 
       bool nonSpatialFormat = CSLFetchBoolean( metadata, GDAL_DCAP_NONSPATIAL, false );
-#else
-      bool nonSpatialFormat = ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) );
-#endif
 
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
@@ -3441,7 +3410,7 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
   }
 
   results.reserve( writableDrivers.count() );
-  for ( const QString &drvName : qgis::as_const( writableDrivers ) )
+  for ( const QString &drvName : std::as_const( writableDrivers ) )
   {
     MetaData metadata;
     if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )

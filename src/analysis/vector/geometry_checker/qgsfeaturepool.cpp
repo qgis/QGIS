@@ -24,13 +24,15 @@
 #include "qgsreadwritelocker.h"
 
 #include <QMutexLocker>
+#include <QThread>
+
 
 
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
   : mFeatureCache( CACHE_SIZE )
   , mLayer( layer )
   , mGeometryType( layer->geometryType() )
-  , mFeatureSource( qgis::make_unique<QgsVectorLayerFeatureSource>( layer ) )
+  , mFeatureSource( std::make_unique<QgsVectorLayerFeatureSource>( layer ) )
   , mLayerName( layer->name() )
 {
 
@@ -79,7 +81,7 @@ QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request, Qgs
 
   QgsFeatureIds fids;
 
-  mFeatureSource = qgis::make_unique<QgsVectorLayerFeatureSource>( mLayer );
+  mFeatureSource = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
 
   QgsFeatureIterator it = mFeatureSource->getFeatures( request );
   QgsFeature feature;

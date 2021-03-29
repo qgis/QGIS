@@ -41,6 +41,7 @@
 #include <QDesktopWidget>
 #include <QMenu>
 #include <QClipboard>
+#include <QMimeData>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -189,7 +190,7 @@ void QgsLayoutView::scaleSafe( double scale )
 {
   double currentScale = transform().m11();
   scale *= currentScale;
-  scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
+  scale = std::clamp( scale, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
   emit zoomLevelChanged();
   viewChanged();
@@ -212,7 +213,7 @@ void QgsLayoutView::setZoomLevel( double level )
       dpi = 72;
 
     //desired pixel width for 1mm on screen
-    level = qBound( MIN_VIEW_SCALE, level, MAX_VIEW_SCALE );
+    level = std::clamp( level, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
     double mmLevel = currentLayout()->convertFromLayoutUnits( level, QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
     setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
   }
@@ -917,7 +918,7 @@ void QgsLayoutView::ungroupSelectedItems()
 
   if ( !ungroupedItems.empty() )
   {
-    for ( QgsLayoutItem *item : qgis::as_const( ungroupedItems ) )
+    for ( QgsLayoutItem *item : std::as_const( ungroupedItems ) )
     {
       item->setSelected( true );
     }
@@ -942,7 +943,7 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MidButton )
+    if ( event->button() == Qt::MiddleButton )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
@@ -1162,7 +1163,7 @@ void QgsLayoutView::invalidateCachedRenders()
   QList< QgsLayoutItem *> items;
   currentLayout()->layoutItems( items );
 
-  for ( QgsLayoutItem *item : qgis::as_const( items ) )
+  for ( QgsLayoutItem *item : std::as_const( items ) )
   {
     item->invalidateCache();
   }
@@ -1264,11 +1265,7 @@ QgsLayoutViewSnapMarker::QgsLayoutViewSnapMarker()
 {
   QFont f;
   QFontMetrics fm( f );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mSize = fm.width( QStringLiteral( "X" ) );
-#else
   mSize = fm.horizontalAdvance( 'X' );
-#endif
   setPen( QPen( Qt::transparent, mSize ) );
 
   setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );

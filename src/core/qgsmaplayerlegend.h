@@ -39,7 +39,7 @@ class QgsSymbol;
 
 /**
  * \ingroup core
- * The QgsMapLayerLegend class is abstract interface for implementations
+ * \brief The QgsMapLayerLegend class is abstract interface for implementations
  * of legends for one map layer.
  *
  * \since QGIS 2.6
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 
 /**
  * \ingroup core
- * Miscellaneous utility functions for handling of map layer legend
+ * \brief Miscellaneous utility functions for handling of map layer legend
  *
  * \since QGIS 2.6
  */
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 
 /**
  * \ingroup core
- * Default legend implementation for vector layers
+ * \brief Default legend implementation for vector layers
  * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 
 /**
  * \ingroup core
- * Default legend implementation for raster layers
+ * \brief Default legend implementation for raster layers
  * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 
 /**
  * \ingroup core
- * Default legend implementation for mesh layers
+ * \brief Default legend implementation for mesh layers
  * \since QGIS 3.4
  */
 class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
 
 /**
  * \ingroup core
- * Default legend implementation for point cloud layers
+ * \brief Default legend implementation for point cloud layers
  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsDefaultPointCloudLayerLegend : public QgsMapLayerLegend

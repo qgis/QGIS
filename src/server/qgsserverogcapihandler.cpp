@@ -313,7 +313,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       {
         fName.chop( 1 );
       }
-      fName += '/' + QString::number( args.at( 0 )->get<QgsFeatureId>( ) );
+      fName += '/' + QString::fromStdString( args.at( 0 )->get<std::string>( ) );
       if ( !suffix.isEmpty() )
       {
         fName += '.' + suffix;
@@ -477,7 +477,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
   {
     // Check aliases
     bool found { false };
-    if ( QgsServerOgcApi::contentTypeAliases().keys().contains( result ) )
+    if ( QgsServerOgcApi::contentTypeAliases().contains( result ) )
     {
       const QList<QgsServerOgcApi::ContentType> constCt { contentTypes() };
       for ( const auto &ct : constCt )
@@ -590,7 +590,7 @@ json QgsServerOgcApiHandler::jsonTags() const
 void QgsServerOgcApiHandler::setContentTypesInt( const QList<int> &contentTypes )
 {
   mContentTypes.clear();
-  for ( const int &i : qgis::as_const( contentTypes ) )
+  for ( const int &i : std::as_const( contentTypes ) )
   {
     mContentTypes.push_back( static_cast<QgsServerOgcApi::ContentType>( i ) );
   }

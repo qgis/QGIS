@@ -243,11 +243,12 @@
   <tabstop>mAddColumnPushButton</tabstop>
   <tabstop>mRemoveColumnPushButton</tabstop>
   <tabstop>mResetColumnsPushButton</tabstop>
+  <tabstop>mClearColumnsPushButton</tabstop>
   <tabstop>mSortColumnTableView</tabstop>
   <tabstop>mSortColumnUpPushButton</tabstop>
   <tabstop>mSortColumnDownPushButton</tabstop>
+  <tabstop>mAddSortColumnPushButton</tabstop>
   <tabstop>mRemoveSortColumnPushButton</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

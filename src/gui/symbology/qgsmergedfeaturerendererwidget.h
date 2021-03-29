@@ -25,7 +25,7 @@ class QMenu;
 
 /**
  * \ingroup gui
- * A widget used represent options of a QgsMergedFeatureRenderer
+ * \brief A widget used represent options of a QgsMergedFeatureRenderer
  *
  * \since QGIS 3.18
  */

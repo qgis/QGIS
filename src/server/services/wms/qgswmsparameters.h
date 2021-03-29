@@ -1327,6 +1327,10 @@ namespace QgsWms
        */
       bool isForce2D() const;
 
+      QString version() const override;
+
+      QString request() const override;
+
     private:
       static bool isExternalLayer( const QString &name );
 

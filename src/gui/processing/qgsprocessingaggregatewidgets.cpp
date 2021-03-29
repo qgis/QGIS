@@ -529,7 +529,7 @@ QWidget *QgsAggregateMappingWidget::AggregateDelegate::createEditor( QWidget *pa
   }
 
   connect( editor,
-           qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
+           qOverload<int >( &QComboBox::currentIndexChanged ),
            this,
            [ = ]( int currentIndex )
   {
@@ -546,7 +546,7 @@ void QgsAggregateMappingWidget::AggregateDelegate::setEditorData( QWidget *edito
   if ( ! editorWidget )
     return;
 
-  const QVariant value { index.model()->data( index, Qt::EditRole ) };
+  const QVariant value = index.model()->data( index, Qt::EditRole );
   editorWidget->setCurrentIndex( editorWidget->findData( value ) );
 }
 
@@ -556,7 +556,7 @@ void QgsAggregateMappingWidget::AggregateDelegate::setModelData( QWidget *editor
   if ( ! editorWidget )
     return;
 
-  const QVariant currentValue { editorWidget->currentData( ) };
+  const QVariant currentValue = editorWidget->currentData( );
   model->setData( index, currentValue, Qt::EditRole );
 }
 

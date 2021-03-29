@@ -30,7 +30,7 @@ class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsOgrExpressionCompiler( QgsOgrFeatureSource *source );
+    explicit QgsOgrExpressionCompiler( QgsOgrFeatureSource *source, bool ignoreStaticNodes = false );
 
     Result compile( const QgsExpression *exp ) override;
 

@@ -58,6 +58,9 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
         QgsHanaProviderUtils.cleanUp(cls.conn, cls.schemaName)
         cls.conn.close()
 
+    def getUniqueSchemaName(self, name):
+        return 'qgis_test_' + QgsHanaProviderUtils.generateSchemaName(self.conn, name)
+
     def createProviderMetadata(self):
         return QgsProviderRegistry.instance().providerMetadata(self.providerKey)
 

@@ -22,6 +22,8 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 
+#include <QFileInfo>
+
 ///@cond PRIVATE
 
 #define PROVIDER_KEY QStringLiteral( "ept" )
@@ -36,7 +38,7 @@ QgsEptProvider::QgsEptProvider(
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   loadIndex( );
 }
@@ -190,6 +192,11 @@ QString QgsEptProviderMetadata::filters( QgsProviderMetadata::FilterType type )
       return QObject::tr( "Entwine Point Clouds" ) + QStringLiteral( " (ept.json EPT.JSON)" );
   }
   return QString();
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsEptProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
 }
 
 QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const

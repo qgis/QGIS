@@ -40,6 +40,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QPolygonF>
+#include <QThread>
 
 QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint &point )
 {
@@ -109,6 +110,11 @@ void QgsFeatureRenderer::stopRender( QgsRenderContext & )
 #ifdef QGISDEBUG
   Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::stopRender", "stopRender called in a different thread - use a cloned renderer instead" );
 #endif
+}
+
+bool QgsFeatureRenderer::usesEmbeddedSymbols() const
+{
+  return false;
 }
 
 bool QgsFeatureRenderer::filterNeedsGeometry() const

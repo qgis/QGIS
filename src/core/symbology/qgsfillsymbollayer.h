@@ -254,18 +254,13 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
-
     QVariantMap properties() const override;
-
     QgsGradientFillSymbolLayer *clone() const override SIP_FACTORY;
-
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     //! Type of gradient, e.g., linear or radial
     GradientType gradientType() const { return mGradientType; }
@@ -454,18 +449,13 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
-
     QVariantMap properties() const override;
-
     QgsShapeburstFillSymbolLayer *clone() const override SIP_FACTORY;
-
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     /**
      * Sets the blur radius, which controls the amount of blurring applied to the fill.
@@ -711,7 +701,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
 /**
  * \ingroup core
- * Base class for polygon renderers generating texture images
+ * \brief Base class for polygon renderers generating texture images
 */
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 {
@@ -1023,7 +1013,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
 /**
  * \ingroup core
- * A class for filling symbols with a repeated SVG file.
+ * \brief A class for filling symbols with a repeated SVG file.
 */
 class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1305,7 +1295,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsLinePatternFillSymbolLayer
- * A symbol fill consisting of repeated parallel lines.
+ * \brief A symbol fill consisting of repeated parallel lines.
  */
 class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1824,7 +1814,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
  * \ingroup core
  * \class QgsRandomMarkerFillSymbolLayer
  *
- * A fill symbol layer which places markers at random locations within polygons.
+ * \brief A fill symbol layer which places markers at random locations within polygons.
  *
  * \since QGIS 3.12
  */
@@ -1860,6 +1850,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsRandomMarkerFillSymbolLayer *clone() const override SIP_FACTORY;
+    bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     void setColor( const QColor &color ) override;
     QColor color() const override;
@@ -2037,34 +2028,24 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
-
     QVariantMap properties() const override;
-
     QgsCentroidFillSymbolLayer *clone() const override SIP_FACTORY;
-
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
-
     void setColor( const QColor &color ) override;
     QColor color() const override;
-
     QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
-
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
+    bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     void setPointOnSurface( bool pointOnSurface ) { mPointOnSurface = pointOnSurface; }
     bool pointOnSurface() const { return mPointOnSurface; }

@@ -41,7 +41,7 @@ class QgsRasterDataProvider;
 
 /**
  * \ingroup core
- * Base class for processing modules.
+ * \brief Base class for processing modules.
  */
 class CORE_EXPORT QgsRasterPipe
 {

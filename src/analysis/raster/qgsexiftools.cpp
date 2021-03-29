@@ -15,7 +15,9 @@
 
 #include "qgsexiftools.h"
 #include "qgspoint.h"
+
 #include <exiv2/exiv2.hpp>
+
 #include <QRegularExpression>
 #include <QFileInfo>
 

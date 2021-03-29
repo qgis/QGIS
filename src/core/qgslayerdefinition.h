@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLayerDefinition
 
     /**
      * \ingroup core
-     * Class used to work with layer dependencies stored in a XML project or layer definition file
+     * \brief Class used to work with layer dependencies stored in a XML project or layer definition file
      */
     class CORE_EXPORT DependencySorter
     {
@@ -115,6 +115,12 @@ class CORE_EXPORT QgsLayerDefinition
         bool mHasMissingDependency;
         void init( const QDomDocument &doc );
     };
+
+  private:
+
+    static QList<QgsMapLayer *> loadLayerDefinitionLayersInternal( QDomDocument &document, QgsReadWriteContext &context, QString &errorMessage );
+
+
 };
 
 #endif // QGSLAYERDEFINITION_H

@@ -294,6 +294,17 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool save();
 
     /**
+     * Save all the values from the editors to the layer.
+     *
+     * \param error if specified, will be set to an explanatory error message if an error occurs while saving the form.
+     *
+     * \returns TRUE if save was successful
+     *
+     * \since QGIS 3.18
+     */
+    bool saveWithDetails( QString *error SIP_OUT = nullptr );
+
+    /**
      * Sets all values to the values of the current feature
      */
     void resetValues();
@@ -388,7 +399,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void scanForEqualAttributes( QgsFeatureIterator &fit, QSet< int > &mixedValueFields, QHash< int, QVariant > &fieldSharedValues ) const;
 
     //! Save single feature or add feature edits
-    bool saveEdits();
+    bool saveEdits( QString *error );
 
     //! fill up dependency map for default values
     void createDefaultValueDependencies();

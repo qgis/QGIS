@@ -33,7 +33,7 @@ class QgsChunkNode;
 
 /**
  * \ingroup 3d
- * Element of a double-linked list
+ * \brief Element of a double-linked list
  *
  * \note Not available in Python bindings
  *
@@ -55,7 +55,8 @@ struct QgsChunkListEntry
 
 /**
  * \ingroup 3d
- * Double linked list of chunks.
+ * \brief Double linked list of chunks.
+ *
  * The list does not own entries.
  *
  * Why having another linked list structure if there is already QLinkedList template?

@@ -649,6 +649,9 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   job.context.setLabelingEngine( labelingEngine2 );
   job.context.setExtent( mSettings.visibleExtent() );
   job.context.setFeatureFilterProvider( mFeatureFilterProvider );
+  QgsCoordinateTransform ct;
+  ct.setDestinationCrs( mSettings.destinationCrs() );
+  job.context.setCoordinateTransform( ct );
 
   // if we can use the cache, let's do it and avoid rendering!
   bool hasCache = canUseLabelCache && mCache && mCache->hasCacheImage( LABEL_CACHE_ID );

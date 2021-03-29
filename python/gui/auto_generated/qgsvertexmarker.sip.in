@@ -16,7 +16,7 @@
 
 class QgsVertexMarker : QgsMapCanvasItem
 {
-%Docstring
+%Docstring(signature="appended")
 A class for marking vertices of features using e.g. circles or 'x'.
 %End
 
@@ -41,6 +41,7 @@ A class for marking vertices of features using e.g. circles or 'x'.
       ICON_DOUBLE_TRIANGLE,
       ICON_TRIANGLE,
       ICON_RHOMBUS,
+      ICON_INVERTED_TRIANGLE,
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas /TransferThis/ );

@@ -12,7 +12,7 @@
 
 class QgsCurve: QgsAbstractGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for curved geometry type
 
 .. versionadded:: 2.10
@@ -277,6 +277,7 @@ Returns the curve's orientation, e.g. clockwise or counter-clockwise.
     virtual int childCount() const;
 
     virtual QgsPoint childPoint( int index ) const;
+
 
 
 

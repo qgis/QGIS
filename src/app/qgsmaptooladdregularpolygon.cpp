@@ -27,7 +27,7 @@
 QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Add regular polygon" );
 
@@ -44,7 +44,7 @@ QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
 {
   deleteNumberSidesSpinBox();
-  mNumberSidesSpinBox = qgis::make_unique<QgsSpinBox>();
+  mNumberSidesSpinBox = std::make_unique<QgsSpinBox>();
   mNumberSidesSpinBox->setMaximum( 99999999 );
   mNumberSidesSpinBox->setMinimum( 3 );
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );
@@ -115,7 +115,7 @@ void QgsMapToolAddRegularPolygon::deactivate()
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> ls( mRegularPolygon.toLineString() );
-  for ( const QgsPoint &point : qgis::as_const( mPoints ) )
+  for ( const QgsPoint &point : std::as_const( mPoints ) )
   {
     if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
          point.z() != defaultZValue() )

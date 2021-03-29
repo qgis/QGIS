@@ -43,11 +43,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
   QString firstLabel = firstLabelString( settings );
   QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, format );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  double xOffset = fontMetrics.width( firstLabel ) / 2.0;
-#else
   double xOffset = fontMetrics.horizontalAdvance( firstLabel ) / 2.0;
-#endif
 
   double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
@@ -148,13 +144,8 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     }
     else
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-      pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
-                - fontMetrics.width( currentNumericLabel ) / 2.0 );
-#else
       pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
                 - fontMetrics.horizontalAdvance( currentNumericLabel ) / 2.0 );
-#endif
       QgsTextRenderer::drawText( pos, 0, QgsTextRenderer::AlignLeft, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
     }
   }

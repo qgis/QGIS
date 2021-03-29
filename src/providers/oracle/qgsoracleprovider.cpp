@@ -46,6 +46,7 @@
 #include <QSqlRecord>
 #include <QSqlField>
 #include <QMessageBox>
+#include <QUuid>
 
 #include "ocispatial/wkbptr.h"
 

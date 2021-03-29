@@ -28,19 +28,36 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 
   public:
     QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
+    ~QgsMapToolMoveLabel();
+
+    void deleteRubberBands() override;
 
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
 
   protected:
+
+    bool canModifyCallout( const QgsCalloutPosition &position, bool isOrigin, int &xCol, int &yCol ) override;
+
+    bool mCurrentCalloutMoveOrigin = false;
+
+    QgsRubberBand *mCalloutMoveRubberBand = nullptr;
 
     //! Start point of the move in map coordinates
     QgsPointXY mStartPointMapCoords;
 
     double mClickOffsetX = 0;
     double mClickOffsetY = 0;
+
+  private:
+    bool currentCalloutDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol );
+
+    QgsPointXY snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const;
+
 };
 
 #endif // QGSMAPTOOLMOVELABEL_H

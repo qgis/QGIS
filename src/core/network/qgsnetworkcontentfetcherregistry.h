@@ -23,17 +23,17 @@
 #include <QMap>
 #include <QMutex>
 #include <QNetworkReply>
+#include <QFile>
+#include <QTemporaryFile>
 
 #include "qgis_core.h"
 #include "qgstaskmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
 
-class QTemporaryFile;
-
 /**
  * \class QgsFetchedContent
  * \ingroup core
- * FetchedContent holds useful information about a network content being fetched
+ * \brief FetchedContent holds useful information about a network content being fetched
  * \see QgsNetworkContentFetcherRegistry
  * \since QGIS 3.2
  */

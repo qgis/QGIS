@@ -23,6 +23,7 @@
 
 #include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
+#include <QTimer>
 
 class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
@@ -36,7 +37,7 @@ class QRect;
 
 /**
  * \ingroup gui
- * Shows a list of features and renders a edit button next to each feature.
+ * \brief Shows a list of features and renders a edit button next to each feature.
  *
  * Accepts a display expression to define the way, features are rendered.
  * Uses a QgsFeatureListModel as source model.

@@ -60,7 +60,7 @@ void QgsFeatureDownloaderProgressDialog::resizeEvent( QResizeEvent *ev )
   QRect rect = geometry();
   QRect cancelRect = mCancel->geometry();
   QRect hideRect = mHide->geometry();
-  int mtb = style()->pixelMetric( QStyle::PM_DefaultTopLevelMargin );
+  int mtb = style()->pixelMetric( QStyle::PM_LayoutRightMargin );
   int mlr = std::min( width() / 10, mtb );
   if ( rect.width() - cancelRect.x() - cancelRect.width() > mlr )
   {
@@ -865,7 +865,7 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    for ( auto i : qgis::as_const( mSubSetAttributes ) )
+    for ( auto i : std::as_const( mSubSetAttributes ) )
     {
       setAttr( i );
     }

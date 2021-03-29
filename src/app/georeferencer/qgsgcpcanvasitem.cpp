@@ -223,6 +223,11 @@ void QgsGCPCanvasItem::checkBoundingRectChange()
   prepareGeometryChange();
 }
 
+void QgsGCPCanvasItem::setPointColor( const QColor &color )
+{
+  mPointBrush.setColor( color );
+}
+
 double QgsGCPCanvasItem::fontSizePainterUnits( double points, const QgsRenderContext &c )
 {
   return points * 0.3527 * c.scaleFactor();

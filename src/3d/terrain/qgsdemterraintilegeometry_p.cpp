@@ -64,14 +64,14 @@ static QByteArray createPlaneVertexData( int res, float side, float vertScale, f
   // Iterate over z
   for ( int j = -1; j <= resolution.height(); ++j )
   {
-    int jBound = qBound( 0, j, jMax );
+    int jBound = std::clamp( j, 0, jMax );
     const float z = z0 + static_cast<float>( jBound ) * dz;
     const float v = static_cast<float>( jBound ) * dv;
 
     // Iterate over x
     for ( int i = -1; i <= resolution.width(); ++i )
     {
-      int iBound = qBound( 0, i, iMax );
+      int iBound = std::clamp( i, 0, iMax );
       const float x = x0 + static_cast<float>( iBound ) * dx;
       const float u = static_cast<float>( iBound ) * du;
 
@@ -95,10 +95,10 @@ static QByteArray createPlaneVertexData( int res, float side, float vertScale, f
 
       // calculate normal coordinates
 #define zAt( ii, jj )  zData[ jj * resolution.width() + ii ] * vertScale
-      float zi0 = zAt( qBound( 0, i - 1, iMax ), jBound );
-      float zi1 = zAt( qBound( 0, i + 1, iMax ), jBound );
-      float zj0 = zAt( iBound, qBound( 0, j - 1, jMax ) );
-      float zj1 = zAt( iBound, qBound( 0, j + 1, jMax ) );
+      float zi0 = zAt( std::clamp( i - 1, 0, iMax ), jBound );
+      float zi1 = zAt( std::clamp( i + 1, 0, iMax ), jBound );
+      float zj0 = zAt( iBound, std::clamp( j - 1, 0, jMax ) );
+      float zj1 = zAt( iBound, std::clamp( j + 1, 0, jMax ) );
 
       QVector3D n;
       if ( std::isnan( zi0 ) || std::isnan( zi1 ) || std::isnan( zj0 ) || std::isnan( zj1 ) )
@@ -137,8 +137,8 @@ static QByteArray createPlaneVertexData( int res, float side, float vertScale, f
 
 inline int ijToHeightMapIndex( int i, int j, int resX, int resZ )
 {
-  i = qBound( 1, i, resX ) - 1;
-  j = qBound( 1, j, resZ ) - 1;
+  i = std::clamp( i, 1, resX ) - 1;
+  j = std::clamp( j, 1, resZ ) - 1;
   return j * resX + i;
 }
 
@@ -356,14 +356,8 @@ void DemTerrainTileGeometry::init()
   mNormalAttribute = new QAttribute( this );
   mTexCoordAttribute = new QAttribute( this );
   mIndexAttribute = new QAttribute( this );
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-  mIndexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
-#else
   mVertexBuffer = new Qt3DRender::QBuffer( this );
   mIndexBuffer = new Qt3DRender::QBuffer( this );
-#endif
-
 
   int nVertsX = mResolution + 2;
   int nVertsZ = mResolution + 2;

@@ -32,6 +32,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QPicture>
+#include <QRegularExpression>
 #include <QSvgRenderer>
 #include <QFileInfo>
 #include <QNetworkReply>
@@ -430,7 +431,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   QSize imageSize = sizeForImage( *entry, viewBoxSize, scaledSize );
 
   // cast double image sizes to int for QImage
-  std::unique_ptr< QImage > image = qgis::make_unique< QImage >( imageSize, QImage::Format_ARGB32_Premultiplied );
+  std::unique_ptr< QImage > image = std::make_unique< QImage >( imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
   const bool isFixedAR = entry->fixedAspectRatio > 0;
@@ -466,7 +467,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   bool isFixedAR = entry->fixedAspectRatio > 0;
 
   //correct QPictures dpi correction
-  std::unique_ptr< QPicture > picture = qgis::make_unique< QPicture >();
+  std::unique_ptr< QPicture > picture = std::make_unique< QPicture >();
   QRectF rect;
   QSvgRenderer r( entry->svgContent );
   double hwRatio = 1.0;

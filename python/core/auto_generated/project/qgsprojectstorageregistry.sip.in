@@ -12,8 +12,9 @@
 
 class QgsProjectStorageRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of storage backends that :py:class:`QgsProject` may use.
+
 This is a singleton that should be accessed through :py:func:`QgsApplication.projectStorageRegistry()`.
 
 .. versionadded:: 3.2

@@ -27,7 +27,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorrelation.h"
-
+#include <QUrl>
 
 QgsEditFormConfig::QgsEditFormConfig()
   : d( new QgsEditFormConfigPrivate() )
@@ -270,6 +270,23 @@ void QgsEditFormConfig::setLabelOnTop( int idx, bool onTop )
   }
 }
 
+bool QgsEditFormConfig::reuseLastValue( int index ) const
+{
+  if ( index >= 0 && index < d->mFields.count() )
+    return d->mReuseLastValue.value( d->mFields.at( index ).name(), false );
+  else
+    return false;
+}
+
+void QgsEditFormConfig::setReuseLastValue( int index, bool reuse )
+{
+  if ( index >= 0 && index < d->mFields.count() )
+  {
+    d.detach();
+    d->mReuseLastValue[ d->mFields.at( index ).name()] = reuse;
+  }
+}
+
 QString QgsEditFormConfig::initFunction() const
 {
   return d->mInitFunction;
@@ -441,6 +458,14 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
     d->mLabelOnTop.insert( labelOnTopElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( labelOnTopElement.attribute( QStringLiteral( "labelOnTop" ) ).toInt() ) );
   }
 
+  d->mReuseLastValue.clear();
+  const QDomNodeList reuseLastValueNodeList = node.namedItem( QStringLiteral( "reuseLastValue" ) ).toElement().childNodes();
+  for ( int i = 0; i < reuseLastValueNodeList.size(); ++i )
+  {
+    const QDomElement reuseLastValueElement = reuseLastValueNodeList.at( i ).toElement();
+    d->mReuseLastValue.insert( reuseLastValueElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( reuseLastValueElement.attribute( QStringLiteral( "reuseLastValue" ) ).toInt() ) );
+  }
+
   // Read data defined field properties
   QDomNodeList fieldDDPropertiesNodeList = node.namedItem( QStringLiteral( "dataDefinedFieldProperties" ) ).toElement().childNodes();
   for ( int i = 0; i < fieldDDPropertiesNodeList.size(); ++i )
@@ -601,6 +626,16 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
     labelOnTopElem.appendChild( fieldElem );
   }
   node.appendChild( labelOnTopElem );
+
+  QDomElement reuseLastValueElem = doc.createElement( QStringLiteral( "reuseLastValue" ) );
+  for ( auto reuseLastValueIt = d->mReuseLastValue.constBegin(); reuseLastValueIt != d->mReuseLastValue.constEnd(); ++reuseLastValueIt )
+  {
+    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
+    fieldElem.setAttribute( QStringLiteral( "name" ), reuseLastValueIt.key() );
+    fieldElem.setAttribute( QStringLiteral( "reuseLastValue" ), reuseLastValueIt.value() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    reuseLastValueElem.appendChild( fieldElem );
+  }
+  node.appendChild( reuseLastValueElem );
 
   // Store data defined field properties
   QDomElement ddFieldPropsElement = doc.createElement( QStringLiteral( "dataDefinedFieldProperties" ) );

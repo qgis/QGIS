@@ -23,7 +23,8 @@
 #include "qgis_sip.h"
 #include <QList>
 #include <QVector>
-#include "qgspallabeling.h"
+#include "qgslabelposition.h"
+#include "qgscalloutposition.h"
 #include "qgsgenericspatialindex.h"
 #include "qgsmapsettings.h"
 
@@ -40,7 +41,7 @@ namespace pal
 
 /**
  * \ingroup core
- * A class to query the labeling structure at a given point (small wrapper around pal RTree class)
+ * \brief A class to query the labeling structure at a given point (small wrapper around pal RTree class)
  */
 class CORE_EXPORT QgsLabelSearchTree
 {
@@ -87,6 +88,26 @@ class CORE_EXPORT QgsLabelSearchTree
     bool insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString(), bool isUnplaced = false ) SIP_SKIP;
 
     /**
+     * Inserts a rendered callout position.
+     *
+     * \returns TRUE in case of success
+     * \note not available in Python bindings
+     * \since QGIS 3.20
+     */
+    bool insertCallout( const QgsCalloutPosition &position ) SIP_SKIP;
+
+    /**
+     * Returns the list of callouts with origins or destinations inside the given \a rectangle.
+     *
+     * The \a rectangle is specified in map coordinates.
+     *
+     * QgsLabelSearchTree keeps ownership, don't delete the returned objects.
+     *
+     * \since QGIS 3.20
+     */
+    QList<const QgsCalloutPosition *> calloutsInRectangle( const QgsRectangle &rectangle ) const;
+
+    /**
      * Sets the map \a settings associated with the labeling run.
      * \since QGIS 3.4.8
      */
@@ -95,6 +116,8 @@ class CORE_EXPORT QgsLabelSearchTree
   private:
     QgsGenericSpatialIndex< QgsLabelPosition > mSpatialIndex;
     std::vector< std::unique_ptr< QgsLabelPosition > > mOwnedPositions;
+    QgsGenericSpatialIndex< QgsCalloutPosition > mCalloutIndex;
+    std::vector< std::unique_ptr< QgsCalloutPosition > > mOwnedCalloutPositions;
     QgsMapSettings mMapSettings;
     QTransform mTransform;
 

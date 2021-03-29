@@ -350,7 +350,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
 {
   assert( nativeMesh );
   Q_UNUSED( method );
-
+  Q_UNUSED( triangularMesh );
 
   // assuming that native vertex count = triangular vertex count
   assert( nativeMesh->vertices.size() == triangularMesh->vertices().size() );
@@ -364,6 +364,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( const QVector<doubl
     QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   int vertexCount = nativeMesh.vertexCount();
+  Q_UNUSED( method );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
   QVector<double> res( vertexCount, 0.0 );

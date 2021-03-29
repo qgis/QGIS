@@ -1,0 +1,87 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelposition.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLabelPosition
+{
+%Docstring(signature="appended")
+Represents the calculated placement of a map label.
+%End
+
+%TypeHeaderCode
+#include "qgslabelposition.h"
+%End
+  public:
+
+    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
+                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false );
+%Docstring
+Constructor for QgsLabelPosition.
+
+:param id: associated feature ID
+:param r: label rotation in degrees clockwise
+:param corners: corner points of label bounding box, in map units
+:param rect: label bounding box, in map units
+:param w: width of label, in map units
+:param h: height of label, in map units
+:param layer: ID of associated map layer
+:param labeltext: text rendered for label
+:param labelfont: font used to render label
+:param upside_down: ``True`` if label is upside down
+:param diagram: ``True`` if label is a diagram
+:param pinned: ``True`` if label has pinned placement
+:param providerId: ID of associated label provider
+:param labelGeometry: polygon geometry of label boundary
+:param isUnplaced: set to ``True`` if label was unplaced (e.g. due to collisions with other labels)
+%End
+
+    QgsLabelPosition();
+%Docstring
+Constructor for QgsLabelPosition
+%End
+
+    QgsFeatureId featureId;
+
+    double rotation;
+
+    QVector< QgsPointXY > cornerPoints;
+    QgsRectangle labelRect;
+
+    QgsGeometry labelGeometry;
+
+    double width;
+
+    double height;
+
+    QString layerID;
+
+    QString labelText;
+
+    QFont labelFont;
+
+    bool upsideDown;
+
+    bool isDiagram;
+
+    bool isPinned;
+
+    QString providerID;
+
+    bool isUnplaced;
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelposition.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

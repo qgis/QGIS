@@ -12,7 +12,7 @@
 
 class QgsMessageLogViewer: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A generic dialog widget for displaying QGIS log messages.
 %End
 

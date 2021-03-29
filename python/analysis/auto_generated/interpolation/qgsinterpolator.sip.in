@@ -32,8 +32,10 @@ Constructor for :py:class:`QgsInterpolatorVertexData`
 
 class QgsInterpolator
 {
-%Docstring
-Interface class for interpolations. Interpolators take
+%Docstring(signature="appended")
+Interface class for interpolations.
+
+Interpolators take
 the vertices of a vector layer as base data. The z-Value
 can be an attribute or the z-coordinates in case of 3D types.
 %End

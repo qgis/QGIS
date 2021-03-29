@@ -50,6 +50,8 @@
 #include "qgssettings.h"
 #include "qgspropertycollection.h"
 
+#include "qgsrelationmanager.h"
+#include "qgsmapthemecollection.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -59,11 +61,9 @@ class QDomNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
-class QgsMapThemeCollection;
 class QgsPathResolver;
 class QgsProjectBadLayerHandler;
 class QgsProjectStorage;
-class QgsRelationManager;
 class QgsTolerance;
 class QgsTransactionGroup;
 class QgsVectorLayer;
@@ -84,7 +84,7 @@ class QgsPropertyCollection;
 
 /**
  * \ingroup core
- * Encapsulates a QGIS project, including sets of map layers and their styles,
+ * \brief Encapsulates a QGIS project, including sets of map layers and their styles,
  * layouts, annotations, canvases, etc.
  *
  * QgsProject is available both as a singleton (QgsProject::instance()) and for use as
@@ -2093,7 +2093,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProject::ReadFlags )
 
 /**
- * Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
+ * \brief Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
  *
  * QgsProjectDirtyBlocker supports "stacked" blocking, so two QgsProjectDirtyBlockers created
  * for the same project will both need to be destroyed before the project can be dirtied again.

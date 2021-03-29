@@ -9,7 +9,7 @@
 
 class QgsVectorLayerFeatureCounter : QgsTask
 {
-%Docstring
+%Docstring(signature="appended")
 
 Counts the features in a :py:class:`QgsVectorLayer` in task.
 You should most likely not use this directly and instead call

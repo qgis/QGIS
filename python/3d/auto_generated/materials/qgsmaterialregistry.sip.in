@@ -13,7 +13,7 @@ class QgsMaterialSettingsWidget /External/;
 
 class QgsMaterialSettingsAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about one 3D material settings class.
 
 .. note::
@@ -75,7 +75,7 @@ Returns ``True`` if the material type supports the specified rendering ``techniq
 
 class QgsMaterialRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of available 3d material settings classes.
 
 :py:class:`QgsMaterialRegistry` is not usually directly created, but rather accessed through

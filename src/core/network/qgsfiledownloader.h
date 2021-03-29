@@ -19,6 +19,8 @@
 #include <QObject>
 #include <QFile>
 #include <QNetworkReply>
+#include <QUrl>
+
 #include "qgis_core.h"
 
 #ifndef QT_NO_SSL
@@ -27,7 +29,7 @@
 
 /**
  * \ingroup core
- * QgsFileDownloader is a utility class for downloading files.
+ * \brief QgsFileDownloader is a utility class for downloading files.
  *
  * To use this class, it is necessary to pass the URL and an output file name as
  * arguments to the constructor, the download will start immediately.
