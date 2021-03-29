@@ -587,7 +587,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
 #ifndef SIP_RUN
                                                , QString *newLayer = nullptr,
-                                           QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
+                                           const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
                                            FieldNameSource fieldNameSource = Original
 #endif
                                          ) SIP_DEPRECATED;
@@ -628,7 +628,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            const QString &layerName,
                                            QgsVectorFileWriter::ActionOnExistingFile action,
                                            QString *newLayer = nullptr,
-                                           QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
+                                           const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                            FieldNameSource fieldNameSource = Original
                                          ) SIP_SKIP;

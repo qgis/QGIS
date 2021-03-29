@@ -455,13 +455,13 @@ Create a new vector file writer.
 .. versionadded:: 3.10.3
 %End
 
-    static QgsVectorFileWriter::WriterError writeAsVectorFormatV2( QgsVectorLayer *layer,
+ static QgsVectorFileWriter::WriterError writeAsVectorFormatV2( QgsVectorLayer *layer,
         const QString &fileName,
         const QgsCoordinateTransformContext &transformContext,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
         QString *newLayer = 0,
-        QString *errorMessage /Out/ = 0 );
+        QString *errorMessage /Out/ = 0 ) /Deprecated/;
 %Docstring
 Writes a layer out to a vector file.
 
