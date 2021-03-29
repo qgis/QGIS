@@ -496,12 +496,12 @@ void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &rang
   switch ( mNavigationObject->navigationMode() )
   {
     case QgsTemporalNavigationObject::Animated:
-      mCurrentRangeLabel->setText( tr( "Frame: %1 to %2" ).arg(
+      mCurrentRangeLabel->setText( tr( "Current frame: %1 (including) to %2 (excluding)" ).arg(
                                      range.begin().toString( timeFrameFormat ),
                                      range.end().toString( timeFrameFormat ) ) );
       break;
     case QgsTemporalNavigationObject::FixedRange:
-      mCurrentRangeLabel->setText( tr( "Range: %1 to %2" ).arg(
+      mCurrentRangeLabel->setText( tr( "Current range: %1 (including) to %2 (excluding)" ).arg(
                                      range.begin().toString( timeFrameFormat ),
                                      range.end().toString( timeFrameFormat ) ) );
       break;
