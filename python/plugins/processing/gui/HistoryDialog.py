@@ -30,6 +30,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.Qsci import QsciScintilla
+
 from processing.gui import TestTools
 from processing.core.ProcessingLog import ProcessingLog, LOG_SEPARATOR
 
@@ -48,6 +50,13 @@ class HistoryDialog(BASE, WIDGET):
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
+
+        self.text.setReadOnly(True)
+        self.text.setCaretLineVisible(False)
+        self.text.setLineNumbersVisible(False)  # NO linenumbers for the input line
+        self.text.setFoldingVisible(False)
+        self.text.setEdgeMode(QsciScintilla.EdgeNone)
+        self.text.setWrapMode(QsciScintilla.SC_WRAP_WORD)
 
         self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
 
