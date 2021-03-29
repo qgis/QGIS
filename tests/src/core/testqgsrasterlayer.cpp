@@ -547,7 +547,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided
-    myPyramidList[myCounterInt].build = true;
+    myPyramidList[myCounterInt].setBuild( true );
   }
   //now actually make the pyramids
   QString myResult =
@@ -561,7 +561,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided
-    QVERIFY( myPyramidList.at( myCounterInt ).exists );
+    QVERIFY( myPyramidList.at( myCounterInt ).getExists() );
   }
 
   //
@@ -579,7 +579,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided
-    myPyramidList[myCounterInt].build = true;
+    myPyramidList[myCounterInt].setBuild( true );
   }
 
   // Test with options
