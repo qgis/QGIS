@@ -88,10 +88,10 @@ void TestQgsMapToolMoveFeature::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 
   mLayerBase->startEditing();
-  QString wkt1 = "Polygon ((0 0, 0 1, 1 1, 1 0))";
+  QString wkt1 = "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))";
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  QString wkt2 = "Polygon ((2 0, 2 5, 3 5, 3 0))";
+  QString wkt2 = "Polygon ((2 0, 2 5, 3 5, 3 0, 2 0))";
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 
@@ -135,9 +135,9 @@ void TestQgsMapToolMoveFeature::testMoveFeature()
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QString wkt1 = "Polygon ((1 0, 1 1, 2 1, 2 0))";
+  QString wkt1 = "Polygon ((1 0, 1 1, 2 1, 2 0, 1 0))";
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt(), wkt1 );
-  QString wkt2 = "Polygon ((2 0, 2 5, 3 5, 3 0))";
+  QString wkt2 = "Polygon ((2 0, 2 5, 3 5, 3 0, 2 0))";
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
   mLayerBase->undoStack()->undo();
@@ -153,9 +153,9 @@ void TestQgsMapToolMoveFeature::testTopologicalMoveFeature()
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QString wkt1 = "Polygon ((1 0, 1 1, 2 1, 2 0))";
+  QString wkt1 = "Polygon ((1 0, 1 1, 2 1, 2 0, 1 0))";
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt(), wkt1 );
-  QString wkt2 = "Polygon ((2 0, 2 1, 2 5, 3 5, 3 0))";
+  QString wkt2 = "Polygon ((2 0, 2 1, 2 5, 3 5, 3 0, 2 0))";
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
   mLayerBase->undoStack()->undo();
