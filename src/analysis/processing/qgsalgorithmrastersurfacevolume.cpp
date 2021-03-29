@@ -221,6 +221,9 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
       const QString encodedAreaUnit = QgsStringUtils::ampersandEncode( areaUnit );
 
       QTextStream out( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      out.setCodec( "UTF-8" );
+#endif
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
       out << QStringLiteral( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Analyzed file" ), mSource, QObject::tr( "band" ) ).arg( mBand );
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Volume" ), QString::number( volume, 'g', 16 ) );
