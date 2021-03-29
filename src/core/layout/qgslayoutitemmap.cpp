@@ -919,13 +919,13 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       if ( mPainterJob && mCacheInvalidated && !mDrawingPreview )
       {
         // current job was invalidated - start a new one
-        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
         mBackgroundUpdateTimer->start( 1 );
       }
       else if ( !mPainterJob && !mDrawingPreview )
       {
         // this is the map's very first paint - trigger a cache update
-        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
         mBackgroundUpdateTimer->start( 1 );
       }
     }
@@ -934,7 +934,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       if ( mCacheInvalidated && !mDrawingPreview )
       {
         // cache was invalidated - trigger a background update
-        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
         mBackgroundUpdateTimer->start( 1 );
       }
 
@@ -980,7 +980,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
     {
       // rasterize
-      double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style ) * 25.4;
+      double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter ) * 25.4;
       double layoutUnitsInInches = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutInches ).length() : 1;
       int widthInPixels = static_cast< int >( std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi ) );
       int heightInPixels = static_cast< int >( std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi ) );
