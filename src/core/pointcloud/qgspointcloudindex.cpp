@@ -41,6 +41,11 @@ IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z ):
   mZ( _z )
 {}
 
+IndexedPointCloudNode IndexedPointCloudNode::parentNode() const
+{
+  return IndexedPointCloudNode( mD - 1, mX / 2, mY / 2, mZ / 2 );
+}
+
 IndexedPointCloudNode IndexedPointCloudNode::fromString( const QString &str )
 {
   QStringList lst = str.split( '-' );
