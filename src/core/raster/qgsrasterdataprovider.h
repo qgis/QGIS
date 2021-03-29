@@ -319,7 +319,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param format raster pyramid format.
      * \param configOptions optional configuration options which are passed to the specific data provider
      * for use during pyramid creation.
-     * \param feedback optional feedback argument for progress reports and cancelation support.
+     * \param feedback optional feedback argument for progress reports and cancellation support.
      *
      * \see buildPyramidList()
      * \see hasPyramids()
