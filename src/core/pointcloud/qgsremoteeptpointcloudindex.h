@@ -31,6 +31,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
+#include "qgseptpointcloudindex.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -38,7 +39,7 @@
 class QgsCoordinateReferenceSystem;
 class QgsTileDownloadManager;
 
-class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsPointCloudIndex
+class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
 {
     Q_OBJECT
   public:
@@ -53,12 +54,7 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockHandle *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
-    QgsCoordinateReferenceSystem crs() const override;
     int pointCount() const override;
-    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
-    QVariantList metadataClasses( const QString &attribute ) const override;
-    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
-    QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;
 
@@ -73,26 +69,10 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsPointCloudIndex
     QString mDataType;
     QString mUrlDirectoryPart;
     QString mUrlFileNamePart;
-    QString mWkt;
 
     QUrl mUrl;
 
     int mPointCount = 0;
-
-    struct AttributeStatistics
-    {
-      int count = -1;
-      QVariant minimum;
-      QVariant maximum;
-      double mean = std::numeric_limits< double >::quiet_NaN();
-      double stDev = std::numeric_limits< double >::quiet_NaN();
-      double variance = std::numeric_limits< double >::quiet_NaN();
-    };
-
-    QMap< QString, AttributeStatistics > mMetadataStats;
-
-    QMap< QString, QMap< int, int > > mAttributeClasses;
-    QVariantMap mOriginalMetadata;
 
     QgsTileDownloadManager *mTileDownloadManager = nullptr;
 };

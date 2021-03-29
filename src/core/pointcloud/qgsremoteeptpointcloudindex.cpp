@@ -46,7 +46,7 @@
 
 ///@cond PRIVATE
 
-QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsPointCloudIndex()
+QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudIndex()
 {
   mTileDownloadManager = QgsApplication::tileDownloadManager();
 }
@@ -97,10 +97,6 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
 
   QgsNetworkReplyContent reply = req.reply();
   bool success = loadSchema( reply.content() );
-//  if ( success )
-//  {
-//    success = loadHierarchy();
-//  }
 
   mIsValid = success;
 }
@@ -409,80 +405,9 @@ QgsPointCloudBlockHandle *QgsRemoteEptPointCloudIndex::asyncNodeData( const Inde
   return handle;
 }
 
-QgsCoordinateReferenceSystem QgsRemoteEptPointCloudIndex::crs() const
-{
-  return QgsCoordinateReferenceSystem::fromWkt( mWkt );
-}
-
 int QgsRemoteEptPointCloudIndex::pointCount() const
 {
   return mPointCount;
-}
-
-QVariant QgsRemoteEptPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( !mMetadataStats.contains( attribute ) )
-    return QVariant();
-
-  const AttributeStatistics &stats = mMetadataStats[ attribute ];
-  switch ( statistic )
-  {
-    case QgsStatisticalSummary::Count:
-      return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
-
-    case QgsStatisticalSummary::Mean:
-      return std::isnan( stats.mean ) ? QVariant() : QVariant( stats.mean );
-
-    case QgsStatisticalSummary::StDev:
-      return std::isnan( stats.stDev ) ? QVariant() : QVariant( stats.stDev );
-
-    case QgsStatisticalSummary::Min:
-      return stats.minimum;
-
-    case QgsStatisticalSummary::Max:
-      return stats.maximum;
-
-    case QgsStatisticalSummary::Range:
-      return stats.minimum.isValid() && stats.maximum.isValid() ? QVariant( stats.maximum.toDouble() - stats.minimum.toDouble() ) : QVariant();
-
-    case QgsStatisticalSummary::CountMissing:
-    case QgsStatisticalSummary::Sum:
-    case QgsStatisticalSummary::Median:
-    case QgsStatisticalSummary::StDevSample:
-    case QgsStatisticalSummary::Minority:
-    case QgsStatisticalSummary::Majority:
-    case QgsStatisticalSummary::Variety:
-    case QgsStatisticalSummary::FirstQuartile:
-    case QgsStatisticalSummary::ThirdQuartile:
-    case QgsStatisticalSummary::InterQuartileRange:
-    case QgsStatisticalSummary::First:
-    case QgsStatisticalSummary::Last:
-    case QgsStatisticalSummary::All:
-      return QVariant();
-  }
-  return QVariant();
-}
-
-QVariantList QgsRemoteEptPointCloudIndex::metadataClasses( const QString &attribute ) const
-{
-  QVariantList classes;
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
-  for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
-  {
-    classes << it.key();
-  }
-  return classes;
-}
-
-QVariant QgsRemoteEptPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( statistic != QgsStatisticalSummary::Count )
-    return QVariant();
-
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
-  if ( !values.contains( value.toInt() ) )
-    return QVariant();
-  return values.value( value.toInt() );
 }
 
 bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const
