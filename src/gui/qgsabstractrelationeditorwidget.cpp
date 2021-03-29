@@ -655,6 +655,16 @@ QgsRelation QgsAbstractRelationEditorConfigWidget::relation() const
   return mRelation;
 }
 
+void QgsAbstractRelationEditorConfigWidget::setNmRelation( const QgsRelation &nmRelation )
+{
+  mNmRelation = nmRelation;
+}
+
+QgsRelation QgsAbstractRelationEditorConfigWidget::nmRelation() const
+{
+  return mNmRelation;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
