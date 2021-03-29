@@ -363,7 +363,7 @@ Ownership of ``symbol`` is transferred to the rubberband.
 
 .. warning::
 
-   Only line symbols are currently supported.
+   Only line and fill symbols are currently supported.
 
 .. note::
 
