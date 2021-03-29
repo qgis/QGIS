@@ -68,6 +68,9 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels );
 
+    int renderNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
+    int renderNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
+
     QgsPointCloudLayer *mLayer = nullptr;
 
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;

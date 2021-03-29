@@ -46,9 +46,6 @@
 
 ///@cond PRIVATE
 
-#define PROVIDER_KEY QStringLiteral( "ept" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "EPT point cloud provider" )
-
 QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsPointCloudIndex()
 {
   mTileDownloadManager = QgsApplication::tileDownloadManager();
