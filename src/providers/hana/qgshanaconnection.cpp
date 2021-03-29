@@ -49,15 +49,50 @@ namespace
     DatabaseMetaDataUnicodeRef dmd = conn.getDatabaseMetaDataUnicode();
     ResultSetRef rsStats = dmd->getStatistics( nullptr, schemaName.toStdU16String().c_str(),
                            tableName.toStdU16String().c_str(), odbc::IndexType::UNIQUE, odbc::StatisticsAccuracy::ENSURE );
+    QMap<QString, QStringList> compositeKeys;
     while ( rsStats->next() )
     {
+      QString clmName = QgsHanaUtils::toQString( rsStats->getString( 9 /*COLUMN_NAME*/ ) );
+      if ( clmName.isEmpty() )
+        continue;
       bool unique = rsStats->getShort( 4 /*NON_UNIQUE*/ ) == 0;
-      QString name = QgsHanaUtils::toQString( rsStats->getString( 9 /*COLUMN_NAME*/ ) );
-      if ( !name.isEmpty() )
-        ret.insert( name, unique );
+      QString indexName = QgsHanaUtils::toQString( rsStats->getString( 6 /*INDEX_NAME*/ ) );
+      ret.insert( clmName, unique );
+      compositeKeys[indexName].append( clmName );
     }
     rsStats->close();
+
+    for ( const QString &key : compositeKeys.keys() )
+    {
+      const QStringList indexColumns = compositeKeys.value( key );
+      if ( indexColumns.size() <= 1 )
+        continue;
+      for ( const QString &clmName : indexColumns )
+        ret[clmName] = false;
+    }
+
     return ret;
+  }
+
+  int getSrid( PreparedStatementRef &stmt )
+  {
+    int srid = -1;
+    ResultSetRef rsSrid = stmt->executeQuery( );
+    while ( rsSrid->next() )
+    {
+      Int value = rsSrid->getInt( 1 );
+      if ( value.isNull() )
+        continue;
+      if ( srid == -1 )
+        srid = *value;
+      else if ( srid != *value )
+      {
+        srid = -1;
+        break;
+      }
+    }
+    rsSrid->close();
+    return srid;
   }
 }
 
@@ -662,9 +697,9 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
   auto getColumnComments = [&clmComments, &conn = mConnection](
                              const QString & schemaName, const QString & tableName, const QString & columnName )
   {
-    if ( schemaName.isEmpty() || tableName.isEmpty() )
+    if ( schemaName.isEmpty() || tableName.isEmpty() || columnName.isEmpty() )
       return QString();
-    const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+    const QString key = QStringLiteral( "%1.%2" ).arg( QgsHanaUtils::quotedIdentifier( schemaName ), QgsHanaUtils::quotedIdentifier( tableName ) );
     if ( !clmComments.contains( key ) )
     {
       const char *sql = "SELECT COLUMN_NAME, COMMENTS FROM SYS.TABLE_COLUMNS WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?";
@@ -688,9 +723,9 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
   auto isColumnUnique = [&clmUniqueness, &conn = mConnection](
                           const QString & schemaName, const QString & tableName, const QString & columnName )
   {
-    if ( schemaName.isEmpty() || tableName.isEmpty() )
+    if ( schemaName.isEmpty() || tableName.isEmpty() || columnName.isEmpty() )
       return false;
-    const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+    const QString key = QStringLiteral( "%1.%2" ).arg( QgsHanaUtils::quotedIdentifier( schemaName ), QgsHanaUtils::quotedIdentifier( tableName ) );
     if ( !clmUniqueness.contains( key ) )
       clmUniqueness.insert( key, getColumnsUniqueness( *conn, schemaName, tableName ) );
     return clmUniqueness[key].value( columnName, false );
@@ -702,9 +737,13 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
     ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
     for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
     {
+      QString baseTableName = QString::fromStdU16String( rsmd->getBaseTableName( i ) );
+      QString baseColumnName = QString::fromStdU16String( rsmd->getBaseColumnName( i ) );
+
       QString schema = QString::fromStdU16String( rsmd->getSchemaName( i ) );
       if ( schema.isEmpty() )
         schema = schemaName;
+
       AttributeField field;
       field.schemaName = schema;
       field.tableName = QString::fromStdU16String( rsmd->getTableName( i ) );
@@ -714,13 +753,16 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
       field.isSigned = rsmd->isSigned( i );
       field.isNullable = rsmd->isNullable( i );
       field.isAutoIncrement = rsmd->isAutoIncrement( i );
-      field.isUnique = isColumnUnique( schema, field.tableName, field.name );
       field.size = static_cast<int>( rsmd->getColumnLength( i ) );
       field.precision = static_cast<int>( rsmd->getScale( i ) );
-      if ( field.isGeometry() )
-        field.srid = getColumnSrid( schema, field.tableName, field.name );
-      // As field comments cannot be retrieved via ODBC, we get it from SYS.TABLE_COLUMNS.
-      field.comment = getColumnComments( schema, field.tableName, field.name );
+
+      if ( !schema.isEmpty() )
+      {
+        field.isUnique = isColumnUnique( schema, baseTableName, baseColumnName );
+        // As field comments cannot be retrieved via ODBC, we get it from SYS.TABLE_COLUMNS.
+        field.comment = getColumnComments( schema, baseTableName, baseColumnName );
+        // We skip determing srid, as query layers don't use it.
+      }
 
       callback( field );
     }
@@ -739,20 +781,16 @@ void QgsHanaConnection::readTableFields( const QString &schemaName, const QStrin
     const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
     if ( !clmAutoIncrement.contains( key ) )
     {
-      DatabaseMetaDataUnicodeRef dmd = mConnection->getDatabaseMetaDataUnicode();
-      ResultSetRef rsSpecialColumns = dmd->getSpecialColumns( RowIdentifierType::ROWVER, nullptr,
-                                      schemaName.toStdU16String().c_str(), tableName.toStdU16String().c_str(),
-                                      RowIdentifierScope::SESSION, ColumnNullableValue::NULLABLE );
-      while ( rsSpecialColumns->next() )
+      QString sql = QStringLiteral( "SELECT * FROM %1.%2" )
+                    .arg( QgsHanaUtils::quotedIdentifier( schemaName ), QgsHanaUtils::quotedIdentifier( tableName ) );
+      PreparedStatementRef stmt = prepareStatement( sql );
+      ResultSetMetaDataUnicodeRef rsmd = stmt->getMetaDataUnicode();
+      for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
       {
-        QString name = QgsHanaUtils::toQString( rsSpecialColumns->getString( 9 /*COLUMN_NAME*/ ) );
-        if ( !name.isEmpty() )
-        {
-          bool unique = rsSpecialColumns->getShort( 4 /*NON_UNIQUE*/ ) == 0;
-          clmAutoIncrement[key].insert( name, unique );
-        }
+        QString name = QString::fromStdU16String( rsmd->getColumnName( i ) );
+        bool isAutoIncrement = rsmd->isAutoIncrement( i );
+        clmAutoIncrement[key].insert( name, isAutoIncrement );
       }
-      rsSpecialColumns->close();
     }
     return clmAutoIncrement[key].value( columnName, false );
   };
@@ -783,7 +821,8 @@ void QgsHanaConnection::readTableFields( const QString &schemaName, const QStrin
                        field.type == SQLDataTypes::BigInt || field.type == SQLDataTypes::Decimal ||
                        field.type == SQLDataTypes::Numeric || field.type == SQLDataTypes::Real ||
                        field.type == SQLDataTypes::Float || field.type == SQLDataTypes::Double;
-      field.isNullable = rsColumns->getString( 18/*IS_NULLABLE*/ ) == QLatin1String( "TRUE" );
+      QString isNullable = rsColumns->getString( 18/*IS_NULLABLE*/ );
+      field.isNullable = ( isNullable == QLatin1String( "YES" ) || isNullable == QLatin1String( "TRUE" ) );
       field.isAutoIncrement = isColumnAutoIncrement( field.name );
       field.isUnique = isColumnUnique( field.name );
       if ( field.isGeometry() )
@@ -945,27 +984,6 @@ int QgsHanaConnection::getColumnSrid( const QString &schemaName, const QString &
   if ( columnName.isEmpty() )
     return -1;
 
-  auto getSrid = []( PreparedStatementRef & stmt )
-  {
-    int srid = -1;
-    ResultSetRef rsSrid = stmt->executeQuery( );
-    while ( rsSrid->next() )
-    {
-      Int value = rsSrid->getInt( 1 );
-      if ( value.isNull() )
-        continue;
-      if ( srid == -1 )
-        srid = *value;
-      else if ( srid != *value )
-      {
-        srid = -1;
-        break;
-      }
-    }
-    rsSrid->close();
-    return srid;
-  };
-
   try
   {
     PreparedStatementRef stmt = mConnection->prepareStatement( "SELECT SRS_ID FROM SYS.ST_GEOMETRY_COLUMNS "
@@ -987,6 +1005,26 @@ int QgsHanaConnection::getColumnSrid( const QString &schemaName, const QString &
     }
 
     return srid;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+int QgsHanaConnection::getColumnSrid( const QString &sql, const QString &columnName )
+{
+  if ( columnName.isEmpty() )
+    return -1;
+
+  try
+  {
+    QString query = QStringLiteral( "SELECT %1.ST_SRID() FROM (%2) WHERE %1 IS NOT NULL LIMIT %3" )
+                    .arg( QgsHanaUtils::quotedIdentifier( columnName ),
+                          sql,
+                          QString::number( GEOMETRIES_SELECT_LIMIT ) );
+    PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( query ) );
+    return getSrid( stmt );
   }
   catch ( const Exception &ex )
   {
