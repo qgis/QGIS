@@ -369,7 +369,7 @@ void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverJoinedSource( Qg
 void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverInputSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   if ( mJoinSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
-    feedback->reportError( QObject::tr( "No spatial index exists for join layer, performance will be severely degraded" ) );
+    feedback->pushWarning( QObject::tr( "No spatial index exists for join layer, performance will be severely degraded" ) );
 
   QgsFeatureIterator it = mBaseSource->getFeatures();
   QgsFeature f;
