@@ -2192,7 +2192,7 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &tileLayer
     return false;
 
   // take most coarse tile matrix ...
-  QMap<double, QgsWmtsTileMatrix>::const_iterator tmIt = tmsIt->tileMatrices.constEnd() - 1;
+  QMap<double, QgsWmtsTileMatrix>::const_iterator tmIt = --tmsIt->tileMatrices.constEnd();
   if ( tmIt == tmsIt->tileMatrices.constEnd() )
     return false;
 
