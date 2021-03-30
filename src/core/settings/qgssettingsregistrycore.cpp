@@ -21,16 +21,17 @@
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : mSettingsEntries()
 {
-  mSettingsEntries.append( new QgsLayout::Settings::SearchPathForTemplates() );
+  mSettingsEntries.append( &QgsLayout::Settings::searchPathForTemplates );
+//  mSettingsEntries.append( new QgsLayout::Settings::SearchPathForTemplates() );
 
-  mSettingsEntries.append( new QgsLocator::Settings::LocatorFilterEnabled() );
-  mSettingsEntries.append( new QgsLocator::Settings::LocatorFilterDefault() );
-  mSettingsEntries.append( new QgsLocator::Settings::LocatorFilterPrefix() );
+//  mSettingsEntries.append( &QgsLocator::Settings::locatorFilterEnabled );
+//  mSettingsEntries.append( &QgsLocator::Settings::locatorFilterDefault );
+//  mSettingsEntries.append( &QgsLocator::Settings::locatorFilterPrefix );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 {
-  qDeleteAll( mSettingsEntries );
+//  qDeleteAll( mSettingsEntries );
 }
 
 

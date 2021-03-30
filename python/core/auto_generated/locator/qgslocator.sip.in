@@ -141,6 +141,11 @@ This list is updated when preparing the search
 .. versionadded:: 3.16
 %End
 
+    struct Settings
+    {
+
+    };
+
   signals:
 
     void foundResult( const QgsLocatorResult &result );

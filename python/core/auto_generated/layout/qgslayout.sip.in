@@ -614,6 +614,14 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+
+    struct Settings
+    {
+      static QgsSettingsEntryStringList searchPathForTemplates = QgsSettingsEntryStringList( QStringLiteral( "Layout/searchPathsForTemplates" ), QgsSettings::Core, QStringList(), "Search path for templates" );
+
+
+    };
+
   public slots:
 
     void refresh();

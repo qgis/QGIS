@@ -659,6 +659,13 @@ wide background task handling.
 .. versionadded:: 3.0
 %End
 
+    static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference/;
+%Docstring
+Returns the application's settings registry, used for managing application settings.
+
+.. versionadded:: 3.20
+%End
+
     static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
 %Docstring
 Returns the application's color scheme registry, used for managing color schemes.

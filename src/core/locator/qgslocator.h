@@ -155,9 +155,13 @@ class CORE_EXPORT QgsLocator : public QObject
 
     struct Settings
     {
-      QGS_SETTING_ENTRY_BOOL( LocatorFilterEnabled, QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, tr( "Enabled" ) )
-      QGS_SETTING_ENTRY_BOOL( LocatorFilterDefault, QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, tr( "Default value" ) )
-      QGS_SETTING_ENTRY_STRING( LocatorFilterPrefix, QStringLiteral( "locator_filters/prefix_%" ), QgsSettings::Gui, QString(), tr( "Locator filter prefix" ) )
+//      static inline QgsSettingsEntryBool locatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, "Enabled" );
+//      static inline QgsSettingsEntryBool locatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, "Default value" );
+//      static inline QgsSettingsEntryString locatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "locator_filters/prefix_%" ), QgsSettings::Gui, QString(), "Locator filter prefix" );
+
+//      QGS_SETTING_ENTRY_BOOL( LocatorFilterEnabled, QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, tr( "Enabled" ) )
+//      QGS_SETTING_ENTRY_BOOL( LocatorFilterDefault, QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, tr( "Default value" ) )
+//      QGS_SETTING_ENTRY_STRING( LocatorFilterPrefix, QStringLiteral( "locator_filters/prefix_%" ), QgsSettings::Gui, QString(), tr( "Locator filter prefix" ) )
     };
 
   signals:
