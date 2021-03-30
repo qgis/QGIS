@@ -61,10 +61,8 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
 
 void QgsPointCloudSourceSelect::addButtonClicked()
 {
-  qDebug() << __PRETTY_FUNCTION__ << mDataSourceType;
   if ( mDataSourceType == QStringLiteral( "file" ) )
   {
-    qDebug() << __PRETTY_FUNCTION__ << " : " << mPath;
     if ( mPath.isEmpty() )
     {
       QMessageBox::information( this,
