@@ -238,7 +238,7 @@ Returns a new image downloader for the raster legend.
 %Docstring
 Creates pyramid overviews.
 
-:param pyramidList: a list of :py:class:`QgsRasterPryamids` to create overviews for. The :py:func:`QgsRasterPryamid.setBuild()` flag
+:param pyramidList: a list of :py:class:`QgsRasterPyramids` to create overviews for. The :py:func:`QgsRasterPyramid.setBuild()` flag
                     should be set to ``True`` for every layer where pyramids are desired.
 :param resamplingMethod: resampling method to use when creating the pyramids. The :py:func:`~QgsRasterDataProvider.pyramidResamplingMethods` method
                          can be used to retrieve a list of valid resampling methods available for specific raster data providers.
@@ -265,8 +265,8 @@ ACTUALLY exists you need to look at the :py:func:`QgsRasterPyramid.getExists()` 
 list.
 
 The returned list is suitable for passing to the :py:func:`~QgsRasterDataProvider.buildPyramids` method. First, modify the returned list
-by calling `QgsRasterPryamid.setBuild( ``True`` )` for every layer you want to create pyramids for, and then
-pass the modified list to :py:func:`~QgsRasterDataProvider.buildPryamids`.
+by calling `QgsRasterPyramid.setBuild( ``True`` )` for every layer you want to create pyramids for, and then
+pass the modified list to :py:func:`~QgsRasterDataProvider.buildPyramids`.
 
 :param overviewList: used to construct the pyramid list (optional), when empty the list is defined by the provider.
 
@@ -280,7 +280,7 @@ pass the modified list to :py:func:`~QgsRasterDataProvider.buildPryamids`.
 Returns ``True`` if raster has at least one existing pyramid.
 
 The :py:func:`~QgsRasterDataProvider.buildPyramidList` method can be used to retrieve additional details about potential and existing
-pryamid layers.
+pyramid layers.
 
 .. seealso:: :py:func:`buildPyramidList`
 
