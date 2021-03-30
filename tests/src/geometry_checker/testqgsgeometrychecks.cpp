@@ -1284,8 +1284,8 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
     qDebug() << f.geometry().vertexAt( 2 ).asWkt() << "\n"; // "Point (2537297.08237999258562922 1152290.78251273254863918)"
     qDebug() << pointOld_2.asWkt() << "\n"; //  "Point (2537366.84566075634211302 1152360.28978145681321621)"
     */
-    QCOMPARE( f.geometry().vertexAt( 1 ).asWkt( 4 ), QgsGeometry::fromWkt( "Point (2537366.8457 1152360.2898)" ).asWkt( 4 ) );
-    QCOMPARE( f.geometry().vertexAt( 2 ).asWkt( 4 ), QgsGeometry::fromWkt( "Point (2537297.0824 1152290.7825)" ).asWkt( 4 ) );
+    QCOMPARE( f.geometry().vertexAt( 1 ).asWkt( 4 ), QStringLiteral( "Point (2537366.8457 1152360.2898)" ) );
+    QCOMPARE( f.geometry().vertexAt( 2 ).asWkt( 4 ), QStringLiteral( "Point (2537297.0824 1152290.7825)" ) );
   }
 
   cleanupTestContext( testContext );
