@@ -34,7 +34,11 @@ const QString QgsDb2Provider::DB2_PROVIDER_KEY = QStringLiteral( "DB2" );
 const QString QgsDb2Provider::DB2_PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
 
 int QgsDb2Provider::sConnectionId = 0;
-QMutex QgsDb2Provider::sMutex{ QMutex::Recursive };
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+QMutex QgsDb2Provider::sMutex { QMutex::Recursive };
+#else
+QRecursiveMutex QgsDb2Provider::sMutex;
+#endif
 
 QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &options,
                                 QgsDataProvider::ReadFlags flags )

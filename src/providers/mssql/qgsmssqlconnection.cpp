@@ -29,7 +29,11 @@
 #include <QFile>
 
 int QgsMssqlConnection::sConnectionId = 0;
-QMutex QgsMssqlConnection::sMutex{ QMutex::Recursive };
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+QMutex QgsMssqlConnection::sMutex { QMutex::Recursive };
+#else
+QRecursiveMutex QgsMssqlConnection::sMutex;
+#endif
 
 QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password )
 {
