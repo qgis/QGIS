@@ -2,11 +2,11 @@
   "name": "to_date",
   "type": "function",
   "groups": ["Conversions", "Date and Time"],
-  "description": "Converts a string into a date object. An optional format string can be provided to parse the string; see <a href='https://doc.qt.io/qt-5/qdate.html#fromString-2'>QDate::fromString</a> or the documentation of the format_date function for additional documentation on the format.",
+  "description": "Converts a string into a date object. An optional format string can be provided to parse the string; see <a href='https://doc.qt.io/qt-5/qdate.html#fromString-2'>QDate::fromString</a> or the documentation of the format_date function for additional documentation on the format. By default the current QGIS user locale is used.",
   "arguments": [
    {"arg":"string","description":"string representing a date value"},
    {"arg":"format","optional":true,"description":"format used to convert the string into a date"},
-   {"arg":"language","optional":true,"default":"@qgis_locale","description":"language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a date. By default the currently set-up locale is used."}
+   {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a date. By default the current QGIS user locale is used."}
   ],
   "examples": [
    { "expression":"to_date('2012-05-04')", "returns":"2012-05-04"},
