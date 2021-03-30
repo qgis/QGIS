@@ -95,14 +95,20 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 
   // restore settings
   bool enabled = true;
-  if ( QgsLocator::Settings::LocatorFilterEnabled().exists( filter->name() ) )
-    enabled = QgsLocator::Settings::LocatorFilterEnabled().value<bool>( filter->name() );
+//  if ( QgsLocator::Settings::LocatorFilterEnabled().exists( filter->name() ) )
+//    enabled = QgsLocator::Settings::LocatorFilterEnabled().value<bool>( filter->name() );
+//  if ( QgsLocator::Settings::locatorFilterEnabled.exists( filter->name() ) )
+//    enabled = QgsLocator::Settings::locatorFilterEnabled.value<bool>( filter->name() );
   bool byDefault = filter->useWithoutPrefix();
-  if ( QgsLocator::Settings::LocatorFilterDefault().exists( filter->name() ) )
-    byDefault = QgsLocator::Settings::LocatorFilterDefault().value<bool>( filter->name() );
+//  if ( QgsLocator::Settings::LocatorFilterDefault().exists( filter->name() ) )
+//    byDefault = QgsLocator::Settings::LocatorFilterDefault().value<bool>( filter->name() );
+//  if ( QgsLocator::Settings::locatorFilterDefault.exists( filter->name() ) )
+//    byDefault = QgsLocator::Settings::locatorFilterDefault.value<bool>( filter->name() );
   QString prefix = filter->prefix();
-  if ( QgsLocator::Settings::LocatorFilterPrefix().exists( filter->name() ) )
-    prefix = QgsLocator::Settings::LocatorFilterPrefix().value<QString>( filter->name() );
+//  if ( QgsLocator::Settings::LocatorFilterPrefix().exists( filter->name() ) )
+//    prefix = QgsLocator::Settings::LocatorFilterPrefix().value<QString>( filter->name() );
+//  if ( QgsLocator::Settings::locatorFilterPrefix.exists( filter->name() ) )
+//    prefix = QgsLocator::Settings::locatorFilterPrefix.value<QString>( filter->name() );
   if ( prefix.isEmpty() )
   {
     prefix = filter->prefix();

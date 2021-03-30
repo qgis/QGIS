@@ -229,140 +229,140 @@ QgsSettingsEntry::SettingsType QgsSettingsEntryBool::settingsType() const
   return QgsSettingsEntry::Bool;
 }
 
-QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key,
-    QgsSettings::Section section,
-    qlonglong defaultValue,
-    const QString &description,
-    qlonglong minValue,
-    qlonglong maxValue )
-  : QgsSettingsEntry( key,
-                      section,
-                      defaultValue,
-                      description )
-  , mMinValue( minValue )
-  , mMaxValue( maxValue )
-{
+//QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key,
+//    QgsSettings::Section section,
+//    qlonglong defaultValue,
+//    const QString &description,
+//    qlonglong minValue,
+//    qlonglong maxValue )
+//  : QgsSettingsEntry( key,
+//                      section,
+//                      defaultValue,
+//                      description )
+//  , mMinValue( minValue )
+//  , mMaxValue( maxValue )
+//{
 
-}
+//}
 
-bool QgsSettingsEntryInteger::setValue( const QVariant &value, const QString &dynamicKeyPart )
-{
-  if ( value.canConvert<qlonglong>() == false )
-  {
-    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to qlonglong for settings with key '%2'" )
-                 .arg( value.toString() )
-                 .arg( QgsSettingsEntry::key() ) );
-    return false;
-  }
+//bool QgsSettingsEntryInteger::setValue( const QVariant &value, const QString &dynamicKeyPart )
+//{
+//  if ( value.canConvert<qlonglong>() == false )
+//  {
+//    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to qlonglong for settings with key '%2'" )
+//                 .arg( value.toString() )
+//                 .arg( QgsSettingsEntry::key() ) );
+//    return false;
+//  }
 
-  qlonglong valueLongLong = value.toLongLong();
-  if ( valueLongLong < mMinValue )
-  {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
-                 .arg( QgsSettingsEntry::key() )
-                 .arg( valueLongLong )
-                 .arg( mMinValue ) );
-    return false;
-  }
+//  qlonglong valueLongLong = value.toLongLong();
+//  if ( valueLongLong < mMinValue )
+//  {
+//    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
+//                 .arg( QgsSettingsEntry::key() )
+//                 .arg( valueLongLong )
+//                 .arg( mMinValue ) );
+//    return false;
+//  }
 
-  if ( valueLongLong > mMaxValue )
-  {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
-                 .arg( QgsSettingsEntry::key() )
-                 .arg( valueLongLong )
-                 .arg( mMinValue ) );
-    return false;
-  }
+//  if ( valueLongLong > mMaxValue )
+//  {
+//    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
+//                 .arg( QgsSettingsEntry::key() )
+//                 .arg( valueLongLong )
+//                 .arg( mMinValue ) );
+//    return false;
+//  }
 
-  QgsSettingsEntry::setValue( value, dynamicKeyPart );
-  return true;
-}
+//  QgsSettingsEntry::setValue( value, dynamicKeyPart );
+//  return true;
+//}
 
-QgsSettingsEntry::SettingsType QgsSettingsEntryInteger::settingsType() const
-{
-  return QgsSettingsEntry::Integer;
-}
+//QgsSettingsEntry::SettingsType QgsSettingsEntryInteger::settingsType() const
+//{
+//  return QgsSettingsEntry::Integer;
+//}
 
-qlonglong QgsSettingsEntryInteger::minValue()
-{
-  return mMinValue;
-}
+//qlonglong QgsSettingsEntryInteger::minValue()
+//{
+//  return mMinValue;
+//}
 
-qlonglong QgsSettingsEntryInteger::maxValue()
-{
-  return mMaxValue;
-}
+//qlonglong QgsSettingsEntryInteger::maxValue()
+//{
+//  return mMaxValue;
+//}
 
-QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key,
-    QgsSettings::Section section,
-    double defaultValue,
-    const QString &description,
-    double minValue,
-    double maxValue,
-    double displayDecimals )
-  : QgsSettingsEntry( key,
-                      section,
-                      defaultValue,
-                      description )
-  , mMinValue( minValue )
-  , mMaxValue( maxValue )
-  , mDisplayHintDecimals( displayDecimals )
-{
+//QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key,
+//    QgsSettings::Section section,
+//    double defaultValue,
+//    const QString &description,
+//    double minValue,
+//    double maxValue,
+//    double displayDecimals )
+//  : QgsSettingsEntry( key,
+//                      section,
+//                      defaultValue,
+//                      description )
+//  , mMinValue( minValue )
+//  , mMaxValue( maxValue )
+//  , mDisplayHintDecimals( displayDecimals )
+//{
 
-}
+//}
 
-bool QgsSettingsEntryDouble::setValue( const QVariant &value, const QString &dynamicKeyPart )
-{
-  if ( value.canConvert<double>() == false )
-  {
-    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to double for settings with key '%2'" )
-                 .arg( value.toString() )
-                 .arg( QgsSettingsEntry::key() ) );
-    return false;
-  }
+//bool QgsSettingsEntryDouble::setValue( const QVariant &value, const QString &dynamicKeyPart )
+//{
+//  if ( value.canConvert<double>() == false )
+//  {
+//    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to double for settings with key '%2'" )
+//                 .arg( value.toString() )
+//                 .arg( QgsSettingsEntry::key() ) );
+//    return false;
+//  }
 
-  double valueDouble = value.toDouble();
-  if ( valueDouble < mMinValue )
-  {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
-                 .arg( QgsSettingsEntry::key() )
-                 .arg( valueDouble )
-                 .arg( mMinValue ) );
-    return false;
-  }
+//  double valueDouble = value.toDouble();
+//  if ( valueDouble < mMinValue )
+//  {
+//    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
+//                 .arg( QgsSettingsEntry::key() )
+//                 .arg( valueDouble )
+//                 .arg( mMinValue ) );
+//    return false;
+//  }
 
-  if ( valueDouble > mMaxValue )
-  {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
-                 .arg( QgsSettingsEntry::key() )
-                 .arg( valueDouble )
-                 .arg( mMinValue ) );
-    return false;
-  }
+//  if ( valueDouble > mMaxValue )
+//  {
+//    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
+//                 .arg( QgsSettingsEntry::key() )
+//                 .arg( valueDouble )
+//                 .arg( mMinValue ) );
+//    return false;
+//  }
 
-  QgsSettingsEntry::setValue( value, dynamicKeyPart );
-  return true;
-}
+//  QgsSettingsEntry::setValue( value, dynamicKeyPart );
+//  return true;
+//}
 
-QgsSettingsEntry::SettingsType QgsSettingsEntryDouble::settingsType() const
-{
-  return QgsSettingsEntry::Double;
-}
+//QgsSettingsEntry::SettingsType QgsSettingsEntryDouble::settingsType() const
+//{
+//  return QgsSettingsEntry::Double;
+//}
 
-double QgsSettingsEntryDouble::minValue() const
-{
-  return mMinValue;
-}
+//double QgsSettingsEntryDouble::minValue() const
+//{
+//  return mMinValue;
+//}
 
-double QgsSettingsEntryDouble::maxValue() const
-{
-  return mMaxValue;
-}
+//double QgsSettingsEntryDouble::maxValue() const
+//{
+//  return mMaxValue;
+//}
 
-int QgsSettingsEntryDouble::displayHintDecimals() const
-{
-  return mDisplayHintDecimals;
-}
+//int QgsSettingsEntryDouble::displayHintDecimals() const
+//{
+//  return mDisplayHintDecimals;
+//}
 
 bool QgsSettingsEntryEnum::setValue( const QVariant &value, const QString &dynamicKeyPart )
 {

@@ -1481,7 +1481,8 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListComposerTemplatePaths->item( i )->text();
   }
-  QgsLayout::Settings::SearchPathForTemplates().setValue( pathsList );
+//  QgsLayout::Settings::searchPathForTemplates.setValue( pathsList );
+//  QgsLayout::Settings::SearchPathForTemplates().setValue( pathsList );
 
   pathsList.clear();
   for ( int r = 0; r < mLocalizedDataPathListWidget->count(); r++ )

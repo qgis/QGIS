@@ -1,0 +1,306 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsentry.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSettingsEntry
+{
+%Docstring(signature="appended")
+
+Represent settings entry and provides methods for reading and writing settings values.
+Different subclasses are provided for different settings types with metainformations
+to validate set values and provide more accurate settings description for the gui.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryString;
+    if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryStringList;
+    else if ( dynamic_cast< QgsSettingsEntryBool * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryBool;
+//    else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
+//      sipType = sipType_QgsSettingsEntryInteger;
+//    else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
+//      sipType = sipType_QgsSettingsEntryDouble;
+    else
+      sipType = NULL;
+%End
+  public:
+
+    enum SettingsType
+    {
+      Variant,
+      String,
+      StringList,
+      Bool,
+      Integer,
+      Double,
+      Enum
+    };
+
+    QgsSettingsEntry( QString key,
+                      QgsSettings::Section section,
+                      QVariant defaultValue = QVariant(),
+                      QString description = QString() );
+%Docstring
+Constructor for QgsSettingsEntry.
+
+The ``key`` argument specifies the key of the settings.
+The ``section`` argument specifies the section of the settings.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+%End
+
+    virtual ~QgsSettingsEntry();
+
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Get settings entry key.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    bool hasDynamicKey() const;
+%Docstring
+Returns true if a part of the settings key is built dynamically.
+%End
+
+    bool exists( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Returns true if the settings is contained in the underlying QSettings.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    void remove( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Removes the settings from the underlying QSettings.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QgsSettings::Section section() const;
+%Docstring
+Get settings section. The settings section of the parent group is returned if available.
+%End
+
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+%Docstring
+Set settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QVariant valueFromPython() const /PyName=value/;
+%Docstring
+Get settings value.
+%End
+
+
+    QVariant defaultValueFromPython() const /PyName=defaultValue/;
+%Docstring
+Get settings default value.
+%End
+
+
+    virtual SettingsType settingsType() const;
+%Docstring
+Get the settings entry type.
+%End
+
+    QString description() const;
+%Docstring
+Get the settings entry description.
+%End
+
+};
+
+
+
+class QgsSettingsEntryString : QgsSettingsEntry
+{
+%Docstring(signature="appended")
+A string settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryString( const QString &key,
+                            QgsSettings::Section section,
+                            const QString &defaultValue = QString(),
+                            const QString &description = QString(),
+                            int minLength = 0,
+                            int maxLength = -1 );
+%Docstring
+Constructor for QgsSettingsEntryString.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``minLength`` argument specifies the minimal length of the string value.
+The ``maxLength`` argument specifies the maximal length of the string value.
+By -1 the there is no limit
+%End
+
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
+
+    virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
+
+    int minLength();
+%Docstring
+Returns the string minimum length.
+%End
+
+    int maxLength();
+%Docstring
+Returns the string maximum length. By -1 there is no limitation.
+%End
+
+};
+
+
+
+class QgsSettingsEntryStringList : QgsSettingsEntry
+{
+%Docstring(signature="appended")
+A string list settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryStringList( const QString &key,
+                                QgsSettings::Section section,
+                                const QStringList &defaultValue = QStringList(),
+                                const QString &description = QString() );
+%Docstring
+Constructor for QgsSettingsEntryStringList.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+%End
+
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
+
+    virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
+
+};
+
+
+
+class QgsSettingsEntryBool : QgsSettingsEntry
+{
+%Docstring(signature="appended")
+A boolean settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryBool( const QString &key,
+                          QgsSettings::Section section,
+                          bool defaultValue = false,
+                          const QString &description = QString() );
+%Docstring
+Constructor for QgsSettingsEntryBool.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+%End
+
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
+
+    virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsentry.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
