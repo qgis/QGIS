@@ -17,7 +17,8 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
+#include <QRegularExpression>
 
 #include "qgspgnewconnection.h"
 #include "qgsauthmanager.h"
@@ -112,7 +113,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
     txtName->setText( connName );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]*" ), txtName ) );
 }
 
 //! Autoconnected SLOTS

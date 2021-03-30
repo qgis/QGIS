@@ -19,7 +19,8 @@
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
@@ -91,7 +92,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
 
     txtName->setText( connName );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
   cb_trustedConnection_clicked();
 
   schemaView->setModel( &mSchemaModel );

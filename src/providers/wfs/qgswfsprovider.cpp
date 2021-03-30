@@ -47,6 +47,7 @@
 #include <QPair>
 #include <QTimer>
 #include <QUrlQuery>
+#include <QRegularExpression>
 
 #include <cfloat>
 
@@ -1527,8 +1528,8 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     // attribute ref
     QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
 
-    QRegExp gmlPT( "gml:(.*)PropertyType" );
-    QRegExp gmlRefProperty( "gml:(.*)Property" );
+    const QRegularExpression gmlPT( QStringLiteral( "gml:(.*)PropertyType" ) );
+    const QRegularExpression gmlRefProperty( QStringLiteral( "gml:(.*)Property" ) );
 
     // gmgml: is Geomedia Web Server
     if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
@@ -1560,7 +1561,10 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
         geomType = QgsWkbTypes::Unknown;
       else
-        geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
+      {
+        const QRegularExpressionMatch match = gmlPT.match( type );
+        geomType = geomTypeFromPropertyType( geometryAttribute, match.captured( 1 ) );
+      }
     }
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty"
     //Note: this was deprecated with GML3.
@@ -1568,7 +1572,9 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     {
       foundGeometryAttribute = true;
       geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
-      QString propertyType( gmlRefProperty.cap( 1 ) );
+
+      const QRegularExpressionMatch match = gmlRefProperty.match( ref );
+      QString propertyType( match.captured( 1 ) );
       // Set the first character in upper case
       propertyType = propertyType.at( 0 ).toUpper() + propertyType.mid( 1 );
       geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );

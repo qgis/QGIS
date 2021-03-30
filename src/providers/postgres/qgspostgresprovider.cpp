@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QRegularExpression>
 
 #include "qgsvectorlayerexporter.h"
 #include "qgspostgresprovider.h"
@@ -1006,11 +1007,12 @@ bool QgsPostgresProvider::loadFields()
         }
         else
         {
-          QRegExp re( "numeric\\((\\d+),(\\d+)\\)" );
-          if ( re.exactMatch( formattedFieldType ) )
+          const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "numeric\\((\\d+),(\\d+)\\)" ) ) );
+          const QRegularExpressionMatch match = re.match( formattedFieldType );
+          if ( match.hasMatch() )
           {
-            fieldSize = re.cap( 1 ).toInt();
-            fieldPrec = re.cap( 2 ).toInt();
+            fieldSize = match.captured( 1 ).toInt();
+            fieldPrec = match.captured( 2 ).toInt();
           }
           else if ( formattedFieldType != QLatin1String( "numeric" ) )
           {
@@ -1027,10 +1029,11 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        QRegExp re( "character varying\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        const QRegularExpression re( QRegularExpression::anchoredPattern( "character varying\\((\\d+)\\)" ) );
+        const QRegularExpressionMatch match = re.match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1079,10 +1082,11 @@ bool QgsPostgresProvider::loadFields()
 
         fieldType = QVariant::String;
 
-        QRegExp re( "character\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        const QRegularExpression re( QRegularExpression::anchoredPattern( "character\\((\\d+)\\)" ) );
+        const QRegularExpressionMatch match = re.match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1097,10 +1101,11 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        QRegExp re( "char\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "char\\((\\d+)\\)" ) ) );
+        const QRegularExpressionMatch match = re.match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -3747,15 +3752,14 @@ QgsRectangle QgsPostgresProvider::extent() const
     {
       QgsDebugMsgLevel( "Got extents using: " + sql, 2 );
 
-      QRegExp rx( "\\((.+) (.+),(.+) (.+)\\)" );
-      if ( ext.contains( rx ) )
+      const QRegularExpression rx( "\\((.+) (.+),(.+) (.+)\\)" );
+      const QRegularExpressionMatch match = rx.match( ext );
+      if ( match.hasMatch() )
       {
-        QStringList ex = rx.capturedTexts();
-
-        mLayerExtent.setXMinimum( ex[1].toDouble() );
-        mLayerExtent.setYMinimum( ex[2].toDouble() );
-        mLayerExtent.setXMaximum( ex[3].toDouble() );
-        mLayerExtent.setYMaximum( ex[4].toDouble() );
+        mLayerExtent.setXMinimum( match.captured( 1 ).toDouble() );
+        mLayerExtent.setYMinimum( match.captured( 2 ).toDouble() );
+        mLayerExtent.setXMaximum( match.captured( 3 ).toDouble() );
+        mLayerExtent.setYMaximum( match.captured( 4 ).toDouble() );
       }
       else
       {
