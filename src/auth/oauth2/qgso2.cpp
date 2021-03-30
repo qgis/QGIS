@@ -312,7 +312,11 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect( tokenReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+#else
+    connect( tokenReply, &QNetworkReply::errorOccurred, this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+#endif
   }
   else if ( grantFlow_ == GrantFlowImplicit )
   {
