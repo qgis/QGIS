@@ -312,7 +312,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Creates pyramid overviews.
      *
-     * \param pyramidList a list of QgsRasterPryamids to create overviews for. The QgsRasterPryamid::setBuild() flag
+     * \param pyramidList a list of QgsRasterPyramids to create overviews for. The QgsRasterPyramid::setBuild() flag
      * should be set to TRUE for every layer where pyramids are desired.
      * \param resamplingMethod resampling method to use when creating the pyramids. The pyramidResamplingMethods() method
      * can be used to retrieve a list of valid resampling methods available for specific raster data providers.
@@ -349,8 +349,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * list.
      *
      * The returned list is suitable for passing to the buildPyramids() method. First, modify the returned list
-     * by calling `QgsRasterPryamid::setBuild( TRUE )` for every layer you want to create pyramids for, and then
-     * pass the modified list to buildPryamids().
+     * by calling `QgsRasterPyramid::setBuild( TRUE )` for every layer you want to create pyramids for, and then
+     * pass the modified list to buildPyramids().
      *
      * \param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      *
@@ -364,7 +364,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Returns TRUE if raster has at least one existing pyramid.
      *
      * The buildPyramidList() method can be used to retrieve additional details about potential and existing
-     * pryamid layers.
+     * pyramid layers.
      *
      * \see buildPyramidList()
      * \see buildPyramids()
