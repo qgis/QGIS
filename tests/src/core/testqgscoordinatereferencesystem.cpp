@@ -62,6 +62,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void fromStringCache();
     void isValid();
     void validate();
+    void comparison_data();
+    void comparison();
     void equality();
     void noEquality();
     void equalityInvalid();
@@ -724,6 +726,65 @@ void TestQgsCoordinateReferenceSystem::validate()
   QVERIFY( sValidateCalled );
 
   QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
+}
+
+void TestQgsCoordinateReferenceSystem::comparison_data()
+{
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "lhs" );
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "rhs" );
+  QTest::addColumn<bool>( "equal" );
+
+  QgsCoordinateReferenceSystem noAuthId;
+  noAuthId.createFromWkt( QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"unnamed\",DATUM[\"Geocentric_Datum_of_Australia_2020\",SPHEROID[\"GRS 80\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",147],PARAMETER[\"scale_factor\",0.1996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
+
+
+  QgsCoordinateReferenceSystem epsg4326( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem epsg3111( QStringLiteral( "EPSG:3111" ) );
+
+  QgsCoordinateReferenceSystem userCrs1;
+  userCrs1.createFromProj( QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10.123 +y_0=3 +datum=WGS84 +units=m +no_defs" ) );
+  userCrs1.saveAsUserCrs( QStringLiteral( "test1" ) );
+  Q_ASSERT( userCrs1.isValid() );
+
+  QgsCoordinateReferenceSystem userCrs2;
+  userCrs2.createFromProj( QStringLiteral( "+proj=aea +lat_1=21 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10.123 +y_0=3 +datum=WGS84 +units=m +no_defs" ) );
+  userCrs2.saveAsUserCrs( QStringLiteral( "test2" ) );
+  Q_ASSERT( userCrs2.isValid() );
+
+  // lhs is always < rhs. Or equal is set to true
+  QTest::newRow( "invalid == invalid" ) << QgsCoordinateReferenceSystem() << QgsCoordinateReferenceSystem() << true;
+  QTest::newRow( "epsg4326 == epsg4326" ) << epsg4326 << epsg4326 << true;
+  QTest::newRow( "user == user" ) << userCrs1 << userCrs1 << true;
+  QTest::newRow( "noAuthId == noAuthId" ) << noAuthId << noAuthId << true;
+
+  QTest::newRow( "invalid < epsg4326" ) << QgsCoordinateReferenceSystem() << epsg4326 << false;
+  QTest::newRow( "invalid < user" ) << QgsCoordinateReferenceSystem() << userCrs1 << false;
+  QTest::newRow( "invalid < noAuthId" ) << QgsCoordinateReferenceSystem() << noAuthId << false;
+
+  QTest::newRow( "epsg3111 < epsg4326" ) << epsg3111 << epsg4326 << false;
+  QTest::newRow( "user1 < user2" ) << userCrs1 << userCrs2 << false;
+}
+
+void TestQgsCoordinateReferenceSystem::comparison()
+{
+  QFETCH( QgsCoordinateReferenceSystem, lhs );
+  QFETCH( QgsCoordinateReferenceSystem, rhs );
+  QFETCH( bool, equal );
+
+  if ( equal )
+  {
+    QVERIFY( lhs <= rhs );
+    QVERIFY( lhs >= rhs );
+    QVERIFY( !( lhs > rhs ) );
+    QVERIFY( !( lhs < rhs ) );
+  }
+  else
+  {
+    QVERIFY( lhs <= rhs );
+    QVERIFY( rhs >= lhs );
+    QVERIFY( lhs < rhs );
+    QVERIFY( rhs > lhs );
+  }
 }
 
 void TestQgsCoordinateReferenceSystem::equality()
