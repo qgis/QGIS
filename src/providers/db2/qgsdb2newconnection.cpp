@@ -19,7 +19,8 @@
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 #include "qgssettings.h"
 #include "qgslogger.h"
@@ -80,7 +81,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
 
     txtName->setText( connName );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
 }
 
 //! Autoconnected SLOTS
