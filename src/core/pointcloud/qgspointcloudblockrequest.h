@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudblockhandle.h
+                         qgspointcloudblockrequest.h
                          --------------------
     begin                : March 2021
     copyright            : (C) 2021 by Belgacem Nedjima
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDBLOCKHANDLE_H
-#define QGSPOINTCLOUDBLOCKHANDLE_H
+#ifndef QGSPOINTCLOUDBLOCKREQUEST_H
+#define QGSPOINTCLOUDBLOCKREQUEST_H
 
 #include <QObject>
 
@@ -36,24 +36,37 @@ class QgsPointCloudBlock;
  *
  * \since QGIS 3.20
  */
-class CORE_EXPORT QgsPointCloudBlockHandle : public QObject
+class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
 {
     Q_OBJECT
   public:
-    //! Constructor
-    QgsPointCloudBlockHandle( const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, QgsTileDownloadManagerReply *tileDownloadManagerReply );
+    /**
+     * QgsPointCloudBlockRequest constructor
+     * Note: the istanced object will take ownership over \a tileDownloadManagerReply
+     */
+    QgsPointCloudBlockRequest( const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, QgsTileDownloadManagerReply *tileDownloadManagerReply );
+
+    /**
+     * Returns the requested block. if the returned block is nullptr, that means the data request failed
+     * Note: the returned block is owned by QgsPointCloudBlockRequest and will be deallocated once QgsPointCloudBlockRequest instance is deallocated
+     */
+    QgsPointCloudBlock *block();
+
+    //! Returns the error message string of the request
+    QString errorStr();
+
   signals:
-    //! Emitted when the block is loaded successfully
-    void blockLoadingSucceeded( QgsPointCloudBlock *block );
-    //! Emitted when the block loading has failed
-    void blockLoadingFailed( const QString &errorStr );
+    //! Emitted when the request processing has finished
+    void finished();
   private:
     QString mDataType;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudAttributeCollection mRequestedAttributes;
-    QgsTileDownloadManagerReply *mTileDownloadManagetReply = nullptr;
+    std::unique_ptr<QgsTileDownloadManagerReply> mTileDownloadManagetReply = nullptr;
+    std::unique_ptr<QgsPointCloudBlock> mBlock = nullptr;
+    QString mErrorStr;
   private slots:
     void blockFinishedLoading();
 };
 
-#endif // QGSPOINTCLOUDBLOCKHANDLE_H
+#endif // QGSPOINTCLOUDBLOCKREQUEST_H

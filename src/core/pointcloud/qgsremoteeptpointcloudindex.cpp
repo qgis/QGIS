@@ -42,36 +42,23 @@
 
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
-#include "qgspointcloudblockhandle.h"
+#include "qgspointcloudblockrequest.h"
 
 ///@cond PRIVATE
 
-QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudIndex()
-{
-  mTileDownloadManager = QgsApplication::tileDownloadManager();
-}
+QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudIndex() { }
 
 QgsRemoteEptPointCloudIndex::~QgsRemoteEptPointCloudIndex() = default;
 
 QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
   // Potential bug: what if loadNodeHierarchy fails and returns false
-  Q_ASSERT( loadNodeHierarchy( n ) );
-
-  QList<IndexedPointCloudNode> lst;
-  int d = n.d() + 1;
-  int x = n.x() * 2;
-  int y = n.y() * 2;
-  int z = n.z() * 2;
-
-  for ( int i = 0; i < 8; ++i )
+  if ( !loadNodeHierarchy( n ) )
   {
-    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
-    if ( mHierarchy.contains( n2 ) )
-      lst.append( n2 );
+    return QList<IndexedPointCloudNode>();
   }
-  return lst;
+
+  return QgsPointCloudIndex::nodeChildren( n );
 }
 
 void QgsRemoteEptPointCloudIndex::load( const QString &url )
@@ -96,24 +83,7 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
   }
 
   QgsNetworkReplyContent reply = req.reply();
-  bool success = loadSchema( reply.content() );
-
-  if ( success )
-  {
-    // try to import the metadata too!
-    QNetworkRequest nr( QStringLiteral( "%1/ept-sources/manifest.json" ).arg( mUrlDirectoryPart ) );
-
-    QgsBlockingNetworkRequest req;
-    QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
-    if ( errCode == QgsBlockingNetworkRequest::NoError )
-    {
-      QgsNetworkReplyContent reply = req.reply();
-      const QByteArray manifestJson = reply.content();
-      loadManifest( manifestJson );
-    }
-  }
-
-  mIsValid = success;
+  mIsValid = loadSchema( reply.content() );
 }
 
 QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -146,9 +116,6 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
 
   QgsFileDownloader downloader( fileUrl, fileName );
 
-  int timeout = 10000;
-  QTimer timer;
-  timer.setSingleShot( true );
   QEventLoop loop;
 
   QUrl downloadedUrl;
@@ -165,9 +132,7 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
     loop.exit();
   } );
 
-  connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
   downloader.startDownload();
-  timer.start( timeout );
   loop.exec();
 
   if ( downloadedUrl.isEmpty() )
@@ -192,12 +157,12 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
   return nullptr;
 }
 
-QgsPointCloudBlockHandle *QgsRemoteEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
   if ( !loadNodeHierarchy( n ) )
     return nullptr;
 
-  QgsPointCloudBlockHandle *handle = nullptr;
+  QgsPointCloudBlockRequest *handle = nullptr;
 
   QString fileUrl;
   if ( mDataType == QLatin1String( "binary" ) )
@@ -213,8 +178,8 @@ QgsPointCloudBlockHandle *QgsRemoteEptPointCloudIndex::asyncNodeData( const Inde
     fileUrl = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mUrlDirectoryPart, n.toString() );
   }
   QNetworkRequest nr( fileUrl );
-  QgsTileDownloadManagerReply *reply = mTileDownloadManager->get( nr );
-  handle = new QgsPointCloudBlockHandle( mDataType, attributes(), request.attributes(), reply );
+  QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( nr );
+  handle = new QgsPointCloudBlockRequest( mDataType, attributes(), request.attributes(), reply );
   return handle;
 }
 
@@ -247,6 +212,9 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
 
     const QString fileUrl = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, node.toString() );
     QNetworkRequest nr( fileUrl );
+
+    nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     QgsBlockingNetworkRequest req;
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );

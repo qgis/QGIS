@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
     void load( const QString &fileName ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-    QgsPointCloudBlockHandle *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
+    QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
     int pointCount() const override;
 
@@ -67,8 +67,6 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
     QString mUrlFileNamePart;
 
     QUrl mUrl;
-
-    QgsTileDownloadManager *mTileDownloadManager = nullptr;
 };
 
 ///@endcond
