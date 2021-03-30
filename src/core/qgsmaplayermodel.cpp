@@ -63,8 +63,10 @@ void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
-void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty )
+void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty, const QString &text, const QIcon &icon )
 {
+  mEmptyText = text;
+  mEmptyIcon = icon;
   if ( allowEmpty == mAllowEmpty )
     return;
 
@@ -252,7 +254,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
     case Qt::EditRole:
     {
       if ( index.row() == 0 && mAllowEmpty )
-        return QVariant();
+        return mEmptyText;
 
       if ( additionalIndex >= 0 )
         return mAdditionalItems.at( additionalIndex );
@@ -337,7 +339,10 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
     case Qt::DecorationRole:
     {
-      if ( isEmpty || additionalIndex >= 0 )
+      if ( isEmpty )
+        return mEmptyIcon.isNull() ? QVariant() : mEmptyIcon;
+
+      if ( additionalIndex >= 0 )
         return QVariant();
 
       QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
