@@ -297,7 +297,7 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   }
 }
 
-QgsPointCloudBlockHandle *QgsEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
   Q_UNUSED( n );
   Q_UNUSED( request );

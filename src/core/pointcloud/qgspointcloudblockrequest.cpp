@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudblockhandle.cpp
+                         qgspointcloudblockrequest.cpp
                          --------------------
     begin                : March 2021
     copyright            : (C) 2021 by Belgacem Nedjima
@@ -15,49 +15,59 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointcloudblockhandle.h"
+#include "qgspointcloudblockrequest.h"
 
 #include "qgstiledownloadmanager.h"
 #include "qgseptdecoder.h"
 
 //
-// QgsPointCloudBlockHandle
+// QgsPointCloudBlockRequest
 //
 
 ///@cond PRIVATE
 
-QgsPointCloudBlockHandle::QgsPointCloudBlockHandle( const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, QgsTileDownloadManagerReply *tileDownloadManagerReply )
+QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, QgsTileDownloadManagerReply *tileDownloadManagerReply )
   : mDataType( dataType ), mAttributes( attributes ), mRequestedAttributes( requestedAttributes ), mTileDownloadManagetReply( tileDownloadManagerReply )
 {
-  connect( mTileDownloadManagetReply, &QgsTileDownloadManagerReply::finished, this, &QgsPointCloudBlockHandle::blockFinishedLoading );
+  connect( tileDownloadManagerReply, &QgsTileDownloadManagerReply::finished, this, &QgsPointCloudBlockRequest::blockFinishedLoading );
 }
 
-void QgsPointCloudBlockHandle::blockFinishedLoading()
+QgsPointCloudBlock *QgsPointCloudBlockRequest::block()
 {
+  return mBlock.get();
+}
+
+QString QgsPointCloudBlockRequest::errorStr()
+{
+  return mErrorStr;
+}
+
+void QgsPointCloudBlockRequest::blockFinishedLoading()
+{
+  mBlock.reset( nullptr );
   if ( mTileDownloadManagetReply->error() == QNetworkReply::NetworkError::NoError )
   {
-    QgsPointCloudBlock *block = nullptr;
     if ( mDataType == QLatin1String( "binary" ) )
     {
-      block = QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes );
+      mBlock.reset( QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
     }
     else if ( mDataType == QLatin1String( "zstandard" ) )
     {
-      block = QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes );
+      mBlock.reset( QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
     }
     else if ( mDataType == QLatin1String( "laszip" ) )
     {
-      block = QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes );
+      mBlock.reset( QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
     }
-    if ( block == nullptr )
-      emit blockLoadingFailed( QStringLiteral( "unknown data type %1;" ).arg( mDataType ) +  mTileDownloadManagetReply->errorString() );
-    else
-      emit blockLoadingSucceeded( block );
+
+    if ( !mBlock.get() )
+      mErrorStr = QStringLiteral( "unknown data type %1;" ).arg( mDataType ) +  mTileDownloadManagetReply->errorString();
   }
   else
   {
-    emit blockLoadingFailed( mTileDownloadManagetReply->errorString() );
+    mErrorStr = mTileDownloadManagetReply->errorString();
   }
+  emit finished();
 }
 
 ///@endcond

@@ -79,7 +79,6 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
       if ( preferredProviders.empty() )
         continue;
-      qDebug() << "preferredProviders.at( 0 ).metadata()->key(): " << preferredProviders.at( 0 ).metadata()->key();
       emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
     }
   }

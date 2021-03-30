@@ -17,7 +17,6 @@
 
 #include <QElapsedTimer>
 #include <QPointer>
-#include <QTimer>
 
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudlayer.h"
@@ -34,7 +33,7 @@
 #include "qgsmessagelog.h"
 #include "qgscircle.h"
 #include "qgsmapclippingutils.h"
-#include "qgspointcloudblockhandle.h"
+#include "qgspointcloudblockrequest.h"
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -240,45 +239,26 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   downloadTimer.start();
 
   // Async loading of nodes
-  QVector<QgsPointCloudBlock *> blocks( nodes.size(), nullptr );
-  QVector<QgsPointCloudBlockHandle *> blockHandles( nodes.size(), nullptr );
+  QVector<QgsPointCloudBlockRequest *> blockRequests( nodes.size(), nullptr );
   QVector<bool> finishedLoadingBlock( nodes.size(), false );
-  QTimer timer;
   QEventLoop loop;
-  QObject::connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
   // Note: All capture by reference warnings here shouldn't be an issue since we have an event loop, so locals won't be deallocated
-  auto checkIfFinished = [&]()
-  {
-    // If all blocks are loaded, exit the event loop
-    if ( !finishedLoadingBlock.contains( false ) ) loop.exit();
-  };
   for ( int i = 0; i < nodes.size(); ++i )
   {
     const IndexedPointCloudNode &n = nodes[i];
-    QgsPointCloudBlockHandle *blockHandle = pc->asyncNodeData( n, request );
-    blockHandles[ i ] = blockHandle;
-    QObject::connect( blockHandle, &QgsPointCloudBlockHandle::blockLoadingSucceeded, [ &, i ]( QgsPointCloudBlock * block )
+    QgsPointCloudBlockRequest *blockReuqest = pc->asyncNodeData( n, request );
+    blockRequests[ i ] = blockReuqest;
+    QObject::connect( blockReuqest, &QgsPointCloudBlockRequest::finished, [ &, i, blockReuqest ]()
     {
-      if ( block )
+      if ( !blockReuqest->block() )
       {
-        blocks[ i ] = block;
-      }
-      else
-      {
-        QgsDebugMsg( QStringLiteral( "Unable to load node %1" ).arg( n.toString() ) );
+        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), blockReuqest->errorStr() ) );
       }
       finishedLoadingBlock[ i ] = true;
-      checkIfFinished();
-    } );
-    QObject::connect( blockHandle, &QgsPointCloudBlockHandle::blockLoadingFailed, [ &, i ]( const QString & errorStr )
-    {
-      Q_UNUSED( errorStr );
-      QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), errorStr ) );
-      finishedLoadingBlock[ i ] = true;
-      checkIfFinished();
+      // If all blocks are loaded, exit the event loop
+      if ( !finishedLoadingBlock.contains( false ) ) loop.exit();
     } );
   }
-  timer.start( 100000 );
   // Wait for all point cloud nodes to finish loading
   loop.exec();
 
@@ -294,12 +274,12 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
       break;
     }
 
-    if ( !blocks[ i ] )
+    if ( !blockRequests[ i ]->block() )
       continue;
 
-    context.setAttributes( blocks[ i ]->attributes() );
+    context.setAttributes( blockRequests[ i ]->block()->attributes() );
 
-    mRenderer->renderBlock( blocks[ i ], context );
+    mRenderer->renderBlock( blockRequests[ i ]->block(), context );
     ++nodesDrawn;
 
     // as soon as first block is rendered, we can start showing layer updates.
@@ -313,13 +293,8 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
 
   for ( int i = 0; i < nodes.size(); ++i )
   {
-    if ( blocks[ i ] )
-      delete blocks[ i ];
-    if ( blockHandles[ i ] )
-    {
-      blockHandles[ i ]->disconnect();
-      delete blockHandles[ i ];
-    }
+    if ( blockRequests[ i ] )
+      blockRequests[ i ]->deleteLater();
   }
   return nodesDrawn;
 }

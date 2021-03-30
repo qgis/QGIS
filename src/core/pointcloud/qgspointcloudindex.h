@@ -39,7 +39,7 @@
 class QgsPointCloudRequest;
 class QgsPointCloudAttributeCollection;
 class QgsCoordinateReferenceSystem;
-class QgsPointCloudBlockHandle;
+class QgsPointCloudBlockRequest;
 
 /**
  * \ingroup core
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      *
      * May return nullptr in case the node is not present or any other problem with loading
      */
-    virtual QgsPointCloudBlockHandle *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
+    virtual QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
 
     //! Returns extent of the data
     QgsRectangle extent() const { return mExtent; }
