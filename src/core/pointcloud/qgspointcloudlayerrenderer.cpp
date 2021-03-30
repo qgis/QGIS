@@ -246,13 +246,13 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   for ( int i = 0; i < nodes.size(); ++i )
   {
     const IndexedPointCloudNode &n = nodes[i];
-    QgsPointCloudBlockRequest *blockReuqest = pc->asyncNodeData( n, request );
-    blockRequests[ i ] = blockReuqest;
-    QObject::connect( blockReuqest, &QgsPointCloudBlockRequest::finished, [ &, i, blockReuqest ]()
+    QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
+    blockRequests[ i ] = blockRequest;
+    QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, [ &, i, blockRequest ]()
     {
-      if ( !blockReuqest->block() )
+      if ( !blockRequest->block() )
       {
-        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), blockReuqest->errorStr() ) );
+        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), blockRequest->errorStr() ) );
       }
       finishedLoadingBlock[ i ] = true;
       // If all blocks are loaded, exit the event loop

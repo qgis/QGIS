@@ -40,6 +40,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * QgsPointCloudBlockRequest constructor
      * Note: the istanced object will take ownership over \a tileDownloadManagerReply
