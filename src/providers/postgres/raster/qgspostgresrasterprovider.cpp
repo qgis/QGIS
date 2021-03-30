@@ -1061,7 +1061,7 @@ bool QgsPostgresRasterProvider::init()
         for ( const QString &t : std::as_const( pxTypes ) )
         {
           Qgis::DataType type { pixelTypeFromString( t ) };
-          if ( t == Qgis::DataType::UnknownDataType )
+          if ( type == Qgis::DataType::UnknownDataType )
           {
             throw QgsPostgresRasterProviderException( tr( "Unsupported data type: '%1'" ).arg( t ) );
           }
