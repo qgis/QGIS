@@ -50,7 +50,6 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     //swallow clicks while dragging/resizing items
     return;
   }
-
   if ( mMouseHandles->isVisible() )
   {
     //selection handles are being shown, get mouse action for current cursor position
@@ -218,10 +217,13 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
     itemList = layout()->items( rect.center(), selectionMode );
   else
     itemList = layout()->items( rect, selectionMode );
+
+  bool paperItemFocused = false;
   for ( QGraphicsItem *item : std::as_const( itemList ) )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
     QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
+
     if ( layoutItem && !paperItem )
     {
       if ( !layoutItem->isLocked() )
@@ -241,13 +243,26 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
         }
       }
     }
+    else
+    {
+      if ( paperItem )
+      {
+        emit itemFocused( paperItem );
+        paperItemFocused = true;
+      }
+    }
   }
+
 
   //update item panel
   const QList<QgsLayoutItem *> selectedItemList = layout()->selectedLayoutItems();
   if ( !selectedItemList.isEmpty() )
   {
     emit itemFocused( selectedItemList.at( 0 ) );
+  }
+  else if ( paperItemFocused )
+  {
+    // do NOT emit nullptr because that will remove the page properties...
   }
   else
   {
