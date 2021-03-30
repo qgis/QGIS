@@ -2657,8 +2657,10 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
     conn->begin();
 
     QgsFeatureIds chunkIds;
-    const QgsFeatureIds::const_iterator lastId = --ids.end();
-    for ( QgsFeatureIds::const_iterator it = ids.begin(); it != ids.end(); ++it )
+    QgsFeatureIds::const_iterator lastId = ids.constEnd();
+    lastId--;
+
+    for ( QgsFeatureIds::const_iterator it = ids.constBegin(); it != ids.constEnd(); ++it )
     {
       // create chunks of fids to delete, the last chunk may be smaller
       chunkIds.insert( *it );
@@ -2674,7 +2676,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
       if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
 
-      for ( QgsFeatureIds::const_iterator chunkIt = chunkIds.begin(); chunkIt != chunkIds.end(); ++chunkIt )
+      for ( QgsFeatureIds::const_iterator chunkIt = chunkIds.constBegin(); chunkIt != chunkIds.constEnd(); ++chunkIt )
       {
         mShared->removeFid( *chunkIt );
       }
