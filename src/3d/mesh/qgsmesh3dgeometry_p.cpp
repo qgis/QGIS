@@ -40,7 +40,7 @@ static QByteArray createTerrainVertexData(
 {
   const int nVerts = mesh.vertices().count();
 
-  QVector<QVector3D> normals = mesh.vertexNormals( vertScale );
+  const QVector<QVector3D> normals = mesh.vertexNormals( vertScale );
 
   // Populate a buffer with the interleaved per-vertex data with
   // vec3 pos,  vec3 normal
@@ -79,14 +79,14 @@ static QByteArray createDatasetVertexData(
 {
   const int nVerts = mesh.vertices().count();
 
-  QVector<double> verticalMagnitude =
+  const QVector<double> verticalMagnitude =
     QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.verticalGroupMetadata, data.verticalData, data.activeFaceFlagValues );
 
-  QVector<double> scalarMagnitude =
+  const QVector<double> scalarMagnitude =
     QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.scalarGroupMetadata, data.scalarData, data.activeFaceFlagValues );
 
   //Calculate normales with Z value equal to verticaleMagnitude
-  QVector<QVector3D> normals = QgsMeshLayerUtils::calculateNormals( mesh, verticalMagnitude, data.isVerticalMagnitudeRelative );
+  const QVector<QVector3D> normals = QgsMeshLayerUtils::calculateNormals( mesh, verticalMagnitude, data.isVerticalMagnitudeRelative );
 
   // Populate a buffer with the interleaved per-vertex data with
   // vec3 pos, vec3 normal, float magnitude
@@ -146,7 +146,7 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, QgsMesh
 {
   int activeFaceCount = 0;
 
-  // First we nned to know about the cunt of active faces
+  // First we need to know about the count of active faces
   if ( mActiveFaceFlagValues.active().isEmpty() )
     activeFaceCount = mesh.triangles().count();
   else
