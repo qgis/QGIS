@@ -42,4 +42,4 @@ cmake -GNinja \
  -DWERROR=TRUE \
  ..
 
-ninja qgis_core
+ninja
