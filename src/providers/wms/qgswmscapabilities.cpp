@@ -19,6 +19,7 @@
 #include <QFile>
 #include <QDir>
 #include <QNetworkCacheMetaData>
+#include <QRegularExpression>
 
 #include "qgssettings.h"
 #include "qgscoordinatetransform.h"
