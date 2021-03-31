@@ -271,6 +271,19 @@ class TestQgsSimpleLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('simpleline_dashcornertweak', 'simpleline_dashcornertweak', rendered_image)
 
+    def testRingNumberVariable(self):
+        # test test geometry_ring_num variable
+        s3 = QgsFillSymbol()
+        s3.deleteSymbolLayer(0)
+        s3.appendSymbolLayer(
+            QgsSimpleLineSymbolLayer(color=QColor(255, 0, 0), width=2))
+        s3.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor,
+                                                 QgsProperty.fromExpression('case when @geometry_ring_num=0 then \'green\' when @geometry_ring_num=1 then \'blue\' when @geometry_ring_num=2 then \'red\' end'))
+
+        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        rendered_image = self.renderGeometry(s3, g)
+        assert self.imageCheck('simpleline_ring_num', 'simpleline_ring_num', rendered_image)
+
     def testRingFilter(self):
         # test filtering rings during rendering
 
