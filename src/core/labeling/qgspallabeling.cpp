@@ -1309,7 +1309,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   const double logicalDpiX = QgsApplication::desktop()->logicalDpiX();
 #else
-  const double logicalDpiX = QApplication::topLevelWidgets().first()->screen()->devicePixelRatio();
+  const double logicalDpiX = QApplication::topLevelWidgets().first()->screen()->logicalDotsPerInchX();
 #endif
   context.setScaleFactor( logicalDpiX / 25.4 );
 
