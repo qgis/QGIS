@@ -267,11 +267,15 @@ void TestVectorLayerCache::testFullCacheThroughRequest()
     // suck in all features
   }
 
-  // cache should now contain all features
+  // cache should now contain all features, and should iterate through in the same order as the non-cached feature ordering
   it = mPointsLayer->getFeatures();
+  QgsFeatureIterator itCached = cache.getFeatures( QgsFeatureRequest() );
+  QgsFeature fCached;
   while ( it.nextFeature( f ) )
   {
     QVERIFY( cache.isFidCached( f.id() ) );
+    itCached.nextFeature( fCached );
+    QCOMPARE( f.id(), fCached.id() );
   }
 
   // so it should be a full cache!

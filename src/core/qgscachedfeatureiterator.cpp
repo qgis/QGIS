@@ -45,15 +45,15 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   switch ( featureRequest.filterType() )
   {
     case QgsFeatureRequest::FilterFids:
-      mFeatureIds = featureRequest.filterFids();
+      mFeatureIds = QList< QgsFeatureId >( qgis::setToList( featureRequest.filterFids() ) );
       break;
 
     case QgsFeatureRequest::FilterFid:
-      mFeatureIds = QgsFeatureIds() << featureRequest.filterFid();
+      mFeatureIds = QList< QgsFeatureId >() << featureRequest.filterFid();
       break;
 
     default:
-      mFeatureIds = qgis::listToSet( mVectorLayerCache->mCache.keys() );
+      mFeatureIds = mVectorLayerCache->mCacheOrderedKeys;
       break;
   }
 
