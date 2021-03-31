@@ -694,15 +694,21 @@ void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
 
 void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
+  QgsExpressionContextScope *scope = nullptr;
+  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper;
+  if ( hasDataDefinedProperties() )
+  {
+    scope = new QgsExpressionContextScope();
+    scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.renderContext().expressionContext(), scope );
+  }
 
   switch ( mRingFilter )
   {
     case AllRings:
     case ExteriorRingOnly:
     {
-      scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
+      if ( scope )
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
       renderPolyline( points, context );
       break;
     }
@@ -720,7 +726,8 @@ void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVe
         int ringIndex = 1;
         for ( const QPolygonF &ring : std::as_const( *rings ) )
         {
-          scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, ringIndex, true ) );
+          if ( scope )
+            scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, ringIndex, true ) );
 
           renderPolyline( ring, context );
           ringIndex++;
