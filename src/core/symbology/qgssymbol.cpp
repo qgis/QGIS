@@ -1012,11 +1012,12 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     QPolygonF renderExterior;
     QVector< QPolygonF > renderRings;
     const QgsCurvePolygon *originalGeometry = nullptr;
+    int originalPartIndex = 0;
   };
   QVector< PolygonInfo > polygonsToRender;
 
-  std::function< void ( const QgsAbstractGeometry * )> getPartGeometry;
-  getPartGeometry = [&pointsToRender, &linesToRender, &polygonsToRender, &getPartGeometry, &context, &clippingEnabled, &markers, &feature, &usingSegmentizedGeometry, this]( const QgsAbstractGeometry * part )
+  std::function< void ( const QgsAbstractGeometry *, int partIndex )> getPartGeometry;
+  getPartGeometry = [&pointsToRender, &linesToRender, &polygonsToRender, &getPartGeometry, &context, &clippingEnabled, &markers, &feature, &usingSegmentizedGeometry, this]( const QgsAbstractGeometry * part, int partIndex = 0 )
   {
     Q_UNUSED( feature )
 
@@ -1138,6 +1139,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         PolygonInfo info;
         info.originalGeometry = qgsgeometry_cast<const QgsCurvePolygon *>( part );
+        info.originalPartIndex = partIndex;
         if ( !qgsgeometry_cast<const QgsPolygon *>( processedGeometry )->exteriorRing() )
         {
           QgsDebugMsg( QStringLiteral( "cannot render polygon with no exterior ring" ) );
@@ -1167,7 +1169,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           if ( context.renderingStopped() )
             break;
 
-          getPartGeometry( geomCollection->geometryN( i ) );
+          getPartGeometry( geomCollection->geometryN( i ), i );
         }
         break;
       }
@@ -1205,7 +1207,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           for ( int idx = 0; idx < listPartIndex.size(); ++idx )
           {
             const unsigned i = listPartIndex[idx];
-            getPartGeometry( geomCollection->geometryN( i ) );
+            getPartGeometry( geomCollection->geometryN( i ), i );
           }
         }
         break;
@@ -1219,7 +1221,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
   };
 
-  getPartGeometry( geom.constGet() );
+  getPartGeometry( geom.constGet(), 0 );
 
   // step 2 - determine which layers to render
   std::vector< int > layers;
@@ -1295,19 +1297,17 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
       case QgsSymbol::Fill:
       {
-        int geometryPartNumber = 0;
         for ( const PolygonInfo &info : std::as_const( polygonsToRender ) )
         {
           if ( context.renderingStopped() )
             break;
 
-          mSymbolRenderContext->setGeometryPartNum( geometryPartNumber + 1 );
+          mSymbolRenderContext->setGeometryPartNum( info.originalPartIndex + 1 );
           if ( needsExpressionContext )
-            mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, geometryPartNumber + 1, true ) );
+            mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, info.originalPartIndex + 1, true ) );
 
           context.setGeometry( info.originalGeometry );
           static_cast<QgsFillSymbol *>( this )->renderPolygon( info.renderExterior, ( !info.renderRings.isEmpty() ? &info.renderRings : nullptr ), &feature, context, symbolLayerIndex, selected );
-          geometryPartNumber++;
         }
 
         break;
