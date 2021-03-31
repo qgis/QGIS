@@ -791,6 +791,8 @@ Clears all cached values from the context.
     static const QString EXPR_SYMBOL_ANGLE;
     static const QString EXPR_GEOMETRY_PART_COUNT;
     static const QString EXPR_GEOMETRY_PART_NUM;
+
+    static const QString EXPR_GEOMETRY_RING_NUM;
     static const QString EXPR_GEOMETRY_POINT_COUNT;
     static const QString EXPR_GEOMETRY_POINT_NUM;
     static const QString EXPR_CLUSTER_SIZE;

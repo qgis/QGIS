@@ -727,6 +727,12 @@ class CORE_EXPORT QgsExpressionContext
     static const QString EXPR_GEOMETRY_PART_COUNT;
     //! Inbuilt variable name for geometry part number variable
     static const QString EXPR_GEOMETRY_PART_NUM;
+
+    /**
+     * Inbuilt variable name for geometry ring number variable.
+     * \since QGIS 3.20
+     */
+    static const QString EXPR_GEOMETRY_RING_NUM;
     //! Inbuilt variable name for point count variable
     static const QString EXPR_GEOMETRY_POINT_COUNT;
     //! Inbuilt variable name for point number variable
