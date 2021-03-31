@@ -118,14 +118,16 @@ void QgsSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, const
   dataDefinedProperties().setProperty( key, property );
 }
 
-void QgsSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+void QgsSymbolLayer::startFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
-
+  if ( subSymbol() )
+    subSymbol()->startFeatureRender( feature, context );
 }
 
-void QgsSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext & )
+void QgsSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
-
+  if ( subSymbol() )
+    subSymbol()->stopFeatureRender( feature, context );
 }
 
 bool QgsSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const

@@ -767,6 +767,8 @@ class CORE_EXPORT QgsSymbol
      */
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
 
+    friend class QgsSymbolLayer;
+
     Q_DISABLE_COPY( QgsSymbol )
 
 };
