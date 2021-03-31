@@ -656,7 +656,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   emit gotCapabilities();
 }
 
-QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
+QString QgsWfsCapabilities::NormalizeSRSName( const QString &crsName )
 {
   const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+?([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
   if ( const QRegularExpressionMatch match = re.match( crsName ); match.hasMatch() )
