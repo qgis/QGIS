@@ -186,6 +186,26 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g, buffer=4)
         assert self.imageCheck('part_count_variable', 'part_count_variable', rendered_image)
 
+    def testPartNumPolygon(self):
+        # test geometry_part_num variable
+        s = QgsFillSymbol()
+
+        marker_line = QgsMarkerLineSymbolLayer(False)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
+        f = QgsFontUtils.getStandardTestFont('Bold', 24)
+        marker = QgsFontMarkerSymbolLayer(f.family(), 'x', 24, QColor(255, 255, 0))
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('@geometry_part_num'))
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        marker_line.setAverageAngleLength(0)
+        s.changeSymbolLayer(0, marker_line)
+
+        # rendering test - a polygon with a smaller part first
+        g = QgsGeometry.fromWkt('MultiPolygon(((0 0, 2 0, 2 2, 0 0)),((10 0, 10 10, 0 10, 10 0)))')
+        rendered_image = self.renderGeometry(s, g, buffer=4)
+        assert self.imageCheck('poly_part_num_variable', 'poly_part_num_variable', rendered_image)
+
     def testCompoundCurve(self):
         # test rendering compound curve with markers at vertices and curve points
         s = QgsLineSymbol()
