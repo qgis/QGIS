@@ -658,13 +658,13 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
 
 QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 {
-  const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+?([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
   if ( const QRegularExpressionMatch match = re.match( crsName ); match.hasMatch() )
   {
     return match.captured( 1 ) + ':' + match.captured( 2 );
   }
   // urn:x-ogc:def:crs:EPSG:xxxx as returned by http://maps.warwickshire.gov.uk/gs/ows? in WFS 1.1
-  const QRegularExpression re2( QRegularExpression::anchoredPattern( QStringLiteral( "urn:x-ogc:def:crs:([^:]+).+([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpression re2( QRegularExpression::anchoredPattern( QStringLiteral( "urn:x-ogc:def:crs:([^:]+).+?([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
   if ( const QRegularExpressionMatch match = re2.match( crsName ); match.hasMatch() )
   {
     return match.captured( 1 ) + ':' + match.captured( 2 );
