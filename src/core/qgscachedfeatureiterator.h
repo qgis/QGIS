@@ -76,9 +76,9 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
 
   private:
-    QgsFeatureIds mFeatureIds;
+    QList< QgsFeatureId > mFeatureIds;
     QgsVectorLayerCache *mVectorLayerCache = nullptr;
-    QgsFeatureIds::ConstIterator mFeatureIdIterator;
+    QList< QgsFeatureId >::ConstIterator mFeatureIdIterator;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
 };
