@@ -218,11 +218,13 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   else
     itemList = layout()->items( rect, selectionMode );
 
-  bool paperItemFocused = false;
+  QgsLayoutItemPage *focusedPaperItem = nullptr;
   for ( QGraphicsItem *item : std::as_const( itemList ) )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
     QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
+    if ( paperItem )
+        focusedPaperItem = paperItem;
 
     if ( layoutItem && !paperItem )
     {
@@ -241,14 +243,6 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
           // found an item, and only a click - nothing more to do
           break;
         }
-      }
-    }
-    else
-    {
-      if ( paperItem )
-      {
-        emit itemFocused( paperItem );
-        paperItemFocused = true;
       }
     }
   }
