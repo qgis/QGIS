@@ -2046,13 +2046,23 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl1.extent(), originalExtent)
 
         # read xml with custom extent with readExtent option. Extent read from
-        # xml document should NOT be used because we don't have a view or a
+        # xml document should be used even if we don't have a view or a
         # materialized view
         vl2 = QgsVectorLayer()
         vl2.setReadExtentFromXml(True)
         vl2.readLayerXml(elem, QgsReadWriteContext())
         self.assertTrue(vl2.isValid())
 
+        self.assertEqual(vl2.extent(), customExtent)
+
+        # but a force update on extent should allow retrieveing the data
+        # provider extent
+        vl2.updateExtents()
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertEqual(vl2.extent(), customExtent)
+
+        vl2.updateExtents(force=True)
+        vl2.readLayerXml(elem, QgsReadWriteContext())
         self.assertEqual(vl2.extent(), originalExtent)
 
     def testDeterminePkey(self):
