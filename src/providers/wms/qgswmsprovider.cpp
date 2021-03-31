@@ -2020,7 +2020,8 @@ int QgsWmsProvider::capabilities() const
   // See https://github.com/qgis/QGIS/issues/34813
   if ( mSettings.mTiled && !( mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
   {
-    capability |= Capability::Prefetch;
+    // March 2021: *never* prefetch tile based layers, see: https://github.com/qgis/QGIS/pull/41953
+    // capability |= Capability::Prefetch;
   }
 
   QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );
