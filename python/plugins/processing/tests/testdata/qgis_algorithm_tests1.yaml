@@ -154,7 +154,7 @@ tests:
           precision: 0
         }, {
           input: 'intval',
-          aggregate: 'first_value',
+          aggregate: 'last_value',
           delimiter: '',
           name: 'intval',
           type: 2,
