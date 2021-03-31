@@ -254,9 +254,9 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   {
     emit itemFocused( selectedItemList.at( 0 ) );
   }
-  else if ( paperItemFocused )
+  else if ( focusedPaperItem )
   {
-    // do NOT emit nullptr because that will remove the page properties...
+    emit itemFocused( focusedPaperItem );
   }
   else
   {
