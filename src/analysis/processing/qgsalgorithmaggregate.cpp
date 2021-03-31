@@ -42,7 +42,7 @@ QString QgsAggregateAlgorithm::shortHelpString() const
 
 QStringList QgsAggregateAlgorithm::tags() const
 {
-  return QObject::tr( "attributes,sum,mean,collect,dissolve" ).split( ',' );
+  return QObject::tr( "attributes,sum,mean,collect,dissolve,statistics" ).split( ',' );
 }
 
 QString QgsAggregateAlgorithm::group() const
