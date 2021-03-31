@@ -23,8 +23,6 @@
 #include "qgis_sip.h"
 #include "qgssettings.h"
 
-#define QGS_SETTING_ENTRY_VARIANT(name, path, section, defaultValue, ...) struct name : public QgsSettingsEntry { name() : QgsSettingsEntry( path, section, defaultValue, ##__VA_ARGS__ ) {} };
-
 /**
  * \ingroup core
  * \class QgsSettingsEntry
@@ -46,10 +44,10 @@ class CORE_EXPORT QgsSettingsEntry
       sipType = sipType_QgsSettingsEntryStringList;
     else if ( dynamic_cast< QgsSettingsEntryBool * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryBool;
-//    else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
-//      sipType = sipType_QgsSettingsEntryInteger;
-//    else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
-//      sipType = sipType_QgsSettingsEntryDouble;
+    else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryInteger;
+    else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryDouble;
     else
       sipType = NULL;
     SIP_END
@@ -122,7 +120,7 @@ class CORE_EXPORT QgsSettingsEntry
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
-    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings value.
@@ -183,8 +181,6 @@ class CORE_EXPORT QgsSettingsEntry
 };
 
 
-#define QGS_SETTING_ENTRY_STRING(name, path, section, defaultValue, ...) struct name : public QgsSettingsEntryString { name() : QgsSettingsEntryString( path, section, defaultValue, ##__VA_ARGS__ ) {} };
-
 /**
  * \class QgsSettingsEntryString
  * \ingroup core
@@ -215,7 +211,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
                             int maxLength = -1 );
 
     //! \copydoc QgsSettingsEntry::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) override;
+    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
@@ -237,8 +233,6 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 
 };
 
-
-#define QGS_SETTING_ENTRY_STRINGLIST(name, path, section, defaultValue, ...) struct name : public QgsSettingsEntryStringList { name() : QgsSettingsEntryStringList( path, section, defaultValue, ##__VA_ARGS__ ) {} };
 
 /**
  * \class QgsSettingsEntryStringList
@@ -265,15 +259,13 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
                                 const QString &description = QString() );
 
     //! \copydoc QgsSettingsEntry::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) override;
+    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
 
 };
 
-
-#define QGS_SETTING_ENTRY_BOOL(name, path, section, defaultValue, ...) struct name : public QgsSettingsEntryBool { name() : QgsSettingsEntryBool( path, section, defaultValue, ##__VA_ARGS__ ) {} };
 
 /**
  * \class QgsSettingsEntryBool
@@ -300,7 +292,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
                           const QString &description = QString() );
 
     //! \copydoc QgsSettingsEntry::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) override;
+    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
@@ -308,125 +300,196 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
 };
 
 
-//#define QGS_SETTING_ENTRY_INTEGER(name, path, section, defaultValue, ...) struct name : public QgsSettingsEntryInteger { name() : QgsSettingsEntryInteger( path, section, defaultValue, ##__VA_ARGS__ ) {} };
-
-///**
-// * \class QgsSettingsEntryInteger
-// * \ingroup core
-// * An integer settings entry.
-//  * \since QGIS 3.20
-// */
-//class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
-//{
-//  public:
-
-//    /**
-//     * Constructor for QgsSettingsEntryInteger.
-//     *
-//     * The \a key argument specifies the final part of the settings key.
-//     * The \a parentGroup argument specifies a parent group which is used to rebuild
-//     * the entiere settings key and to determine the settings section.
-//     * The \a default value argument specifies the default value for the settings entry.
-//     * The \a description argument specifies a description for the settings entry.
-//     * The \a minValue argument specifies the minimal value.
-//     * The \a maxValue argument specifies the maximal value.
-//     */
-//    QgsSettingsEntryInteger( const QString &key,
-//                             QgsSettings::Section section,
-//                             qlonglong defaultValue = 0,
-//                             const QString &description = QString(),
-//                             qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-//                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() );
-
-//    //! \copydoc QgsSettingsEntry::setValue
-//    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) override;
-
-//    //! \copydoc QgsSettingsEntry::settingsType
-//    virtual SettingsType settingsType() const override;
-
-//    /**
-//     * Returns the minimum value.
-//     */
-//    qlonglong minValue();
-
-//    /**
-//     * Returns the maximum value.
-//     */
-//    qlonglong maxValue();
-
-//  private:
-
-//    qlonglong mMinValue;
-//    qlonglong mMaxValue;
-
-//};
-
-
-//#define QGS_SETTING_ENTRY_DOUBLE(name, path, section, defaultValue, ...) struct name : public QgsSettingsEntryDouble { name() : QgsSettingsEntryDouble( path, section, defaultValue, ##__VA_ARGS__ ) {} };
-
-///**
-// * \class QgsSettingsEntryDouble
-// * \ingroup core
-// * A double settings entry.
-//  * \since QGIS 3.20
-// */
-//class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
-//{
-//  public:
-
-//    /**
-//     * Constructor for QgsSettingsEntryDouble.
-//     *
-//     * The \a key argument specifies the final part of the settings key.
-//     * The \a parentGroup argument specifies a parent group which is used to rebuild
-//     * the entiere settings key and to determine the settings section.
-//     * The \a default value argument specifies the default value for the settings entry.
-//     * The \a description argument specifies a description for the settings entry.
-//     * The \a minValue argument specifies the minimal value.
-//     * The \a maxValue argument specifies the maximal value.
-//     */
-//    QgsSettingsEntryDouble( const QString &key,
-//                            QgsSettings::Section section,
-//                            double defaultValue = 0.0,
-//                            const QString &description = QString(),
-//                            double minValue = std::numeric_limits<double>::min(),
-//                            double maxValue = std::numeric_limits<double>::max(),
-//                            double displayDecimals = 1 );
-
-//    //! \copydoc QgsSettingsEntry::setValue
-//    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) override;
-
-//    //! \copydoc QgsSettingsEntry::settingsType
-//    virtual SettingsType settingsType() const override;
-
-//    /**
-//     * Returns the minimum value.
-//     */
-//    double minValue() const;
-
-//    /**
-//     * Returns the maximum value.
-//     */
-//    double maxValue() const;
-
-//    /**
-//     * Returns how much decimals should be shown in the Gui.
-//     */
-//    int displayHintDecimals() const;
-
-//  private:
-
-//    double mMinValue;
-//    double mMaxValue;
-
-//    int mDisplayHintDecimals;
-
-//};
+/**
+ * \class QgsSettingsEntryInteger
+ * \ingroup core
+ * An integer settings entry.
+  * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
+{
+  public:
 
 
 #ifndef SIP_RUN
 
-#define QGS_SETTING_ENTRY_ENUM(name, path, section, defaultValue, ...) struct name : public QgsSettingsEntryEnum { name() : QgsSettingsEntryEnum( path, section, defaultValue, ##__VA_ARGS__ ) {} };
+    /**
+     * Constructor for QgsSettingsEntryInteger.
+     *
+     * The \a key argument specifies the final part of the settings key.
+     * The \a parentGroup argument specifies a parent group which is used to rebuild
+     * the entiere settings key and to determine the settings section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a minValue argument specifies the minimal value.
+     * The \a maxValue argument specifies the maximal value.
+     */
+    QgsSettingsEntryInteger( const QString &key,
+                             QgsSettings::Section section,
+                             qlonglong defaultValue = 0,
+                             const QString &description = QString(),
+                             qlonglong minValue = std::numeric_limits<qlonglong>::min(),
+                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() );
+#else
+
+    /**
+     * Constructor for QgsSettingsEntryInteger.
+     *
+     * The \a key argument specifies the final part of the settings key.
+     * The \a parentGroup argument specifies a parent group which is used to rebuild
+     * the entiere settings key and to determine the settings section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     */
+    QgsSettingsEntryInteger( const QString &key,
+                             QgsSettings::Section section,
+                             qlonglong defaultValue = 0,
+                             const QString &description = QString() );
+
+#endif
+
+    //! \copydoc QgsSettingsEntry::setValue
+    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+
+    //! \copydoc QgsSettingsEntry::settingsType
+    virtual SettingsType settingsType() const override;
+
+    /**
+     * Set the minimum value.
+     *
+     * minValue The minimum value.
+     */
+    void setMinValue( qlonglong minValue );
+
+    /**
+     * Returns the minimum value.
+     */
+    qlonglong minValue();
+
+    /**
+     * Set the maximum value.
+     *
+     * maxValue The maximum value.
+     */
+    void setMaxValue( qlonglong maxValue );
+
+    /**
+     * Returns the maximum value.
+     */
+    qlonglong maxValue();
+
+  private:
+
+    qlonglong mMinValue;
+    qlonglong mMaxValue;
+
+};
+
+
+/**
+ * \class QgsSettingsEntryDouble
+ * \ingroup core
+ * A double settings entry.
+  * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
+{
+  public:
+
+#ifndef SIP_RUN
+
+    /**
+     * Constructor for QgsSettingsEntryDouble.
+     *
+     * The \a key argument specifies the final part of the settings key.
+     * The \a parentGroup argument specifies a parent group which is used to rebuild
+     * the entiere settings key and to determine the settings section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a minValue argument specifies the minimal value.
+     * The \a maxValue argument specifies the maximal value.
+     * The \a displayDecimals specifies an hint for the gui about how much decimals to show
+     * for example for a QDoubleSpinBox.
+     */
+    QgsSettingsEntryDouble( const QString &key,
+                            QgsSettings::Section section,
+                            double defaultValue = 0.0,
+                            const QString &description = QString(),
+                            double minValue = std::numeric_limits<double>::min(),
+                            double maxValue = std::numeric_limits<double>::max(),
+                            int displayDecimals = 1 );
+
+#else
+
+    /**
+     * Constructor for QgsSettingsEntryDouble.
+     *
+     * The \a key argument specifies the final part of the settings key.
+     * The \a parentGroup argument specifies a parent group which is used to rebuild
+     * the entiere settings key and to determine the settings section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     */
+    QgsSettingsEntryDouble( const QString &key,
+                            QgsSettings::Section section,
+                            double defaultValue = 0.0,
+                            const QString &description = QString() );
+
+#endif
+
+    //! \copydoc QgsSettingsEntry::setValue
+    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+
+    //! \copydoc QgsSettingsEntry::settingsType
+    virtual SettingsType settingsType() const override;
+
+    /**
+     * Set the minimum value.
+     *
+     * minValue The minimum value.
+     */
+    void setMinValue( double minValue );
+
+    /**
+     * Returns the minimum value.
+     */
+    double minValue() const;
+
+    /**
+     * Set the maximum value.
+     *
+     * maxValue The maximum value.
+     */
+    void setMaxValue( double maxValue );
+
+    /**
+     * Returns the maximum value.
+     */
+    double maxValue() const;
+
+    /**
+     * Set the display hint decimals.
+     *
+     * displayHintDecimals The number of decimals that should be shown in the Gui.
+     */
+    void setDisplayHintDecimals( int displayHintDecimals );
+
+    /**
+     * Returns how much decimals should be shown in the Gui.
+     */
+    int displayHintDecimals() const;
+
+  private:
+
+    double mMinValue;
+    double mMaxValue;
+
+    int mDisplayHintDecimals;
+
+};
+
+
+#ifndef SIP_RUN
 
 /**
  * \class QgsSettingsEntryEnum
@@ -466,7 +529,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
     }
 
     //! \copydoc QgsSettingsEntry::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) override;
+    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;

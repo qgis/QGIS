@@ -43,7 +43,7 @@ class CORE_EXPORT QgsSettingsRegistryCore
 
   private:
 
-    QList<QgsSettingsEntry *> mSettingsEntries;
+    QList<const QgsSettingsEntry *> mSettingsEntries;
 
 };
 

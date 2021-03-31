@@ -9,7 +9,6 @@
 
 
 
-
 class QgsSettingsEntry
 {
 %Docstring(signature="appended")
@@ -31,10 +30,10 @@ to validate set values and provide more accurate settings description for the gu
       sipType = sipType_QgsSettingsEntryStringList;
     else if ( dynamic_cast< QgsSettingsEntryBool * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryBool;
-//    else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
-//      sipType = sipType_QgsSettingsEntryInteger;
-//    else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
-//      sipType = sipType_QgsSettingsEntryDouble;
+    else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryInteger;
+    else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryDouble;
     else
       sipType = NULL;
 %End
@@ -97,7 +96,7 @@ The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 Get settings section. The settings section of the parent group is returned if available.
 %End
 
-    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
 
@@ -127,7 +126,6 @@ Get the settings entry description.
 %End
 
 };
-
 
 
 class QgsSettingsEntryString : QgsSettingsEntry
@@ -162,7 +160,7 @@ The ``maxLength`` argument specifies the maximal length of the string value.
 By -1 the there is no limit
 %End
 
-    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.setValue
@@ -184,7 +182,6 @@ Returns the string maximum length. By -1 there is no limitation.
 %End
 
 };
-
 
 
 class QgsSettingsEntryStringList : QgsSettingsEntry
@@ -214,7 +211,7 @@ The ``default`` value argument specifies the default value for the settings entr
 The ``description`` argument specifies a description for the settings entry.
 %End
 
-    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.setValue
@@ -226,7 +223,6 @@ The ``description`` argument specifies a description for the settings entry.
 %End
 
 };
-
 
 
 class QgsSettingsEntryBool : QgsSettingsEntry
@@ -256,7 +252,7 @@ The ``default`` value argument specifies the default value for the settings entr
 The ``description`` argument specifies a description for the settings entry.
 %End
 
-    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() );
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.setValue
@@ -270,28 +266,151 @@ The ``description`` argument specifies a description for the settings entry.
 };
 
 
+class QgsSettingsEntryInteger : QgsSettingsEntry
+{
+%Docstring(signature="appended")
+An integer settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
 
 
 
+    QgsSettingsEntryInteger( const QString &key,
+                             QgsSettings::Section section,
+                             qlonglong defaultValue = 0,
+                             const QString &description = QString() );
+%Docstring
+Constructor for QgsSettingsEntryInteger.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+%End
 
 
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
+
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
+
+    virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
+
+    void setMinValue( qlonglong minValue );
+%Docstring
+Set the minimum value.
+
+minValue The minimum value.
+%End
+
+    qlonglong minValue();
+%Docstring
+Returns the minimum value.
+%End
+
+    void setMaxValue( qlonglong maxValue );
+%Docstring
+Set the maximum value.
+
+maxValue The maximum value.
+%End
+
+    qlonglong maxValue();
+%Docstring
+Returns the maximum value.
+%End
+
+};
 
 
+class QgsSettingsEntryDouble : QgsSettingsEntry
+{
+%Docstring(signature="appended")
+A double settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
 
 
+    QgsSettingsEntryDouble( const QString &key,
+                            QgsSettings::Section section,
+                            double defaultValue = 0.0,
+                            const QString &description = QString() );
+%Docstring
+Constructor for QgsSettingsEntryDouble.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+%End
 
 
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
 
+    virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
 
+    void setMinValue( double minValue );
+%Docstring
+Set the minimum value.
 
+minValue The minimum value.
+%End
 
+    double minValue() const;
+%Docstring
+Returns the minimum value.
+%End
 
+    void setMaxValue( double maxValue );
+%Docstring
+Set the maximum value.
 
+maxValue The maximum value.
+%End
 
+    double maxValue() const;
+%Docstring
+Returns the maximum value.
+%End
 
+    void setDisplayHintDecimals( int displayHintDecimals );
+%Docstring
+Set the display hint decimals.
 
+displayHintDecimals The number of decimals that should be shown in the Gui.
+%End
 
+    int displayHintDecimals() const;
+%Docstring
+Returns how much decimals should be shown in the Gui.
+%End
+
+};
 
 
 

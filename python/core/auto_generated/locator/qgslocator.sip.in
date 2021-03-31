@@ -143,7 +143,9 @@ This list is updated when preparing the search
 
     struct Settings
     {
-
+      static QgsSettingsEntryBool locatorFilterEnabled; // = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, "Enabled" );
+      static QgsSettingsEntryBool locatorFilterDefault; // = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, "Default value" );
+      static QgsSettingsEntryString locatorFilterPrefix; // = QgsSettingsEntryString( QStringLiteral( "locator_filters/prefix_%" ), QgsSettings::Gui, QString(), "Locator filter prefix" );
     };
 
   signals:
