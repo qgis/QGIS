@@ -183,6 +183,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
       groupSinks.emplace_back( std::move( sink ) );
       group.layer = layer;
       group.firstFeature = feature;
+      group.lastFeature = feature;
       groups[key] = group;
       keys.append( key );
     }
