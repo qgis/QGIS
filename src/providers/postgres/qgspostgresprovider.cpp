@@ -3166,6 +3166,84 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
 
   bool returnvalue = true;
 
+  if ( mSpatialColType != SctTopoGeometry )
+  {
+    try
+    {
+      // Start the PostGIS transaction
+      conn->begin();
+
+      int chunkSizeNotLess = 123456; //in bytes
+      int chunkCount = 0;
+      int featureCount = 0;
+      QString updatePrepare;
+      QString paramStringChunk;
+      QgsPostgresResult result;
+
+      updatePrepare = QStringLiteral( "PREPARE updategeometrys AS UPDATE %1 SET %2=%3 WHERE %4;\n" )
+                      .arg( mQuery,
+                            quotedIdentifier( mGeometryColumn ),
+                            geomParam( 1 ),
+                            pkParamWhereClause( 2 ) );
+
+      const QgsGeometryMap::const_iterator lastIter = geometry_map.constEnd() - 1;
+      for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin();
+            iter != geometry_map.constEnd();
+            ++iter )
+      {
+        QStringList params;
+        QString paramString;
+
+        //appendGeomParam( *iter, params );
+        QgsGeometry geom = *iter;
+        if ( geom.isNull() )
+        {
+          params << QString();
+        }
+        else
+        {
+          QgsGeometry convertedGeom( convertToProviderType( geom ) );
+          QByteArray wkb( !convertedGeom.isNull() ? convertedGeom.asWkb() : geom.asWkb() );
+          params << wkb.toHex();
+        }
+
+        appendPkParams( iter.key(), params );
+        paramString = params.join( QLatin1String( "','" ) ).prepend( "EXECUTE updategeometrys('\\x" ).append( "');" );
+        paramStringChunk += paramString;
+        featureCount++;
+
+        if ( iter == lastIter || paramStringChunk.size() > chunkSizeNotLess )
+        {
+          if ( chunkCount > 0 )
+            updatePrepare = QStringLiteral( "/*..START chunk=%1(%2)..*/\n" ).arg( chunkCount ).arg( featureCount );
+
+          result = conn->PQexec( updatePrepare + paramStringChunk );
+          if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+            throw PGException( result );
+
+          chunkCount++;
+          paramStringChunk = "";
+        }
+      } // for each feature
+
+      conn->PQexecNR( QStringLiteral( "DEALLOCATE updategeometrys;" ) );
+
+      returnvalue &= conn->commit();
+      if ( mTransaction )
+        mTransaction->dirtyLastSavePoint();
+    }
+    catch ( PGException &e )
+    {
+      pushError( tr( "PostGIS error while changing geometry values: %1" ).arg( e.errorMessage() ) );
+      conn->rollback();
+      conn->PQexecNR( QStringLiteral( "DEALLOCATE updategeometrys;" ) );
+      returnvalue = false;
+    }
+
+    conn->unlock();
+    return returnvalue;
+  }
+
   try
   {
     // Start the PostGIS transaction
