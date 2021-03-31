@@ -9,7 +9,7 @@
 
 
 
-class QgsSettingsEntry
+class QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 
@@ -24,9 +24,11 @@ to validate set values and provide more accurate settings description for the gu
 #include "qgssettingsentry.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
+    if ( dynamic_cast< QgsSettingsEntryVariant * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryVariant;
+    else if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryString;
-    if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
+    else if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryStringList;
     else if ( dynamic_cast< QgsSettingsEntryBool * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryBool;
@@ -50,12 +52,12 @@ to validate set values and provide more accurate settings description for the gu
       Enum
     };
 
-    QgsSettingsEntry( QString key,
-                      QgsSettings::Section section,
-                      QVariant defaultValue = QVariant(),
-                      QString description = QString() );
+    QgsSettingsEntryBase( QString key,
+                          QgsSettings::Section section,
+                          QVariant defaultValue = QVariant(),
+                          QString description = QString() );
 %Docstring
-Constructor for QgsSettingsEntry.
+Constructor for :py:class:`QgsSettingsEntry`.
 
 The ``key`` argument specifies the key of the settings.
 The ``section`` argument specifies the section of the settings.
@@ -63,7 +65,7 @@ The ``default`` value argument specifies the default value for the settings entr
 The ``description`` argument specifies a description for the settings entry.
 %End
 
-    virtual ~QgsSettingsEntry();
+    virtual ~QgsSettingsEntryBase();
 
     QString key( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
@@ -103,19 +105,19 @@ Set settings value.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
-    QVariant valueFromPython() const /PyName=value/;
+    QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
-
-    QVariant defaultValueFromPython() const /PyName=defaultValue/;
+    QVariant defaultValueAsVariant() const;
 %Docstring
 Get settings default value.
 %End
 
-
-    virtual SettingsType settingsType() const;
+    virtual SettingsType settingsType() const = 0;
 %Docstring
 Get the settings entry type.
 %End
@@ -128,7 +130,59 @@ Get the settings entry description.
 };
 
 
-class QgsSettingsEntryString : QgsSettingsEntry
+class QgsSettingsEntryVariant : QgsSettingsEntryBase
+{
+%Docstring(signature="appended")
+A variant settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryVariant( const QString &key,
+                             QgsSettings::Section section,
+                             const QVariant &defaultValue = QVariant(),
+                             const QString &description = QString() );
+%Docstring
+Constructor for QgsSettingsEntryVariant.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``parentGroup`` argument specifies a parent group which is used to rebuild
+the entiere settings key and to determine the settings section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+%End
+
+    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
+
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
+
+    QVariant value( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QVariant defaultValue() const;
+%Docstring
+Get settings default value.
+%End
+
+    virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntry`.settingsType
+%End
+};
+
+
+class QgsSettingsEntryString : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 A string settings entry.
@@ -166,6 +220,18 @@ By -1 the there is no limit
 \copydoc :py:class:`QgsSettingsEntry`.setValue
 %End
 
+    QString value( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QString defaultValue() const;
+%Docstring
+Get settings default value.
+%End
+
     virtual SettingsType settingsType() const;
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.settingsType
@@ -184,7 +250,7 @@ Returns the string maximum length. By -1 there is no limitation.
 };
 
 
-class QgsSettingsEntryStringList : QgsSettingsEntry
+class QgsSettingsEntryStringList : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 A string list settings entry.
@@ -217,6 +283,18 @@ The ``description`` argument specifies a description for the settings entry.
 \copydoc :py:class:`QgsSettingsEntry`.setValue
 %End
 
+    QStringList value( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QStringList defaultValue() const;
+%Docstring
+Get settings default value.
+%End
+
     virtual SettingsType settingsType() const;
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.settingsType
@@ -225,7 +303,7 @@ The ``description`` argument specifies a description for the settings entry.
 };
 
 
-class QgsSettingsEntryBool : QgsSettingsEntry
+class QgsSettingsEntryBool : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 A boolean settings entry.
@@ -258,6 +336,18 @@ The ``description`` argument specifies a description for the settings entry.
 \copydoc :py:class:`QgsSettingsEntry`.setValue
 %End
 
+    bool value( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    bool defaultValue() const;
+%Docstring
+Get settings default value.
+%End
+
     virtual SettingsType settingsType() const;
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.settingsType
@@ -266,7 +356,7 @@ The ``description`` argument specifies a description for the settings entry.
 };
 
 
-class QgsSettingsEntryInteger : QgsSettingsEntry
+class QgsSettingsEntryInteger : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 An integer settings entry.
@@ -302,6 +392,18 @@ The ``description`` argument specifies a description for the settings entry.
 \copydoc :py:class:`QgsSettingsEntry`.setValue
 %End
 
+    qlonglong value( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    qlonglong defaultValue() const;
+%Docstring
+Get settings default value.
+%End
+
     virtual SettingsType settingsType() const;
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.settingsType
@@ -334,7 +436,7 @@ Returns the maximum value.
 };
 
 
-class QgsSettingsEntryDouble : QgsSettingsEntry
+class QgsSettingsEntryDouble : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 A double settings entry.
@@ -367,6 +469,18 @@ The ``description`` argument specifies a description for the settings entry.
 
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.setValue
+%End
+
+    double value( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    double defaultValue() const;
+%Docstring
+Get settings default value.
 %End
 
     virtual SettingsType settingsType() const;

@@ -155,9 +155,9 @@ class CORE_EXPORT QgsLocator : public QObject
 
     struct Settings
     {
-      static inline QgsSettingsEntryBool locatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, "Enabled" );
-      static inline QgsSettingsEntryBool locatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, "Default value" );
-      static inline QgsSettingsEntryString locatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "locator_filters/prefix_%" ), QgsSettings::Gui, QString(), "Locator filter prefix" );
+      static const inline QgsSettingsEntryBool locatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, "Enabled" );
+      static const inline QgsSettingsEntryBool locatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, "Default value" );
+      static const inline QgsSettingsEntryString locatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "locator_filters/prefix_%" ), QgsSettings::Gui, QString(), "Locator filter prefix" );
     };
 
   signals:

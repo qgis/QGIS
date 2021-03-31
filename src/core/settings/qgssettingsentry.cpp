@@ -17,10 +17,10 @@
 
 #include "qgslogger.h"
 
-QgsSettingsEntry::QgsSettingsEntry( QString key,
-                                    QgsSettings::Section section,
-                                    QVariant defaultValue,
-                                    QString description )
+QgsSettingsEntryBase::QgsSettingsEntryBase( QString key,
+    QgsSettings::Section section,
+    QVariant defaultValue,
+    QString description )
   : mKey( key )
   , mDefaultValue( defaultValue )
   , mSection( section )
@@ -28,11 +28,11 @@ QgsSettingsEntry::QgsSettingsEntry( QString key,
 {
 }
 
-QgsSettingsEntry::~QgsSettingsEntry()
+QgsSettingsEntryBase::~QgsSettingsEntryBase()
 {
 }
 
-QString QgsSettingsEntry::key( const QString &dynamicKeyPart ) const
+QString QgsSettingsEntryBase::key( const QString &dynamicKeyPart ) const
 {
   if ( dynamicKeyPart.isEmpty() == false )
   {
@@ -54,27 +54,27 @@ QString QgsSettingsEntry::key( const QString &dynamicKeyPart ) const
   }
 }
 
-bool QgsSettingsEntry::hasDynamicKey() const
+bool QgsSettingsEntryBase::hasDynamicKey() const
 {
   return mKey.contains( '%' );
 }
 
-bool QgsSettingsEntry::exists( const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const
 {
   return QgsSettings().contains( key( dynamicKeyPart ), section() );
 }
 
-void QgsSettingsEntry::remove( const QString &dynamicKeyPart ) const
+void QgsSettingsEntryBase::remove( const QString &dynamicKeyPart ) const
 {
   QgsSettings().remove( key( dynamicKeyPart ), section() );
 }
 
-QgsSettings::Section QgsSettingsEntry::section() const
+QgsSettings::Section QgsSettingsEntryBase::section() const
 {
   return mSection;
 }
 
-bool QgsSettingsEntry::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryBase::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
 {
   QgsSettings().setValue( key( dynamicKeyPart ),
                           value,
@@ -82,40 +82,60 @@ bool QgsSettingsEntry::setValue( const QVariant &value, const QString &dynamicKe
   return true;
 }
 
-QgsSettingsEntry::SettingsType QgsSettingsEntry::settingsType() const
+QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart ) const
 {
-  return QgsSettingsEntry::Variant;
+  return QgsSettings().value( key( dynamicKeyPart ),
+                              mDefaultValue,
+                              mSection );
 }
 
-QVariant QgsSettingsEntry::valueFromPython() const
+QVariant QgsSettingsEntryBase::defaultValueAsVariant() const
 {
-  return value<QVariant>();
+  return mDefaultValue;
 }
 
-QVariant QgsSettingsEntry::defaultValueFromPython() const
-{
-  return defaultValue<QVariant>();
-}
-
-QString QgsSettingsEntry::description() const
+QString QgsSettingsEntryBase::description() const
 {
   return mDescription;
 }
 
-QgsSettingsEntryString::QgsSettingsEntryString( const QString &key,
-    QgsSettings::Section section,
-    const QString &defaultValue,
-    const QString &description,
-    int minLength,
-    int maxLength )
-  : QgsSettingsEntry( key,
-                      section,
-                      defaultValue,
-                      description )
+
+QgsSettingsEntryVariant::QgsSettingsEntryVariant( const QString &key, QgsSettings::Section section, const QVariant &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          section,
+                          defaultValue,
+                          description )
+{
+}
+
+bool QgsSettingsEntryVariant::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
+{
+  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
+}
+
+QVariant QgsSettingsEntryVariant::value( const QString &dynamicKeyPart ) const
+{
+  return valueAsVariant( dynamicKeyPart );
+}
+
+QVariant QgsSettingsEntryVariant::defaultValue() const
+{
+  return defaultValueAsVariant();
+}
+
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryVariant::settingsType() const
+{
+  return QgsSettingsEntryBase::Variant;
+}
+
+QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, QgsSettings::Section section, const QString &defaultValue, const QString &description, int minLength, int maxLength )
+  : QgsSettingsEntryBase( key,
+                          section,
+                          defaultValue,
+                          description )
   , mMinLength( minLength )
   , mMaxLength( maxLength )
 {
-
 }
 
 bool QgsSettingsEntryString::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
@@ -124,7 +144,7 @@ bool QgsSettingsEntryString::setValue( const QVariant &value, const QString &dyn
   {
     QgsDebugMsg( QObject::tr( "Can't convert value '%1' to string for settings with key '%2'" )
                  .arg( value.toString(),
-                       QgsSettingsEntry::key() ) );
+                       QgsSettingsEntryBase::key() ) );
     return false;
   }
 
@@ -132,7 +152,7 @@ bool QgsSettingsEntryString::setValue( const QVariant &value, const QString &dyn
   if ( valueString.length() < mMinLength )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is shorter than minimum length '%3'." )
-                 .arg( QgsSettingsEntry::key(),
+                 .arg( QgsSettingsEntryBase::key(),
                        valueString.length(),
                        mMinLength ) );
     return false;
@@ -142,19 +162,28 @@ bool QgsSettingsEntryString::setValue( const QVariant &value, const QString &dyn
        && valueString.length() > mMaxLength )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is longer than maximum length '%3'." )
-                 .arg( QgsSettingsEntry::key(),
+                 .arg( QgsSettingsEntryBase::key(),
                        valueString.length(),
                        mMinLength ) );
     return false;
   }
 
-  QgsSettingsEntry::setValue( value, dynamicKeyPart );
-  return true;
+  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
 }
 
-QgsSettingsEntry::SettingsType QgsSettingsEntryString::settingsType() const
+QString QgsSettingsEntryString::value( const QString &dynamicKeyPart ) const
 {
-  return QgsSettingsEntry::String;
+  return valueAsVariant( dynamicKeyPart ).toString();
+}
+
+QString QgsSettingsEntryString::defaultValue() const
+{
+  return defaultValueAsVariant().toString();
+}
+
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryString::settingsType() const
+{
+  return QgsSettingsEntryBase::String;
 }
 
 int QgsSettingsEntryString::minLength()
@@ -171,12 +200,11 @@ QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key,
     QgsSettings::Section section,
     const QStringList &defaultValue,
     const QString &description )
-  : QgsSettingsEntry( key,
-                      section,
-                      defaultValue,
-                      description )
+  : QgsSettingsEntryBase( key,
+                          section,
+                          defaultValue,
+                          description )
 {
-
 }
 
 bool QgsSettingsEntryStringList::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
@@ -185,29 +213,37 @@ bool QgsSettingsEntryStringList::setValue( const QVariant &value, const QString 
   {
     QgsDebugMsg( QObject::tr( "Can't convert value '%1' to string list for settings with key '%2'" )
                  .arg( value.toString(),
-                       QgsSettingsEntry::key() ) );
+                       QgsSettingsEntryBase::key() ) );
     return false;
   }
 
-  QgsSettingsEntry::setValue( value, dynamicKeyPart );
-  return true;
+  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
 }
 
-QgsSettingsEntry::SettingsType QgsSettingsEntryStringList::settingsType() const
+QStringList QgsSettingsEntryStringList::value( const QString &dynamicKeyPart ) const
 {
-  return QgsSettingsEntry::StringList;
+  return valueAsVariant( dynamicKeyPart ).toStringList();
+}
+
+QStringList QgsSettingsEntryStringList::defaultValue() const
+{
+  return defaultValueAsVariant().toStringList();
+}
+
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryStringList::settingsType() const
+{
+  return QgsSettingsEntryBase::StringList;
 }
 
 QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key,
     QgsSettings::Section section,
     bool defaultValue,
     const QString &description )
-  : QgsSettingsEntry( key,
-                      section,
-                      defaultValue,
-                      description )
+  : QgsSettingsEntryBase( key,
+                          section,
+                          defaultValue,
+                          description )
 {
-
 }
 
 bool QgsSettingsEntryBool::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
@@ -216,35 +252,33 @@ bool QgsSettingsEntryBool::setValue( const QVariant &value, const QString &dynam
   {
     QgsDebugMsg( QObject::tr( "Can't convert value '%1' to bool for settings with key '%2'" )
                  .arg( value.toString(),
-                       QgsSettingsEntry::key() ) );
+                       QgsSettingsEntryBase::key() ) );
     return false;
   }
 
-  QgsSettingsEntry::setValue( value, dynamicKeyPart );
-  return true;
+  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
 }
 
-QgsSettingsEntry::SettingsType QgsSettingsEntryBool::settingsType() const
+bool QgsSettingsEntryBool::value( const QString &dynamicKeyPart ) const
 {
-  return QgsSettingsEntry::Bool;
+  return valueAsVariant( dynamicKeyPart ).toBool();
 }
 
-//QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, QgsSettings::Section section, qlonglong defaultValue, const QString &description )
-//  : QgsSettingsEntry( key,
-//                      section,
-//                      defaultValue,
-//                      description )
-//  , mMinValue( std::numeric_limits<qlonglong>::min() )
-//  , mMaxValue( std::numeric_limits<qlonglong>::max() )
-//{
+bool QgsSettingsEntryBool::defaultValue() const
+{
+  return defaultValueAsVariant().toBool();
+}
 
-//}
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryBool::settingsType() const
+{
+  return QgsSettingsEntryBase::Bool;
+}
 
 QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, QgsSettings::Section section, qlonglong defaultValue, const QString &description, qlonglong minValue, qlonglong maxValue )
-  : QgsSettingsEntry( key,
-                      section,
-                      defaultValue,
-                      description )
+  : QgsSettingsEntryBase( key,
+                          section,
+                          defaultValue,
+                          description )
   , mMinValue( minValue )
   , mMaxValue( maxValue )
 {
@@ -257,7 +291,7 @@ bool QgsSettingsEntryInteger::setValue( const QVariant &value, const QString &dy
   {
     QgsDebugMsg( QObject::tr( "Can't convert value '%1' to qlonglong for settings with key '%2'" )
                  .arg( value.toString(),
-                       QgsSettingsEntry::key() ) );
+                       QgsSettingsEntryBase::key() ) );
     return false;
   }
 
@@ -265,7 +299,7 @@ bool QgsSettingsEntryInteger::setValue( const QVariant &value, const QString &dy
   if ( valueLongLong < mMinValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
-                 .arg( QgsSettingsEntry::key(),
+                 .arg( QgsSettingsEntryBase::key(),
                        QString::number( valueLongLong ),
                        QString::number( mMinValue ) ) );
     return false;
@@ -274,19 +308,28 @@ bool QgsSettingsEntryInteger::setValue( const QVariant &value, const QString &dy
   if ( valueLongLong > mMaxValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
-                 .arg( QgsSettingsEntry::key(),
+                 .arg( QgsSettingsEntryBase::key(),
                        QString::number( valueLongLong ),
                        QString::number( mMinValue ) ) );
     return false;
   }
 
-  QgsSettingsEntry::setValue( value, dynamicKeyPart );
-  return true;
+  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
 }
 
-QgsSettingsEntry::SettingsType QgsSettingsEntryInteger::settingsType() const
+qlonglong QgsSettingsEntryInteger::value( const QString &dynamicKeyPart ) const
 {
-  return QgsSettingsEntry::Integer;
+  return valueAsVariant( dynamicKeyPart ).toLongLong();
+}
+
+qlonglong QgsSettingsEntryInteger::defaultValue() const
+{
+  return defaultValueAsVariant().toLongLong();
+}
+
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryInteger::settingsType() const
+{
+  return QgsSettingsEntryBase::Integer;
 }
 
 void QgsSettingsEntryInteger::setMinValue( qlonglong minValue )
@@ -309,23 +352,11 @@ qlonglong QgsSettingsEntryInteger::maxValue()
   return mMaxValue;
 }
 
-//QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, QgsSettings::Section section, double defaultValue, const QString &description )
-//  : QgsSettingsEntry( key,
-//                      section,
-//                      defaultValue,
-//                      description )
-//  , mMinValue( std::numeric_limits<double>::min() )
-//  , mMaxValue( std::numeric_limits<double>::max() )
-//  , mDisplayHintDecimals( 1 )
-//{
-
-//}
-
 QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, QgsSettings::Section section, double defaultValue, const QString &description, double minValue, double maxValue, int displayDecimals )
-  : QgsSettingsEntry( key,
-                      section,
-                      defaultValue,
-                      description )
+  : QgsSettingsEntryBase( key,
+                          section,
+                          defaultValue,
+                          description )
   , mMinValue( minValue )
   , mMaxValue( maxValue )
   , mDisplayHintDecimals( displayDecimals )
@@ -339,7 +370,7 @@ bool QgsSettingsEntryDouble::setValue( const QVariant &value, const QString &dyn
   {
     QgsDebugMsg( QObject::tr( "Can't convert value '%1' to double for settings with key '%2'" )
                  .arg( value.toString(),
-                       QgsSettingsEntry::key() ) );
+                       QgsSettingsEntryBase::key() ) );
     return false;
   }
 
@@ -347,7 +378,7 @@ bool QgsSettingsEntryDouble::setValue( const QVariant &value, const QString &dyn
   if ( valueDouble < mMinValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
-                 .arg( QgsSettingsEntry::key(),
+                 .arg( QgsSettingsEntryBase::key(),
                        QString::number( valueDouble ),
                        QString::number( mMinValue ) ) );
     return false;
@@ -356,19 +387,28 @@ bool QgsSettingsEntryDouble::setValue( const QVariant &value, const QString &dyn
   if ( valueDouble > mMaxValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
-                 .arg( QgsSettingsEntry::key(),
+                 .arg( QgsSettingsEntryBase::key(),
                        QString::number( valueDouble ),
                        QString::number( mMinValue ) ) );
     return false;
   }
 
-  QgsSettingsEntry::setValue( value, dynamicKeyPart );
-  return true;
+  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
 }
 
-QgsSettingsEntry::SettingsType QgsSettingsEntryDouble::settingsType() const
+double QgsSettingsEntryDouble::value( const QString &dynamicKeyPart ) const
 {
-  return QgsSettingsEntry::Double;
+  return valueAsVariant( dynamicKeyPart ).toDouble();
+}
+
+double QgsSettingsEntryDouble::defaultValue() const
+{
+  return defaultValueAsVariant().toDouble();
+}
+
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryDouble::settingsType() const
+{
+  return QgsSettingsEntryBase::Double;
 }
 
 void QgsSettingsEntryDouble::setMinValue( double minValue )
@@ -409,11 +449,11 @@ bool QgsSettingsEntryEnum::setValue( const QVariant &value, const QString &dynam
     return false;
   }
 
-  QgsSettingsEntry::setValue( mMetaEnum.valueToKey( value.toInt() ), dynamicKeyPart );
-  return true;
+  return QgsSettingsEntryBase::setValue( mMetaEnum.valueToKey( value.toInt() ), dynamicKeyPart );
 }
 
-QgsSettingsEntry::SettingsType QgsSettingsEntryEnum::settingsType() const
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryEnum::settingsType() const
 {
-  return QgsSettingsEntry::Enum;
+  return QgsSettingsEntryBase::Enum;
 }
+

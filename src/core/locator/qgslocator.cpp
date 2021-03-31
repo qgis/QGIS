@@ -96,13 +96,13 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   // restore settings
   bool enabled = true;
   if ( QgsLocator::Settings::locatorFilterEnabled.exists( filter->name() ) )
-    enabled = QgsLocator::Settings::locatorFilterEnabled.value<bool>( filter->name() );
+    enabled = QgsLocator::Settings::locatorFilterEnabled.value( filter->name() );
   bool byDefault = filter->useWithoutPrefix();
   if ( QgsLocator::Settings::locatorFilterDefault.exists( filter->name() ) )
-    byDefault = QgsLocator::Settings::locatorFilterDefault.value<bool>( filter->name() );
+    byDefault = QgsLocator::Settings::locatorFilterDefault.value( filter->name() );
   QString prefix = filter->prefix();
   if ( QgsLocator::Settings::locatorFilterPrefix.exists( filter->name() ) )
-    prefix = QgsLocator::Settings::locatorFilterPrefix.value<QString>( filter->name() );
+    prefix = QgsLocator::Settings::locatorFilterPrefix.value( filter->name() );
   if ( prefix.isEmpty() )
   {
     prefix = filter->prefix();

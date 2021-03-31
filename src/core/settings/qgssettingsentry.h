@@ -33,14 +33,16 @@
  *
  * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsEntry
+class CORE_EXPORT QgsSettingsEntryBase
 {
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
+    if ( dynamic_cast< QgsSettingsEntryVariant * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryVariant;
+    else if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryString;
-    if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
+    else if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryStringList;
     else if ( dynamic_cast< QgsSettingsEntryBool * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryBool;
@@ -74,15 +76,15 @@ class CORE_EXPORT QgsSettingsEntry
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      */
-    QgsSettingsEntry( QString key,
-                      QgsSettings::Section section,
-                      QVariant defaultValue = QVariant(),
-                      QString description = QString() );
+    QgsSettingsEntryBase( QString key,
+                          QgsSettings::Section section,
+                          QVariant defaultValue = QVariant(),
+                          QString description = QString() );
 
     /**
      * Destructor for QgsSettingsEntry.
      */
-    virtual ~QgsSettingsEntry();
+    virtual ~QgsSettingsEntryBase();
 
     /**
      * Get settings entry key.
@@ -124,47 +126,20 @@ class CORE_EXPORT QgsSettingsEntry
 
     /**
      * Get settings value.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
-    QVariant valueFromPython() const SIP_PYNAME( value );
-
-#ifndef SIP_RUN
-    template <class T>
-    T value( const QString &dynamicKeyPart = QString() ) const
-    {
-      QVariant variantValue = QgsSettings().value( key( dynamicKeyPart ),
-                              mDefaultValue,
-                              mSection );
-      if ( variantValue.canConvert<T>() == false )
-        QgsDebugMsg( QObject::tr( "Can't convert setting '%1' to type '%2'" )
-                     .arg( key( dynamicKeyPart ) )
-                     .arg( typeid( T ).name() ) );
-
-      return variantValue.value<T>();
-    }
-#endif
+    QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings default value.
      */
-    QVariant defaultValueFromPython() const SIP_PYNAME( defaultValue );
-
-#ifndef SIP_RUN
-    template <class T>
-    T defaultValue() const
-    {
-      if ( mDefaultValue.canConvert<T>() == false )
-        QgsDebugMsg( QObject::tr( "Can't convert default value of setting '%1' to type '%2'" )
-                     .arg( mKey )
-                     .arg( typeid( T ).name() ) );
-
-      return mDefaultValue.value<T>();
-    }
-#endif
+    QVariant defaultValueAsVariant() const;
 
     /**
      * Get the settings entry type.
      */
-    virtual SettingsType settingsType() const;
+    virtual SettingsType settingsType() const = 0;
 
     /**
      * Get the settings entry description.
@@ -182,12 +157,56 @@ class CORE_EXPORT QgsSettingsEntry
 
 
 /**
+ * \class QgsSettingsEntryVariant
+ * \ingroup core
+ * A variant settings entry.
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryVariant.
+     *
+     * The \a key argument specifies the final part of the settings key.
+     * The \a parentGroup argument specifies a parent group which is used to rebuild
+     * the entiere settings key and to determine the settings section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     */
+    QgsSettingsEntryVariant( const QString &key,
+                             QgsSettings::Section section,
+                             const QVariant &defaultValue = QVariant(),
+                             const QString &description = QString() );
+
+    //! \copydoc QgsSettingsEntry::setValue
+    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    QVariant value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings default value.
+     */
+    QVariant defaultValue() const;
+
+    //! \copydoc QgsSettingsEntry::settingsType
+    virtual SettingsType settingsType() const override;
+};
+
+
+/**
  * \class QgsSettingsEntryString
  * \ingroup core
  * A string settings entry.
  * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
+class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
 {
   public:
 
@@ -212,6 +231,18 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
 
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    QString value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings default value.
+     */
+    QString defaultValue() const;
 
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
@@ -240,7 +271,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntry
  * A string list settings entry.
   * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
+class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
 {
   public:
 
@@ -261,6 +292,18 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    QStringList value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings default value.
+     */
+    QStringList defaultValue() const;
+
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
 
@@ -273,7 +316,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntry
  * A boolean settings entry.
   * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
+class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
 {
   public:
 
@@ -294,6 +337,18 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    bool value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings default value.
+     */
+    bool defaultValue() const;
+
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
 
@@ -306,7 +361,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntry
  * An integer settings entry.
   * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
+class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
 {
   public:
 
@@ -351,6 +406,18 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    qlonglong value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings default value.
+     */
+    qlonglong defaultValue() const;
+
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
 
@@ -392,7 +459,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntry
  * A double settings entry.
   * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
+class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
 {
   public:
 
@@ -439,6 +506,18 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
 
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    double value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings default value.
+     */
+    double defaultValue() const;
 
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
@@ -497,7 +576,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntry
  * An enum settings entry.
   * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
+class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
 {
   public:
 
@@ -515,10 +594,10 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntry
                           QgsSettings::Section section,
                           const T &defaultValue,
                           const QString &description = QString() )
-      : QgsSettingsEntry( key,
-                          section,
-                          defaultValue,
-                          description )
+      : QgsSettingsEntryBase( key,
+                              section,
+                              defaultValue,
+                              description )
     {
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );
