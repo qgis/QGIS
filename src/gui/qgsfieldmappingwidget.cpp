@@ -253,7 +253,6 @@ QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *paren
   QgsFieldExpressionWidget *editor = new QgsFieldExpressionWidget( parent );
   editor->setAutoFillBackground( true );
   editor->setAllowEvalErrors( false );
-  editor->setAllowEmptyFieldName( true );
   if ( const QgsFieldMappingModel *model = qobject_cast<const QgsFieldMappingModel *>( index.model() ) )
   {
     editor->registerExpressionContextGenerator( model->contextGenerator() );
