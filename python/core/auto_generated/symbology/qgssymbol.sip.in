@@ -614,6 +614,32 @@ Returns the symbol render context. Only valid between startRender and stopRender
 :return: The symbol render context
 %End
 
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+%Docstring
+Called before symbol layers will be rendered for a particular ``feature``.
+
+This is always followed by a call to :py:func:`~QgsSymbol.stopFeatureRender` after the feature
+has been completely rendered (i.e. all parts have been rendered).
+
+Internally, this notifies all symbol layers which will be used via a call to
+:py:func:`QgsSymbolLayer.startFeatureRender()`.
+
+.. versionadded:: 3.20
+%End
+
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+%Docstring
+Called after symbol layers have been rendered for a particular ``feature``.
+
+This is always preceded by a call to :py:func:`~QgsSymbol.startFeatureRender` just before the feature
+will be rendered.
+
+Internally, this notifies all symbol layers which were used via a call to
+:py:func:`QgsSymbolLayer.stopFeatureRender()`.
+
+.. versionadded:: 3.20
+%End
+
   protected:
     QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
 
