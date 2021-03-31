@@ -2663,7 +2663,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
 
     QgsFeatureIds chunkIds;
     QgsFeatureIds::const_iterator lastId = ids.constEnd();
-    lastId--;
+    --lastId;
 
     for ( QgsFeatureIds::const_iterator it = ids.constBegin(); it != ids.constEnd(); ++it )
     {
