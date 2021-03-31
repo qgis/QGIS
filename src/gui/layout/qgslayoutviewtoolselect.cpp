@@ -224,7 +224,7 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
     QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
     if ( paperItem )
-        focusedPaperItem = paperItem;
+      focusedPaperItem = paperItem;
 
     if ( layoutItem && !paperItem )
     {
