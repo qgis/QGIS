@@ -453,6 +453,11 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
 
 void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &params ) const
 {
+  QgsPostgresProvider::appendPkParams( featureId, params, false );
+}
+
+void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &params, bool asQuotedString ) const
+{
   switch ( mPrimaryKeyType )
   {
     case PktOid:
@@ -481,7 +486,9 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
       {
         if ( i < pkVals.size() )
         {
-          params << pkVals[i].toString();
+          params << ( asQuotedString ? \
+                      QgsPostgresConn::quotedValue( pkVals[i] ) : \
+                      pkVals[i].toString() );
         }
         else
         {
@@ -3128,9 +3135,14 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
 void QgsPostgresProvider::appendGeomParam( const QgsGeometry &geom, QStringList &params ) const
 {
+  QgsPostgresProvider::appendGeomParam( geom, params, false );
+}
+
+void QgsPostgresProvider::appendGeomParam( const QgsGeometry &geom, QStringList &params, bool asQuotedString ) const
+{
   if ( geom.isNull() )
   {
-    params << QString();
+    params << ( asQuotedString ? QStringLiteral( "NULL" ) : QString() );
     return;
   }
 
@@ -3148,7 +3160,13 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry &geom, QStringList 
     else
       param += QStringLiteral( "\\%1" ).arg( ( int ) buf[i], 3, 8, QChar( '0' ) );
   }
-  params << param;
+
+  if ( !asQuotedString )
+    params << param;
+  else if ( connectionRO()->useWkbHex() )
+    params << QStringLiteral( "'\\x%1'" ).arg( param );
+  else
+    params << QStringLiteral( "'%1'" ).arg( param );
 }
 
 bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
@@ -3194,21 +3212,12 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
         QStringList params;
         QString paramString;
 
-        //appendGeomParam( *iter, params );
-        QgsGeometry geom = *iter;
-        if ( geom.isNull() )
-        {
-          params << QString();
-        }
-        else
-        {
-          QgsGeometry convertedGeom( convertToProviderType( geom ) );
-          QByteArray wkb( !convertedGeom.isNull() ? convertedGeom.asWkb() : geom.asWkb() );
-          params << wkb.toHex();
-        }
+        appendGeomParam( *iter, params, true );
+        appendPkParams( iter.key(), params, true );
 
-        appendPkParams( iter.key(), params );
-        paramString = params.join( QLatin1String( "','" ) ).prepend( "EXECUTE updategeometrys('\\x" ).append( "');" );
+        paramString = params.join( QLatin1Char( ',' ) )
+                      .prepend( QStringLiteral( "EXECUTE updategeometrys(" ) )
+                      .append( QStringLiteral( ");" ) );
         paramStringChunk += paramString;
         featureCount++;
 
