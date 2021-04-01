@@ -332,10 +332,12 @@ Returns the current value of the parameter.
 Returns any custom properties set by the wrapper.
 %End
 
-    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+    virtual void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
 Registers a Processing context ``generator`` class that will be used to retrieve
 a Processing context for the wrapper when required.
+
+Care must be taken to call the base class implementation if overwrite this method.
 %End
 
     void registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator );
