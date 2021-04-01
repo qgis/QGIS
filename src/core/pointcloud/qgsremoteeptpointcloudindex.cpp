@@ -52,13 +52,22 @@ QgsRemoteEptPointCloudIndex::~QgsRemoteEptPointCloudIndex() = default;
 
 QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
-  // Potential bug: what if loadNodeHierarchy fails and returns false
+  QList<IndexedPointCloudNode> lst;
   if ( !loadNodeHierarchy( n ) )
-  {
-    return QList<IndexedPointCloudNode>();
-  }
+    return lst;
+  int d = n.d() + 1;
+  int x = n.x() * 2;
+  int y = n.y() * 2;
+  int z = n.z() * 2;
 
-  return QgsPointCloudIndex::nodeChildren( n );
+  for ( int i = 0; i < 8; ++i )
+  {
+    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
+    IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
+    if ( loadNodeHierarchy( n2 ) )
+      lst.append( n2 );
+  }
+  return lst;
 }
 
 void QgsRemoteEptPointCloudIndex::load( const QString &url )
@@ -88,6 +97,7 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
 
 QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
+  qDebug() << __PRETTY_FUNCTION__ << " " << n.toString() << " start";
   QgsPointCloudBlockRequest *blockRequest = asyncNodeData( n, request );
   if ( !blockRequest )
     return nullptr;
@@ -100,6 +110,7 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
   {
     QgsDebugMsg( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
+  qDebug() << __PRETTY_FUNCTION__ << " " << n.toString() << " end";
 
   return blockRequest->block();
 }
@@ -125,9 +136,17 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
     fileUrl = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mUrlDirectoryPart, n.toString() );
   }
   QNetworkRequest nr( fileUrl );
+  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
   QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( nr );
   handle = new QgsPointCloudBlockRequest( mDataType, attributes(), request.attributes(), reply );
   return handle;
+}
+
+bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
+{
+  return loadNodeHierarchy( n );
 }
 
 int QgsRemoteEptPointCloudIndex::pointCount() const
@@ -141,20 +160,26 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
     return true;
   QVector<IndexedPointCloudNode> nodePathToRoot;
   {
-    nodePathToRoot.push_back( nodeId );
     IndexedPointCloudNode currentNode = nodeId;
-    while ( currentNode.d() != 0 )
+    do
     {
-      currentNode = currentNode.parentNode();
       nodePathToRoot.push_back( currentNode );
+      currentNode = currentNode.parentNode();
     }
+    while ( currentNode.d() >= 0 );
   }
 
-  for ( int i = nodePathToRoot.size() - 1; i >= 0 && mHierarchy.find( nodeId ) == mHierarchy.end(); --i )
+  QSet<IndexedPointCloudNode> toBeLoaded;
+  toBeLoaded.insert( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) );
+
+  for ( int i = nodePathToRoot.size() - 1; i >= 0 && !mHierarchy.contains( nodeId ); --i )
   {
     IndexedPointCloudNode node = nodePathToRoot[i];
     //! The hierarchy of the node is found => No need to load its file
-    if ( mHierarchy.find( node ) != mHierarchy.end() )
+    if ( mHierarchy.contains( node ) )
+      continue;
+
+    if ( !toBeLoaded.contains( node ) )
       continue;
 
     const QString fileUrl = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, node.toString() );
@@ -191,6 +216,10 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
       {
         IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
         mHierarchy[nodeId] = nodePointCount;
+      }
+      else if ( nodePointCount == -1 )
+      {
+        toBeLoaded.insert( IndexedPointCloudNode::fromString( nodeIdStr ) );
       }
     }
   }

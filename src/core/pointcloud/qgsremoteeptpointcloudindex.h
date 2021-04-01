@@ -54,6 +54,8 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
+    bool hasNode( const IndexedPointCloudNode &n ) const override;
+
     int pointCount() const override;
 
     bool isValid() const override;
