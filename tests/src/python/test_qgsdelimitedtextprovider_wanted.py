@@ -869,7 +869,7 @@ def test_017_regular_expression_1():
 
 def test_018_regular_expression_2():
     wanted = {}
-    wanted['uri'] = 'file://testre.txt?geomType=none&trimFields=Y&delimiter=(RE)(GEXP)?&type=regexp'
+    wanted['uri'] = 'file://testre.txt?geomType=none&trimFields=Y&delimiter=(RE)((?:GEXP)?)&type=regexp'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['geometryType'] = 4
     wanted['data'] = {
@@ -893,11 +893,11 @@ def test_018_regular_expression_2():
             'GEXP': 'GEXP',
             'description': 'RE',
             'RE_1': 'RE',
-            'GEXP_1': 'data2',
-            'data': 'RE',
-            'RE_2': 'info2',
-            'GEXP_2': 'NULL',
-            'info': 'NULL',
+            'GEXP_1': '',
+            'data': 'data2',
+            'RE_2': 'RE',
+            'GEXP_2': '',
+            'info': 'info2',
             '#fid': 3,
             '#geometry': 'None',
         },
