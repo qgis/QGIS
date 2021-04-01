@@ -88,73 +88,20 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
 
 QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
-  if ( !loadNodeHierarchy( n ) )
+  QgsPointCloudBlockRequest *blockRequest = asyncNodeData( n, request );
+  if ( !blockRequest )
     return nullptr;
-
-  QString fileUrl;
-  QString fileName;
-  if ( mDataType == QLatin1String( "binary" ) )
-  {
-
-    fileUrl = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mUrlDirectoryPart, n.toString() );
-    fileName = QStringLiteral( "/tmp/%1.bin" ).arg( n.toString() );
-  }
-  else if ( mDataType == QLatin1String( "zstandard" ) )
-  {
-    fileUrl = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mUrlDirectoryPart, n.toString() );
-    fileName = QStringLiteral( "/tmp/%1.zst" ).arg( n.toString() );
-  }
-  else if ( mDataType == QLatin1String( "laszip" ) )
-  {
-    fileUrl = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mUrlDirectoryPart, n.toString() );
-    fileName = QStringLiteral( "/tmp/%1.laz" ).arg( n.toString() );
-  }
-  else
-  {
-    return nullptr;  // unsupported
-  }
-
-  QgsFileDownloader downloader( fileUrl, fileName );
 
   QEventLoop loop;
-
-  QUrl downloadedUrl;
-  QStringList errorMessages;
-  connect( &downloader, &QgsFileDownloader::downloadCompleted, [&]( const QUrl & url )
-  {
-    downloadedUrl = url;
-    loop.quit();
-  } );
-  connect( &downloader, &QgsFileDownloader::downloadCanceled, &loop, &QEventLoop::quit );
-  connect( &downloader, &QgsFileDownloader::downloadError, [&]( QStringList errorMessagesList )
-  {
-    errorMessages = errorMessagesList;
-    loop.exit();
-  } );
-
-  downloader.startDownload();
+  connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
   loop.exec();
 
-  if ( downloadedUrl.isEmpty() )
+  if ( !blockRequest->block() )
   {
-    qDebug() << "Error downloading " << fileUrl << " : " << errorMessages;
-    return nullptr;
+    QgsDebugMsg(  QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
-  qDebug() << "File downloaded";
 
-  if ( mDataType == QLatin1String( "binary" ) )
-  {
-    return QgsEptDecoder::decompressBinary( fileName, attributes(), request.attributes() );
-  }
-  else if ( mDataType == QLatin1String( "zstandard" ) )
-  {
-    return QgsEptDecoder::decompressZStandard( fileName, attributes(), request.attributes() );
-  }
-  else if ( mDataType == QLatin1String( "laszip" ) )
-  {
-    return QgsEptDecoder::decompressLaz( fileName, attributes(), request.attributes() );
-  }
-  return nullptr;
+  return blockRequest->block();
 }
 
 QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )

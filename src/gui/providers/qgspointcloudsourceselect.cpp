@@ -92,6 +92,14 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       return;
     }
 
+    if ( !mPath.endsWith( QStringLiteral( "/ept.json" ) ) )
+    {
+      QMessageBox::information( this,
+                                tr( "Add Point Cloud Layers" ),
+                                tr( "Unvalid point cloud URL \"%1\", please make sure your URL ends with /ept.json" ).arg( mPath ) );
+      return;
+    }
+
     // auto determine preferred provider for each path
     const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
