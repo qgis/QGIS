@@ -49,7 +49,8 @@ to validate set values and provide more accurate settings description for the gu
       Bool,
       Integer,
       Double,
-      Enum
+      Enum,
+      Flag
     };
 
     QgsSettingsEntryBase( QString key,

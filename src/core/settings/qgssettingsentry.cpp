@@ -441,19 +441,5 @@ int QgsSettingsEntryDouble::displayHintDecimals() const
   return mDisplayHintDecimals;
 }
 
-bool QgsSettingsEntryEnum::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
-{
-  if ( mMetaEnum.isValid() == false )
-  {
-    QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
-    return false;
-  }
 
-  return QgsSettingsEntryBase::setValue( mMetaEnum.valueToKey( value.toInt() ), dynamicKeyPart );
-}
-
-QgsSettingsEntryBase::SettingsType QgsSettingsEntryEnum::settingsType() const
-{
-  return QgsSettingsEntryBase::Enum;
-}
 
