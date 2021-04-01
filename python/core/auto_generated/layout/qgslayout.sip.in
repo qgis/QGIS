@@ -617,7 +617,7 @@ should be canceled.
 
     struct Settings
     {
-      static const QgsSettingsEntryStringList searchPathForTemplates; // = QgsSettingsEntryStringList( QStringLiteral( "Layout/searchPathsForTemplates" ), QgsSettings::Core, QStringList(), QObject::tr( "Search path for templates" ) );
+      const QgsSettingsEntryStringList searchPathForTemplates;
     };
 
   public slots:
