@@ -717,8 +717,10 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
   // and extract capture groups
   if ( mAnchoredRegexp )
   {
-    if ( mDelimRegexp.indexIn( buffer ) < 0 ) return RecordInvalid;
-    QStringList groups = mDelimRegexp.capturedTexts();
+    const QRegularExpressionMatch match = mDelimRegexp.match( buffer );
+    if ( !match.hasMatch() )
+      return RecordInvalid;
+    const QStringList groups = match.capturedTexts();
     for ( int i = 1; i < groups.size(); i++ )
     {
       appendField( fields, groups[i] );
@@ -730,15 +732,19 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
   int size = buffer.size();
   while ( true )
   {
-    if ( pos >= size ) break;
-    int matchPos = mDelimRegexp.indexIn( buffer, pos );
+    if ( pos >= size )
+      break;
+    QRegularExpressionMatch match = mDelimRegexp.match( buffer, pos );
+
+    int matchPos = match.capturedStart();
     // If match won't advance cursor, then need to force it along one place
     // to avoid infinite loop.
-    int matchLen = mDelimRegexp.matchedLength();
+    int matchLen = match.capturedLength();
     if ( matchPos == pos && matchLen == 0 )
     {
-      matchPos = mDelimRegexp.indexIn( buffer, pos + 1 );
-      matchLen = mDelimRegexp.matchedLength();
+      match = mDelimRegexp.match( buffer, pos + 1 );
+      matchPos = match.capturedStart();
+      matchLen = match.capturedLength();
     }
     // If no match, then field is to end of record
     if ( matchPos < 0 )
@@ -751,7 +757,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
     appendField( fields, buffer.mid( pos, matchPos - pos ) );
     if ( mDelimRegexp.captureCount() > 0 )
     {
-      QStringList groups = mDelimRegexp.capturedTexts();
+      QStringList groups = match.capturedTexts();
       for ( int i = 1; i < groups.size(); i++ )
       {
         appendField( fields, groups[i] );
