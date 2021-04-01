@@ -445,10 +445,9 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     }
   }
 
-  QString sql = QStringLiteral( "SELECT %1 FROM %2.%3" ).arg(
+  QString sql = QStringLiteral( "SELECT %1 FROM %2" ).arg(
                   sqlFields.isEmpty() ? QStringLiteral( "*" ) : sqlFields.join( ',' ),
-                  QgsHanaUtils::quotedIdentifier( mSource->mSchemaName ),
-                  QgsHanaUtils::quotedIdentifier( mSource->mTableName ) );
+                  mSource->mQuery );
 
   if ( !sqlFilter.isEmpty() )
     sql += QStringLiteral( " WHERE (%1)" ).arg( sqlFilter.join( QLatin1String( ") AND (" ) ) );
@@ -479,8 +478,8 @@ QVariantList QgsHanaFeatureIterator::buildSqlQueryParameters( ) const
 QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )
   : mDatabaseVersion( p->mDatabaseVersion )
   , mUri( p->mUri )
-  , mSchemaName( p->mSchemaName )
-  , mTableName( p->mTableName )
+  , mQuery( p->mQuerySource )
+  , mQueryWhereClause( p->mQueryWhereClause )
   , mPrimaryKeyType( p->mPrimaryKeyType )
   , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
   , mPrimaryKeyCntx( p->mPrimaryKeyCntx )
@@ -490,7 +489,6 @@ QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )
   , mSrid( p->mSrid )
   , mSrsExtent( p->mSrsExtent )
   , mCrs( p->crs() )
-  , mQueryWhereClause( p->mQueryWhereClause )
 {
   if ( p->mHasSrsPlanarEquivalent && p->mDatabaseVersion.majorVersion() <= 1 )
     mSrid = QgsHanaUtils::toPlanarSRID( p->mSrid );

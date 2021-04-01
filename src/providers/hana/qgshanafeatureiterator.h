@@ -39,8 +39,8 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
   private:
     QVersionNumber mDatabaseVersion;
     QgsDataSourceUri mUri;
-    QString mSchemaName;
-    QString mTableName;
+    QString mQuery;
+    QString mQueryWhereClause;
     QgsHanaPrimaryKeyType mPrimaryKeyType = QgsHanaPrimaryKeyType::PktUnknown;
     QList<int> mPrimaryKeyAttrs;
     std::shared_ptr<QgsHanaPrimaryKeyContext> mPrimaryKeyCntx;
@@ -50,7 +50,6 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
     int mSrid;
     QgsRectangle mSrsExtent;
     QgsCoordinateReferenceSystem mCrs;
-    QString mQueryWhereClause;
 
     friend class QgsHanaFeatureIterator;
     friend class QgsHanaExpressionCompiler;
