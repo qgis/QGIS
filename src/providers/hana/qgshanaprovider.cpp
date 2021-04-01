@@ -50,8 +50,17 @@ using namespace std;
 
 namespace
 {
+  bool isQuery( const QString &source )
+  {
+    QString trimmed = source.trimmed();
+    return trimmed.startsWith( '(' ) && trimmed.endsWith( ')' );
+  }
+
   QString buildQuery( const QString &source, const QString &columns, const QString &where, const QString &orderBy, int limit )
   {
+    if ( isQuery( source ) && columns == QLatin1String( "*" ) && where.isEmpty() && limit <= 0 )
+      return source;
+
     QString sql = QStringLiteral( "SELECT %1 FROM %2" ).arg( columns, source );
     if ( !where.isEmpty() )
       sql  += QStringLiteral( " WHERE " ) + where;
@@ -358,7 +367,7 @@ QgsHanaProvider::QgsHanaProvider(
     return;
   }
 
-  if ( mSchemaName.isEmpty() && mTableName.startsWith( '(' ) && mTableName.endsWith( ')' ) )
+  if ( isQuery( mTableName ) )
   {
     mIsQuery = true;
     mQuerySource = mTableName;
@@ -367,7 +376,9 @@ QgsHanaProvider::QgsHanaProvider(
   else
   {
     mIsQuery = false;
-    mQuerySource = QStringLiteral( "%1.%2" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ) );
+    mQuerySource = QStringLiteral( "%1.%2" ).arg(
+                     QgsHanaUtils::quotedIdentifier( mSchemaName ),
+                     QgsHanaUtils::quotedIdentifier( mTableName ) );
   }
 
   try
@@ -1398,17 +1409,29 @@ void QgsHanaProvider::readGeometryType( QgsHanaConnection &conn )
   if ( mGeometryColumn.isNull() || mGeometryColumn.isEmpty() )
     mDetectedGeometryType = QgsWkbTypes::NoGeometry;
 
-  mDetectedGeometryType = conn.getColumnGeometryType( mSchemaName, mTableName, mGeometryColumn );
+  if ( mIsQuery )
+  {
+    QString query = buildQuery( QStringLiteral( "*" ) );
+    if ( !isQuery( query ) )
+      query = "(" + query + ")";
+    mDetectedGeometryType = conn.getColumnGeometryType( query, mGeometryColumn );
+  }
+  else
+    mDetectedGeometryType = conn.getColumnGeometryType( mSchemaName, mTableName, mGeometryColumn );
 }
 
 void QgsHanaProvider::readMetadata( QgsHanaConnection &conn )
 {
-  QString sql = QStringLiteral( "SELECT COMMENTS FROM TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?" );
-  QVariant comment = conn.executeScalar( sql, { mSchemaName, mTableName } );
-  if ( !comment.isNull() )
-    mLayerMetadata.setAbstract( comment.toString() );
-  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
   mLayerMetadata.setCrs( crs() );
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+
+  if ( !mIsQuery )
+  {
+    QString sql = QStringLiteral( "SELECT COMMENTS FROM SYS.TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?" );
+    QVariant comment = conn.executeScalar( sql, { mSchemaName, mTableName } );
+    if ( !comment.isNull() )
+      mLayerMetadata.setAbstract( comment.toString() );
+  }
 }
 
 void QgsHanaProvider::readSrsInformation( QgsHanaConnection &conn )
@@ -1417,7 +1440,15 @@ void QgsHanaProvider::readSrsInformation( QgsHanaConnection &conn )
     return;
 
   if ( mSrid < 0 )
-    mSrid = conn.getColumnSrid( mSchemaName, mTableName, mGeometryColumn );
+  {
+    if ( mIsQuery )
+      mSrid = conn.getColumnSrid( mQuerySource, mGeometryColumn );
+    else
+      mSrid = conn.getColumnSrid( mSchemaName, mTableName, mGeometryColumn );
+
+    if ( mSrid < 0 )
+      return;
+  }
 
   QgsRectangle ext;
   bool isRoundEarth = false;
