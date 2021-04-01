@@ -911,17 +911,16 @@ QStringList QgsHanaConnection::getPrimaryKeyCandidates( const QgsHanaLayerProper
   return ret;
 }
 
-QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName )
+QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &querySource, const QString &columnName )
 {
   if ( columnName.isEmpty() )
     return QgsWkbTypes::NoGeometry;
 
   QgsWkbTypes::Type ret = QgsWkbTypes::Unknown;
-  QString sql = QStringLiteral( "SELECT upper(%1.ST_GeometryType()), %1.ST_Is3D(), %1.ST_IsMeasured() FROM %2.%3 "
-                                "WHERE %1 IS NOT NULL LIMIT %4" ).arg(
+  QString sql = QStringLiteral( "SELECT upper(%1.ST_GeometryType()), %1.ST_Is3D(), %1.ST_IsMeasured() FROM %2 "
+                                "WHERE %1 IS NOT NULL LIMIT %3" ).arg(
                   QgsHanaUtils::quotedIdentifier( columnName ),
-                  QgsHanaUtils::quotedIdentifier( schemaName ),
-                  QgsHanaUtils::quotedIdentifier( tableName ),
+                  querySource,
                   QString::number( GEOMETRIES_SELECT_LIMIT ) );
 
   try
@@ -950,6 +949,13 @@ QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &schem
   }
 
   return ret;
+}
+
+QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName )
+{
+  QString querySource = QStringLiteral( "%1.%2" ).arg( QgsHanaUtils::quotedIdentifier( schemaName ),
+                        QgsHanaUtils::quotedIdentifier( tableName ) );
+  return getColumnGeometryType( querySource, columnName );
 }
 
 QString QgsHanaConnection::getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName )
