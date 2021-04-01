@@ -98,7 +98,7 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
 
   if ( !blockRequest->block() )
   {
-    QgsDebugMsg(  QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
+    QgsDebugMsg( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
 
   return blockRequest->block();
