@@ -3186,11 +3186,23 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
         {
           QgsGeometry convertedGeom( convertToProviderType( geom ) );
           QByteArray wkb( !convertedGeom.isNull() ? convertedGeom.asWkb() : geom.asWkb() );
-          params << wkb.toHex();
+          params << QStringLiteral( "\\x%1" ).arg( QString( wkb.toHex() ) );
+        }
+        appendPkParams( iter.key(), params );
+
+        QMutableListIterator<QString> paramsIter( params );
+        while ( paramsIter.hasNext() )
+        {
+          if ( paramsIter.next().isNull() )
+            paramsIter.setValue( QStringLiteral( "NULL" ) );
+
+          if ( paramsIter.value() != QLatin1String( "NULL" ) )
+            paramsIter.setValue( paramsIter.value().prepend( QLatin1Char( '\'' ) ).append( QLatin1Char( '\'' ) ) );
         }
 
-        appendPkParams( iter.key(), params );
-        paramString = params.join( QLatin1String( "','" ) ).prepend( "EXECUTE updategeometrys('\\x" ).append( "');" );
+        paramString = params.join( QLatin1Char( ',' ) )
+                      .prepend( QStringLiteral( "EXECUTE updategeometrys(" ) )
+                      .append( QStringLiteral( ");" ) );
         paramStringChunk += paramString;
         featureCount++;
 
