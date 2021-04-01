@@ -452,6 +452,9 @@ target_compile_features(qgis_analysis PRIVATE cxx_std_17)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_definitions(qgis_analysis PUBLIC _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR)
 endif()
+if (MSVC)
+  target_compile_definitions(qgis_analysis PUBLIC _HAS_AUTO_PTR_ETC=1)
+endif()
 
 target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis
