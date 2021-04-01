@@ -1110,7 +1110,7 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE =~ s/\s*\bMAYBE_UNUSED \b//;
         $LINE =~ s/\s*\bNODISCARD \b//;
         $LINE =~ s/\s*\bQ_DECL_DEPRECATED\b//;
-        $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
+        $LINE =~ s/^(\s*)?(const |virtual |static )*inline /$1$2/;
         $LINE =~ s/\bconstexpr\b/const/;
         $LINE =~ s/\bnullptr\b/0/g;
         $LINE =~ s/\s*=\s*default\b//g;
