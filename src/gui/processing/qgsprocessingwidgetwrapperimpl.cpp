@@ -1990,6 +1990,16 @@ void QgsProcessingExpressionWidgetWrapper::postInitialize( const QList<QgsAbstra
   }
 }
 
+void QgsProcessingExpressionWidgetWrapper::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::registerProcessingContextGenerator( generator );
+  if ( mExpBuilderWidget )
+  {
+    // we need to regenerate the expression context for use by this widget -- it doesn't fetch automatically on demand
+    mExpBuilderWidget->setExpressionContext( createExpressionContext() );
+  }
+}
+
 void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
 {
   // evaluate value to layer
