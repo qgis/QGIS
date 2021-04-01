@@ -90,6 +90,7 @@ class QgsHanaConnection : public QObject
     void readTableFields( const QString &schemaName, const QString &tableName, const std::function<void( const AttributeField &field )> &callback );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
     QStringList getLayerPrimaryKey( const QString &schemaName, const QString &tableName );
+    QgsWkbTypes::Type getColumnGeometryType( const QString &querySource, const QString &columnName );
     QgsWkbTypes::Type getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName );
     QString getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName );
     int getColumnSrid( const QString &schemaName, const QString &tableName, const QString &columnName );

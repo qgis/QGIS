@@ -24,12 +24,15 @@ from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
+    QgsDataSourceUri,
     QgsFeatureRequest,
     QgsFeature,
     QgsFieldConstraints,
     QgsProviderRegistry,
     QgsRectangle,
-    QgsSettings)
+    QgsSettings,
+    QgsVectorDataProvider,
+    QgsWkbTypes)
 from qgis.testing import start_app, unittest
 from test_hana_utils import QgsHanaProviderUtils
 from utilities import unitTestDataPath
@@ -225,6 +228,66 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(bool(vl.fieldConstraints(val1_field_idx) & QgsFieldConstraints.ConstraintUnique))
         self.assertFalse(bool(vl.fieldConstraints(val2_field_idx) & QgsFieldConstraints.ConstraintUnique))
         self.assertFalse(bool(vl.fieldConstraints(val3_field_idx) & QgsFieldConstraints.ConstraintUnique))
+
+    def testQueryLayers(self):
+        def test_query(query, key, geometry, attribute_names, wkb_type=QgsWkbTypes.NoGeometry):
+            uri = QgsDataSourceUri()
+            uri.setSchema(self.schemaName)
+            uri.setTable(query)
+            uri.setKeyColumn(key)
+            uri.setGeometryColumn(geometry)
+            vl = self.createVectorLayer(uri.uri(False), 'testquery')
+
+            for capability in [QgsVectorDataProvider.SelectAtId,
+                               QgsVectorDataProvider.TransactionSupport,
+                               QgsVectorDataProvider.CircularGeometries,
+                               QgsVectorDataProvider.ReadLayerMetadata]:
+                self.assertTrue(vl.dataProvider().capabilities() & capability)
+
+            for capability in [QgsVectorDataProvider.AddAttributes,
+                               QgsVectorDataProvider.ChangeAttributeValues,
+                               QgsVectorDataProvider.DeleteAttributes,
+                               QgsVectorDataProvider.RenameAttributes,
+                               QgsVectorDataProvider.AddFeatures,
+                               QgsVectorDataProvider.ChangeFeatures,
+                               QgsVectorDataProvider.DeleteFeatures,
+                               QgsVectorDataProvider.ChangeGeometries,
+                               QgsVectorDataProvider.FastTruncate]:
+                self.assertFalse(vl.dataProvider().capabilities() & capability)
+
+            fields = vl.dataProvider().fields()
+            self.assertCountEqual(attribute_names, fields.names())
+            for field_idx in vl.primaryKeyAttributes():
+                self.assertIn(fields[field_idx].name(), key.split(","))
+                self.assertEqual(len(vl.primaryKeyAttributes()) == 1,
+                                 bool(vl.fieldConstraints(field_idx) & QgsFieldConstraints.ConstraintUnique))
+            if fields.count() > 0:
+                if vl.featureCount() == 0:
+                    self.assertEqual(QVariant(), vl.maximumValue(0))
+                    self.assertEqual(QVariant(), vl.minimumValue(0))
+                else:
+                    vl.maximumValue(0)
+                    vl.minimumValue(0)
+            self.assertEqual(vl.featureCount(), len([f for f in vl.getFeatures()]))
+            self.assertFalse(vl.addFeatures([QgsFeature()]))
+            self.assertFalse(vl.deleteFeatures([0]))
+            self.assertEqual(wkb_type, vl.wkbType())
+            self.assertEqual(wkb_type == QgsWkbTypes.NoGeometry or wkb_type == QgsWkbTypes.Unknown,
+                             vl.extent().isNull())
+
+        test_query('(SELECT * FROM DUMMY)', None, None, ['DUMMY'], QgsWkbTypes.NoGeometry)
+        test_query('(SELECT CAST(NULL AS INT) ID1, CAST(NULL AS INT) ID2, CAST(NULL AS ST_GEOMETRY) SHAPE FROM DUMMY)',
+                   'ID1,ID2', None, ['ID1', 'ID2', 'SHAPE'], QgsWkbTypes.NoGeometry)
+        test_query('(SELECT CAST(1 AS INT) ID1, CAST(NULL AS BIGINT) ID2 FROM DUMMY)',
+                   'ID1', None, ['ID1', 'ID2'], QgsWkbTypes.NoGeometry)
+        test_query('(SELECT CAST(NULL AS INT) ID1, CAST(NULL AS INT) ID2, CAST(NULL AS ST_GEOMETRY) SHAPE FROM DUMMY)',
+                   None, 'SHAPE', ['ID1', 'ID2'], QgsWkbTypes.Unknown)
+        test_query('(SELECT CAST(NULL AS INT) ID1, CAST(NULL AS BIGINT) ID2, CAST(NULL AS ST_GEOMETRY) SHAPE FROM '
+                   'DUMMY)', 'ID2', 'SHAPE', ['ID1', 'ID2'], QgsWkbTypes.Unknown)
+        test_query('(SELECT CAST(NULL AS INT) ID1, CAST(NULL AS ST_GEOMETRY) SHAPE1, CAST(NULL AS ST_GEOMETRY) SHAPE2 '
+                   'FROM DUMMY)', 'ID1', 'SHAPE1', ['ID1', 'SHAPE2'], QgsWkbTypes.Unknown)
+        test_query(f'(SELECT "pk" AS "key", "cnt", "geom" AS "g" FROM "{self.schemaName}"."some_data")',
+                   'key', 'g', ['key', 'cnt'], QgsWkbTypes.Point)
 
     def testBooleanType(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."boolean_type" ( ' \
