@@ -223,9 +223,8 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
   strTypeList = strTypeList.toLower();
-  const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" ) ) );
-  const QRegularExpressionMatch match = reTypeList.match( strTypeList );
-  if ( !match.hasMatch() )
+  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
+  if ( ! reTypeList.exactMatch( strTypeList ) )
   {
     // Looks like this was supposed to be a CSVT file, so report bad formatted string
     if ( message ) { *message = tr( "File type string in %1 is not correctly formatted" ).arg( csvtInfo.fileName() ); }
@@ -237,16 +236,13 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
   int pos = 0;
-  const QRegularExpression reType( QStringLiteral( "(integer|real|double|string|date|datetime|time)" ) );
+  QRegExp reType( "(integer|real|double|string|date|datetime|time)" );
 
-  QRegularExpressionMatch typeMatch = reType.match( strTypeList, pos );
-  while ( typeMatch.hasMatch() )
+  while ( ( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( typeMatch.captured( 1 ) ), 2 );
-    types << typeMatch.captured( 1 );
-    pos += typeMatch.capturedLength();
-
-    typeMatch = reType.match( strTypeList, pos );
+    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( reType.cap( 1 ) ), 2 );
+    types << reType.cap( 1 );
+    pos += reType.matchedLength();
   }
 
   if ( message )

@@ -419,7 +419,7 @@ class QgsDelimitedTextFile : public QObject
     int mMaxNameLength = 200;
 
     // Parameters used by parsers
-    QRegularExpression mDelimRegexp;
+    QRegExp mDelimRegexp;
     bool mAnchoredRegexp = false;
     QString mDelimChars;
     QString mQuoteChar;
