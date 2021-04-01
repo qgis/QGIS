@@ -484,7 +484,7 @@ extern "C"
 #ifndef Q_OS_WIN
 #include <dlfcn.h>
 #else
-#include <windows.h>
+#include <shellapi.h>
 #include <dbghelp.h>
 #endif
 

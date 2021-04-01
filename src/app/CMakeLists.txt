@@ -420,9 +420,10 @@ if(HAVE_OPENCL)
 endif()
 
 if (HAVE_PDAL)
-  include_directories(SYSTEM
-    ${PDAL_INCLUDE_DIR}
-  )
+  include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
+  if(MSVC)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+  endif()
 endif()
 
 if(ENABLE_MODELTEST)
@@ -603,9 +604,7 @@ if (POSTGRES_FOUND)
 endif()
 
 if (HAVE_PDAL)
-  target_link_libraries(qgis_app
-    ${PDAL_LIBRARIES}
-  )
+  target_link_libraries(qgis_app ${PDAL_LIBRARIES})
 endif()
 
 if(MSVC)
