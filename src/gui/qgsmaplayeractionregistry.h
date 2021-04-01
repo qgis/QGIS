@@ -30,6 +30,9 @@ class QgsFeature;
 /**
  * \ingroup gui
 * \brief An action which can run on map layers
+* The class can be used in two manners:
+* * by instantiating it and connecting to its signals to perform an action
+* * by subclassing and reimplementing its method (only since QGIS 3.18.2)
 */
 class GUI_EXPORT QgsMapLayerAction : public QAction
 {
@@ -83,16 +86,16 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     QgsMapLayerAction::Flags flags() const;
 
     //! True if action can run using the specified layer
-    bool canRunUsingLayer( QgsMapLayer *layer ) const;
+    virtual bool canRunUsingLayer( QgsMapLayer *layer ) const;
 
     //! Triggers the action with the specified layer and list of feature.
-    void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
+    virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
 
     //! Triggers the action with the specified layer and feature.
-    void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature );
+    virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature );
 
     //! Triggers the action with the specified layer.
-    void triggerForLayer( QgsMapLayer *layer );
+    virtual void triggerForLayer( QgsMapLayer *layer );
 
     //! Define the targets of the action
     void setTargets( Targets targets ) {mTargets = targets;}
