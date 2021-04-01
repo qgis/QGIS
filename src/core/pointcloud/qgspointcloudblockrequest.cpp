@@ -47,19 +47,25 @@ void QgsPointCloudBlockRequest::blockFinishedLoading()
   mBlock.reset( nullptr );
   if ( mTileDownloadManagetReply->error() == QNetworkReply::NetworkError::NoError )
   {
-    if ( mDataType == QLatin1String( "binary" ) )
+    try
     {
-      mBlock.reset( QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
+      if ( mDataType == QLatin1String( "binary" ) )
+      {
+        mBlock.reset( QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
+      }
+      else if ( mDataType == QLatin1String( "zstandard" ) )
+      {
+        mBlock.reset( QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
+      }
+      else if ( mDataType == QLatin1String( "laszip" ) )
+      {
+        mBlock.reset( QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
+      }
     }
-    else if ( mDataType == QLatin1String( "zstandard" ) )
+    catch ( std::exception e )
     {
-      mBlock.reset( QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
+      mErrorStr = QStringLiteral( "Exception while decompressing file: %1" ).arg( e.what() );
     }
-    else if ( mDataType == QLatin1String( "laszip" ) )
-    {
-      mBlock.reset( QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes ) );
-    }
-
     if ( !mBlock.get() )
       mErrorStr = QStringLiteral( "unknown data type %1;" ).arg( mDataType ) +  mTileDownloadManagetReply->errorString();
   }

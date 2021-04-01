@@ -43,7 +43,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
 
     /**
      * QgsPointCloudBlockRequest constructor
-     * Note: the istanced object will take ownership over \a tileDownloadManagerReply
+     * Note: the istanced QgsPointCloudBlockRequest object will take ownership over \a tileDownloadManagerReply
      */
     QgsPointCloudBlockRequest( const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, QgsTileDownloadManagerReply *tileDownloadManagerReply );
 

@@ -200,7 +200,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
     //! Returns whether the octree contain given node
-    bool hasNode( const IndexedPointCloudNode &n ) const { return mHierarchy.contains( n ); }
+    virtual bool hasNode( const IndexedPointCloudNode &n ) const { return mHierarchy.contains( n ); }
 
     //! Returns all children of node
     virtual QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const;
