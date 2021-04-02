@@ -258,7 +258,7 @@ jobs:
       httpbin:
         image: kennethreitz/httpbin:latest
         ports:
-          - 80:80
+          - 8082:80
 
     needs: build
 
