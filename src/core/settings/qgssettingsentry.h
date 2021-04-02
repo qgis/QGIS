@@ -616,7 +616,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
     T value( const QString &dynamicKeyPart = QString() ) const
     {
       return QgsSettings().enumValue( key( dynamicKeyPart ),
-                                      defaultValueAsVariant().value<T>(),
+                                      defaultValueAsVariant().template value<T>(),
                                       section() );
     }
 
@@ -724,7 +724,7 @@ class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryBase
     T value( const QString &dynamicKeyPart = QString() ) const
     {
       return QgsSettings().flagValue( key( dynamicKeyPart ),
-                                      defaultValueAsVariant().value<T>(),
+                                      defaultValueAsVariant().template value<T>(),
                                       section() );
     }
 
