@@ -252,6 +252,13 @@ jobs:
         ubuntu-base: [20.04]
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, ORACLE, HANA]
       fail-fast: false
+      
+    services:
+      # Run httpbin container for QgsNetwor* tests
+      httpbin:
+        image: kennethreitz/httpbin:latest
+        ports:
+          - 80:80
 
     needs: build
 
