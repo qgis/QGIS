@@ -383,6 +383,7 @@ void QgsBlockingNetworkRequest::replyFinished()
         QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
       }
       mReplyContent = QgsNetworkReplyContent( mReply );
+      mReplyContent.setContent( mReply->readAll() );
     }
   }
   if ( mTimedout )
