@@ -170,14 +170,32 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTDateTime;
       break;
 
+    case QVariant::StringList:
+    {
+      ogrType = OFTStringList;
+      break;
+    }
+
     case QVariant::List:
       if ( field.subType() == QVariant::String )
       {
         ogrType = OFTStringList;
       }
+      else if ( field.subType() == QVariant::Int )
+      {
+        ogrType = OFTIntegerList;
+      }
+      else if ( field.subType() == QVariant::LongLong )
+      {
+        ogrType = OFTInteger64List;
+      }
+      else if ( field.subType() == QVariant::Double )
+      {
+        ogrType = OFTRealList;
+      }
       else
       {
-        // only string lists are supported at this moment
+        // other lists are supported at this moment
         return false;
       }
       break;
@@ -1224,8 +1242,23 @@ void QgsOgrProvider::loadFields()
         break;
 
       case OFTStringList:
-        varType = QVariant::List;
+        varType = QVariant::StringList;
         varSubType = QVariant::String;
+        break;
+
+      case OFTIntegerList:
+        varType = QVariant::List;
+        varSubType = QVariant::Int;
+        break;
+
+      case OFTRealList:
+        varType = QVariant::List;
+        varSubType = QVariant::Double;
+        break;
+
+      case OFTInteger64List:
+        varType = QVariant::List;
+        varSubType = QVariant::LongLong;
         break;
 
       default:
@@ -1764,7 +1797,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     {
       OGR_F_UnsetField( feature.get(), ogrAttributeId );
     }
-    else if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
+    else if ( attrVal.isNull() || ( type != OFTString && ( ( attrVal.type() != QVariant::List && attrVal.toString().isEmpty() ) || ( attrVal.type() == QVariant::List && attrVal.toList().empty() ) ) ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -1857,7 +1890,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           if ( count > 0 )
           {
             int pos = 0;
-            for ( QString string : list )
+            for ( const QString &string : list )
             {
               lst[pos] = textEncoding()->fromUnicode( string ).data();
               pos++;
@@ -1865,6 +1898,63 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           }
           lst[count] = nullptr;
           OGR_F_SetFieldStringList( feature.get(), ogrAttributeId, lst );
+          break;
+        }
+
+        case OFTIntegerList:
+        {
+          const QVariantList list = attrVal.toList();
+          const int count = list.count();
+          int *lst = new int[count];
+          if ( count > 0 )
+          {
+            int pos = 0;
+            for ( const QVariant &value : list )
+            {
+              lst[pos] = value.toInt();
+              pos++;
+            }
+          }
+          OGR_F_SetFieldIntegerList( feature.get(), ogrAttributeId, count, lst );
+          delete [] lst;
+          break;
+        }
+
+        case OFTRealList:
+        {
+          const QVariantList list = attrVal.toList();
+          const int count = list.count();
+          double *lst = new double[count];
+          if ( count > 0 )
+          {
+            int pos = 0;
+            for ( const QVariant &value : list )
+            {
+              lst[pos] = value.toDouble();
+              pos++;
+            }
+          }
+          OGR_F_SetFieldDoubleList( feature.get(), ogrAttributeId, count, lst );
+          delete [] lst;
+          break;
+        }
+
+        case OFTInteger64List:
+        {
+          const QVariantList list = attrVal.toList();
+          const int count = list.count();
+          long long *lst = new long long[count];
+          if ( count > 0 )
+          {
+            int pos = 0;
+            for ( const QVariant &value : list )
+            {
+              lst[pos] = value.toLongLong();
+              pos++;
+            }
+          }
+          OGR_F_SetFieldInteger64List( feature.get(), ogrAttributeId, count, lst );
+          delete [] lst;
           break;
         }
 
@@ -2026,13 +2116,32 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::Map:
       type = OFTString;
       break;
+    case QVariant::StringList:
+      type = OFTStringList;
+      break;
     case QVariant::List:
-      // only string list supported at the moment, fall through to default for other types
       if ( field.subType() == QVariant::String )
       {
         type = OFTStringList;
         break;
       }
+      else if ( field.subType() == QVariant::Int )
+      {
+        type = OFTIntegerList;
+        break;
+      }
+      else if ( field.subType() == QVariant::LongLong )
+      {
+        type = OFTInteger64List;
+        break;
+      }
+      else if ( field.subType() == QVariant::Double )
+      {
+        type = OFTRealList;
+        break;
+      }
+      // other lists are supported at this moment, fall through to default for other types
+
       //intentional fall-through
       FALLTHROUGH
 
@@ -2044,7 +2153,7 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
 
   gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->fromUnicode( field.name() ).constData(), type ) );
   int width = field.length();
-  // Increase width by 1 for OFTReal to make room for the decimal point
+// Increase width by 1 for OFTReal to make room for the decimal point
   if ( type == OFTReal && field.precision() )
     width += 1;
   OGR_Fld_SetWidth( fielddefn.get(), width );
@@ -2487,7 +2596,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
       OGRFieldType type = OGR_Fld_GetType( fd );
 
-      if ( it2->isNull() || ( type != OFTString && it2->toString().isEmpty() ) )
+      if ( it2->isNull() || ( type != OFTString && ( ( it2->type() != QVariant::List && it2->toString().isEmpty() ) || ( it2->type() == QVariant::List && it2->toList().empty() ) ) ) )
       {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -2568,7 +2677,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             if ( count > 0 )
             {
               int pos = 0;
-              for ( QString string : list )
+              for ( const QString &string : list )
               {
                 lst[pos] = textEncoding()->fromUnicode( string ).data();
                 pos++;
@@ -2576,6 +2685,63 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             }
             lst[count] = nullptr;
             OGR_F_SetFieldStringList( of.get(), f, lst );
+            break;
+          }
+
+          case OFTIntegerList:
+          {
+            const QVariantList list = it2->toList();
+            const int count = list.count();
+            int *lst = new int[count];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toInt();
+                pos++;
+              }
+            }
+            OGR_F_SetFieldIntegerList( of.get(), f, count, lst );
+            delete [] lst;
+            break;
+          }
+
+          case OFTRealList:
+          {
+            const QVariantList list = it2->toList();
+            const int count = list.count();
+            double *lst = new double[count];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toDouble();
+                pos++;
+              }
+            }
+            OGR_F_SetFieldDoubleList( of.get(), f, count, lst );
+            delete [] lst;
+            break;
+          }
+
+          case OFTInteger64List:
+          {
+            const QVariantList list = it2->toList();
+            const int count = list.count();
+            long long *lst = new long long[count];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toLongLong();
+                pos++;
+              }
+            }
+            OGR_F_SetFieldInteger64List( of.get(), f, count, lst );
+            delete [] lst;
             break;
           }
 

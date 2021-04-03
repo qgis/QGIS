@@ -685,15 +685,76 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             ogrType = OFTBinary;
             break;
 
+          case QVariant::StringList:
+          {
+            const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+            if ( pszDataTypes && strstr( pszDataTypes, "StringList" ) )
+            {
+              ogrType = OFTStringList;
+              mSupportedListSubTypes.insert( QVariant::String );
+            }
+            else
+            {
+              ogrType = OFTString;
+              ogrWidth = 255;
+            }
+            break;
+          }
+
           case QVariant::List:
-            // only string list supported at the moment, fall through to default for other types
+            // fall through to default for other unsupported types
             if ( attrField.subType() == QVariant::String )
             {
               const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
               if ( pszDataTypes && strstr( pszDataTypes, "StringList" ) )
               {
                 ogrType = OFTStringList;
-                supportsStringList = true;
+                mSupportedListSubTypes.insert( QVariant::String );
+              }
+              else
+              {
+                ogrType = OFTString;
+                ogrWidth = 255;
+              }
+              break;
+            }
+            else if ( attrField.subType() == QVariant::Int )
+            {
+              const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+              if ( pszDataTypes && strstr( pszDataTypes, "IntegerList" ) )
+              {
+                ogrType = OFTIntegerList;
+                mSupportedListSubTypes.insert( QVariant::Int );
+              }
+              else
+              {
+                ogrType = OFTString;
+                ogrWidth = 255;
+              }
+              break;
+            }
+            else if ( attrField.subType() == QVariant::Double )
+            {
+              const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+              if ( pszDataTypes && strstr( pszDataTypes, "RealList" ) )
+              {
+                ogrType = OFTRealList;
+                mSupportedListSubTypes.insert( QVariant::Double );
+              }
+              else
+              {
+                ogrType = OFTString;
+                ogrWidth = 255;
+              }
+              break;
+            }
+            else if ( attrField.subType() == QVariant::LongLong )
+            {
+              const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+              if ( pszDataTypes && strstr( pszDataTypes, "Integer64List" ) )
+              {
+                ogrType = OFTInteger64List;
+                mSupportedListSubTypes.insert( QVariant::LongLong );
               }
               else
               {
@@ -2490,12 +2551,38 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       case QVariant::Invalid:
         break;
 
+      case QVariant::StringList:
+      {
+        QStringList list = attrValue.toStringList();
+        if ( mSupportedListSubTypes.contains( QVariant::String ) )
+        {
+          int count = list.count();
+          char **lst = new char *[count + 1];
+          if ( count > 0 )
+          {
+            int pos = 0;
+            for ( const QString &string : list )
+            {
+              lst[pos] = mCodec->fromUnicode( string ).data();
+              pos++;
+            }
+          }
+          lst[count] = nullptr;
+          OGR_F_SetFieldStringList( poFeature.get(), ogrField, lst );
+        }
+        else
+        {
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( list.join( ',' ) ).constData() );
+        }
+        break;
+      }
+
       case QVariant::List:
-        // only string list supported at the moment, fall through to default for other types
+        // fall through to default for unsupported types
         if ( field.subType() == QVariant::String )
         {
           QStringList list = attrValue.toStringList();
-          if ( supportsStringList )
+          if ( mSupportedListSubTypes.contains( QVariant::String ) )
           {
             int count = list.count();
             char **lst = new char *[count + 1];
@@ -2514,6 +2601,99 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           else
           {
             OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( list.join( ',' ) ).constData() );
+          }
+          break;
+        }
+        else if ( field.subType() == QVariant::Int )
+        {
+          const QVariantList list = attrValue.toList();
+          if ( mSupportedListSubTypes.contains( QVariant::Int ) )
+          {
+            const int count = list.count();
+            int *lst = new int[count];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toInt();
+                pos++;
+              }
+            }
+            OGR_F_SetFieldIntegerList( poFeature.get(), ogrField, count, lst );
+            delete [] lst;
+          }
+          else
+          {
+            QStringList strings;
+            strings.reserve( list.size() );
+            for ( const QVariant &value : list )
+            {
+              strings << QString::number( value.toInt() );
+            }
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( strings.join( ',' ) ).constData() );
+          }
+          break;
+        }
+        else if ( field.subType() == QVariant::Double )
+        {
+          const QVariantList list = attrValue.toList();
+          if ( mSupportedListSubTypes.contains( QVariant::Double ) )
+          {
+            const int count = list.count();
+            double *lst = new double[count];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toDouble();
+                pos++;
+              }
+            }
+            OGR_F_SetFieldDoubleList( poFeature.get(), ogrField, count, lst );
+            delete [] lst;
+          }
+          else
+          {
+            QStringList strings;
+            strings.reserve( list.size() );
+            for ( const QVariant &value : list )
+            {
+              strings << QString::number( value.toDouble() );
+            }
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( strings.join( ',' ) ).constData() );
+          }
+          break;
+        }
+        else if ( field.subType() == QVariant::LongLong )
+        {
+          const QVariantList list = attrValue.toList();
+          if ( mSupportedListSubTypes.contains( QVariant::LongLong ) )
+          {
+            const int count = list.count();
+            long long *lst = new long long[count];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toLongLong();
+                pos++;
+              }
+            }
+            OGR_F_SetFieldInteger64List( poFeature.get(), ogrField, count, lst );
+            delete [] lst;
+          }
+          else
+          {
+            QStringList strings;
+            strings.reserve( list.size() );
+            for ( const QVariant &value : list )
+            {
+              strings << QString::number( value.toLongLong() );
+            }
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( strings.join( ',' ) ).constData() );
           }
           break;
         }
