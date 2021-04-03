@@ -62,10 +62,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Test local httpbin
-        env:
-          QGIS_HTTPBIN_HOST: localhost:8082
         run: |
-          echo $(curl -sS 'http://${QGIS_HTTPBIN_HOST}/get?a=b')
+          echo $(curl -sS 'http://localhost:8082/get?a=b')
 
       - name: Set vars
         env:
