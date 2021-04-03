@@ -127,6 +127,8 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
   mSpan = result.value( QLatin1String( "span" ) ).toInt();
   mPointCount = result.value( QLatin1String( "points" ) ).toInt();
+  if ( mPointCount == 0 )
+    mPointCount = result.value( QLatin1String( "points" ) ).toDouble();
 
   // WKT
   const QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();

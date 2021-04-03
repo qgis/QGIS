@@ -98,19 +98,18 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
 QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
   qDebug() << __PRETTY_FUNCTION__ << " " << n.toString() << " start";
-  QgsPointCloudBlockRequest *blockRequest = asyncNodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
   if ( !blockRequest )
     return nullptr;
 
   QEventLoop loop;
-  connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
+  connect( blockRequest.get(), &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
   loop.exec();
 
   if ( !blockRequest->block() )
   {
     QgsDebugMsg( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
-  qDebug() << __PRETTY_FUNCTION__ << " " << n.toString() << " end";
 
   return blockRequest->block();
 }
@@ -119,8 +118,6 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
 {
   if ( !loadNodeHierarchy( n ) )
     return nullptr;
-
-  QgsPointCloudBlockRequest *handle = nullptr;
 
   QString fileUrl;
   if ( mDataType == QLatin1String( "binary" ) )
@@ -135,13 +132,12 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
   {
     fileUrl = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mUrlDirectoryPart, n.toString() );
   }
-  QNetworkRequest nr( fileUrl );
-  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+  else
+  {
+    return nullptr;
+  }
 
-  QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( nr );
-  handle = new QgsPointCloudBlockRequest( mDataType, attributes(), request.attributes(), reply );
-  return handle;
+  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), request.attributes() );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const

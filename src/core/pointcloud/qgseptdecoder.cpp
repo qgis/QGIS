@@ -479,10 +479,11 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
 }
 
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
+    const QString &nodeStr,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  QString filename = QDir::tempPath() + QDir::separator() + QStringLiteral( "node.txt" );
+  QString filename = QDir::tempPath() + QDir::separator() + QStringLiteral( "%1.laz" ).arg( nodeStr );
   std::ofstream file( filename.toStdString(), std::ios::binary | std::ios::out );
   if ( file.is_open() )
   {
