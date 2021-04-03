@@ -96,7 +96,6 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
 
 QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
-  qDebug() << __PRETTY_FUNCTION__ << " " << n.toString() << " start";
   std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
   if ( !blockRequest )
     return nullptr;
