@@ -38,7 +38,6 @@
 
 #include "qgstiledownloadmanager.h"
 #include "qgsblockingnetworkrequest.h"
-#include "qgsfiledownloader.h"
 
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
