@@ -1491,7 +1491,7 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
 
     QgsRectangle bounds = hull->boundingBox();
     double currentArea = bounds.width() * bounds.height();
-    if ( currentArea  < area || ( qgsDoubleNear(currentArea, area, currentArea * 0.0000000001 ) && height < bounds.height() ) )
+    if ( currentArea  < area || ( qgsDoubleNear( currentArea, area, currentArea * 0.0000000001 ) && height < bounds.height() ) )
     {
       minRect = bounds;
       area = currentArea;
