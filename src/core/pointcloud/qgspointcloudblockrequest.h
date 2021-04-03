@@ -22,6 +22,7 @@
 
 #include "qgspointcloudattribute.h"
 #include "qgstiledownloadmanager.h"
+#include "qgspointcloudindex.h"
 
 #define SIP_NO_FILE
 
@@ -43,13 +44,13 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
 
     /**
      * QgsPointCloudBlockRequest constructor
-     * Note: the istanced QgsPointCloudBlockRequest object will take ownership over \a tileDownloadManagerReply
+     * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
      */
-    QgsPointCloudBlockRequest( const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, QgsTileDownloadManagerReply *tileDownloadManagerReply );
+    QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes );
 
     /**
      * Returns the requested block. if the returned block is nullptr, that means the data request failed
-     * Note: the returned block is owned by QgsPointCloudBlockRequest and will be deallocated once QgsPointCloudBlockRequest instance is deallocated
+     * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
      */
     QgsPointCloudBlock *block();
 
@@ -60,11 +61,12 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     //! Emitted when the request processing has finished
     void finished();
   private:
+    IndexedPointCloudNode mNode;
     QString mDataType;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudAttributeCollection mRequestedAttributes;
     std::unique_ptr<QgsTileDownloadManagerReply> mTileDownloadManagetReply = nullptr;
-    std::unique_ptr<QgsPointCloudBlock> mBlock = nullptr;
+    QgsPointCloudBlock *mBlock = nullptr;
     QString mErrorStr;
   private slots:
     void blockFinishedLoading();

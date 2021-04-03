@@ -300,7 +300,11 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
     for ( int i = 0; i < blockRequests.size(); ++i )
     {
       if ( blockRequests[ i ] )
+      {
+        if ( blockRequests[ i ]->block() )
+          delete blockRequests[ i ]->block();
         blockRequests[ i ]->deleteLater();
+      }
     }
   }
 
