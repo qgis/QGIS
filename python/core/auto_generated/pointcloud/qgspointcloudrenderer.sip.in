@@ -26,7 +26,7 @@ Encapsulates the render context for a 2D point cloud rendering operation.
   public:
 
     QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset );
+                                double zValueScale, double zValueFixedOffset, QgsFeedback *feedback );
 %Docstring
 Constructor for QgsPointCloudRenderContext.
 
@@ -133,6 +133,13 @@ Returns any constant offset which must be applied to z values taken from the poi
 .. note::
 
    Scaling of z values via :py:func:`~QgsPointCloudRenderContext.zValueScale` should be applied before the :py:func:`~QgsPointCloudRenderContext.zValueFixedOffset`.
+%End
+
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object used to cancel rendering
+
+.. versionadded:: 3.20
 %End
 
 
