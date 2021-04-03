@@ -75,13 +75,16 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [ = ]
   {
     mDynamicTextMenu->clear();
-    // we need to rebuild this on each show, as the content varies depending on other available items...
-    buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [ = ]( const QString & expression )
+    if ( mLabel->layout() )
     {
-      mLabel->beginCommand( tr( "Insert dynamic text" ) );
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
-      mLabel->endCommand();
-    } );
+      // we need to rebuild this on each show, as the content varies depending on other available items...
+      buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [ = ]( const QString & expression )
+      {
+        mLabel->beginCommand( tr( "Insert dynamic text" ) );
+        mTextEdit->insertPlainText( "[%" + expression + "%]" );
+        mLabel->endCommand();
+      } );
+    }
   } );
 
 }
@@ -94,6 +97,7 @@ void QgsLayoutLabelWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayo
 
 void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void ( const QString & )> &callback )
 {
+  Q_ASSERT( layout );
   auto addExpression = [&callback]( QMenu * menu, const QString & name, const QString & expression )
   {
     QAction *action = new QAction( name, menu );
