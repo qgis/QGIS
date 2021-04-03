@@ -425,14 +425,17 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [ = ]
   {
     mDynamicTextMenu->clear();
-    // we need to rebuild this on each show, as the content varies depending on other available items...
-    QgsLayoutLabelWidget::buildInsertDynamicTextMenu( mLayout, mDynamicTextMenu, [ = ]( const QString & expression )
+    if ( mLayout )
     {
-      activateNewItemCreationTool( QgsGui::layoutItemGuiRegistry()->metadataIdForItemType( QgsLayoutItemRegistry::LayoutLabel ), false );
-      QVariantMap properties;
-      properties.insert( QStringLiteral( "expression" ), expression );
-      mAddItemTool->setCustomProperties( properties );
-    } );
+      // we need to rebuild this on each show, as the content varies depending on other available items...
+      QgsLayoutLabelWidget::buildInsertDynamicTextMenu( mLayout, mDynamicTextMenu, [ = ]( const QString & expression )
+      {
+        activateNewItemCreationTool( QgsGui::layoutItemGuiRegistry()->metadataIdForItemType( QgsLayoutItemRegistry::LayoutLabel ), false );
+        QVariantMap properties;
+        properties.insert( QStringLiteral( "expression" ), expression );
+        mAddItemTool->setCustomProperties( properties );
+      } );
+    }
   } );
 
   // not so nice hack to insert dynamic text menu near the label item
