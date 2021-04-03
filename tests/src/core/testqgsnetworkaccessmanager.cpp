@@ -177,7 +177,7 @@ void TestQgsNetworkAccessManager::initTestCase()
 
   QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 5000 );
 
-  mHttpBinHost = QStringLiteral( "localhost:8082" );
+  mHttpBinHost = QStringLiteral( "httpbin.org" );
   QString overrideHost = qgetenv( "QGIS_HTTPBIN_HOST" );
   if ( !overrideHost.isEmpty() )
     mHttpBinHost = overrideHost;
