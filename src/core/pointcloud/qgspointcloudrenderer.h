@@ -55,7 +55,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * taken from the point cloud index.
      */
     QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset, QgsFeedback *feedback );
+                                double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = nullptr );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh ) = delete;
