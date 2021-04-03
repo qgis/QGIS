@@ -67,7 +67,10 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.displayPrompt(self.continuationLine)
 
         for line in _init_commands:
-            self.runsource(line)
+            try:
+                self.runsource(line)
+            except ModuleNotFoundError:
+                pass
 
         self.history = []
         self.softHistory = ['']
