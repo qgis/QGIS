@@ -108,7 +108,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
     void onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
 
-  public:
+  protected:
     ~QgsFileDownloader() override;
 
   private:
