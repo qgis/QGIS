@@ -242,14 +242,15 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   const int groupSize = 4;
   for ( int groupIndex = 0; groupIndex < nodes.size(); groupIndex += groupSize )
   {
-    if ( context.feedback()->isCanceled() )
+    if ( context.feedback() && context.feedback()->isCanceled() )
       break;
     // Async loading of nodes
     const int currentGroupSize = std::min( std::max( nodes.size() - groupIndex, 0 ), groupSize );
     QVector<QgsPointCloudBlockRequest *> blockRequests( currentGroupSize, nullptr );
     QVector<bool> finishedLoadingBlock( currentGroupSize, false );
     QEventLoop loop;
-    QObject::connect( context.feedback(), &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+    if ( context.feedback() )
+      QObject::connect( context.feedback(), &QgsFeedback::canceled, &loop, &QEventLoop::quit );
     // Note: All capture by reference warnings here shouldn't be an issue since we have an event loop, so locals won't be deallocated
     for ( int i = 0; i < blockRequests.size(); ++i )
     {
