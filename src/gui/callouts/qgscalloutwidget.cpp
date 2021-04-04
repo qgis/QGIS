@@ -541,12 +541,15 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *p
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mWedgeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mCornerRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   mSpinBottomMargin->setClearValue( 0 );
   mSpinTopMargin->setClearValue( 0 );
   mSpinRightMargin->setClearValue( 0 );
   mSpinLeftMargin->setClearValue( 0 );
   mWedgeWidthSpin->setClearValue( 2.64 );
+  mCornerRadiusSpin->setClearValue( 0.0 );
 
   connect( mOffsetFromAnchorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsBalloonCalloutWidget::offsetFromAnchorUnitWidgetChanged );
   connect( mOffsetFromAnchorSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsBalloonCalloutWidget::offsetFromAnchorChanged );
@@ -605,6 +608,18 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *p
     mCallout->setWedgeWidth( value );
     emit changed();
   } );
+
+  connect( mCornerRadiusUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    mCallout->setCornerRadiusUnit( mCornerRadiusUnitWidget->unit() );
+    mCallout->setCornerRadiusMapUnitScale( mCornerRadiusUnitWidget->getMapUnitScale() );
+    emit changed();
+  } );
+  connect( mCornerRadiusSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    mCallout->setCornerRadius( value );
+    emit changed();
+  } );
 }
 
 void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
@@ -634,6 +649,12 @@ void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
   mWedgeWidthUnitWidget->blockSignals( false );
   whileBlocking( mWedgeWidthSpin )->setValue( mCallout->wedgeWidth() );
 
+  mCornerRadiusUnitWidget->blockSignals( true );
+  mCornerRadiusUnitWidget->setUnit( mCallout->cornerRadiusUnit() );
+  mCornerRadiusUnitWidget->setMapUnitScale( mCallout->cornerRadiusMapUnitScale() );
+  mCornerRadiusUnitWidget->blockSignals( false );
+  whileBlocking( mCornerRadiusSpin )->setValue( mCallout->cornerRadius() );
+
   whileBlocking( mCalloutFillStyleButton )->setSymbol( mCallout->fillSymbol()->clone() );
 
   whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
@@ -645,6 +666,7 @@ void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
   registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
   registerDataDefinedButton( mMarginsDDBtn, QgsCallout::Margins );
   registerDataDefinedButton( mWedgeWidthDDBtn, QgsCallout::WedgeWidth );
+  registerDataDefinedButton( mCornerRadiusDDBtn, QgsCallout::CornerRadius );
 }
 
 void QgsBalloonCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
