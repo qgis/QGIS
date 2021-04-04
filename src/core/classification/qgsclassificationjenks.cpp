@@ -99,10 +99,11 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
       double r = QRandomGenerator::global()->generate();
+      int j = std::floor( r / QRandomGenerator::max() * ( values.size() - 1 ) );
 #else
       double r = qrand();
-#endif
       int j = std::floor( r / RAND_MAX * ( values.size() - 1 ) );
+#endif
       sample[ i ] = values[ j ];
     }
   }
