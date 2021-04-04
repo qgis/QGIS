@@ -54,10 +54,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Test local httpbin
-        run: |
-          echo $(curl -sS 'http://localhost:8082/get?a=b')
-
       - name: Set vars
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
