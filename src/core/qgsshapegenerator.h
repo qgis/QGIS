@@ -24,6 +24,7 @@
 #include <QPolygonF>
 
 class QgsPointXY;
+class QPainterPath;
 
 /**
  * \ingroup core
@@ -38,7 +39,7 @@ class CORE_EXPORT QgsShapeGenerator
   public:
 
     /**
-     * Generates a "balloon"/"talking bubble" style shape.
+     * Generates a "balloon"/"talking bubble" style shape (as a QPolygonF).
      *
      * The \a origin point indicates the starting point for the pointing wedge portion of the balloon.
      *
@@ -48,6 +49,20 @@ class CORE_EXPORT QgsShapeGenerator
      * position where it joins with the balloon's main body.
      */
     static QPolygonF createBalloon( const QgsPointXY &origin, const QRectF &rect, double wedgeWidth );
+
+    /**
+     * Generates a "balloon"/"talking bubble" style shape (as a painter path).
+     *
+     * The \a origin point indicates the starting point for the pointing wedge portion of the balloon.
+     *
+     * The \a rect argument specifies the rectangular bounds of the main body of the balloon.
+     *
+     * The \a wedgeWidth argument gives the width of the pointing wedge portion of the balloon at the
+     * position where it joins with the balloon's main body.
+     *
+     * The \a cornerRadius argument gives the radius for rounding corners on the main bubble rectangle.
+     */
+    static QPainterPath createBalloon( const QgsPointXY &origin, const QRectF &rect, double wedgeWidth, double cornerRadius );
 };
 
 #endif // QGSSHAPEGENERATOR_H

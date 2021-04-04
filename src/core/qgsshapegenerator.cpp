@@ -19,32 +19,34 @@
 #include "qgsgeometryutils.h"
 #include <QLineF>
 #include <QList>
+#include <QPainterPath>
 #include <algorithm>
 
-QLineF segment( int index, QRectF rect )
+QLineF segment( int index, QRectF rect, double radius )
 {
+  const int yMultiplier = rect.height() < 0 ? -1 : 1;
   switch ( index )
   {
     case 0:
-      return QLineF( rect.left(),
+      return QLineF( rect.left() + radius,
                      rect.top(),
-                     rect.right(),
+                     rect.right() - radius,
                      rect.top() );
     case 1:
       return QLineF( rect.right(),
-                     rect.top(),
+                     rect.top() + yMultiplier * radius,
                      rect.right(),
-                     rect.bottom() );
+                     rect.bottom() - yMultiplier * radius );
     case 2:
-      return QLineF( rect.right(),
+      return QLineF( rect.right() - radius,
                      rect.bottom(),
-                     rect.left(),
+                     rect.left() + radius,
                      rect.bottom() );
     case 3:
       return QLineF( rect.left(),
-                     rect.bottom(),
+                     rect.bottom() - yMultiplier * radius,
                      rect.left(),
-                     rect.top() );
+                     rect.top() + yMultiplier * radius );
     default:
       return QLineF();
   }
@@ -52,9 +54,18 @@ QLineF segment( int index, QRectF rect )
 
 QPolygonF QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const QRectF &rect, double wedgeWidth )
 {
+  return createBalloon( origin, rect, wedgeWidth, 0 ).toFillPolygon();
+}
+
+QPainterPath QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const QRectF &rect, double wedgeWidth, double cornerRadius )
+{
   int balloonSegment = -1;
   QPointF balloonSegmentPoint1;
   QPointF balloonSegmentPoint2;
+
+  const bool invertedY = rect.height() < 0;
+
+  cornerRadius = std::min( cornerRadius, std::min( std::fabs( rect.height() ), rect.width() ) / 2.0 );
 
   //first test if the point is in the frame. In that case we don't need a balloon and can just use a rect
   if ( rect.contains( origin.toQPointF() ) )
@@ -65,10 +76,10 @@ QPolygonF QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const QRec
   {
     //edge list
     QList<QLineF> segmentList;
-    segmentList << segment( 0, rect );
-    segmentList << segment( 1, rect );
-    segmentList << segment( 2, rect );
-    segmentList << segment( 3, rect );
+    segmentList << segment( 0, rect, cornerRadius );
+    segmentList << segment( 1, rect, cornerRadius );
+    segmentList << segment( 2, rect, cornerRadius );
+    segmentList << segment( 3, rect, cornerRadius );
 
     // find closest edge / closest edge point
     double minEdgeDist = std::numeric_limits<double>::max();
@@ -132,23 +143,54 @@ QPolygonF QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const QRec
     }
   }
 
-  QPolygonF poly;
-  poly.reserve( 12 );
+  QPainterPath path;
+  QPointF p0;
+  QPointF p1;
   for ( int i = 0; i < 4; ++i )
   {
-    QLineF currentSegment = segment( i, rect );
-    poly << currentSegment.p1();
+    QLineF currentSegment = segment( i, rect, cornerRadius );
+    if ( i == 0 )
+    {
+      p0 = currentSegment.p1();
+      path.moveTo( currentSegment.p1() );
+    }
+    else
+    {
+      if ( invertedY )
+        path.arcTo( std::min( p1.x(), currentSegment.p1().x() ),
+                    std::min( p1.y(), currentSegment.p1().y() ),
+                    cornerRadius, cornerRadius,
+                    i == 0 ? -180 : ( i == 1 ? -90 : ( i == 2 ? 0 : 90 ) ),
+                    90 );
+      else
+        path.arcTo( std::min( p1.x(), currentSegment.p1().x() ),
+                    std::min( p1.y(), currentSegment.p1().y() ),
+                    cornerRadius, cornerRadius,
+                    i == 0 ? 180 : ( i == 1 ? 90 : ( i == 2 ? 0 : -90 ) ),
+                    -90 );
+    }
 
     if ( i == balloonSegment )
     {
-      poly << balloonSegmentPoint1;
-      poly << origin.toQPointF();
-      poly << balloonSegmentPoint2;
+      path.lineTo( balloonSegmentPoint1 );
+      path.lineTo( origin.toQPointF() );
+      path.lineTo( balloonSegmentPoint2 );
     }
 
-    poly << currentSegment.p2();
+    p1 = currentSegment.p2();
+    path.lineTo( p1 );
   }
-  if ( poly.at( 0 ) != poly.at( poly.count() - 1 ) )
-    poly << poly.at( 0 );
-  return poly;
+
+  if ( invertedY )
+    path.arcTo( std::min( p1.x(), p0.x() ),
+                std::min( p1.y(), p0.y() ),
+                cornerRadius, cornerRadius,
+                180, 90 );
+  else
+    path.arcTo( std::min( p1.x(), p0.x() ),
+                std::min( p1.y(), p0.y() ),
+                cornerRadius, cornerRadius,
+                -180, -90 );
+
+  return path;
 }

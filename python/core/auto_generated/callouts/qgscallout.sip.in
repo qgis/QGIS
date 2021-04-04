@@ -65,6 +65,7 @@ relevant symbology elements to render them.
       Orientation,
       Margins,
       WedgeWidth,
+      CornerRadius,
     };
 
     enum DrawOrder
@@ -987,7 +988,6 @@ Returns the units for the margins between the outside of the callout frame and t
 .. seealso:: :py:func:`margins`
 %End
 
-
     double wedgeWidth() const;
 %Docstring
 Returns the width of the wedge shape at the side it connects with the label.
@@ -1001,7 +1001,7 @@ Units are specified through :py:func:`~QgsBalloonCallout.wedgeWidthUnit`.
 
     void setWedgeWidth( double width );
 %Docstring
-Returns the ``width`` of the wedge shape at the side it connects with the label.
+Sets the ``width`` of the wedge shape at the side it connects with the label.
 
 Units are specified through :py:func:`~QgsBalloonCallout.setWedgeWidthUnit`.
 
@@ -1049,6 +1049,69 @@ Returns the map unit scale for the wedge width.
 
 .. seealso:: :py:func:`wedgeWidth`
 %End
+
+    double cornerRadius() const;
+%Docstring
+Returns the corner radius of the balloon shapes.
+
+Units are specified through :py:func:`~QgsBalloonCallout.wedgeWidthUnit`.
+
+.. seealso:: :py:func:`setCornerRadius`
+
+.. seealso:: :py:func:`cornerRadiusUnit`
+%End
+
+    void setCornerRadius( double radius );
+%Docstring
+Sets the ``radius`` of the corners for the balloon shapes.
+
+Units are specified through :py:func:`~QgsBalloonCallout.setCornerRadiusUnit`.
+
+.. seealso:: :py:func:`cornerRadius`
+
+.. seealso:: :py:func:`setCornerRadiusUnit`
+%End
+
+    void setCornerRadiusUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the corner radius.
+
+.. seealso:: :py:func:`cornerRadiusUnit`
+
+.. seealso:: :py:func:`setCornerRadius`
+%End
+
+    QgsUnitTypes::RenderUnit cornerRadiusUnit() const;
+%Docstring
+Returns the units for the corner radius.
+
+.. seealso:: :py:func:`setCornerRadiusUnit`
+
+.. seealso:: :py:func:`cornerRadius`
+%End
+
+    void setCornerRadiusMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the corner radius.
+
+.. seealso:: :py:func:`cornerRadiusMapUnitScale`
+
+.. seealso:: :py:func:`setCornerRadiusUnit`
+
+.. seealso:: :py:func:`setCornerRadius`
+%End
+
+    const QgsMapUnitScale &cornerRadiusMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the corner radius.
+
+.. seealso:: :py:func:`setCornerRadiusMapUnitScale`
+
+.. seealso:: :py:func:`cornerRadiusUnit`
+
+.. seealso:: :py:func:`cornerRadius`
+%End
+
 
   protected:
     virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
