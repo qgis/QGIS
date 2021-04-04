@@ -69,6 +69,8 @@ class CORE_EXPORT QgsSettingsEntryBase
       Flag
     };
 
+#ifndef SIP_RUN
+
     /**
      * Constructor for QgsSettingsEntry.
      *
@@ -77,10 +79,26 @@ class CORE_EXPORT QgsSettingsEntryBase
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      */
-    QgsSettingsEntryBase( QString key,
+    QgsSettingsEntryBase( const QString &key,
                           QgsSettings::Section section,
-                          QVariant defaultValue = QVariant(),
-                          QString description = QString() );
+                          const QVariant &defaultValue = QVariant(),
+                          const QString &description = QString() );
+
+#endif
+
+    /**
+     * Constructor for QgsSettingsEntry.
+     * This constructor is intended to be used from plugins.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     */
+    QgsSettingsEntryBase( const QString &key,
+                          const QString &pluginName,
+                          const QVariant &defaultValue = QVariant(),
+                          const QString &description = QString() );
 
     /**
      * Destructor for QgsSettingsEntry.
@@ -153,7 +171,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     QVariant mDefaultValue;
     QgsSettings::Section mSection;
     QString mDescription;
-
+    QString mPluginName;
 };
 
 
@@ -166,6 +184,8 @@ class CORE_EXPORT QgsSettingsEntryBase
 class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
 {
   public:
+
+#ifndef SIP_RUN
 
     /**
      * Constructor for QgsSettingsEntryVariant.
@@ -180,6 +200,23 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
                              QgsSettings::Section section,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString() );
+
+#endif
+
+    /**
+     * Constructor for QgsSettingsEntryVariant.
+     * This constructor is intended to be used from plugins.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     */
+    QgsSettingsEntryVariant( const QString &key,
+                             const QString &pluginName,
+                             const QVariant &defaultValue = QVariant(),
+                             const QString &description = QString() );
+
 
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
@@ -211,6 +248,8 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
 {
   public:
 
+#ifndef SIP_RUN
+
     /**
      * Constructor for QgsSettingsEntryString.
      *
@@ -229,6 +268,22 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
                             const QString &description = QString(),
                             int minLength = 0,
                             int maxLength = -1 );
+
+#endif
+
+    /**
+     * Constructor for QgsSettingsEntryString.
+     * This constructor is intended to be used from plugins.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     */
+    QgsSettingsEntryString( const QString &key,
+                            const QString &pluginName,
+                            const QVariant &defaultValue = QVariant(),
+                            const QString &description = QString() );
 
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
@@ -249,9 +304,23 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
     virtual SettingsType settingsType() const override;
 
     /**
+     * Set the string minimum length.
+     *
+     * minLength The string minimum length.
+     */
+    void setMinLength( int minLength );
+
+    /**
      * Returns the string minimum length.
      */
     int minLength();
+
+    /**
+     * Set the string maximum length.
+     *
+     * maxLength The string maximum length.
+     */
+    void setMaxLength( int maxLength );
 
     /**
      * Returns the string maximum length. By -1 there is no limitation.
@@ -276,6 +345,8 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
 {
   public:
 
+#ifndef SIP_RUN
+
     /**
      * Constructor for QgsSettingsEntryStringList.
      *
@@ -288,6 +359,22 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
     QgsSettingsEntryStringList( const QString &key,
                                 QgsSettings::Section section,
                                 const QStringList &defaultValue = QStringList(),
+                                const QString &description = QString() );
+
+#endif
+
+    /**
+     * Constructor for QgsSettingsEntryStringList.
+     * This constructor is intended to be used from plugins.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     */
+    QgsSettingsEntryStringList( const QString &key,
+                                const QString &pluginName,
+                                const QVariant &defaultValue = QVariant(),
                                 const QString &description = QString() );
 
     //! \copydoc QgsSettingsEntry::setValue
@@ -321,6 +408,8 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
 {
   public:
 
+#ifndef SIP_RUN
+
     /**
      * Constructor for QgsSettingsEntryBool.
      *
@@ -333,6 +422,22 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
     QgsSettingsEntryBool( const QString &key,
                           QgsSettings::Section section,
                           bool defaultValue = false,
+                          const QString &description = QString() );
+
+#endif
+
+    /**
+     * Constructor for QgsSettingsEntryBool.
+     * This constructor is intended to be used from plugins.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     */
+    QgsSettingsEntryBool( const QString &key,
+                          const QString &pluginName,
+                          const QVariant &defaultValue = QVariant(),
                           const QString &description = QString() );
 
     //! \copydoc QgsSettingsEntry::setValue
@@ -352,7 +457,6 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
 
     //! \copydoc QgsSettingsEntry::settingsType
     virtual SettingsType settingsType() const override;
-
 };
 
 
@@ -386,23 +490,23 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
                              const QString &description = QString(),
                              qlonglong minValue = std::numeric_limits<qlonglong>::min(),
                              qlonglong maxValue = std::numeric_limits<qlonglong>::max() );
-#else
+
+#endif
 
     /**
      * Constructor for QgsSettingsEntryInteger.
+     * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      */
     QgsSettingsEntryInteger( const QString &key,
-                             QgsSettings::Section section,
-                             qlonglong defaultValue = 0,
+                             const QString &pluginName,
+                             const QVariant &defaultValue = QVariant(),
                              const QString &description = QString() );
 
-#endif
 
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
@@ -487,23 +591,21 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
                             double maxValue = std::numeric_limits<double>::max(),
                             int displayDecimals = 1 );
 
-#else
+#endif
 
     /**
      * Constructor for QgsSettingsEntryDouble.
+     * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      */
     QgsSettingsEntryDouble( const QString &key,
-                            QgsSettings::Section section,
-                            double defaultValue = 0.0,
+                            const QString &pluginName,
+                            const QVariant &defaultValue = QVariant(),
                             const QString &description = QString() );
-
-#endif
 
     //! \copydoc QgsSettingsEntry::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
@@ -616,7 +718,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
     T value( const QString &dynamicKeyPart = QString() ) const
     {
       return QgsSettings().enumValue( key( dynamicKeyPart ),
-                                      defaultValueAsVariant().template value<T>(),
+                                      defaultValueAsVariant().value<T>(),
                                       section() );
     }
 
@@ -724,7 +826,7 @@ class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryBase
     T value( const QString &dynamicKeyPart = QString() ) const
     {
       return QgsSettings().flagValue( key( dynamicKeyPart ),
-                                      defaultValueAsVariant().template value<T>(),
+                                      defaultValueAsVariant().value<T>(),
                                       section() );
     }
 

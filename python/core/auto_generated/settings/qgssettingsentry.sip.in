@@ -53,15 +53,17 @@ to validate set values and provide more accurate settings description for the gu
       Flag
     };
 
-    QgsSettingsEntryBase( QString key,
-                          QgsSettings::Section section,
-                          QVariant defaultValue = QVariant(),
-                          QString description = QString() );
+
+    QgsSettingsEntryBase( const QString &key,
+                          const QString &pluginName,
+                          const QVariant &defaultValue = QVariant(),
+                          const QString &description = QString() );
 %Docstring
 Constructor for :py:class:`QgsSettingsEntry`.
+This constructor is intended to be used from plugins.
 
 The ``key`` argument specifies the key of the settings.
-The ``section`` argument specifies the section of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
 The ``default`` value argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 %End
@@ -144,19 +146,21 @@ A variant settings entry.
 %End
   public:
 
+
     QgsSettingsEntryVariant( const QString &key,
-                             QgsSettings::Section section,
+                             const QString &pluginName,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryVariant.
+This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parentGroup`` argument specifies a parent group which is used to rebuild
-the entiere settings key and to determine the settings section.
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
 The ``default`` value argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 %End
+
 
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
@@ -196,23 +200,19 @@ A string settings entry.
 %End
   public:
 
+
     QgsSettingsEntryString( const QString &key,
-                            QgsSettings::Section section,
-                            const QString &defaultValue = QString(),
-                            const QString &description = QString(),
-                            int minLength = 0,
-                            int maxLength = -1 );
+                            const QString &pluginName,
+                            const QVariant &defaultValue = QVariant(),
+                            const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryString.
+This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parentGroup`` argument specifies a parent group which is used to rebuild
-the entiere settings key and to determine the settings section.
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
 The ``default`` value argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
-The ``minLength`` argument specifies the minimal length of the string value.
-The ``maxLength`` argument specifies the maximal length of the string value.
-By -1 the there is no limit
 %End
 
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
@@ -238,9 +238,23 @@ Get settings default value.
 \copydoc :py:class:`QgsSettingsEntry`.settingsType
 %End
 
+    void setMinLength( int minLength );
+%Docstring
+Set the string minimum length.
+
+minLength The string minimum length.
+%End
+
     int minLength();
 %Docstring
 Returns the string minimum length.
+%End
+
+    void setMaxLength( int maxLength );
+%Docstring
+Set the string maximum length.
+
+maxLength The string maximum length.
 %End
 
     int maxLength();
@@ -264,16 +278,17 @@ A string list settings entry.
 %End
   public:
 
+
     QgsSettingsEntryStringList( const QString &key,
-                                QgsSettings::Section section,
-                                const QStringList &defaultValue = QStringList(),
+                                const QString &pluginName,
+                                const QVariant &defaultValue = QVariant(),
                                 const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryStringList.
+This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parentGroup`` argument specifies a parent group which is used to rebuild
-the entiere settings key and to determine the settings section.
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
 The ``default`` value argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 %End
@@ -317,16 +332,17 @@ A boolean settings entry.
 %End
   public:
 
+
     QgsSettingsEntryBool( const QString &key,
-                          QgsSettings::Section section,
-                          bool defaultValue = false,
+                          const QString &pluginName,
+                          const QVariant &defaultValue = QVariant(),
                           const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryBool.
+This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parentGroup`` argument specifies a parent group which is used to rebuild
-the entiere settings key and to determine the settings section.
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
 The ``default`` value argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 %End
@@ -353,7 +369,6 @@ Get settings default value.
 %Docstring
 \copydoc :py:class:`QgsSettingsEntry`.settingsType
 %End
-
 };
 
 
@@ -373,15 +388,15 @@ An integer settings entry.
 
 
     QgsSettingsEntryInteger( const QString &key,
-                             QgsSettings::Section section,
-                             qlonglong defaultValue = 0,
+                             const QString &pluginName,
+                             const QVariant &defaultValue = QVariant(),
                              const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryInteger.
+This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parentGroup`` argument specifies a parent group which is used to rebuild
-the entiere settings key and to determine the settings section.
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
 The ``default`` value argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 %End
@@ -452,19 +467,18 @@ A double settings entry.
 
 
     QgsSettingsEntryDouble( const QString &key,
-                            QgsSettings::Section section,
-                            double defaultValue = 0.0,
+                            const QString &pluginName,
+                            const QVariant &defaultValue = QVariant(),
                             const QString &description = QString() );
 %Docstring
 Constructor for QgsSettingsEntryDouble.
+This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parentGroup`` argument specifies a parent group which is used to rebuild
-the entiere settings key and to determine the settings section.
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
 The ``default`` value argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 %End
-
 
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 

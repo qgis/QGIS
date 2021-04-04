@@ -17,14 +17,21 @@
 
 #include "qgslogger.h"
 
-QgsSettingsEntryBase::QgsSettingsEntryBase( QString key,
-    QgsSettings::Section section,
-    QVariant defaultValue,
-    QString description )
+QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettings::Section section, const QVariant &defaultValue, const QString &description )
   : mKey( key )
   , mDefaultValue( defaultValue )
   , mSection( section )
   , mDescription( description )
+  , mPluginName()
+{
+}
+
+QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+  : mKey( key )
+  , mDefaultValue( defaultValue )
+  , mSection( QgsSettings::Plugins )
+  , mDescription( description )
+  , mPluginName( pluginName )
 {
 }
 
@@ -34,23 +41,26 @@ QgsSettingsEntryBase::~QgsSettingsEntryBase()
 
 QString QgsSettingsEntryBase::key( const QString &dynamicKeyPart ) const
 {
-  if ( dynamicKeyPart.isEmpty() == false )
-  {
-    if ( hasDynamicKey() == false )
-    {
-      QgsLogger::warning( QStringLiteral( "Settings '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( mKey ) );
-      return mKey;
-    }
+  QString completeKey = mKey;
+  if ( !mPluginName.isEmpty() )
+    completeKey.prepend( mPluginName + "/" );
 
-    QString completeKey = mKey;
-    return completeKey.replace( '%', dynamicKeyPart );
+  if ( dynamicKeyPart.isEmpty() )
+  {
+    if ( hasDynamicKey() )
+      QgsLogger::warning( QStringLiteral( "Settings '%1' have a dynamic key but the dynamic key part was not provided" ).arg( completeKey ) );
+
+    return completeKey;
   }
   else
   {
-    if ( hasDynamicKey() == true )
-      QgsLogger::warning( QStringLiteral( "Settings '%1' have a dynamic key but the dynamic key part was not provided" ).arg( mKey ) );
+    if ( !hasDynamicKey() )
+    {
+      QgsLogger::warning( QStringLiteral( "Settings '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( completeKey ) );
+      return completeKey;
+    }
 
-    return mKey;
+    return completeKey.replace( '%', dynamicKeyPart );
   }
 }
 
@@ -108,6 +118,14 @@ QgsSettingsEntryVariant::QgsSettingsEntryVariant( const QString &key, QgsSetting
 {
 }
 
+QgsSettingsEntryVariant::QgsSettingsEntryVariant( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          pluginName,
+                          defaultValue,
+                          description )
+{
+}
+
 bool QgsSettingsEntryVariant::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
 {
   return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
@@ -135,6 +153,16 @@ QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, QgsSettings:
                           description )
   , mMinLength( minLength )
   , mMaxLength( maxLength )
+{
+}
+
+QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          pluginName,
+                          defaultValue,
+                          description )
+  , mMinLength( 0 )
+  , mMaxLength( -1 )
 {
 }
 
@@ -186,9 +214,19 @@ QgsSettingsEntryBase::SettingsType QgsSettingsEntryString::settingsType() const
   return QgsSettingsEntryBase::String;
 }
 
+void QgsSettingsEntryString::setMinLength( int minLength )
+{
+  mMinLength = minLength;
+}
+
 int QgsSettingsEntryString::minLength()
 {
   return mMinLength;
+}
+
+void QgsSettingsEntryString::setMaxLength( int maxLength )
+{
+  mMaxLength = maxLength;
 }
 
 int QgsSettingsEntryString::maxLength()
@@ -196,12 +234,17 @@ int QgsSettingsEntryString::maxLength()
   return mMaxLength;
 }
 
-QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key,
-    QgsSettings::Section section,
-    const QStringList &defaultValue,
-    const QString &description )
+QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key, QgsSettings::Section section, const QStringList &defaultValue, const QString &description )
   : QgsSettingsEntryBase( key,
                           section,
+                          defaultValue,
+                          description )
+{
+}
+
+QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          pluginName,
                           defaultValue,
                           description )
 {
@@ -235,12 +278,17 @@ QgsSettingsEntryBase::SettingsType QgsSettingsEntryStringList::settingsType() co
   return QgsSettingsEntryBase::StringList;
 }
 
-QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key,
-    QgsSettings::Section section,
-    bool defaultValue,
-    const QString &description )
+QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key, QgsSettings::Section section, bool defaultValue, const QString &description )
   : QgsSettingsEntryBase( key,
                           section,
+                          defaultValue,
+                          description )
+{
+}
+
+QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          pluginName,
                           defaultValue,
                           description )
 {
@@ -282,7 +330,16 @@ QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, QgsSetting
   , mMinValue( minValue )
   , mMaxValue( maxValue )
 {
+}
 
+QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          pluginName,
+                          defaultValue,
+                          description )
+  , mMinValue( std::numeric_limits<qlonglong>::min() )
+  , mMaxValue( std::numeric_limits<qlonglong>::max() )
+{
 }
 
 bool QgsSettingsEntryInteger::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
@@ -361,7 +418,17 @@ QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, QgsSettings:
   , mMaxValue( maxValue )
   , mDisplayHintDecimals( displayDecimals )
 {
+}
 
+QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          pluginName,
+                          defaultValue,
+                          description )
+  , mMinValue( std::numeric_limits<double>::min() )
+  , mMaxValue( std::numeric_limits<double>::max() )
+  , mDisplayHintDecimals( 1 )
+{
 }
 
 bool QgsSettingsEntryDouble::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
