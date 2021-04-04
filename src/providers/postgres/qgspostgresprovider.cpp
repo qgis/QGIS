@@ -587,7 +587,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
 
 QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
 {
-  Q_UNUSED(conn);
+  Q_UNUSED( conn );
   switch ( pkType )
   {
     case PktOid:
@@ -669,8 +669,8 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       }
 
       return whereClauses.isEmpty() ? QString() :
-                                   wherePreClauses.prepend( "( (" ).append( ") IN " )
-                                     + whereClauses.join( QLatin1String( "),(" ) ).prepend( "( VALUES (" ).append( ") ) )" );
+             wherePreClauses.prepend( "( (" ).append( ") IN " )
+             + whereClauses.join( QLatin1String( "),(" ) ).prepend( "( VALUES (" ).append( ") ) )" );
     }
   }
   return QString(); //avoid warning
