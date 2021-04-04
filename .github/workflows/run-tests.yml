@@ -43,13 +43,6 @@ jobs:
           - ubuntu-base: '21.04'
             run-tests: false
       fail-fast: false
-      
-    services:
-      # temp, remove if curl was successful
-      httpbin:
-        image: kennethreitz/httpbin:latest
-        ports:
-          - 8082:80
 
     outputs:
       compile_outcome: ${{ steps.compile.outcome }}
@@ -344,7 +337,7 @@ jobs:
         id: tests
         env:
           TEST_BATCH: ${{matrix.test-batch}}
-          QGIS_HTTPBIN_HOST: localhost:8082
+          QGIS_HTTPBIN_HOST: "localhost:8082"
         run: |
           DOCKERFILE=$( ( [[ ${TEST_BATCH} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${TEST_BATCH} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
