@@ -93,6 +93,7 @@ class CORE_EXPORT QgsCallout
       Orientation, //!< Orientation of curved line callouts (since QGIS 3.20)
       Margins, //!< Margin from text (since QGIS 3.20)
       WedgeWidth, //!< Balloon callout wedge width (since QGIS 3.20)
+      CornerRadius, //!< Balloon callout corner radius (since QGIS 3.20)
     };
 
     //! Options for draw order (stacking) of callouts
@@ -991,7 +992,6 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
     */
     QgsUnitTypes::RenderUnit marginsUnit() const { return mMarginUnit; }
 
-
     /**
      * Returns the width of the wedge shape at the side it connects with the label.
      *
@@ -1003,7 +1003,7 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
     double wedgeWidth() const { return mWedgeWidth; }
 
     /**
-     * Returns the \a width of the wedge shape at the side it connects with the label.
+     * Sets the \a width of the wedge shape at the side it connects with the label.
      *
      * Units are specified through setWedgeWidthUnit().
      *
@@ -1046,6 +1046,61 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      */
     const QgsMapUnitScale &wedgeWidthMapUnitScale() const { return mWedgeWidthScale; }
 
+    /**
+     * Returns the corner radius of the balloon shapes.
+     *
+     * Units are specified through wedgeWidthUnit().
+     *
+     * \see setCornerRadius()
+     * \see cornerRadiusUnit()
+     */
+    double cornerRadius() const { return mCornerRadius; }
+
+    /**
+     * Sets the \a radius of the corners for the balloon shapes.
+     *
+     * Units are specified through setCornerRadiusUnit().
+     *
+     * \see cornerRadius()
+     * \see setCornerRadiusUnit()
+     */
+    void setCornerRadius( double radius ) { mCornerRadius = radius; }
+
+    /**
+     * Sets the \a unit for the corner radius.
+     *
+     * \see cornerRadiusUnit()
+     * \see setCornerRadius()
+    */
+    void setCornerRadiusUnit( QgsUnitTypes::RenderUnit unit ) { mCornerRadiusUnit = unit; }
+
+    /**
+     * Returns the units for the corner radius.
+     *
+     * \see setCornerRadiusUnit()
+     * \see cornerRadius()
+    */
+    QgsUnitTypes::RenderUnit cornerRadiusUnit() const { return mCornerRadiusUnit; }
+
+    /**
+     * Sets the map unit \a scale for the corner radius.
+     *
+     * \see cornerRadiusMapUnitScale()
+     * \see setCornerRadiusUnit()
+     * \see setCornerRadius()
+     */
+    void setCornerRadiusMapUnitScale( const QgsMapUnitScale &scale ) { mCornerRadiusScale = scale; }
+
+    /**
+     * Returns the map unit scale for the corner radius.
+     *
+     * \see setCornerRadiusMapUnitScale()
+     * \see cornerRadiusUnit()
+     * \see cornerRadius()
+     */
+    const QgsMapUnitScale &cornerRadiusMapUnitScale() const { return mCornerRadiusScale; }
+
+
   protected:
     void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
@@ -1070,6 +1125,10 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
     double mWedgeWidth = 2.64;
     QgsUnitTypes::RenderUnit mWedgeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mWedgeWidthScale;
+
+    double mCornerRadius = 0.0;
+    QgsUnitTypes::RenderUnit mCornerRadiusUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mCornerRadiusScale;
 
 };
 

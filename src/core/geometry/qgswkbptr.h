@@ -78,8 +78,10 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( int &v ) const { read( v ); return *this; } SIP_SKIP
+#ifndef Q_PROCESSOR_X86_32
     //! Reads an integer value into a qsizetype
     inline const QgsWkbPtr &operator>>( qsizetype &r ) const { int v; read( v ); r = v; return *this; } SIP_SKIP
+#endif
     inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( QgsWkbTypes::Type &v ) const { read( v ); return *this; } SIP_SKIP
@@ -90,8 +92,10 @@ class CORE_EXPORT QgsWkbPtr
     inline QgsWkbPtr &operator<<( float r ) { double v = r; write( v ); return *this; } SIP_SKIP
     //! Writes an int to the pointer
     inline QgsWkbPtr &operator<<( int v ) { write( v ); return *this; } SIP_SKIP
+#ifndef Q_PROCESSOR_X86_32
     //! Writes a size as int to the pointer
     inline QgsWkbPtr &operator<<( qsizetype r ) { int v = r; write( v ); return *this; } SIP_SKIP
+#endif
     //! Writes an unsigned int to the pointer
     inline QgsWkbPtr &operator<<( unsigned int v ) { write( v ); return *this; } SIP_SKIP
     //! Writes a char to the pointer

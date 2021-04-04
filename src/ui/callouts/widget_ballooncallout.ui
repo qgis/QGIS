@@ -34,17 +34,10 @@
      <property name="topMargin">
       <number>0</number>
      </property>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_46">
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_47">
        <property name="text">
-        <string>Offset from feature</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <widget class="QgsPropertyOverrideButton" name="mOffsetFromAnchorDDBtn">
-       <property name="text">
-        <string>…</string>
+        <string>Wedge width</string>
        </property>
       </widget>
      </item>
@@ -61,13 +54,30 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1" colspan="3">
-      <widget class="QComboBox" name="mAnchorPointComboBox"/>
+     <item row="4" column="2" colspan="2">
+      <widget class="QgsUnitSelectionWidget" name="mWedgeWidthUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="mAnchorPointLbl">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Anchor point</string>
+        <string>Fill style</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_46">
+       <property name="text">
+        <string>Offset from feature</string>
        </property>
       </widget>
      </item>
@@ -96,8 +106,8 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="4">
-      <widget class="QgsPropertyOverrideButton" name="mAnchorPointDDBtn">
+     <item row="1" column="4">
+      <widget class="QgsPropertyOverrideButton" name="mOffsetFromAnchorDDBtn">
        <property name="text">
         <string>…</string>
        </property>
@@ -116,21 +126,24 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+     <item row="2" column="1" colspan="3">
+      <widget class="QComboBox" name="mAnchorPointComboBox"/>
+     </item>
+     <item row="2" column="4">
+      <widget class="QgsPropertyOverrideButton" name="mAnchorPointDDBtn">
        <property name="text">
-        <string>Fill style</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_47">
+     <item row="2" column="0">
+      <widget class="QLabel" name="mAnchorPointLbl">
        <property name="text">
-        <string>Wedge width</string>
+        <string>Anchor point</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <widget class="QgsDoubleSpinBox" name="mWedgeWidthSpin">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -155,8 +168,47 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="4">
+      <widget class="QgsPropertyOverrideButton" name="mWedgeWidthDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_48">
+       <property name="text">
+        <string>Corner radius</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QgsDoubleSpinBox" name="mCornerRadiusSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="2" colspan="2">
-      <widget class="QgsUnitSelectionWidget" name="mWedgeWidthUnitWidget" native="true">
+      <widget class="QgsUnitSelectionWidget" name="mCornerRadiusUnitWidget" native="true">
        <property name="minimumSize">
         <size>
          <width>10</width>
@@ -169,7 +221,7 @@
       </widget>
      </item>
      <item row="3" column="4">
-      <widget class="QgsPropertyOverrideButton" name="mWedgeWidthDDBtn">
+      <widget class="QgsPropertyOverrideButton" name="mCornerRadiusDDBtn">
        <property name="text">
         <string>…</string>
        </property>
@@ -526,6 +578,25 @@
  </customwidgets>
  <tabstops>
   <tabstop>mCalloutFillStyleButton</tabstop>
+  <tabstop>mOffsetFromAnchorSpin</tabstop>
+  <tabstop>mOffsetFromAnchorUnitWidget</tabstop>
+  <tabstop>mOffsetFromAnchorDDBtn</tabstop>
+  <tabstop>mAnchorPointComboBox</tabstop>
+  <tabstop>mAnchorPointDDBtn</tabstop>
+  <tabstop>mCornerRadiusSpin</tabstop>
+  <tabstop>mCornerRadiusUnitWidget</tabstop>
+  <tabstop>mCornerRadiusDDBtn</tabstop>
+  <tabstop>mWedgeWidthSpin</tabstop>
+  <tabstop>mWedgeWidthUnitWidget</tabstop>
+  <tabstop>mWedgeWidthDDBtn</tabstop>
+  <tabstop>mSpinTopMargin</tabstop>
+  <tabstop>mSpinLeftMargin</tabstop>
+  <tabstop>mSpinRightMargin</tabstop>
+  <tabstop>mSpinBottomMargin</tabstop>
+  <tabstop>mMarginUnitWidget</tabstop>
+  <tabstop>mMarginsDDBtn</tabstop>
+  <tabstop>mDestXDDBtn</tabstop>
+  <tabstop>mDestYDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

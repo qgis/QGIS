@@ -63,6 +63,7 @@ void QgsCallout::initPropertyDefinitions()
       QgsCallout::Margins, QgsPropertyDefinition( "Margins", QgsPropertyDefinition::DataTypeString, QObject::tr( "Margins" ), QObject::tr( "string of four doubles '<b>top,right,bottom,left</b>' or array of doubles <b>[top, right, bottom, left]</b>" ) )
     },
     { QgsCallout::WedgeWidth, QgsPropertyDefinition( "WedgeWidth", QObject::tr( "Wedge width" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsCallout::CornerRadius, QgsPropertyDefinition( "CornerRadius", QObject::tr( "Corner radius" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 }
 
@@ -1021,6 +1022,9 @@ QgsBalloonCallout::QgsBalloonCallout( const QgsBalloonCallout &other )
   , mWedgeWidth( other.mWedgeWidth )
   , mWedgeWidthUnit( other.mWedgeWidthUnit )
   , mWedgeWidthScale( other.mWedgeWidthScale )
+  , mCornerRadius( other.mCornerRadius )
+  , mCornerRadiusUnit( other.mCornerRadiusUnit )
+  , mCornerRadiusScale( other.mCornerRadiusScale )
 {
 
 }
@@ -1062,6 +1066,10 @@ QVariantMap QgsBalloonCallout::properties( const QgsReadWriteContext &context ) 
   props[ QStringLiteral( "wedgeWidthUnit" ) ] = QgsUnitTypes::encodeUnit( mWedgeWidthUnit );
   props[ QStringLiteral( "wedgeWidthMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mWedgeWidthScale );
 
+  props[ QStringLiteral( "cornerRadius" ) ] = mCornerRadius;
+  props[ QStringLiteral( "cornerRadiusUnit" ) ] = QgsUnitTypes::encodeUnit( mCornerRadiusUnit );
+  props[ QStringLiteral( "cornerRadiusMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mCornerRadiusScale );
+
   return props;
 }
 
@@ -1087,6 +1095,10 @@ void QgsBalloonCallout::readProperties( const QVariantMap &props, const QgsReadW
   mWedgeWidth = props.value( QStringLiteral( "wedgeWidth" ), 2.64 ).toDouble();
   mWedgeWidthUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "wedgeWidthUnit" ) ).toString() );
   mWedgeWidthScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "wedgeWidthMapUnitScale" ) ).toString() );
+
+  mCornerRadius = props.value( QStringLiteral( "cornerRadius" ), 0 ).toDouble();
+  mCornerRadiusUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "cornerRadiusUnit" ) ).toString() );
+  mCornerRadiusScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "cornerRadiusMapUnitScale" ) ).toString() );
 }
 
 void QgsBalloonCallout::startRender( QgsRenderContext &context )
@@ -1181,6 +1193,14 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
   }
   segmentPointWidth = context.convertToPainterUnits( segmentPointWidth, mWedgeWidthUnit, mWedgeWidthScale );
 
+  double cornerRadius = mCornerRadius;
+  if ( dataDefinedProperties().isActive( QgsCallout::CornerRadius ) )
+  {
+    context.expressionContext().setOriginalValueVariable( cornerRadius );
+    cornerRadius = dataDefinedProperties().valueAsDouble( QgsCallout::CornerRadius, context.expressionContext(), cornerRadius );
+  }
+  cornerRadius = context.convertToPainterUnits( cornerRadius, mCornerRadiusUnit, mCornerRadiusScale );
+
   double left = mMargins.left();
   double right = mMargins.right();
   double top = mMargins.top();
@@ -1247,10 +1267,14 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
                              rect.width() + marginLeft + marginRight,
                              rect.height() - marginTop - marginBottom );
 
-  // IMPORTANT -- check for degenerate height is >=0, because QRectF are not normalized and we are using painter
+  // IMPORTANT -- check for degenerate height is sometimes >=0, because QRectF are not normalized and we are using painter
   // coordinates with descending vertical axis!
-  if ( expandedRect.width() <= 0 || expandedRect.height() >= 0 )
+  if ( expandedRect.width() <= 0 || ( rect.height() < 0 && expandedRect.height() >= 0 ) || ( rect.height() > 0 && expandedRect.height() <= 0 ) )
     return QPolygonF();
 
-  return QgsShapeGenerator::createBalloon( origin, expandedRect, segmentPointWidth );
+  const QPainterPath path = QgsShapeGenerator::createBalloon( origin, expandedRect, segmentPointWidth, cornerRadius );
+  QTransform t = QTransform::fromScale( 100, 100 );
+  QTransform ti = t.inverted();
+  QPolygonF poly = path.toFillPolygon( t );
+  return ti.map( poly );
 }
