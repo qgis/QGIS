@@ -55,32 +55,59 @@ namespace pal
   class CORE_EXPORT LabelInfo
   {
     public:
-      struct CharacterInfo
-      {
-        double width;
-      };
 
-      LabelInfo( int num, double height, double maxinangle = 20.0, double maxoutangle = -20.0 )
+      /**
+       * Constructor for LabelInfo
+       * \param characterHeight height of characters
+       * \param characterWidths vector of character widths
+       * \param maxinangle maximum acceptable in angle (in degrees)
+       * \param maxoutangle maximum acceptable out angle (in degrees)
+       */
+      LabelInfo( double characterHeight, std::vector< double > characterWidths, double maxinangle = 20.0, double maxoutangle = -20.0 )
+        : maxCharAngleInsideRadians( maxinangle * M_PI / 180 )
+          // outside angle should be negative
+        , maxCharAngleOutsideRadians( ( maxoutangle > 0 ? -maxoutangle : maxoutangle ) * M_PI / 180 )
+        , characterHeight( characterHeight )
+        , mCharacterWidths( characterWidths )
       {
-        max_char_angle_inside = maxinangle;
-        // outside angle should be negative
-        max_char_angle_outside = maxoutangle > 0 ? -maxoutangle : maxoutangle;
-        label_height = height;
-        char_num = num;
-        char_info = new CharacterInfo[num];
       }
-      ~LabelInfo() { delete [] char_info; }
 
       //! LabelInfo cannot be copied
       LabelInfo( const LabelInfo &rh ) = delete;
       //! LabelInfo cannot be copied
       LabelInfo &operator=( const LabelInfo &rh ) = delete;
 
-      double max_char_angle_inside;
-      double max_char_angle_outside;
-      double label_height;
-      int char_num;
-      CharacterInfo *char_info = nullptr;
+      /**
+       * Maximum angle between inside curved label characters (in radians).
+       * \see maxCharAngleOutsideRadians
+       */
+      double maxCharAngleInsideRadians = 0;
+
+      /**
+       * Maximum angle between outside curved label characters (in radians).
+       * \see maxCharAngleInsideRadians
+       */
+      double maxCharAngleOutsideRadians = 0;
+
+      // TODO - maybe individual character height would give better results!
+
+      /**
+       * Character height (actually font metrics height, not individual character height).
+       */
+      double characterHeight = 0;
+
+      /**
+       * Returns the total number of characters.
+       */
+      int count() const { return static_cast< int >( mCharacterWidths.size() ); }
+
+      /**
+       * Returns the width of the character at the specified position.
+       */
+      double characterWidth( int position ) const { return mCharacterWidths[position]; }
+
+    private:
+      std::vector< double > mCharacterWidths;
 
   };
 
@@ -238,8 +265,8 @@ namespace pal
 
       /**
        * Returns the label position for a curved label at a specific offset along a path.
-       * \param path_positions line path to place label on
-       * \param path_distances array of distances to each segment on path
+       * \param mapShape line path to place label on
+       * \param pathDistances array of distances to each segment on path
        * \param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
        * \param distance distance to offset label along curve by
        * \param reversed if TRUE label is reversed from lefttoright to righttoleft
@@ -247,7 +274,7 @@ namespace pal
        * \param applyAngleConstraints TRUE if label feature character angle constraints should be applied
        * \returns calculated label position
        */
-      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
+      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
           int &orientation, double distance, bool &reversed, bool &flip, bool applyAngleConstraints );
 
       /**

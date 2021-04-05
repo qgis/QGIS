@@ -75,8 +75,8 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
     maxoutangle = -95.0;
 
   // create label info!
-  double mapScale = xform->mapUnitsPerPixel();
-  double labelHeight = mapScale * fm->height();
+  const double mapScale = xform->mapUnitsPerPixel();
+  const double characterHeight = mapScale * fm->height();
 
   // mLetterSpacing/mWordSpacing = 0.0 is default for non-curved labels
   // (non-curved spacings handled by Qt in QgsPalLayerSettings/QgsPalLabeling)
@@ -104,7 +104,7 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
     mClusters = QgsPalLabeling::splitToGraphemes( mLabelText );
   }
 
-  mInfo = new pal::LabelInfo( mClusters.count(), labelHeight, maxinangle, maxoutangle );
+  std::vector< double > characterWidths( mClusters.count() );
   for ( int i = 0; i < mClusters.count(); i++ )
   {
     // reconstruct how Qt creates word spacing, then adjust per individual stored character
@@ -131,9 +131,9 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
       charWidth = fm->horizontalAdvance( QString( mClusters[i] ) ) + wordSpaceFix;
     }
 
-    double labelWidth = mapScale * charWidth;
-    mInfo->char_info[i].width = labelWidth;
+    characterWidths[i] = mapScale * charWidth;
   }
+  mInfo = new pal::LabelInfo( characterHeight, std::move( characterWidths ), maxinangle, maxoutangle );
 }
 
 QgsTextDocument QgsTextLabelFeature::document() const
