@@ -269,14 +269,11 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, 
 
 /* *************************************************************************************** */
 
-QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
-    const QgsPointCloudAttributeCollection &attributes,
-    const QgsPointCloudAttributeCollection &requestedAttributes )
+template<typename FileType>
+QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  Q_UNUSED( attributes )
+  Q_UNUSED( attributes );
 
-  const QByteArray arr = filename.toUtf8();
-  std::ifstream file( arr.constData(), std::ios::binary );
   if ( ! file.good() )
     return nullptr;
 
@@ -284,7 +281,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
   auto start = common::tick();
 #endif
 
-  laszip::io::reader::file f( file );
+  laszip::io::reader::basic_file<FileType> f( file );
 
   const size_t count = f.get_header().point_count;
   char buf[sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) + sizeof( laszip::formats::las::rgb ) ]; // a buffer large enough to hold our point
@@ -479,28 +476,22 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
          );
 }
 
-#include <QDebug>
+QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
+    const QgsPointCloudAttributeCollection &attributes,
+    const QgsPointCloudAttributeCollection &requestedAttributes )
+{
+  const QByteArray arr = filename.toUtf8();
+  std::ifstream file( arr.constData(), std::ios::binary );
+
+  return __decompressLaz<std::ifstream>( file, attributes, requestedAttributes );
+}
 
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  QTemporaryFile tempFile;
-  if ( !tempFile.open() )
-    return nullptr;
-  QString filename = tempFile.fileName();
-  std::ofstream file( filename.toStdString(), std::ios::binary | std::ios::out );
-  if ( file.is_open() )
-  {
-    file.write( byteArrayData.constData(), byteArrayData.size() );
-    file.close();
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "Couldn't open %1" ).arg( filename ) );
-    return nullptr;
-  }
-  return QgsEptDecoder::decompressLaz( filename, attributes, requestedAttributes );
+  std::istringstream file( byteArrayData.toStdString() );
+  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes );
 }
 
 ///@endcond
