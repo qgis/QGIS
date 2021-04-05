@@ -303,6 +303,13 @@ namespace pal
        */
       void insertIntoIndex( PalRtree<LabelPosition> &index );
 
+      /**
+       * Returns a prepared GEOS representation of all label parts as a multipolygon.
+       *
+       * \since QGIS 3.20
+       */
+      const GEOSPreparedGeometry *preparedMultiPartGeom() const;
+
     protected:
 
       int id;
@@ -349,7 +356,11 @@ namespace pal
        */
       double polygonIntersectionCostForParts( PointSet *polygon ) const;
 
-      bool isInConflictSinglePart( const LabelPosition *lp ) const;
+      /**
+       * Creates a GEOS representation of all label parts as a multipolygon.
+       */
+      void createMultiPartGeosGeom() const;
+
       bool isInConflictMultiPart( const LabelPosition *lp ) const;
 
       LabelPosition &operator=( const LabelPosition & ) = delete;

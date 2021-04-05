@@ -231,6 +231,7 @@ namespace pal
       void deleteCoords();
       void createGeosGeom() const;
       const GEOSPreparedGeometry *preparedGeom() const;
+
       void invalidateGeos();
 
       double xmin = std::numeric_limits<double>::max();
@@ -242,6 +243,9 @@ namespace pal
 
       mutable const GEOSPreparedGeometry *mGeosPreparedBoundary = nullptr;
       mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
+
+      mutable GEOSGeometry *mMultipartGeos = nullptr;
+      mutable const GEOSPreparedGeometry *mMultipartPreparedGeos = nullptr;
 
       PointSet &operator= ( const PointSet & ) = delete;
 
