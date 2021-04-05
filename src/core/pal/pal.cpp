@@ -197,6 +197,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         for ( std::unique_ptr< LabelPosition > &candidate : candidates )
         {
           candidate->insertIntoIndex( allCandidatesFirstRound );
+          candidate->setGlobalId( mNextCandidateId++ );
         }
 
         std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
@@ -220,6 +221,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         {
           // if we are displaying all labels, we throw the default candidate in too
           unplacedPosition->insertIntoIndex( allCandidatesFirstRound );
+          unplacedPosition->setGlobalId( mNextCandidateId++ );
           candidates.emplace_back( std::move( unplacedPosition ) );
 
           // valid features are added to fFeats
@@ -445,9 +447,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
         // lookup for overlapping candidate
         lp->getBoundingBox( amin, amax );
-        prob->allCandidatesIndex().intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
+        prob->allCandidatesIndex().intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp, this]( const LabelPosition * lp2 )->bool
         {
-          if ( lp->isInConflict( lp2 ) )
+          if ( candidatesAreConflicting( lp.get(), lp2 ) )
           {
             lp->incrementNumOverlaps();
           }
@@ -548,6 +550,22 @@ QgsLabelingEngineSettings::PlacementEngineVersion Pal::placementVersion() const
 void Pal::setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion )
 {
   mPlacementVersion = placementVersion;
+}
+
+bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const
+{
+  // we cache the value -- this can be costly to calculate, and we check this multiple times
+  // per candidate during the labeling problem solving
+
+  // conflicts are commutative - so we always store them in the cache using the smaller id as the first element of the key pair
+  auto key = qMakePair( std::min( lp1->globalId(), lp2->globalId() ), std::max( lp1->globalId(), lp2->globalId() ) );
+  auto it = mCandidateConflicts.constFind( key );
+  if ( it != mCandidateConflicts.constEnd() )
+    return *it;
+
+  const bool res = lp1->isInConflict( lp2 );
+  mCandidateConflicts.insert( key, res );
+  return res;
 }
 
 int Pal::getMinIt()

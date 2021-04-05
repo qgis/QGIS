@@ -45,6 +45,7 @@ namespace pal
 
   class LabelPosition;
   class Label;
+  class PriorityQueue;
 
   /**
    * \class pal::Sol
@@ -156,6 +157,11 @@ namespace pal
     private:
 
       /**
+       * Returns TRUE if a labelling candidate \a lp1 conflicts with \a lp2.
+       */
+      bool candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const;
+
+      /**
        * Total number of layers containing labels
        */
       int mLayerCount = 0;
@@ -225,6 +231,7 @@ namespace pal
       Pal *pal = nullptr;
 
       void solution_cost();
+      void ignoreLabel( const LabelPosition *lp, pal::PriorityQueue &list, PalRtree<LabelPosition> &candidatesIndex );
   };
 
 } // namespace

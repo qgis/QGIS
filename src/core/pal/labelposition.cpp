@@ -452,7 +452,6 @@ const GEOSPreparedGeometry *LabelPosition::preparedMultiPartGeom() const
   return mMultipartPreparedGeos;
 }
 
-
 double LabelPosition::getDistanceToPoint( double xp, double yp ) const
 {
   //first check if inside, if so then distance is -1
