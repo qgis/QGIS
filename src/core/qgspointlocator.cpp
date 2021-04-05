@@ -29,6 +29,8 @@
 #include "qgscurvepolygon.h"
 #include "qgspointlocatorinittask.h"
 #include <spatialindex/SpatialIndex.h>
+#include "qgsproject.h"
+#include "qgssnappingconfig.h"
 
 #include <QLinkedListIterator>
 #include <QtConcurrent>
@@ -1255,14 +1257,63 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   Q_UNUSED( geom )
-  onFeatureDeleted( fid );
-  onFeatureAdded( fid );
+  if ( mIsIndexing || !mRTree || ( mLayer->project() && mLayer->project()->snappingConfig().enabled() ) )
+  {
+    onFeatureDeleted( fid );
+    onFeatureAdded( fid );
+    return;
+  }
+
+  // CopyPaste from onFeatureDeleted( fid )
+  if ( mGeoms.contains( fid ) )
+  {
+    mRTree->deleteData( rect2region( mGeoms[fid]->boundingBox() ), fid );
+    delete mGeoms.take( fid );
+  }
+
+  // CopyPaste from onFeatureAdded( fid ) and add .setNoAttributes() to request
+  QgsFeature f;
+  if ( mLayer->getFeatures( QgsFeatureRequest( fid ).setNoAttributes() ).nextFeature( f ) )
+  {
+    if ( !f.hasGeometry() )
+      return;
+
+    if ( mTransform.isValid() )
+    {
+      try
+      {
+        QgsGeometry transformedGeom = f.geometry();
+        transformedGeom.transform( mTransform );
+        f.setGeometry( transformedGeom );
+      }
+      catch ( const QgsException &e )
+      {
+        Q_UNUSED( e )
+        // See https://github.com/qgis/QGIS/issues/20749
+        QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        return;
+      }
+    }
+
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
+    {
+      SpatialIndex::Region r( rect2region( bbox ) );
+      mRTree->insertData( 0, nullptr, r, f.id() );
+
+      if ( mGeoms.contains( f.id() ) )
+        delete mGeoms.take( f.id() );
+      mGeoms[fid] = new QgsGeometry( f.geometry() );
+    }
+  }
 }
 
 void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
   Q_UNUSED( idx )
   Q_UNUSED( value )
+  if ( mLayer->project() && !mLayer->project()->snappingConfig().enabled() )
+    return;
   if ( mContext )
   {
     onFeatureDeleted( fid );
