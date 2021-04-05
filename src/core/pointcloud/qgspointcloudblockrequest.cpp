@@ -66,7 +66,7 @@ void QgsPointCloudBlockRequest::blockFinishedLoading()
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {
-        mBlock = QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mNode.toString(), mAttributes, mRequestedAttributes );
+        mBlock = QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes );
       }
       else
       {
