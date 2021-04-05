@@ -310,6 +310,24 @@ namespace pal
        */
       const GEOSPreparedGeometry *preparedMultiPartGeom() const;
 
+      /**
+       * Returns the global ID for the candidate, which is unique for a single run of the pal
+       * labelling engine.
+       *
+       * A return value of 0 means that the ID has not been assigned.
+       *
+       * \see setGlobalId()
+       */
+      long long globalId() const { return mGlobalId; }
+
+      /**
+       * Sets the global \a id for the candidate, which is unique for a single run of the pal
+       * labelling engine.
+       *
+       * \see globalId()
+       */
+      void setGlobalId( long long id ) { mGlobalId = id; }
+
     protected:
 
       int id;
@@ -338,6 +356,7 @@ namespace pal
 
     private:
 
+      long long mGlobalId = 0;
       std::unique_ptr< LabelPosition > mNextPart;
 
       double mCost;
