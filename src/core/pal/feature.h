@@ -265,8 +265,8 @@ namespace pal
 
       /**
        * Returns the label position for a curved label at a specific offset along a path.
-       * \param path_positions line path to place label on
-       * \param path_distances array of distances to each segment on path
+       * \param mapShape line path to place label on
+       * \param pathDistances array of distances to each segment on path
        * \param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
        * \param distance distance to offset label along curve by
        * \param reversed if TRUE label is reversed from lefttoright to righttoleft
@@ -274,7 +274,7 @@ namespace pal
        * \param applyAngleConstraints TRUE if label feature character angle constraints should be applied
        * \returns calculated label position
        */
-      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *path_positions, const std::vector<double> &path_distances,
+      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
           int &orientation, double distance, bool &reversed, bool &flip, bool applyAngleConstraints );
 
       /**

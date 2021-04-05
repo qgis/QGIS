@@ -1222,28 +1222,27 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   return lPos.size();
 }
 
-
-std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, const std::vector< double> &path_distances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip, bool applyAngleConstraints )
+std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *mapShape, const std::vector< double> &pathDistances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip, bool applyAngleConstraints )
 {
   double offsetAlongSegment = offsetAlongLine;
   int index = 1;
   // Find index of segment corresponding to starting offset
-  while ( index < path_positions->nbPoints && offsetAlongSegment > path_distances[index] )
+  while ( index < mapShape->nbPoints && offsetAlongSegment > pathDistances[index] )
   {
-    offsetAlongSegment -= path_distances[index];
+    offsetAlongSegment -= pathDistances[index];
     index += 1;
   }
-  if ( index >= path_positions->nbPoints )
+  if ( index >= mapShape->nbPoints )
   {
     return nullptr;
   }
 
   LabelInfo *li = mLF->curvedLabelInfo();
 
-  double string_height = li->characterHeight;
+  const double characterHeight = li->characterHeight;
 
-  const double segment_length = path_distances[index];
-  if ( qgsDoubleNear( segment_length, 0.0 ) )
+  const double segmentLength = pathDistances[index];
+  if ( qgsDoubleNear( segmentLength, 0.0 ) )
   {
     // Not allowed to place across on 0 length segments or discontinuities
     return nullptr;
@@ -1265,7 +1264,7 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     {
       const double characterWidth = li->characterWidth( i );
       double characterStartX, characterStartY;
-      if ( !nextCharPosition( characterWidth, path_distances[endindex], path_positions, endindex, _distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
+      if ( !nextCharPosition( characterWidth, pathDistances[endindex], mapShape, endindex, _distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
       {
         return nullptr;
       }
@@ -1299,11 +1298,11 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
   std::unique_ptr< LabelPosition > slp;
   LabelPosition *slp_tmp = nullptr;
 
-  double old_x = path_positions->x[index - 1];
-  double old_y = path_positions->y[index - 1];
+  double old_x = mapShape->x[index - 1];
+  double old_y = mapShape->y[index - 1];
 
-  double new_x = path_positions->x[index];
-  double new_y = path_positions->y[index];
+  double new_x = mapShape->x[index];
+  double new_y = mapShape->y[index];
 
   double dx = new_x - old_x;
   double dy = new_y - old_y;
@@ -1322,7 +1321,7 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
       continue;
 
     double start_x, start_y, end_x, end_y;
-    if ( !nextCharPosition( characterWidth, path_distances[index], path_positions, index, offsetAlongSegment, start_x, start_y, end_x, end_y ) )
+    if ( !nextCharPosition( characterWidth, pathDistances[index], mapShape, index, offsetAlongSegment, start_x, start_y, end_x, end_y ) )
     {
       return nullptr;
     }
@@ -1375,7 +1374,7 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
       render_angle += M_PI;
     }
 
-    std::unique_ptr< LabelPosition > tmp = std::make_unique< LabelPosition >( 0, render_x /*- xBase*/, render_y /*- yBase*/, characterWidth, string_height, -render_angle, 0.0001, this, false, LabelPosition::QuadrantOver );
+    std::unique_ptr< LabelPosition > tmp = std::make_unique< LabelPosition >( 0, render_x /*- xBase*/, render_y /*- yBase*/, characterWidth, characterHeight, -render_angle, 0.0001, this, false, LabelPosition::QuadrantOver );
     tmp->setPartId( orientation > 0 ? i : characterCount - i - 1 );
     LabelPosition *next = tmp.get();
     if ( !slp )
