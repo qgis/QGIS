@@ -239,6 +239,10 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   QElapsedTimer downloadTimer;
   downloadTimer.start();
 
+  // Instead of loading all point blocks in parallel and then rendering the one by one,
+  // we split the processing into groups of size groupSize where we load the blocks of the group
+  // in parallel and then render the group's blocks sequentially.
+  // This way helps QGIS stay responsive if the nodes vector size is big
   const int groupSize = 4;
   for ( int groupIndex = 0; groupIndex < nodes.size(); groupIndex += groupSize )
   {
