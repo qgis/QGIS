@@ -56,6 +56,13 @@ namespace pal
   {
     public:
 
+      /**
+       * Constructor for LabelInfo
+       * \param characterHeight height of characters
+       * \param characterWidths vector of character widths
+       * \param maxinangle maximum acceptable in angle (in degrees)
+       * \param maxoutangle maximum acceptable out angle (in degrees)
+       */
       LabelInfo( double characterHeight, std::vector< double > characterWidths, double maxinangle = 20.0, double maxoutangle = -20.0 )
         : maxCharAngleInsideRadians( maxinangle * M_PI / 180 )
           // outside angle should be negative

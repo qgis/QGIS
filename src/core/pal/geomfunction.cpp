@@ -378,6 +378,21 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     double x1, double y1, double x2, double y2,
     double &xRes, double &yRes )
 {
+  double multiplier = 1;
+  if ( radius < 10 )
+  {
+    // these calculations get unstable for small coordinates differences, e.g. as a result of map labeling in a geographic
+    // CRS
+    multiplier = 10000;
+    x1 *= multiplier;
+    y1 *= multiplier;
+    x2 *= multiplier;
+    y2 *= multiplier;
+    cx *= multiplier;
+    cy *= multiplier;
+    radius *= multiplier;
+  }
+
   double dx = x2 - x1;
   double dy = y2 - y1;
 
@@ -405,5 +420,11 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
+  }
+
+  if ( multiplier != 1 )
+  {
+    xRes /= multiplier;
+    yRes /= multiplier;
   }
 }

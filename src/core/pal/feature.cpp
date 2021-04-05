@@ -1405,10 +1405,12 @@ static std::unique_ptr< LabelPosition > _createCurvedCandidate( LabelPosition *l
 std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal )
 {
   LabelInfo *li = mLF->curvedLabelInfo();
-
   // label info must be present
+  if ( !li )
+    return 0;
+
   const int characterCount = li->count();
-  if ( !li || characterCount == 0 )
+  if ( characterCount == 0 )
     return 0;
 
   // TODO - we may need an explicit penalty for overhanging labels. Currently, they are penalized just because they
