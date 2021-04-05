@@ -45,7 +45,10 @@
 
 ///@cond PRIVATE
 
-QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudIndex() { }
+QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudIndex()
+{
+  mHierarchyNodes.insert( IndexedPointCloudNode( 0, 0, 0, 0 ) );
+}
 
 QgsRemoteEptPointCloudIndex::~QgsRemoteEptPointCloudIndex() = default;
 
@@ -54,6 +57,7 @@ QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const In
   QList<IndexedPointCloudNode> lst;
   if ( !loadNodeHierarchy( n ) )
     return lst;
+
   int d = n.d() + 1;
   int x = n.x() * 2;
   int y = n.y() * 2;
@@ -158,9 +162,6 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
     while ( currentNode.d() >= 0 );
   }
 
-  QSet<IndexedPointCloudNode> toBeLoaded;
-  toBeLoaded.insert( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) );
-
   for ( int i = nodePathToRoot.size() - 1; i >= 0 && !mHierarchy.contains( nodeId ); --i )
   {
     IndexedPointCloudNode node = nodePathToRoot[i];
@@ -168,7 +169,7 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
     if ( mHierarchy.contains( node ) )
       continue;
 
-    if ( !toBeLoaded.contains( node ) )
+    if ( !mHierarchyNodes.contains( node ) )
       continue;
 
     const QString fileUrl = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, node.toString() );
@@ -201,15 +202,11 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
     {
       QString nodeIdStr = it.key();
       int nodePointCount = it.value().toInt();
+      IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
       if ( nodePointCount > 0 )
-      {
-        IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
         mHierarchy[nodeId] = nodePointCount;
-      }
       else if ( nodePointCount == -1 )
-      {
-        toBeLoaded.insert( IndexedPointCloudNode::fromString( nodeIdStr ) );
-      }
+        mHierarchyNodes.insert( nodeId );
     }
   }
 
