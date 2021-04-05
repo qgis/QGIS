@@ -26,6 +26,7 @@
 #include <QList>
 #include <QFile>
 #include <QUrl>
+#include <QSet>
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
@@ -67,6 +68,9 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
     QString mUrlFileNamePart;
 
     QUrl mUrl;
+
+    //! Contains the nodes that will have */ept-hierarchy/d-x-y-z.json file
+    mutable QSet<IndexedPointCloudNode> mHierarchyNodes;
 };
 
 ///@endcond
