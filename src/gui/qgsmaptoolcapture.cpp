@@ -633,7 +633,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
         mCaptureLastPoint = mapPoint;
         mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, firstCapturedMapPoint() );
       }
-      else if ( mCaptureCurve.numPoints() == 0 )
+      else if ( mTempRubberBand->pointsCount() == 0 )
       {
         mCaptureLastPoint = mapPoint;
         mCaptureCurve.addVertex( layerPoint );
