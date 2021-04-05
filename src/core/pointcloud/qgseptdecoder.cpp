@@ -27,6 +27,7 @@
 #include <iostream>
 #include <memory>
 #include <cstring>
+#include <QTemporaryFile>
 
 #include <zstd.h>
 
@@ -478,12 +479,16 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
          );
 }
 
+#include <QDebug>
+
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
-    const QString &nodeStr,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  QString filename = QDir::tempPath() + QDir::separator() + QStringLiteral( "%1.laz" ).arg( nodeStr );
+  QTemporaryFile tempFile;
+  if ( !tempFile.open() )
+    return nullptr;
+  QString filename = tempFile.fileName();
   std::ofstream file( filename.toStdString(), std::ios::binary | std::ios::out );
   if ( file.is_open() )
   {
