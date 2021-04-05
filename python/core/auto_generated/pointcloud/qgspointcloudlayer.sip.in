@@ -114,7 +114,7 @@ QgsPointCloudLayer cannot be copied.
 Returns the attributes available from the layer.
 %End
 
-    int pointCount() const;
+    qint64 pointCount() const;
 %Docstring
 Returns the total number of points available in the layer.
 %End

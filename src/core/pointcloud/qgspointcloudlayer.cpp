@@ -473,7 +473,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
   // feature count
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  const int pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
+  const qint64 pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                 + tr( "Point count" ) + QStringLiteral( "</td><td>" )
                 + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
@@ -630,7 +630,7 @@ QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
   return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
 }
 
-int QgsPointCloudLayer::pointCount() const
+qint64 QgsPointCloudLayer::pointCount() const
 {
   return mDataProvider ? mDataProvider->pointCount() : 0;
 }

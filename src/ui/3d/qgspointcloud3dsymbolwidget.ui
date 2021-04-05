@@ -73,25 +73,6 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1" colspan="2">
-         <widget class="QSpinBox" name="mPointBudgetSpinBox">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="minimum">
-           <number>100000</number>
-          </property>
-          <property name="maximum">
-           <number>99999999</number>
-          </property>
-          <property name="singleStep">
-           <number>10000</number>
-          </property>
-          <property name="value">
-           <number>1000000</number>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1" colspan="2">
          <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
           <property name="sizePolicy">
@@ -126,6 +107,19 @@
          <widget class="QLabel" name="mPointCloudSizeLabel">
           <property name="text">
            <string>10000</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QDoubleSpinBox" name="mPointBudgetSpinBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="minimum">
+           <double>100000.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>99999999.000000000000000</double>
           </property>
          </widget>
         </item>

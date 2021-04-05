@@ -143,11 +143,6 @@ bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) cons
   return loadNodeHierarchy( n );
 }
 
-int QgsRemoteEptPointCloudIndex::pointCount() const
-{
-  return mPointCount;
-}
-
 bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const
 {
   if ( mHierarchy.contains( nodeId ) )

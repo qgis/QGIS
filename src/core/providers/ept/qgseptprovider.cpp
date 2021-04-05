@@ -87,7 +87,7 @@ QgsPointCloudIndex *QgsEptProvider::index() const
   return mIndex.get();
 }
 
-int QgsEptProvider::pointCount() const
+qint64 QgsEptProvider::pointCount() const
 {
   return mIndex->pointCount();
 }

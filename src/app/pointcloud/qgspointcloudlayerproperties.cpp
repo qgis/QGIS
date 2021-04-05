@@ -599,7 +599,7 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
 
         case Percent:
         {
-          const int pointCount = mLayer->dataProvider() ? mLayer->dataProvider()->pointCount() : -1;
+          const qint64 pointCount = mLayer->dataProvider() ? mLayer->dataProvider()->pointCount() : -1;
           return pointCount > 0 ? mLayer->dataProvider()->metadataClassStatistic( mAttribute, classValue, QgsStatisticalSummary::Count ).toDouble() / pointCount * 100 : QVariant();
         }
 

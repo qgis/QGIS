@@ -186,7 +186,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns the coordinate reference system of the point cloud index
     virtual QgsCoordinateReferenceSystem crs() const = 0;
     //! Returns the number of points in the point cloud
-    virtual int pointCount() const = 0;
+    virtual qint64 pointCount() const = 0;
     //! Returns the statistic \a statistic of \a attribute
     virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const = 0;
     //! Returns the classes of \a attribute
