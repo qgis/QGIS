@@ -55,32 +55,52 @@ namespace pal
   class CORE_EXPORT LabelInfo
   {
     public:
-      struct CharacterInfo
-      {
-        double width;
-      };
 
-      LabelInfo( int num, double height, double maxinangle = 20.0, double maxoutangle = -20.0 )
+      LabelInfo( double characterHeight, std::vector< double > characterWidths, double maxinangle = 20.0, double maxoutangle = -20.0 )
+        : maxCharAngleInsideRadians( maxinangle * M_PI / 180 )
+          // outside angle should be negative
+        , maxCharAngleOutsideRadians( ( maxoutangle > 0 ? -maxoutangle : maxoutangle ) * M_PI / 180 )
+        , characterHeight( characterHeight )
+        , mCharacterWidths( characterWidths )
       {
-        max_char_angle_inside = maxinangle;
-        // outside angle should be negative
-        max_char_angle_outside = maxoutangle > 0 ? -maxoutangle : maxoutangle;
-        label_height = height;
-        char_num = num;
-        char_info = new CharacterInfo[num];
       }
-      ~LabelInfo() { delete [] char_info; }
 
       //! LabelInfo cannot be copied
       LabelInfo( const LabelInfo &rh ) = delete;
       //! LabelInfo cannot be copied
       LabelInfo &operator=( const LabelInfo &rh ) = delete;
 
-      double max_char_angle_inside;
-      double max_char_angle_outside;
-      double label_height;
-      int char_num;
-      CharacterInfo *char_info = nullptr;
+      /**
+       * Maximum angle between inside curved label characters (in radians).
+       * \see maxCharAngleOutsideRadians
+       */
+      double maxCharAngleInsideRadians = 0;
+
+      /**
+       * Maximum angle between outside curved label characters (in radians).
+       * \see maxCharAngleInsideRadians
+       */
+      double maxCharAngleOutsideRadians = 0;
+
+      // TODO - maybe individual character height would give better results!
+
+      /**
+       * Character height (actually font metrics height, not individual character height).
+       */
+      double characterHeight = 0;
+
+      /**
+       * Returns the total number of characters.
+       */
+      int count() const { return static_cast< int >( mCharacterWidths.size() ); }
+
+      /**
+       * Returns the width of the character at the specified position.
+       */
+      double characterWidth( int position ) const { return mCharacterWidths[position]; }
+
+    private:
+      std::vector< double > mCharacterWidths;
 
   };
 
@@ -247,7 +267,7 @@ namespace pal
        * \param applyAngleConstraints TRUE if label feature character angle constraints should be applied
        * \returns calculated label position
        */
-      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
+      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *path_positions, const std::vector<double> &path_distances,
           int &orientation, double distance, bool &reversed, bool &flip, bool applyAngleConstraints );
 
       /**

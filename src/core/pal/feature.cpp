@@ -1223,7 +1223,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
 }
 
 
-std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, double *path_distances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip, bool applyAngleConstraints )
+std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, const std::vector< double> &path_distances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip, bool applyAngleConstraints )
 {
   double offsetAlongSegment = offsetAlongLine;
   int index = 1;
@@ -1240,7 +1240,7 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
 
   LabelInfo *li = mLF->curvedLabelInfo();
 
-  double string_height = li->label_height;
+  double string_height = li->characterHeight;
 
   const double segment_length = path_distances[index];
   if ( qgsDoubleNear( segment_length, 0.0 ) )
@@ -1260,11 +1260,12 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     double startLabelY = 0;
     double endLabelX = 0;
     double endLabelY = 0;
-    for ( int i = 0; i < li->char_num; i++ )
+    const int characterCount = li->count();
+    for ( int i = 0; i < characterCount; i++ )
     {
-      LabelInfo::CharacterInfo &ci = li->char_info[i];
+      const double characterWidth = li->characterWidth( i );
       double characterStartX, characterStartY;
-      if ( !nextCharPosition( ci.width, path_distances[endindex], path_positions, endindex, _distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
+      if ( !nextCharPosition( characterWidth, path_distances[endindex], path_positions, endindex, _distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
       {
         return nullptr;
       }
@@ -1309,18 +1310,19 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
 
   double angle = std::atan2( -dy, dx );
 
-  for ( int i = 0; i < li->char_num; i++ )
+  const int characterCount = li->count();
+  for ( int i = 0; i < characterCount; i++ )
   {
     double last_character_angle = angle;
 
     // grab the next character according to the orientation
-    LabelInfo::CharacterInfo &ci = ( orientation > 0 ? li->char_info[i] : li->char_info[li->char_num - i - 1] );
-    if ( qgsDoubleNear( ci.width, 0.0 ) )
+    const double characterWidth = ( orientation > 0 ? li->characterWidth( i ) : li->characterWidth( characterCount - i - 1 ) );
+    if ( qgsDoubleNear( characterWidth, 0.0 ) )
       // Certain scripts rely on zero-width character, skip those to prevent failure (see #15801)
       continue;
 
     double start_x, start_y, end_x, end_y;
-    if ( !nextCharPosition( ci.width, path_distances[index], path_positions, index, offsetAlongSegment, start_x, start_y, end_x, end_y ) )
+    if ( !nextCharPosition( characterWidth, path_distances[index], path_positions, index, offsetAlongSegment, start_x, start_y, end_x, end_y ) )
     {
       return nullptr;
     }
@@ -1331,21 +1333,23 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     // Test last_character_angle vs angle
     // since our rendering angle has changed then check against our
     // max allowable angle change.
-    double angle_delta = last_character_angle - angle;
+    double angleDelta = last_character_angle - angle;
     // normalise between -180 and 180
-    while ( angle_delta > M_PI ) angle_delta -= 2 * M_PI;
-    while ( angle_delta < -M_PI ) angle_delta += 2 * M_PI;
-    if ( applyAngleConstraints && ( ( li->max_char_angle_inside > 0 && angle_delta > 0
-                                      && angle_delta > li->max_char_angle_inside * ( M_PI / 180 ) )
-                                    || ( li->max_char_angle_outside < 0 && angle_delta < 0
-                                         && angle_delta < li->max_char_angle_outside * ( M_PI / 180 ) ) ) )
+    while ( angleDelta > M_PI )
+      angleDelta -= 2 * M_PI;
+    while ( angleDelta < -M_PI )
+      angleDelta += 2 * M_PI;
+    if ( applyAngleConstraints && ( ( li->maxCharAngleInsideRadians > 0 && angleDelta > 0
+                                      && angleDelta > li->maxCharAngleInsideRadians )
+                                    || ( li->maxCharAngleOutsideRadians < 0 && angleDelta < 0
+                                         && angleDelta < li->maxCharAngleOutsideRadians ) ) )
     {
       return nullptr;
     }
 
     // Shift the character downwards since the draw position is specified at the baseline
     // and we're calculating the mean line here
-    double dist = 0.9 * li->label_height / 2;
+    double dist = 0.9 * li->characterHeight / 2;
     if ( orientation < 0 )
     {
       dist = -dist;
@@ -1366,13 +1370,13 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     if ( orientation < 0 )
     {
       // rotate in place
-      render_x += ci.width * std::cos( render_angle ); //- (string_height-2)*sin(render_angle);
-      render_y -= ci.width * std::sin( render_angle ); //+ (string_height-2)*cos(render_angle);
+      render_x += characterWidth * std::cos( render_angle ); //- (string_height-2)*sin(render_angle);
+      render_y -= characterWidth * std::sin( render_angle ); //+ (string_height-2)*cos(render_angle);
       render_angle += M_PI;
     }
 
-    std::unique_ptr< LabelPosition > tmp = std::make_unique< LabelPosition >( 0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this, false, LabelPosition::QuadrantOver );
-    tmp->setPartId( orientation > 0 ? i : li->char_num - i - 1 );
+    std::unique_ptr< LabelPosition > tmp = std::make_unique< LabelPosition >( 0, render_x /*- xBase*/, render_y /*- yBase*/, characterWidth, string_height, -render_angle, 0.0001, this, false, LabelPosition::QuadrantOver );
+    tmp->setPartId( orientation > 0 ? i : characterCount - i - 1 );
     LabelPosition *next = tmp.get();
     if ( !slp )
       slp = std::move( tmp );
@@ -1403,15 +1407,16 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   LabelInfo *li = mLF->curvedLabelInfo();
 
   // label info must be present
-  if ( !li || li->char_num == 0 )
+  const int characterCount = li->count();
+  if ( !li || characterCount == 0 )
     return 0;
 
   // TODO - we may need an explicit penalty for overhanging labels. Currently, they are penalized just because they
   // are further from the line center, so non-overhanding placements are picked where possible.
 
   double totalCharacterWidth = 0;
-  for ( int i = 0; i < li->char_num; ++i )
-    totalCharacterWidth += li->char_info[ i ].width;
+  for ( int i = 0; i < characterCount; ++i )
+    totalCharacterWidth += li->characterWidth( i );
 
   std::unique_ptr< PointSet > expanded;
   double shapeLength = mapShape->length();
@@ -1442,7 +1447,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   }
 
   // distance calculation
-  std::unique_ptr< double [] > path_distances = std::make_unique<double[]>( mapShape->nbPoints );
+  std::vector< double > path_distances( mapShape->nbPoints );
   double total_distance = 0;
   double old_x = -1.0, old_y = -1.0;
   for ( int i = 0; i < mapShape->nbPoints; i++ )
@@ -1469,7 +1474,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
   std::vector< std::unique_ptr< LabelPosition >> positions;
   const std::size_t candidateTargetCount = maximumLineCandidates();
-  double delta = std::max( li->label_height / 6, total_distance / candidateTargetCount );
+  double delta = std::max( li->characterHeight / 6, total_distance / candidateTargetCount );
 
   QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
@@ -1507,18 +1512,18 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       orientation = 1;
     }
 
-    std::unique_ptr< LabelPosition > slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip, !singleCandidateOnly );
+    std::unique_ptr< LabelPosition > slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, distanceAlongLineToStartCandidate, reversed, flip, !singleCandidateOnly );
     if ( !slp )
       continue;
 
     // If we placed too many characters upside down
-    if ( slp->upsideDownCharCount() >= li->char_num / 2.0 )
+    if ( slp->upsideDownCharCount() >= characterCount / 2.0 )
     {
       // if labels should be shown upright then retry with the opposite orientation
       if ( ( showUprightLabels() && !flip ) )
       {
         orientation = -orientation;
-        slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip, !singleCandidateOnly );
+        slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, distanceAlongLineToStartCandidate, reversed, flip, !singleCandidateOnly );
       }
     }
     if ( !slp )
@@ -1547,7 +1552,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     // if anchor placement is towards start or end of line, we need to slightly tweak the costs to ensure that the
     // anchor weighting is sufficient to push labels towards start/end
     const bool anchorIsFlexiblePlacement = !singleCandidateOnly && mLF->lineAnchorPercent() > 0.1 && mLF->lineAnchorPercent() < 0.9;
-    double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
+    double angle_diff_avg = characterCount > 1 ? ( angle_diff / ( characterCount - 1 ) ) : 0; // <0, pi> but pi/8 is much already
     double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
     if ( cost < 0.0001 )
       cost = 0.0001;
@@ -1559,14 +1564,14 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     slp->setCost( cost );
 
     // average angle is calculated with respect to periodicity of angles
-    double angle_avg = std::atan2( sin_avg / li->char_num, cos_avg / li->char_num );
+    double angle_avg = std::atan2( sin_avg / characterCount, cos_avg / characterCount );
     bool localreversed = flip ? !reversed : reversed;
     // displacement - we loop through 3 times, generating above, online then below line placements successively
     for ( int i = 0; i <= 2; ++i )
     {
       std::unique_ptr< LabelPosition > p;
       if ( i == 0 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) ) )
-        p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() + li->label_height / 2 );
+        p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() + li->characterHeight / 2 );
       if ( i == 1 && flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
         p = _createCurvedCandidate( slp.get(), angle_avg, 0 );
@@ -1574,7 +1579,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       }
       if ( i == 2 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) ) )
       {
-        p = _createCurvedCandidate( slp.get(), angle_avg, -li->label_height / 2 - mLF->distLabel() );
+        p = _createCurvedCandidate( slp.get(), angle_avg, -li->characterHeight / 2 - mLF->distLabel() );
         p->setCost( p->cost() + 0.001 );
       }
 
