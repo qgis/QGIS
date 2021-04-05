@@ -38,11 +38,15 @@
 #include "qgspolygon3dsymbol.h"
 
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DRender/QRenderSettings>
 
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
 {
   QImage resImage;
   QEventLoop evLoop;
+
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
   auto requestImageFcn = [&engine, scene]
   {
@@ -77,6 +81,7 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
   if ( conn2 )
     QObject::disconnect( conn2 );
 
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
   return resImage;
 }
 
@@ -94,6 +99,8 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
   engine.setSize( outputSize );
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
   engine.setRootEntity( scene );
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
   if ( animationSettings.keyFrames().size() < 2 )
   {
