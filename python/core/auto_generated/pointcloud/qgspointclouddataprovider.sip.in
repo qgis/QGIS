@@ -128,7 +128,7 @@ Gets the current index generation state
 Returns whether provider has index which is valid
 %End
 
-    virtual int pointCount() const = 0;
+    virtual qint64 pointCount() const = 0;
 %Docstring
 Returns the total number of points available in the dataset.
 %End

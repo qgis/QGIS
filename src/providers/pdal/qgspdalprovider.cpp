@@ -190,7 +190,7 @@ QVariant QgsPdalProvider::metadataStatistic( const QString &attribute, QgsStatis
     return QVariant();
 }
 
-int QgsPdalProvider::pointCount() const
+qint64 QgsPdalProvider::pointCount() const
 {
   return mPointCount;
 }

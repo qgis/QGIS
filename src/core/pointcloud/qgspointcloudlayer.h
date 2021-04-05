@@ -143,7 +143,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     /**
      * Returns the total number of points available in the layer.
      */
-    int pointCount() const;
+    qint64 pointCount() const;
 
     /**
      * Returns the 2D renderer for the point cloud.

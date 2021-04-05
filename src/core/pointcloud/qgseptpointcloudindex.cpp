@@ -126,7 +126,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
     return false;
 
   mSpan = result.value( QLatin1String( "span" ) ).toInt();
-  mPointCount = std::min( ( double )std::numeric_limits<int>::max(), result.value( QLatin1String( "points" ) ).toDouble() );
+  mPointCount = result.value( QLatin1String( "points" ) ).toDouble();
 
   // WKT
   const QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
@@ -310,7 +310,7 @@ QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
   return QgsCoordinateReferenceSystem::fromWkt( mWkt );
 }
 
-int QgsEptPointCloudIndex::pointCount() const
+qint64 QgsEptPointCloudIndex::pointCount() const
 {
   return mPointCount;
 }

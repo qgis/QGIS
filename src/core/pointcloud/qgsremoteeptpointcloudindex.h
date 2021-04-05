@@ -56,8 +56,6 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
 
     bool hasNode( const IndexedPointCloudNode &n ) const override;
 
-    int pointCount() const override;
-
     bool isValid() const override;
 
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Remote; }

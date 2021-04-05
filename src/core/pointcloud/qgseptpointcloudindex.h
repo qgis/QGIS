@@ -50,7 +50,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
     QgsCoordinateReferenceSystem crs() const override;
-    int pointCount() const override;
+    qint64 pointCount() const override;
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
@@ -69,7 +69,8 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QString mDataType;
     QString mDirectory;
     QString mWkt;
-    int mPointCount = 0;
+
+    qint64 mPointCount = 0;
 
     struct AttributeStatistics
     {
