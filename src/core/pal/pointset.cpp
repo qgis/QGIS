@@ -172,6 +172,18 @@ void PointSet::invalidateGeos()
     GEOSPreparedGeom_destroy_r( geosctxt, mGeosPreparedBoundary );
     mGeosPreparedBoundary = nullptr;
   }
+
+  if ( mMultipartPreparedGeos )
+  {
+    GEOSPreparedGeom_destroy_r( geosctxt, mMultipartPreparedGeos );
+    mMultipartPreparedGeos = nullptr;
+  }
+  if ( mMultipartGeos )
+  {
+    GEOSGeom_destroy_r( geosctxt, mMultipartGeos );
+    mMultipartGeos = nullptr;
+  }
+
   mPreparedGeom = nullptr;
   mLength = -1;
   mArea = -1;
@@ -192,6 +204,17 @@ PointSet::~PointSet()
   {
     GEOSPreparedGeom_destroy_r( geosctxt, mGeosPreparedBoundary );
     mGeosPreparedBoundary = nullptr;
+  }
+
+  if ( mMultipartPreparedGeos )
+  {
+    GEOSPreparedGeom_destroy_r( geosctxt, mMultipartPreparedGeos );
+    mMultipartPreparedGeos = nullptr;
+  }
+  if ( mMultipartGeos )
+  {
+    GEOSGeom_destroy_r( geosctxt, mMultipartGeos );
+    mMultipartGeos = nullptr;
   }
 
   deleteCoords();
