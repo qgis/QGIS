@@ -972,7 +972,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
     //! Open layer properties dialog
-    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+    virtual void showLayerProperties( QgsMapLayer *l, const QString &page = QString() ) = 0;
 
     //! Open attribute table dialog
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;

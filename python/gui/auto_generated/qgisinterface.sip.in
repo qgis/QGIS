@@ -1138,7 +1138,7 @@ Removes the specified ``dock`` widget from main window (without deleting it).
 .. seealso:: :py:func:`addDockWidget`
 %End
 
-    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+    virtual void showLayerProperties( QgsMapLayer *l, const QString &page = QString() ) = 0;
 %Docstring
 Open layer properties dialog
 %End
