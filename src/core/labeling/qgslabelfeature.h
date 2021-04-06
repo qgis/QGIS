@@ -530,6 +530,24 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setOriginalFeatureCrs( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Returns the minimum size (in map unit) for a feature to be labelled.
+     *
+     * \note At the moment this is only used when labeling merged lines
+     * \see minimumSize()
+     * \since QGIS 3.20
+     */
+    double minimumSize() const { return mMinimumSize; }
+
+    /**
+     * Sets the minimum \a size (in map unit) for a feature to be labelled.
+     *
+     * \note At the moment this is only used when labeling merged lines
+     * \see setMinimumSize()
+     * \since QGIS 3.20
+     */
+    void setMinimumSize( double size ) { mMinimumSize = size; }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -611,6 +629,9 @@ class CORE_EXPORT QgsLabelFeature
     QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
 
     QgsCoordinateReferenceSystem mOriginalFeatureCrs;
+
+    double mMinimumSize = 0.0;
+
 };
 
 #endif // QGSLABELFEATURE_H
