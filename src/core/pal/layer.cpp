@@ -338,6 +338,12 @@ void Layer::joinConnectedFeatures()
     }
   }
   mConnectedHashtable.clear();
+
+  // Expunge feature parts that are smaller than the minimum size required
+  mFeatureParts.erase( std::remove_if( mFeatureParts.begin(), mFeatureParts.end(), []( FeaturePart * part )
+  {
+    return part->feature()->minimumSize() != 0.0 && part->length() < part->feature()->minimumSize();
+  } ), mFeatureParts.end() );
 }
 
 int Layer::connectedFeatureId( QgsFeatureId featureId ) const

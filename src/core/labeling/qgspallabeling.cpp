@@ -2104,8 +2104,20 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   QgsLabelThinningSettings featureThinningSettings = mThinningSettings;
   featureThinningSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
 
-  if ( featureThinningSettings.minimumFeatureSize() > 0 && !checkMinimumSizeMM( context, geom, featureThinningSettings.minimumFeatureSize() ) )
-    return;
+  double minimumSize = 0.0;
+  if ( featureThinningSettings.minimumFeatureSize() > 0 )
+  {
+    // for minimum feature size on merged lines, we need to delay the filtering after the merging occurred in PAL
+    if ( geom.type() == QgsWkbTypes::LineGeometry && mLineSettings.mergeLines() )
+    {
+      minimumSize = context.convertToMapUnits( featureThinningSettings.minimumFeatureSize(), QgsUnitTypes::RenderMillimeters );
+    }
+    else
+    {
+      if ( !checkMinimumSizeMM( context, geom, featureThinningSettings.minimumFeatureSize() ) )
+        return;
+    }
+  }
 
   if ( !geos_geom_clone )
     return; // invalid geometry
@@ -2493,6 +2505,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setLineAnchorType( lineSettings.anchorType() );
   ( *labelFeature )->setLabelAllParts( labelAll );
   ( *labelFeature )->setOriginalFeatureCrs( context.coordinateTransform().sourceCrs() );
+  ( *labelFeature )->setMinimumSize( minimumSize );
   if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
   {
     //register symbol size
