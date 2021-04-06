@@ -21,6 +21,7 @@
 #include <QSqlError>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QMenu>
 
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
@@ -96,6 +97,24 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   cb_trustedConnection_clicked();
 
   schemaView->setModel( &mSchemaModel );
+  schemaView->setContextMenuPolicy( Qt::CustomContextMenu );
+
+  connect( schemaView, &QWidget::customContextMenuRequested, this, [this]( const QPoint & p )
+  {
+    QMenu menu;
+    menu.addAction( tr( "Check All" ), this, [this]
+    {
+      mSchemaModel.checkAll();
+    } );
+
+    menu.addAction( tr( "Uncheck All" ), this, [this]
+    {
+      mSchemaModel.unCheckAll();
+    } );
+
+    menu.exec( this->schemaView->viewport()->mapToGlobal( p ) );
+  }
+         );
   onCurrentDataBaseChange();
 
   groupBoxSchemasFilter->setCollapsed( !groupBoxSchemasFilter->isChecked() );
@@ -354,6 +373,7 @@ void QgsMssqlNewConnection::onPrimaryKeyFromGeometryToggled( bool checked )
     bar->pushInfo( tr( "Use primary key(s) from geometry_columns table" ), tr( "Primary key column found." ) );
 }
 
+
 bool QgsMssqlNewConnection::testExtentInGeometryColumns() const
 {
   QSqlDatabase db = getDatabase();
@@ -468,4 +488,16 @@ void QgsMssqlNewConnection::SchemaModel::setSettings( const QString &database, c
   mSchemas = schemas;
   mExcludedSchemas = excludedSchemas;
   endResetModel();
+}
+
+void QgsMssqlNewConnection::SchemaModel::checkAll()
+{
+  mExcludedSchemas.clear();
+  emit dataChanged( index( 0, 0, QModelIndex() ), index( mSchemas.count() - 1, 0, QModelIndex() ) );
+}
+
+void QgsMssqlNewConnection::SchemaModel::unCheckAll()
+{
+  mExcludedSchemas = mSchemas;
+  emit dataChanged( index( 0, 0, QModelIndex() ), index( mSchemas.count() - 1, 0, QModelIndex() ) );
 }
