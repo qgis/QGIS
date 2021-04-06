@@ -877,7 +877,7 @@ QgsRectangle QgsVectorLayer::extent() const
   }
 
   if ( !mEditBuffer ||
-       ( !mDataProvider->transaction() && ( mEditBuffer->deletedFeatureIds().isEmpty() && mEditBuffer->changedGeometries().isEmpty() ) ) ||
+       ( !mEditBuffer->isPassthrough() && ( mEditBuffer->deletedFeatureIds().isEmpty() && mEditBuffer->changedGeometries().isEmpty() ) ) ||
        QgsDataSourceUri( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
   {
     mDataProvider->updateExtents();
@@ -890,7 +890,7 @@ QgsRectangle QgsVectorLayer::extent() const
       rect.combineExtentWith( r );
     }
 
-    if ( mEditBuffer && !mDataProvider->transaction() )
+    if ( mEditBuffer && !mEditBuffer->isPassthrough() )
     {
       const auto addedFeatures = mEditBuffer->addedFeatures();
       for ( QgsFeatureMap::const_iterator it = addedFeatures.constBegin(); it != addedFeatures.constEnd(); ++it )
@@ -3367,13 +3367,13 @@ long QgsVectorLayer::featureCount() const
   if ( ! mDataProvider )
     return -1;
   return mDataProvider->featureCount() +
-         ( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->addedFeatures().size() - mEditBuffer->deletedFeatureIds().size() : 0 );
+         ( mEditBuffer && ! mEditBuffer->isPassthrough() ? mEditBuffer->addedFeatures().size() - mEditBuffer->deletedFeatureIds().size() : 0 );
 }
 
 QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
 {
-  const QgsFeatureIds deletedFeatures( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->deletedFeatureIds() : QgsFeatureIds() );
-  const QgsFeatureMap addedFeatures( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->addedFeatures() : QgsFeatureMap() );
+  const QgsFeatureIds deletedFeatures( mEditBuffer && ! mEditBuffer->isPassthrough() ? mEditBuffer->deletedFeatureIds() : QgsFeatureIds() );
+  const QgsFeatureMap addedFeatures( mEditBuffer && ! mEditBuffer->isPassthrough() ? mEditBuffer->addedFeatures() : QgsFeatureMap() );
 
   if ( mEditBuffer && !deletedFeatures.empty() )
   {
@@ -3457,7 +3457,7 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     return false;
   }
 
-  bool rollbackExtent = !mDataProvider->transaction() && ( !mEditBuffer->deletedFeatureIds().isEmpty() ||
+  bool rollbackExtent = !mEditBuffer->isPassthrough() && ( !mEditBuffer->deletedFeatureIds().isEmpty() ||
                         !mEditBuffer->addedFeatures().isEmpty() ||
                         !mEditBuffer->changedGeometries().isEmpty() );
 
@@ -4044,7 +4044,7 @@ QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
     {
       uniqueValues = mDataProvider->uniqueValues( index, limit );
 
-      if ( mEditBuffer && ! mDataProvider->transaction() )
+      if ( mEditBuffer && ! mEditBuffer->isPassthrough() )
       {
         QSet<QString> vals;
         const auto constUniqueValues = uniqueValues;
@@ -4152,7 +4152,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString &sub
     {
       results = mDataProvider->uniqueStringsMatching( index, substring, limit, feedback );
 
-      if ( mEditBuffer && ! mDataProvider->transaction() )
+      if ( mEditBuffer && ! mEditBuffer->isPassthrough() )
       {
         QgsFeatureMap added = mEditBuffer->addedFeatures();
         QMapIterator< QgsFeatureId, QgsFeature > addedIt( added );
@@ -4262,7 +4262,7 @@ QVariant QgsVectorLayer::minimumOrMaximumValue( int index, bool minimum ) const
     case QgsFields::OriginProvider: //a provider field
     {
       QVariant val = minimum ? mDataProvider->minimumValue( index ) : mDataProvider->maximumValue( index );
-      if ( mEditBuffer && ! mDataProvider->transaction() )
+      if ( mEditBuffer && ! mEditBuffer->isPassthrough() )
       {
         QgsFeatureMap added = mEditBuffer->addedFeatures();
         QMapIterator< QgsFeatureId, QgsFeature > addedIt( added );

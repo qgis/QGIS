@@ -189,6 +189,13 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      */
     void updateFields( QgsFields &fields );
 
+    /**
+     * Returns TRUE if the edit buffer makes direct changes to the data provider, such in case of transactions.
+     * Subclasses may override this method to indicate that they support this behavior, the default implementation returns FALSE.
+     * \since QGIS 3.18
+     */
+    virtual bool isPassthrough();
+
     //QString dumpEditBuffer();
 
   protected slots:

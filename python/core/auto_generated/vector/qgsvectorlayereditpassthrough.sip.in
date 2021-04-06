@@ -40,6 +40,8 @@ class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
 
     virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
+    virtual bool isPassthrough();
+
 
     virtual bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues );
 

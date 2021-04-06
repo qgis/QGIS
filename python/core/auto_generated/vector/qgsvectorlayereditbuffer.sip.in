@@ -212,6 +212,14 @@ Returns ``True`` if the specified feature ID has been deleted but not committed.
 Updates ``fields``
 %End
 
+    virtual bool isPassthrough();
+%Docstring
+Returns ``True`` if the edit buffer makes direct changes to the data provider, such in case of transactions.
+Subclasses may override this method to indicate that they support this behavior, the default implementation returns ``False``.
+
+.. versionadded:: 3.18
+%End
+
 
   protected slots:
     void undoIndexChanged( int index );

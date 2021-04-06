@@ -54,6 +54,7 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     bool deleteFeatures( const QgsFeatureIds &fids ) override;
     bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom ) override;
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() ) override;
+    bool isPassthrough() override;
 
     /**
      * Changes values of attributes (but does not commit it).
@@ -86,6 +87,7 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
 
     // utility function to avoid cpy/paste
     bool modify( QgsVectorLayerUndoPassthroughCommand *cmd );
+
 
 };
 

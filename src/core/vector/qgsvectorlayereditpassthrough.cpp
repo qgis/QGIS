@@ -66,6 +66,11 @@ bool QgsVectorLayerEditPassthrough::addFeatures( QgsFeatureList &features )
   return true;
 }
 
+bool QgsVectorLayerEditPassthrough::isPassthrough()
+{
+  return true;
+}
+
 bool QgsVectorLayerEditPassthrough::deleteFeature( QgsFeatureId fid )
 {
   return modify( new QgsVectorLayerUndoPassthroughCommandDeleteFeatures( this, QgsFeatureIds() << fid ) );

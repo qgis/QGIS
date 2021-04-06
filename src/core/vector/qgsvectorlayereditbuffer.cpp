@@ -256,6 +256,10 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
   return true;
 }
 
+bool QgsVectorLayerEditBuffer::isPassthrough()
+{
+  return false;
+}
 
 bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
 {
