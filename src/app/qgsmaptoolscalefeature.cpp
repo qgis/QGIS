@@ -22,6 +22,7 @@
 #include <limits>
 #include <cmath>
 
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmaptoolscalefeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
@@ -33,6 +34,7 @@
 #include "qgisapp.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
+#include "qgssnapindicator.h"
 #include "qgsmapmouseevent.h"
 
 
@@ -107,8 +109,10 @@ void QgsScaleMagnetWidget::scaleSpinBoxValueChanged( double scale )
 //
 
 QgsMapToolScaleFeature::QgsMapToolScaleFeature( QgsMapCanvas *canvas )
-  : QgsMapToolEdit( canvas )
+  : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
+  mToolName = tr( "Scale feature" );
 }
 
 QgsMapToolScaleFeature::~QgsMapToolScaleFeature()
@@ -116,10 +120,12 @@ QgsMapToolScaleFeature::~QgsMapToolScaleFeature()
   deleteScalingWidget();
   mAnchorPoint.reset();
   deleteRubberband();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 }
 
-void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
+void QgsMapToolScaleFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+  mSnapIndicator->setMatch( e->mapPointMatch() );
   if ( mBaseDistance == 0 )
   {
     return;
@@ -141,7 +147,7 @@ void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mCanvas )
   {
@@ -154,6 +160,8 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     deleteScalingWidget();
     deleteRubberband();
     notifyNotVectorLayer();
+    mSnapIndicator->setMatch( QgsPointLocator::Match() );
+    mCadDockWidget->clear();
     return;
   }
 
@@ -173,6 +181,7 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     }
     mAnchorPoint->setCenter( e->mapPoint() );
     mFeatureCenterMapCoords = e->mapPoint();
+    cadDockWidget()->clear();
     return;
   }
 
@@ -300,6 +309,8 @@ void QgsMapToolScaleFeature::cancel()
     mAnchorPoint.reset();
   }
   mScalingActive = false;
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  mCadDockWidget->clear();
 }
 
 void QgsMapToolScaleFeature::updateRubberband( double scale )
@@ -338,6 +349,8 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
   {
     deleteRubberband();
     notifyNotVectorLayer();
+    mSnapIndicator->setMatch( QgsPointLocator::Match() );
+    mCadDockWidget->clear();
     return;
   }
 
@@ -362,6 +375,8 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   deleteScalingWidget();
   deleteRubberband();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  mCadDockWidget->clear();
 
   if ( mAutoSetAnchorPoint )
     mAnchorPoint.reset();
@@ -377,7 +392,7 @@ void QgsMapToolScaleFeature::keyReleaseEvent( QKeyEvent *e )
     cancel();
     return;
   }
-  QgsMapTool::keyReleaseEvent( e );
+  QgsMapToolAdvancedDigitizing::keyReleaseEvent( e );
 }
 
 void QgsMapToolScaleFeature::activate()
@@ -402,7 +417,7 @@ void QgsMapToolScaleFeature::activate()
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     mAnchorPoint->setCenter( mFeatureCenterMapCoords );
   }
-  QgsMapTool::activate();
+  QgsMapToolAdvancedDigitizing::activate();
 }
 
 void QgsMapToolScaleFeature::deleteRubberband()
@@ -419,7 +434,8 @@ void QgsMapToolScaleFeature::deactivate()
   mScalingActive = false;
   mAnchorPoint.reset();
   deleteRubberband();
-  QgsMapTool::deactivate();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolScaleFeature::createScalingWidget()

@@ -115,6 +115,7 @@ void TestQgsMapToolScaleFeature::initTestCase()
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBase );
   mCanvas->setCurrentLayer( mLayerBase );
+  mCanvas->snappingUtils()->locatorForLayer( mLayerBase )->init();
 
   // create the tool
   mScaleTool = new QgsMapToolScaleFeature( mCanvas );
