@@ -29,8 +29,7 @@
 #include "qgscurvepolygon.h"
 #include "qgspointlocatorinittask.h"
 #include <spatialindex/SpatialIndex.h>
-#include "qgsproject.h"
-#include "qgssnappingconfig.h"
+#include "qgssettings.h"
 
 #include <QLinkedListIterator>
 #include <QtConcurrent>
@@ -1257,7 +1256,8 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   Q_UNUSED( geom )
-  if ( mIsIndexing || !mRTree || ( mLayer->project() && mLayer->project()->snappingConfig().enabled() ) )
+  if ( mIsIndexing || !mRTree
+       || !( QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() ) )
   {
     onFeatureDeleted( fid );
     onFeatureAdded( fid );
@@ -1312,7 +1312,7 @@ void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const 
 {
   Q_UNUSED( idx )
   Q_UNUSED( value )
-  if ( mLayer->project() && !mLayer->project()->snappingConfig().enabled() )
+  if ( QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() )
     return;
   if ( mContext )
   {
