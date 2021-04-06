@@ -207,6 +207,10 @@ Returns ``True`` if the specified feature ID has been deleted but not committed.
 .. versionadded:: 3.0
 %End
 
+    void updateFields( QgsFields &fields );
+%Docstring
+Updates ``fields``
+%End
 
 
   protected slots:

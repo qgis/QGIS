@@ -186,10 +186,8 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /**
      * Updates \a fields
-     * \note Not available in Python bindings
-     * \since QGIS 3.18
      */
-    void updateFields( QgsFields &fields ) SIP_SKIP;
+    void updateFields( QgsFields &fields );
 
     //QString dumpEditBuffer();
 
