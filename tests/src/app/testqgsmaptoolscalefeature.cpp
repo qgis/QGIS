@@ -48,6 +48,7 @@ class TestQgsMapToolScaleFeature: public QObject
     void testCancelManualAnchor();
     void testScaleFeatureWithAnchorSetAfterStart();
     void testScaleSelectedFeatures();
+    void testScaleFeatureManualAnchorSnapping();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -113,6 +114,7 @@ void TestQgsMapToolScaleFeature::initTestCase()
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBase );
   mCanvas->setCurrentLayer( mLayerBase );
+  mCanvas->snappingUtils()->locatorForLayer( mLayerBase )->init();
 
   // create the tool
   mScaleTool = new QgsMapToolScaleFeature( mCanvas );
@@ -229,6 +231,37 @@ void TestQgsMapToolScaleFeature::testScaleSelectedFeatures()
   mLayerBase->undoStack()->undo();
 }
 
+void TestQgsMapToolScaleFeature::testScaleFeatureManualAnchorSnapping()
+{
+  TestQgsMapToolUtils utils( mScaleTool );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  const double tolerance = cfg.tolerance();
+  const QgsTolerance::UnitType units = cfg.units();
+  cfg.setTolerance( 0.5 );
+  cfg.setUnits( QgsTolerance::LayerUnits );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  //set manual anchor point, should snap to (-2, -2)
+  utils.mouseClick( -1.9, -1.9, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // resize, source point should snap to (-1, -1)
+  utils.mouseMove( -0.9, -0.9 );
+  utils.mouseClick( -0.9, -0.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  // target point should snap to (1.1, 0.8)
+  utils.mouseMove( 1.2, 0.9 );
+  utils.mouseClick( 1.2, 0.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2 -2, -2 0.95, 0.95 0.95, 0.95 -2, -2 -2))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+
+  mLayerBase->undoStack()->undo();
+
+  // restore tolerance setting
+  cfg.setTolerance( tolerance );
+  cfg.setUnits( units );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
 
 QGSTEST_MAIN( TestQgsMapToolScaleFeature )
 #include "testqgsmaptoolscalefeature.moc"
