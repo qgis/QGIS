@@ -155,6 +155,8 @@ QgsField AttributeField::toQgsField() const
         // 1. Type is QVariant::String. The value is provided as WKT and editable.
         // 2. Type is QVariant::ByteArray. The value is provided as BLOB and uneditable.
         fieldType = QVariant::String;
+      else
+        throw QgsHanaException( QString( "Field type '%1' is not supported" ).arg( QString::number( type ) ) );
       break;
   }
 
@@ -761,7 +763,7 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
         field.isUnique = isColumnUnique( schema, baseTableName, baseColumnName );
         // As field comments cannot be retrieved via ODBC, we get it from SYS.TABLE_COLUMNS.
         field.comment = getColumnComments( schema, baseTableName, baseColumnName );
-        // We skip determing srid, as query layers don't use it.
+        // We skip determining srid, as query layers don't use it.
       }
 
       callback( field );
