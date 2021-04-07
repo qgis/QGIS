@@ -2524,13 +2524,28 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // store the label's calculated font for later use during painting
   QgsDebugMsgLevel( QStringLiteral( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString(), labelFont.styleName() ), 4 );
   lf->setDefinedFont( labelFont );
+  lf->setFontMetrics( *labelFontMetrics );
 
-  // TODO: only for placement which needs character info
-  // account for any data defined font metrics adjustments
   lf->setMaximumCharacterAngleInside( std::clamp( maxcharanglein, 20.0, 60.0 ) * M_PI / 180 );
   lf->setMaximumCharacterAngleOutside( std::clamp( maxcharangleout, -95.0, -20.0 ) * M_PI / 180 );
-  lf->calculateInfo( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved,
-                     labelFontMetrics.get(), xform, format().allowHtmlFormatting() ? &doc : nullptr );
+  switch ( placement )
+  {
+    case QgsPalLayerSettings::AroundPoint:
+    case QgsPalLayerSettings::OverPoint:
+    case QgsPalLayerSettings::Line:
+    case QgsPalLayerSettings::Horizontal:
+    case QgsPalLayerSettings::Free:
+    case QgsPalLayerSettings::OrderedPositionsAroundPoint:
+    case QgsPalLayerSettings::OutsidePolygons:
+      // these placements don't require text metrics
+      break;
+
+    case QgsPalLayerSettings::Curved:
+    case QgsPalLayerSettings::PerimeterCurved:
+      lf->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, *labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, format().allowHtmlFormatting() ? &doc : nullptr ) );
+      break;
+  }
+
   // for labelFeature the LabelInfo is passed to feat when it is registered
 
   // TODO: allow layer-wide feature dist in PAL...?

@@ -27,7 +27,6 @@
 
 namespace pal
 {
-  class LabelInfo;
   class Layer;
 }
 
@@ -344,11 +343,6 @@ class CORE_EXPORT QgsLabelFeature
     //! Sets text of the label
     void setLabelText( const QString &text ) { mLabelText = text; }
 
-    //! Gets additional info required for curved label placement. Returns NULLPTR if not set
-    pal::LabelInfo *curvedLabelInfo() const { return mInfo; }
-    //! takes ownership of the instance
-    void setCurvedLabelInfo( pal::LabelInfo *info ) { mInfo = info; }
-
     //! Gets PAL layer of the label feature. Should be only used internally in PAL
     pal::Layer *layer() const { return mLayer; }
     //! Assign PAL layer to the label feature. Should be only used internally in PAL
@@ -596,8 +590,6 @@ class CORE_EXPORT QgsLabelFeature
     bool mAlwaysShow = false;
     //! text of the label
     QString mLabelText;
-    //! extra information for curved labels (may be NULLPTR)
-    pal::LabelInfo *mInfo = nullptr;
 
     //! Distance to allow label to overrun linear features
     double mOverrunDistance = 0;

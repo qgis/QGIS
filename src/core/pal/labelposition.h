@@ -287,10 +287,18 @@ namespace pal
       int getPartId() const { return partId; }
       void setPartId( int id ) { partId = id; }
 
-      //! Increases the count of upside down characters for this label position
-      int incrementUpsideDownCharCount() { return ++mUpsideDownCharCount; }
+      /**
+       * Sets the \a count of upside down characters for this label position.
+       *
+       * \see upsideDownCharCount()
+       */
+      void setUpsideDownCharCount( int count ) { mUpsideDownCharCount = count ; }
 
-      //! Returns the number of upside down characters for this label position
+      /**
+       * Returns the number of upside down characters for this label position.
+       *
+       * \see setUpsideDownCharCount()
+       */
       int upsideDownCharCount() const { return mUpsideDownCharCount; }
 
       /**

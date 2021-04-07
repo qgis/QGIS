@@ -629,7 +629,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       }
     }
 
-
     QgsTextRenderer::HAlignment hAlign = QgsTextRenderer::AlignLeft;
     if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )
       hAlign = QgsTextRenderer::AlignCenter;
