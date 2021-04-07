@@ -567,11 +567,10 @@ QgsVectorLayerUndoPassthroughCommandChangeAttributes::QgsVectorLayerUndoPassthro
       mOldValues[ it.key() ] = oldAttrs[ it.key() ];
     }
   }
-  QgsFeatureMap::const_iterator addedIt { mBuffer->mAddedFeatures.constFind( mFid ) };
-  const bool isAdded { addedIt != mBuffer->mAddedFeatures.constEnd() };
+  const bool isAdded { mBuffer->mAddedFeatures.contains( mFid ) };
   for ( auto it = mNewValues.constBegin(); it != mNewValues.constEnd(); ++it )
   {
-    if ( isAdded && addedIt.value().attribute( it.key() ).isValid() )
+    if ( isAdded && mBuffer->mAddedFeatures[ mFid ].attribute( it.key() ).isValid() )
     {
       mFirstChanges[ it.key() ] = false;
     }
