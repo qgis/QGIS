@@ -131,35 +131,35 @@ A string with default project scales.
 %Docstring
 GEOS version number linked
 
-.. versionadded:: 3.18
+.. versionadded:: 3.20
 %End
 
     static int geosVersionMajor();
 %Docstring
 GEOS Major version number linked
 
-.. versionadded:: 3.18
+.. versionadded:: 3.20
 %End
 
     static int geosVersionMinor();
 %Docstring
 GEOS Minor version number linked
 
-.. versionadded:: 3.18
+.. versionadded:: 3.20
 %End
 
     static int geosVersionPatch();
 %Docstring
 GEOS Patch version number linked
 
-.. versionadded:: 3.18
+.. versionadded:: 3.20
 %End
 
     static QString geosVersion();
 %Docstring
 GEOS string version linked
 
-.. versionadded:: 3.18
+.. versionadded:: 3.20
 %End
 };
 

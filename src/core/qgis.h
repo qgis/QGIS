@@ -204,35 +204,35 @@ class CORE_EXPORT Qgis
     /**
      * GEOS version number linked
      *
-     * \since QGIS 3.18
+     * \since QGIS 3.20
      */
     static int geosVersionInt();
 
     /**
      * GEOS Major version number linked
      *
-     * \since QGIS 3.18
+     * \since QGIS 3.20
      */
     static int geosVersionMajor();
 
     /**
      * GEOS Minor version number linked
      *
-     * \since QGIS 3.18
+     * \since QGIS 3.20
      */
     static int geosVersionMinor();
 
     /**
      * GEOS Patch version number linked
      *
-     * \since QGIS 3.18
+     * \since QGIS 3.20
      */
     static int geosVersionPatch();
 
     /**
      * GEOS string version linked
      *
-     * \since QGIS 3.18
+     * \since QGIS 3.20
      */
     static QString geosVersion();
 };
