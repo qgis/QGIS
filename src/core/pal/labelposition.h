@@ -326,7 +326,7 @@ namespace pal
        *
        * \see setGlobalId()
        */
-      long long globalId() const { return mGlobalId; }
+      unsigned int globalId() const { return mGlobalId; }
 
       /**
        * Sets the global \a id for the candidate, which is unique for a single run of the pal
@@ -334,7 +334,7 @@ namespace pal
        *
        * \see globalId()
        */
-      void setGlobalId( long long id ) { mGlobalId = id; }
+      void setGlobalId( unsigned int id ) { mGlobalId = id; }
 
     protected:
 
@@ -364,7 +364,7 @@ namespace pal
 
     private:
 
-      long long mGlobalId = 0;
+      unsigned int mGlobalId = 0;
       std::unique_ptr< LabelPosition > mNextPart;
 
       double mCost;
