@@ -224,6 +224,74 @@ Returns the height of a character when rendered with the specified text ``format
 
 };
 
+class QgsPrecalculatedTextMetrics
+{
+%Docstring(signature="appended")
+Contains precalculated properties regarding text metrics for text to be renderered at a later stage.
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgstextrenderer.h"
+%End
+  public:
+
+    QgsPrecalculatedTextMetrics( const QStringList &graphemes, double characterHeight, const QVector< double > &characterWidths );
+%Docstring
+Constructor for QgsPrecalculatedTextMetrics
+
+:param graphemes: list of graphemes contained in the text
+:param characterHeight: height of characters
+:param characterWidths: vector of character widths
+%End
+
+    double characterHeight() const;
+%Docstring
+Character height (actually font metrics height, not individual character height).
+%End
+
+    int count() const;
+%Docstring
+Returns the total number of characters.
+%End
+
+    double characterWidth( int position ) const;
+%Docstring
+Returns the width of the character at the specified position.
+%End
+
+    QStringList graphemes() const;
+%Docstring
+Returns the list of graphemes contained in the text.
+%End
+
+    QString grapheme( int index ) const;
+%Docstring
+Returns the grapheme at the specified ``index``.
+%End
+
+    void setGraphemeFormats( const QVector< QgsTextCharacterFormat > &formats );
+%Docstring
+Sets the character ``formats`` associated with the text :py:func:`~QgsPrecalculatedTextMetrics.graphemes`.
+%End
+
+    int graphemeFormatCount() const;
+%Docstring
+Returns the number of grapheme formats available.
+%End
+
+    QgsTextCharacterFormat graphemeFormat( int index ) const;
+%Docstring
+Returns the character format for the grapheme at the specified ``index``.
+%End
+
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

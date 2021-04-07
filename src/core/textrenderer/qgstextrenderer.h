@@ -386,8 +386,6 @@ class CORE_EXPORT QgsTextRenderer
 
 };
 
-#ifndef SIP_RUN
-
 /**
  * \class QgsPrecalculatedTextMetrics
   * \ingroup core
@@ -461,6 +459,5 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
 
 };
 
-#endif
 
 #endif // QGSTEXTRENDERER_H

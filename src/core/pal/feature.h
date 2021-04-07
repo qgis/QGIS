@@ -323,10 +323,6 @@ namespace pal
       //! Returns TRUE if feature's label must be displayed upright
       bool showUprightLabels() const;
 
-      //! Returns TRUE if the next char position is found. The referenced parameters are updated.
-      bool nextCharPosition( double charWidth, double segmentLength, PointSet *path_positions, int &index, double &currentDistanceAlongSegment,
-                             double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY ) const;
-
       /**
        * Returns the total number of repeating labels associated with this label.
        * \see setTotalRepeats()

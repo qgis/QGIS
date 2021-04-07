@@ -44,6 +44,7 @@
 #include "qgsgeometryutils.h"
 #include "qgslabeling.h"
 #include "qgspolygon.h"
+#include "qgstextrendererutils.h"
 
 #include <QLinkedList>
 #include <cmath>
@@ -1227,177 +1228,44 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
 
 std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *mapShape, const std::vector< double> &pathDistances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip, bool applyAngleConstraints )
 {
-  double offsetAlongSegment = offsetAlongLine;
-  int index = 1;
-  // Find index of segment corresponding to starting offset
-  while ( index < mapShape->nbPoints && offsetAlongSegment > pathDistances[index] )
-  {
-    offsetAlongSegment -= pathDistances[index];
-    index += 1;
-  }
-  if ( index >= mapShape->nbPoints )
-  {
+  const QgsPrecalculatedTextMetrics *metrics = qgis::down_cast< QgsTextLabelFeature * >( mLF )->textMetrics();
+  Q_ASSERT( metrics );
+
+  const bool uprightOnly = showUprightLabels();
+  const double maximumCharacterAngleInside = applyAngleConstraints ? std::fabs( qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleInside() ) : 0;
+  const double maximumCharacterAngleOutside = applyAngleConstraints ? std::fabs( qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleOutside() ) : 0;
+
+  std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > placement(
+    QgsTextRendererUtils::generateCurvedTextPlacement( *metrics, mapShape->x.data(), mapShape->y.data(), mapShape->nbPoints, pathDistances, offsetAlongLine, orientation, maximumCharacterAngleInside, maximumCharacterAngleOutside, uprightOnly )
+  );
+
+  if ( !placement )
     return nullptr;
-  }
 
-  const QgsPrecalculatedTextMetrics *li = qgis::down_cast< QgsTextLabelFeature * >( mLF )->textMetrics();
-  Q_ASSERT( li );
+  orientation = placement->orientation;
+  reversed = placement->reversed;
+  flip = placement->flip;
 
-  const double characterHeight = li->characterHeight();
-
-  const double segmentLength = pathDistances[index];
-  if ( qgsDoubleNear( segmentLength, 0.0 ) )
+  auto it = placement->graphemePlacement.constBegin();
+  int i = 0;
+  std::unique_ptr< LabelPosition > firstPosition = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, false, LabelPosition::QuadrantOver );
+  firstPosition->setPartId( orientation > 0 ? i : metrics->count() - i - 1 );
+  LabelPosition *previousPosition = firstPosition.get();
+  it++;
+  i++;
+  while ( it != placement->graphemePlacement.constEnd() )
   {
-    // Not allowed to place across on 0 length segments or discontinuities
-    return nullptr;
+    std::unique_ptr< LabelPosition > position = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, false, LabelPosition::QuadrantOver );
+    position->setPartId( orientation > 0 ? i : metrics->count() - i - 1 );
+
+    LabelPosition *nextPosition = position.get();
+    previousPosition->setNextPart( std::move( position ) );
+    previousPosition = nextPosition;
+    i++;
+    it++;
   }
 
-  if ( orientation == 0 )       // Must be map orientation
-  {
-    // Calculate the orientation based on the angle of the path segment under consideration
-
-    double _distance = offsetAlongSegment;
-    int endindex = index;
-
-    double startLabelX = 0;
-    double startLabelY = 0;
-    double endLabelX = 0;
-    double endLabelY = 0;
-    const int characterCount = li->count();
-    for ( int i = 0; i < characterCount; i++ )
-    {
-      const double characterWidth = li->characterWidth( i );
-      double characterStartX, characterStartY;
-      if ( !nextCharPosition( characterWidth, pathDistances[endindex], mapShape, endindex, _distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
-      {
-        return nullptr;
-      }
-      if ( i == 0 )
-      {
-        startLabelX = characterStartX;
-        startLabelY = characterStartY;
-      }
-    }
-
-    // Determine the angle of the path segment under consideration
-    double dx = endLabelX - startLabelX;
-    double dy = endLabelY - startLabelY;
-    const double lineAngle = std::atan2( -dy, dx ) * 180 / M_PI;
-
-    bool isRightToLeft = ( lineAngle > 90 || lineAngle < -90 );
-    reversed = isRightToLeft;
-    orientation = isRightToLeft ? -1 : 1;
-  }
-
-  if ( !showUprightLabels() )
-  {
-    if ( orientation < 0 )
-    {
-      flip = true;   // Report to the caller, that the orientation is flipped
-      reversed = !reversed;
-      orientation = 1;
-    }
-  }
-
-  std::unique_ptr< LabelPosition > slp;
-  LabelPosition *slp_tmp = nullptr;
-
-  double old_x = mapShape->x[index - 1];
-  double old_y = mapShape->y[index - 1];
-
-  double new_x = mapShape->x[index];
-  double new_y = mapShape->y[index];
-
-  double dx = new_x - old_x;
-  double dy = new_y - old_y;
-
-  double angle = std::atan2( -dy, dx );
-
-  const int characterCount = li->count();
-  const double maximumCharacterAngleInside = qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleInside();
-  const double maximumCharacterAngleOutside = qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleOutside();
-  for ( int i = 0; i < characterCount; i++ )
-  {
-    double last_character_angle = angle;
-
-    // grab the next character according to the orientation
-    const double characterWidth = ( orientation > 0 ? li->characterWidth( i ) : li->characterWidth( characterCount - i - 1 ) );
-    if ( qgsDoubleNear( characterWidth, 0.0 ) )
-      // Certain scripts rely on zero-width character, skip those to prevent failure (see #15801)
-      continue;
-
-    double start_x, start_y, end_x, end_y;
-    if ( !nextCharPosition( characterWidth, pathDistances[index], mapShape, index, offsetAlongSegment, start_x, start_y, end_x, end_y ) )
-    {
-      return nullptr;
-    }
-
-    // Calculate angle from the start of the character to the end based on start_/end_ position
-    angle = std::atan2( start_y - end_y, end_x - start_x );
-
-    // Test last_character_angle vs angle
-    // since our rendering angle has changed then check against our
-    // max allowable angle change.
-    double angleDelta = last_character_angle - angle;
-    // normalise between -180 and 180
-    while ( angleDelta > M_PI )
-      angleDelta -= 2 * M_PI;
-    while ( angleDelta < -M_PI )
-      angleDelta += 2 * M_PI;
-    if ( applyAngleConstraints && ( ( maximumCharacterAngleInside > 0 && angleDelta > 0
-                                      && angleDelta > maximumCharacterAngleInside )
-                                    || ( maximumCharacterAngleOutside < 0 && angleDelta < 0
-                                         && angleDelta < maximumCharacterAngleOutside ) ) )
-    {
-      return nullptr;
-    }
-
-    // Shift the character downwards since the draw position is specified at the baseline
-    // and we're calculating the mean line here
-    double dist = 0.9 * li->characterHeight() / 2;
-    if ( orientation < 0 )
-    {
-      dist = -dist;
-      flip = true;
-    }
-    start_x += dist * std::cos( angle + M_PI_2 );
-    start_y -= dist * std::sin( angle + M_PI_2 );
-
-    double render_angle = angle;
-
-    double render_x = start_x;
-    double render_y = start_y;
-
-    // Center the text on the line
-    //render_x -= ((string_height/2.0) - 1.0)*math.cos(render_angle+math.pi/2)
-    //render_y += ((string_height/2.0) - 1.0)*math.sin(render_angle+math.pi/2)
-
-    if ( orientation < 0 )
-    {
-      // rotate in place
-      render_x += characterWidth * std::cos( render_angle ); //- (string_height-2)*sin(render_angle);
-      render_y -= characterWidth * std::sin( render_angle ); //+ (string_height-2)*cos(render_angle);
-      render_angle += M_PI;
-    }
-
-    std::unique_ptr< LabelPosition > tmp = std::make_unique< LabelPosition >( 0, render_x /*- xBase*/, render_y /*- yBase*/, characterWidth, characterHeight, -render_angle, 0.0001, this, false, LabelPosition::QuadrantOver );
-    tmp->setPartId( orientation > 0 ? i : characterCount - i - 1 );
-    LabelPosition *next = tmp.get();
-    if ( !slp )
-      slp = std::move( tmp );
-    else
-      slp_tmp->setNextPart( std::move( tmp ) );
-    slp_tmp = next;
-
-    // Normalise to 0 <= angle < 2PI
-    while ( render_angle >= 2 * M_PI ) render_angle -= 2 * M_PI;
-    while ( render_angle < 0 ) render_angle += 2 * M_PI;
-
-    if ( render_angle > M_PI_2 && render_angle < 1.5 * M_PI )
-      slp->incrementUpsideDownCharCount();
-  }
-
-  return slp;
+  return firstPosition;
 }
 
 static std::unique_ptr< LabelPosition > _createCurvedCandidate( LabelPosition *lp, double angle, double dist )
@@ -2321,62 +2189,3 @@ bool FeaturePart::showUprightLabels() const
   return uprightLabel;
 }
 
-bool FeaturePart::nextCharPosition( double charWidth, double segmentLength, PointSet *path_positions, int &index, double &currentDistanceAlongSegment,
-                                    double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY ) const
-{
-  // Coordinates this character will start at
-  if ( qgsDoubleNear( segmentLength, 0.0 ) )
-  {
-    // Not allowed to place across on 0 length segments or discontinuities
-    return false;
-  }
-
-  double segmentStartX = path_positions->x[index - 1];
-  double segmentStartY = path_positions->y[index - 1];
-
-  double segmentEndX = path_positions->x[index];
-  double segmentEndY = path_positions->y[index];
-
-  double segmentDx = segmentEndX - segmentStartX;
-  double segmentDy = segmentEndY - segmentStartY;
-
-  characterStartX = segmentStartX + segmentDx * currentDistanceAlongSegment / segmentLength;
-  characterStartY = segmentStartY + segmentDy * currentDistanceAlongSegment / segmentLength;
-
-  // Coordinates this character ends at, calculated below
-  characterEndX = 0;
-  characterEndY = 0;
-
-  if ( segmentLength - currentDistanceAlongSegment >= charWidth )
-  {
-    // if the distance remaining in this segment is enough, we just go further along the segment
-    currentDistanceAlongSegment += charWidth;
-    characterEndX = segmentStartX + segmentDx * currentDistanceAlongSegment / segmentLength;
-    characterEndY = segmentStartY + segmentDy * currentDistanceAlongSegment / segmentLength;
-  }
-  else
-  {
-    // If there isn't enough distance left on this segment
-    // then we need to search until we find the line segment that ends further than ci.width away
-    do
-    {
-      segmentStartX = segmentEndX;
-      segmentStartY = segmentEndY;
-      index++;
-      if ( index >= path_positions->nbPoints ) // Bail out if we run off the end of the shape
-      {
-        return false;
-      }
-      segmentEndX = path_positions->x[index];
-      segmentEndY = path_positions->y[index];
-    }
-    while ( std::sqrt( std::pow( characterStartX - segmentEndX, 2 ) + std::pow( characterStartY - segmentEndY, 2 ) ) < charWidth ); // Distance from start_ to new_
-
-    // Calculate the position to place the end of the character on
-    GeomFunction::findLineCircleIntersection( characterStartX, characterStartY, charWidth, segmentStartX, segmentStartY, segmentEndX, segmentEndY, characterEndX, characterEndY );
-
-    // Need to calculate distance on the new segment
-    currentDistanceAlongSegment = std::sqrt( std::pow( segmentStartX - characterEndX, 2 ) + std::pow( segmentStartY - characterEndY, 2 ) );
-  }
-  return true;
-}

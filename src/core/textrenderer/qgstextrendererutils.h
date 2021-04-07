@@ -21,6 +21,11 @@
 #include "qgstextbackgroundsettings.h"
 #include "qgstextshadowsettings.h"
 #include "qgstextformat.h"
+#include "qgstextrenderer.h"
+
+#ifndef SIP_RUN
+#include <optional>
+#endif
 
 /**
  * \class QgsTextRendererUtils
@@ -83,6 +88,45 @@ class CORE_EXPORT QgsTextRendererUtils
      * \since QGIS 3.14
      */
     static QColor readColor( QgsVectorLayer *layer, const QString &property, const QColor &defaultColor = Qt::black, bool withAlpha = true ) SIP_SKIP;
+
+
+    class CurvedGraphemePlacement
+    {
+      public:
+
+        double x;
+        double y;
+        double width;
+        double height;
+        double angle; //in radians
+        int partId;
+    };
+
+    class CurvePlacementProperties
+    {
+      public:
+        QVector< QgsTextRendererUtils::CurvedGraphemePlacement > graphemePlacement;
+        int upsideDownCharCount = 0;
+        bool flip = false;
+        bool reversed = false;
+        int orientation = 0;
+
+    };
+
+    static CurvePlacementProperties *generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QgsLineString *line, double offsetAlongLine, int orientation = 0, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) SIP_FACTORY;
+
+    static CurvePlacementProperties *generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, int orientation = 0, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) SIP_SKIP;
+
+  private:
+
+
+    //! Returns TRUE if the next char position is found. The referenced parameters are updated.
+    static bool nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment,
+                                  double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY );
+
+    static void findLineCircleIntersection( double cx, double cy, double radius,
+                                            double x1, double y1, double x2, double y2,
+                                            double &xRes, double &yRes );
 };
 
 

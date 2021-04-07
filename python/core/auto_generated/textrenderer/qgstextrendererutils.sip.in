@@ -8,6 +8,7 @@
 
 
 
+
 class QgsTextRendererUtils
 {
 %Docstring(signature="appended")
@@ -61,6 +62,42 @@ Attempts to decode a string representation of a text orientation.
 
 .. seealso:: :py:func:`encodeTextOrientation`
 %End
+
+
+
+
+    class CurvedGraphemePlacement
+{
+
+%TypeHeaderCode
+#include "qgstextrendererutils.h"
+%End
+      public:
+
+        double x;
+        double y;
+        double width;
+        double height;
+        double angle; //in radians
+        int partId;
+    };
+
+    class CurvePlacementProperties
+{
+
+%TypeHeaderCode
+#include "qgstextrendererutils.h"
+%End
+      public:
+        QVector< QgsTextRendererUtils::CurvedGraphemePlacement > graphemePlacement;
+        int upsideDownCharCount;
+        bool flip;
+        bool reversed;
+        int orientation;
+
+    };
+
+    CurvePlacementProperties *generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QgsLineString *line, double offsetAlongLine, int orientation = 0, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) /Factory/;
 
 
 };
