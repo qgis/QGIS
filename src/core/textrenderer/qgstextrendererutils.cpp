@@ -208,7 +208,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
 
   const int characterCount = metrics.count();
 
-  if ( orientation == 0 )       // Must be map orientation
+  if ( output->orientation == 0 )       // Must be map orientation
   {
     // Calculate the orientation based on the angle of the path segment under consideration
 
@@ -246,7 +246,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
 
   if ( !uprightOnly )
   {
-    if ( orientation < 0 )
+    if ( output->orientation < 0 )
     {
       output->flip = true;   // Report to the caller, that the orientation is flipped
       output->reversed = !output->reversed;
@@ -270,7 +270,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     double last_character_angle = angle;
 
     // grab the next character according to the orientation
-    const double characterWidth = ( orientation > 0 ? metrics.characterWidth( i ) : metrics.characterWidth( characterCount - i - 1 ) );
+    const double characterWidth = ( output->orientation > 0 ? metrics.characterWidth( i ) : metrics.characterWidth( characterCount - i - 1 ) );
     if ( qgsDoubleNear( characterWidth, 0.0 ) )
       // Certain scripts rely on zero-width character, skip those to prevent failure (see #15801)
       continue;
@@ -301,7 +301,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     // Shift the character downwards since the draw position is specified at the baseline
     // and we're calculating the mean line here
     double dist = 0.9 * metrics.characterHeight() / 2;
-    if ( orientation < 0 )
+    if ( output->orientation < 0 )
     {
       dist = -dist;
       output->flip = true;
@@ -318,7 +318,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     //render_x -= ((string_height/2.0) - 1.0)*math.cos(render_angle+math.pi/2)
     //render_y += ((string_height/2.0) - 1.0)*math.sin(render_angle+math.pi/2)
 
-    if ( orientation < 0 )
+    if ( output->orientation < 0 )
     {
       // rotate in place
       render_x += characterWidth * std::cos( render_angle ); //- (string_height-2)*sin(render_angle);
@@ -332,7 +332,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     placement.width = characterWidth;
     placement.height = characterHeight;
     placement.angle = -render_angle;
-    placement.partId = orientation > 0 ? i : characterCount - i - 1;
+    placement.partId = output->orientation > 0 ? i : characterCount - i - 1;
     output->graphemePlacement.push_back( placement );
 
     // Normalise to 0 <= angle < 2PI

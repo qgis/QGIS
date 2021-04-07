@@ -20,6 +20,7 @@
 #include "qgslabelfeature.h"
 #include "qgstextdocument.h"
 #include "qgstextrenderer.h"
+#include <optional>
 
 class QgsTextCharacterFormat;
 
