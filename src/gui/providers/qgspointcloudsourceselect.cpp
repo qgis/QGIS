@@ -106,9 +106,9 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     if ( !preferredProviders.empty() )
     {
       QString baseName = QStringLiteral( "remote ept layer" );
-      QStringList seperatedPath = mPath.split( '/' );
-      if ( seperatedPath.size() >= 2 )
-        baseName = seperatedPath[ seperatedPath.size() - 2 ];
+      QStringList separatedPath = mPath.split( '/' );
+      if ( separatedPath.size() >= 2 )
+        baseName = separatedPath[ separatedPath.size() - 2 ];
       emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() ) ;
     }
   }
