@@ -999,7 +999,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * mOptsPage_Information, mOptsPage_Style, mOptsPage_Labeling, mOptsPage_Metadata
      *
      * \note Page names are subject to change without notice between QGIS versions,
-     * and that the tab names themselves aren't considered part of the stable API.
+     * they are not considered part of the stable API.
      *
      * \note More strings may be available depending on the context, e.g. via plugins.
      */
