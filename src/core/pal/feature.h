@@ -37,6 +37,7 @@
 #include "pointset.h"
 #include "labelposition.h" // for LabelPosition enum
 #include "qgslabelfeature.h"
+#include "qgstextrendererutils.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -51,49 +52,6 @@
 
 namespace pal
 {
-  //! Optional additional info about label (for curved labels)
-  class CORE_EXPORT LabelInfo
-  {
-    public:
-
-      /**
-       * Constructor for LabelInfo
-       * \param characterHeight height of characters
-       * \param characterWidths vector of character widths
-       */
-      LabelInfo( double characterHeight, std::vector< double > characterWidths )
-        : characterHeight( characterHeight )
-        , mCharacterWidths( characterWidths )
-      {
-      }
-
-      //! LabelInfo cannot be copied
-      LabelInfo( const LabelInfo &rh ) = delete;
-      //! LabelInfo cannot be copied
-      LabelInfo &operator=( const LabelInfo &rh ) = delete;
-
-      // TODO - maybe individual character height would give better results!
-
-      /**
-       * Character height (actually font metrics height, not individual character height).
-       */
-      double characterHeight = 0;
-
-      /**
-       * Returns the total number of characters.
-       */
-      int count() const { return static_cast< int >( mCharacterWidths.size() ); }
-
-      /**
-       * Returns the width of the character at the specified position.
-       */
-      double characterWidth( int position ) const { return mCharacterWidths[position]; }
-
-    private:
-      std::vector< double > mCharacterWidths;
-
-  };
-
   class LabelPosition;
   class FeaturePart;
 
@@ -250,15 +208,14 @@ namespace pal
        * Returns the label position for a curved label at a specific offset along a path.
        * \param mapShape line path to place label on
        * \param pathDistances array of distances to each segment on path
-       * \param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
+       * \param direction either RespectPainterOrientation or FollowLineDirection
        * \param distance distance to offset label along curve by
-       * \param reversed if TRUE label is reversed from lefttoright to righttoleft
-       * \param flip if TRUE label is placed on the other side of the line
+       * \param labeledLineSegmentIsRightToLeft if TRUE label is reversed from lefttoright to righttoleft
        * \param applyAngleConstraints TRUE if label feature character angle constraints should be applied
        * \returns calculated label position
        */
       std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
-          int &orientation, double distance, bool &reversed, bool &flip, bool applyAngleConstraints );
+          QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints );
 
       /**
        * Generate curved candidates for line features.
@@ -364,11 +321,7 @@ namespace pal
       double calculatePriority() const;
 
       //! Returns TRUE if feature's label must be displayed upright
-      bool showUprightLabels() const;
-
-      //! Returns TRUE if the next char position is found. The referenced parameters are updated.
-      bool nextCharPosition( double charWidth, double segmentLength, PointSet *path_positions, int &index, double &currentDistanceAlongSegment,
-                             double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY ) const;
+      bool onlyShowUprightLabels() const;
 
       /**
        * Returns the total number of repeating labels associated with this label.

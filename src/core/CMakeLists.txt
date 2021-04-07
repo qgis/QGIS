@@ -1551,6 +1551,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextformat.h
   textrenderer/qgstextfragment.h
   textrenderer/qgstextmasksettings.h
+  textrenderer/qgstextmetrics.h
   textrenderer/qgstextrenderer.h
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h

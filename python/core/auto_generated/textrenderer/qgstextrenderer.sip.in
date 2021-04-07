@@ -224,7 +224,6 @@ Returns the height of a character when rendered with the specified text ``format
 
 };
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
