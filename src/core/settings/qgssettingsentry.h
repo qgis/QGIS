@@ -75,7 +75,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Constructor for QgsSettingsEntry.
      *
      * The \a key argument specifies the key of the settings.
-     * The \a section argument specifies the section of the settings.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      */
@@ -191,8 +191,7 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryVariant.
      *
      * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      */
@@ -218,7 +217,7 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
                              const QString &description = QString() );
 
 
-    //! \copydoc QgsSettingsEntry::setValue
+    //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     /**
@@ -233,7 +232,7 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
      */
     QVariant defaultValue() const;
 
-    //! \copydoc QgsSettingsEntry::settingsType
+    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 };
 
@@ -254,8 +253,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryString.
      *
      * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      * The \a minLength argument specifies the minimal length of the string value.
@@ -285,7 +283,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
                             const QVariant &defaultValue = QVariant(),
                             const QString &description = QString() );
 
-    //! \copydoc QgsSettingsEntry::setValue
+    //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     /**
@@ -300,7 +298,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
      */
     QString defaultValue() const;
 
-    //! \copydoc QgsSettingsEntry::settingsType
+    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
     /**
@@ -351,8 +349,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryStringList.
      *
      * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      */
@@ -377,7 +374,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
                                 const QVariant &defaultValue = QVariant(),
                                 const QString &description = QString() );
 
-    //! \copydoc QgsSettingsEntry::setValue
+    //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     /**
@@ -392,7 +389,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
      */
     QStringList defaultValue() const;
 
-    //! \copydoc QgsSettingsEntry::settingsType
+    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
 };
@@ -414,8 +411,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryBool.
      *
      * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      */
@@ -440,7 +436,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
                           const QVariant &defaultValue = QVariant(),
                           const QString &description = QString() );
 
-    //! \copydoc QgsSettingsEntry::setValue
+    //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     /**
@@ -455,7 +451,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
      */
     bool defaultValue() const;
 
-    //! \copydoc QgsSettingsEntry::settingsType
+    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 };
 
@@ -477,8 +473,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryInteger.
      *
      * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      * The \a minValue argument specifies the minimal value.
@@ -508,7 +503,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
                              const QString &description = QString() );
 
 
-    //! \copydoc QgsSettingsEntry::setValue
+    //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     /**
@@ -523,7 +518,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
      */
     qlonglong defaultValue() const;
 
-    //! \copydoc QgsSettingsEntry::settingsType
+    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
     /**
@@ -574,8 +569,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryDouble.
      *
      * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      * The \a minValue argument specifies the minimal value.
@@ -607,7 +601,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
                             const QVariant &defaultValue = QVariant(),
                             const QString &description = QString() );
 
-    //! \copydoc QgsSettingsEntry::setValue
+    //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
 
     /**
@@ -622,7 +616,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
      */
     double defaultValue() const;
 
-    //! \copydoc QgsSettingsEntry::settingsType
+    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
     /**
@@ -688,10 +682,12 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryEnum.
      *
      * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
+     *
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly
      */
     QgsSettingsEntryEnum( const QString &key,
                           QgsSettings::Section section,
@@ -745,7 +741,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
       return defaultValue;
     }
 
-    //! \copydoc QgsSettingsEntry::setValue
+    //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override
     {
       if ( !mMetaEnum.isValid() )
@@ -761,11 +757,10 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
         return false;
       }
 
-      QgsSettingsEntryBase::setValue( enumKey, dynamicKeyPart );
-      return true;
+      return QgsSettingsEntryBase::setValue( enumKey, dynamicKeyPart );
     }
 
-    //! \copydoc QgsSettingsEntry::settingsType
+    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override
     {
       return QgsSettingsEntryBase::Enum;
@@ -796,10 +791,12 @@ class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryFlag.
      *
      * The \a key argument specifies the final part of the settings key.
-     * The \a parentGroup argument specifies a parent group which is used to rebuild
-     * the entiere settings key and to determine the settings section.
+     * The \a section argument specifies the section.
      * The \a default value argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
+     *
+     * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly.
      */
     QgsSettingsEntryFlag( const QString &key,
                           QgsSettings::Section section,
@@ -853,7 +850,7 @@ class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryBase
       return defaultValue;
     }
 
-    //! \copydoc QgsSettingsEntry::setValue
+    //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const
     {
       if ( !mMetaEnum.isValid() )
@@ -873,7 +870,7 @@ class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryBase
       return true;
     }
 
-    //! \copydoc QgsSettingsEntry::settingsType
+    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override
     {
       return QgsSettingsEntryBase::Flag;

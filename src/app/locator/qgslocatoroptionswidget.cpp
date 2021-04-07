@@ -330,30 +330,26 @@ void QgsLocatorFiltersModel::commitChanges()
     if ( !activePrefix.isEmpty() && activePrefix != filter->prefix() )
     {
       filter->setActivePrefix( activePrefix );
-//      QgsLocator::Settings::LocatorFilterPrefix().setValue( activePrefix, filter->name() );
-//      QgsLocator::Settings::locatorFilterPrefix.setValue( activePrefix, filter->name() );
+      QgsLocator::Settings::locatorFilterPrefix.setValue( activePrefix, filter->name() );
     }
     else
     {
       filter->setActivePrefix( QString() );
-//      QgsLocator::Settings::LocatorFilterPrefix().remove( filter->name() );
-//      QgsLocator::Settings::locatorFilterPrefix.remove( filter->name() );
+      QgsLocator::Settings::locatorFilterPrefix.remove( filter->name() );
     }
   }
   QHash< QgsLocatorFilter *, bool >::const_iterator it = mEnabledChanges.constBegin();
   for ( ; it != mEnabledChanges.constEnd(); ++it )
   {
     QgsLocatorFilter *filter = it.key();
-//    QgsLocator::Settings::LocatorFilterEnabled().setValue( it.value(), filter->name() );
-//    QgsLocator::Settings::locatorFilterEnabled.setValue( it.value(), filter->name() );
+    QgsLocator::Settings::locatorFilterEnabled.setValue( it.value(), filter->name() );
     filter->setEnabled( it.value() );
   }
   it = mDefaultChanges.constBegin();
   for ( ; it != mDefaultChanges.constEnd(); ++it )
   {
     QgsLocatorFilter *filter = it.key();
-//    QgsLocator::Settings::LocatorFilterDefault().setValue( it.value(), filter->name() );
-//    QgsLocator::Settings::locatorFilterDefault.setValue( it.value(), filter->name() );
+    QgsLocator::Settings::locatorFilterDefault.setValue( it.value(), filter->name() );
     filter->setUseWithoutPrefix( it.value() );
   }
 }

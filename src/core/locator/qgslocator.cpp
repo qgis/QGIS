@@ -94,9 +94,7 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   filter->setParent( this );
 
   // restore settings
-  bool enabled = true;
-  if ( QgsLocator::Settings::locatorFilterEnabled.exists( filter->name() ) )
-    enabled = QgsLocator::Settings::locatorFilterEnabled.value( filter->name() );
+  bool enabled = QgsLocator::Settings::locatorFilterEnabled.value( filter->name() );
   bool byDefault = filter->useWithoutPrefix();
   if ( QgsLocator::Settings::locatorFilterDefault.exists( filter->name() ) )
     byDefault = QgsLocator::Settings::locatorFilterDefault.value( filter->name() );

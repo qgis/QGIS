@@ -165,7 +165,7 @@ The ``description`` argument specifies a description for the settings entry.
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.setValue
+\copydoc :py:class:`QgsSettingsEntryBase`.setValue
 %End
 
     QVariant value( const QString &dynamicKeyPart = QString() ) const;
@@ -182,7 +182,7 @@ Get settings default value.
 
     virtual SettingsType settingsType() const;
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.settingsType
+\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
 %End
 };
 
@@ -218,7 +218,7 @@ The ``description`` argument specifies a description for the settings entry.
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.setValue
+\copydoc :py:class:`QgsSettingsEntryBase`.setValue
 %End
 
     QString value( const QString &dynamicKeyPart = QString() ) const;
@@ -235,7 +235,7 @@ Get settings default value.
 
     virtual SettingsType settingsType() const;
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.settingsType
+\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
 %End
 
     void setMinLength( int minLength );
@@ -296,7 +296,7 @@ The ``description`` argument specifies a description for the settings entry.
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.setValue
+\copydoc :py:class:`QgsSettingsEntryBase`.setValue
 %End
 
     QStringList value( const QString &dynamicKeyPart = QString() ) const;
@@ -313,7 +313,7 @@ Get settings default value.
 
     virtual SettingsType settingsType() const;
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.settingsType
+\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
 %End
 
 };
@@ -350,7 +350,7 @@ The ``description`` argument specifies a description for the settings entry.
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.setValue
+\copydoc :py:class:`QgsSettingsEntryBase`.setValue
 %End
 
     bool value( const QString &dynamicKeyPart = QString() ) const;
@@ -367,7 +367,7 @@ Get settings default value.
 
     virtual SettingsType settingsType() const;
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.settingsType
+\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
 %End
 };
 
@@ -405,7 +405,7 @@ The ``description`` argument specifies a description for the settings entry.
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.setValue
+\copydoc :py:class:`QgsSettingsEntryBase`.setValue
 %End
 
     qlonglong value( const QString &dynamicKeyPart = QString() ) const;
@@ -422,7 +422,7 @@ Get settings default value.
 
     virtual SettingsType settingsType() const;
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.settingsType
+\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
 %End
 
     void setMinValue( qlonglong minValue );
@@ -483,7 +483,7 @@ The ``description`` argument specifies a description for the settings entry.
     virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.setValue
+\copydoc :py:class:`QgsSettingsEntryBase`.setValue
 %End
 
     double value( const QString &dynamicKeyPart = QString() ) const;
@@ -500,7 +500,7 @@ Get settings default value.
 
     virtual SettingsType settingsType() const;
 %Docstring
-\copydoc :py:class:`QgsSettingsEntry`.settingsType
+\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
 %End
 
     void setMinValue( double minValue );

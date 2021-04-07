@@ -153,10 +153,17 @@ class CORE_EXPORT QgsLocator : public QObject
      */
     QStringList completionList() const {return mAutocompletionList;}
 
+    /**
+     * Contains QgsLocator settings
+     * \since QGIS 3.20
+     */
     struct Settings
     {
-      static const inline QgsSettingsEntryBool locatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, "Enabled" );
-      static const inline QgsSettingsEntryBool locatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, "Default value" );
+      //! Settings entry locator filter enabled
+      static const inline QgsSettingsEntryBool locatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%" ), QgsSettings::Gui, true, "Locator filter enabled" );
+      //! Settings entry locator filter default value
+      static const inline QgsSettingsEntryBool locatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%" ), QgsSettings::Gui, false, "Locator filter default value" );
+      //! Settings entry locator filter prefix
       static const inline QgsSettingsEntryString locatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "locator_filters/prefix_%" ), QgsSettings::Gui, QString(), "Locator filter prefix" );
     };
 

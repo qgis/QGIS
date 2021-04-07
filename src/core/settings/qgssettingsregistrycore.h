@@ -31,6 +31,8 @@ class QgsSettingsEntryStringList;
 /**
  * \ingroup core
  * \class QgsSettingsRegistryCore
+ * QgsSettingsRegistryCore is used for settings introspection and collects all
+ * QgsSettingsEntry instances of core.
  *
  * \since QGIS 3.20
  */
@@ -38,8 +40,15 @@ class CORE_EXPORT QgsSettingsRegistryCore
 {
   public:
 
+    /**
+     * Constructor for QgsSettingsRegistryCore.
+     */
     QgsSettingsRegistryCore();
-    ~QgsSettingsRegistryCore();
+
+    /**
+     * Destructor for QgsSettingsRegistryCore.
+     */
+    virtual ~QgsSettingsRegistryCore();
 
   private:
 
