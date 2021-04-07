@@ -27,7 +27,6 @@
  *
  */
 
-#include "qgsgeometry.h"
 #include "pal.h"
 #include "layer.h"
 #include "feature.h"
@@ -35,13 +34,17 @@
 #include "labelposition.h"
 #include "pointset.h"
 #include "util.h"
-#include "qgis.h"
-#include "qgsgeos.h"
-#include "qgsmessagelog.h"
 #include "costcalculator.h"
+
+#include "qgis.h"
+#include "qgsgeometry.h"
+#include "qgsgeos.h"
+#include "qgstextlabelfeature.h"
+#include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
 #include "qgslabeling.h"
 #include "qgspolygon.h"
+
 #include <QLinkedList>
 #include <cmath>
 #include <cfloat>
@@ -1310,6 +1313,8 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
   double angle = std::atan2( -dy, dx );
 
   const int characterCount = li->count();
+  const double maximumCharacterAngleInside = qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleInside();
+  const double maximumCharacterAngleOutside = qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleOutside();
   for ( int i = 0; i < characterCount; i++ )
   {
     double last_character_angle = angle;
@@ -1338,10 +1343,10 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
       angleDelta -= 2 * M_PI;
     while ( angleDelta < -M_PI )
       angleDelta += 2 * M_PI;
-    if ( applyAngleConstraints && ( ( li->maxCharAngleInsideRadians > 0 && angleDelta > 0
-                                      && angleDelta > li->maxCharAngleInsideRadians )
-                                    || ( li->maxCharAngleOutsideRadians < 0 && angleDelta < 0
-                                         && angleDelta < li->maxCharAngleOutsideRadians ) ) )
+    if ( applyAngleConstraints && ( ( maximumCharacterAngleInside > 0 && angleDelta > 0
+                                      && angleDelta > maximumCharacterAngleInside )
+                                    || ( maximumCharacterAngleOutside < 0 && angleDelta < 0
+                                         && angleDelta < maximumCharacterAngleOutside ) ) )
     {
       return nullptr;
     }
