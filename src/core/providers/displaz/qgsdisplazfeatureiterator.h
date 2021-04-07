@@ -87,7 +87,7 @@ public:
  void RootNode(QgsRectangle &extent);
   DrawCount  getData();
   DrawCount getDataMore();
-  std::shared_ptr<Geometry> getgeom()
+  std::shared_ptr<Geometry>& getgeom()
   {
 	  return m_geom;
   }

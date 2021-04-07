@@ -76,7 +76,7 @@ private:
   std::unique_ptr<QgsDisplazPointCloudIndex> mIndex;
   bool mIsValid = false;
 
-	std::shared_ptr<Geometry>  m_geom;
+//	std::shared_ptr<Geometry>  m_geom;  读取线程慢，const 函数中不能修改 弃用 
 };
 
 

@@ -17928,6 +17928,9 @@ void QgisApp::setProgressReadlas(int per)
   {
     //slee
     QThread::msleep(50);
+
+    QgisApp::instance()->layerTreeView()->defaultActions()->zoomToLayer(mMapCanvas);
+
     refreshMapCanvas();
   }
 }

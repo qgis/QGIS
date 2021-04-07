@@ -70,6 +70,77 @@ bool QgsDisplazPointCloudIndex::load(const QString &fileName)
   mDirectory = directory.absolutePath();
   isloaded = false;
   mScale.set(1.0, 1.0, 1.0);
+
+  QgsdisplazfileLoader  *lasfileManager = QgsdisplazfileLoader::sInstance;
+  GeometryCollection*  m_geometries = lasfileManager->getDisPlaz_las_geometry();
+  const GeometryCollection::GeometryVec& geoms = m_geometries->get();
+  if (isloaded == false)
+  {
+    for (auto g = geoms.begin(); g != geoms.end(); ++g)
+    {
+      if ((*g)->fileName() == mName)
+      {
+        //TODO
+        Imath::Box3d m_bbox = (*g)->boundingBox();
+        m_geom = (*g);
+        mExtent.set(QgsPointXY(m_bbox.min.x, m_bbox.min.y), QgsPointXY(m_bbox.max.x, m_bbox.max.y));
+        mZMin = m_bbox.min.z;
+        mZMax = m_bbox.max.z;
+        mPointCount = (*g)->pointCount();
+
+        QgsPointCloudAttributeCollection attributes;
+
+        const std::vector<PointCloudGeomField>*  m_pointarrayfields = (*g)->GetFiled();
+        Imath::V3d offset = (*g)->offset();
+        for (size_t i = 0; i < m_pointarrayfields->size(); ++i)
+        {
+          const PointCloudGeomField& field = (*m_pointarrayfields)[i];
+          if (field.name == "position")
+          {
+            attributes.push_back(QgsPointCloudAttribute("X", QgsPointCloudAttribute::Float));
+            attributes.push_back(QgsPointCloudAttribute("Y", QgsPointCloudAttribute::Float));
+            attributes.push_back(QgsPointCloudAttribute("Z", QgsPointCloudAttribute::Float));
+            // m_P = (V3f*)field.as<float>();
+          }
+          if (field.name == "classification")
+          {
+            // classificationindex = i;
+            attributes.push_back(QgsPointCloudAttribute("Classification", QgsPointCloudAttribute::Char));
+          }
+          if (field.name == "intensity")
+          {
+            attributes.push_back(QgsPointCloudAttribute("Intensity", QgsPointCloudAttribute::UShort));
+          }
+          if (field.name == "returnNumber")
+          {
+            attributes.push_back(QgsPointCloudAttribute("ReturnNumber", QgsPointCloudAttribute::UShort));
+          }
+          if (field.name == "numberOfReturns")
+          {
+            attributes.push_back(QgsPointCloudAttribute("NumberOfReturns", QgsPointCloudAttribute::UShort));
+          }
+          if (field.name == "pointSourceId")
+          {
+            attributes.push_back(QgsPointCloudAttribute("PointSourceId", QgsPointCloudAttribute::UShort));
+          }
+          if (field.name == "color")
+          {
+            attributes.push_back(QgsPointCloudAttribute("Color", QgsPointCloudAttribute::UShort));
+          }
+        }
+        isloaded = true;
+        setAttributes(attributes);
+        mRootBounds = QgsPointCloudDataBounds
+        (m_bbox.min.x, m_bbox.min.y, m_bbox.min.z,
+          m_bbox.max.x, m_bbox.max.y, m_bbox.max.z);
+        //std::static_pointer_cast<PointArray>(m_geom)->GetrootNode().get();
+        m_renderextent = mExtent;
+        break;
+      }
+    }
+
+  }
+  
   return true;
 }
 void QgsDisplazPointCloudIndex:: RootNode(QgsRectangle &extent)
