@@ -33,21 +33,21 @@
       <div class="container">
           <div id="navbar" class="navbar-collapse collapse d-flex justify-content-between align-items-center">
               <ol class="breadcrumb bg-light my-0 pl-0">
-              
+
                   <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/" >Landing page</a></li>
-              
+
                   <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/collections/" >Collections</a></li>
-              
+
                   <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/collections/testlayer èé/" >A test vector layer èé</a></li>
-              
+
                   <li class="breadcrumb-item active">
                      Features in layer A test vector layer èé
                   </li>
               </ol>
               <ul class="list-unstyled list-separated m-0 p-0 text-muted">
-              
+
                   <li><a rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson" target="_blank">GEOJSON</a></li>
-              
+
               </ul>
           </div>
 
@@ -61,11 +61,11 @@
     <div class="row">
         <nav aria-label="Page navigation example">
           <ul class="pagination">
-            
+
             <!-- TODO: full pagination: li class="page-item"><a class="page-link" href="#">1</a></li>
             <li class="page-item"><a class="page-link" href="#">2</a></li>
             <li class="page-item"><a class="page-link" href="#">3</a></li-->
-            
+
           </ul>
         </nav>
     </div>
@@ -74,49 +74,49 @@
         <div class="col-md-6">
             <h1>Features in layer A test vector layer èé</h1>
 
-            
+
                 <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/0.html">A test vector layer èé 0</a></h2>
                 <dl class="row">
-                
+
                     <dt class="col-sm-3">id</dt>
                     <dd class="col-sm-9">1</dd>
-                
+
                     <dt class="col-sm-3">name</dt>
                     <dd class="col-sm-9">one</dd>
-                
+
                     <dt class="col-sm-3">utf8nameè</dt>
                     <dd class="col-sm-9">one èé</dd>
-                
+
                 </dl>
-            
+
                 <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/1.html">A test vector layer èé 1</a></h2>
                 <dl class="row">
-                
+
                     <dt class="col-sm-3">id</dt>
                     <dd class="col-sm-9">2</dd>
-                
+
                     <dt class="col-sm-3">name</dt>
                     <dd class="col-sm-9">two</dd>
-                
+
                     <dt class="col-sm-3">utf8nameè</dt>
                     <dd class="col-sm-9">two àò</dd>
-                
+
                 </dl>
-            
+
                 <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/2.html">A test vector layer èé 2</a></h2>
                 <dl class="row">
-                
+
                     <dt class="col-sm-3">id</dt>
                     <dd class="col-sm-9">3</dd>
-                
+
                     <dt class="col-sm-3">name</dt>
                     <dd class="col-sm-9">three</dd>
-                
+
                     <dt class="col-sm-3">utf8nameè</dt>
                     <dd class="col-sm-9">three èé↓</dd>
-                
+
                 </dl>
-            
+
         </div>
 
         <!-- template for the WFS3 API leaflet map -->
@@ -126,7 +126,7 @@
     <script type="text/javascript">
     jQuery( document ).ready(function( $ ) {
         var map = L.map('mapid').setView([0, 0], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map)
         $.get( "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson", function( data ) {
@@ -172,4 +172,3 @@
     </script>
   </body>
 </html>
-
