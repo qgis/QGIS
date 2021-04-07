@@ -200,6 +200,41 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.12
      */
     static QString defaultProjectScales();
+
+    /**
+     * GEOS version number linked
+     *
+     * \since QGIS 3.18
+     */
+    static int geosVersionInt();
+
+    /**
+     * GEOS Major version number linked
+     *
+     * \since QGIS 3.18
+     */
+    static int geosVersionMajor();
+
+    /**
+     * GEOS Minor version number linked
+     *
+     * \since QGIS 3.18
+     */
+    static int geosVersionMinor();
+
+    /**
+     * GEOS Patch version number linked
+     *
+     * \since QGIS 3.18
+     */
+    static int geosVersionPatch();
+
+    /**
+     * GEOS string version linked
+     *
+     * \since QGIS 3.18
+     */
+    static QString geosVersion();
 };
 
 // hack to workaround warnings when casting void pointers

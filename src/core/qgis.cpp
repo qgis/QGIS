@@ -30,6 +30,7 @@
 #include "qgswkbtypes.h"
 
 #include <gdal.h>
+#include <geos_c.h>
 #include <ogr_api.h>
 
 // Version constants
@@ -296,6 +297,31 @@ QString Qgis::releaseName()
 QString Qgis::devVersion()
 {
   return QString::fromUtf8( QGIS_DEV_VERSION );
+}
+
+QString Qgis::geosVersion()
+{
+  return GEOSversion();
+}
+
+int Qgis::geosVersionInt()
+{
+  return QStringLiteral( "%1%2%3" ).arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) ).arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) ).arg( GEOS_VERSION_PATCH, 2, 10, QChar( '0' ) ).toInt();
+}
+
+int Qgis::geosVersionMajor()
+{
+  return GEOS_VERSION_MAJOR;
+}
+
+int Qgis::geosVersionMinor()
+{
+  return GEOS_VERSION_MINOR;
+}
+
+int Qgis::geosVersionPatch()
+{
+  return GEOS_VERSION_PATCH;
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
