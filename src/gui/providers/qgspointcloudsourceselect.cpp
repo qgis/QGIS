@@ -104,7 +104,13 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
     if ( !preferredProviders.empty() )
-      emit addPointCloudLayer( mPath, QFileInfo( mPath ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
+    {
+      QString baseName = QStringLiteral( "remote ept layer" );
+      QStringList seperatedPath = mPath.split( '/' );
+      if ( seperatedPath.size() >= 2 )
+        baseName = seperatedPath[ seperatedPath.size() - 2 ];
+      emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() ) ;
+    }
   }
 }
 
