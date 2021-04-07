@@ -26,6 +26,7 @@
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
   mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  mColorRampShader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 }
 
 QString QgsPointCloudAttributeByRampRenderer::type() const
