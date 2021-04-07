@@ -63,7 +63,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     bool hasCharacterFormat( int partId ) const;
 
     //! calculate data for info(). setDefinedFont() must have been called already.
-    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, QgsTextDocument *document = nullptr );
+    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, QgsTextDocument *document = nullptr );
 
     //! Gets data-defined values
     const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
@@ -92,6 +92,38 @@ class QgsTextLabelFeature : public QgsLabelFeature
      */
     void setDocument( const QgsTextDocument &document );
 
+    /**
+     * Sets the maximum \a angle (in radians) between inside curved label characters.
+     * \see maximumCharacterAngleInside()
+     * \see setMaximumCharacterAngleOutside()
+     * \since QGIS 3.20
+     */
+    void setMaximumCharacterAngleInside( double angle ) { mMaximumCharacterAngleInside = angle; }
+
+    /**
+     * Returns the maximum angle (in radians) between inside curved label characters.
+     * \see setMaximumCharacterAngleInside()
+     * \see maximumCharacterAngleOutside()
+     * \since QGIS 3.20
+     */
+    double maximumCharacterAngleInside() const { return mMaximumCharacterAngleInside; }
+
+    /**
+     * Sets the maximum \a angle (in radians) between outside curved label characters.
+     * \see maximumCharacterAngleOutside()
+     * \see setMaximumCharacterAngleInside()
+     * \since QGIS 3.20
+     */
+    void setMaximumCharacterAngleOutside( double angle ) { mMaximumCharacterAngleOutside = angle; }
+
+    /**
+     * Returns the maximum angle (in radians) between outside curved label characters.
+     * \see setMaximumCharacterAngleOutside()
+     * \see maximumCharacterAngleInside()
+     * \since QGIS 3.20
+     */
+    double maximumCharacterAngleOutside() const { return mMaximumCharacterAngleOutside; }
+
   protected:
     //! List of graphemes (used for curved labels)
     QStringList mClusters;
@@ -106,6 +138,9 @@ class QgsTextLabelFeature : public QgsLabelFeature
     QMap< QgsPalLayerSettings::Property, QVariant > mDataDefinedValues;
 
     QgsTextDocument mDocument;
+
+    double mMaximumCharacterAngleInside = 0;
+    double mMaximumCharacterAngleOutside = 0;
 
 };
 

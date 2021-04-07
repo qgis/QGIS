@@ -54,7 +54,7 @@ bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
   return partId < mCharacterFormats.size();
 }
 
-void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, QgsTextDocument *document )
+void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, QgsTextDocument *document )
 {
   if ( mInfo )
     return;
@@ -63,16 +63,6 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
 
   qreal letterSpacing = mDefinedFont.letterSpacing();
   qreal wordSpacing = mDefinedFont.wordSpacing();
-
-  // max angle between curved label characters (20.0/-20.0 was default in QGIS <= 1.8)
-  if ( maxinangle < 20.0 )
-    maxinangle = 20.0;
-  if ( 60.0 < maxinangle )
-    maxinangle = 60.0;
-  if ( maxoutangle > -20.0 )
-    maxoutangle = -20.0;
-  if ( -95.0 > maxoutangle )
-    maxoutangle = -95.0;
 
   // create label info!
   const double mapScale = xform->mapUnitsPerPixel();
@@ -133,7 +123,7 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
 
     characterWidths[i] = mapScale * charWidth;
   }
-  mInfo = new pal::LabelInfo( characterHeight, std::move( characterWidths ), maxinangle, maxoutangle );
+  mInfo = new pal::LabelInfo( characterHeight, std::move( characterWidths ) );
 }
 
 QgsTextDocument QgsTextLabelFeature::document() const

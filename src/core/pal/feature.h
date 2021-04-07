@@ -60,14 +60,9 @@ namespace pal
        * Constructor for LabelInfo
        * \param characterHeight height of characters
        * \param characterWidths vector of character widths
-       * \param maxinangle maximum acceptable in angle (in degrees)
-       * \param maxoutangle maximum acceptable out angle (in degrees)
        */
-      LabelInfo( double characterHeight, std::vector< double > characterWidths, double maxinangle = 20.0, double maxoutangle = -20.0 )
-        : maxCharAngleInsideRadians( maxinangle * M_PI / 180 )
-          // outside angle should be negative
-        , maxCharAngleOutsideRadians( ( maxoutangle > 0 ? -maxoutangle : maxoutangle ) * M_PI / 180 )
-        , characterHeight( characterHeight )
+      LabelInfo( double characterHeight, std::vector< double > characterWidths )
+        : characterHeight( characterHeight )
         , mCharacterWidths( characterWidths )
       {
       }
@@ -76,18 +71,6 @@ namespace pal
       LabelInfo( const LabelInfo &rh ) = delete;
       //! LabelInfo cannot be copied
       LabelInfo &operator=( const LabelInfo &rh ) = delete;
-
-      /**
-       * Maximum angle between inside curved label characters (in radians).
-       * \see maxCharAngleOutsideRadians
-       */
-      double maxCharAngleInsideRadians = 0;
-
-      /**
-       * Maximum angle between outside curved label characters (in radians).
-       * \see maxCharAngleInsideRadians
-       */
-      double maxCharAngleOutsideRadians = 0;
 
       // TODO - maybe individual character height would give better results!
 
