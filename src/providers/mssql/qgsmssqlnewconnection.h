@@ -80,6 +80,12 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
         //! Sets the settings for \a database
         void setSettings( const QString &database, const QStringList &schemas, const QStringList &excludedSchemas );
 
+        //! Checks all schemas
+        void checkAll();
+
+        //! Unchecks all schemas
+        void unCheckAll();
+
       private:
         QString mDataBaseName;
         QStringList mSchemas;
