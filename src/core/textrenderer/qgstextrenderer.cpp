@@ -1861,3 +1861,4 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
     i++;
   }
 }
+

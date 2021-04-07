@@ -1240,9 +1240,10 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     return nullptr;
   }
 
-  LabelInfo *li = mLF->curvedLabelInfo();
+  const QgsPrecalculatedTextMetrics *li = qgis::down_cast< QgsTextLabelFeature * >( mLF )->textMetrics();
+  Q_ASSERT( li );
 
-  const double characterHeight = li->characterHeight;
+  const double characterHeight = li->characterHeight();
 
   const double segmentLength = pathDistances[index];
   if ( qgsDoubleNear( segmentLength, 0.0 ) )
@@ -1353,7 +1354,7 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
 
     // Shift the character downwards since the draw position is specified at the baseline
     // and we're calculating the mean line here
-    double dist = 0.9 * li->characterHeight / 2;
+    double dist = 0.9 * li->characterHeight() / 2;
     if ( orientation < 0 )
     {
       dist = -dist;
@@ -1408,7 +1409,9 @@ static std::unique_ptr< LabelPosition > _createCurvedCandidate( LabelPosition *l
 
 std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal )
 {
-  LabelInfo *li = mLF->curvedLabelInfo();
+  const QgsPrecalculatedTextMetrics *li = qgis::down_cast< QgsTextLabelFeature *>( mLF )->textMetrics();
+  Q_ASSERT( li );
+
   // label info must be present
   if ( !li )
     return 0;
@@ -1480,7 +1483,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
   std::vector< std::unique_ptr< LabelPosition >> positions;
   const std::size_t candidateTargetCount = maximumLineCandidates();
-  double delta = std::max( li->characterHeight / 6, total_distance / candidateTargetCount );
+  double delta = std::max( li->characterHeight() / 6, total_distance / candidateTargetCount );
 
   QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
@@ -1577,7 +1580,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     {
       std::unique_ptr< LabelPosition > p;
       if ( i == 0 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) ) )
-        p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() + li->characterHeight / 2 );
+        p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() + li->characterHeight() / 2 );
       if ( i == 1 && flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
         p = _createCurvedCandidate( slp.get(), angle_avg, 0 );
@@ -1585,7 +1588,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       }
       if ( i == 2 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) ) )
       {
-        p = _createCurvedCandidate( slp.get(), angle_avg, -li->characterHeight / 2 - mLF->distLabel() );
+        p = _createCurvedCandidate( slp.get(), angle_avg, -li->characterHeight() / 2 - mLF->distLabel() );
         p->setCost( p->cost() + 0.001 );
       }
 

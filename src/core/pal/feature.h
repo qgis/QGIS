@@ -51,49 +51,6 @@
 
 namespace pal
 {
-  //! Optional additional info about label (for curved labels)
-  class CORE_EXPORT LabelInfo
-  {
-    public:
-
-      /**
-       * Constructor for LabelInfo
-       * \param characterHeight height of characters
-       * \param characterWidths vector of character widths
-       */
-      LabelInfo( double characterHeight, std::vector< double > characterWidths )
-        : characterHeight( characterHeight )
-        , mCharacterWidths( characterWidths )
-      {
-      }
-
-      //! LabelInfo cannot be copied
-      LabelInfo( const LabelInfo &rh ) = delete;
-      //! LabelInfo cannot be copied
-      LabelInfo &operator=( const LabelInfo &rh ) = delete;
-
-      // TODO - maybe individual character height would give better results!
-
-      /**
-       * Character height (actually font metrics height, not individual character height).
-       */
-      double characterHeight = 0;
-
-      /**
-       * Returns the total number of characters.
-       */
-      int count() const { return static_cast< int >( mCharacterWidths.size() ); }
-
-      /**
-       * Returns the width of the character at the specified position.
-       */
-      double characterWidth( int position ) const { return mCharacterWidths[position]; }
-
-    private:
-      std::vector< double > mCharacterWidths;
-
-  };
-
   class LabelPosition;
   class FeaturePart;
 
