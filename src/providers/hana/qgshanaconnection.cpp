@@ -622,7 +622,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       layer.srid = -1;
       layer.type = isGeometryColumn ? QgsWkbTypes::Type::Unknown : QgsWkbTypes::NoGeometry;
 
-      if ( layerFilter != nullptr && !layerFilter( layer ) )
+      if ( layerFilter && !layerFilter( layer ) )
         continue;
 
       QPair<QString, QString> layerKey( layer.schemaName, layer.tableName );
