@@ -42,6 +42,7 @@ class TestQgsMapToolCircularString : public QObject
     void testAddCircularStringRadius();
     void testAddCircularStringCurvePointWithDeletedVertex();
     void testAddCircularStringRadiusWithDeletedVertex();
+    void testAddCircularStringAfterClassicDigitizing();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -182,6 +183,44 @@ void TestQgsMapToolCircularString::testAddCircularStringRadiusWithDeletedVertex(
   QgsFeature f = mLayer->getFeature( newFid );
 
   QString wkt = "CompoundCurveZ (CircularStringZ (0 0 111, 0.17912878474779187 0.82087121525220819 111, 1 1 111))";
+  QCOMPARE( f.geometry().asWkt(), wkt );
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
+
+void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  mLayer->startEditing();
+
+  TestQgsMapToolAdvancedDigitizingUtils utilsClassic( mParentTool );
+
+  mCanvas->setMapTool( mParentTool );
+  utilsClassic.mouseClick( 2, 1, Qt::LeftButton );
+  utilsClassic.mouseClick( 2, 0, Qt::LeftButton );
+  utilsClassic.mouseClick( 0, 0, Qt::LeftButton );
+
+  QgsMapToolCircularStringCurvePoint mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utilsCircular( &mapTool );
+  utilsCircular.mouseClick( 1, 1, Qt::LeftButton );
+  utilsCircular.mouseClick( 0, 2, Qt::LeftButton );
+
+  mCanvas->setMapTool( mParentTool );
+  utilsClassic.mouseClick( 2, 2, Qt::LeftButton );
+  utilsClassic.mouseClick( 4, 2, Qt::LeftButton );
+
+  utilsCircular.mouseClick( 4, 2, Qt::RightButton );
+  QgsFeatureId newFid = utilsCircular.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  qDebug() << f.geometry().asWkt();
+
+  QString wkt = "CompoundCurveZ ((2 1 333, 2 0 333, 0 0 333),CircularStringZ (0 0 333, 1 1 333, 0 2 333),(0 2 333, 2 2 333, 4 2 333))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
