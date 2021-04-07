@@ -126,6 +126,41 @@ A string with default project scales.
 
 .. versionadded:: 3.12
 %End
+
+    static int geosVersionInt();
+%Docstring
+GEOS version number linked
+
+.. versionadded:: 3.18
+%End
+
+    static int geosVersionMajor();
+%Docstring
+GEOS Major version number linked
+
+.. versionadded:: 3.18
+%End
+
+    static int geosVersionMinor();
+%Docstring
+GEOS Minor version number linked
+
+.. versionadded:: 3.18
+%End
+
+    static int geosVersionPatch();
+%Docstring
+GEOS Patch version number linked
+
+.. versionadded:: 3.18
+%End
+
+    static QString geosVersion();
+%Docstring
+GEOS string version linked
+
+.. versionadded:: 3.18
+%End
 };
 
 
