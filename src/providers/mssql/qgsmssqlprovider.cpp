@@ -2974,10 +2974,10 @@ bool QgsMssqlProvider::getExtentFromGeometryColumns( QgsRectangle &extent ) cons
   query.setForwardOnly( true );
 
   QString sql = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax "
-                                "FROM geometry_columns WHERE f_table_name = '%1' AND f_table_schema = '%2' "
+                                "FROM geometry_columns WHERE f_table_name = %1 AND f_table_schema = %2 "
                                 "AND NOT (qgis_xmin IS NULL OR qgis_xmax IS NULL OR qgis_ymin IS NULL OR qgis_ymax IS NULL)" );
 
-  QString statement = sql.arg( mTableName, mSchemaName );
+  QString statement = sql.arg( quotedValue( mTableName ), quotedValue( mSchemaName ) );
   if ( query.exec( statement ) && query.isActive() )
   {
     query.next();
