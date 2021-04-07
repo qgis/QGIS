@@ -199,6 +199,7 @@ void QgsLabelingGui::showLineAnchorSettings()
     const QgsLabelLineSettings widgetSettings = widget->settings();
     mLineSettings.setLineAnchorPercent( widgetSettings.lineAnchorPercent() );
     mLineSettings.setAnchorType( widgetSettings.anchorType() );
+    mLineSettings.setAnchorClipping( widgetSettings.anchorClipping() );
     const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
     widget->updateDataDefinedProperties( mDataDefinedProperties );
     emit widgetChanged();
@@ -553,6 +554,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.lineSettings().setLineAnchorPercent( mLineSettings.lineAnchorPercent() );
   lyr.lineSettings().setAnchorType( mLineSettings.anchorType() );
+  lyr.lineSettings().setAnchorClipping( mLineSettings.anchorClipping() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
