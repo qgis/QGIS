@@ -109,7 +109,7 @@ Item {
     // Icon
     Item {
       id: importDataBtn
-      visible: supportDataImport
+      visible: supportsDataImport
       anchors.right: parent.right
       anchors.verticalCenter: parent.verticalCenter
       anchors.rightMargin: customStyle.fields.sideMargin
