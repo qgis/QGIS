@@ -458,7 +458,12 @@ Item {
         Connections {
           target: attributeEditorLoader.item
           onValueChanged: {
+            var valueChanged = value != AttributeValue
             AttributeValue = isNull ? undefined : value
+            // updates other attributes if a user males a change
+            if (valueChanged) {
+              form.model.attributeModel.updateDefaultValuesAttributes(Field)
+            }
           }
         }
 
@@ -662,4 +667,3 @@ Item {
     }
   }
 }
-
