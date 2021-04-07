@@ -1150,11 +1150,12 @@ void TestQgsLabelingEngine::testMergingLinesWithForks()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::Curved;
   settings.labelPerPart = false;
+  settings.dist = 1;
   settings.lineSettings().setMergeLines( true );
 
   // if treated individually, none of these parts are long enough for the label to fit -- but the label should be rendered if the mergeLines setting is true
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  vl2->setRenderer( new QgsNullSymbolRenderer() );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -1219,9 +1220,9 @@ void TestQgsLabelingEngine::testMergingLinesWithMinimumSize()
   settings.lineSettings().setMergeLines( true );
   settings.thinningSettings().setMinimumFeatureSize( 90.0 );
 
-  // if treated individually, none of these parts are long enough for the label to fit -- but the label should be rendered if the mergeLines setting is true
+  // if treated individually, none of these parts exceed the minimum feature size set above -- but the label should be rendered if the mergeLines setting is true
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  vl2->setRenderer( new QgsNullSymbolRenderer() );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );

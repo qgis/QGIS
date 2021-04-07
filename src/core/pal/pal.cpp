@@ -156,7 +156,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     QMutexLocker locker( &layer->mMutex );
 
     // generate candidates for all features
-    for ( FeaturePart *featurePart : std::as_const( layer->mFeatureParts ) )
+    for ( const std::unique_ptr< FeaturePart > &featurePart : std::as_const( layer->mFeatureParts ) )
     {
       if ( isCanceled() )
         break;
@@ -204,7 +204,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
         // valid features are added to fFeats
         std::unique_ptr< Feats > ft = std::make_unique< Feats >();
-        ft->feature = featurePart;
+        ft->feature = featurePart.get();
         ft->shape = nullptr;
         ft->candidates = std::move( candidates );
         ft->priority = featurePart->calculatePriority();
@@ -213,7 +213,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       else
       {
         // no candidates, so generate a default "point on surface" one
-        std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
+        std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart.get() );
         if ( !unplacedPosition )
           continue;
 
@@ -226,7 +226,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
           // valid features are added to fFeats
           std::unique_ptr< Feats > ft = std::make_unique< Feats >();
-          ft->feature = featurePart;
+          ft->feature = featurePart.get();
           ft->shape = nullptr;
           ft->candidates = std::move( candidates );
           ft->priority = featurePart->calculatePriority();

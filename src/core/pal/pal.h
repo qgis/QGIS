@@ -264,8 +264,8 @@ namespace pal
       int mTenure = 10;
       double mCandListSize = 0.2;
 
-      long long mNextCandidateId = 1;
-      mutable QHash< QPair< long long, long long >, bool > mCandidateConflicts;
+      unsigned int mNextCandidateId = 1;
+      mutable QHash< QPair< unsigned int, unsigned int >, bool > mCandidateConflicts;
 
       /**
        * \brief show partial labels (cut-off by the map canvas) or not
