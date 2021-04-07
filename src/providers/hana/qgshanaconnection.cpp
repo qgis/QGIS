@@ -696,8 +696,7 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
     const std::function<void( const AttributeField &field )> &callback )
 {
   QMap<QString, QMap<QString, QString>> clmComments;
-  auto getColumnComments = [&clmComments, &conn = mConnection](
-                             const QString & schemaName, const QString & tableName, const QString & columnName )
+  auto getColumnComments = [&]( const QString & schemaName, const QString & tableName, const QString & columnName )
   {
     if ( schemaName.isEmpty() || tableName.isEmpty() || columnName.isEmpty() )
       return QString();
@@ -705,7 +704,7 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
     if ( !clmComments.contains( key ) )
     {
       const char *sql = "SELECT COLUMN_NAME, COMMENTS FROM SYS.TABLE_COLUMNS WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?";
-      PreparedStatementRef stmt = conn->prepareStatement( sql );
+      PreparedStatementRef stmt = mConnection->prepareStatement( sql );
       stmt->setNString( 1, NString( schemaName.toStdU16String() ) );
       stmt->setNString( 2, NString( tableName.toStdU16String() ) );
 
@@ -722,14 +721,13 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
   };
 
   QMap<QString, QMap<QString, bool>> clmUniqueness;
-  auto isColumnUnique = [&clmUniqueness, &conn = mConnection](
-                          const QString & schemaName, const QString & tableName, const QString & columnName )
+  auto isColumnUnique = [&]( const QString & schemaName, const QString & tableName, const QString & columnName )
   {
     if ( schemaName.isEmpty() || tableName.isEmpty() || columnName.isEmpty() )
       return false;
     const QString key = QStringLiteral( "%1.%2" ).arg( QgsHanaUtils::quotedIdentifier( schemaName ), QgsHanaUtils::quotedIdentifier( tableName ) );
     if ( !clmUniqueness.contains( key ) )
-      clmUniqueness.insert( key, getColumnsUniqueness( *conn, schemaName, tableName ) );
+      clmUniqueness.insert( key, getColumnsUniqueness( *mConnection, schemaName, tableName ) );
     return clmUniqueness[key].value( columnName, false );
   };
 
