@@ -252,6 +252,13 @@ jobs:
         ubuntu-base: [20.04]
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, ORACLE, HANA]
       fail-fast: false
+      
+    services:
+      # Run httpbin container for QgsNetwor* tests
+      httpbin:
+        image: kennethreitz/httpbin:latest
+        ports:
+          - 8082:80
 
     needs: build
 
@@ -326,6 +333,7 @@ jobs:
         id: tests
         env:
           TEST_BATCH: ${{matrix.test-batch}}
+          QGIS_HTTPBIN_HOST: "localhost:8082"
         run: |
           DOCKERFILE=$( ( [[ ${TEST_BATCH} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${TEST_BATCH} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
