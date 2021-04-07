@@ -1236,15 +1236,15 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
   const double maximumCharacterAngleOutside = applyAngleConstraints ? std::fabs( qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleOutside() ) : 0;
 
   std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > placement(
-    QgsTextRendererUtils::generateCurvedTextPlacement( *metrics, mapShape->x.data(), mapShape->y.data(), mapShape->nbPoints, pathDistances, offsetAlongLine, orientation, maximumCharacterAngleInside, maximumCharacterAngleOutside, uprightOnly )
+    QgsTextRendererUtils::generateCurvedTextPlacement( *metrics, mapShape->x.data(), mapShape->y.data(), mapShape->nbPoints, pathDistances, offsetAlongLine, orientation, reversed, flip, maximumCharacterAngleInside, maximumCharacterAngleOutside, uprightOnly )
   );
-
-  if ( !placement )
-    return nullptr;
 
   orientation = placement->orientation;
   reversed = placement->reversed;
   flip = placement->flip;
+
+  if ( placement->graphemePlacement.empty() )
+    return nullptr;
 
   auto it = placement->graphemePlacement.constBegin();
   int i = 0;

@@ -152,7 +152,7 @@ QColor QgsTextRendererUtils::readColor( QgsVectorLayer *layer, const QString &pr
   return QColor( r, g, b, a );
 }
 
-QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QgsLineString *line, double offsetAlongLine, int orientation, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly )
+QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QgsLineString *line, double offsetAlongLine, int orientation, bool reversed, bool flip, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly )
 {
   const int numPoints = line->numPoints();
   std::vector<double> pathDistances( numPoints );
@@ -175,14 +175,16 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     prevY = *y++;
   }
 
-  return generateCurvedTextPlacement( metrics, line->xData(), line->yData(), numPoints, pathDistances, offsetAlongLine, orientation, maxConcaveAngle, maxConvexAngle, uprightOnly );
+  return generateCurvedTextPlacement( metrics, line->xData(), line->yData(), numPoints, pathDistances, offsetAlongLine, orientation, reversed, flip, maxConcaveAngle, maxConvexAngle, uprightOnly );
 }
 
-QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, const int orientation, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly )
+QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, const int orientation, bool reversed, bool flip, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly )
 {
   std::unique_ptr< CurvePlacementProperties > output = std::make_unique< CurvePlacementProperties >();
   output->graphemePlacement.reserve( metrics.count() );
   output->orientation = orientation;
+  output->reversed = reversed;
+  output->flip = flip;
 
   double offsetAlongSegment = offsetAlongLine;
   int index = 1;
@@ -194,7 +196,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
   }
   if ( index >= numPoints )
   {
-    return nullptr;
+    return output.release();
   }
 
   const double characterHeight = metrics.characterHeight();
@@ -203,7 +205,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
   if ( qgsDoubleNear( segmentLength, 0.0 ) )
   {
     // Not allowed to place across on 0 length segments or discontinuities
-    return nullptr;
+    return output.release();
   }
 
   const int characterCount = metrics.count();
@@ -225,7 +227,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
       double characterStartX, characterStartY;
       if ( !nextCharPosition( characterWidth, pathDistances[endindex], x, y, numPoints, endindex, _distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
       {
-        return nullptr;
+        return output.release();
       }
       if ( i == 0 )
       {
@@ -278,7 +280,8 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     double start_x, start_y, end_x, end_y;
     if ( !nextCharPosition( characterWidth, pathDistances[index], x, y, numPoints, index, offsetAlongSegment, start_x, start_y, end_x, end_y ) )
     {
-      return nullptr;
+      output->graphemePlacement.clear();
+      return output.release();
     }
 
     // Calculate angle from the start of the character to the end based on start_/end_ position
@@ -295,7 +298,8 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
       angleDelta += 2 * M_PI;
     if ( ( maxConcaveAngle > 0 && angleDelta > 0 && angleDelta > maxConcaveAngle ) || ( maxConvexAngle > 0 && angleDelta < 0 && angleDelta < -maxConvexAngle ) )
     {
-      return nullptr;
+      output->graphemePlacement.clear();
+      return output.release();
     }
 
     // Shift the character downwards since the draw position is specified at the baseline

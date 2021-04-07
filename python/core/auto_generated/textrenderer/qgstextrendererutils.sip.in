@@ -97,7 +97,7 @@ Attempts to decode a string representation of a text orientation.
 
     };
 
-    CurvePlacementProperties *generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QgsLineString *line, double offsetAlongLine, int orientation = 0, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) /Factory/;
+    static CurvePlacementProperties *generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QgsLineString *line, double offsetAlongLine, int orientation = 0, bool reversed = false, bool flip = false, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) /Factory/;
 
 
 };
