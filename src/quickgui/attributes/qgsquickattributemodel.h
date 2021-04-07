@@ -164,6 +164,9 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
     //! Emitted when user allows reusing last entered values
     void rememberValuesAllowChanged();
 
+    //! Emitted when setData failed
+    void dataChangedFailed( const QString &message );
+
   protected:
     //! Commits model changes
     bool commit();
