@@ -79,3 +79,4 @@ python/plugins/processing/tests/testdata/*.aux.xml
 Thumb.db
 Testing/*
 src/app/CMakeLists.txt
+*.dgml

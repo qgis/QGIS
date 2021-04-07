@@ -343,7 +343,7 @@ if(WITH_CORE)
   set(Boost_USE_STATIC_LIBS        ON) # only find static libs
   set(Boost_USE_MULTITHREADED      ON)
   set(Boost_USE_STATIC_RUNTIME    OFF)
-  find_package(Boost 1.74.0 COMPONENTS thread)
+  find_package(Boost 1.75.0 COMPONENTS thread)
   # required
   find_package(Proj)
   find_package(GEOS)

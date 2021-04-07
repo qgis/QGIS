@@ -41,7 +41,7 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     QString type() const override;
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
-	void renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context) override;
+	  void renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;

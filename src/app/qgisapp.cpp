@@ -17926,6 +17926,8 @@ void QgisApp::setProgressReadlas(int per)
 	showProgress(per, 100);
   if (per  == 100) // 如果完全加载成功
   {
+    //slee
+    QThread::msleep(50);
     refreshMapCanvas();
   }
 }

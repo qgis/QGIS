@@ -1,808 +1,808 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<DirectedGraph DataVirtualized="True" GraphDirection="LeftToRight" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+<DirectedGraph DataVirtualized="True" GraphDirection="TopToBottom" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="(Name=00007ffa5e854379 @1 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3923.79588688161,456.185216695978,142.203333333333,25.24" CodeSchemaProperty_IsExternal="True" Label="00007ffa5e854379">
+    <Node Id="(Name=00007ffa5e854379 @1 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="200.481666666667,924.392499999996,142.203333333333,25.24" CodeSchemaProperty_IsExternal="True" Label="00007ffa5e854379">
       <Category Ref="CallStackEntry" />
       <Category Ref="ExternalCallStackEntry" />
     </Node>
-    <Node Id="(Name=Geometry::initializeBboxGL @3 @19 OverloadingParameters=[(Type=&quot;unsigned int&quot; Name=bboxShader)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3023.48317490103,77.109279546158,127.16,25.24" Label="initializeBboxGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/geometry.cpp StartLineNumber=130 StartCharacterOffset=0 EndLineNumber=130 EndCharacterOffset=0)">
+    <Node Id="(Name=Geometry::initializeBboxGL @3 @19 OverloadingParameters=[(Type=&quot;unsigned int&quot; Name=bboxShader)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1410.00333333333,1721.3775,127.16,25.2399999999998" Label="initializeBboxGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/geometry.cpp StartLineNumber=130 StartCharacterOffset=0 EndLineNumber=130 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="(Name=PointArray::getPointByIndex @7 Type=Imath::Vec3&lt;float&gt; OverloadingParameters=[(Type=&quot;unsigned __int64&quot; Name=inds)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1958.12430828624,996.647372476453,130.356666666666,25.24" Label="getPointByIndex" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/pointarray.h StartLineNumber=56 StartCharacterOffset=0 EndLineNumber=56 EndCharacterOffset=0)">
+    <Node Id="(Name=PointArray::getPointByIndex @7 Type=Imath::Vec3&lt;float&gt; OverloadingParameters=[(Type=&quot;unsigned __int64&quot; Name=inds)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1847.405,981.319999999996,130.356666666666,25.24" Label="getPointByIndex" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/pointarray.h StartLineNumber=56 StartCharacterOffset=0 EndLineNumber=56 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="(Name=QDomNodePrivate::insertAfter @52 Type=&quot;QDomNodePrivate *&quot; OverloadingParameters=[(Type=&quot;QDomNodePrivate *&quot; Name=newChild),(Type=&quot;QDomNodePrivate *&quot; Name=refChild)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2842.62263349919,611.123741575574,96.4699999999998,25.24" Label="insertAfter" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/xml/dom/qdom.cpp StartLineNumber=1630 StartCharacterOffset=0 EndLineNumber=1630 EndCharacterOffset=0)">
+    <Node Id="(Name=QDomNodePrivate::insertAfter @52 Type=&quot;QDomNodePrivate *&quot; OverloadingParameters=[(Type=&quot;QDomNodePrivate *&quot; Name=newChild),(Type=&quot;QDomNodePrivate *&quot; Name=refChild)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="385.348333333334,1493.6675,96.4699999999993,25.2399999999998" Label="insertAfter" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/xml/dom/qdom.cpp StartLineNumber=1630 StartCharacterOffset=0 EndLineNumber=1630 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="(Name=QgsDisplazPointCloudIndex::RootNode @3 Type=&quot;OctreeNode *&quot; @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1578.65400828624,1005.91497775733,95.4366666666665,25.2399999999997" Label="RootNode" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
+    <Node Id="(Name=QgsDisplazPointCloudIndex::RootNode @3 Type=&quot;OctreeNode *&quot; @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1999.865,924.392499999996,95.4366666666665,25.2399999999998" Label="RootNode" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="(Name=QgsDisplazPointCloudIndex::load @3 @4 OverloadingParameters=[(@76 Name=fileName)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2739.14383911318,963.919203872603,61.1333333333332,25.24" Label="load" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=70 StartCharacterOffset=0 EndLineNumber=70 EndCharacterOffset=0)">
+    <Node Id="(Name=QgsDisplazPointCloudIndex::load @3 @4 OverloadingParameters=[(@76 Name=fileName)] @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="545.016666666667,924.392499999996,61.1333333333332,25.24" Label="load" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=70 StartCharacterOffset=0 EndLineNumber=70 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="(Name=QgsdisplazfileLoader::QgsdisplazfileLoader @3 @19 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="959.778780890355,520.565329489613,155.67,25.2399999999998" Label="QgsdisplazfileLoader" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=55 StartCharacterOffset=0 EndLineNumber=55 EndCharacterOffset=0)">
+    <Node Id="(Name=QgsdisplazfileLoader::QgsdisplazfileLoader @3 @19 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1316.74833333333,1038.2475,155.67,25.2399999999998" Label="QgsdisplazfileLoader" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=55 StartCharacterOffset=0 EndLineNumber=55 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="(Name=QtPrivate::RefCount::ref @3 @4 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1962.63097495291,1051.88747247645,51.5533333333333,25.2399999999998" Label="ref" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qrefcount.h StartLineNumber=54 StartCharacterOffset=0 EndLineNumber=54 EndCharacterOffset=0)">
+    <Node Id="(Name=QtPrivate::RefCount::ref @3 @4 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2145.80666666667,1038.2475,51.5533333333333,25.2399999999998" Label="ref" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qrefcount.h StartLineNumber=54 StartCharacterOffset=0 EndLineNumber=54 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="(Name=std::_Ref_count_base::_Decref @3 @19 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1849.22420828624,992.407642569327,78.9000000000001,25.2399999999998" CodeSchemaProperty_IsExternal="True" Label="_Decref" SourceLocation="(Assembly=&quot;file:///c:/program files (x86)/microsoft visual studio 14.0/vc/include/memory&quot; StartLineNumber=109 StartCharacterOffset=0 EndLineNumber=109 EndCharacterOffset=0)">
+    <Node Id="(Name=std::_Ref_count_base::_Decref @3 @19 @2)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1738.13333333333,981.319999999996,78.9000000000001,25.2399999999998" CodeSchemaProperty_IsExternal="True" Label="_Decref" SourceLocation="(Assembly=&quot;file:///c:/program files (x86)/microsoft visual studio 14.0/vc/include/memory&quot; StartLineNumber=109 StartCharacterOffset=0 EndLineNumber=109 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
       <Category Ref="ExternalCallStackEntry" />
     </Node>
-    <Node Id="@101" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1187.78848610635,35.219107978638,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+    <Node Id="@101" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1418.07,1095.175,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@102" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="931.111033499192,758.331047071438,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
+    <Node Id="@102" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="576.985,569.274999999998,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@103" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1030.30780016586,750.412664885365,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+    <Node Id="@103" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="357.069999999999,626.202499999998,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@104" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1518.87742021494,520.565329489612,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3347 StartCharacterOffset=0 EndLineNumber=3347 EndCharacterOffset=0)">
+    <Node Id="@104" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="964.985,1379.8125,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3347 StartCharacterOffset=0 EndLineNumber=3347 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@105" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1377.85065354828,575.805329489612,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3718 StartCharacterOffset=0 EndLineNumber=3718 EndCharacterOffset=0)">
+    <Node Id="@105" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="709.07,1436.74,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3718 StartCharacterOffset=0 EndLineNumber=3718 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@106" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1027.35490823436,356.487772713331,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3203 StartCharacterOffset=0 EndLineNumber=3203 EndCharacterOffset=0)">
+    <Node Id="@106" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1003.985,1038.2475,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3203 StartCharacterOffset=0 EndLineNumber=3203 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@107" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1136.817528247,354.845329489612,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+    <Node Id="@107" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1244.07,1095.175,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@108" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1277.84419491367,410.085329489612,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+    <Node Id="@108" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1102.07,1095.175,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@109" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1145.44878089036,465.325329489612,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+    <Node Id="@109" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="657.07,1095.175,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@110" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1225.74844156769,299.605329489613,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+    <Node Id="@110" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="896.07,1095.175,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@111" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1889.76894156769,266.875895441882,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
+    <Node Id="@111" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1587.985,1209.03,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@112" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1988.96570823436,236.833544615044,111.026666666667,25.24" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
+    <Node Id="@112" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1567.07,1265.95749999999,111.026666666667,25.2399999999998" Label="notify_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3727 StartCharacterOffset=0 EndLineNumber=3727 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@113" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2581.90287490103,96.6168514644085,155.073333333333,25.24" Label="initializeGLGeometry" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=202 StartCharacterOffset=0 EndLineNumber=202 EndCharacterOffset=0)">
+    <Node Id="@113" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1396.04666666667,1550.595,155.073333333333,25.2399999999998" Label="initializeGLGeometry" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=202 StartCharacterOffset=0 EndLineNumber=202 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@115" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="839.158186106348,108.050429299521,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+    <Node Id="@115" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1191.465,924.392499999996,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@117" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="989.394952773016,78.6453294896128,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+    <Node Id="@117" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1216.985,981.319999999996,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@118" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="479.857300165859,769.557719120182,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+    <Node Id="@118" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="551.464999999999,455.419999999998,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@119" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="740.620833499192,767.612848905888,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+    <Node Id="@119" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="576.985,512.347499999998,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@12" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="125.839653548276,536.059116603791,61.72,25.2399999999998" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1335 StartCharacterOffset=0 EndLineNumber=1335 EndCharacterOffset=0)">
+    <Node Id="@12" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1313.72333333333,512.347499999998,61.7200000000003,25.2399999999998" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1335 StartCharacterOffset=0 EndLineNumber=1335 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@120" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1418.87086158033,465.325329489612,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+    <Node Id="@120" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="853.465,1265.9575,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@121" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1033.99712021494,575.805329489612,216.07,25.24" Label="sendThroughObjectEventFilters" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1172 StartCharacterOffset=0 EndLineNumber=1172 EndCharacterOffset=0)">
+    <Node Id="@121" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="656.548333333334,1493.6675,216.07,25.2399999999998" Label="sendThroughObjectEventFilters" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1172 StartCharacterOffset=0 EndLineNumber=1172 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@122" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1618.074102099,473.794540394303,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+    <Node Id="@122" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="989.985,1322.885,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@123" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1142.6927311752,189.125329489613,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+    <Node Id="@123" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="688.465,1322.885,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@124" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1027.35490823436,301.247672713331,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+    <Node Id="@124" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="713.985,1379.8125,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@125" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="992.456064508533,133.885329489612,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+    <Node Id="@125" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="839.465,1322.885,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@126" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="928.158141567691,289.67466708839,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+    <Node Id="@126" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="864.985,1379.8125,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@127" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1292.92939784187,244.365329489613,120.236666666667,25.24" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+    <Node Id="@127" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1121.465,1322.885,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@128" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1126.55167490102,299.605329489612,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+    <Node Id="@128" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1237.985,1379.8125,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@129" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="678.724608234356,315.014223376787,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+    <Node Id="@129" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="996.465,924.392499999997,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@130" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="828.961374901024,323.936499545838,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+    <Node Id="@130" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1003.985,981.319999999996,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@131" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1366.77520823436,333.936195177497,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
+    <Node Id="@131" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1562.465,1095.175,120.236666666667,25.2399999999998" Label="notifyInternal2" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1047 StartCharacterOffset=0 EndLineNumber=1047 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@132" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1790.57217490103,298.795697262548,69.1966666666667,25.24" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
+    <Node Id="@132" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1587.985,1152.1025,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsapplication.cpp StartLineNumber=459 StartCharacterOffset=0 EndLineNumber=459 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@133" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3705.24578688161,456.120196764959,188.55,25.24" Label="applyLayerNodeProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaplayerlegend.cpp StartLineNumber=249 StartCharacterOffset=0 EndLineNumber=249 EndCharacterOffset=0)">
+    <Node Id="@133" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="177.308333333333,867.464999999996,188.55,25.24" Label="applyLayerNodeProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaplayerlegend.cpp StartLineNumber=249 StartCharacterOffset=0 EndLineNumber=249 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@135" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2560.73707244651,962.579977640282,148.406666666667,25.24" Label="QgsDisplazProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazprovider.cpp StartLineNumber=53 StartCharacterOffset=0 EndLineNumber=53 EndCharacterOffset=0)">
+    <Node Id="@135" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="501.379999999999,867.464999999996,148.406666666668,25.24" Label="QgsDisplazProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazprovider.cpp StartLineNumber=53 StartCharacterOffset=0 EndLineNumber=53 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@136" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="470.646138872467,620.582892989256,155.22,25.24" Label="showLayerProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=16372 StartCharacterOffset=0 EndLineNumber=16372 EndCharacterOffset=0)">
+    <Node Id="@136" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="743.973333333333,455.419999999998,155.22,25.24" Label="showLayerProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=16372 StartCharacterOffset=0 EndLineNumber=16372 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@137" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1456.26724161957,981.008451913184,92.3866666666665,25.2399999999998" Label="nodeData" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=78 StartCharacterOffset=0 EndLineNumber=78 EndCharacterOffset=0)">
+    <Node Id="@137" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1731.39,924.392499999996,92.3866666666663,25.2399999999998" Label="nodeData" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=78 StartCharacterOffset=0 EndLineNumber=78 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@139" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="804.876920214943,635.237329581656,117.673333333333,25.24" Label="activateAction" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1448 StartCharacterOffset=0 EndLineNumber=1448 EndCharacterOffset=0)">
+    <Node Id="@139" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="397.746666666666,113.855,117.673333333333,25.24" Label="activateAction" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1448 StartCharacterOffset=0 EndLineNumber=1448 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@14" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="333.53318688161,573.391507810088,61.72,25.24" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/dialogs/qdialog.cpp StartLineNumber=546 StartCharacterOffset=0 EndLineNumber=546 EndCharacterOffset=0)">
+    <Node Id="@14" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="810.723333333333,512.347499999998,61.72,25.24" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/dialogs/qdialog.cpp StartLineNumber=546 StartCharacterOffset=0 EndLineNumber=546 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@140" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="952.550353548277,645.356151688498,117.673333333333,25.24" Label="activateAction" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1448 StartCharacterOffset=0 EndLineNumber=1448 EndCharacterOffset=0)">
+    <Node Id="@140" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="545.746666666666,113.855,117.673333333333,25.24" Label="activateAction" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1448 StartCharacterOffset=0 EndLineNumber=1448 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@142" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="929.816841619574,1000.64145515228,104.08,25.2399999999998" Label="runIteration" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentmapkernel.h StartLineNumber=68 StartCharacterOffset=0 EndLineNumber=68 EndCharacterOffset=0)">
+    <Node Id="@142" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1859.54333333333,753.609999999997,104.08,25.2399999999998" Label="runIteration" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentmapkernel.h StartLineNumber=68 StartCharacterOffset=0 EndLineNumber=68 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@144" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2305.12223349919,633.717457620386,86.7066666666669,25.24" Label="writeXml" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
+    <Node Id="@144" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="390.23,1265.9575,86.7066666666669,25.2399999999998" Label="writeXml" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@145" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2157.88213349919,644.062070622207,117.24,25.24" Label="writeLayerXml" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaplayer.cpp StartLineNumber=549 StartCharacterOffset=0 EndLineNumber=549 EndCharacterOffset=0)">
+    <Node Id="@145" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="374.963333333333,1209.03,117.24,25.2399999999998" Label="writeLayerXml" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaplayer.cpp StartLineNumber=549 StartCharacterOffset=0 EndLineNumber=549 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@146" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1704.09077495291,1002.77450684357,115.133333333333,25.2399999999999" Label="renderDisplaz" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudclassifiedrenderer.cpp StartLineNumber=182 StartCharacterOffset=0 EndLineNumber=182 EndCharacterOffset=0)">
+    <Node Id="@146" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1854.01666666667,924.392499999996,115.133333333333,25.24" Label="renderDisplaz" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudclassifiedrenderer.cpp StartLineNumber=182 StartCharacterOffset=0 EndLineNumber=182 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@147" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="669.118086106349,151.290273052974,140.04,25.2399999999998" Label="sendPostedEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1742 StartCharacterOffset=0 EndLineNumber=1742 EndCharacterOffset=0)">
+    <Node Id="@147" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1181.56333333333,867.464999999997,140.04,25.2399999999998" Label="sendPostedEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qcoreapplication.cpp StartLineNumber=1742 StartCharacterOffset=0 EndLineNumber=1742 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@148" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2411.29363911318,957.820474917043,119.443333333333,25.24" Label="createProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazprovider.cpp StartLineNumber=209 StartCharacterOffset=0 EndLineNumber=209 EndCharacterOffset=0)">
+    <Node Id="@148" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="515.861666666667,810.537499999997,119.443333333333,25.24" Label="createProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazprovider.cpp StartLineNumber=209 StartCharacterOffset=0 EndLineNumber=209 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@149" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2167.51251943968,68.3632345315424,138.396666666667,25.24" Label="geometryInserted" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=226 StartCharacterOffset=0 EndLineNumber=226 EndCharacterOffset=0)">
+    <Node Id="@149" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1404.385,1493.6675,138.396666666667,25.2399999999998" Label="geometryInserted" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=226 StartCharacterOffset=0 EndLineNumber=226 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@15" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="675.057435432335,506.237842880156,83.4633333333334,25.2399999999998" Label="instance" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=44 StartCharacterOffset=0 EndLineNumber=44 EndCharacterOffset=0)">
+    <Node Id="@15" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1364.85166666667,981.319999999996,83.4633333333331,25.2399999999998" Label="instance" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/providers/displaz/qgsdisplazfeatureiterator.cpp StartLineNumber=44 StartCharacterOffset=0 EndLineNumber=44 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@151" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1456.22716415311,869.814542885601,152.47,25.24" Label="addPointCloudLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=5848 StartCharacterOffset=0 EndLineNumber=5848 EndCharacterOffset=0)">
+    <Node Id="@151" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="374.348333333333,512.347499999998,152.47,25.24" Label="addPointCloudLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=5848 StartCharacterOffset=0 EndLineNumber=5848 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@152" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1594.03545277302,20.6818605150917,114.806666666667,25.24" Label="addGeometry" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/geometrycollection.cpp StartLineNumber=135 StartCharacterOffset=0 EndLineNumber=135 EndCharacterOffset=0)">
+    <Node Id="@152" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1416.18,1265.95749999999,114.806666666667,25.2399999999998" Label="addGeometry" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/geometrycollection.cpp StartLineNumber=135 StartCharacterOffset=0 EndLineNumber=135 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@153" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="790.183408286242,996.817760379051,109.633333333333,25.2399999999998" Label="runIterations" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentmapkernel.h StartLineNumber=77 StartCharacterOffset=0 EndLineNumber=77 EndCharacterOffset=0)">
+    <Node Id="@153" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1846.76666666667,683.129999999997,109.633333333333,25.2399999999998" Label="runIterations" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentmapkernel.h StartLineNumber=77 StartCharacterOffset=0 EndLineNumber=77 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@154" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="160.51318688161,749.608097346684,137.436666666667,25.24" Label="qt_static_metacall" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/.moc/release/moc_qwidget.cpp StartLineNumber=397 StartCharacterOffset=0 EndLineNumber=397 EndCharacterOffset=0)">
+    <Node Id="@154" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="543.865,341.564999999999,137.436666666667,25.24" Label="qt_static_metacall" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/.moc/release/moc_qwidget.cpp StartLineNumber=397 StartCharacterOffset=0 EndLineNumber=397 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@155" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1426.59868610635,20.9638470230424,137.436666666667,25.24" Label="qt_static_metacall" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/build/src/moc_geometrycollection.cpp StartLineNumber=95 StartCharacterOffset=0 EndLineNumber=95 EndCharacterOffset=0)">
+    <Node Id="@155" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1404.865,1209.03,137.436666666667,25.2399999999998" Label="qt_static_metacall" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/build/src/moc_geometrycollection.cpp StartLineNumber=95 StartCharacterOffset=0 EndLineNumber=95 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@156" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2000.07575277302,46.079296698715,137.436666666667,25.24" Label="qt_static_metacall" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/build/src/render/moc_view3d.cpp StartLineNumber=285 StartCharacterOffset=0 EndLineNumber=285 EndCharacterOffset=0)">
+    <Node Id="@156" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1404.865,1436.74,137.436666666667,25.2399999999998" Label="qt_static_metacall" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/build/src/render/moc_view3d.cpp StartLineNumber=285 StartCharacterOffset=0 EndLineNumber=285 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@16" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1457.41368050846,1036.24855191318,91.24,25.2399999999998" Label="attributes" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudblock.cpp StartLineNumber=47 StartCharacterOffset=0 EndLineNumber=47 EndCharacterOffset=0)">
+    <Node Id="@16" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2125.96333333333,924.392499999996,91.2399999999998,25.2399999999998" Label="attributes" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudblock.cpp StartLineNumber=47 StartCharacterOffset=0 EndLineNumber=47 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@162" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="630.094066832526,755.367216451407,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
+    <Node Id="@162" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="461.32,284.637499999999,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@163" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2721.05508688161,445.693732417865,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
+    <Node Id="@163" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="81.3200000000002,569.274999999998,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@164" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1889.54898610635,34.4431044453603,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3771 StartCharacterOffset=0 EndLineNumber=3771 EndCharacterOffset=0)">
+    <Node Id="@164" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1433.32,1379.8125,80.5266666666666,25.2399999999998" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3771 StartCharacterOffset=0 EndLineNumber=3771 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@165" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2878.22185354828,517.782273010969,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
+    <Node Id="@165" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="62.3200000000002,753.609999999997,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@166" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="-294.890546451724,725.352560034491,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3771 StartCharacterOffset=0 EndLineNumber=3771 EndCharacterOffset=0)">
+    <Node Id="@166" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="572.32,284.637499999999,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3771 StartCharacterOffset=0 EndLineNumber=3771 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@167" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2022.03782021494,490.852756467774,80.5266666666669,25.2400000000001" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
+    <Node Id="@167" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="221.32,227.71,80.5266666666669,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=3754 StartCharacterOffset=0 EndLineNumber=3754 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@168" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2261.85020577984,948.268403259115,119.443333333333,25.24" Label="createProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproviderregistry.cpp StartLineNumber=476 StartCharacterOffset=0 EndLineNumber=476 EndCharacterOffset=0)">
+    <Node Id="@168" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="515.861666666667,753.609999999997,119.443333333333,25.24" Label="createProvider" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproviderregistry.cpp StartLineNumber=476 StartCharacterOffset=0 EndLineNumber=476 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@169" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1665.91569471554,895.644908158767,191.803333333334,25.24" Label="addPointCloudLayerPrivate" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=5905 StartCharacterOffset=0 EndLineNumber=5905 EndCharacterOffset=0)">
+    <Node Id="@169" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="354.681666666666,569.274999999998,191.803333333334,25.24" Label="addPointCloudLayerPrivate" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=5905 StartCharacterOffset=0 EndLineNumber=5905 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@17" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="617.973308286241,971.726814470632,142.21,25.2399999999998" Label="forThreadFunction" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentiteratekernel.h StartLineNumber=254 StartCharacterOffset=0 EndLineNumber=254 EndCharacterOffset=0)">
+    <Node Id="@17" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1824.47833333333,626.202499999998,142.21,25.2399999999998" Label="forThreadFunction" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentiteratekernel.h StartLineNumber=254 StartCharacterOffset=0 EndLineNumber=254 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@170" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="120.27764156769,275.173270724371,128.47,25.2399999999998" Label="qt_internal_proc" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventdispatcher_win.cpp StartLineNumber=237 StartCharacterOffset=0 EndLineNumber=237 EndCharacterOffset=0)">
+    <Node Id="@170" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="992.348333333333,753.609999999997,128.47,25.2399999999998" Label="qt_internal_proc" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventdispatcher_win.cpp StartLineNumber=237 StartCharacterOffset=0 EndLineNumber=237 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@172" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="-86.3637797850566,631.121718689738,87.74,25.2399999999998" Label="WinMain" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/mainwin.cpp StartLineNumber=194 StartCharacterOffset=0 EndLineNumber=194 EndCharacterOffset=0)">
+    <Node Id="@172" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1362.71333333333,398.492499999998,87.7399999999998,25.2399999999998" Label="WinMain" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/mainwin.cpp StartLineNumber=194 StartCharacterOffset=0 EndLineNumber=194 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@173" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1902.08989736337,918.686380414042,153.493333333333,25.24" Label="QgsPointCloudLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=43 StartCharacterOffset=0 EndLineNumber=43 EndCharacterOffset=0)">
+    <Node Id="@173" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="498.836666666667,626.202499999998,153.493333333333,25.24" Label="QgsPointCloudLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=43 StartCharacterOffset=0 EndLineNumber=43 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@174" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="438.476720214943,678.702933247646,153.2,25.24" Label="activateCausedStack" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1370 StartCharacterOffset=0 EndLineNumber=1370 EndCharacterOffset=0)">
+    <Node Id="@174" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="343.983333333333,170.782499999999,153.2,25.24" Label="activateCausedStack" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1370 StartCharacterOffset=0 EndLineNumber=1370 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@175" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="621.676820214944,689.912536981509,153.2,25.24" Label="activateCausedStack" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1370 StartCharacterOffset=0 EndLineNumber=1370 EndCharacterOffset=0)">
+    <Node Id="@175" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="527.983333333333,170.782499999999,153.2,25.24" Label="activateCausedStack" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=1370 StartCharacterOffset=0 EndLineNumber=1370 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@176" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2581.02243349919,619.323681933133,92.2799999999997,25.24" Label="writeStyle" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=234 StartCharacterOffset=0 EndLineNumber=234 EndCharacterOffset=0)">
+    <Node Id="@176" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="387.443333333334,1379.8125,92.2799999999997,25.2399999999998" Label="writeStyle" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=234 StartCharacterOffset=0 EndLineNumber=234 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@177" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2421.82900016586,625.484024553808,129.193333333334,25.24" Label="writeSymbology" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=221 StartCharacterOffset=0 EndLineNumber=221 EndCharacterOffset=0)">
+    <Node Id="@177" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="368.986666666666,1322.885,129.193333333335,25.2399999999998" Label="writeSymbology" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=221 StartCharacterOffset=0 EndLineNumber=221 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@178" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2097.87221453025,935.203641728369,119.07,25.24" Label="setDataSource" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=288 StartCharacterOffset=0 EndLineNumber=288 EndCharacterOffset=0)">
+    <Node Id="@178" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="516.048333333333,683.129999999998,119.07,25.24" Label="setDataSource" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=288 StartCharacterOffset=0 EndLineNumber=288 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@18" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="464.546541619574,940.540827032092,123.426666666667,25.2399999999998" Label="threadFunction" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentiteratekernel.h StartLineNumber=216 StartCharacterOffset=0 EndLineNumber=216 EndCharacterOffset=0)">
+    <Node Id="@18" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1797.87,569.274999999998,123.426666666667,25.2399999999998" Label="threadFunction" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentiteratekernel.h StartLineNumber=216 StartCharacterOffset=0 EndLineNumber=216 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@184" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2922.87528688161,454.803999077834,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+    <Node Id="@184" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="182.936666666666,626.202499999998,61.2933333333331,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@185" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2680.01681959461,556.173932417865,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+    <Node Id="@185" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="62.936666666667,810.537499999997,61.2933333333331,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@186" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="84.4464202149428,691.008282179701,61.2933333333333,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+    <Node Id="@186" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="743.936666666667,341.564999999999,61.2933333333331,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@187" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2831.58185354828,445.693732417865,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+    <Node Id="@187" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="90.936666666667,626.202499999998,61.2933333333331,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@188" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="839.817600165859,783.861458774327,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=419 StartCharacterOffset=0 EndLineNumber=419 EndCharacterOffset=0)">
+    <Node Id="@188" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="419.936666666666,341.564999999999,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=419 StartCharacterOffset=0 EndLineNumber=419 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@189" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2132.56458688161,482.014012391445,61.2933333333335,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
+    <Node Id="@189" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="230.936666666666,284.637499999999,61.2933333333331,25.24" Label="impl" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qobjectdefs_impl.h StartLineNumber=394 StartCharacterOffset=0 EndLineNumber=394 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@190" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="217.559753548277,506.595643482458,85.9733333333334,25.2399999999998" Label="QgisApp" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=992 StartCharacterOffset=0 EndLineNumber=992 EndCharacterOffset=0)">
+    <Node Id="@190" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1363.59666666667,867.464999999997,85.9733333333334,25.2399999999998" Label="QgisApp" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=992 StartCharacterOffset=0 EndLineNumber=992 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@191" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1443.16606450853,189.125329489613,134.113333333333,25.24" Label="sendMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=2693 StartCharacterOffset=0 EndLineNumber=2693 EndCharacterOffset=0)">
+    <Node Id="@191" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="688.526666666667,1265.9575,134.113333333333,25.2399999999998" Label="sendMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=2693 StartCharacterOffset=0 EndLineNumber=2693 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@192" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1607.27939784187,247.931705566003,134.113333333333,25.24" Label="sendMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=2693 StartCharacterOffset=0 EndLineNumber=2693 EndCharacterOffset=0)">
+    <Node Id="@192" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1004.52666666667,1265.9575,134.113333333333,25.2399999999998" Label="sendMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=2693 StartCharacterOffset=0 EndLineNumber=2693 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@20" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1738.84221943968,26.0368807232082,120.706666666667,25.24" Label="endInsertRows" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/itemmodels/qabstractitemmodel.cpp StartLineNumber=2731 StartCharacterOffset=0 EndLineNumber=2731 EndCharacterOffset=0)">
+    <Node Id="@20" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1413.23,1322.885,120.706666666667,25.2399999999998" Label="endInsertRows" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/itemmodels/qabstractitemmodel.cpp StartLineNumber=2731 StartCharacterOffset=0 EndLineNumber=2731 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@21" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="293.806341619574,866.122862405907,55.37,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/thread/qthreadpool.cpp StartLineNumber=97 StartCharacterOffset=0 EndLineNumber=97 EndCharacterOffset=0)">
+    <Node Id="@21" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1738.89833333333,455.419999999998,55.3699999999999,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/thread/qthreadpool.cpp StartLineNumber=97 StartCharacterOffset=0 EndLineNumber=97 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@22" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2895.22974156769,80.8229853803864,98.2533333333331,25.24" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/geometry.cpp StartLineNumber=71 StartCharacterOffset=0 EndLineNumber=71 EndCharacterOffset=0)">
+    <Node Id="@22" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1424.45666666667,1664.45,98.2533333333331,25.2399999999998" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/geometry.cpp StartLineNumber=71 StartCharacterOffset=0 EndLineNumber=71 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@23" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2766.97630823436,88.6429318338112,98.2533333333331,25.24" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/pointarray.cpp StartLineNumber=712 StartCharacterOffset=0 EndLineNumber=712 EndCharacterOffset=0)">
+    <Node Id="@23" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1424.45666666667,1607.5225,98.2533333333331,25.2399999999998" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/pointarray.cpp StartLineNumber=712 StartCharacterOffset=0 EndLineNumber=712 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@24" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3163.04548688161,454.600376487662,157.7,25.24" Label="layerLegendChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=841 StartCharacterOffset=0 EndLineNumber=841 EndCharacterOffset=0)">
+    <Node Id="@24" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="211.733333333333,683.129999999998,157.7,25.24" Label="layerLegendChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=841 StartCharacterOffset=0 EndLineNumber=841 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@25" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2721.05508688161,500.933832417865,127.166666666667,25.24" Label="legendChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayer.cpp StartLineNumber=748 StartCharacterOffset=0 EndLineNumber=748 EndCharacterOffset=0)">
+    <Node Id="@25" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="0,867.464999999996,127.166666666667,25.24" Label="legendChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayer.cpp StartLineNumber=748 StartCharacterOffset=0 EndLineNumber=748 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@26" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2554.19832021494,459.222872193101,136.856666666667,25.24" Label="rendererChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayer.cpp StartLineNumber=736 StartCharacterOffset=0 EndLineNumber=736 EndCharacterOffset=0)">
+    <Node Id="@26" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="193.155,512.347499999998,136.856666666667,25.24" Label="rendererChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayer.cpp StartLineNumber=736 StartCharacterOffset=0 EndLineNumber=736 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@27" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3014.16872021494,452.534779175015,118.876666666667,25.24" Label="itemsChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayerlegend.cpp StartLineNumber=126 StartCharacterOffset=0 EndLineNumber=126 EndCharacterOffset=0)">
+    <Node Id="@27" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="62.145,683.129999999998,118.876666666667,25.24" Label="itemsChanged" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/build/src/core/qgis_core_autogen/include_relwithdebinfo/ewiega46ww/moc_qgsmaplayerlegend.cpp StartLineNumber=126 StartCharacterOffset=0 EndLineNumber=126 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@28" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1063.89694161957,975.498293745489,92.4133333333332,25.2399999999998" Label="doRender" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprenderercustompainterjob.cpp StartLineNumber=317 StartCharacterOffset=0 EndLineNumber=317 EndCharacterOffset=0)">
+    <Node Id="@28" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1720.37666666667,810.537499999997,92.413333333333,25.2399999999998" Label="doRender" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprenderercustompainterjob.cpp StartLineNumber=317 StartCharacterOffset=0 EndLineNumber=317 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@29" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="621.158472926849,893.210128164085,55.3699999999999,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentrunbase.h StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
+    <Node Id="@29" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1738.89833333333,626.202499999998,55.3699999999999,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtconcurrent/qtconcurrentrunbase.h StartLineNumber=131 StartCharacterOffset=0 EndLineNumber=131 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@30" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="756.35794947918,916.486714470632,99.23,25.2399999999998" Label="runFunctor">
+    <Node Id="@30" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1716.96833333333,683.129999999997,99.23,25.2399999999998" Label="runFunctor">
       <Category Ref="CallStackEntry" />
     </Node>
-    <Node Id="@32" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2321.36145354828,469.418287866013,67.5033333333336,25.24" Label="apply" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/gui/pointcloud/qgspointcloudrendererpropertieswidget.cpp StartLineNumber=168 StartCharacterOffset=0 EndLineNumber=168 EndCharacterOffset=0)">
+    <Node Id="@32" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="227.831666666666,398.492499999999,67.503333333334,25.24" Label="apply" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/gui/pointcloud/qgspointcloudrendererpropertieswidget.cpp StartLineNumber=168 StartCharacterOffset=0 EndLineNumber=168 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@34" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2358.19600823436,153.008865078551,65.4533333333334,25.24" Label="glInit" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/opengl/qgl.cpp StartLineNumber=4541 StartCharacterOffset=0 EndLineNumber=4541 EndCharacterOffset=0)">
+    <Node Id="@34" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1589.85666666667,1436.74,65.4533333333329,25.2399999999998" Label="glInit" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/opengl/qgl.cpp StartLineNumber=4541 StartCharacterOffset=0 EndLineNumber=4541 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@35" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="516.404102099002,450.997842880157,128.653333333333,25.2399999999998" Label="createLasViewer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=17220 StartCharacterOffset=0 EndLineNumber=17220 EndCharacterOffset=0)">
+    <Node Id="@35" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1342.25666666667,924.392499999996,128.653333333333,25.2399999999998" Label="createLasViewer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=17220 StartCharacterOffset=0 EndLineNumber=17220 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@36" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1493.67486683253,709.268691042604,73.7,25.24" Label="fileExit" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=6592 StartCharacterOffset=0 EndLineNumber=6592 EndCharacterOffset=0)">
+    <Node Id="@36" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="396.733333333333,867.464999999996,73.6999999999998,25.24" Label="fileExit" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=6592 StartCharacterOffset=0 EndLineNumber=6592 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@37" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="175.739853548276,668.621346207741,122.21,25.24" Label="layerProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=9401 StartCharacterOffset=0 EndLineNumber=9401 EndCharacterOffset=0)">
+    <Node Id="@37" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="743.478333333333,398.492499999999,122.21,25.24" Label="layerProperties" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=9401 StartCharacterOffset=0 EndLineNumber=9401 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@38" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2223.85802021494,475.073386809111,67.5033333333331,25.24" Label="apply" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/pointcloud/qgspointcloudlayerproperties.cpp StartLineNumber=149 StartCharacterOffset=0 EndLineNumber=149 EndCharacterOffset=0)">
+    <Node Id="@38" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="227.831666666666,341.564999999999,67.5033333333331,25.24" Label="apply" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/pointcloud/qgspointcloudlayerproperties.cpp StartLineNumber=149 StartCharacterOffset=0 EndLineNumber=149 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@39" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2453.64944156769,127.264582682285,98.2533333333331,25.24" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=444 StartCharacterOffset=0 EndLineNumber=444 EndCharacterOffset=0)">
+    <Node Id="@39" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1573.45666666667,1493.6675,98.2533333333331,25.2399999999998" Label="initializeGL" SourceLocation="(Assembly=file:///i:/tst/ccgis/displaz-master/displaz-master/src/render/view3d.cpp StartLineNumber=444 StartCharacterOffset=0 EndLineNumber=444 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@40" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1797.91762021494,515.310082322714,60.9533333333334,25.24" Label="click" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=407 StartCharacterOffset=0 EndLineNumber=407 EndCharacterOffset=0)">
+    <Node Id="@40" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="306.106666666666,113.854999999999,60.9533333333334,25.2399999999998" Label="click" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=407 StartCharacterOffset=0 EndLineNumber=407 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@41" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1888.87105354828,503.098440834558,103.166666666667,25.24" Label="emitClicked" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=414 StartCharacterOffset=0 EndLineNumber=414 EndCharacterOffset=0)">
+    <Node Id="@41" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="210,170.7825,103.166666666667,25.24" Label="emitClicked" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=414 StartCharacterOffset=0 EndLineNumber=414 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@42" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="619.358041567691,395.757842880157,107.876666666667,25.2399999999998" Label="show_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=7986 StartCharacterOffset=0 EndLineNumber=7986 EndCharacterOffset=0)">
+    <Node Id="@42" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1568.645,981.319999999996,107.876666666667,25.2399999999998" Label="show_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=7986 StartCharacterOffset=0 EndLineNumber=7986 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@44" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="499.078086106348,206.865416165614,140.04,25.2399999999998" Label="sendPostedEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/platformsupport/eventdispatchers/qwindowsguieventdispatcher.cpp StartLineNumber=81 StartCharacterOffset=0 EndLineNumber=81 EndCharacterOffset=0)">
+    <Node Id="@44" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1181.56333333333,810.537499999997,140.04,25.2399999999998" Label="sendPostedEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/platformsupport/eventdispatchers/qwindowsguieventdispatcher.cpp StartLineNumber=81 StartCharacterOffset=0 EndLineNumber=81 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@46" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="379.176441619574,916.265245951734,55.37,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/concurrent/qtconcurrentthreadengine.cpp StartLineNumber=297 StartCharacterOffset=0 EndLineNumber=297 EndCharacterOffset=0)">
+    <Node Id="@46" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1797.89833333333,512.347499999998,55.3699999999999,25.2399999999998" Label="run" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/concurrent/qtconcurrentthreadengine.cpp StartLineNumber=297 StartCharacterOffset=0 EndLineNumber=297 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@48" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1328.81525277302,25.1166409373074,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=1249 StartCharacterOffset=0 EndLineNumber=1249 EndCharacterOffset=0)">
+    <Node Id="@48" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1439.69166666667,1152.1025,67.7833333333333,25.2399999999998" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qobject.cpp StartLineNumber=1249 StartCharacterOffset=0 EndLineNumber=1249 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@49" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2227.77590823436,179.824839781268,100.42,25.24" Label="resizeEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/opengl/qgl.cpp StartLineNumber=4427 StartCharacterOffset=0 EndLineNumber=4427 EndCharacterOffset=0)">
+    <Node Id="@49" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1572.37333333333,1379.8125,100.42,25.2399999999998" Label="resizeEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/opengl/qgl.cpp StartLineNumber=4427 StartCharacterOffset=0 EndLineNumber=4427 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@5" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1352.41047495291,997.426480673886,73.8566666666668,25.2399999999998" Label="render" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayerrenderer.cpp StartLineNumber=141 StartCharacterOffset=0 EndLineNumber=141 EndCharacterOffset=0)">
+    <Node Id="@5" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1874.655,867.464999999997,73.8566666666666,25.2399999999998" Label="render" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayerrenderer.cpp StartLineNumber=141 StartCharacterOffset=0 EndLineNumber=141 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@51" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="327.949953548276,714.824608316594,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qaction.cpp StartLineNumber=1166 StartCharacterOffset=0 EndLineNumber=1166 EndCharacterOffset=0)">
+    <Node Id="@51" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="461.32,227.709999999999,80.5266666666666,25.24" Label="activate" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qaction.cpp StartLineNumber=1166 StartCharacterOffset=0 EndLineNumber=1166 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@53" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2703.30253349919,614.858644322661,109.32,25.24" Label="appendChild" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/xml/dom/qdom.cpp StartLineNumber=2605 StartCharacterOffset=0 EndLineNumber=2605 EndCharacterOffset=0)">
+    <Node Id="@53" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="378.923333333334,1436.74,109.32,25.2399999999998" Label="appendChild" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/xml/dom/qdom.cpp StartLineNumber=2605 StartCharacterOffset=0 EndLineNumber=2605 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@54" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="475.044608234358,395.757842880157,114.313333333333,25.2399999999998" Label="showChildren" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8408 StartCharacterOffset=0 EndLineNumber=8408 EndCharacterOffset=0)">
+    <Node Id="@54" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1773.42666666667,1038.2475,114.313333333333,25.2399999999998" Label="showChildren" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8408 StartCharacterOffset=0 EndLineNumber=8408 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@55" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="354.487841567691,455.291322051554,90.5566666666667,25.2399999999998" Label="setVisible" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8341 StartCharacterOffset=0 EndLineNumber=8341 EndCharacterOffset=0)">
+    <Node Id="@55" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1577.305,924.392499999996,90.5566666666668,25.2399999999998" Label="setVisible" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8341 StartCharacterOffset=0 EndLineNumber=8341 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@56" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="202.096341619574,804.848197346684,61.71,25.2399999999998" Label="start" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/thread/qthread_win.cpp StartLineNumber=379 StartCharacterOffset=0 EndLineNumber=379 EndCharacterOffset=0)">
+    <Node Id="@56" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1480.72833333333,398.492499999998,61.71,25.2399999999998" Label="start" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/thread/qthread_win.cpp StartLineNumber=379 StartCharacterOffset=0 EndLineNumber=379 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@57" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="788.520253548277,561.477842880156,67.7833333333334,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qframe.cpp StartLineNumber=550 StartCharacterOffset=0 EndLineNumber=550 EndCharacterOffset=0)">
+    <Node Id="@57" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="694.691666666667,1607.5225,67.7833333333333,25.2399999999998" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qframe.cpp StartLineNumber=550 StartCharacterOffset=0 EndLineNumber=550 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@59" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1286.47544755702,520.565329489612,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=3064 StartCharacterOffset=0 EndLineNumber=3064 EndCharacterOffset=0)">
+    <Node Id="@59" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1265.69166666667,1152.1025,67.7833333333333,25.2399999999998" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=3064 StartCharacterOffset=0 EndLineNumber=3064 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@6" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1826.43516683253,674.030441229383,64.53,25.24" Label="write" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=2170 StartCharacterOffset=0 EndLineNumber=2170 EndCharacterOffset=0)">
+    <Node Id="@6" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="401.318333333333,1038.2475,64.5299999999997,25.2399999999998" Label="write" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=2170 StartCharacterOffset=0 EndLineNumber=2170 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@60" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1618.07418688161,529.034640394303,149.843333333333,25.24" Label="mouseReleaseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=1011 StartCharacterOffset=0 EndLineNumber=1011 EndCharacterOffset=0)">
+    <Node Id="@60" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="349.661666666666,56.9274999999993,149.843333333333,25.2399999999998" Label="mouseReleaseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qabstractbutton.cpp StartLineNumber=1011 StartCharacterOffset=0 EndLineNumber=1011 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@61" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1100.22378688161,631.045329489612,149.843333333333,25.24" Label="mouseReleaseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=2945 StartCharacterOffset=0 EndLineNumber=2945 EndCharacterOffset=0)">
+    <Node Id="@61" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="529.661666666666,56.9274999999998,149.843333333333,25.24" Label="mouseReleaseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=2945 StartCharacterOffset=0 EndLineNumber=2945 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@63" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="498.234508234357,285.277842880157,150.49,25.2399999999998" Label="processMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/gui/kernel/qguiapplication.cpp StartLineNumber=2081 StartCharacterOffset=0 EndLineNumber=2081 EndCharacterOffset=0)">
+    <Node Id="@63" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="981.338333333333,867.464999999997,150.49,25.2399999999998" Label="processMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/gui/kernel/qguiapplication.cpp StartLineNumber=2081 StartCharacterOffset=0 EndLineNumber=2081 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@64" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1366.90143349919,720.207483698868,96.7733333333335,25.24" Label="closeEvent" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=13707 StartCharacterOffset=0 EndLineNumber=13707 EndCharacterOffset=0)">
+    <Node Id="@64" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="385.196666666666,810.537499999997,96.7733333333335,25.24" Label="closeEvent" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=13707 StartCharacterOffset=0 EndLineNumber=13707 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@65" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="516.97338688161,561.477842880156,143.763333333333,25.24" Label="contextMenuEvent" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/gui/layertree/qgslayertreeview.cpp StartLineNumber=186 StartCharacterOffset=0 EndLineNumber=186 EndCharacterOffset=0)">
+    <Node Id="@65" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="656.701666666667,1721.3775,143.763333333333,25.2399999999998" Label="contextMenuEvent" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/gui/layertree/qgslayertreeview.cpp StartLineNumber=186 StartCharacterOffset=0 EndLineNumber=186 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@66" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1171.33456683253,742.159917317133,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=2278 StartCharacterOffset=0 EndLineNumber=2278 EndCharacterOffset=0)">
+    <Node Id="@66" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="399.691666666666,683.129999999998,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=2278 StartCharacterOffset=0 EndLineNumber=2278 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@68" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1269.11800016586,730.341072413237,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
+    <Node Id="@68" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="399.691666666666,753.609999999997,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@69" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="886.30368688161,575.805329489612,117.693333333333,25.24" Label="viewportEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/itemviews/qabstractitemview.cpp StartLineNumber=1750 StartCharacterOffset=0 EndLineNumber=1750 EndCharacterOffset=0)">
+    <Node Id="@69" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="705.736666666667,1550.595,117.693333333333,25.2399999999998" Label="viewportEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/itemviews/qabstractitemview.cpp StartLineNumber=1750 StartCharacterOffset=0 EndLineNumber=1750 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@70" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="690.736820214943,561.477842880156,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
+    <Node Id="@70" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="694.691666666667,1664.45,67.7833333333333,25.2399999999998" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@72" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1280.06722021494,575.805329489612,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
+    <Node Id="@72" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="678.691666666666,0,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9353 StartCharacterOffset=0 EndLineNumber=9353 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@73" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1517.01197490103,339.653825450972,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidgetwindow.cpp StartLineNumber=274 StartCharacterOffset=0 EndLineNumber=274 EndCharacterOffset=0)">
+    <Node Id="@73" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="917.691666666667,1152.1025,67.7833333333333,25.2399999999998" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidgetwindow.cpp StartLineNumber=274 StartCharacterOffset=0 EndLineNumber=274 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@74" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2129.99247490103,207.913826934716,67.7833333333333,25.24" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9071 StartCharacterOffset=0 EndLineNumber=9071 EndCharacterOffset=0)">
+    <Node Id="@74" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1588.69166666667,1322.885,67.7833333333328,25.2399999999998" Label="event" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=9071 StartCharacterOffset=0 EndLineNumber=9071 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@75" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1614.79540823436,332.172044265931,145.776666666667,25.24" Label="handleMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidgetwindow.cpp StartLineNumber=556 StartCharacterOffset=0 EndLineNumber=556 EndCharacterOffset=0)">
+    <Node Id="@75" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="878.695,1209.03,145.776666666667,25.2399999999998" Label="handleMouseEvent" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidgetwindow.cpp StartLineNumber=556 StartCharacterOffset=0 EndLineNumber=556 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@77" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2003.72203349919,656.811105627156,124.16,25.24" Label="writeProjectFile" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=2313 StartCharacterOffset=0 EndLineNumber=2313 EndCharacterOffset=0)">
+    <Node Id="@77" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="371.503333333333,1152.1025,124.16,25.2399999999998" Label="writeProjectFile" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=2313 StartCharacterOffset=0 EndLineNumber=2313 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@78" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1920.96526683253,663.914946909509,52.7566666666667,25.24" Label="zip" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=3346 StartCharacterOffset=0 EndLineNumber=3346 EndCharacterOffset=0)">
+    <Node Id="@78" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="407.205,1095.175,52.7566666666667,25.2399999999998" Label="zip" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsproject.cpp StartLineNumber=3346 StartCharacterOffset=0 EndLineNumber=3346 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@8" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1716.40840016586,685.20872577674,80.0266666666666,25.24" Label="fileSave" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=7409 StartCharacterOffset=0 EndLineNumber=7409 EndCharacterOffset=0)">
+    <Node Id="@8" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="393.57,981.319999999996,80.0266666666666,25.24" Label="fileSave" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=7409 StartCharacterOffset=0 EndLineNumber=7409 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@80" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="462.482020263043,340.517842880157,116.933333333333,25.2399999999998" Label="processEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventdispatcher_win.cpp StartLineNumber=629 StartCharacterOffset=0 EndLineNumber=629 EndCharacterOffset=0)">
+    <Node Id="@80" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="783.116666666667,683.129999999997,116.933333333333,25.2399999999998" Label="processEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventdispatcher_win.cpp StartLineNumber=629 StartCharacterOffset=0 EndLineNumber=629 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@81" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="278.74774156769,283.787081565956,189.486666666667,25.2399999999998" Label="sendWindowSystemEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/gui/kernel/qwindowsysteminterface.cpp StartLineNumber=1032 StartCharacterOffset=0 EndLineNumber=1032 EndCharacterOffset=0)">
+    <Node Id="@81" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="961.84,810.537499999997,189.486666666667,25.2399999999998" Label="sendWindowSystemEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/gui/kernel/qwindowsysteminterface.cpp StartLineNumber=1032 StartCharacterOffset=0 EndLineNumber=1032 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@82" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="207.554408234358,449.399313260827,116.933333333333,25.2399999999998" Label="processEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/platformsupport/eventdispatchers/qwindowsguieventdispatcher.cpp StartLineNumber=74 StartCharacterOffset=0 EndLineNumber=74 EndCharacterOffset=0)">
+    <Node Id="@82" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="783.116666666667,626.202499999998,116.933333333333,25.2399999999998" Label="processEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/platformsupport/eventdispatchers/qwindowsguieventdispatcher.cpp StartLineNumber=74 StartCharacterOffset=0 EndLineNumber=74 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@83" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="333.53318688161,516.230643638715,61.72,25.2399999999998" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventloop.cpp StartLineNumber=211 StartCharacterOffset=0 EndLineNumber=211 EndCharacterOffset=0)">
+    <Node Id="@83" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="810.723333333333,569.274999999998,61.72,25.2399999999998" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/corelib/kernel/qeventloop.cpp StartLineNumber=211 StartCharacterOffset=0 EndLineNumber=211 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@84" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1030.30825016586,808.519581761213,155.506666666667,25.24" Label="addLayersFromItems" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/browser/qgsinbuiltdataitemproviders.cpp StartLineNumber=608 StartCharacterOffset=0 EndLineNumber=608 EndCharacterOffset=0)">
+    <Node Id="@84" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="372.829999999999,398.492499999999,155.506666666667,25.24" Label="addLayersFromItems" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/browser/qgsinbuiltdataitemproviders.cpp StartLineNumber=608 StartCharacterOffset=0 EndLineNumber=608 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@85" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1186.31037495291,1002.14326884151,136.1,25.2399999999998" Label="renderLayerStatic" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprendererparalleljob.cpp StartLineNumber=350 StartCharacterOffset=0 EndLineNumber=350 EndCharacterOffset=0)">
+    <Node Id="@85" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1843.53333333333,810.537499999997,136.1,25.2399999999998" Label="renderLayerStatic" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprendererparalleljob.cpp StartLineNumber=350 StartCharacterOffset=0 EndLineNumber=350 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@86" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1232.81827304194,841.424607236237,140.223333333333,25.24" Label="handleDropUriList" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=2203 StartCharacterOffset=0 EndLineNumber=2203 EndCharacterOffset=0)">
+    <Node Id="@86" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="380.471666666667,455.419999999998,140.223333333333,25.24" Label="handleDropUriList" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=2203 StartCharacterOffset=0 EndLineNumber=2203 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@87" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="342.823866832526,770.064708316594,107.033333333333,25.24" Label="close_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8497 StartCharacterOffset=0 EndLineNumber=8497 EndCharacterOffset=0)">
+    <Node Id="@87" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="559.066666666667,398.492499999999,107.033333333333,25.24" Label="close_helper" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=8497 StartCharacterOffset=0 EndLineNumber=8497 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@88" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3529.69235354828,455.939934925968,145.553333333333,25.24" Label="addLegendToLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=1325 StartCharacterOffset=0 EndLineNumber=1325 EndCharacterOffset=0)">
+    <Node Id="@88" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="198.806666666666,810.537499999997,145.553333333333,25.24" Label="addLegendToLayer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=1325 StartCharacterOffset=0 EndLineNumber=1325 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@89" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="3350.74558688161,455.366700731712,148.946666666667,25.24" Label="refreshLayerLegend" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=563 StartCharacterOffset=0 EndLineNumber=563 EndCharacterOffset=0)">
+    <Node Id="@89" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="197.11,753.609999999997,148.946666666667,25.24" Label="refreshLayerLegend" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/layertree/qgslayertreemodel.cpp StartLineNumber=563 StartCharacterOffset=0 EndLineNumber=563 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@9" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1597.37496683253,697.456658750585,89.0333333333333,25.24" Label="saveDirty" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=13492 StartCharacterOffset=0 EndLineNumber=13492 EndCharacterOffset=0)">
+    <Node Id="@9" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="389.066666666667,924.392499999996,89.0333333333333,25.24" Label="saveDirty" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/qgisapp.cpp StartLineNumber=13492 StartCharacterOffset=0 EndLineNumber=13492 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@90" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2418.86488688161,464.293107781293,105.333333333333,25.24" Label="setRenderer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=597 StartCharacterOffset=0 EndLineNumber=597 EndCharacterOffset=0)">
+    <Node Id="@90" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="208.916666666667,455.419999999998,105.333333333333,25.24" Label="setRenderer" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/pointcloud/qgspointcloudlayer.cpp StartLineNumber=597 StartCharacterOffset=0 EndLineNumber=597 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@91" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="926.453508286241,941.577660379051,107.443333333333,25.2399999999998" Label="staticRender" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprenderercustompainterjob.cpp StartLineNumber=264 StartCharacterOffset=0 EndLineNumber=264 EndCharacterOffset=0)">
+    <Node Id="@91" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1712.86166666667,753.609999999997,107.443333333333,25.2399999999998" Label="staticRender" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/core/qgsmaprenderercustompainterjob.cpp StartLineNumber=264 StartCharacterOffset=0 EndLineNumber=264 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@92" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1849.22420828624,1051.88747247645,83.4066666666668,25.2399999999998" Label="QVector" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qvector.h StartLineNumber=357 StartCharacterOffset=0 EndLineNumber=357 EndCharacterOffset=0)">
+    <Node Id="@92" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2129.88,981.319999999996,83.4066666666668,25.2399999999998" Label="QVector" SourceLocation="(Assembly=file:///i:/00000/qgisdev/apps/qt5/include/qtcore/qvector.h StartLineNumber=357 StartCharacterOffset=0 EndLineNumber=357 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@93" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="425.25328688161,536.020196724182,61.72,25.24" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=2675 StartCharacterOffset=0 EndLineNumber=2675 EndCharacterOffset=0)">
+    <Node Id="@93" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="626.723333333333,1778.305,61.72,25.2399999999998" Label="exec" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/widgets/qmenu.cpp StartLineNumber=2675 StartCharacterOffset=0 EndLineNumber=2675 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@94" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="31.3762202149431,559.535201752891,64.4633333333334,25.2399999999998" Label="main" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/main.cpp StartLineNumber=1611 StartCharacterOffset=0 EndLineNumber=1611 EndCharacterOffset=0)">
+    <Node Id="@94" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1374.35166666667,455.419999999998,64.4633333333331,25.2399999999998" Label="main" SourceLocation="(Assembly=file:///i:/tst/ccgis/qgis3.17/qgis-master/src/app/main.cpp StartLineNumber=1611 StartCharacterOffset=0 EndLineNumber=1611 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@95" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="757.234808234358,379.176599545838,240.12,25.2399999999998" Label="sendPendingMoveAndResizeEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=7935 StartCharacterOffset=0 EndLineNumber=7935 EndCharacterOffset=0)">
+    <Node Id="@95" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1502.52333333333,1038.2475,240.12,25.2399999999998" Label="sendPendingMoveAndResizeEvents" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qwidget.cpp StartLineNumber=7935 StartCharacterOffset=0 EndLineNumber=7935 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="@99" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1088.59171943968,52.2286599400782,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
+    <Node Id="@99" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1216.985,1038.2475,69.1966666666667,25.2399999999998" Label="notify" SourceLocation="(Assembly=file:///c:/users/qt/work/qt/qtbase/src/widgets/kernel/qapplication.cpp StartLineNumber=3655 StartCharacterOffset=0 EndLineNumber=3655 EndCharacterOffset=0)">
       <Category Ref="CallStackEntry" />
       <Category Ref="CodeSchema_SourceLocation" />
     </Node>
-    <Node Id="ExternalCodeRootNode" Category="ExternalCallStackEntry" Bounds="-184.363779785057,712.934445884367,68,25.2399999999998" Label="外部代码">
+    <Node Id="ExternalCodeRootNode" Category="ExternalCallStackEntry" Bounds="1372.58333333333,341.564999999999,68,25.2399999999998" Label="外部代码">
       <Category Ref="CallStackEntry" />
     </Node>
   </Nodes>
   <Links>
-    <Link Source="@101" Target="@48" Category="CallStackDirectCall" Bounds="1298.81515277302,41.3628508895295,21.0321403798732,1.77945921067279" />
-    <Link Source="@102" Target="@103" Category="CallStackDirectCall" Bounds="1000.30770016586,767.284428742189,21.0195940247357,1.38571918058494" />
-    <Link Source="@103" Target="@66" Category="CallStackDirectCall" Bounds="1141.33446683253,757.742917450644,21.0215195984381,1.4529136087699" />
-    <Link Source="@104" Target="@105" Category="CallStackDirectCall" Bounds="1468.98114657698,545.805329489612,57.0541562954563,26.2394907778478" />
-    <Link Source="@105" Target="@121" Category="CallStackDirectCall" Bounds="1258.48449707031,600.695495605469,133.072387695313,7.67486572265625" />
-    <Link Source="@106" Target="@107" Category="CallStackDirectCall" Bounds="1096.55157490102,368.27803273084,31.2666674072157,0.393884517958497" />
-    <Link Source="@106" Target="@108" Category="CallStackDirectCall" Bounds="1096.55157490102,375.940332942526,172.752631119385,34.1155958439733" />
-    <Link Source="@106" Target="@109" Category="CallStackDirectCall" Bounds="1078.07168473088,381.727772713331,99.685629196365,78.0492649148218" />
-    <Link Source="@106" Target="@110" Category="CallStackDirectCall" Bounds="1096.55157490102,327.104907365254,127.342439130591,33.0290342729438" />
-    <Link Source="@107" Target="@59" Category="CallStackDirectCall" Bounds="1202.08114825882,380.085329489612,103.033192952225,133.358016839217" />
-    <Link Source="@108" Target="@59" Category="CallStackDirectCall" Bounds="1322.90198790852,435.325329489612,8.97166067723833,76.3015766735746" />
-    <Link Source="@109" Target="@72" Category="CallStackDirectCall" Bounds="1213.86960219385,490.565329489612,80.7465734836876,78.9481082391995" />
-    <Link Source="@110" Target="@73" Category="CallStackDirectCall" Bounds="1336.77514648438,316.480621337891,181.548706054688,19.3810729980469" />
-    <Link Source="@111" Target="@112" Category="CallStackDirectCall" Bounds="1958.96560823436,264.257351029046,26.326608972415,6.58481050424666" />
-    <Link Source="@112" Target="@74" Category="CallStackDirectCall" Bounds="2096.58509525248,230.860866451356,24.6602764690215,5.97267816368759" />
-    <Link Source="@113" Target="@23" Category="CallStackDirectCall" Bounds="2736.97620823436,104.220894515176,21.0117353141623,1.06946391464578" />
-    <Link Source="@115" Target="@117" Category="CallStackDirectCall" Bounds="952.802118927802,101.488098207665,27.8330194715616,6.56233109185563" />
-    <Link Source="@117" Target="@99" Category="CallStackDirectCall" Bounds="1058.59161943968,76.3784283929044,21.3032045842631,5.67316591819628" />
-    <Link Source="@118" Target="@119" Category="CallStackDirectCall" Bounds="600.093966832525,780.593294527999,131.527174231101,1.0873977274" />
-    <Link Source="@119" Target="@102" Category="CallStackDirectCall" Bounds="809.817500165859,773.074894388748,112.304198295828,5.47212042277636" />
-    <Link Source="@12" Target="@83" Category="CallStackDirectCall" Bounds="187.559653548277,532.652183185655,137.014270296737,13.0807334768975" />
-    <Link Source="@120" Target="@122" Category="CallStackDirectCall" Bounds="1539.107528247,480.876843449843,69.9772547787352,3.41225858915692" />
-    <Link Source="@121" Target="@69" Category="CallStackDirectCall" Bounds="1012.99702021494,588.425329489612,21.0001,0" />
-    <Link Source="@122" Target="@104" Category="CallStackDirectCall" Bounds="1588.3821712172,499.034540394303,37.5243671757319,17.6925702531299" />
-    <Link Source="@123" Target="@124" Category="CallStackDirectCall" Bounds="1084.84913101102,214.365329489613,102.107593725405,81.277293872674" />
-    <Link Source="@124" Target="@106" Category="CallStackDirectCall" Bounds="1061.95324156769,326.487672713331,0,21.0001000000001" />
-    <Link Source="@125" Target="@126" Category="CallStackDirectCall" Bounds="974.527568462297,159.125329489612,70.7709643878807,122.752356124694" />
-    <Link Source="@126" Target="@106" Category="CallStackDirectCall" Bounds="981.49326588872,314.91466708839,54.2585005971669,36.5453336158752" />
-    <Link Source="@127" Target="@128" Category="CallStackDirectCall" Bounds="1204.37846556899,269.605329489613,104.828764818498,30.1761838537238" />
-    <Link Source="@128" Target="@106" Category="CallStackDirectCall" Bounds="1091.76858962869,324.845329489612,47.3735173203852,27.1654157674292" />
-    <Link Source="@129" Target="@130" Category="CallStackDirectCall" Bounds="798.961274901023,331.935107589546,21.0230430422218,1.50399501967433" />
-    <Link Source="@130" Target="@106" Category="CallStackDirectCall" Bounds="898.158041567691,342.233195658614,120.315616031967,19.7406962715441" />
-    <Link Source="@131" Target="@132" Category="CallStackDirectCall" Bounds="1487.01187490103,315.259362321479,294.595128221398,25.9925136410973" />
-    <Link Source="@132" Target="@111" Category="CallStackDirectCall" Bounds="1859.42142724176,293.274080293943,22.1275558810476,7.12026432143864" />
-    <Link Source="@133" Target="(Name=00007ffa5e854379 @1 @2)" Category="CallStackDirectCall" Bounds="3893.79578688161,468.771570781949,21.0001004983792,0.0069886768477545" />
-    <Link Source="@135" Target="(Name=QgsDisplazPointCloudIndex::load @3 @4 OverloadingParameters=[(@76 Name=fileName)] @2)" Category="CallStackDirectCall" Bounds="2709.14373911318,975.93734483468,21.0005443254049,0.208684862989685" />
-    <Link Source="@136" Target="@14" Category="CallStackDirectCall" Bounds="403.970624850596,596.169694107956,95.1165725865836,24.4131988813004" />
-    <Link Source="@137" Target="(Name=std::_Ref_count_base::_Decref @3 @19 @2)" Category="CallStackDirectCall" Bounds="1548.65393066406,994.4609375,291.576171875,8.80426025390625" />
-    <Link Source="@139" Target="@174" Category="CallStackDirectCall" Bounds="600.607580076498,655.192673255469,204.269340138445,25.4668712017191" />
-    <Link Source="@14" Target="@83" Category="CallStackDirectCall" Bounds="364.39318688161,550.470643638715,0,22.9208641713724" />
-    <Link Source="@140" Target="@175" Category="CallStackDirectCall" Bounds="783.517855528157,666.348760403757,169.032498020119,24.0537584174024" />
-    <Link Source="@142" Target="@85" Category="CallStackDirectCall" Bounds="1033.89684161957,1013.54825651383,143.413670008767,0.790377321743449" />
-    <Link Source="@144" Target="@177" Category="CallStackDirectCall" Bounds="2391.82890016586,642.495624121372,21.0160871850303,1.25432708754329" />
-    <Link Source="@145" Target="@144" Category="CallStackDirectCall" Bounds="2275.12213349919,650.438966989281,21.0276215154736,1.64823026447255" />
-    <Link Source="@146" Target="(Name=PointArray::getPointByIndex @7 Type=Imath::Vec3&lt;float&gt; OverloadingParameters=[(Type=&quot;unsigned __int64&quot; Name=inds)] @2)" Category="CallStackDirectCall" Bounds="1819.22412109375,1020.53137207031,153.692993164063,6.9869384765625" />
-    <Link Source="@147" Target="@115" Category="CallStackDirectCall" Bounds="785.876160373909,135.636546717475,57.973456737928,15.6537263354994" />
-    <Link Source="@148" Target="@135" Category="CallStackDirectCall" Bounds="2530.73697244651,972.174470718396,21.0038911439851,0.609839964095727" />
-    <Link Source="@149" Target="@113" Category="CallStackDirectCall" Bounds="2305.90918610635,85.6081943561697,267.013723599698,17.846206473269" />
-    <Link Source="@15" Target="(Name=QgsdisplazfileLoader::QgsdisplazfileLoader @3 @19 @2)" Category="CallStackDirectCall" Bounds="758.520768765668,520.721508411154,192.266973362174,8.58631728913463" />
-    <Link Source="@151" Target="@169" Category="CallStackDirectCall" Bounds="1608.69716415311,891.020255877459,48.5061454852398,5.46284309670796" />
-    <Link Source="@152" Target="@20" Category="CallStackDirectCall" Bounds="1708.84211943968,35.3822796860575,21.0060048981286,0.761302397575058" />
-    <Link Source="@153" Target="@142" Category="CallStackDirectCall" Bounds="899.816741619575,1010.96930468573,21.0036106879453,0.586828100374873" />
-    <Link Source="@154" Target="@87" Category="CallStackDirectCall" Bounds="297.949853548276,770.640236128866,35.9406989198915,4.39967229379954" />
-    <Link Source="@155" Target="@152" Category="CallStackDirectCall" Bounds="1564.03535277302,33.4217979225592,21.0001146805118,0.0379303227970951" />
-    <Link Source="@156" Target="@149" Category="CallStackDirectCall" Bounds="2137.51241943968,67.8187854690969,21.0783199673983,2.79726665239077" />
-    <Link Source="@16" Target="@92" Category="CallStackDirectCall" Bounds="1548.65368050846,1050.70783741786,291.577833635027,11.7556966876623" />
-    <Link Source="@162" Target="@188" Category="CallStackDirectCall" Bounds="692.038391113281,780.607238769531,138.788940429688,20.7263793945313" />
-    <Link Source="@163" Target="@184" Category="CallStackDirectCall" Bounds="2801.58178710938,466.956115722656,112.404296875,11.196044921875" />
-    <Link Source="@163" Target="@187" Category="CallStackDirectCall" Bounds="2801.58175354828,458.313732417865,21.0001000000002,0" />
-    <Link Source="@164" Target="@156" Category="CallStackDirectCall" Bounds="1970.07565277302,50.4341357587789,21.0314792599161,1.76085210247596" />
-    <Link Source="@165" Target="@185" Category="CallStackDirectCall" Bounds="2750.16040564389,537.840265171103,128.061447904387,23.6572575261575" />
-    <Link Source="@166" Target="@154" Category="CallStackDirectCall" Bounds="-214.363879785057,739.990935888229,365.888353693673,18.3417555656678" />
-    <Link Source="@166" Target="@186" Category="CallStackDirectCall" Bounds="-214.363876342773,711.227661132813,289.972496032715,36.0197143554688" />
-    <Link Source="@167" Target="@189" Category="CallStackDirectCall" Bounds="2102.56448688161,498.103668389832,21.0344268659801,1.84241137270374" />
-    <Link Source="@168" Target="@148" Category="CallStackDirectCall" Bounds="2381.29353911318,964.705671283589,21.0184284503966,1.34344835512036" />
-    <Link Source="@169" Target="@173" Category="CallStackDirectCall" Bounds="1857.66694380959,918.441498373985,35.4732553798726,3.76628436408907" />
-    <Link Source="@17" Target="@153" Category="CallStackDirectCall" Bounds="759.631791483371,995.700287872035,21.6659301509454,3.48648359427011" />
-    <Link Source="@170" Target="@44" Category="CallStackDirectCall" Bounds="248.222393853453,233.240483355609,243.432202567925,43.2370276204152" />
-    <Link Source="@170" Target="@81" Category="CallStackDirectCall" Bounds="248.74764156769,290.721161117203,21.0094347481538,0.957629363399519" />
-    <Link Source="@172" Target="@94" Category="CallStackDirectCall" Bounds="-23.7890978054237,589.808906305865,61.2316178545627,41.3128123838725" />
-    <Link Source="@173" Target="@178" Category="CallStackDirectCall" Bounds="2055.5832306967,938.405221935792,33.327239214253,3.08267185814077" />
-    <Link Source="@174" Target="@51" Category="CallStackDirectCall" Bounds="417.203089894633,703.942933247646,46.5632598812622,11.452428323424" />
-    <Link Source="@175" Target="@51" Category="CallStackDirectCall" Bounds="417.451094001849,708.314044090143,204.225726213094,15.4142622436939" />
-    <Link Source="@176" Target="@53" Category="CallStackDirectCall" Bounds="2673.30243349919,629.651585329092,21.0053392273912,0.717045550202556" />
-    <Link Source="@177" Target="@176" Category="CallStackDirectCall" Bounds="2551.02233349919,634.356898194873,21.00870961194,0.919595158345146" />
-    <Link Source="@178" Target="@168" Category="CallStackDirectCall" Bounds="2216.94221453025,952.56163215582,35.9363573194241,2.85993309778928" />
-    <Link Source="@18" Target="@17" Category="CallStackDirectCall" Bounds="587.167180968271,964.826916930044,27.1842503957743,5.20682869876998" />
-    <Link Source="@184" Target="@24" Category="CallStackDirectCall" Bounds="2983.03491210938,478.870483398438,171.210205078125,9.84713745117188" />
-    <Link Source="@185" Target="@25" Category="CallStackDirectCall" Bounds="2727.56359445253,531.558778655804,32.9634518005523,24.615153762061" />
-    <Link Source="@186" Target="@37" Category="CallStackDirectCall" Bounds="145.739753548276,694.0265545929,21.5725069714462,3.96661457608752" />
-    <Link Source="@187" Target="@27" Category="CallStackDirectCall" Bounds="2892.87524414063,446.823272705078,133.588134765625,8.05136108398438" />
-    <Link Source="@188" Target="@84" Category="CallStackDirectCall" Bounds="901.110933499193,799.66200511385,120.245396006329,12.4792055942728" />
-    <Link Source="@189" Target="@38" Category="CallStackDirectCall" Bounds="2193.85792021494,490.834913008508,21.0243283427353,1.54580945884658" />
-    <Link Source="@190" Target="@35" Category="CallStackDirectCall" Bounds="303.53308688161,476.259480936913,204.395258011756,35.4918247891599" />
-    <Link Source="@190" Target="@55" Category="CallStackDirectCall" Bounds="294.792137829678,483.643355659882,62.2834839448549,22.9522878225765" />
-    <Link Source="@191" Target="@123" Category="CallStackDirectCall" Bounds="1271.92939784187,201.745329489613,171.236666666667,2.8421709430404E-14" />
-    <Link Source="@191" Target="@125" Category="CallStackDirectCall" Bounds="1121.62787640814,154.8403629163,321.538188100391,38.8109563981054" />
-    <Link Source="@192" Target="@127" Category="CallStackDirectCall" Bounds="1422.16551009127,257.752553094099,185.113887750599,2.05480769821941" />
-    <Link Source="@20" Target="@164" Category="CallStackDirectCall" Bounds="1859.54888610635,42.541095861318,21.0186810384332,1.3527186414324" />
-    <Link Source="@21" Target="@29" Category="CallStackDirectCall" Bounds="349.176341619574,881.033701171858,263.012785456342,21.7634056299061" />
-    <Link Source="@21" Target="@46" Category="CallStackDirectCall" Bounds="342.977569154317,891.362862405907,34.6372463880704,20.3442902534014" />
-    <Link Source="@22" Target="(Name=Geometry::initializeBboxGL @3 @19 OverloadingParameters=[(Type=&quot;unsigned int&quot; Name=bboxShader)] @2)" Category="CallStackDirectCall" Bounds="2993.48307490103,91.6179738534385,21.0031459156098,0.546571878445945" />
-    <Link Source="@23" Target="@22" Category="CallStackDirectCall" Bounds="2865.22964156769,96.9861027001659,21.0167829639645,1.28144809171935" />
-    <Link Source="@24" Target="@89" Category="CallStackDirectCall" Bounds="3320.74548688161,467.549983377216,21.000178631396,0.0877844458944423" />
-    <Link Source="@25" Target="@163" Category="CallStackDirectCall" Bounds="2770.14633273372,479.225171968828,9.16446497510969,21.7086604490372" />
-    <Link Source="@26" Target="@163" Category="CallStackDirectCall" Bounds="2691.05498688161,463.115137116904,21.0426172833545,2.05267058965029" />
-    <Link Source="@27" Target="@165" Category="CallStackDirectCall" Bounds="2956.78445243994,477.774779175015,86.8193344349038,36.518023603698" />
-    <Link Source="@28" Target="@5" Category="CallStackDirectCall" Bounds="1156.31030273438,990.02490234375,188.143188476563,7.76336669921875" />
-    <Link Source="@29" Target="@30" Category="CallStackDirectCall" Bounds="676.528472926849,909.931282868066,70.9266301580905,10.506811735973" />
-    <Link Source="@30" Target="@91" Category="CallStackDirectCall" Bounds="855.58794947918,936.252933629778,61.9574862785064,8.92394992433731" />
-    <Link Source="@32" Target="@90" Category="CallStackDirectCall" Bounds="2388.86478688161,479.627524466484,21.0088087646659,0.924887281175245" />
-    <Link Source="@34" Target="@39" Category="CallStackDirectCall" Bounds="2423.64934156769,153.10632600385,21.6811031051266,4.99014133377159" />
-    <Link Source="@35" Target="@15" Category="CallStackDirectCall" Bounds="611.814334418577,476.237842880156,65.5522828426915,26.6143794026845" />
-    <Link Source="@36" Target="@9" Category="CallStackDirectCall" Bounds="1567.37486683253,715.747539282272,21.0503001557622,2.23268424359287" />
-    <Link Source="@37" Target="@136" Category="CallStackDirectCall" Bounds="297.949853548276,646.398440488539,164.765595897352,25.4168193111273" />
-    <Link Source="@38" Target="@32" Category="CallStackDirectCall" Bounds="2291.36135354828,484.516964854431,21.0151993798959,1.21885996974055" />
-    <Link Source="@39" Target="@113" Category="CallStackDirectCall" Bounds="2551.90277490103,123.584749031119,34.1939512414051,6.68928929122853" />
-    <Link Source="@40" Target="@41" Category="CallStackDirectCall" Bounds="1858.87095354828,522.314679136797,21.0530677400038,2.29423778371415" />
-    <Link Source="@41" Target="@167" Category="CallStackDirectCall" Bounds="1992.03772021494,508.419221939821,21.0452103133055,2.11505819956915" />
-    <Link Source="@42" Target="@54" Category="CallStackDirectCall" Bounds="598.357941567691,408.377842880157,21.0001000000001,5.6843418860808E-14" />
-    <Link Source="@42" Target="@95" Category="CallStackDirectCall" Bounds="727.234708234358,402.284090871542,21.0328758706393,1.70957799593356" />
-    <Link Source="@44" Target="@147" Category="CallStackDirectCall" Bounds="607.710758603667,179.326247476441,84.2599763425883,27.5391686891731" />
-    <Link Source="@46" Target="@18" Category="CallStackDirectCall" Bounds="434.546441619574,934.514042272146,22.7119171821272,4.61769029670495" />
-    <Link Source="@48" Target="@155" Category="CallStackDirectCall" Bounds="1396.59858610635,36.0175222002966,21.0045098191888,0.657773431656025" />
-    <Link Source="@49" Target="@34" Category="CallStackDirectCall" Bounds="2327.33964163509,175.478736976763,22.0998242236665,5.24743486826989" />
-    <Link Source="@5" Target="(Name=QgsDisplazPointCloudIndex::RootNode @3 Type=&quot;OctreeNode *&quot; @2)" Category="CallStackDirectCall" Bounds="1426.26714161957,1011.36893511899,143.392632167824,5.1350875246485" />
-    <Link Source="@5" Target="@137" Category="CallStackDirectCall" Bounds="1426.26714161957,1001.62544187882,21.0934182149442,3.06141211474312" />
-    <Link Source="@5" Target="@146" Category="CallStackDirectCall" Bounds="1426.26708984375,1015.05780029297,269.175415039063,25.5808715820313" />
-    <Link Source="@5" Target="@16" Category="CallStackDirectCall" Bounds="1424.89396161207,1022.1870870914,32.6634449610199,11.1532082530433" />
-    <Link Source="@51" Target="@162" Category="CallStackDirectCall" Bounds="408.476620214943,732.847263783851,212.697391528988,28.5403773130734" />
-    <Link Source="@51" Target="@166" Category="CallStackDirectCall" Bounds="-205.374099731445,728.596496582031,533.32405090332,12.6951293945313" />
-    <Link Source="@53" Target="(Name=QDomNodePrivate::insertAfter @52 Type=&quot;QDomNodePrivate *&quot; OverloadingParameters=[(Type=&quot;QDomNodePrivate *&quot; Name=newChild),(Type=&quot;QDomNodePrivate *&quot; Name=refChild)] @2)" Category="CallStackDirectCall" Bounds="2812.62253349919,625.352182305527,21.0036521884467,0.590289621343914" />
-    <Link Source="@54" Target="@55" Category="CallStackDirectCall" Bounds="436.04871282649,420.997842880156,68.0787625039056,30.6034094401012" />
-    <Link Source="@55" Target="@42" Category="CallStackDirectCall" Bounds="445.03546201018,421.872700337169,166.257967479892,36.1858224212278" />
-    <Link Source="@56" Target="@21" Category="CallStackDirectCall" Bounds="251.186852151048,830.088197346684,44.668378636729,30.9130329761027" />
-    <Link Source="@57" Target="@70" Category="CallStackDirectCall" Bounds="767.520153548276,574.097842880156,21.0001000000002,0" />
-    <Link Source="@59" Target="@72" Category="CallStackDirectCall" Bounds="1316.46000329689,545.805329489612,2.44310243554219,21.0599548572766" />
-    <Link Source="@6" Target="@78" Category="CallStackDirectCall" Bounds="1890.96516683253,680.565502598821,21.0581332823633,2.40303674614995" />
-    <Link Source="@60" Target="@40" Category="CallStackDirectCall" Bounds="1767.91752021494,531.926953395493,21.0459829090541,2.13330987292807" />
-    <Link Source="@61" Target="@139" Category="CallStackDirectCall" Bounds="931.541137695313,640.903076171875,168.6826171875,3.90142822265625" />
-    <Link Source="@61" Target="@140" Category="CallStackDirectCall" Bounds="1079.18951605566,650.212721454021,21.0342708259543,1.8381814221483" />
-    <Link Source="@63" Target="@129" Category="CallStackDirectCall" Bounds="643.659082675274,310.517842880157,26.4365940600503,4.75394471533468" />
-    <Link Source="@64" Target="@36" Category="CallStackDirectCall" Bounds="1463.67476683253,726.237156268131,21.0403759930996,1.99724720725726" />
-    <Link Source="@65" Target="@93" Category="CallStackDirectCall" Bounds="495.812203440379,556.25378358465,27.2393942396812,5.22405929550598" />
-    <Link Source="@66" Target="@68" Category="CallStackDirectCall" Bounds="1239.11790016586,748.137423605954,21.0651287101816,2.54609068856848" />
-    <Link Source="@68" Target="@64" Category="CallStackDirectCall" Bounds="1336.90133349919,738.003577242082,21.036533674202,1.89863336975372" />
-    <Link Source="@69" Target="@57" Category="CallStackDirectCall" Bounds="865.242888028256,579.097581765112,21.0607988533536,2.45846639362242" />
-    <Link Source="@70" Target="@65" Category="CallStackDirectCall" Bounds="669.736720214943,574.097842880156,21.0001,0" />
-    <Link Source="@72" Target="@60" Category="CallStackDirectCall" Bounds="1346.7177734375,550.084655761719,262.401489257813,26.37255859375" />
-    <Link Source="@72" Target="@61" Category="CallStackDirectCall" Bounds="1215.22064787228,600.975168532375,67.2015582470849,26.7424700076024" />
-    <Link Source="@73" Target="@75" Category="CallStackDirectCall" Bounds="1584.79530823436,349.270547219183,21.0135339416086,1.14942643612312" />
-    <Link Source="@74" Target="@49" Category="CallStackDirectCall" Bounds="2197.77580823436,206.64991976665,22.5068900864858,5.54063065780764" />
-    <Link Source="@75" Target="@120" Category="CallStackDirectCall" Bounds="1506.35606649571,357.412044265931,161.54802656876,103.072412786586" />
-    <Link Source="@75" Target="@191" Category="CallStackDirectCall" Bounds="1532.88587104625,220.013498356114,139.141740601539,112.158545909817" />
-    <Link Source="@75" Target="@192" Category="CallStackDirectCall" Bounds="1677.74413048274,282.060813907938,7.94000273714641,50.1112303579928" />
-    <Link Source="@77" Target="@145" Category="CallStackDirectCall" Bounds="2127.88203349919,662.399925749245,21.0321343935379,1.77929157055632" />
-    <Link Source="@78" Target="@77" Category="CallStackDirectCall" Bounds="1973.72193349919,673.692738756311,21.0162397790145,1.26032421281388" />
-    <Link Source="@8" Target="@6" Category="CallStackDirectCall" Bounds="1796.43506683253,691.15458126572,21.0533752063727,2.30097989448177" />
-    <Link Source="@80" Target="@170" Category="CallStackIndirectCall" Bounds="237.447387695313,302.010772705078,225.172546386719,40.6079711914063" Label="外部代码" LabelBounds="312.947660674161,326.315274650489,48,15.2399999999998" />
-    <Link Source="@81" Target="@63" Category="CallStackDirectCall" Bounds="468.234408234357,297.113320890689,21.0003500350467,0.156541600407195" />
-    <Link Source="@82" Target="@80" Category="CallStackDirectCall" Bounds="295.568677928005,369.292876841555,187.555719748235,80.106436419272" />
-    <Link Source="@83" Target="@82" Category="CallStackDirectCall" Bounds="292.041543101038,479.696909805727,53.7756847778799,36.5337338329888" />
-    <Link Source="@84" Target="@86" Category="CallStackDirectCall" Bounds="1182.79906264898,833.759581761213,41.9808107845101,7.08878380870601" />
-    <Link Source="@85" Target="@5" Category="CallStackDirectCall" Bounds="1322.41037495291,1011.65124314085,21.0055900836978,0.734035181131958" />
-    <Link Source="@86" Target="@151" Category="CallStackDirectCall" Bounds="1373.04160637528,862.716442791151,74.2536199249523,9.18413741906409" />
-    <Link Source="@87" Target="@118" Category="CallStackDirectCall" Bounds="449.857200165859,782.421686088215,21.0001560640801,0.0741243069937809" />
-    <Link Source="@88" Target="@133" Category="CallStackDirectCall" Bounds="3675.24568688161,468.626510608038,21.0001037658167,0.0192107758680891" />
-    <Link Source="@89" Target="@88" Category="CallStackDirectCall" Bounds="3499.69225354828,468.227550588648,21.0001470652437,0.0679153488895281" />
-    <Link Source="@9" Target="@8" Category="CallStackDirectCall" Bounds="1686.40830016586,703.064790846905,21.0511261935769,2.25122288937939" />
-    <Link Source="@90" Target="@26" Category="CallStackDirectCall" Bounds="2524.19822021494,474.440932758808,21.0051629244226,0.704861538164778" />
-    <Link Source="@91" Target="@28" Category="CallStackDirectCall" Bounds="1028.51439111533,966.817660379051,27.6285363808604,7.21302819546906" />
-    <Link Source="@92" Target="(Name=QtPrivate::RefCount::ref @3 @4 @2)" Category="CallStackDirectCall" Bounds="1932.63087495291,1064.50747247645,21.0001000000002,0" />
-    <Link Source="@93" Target="@83" Category="CallStackDirectCall" Bounds="404.050742099505,537.407168263354,21.2025447821051,4.57466668170287" />
-    <Link Source="@94" Target="@12" Category="CallStackDirectCall" Bounds="95.8395535482765,558.662198122256,21.2733167084554,5.36475149558305" />
-    <Link Source="@94" Target="@190" Category="CallStackDirectCall" Bounds="77.8295364379883,521.623291015625,130.739860534668,37.9119262695313" />
-    <Link Source="@95" Target="@131" Category="CallStackDirectCall" Bounds="916.153686523438,346.420959472656,441.62158203125,32.7556457519531" />
-    <Link Source="@99" Target="@101" Category="CallStackDirectCall" Bounds="1157.78838610635,56.962531886938,21.0890107407206,2.98650693403882" />
-    <Link Source="ExternalCodeRootNode" Target="@172" Category="CallStackIndirectCall" Bounds="-133.724322249783,661.800366330279,67.4202333871294,51.1340795540877" />
-    <Link Source="ExternalCodeRootNode" Target="@56" Category="CallStackIndirectCall" Bounds="-116.363779785057,733.707183345564,309.708211634535,74.2638158539171" />
+    <Link Source="@101" Target="@48" Category="CallStackDirectCall" Bounds="1473.58337402344,1120.4150390625,0,22.6875" />
+    <Link Source="@102" Target="@103" Category="CallStackDirectCall" Bounds="465.351654052734,591.788879394531,111.645904541016,31.9382934570313" />
+    <Link Source="@103" Target="@66" Category="CallStackDirectCall" Bounds="417.238739013672,651.442504882813,8.57437133789063,23.2437133789063" />
+    <Link Source="@104" Target="@105" Category="CallStackDirectCall" Bounds="825.426452636719,1400.81372070313,139.558532714844,33.807373046875" />
+    <Link Source="@105" Target="@121" Category="CallStackDirectCall" Bounds="764.583312988281,1461.97998046875,0,22.6875" />
+    <Link Source="@106" Target="@107" Category="CallStackDirectCall" Bounds="1073.181640625,1058.41381835938,163.1259765625,35.5799560546875" />
+    <Link Source="@106" Target="@108" Category="CallStackDirectCall" Bounds="1066.51574707031,1063.48754882813,58.2103271484375,27.6199951171875" />
+    <Link Source="@106" Target="@109" Category="CallStackDirectCall" Bounds="745.099304199219,1054.50146484375,258.885681152344,36.814208984375" />
+    <Link Source="@106" Target="@110" Category="CallStackDirectCall" Bounds="978.401000976563,1063.48754882813,40.8956909179688,26.7596435546875" />
+    <Link Source="@107" Target="@59" Category="CallStackDirectCall" Bounds="1299.58337402344,1120.4150390625,0,22.6875" />
+    <Link Source="@108" Target="@59" Category="CallStackDirectCall" Bounds="1189.06262207031,1120.4150390625,70.787353515625,28.37841796875" />
+    <Link Source="@109" Target="@72" Category="CallStackDirectCall" Bounds="712.583312988281,34.2400016784668,0,1060.93504714966" />
+    <Link Source="@110" Target="@73" Category="CallStackDirectCall" Bounds="951.583312988281,1120.4150390625,0,22.6875" />
+    <Link Source="@111" Target="@112" Category="CallStackDirectCall" Bounds="1622.58337402344,1234.27001953125,0,22.6875" />
+    <Link Source="@112" Target="@74" Category="CallStackDirectCall" Bounds="1622.58337402344,1291.19750976563,0,22.6875" />
+    <Link Source="@113" Target="@23" Category="CallStackDirectCall" Bounds="1473.58337402344,1575.8349609375,0,22.6875" />
+    <Link Source="@115" Target="@117" Category="CallStackDirectCall" Bounds="1251.58337402344,949.632507324219,0,22.6875" />
+    <Link Source="@117" Target="@99" Category="CallStackDirectCall" Bounds="1251.58337402344,1006.55999755859,0,22.6875610351563" />
+    <Link Source="@118" Target="@119" Category="CallStackDirectCall" Bounds="611.583312988281,480.660003662109,0,22.6875" />
+    <Link Source="@119" Target="@102" Category="CallStackDirectCall" Bounds="611.583312988281,537.587524414063,0,22.6875" />
+    <Link Source="@12" Target="@83" Category="CallStackDirectCall" Bounds="875.092468261719,526.93701171875,438.630920410156,38.7113647460938" />
+    <Link Source="@120" Target="@122" Category="CallStackDirectCall" Bounds="938.1904296875,1291.19750976563,53.777587890625,27.5804443359375" />
+    <Link Source="@121" Target="@69" Category="CallStackDirectCall" Bounds="764.583312988281,1518.90747070313,0,22.6875" />
+    <Link Source="@122" Target="@104" Category="CallStackDirectCall" Bounds="1016.35198974609,1348.125,8.23138427734375,24.7098388671875" />
+    <Link Source="@123" Target="@124" Category="CallStackDirectCall" Bounds="748.583312988281,1348.125,0,22.6875" />
+    <Link Source="@124" Target="@106" Category="CallStackDirectCall" Bounds="657.583312988281,1063.36059570313,337.779052734375,318.3193359375" />
+    <Link Source="@125" Target="@126" Category="CallStackDirectCall" Bounds="899.583312988281,1348.125,0,22.6875" />
+    <Link Source="@126" Target="@106" Category="CallStackDirectCall" Bounds="934.181640625,1071.28869628906,213.118774414063,312.765747070313" />
+    <Link Source="@127" Target="@128" Category="CallStackDirectCall" Bounds="1201.75671386719,1348.125,43.023193359375,26.914306640625" />
+    <Link Source="@128" Target="@106" Category="CallStackDirectCall" Bounds="1059.19702148438,1069.78894042969,208.113403320313,310.023559570313" />
+    <Link Source="@129" Target="@130" Category="CallStackDirectCall" Bounds="1051.0673828125,949.632507324219,5.5159912109375,23.8952026367188" />
+    <Link Source="@130" Target="@106" Category="CallStackDirectCall" Bounds="1038.58337402344,1006.55999755859,0,22.6875610351563" />
+    <Link Source="@131" Target="@132" Category="CallStackDirectCall" Bounds="1622.58337402344,1120.4150390625,0,22.6875" />
+    <Link Source="@132" Target="@111" Category="CallStackDirectCall" Bounds="1622.58337402344,1177.34252929688,0,22.6875" />
+    <Link Source="@133" Target="(Name=00007ffa5e854379 @1 @2)" Category="CallStackDirectCall" Bounds="271.583343505859,892.705017089844,0,22.6875" />
+    <Link Source="@135" Target="(Name=QgsDisplazPointCloudIndex::load @3 @4 OverloadingParameters=[(@76 Name=fileName)] @2)" Category="CallStackDirectCall" Bounds="575.583312988281,892.705017089844,0,22.6875" />
+    <Link Source="@136" Target="@14" Category="CallStackDirectCall" Bounds="826.017028808594,480.660003662109,8.1494140625,23.1962890625" />
+    <Link Source="@137" Target="(Name=std::_Ref_count_base::_Decref @3 @19 @2)" Category="CallStackDirectCall" Bounds="1777.58337402344,949.632507324219,0,22.6875" />
+    <Link Source="@139" Target="@174" Category="CallStackDirectCall" Bounds="433.374328613281,139.095001220703,15.2283325195313,24.0808563232422" />
+    <Link Source="@14" Target="@83" Category="CallStackDirectCall" Bounds="841.583312988281,537.587524414063,0,22.6875" />
+    <Link Source="@140" Target="@175" Category="CallStackDirectCall" Bounds="604.583312988281,139.095001220703,0,22.6875" />
+    <Link Source="@142" Target="@85" Category="CallStackDirectCall" Bounds="1911.58337402344,778.849975585938,0,22.6875" />
+    <Link Source="@144" Target="@177" Category="CallStackDirectCall" Bounds="433.583343505859,1291.19750976563,0,22.6875" />
+    <Link Source="@145" Target="@144" Category="CallStackDirectCall" Bounds="433.583343505859,1234.27001953125,0,22.6875" />
+    <Link Source="@146" Target="(Name=PointArray::getPointByIndex @7 Type=Imath::Vec3&lt;float&gt; OverloadingParameters=[(Type=&quot;unsigned __int64&quot; Name=inds)] @2)" Category="CallStackDirectCall" Bounds="1911.58337402344,949.632507324219,0.274169921875,22.69189453125" />
+    <Link Source="@147" Target="@115" Category="CallStackDirectCall" Bounds="1251.58337402344,892.705017089844,0,22.6875" />
+    <Link Source="@148" Target="@135" Category="CallStackDirectCall" Bounds="575.583312988281,835.777526855469,0,22.6875" />
+    <Link Source="@149" Target="@113" Category="CallStackDirectCall" Bounds="1473.58337402344,1518.90747070313,0,22.6875" />
+    <Link Source="@15" Target="(Name=QgsdisplazfileLoader::QgsdisplazfileLoader @3 @19 @2)" Category="CallStackDirectCall" Bounds="1399.09985351563,1006.55999755859,4.8232421875,22.8810424804688" />
+    <Link Source="@151" Target="@169" Category="CallStackDirectCall" Bounds="450.583343505859,537.587524414063,0,22.6875" />
+    <Link Source="@152" Target="@20" Category="CallStackDirectCall" Bounds="1473.58337402344,1291.19750976563,0,22.6875" />
+    <Link Source="@153" Target="@142" Category="CallStackDirectCall" Bounds="1903.37390136719,708.369995117188,5.154541015625,36.3292236328125" />
+    <Link Source="@154" Target="@87" Category="CallStackDirectCall" Bounds="612.583312988281,366.804992675781,0,22.6875" />
+    <Link Source="@155" Target="@152" Category="CallStackDirectCall" Bounds="1473.58337402344,1234.27001953125,0,22.6875" />
+    <Link Source="@156" Target="@149" Category="CallStackDirectCall" Bounds="1473.58337402344,1461.97998046875,0,22.6875" />
+    <Link Source="@16" Target="@92" Category="CallStackDirectCall" Bounds="2171.58325195313,949.632507324219,0,22.6875" />
+    <Link Source="@162" Target="@188" Category="CallStackDirectCall" Bounds="467.894683837891,309.877502441406,22.3826904296875,24.984130859375" />
+    <Link Source="@163" Target="@184" Category="CallStackDirectCall" Bounds="141.978393554688,594.515014648438,43.5565643310547,26.9517822265625" />
+    <Link Source="@163" Target="@187" Category="CallStackDirectCall" Bounds="121.583335876465,594.515014648438,0,22.6875" />
+    <Link Source="@164" Target="@156" Category="CallStackDirectCall" Bounds="1473.58337402344,1405.05249023438,0,22.6875" />
+    <Link Source="@165" Target="@185" Category="CallStackDirectCall" Bounds="96.9839096069336,778.849975585938,3.60425567626953,22.7979125976563" />
+    <Link Source="@166" Target="@154" Category="CallStackDirectCall" Bounds="612.583312988281,309.877502441406,0,22.6875" />
+    <Link Source="@166" Target="@186" Category="CallStackDirectCall" Bounds="652.8466796875,305.939666748047,101.438232421875,29.9651489257813" />
+    <Link Source="@167" Target="@189" Category="CallStackDirectCall" Bounds="261.583343505859,252.949996948242,0,22.6875152587891" />
+    <Link Source="@168" Target="@148" Category="CallStackDirectCall" Bounds="575.583312988281,778.849975585938,0,22.6875" />
+    <Link Source="@169" Target="@173" Category="CallStackDirectCall" Bounds="464.106140136719,594.515014648438,60.9642944335938,29.0810546875" />
+    <Link Source="@17" Target="@153" Category="CallStackDirectCall" Bounds="1896.91345214844,651.442504882813,2.3963623046875,22.737060546875" />
+    <Link Source="@170" Target="@44" Category="CallStackDirectCall" Bounds="1099.81201171875,778.849975585938,99.9033203125,29.1654052734375" />
+    <Link Source="@170" Target="@81" Category="CallStackDirectCall" Bounds="1056.58337402344,778.849975585938,0,22.6875" />
+    <Link Source="@172" Target="@94" Category="CallStackDirectCall" Bounds="1406.58337402344,423.732513427734,0,22.6875" />
+    <Link Source="@173" Target="@178" Category="CallStackDirectCall" Bounds="575.583312988281,651.442504882813,0,22.6875" />
+    <Link Source="@174" Target="@51" Category="CallStackDirectCall" Bounds="438.539855957031,196.022506713867,37.7236022949219,26.5124664306641" />
+    <Link Source="@175" Target="@51" Category="CallStackDirectCall" Bounds="532.293884277344,196.022506713867,49.4558715820313,27.3339385986328" />
+    <Link Source="@176" Target="@53" Category="CallStackDirectCall" Bounds="433.583343505859,1405.05249023438,0,22.6875" />
+    <Link Source="@177" Target="@176" Category="CallStackDirectCall" Bounds="433.583343505859,1348.125,0,22.6875" />
+    <Link Source="@178" Target="@168" Category="CallStackDirectCall" Bounds="575.583312988281,708.369995117188,0,36.239990234375" />
+    <Link Source="@18" Target="@17" Category="CallStackDirectCall" Bounds="1867.56396484375,594.515014648438,15.2283935546875,24.0808715820313" />
+    <Link Source="@184" Target="@24" Category="CallStackDirectCall" Bounds="230.653121948242,651.442504882813,35.6234893798828,26.3370971679688" />
+    <Link Source="@185" Target="@25" Category="CallStackDirectCall" Bounds="74.4297943115234,835.777526855469,12.5029754638672,23.7254028320313" />
+    <Link Source="@186" Target="@37" Category="CallStackDirectCall" Bounds="781.23388671875,366.804992675781,12.5029907226563,23.7254333496094" />
+    <Link Source="@187" Target="@27" Category="CallStackDirectCall" Bounds="121.583335876465,651.442504882813,0,22.6875" />
+    <Link Source="@188" Target="@84" Category="CallStackDirectCall" Bounds="450.583343505859,366.804992675781,0,22.6875" />
+    <Link Source="@189" Target="@38" Category="CallStackDirectCall" Bounds="261.583343505859,309.877502441406,0,22.6875" />
+    <Link Source="@190" Target="@35" Category="CallStackDirectCall" Bounds="1406.58337402344,892.705017089844,0,22.6875" />
+    <Link Source="@190" Target="@55" Category="CallStackDirectCall" Bounds="1449.11450195313,891.294250488281,120.335327148438,31.7147216796875" />
+    <Link Source="@191" Target="@123" Category="CallStackDirectCall" Bounds="751.233520507813,1291.19750976563,2.79803466796875,22.7547607421875" />
+    <Link Source="@191" Target="@125" Category="CallStackDirectCall" Bounds="787.506042480469,1291.19750976563,71.7848510742188,28.378662109375" />
+    <Link Source="@192" Target="@127" Category="CallStackDirectCall" Bounds="1095.96875,1291.19750976563,53.236083984375,27.5509033203125" />
+    <Link Source="@20" Target="@164" Category="CallStackDirectCall" Bounds="1473.58337402344,1348.125,0,22.6875" />
+    <Link Source="@21" Target="@29" Category="CallStackDirectCall" Bounds="1766.58337402344,480.660003662109,0,136.542510986328" />
+    <Link Source="@21" Target="@46" Category="CallStackDirectCall" Bounds="1780.32788085938,480.660003662109,26.508056640625,25.2926940917969" />
+    <Link Source="@22" Target="(Name=Geometry::initializeBboxGL @3 @19 OverloadingParameters=[(Type=&quot;unsigned int&quot; Name=bboxShader)] @2)" Category="CallStackDirectCall" Bounds="1473.58337402344,1689.68994140625,0,22.6875" />
+    <Link Source="@23" Target="@22" Category="CallStackDirectCall" Bounds="1473.58337402344,1632.76245117188,0,22.6875" />
+    <Link Source="@24" Target="@89" Category="CallStackDirectCall" Bounds="277.328033447266,708.369995117188,9.85321044921875,36.5502319335938" />
+    <Link Source="@25" Target="@163" Category="CallStackDirectCall" Bounds="31.5833339691162,596.925231933594,42.7255344390869,270.539794921875" />
+    <Link Source="@26" Target="@163" Category="CallStackDirectCall" Bounds="160.956405639648,537.587524414063,69.5909576416016,28.2974243164063" />
+    <Link Source="@27" Target="@165" Category="CallStackDirectCall" Bounds="108.328025817871,708.369995117188,9.85321044921875,36.5502319335938" />
+    <Link Source="@28" Target="@5" Category="CallStackDirectCall" Bounds="1798.72778320313,835.777526855469,72.3336181640625,28.3984375" />
+    <Link Source="@29" Target="@30" Category="CallStackDirectCall" Bounds="1766.58337402344,651.442504882813,0,22.6875" />
+    <Link Source="@30" Target="@91" Category="CallStackDirectCall" Bounds="1766.58337402344,708.369995117188,0,36.239990234375" />
+    <Link Source="@32" Target="@90" Category="CallStackDirectCall" Bounds="261.583343505859,423.732513427734,0,22.6875" />
+    <Link Source="@34" Target="@39" Category="CallStackDirectCall" Bounds="1622.58337402344,1461.97998046875,0,22.6875" />
+    <Link Source="@35" Target="@15" Category="CallStackDirectCall" Bounds="1406.58337402344,949.632507324219,0,22.6875" />
+    <Link Source="@36" Target="@9" Category="CallStackDirectCall" Bounds="433.583343505859,892.705017089844,0,22.6875" />
+    <Link Source="@37" Target="@136" Category="CallStackDirectCall" Bounds="808.351989746094,423.732513427734,6.887451171875,23.0637817382813" />
+    <Link Source="@38" Target="@32" Category="CallStackDirectCall" Bounds="261.583343505859,366.804992675781,0,22.6875" />
+    <Link Source="@39" Target="@113" Category="CallStackDirectCall" Bounds="1515.02172851563,1518.90747070313,74.530517578125,28.4754638671875" />
+    <Link Source="@40" Target="@41" Category="CallStackDirectCall" Bounds="285.378540039063,139.095001220703,34.578369140625,26.2461395263672" />
+    <Link Source="@41" Target="@167" Category="CallStackDirectCall" Bounds="261.583343505859,196.022506713867,0,22.6875" />
+    <Link Source="@42" Target="@54" Category="CallStackDirectCall" Bounds="1646.08203125,1006.55999755859,118.616577148438,32.2086791992188" />
+    <Link Source="@42" Target="@95" Category="CallStackDirectCall" Bounds="1622.58337402344,1006.55999755859,0,22.6875610351563" />
+    <Link Source="@44" Target="@147" Category="CallStackDirectCall" Bounds="1251.58337402344,835.777526855469,0,22.6875" />
+    <Link Source="@46" Target="@18" Category="CallStackDirectCall" Bounds="1833.12060546875,537.587524414063,14.310546875,23.960693359375" />
+    <Link Source="@48" Target="@155" Category="CallStackDirectCall" Bounds="1473.58337402344,1177.34252929688,0,22.6875" />
+    <Link Source="@49" Target="@34" Category="CallStackDirectCall" Bounds="1622.58337402344,1405.05249023438,0,22.6875" />
+    <Link Source="@5" Target="(Name=QgsDisplazPointCloudIndex::RootNode @3 Type=&quot;OctreeNode *&quot; @2)" Category="CallStackDirectCall" Bounds="1941.73254394531,892.705017089844,67.3995361328125,28.21240234375" />
+    <Link Source="@5" Target="@137" Category="CallStackDirectCall" Bounds="1815.57263183594,892.705017089844,66.3048095703125,28.1683959960938" />
+    <Link Source="@5" Target="@146" Category="CallStackDirectCall" Bounds="1911.58337402344,892.705017089844,0,22.6875" />
+    <Link Source="@5" Target="@16" Category="CallStackDirectCall" Bounds="1948.51171875,888.170532226563,168.68212890625,36.9332885742188" />
+    <Link Source="@51" Target="@162" Category="CallStackDirectCall" Bounds="501.583343505859,252.949996948242,0,22.6875152587891" />
+    <Link Source="@51" Target="@166" Category="CallStackDirectCall" Bounds="526.1904296875,252.949996948242,53.777587890625,27.5803985595703" />
+    <Link Source="@53" Target="(Name=QDomNodePrivate::insertAfter @52 Type=&quot;QDomNodePrivate *&quot; OverloadingParameters=[(Type=&quot;QDomNodePrivate *&quot; Name=newChild),(Type=&quot;QDomNodePrivate *&quot; Name=refChild)] @2)" Category="CallStackDirectCall" Bounds="433.583343505859,1461.97998046875,0,22.6875" />
+    <Link Source="@54" Target="@55" Category="CallStackDirectCall" Bounds="1668.78686523438,952.541137695313,107.330810546875,85.7222900390625" />
+    <Link Source="@55" Target="@42" Category="CallStackDirectCall" Bounds="1622.58337402344,949.632507324219,0,22.6875" />
+    <Link Source="@56" Target="@21" Category="CallStackDirectCall" Bounds="1542.43835449219,418.000732421875,187.676147460938,41.8977966308594" />
+    <Link Source="@57" Target="@70" Category="CallStackDirectCall" Bounds="728.583312988281,1632.76245117188,0,22.6875" />
+    <Link Source="@59" Target="@72" Category="CallStackDirectCall" Bounds="755.399230957031,18.2103748321533,620.115173339844,1133.89216423035" />
+    <Link Source="@6" Target="@78" Category="CallStackDirectCall" Bounds="433.583343505859,1063.48754882813,0,22.6875" />
+    <Link Source="@60" Target="@40" Category="CallStackDirectCall" Bounds="363.648315429688,82.1675033569336,41.4266967773438,26.7990646362305" />
+    <Link Source="@61" Target="@139" Category="CallStackDirectCall" Bounds="497.792816162109,82.1675033569336,73.9810485839844,28.4564666748047" />
+    <Link Source="@61" Target="@140" Category="CallStackDirectCall" Bounds="604.583312988281,82.1675033569336,0,22.6875" />
+    <Link Source="@63" Target="@129" Category="CallStackDirectCall" Bounds="1056.58337402344,892.705017089844,0,22.6875" />
+    <Link Source="@64" Target="@36" Category="CallStackDirectCall" Bounds="433.583343505859,835.777526855469,0,22.6875" />
+    <Link Source="@65" Target="@93" Category="CallStackDirectCall" Bounds="680.344665527344,1746.61755371094,32.4990234375,26.0574951171875" />
+    <Link Source="@66" Target="@68" Category="CallStackDirectCall" Bounds="433.583343505859,708.369995117188,0,36.239990234375" />
+    <Link Source="@68" Target="@64" Category="CallStackDirectCall" Bounds="433.583343505859,778.849975585938,0,22.6875" />
+    <Link Source="@69" Target="@57" Category="CallStackDirectCall" Bounds="741.374328613281,1575.8349609375,15.2283325195313,24.0809326171875" />
+    <Link Source="@70" Target="@65" Category="CallStackDirectCall" Bounds="728.583312988281,1689.68994140625,0,22.6875" />
+    <Link Source="@72" Target="@60" Category="CallStackDirectCall" Bounds="497.257934570313,19.3191947937012,181.433715820313,35.8630867004395" />
+    <Link Source="@72" Target="@61" Category="CallStackDirectCall" Bounds="636.487060546875,25.2399997711182,52.1542358398438,27.4908542633057" />
+    <Link Source="@73" Target="@75" Category="CallStackDirectCall" Bounds="951.583312988281,1177.34252929688,0,22.6875" />
+    <Link Source="@74" Target="@49" Category="CallStackDirectCall" Bounds="1622.58337402344,1348.125,0,22.6875" />
+    <Link Source="@75" Target="@120" Category="CallStackDirectCall" Bounds="927.004089355469,1234.27001953125,16.1552124023438,24.201904296875" />
+    <Link Source="@75" Target="@191" Category="CallStackDirectCall" Bounds="807.676513671875,1234.27001953125,100.456481933594,29.17724609375" />
+    <Link Source="@75" Target="@192" Category="CallStackDirectCall" Bounds="978.185607910156,1234.27001953125,58.6641235351563,27.8299560546875" />
+    <Link Source="@77" Target="@145" Category="CallStackDirectCall" Bounds="433.583343505859,1177.34252929688,0,22.6875" />
+    <Link Source="@78" Target="@77" Category="CallStackDirectCall" Bounds="433.583343505859,1120.4150390625,0,22.6875" />
+    <Link Source="@8" Target="@6" Category="CallStackDirectCall" Bounds="433.583343505859,1006.55999755859,0,22.6875610351563" />
+    <Link Source="@80" Target="@170" Category="CallStackIndirectCall" Bounds="859.489135742188,708.369995117188,129.20361328125,43.3602294921875" Label="外部代码" LabelBounds="843.583333333333,723.369999999997,48,15.2399999999998" />
+    <Link Source="@81" Target="@63" Category="CallStackDirectCall" Bounds="1056.58337402344,835.777526855469,0,22.6875" />
+    <Link Source="@82" Target="@80" Category="CallStackDirectCall" Bounds="841.583312988281,651.442504882813,0,22.6875" />
+    <Link Source="@83" Target="@82" Category="CallStackDirectCall" Bounds="841.583312988281,594.515014648438,0,22.6875" />
+    <Link Source="@84" Target="@86" Category="CallStackDirectCall" Bounds="450.583343505859,423.732513427734,0,22.6875" />
+    <Link Source="@85" Target="@5" Category="CallStackDirectCall" Bounds="1911.58337402344,835.777526855469,0,22.6875" />
+    <Link Source="@86" Target="@151" Category="CallStackDirectCall" Bounds="450.583343505859,480.660003662109,0,22.6875" />
+    <Link Source="@87" Target="@118" Category="CallStackDirectCall" Bounds="611.617004394531,423.732513427734,0.52294921875,22.6875610351563" />
+    <Link Source="@88" Target="@133" Category="CallStackDirectCall" Bounds="271.583343505859,835.777526855469,0,22.6875" />
+    <Link Source="@89" Target="@88" Category="CallStackDirectCall" Bounds="271.583343505859,778.849975585938,0,22.6875" />
+    <Link Source="@9" Target="@8" Category="CallStackDirectCall" Bounds="433.583343505859,949.632507324219,0,22.6875" />
+    <Link Source="@90" Target="@26" Category="CallStackDirectCall" Bounds="261.583343505859,480.660003662109,0,22.6875" />
+    <Link Source="@91" Target="@28" Category="CallStackDirectCall" Bounds="1766.58337402344,778.849975585938,0,22.6875" />
+    <Link Source="@92" Target="(Name=QtPrivate::RefCount::ref @3 @4 @2)" Category="CallStackDirectCall" Bounds="2171.58325195313,1006.55999755859,0,22.6875610351563" />
+    <Link Source="@93" Target="@83" Category="CallStackDirectCall" Bounds="638.192626953125,593.484680175781,163.894836425781,1184.82037353516" />
+    <Link Source="@94" Target="@12" Category="CallStackDirectCall" Bounds="1364.95715332031,480.660003662109,27.8817138671875,25.6004943847656" />
+    <Link Source="@94" Target="@190" Category="CallStackDirectCall" Bounds="1406.58337402344,480.660003662109,0,377.805023193359" />
+    <Link Source="@95" Target="@131" Category="CallStackDirectCall" Bounds="1622.58337402344,1063.48754882813,0,22.6875" />
+    <Link Source="@99" Target="@101" Category="CallStackDirectCall" Bounds="1286.181640625,1059.73950195313,129.469604492188,33.199951171875" />
+    <Link Source="ExternalCodeRootNode" Target="@172" Category="CallStackIndirectCall" Bounds="1406.58337402344,366.804992675781,0,22.6875" />
+    <Link Source="ExternalCodeRootNode" Target="@56" Category="CallStackIndirectCall" Bounds="1429.8603515625,366.804992675781,50.5340576171875,27.3978881835938" />
   </Links>
   <Categories>
     <Category Id="CallStackDirectCall" Label="调用堆栈直接调用" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="调用堆栈直接调用" OutgoingActionLabel="调用堆栈直接调用" />
