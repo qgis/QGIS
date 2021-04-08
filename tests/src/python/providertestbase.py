@@ -300,6 +300,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("----------------------------> testOpenIteratorAfterLayerRemoval")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -569,6 +570,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertFalse(self.source.empty())
 
         # If the provider supports tests on editable layers
+        print("----------------------------> testEmpty")
         if getattr(self, 'getEditableLayer', None):
             l = self.getEditableLayer()
             self.assertTrue(l.isValid())
@@ -599,6 +601,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("--------------------> testAddFeature")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -649,6 +652,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------> testAddFeatureFastInsert")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -676,6 +680,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------> testAddFeatureMissingAttributes")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -704,6 +709,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------>testAddFeatureExtraAttributes")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -739,6 +745,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------>testAddFeatureWrongGeomType")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -777,6 +784,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------>testAddFeaturesUpdateExtent")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -795,6 +803,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------>testDeleteFeatures")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -822,6 +831,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------>testDeleteFeaturesUpdateExtent")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -839,6 +849,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------>testTruncate")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -862,6 +873,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("------------>testChangeAttributes")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -953,6 +965,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("---------------------------------------->testChangeGeometries")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -986,6 +999,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("---------------------------------------->testChangeFeatures")
         l = self.getEditableLayer()
         self.assertTrue(l.isValid())
 
@@ -1037,6 +1051,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not getattr(self, 'getEditableLayer', None):
             return
 
+        print("----------------------------> testMinMaxAfterChanges")
         vl = self.getEditableLayer()
         self.assertTrue(vl.isValid())
 
