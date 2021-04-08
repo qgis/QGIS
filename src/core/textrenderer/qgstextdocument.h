@@ -19,10 +19,10 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsstringutils.h"
+#include "qgstextblock.h"
 
 #include <QVector>
 
-class QgsTextBlock;
 class QgsTextFragment;
 
 /**
