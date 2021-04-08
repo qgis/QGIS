@@ -72,6 +72,7 @@ QgsRectangle QgsDisplazProvider::extent() const
   std::shared_ptr<Geometry> m_geom = mIndex->getgeom();
   if (m_geom)
   {
+   // m_geom->
     return QgsRectangle(m_geom->boundingBox().min.x, m_geom->boundingBox().min.y, m_geom->boundingBox().max.x, m_geom->boundingBox().max.y);
   }
   else

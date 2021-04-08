@@ -80,3 +80,4 @@ Thumb.db
 Testing/*
 src/app/CMakeLists.txt
 *.dgml
+CMakeLists.txt
