@@ -2186,10 +2186,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
       for ( QgsGeometry g : editGeom )
       {
         QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
-        QgsGeometry pts = g.convertToType( QgsWkbTypes::PointGeometry, true );
         if ( ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() && ( layer->crs() == mapPointMatch->layer()->crs() ) )
         {
-          if ( pts.contains( p ) )
+          if ( g.convertToType( QgsWkbTypes::PointGeometry, true ).contains( p ) )
           {
             if ( !layerPoint.is3D() )
               layerPoint.addZValue( defaultZValue() );
@@ -2198,7 +2197,12 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
           }
         }
         if ( QgsProject::instance()->avoidIntersectionsMode() != QgsProject::AvoidIntersectionsMode::AllowIntersections )
-          QgsMapToolEdit::addTopologicalPoints( pts.asMultiPoint() );
+        {
+          for ( QgsAbstractGeometry::vertex_iterator it = g.vertices_begin() ; it != g.vertices_end() ; it++ )
+          {
+            layer->addTopologicalPoints( *it );
+          }
+        }
       }
     }
   }
