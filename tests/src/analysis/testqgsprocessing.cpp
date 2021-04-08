@@ -4940,6 +4940,11 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( def->valueAsPythonString( QVariantList() << 1 << 2, context ), QStringLiteral( "[1,2]" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "1,2" ), context ), QStringLiteral( "[1,2]" ) );
 
+  QCOMPARE( def->valueAsPythonComment( QVariant(), context ), QString() );
+  QCOMPARE( def->valueAsPythonComment( 2, context ), QStringLiteral( "C" ) );
+  QCOMPARE( def->valueAsPythonComment( QVariantList() << 1 << 2, context ), QStringLiteral( "B,C" ) );
+  QCOMPARE( def->valueAsPythonComment( QStringLiteral( "1,2" ), context ), QStringLiteral( "B,C" ) );
+
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=True, usesStaticStrings=False, defaultValue=5)" ) );
 
@@ -10329,9 +10334,9 @@ void TestQgsProcessing::modelExecution()
                               "    alg_params = {\n"
                               "      'DISSOLVE': False,\n"
                               "      'DISTANCE': parameters['DIST'],\n"
-                              "      'END_CAP_STYLE': 1,\n"
+                              "      'END_CAP_STYLE': 1,  # Flat\n"
                               "      'INPUT': parameters['SOURCE_LAYER'],\n"
-                              "      'JOIN_STYLE': 2,\n"
+                              "      'JOIN_STYLE': 2,  # Bevel\n"
                               "      'SEGMENTS': QgsExpression('@myvar*2').evaluate(),\n"
                               "      'OUTPUT': parameters['MyModelOutput']\n"
                               "    }\n"

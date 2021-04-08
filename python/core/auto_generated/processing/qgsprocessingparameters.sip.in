@@ -509,6 +509,13 @@ Returns a string version of the parameter input ``value``, which is suitable for
 parameter value when running an algorithm directly from a Python command.
 %End
 
+    virtual QString valueAsPythonComment( const QVariant &value, QgsProcessingContext &context ) const;
+%Docstring
+Returns a Python comment explaining a parameter ``value``, or an empty string if no comment is required.
+
+.. versionadded:: 3.20
+%End
+
     virtual QString asScriptCode() const;
 %Docstring
 Returns the parameter definition encoded in a string which can be used within a
@@ -2434,6 +2441,8 @@ Returns the type name for the parameter class.
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString valueAsPythonComment( const QVariant &value, QgsProcessingContext &context ) const;
 
     virtual QString asScriptCode() const;
 
