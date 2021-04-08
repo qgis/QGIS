@@ -122,7 +122,7 @@ Item {
      * Suppose to set `supportsDataImport` variable of a feature form. If true, enables to set data by this handler.
      * \param name "Name" property of field item. Expecting alias if defined, otherwise field name.
      */
-    property var supportsImportData: function supportsImportData(name) { return false }
+    property var supportsDataImport: function supportsDataImport(name) { return false }
 
     /**
      * Suppose to be called to invoke a component to set data automatically (e.g. code scanner, sensor).
