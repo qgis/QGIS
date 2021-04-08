@@ -2407,6 +2407,11 @@ QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &v
   return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
+QString QgsProcessingParameterDefinition::valueAsPythonComment( const QVariant &, QgsProcessingContext & ) const
+{
+  return QString();
+}
+
 QString QgsProcessingParameterDefinition::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
@@ -4436,6 +4441,52 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
     }
 
     return QString::number( static_cast< int >( value.toDouble() ) );
+  }
+}
+
+QString QgsProcessingParameterEnum::valueAsPythonComment( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QString();
+
+  if ( value.canConvert<QgsProperty>() )
+    return QString();
+
+  if ( mUsesStaticStrings )
+  {
+    return QString();
+  }
+  else
+  {
+    if ( value.type() == QVariant::List )
+    {
+      QStringList parts;
+      const QVariantList toList = value.toList();
+      parts.reserve( toList.size() );
+      for ( const QVariant &val : toList )
+      {
+        parts << mOptions.value( static_cast< int >( val.toDouble() ) );
+      }
+      return parts.join( ',' );
+    }
+    else if ( value.type() == QVariant::String )
+    {
+      const QStringList parts = value.toString().split( ',' );
+      QStringList comments;
+      if ( parts.count() > 1 )
+      {
+        for ( const QString &part : parts )
+        {
+          bool ok = false;
+          int val = part.toInt( &ok );
+          if ( ok )
+            comments << mOptions.value( val );
+        }
+        return comments.join( ',' );
+      }
+    }
+
+    return mOptions.value( static_cast< int >( value.toDouble() ) );
   }
 }
 

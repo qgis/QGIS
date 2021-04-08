@@ -603,6 +603,13 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
     /**
+     * Returns a Python comment explaining a parameter \a value, or an empty string if no comment is required.
+     *
+     * \since QGIS 3.20
+     */
+    virtual QString valueAsPythonComment( const QVariant &value, QgsProcessingContext &context ) const;
+
+    /**
      * Returns the parameter definition encoded in a string which can be used within a
      * Processing script.
      */
@@ -2377,6 +2384,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsPythonComment( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
 
