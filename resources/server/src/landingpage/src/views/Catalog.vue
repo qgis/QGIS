@@ -63,7 +63,7 @@
               @ready="loadMap(project, $event)"
             >
               <l-tile-layer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 v-if="
                   project.capabilities.wmsOutputCrsList.includes('EPSG:3857')
                 "
