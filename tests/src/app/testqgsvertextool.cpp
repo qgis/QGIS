@@ -1062,6 +1062,42 @@ void TestQgsVertexTool::testAvoidIntersections()
   QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 
+  // If topologicalEditing and avoidIntersections are activated we must take care that the topological points are well added.
+  QgsPolygonXY polygon_topo1;
+  QgsPolylineXY polygon_topo1exterior;
+  polygon_topo1exterior << QgsPointXY( 0, 10 ) << QgsPointXY( 0, 20 ) << QgsPointXY( 5, 15 ) << QgsPointXY( 0, 10 );
+  polygon_topo1 << polygon_topo1exterior;
+  QgsFeature polygonF_topo1;
+  polygonF_topo1.setGeometry( QgsGeometry::fromPolygonXY( polygon_topo1 ) );
+
+  mLayerPolygon->addFeature( polygonF_topo1 );
+  QgsFeatureId mFidPolygonF_topo1 = polygonF_topo1.id();
+
+  QgsPolygonXY polygon_topo2;
+  QgsPolylineXY polygon_topo2exterior;
+  polygon_topo2exterior << QgsPointXY( 10, 15 ) << QgsPointXY( 15, 10 ) << QgsPointXY( 15, 20 ) << QgsPointXY( 10, 15 );
+  polygon_topo2 << polygon_topo2exterior;
+  QgsFeature polygonF_topo2;
+  polygonF_topo2.setGeometry( QgsGeometry::fromPolygonXY( polygon_topo2 ) );
+
+  mLayerPolygon->addFeature( polygonF_topo2 );
+  QgsFeatureId mFidPolygonF_topo2 = polygonF_topo2.id();
+
+  QCOMPARE( mLayerPolygon->featureCount(), ( long )3 );
+
+  mouseClick( 5, 15, Qt::LeftButton );
+  mouseClick( 12.5, 15, Qt::LeftButton );
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry().asWkt( 1 ), "Polygon ((0 20, 10.7 15.7, 10 15, 10.7 14.3, 0 10, 0 20))" );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo2 ).geometry().asWkt( 1 ), "Polygon ((10 15, 10.7 14.3, 15 10, 15 20, 10.7 15.7, 10 15))" );
+
+  mLayerPolygon->undoStack()->undo(); // undo topological points
+  mLayerPolygon->undoStack()->undo(); // undo move
+  mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo2
+  mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo1
+  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
+
+
   QgsProject::instance()->setTopologicalEditing( false );
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
 }
