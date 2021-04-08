@@ -2200,6 +2200,21 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     }
   }
 
+  if ( QgsProject::instance()->topologicalEditing() && QgsProject::instance()->avoidIntersectionsMode() != QgsProject::AvoidIntersectionsMode::AllowIntersections )
+  {
+    const auto editKeys = edits.keys();
+    for ( QgsVectorLayer *layer : editKeys )
+    {
+      const auto editGeom = edits[layer].values();
+      for ( QgsGeometry g : editGeom )
+      {
+        QgsGeometry pts = g.convertToType( QgsWkbTypes::PointGeometry, true );
+        for ( const auto &p : pts.asMultiPoint() )
+          QgsMapToolEdit::addTopologicalPoints( pts.asMultiPoint() );
+      }
+    }
+  }
+
   updateLockedFeatureVertices();
   if ( mVertexEditor )
     mVertexEditor->updateEditor( mLockedFeature.get() );
