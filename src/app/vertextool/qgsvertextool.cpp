@@ -2174,7 +2174,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   applyEditsToLayers( edits );
 
-  if ( QgsProject::instance()->topologicalEditing() && ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() )
+  if ( QgsProject::instance()->topologicalEditing() )
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
     // this requires that the snapping match is to a segment and the segment layer's CRS
@@ -2182,13 +2182,14 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     const auto editKeys = edits.keys();
     for ( QgsVectorLayer *layer : editKeys )
     {
-      if ( layer->crs() == mapPointMatch->layer()->crs() )
+      const auto editGeom = edits[layer].values();
+      for ( QgsGeometry g : editGeom )
       {
-        const auto editGeom = edits[layer].values();
-        for ( QgsGeometry g : editGeom )
+        QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
+        QgsGeometry pts = g.convertToType( QgsWkbTypes::PointGeometry, true );
+        if ( ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() && ( layer->crs() == mapPointMatch->layer()->crs() ) )
         {
-          QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
-          if ( g.convertToType( QgsWkbTypes::PointGeometry, true ).contains( p ) )
+          if ( pts.contains( p ) )
           {
             if ( !layerPoint.is3D() )
               layerPoint.addZValue( defaultZValue() );
@@ -2196,20 +2197,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
             mapPointMatch->layer()->addTopologicalPoints( layerPoint );
           }
         }
-      }
-    }
-  }
-
-  if ( QgsProject::instance()->topologicalEditing() && QgsProject::instance()->avoidIntersectionsMode() != QgsProject::AvoidIntersectionsMode::AllowIntersections )
-  {
-    const auto editKeys = edits.keys();
-    for ( QgsVectorLayer *layer : editKeys )
-    {
-      const auto editGeom = edits[layer].values();
-      for ( QgsGeometry g : editGeom )
-      {
-        QgsGeometry pts = g.convertToType( QgsWkbTypes::PointGeometry, true );
-        for ( const auto &p : pts.asMultiPoint() )
+        if ( QgsProject::instance()->avoidIntersectionsMode() != QgsProject::AvoidIntersectionsMode::AllowIntersections )
           QgsMapToolEdit::addTopologicalPoints( pts.asMultiPoint() );
       }
     }
