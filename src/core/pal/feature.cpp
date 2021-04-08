@@ -1239,7 +1239,7 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     QgsTextRendererUtils::generateCurvedTextPlacement( *metrics, mapShape->x.data(), mapShape->y.data(), mapShape->nbPoints, pathDistances, offsetAlongLine, direction, maximumCharacterAngleInside, maximumCharacterAngleOutside, uprightOnly )
   );
 
-  labeledLineSegmentIsRightToLeft = placement->labeledLineSegmentIsRightToLeft;
+  labeledLineSegmentIsRightToLeft = placement->flippedCharacterPlacementToGetUprightLabels;
 
   if ( placement->graphemePlacement.empty() )
     return nullptr;
@@ -1262,13 +1262,6 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
   }
 
   return firstPosition;
-}
-
-static std::unique_ptr< LabelPosition > _createCurvedCandidate( LabelPosition *lp, double angle, double dist )
-{
-  std::unique_ptr< LabelPosition > newLp = std::make_unique< LabelPosition >( *lp );
-  newLp->offsetPosition( dist * std::cos( angle + M_PI_2 ), dist * std::sin( angle + M_PI_2 ) );
-  return newLp;
 }
 
 std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal )
@@ -1319,6 +1312,21 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     shapeLength = mapShape->length();
   }
 
+  QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
+  if ( flags == 0 )
+    flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
+
+  std::unique_ptr< PointSet > mapShapeOffsetPositive;
+  std::unique_ptr< PointSet > mapShapeOffsetNegative;
+  if ( flags & QgsLabeling::LinePlacementFlag::AboveLine || flags & QgsLabeling::LinePlacementFlag::BelowLine )
+  {
+    // create offseted map shapes to be used for above and below line placements
+    mapShapeOffsetPositive = mapShape->clone();
+    mapShapeOffsetPositive->offsetCurveByDistance( mLF->distLabel() + li->characterHeight() / 2 );
+    mapShapeOffsetNegative = mapShape->clone();
+    mapShapeOffsetNegative->offsetCurveByDistance( ( mLF->distLabel() + li->characterHeight() / 2 ) * -1 );
+  }
+
   // distance calculation
   std::vector< double > path_distances( mapShape->nbPoints );
   double total_distance = 0;
@@ -1336,8 +1344,38 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   }
 
   if ( qgsDoubleNear( total_distance, 0.0 ) )
-  {
     return 0;
+
+  std::vector< double > pathDistancesPositive;
+  if ( mapShapeOffsetPositive )
+  {
+    pathDistancesPositive.resize( mapShapeOffsetPositive->nbPoints );
+    double old_x = -1.0, old_y = -1.0;
+    for ( int i = 0; i < mapShapeOffsetPositive->nbPoints; i++ )
+    {
+      if ( i == 0 )
+        pathDistancesPositive[i] = 0;
+      else
+        pathDistancesPositive[i] = std::sqrt( std::pow( old_x - mapShapeOffsetPositive->x[i], 2 ) + std::pow( old_y - mapShapeOffsetPositive->y[i], 2 ) );
+      old_x = mapShapeOffsetPositive->x[i];
+      old_y = mapShapeOffsetPositive->y[i];
+    }
+  }
+
+  std::vector< double > pathDistancesNegative;
+  if ( mapShapeOffsetNegative )
+  {
+    pathDistancesNegative.resize( mapShapeOffsetNegative->nbPoints );
+    double old_x = -1.0, old_y = -1.0;
+    for ( int i = 0; i < mapShapeOffsetNegative->nbPoints; i++ )
+    {
+      if ( i == 0 )
+        pathDistancesNegative[i] = 0;
+      else
+        pathDistancesNegative[i] = std::sqrt( std::pow( old_x - mapShapeOffsetNegative->x[i], 2 ) + std::pow( old_y - mapShapeOffsetNegative->y[i], 2 ) );
+      old_x = mapShapeOffsetNegative->x[i];
+      old_y = mapShapeOffsetNegative->y[i];
+    }
   }
 
   const double lineAnchorPoint = total_distance * mLF->lineAnchorPercent();
@@ -1348,10 +1386,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   std::vector< std::unique_ptr< LabelPosition >> positions;
   const std::size_t candidateTargetCount = maximumLineCandidates();
   double delta = std::max( li->characterHeight() / 6, total_distance / candidateTargetCount );
-
-  QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
-  if ( flags == 0 )
-    flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
 
   // generate curved labels
   double distanceAlongLineToStartCandidate = 0;
@@ -1367,27 +1401,15 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       break;
   }
 
-  for ( ; distanceAlongLineToStartCandidate <= total_distance; distanceAlongLineToStartCandidate += delta )
+  auto calculateCost = [ = ]( LabelPosition * labelPosition, double distanceToStartCandidate )
   {
-
-    if ( pal->isCanceled() )
-      return 0;
-
-    // placements may need to be reversed if using map orientation and the line has right-to-left direction
-    bool labeledLineSegmentIsRightToLeft = false;
-    const QgsTextRendererUtils::LabelLineDirection direction = ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? QgsTextRendererUtils::RespectPainterOrientation : QgsTextRendererUtils::FollowLineDirection;
-
-    std::unique_ptr< LabelPosition > slp = curvedPlacementAtOffset( mapShape, path_distances, direction, distanceAlongLineToStartCandidate, labeledLineSegmentIsRightToLeft, !singleCandidateOnly );
-    if ( !slp )
-      continue;
-
     // evaluate cost
     double angle_diff = 0.0, angle_last = 0.0, diff;
-    LabelPosition *tmp = slp.get();
+    LabelPosition *tmp = labelPosition;
     double sin_avg = 0, cos_avg = 0;
     while ( tmp )
     {
-      if ( tmp != slp.get() ) // not first?
+      if ( tmp != labelPosition ) // not first?
       {
         diff = std::fabs( tmp->getAlpha() - angle_last );
         if ( diff > 2 * M_PI ) diff -= 2 * M_PI;
@@ -1410,32 +1432,60 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       cost = 0.0001;
 
     // penalize positions which are further from the line's anchor point
-    double labelCenter = distanceAlongLineToStartCandidate + getLabelWidth() / 2;
+    double labelCenter = distanceToStartCandidate + getLabelWidth() / 2;
     double costCenter = std::fabs( lineAnchorPoint - labelCenter ) / total_distance; // <0, 0.5>
     cost += costCenter / ( anchorIsFlexiblePlacement ? 100 : 10 );  // < 0, 0.005 >, or <0, 0.05> if preferring placement close to start/end of line
-    slp->setCost( cost );
+    labelPosition->setCost( cost );
+  };
 
-    // average angle is calculated with respect to periodicity of angles
-    double angle_avg = std::atan2( sin_avg / characterCount, cos_avg / characterCount );
+  for ( ; distanceAlongLineToStartCandidate <= total_distance; distanceAlongLineToStartCandidate += delta )
+  {
+    if ( pal->isCanceled() )
+      return 0;
+
+    // placements may need to be reversed if using map orientation and the line has right-to-left direction
+    bool labeledLineSegmentIsRightToLeft = false, labeledLineSegmentIsRightToLeftOffsetPositive = false, labeledLineSegmentIsRightToLeftOffsetNegative = false;
+    const QgsTextRendererUtils::LabelLineDirection direction = ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? QgsTextRendererUtils::RespectPainterOrientation : QgsTextRendererUtils::FollowLineDirection;
+
+    std::unique_ptr< LabelPosition > slp = curvedPlacementAtOffset( mapShape, path_distances, direction, distanceAlongLineToStartCandidate, labeledLineSegmentIsRightToLeft, !singleCandidateOnly );
+    std::unique_ptr< LabelPosition > slpOffsetPositive;
+    std::unique_ptr< LabelPosition > slpOffsetNegative;
+    if ( mapShapeOffsetPositive )
+    {
+      slpOffsetPositive = curvedPlacementAtOffset( mapShapeOffsetPositive.get(), pathDistancesPositive, direction, distanceAlongLineToStartCandidate, labeledLineSegmentIsRightToLeftOffsetPositive, !singleCandidateOnly );
+      slpOffsetNegative = curvedPlacementAtOffset( mapShapeOffsetNegative.get(), pathDistancesNegative, direction, distanceAlongLineToStartCandidate, labeledLineSegmentIsRightToLeftOffsetNegative, !singleCandidateOnly );
+    }
+
     // displacement - we loop through 3 times, generating above, online then below line placements successively
     for ( int i = 0; i <= 2; ++i )
     {
       std::unique_ptr< LabelPosition > p;
-      if ( i == 0 && ( ( !labeledLineSegmentIsRightToLeft && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( labeledLineSegmentIsRightToLeft && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) ) )
+      if ( i == 0 && flags & QgsLabeling::LinePlacementFlag::AboveLine )
       {
         // labels "above" line
-        p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() + li->characterHeight() / 2 );
+        LabelPosition *labelPosition = labeledLineSegmentIsRightToLeftOffsetPositive ? slpOffsetNegative.get() : slpOffsetPositive.get();
+        if ( !labelPosition )
+          continue;
+        calculateCost( labelPosition, distanceAlongLineToStartCandidate );
+        p = std::make_unique< LabelPosition >( *labelPosition );
       }
       if ( i == 1 && flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
         // labels on line
-        p = _createCurvedCandidate( slp.get(), angle_avg, 0 );
+        if ( !slp )
+          continue;
+        calculateCost( slp.get(), distanceAlongLineToStartCandidate );
+        p = std::make_unique< LabelPosition >( *slp.get() );
         p->setCost( p->cost() + 0.002 );
       }
-      if ( i == 2 && ( ( !labeledLineSegmentIsRightToLeft  && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( labeledLineSegmentIsRightToLeft && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) ) )
+      if ( i == 2 && flags & QgsLabeling::LinePlacementFlag::BelowLine )
       {
         // labels "below" line
-        p = _createCurvedCandidate( slp.get(), angle_avg, -li->characterHeight() / 2 - mLF->distLabel() );
+        LabelPosition *labelPosition = labeledLineSegmentIsRightToLeftOffsetNegative ? slpOffsetNegative.get() : slpOffsetPositive.get();
+        if ( !labelPosition )
+          continue;
+        calculateCost( labelPosition, distanceAlongLineToStartCandidate );
+        p = std::make_unique< LabelPosition >( *labelPosition );
         p->setCost( p->cost() + 0.001 );
       }
 

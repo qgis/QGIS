@@ -137,6 +137,11 @@ namespace pal
       void extendLineByDistance( double startDistance, double endDistance, double smoothDistance );
 
       /**
+       * Offsets linestrings by the specified \a distance.
+       */
+      void offsetCurveByDistance( double distance );
+
+      /**
        * Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).
        * \param px x coordinate of the point
