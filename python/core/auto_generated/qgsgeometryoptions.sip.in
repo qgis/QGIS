@@ -118,6 +118,11 @@ Read the geometry options from ``node``.
 .. versionadded:: 3.4
 %End
 
+    struct Settings
+    {
+      const QgsSettingsEntryString geometryValidationDefaultChecks;
+    };
+
   signals:
 
     void checkConfigurationChanged();

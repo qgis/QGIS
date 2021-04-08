@@ -157,6 +157,12 @@ Returns map settings with which this job was started.
 
 
 
+
+    struct Settings
+    {
+      const QgsSettingsEntryBool logCanvasRefreshEvent;
+    };
+
   signals:
 
     void renderingLayersFinished();

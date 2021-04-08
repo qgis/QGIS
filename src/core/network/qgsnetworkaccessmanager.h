@@ -31,6 +31,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgssettingsentry.h"
 
 class QgsFeedback;
 

@@ -40,24 +40,23 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
 
   QUrlQuery query( feedUrl );
 
-  const qint64 after = QgsSettings().value( QStringLiteral( "%1/lastFetchTime" ).arg( mSettingsKey ), 0, QgsSettings::Core ).toUInt();
+  const qint64 after = Settings::feedLastFetchTime.value( mSettingsKey );
   if ( after > 0 )
     query.addQueryItem( QStringLiteral( "after" ), qgsDoubleToString( after, 0 ) );
 
-  QString feedLanguage = QgsSettings().value( QStringLiteral( "%1/lang" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toString();
+  QString feedLanguage = Settings::feedLanguage.value( mSettingsKey );
   if ( feedLanguage.isEmpty() )
   {
-    feedLanguage = QgsSettings().value( QStringLiteral( "locale/userLocale" ), QStringLiteral( "en_US" ) ).toString().left( 2 );
+    feedLanguage = QgsSettings().value( QgsApplication::Settings::localeUserLocale.key(), QStringLiteral( "en_US" ) ).toString().left( 2 );
   }
   if ( !feedLanguage.isEmpty() && feedLanguage != QLatin1String( "C" ) )
     query.addQueryItem( QStringLiteral( "lang" ), feedLanguage );
 
-  bool latOk = false;
-  bool longOk = false;
-  const double feedLat = QgsSettings().value( QStringLiteral( "%1/latitude" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toDouble( &latOk );
-  const double feedLong = QgsSettings().value( QStringLiteral( "%1/longitude" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toDouble( &longOk );
-  if ( latOk && longOk )
+  if ( Settings::feedLatitude.exists( mSettingsKey ) && Settings::feedLongitude.exists( mSettingsKey ) )
   {
+    const double feedLat = Settings::feedLatitude.value( mSettingsKey );
+    const double feedLong = Settings::feedLongitude.value( mSettingsKey );
+
     // hack to allow testing using local files
     if ( feedUrl.isLocalFile() )
     {
@@ -170,7 +169,7 @@ void QgsNewsFeedParser::fetch()
 
 void QgsNewsFeedParser::onFetch( const QString &content )
 {
-  QgsSettings().setValue( mSettingsKey + "/lastFetchTime", mFetchStartTime, QgsSettings::Core );
+  Settings::feedLastFetchTime.setValue( mFetchStartTime, mSettingsKey );
 
   const QVariant json = QgsJsonUtils::parseJson( content );
 

@@ -9,7 +9,10 @@
 
 
 
-class QgsSettingsRegistryCore : QgsSettingsRegistry
+
+
+
+class QgsSettingsRegistryCore
 {
 %Docstring(signature="appended")
 :py:class:`QgsSettingsRegistryCore` is used for settings introspection and collects all
@@ -29,6 +32,16 @@ Constructor for QgsSettingsRegistryCore.
 %End
 
     virtual ~QgsSettingsRegistryCore();
+
+    const QgsSettingsEntryBase *getSettingsEntry( const QString &key );
+%Docstring
+Returns the :py:class:`QgsSettingsEntry` with the given ``key`` or None if not found.
+%End
+
+    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
+%Docstring
+Add ``settingsEntry`` to the register.
+%End
 
 };
 
