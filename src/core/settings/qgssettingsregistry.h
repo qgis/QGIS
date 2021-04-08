@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgssettingsregistrycore.h
+  qgssettingsregistry.h
   --------------------------------------
   Date                 : February 2021
   Copyright            : (C) 2021 by Damiano Lombardi
@@ -14,37 +14,52 @@
  ***************************************************************************/
 
 
-#ifndef QGSSETTINGSREGISTRYCORE_H
-#define QGSSETTINGSREGISTRYCORE_H
+#ifndef QGSSETTINGSREGISTRY_H
+#define QGSSETTINGSREGISTRY_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsregistry.h"
+#include "qgssettingsentry.h"
 
 #include <QMap>
 
 /**
  * \ingroup core
- * \class QgsSettingsRegistryCore
- * QgsSettingsRegistryCore is used for settings introspection and collects all
- * QgsSettingsEntry instances of core.
+ * \class QgsSettingsRegistry
+ * QgsSettingsRegistry is used for settings introspection and collects a
+ * list of child QgsSettingsRegistry and a list of child QgsSettingsRegistry
  *
  * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
+class CORE_EXPORT QgsSettingsRegistry
 {
   public:
 
     /**
-     * Constructor for QgsSettingsRegistryCore.
+     * Constructor for QgsSettingsRegistry.
      */
-    QgsSettingsRegistryCore();
+    QgsSettingsRegistry();
 
     /**
-     * Destructor for QgsSettingsRegistryCore.
+     * Destructor for QgsSettingsRegistry.
      */
-    virtual ~QgsSettingsRegistryCore();
+    virtual ~QgsSettingsRegistry();
+
+    /**
+     * Returns the QgsSettingsEntry with the given \a key or nullptr if not found.
+     */
+    const QgsSettingsEntryBase *getSettingsEntry( const QString &key );
+
+    /**
+     * Add \a settingsEntry to the register.
+     */
+    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
+
+  private:
+
+    QMap<QString, const QgsSettingsEntryBase *> mSettingsEntriesMap;
+    QMap<QString, const QgsSettingsEntryBase *> mDynamicSettingsEntriesMap;
 
 };
 
-#endif // QGSSETTINGSREGISTRYCORE_H
+#endif // QGSSETTINGSREGISTRY_H

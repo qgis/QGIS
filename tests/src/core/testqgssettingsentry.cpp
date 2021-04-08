@@ -24,7 +24,8 @@
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the operations on curve geometries
+ * This is a unit test for QgsSettingsEntry classes
+ * \note Most functions are covered in the python test
  */
 class TestQgsSettingsEntry : public QObject
 {

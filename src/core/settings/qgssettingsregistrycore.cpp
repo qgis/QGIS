@@ -26,7 +26,7 @@
 #include "qgsmaprendererjob.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
-  : mSettingsEntriesMap()
+  : QgsSettingsRegistry()
 {
   addSettingsEntry( &QgsLayout::settingsSearchPathForTemplates );
 
@@ -61,29 +61,4 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 {
-}
-
-const QgsSettingsEntryBase *QgsSettingsRegistryCore::getSettingsEntry( const QString &key )
-{
-  if ( mSettingsEntriesMap.contains( key ) )
-    return mSettingsEntriesMap.value( key );
-
-  const QMap<QString, const QgsSettingsEntryBase *> dynamicSettingsEntriesMap = mDynamicSettingsEntriesMap;
-  for ( const QgsSettingsEntryBase *settingsEntry : dynamicSettingsEntriesMap )
-  {
-    QRegularExpression regularExpression( settingsEntry->key( ".*" ) );
-    QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( key );
-    if ( regularExpresisonMatch.hasMatch() )
-      return settingsEntry;
-  }
-
-  return nullptr;
-}
-
-void QgsSettingsRegistryCore::addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
-{
-  if ( settingsEntry->hasDynamicKey() )
-    mDynamicSettingsEntriesMap.insert( settingsEntry->key(), settingsEntry );
-  else
-    mSettingsEntriesMap.insert( settingsEntry->key(), settingsEntry );
 }

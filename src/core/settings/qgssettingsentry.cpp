@@ -80,6 +80,18 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
       completeKey.replace( QString( "%%1" ).arg( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
     }
   }
+}
+
+QString QgsSettingsEntryBase::definitionKey() const
+{
+  QString completeKey = mKey;
+  if ( !mPluginName.isEmpty() )
+  {
+    if ( completeKey.startsWith( '/' ) )
+      completeKey.remove( 0, 1 );
+    completeKey.prepend( mPluginName + "/" );
+  }
+
   return completeKey;
 }
 
