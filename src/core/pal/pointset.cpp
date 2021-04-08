@@ -164,9 +164,15 @@ void PointSet::invalidateGeos()
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   if ( mOwnsGeom ) // delete old geometry if we own it
     GEOSGeom_destroy_r( geosctxt, mGeos );
-  GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
   mOwnsGeom = false;
   mGeos = nullptr;
+
+  if ( mPreparedGeom )
+  {
+    GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
+    mPreparedGeom = nullptr;
+  }
+
   if ( mGeosPreparedBoundary )
   {
     GEOSPreparedGeom_destroy_r( geosctxt, mGeosPreparedBoundary );
@@ -184,7 +190,6 @@ void PointSet::invalidateGeos()
     mMultipartGeos = nullptr;
   }
 
-  mPreparedGeom = nullptr;
   mLength = -1;
   mArea = -1;
 }
@@ -538,6 +543,46 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
     }
   }
   return outputShapes;
+}
+
+void PointSet::offsetCurveByDistance( double distance )
+{
+  if ( !mGeos )
+    createGeosGeom();
+
+  if ( !mGeos || type != GEOS_LINESTRING )
+    return;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSGeometry *newGeos;
+  try
+  {
+    newGeos = GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_ROUND, 2 );
+    const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos );
+    const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos );
+    std::vector< double > newX;
+    std::vector< double > newY;
+    newX.resize( newNbPoints );
+    newY.resize( newNbPoints );
+    for ( int i = 0; i < newNbPoints; i++ )
+    {
+      GEOSCoordSeq_getX_r( geosctxt, coordSeq, i, &newX[i] );
+      GEOSCoordSeq_getY_r( geosctxt, coordSeq, i, &newY[i] );
+    }
+    nbPoints = newNbPoints;
+    x = newX;
+    y = newY;
+  }
+  catch ( GEOSException &e )
+  {
+    qWarning( "GEOS exception: %s", e.what() );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return;
+  }
+
+  invalidateGeos();
+  mGeos = newGeos;
+  mOwnsGeom = true;
 }
 
 void PointSet::extendLineByDistance( double startDistance, double endDistance, double smoothDistance )
