@@ -24,6 +24,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgssettingsentry.h"
 
 /**
  * \ingroup core
@@ -64,6 +65,16 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
 
     //! Unregisters a localized path
     void unregisterPath( const QString &path );
+
+    /**
+     * Contains QgsLocalizedDataPathRegistry settings
+     * \since QGIS 3.20
+     */
+    struct Settings
+    {
+      //! Settings entry localized data paths
+      static const inline QgsSettingsEntryStringList localizedDataPaths = QgsSettingsEntryStringList( QStringLiteral( "/qgis/localized_data_paths" ), QgsSettings::NoSection, QStringList() );
+    };
 
   private:
 #ifdef SIP_RUN

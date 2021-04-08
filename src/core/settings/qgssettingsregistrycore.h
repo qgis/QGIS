@@ -21,12 +21,7 @@
 #include "qgis_sip.h"
 #include "qgssettingsentry.h"
 
-#include "qgslayout.h"
-#include "qgslocator.h"
-
-#include <QList>
-
-class QgsSettingsEntryStringList;
+#include <QMap>
 
 /**
  * \ingroup core
@@ -50,9 +45,20 @@ class CORE_EXPORT QgsSettingsRegistryCore
      */
     virtual ~QgsSettingsRegistryCore();
 
+    /**
+     * Returns the QgsSettingsEntry with the given \a key or nullptr if not found.
+     */
+    const QgsSettingsEntryBase *getSettingsEntry( const QString &key );
+
+    /**
+     * Add \a settingsEntry to the register.
+     */
+    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
+
   private:
 
-    QList<const QgsSettingsEntryBase *> mSettingsEntries;
+    QMap<QString, const QgsSettingsEntryBase *> mSettingsEntriesMap;
+    QMap<QString, const QgsSettingsEntryBase *> mDynamicSettingsEntriesMap;
 
 };
 

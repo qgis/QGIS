@@ -17,19 +17,73 @@
 
 #include "qgslayout.h"
 #include "qgslocator.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnewsfeedparser.h"
+#include "qgsprocessing.h"
+#include "qgsapplication.h"
+#include "qgsgeometryoptions.h"
+#include "qgslocalizeddatapathregistry.h"
+#include "qgsmaprendererjob.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
-  : mSettingsEntries()
+  : mSettingsEntriesMap()
 {
-  mSettingsEntries.append( &QgsLayout::settingsSearchPathForTemplates );
+  addSettingsEntry( &QgsLayout::settingsSearchPathForTemplates );
 
-  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterEnabled );
-  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterDefault );
-  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterPrefix );
+  addSettingsEntry( &QgsLocator::settingsLocatorFilterEnabled );
+  addSettingsEntry( &QgsLocator::settingsLocatorFilterDefault );
+  addSettingsEntry( &QgsLocator::settingsLocatorFilterPrefix );
+
+  addSettingsEntry( &QgsNetworkAccessManager::Settings::networkTimeout );
+
+  addSettingsEntry( &QgsNewsFeedParser::Settings::feedLastFetchTime );
+  addSettingsEntry( &QgsNewsFeedParser::Settings::feedLanguage );
+  addSettingsEntry( &QgsNewsFeedParser::Settings::feedLatitude );
+  addSettingsEntry( &QgsNewsFeedParser::Settings::feedLongitude );
+
+  addSettingsEntry( &QgsProcessing::Settings::preferFilenameAsLayerName );
+  addSettingsEntry( &QgsProcessing::Settings::tempPath );
+  addSettingsEntry( &QgsProcessing::Settings::defaultOutputVectorLayerExt );
+  addSettingsEntry( &QgsProcessing::Settings::defaultOutputRasterLayerExt );
+
+  addSettingsEntry( &QgsApplication::Settings::localeUserLocale );
+  addSettingsEntry( &QgsApplication::Settings::localeOverrideFlag );
+  addSettingsEntry( &QgsApplication::Settings::localeGlobalLocale );
+  addSettingsEntry( &QgsApplication::Settings::localeShowGroupSeparator );
+  addSettingsEntry( &QgsApplication::Settings::searchPathsForSVG );
+
+  addSettingsEntry( &QgsGeometryOptions::Settings::geometryValidationDefaultChecks );
+
+  addSettingsEntry( &QgsLocalizedDataPathRegistry::Settings::localizedDataPaths );
+
+  addSettingsEntry( &QgsMapRendererJob::Settings::logCanvasRefreshEvent );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 {
 }
 
+const QgsSettingsEntryBase *QgsSettingsRegistryCore::getSettingsEntry( const QString &key )
+{
+  if ( mSettingsEntriesMap.contains( key ) )
+    return mSettingsEntriesMap.value( key );
 
+  const QMap<QString, const QgsSettingsEntryBase *> dynamicSettingsEntriesMap = mDynamicSettingsEntriesMap;
+  for ( const QgsSettingsEntryBase *settingsEntry : dynamicSettingsEntriesMap )
+  {
+    QRegularExpression regularExpression( settingsEntry->key( ".*" ) );
+    QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( key );
+    if ( regularExpresisonMatch.hasMatch() )
+      return settingsEntry;
+  }
+
+  return nullptr;
+}
+
+void QgsSettingsRegistryCore::addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
+{
+  if ( settingsEntry->hasDynamicKey() )
+    mDynamicSettingsEntriesMap.insert( settingsEntry->key(), settingsEntry );
+  else
+    mSettingsEntriesMap.insert( settingsEntry->key(), settingsEntry );
+}

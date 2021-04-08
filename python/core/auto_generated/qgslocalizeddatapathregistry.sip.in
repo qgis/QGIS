@@ -60,6 +60,11 @@ Since the paths are stored by order of preference, lower positions in the list t
 Unregisters a localized path
 %End
 
+    struct Settings
+    {
+      const QgsSettingsEntryStringList localizedDataPaths;
+    };
+
   private:
     QgsLocalizedDataPathRegistry( const QgsLocalizedDataPathRegistry &other );
 };

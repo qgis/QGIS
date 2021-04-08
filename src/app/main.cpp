@@ -966,20 +966,18 @@ int main( int argc, char *argv[] )
   delete profile;
 
   {
-    QgsSettings settings;
-
     /* Translation file for QGIS.
     */
-    QString myUserTranslation = settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
-    QString myGlobalLocale = settings.value( QStringLiteral( "locale/globalLocale" ), "" ).toString();
+    QString myUserTranslation = QgsApplication::Settings::localeUserLocale.value();
+    QString myGlobalLocale = QgsApplication::Settings::localeGlobalLocale.value();
     bool myShowGroupSeparatorFlag = false; // Default to false
-    bool myLocaleOverrideFlag = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+    bool myLocaleOverrideFlag = QgsApplication::Settings::localeOverrideFlag.value();
 
     // Override Show Group Separator if the global override flag is set
     if ( myLocaleOverrideFlag )
     {
       // Default to false again
-      myShowGroupSeparatorFlag = settings.value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
+      myShowGroupSeparatorFlag = QgsApplication::Settings::localeShowGroupSeparator.value();
     }
 
     //
@@ -993,7 +991,7 @@ int main( int argc, char *argv[] )
     //
     if ( !translationCode.isNull() && !translationCode.isEmpty() )
     {
-      settings.setValue( QStringLiteral( "locale/userLocale" ), translationCode );
+      QgsApplication::Settings::localeUserLocale.setValue( translationCode );
     }
     else
     {
@@ -1002,7 +1000,7 @@ int main( int argc, char *argv[] )
         translationCode = QLocale().name();
         //setting the locale/userLocale when the --lang= option is not set will allow third party
         //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
-        settings.setValue( QStringLiteral( "locale/userLocale" ), translationCode );
+        QgsApplication::Settings::localeUserLocale.setValue( translationCode );
       }
       else
       {

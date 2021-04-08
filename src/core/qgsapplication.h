@@ -23,6 +23,7 @@
 
 #include "qgis_sip.h"
 #include "qgsconfig.h"
+#include "qgssettingsentry.h"
 #include "qgstranslationcontext.h"
 
 class QgsSettingsRegistryCore;
@@ -943,6 +944,24 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.4
      */
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
+
+    /**
+     * Contains QgsApplication settings
+     * \since QGIS 3.20
+     */
+    struct Settings
+    {
+      //! Settings entry locale user locale
+      static const inline QgsSettingsEntryString localeUserLocale = QgsSettingsEntryString( QStringLiteral( "locale/userLocale" ), QgsSettings::NoSection, QString() );
+      //! Settings entry locale override flag
+      static const inline QgsSettingsEntryBool localeOverrideFlag = QgsSettingsEntryBool( QStringLiteral( "locale/overrideFlag" ), QgsSettings::NoSection, false );
+      //! Settings entry locale global locale
+      static const inline QgsSettingsEntryString localeGlobalLocale = QgsSettingsEntryString( QStringLiteral( "locale/globalLocale" ), QgsSettings::NoSection, QString() );
+      //! Settings entry locale show group separator
+      static const inline QgsSettingsEntryBool localeShowGroupSeparator = QgsSettingsEntryBool( QStringLiteral( "locale/showGroupSeparator" ), QgsSettings::NoSection, false );
+      //! Settings entry search path for SVG
+      static const inline QgsSettingsEntryStringList searchPathsForSVG = QgsSettingsEntryStringList( QStringLiteral( "svg/searchPathsForSVG" ), QgsSettings::NoSection, QStringList() );
+    };
 
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )

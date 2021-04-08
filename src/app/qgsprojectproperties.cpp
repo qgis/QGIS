@@ -983,7 +983,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
 
   cbtsLocale->addItem( QIcon( QStringLiteral( ":/images/flags/%1.svg" ).arg( QLatin1String( "en_US" ) ) ), QLocale( QStringLiteral( "en_US" ) ).nativeLanguageName(), QStringLiteral( "en_US" ) );
-  cbtsLocale->setCurrentIndex( cbtsLocale->findData( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() ) );
+  cbtsLocale->setCurrentIndex( cbtsLocale->findData( QgsApplication::Settings::localeUserLocale.value() ) );
 
   connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::onGenerateTsFileButton );
 
