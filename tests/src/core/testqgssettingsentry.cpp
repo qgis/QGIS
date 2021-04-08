@@ -31,10 +31,67 @@ class TestQgsSettingsEntry : public QObject
     Q_OBJECT
 
   private slots:
+    void settingsKey();
     void enumValue();
     void flagValue();
 };
 
+void TestQgsSettingsEntry::settingsKey()
+{
+  QgsSettings settings;
+
+  {
+    QString key( QStringLiteral( "/qgis/testing/settingsKey" ) );
+
+    // Be sure that settings does not exist already
+    settings.remove( key );
+
+    // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
+    settings.setValue( key, 42 );
+
+    QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::NoSection, 0 );
+    QCOMPARE( settingsEntryInteger.value(), 42 );
+  }
+
+  {
+    QString key( QStringLiteral( "qgis/testing/settingsKey" ) );
+
+    // Be sure that settings does not exist already
+    settings.remove( key );
+
+    // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
+    settings.setValue( key, 43 );
+
+    QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::NoSection, 0 );
+    QCOMPARE( settingsEntryInteger.value(), 43 );
+  }
+
+  {
+    QString key( QStringLiteral( "/qgis/testing/settingsKey" ) );
+
+    // Be sure that settings does not exist already
+    settings.remove( key, QgsSettings::Core );
+
+    // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
+    settings.setValue( key, 44, QgsSettings::Core );
+
+    QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::Core, 0 );
+    QCOMPARE( settingsEntryInteger.value(), 44 );
+  }
+
+  {
+    QString key( QStringLiteral( "qgis/testing/settingsKey" ) );
+
+    // Be sure that settings does not exist already
+    settings.remove( key, QgsSettings::Core );
+
+    // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
+    settings.setValue( key, 45, QgsSettings::Core );
+
+    QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::Core, 0 );
+    QCOMPARE( settingsEntryInteger.value(), 45 );
+  }
+}
 
 void TestQgsSettingsEntry::enumValue()
 {

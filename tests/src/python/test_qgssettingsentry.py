@@ -214,6 +214,12 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), 43)
         self.assertEqual(settingsEntryInteger.valueAsVariant(), 43)
 
+        # Set/Get negative value
+        settingsEntryInteger.setValue(-42)
+        # Verify setValue using QgsSettings
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), -42)
+        self.assertEqual(settingsEntryInteger.valueAsVariant(), -42)
+
         # Settings type
         self.assertEqual(settingsEntryInteger.settingsType(), QgsSettingsEntryBase.Integer)
 
@@ -235,6 +241,12 @@ class TestQgsSettingsEntry(unittest.TestCase):
         # Verify setValue using QgsSettings
         self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), 1.618)
         self.assertEqual(settingsEntryDouble.valueAsVariant(), 1.618)
+
+        # Set/Get negative value
+        settingsEntryDouble.setValue(-273.15)
+        # Verify setValue using QgsSettings
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), -273.15)
+        self.assertEqual(settingsEntryDouble.valueAsVariant(), -273.15)
 
         # Settings type
         self.assertEqual(settingsEntryDouble.settingsType(), QgsSettingsEntryBase.Double)

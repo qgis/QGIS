@@ -581,7 +581,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
                             QgsSettings::Section section,
                             double defaultValue = 0.0,
                             const QString &description = QString(),
-                            double minValue = std::numeric_limits<double>::min(),
+                            double minValue = std::numeric_limits<double>::lowest(),
                             double maxValue = std::numeric_limits<double>::max(),
                             int displayDecimals = 1 );
 

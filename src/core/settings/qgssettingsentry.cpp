@@ -425,7 +425,7 @@ QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, const QStrin
                           pluginName,
                           defaultValue,
                           description )
-  , mMinValue( std::numeric_limits<double>::min() )
+  , mMinValue( std::numeric_limits<double>::lowest() )
   , mMaxValue( std::numeric_limits<double>::max() )
   , mDisplayHintDecimals( 1 )
 {
