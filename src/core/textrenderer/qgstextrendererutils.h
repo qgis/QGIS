@@ -155,8 +155,8 @@ class CORE_EXPORT QgsTextRendererUtils
      * \param pathDistances vector of precalculated distances between vertices in \a x, \a y arrays
      * \param offsetAlongLine offset along line at which to start the curved text placement
      * \param direction controls placement of text with respect to painter orientation or line direction
-     * \param maxConcaveAngle maximum angle between chracters for concave text, or -1 if not set
-     * \param maxConvexAnglemaximum angle between chracters for convex text, or -1 if not set
+     * \param maxConcaveAngle maximum angle between characters for concave text, or -1 if not set
+     * \param maxConvexAngle maximum angle between characters for convex text, or -1 if not set
      * \param uprightOnly set to TRUE if text should be placed in an upright orientation only, or FALSE to allow upside down text placement
      *
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
