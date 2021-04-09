@@ -963,7 +963,8 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   const double logicalDpiX = QgsApplication::desktop()->logicalDpiX();
 #else
-  const double logicalDpiX = QApplication::topLevelWidgets().first()->screen()->logicalDotsPerInchX();
+  QWidget *activeWindow = QApplication::activeWindow();
+  const double logicalDpiX = activeWindow && activeWindow->screen() ? activeWindow->screen()->logicalDotsPerInchX() : 96.0;
 #endif
   context.setScaleFactor( logicalDpiX / 25.4 );
 

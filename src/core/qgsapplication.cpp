@@ -1865,8 +1865,11 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
   if ( applyDevicePixelRatio && QApplication::desktop() )
     scaledIconSize *= QApplication::desktop()->devicePixelRatio();
 #else
-  if ( applyDevicePixelRatio && !QApplication::topLevelWidgets().isEmpty() )
-    scaledIconSize *= QApplication::topLevelWidgets().first()->screen()->devicePixelRatio();
+  if ( applyDevicePixelRatio )
+  {
+    if ( QWidget *activeWindow = QApplication::activeWindow() )
+      scaledIconSize *= ( activeWindow->screen() ? QApplication::activeWindow()->screen()->devicePixelRatio() : 1 );
+  }
 #endif
   return scaledIconSize;
 }
