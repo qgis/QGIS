@@ -176,16 +176,16 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     prevY = *y++;
   }
 
-  return generateCurvedTextPlacementPrivate( metrics, line->xData(), line->yData(), numPoints, pathDistances, offsetAlongLine, direction, LeftToRight, maxConcaveAngle, maxConvexAngle, uprightOnly );
+  return generateCurvedTextPlacementPrivate( metrics, line->xData(), line->yData(), numPoints, pathDistances, offsetAlongLine, direction, maxConcaveAngle, maxConvexAngle, uprightOnly );
 }
 #endif
 
 QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly )
 {
-  return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, LeftToRight, maxConcaveAngle, maxConvexAngle, uprightOnly );
+  return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, maxConcaveAngle, maxConvexAngle, uprightOnly );
 }
 
-QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, LineOrientationAtLabelPosition orientation,  double maxConcaveAngle, double maxConvexAngle, bool uprightOnly, bool isSecondAttempt )
+QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly, bool isSecondAttempt )
 {
   std::unique_ptr< CurvePlacementProperties > output = std::make_unique< CurvePlacementProperties >();
   output->graphemePlacement.reserve( metrics.count() );
@@ -245,24 +245,18 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     double dy = endLabelY - startLabelY;
     const double lineAngle = std::atan2( -dy, dx ) * 180 / M_PI;
 
-    orientation = ( lineAngle > 90 || lineAngle < -90 ) ? RightToLeft : LeftToRight;
-    if ( orientation == RightToLeft )
+    if ( lineAngle > 90 || lineAngle < -90 )
+    {
       output->labeledLineSegmentIsRightToLeft = true;
+    }
   }
 
-  if ( orientation == RightToLeft )
+  if ( isSecondAttempt )
   {
-    if ( !isSecondAttempt )
-    {
-      // first pass - we try treating the segment as running from right to left, and see how many upside down characters we get
-      orientation = LeftToRight;
-    }
-    else
-    {
-      // we know that treating the segment as running from right to left gave too many upside down characters, so try again treating the
-      // segment as left to right
-      output->labeledLineSegmentIsRightToLeft = false;
-    }
+    // we know that treating the segment as running from right to left gave too many upside down characters, so try again treating the
+    // segment as left to right
+    output->labeledLineSegmentIsRightToLeft = false;
+    output->flippedCharacterPlacementToGetUprightLabels = true;
   }
 
   double dx = x[index] - x[index - 1];
@@ -275,7 +269,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     double lastCharacterAngle = angle;
 
     // grab the next character according to the orientation
-    const double characterWidth = ( orientation == LeftToRight ? metrics.characterWidth( i ) : metrics.characterWidth( characterCount - i - 1 ) );
+    const double characterWidth = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterWidth( i ) : metrics.characterWidth( characterCount - i - 1 );
     if ( qgsDoubleNear( characterWidth, 0.0 ) )
       // Certain scripts rely on zero-width character, skip those to prevent failure (see #15801)
       continue;
@@ -314,7 +308,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     // Shift the character downwards since the draw position is specified at the baseline
     // and we're calculating the mean line here
     double dist = 0.9 * metrics.characterHeight() / 2;
-    if ( orientation == RightToLeft )
+    if ( output->flippedCharacterPlacementToGetUprightLabels )
     {
       dist = -dist;
     }
@@ -323,12 +317,12 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
 
     double renderAngle = angle;
     CurvedGraphemePlacement placement;
-    placement.graphemeIndex = orientation == LeftToRight ? i : characterCount - i - 1;
+    placement.graphemeIndex = !output->flippedCharacterPlacementToGetUprightLabels ? i : characterCount - i - 1;
     placement.x = characterStartX;
     placement.y = characterStartY;
     placement.width = characterWidth;
     placement.height = characterHeight;
-    if ( orientation == RightToLeft )
+    if ( output->flippedCharacterPlacementToGetUprightLabels )
     {
       // rotate in place
       placement.x += characterWidth * std::cos( renderAngle );
@@ -352,7 +346,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
   {
     // more of text is upside down then right side up...
     // if text should be shown upright then retry with the opposite orientation
-    return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, QgsTextRendererUtils::RightToLeft, maxConcaveAngle, maxConvexAngle, uprightOnly, true );
+    return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, maxConcaveAngle, maxConvexAngle, uprightOnly, true );
   }
 
   return output.release();
