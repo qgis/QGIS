@@ -1,0 +1,22 @@
+--- python/gui/auto_generated/qgsmessagebar.sip.in	2021-04-09 23:02:31.706218166 +0200
++++ python/gui/auto_generated/qgsmessagebar.sip.in.8501e9b5a713111d94dcd083a0e82860c231c3c5.prepare	2021-04-09 23:19:39.329746863 +0200
+@@ -214,7 +214,8 @@
+ 
+     void pushWarning( const QString &title, const QString &message );
+ %Docstring
+-Pushes a warning ``message`` that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.
++Pushes a warning ``message`` that must be manually dismissed by the user.
++Before QGIS 3.18 the default timeout was used.
+ 
+ :param title: title string for message
+ :param message: The message to be displayed
+@@ -224,7 +225,8 @@
+ 
+     void pushCritical( const QString &title, const QString &message );
+ %Docstring
+-Pushes a critical warning ``message`` that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.    
++Pushes a critical warning ``message`` that must be manually dismissed by the user.
++Before QGIS 3.18 the default timeout was used.
+ 
+ :param title: title string for message
+ :param message: The message to be displayed
