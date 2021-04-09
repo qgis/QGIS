@@ -7436,6 +7436,13 @@ void TestQgsGeometry::triangle()
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
   QVERIFY( !t6.fromWkb( wkbPointPtr ) );
   QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+  // invalid multi ring
+  // ba is equivalent to "Triangle((0 0, 0 5, 5 5, 0 0), (2 2, 2 4, 3 3, 2 2))"
+  QByteArray ba = QByteArray::fromHex( "01110000000200000004000000000000000000000000000000000000000000000000000000000000000000144000000000000014400000000000001440000000000000000000000000000000000400000000000000000000400000000000000040000000000000004000000000000010400000000000000840000000000000084000000000000000400000000000000040" );
+  QgsTriangle tInvalidWkb;
+  QgsConstWkbPtr wkbMultiRing( ba );
+  QVERIFY( !tInvalidWkb.fromWkb( wkbMultiRing ) );
+  QCOMPARE( tInvalidWkb, QgsTriangle() );
 
   //asGML2
   QgsTriangle exportTriangle( QgsPoint( 1, 2 ),
