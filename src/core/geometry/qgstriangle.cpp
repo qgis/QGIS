@@ -182,6 +182,7 @@ bool QgsTriangle::fromWkt( const QString &wkt )
     QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
     QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( childParts.first );
+
     if ( flatCurveType == QgsWkbTypes::LineString )
       mInteriorRings.append( new QgsLineString() );
     else
@@ -196,11 +197,6 @@ bool QgsTriangle::fromWkt( const QString &wkt )
     }
   }
 
-  if ( mInteriorRings.isEmpty() )
-  {
-    clear();
-    return false;
-  }
   mExteriorRing.reset( mInteriorRings.takeFirst() );
   if ( ( mExteriorRing->numPoints() < 3 ) || ( mExteriorRing->numPoints() > 4 ) || ( mExteriorRing->numPoints() == 4 && mExteriorRing->startPoint() != mExteriorRing->endPoint() ) )
   {
