@@ -129,6 +129,8 @@ class CORE_EXPORT QgsTextRendererUtils
         int upsideDownCharCount = 0;
         //! TRUE if labeled section of line is calculated to be of right-to-left orientation
         bool labeledLineSegmentIsRightToLeft = false;
+        //! TRUE if the character placement had to be reversed in order to obtain upright labels on the segment
+        bool flippedCharacterPlacementToGetUprightLabels = false;
     };
 
     /**
@@ -167,13 +169,7 @@ class CORE_EXPORT QgsTextRendererUtils
 
   private:
 
-    enum LineOrientationAtLabelPosition
-    {
-      LeftToRight,
-      RightToLeft
-    };
-
-    static CurvePlacementProperties *generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, LineOrientationAtLabelPosition orientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true, bool isSecondAttempt = false ) SIP_SKIP;
+    static CurvePlacementProperties *generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true, bool isSecondAttempt = false ) SIP_SKIP;
 
     //! Returns TRUE if the next char position is found. The referenced parameters are updated.
     static bool nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment,
