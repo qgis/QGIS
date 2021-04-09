@@ -87,6 +87,7 @@ bool QgsMapToolReshape::supportsTechnique( QgsMapToolCapture::CaptureTechnique t
   {
     case QgsMapToolCapture::StraightSegments:
     case QgsMapToolCapture::CircularString:
+    case QgsMapToolCapture::Streaming:
       return true;
   }
   return false;

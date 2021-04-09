@@ -10,7 +10,7 @@
 
 class QgsLayoutViewToolTemporaryKeyPan : QgsLayoutViewTool
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for temporarily panning a layout while a key is depressed.
 
 .. versionadded:: 3.0

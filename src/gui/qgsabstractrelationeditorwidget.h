@@ -87,6 +87,12 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     QgsRelation relation() const {return mRelation;}
 
     /**
+     * Returns the nm relation
+     * \since QGIS 3.18
+     */
+    QgsRelation nmRelation() const {return mNmRelation;}
+
+    /**
      * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
      */
     void setFeature( const QgsFeature &feature, bool update = true );
@@ -226,7 +232,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     bool mLayerInSameTransactionGroup = false;
 
     bool mForceSuppressFormPopup = false;
-    QVariant mNmRelationId;
     QString mLabel;
 
     /**
@@ -346,10 +351,24 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
      */
     QgsRelation relation() const;
 
+    /**
+     * \brief Set the nm relation for this widget.
+     *
+     * \param nmRelation The nm relation
+     */
+    virtual void setNmRelation( const QgsRelation &nmRelation );
+
+    /**
+     * Returns the nm relation for which this configuration widget applies
+     *
+     * \returns The nm relation
+     */
+    virtual QgsRelation nmRelation() const;
 
   private:
     QgsVectorLayer *mLayer = nullptr;
     QgsRelation mRelation;
+    QgsRelation mNmRelation;
 };
 
 

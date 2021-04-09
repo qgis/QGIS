@@ -17,7 +17,7 @@
 
 class QgsRubberBand : QgsMapCanvasItem
 {
-%Docstring
+%Docstring(signature="appended")
 A class for drawing transient features (e.g. digitizing lines) on the map.
 
 The :py:class:`QgsRubberBand` class provides a transparent overlay widget
@@ -363,7 +363,7 @@ Ownership of ``symbol`` is transferred to the rubberband.
 
 .. warning::
 
-   Only line symbols are currently supported.
+   Only line and fill symbols are currently supported.
 
 .. note::
 

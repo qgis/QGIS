@@ -92,7 +92,7 @@
         <number>6</number>
        </property>
        <property name="minimum">
-        <double>0.0</double>
+        <double>0.000000000000000</double>
        </property>
        <property name="maximum">
         <double>99999999.989999994635582</double>
@@ -113,7 +113,7 @@
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
-      </widget>     
+      </widget>
      </item>
     </layout>
    </item>
@@ -165,11 +165,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -179,9 +174,29 @@
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mCountMethodComboBox</tabstop>
+  <tabstop>mPointCountSpinBox</tabstop>
   <tabstop>mPointCountDdbtn</tabstop>
+  <tabstop>mDensityAreaSpinBox</tabstop>
+  <tabstop>mDensityAreaUnitWidget</tabstop>
+  <tabstop>mDensityAreaDdbtn</tabstop>
+  <tabstop>mSeedSpinBox</tabstop>
+  <tabstop>mSeedDdbtn</tabstop>
+  <tabstop>mClipPointsCheckBox</tabstop>
+  <tabstop>mClipPointsDdbtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

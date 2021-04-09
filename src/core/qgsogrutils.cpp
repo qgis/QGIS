@@ -23,6 +23,9 @@
 #include "qgsmultilinestring.h"
 #include "qgsogrprovider.h"
 #include "qgslinesymbollayer.h"
+#include "qgspolygon.h"
+#include "qgsmultipolygon.h"
+
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -277,30 +280,108 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
+      case QVariant::StringList:
+      {
+        QStringList list;
+        char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+        const int count = CSLCount( lst );
+        if ( count > 0 )
+        {
+          list.reserve( count );
+          for ( int i = 0; i < count; i++ )
+          {
+            if ( encoding )
+              list << encoding->toUnicode( lst[i] );
+            else
+              list << QString::fromUtf8( lst[i] );
+          }
+        }
+        value = list;
+        break;
+      }
+
       case QVariant::List:
       {
-        if ( field.subType() == QVariant::String )
+        switch ( field.subType() )
         {
-          QStringList list;
-          char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
-          const int count = CSLCount( lst );
-          if ( count > 0 )
+          case QVariant::String:
           {
-            for ( int i = 0; i < count; i++ )
+            QStringList list;
+            char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+            const int count = CSLCount( lst );
+            if ( count > 0 )
             {
-              if ( encoding )
-                list << encoding->toUnicode( lst[i] );
-              else
-                list << QString::fromUtf8( lst[i] );
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                if ( encoding )
+                  list << encoding->toUnicode( lst[i] );
+                else
+                  list << QString::fromUtf8( lst[i] );
+              }
             }
+            value = list;
+            break;
           }
-          value = list;
-        }
-        else
-        {
-          Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
-          if ( ok )
-            *ok = false;
+
+          case QVariant::Int:
+          {
+            QVariantList list;
+            int count = 0;
+            const int *lst = OGR_F_GetFieldAsIntegerList( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          case QVariant::Double:
+          {
+            QVariantList list;
+            int count = 0;
+            const double *lst = OGR_F_GetFieldAsDoubleList( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          case QVariant::LongLong:
+          {
+            QVariantList list;
+            int count = 0;
+            const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          default:
+          {
+            Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
+            if ( ok )
+              *ok = false;
+            break;
+          }
         }
         break;
       }
@@ -427,6 +508,38 @@ std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeomet
   return mp;
 }
 
+std::unique_ptr< QgsPolygon > ogrGeometryToQgsPolygon( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  if ( count >= 1 )
+  {
+    polygon->setExteriorRing( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, 0 ) ).release() );
+  }
+
+  for ( int i = 1; i < count; ++i )
+  {
+    polygon->addInteriorRing( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return polygon;
+}
+
+std::unique_ptr< QgsMultiPolygon > ogrGeometryToQgsMultiPolygon( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsMultiPolygon > polygon = std::make_unique< QgsMultiPolygon >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  polygon->reserve( count );
+  for ( int i = 0; i < count; ++i )
+  {
+    polygon->addGeometry( ogrGeometryToQgsPolygon( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return polygon;
+}
+
 QgsWkbTypes::Type QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType )
 {
   switch ( ogrGeomType )
@@ -537,19 +650,27 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 
     case QgsWkbTypes::LineString:
     {
-      // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsLineString( geom ) );
     }
 
     case QgsWkbTypes::MultiLineString:
     {
-      // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsMultiLineString( geom ) );
+    }
+
+    case QgsWkbTypes::Polygon:
+    {
+      return QgsGeometry( ogrGeometryToQgsPolygon( geom ) );
+    }
+
+    case QgsWkbTypes::MultiPolygon:
+    {
+      return QgsGeometry( ogrGeometryToQgsMultiPolygon( geom ) );
     }
 
     default:
       break;
-  };
+  }
 
   // Fallback to inefficient WKB conversions
 

@@ -75,13 +75,16 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [ = ]
   {
     mDynamicTextMenu->clear();
-    // we need to rebuild this on each show, as the content varies depending on other available items...
-    buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [ = ]( const QString & expression )
+    if ( mLabel->layout() )
     {
-      mLabel->beginCommand( tr( "Insert dynamic text" ) );
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
-      mLabel->endCommand();
-    } );
+      // we need to rebuild this on each show, as the content varies depending on other available items...
+      buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [ = ]( const QString & expression )
+      {
+        mLabel->beginCommand( tr( "Insert dynamic text" ) );
+        mTextEdit->insertPlainText( "[%" + expression + "%]" );
+        mLabel->endCommand();
+      } );
+    }
   } );
 
 }
@@ -94,6 +97,7 @@ void QgsLayoutLabelWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayo
 
 void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void ( const QString & )> &callback )
 {
+  Q_ASSERT( layout );
   auto addExpression = [&callback]( QMenu * menu, const QString & name, const QString & expression )
   {
     QAction *action = new QAction( name, menu );
@@ -119,7 +123,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   QMenu *mapsMenu = new QMenu( tr( "Map Properties" ), menu );
   QList< QgsLayoutItemMap * > maps;
   layout->layoutItems( maps );
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     // these expressions require the map to have a non-empty ID set
     if ( map->id().isEmpty() )

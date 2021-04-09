@@ -10,7 +10,7 @@
 
 class QgsCheckBoxFieldFormatter : QgsFieldFormatter
 {
-%Docstring
+%Docstring(signature="appended")
 Field formatter for a checkbox field.
 
 .. versionadded:: 3.10

@@ -11,7 +11,7 @@
 
 class QgsPropertyDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 Definition for a property.
 
 :py:class:`QgsPropertyDefinition` defines the type of values allowed for a property, and
@@ -170,7 +170,7 @@ override assistants.
 
 class QgsProperty
 {
-%Docstring
+%Docstring(signature="appended")
 A store for object properties.
 
 :py:class:`QgsProperty` objects are used for storing properties for objects, which can then be transformed to

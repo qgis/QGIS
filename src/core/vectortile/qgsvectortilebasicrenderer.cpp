@@ -120,7 +120,7 @@ void QgsVectorTileBasicRenderer::startRender( QgsRenderContext &context, int til
   Q_UNUSED( context )
   Q_UNUSED( tileRange )
   // figure out required fields for different layers
-  for ( const QgsVectorTileBasicRendererStyle &layerStyle : qgis::as_const( mStyles ) )
+  for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
   {
     if ( layerStyle.isActive( tileZoom ) )
     {
@@ -145,7 +145,7 @@ QMap<QString, QSet<QString> > QgsVectorTileBasicRenderer::usedAttributes( const 
 QSet<QString> QgsVectorTileBasicRenderer::requiredLayers( QgsRenderContext &, int tileZoom ) const
 {
   QSet< QString > res;
-  for ( const QgsVectorTileBasicRendererStyle &layerStyle : qgis::as_const( mStyles ) )
+  for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
   {
     if ( layerStyle.isActive( tileZoom ) )
     {
@@ -165,7 +165,7 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
   const QgsVectorTileFeatures tileData = tile.features();
   int zoomLevel = tile.id().zoomLevel();
 
-  for ( const QgsVectorTileBasicRendererStyle &layerStyle : qgis::as_const( mStyles ) )
+  for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
   {
     if ( !layerStyle.isActive( zoomLevel ) )
       continue;

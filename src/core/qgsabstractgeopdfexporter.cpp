@@ -98,7 +98,9 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QTextStream out( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     out.setCodec( "UTF-8" );
+#endif
     out << composition;
   }
   else
@@ -277,7 +279,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
   if ( details.includeFeatures )
   {
-    for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
+    for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
     {
       if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
         continue;
@@ -541,7 +543,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   // vector datasets (we "draw" these on top, just for debugging... but they are invisible, so are never really drawn!)
   if ( details.includeFeatures )
   {
-    for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
+    for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
     {
       QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
       if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )

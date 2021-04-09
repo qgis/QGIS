@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "qgswmsutils.h"
+#include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsdescribelayer.h"
 #include "qgsserverprojectutils.h"
@@ -28,21 +29,19 @@
 namespace QgsWms
 {
 
-  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                           const QgsServerRequest &request, QgsServerResponse &response )
+  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project,
+                           const QgsWmsRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = describeLayer( serverIface, project, version, request );
+    QDomDocument doc = describeLayer( serverIface, project, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
   // DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
-  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                              const QgsServerRequest &request )
+  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project,
+                              const QgsWmsRequest &request )
   {
-    Q_UNUSED( version )
-
-    QgsServerRequest::Parameters parameters = request.parameters();
+    const QgsServerRequest::Parameters parameters = request.parameters();
 
     if ( !parameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
     {

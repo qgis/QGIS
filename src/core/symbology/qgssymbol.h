@@ -638,6 +638,32 @@ class CORE_EXPORT QgsSymbol
      */
     QgsSymbolRenderContext *symbolRenderContext();
 
+    /**
+     * Called before symbol layers will be rendered for a particular \a feature.
+     *
+     * This is always followed by a call to stopFeatureRender() after the feature
+     * has been completely rendered (i.e. all parts have been rendered).
+     *
+     * Internally, this notifies all symbol layers which will be used via a call to
+     * QgsSymbolLayer::startFeatureRender().
+     *
+     * \since QGIS 3.20
+     */
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+
+    /**
+     * Called after symbol layers have been rendered for a particular \a feature.
+     *
+     * This is always preceded by a call to startFeatureRender() just before the feature
+     * will be rendered.
+     *
+     * Internally, this notifies all symbol layers which were used via a call to
+     * QgsSymbolLayer::stopFeatureRender().
+     *
+     * \since QGIS 3.20
+     */
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+
   protected:
     QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers SIP_TRANSFER ); // can't be instantiated
 
@@ -740,32 +766,6 @@ class CORE_EXPORT QgsSymbol
     std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
     QgsPropertyCollection mDataDefinedProperties;
-
-    /**
-     * Called before symbol layers will be rendered for a particular \a feature.
-     *
-     * This is always followed by a call to stopFeatureRender() after the feature
-     * has been completely rendered (i.e. all parts have been rendered).
-     *
-     * Internally, this notifies all symbol layers which will be used via a call to
-     * QgsSymbolLayer::startFeatureRender().
-     *
-     * \since QGIS 3.12
-     */
-    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
-
-    /**
-     * Called after symbol layers have been rendered for a particular \a feature.
-     *
-     * This is always preceded by a call to startFeatureRender() just before the feature
-     * will be rendered.
-     *
-     * Internally, this notifies all symbol layers which were used via a call to
-     * QgsSymbolLayer::stopFeatureRender().
-     *
-     * \since QGIS 3.12
-     */
-    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
 
     Q_DISABLE_COPY( QgsSymbol )
 

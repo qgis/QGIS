@@ -19,7 +19,7 @@
 #define QGSDELIMITEDTEXTFILE_H
 
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QObject>
 
@@ -419,7 +419,7 @@ class QgsDelimitedTextFile : public QObject
     int mMaxNameLength = 200;
 
     // Parameters used by parsers
-    QRegExp mDelimRegexp;
+    QRegularExpression mDelimRegexp;
     bool mAnchoredRegexp = false;
     QString mDelimChars;
     QString mQuoteChar;
@@ -441,7 +441,7 @@ class QgsDelimitedTextFile : public QObject
     int mMaxFieldCount = 0;
 
     QString mDefaultFieldName;
-    QRegExp mDefaultFieldRegexp;
+    QRegularExpression mDefaultFieldRegexp;
 };
 
 #endif

@@ -355,7 +355,7 @@ class QgsThreadStackOverflowGuard
       QStringList dumpStack;
       const QStack<QString> &stack = mStorage.localData();
 
-      int dumpSize = std::min( stack.size(), 10 );
+      int dumpSize = std::min( static_cast<int>( stack.size() ), 10 );
       for ( int i = 0; i < dumpSize; ++i )
       {
         dumpStack += stack.at( i );
@@ -719,6 +719,7 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
 
   // store field source index - we'll need it when fetching from provider
   mFetchJoinInfo[ joinInfo ].attributes.push_back( sourceLayerIndex );
+  mFetchJoinInfo[ joinInfo ].attributesSourceToDestLayerMap[sourceLayerIndex] = fieldIdx;
 }
 
 
@@ -786,7 +787,9 @@ void QgsVectorLayerFeatureIterator::prepareFields()
 
   mExpressionContext.reset();
 
-  mFieldsToPrepare = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
+  mFieldsToPrepare = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+                     ? mRequest.subsetOfAttributes()
+                     : mSource->mFields.allAttributesList();
 
   while ( !mFieldsToPrepare.isEmpty() )
   {
@@ -1078,44 +1081,47 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
     subsetString += '=' + v;
   }
 
+  QList<int> joinedAttributeIndices;
+
   // maybe user requested just a subset of layer's attributes
   // so we do not have to cache everything
-  QVector<int> subsetIndices;
   if ( joinInfo->hasSubset() )
   {
     const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo );
-    subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, subsetNames );
+    QVector<int> subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, subsetNames );
+    joinedAttributeIndices = qgis::setToList( qgis::listToSet( attributes ).intersect( qgis::listToSet( subsetIndices.toList() ) ) );
   }
+  else
+  {
+    joinedAttributeIndices = attributes;
+  }
+
+  // we don't need the join field, it is already present in the other table
+  joinedAttributeIndices.removeAll( joinField );
 
   // select (no geometry)
   QgsFeatureRequest request;
   request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( attributes );
+  request.setSubsetOfAttributes( joinedAttributeIndices );
   request.setFilterExpression( subsetString );
   request.setLimit( 1 );
   QgsFeatureIterator fi = joinLayer->getFeatures( request );
 
   // get first feature
+  const QList<int> sourceAttrIndexes = attributesSourceToDestLayerMap.keys();
   QgsFeature fet;
   if ( fi.nextFeature( fet ) )
   {
-    int index = indexOffset;
     QgsAttributes attr = fet.attributes();
-    if ( joinInfo->hasSubset() )
-    {
-      for ( int i = 0; i < subsetIndices.count(); ++i )
-        f.setAttribute( index++, attr.at( subsetIndices.at( i ) ) );
-    }
-    else
-    {
-      // use all fields except for the one used for join (has same value as exiting field in target layer)
-      for ( int i = 0; i < attr.count(); ++i )
-      {
-        if ( i == joinField )
-          continue;
 
-        f.setAttribute( index++, attr.at( i ) );
-      }
+    for ( const int sourceAttrIndex : sourceAttrIndexes )
+    {
+      if ( sourceAttrIndex == joinField )
+        continue;
+
+      int destAttrIndex = attributesSourceToDestLayerMap.value( sourceAttrIndex );
+
+      f.setAttribute( destAttrIndex, attr.at( sourceAttrIndex ) );
     }
   }
   else

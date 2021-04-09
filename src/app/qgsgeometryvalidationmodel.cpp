@@ -211,7 +211,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
       case DetailsRole:
       {
         QStringList details;
-        for ( const std::shared_ptr<QgsSingleGeometryCheckError> &error : qgis::as_const( featureItem.errors ) )
+        for ( const std::shared_ptr<QgsSingleGeometryCheckError> &error : std::as_const( featureItem.errors ) )
         {
           details << error->description();
         }

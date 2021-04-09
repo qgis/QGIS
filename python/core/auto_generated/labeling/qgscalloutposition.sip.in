@@ -12,7 +12,7 @@
 
 class QgsCalloutPosition
 {
-%Docstring
+%Docstring(signature="appended")
 Represents the calculated placement of a map label callout line.
 
 .. versionadded:: 3.20
@@ -85,6 +85,50 @@ The destination of the callout line is the line point associated with the featur
 .. seealso:: :py:func:`destination`
 
 .. seealso:: :py:func:`setOrigin`
+%End
+
+    bool originIsPinned() const;
+%Docstring
+Returns ``True`` if the origin of the callout has pinned (manually placed).
+
+The origin of the callout line is the line point associated with the label text.
+
+.. seealso:: :py:func:`destinationIsPinned`
+
+.. seealso:: :py:func:`setOriginIsPinned`
+%End
+
+    void setOriginIsPinned( bool pinned );
+%Docstring
+Sets whether the origin of the callout has pinned (manually placed).
+
+The origin of the callout line is the line point associated with the label text.
+
+.. seealso:: :py:func:`setDestinationIsPinned`
+
+.. seealso:: :py:func:`originIsPinned`
+%End
+
+    bool destinationIsPinned() const;
+%Docstring
+Returns ``True`` if the destination of the callout has pinned (manually placed).
+
+The destination of the callout line is the line point associated with the feature's geometry.
+
+.. seealso:: :py:func:`originIsPinned`
+
+.. seealso:: :py:func:`setDestinationIsPinned`
+%End
+
+    void setDestinationIsPinned( bool pinned );
+%Docstring
+Sets whether the destination of the callout has pinned (manually placed).
+
+The destination of the callout line is the line point associated with the feature's geometry.
+
+.. seealso:: :py:func:`setOriginIsPinned`
+
+.. seealso:: :py:func:`destinationIsPinned`
 %End
 
 };

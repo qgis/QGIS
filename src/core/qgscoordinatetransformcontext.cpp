@@ -26,6 +26,7 @@ QString crsToKey( const QgsCoordinateReferenceSystem &crs )
   return crs.authid().isEmpty() ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : crs.authid();
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 template<>
 bool qMapLessThanKey<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>>( const QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem> &key1,
     const QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem> &key2 )
@@ -34,6 +35,7 @@ bool qMapLessThanKey<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceS
   const QPair< QString, QString > key2String = qMakePair( crsToKey( key2.first ), crsToKey( key2.second ) );
   return key1String < key2String;
 }
+#endif
 
 QgsCoordinateTransformContext::QgsCoordinateTransformContext()
   : d( new QgsCoordinateTransformContextPrivate() )

@@ -10,7 +10,7 @@
 
 class QgsCustomProjectOpenHandler : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class that may be implemented to handle new project file types within
 the QGIS application.
 

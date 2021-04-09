@@ -13,7 +13,7 @@
 
 class QgsPointDistanceRenderer: QgsFeatureRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
 :py:class:`QgsPointDistanceRenderer` handles calculation of point clusters using a distance based threshold.
 Subclasses must implement :py:func:`~drawGroup` to handle the rendering of individual point clusters

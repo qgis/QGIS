@@ -13,7 +13,7 @@
 
 class QgsCameraPose
 {
-%Docstring
+%Docstring(signature="appended")
 Class that encapsulates camera pose in a 3D scene.
 
 The pose is defined with the following parameters:

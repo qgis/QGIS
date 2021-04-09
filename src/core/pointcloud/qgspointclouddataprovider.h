@@ -174,7 +174,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Returns the total number of points available in the dataset.
      */
-    virtual int pointCount() const = 0;
+    virtual qint64 pointCount() const = 0;
 
     /**
      * Returns the polygon bounds of the layer. The CRS of the returned geometry will match the provider's crs().

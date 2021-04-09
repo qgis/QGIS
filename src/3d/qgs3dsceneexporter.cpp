@@ -146,13 +146,9 @@ QVector<uint> getIndexData( Qt3DRender::QAttribute *indexAttribute, const QByteA
 QByteArray getData( Qt3DRender::QBuffer *buffer )
 {
   QByteArray bytes = buffer->data();
-  Qt3DRender::QBufferDataGeneratorPtr dataGenerator = buffer->dataGenerator();
   if ( bytes.isNull() )
   {
-    if ( !dataGenerator.isNull() )
-      bytes = dataGenerator->operator()();
-    else
-      QgsDebugMsg( "QBuffer is null" );
+    QgsDebugMsg( "QBuffer is null" );
   }
   return bytes;
 }

@@ -104,6 +104,14 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mPrefixLineEdit</tabstop>
+  <tabstop>mSuffixLineEdit</tabstop>
+  <tabstop>mDecimalsSpinBox</tabstop>
+  <tabstop>mShowThousandsCheckBox</tabstop>
+  <tabstop>mShowPlusCheckBox</tabstop>
+  <tabstop>mShowTrailingZerosCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

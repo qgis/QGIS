@@ -18,7 +18,7 @@
 
 #include <QWidget>
 
-#include "qgsmaptooledit.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgsvertexmarker.h"
 #include "qgis_app.h"
 #include "qgsgeometry.h"
@@ -27,6 +27,7 @@
 class QgsDoubleSpinBox;
 class QHBoxLayout;
 class QgsSpinBox;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsScaleMagnetWidget : public QWidget
 {
@@ -62,16 +63,16 @@ class APP_EXPORT QgsScaleMagnetWidget : public QWidget
 
 
 //! Map tool to scale features
-class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
     QgsMapToolScaleFeature( QgsMapCanvas *canvas );
     ~QgsMapToolScaleFeature() override;
 
-    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -95,14 +96,17 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
     void createScalingWidget();
     void deleteScalingWidget();
 
-    //! Start point of the move in map coordinates
+    //! Start point of the scaling in map coordinates
     QgsPointXY mFeatureCenterMapCoords;
-    //! Rubberband that shows the feature being moved
+    //! Rubberband that shows the feature being scaled
     QgsRubberBand *mRubberBand = nullptr;
 
-    //! Id of moved feature
+    //! Id of scaled feature
     QgsFeatureIds mScaledFeatures;
     QVector< QgsGeometry > mOriginalGeometries;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     double mScaling = 0;
     double mBaseDistance = 1;

@@ -13,7 +13,7 @@
 
 class QgsVectorTileBasicRendererStyle
 {
-%Docstring
+%Docstring(signature="appended")
 Definition of map rendering of a subset of vector tile data. The subset of data is defined by:
 
 - sub-layer name
@@ -135,7 +135,7 @@ Reads object content from given DOM element
 
 class QgsVectorTileBasicRenderer : QgsVectorTileRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 The default vector tile renderer implementation. It has an ordered list of "styles",
 each defines a rendering rule.
 

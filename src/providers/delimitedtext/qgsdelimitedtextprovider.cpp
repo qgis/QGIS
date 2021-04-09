@@ -24,7 +24,7 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QSettings>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
 
@@ -56,8 +56,8 @@ const QString QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION = QStringLiter
 
 static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 
-QRegExp QgsDelimitedTextProvider::sWktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
+QRegularExpression QgsDelimitedTextProvider::sWktPrefixRegexp( QStringLiteral( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)" ), QRegularExpression::CaseInsensitiveOption );
+QRegularExpression QgsDelimitedTextProvider::sCrdDmsRegexp( QStringLiteral( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$" ), QRegularExpression::CaseInsensitiveOption );
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
@@ -222,9 +222,9 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   // This is a slightly generous regular expression in that it allows spaces and unquoted field types
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
-  strTypeList = strTypeList.toLower();
-  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
-  if ( ! reTypeList.exactMatch( strTypeList ) )
+  const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" ) ) );
+  const QRegularExpressionMatch match = reTypeList.match( strTypeList );
+  if ( !match.hasMatch() )
   {
     // Looks like this was supposed to be a CSVT file, so report bad formatted string
     if ( message ) { *message = tr( "File type string in %1 is not correctly formatted" ).arg( csvtInfo.fileName() ); }
@@ -236,13 +236,15 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
   int pos = 0;
-  QRegExp reType( "(integer|real|double|string|date|datetime|time)" );
-
-  while ( ( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
+  const QRegularExpression reType( QStringLiteral( "(integer|real|double|string|date|datetime|time)" ) );
+  QRegularExpressionMatch typeMatch = reType.match( strTypeList, pos );
+  while ( typeMatch.hasMatch() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( reType.cap( 1 ) ), 2 );
-    types << reType.cap( 1 );
-    pos += reType.matchedLength();
+    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( typeMatch.captured( 1 ) ), 2 );
+    types << typeMatch.captured( 1 );
+    pos = typeMatch.capturedEnd();
+
+    typeMatch = reType.match( strTypeList, pos );
   }
 
   if ( message )
@@ -1310,6 +1312,11 @@ QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts ) 
   url.setQuery( queryItems );
 
   return QString::fromLatin1( url.toEncoded() );
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
 }
 
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

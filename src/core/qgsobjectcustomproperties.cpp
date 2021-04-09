@@ -127,7 +127,7 @@ void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &do
 
   std::sort( keys.begin(), keys.end() );
 
-  for ( const auto &key : qgis::as_const( keys ) )
+  for ( const auto &key : std::as_const( keys ) )
   {
     QDomElement propElement = doc.createElement( QStringLiteral( "property" ) );
     propElement.setAttribute( QStringLiteral( "key" ), key );

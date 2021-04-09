@@ -27,6 +27,7 @@
 #include <QDomDocument>
 #include <QStringList>
 #include <QUrlQuery>
+#include <QRegularExpression>
 
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options )
   : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ),
@@ -93,7 +94,7 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
 
 QString QgsWfsCapabilities::Capabilities::getNamespaceForTypename( const QString &name ) const
 {
-  Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, featureTypes )
+  for ( const QgsWfsCapabilities::FeatureType &f : featureTypes )
   {
     if ( f.name == name )
     {
@@ -608,7 +609,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     mCaps.featureTypes.push_back( featureType );
   }
 
-  Q_FOREACH ( const FeatureType &f, mCaps.featureTypes )
+  for ( const FeatureType &f : std::as_const( mCaps.featureTypes ) )
   {
     mCaps.setAllTypenames.insert( f.name );
     QString unprefixed( QgsWFSUtils::removeNamespacePrefix( f.name ) );
@@ -655,18 +656,18 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   emit gotCapabilities();
 }
 
-QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
+QString QgsWfsCapabilities::NormalizeSRSName( const QString &crsName )
 {
-  QRegExp re( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
-  if ( re.exactMatch( crsName ) )
+  const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+?([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re.match( crsName ); match.hasMatch() )
   {
-    return re.cap( 1 ) + ':' + re.cap( 2 );
+    return match.captured( 1 ) + ':' + match.captured( 2 );
   }
   // urn:x-ogc:def:crs:EPSG:xxxx as returned by http://maps.warwickshire.gov.uk/gs/ows? in WFS 1.1
-  QRegExp re2( "urn:x-ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
-  if ( re2.exactMatch( crsName ) )
+  const QRegularExpression re2( QRegularExpression::anchoredPattern( QStringLiteral( "urn:x-ogc:def:crs:([^:]+).+?([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re2.match( crsName ); match.hasMatch() )
   {
-    return re2.cap( 1 ) + ':' + re2.cap( 2 );
+    return match.captured( 1 ) + ':' + match.captured( 2 );
   }
   return crsName;
 }

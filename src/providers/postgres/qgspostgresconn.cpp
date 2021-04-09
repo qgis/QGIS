@@ -229,7 +229,6 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   , mNextCursorId( 0 )
   , mShared( shared )
   , mTransaction( transaction )
-  , mLock( QMutex::Recursive )
 {
 
   QgsDebugMsgLevel( QStringLiteral( "New PostgreSQL connection for " ) + conninfo, 2 );
@@ -1081,14 +1080,14 @@ QString QgsPostgresConn::postgisVersion() const
       PQexec(
         QStringLiteral(
           "SELECT has_schema_privilege(n.oid, 'usage')"
-          "   AND has_table_privilege(t.oid, 'select')"
-          "   AND has_table_privilege(l.oid, 'select')"
-          "  FROM pg_namespace n, pg_class t, pg_class l"
+          " AND has_table_privilege(t.oid, 'select')"
+          " AND has_table_privilege(l.oid, 'select')"
+          " FROM pg_namespace n, pg_class t, pg_class l"
           " WHERE n.nspname = 'topology'"
-          "   AND t.relnamespace = n.oid"
-          "   AND l.relnamespace = n.oid"
-          "   AND t.relname = 'topology'"
-          "   AND l.relname = 'layer'"
+          " AND t.relnamespace = n.oid"
+          " AND l.relnamespace = n.oid"
+          " AND t.relname = 'topology'"
+          " AND l.relname = 'layer'"
         ) ) );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
@@ -1110,18 +1109,17 @@ QString QgsPostgresConn::postgisVersion() const
   if ( mPostgresqlVersion >= 90000 )
   {
     QgsDebugMsgLevel( QStringLiteral( "Checking for pointcloud support" ), 2 );
-    result = PQexec( QStringLiteral( R"(
-SELECT
- has_table_privilege(c.oid, 'select')
- AND has_table_privilege(f.oid, 'select')
-FROM pg_class c, pg_class f, pg_namespace n, pg_extension e
-WHERE c.relnamespace = n.oid
-  AND c.relname = 'pointcloud_columns'
-  AND f.relnamespace = n.oid
-  AND f.relname = 'pointcloud_formats'
-  AND n.oid = e.extnamespace
-  AND e.extname = 'pointcloud'
-    )" ), false );
+    result = PQexec( QStringLiteral(
+                       "SELECT has_table_privilege(c.oid, 'select')"
+                       " AND has_table_privilege(f.oid, 'select')"
+                       " FROM pg_class c, pg_class f, pg_namespace n, pg_extension e"
+                       " WHERE c.relnamespace = n.oid"
+                       " AND c.relname = 'pointcloud_columns'"
+                       " AND f.relnamespace = n.oid"
+                       " AND f.relname = 'pointcloud_formats'"
+                       " AND n.oid = e.extnamespace"
+                       " AND e.extname = 'pointcloud'"
+                     ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mPointcloudAvailable = true;
@@ -1132,15 +1130,14 @@ WHERE c.relnamespace = n.oid
   QgsDebugMsgLevel( QStringLiteral( "Checking for raster support" ), 2 );
   if ( mPostgisVersionMajor >= 2 )
   {
-    result = PQexec( QStringLiteral( R"(
-SELECT
- has_table_privilege(c.oid, 'select')
-FROM pg_class c, pg_namespace n, pg_type t
-WHERE c.relnamespace = n.oid
-  AND n.oid = t.typnamespace
-  AND c.relname = 'raster_columns'
-  AND t.typname = 'raster'
-    )" ), false );
+    result = PQexec( QStringLiteral(
+                       "SELECT has_table_privilege(c.oid, 'select')"
+                       " FROM pg_class c, pg_namespace n, pg_type t"
+                       " WHERE c.relnamespace = n.oid"
+                       " AND n.oid = t.typnamespace"
+                       " AND c.relname = 'raster_columns'"
+                       " AND t.typname = 'raster'"
+                     ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mRasterAvailable = true;
@@ -1247,11 +1244,11 @@ QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
 {
   if ( value.isNull() || !value.isValid() )
     return QStringLiteral( "null" );
-// where json is a string literal just construct it from that rather than dump
+  // where json is a string literal just construct it from that rather than dump
   if ( value.type() == QVariant::String )
   {
     QString valueStr = value.toString();
-    if ( valueStr.at( 0 ) == "\"" && valueStr.at( valueStr.size() - 1 ) == "\"" )
+    if ( valueStr.at( 0 ) == '\"' && valueStr.at( valueStr.size() - 1 ) == '\"' )
     {
       return quotedString( value.toString() );
     }
@@ -1364,32 +1361,34 @@ int QgsPostgresConn::PQCancel()
 bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
+  QString preStr;
 
   if ( mOpenCursors++ == 0 && !mTransaction )
   {
     QgsDebugMsgLevel( QStringLiteral( "Starting read-only transaction: %1" ).arg( mPostgresqlVersion ), 4 );
     if ( mPostgresqlVersion >= 80000 )
-      PQexecNR( QStringLiteral( "BEGIN READ ONLY" ) );
+      preStr = QStringLiteral( "BEGIN READ ONLY;" );
     else
-      PQexecNR( QStringLiteral( "BEGIN" ) );
+      preStr = QStringLiteral( "BEGIN;" );
   }
   QgsDebugMsgLevel( QStringLiteral( "Binary cursor %1 for %2" ).arg( cursorName, sql ), 3 );
-  return PQexecNR( QStringLiteral( "DECLARE %1 BINARY CURSOR%2 FOR %3" ).
-                   arg( cursorName, !mTransaction ? QString() : QStringLiteral( " WITH HOLD" ), sql ) );
+  return PQexecNR( QStringLiteral( "%1DECLARE %2 BINARY CURSOR%3 FOR %4" ).
+                   arg( preStr, cursorName, !mTransaction ? QString() : QStringLiteral( " WITH HOLD" ), sql ) );
 }
 
 bool QgsPostgresConn::closeCursor( const QString &cursorName )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
-
-  if ( !PQexecNR( QStringLiteral( "CLOSE %1" ).arg( cursorName ) ) )
-    return false;
+  QString postStr;
 
   if ( --mOpenCursors == 0 && !mTransaction )
   {
     QgsDebugMsgLevel( QStringLiteral( "Committing read-only transaction" ), 4 );
-    PQexecNR( QStringLiteral( "COMMIT" ) );
+    postStr = QStringLiteral( ";COMMIT" );
   }
+
+  if ( !PQexecNR( QStringLiteral( "CLOSE %1%2" ).arg( cursorName, postStr ) ) )
+    return false;
 
   return true;
 }
@@ -1760,6 +1759,68 @@ void QgsPostgresConn::deduceEndian()
   // since it appears that starting with
   // version 7.4, binary cursors return data in XDR whereas previous versions
   // return data in the endian of the server
+
+  QgsPostgresResult resOID;
+  int queryCounter = 0;
+  int errorCounter = 0;
+  int oidStatus = 0;
+  int oidSelectSet = 1 << 0;
+  int oidBinaryCursorSet = 1 << 1;
+  qint64 oidSelect = 0;
+  qint64 oidBinaryCursor = 0;
+
+  if ( 0 == PQsendQuery( QStringLiteral(
+                           "SELECT regclass('pg_class')::oid AS oidselect;"
+                           "BEGIN;"
+                           "DECLARE oidcursor BINARY CURSOR FOR SELECT regclass('pg_class')::oid AS oidbinarycursor;"
+                           "FETCH FORWARD 1 FROM oidcursor;"
+                           "CLOSE oidcursor;"
+                           "COMMIT;" ) ) )
+    QgsDebugMsgLevel( QStringLiteral( "PQsendQuery(...) error %1" ).arg( PQerrorMessage() ), 2 );
+
+  for ( ;; )
+  {
+    // PQgetResult() must be called repeatedly until it returns a null pointer
+    resOID = PQgetResult();
+
+    if ( resOID.result() == nullptr )
+      break;
+
+    queryCounter++;
+    if ( resOID.PQresultStatus() == PGRES_FATAL_ERROR )
+    {
+      errorCounter++;
+      QgsDebugMsgLevel( QStringLiteral( "QUERY #%1 PGRES_FATAL_ERROR %2" )
+                        .arg( queryCounter )
+                        .arg( PQerrorMessage().trimmed() ), 2 );
+      continue;
+    }
+
+    if ( resOID.PQresultStatus() == PGRES_TUPLES_OK && resOID.PQnfields() && resOID.PQntuples() )
+    {
+      if ( resOID.PQfname( 0 ) == QLatin1String( "oidselect" ) )
+      {
+        oidSelect = resOID.PQgetvalue( 0, 0 ).toLongLong();
+        oidStatus |= oidSelectSet;
+      }
+      if ( resOID.PQfname( 0 ) == QLatin1String( "oidbinarycursor" ) )
+      {
+        oidBinaryCursor = getBinaryInt( resOID, 0, 0 );
+        oidStatus |= oidBinaryCursorSet;
+      }
+    }
+  }
+
+  if ( errorCounter == 0 && oidStatus == ( oidSelectSet | oidBinaryCursorSet ) )
+  {
+    mSwapEndian = mSwapEndian == ( oidSelect == oidBinaryCursor );
+    return;
+  }
+
+  QgsDebugMsgLevel( QStringLiteral( "Back to old deduceEndian(): PQstatus() - %1, queryCounter = %2, errorCounter = %3" )
+                    .arg( PQstatus() )
+                    .arg( queryCounter )
+                    .arg( errorCounter ), 2 );
 
   QgsPostgresResult res( PQexec( QStringLiteral( "select regclass('pg_class')::oid" ) ) );
   QString oidValue = res.PQgetvalue( 0, 0 );

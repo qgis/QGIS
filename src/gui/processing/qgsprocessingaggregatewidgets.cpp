@@ -529,7 +529,7 @@ QWidget *QgsAggregateMappingWidget::AggregateDelegate::createEditor( QWidget *pa
   }
 
   connect( editor,
-           qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
+           qOverload<int >( &QComboBox::currentIndexChanged ),
            this,
            [ = ]( int currentIndex )
   {
@@ -566,7 +566,8 @@ const QStringList QgsAggregateMappingWidget::AggregateDelegate::aggregates()
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]( )
   {
-    sAggregates << QStringLiteral( "first_value" );
+    sAggregates << QStringLiteral( "first_value" )
+                << QStringLiteral( "last_value" );
 
     const QList<QgsExpressionFunction *> functions = QgsExpression::Functions();
     for ( const QgsExpressionFunction *function : functions )

@@ -90,7 +90,7 @@ void Problem::reduce()
     for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
     {
       // ok[i] = true;
-      for ( j = 0; j < mFeatNbLp[i]; j++ )  // foreach candidate
+      for ( j = 0; j < mFeatNbLp[i]; j++ )  // for each candidate
       {
         if ( !ok[mFeatStartId[i] + j] )
         {
@@ -112,9 +112,9 @@ void Problem::reduce()
               lp2->getBoundingBox( amin, amax );
 
               mNbOverlap -= lp2->getNumOverlaps();
-              mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp2]( const LabelPosition * lp ) -> bool
+              mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp2, this]( const LabelPosition * lp ) -> bool
               {
-                if ( lp2->isInConflict( lp ) )
+                if ( candidatesAreConflicting( lp2, lp ) )
                 {
                   const_cast< LabelPosition * >( lp )->decrementNumOverlaps();
                   lp2->decrementNumOverlaps();
@@ -137,7 +137,7 @@ void Problem::reduce()
   delete[] ok;
 }
 
-void ignoreLabel( const LabelPosition *lp, PriorityQueue &list, PalRtree< LabelPosition > &candidatesIndex )
+void Problem::ignoreLabel( const LabelPosition *lp, PriorityQueue &list, PalRtree< LabelPosition > &candidatesIndex )
 {
   if ( list.isIn( lp->getId() ) )
   {
@@ -146,9 +146,9 @@ void ignoreLabel( const LabelPosition *lp, PriorityQueue &list, PalRtree< LabelP
     double amin[2];
     double amax[2];
     lp->getBoundingBox( amin, amax );
-    candidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &list]( const LabelPosition * lp2 )->bool
+    candidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &list, this]( const LabelPosition * lp2 )->bool
     {
-      if ( lp2->getId() != lp->getId() && list.isIn( lp2->getId() ) && lp2->isInConflict( lp ) )
+      if ( lp2->getId() != lp->getId() && list.isIn( lp2->getId() ) && candidatesAreConflicting( lp2, lp ) )
       {
         list.decreaseKey( lp2->getId() );
       }
@@ -215,9 +215,9 @@ void Problem::init_sol_falp()
     lp->getBoundingBox( amin, amax );
 
     std::vector< const LabelPosition * > conflictingPositions;
-    mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &conflictingPositions]( const LabelPosition * lp2 ) ->bool
+    mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &conflictingPositions, this]( const LabelPosition * lp2 ) ->bool
     {
-      if ( lp->isInConflict( lp2 ) )
+      if ( candidatesAreConflicting( lp, lp2 ) )
       {
         conflictingPositions.emplace_back( lp2 );
       }
@@ -253,9 +253,9 @@ void Problem::init_sol_falp()
           lp->getBoundingBox( amin, amax );
 
 
-          mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
+          mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp, this]( const LabelPosition * lp2 )->bool
           {
-            if ( lp->isInConflict( lp2 ) )
+            if ( candidatesAreConflicting( lp, lp2 ) )
             {
               lp->incrementNumOverlaps();
             }
@@ -275,6 +275,11 @@ void Problem::init_sol_falp()
       }
     }
   }
+}
+
+bool Problem::candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const
+{
+  return  pal->candidatesAreConflicting( lp1, lp2 );
 }
 
 inline Chain *Problem::chain( int seed )
@@ -338,7 +343,7 @@ inline Chain *Problem::chain( int seed )
             lp->getBoundingBox( amin, amax );
             mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &delta_tmp, &conflicts, &currentChain, this]( const LabelPosition * lp2 ) -> bool
             {
-              if ( lp2->isInConflict( lp ) )
+              if ( candidatesAreConflicting( lp2, lp ) )
               {
                 const int feat = lp2->getProblemFeatureId();
 
@@ -503,7 +508,7 @@ inline Chain *Problem::chain( int seed )
       {
         conflicts.clear();
       }
-    } // end foreach labelposition
+    } // end for each labelposition
 
     if ( next_seed == -1 )
     {
@@ -618,9 +623,9 @@ void Problem::chain_search()
           LabelPosition *old = mLabelPositions[ mSol.activeLabelIds[fid] ].get();
           old->removeFromIndex( mActiveCandidatesIndex );
           old->getBoundingBox( amin, amax );
-          mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&ok, old]( const LabelPosition * lp ) ->bool
+          mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&ok, old, this]( const LabelPosition * lp ) ->bool
           {
-            if ( old->isInConflict( lp ) )
+            if ( candidatesAreConflicting( old, lp ) )
             {
               ok[lp->getProblemFeatureId()] = false;
             }
@@ -717,7 +722,7 @@ void Problem::solution_cost()
       lp->getBoundingBox( amin, amax );
       mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp, this]( const LabelPosition * lp2 )->bool
       {
-        if ( lp->isInConflict( lp2 ) )
+        if ( candidatesAreConflicting( lp, lp2 ) )
         {
           mSol.totalCost += mInactiveCost[lp2->getProblemFeatureId()] + lp2->cost();
         }

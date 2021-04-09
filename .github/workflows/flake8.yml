@@ -1,4 +1,4 @@
-name: flake8
+name: ❄ Flake8
 
 on:
   push:

@@ -12,7 +12,7 @@
 
 class QgsAuthCertEditors : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Wrapper widget to manage available certificate editors
 %End
 
@@ -36,7 +36,7 @@ Construct a widget to contain various certificate editors
 
 class QgsAuthCertManager : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Dialog wrapper for widget to manage available certificate editors
 %End
 

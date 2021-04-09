@@ -784,7 +784,7 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgis::as_const( results ) )
+    for ( const QgsGeometry &result : std::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -1160,14 +1160,7 @@ bool QgsGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
     return false;
   }
 
-  // optimise trivial case for point intersections
-  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
-  {
-    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( d->geometry.get() );
-    return rectangle.contains( QgsPointXY( point->x(), point->y() ) );
-  }
-
-  return d->geometry->boundingBox().intersects( rectangle );
+  return d->geometry->boundingBoxIntersects( rectangle );
 }
 
 bool QgsGeometry::boundingBoxIntersects( const QgsGeometry &geometry ) const
@@ -1177,7 +1170,7 @@ bool QgsGeometry::boundingBoxIntersects( const QgsGeometry &geometry ) const
     return false;
   }
 
-  return d->geometry->boundingBox().intersects( geometry.constGet()->boundingBox() );
+  return d->geometry->boundingBoxIntersects( geometry.constGet()->boundingBox() );
 }
 
 bool QgsGeometry::contains( const QgsPointXY *p ) const
@@ -1968,7 +1961,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgis::as_const( results ) )
+    for ( const QgsGeometry &result : std::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -2026,7 +2019,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgis::as_const( results ) )
+    for ( const QgsGeometry &result : std::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -2084,7 +2077,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgis::as_const( results ) )
+    for ( const QgsGeometry &result : std::as_const( results ) )
     {
       first.addPart( result );
     }

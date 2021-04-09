@@ -12,7 +12,7 @@
 
 class QgsAnnotationLineItem : QgsAnnotationItem
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation item which renders a line symbol along a line geometry.
 
 .. versionadded:: 3.16

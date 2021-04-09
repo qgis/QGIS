@@ -13,7 +13,7 @@
 
 class QgsCircularString: QgsCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Circular string geometry type
 
 .. versionadded:: 2.10

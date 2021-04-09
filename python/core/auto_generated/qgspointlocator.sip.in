@@ -19,7 +19,7 @@
 
 class QgsPointLocator : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 The class defines interface for querying point location:
 
 - query nearest vertices / edges to a point

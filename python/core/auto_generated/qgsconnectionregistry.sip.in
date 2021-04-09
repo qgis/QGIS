@@ -13,7 +13,7 @@
 
 class QgsConnectionRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A registry for saved data provider connections, allowing retrieval of
 saved connections by name and provider type.
 

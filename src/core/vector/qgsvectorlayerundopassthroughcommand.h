@@ -178,6 +178,7 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeGeometry : public Qg
     QgsFeatureId mFid;
     mutable QgsGeometry mNewGeom;
     QgsGeometry mOldGeom;
+    bool mFirstChange = true;
 };
 
 /**
@@ -237,7 +238,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttributes: public Q
   private:
     QgsFeatureId mFid;
     const QgsAttributeMap mNewValues;
-    const QgsAttributeMap mOldValues;
+    QgsAttributeMap mOldValues;
+    QMap<int, bool> mFirstChanges;
 };
 
 /**
@@ -288,6 +290,7 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandDeleteAttribute : public Q
 
   private:
     const QgsField mField;
+    const int mOriginalFieldIndex;
 };
 
 /**

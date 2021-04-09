@@ -36,6 +36,11 @@ Item {
    */
   signal canceled
 
+  /**
+   * When any notification message has to be shown.
+   */
+  signal notify(var message)
+
    /**
     * A handler for extra events in externalSourceWidget.
     */
@@ -106,6 +111,30 @@ Item {
     property var getTypeOfWidget: function getTypeOfWidget( widget, valueRelationModel ) {
       return "combobox"
     }
+  }
+
+  /**
+   * A handler for extra events for a TextEdit widget .
+   */
+  property var importDataHandler: QtObject {
+
+    /**
+     * Suppose to set `supportsDataImport` variable of a feature form. If true, enables to set data by this handler.
+     * \param name "Name" property of field item. Expecting alias if defined, otherwise field name.
+     */
+    property var supportsDataImport: function supportsDataImport(name) { return false }
+
+    /**
+     * Suppose to be called to invoke a component to set data automatically (e.g. code scanner, sensor).
+     * \param itemWidget editorWidget for modified field to send valueChanged signal.
+     */
+    property var importData: function importData(itemWidget) {}
+
+    /**
+     * Suppose to be called after `importData` function as a callback to set the value to the widget.
+     * \param value Value to be set.
+     */
+    property var setValue: function setValue(value) {}
   }
 
   /**
@@ -445,6 +474,7 @@ Item {
           property var featurePair: form.model.attributeModel.featureLayerPair
           property var activeProject: form.project
           property var customWidget: form.customWidgetCallback
+          property bool supportsDataImport: importDataHandler.supportsDataImport(Name)
 
           active: widget !== 'Hidden'
 
@@ -458,7 +488,20 @@ Item {
         Connections {
           target: attributeEditorLoader.item
           onValueChanged: {
+            var valueChanged = value != AttributeValue
             AttributeValue = isNull ? undefined : value
+            // updates other attributes if a user males a change
+            if (valueChanged) {
+              form.model.attributeModel.updateDefaultValuesAttributes(Field)
+            }
+          }
+        }
+
+        Connections {
+          target: attributeEditorLoader.item
+          ignoreUnknownSignals: true
+          onImportDataRequested: {
+           importDataHandler.importData(attributeEditorLoader.item)
           }
         }
 
@@ -470,6 +513,11 @@ Item {
               attributeEditorLoader.item.dataUpdated( form.model.attributeModel.featureLayerPair.feature )
             }
           }
+        }
+
+        Connections {
+          target: form.model.attributeModel
+          onDataChangedFailed: notify(message)
         }
 
         Connections {
@@ -662,4 +710,3 @@ Item {
     }
   }
 }
-

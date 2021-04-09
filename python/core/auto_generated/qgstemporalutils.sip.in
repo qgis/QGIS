@@ -10,9 +10,11 @@
 
 
 
+
+
 class QgsTemporalUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains utility methods for working with temporal layers and projects.
 
 .. versionadded:: 3.14
@@ -29,6 +31,19 @@ Calculates the temporal range for a ``project``.
 
 This method considers the temporal range available from layers contained within the project and
 returns the maximal combined temporal extent of these layers.
+%End
+
+    static QList< QgsDateTimeRange > usedTemporalRangesForProject( QgsProject *project );
+%Docstring
+Calculates all temporal ranges which are in use for a ``project``.
+
+This method considers the temporal range available from layers contained within the project and
+returns a list of ranges which cover only the temporal ranges which are actually in use by layers
+in the project.
+
+The returned list may be non-contiguous and have gaps in the ranges. The ranges are sorted in ascending order.
+
+.. versionadded:: 3.20
 %End
 
     struct AnimationExportSettings
@@ -87,6 +102,38 @@ the number of days in the current month.
 
 .. versionadded:: 3.18
 %End
+
+    static QList< QDateTime > calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QString &duration, bool &ok /Out/, bool &maxValuesExceeded /Out/, int maxValues = -1 );
+%Docstring
+Calculates a complete list of datetimes between ``start`` and ``end``, using the specified ISO8601 ``duration`` string (eg "PT12H").
+
+:param start: start date time
+:param end: end date time
+:param duration: ISO8601 duration string
+:param maxValues: maximum number of values to return, or -1 to return all values
+
+:return: - calculated list of date times
+         - ok: will be set to ``True`` if ``duration`` was successfully parsed and date times could be calculated
+         - maxValuesExceeded: will be set to ``True`` if the maximum number of values to return was exceeded
+
+.. versionadded:: 3.20
+%End
+
+
+    static QList< QDateTime > calculateDateTimesFromISO8601( const QString &string, bool &ok /Out/, bool &maxValuesExceeded /Out/, int maxValues = -1 );
+%Docstring
+Calculates a complete list of datetimes from a ISO8601 ``string`` containing a duration (eg "2021-03-23T00:00:00Z/2021-03-24T12:00:00Z/PT12H").
+
+:param string: ISO8601 compatible string
+:param maxValues: maximum number of values to return, or -1 to return all values
+
+:return: - calculated list of date times
+         - ok: will be set to ``True`` if ``string`` was successfully parsed and date times could be calculated
+         - maxValuesExceeded: will be set to ``True`` if the maximum number of values to return was exceeded
+
+.. versionadded:: 3.20
+%End
+
 };
 
 

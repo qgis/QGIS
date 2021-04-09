@@ -29,10 +29,10 @@ macro (ADD_QGIS_TEST TESTSRC)
   add_executable(${TESTNAME} ${TESTSRC} ${util_SRCS})
   target_compile_features(${TESTNAME} PRIVATE cxx_std_17)
   target_link_libraries(${TESTNAME}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Test_LIBRARIES}
+    ${${QT_VERSION_BASE}Core_LIBRARIES}
+    ${${QT_VERSION_BASE}Xml_LIBRARIES}
+    ${${QT_VERSION_BASE}Svg_LIBRARIES}
+    ${${QT_VERSION_BASE}Test_LIBRARIES}
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
@@ -171,6 +171,7 @@ set(TESTS
  testqgsproperty.cpp
  testqgsprovidermetadata.cpp
  testqgis.cpp
+ testqgsrange.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
  testqgsrastermarker.cpp
@@ -242,5 +243,9 @@ endif()
 foreach(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})
 endforeach(TESTSRC)
+
+if (ENABLE_PGTEST)
+  SET_TESTS_PROPERTIES(qgis_vectorlayerjoinbuffertest PROPERTIES LABELS "POSTGRES")
+endif()
 
 add_dependencies(qgis_coordinatereferencesystemtest synccrsdb)

@@ -377,7 +377,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
 
       //insert new features
       QgsAttributeMap attributeMap = feat.attributes().toMap();
-      for ( const QgsGeometry &geom : qgis::as_const( newGeometries ) )
+      for ( const QgsGeometry &geom : std::as_const( newGeometries ) )
       {
         featuresDataToAdd << QgsVectorLayerUtils::QgsFeatureData( geom, attributeMap );
       }

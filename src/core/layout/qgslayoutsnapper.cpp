@@ -372,7 +372,7 @@ double QgsLayoutSnapper::snapPointsToItems( const QList<double> &points, Qt::Ori
       }
     }
 
-    for ( double val : qgis::as_const( currentCoords ) )
+    for ( double val : std::as_const( currentCoords ) )
     {
       for ( double p : points )
       {

@@ -239,7 +239,8 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsWfsConnection::connectionList() )
+  const QStringList list = QgsWfsConnection::connectionList() ;
+  for ( const QString &connName : list )
   {
     QgsWfsConnection connection( connName );
     QString path = "wfs:/" + connName;

@@ -20,7 +20,7 @@ typedef QSet<int> QgsAttributeIds;
 
 class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a vector layer which manages a vector based data sets.
 
 The :py:class:`QgsVectorLayer` is instantiated by specifying the name of a data provider,
@@ -1429,6 +1429,7 @@ Adds a new part polygon to a multipart feature
    - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
+
  QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) /PyName=addPartV2,Deprecated/;
 %Docstring
 Adds a new part polygon to a multipart feature
@@ -2411,11 +2412,22 @@ returned list).
 
 %Docstring
 Returns the minimum value for an attribute column or an invalid variant in case of error.
-Note that in some circumstances when unsaved changes are present for the layer then the
-returned value may be outdated (for instance when the attribute value in a saved feature has
-been changed inside the edit buffer then the previous saved value may be returned as the minimum).
+
+.. note::
+
+   In some circumstances when unsaved changes are present for the layer then the
+   returned value may be outdated (for instance when the attribute value in a saved feature has
+   been changed inside the edit buffer then the previous saved value may be returned as the minimum).
+
+.. note::
+
+   If both the minimum and maximum value are required it is more efficient to call :py:func:`~QgsVectorLayer.minimumAndMaximumValue`
+   instead of separate calls to :py:func:`~QgsVectorLayer.minimumValue` and :py:func:`~QgsVectorLayer.maximumValue`.
+
 
 .. seealso:: :py:func:`maximumValue`
+
+.. seealso:: :py:func:`minimumAndMaximumValue`
 
 .. seealso:: :py:func:`uniqueValues`
 %End
@@ -2424,13 +2436,52 @@ been changed inside the edit buffer then the previous saved value may be returne
 
 %Docstring
 Returns the maximum value for an attribute column or an invalid variant in case of error.
-Note that in some circumstances when unsaved changes are present for the layer then the
-returned value may be outdated (for instance when the attribute value in a saved feature has
-been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+
+.. note::
+
+   In some circumstances when unsaved changes are present for the layer then the
+   returned value may be outdated (for instance when the attribute value in a saved feature has
+   been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+
+.. note::
+
+   If both the minimum and maximum value are required it is more efficient to call :py:func:`~QgsVectorLayer.minimumAndMaximumValue`
+   instead of separate calls to :py:func:`~QgsVectorLayer.minimumValue` and :py:func:`~QgsVectorLayer.maximumValue`.
+
 
 .. seealso:: :py:func:`minimumValue`
 
+.. seealso:: :py:func:`minimumAndMaximumValue`
+
 .. seealso:: :py:func:`uniqueValues`
+%End
+
+
+    void minimumAndMaximumValue( int index, QVariant &minimum /Out/, QVariant &maximum /Out/ ) const;
+%Docstring
+Calculates both the minimum and maximum value for an attribute column.
+
+This is more efficient then calling both :py:func:`~QgsVectorLayer.minimumValue` and :py:func:`~QgsVectorLayer.maximumValue` when both the minimum
+and maximum values are required.
+
+:param index: index of field to calculate minimum and maximum value for.
+
+.. note::
+
+   In some circumstances when unsaved changes are present for the layer then the
+   calculated values may be outdated (for instance when the attribute value in a saved feature has
+   been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+
+
+.. seealso:: :py:func:`minimumValue`
+
+.. seealso:: :py:func:`maximumValue`
+
+
+:return: - minimum: will be set to minimum attribute value or an invalid variant in case of error.
+         - maximum: will be set to maximum attribute value or an invalid variant in case of error.
+
+.. versionadded:: 3.20
 %End
 
     QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,

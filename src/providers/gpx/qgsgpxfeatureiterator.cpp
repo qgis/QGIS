@@ -199,7 +199,7 @@ bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint &wpt, QgsFeature &fe
 {
   if ( !mFilterRect.isNull() )
   {
-    if ( ! mFilterRect.contains( QgsPointXY( wpt.lon, wpt.lat ) ) )
+    if ( ! mFilterRect.contains( wpt.lon, wpt.lat ) )
       return false;
   }
 

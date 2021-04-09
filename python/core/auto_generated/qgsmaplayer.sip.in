@@ -27,7 +27,7 @@ enum class QgsMapLayerType
 
 class QgsMapLayer : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for all map layer types.
 This is the base class for all map layer types (vector, raster).
 %End
@@ -503,6 +503,18 @@ Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for re
     virtual QgsRectangle extent() const;
 %Docstring
 Returns the extent of the layer.
+%End
+
+    QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
+%Docstring
+Returns the WGS84 extent (EPSG:4326) of the layer according to
+ReadFlag.FlagTrustLayerMetadata. If that flag is activated, then the
+WGS84 extent read in the qgs project is returned. Otherwise, the actual
+WGS84 extent is returned.
+
+:param forceRecalculate: True to return the current WGS84 extent whatever the read flags
+
+.. versionadded:: 3.20
 %End
 
     bool isValid() const;
@@ -1800,6 +1812,14 @@ Add error message
 Sets error message
 %End
 
+    void invalidateWgs84Extent();
+%Docstring
+Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
+the extent is not invalidated because we want to trust metadata whatever
+happens.
+
+.. versionadded:: 3.20
+%End
 
 
 

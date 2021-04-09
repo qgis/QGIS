@@ -177,7 +177,7 @@ void QgsChunkedEntity::update( const SceneState &state )
   if ( mBboxesEntity )
   {
     QList<QgsAABB> bboxes;
-    Q_FOREACH ( QgsChunkNode *n, mActiveNodes )
+    for ( QgsChunkNode *n : std::as_const( mActiveNodes ) )
       bboxes << n->bbox();
     mBboxesEntity->setBoxes( bboxes );
   }
@@ -217,7 +217,7 @@ void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )
 
 void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunkQueueJobFactory *updateJobFactory )
 {
-  Q_FOREACH ( QgsChunkNode *node, nodes )
+  for ( QgsChunkNode *node : nodes )
   {
     if ( node->state() == QgsChunkNode::QueuedForUpdate )
     {

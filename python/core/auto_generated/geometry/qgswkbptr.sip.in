@@ -11,7 +11,7 @@
 
 class QgsWkbPtr
 {
-%Docstring
+%Docstring(signature="appended")
 WKB pointer handler.
 %End
 
@@ -33,7 +33,7 @@ WKB pointer handler.
 
 class QgsConstWkbPtr
 {
-%Docstring
+%Docstring(signature="appended")
 A const WKB pointer.
 %End
 

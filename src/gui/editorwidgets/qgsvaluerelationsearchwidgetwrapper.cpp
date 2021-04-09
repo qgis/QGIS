@@ -233,7 +233,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : qgis::as_const( mCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : std::as_const( mCache ) )
     {
       values << i.value;
     }

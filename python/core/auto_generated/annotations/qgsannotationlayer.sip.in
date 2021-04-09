@@ -13,7 +13,7 @@
 
 class QgsAnnotationLayer : QgsMapLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a map layer containing a set of georeferenced annotations, e.g. markers, lines, polygons or
 text items.

@@ -40,6 +40,20 @@ QgsMapToolCapture::Capabilities QgsMapToolAddPart::capabilities() const
   return QgsMapToolCapture::SupportsCurves;
 }
 
+bool QgsMapToolAddPart::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  switch ( technique )
+  {
+    case QgsMapToolCapture::StraightSegments:
+    case QgsMapToolCapture::Streaming:
+      return true;
+
+    case QgsMapToolCapture::CircularString:
+      return false;
+  }
+  return false;
+}
+
 void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )
@@ -68,25 +82,13 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  bool isGeometryEmpty = false;
-  if ( vlayer->selectedFeatureCount() > 0 )
-  {
-    // be efficient here - only grab the first selected feature if there's a selection, don't
-    // fetch all the other features which we don't require.
-    QgsFeatureIterator selectedFeatures = vlayer->getSelectedFeatures();
-    QgsFeature firstSelectedFeature;
-    if ( selectedFeatures.nextFeature( firstSelectedFeature ) )
-      if ( firstSelectedFeature.geometry().isNull() )
-        isGeometryEmpty = true;
-  }
-
   if ( !checkSelection() )
   {
     stopCapturing();
     return;
   }
 
-  int errorCode = 0;
+  QgsGeometry::OperationResult errorCode = QgsGeometry::Success;
   switch ( mode() )
   {
     case CapturePoint:
@@ -177,7 +179,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           case QgsProject::AvoidIntersectionsMode::AllowIntersections:
             break;
         }
-        if ( avoidIntersectionsLayers.size() > 0 )
+        if ( !avoidIntersectionsLayers.isEmpty() )
         {
           geom->avoidIntersections( avoidIntersectionsLayers );
         }
@@ -203,14 +205,14 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     break;
     default:
       Q_ASSERT( !"invalid capture mode" );
-      errorCode = 6;
+      errorCode = QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound;
       break;
   }
 
   QString errorMessage;
   switch ( errorCode )
   {
-    case 0:
+    case QgsGeometry::OperationResult::Success:
     {
       // remove previous message
       emit messageDiscarded();
@@ -226,37 +228,44 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       vlayer->triggerRepaint();
 
-      if ( ( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
-      {
-        emit messageEmitted( tr( "Add part: Feature geom is single part and you've added more than one" ), Qgis::Warning );
-      }
-
       return;
     }
 
-    case 1:
+    case QgsGeometry::OperationResult::InvalidInputGeometryType:
+      errorMessage = tr( "New part's geometry is empty or invalid." );
+      break;
+
+    case QgsGeometry::OperationResult::AddPartNotMultiGeometry:
       errorMessage = tr( "Selected feature is not multi part." );
       break;
 
-    case 2:
-      errorMessage = tr( "New part's geometry is not valid." );
+    case QgsGeometry::OperationResult::SelectionIsEmpty:
+      errorMessage = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table." );
       break;
 
-    case 3:
-      errorMessage = tr( "New polygon ring not disjoint with existing polygons." );
-      break;
-
-    case 4:
-      errorMessage = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table" );
-      break;
-
-    case 5:
+    case QgsGeometry::OperationResult::SelectionIsGreaterThanOne:
       errorMessage = tr( "Several features are selected. Please select only one feature to which an island should be added." );
       break;
 
-    case 6:
-      errorMessage = tr( "Selected geometry could not be found" );
+    case QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound:
+      errorMessage = tr( "Selected geometry could not be found." );
       break;
+
+    case QgsGeometry::OperationResult::InvalidBaseGeometry:
+      errorMessage = tr( "Base geometry is not valid." );
+      break;
+
+    case QgsGeometry::OperationResult::AddRingCrossesExistingRings:
+    case QgsGeometry::OperationResult::AddRingNotClosed:
+    case QgsGeometry::OperationResult::AddRingNotInExistingFeature:
+    case QgsGeometry::OperationResult::AddRingNotValid:
+    case QgsGeometry::OperationResult::GeometryEngineError:
+    case QgsGeometry::OperationResult::LayerNotEditable:
+    case QgsGeometry::OperationResult::NothingHappened:
+    case QgsGeometry::OperationResult::SplitCannotSplitPoint:
+      // Should not reach here
+      // Other OperationResults should not be returned by addPart
+      errorMessage = tr( "Unexpected OperationResult: %1" ).arg( errorCode );
   }
 
   emit messageEmitted( errorMessage, Qgis::Warning );
@@ -284,11 +293,24 @@ bool QgsMapToolAddPart::checkSelection()
   QString selectionErrorMsg;
   if ( nSelectedFeatures < 1 )
   {
-    selectionErrorMsg = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table" );
+    selectionErrorMsg = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table." );
   }
   else if ( nSelectedFeatures > 1 )
   {
-    selectionErrorMsg = tr( "Several features are selected. Please select only one feature to which an part should be added." );
+    selectionErrorMsg = tr( "Several features are selected. Please select only one feature to which a part should be added." );
+  }
+  else
+  {
+    // Only one selected feature
+    // For single-type layers only allow features without geometry
+    QgsFeatureIterator selectedFeatures = vlayer->getSelectedFeatures();
+    QgsFeature selectedFeature;
+    selectedFeatures.nextFeature( selectedFeature );
+    if ( QgsWkbTypes::isSingleType( vlayer->wkbType() ) &&
+         selectedFeature.geometry().constGet() )
+    {
+      selectionErrorMsg = tr( "This layer does not support multipart geometries." );
+    }
   }
 
   if ( !selectionErrorMsg.isEmpty() )

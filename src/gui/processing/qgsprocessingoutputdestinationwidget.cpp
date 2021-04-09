@@ -283,7 +283,7 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
     connect( actionSaveToDatabase, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToDatabase );
     mMenu->addAction( actionSaveToDatabase );
 
-    if ( mParameter->algorithm() && dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter )->supportsAppend() )
+    if ( mParameter->algorithm() && qgis::down_cast< const QgsProcessingParameterFeatureSink * >( mParameter )->supportsAppend() )
     {
       mMenu->addSeparator();
       QAction *actionAppendToLayer = new QAction( tr( "Append to Layer…" ), this );
@@ -657,7 +657,7 @@ QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeDa
   if ( !data->text().isEmpty() && !rawPaths.contains( data->text() ) )
     rawPaths.append( data->text() );
 
-  for ( const QString &path : qgis::as_const( rawPaths ) )
+  for ( const QString &path : std::as_const( rawPaths ) )
   {
     QFileInfo file( path );
     if ( file.isFile() && ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName()

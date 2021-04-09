@@ -11,7 +11,7 @@
 
 class QgsDefaultValue
 {
-%Docstring
+%Docstring(signature="appended")
 
 The :py:class:`QgsDefaultValue` class provides a container for managing client
 side default values for fields.

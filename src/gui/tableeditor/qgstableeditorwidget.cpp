@@ -1364,8 +1364,8 @@ void QgsTableEditorTextEdit::resizeToContents()
     int parentWidth = parent->width();
     int maxWidth = isRightToLeft() ? position.x() + oldWidth : parentWidth - position.x();
     int maxHeight = parent->height() - position.y();
-    int newWidth = qBound( mOriginalWidth, hintWidth, maxWidth );
-    int newHeight = qBound( mOriginalHeight, hintHeight, maxHeight );
+    int newWidth = std::clamp( hintWidth, mOriginalWidth, maxWidth );
+    int newHeight = std::clamp( hintHeight, mOriginalHeight, maxHeight );
 
     if ( mWidgetOwnsGeometry )
     {

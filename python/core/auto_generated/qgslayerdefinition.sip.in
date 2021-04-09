@@ -13,7 +13,7 @@
 
 class QgsLayerDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsLayerDefinition` class holds generic methods for loading/exporting QLR files.
 
 QLR files are an export of the layer xml including the style and datasource location.  There is no link
@@ -72,7 +72,7 @@ This is a low-level routine that does not resolve layer ID conflicts, dependenci
 
     class DependencySorter
 {
-%Docstring
+%Docstring(signature="appended")
 Class used to work with layer dependencies stored in a XML project or layer definition file
 %End
 
@@ -116,6 +116,7 @@ Whether some dependency is missing
 %End
 
     };
+
 };
 
 /************************************************************************

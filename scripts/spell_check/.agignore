@@ -27,6 +27,7 @@ tests/testdata/provider/postgresraster/
 
 #Specific files
 ChangeLog
+doc/NEWS.html
 debian/qgis.desktop
 debian/qgis-plugin-grass.lintian-overrides
 debian/qgis-provider-grass.lintian-overrides

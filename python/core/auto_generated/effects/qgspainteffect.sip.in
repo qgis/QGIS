@@ -12,7 +12,7 @@
 
 class QgsPaintEffect /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for visual effects which can be applied to QPicture drawings
 
 :py:class:`QgsPaintEffect` objects can be used to modify QPicture drawings prior to rendering
@@ -321,7 +321,7 @@ to rendering results onto a painter.
 
 class QgsDrawSourceEffect : QgsPaintEffect /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which draws the source picture with minor or no alterations
 
 The draw source effect can be used to draw an unaltered copy of the original source
@@ -408,7 +408,7 @@ Returns the blend mode for the effect
 
 class QgsEffectPainter
 {
-%Docstring
+%Docstring(signature="appended")
 A class to manager painter saving and restoring required for effect drawing
 
 .. versionadded:: 3.0

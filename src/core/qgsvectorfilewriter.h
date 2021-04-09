@@ -587,7 +587,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
 #ifndef SIP_RUN
                                                , QString *newLayer = nullptr,
-                                           QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
+                                           const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
                                            FieldNameSource fieldNameSource = Original
 #endif
                                          ) SIP_DEPRECATED;
@@ -628,7 +628,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            const QString &layerName,
                                            QgsVectorFileWriter::ActionOnExistingFile action,
                                            QString *newLayer = nullptr,
-                                           QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
+                                           const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                            FieldNameSource fieldNameSource = Original
                                          ) SIP_SKIP;
@@ -671,15 +671,35 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newLayer potentially modified layer name (output parameter)
      * \param errorMessage will be set to the error message text, if an error occurs while writing the layer
      * \returns Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
-     * \since QGIS 3.10.3
+     * \deprecated since QGIS 3.20, use writeAsVectorFormatV3 instead
      */
-    static QgsVectorFileWriter::WriterError writeAsVectorFormatV2( QgsVectorLayer *layer,
+    Q_DECL_DEPRECATED static QgsVectorFileWriter::WriterError writeAsVectorFormatV2( QgsVectorLayer *layer,
         const QString &fileName,
         const QgsCoordinateTransformContext &transformContext,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = nullptr,
         QString *newLayer = nullptr,
-        QString *errorMessage SIP_OUT = nullptr );
+        QString *errorMessage SIP_OUT = nullptr ) SIP_DEPRECATED;
+
+    /**
+     * Writes a layer out to a vector file.
+     * \param layer source layer to write
+     * \param fileName file name to write to
+     * \param transformContext coordinate transform context
+     * \param options save options
+     * \param newFilename potentially modified file name (output parameter)
+     * \param newLayer potentially modified layer name (output parameter)
+     * \param errorMessage will be set to the error message text, if an error occurs while writing the layer
+     * \returns Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
+     * \since QGIS 3.20
+     */
+    static QgsVectorFileWriter::WriterError writeAsVectorFormatV3( QgsVectorLayer *layer,
+        const QString &fileName,
+        const QgsCoordinateTransformContext &transformContext,
+        const QgsVectorFileWriter::SaveVectorOptions &options,
+        QString *errorMessage SIP_OUT = nullptr,
+        QString *newFilename SIP_OUT = nullptr,
+        QString *newLayer SIP_OUT = nullptr );
 
     /**
      * Details of available filters and formats.
@@ -998,7 +1018,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     std::unique_ptr< QgsCoordinateTransform > mCoordinateTransform;
 
     bool mUsingTransaction = false;
-    bool supportsStringList = false;
+    QSet< QVariant::Type > mSupportedListSubTypes;
 
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
     gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );

@@ -151,6 +151,20 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('markerline_interioronly', 'markerline_interioronly', rendered_image)
 
+    def testRingNumberVariable(self):
+        # test test geometry_ring_num variable
+        s3 = QgsFillSymbol()
+        s3.deleteSymbolLayer(0)
+        s3.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        s3.symbolLayer(0).subSymbol()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor,
+                                                                QgsProperty.fromExpression('case when @geometry_ring_num=0 then \'green\' when @geometry_ring_num=1 then \'blue\' when @geometry_ring_num=2 then \'red\' end'))
+        s3.symbolLayer(0).setAverageAngleLength(0)
+
+        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        rendered_image = self.renderGeometry(s3, g)
+        assert self.imageCheck('markerline_ring_num', 'markerline_ring_num', rendered_image)
+
     def testPartNum(self):
         # test geometry_part_num variable
         s = QgsLineSymbol()
@@ -185,6 +199,26 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g, buffer=4)
         assert self.imageCheck('part_count_variable', 'part_count_variable', rendered_image)
+
+    def testPartNumPolygon(self):
+        # test geometry_part_num variable
+        s = QgsFillSymbol()
+
+        marker_line = QgsMarkerLineSymbolLayer(False)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
+        f = QgsFontUtils.getStandardTestFont('Bold', 24)
+        marker = QgsFontMarkerSymbolLayer(f.family(), 'x', 24, QColor(255, 255, 0))
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('@geometry_part_num'))
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        marker_line.setAverageAngleLength(0)
+        s.changeSymbolLayer(0, marker_line)
+
+        # rendering test - a polygon with a smaller part first
+        g = QgsGeometry.fromWkt('MultiPolygon(((0 0, 2 0, 2 2, 0 0)),((10 0, 10 10, 0 10, 10 0)))')
+        rendered_image = self.renderGeometry(s, g, buffer=4)
+        assert self.imageCheck('poly_part_num_variable', 'poly_part_num_variable', rendered_image)
 
     def testCompoundCurve(self):
         # test rendering compound curve with markers at vertices and curve points

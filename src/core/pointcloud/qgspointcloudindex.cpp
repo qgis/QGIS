@@ -25,6 +25,8 @@
 #include <QTime>
 #include <QtDebug>
 
+#include "qgstiledownloadmanager.h"
+
 IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
   mX( 0 ),
@@ -38,6 +40,11 @@ IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z ):
   mY( _y ),
   mZ( _z )
 {}
+
+IndexedPointCloudNode IndexedPointCloudNode::parentNode() const
+{
+  return IndexedPointCloudNode( mD - 1, mX / 2, mY / 2, mZ / 2 );
+}
 
 IndexedPointCloudNode IndexedPointCloudNode::fromString( const QString &str )
 {
@@ -140,7 +147,6 @@ QgsDoubleRange QgsPointCloudDataBounds::zRange( const QgsVector3D &offset, const
 }
 
 ///@endcond
-
 
 //
 // QgsPointCloudIndex

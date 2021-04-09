@@ -187,7 +187,7 @@ void QgsCategorizedSymbolRenderer::rebuildHash()
 {
   mSymbolHash.clear();
 
-  for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
+  for ( const QgsRendererCategory &cat : std::as_const( mCategories ) )
   {
     const QVariant val = cat.value();
     if ( val.type() == QVariant::List )
@@ -430,7 +430,7 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext &context, const
     mExpression->prepare( &context.expressionContext() );
   }
 
-  for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
+  for ( const QgsRendererCategory &cat : std::as_const( mCategories ) )
   {
     cat.symbol()->startRender( context, fields );
   }
@@ -440,7 +440,7 @@ void QgsCategorizedSymbolRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
 
-  for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
+  for ( const QgsRendererCategory &cat : std::as_const( mCategories ) )
   {
     cat.symbol()->stopRender( context );
   }
@@ -537,7 +537,7 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
   QString activeValues;
   QString inactiveValues;
 
-  for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
+  for ( const QgsRendererCategory &cat : std::as_const( mCategories ) )
   {
     if ( cat.value() == "" || cat.value().isNull() )
     {

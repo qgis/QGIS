@@ -66,9 +66,6 @@ void QgsAbout::init()
 
   connect( developersMapView, &QgsWebView::linkClicked, this, &QgsAbout::openUrl );
 
-  // set the 60x60 icon pixmap
-  qgisIcon->setPixmap( QPixmap( QgsApplication::appIconPath() ) );
-
   //read the authors file to populate the svn committers list
   QStringList lines;
 

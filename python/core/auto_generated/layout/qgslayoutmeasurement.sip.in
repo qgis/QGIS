@@ -12,7 +12,7 @@
 
 class QgsLayoutMeasurement
 {
-%Docstring
+%Docstring(signature="appended")
 This class provides a method of storing measurements for use in QGIS layouts
 using a variety of different measurement units.
 

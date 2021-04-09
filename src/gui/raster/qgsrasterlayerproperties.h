@@ -83,7 +83,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * Adds a properties page factory to the raster layer properties dialog.
      * \since QGIS 3.18
      */
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
@@ -113,18 +113,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void pbnImportTransparentPixelValues_clicked();
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
     void pbnRemoveSelectedRow_clicked();
-
-    //! \brief slot executed when user "Set end same as start" button on time options in source page.
-    void setEndAsStartStaticButton_clicked();
-
-    //! \brief slot executed when user "Pass provider temporal range" radio button on time options in source page.
-    void passProjectTemporalRange_toggled( bool checked );
-
-    //! \brief slot executed when user "Static time range" radio button on time options in source page.
-    void staticTemporalRange_toggled( bool checked );
-
-    //! \brief slot executed when temporal properties status change.
-    void temporalPropertiesChange();
 
     /**
      * \brief slot executed when the single band radio button is pressed.
@@ -247,20 +235,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * Updates the information tab by reloading metadata
      */
     void updateInformationContent();
-
-    /**
-     * Updates the layers date source URI with the new time.
-     *
-     * \since QGIS 3.14
-     */
-    void updateSourceStaticTime();
-
-    /**
-     * Initializes the layers static time inputs state.
-     *
-     * \since QGIS 3.14
-     */
-    void setSourceStaticTimeState();
 
     void setupTransparencyTable( int nBands );
 

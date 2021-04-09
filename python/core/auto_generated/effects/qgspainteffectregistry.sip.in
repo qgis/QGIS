@@ -12,7 +12,7 @@ class QgsPaintEffectWidget /External/;
 
 class QgsPaintEffectAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about a paint effect class.
 
 .. note::
@@ -83,7 +83,7 @@ if there's no GUI for the paint effect class.
 
 class QgsPaintEffectRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of available paint effects.
 
 :py:class:`QgsPaintEffectRegistry` is not usually directly created, but rather accessed through

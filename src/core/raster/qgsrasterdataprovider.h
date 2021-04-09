@@ -309,7 +309,22 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return nullptr;
     }
 
-    //! \brief Create pyramid overviews
+    /**
+     * Creates pyramid overviews.
+     *
+     * \param pyramidList a list of QgsRasterPyramids to create overviews for. The QgsRasterPyramid::setBuild() flag
+     * should be set to TRUE for every layer where pyramids are desired.
+     * \param resamplingMethod resampling method to use when creating the pyramids. The pyramidResamplingMethods() method
+     * can be used to retrieve a list of valid resampling methods available for specific raster data providers.
+     * \param format raster pyramid format.
+     * \param configOptions optional configuration options which are passed to the specific data provider
+     * for use during pyramid creation.
+     * \param feedback optional feedback argument for progress reports and cancellation support.
+     *
+     * \see buildPyramidList()
+     * \see hasPyramids()
+     * \see pyramidResamplingMethods()
+     */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> &pyramidList,
                                    const QString &resamplingMethod = "NEAREST",
                                    QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
@@ -326,16 +341,34 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Returns the raster layers pyramid list.
-     * \param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
-     * A pyramid list defines the
-     * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
-     * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
+     *
+     * This method returns a list of pyramid layers which are valid for the data provider. The returned list
+     * is a complete list of all possible layers, and includes both pyramids layers which currently exist and
+     * layers which have not yet been constructed. To know which of the pyramid layers
+     * ACTUALLY exists you need to look at the QgsRasterPyramid::getExists() member for each value in the
      * list.
+     *
+     * The returned list is suitable for passing to the buildPyramids() method. First, modify the returned list
+     * by calling `QgsRasterPyramid::setBuild( TRUE )` for every layer you want to create pyramids for, and then
+     * pass the modified list to buildPyramids().
+     *
+     * \param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
+     *
+     * \see buildPyramids()
+     * \see hasPyramids()
      */
-    virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) // clazy:exclude=function-args-by-ref
+    virtual QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() )
     { Q_UNUSED( overviewList ) return QList<QgsRasterPyramid>(); }
 
-    //! \brief Returns TRUE if raster has at least one populated histogram.
+    /**
+     * Returns TRUE if raster has at least one existing pyramid.
+     *
+     * The buildPyramidList() method can be used to retrieve additional details about potential and existing
+     * pyramid layers.
+     *
+     * \see buildPyramidList()
+     * \see buildPyramids()
+     */
     bool hasPyramids();
 
     /**

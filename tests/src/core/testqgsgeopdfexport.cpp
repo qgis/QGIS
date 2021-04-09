@@ -131,7 +131,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   QVERIFY( geoPdfExporter.saveTemporaryLayers() );
   QCOMPARE( geoPdfExporter.mVectorComponents.count(), 2 );
   QgsAbstractGeoPdfExporter::VectorComponentDetail component;
-  for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -158,7 +158,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   QCOMPARE( f.attributes().at( 2 ).toInt(), 22 );
   QCOMPARE( f.geometry().asWkt(), QStringLiteral( "Polygon ((2 10, 7 10, 7 20, 2 20, 2 10))" ) );
 
-  for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer2" ) )
     {
@@ -209,7 +209,7 @@ void TestQgsGeoPdfExport::testComposition()
   QString layer2Path;
   QString layer2Layer;
 
-  for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -448,7 +448,7 @@ void TestQgsGeoPdfExport::testGroups()
   QString layer2Path;
   QString layer2Layer;
 
-  for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -529,7 +529,7 @@ void TestQgsGeoPdfExport::testCustomGroups()
   QString layer2Path;
   QString layer2Layer;
 
-  for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {

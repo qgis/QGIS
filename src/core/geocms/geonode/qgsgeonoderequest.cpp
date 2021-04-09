@@ -272,7 +272,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
 
   QString wmsURLFormat, wfsURLFormat, xyzURLFormat;
 
-  for ( const QVariant &layer : qgis::as_const( layerList ) )
+  for ( const QVariant &layer : std::as_const( layerList ) )
   {
     QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
     const QVariantMap layerMap = layer.toMap();
@@ -283,7 +283,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
       const QStringList splitUrl = layerMap.value( QStringLiteral( "detail_url" ) ).toString().split( '/' );
       layerStruct.typeName = !splitUrl.isEmpty() ? splitUrl.last() : QString();
     }
-    layerStruct.uuid = layerMap.value( QStringLiteral( "uuid" ) ).toString();
+    layerStruct.uuid = QUuid( layerMap.value( QStringLiteral( "uuid" ) ).toString() );
     layerStruct.id = layerMap.value( QStringLiteral( "id" ) ).toString();
     layerStruct.name = layerMap.value( QStringLiteral( "name" ) ).toString();
     layerStruct.typeName = layerMap.value( QStringLiteral( "typename" ) ).toString();

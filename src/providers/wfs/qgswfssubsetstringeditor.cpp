@@ -44,7 +44,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   d->setSupportMultipleTables( bSupportJoins, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
 
   QMap< QString, QString > mapTypenameToTitle;
-  Q_FOREACH ( const QgsWfsCapabilities::FeatureType f, caps.featureTypes )
+  for ( const QgsWfsCapabilities::FeatureType &f : std::as_const( caps.featureTypes ) )
     mapTypenameToTitle[f.name] = f.title;
 
   QList< QgsSQLComposerDialog::PairNameTitle > tablenames;
@@ -70,14 +70,14 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   d->addTableNames( tablenames );
 
   QList< QgsSQLComposerDialog::Function> functionList;
-  Q_FOREACH ( const QgsWfsCapabilities::Function &f, caps.functionList )
+  for ( const QgsWfsCapabilities::Function &f : std::as_const( caps.functionList ) )
   {
     QgsSQLComposerDialog::Function dialogF;
     dialogF.name = f.name;
     dialogF.returnType = f.returnType;
     dialogF.minArgs = f.minArgs;
     dialogF.maxArgs = f.maxArgs;
-    Q_FOREACH ( const QgsWfsCapabilities::Argument &arg, f.argumentList )
+    for ( const QgsWfsCapabilities::Argument &arg : std::as_const( f.argumentList ) )
     {
       dialogF.argumentList << QgsSQLComposerDialog::Argument( arg.name, arg.type );
     }
@@ -86,14 +86,14 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   d->addFunctions( functionList );
 
   QList< QgsSQLComposerDialog::Function> spatialPredicateList;
-  Q_FOREACH ( const QgsWfsCapabilities::Function &f, caps.spatialPredicatesList )
+  for ( const QgsWfsCapabilities::Function &f : std::as_const( caps.spatialPredicatesList ) )
   {
     QgsSQLComposerDialog::Function dialogF;
     dialogF.name = f.name;
     dialogF.returnType = f.returnType;
     dialogF.minArgs = f.minArgs;
     dialogF.maxArgs = f.maxArgs;
-    Q_FOREACH ( const QgsWfsCapabilities::Argument &arg, f.argumentList )
+    for ( const QgsWfsCapabilities::Argument &arg : std::as_const( f.argumentList ) )
     {
       dialogF.argumentList << QgsSQLComposerDialog::Argument( arg.name, arg.type );
     }

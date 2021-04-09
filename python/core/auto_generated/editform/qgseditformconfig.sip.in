@@ -13,7 +13,7 @@
 
 class QgsEditFormConfig
 {
-%Docstring
+%Docstring(signature="appended")
 Contains configuration settings for an editor form.
 %End
 

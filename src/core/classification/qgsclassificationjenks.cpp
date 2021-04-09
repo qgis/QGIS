@@ -85,7 +85,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     // is larger. This will produce a more representative sample for very large
     // layers, but could end up being computationally intensive...
 
-    sample.resize( std::max( mMaximumSize, values.size() / 10 ) );
+    sample.resize( std::max( mMaximumSize, static_cast<int>( values.size() ) / 10 ) );
 
     QgsDebugMsgLevel( QStringLiteral( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ), 2 );
     QgsDebugMsgLevel( QStringLiteral( "values:%1" ).arg( values.size() ), 2 );
@@ -99,10 +99,11 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
       double r = QRandomGenerator::global()->generate();
+      int j = std::floor( r / QRandomGenerator::max() * ( values.size() - 1 ) );
 #else
       double r = qrand();
-#endif
       int j = std::floor( r / RAND_MAX * ( values.size() - 1 ) );
+#endif
       sample[ i ] = values[ j ];
     }
   }

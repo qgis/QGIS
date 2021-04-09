@@ -1338,12 +1338,6 @@ void QgsCptCityBrowserModel::addRootItems()
 
 void QgsCptCityBrowserModel::removeRootItems()
 {
-  // don't remove root items, they belong to the QgsCptCityArchive
-  // Q_FOREACH ( QgsCptCityDataItem* item, mRootItems )
-  // {
-  //   delete item;
-  // }
-
   mRootItems.clear();
 }
 

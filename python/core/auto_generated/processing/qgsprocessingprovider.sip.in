@@ -11,7 +11,7 @@
 
 class QgsProcessingProvider : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for processing providers.
 
 An algorithm provider is a set of related algorithms, typically from the same external application or related

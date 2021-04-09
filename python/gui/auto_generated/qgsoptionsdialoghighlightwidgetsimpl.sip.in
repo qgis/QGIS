@@ -14,7 +14,7 @@
 
 class QgsOptionsDialogHighlightLabel : QgsOptionsDialogHighlightWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A highlight widget for labels.
 This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 
@@ -40,7 +40,7 @@ constructs a highlight widget for a label
 
 class QgsOptionsDialogHighlightCheckBox : QgsOptionsDialogHighlightWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A highlight widget for checkboxes.
 This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 
@@ -66,7 +66,7 @@ constructs a highlight widget for a checkbox
 
 class QgsOptionsDialogHighlightButton : QgsOptionsDialogHighlightWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A highlight widget for buttons.
 This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 
@@ -92,7 +92,7 @@ constructs a highlight widget for a button.
 
 class QgsOptionsDialogHighlightGroupBox : QgsOptionsDialogHighlightWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A highlight widget for group boxes.
 This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 
@@ -118,7 +118,7 @@ constructs a highlight widget for a group box.
 
 class QgsOptionsDialogHighlightTree : QgsOptionsDialogHighlightWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A highlight widget for trees.
 This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
 Highlighting is only available for tree widgets only while searching can be performed

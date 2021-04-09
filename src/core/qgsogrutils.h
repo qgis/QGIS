@@ -28,6 +28,8 @@
 #include "cpl_string.h"
 #include "qgssymbol.h"
 
+class QTextCodec;
+
 namespace gdal
 {
 

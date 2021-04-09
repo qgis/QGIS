@@ -15,7 +15,7 @@
 
 class QgsFeatureFilterProvider
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract interface for use by classes that filter the features or attributes of a layer.
 
 A :py:class:`QgsFeatureFilterProvider` provides a method for modifying a :py:class:`QgsFeatureRequest` in place to apply

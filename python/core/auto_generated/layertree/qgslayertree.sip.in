@@ -10,7 +10,7 @@
 
 class QgsLayerTree : QgsLayerTreeGroup
 {
-%Docstring
+%Docstring(signature="appended")
 Namespace with helper functions for layer tree operations.
 
 Only generally useful routines should be here. Miscellaneous utility functions for work

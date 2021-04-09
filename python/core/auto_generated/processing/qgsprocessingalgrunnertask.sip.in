@@ -12,7 +12,7 @@
 
 class QgsProcessingAlgRunnerTask : QgsTask
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsTask` task which runs a :py:class:`QgsProcessingAlgorithm` in a background task.
 
 .. versionadded:: 3.0

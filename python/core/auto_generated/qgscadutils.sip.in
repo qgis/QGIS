@@ -12,7 +12,7 @@
 
 class QgsCadUtils
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsCadUtils` class provides routines for CAD editing.
 
 .. versionadded:: 3.0

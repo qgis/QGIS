@@ -11,7 +11,7 @@
 
 class QgsCompoundCurve: QgsCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Compound curve geometry type
 
 .. versionadded:: 2.10
@@ -81,6 +81,8 @@ of the curve.
     virtual QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
 
     int nCurves() const /HoldGIL/;

@@ -47,10 +47,7 @@ class CORE_EXPORT QgsProjUtils
     /**
      * Returns the proj library major version number.
      */
-    static int projVersionMajor()
-    {
-      return PROJ_VERSION_MAJOR;
-    }
+    static int projVersionMajor();
 
     /**
      * Returns the current list of Proj file search paths.

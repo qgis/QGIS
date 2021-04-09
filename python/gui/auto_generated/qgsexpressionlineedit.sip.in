@@ -11,7 +11,7 @@
 
 class QgsExpressionLineEdit : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsExpressionLineEdit` widget includes a line edit for entering expressions
 together with a button to open the expression creation dialog.
 

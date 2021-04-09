@@ -181,7 +181,10 @@ bool QgsQuickAttributeModel::setData( const QModelIndex &index, const QVariant &
 
       if ( !fld.convertCompatible( val ) )
       {
-        QgsMessageLog::logMessage( tr( "Value \"%1\" %4 could not be converted to a compatible value for field %2(%3)." ).arg( value.toString(), fld.name(), fld.typeName(), value.isNull() ? "NULL" : "NOT NULL" ) );
+        QString msg( tr( "Value \"%1\" %4 could not be converted to a compatible value for field %2(%3)." ).arg( value.toString(), fld.name(), fld.typeName(), value.isNull() ? "NULL" : "NOT NULL" ) );
+        QString userFriendlyMsg( tr( "Value %1 is not compatible with field type %2." ).arg( value.toString(), fld.typeName() ) );
+        QgsMessageLog::logMessage( msg );
+        emit dataChangedFailed( userFriendlyMsg );
         return false;
       }
       bool success = mFeatureLayerPair.featureRef().setAttribute( index.row(), val );
@@ -326,6 +329,56 @@ void QgsQuickAttributeModel::resetAttributes()
       else
       {
         mFeatureLayerPair.feature().setAttribute( i, QVariant() );
+      }
+    }
+  }
+  endResetModel();
+}
+
+void QgsQuickAttributeModel::updateDefaultValuesAttributes( const QgsField &editedField )
+{
+  if ( !mFeatureLayerPair.layer() )
+    return;
+
+  QgsExpressionContext expressionContext = mFeatureLayerPair.layer()->createExpressionContext();
+  expressionContext.setFeature( mFeatureLayerPair.feature() );
+  QgsFields fields = mFeatureLayerPair.layer()->fields();
+
+  beginResetModel();
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    QgsDefaultValue defaultDefinition = fields.at( i ).defaultValueDefinition();
+    if ( !defaultDefinition.expression().isEmpty() && defaultDefinition.applyOnUpdate() )
+    {
+      // Skip evaluation for a given (last edited ) field to have same behavior as it is in QGIS
+      // Editing a value is allowed, but eventually it will be overwritten by "on update" default value if defined
+      // when all attributes are saved and form is closed (as in QGIS)
+      if ( editedField.name() == fields.at( i ).name() )
+        continue;
+
+      QgsExpression exp( fields.at( i ).defaultValueDefinition().expression() );
+      exp.prepare( &expressionContext );
+      if ( exp.hasParserError() )
+        QgsMessageLog::logMessage( tr( "Default value expression for %1:%2 has parser error: %3" ).arg(
+                                     mFeatureLayerPair.layer()->name(),
+                                     fields.at( i ).name(),
+                                     exp.parserErrorString() ),
+                                   QStringLiteral( "QgsQuick" ),
+                                   Qgis::Warning );
+
+      QVariant value = exp.evaluate( &expressionContext );
+
+      if ( exp.hasEvalError() )
+        QgsMessageLog::logMessage( tr( "Default value expression for %1:%2 has evaluation error: %3" ).arg(
+                                     mFeatureLayerPair.layer()->name(),
+                                     fields.at( i ).name(),
+                                     exp.evalErrorString() ),
+                                   QStringLiteral( "QgsQuick" ),
+                                   Qgis::Warning );
+      else
+      {
+        QModelIndex index = this->index( i );
+        setData( index, value, AttributeValue );
       }
     }
   }

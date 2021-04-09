@@ -131,6 +131,12 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
                                  'getstyles_pointlabel',
                                  project=self.projectPath)
 
+        # Test GetStyle with labeling
+        self.wms_request_compare('GetStyle',
+                                 '&layers=pointlabel',
+                                 'getstyles_pointlabel',
+                                 project=self.projectPath)
+
     def test_wms_getschemaextension(self):
         self.wms_request_compare('GetSchemaExtension',
                                  '',

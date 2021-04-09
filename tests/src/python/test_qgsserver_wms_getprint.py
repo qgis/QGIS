@@ -25,6 +25,8 @@ from qgis.testing import unittest
 
 from test_qgsserver import QgsServerTestBase
 
+from qgis.PyQt.QtCore import QSize
+
 
 class TestQgsServerWMSGetPrint(QgsServerTestBase):
     """QGIS Server WMS Tests for GetPrint request"""
@@ -273,6 +275,24 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Scale")
+
+    def test_wms_getprint_size(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country,Hello",
+            "map0:SCALE": "36293562",
+            "CRS": "EPSG:3857",
+            "HEIGHT": "100"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Size", max_size_diff=QSize(1, 1))
 
     def test_wms_getprint_grid(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({

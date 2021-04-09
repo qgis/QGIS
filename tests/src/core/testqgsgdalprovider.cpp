@@ -105,8 +105,9 @@ void TestQgsGdalProvider::decodeUri()
 
   uri = QStringLiteral( "/vsizip//home/to/path/file.zip/my.tif" );
   components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
-  QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "/home/to/path/file.zip/my.tif" ) );
+  QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "/home/to/path/file.zip" ) );
   QCOMPARE( components[QStringLiteral( "vsiPrefix" )].toString(), QStringLiteral( "/vsizip/" ) );
+  QCOMPARE( components[QStringLiteral( "vsiSuffix" )].toString(), QStringLiteral( "/my.tif" ) );
 
   //test windows path
   uri = QStringLiteral( "gpkg:c:/home/to/path/my_file.gpkg:layer_name" );
@@ -125,8 +126,9 @@ void TestQgsGdalProvider::encodeUri()
   QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "GPKG:/home/user/test.gpkg:layername" ) );
 
   parts.clear();
-  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/user/test.zip/my.tif" ) );
+  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/user/test.zip" ) );
   parts.insert( QStringLiteral( "vsiPrefix" ), QStringLiteral( "/vsizip/" ) );
+  parts.insert( QStringLiteral( "vsiSuffix" ), QStringLiteral( "/my.tif" ) );
   QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/vsizip//home/user/test.zip/my.tif" ) );
 }
 

@@ -21,7 +21,7 @@ int QgisEvent = QEvent::User + 1;
 
 class Qgis
 {
-%Docstring
+%Docstring(signature="appended")
 The Qgis class provides global constants for use throughout the application.
 %End
 
@@ -125,6 +125,41 @@ The development version
 A string with default project scales.
 
 .. versionadded:: 3.12
+%End
+
+    static int geosVersionInt();
+%Docstring
+GEOS version number linked
+
+.. versionadded:: 3.20
+%End
+
+    static int geosVersionMajor();
+%Docstring
+GEOS Major version number linked
+
+.. versionadded:: 3.20
+%End
+
+    static int geosVersionMinor();
+%Docstring
+GEOS Minor version number linked
+
+.. versionadded:: 3.20
+%End
+
+    static int geosVersionPatch();
+%Docstring
+GEOS Patch version number linked
+
+.. versionadded:: 3.20
+%End
+
+    static QString geosVersion();
+%Docstring
+GEOS string version linked
+
+.. versionadded:: 3.20
 %End
 };
 
@@ -250,7 +285,6 @@ always treated as equal and 0 is not treated as equal with NULL
 :return: ``True`` if values are equal
 %End
 
-
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
 Compares two QVariant values and returns whether the first is greater than the second.
@@ -259,6 +293,12 @@ QVariant data types (such as strings, numeric values, dates and times)
 
 .. seealso:: :py:func:`qgsVariantLessThan`
 %End
+
+
+bool operator> ( const QVariant &v1, const QVariant &v2 );
+
+bool operator< ( const QVariant &v1, const QVariant &v2 );
+
 
 
 

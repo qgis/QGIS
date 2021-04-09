@@ -10,7 +10,7 @@
 
 class QgsGcpTransformerInterface /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 An interface for Ground Control Points (GCP) based transformations.
 
 :py:class:`QgsGcpTransformerInterface` implementations are able to transform point locations

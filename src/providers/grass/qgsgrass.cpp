@@ -1513,7 +1513,7 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject &mapsetObject, QgsGrass
       try
       {
         QByteArray data = runModule( mapsetObject.gisdbase(), mapsetObject.location(), mapsetObject.mapset(), cmd, arguments, timeout, false );
-        Q_FOREACH ( QString fullName, QString::fromLocal8Bit( data ).split( '\n' ) )
+        for ( QString fullName : QString::fromLocal8Bit( data ).split( '\n' ) )
         {
           fullName = fullName.trimmed();
           if ( !fullName.isEmpty() )

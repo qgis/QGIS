@@ -137,7 +137,7 @@ void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent *event )
 
   if ( !mRecentProjListDone )
   {
-    for ( const QgsCoordinateReferenceSystem &crs : qgis::as_const( mRecentProjections ) )
+    for ( const QgsCoordinateReferenceSystem &crs : std::as_const( mRecentProjections ) )
       insertRecent( crs );
     mRecentProjListDone = true;
   }

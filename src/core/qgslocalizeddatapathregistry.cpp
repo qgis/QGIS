@@ -30,7 +30,7 @@ QString QgsLocalizedDataPathRegistry::globalPath( const QString &relativePath ) 
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
 
-  for ( const QDir &basePath : qgis::as_const( mPaths ) )
+  for ( const QDir &basePath : std::as_const( mPaths ) )
     if ( basePath.exists( relativePath ) )
       return basePath.absoluteFilePath( relativePath );
 
@@ -41,7 +41,7 @@ QString QgsLocalizedDataPathRegistry::localizedPath( const QString &fullPath ) c
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
 
-  for ( const QDir &basePath : qgis::as_const( mPaths ) )
+  for ( const QDir &basePath : std::as_const( mPaths ) )
     if ( fullPath.startsWith( basePath.absolutePath() ) )
       return basePath.relativeFilePath( fullPath );
 

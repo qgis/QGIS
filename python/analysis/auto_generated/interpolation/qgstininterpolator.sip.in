@@ -12,7 +12,7 @@
 
 class QgsTinInterpolator: QgsInterpolator
 {
-%Docstring
+%Docstring(signature="appended")
 Interpolation in a triangular irregular network
 
 .. versionadded:: 3.0

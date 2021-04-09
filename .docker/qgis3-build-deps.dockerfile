@@ -1,7 +1,9 @@
 
 ARG UBUNTU_BASE=20.04
 
-FROM      ubuntu:${UBUNTU_BASE}
+# Oracle Docker image is too large, so we add as less dependencies as possible
+# so there is enough space on GitHub runner
+FROM      ubuntu:${UBUNTU_BASE} as binary-for-oracle
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
@@ -10,72 +12,45 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 314DF160 \
 
-
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     apt-transport-https \
-    bison \
     ca-certificates \
-    ccache \
-    clang \
     cmake \
     curl \
     dh-python \
-    flex \
     gdal-bin \
-    git \
     graphviz \
-    grass-dev \
     libaio1 \
-    libexiv2-dev \
-    libexpat1-dev \
-    libfcgi-dev \
-    libgdal-dev \
-    libgeos-dev \
-    libgsl-dev \
-    libpdal-dev \
-    libpq-dev \
-    libproj-dev \
-    libprotobuf-dev \
-    libqca-qt5-2-dev \
+    libexiv2-27 \
+    libfcgi0ldbl \
+    'libgsl23|libgsl23' \
+    'libprotobuf-lite17|libprotobuf-lite23' \
     libqca-qt5-2-plugins \
     libqt53dextras5 \
     libqt53drender5 \
     libqt5concurrent5 \
-    libqt5opengl5-dev \
+    libqt5keychain1 \
     libqt5positioning5 \
     libqt5qml5 \
     libqt5quick5 \
     libqt5quickcontrols2-5 \
-    libqt5scintilla2-dev \
+    libqt5quickwidgets5 \
+    libqt5serialport5 \
     libqt5sql5-odbc \
     libqt5sql5-sqlite \
-    libqt5svg5-dev \
-    libqt5webkit5-dev \
     libqt5xml5 \
-    libqt5serialport5-dev \
-    libqwt-qt5-dev \
-    libspatialindex-dev \
-    libspatialite-dev \
-    libsqlite3-dev \
+    libqt5webkit5 \
+    libqwt-qt5-6 \
+    libspatialindex6 \
     libsqlite3-mod-spatialite \
-    libzip-dev \
-    libzstd-dev \
+    'libzip4|libzip5' \
     lighttpd \
     locales \
-    ninja-build \
     pdal \
-    pkg-config \
     poppler-utils \
-    postgresql-client \
-    protobuf-compiler \
-    pyqt5-dev \
-    pyqt5-dev-tools \
-    pyqt5.qsci-dev \
-    python3-all-dev \
-    python3-dev \
     python3-future \
     python3-gdal \
     python3-mock \
@@ -88,24 +63,16 @@ RUN  apt-get update \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
+    python3-pyqt5.qtwebkit \
     python3-sip \
-    python3-sip-dev \
     python3-termcolor \
     python3-yaml \
-    qt3d5-dev \
     qt3d-assimpsceneimport-plugin \
     qt3d-defaultgeometryloader-plugin \
     qt3d-gltfsceneio-plugin \
     qt3d-scene2d-plugin \
-    qt5keychain-dev \
-    qtbase5-dev \
-    qtdeclarative5-dev-tools \
-    qtpositioning5-dev \
-    qttools5-dev \
-    qttools5-dev-tools \
-    qtbase5-private-dev \
+    qt5-image-formats-plugins \
     saga \
-    spawn-fcgi \
     supervisor \
     unzip \
     xauth \
@@ -114,11 +81,8 @@ RUN  apt-get update \
     xfonts-base \
     xfonts-scalable \
     xvfb \
-    opencl-headers \
     ocl-icd-libopencl1 \
-    ocl-icd-opencl-dev \
   && pip3 install \
-    psycopg2 \
     numpy \
     nose2 \
     pyyaml \
@@ -148,6 +112,24 @@ RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
 ENV PATH="/instantclient_19_9:${PATH}"
 ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
 
+# Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
+RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+RUN locale-gen
+
+RUN echo "alias python=python3" >> ~/.bash_aliases
+
+FROM binary-for-oracle as binary-only
+
+RUN  apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    grass \
+    postgresql-client \
+    spawn-fcgi \
+  && pip3 install \
+    psycopg2 \
+  && apt-get clean
+
 # HANA: client side
 # Install hdbsql tool
 RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt" https://tools.hana.ondemand.com/additional/hanaclient-latest-linux-x64.tar.gz --output hanaclient-latest-linux-x64.tar.gz \
@@ -164,16 +146,64 @@ RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list | tee /etc
 RUN apt-get update
 RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17 mssql-tools
 
-# Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
-RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
-RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-RUN locale-gen
-
-RUN echo "alias python=python3" >> ~/.bash_aliases
-
 # OTB: download and install otb packages for QGIS tests
 RUN curl -k https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
+
+
+FROM binary-only
+
+RUN  apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    bison \
+    ccache \
+    clang \
+    cmake \
+    flex \
+    git \
+    grass-dev \
+    libexiv2-dev \
+    libexpat1-dev \
+    libfcgi-dev \
+    libgdal-dev \
+    libgeos-dev \
+    libgsl-dev \
+    libpdal-dev \
+    libpq-dev \
+    libproj-dev \
+    libprotobuf-dev \
+    libqca-qt5-2-dev \
+    libqt5opengl5-dev \
+    libqt5scintilla2-dev \
+    libqt5svg5-dev \
+    libqt5webkit5-dev \
+    libqt5serialport5-dev \
+    libqwt-qt5-dev \
+    libspatialindex-dev \
+    libspatialite-dev \
+    libsqlite3-dev \
+    libsqlite3-mod-spatialite \
+    libzip-dev \
+    libzstd-dev \
+    ninja-build \
+    protobuf-compiler \
+    pyqt5-dev \
+    pyqt5-dev-tools \
+    pyqt5.qsci-dev \
+    python3-all-dev \
+    python3-dev \
+    python3-sip-dev \
+    qt3d5-dev \
+    qt5keychain-dev \
+    qtbase5-dev \
+    qtdeclarative5-dev-tools \
+    qtpositioning5-dev \
+    qttools5-dev \
+    qttools5-dev-tools \
+    qtbase5-private-dev \
+    opencl-headers \
+    ocl-icd-opencl-dev \
+  && apt-get clean
 
 # Clazy
 RUN curl -k https://downloads.kdab.com/clazy/1.6/Clazy-x86_64-1.6.AppImage -o /tmp/Clazy.AppImage \

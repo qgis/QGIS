@@ -31,7 +31,7 @@ typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygonXY;
 
 class QgsGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 A geometry is the spatial representation of a feature.
 
 :py:class:`QgsGeometry` acts as a generic container for geometry objects. :py:class:`QgsGeometry` objects are implicitly shared,
@@ -1960,7 +1960,7 @@ and the interior rings in a counter-clockwise direction.
 
     class Error
 {
-%Docstring
+%Docstring(signature="appended")
 A geometry error.
 %End
 

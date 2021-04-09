@@ -340,15 +340,14 @@
   <tabstop>cmbTransformType</tabstop>
   <tabstop>cmbResampling</tabstop>
   <tabstop>mCrsSelector</tabstop>
-  <tabstop>mOutputRaster</tabstop>
   <tabstop>cmbCompressionComboBox</tabstop>
+  <tabstop>saveGcpCheckBox</tabstop>
   <tabstop>mWorldFileCheckBox</tabstop>
   <tabstop>cbxZeroAsTrans</tabstop>
   <tabstop>cbxUserResolution</tabstop>
   <tabstop>dsbHorizRes</tabstop>
   <tabstop>dsbVerticalRes</tabstop>
-  <tabstop>mPdfMap</tabstop>
-  <tabstop>mPdfReport</tabstop>
+  <tabstop>cbxLoadInQgisWhenDone</tabstop>
  </tabstops>
  <resources/>
  <connections>

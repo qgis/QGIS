@@ -313,7 +313,7 @@ void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, 
 
 void QgsHueSaturationFilter::setSaturation( int saturation )
 {
-  mSaturation = qBound( -100, saturation, 100 );
+  mSaturation = std::clamp( saturation, -100, 100 );
 
   // Scale saturation value to [0-2], where 0 = desaturated
   mSaturationScale = ( ( double ) mSaturation / 100 ) + 1;

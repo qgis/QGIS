@@ -15,7 +15,7 @@
 
 class QgsExpressionItem : QStandardItem
 {
-%Docstring
+%Docstring(signature="appended")
 An expression item that can be used in the :py:class:`QgsExpressionBuilderWidget` tree.
 %End
 
@@ -74,7 +74,7 @@ Gets the type of expression item, e.g., header, field, ExpressionNode.
 
 class QgsExpressionItemSearchProxy : QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 Search proxy used to filter the :py:class:`QgsExpressionBuilderWidget` tree.
 The default search for a tree model only searches top level this will handle one
 level down
@@ -97,7 +97,7 @@ level down
 
 class QgsExpressionTreeView : QTreeView
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsExpressionTreeView` is a tree view to list all expressions
 functions, variables and fields that can be used in an expression.
 
@@ -113,7 +113,7 @@ functions, variables and fields that can be used in an expression.
 
     class MenuProvider
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of this interface can be implemented to allow QgsExpressionTreeView
 instance to provide custom context menus (opened upon right-click).
 

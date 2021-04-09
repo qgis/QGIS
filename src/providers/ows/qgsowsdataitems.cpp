@@ -38,7 +38,7 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS
-  Q_FOREACH ( const QString &key, QStringList() << "wms" << "WFS" << "wcs" )
+  for ( const QString &key : { QStringLiteral( "wms" ), QStringLiteral( "WFS" ), QStringLiteral( "wcs" ) } )
   {
     QgsDebugMsg( "Add connection for provider " + key );
     const QList<QgsDataItemProvider *> providerList = QgsProviderRegistry::instance()->dataItemProviders( key );
@@ -70,7 +70,7 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
       continue;
     }
 
-    for ( QgsDataItem *item : qgis::as_const( items ) )
+    for ( QgsDataItem *item : std::as_const( items ) )
     {
       item->populate( true ); // populate in foreground - this is already run in a thread
 
@@ -153,9 +153,10 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
   QVector<QgsDataItem *> connections;
   // Combine all WMS,WFS,WCS connections
   QStringList connNames;
-  Q_FOREACH ( const QString &service, QStringList() << "WMS" << "WFS" << "WCS" )
+  for ( const QString &service : { QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" )} )
   {
-    Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( service ) )
+    const QStringList list = QgsOwsConnection::connectionList( service );
+    for ( const QString &connName : list )
     {
       if ( !connNames.contains( connName ) )
       {

@@ -12,7 +12,7 @@
 
 class QgsReadWriteContext
 {
-%Docstring
+%Docstring(signature="appended")
 The class is used as a container of context for various read/write operations on other objects.
 
 .. versionadded:: 3.0
@@ -136,7 +136,7 @@ Sets data coordinate transform context to ``transformContext``
 
 class QgsReadWriteContextCategoryPopper
 {
-%Docstring
+%Docstring(signature="appended")
 Allows entering a context category and takes care of
 leaving this category on deletion of the class.
 This would happen when it gets out of scope.
