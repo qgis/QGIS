@@ -7521,6 +7521,8 @@ void TestQgsGeometry::triangle()
   QVERIFY( t9.isEquilateral() );
 
   // vertex
+  QCOMPARE( QgsTriangle().vertexAt( 0 ), QgsPoint() );
+  QCOMPARE( QgsTriangle().vertexAt( -1 ), QgsPoint() );
   QVERIFY( t9.vertexAt( -1 ).isEmpty() );
   QCOMPARE( t9.vertexAt( 0 ), QgsPoint( 10, 10 ) );
   QCOMPARE( t9.vertexAt( 1 ), QgsPoint( 16, 10 ) );
@@ -7545,6 +7547,7 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), t9.orthocenter(), 0.0001 );
 
   // circumscribed circle
+  QCOMPARE( QgsTriangle().circumscribedCircle(), QgsCircle() );
   QVERIFY( QgsTriangle().circumscribedCenter().isEmpty() );
   QCOMPARE( 0.0, QgsTriangle().circumscribedRadius() );
   QCOMPARE( QgsPoint( 2.5, 2.5 ), t7.circumscribedCenter() );
@@ -7557,6 +7560,7 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( 3.4641, t9.circumscribedCircle().radius(), 0.0001 );
 
   // inscribed circle
+  QCOMPARE( QgsTriangle().inscribedCircle(), QgsCircle() );
   QVERIFY( QgsTriangle().inscribedCenter().isEmpty() );
   QCOMPARE( 0.0, QgsTriangle().inscribedRadius() );
   QGSCOMPARENEARPOINT( QgsPoint( 1.4645, 3.5355 ), t7.inscribedCenter(), 0.001 );
@@ -7639,6 +7643,8 @@ void TestQgsGeometry::triangle()
 
   //move vertex
   QgsPoint pt1( 5, 5 );
+  // empty triangle
+  QVERIFY( !QgsTriangle().moveVertex( id, pt1 ) );
   // invalid part
   id.part = -1;
   QVERIFY( !t11.moveVertex( id, pt1 ) );
