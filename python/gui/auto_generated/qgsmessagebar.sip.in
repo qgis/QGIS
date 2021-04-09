@@ -224,7 +224,7 @@ Pushes a warning ``message`` that must be manually dismissed by the user. Before
 
     void pushCritical( const QString &title, const QString &message );
 %Docstring
-Pushes a critical warning ``message`` that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.
+Pushes a critical warning ``message`` that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.    
 
 :param title: title string for message
 :param message: The message to be displayed
