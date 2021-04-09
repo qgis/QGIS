@@ -390,13 +390,14 @@ if (ENABLE_PGTEST)
   if (WITH_SERVER)
     ADD_PYTHON_TEST(PyQgsServerWMSGetFeatureInfoPG test_qgsserver_wms_getfeatureinfo_postgres.py)
     ADD_PYTHON_TEST(PyQgsServerAccessControlWMSGetPrintPG test_qgsserver_accesscontrol_wms_getprint_postgres.py)
+    SET_TESTS_PROPERTIES(PyQgsServerWMSGetFeatureInfoPG PyQgsServerAccessControlWMSGetPrintPG PROPERTIES LABELS "POSTGRES")
   endif()
   SET_TESTS_PROPERTIES(PyQgsImportIntoPostGIS PyQgsQueryResultModel PyQgsVectorFileWriterPostgres PyQgsPostgresProvider
     PyQgsVectorLayerUtilsPostgres PyQgsPostgresRasterProvider PyQgsPostgresDomain PyQgsPostgresTransaction
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest
     PyQgsDbManagerPostgis PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox
-    PyQgsProviderConnectionPostgres PyQgsServerWMSGetFeatureInfoPG PyQgsServerAccessControlWMSGetPrintPG
+    PyQgsProviderConnectionPostgres
     PROPERTIES LABELS "POSTGRES")
 endif()
 
