@@ -7418,13 +7418,52 @@ void TestQgsGeometry::triangle()
   QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
 
   // WKB
-  QByteArray wkb = t5.asWkb();
-  QCOMPARE( wkb.size(), t5.wkbSize() );
-  t6.clear();
-  QgsConstWkbPtr wkb16ptr5( wkb );
-  t6.fromWkb( wkb16ptr5 );
-  QCOMPARE( t5.wkbType(), QgsWkbTypes::TriangleZM );
-  QCOMPARE( t5, t6 );
+  QgsTriangle tResult, tWKB;
+  QByteArray wkb;
+// WKB noZM
+  tWKB = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
+  wkb = tWKB.asWkb();
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+  tResult.clear();
+  QgsConstWkbPtr wkbPtr( wkb );
+  tResult.fromWkb( wkbPtr );
+  QCOMPARE( tWKB.asWkt(), "Triangle ((0 0, 0 10, 10 10, 0 0))" );
+  QCOMPARE( tWKB.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( tWKB, tResult );
+// WKB Z
+  tWKB = QgsTriangle( QgsPoint( 0, 0, 1 ), QgsPoint( 0, 10, 2 ), QgsPoint( 10, 10, 3 ) );
+  wkb = tWKB.asWkb();
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+  tResult.clear();
+  QgsConstWkbPtr wkbPtrZ( wkb );
+  tResult.fromWkb( wkbPtrZ );
+  QCOMPARE( tWKB.asWkt(), "TriangleZ ((0 0 1, 0 10 2, 10 10 3, 0 0 1))" );
+  QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleZ );
+  QCOMPARE( tWKB, tResult );
+// WKB M
+// tWKB=QgsTriangle (QgsPoint(0,0, 5), QgsPoint(0, 10, 6), QgsPoint(10, 10, 7)); will produce a TriangleZ
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 5 )
+                  << QgsPoint( QgsWkbTypes::PointM, 0, 10, 0, 6 ) << QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 7 ) );
+  tWKB.setExteriorRing( ext.release() );
+  wkb = tWKB.asWkb();
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+  tResult.clear();
+  QgsConstWkbPtr  wkbPtrM( wkb );
+  tResult.fromWkb( wkbPtrM );
+  QCOMPARE( tWKB.asWkt(), "TriangleM ((0 0 5, 0 10 6, 10 10 7, 0 0 5))" );
+  QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleM );
+  QCOMPARE( tWKB, tResult );
+// WKB ZM
+  tWKB = QgsTriangle( QgsPoint( 0, 0, 1, 5 ), QgsPoint( 0, 10, 2, 6 ), QgsPoint( 10, 10, 3, 7 ) );
+  wkb = tWKB.asWkb();
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+  tResult.clear();
+  QgsConstWkbPtr wkbPtrZM( wkb );
+  tResult.fromWkb( wkbPtrZM );
+  QCOMPARE( tWKB.asWkt(), "TriangleZM ((0 0 1 5, 0 10 2 6, 10 10 3 7, 0 0 1 5))" );
+  QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleZM );
+  QCOMPARE( tWKB, tResult );
 
   //bad WKB - check for no crash
   t6.clear();
