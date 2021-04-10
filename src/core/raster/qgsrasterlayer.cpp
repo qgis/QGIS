@@ -311,6 +311,9 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 
 QString QgsRasterLayer::htmlMetadata() const
 {
+  if ( !mDataProvider )
+    return QString();
+
   QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html><head></head>\n<body>\n" );
 
@@ -2173,6 +2176,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
                                QDomDocument &document,
                                const QgsReadWriteContext &context ) const
 {
+  if ( !mDataProvider )
+    return false;
+
   // first get the layer element so that we can append the type attribute
 
   QDomElement mapLayerNode = layer_node.toElement();
