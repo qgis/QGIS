@@ -75,6 +75,23 @@
        </property>
       </widget>
      </item>
+     <item row="9" column="3">
+     <widget class="QgsPropertyOverrideButton" name="mCalloutBlendModeDDBtn">
+       <property name="text">
+       <string>…</string>
+       </property>
+     </widget>
+     </item>
+     <item row="9" column="1" colspan="2">
+     <widget class="QgsBlendModeComboBox" name="mCalloutBlendComboBox"/>
+     </item>
+     <item row="9" column="0">
+     <widget class="QLabel" name="label_18">
+       <property name="text">
+       <string>Blend mode</string>
+       </property>
+     </widget>
+     </item>
      <item row="8" column="0">
       <widget class="QLabel" name="mAnchorPointLbl_2">
        <property name="text">
@@ -554,6 +571,8 @@
   <tabstop>mAnchorPointDDBtn</tabstop>
   <tabstop>mLabelAnchorPointComboBox</tabstop>
   <tabstop>mLabelAnchorPointDDBtn</tabstop>
+  <tabstop>mCalloutBlendComboBox</tabstop>
+  <tabstop>mCalloutBlendModeDDBtn</tabstop>
   <tabstop>mOriginXDDBtn</tabstop>
   <tabstop>mOriginYDDBtn</tabstop>
   <tabstop>mDestXDDBtn</tabstop>

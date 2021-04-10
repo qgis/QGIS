@@ -4044,7 +4044,7 @@ font-style: italic;</string>
                            </property>
                            <property name="topMargin">
                             <number>1</number>
-                           </property>
+                           </property>                           
                            <item row="0" column="1" colspan="2">
                             <widget class="QComboBox" name="mCalloutStyleComboBox"/>
                            </item>

@@ -397,6 +397,13 @@ class CORE_EXPORT QgsPalLayerSettings
     void stopRender( QgsRenderContext &context );
 
     /**
+     * Returns TRUE if any component of the label settings requires advanced effects
+     * such as blend modes, which require output in raster formats to be fully respected.
+     * \since QGIS 3.20
+     */
+    bool containsAdvancedEffects() const;
+
+    /**
      * Returns the labeling property definitions.
      * \since QGIS 3.0
      */

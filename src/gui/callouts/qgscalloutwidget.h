@@ -153,6 +153,7 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     void lineSymbolChanged();
     void mAnchorPointComboBox_currentIndexChanged( int index );
     void mLabelAnchorPointComboBox_currentIndexChanged( int index );
+    void mCalloutBlendComboBox_currentIndexChanged( int index );
     void drawToAllPartsToggled( bool active );
 
   private:
@@ -207,6 +208,7 @@ class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private U
     void lineSymbolChanged();
     void mAnchorPointComboBox_currentIndexChanged( int index );
     void mLabelAnchorPointComboBox_currentIndexChanged( int index );
+    void mCalloutBlendComboBox_currentIndexChanged( int index );
     void drawToAllPartsToggled( bool active );
 
   private:
@@ -243,6 +245,7 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
     void offsetFromAnchorChanged();
     void fillSymbolChanged();
     void mAnchorPointComboBox_currentIndexChanged( int index );
+    void mCalloutBlendComboBox_currentIndexChanged( int index );
 
   private:
     std::unique_ptr< QgsBalloonCallout > mCallout;
