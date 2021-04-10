@@ -292,6 +292,14 @@ This must be called after a call to :py:func:`~QgsPalLayerSettings.startRender`,
 .. versionadded:: 3.10
 %End
 
+    bool containsAdvancedEffects() const;
+%Docstring
+Returns ``True`` if any component of the label settings requires advanced effects
+such as blend modes, which require output in raster formats to be fully respected.
+
+.. versionadded:: 3.20
+%End
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the labeling property definitions.

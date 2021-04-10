@@ -563,6 +563,11 @@ void QgsPalLayerSettings::stopRender( QgsRenderContext &context )
   mRenderStarted = false;
 }
 
+bool QgsPalLayerSettings::containsAdvancedEffects() const
+{
+  return mFormat.containsAdvancedEffects() || mCallout->containsAdvancedEffects();
+}
+
 QgsPalLayerSettings::~QgsPalLayerSettings()
 {
   if ( mRenderStarted )
