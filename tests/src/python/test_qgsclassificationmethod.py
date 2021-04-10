@@ -103,13 +103,12 @@ class TestQgsClassificationMethods(unittest.TestCase):
         # This test checks if Jenkis classification does not crash when number of
         # values in a set is higher than 3000 (value hardcoded in qgsclassificationjenks.h)
         # And if returned values are consistent (the same as at the time of creation of this test)
-        random.seed(42*42);
+        random.seed(42 * 42)
         values = [random.randint(-1000, 1000) for _ in range(5000)]
         vl = createMemoryLayer(values)
         m = QgsClassificationJenks()
 
         r = m.classes(vl, 'value', 4)
-        print('result high=',QgsClassificationMethod.rangesToBreaks(r))
         self.assertEqual(len(r), 4)
         self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
                          [-506.0, -4.0, 499.0, 1000.0])
