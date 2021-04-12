@@ -3109,17 +3109,22 @@ namespace QgsWms
 
   void QgsRenderer::setLayerSelection( QgsMapLayer *layer, const QStringList &fids ) const
   {
-    if ( layer->type() == QgsMapLayerType::VectorLayer )
+    if ( !fids.empty() && layer->type() == QgsMapLayerType::VectorLayer )
     {
-      QgsFeatureIds selectedIds;
-
-      for ( const QString &id : fids )
-      {
-        selectedIds.insert( STRING_TO_FID( id ) );
-      }
-
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-      vl->selectByIds( selectedIds );
+
+      QgsFeatureRequest request;
+      QgsServerFeatureId::updateFeatureRequestFromServerFids( request, fids, vl->dataProvider() );
+      const QgsFeatureIds selectedIds = request.filterFids();
+
+      if ( selectedIds.empty() )
+      {
+        vl->selectByExpression( request.filterExpression()->expression() );
+      }
+      else
+      {
+        vl->selectByIds( selectedIds );
+      }
     }
   }
 
@@ -3236,6 +3241,11 @@ namespace QgsWms
         setLayerFilter( layer, param.mFilter );
       }
 
+      if ( mContext.testFlag( QgsWmsRenderContext::SetAccessControl ) )
+      {
+        setLayerAccessControlFilter( layer );
+      }
+
       if ( mContext.testFlag( QgsWmsRenderContext::UseSelection ) )
       {
         setLayerSelection( layer, param.mSelection );
@@ -3244,11 +3254,6 @@ namespace QgsWms
       if ( settings && mContext.updateExtent() )
       {
         updateExtent( layer, *settings );
-      }
-
-      if ( mContext.testFlag( QgsWmsRenderContext::SetAccessControl ) )
-      {
-        setLayerAccessControlFilter( layer );
       }
     }
 
