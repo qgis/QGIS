@@ -45,7 +45,7 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
     QgsFeatureIds fids;
     for ( const QString &serverFid : serverFids )
     {
-      fids.insert( serverFid.toLongLong() );
+      fids.insert( STRING_TO_FID( serverFid ) );
     }
     featureRequest.setFilterFids( fids );
     return featureRequest;
