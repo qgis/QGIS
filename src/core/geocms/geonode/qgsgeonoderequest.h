@@ -96,6 +96,8 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
       QString wmsURL;
       //! WFS URL for layer
       QString wfsURL;
+      //! WCS URL for layer
+      QString wcsURL;
       //! XYZ tileserver URL for layer
       QString xyzURL;
       //! Backend server (geoserver or qgis-server)
