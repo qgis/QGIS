@@ -102,7 +102,7 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
 
     QgsFeatureSource *mReferenceSource = nullptr;
-    QgsFeatureList mInputFeatures;
+    QHash<QgsFeatureId, QgsGeometry> mCachedReferenceGeometries;
 
     QgsSpatialIndex mIndex;
     mutable QMutex mIndexMutex;
