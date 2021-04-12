@@ -488,16 +488,37 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   QgsFeatureIds refFeatureIds = qgis::listToSet( mIndex.intersects( searchBounds ) );
   mIndexMutex.unlock();
 
-  QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setNoAttributes();
-  mReferenceLayerMutex.lock();
-  QgsFeature refFeature;
-  QgsFeatureIterator refFeatureIt = mReferenceSource->getFeatures( refFeatureRequest );
+  if ( refFeatureIds.isEmpty() )
+    return QgsGeometry( geometry );
 
-  while ( refFeatureIt.nextFeature( refFeature ) )
+  refGeometries.reserve( refFeatureIds.size() );
+  QgsFeatureIds missingFeatureIds;
+  const QgsFeatureIds cachedIds = qgis::listToSet( mCachedReferenceGeometries.keys() );
+  for ( QgsFeatureId id : refFeatureIds )
   {
-    refGeometries.append( refFeature.geometry() );
+    if ( cachedIds.contains( id ) )
+    {
+      refGeometries.append( mCachedReferenceGeometries[id] );
+    }
+    else
+    {
+      missingFeatureIds << id;
+    }
   }
-  mReferenceLayerMutex.unlock();
+
+  if ( missingFeatureIds.size() > 0 )
+  {
+
+    mReferenceLayerMutex.lock();
+    QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( missingFeatureIds ).setNoAttributes();
+    QgsFeatureIterator refFeatureIt = mReferenceSource->getFeatures( refFeatureRequest );
+    QgsFeature refFeature;
+    while ( refFeatureIt.nextFeature( refFeature ) )
+    {
+      refGeometries.append( refFeature.geometry() );
+    }
+    mReferenceLayerMutex.unlock();
+  }
 
   return snapGeometry( geometry, snapTolerance, refGeometries, mode );
 }
