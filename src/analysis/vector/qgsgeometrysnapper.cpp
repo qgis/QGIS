@@ -228,7 +228,7 @@ const QgsSnapIndex::Cell *QgsSnapIndex::GridRow::getCell( int col ) const
   }
   else
   {
-    return &mCells[col - mColStartIdx];
+    return &mCells.at( col - mColStartIdx );
   }
 }
 
@@ -238,10 +238,10 @@ QList<QgsSnapIndex::SnapItem *> QgsSnapIndex::GridRow::getSnapItems( int colStar
   colEnd = std::min( colEnd, mColStartIdx + mCells.size() - 1 );
 
   QList<SnapItem *> items;
-
+  items.reserve( colEnd - colStart + 1 );
   for ( int col = colStart; col <= colEnd; ++col )
   {
-    items.append( mCells[col - mColStartIdx] );
+    items.append( mCells.at( col - mColStartIdx ) );
   }
   return items;
 }
@@ -269,7 +269,7 @@ const QgsSnapIndex::Cell *QgsSnapIndex::getCell( int col, int row ) const
   }
   else
   {
-    return mGridRows[row - mRowsStartIdx].getCell( col );
+    return mGridRows.at( row - mRowsStartIdx ).getCell( col );
   }
 }
 
@@ -410,9 +410,10 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double t
   rowEnd = std::min( rowEnd, mRowsStartIdx + mGridRows.size() - 1 );
 
   QList<SnapItem *> items;
+  items.reserve( rowEnd - rowStart + 1 );
   for ( int row = rowStart; row <= rowEnd; ++row )
   {
-    items.append( mGridRows[row - mRowsStartIdx].getSnapItems( colStart, colEnd ) );
+    items.append( mGridRows.at( row - mRowsStartIdx ).getSnapItems( colStart, colEnd ) );
   }
 
   double minDistSegment = std::numeric_limits<double>::max();
