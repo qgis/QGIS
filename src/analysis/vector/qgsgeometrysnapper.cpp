@@ -197,6 +197,7 @@ QgsSnapIndex::Cell &QgsSnapIndex::GridRow::getCreateCell( int col )
 {
   if ( col < mColStartIdx )
   {
+    mCells.reserve( mColStartIdx - col );
     for ( int i = col; i < mColStartIdx; ++i )
     {
       mCells.prepend( Cell() );
@@ -206,6 +207,7 @@ QgsSnapIndex::Cell &QgsSnapIndex::GridRow::getCreateCell( int col )
   }
   else if ( col >= mColStartIdx + mCells.size() )
   {
+    mCells.reserve( col - ( mColStartIdx + mCells.size() ) );
     for ( int i = mColStartIdx + mCells.size(); i <= col; ++i )
     {
       mCells.append( Cell() );
@@ -275,6 +277,7 @@ QgsSnapIndex::Cell &QgsSnapIndex::getCreateCell( int col, int row )
 {
   if ( row < mRowsStartIdx )
   {
+    mGridRows.reserve( mRowsStartIdx - row );
     for ( int i = row; i < mRowsStartIdx; ++i )
     {
       mGridRows.prepend( GridRow() );
@@ -284,6 +287,7 @@ QgsSnapIndex::Cell &QgsSnapIndex::getCreateCell( int col, int row )
   }
   else if ( row >= mRowsStartIdx + mGridRows.size() )
   {
+    mGridRows.reserve( row - ( mRowsStartIdx + mGridRows.size() ) );
     for ( int i = mRowsStartIdx + mGridRows.size(); i <= row; ++i )
     {
       mGridRows.append( GridRow() );
