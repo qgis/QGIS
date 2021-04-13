@@ -1630,12 +1630,6 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 } // void QgsVectorLayer::readXml
 
 
-void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag )
-{
-  QgsDataProvider::ProviderOptions options;
-  setDataSource( dataSource, baseName, provider, options, loadDefaultStyleFlag );
-}
-
 void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
   QgsWkbTypes::GeometryType geomType = geometryType();
