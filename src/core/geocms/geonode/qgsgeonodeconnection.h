@@ -74,6 +74,8 @@ class CORE_EXPORT QgsGeoNodeConnection
     /**
      * Adds uri parameters relating to the settings for a WCS layer on the connection to a QgsDataSourceUri \a uri.
      * \see addWmsConnectionSettings()
+     *
+     * \since QGIS 3.20
      */
     QgsDataSourceUri &addWcsConnectionSettings( QgsDataSourceUri &uri ) const;
 
