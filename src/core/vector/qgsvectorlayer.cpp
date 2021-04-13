@@ -1072,7 +1072,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &updatedFeature, bool skipDefault
 
     for ( int attr = 0; attr < fa.count(); ++attr )
     {
-      if ( fa.at( attr ) != ca.at( attr ) )
+      if ( !qgsVariantEqual( fa.at( attr ), ca.at( attr ) ) )
       {
         if ( changeAttributeValue( updatedFeature.id(), attr, fa.at( attr ), ca.at( attr ), true ) )
         {
