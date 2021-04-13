@@ -44,7 +44,12 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
   if ( !uri.isEmpty() && !providerLib.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    setDataSource( uri, baseName, providerLib, providerOptions, options.loadDefaultStyle );
+    QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+    if ( options.loadDefaultStyle )
+    {
+      providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+    }
+    setDataSourcePrivate( uri, baseName, providerLib, providerOptions, providerFlags );
 
     if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
       mDataProvider.get()->generateIndex();
@@ -103,7 +108,12 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
     QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, false );
+    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+    {
+      flags |= QgsDataProvider::FlagTrustDataSource;
+    }
+    setDataSourcePrivate( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
   }
 
   if ( !isValid() )
@@ -280,8 +290,8 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
   invalidateWgs84Extent();
 }
 
-void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
-                                        const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
+    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   if ( mDataProvider )
   {
@@ -293,18 +303,11 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   mProviderKey = provider;
   mDataSource = dataSource;
 
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-
   mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( QStringLiteral( "Unable to get point cloud data provider" ) );
     setValid( false );
-    emit dataSourceChanged();
     return;
   }
 
@@ -315,7 +318,6 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   if ( !isValid() )
   {
     QgsDebugMsg( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
-    emit dataSourceChanged();
     return;
   }
 
@@ -325,6 +327,12 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
   setExtent( mDataProvider->extent() );
+
+  bool loadDefaultStyleFlag = false;
+  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  {
+    loadDefaultStyleFlag = true;
+  }
 
   if ( !mRenderer || loadDefaultStyleFlag )
   {
@@ -356,9 +364,6 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
       setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
     }
   }
-
-  emit dataSourceChanged();
-  triggerRepaint();
 }
 
 QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const

@@ -183,7 +183,12 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
+    QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+    if ( options.loadDefaultStyle )
+    {
+      providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+    }
+    setDataSourcePrivate( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
   }
 
   for ( const QgsField &field : std::as_const( mFields ) )
@@ -1629,29 +1634,28 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
 } // void QgsVectorLayer::readXml
 
-
-void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
+    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   QgsWkbTypes::GeometryType geomType = geometryType();
 
   mDataSource = dataSource;
   setName( baseName );
-
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
   setDataProvider( provider, options, flags );
 
   if ( !isValid() )
   {
-    emit dataSourceChanged();
     return;
   }
 
   // Always set crs
   setCoordinateSystem();
+
+  bool loadDefaultStyleFlag = false;
+  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  {
+    loadDefaultStyleFlag = true;
+  }
 
   // reset style if loading default style, style is missing, or geometry type is has changed (and layer is valid)
   if ( !renderer() || !legend() || ( isValid() && geomType != geometryType() ) || loadDefaultStyleFlag )
@@ -1704,9 +1708,6 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
       }
     }
   }
-
-  emit dataSourceChanged();
-  triggerRepaint();
 }
 
 QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
