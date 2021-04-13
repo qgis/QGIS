@@ -2644,7 +2644,7 @@ bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const 
   QgsRectangle visible_extent = canvas()->mapSettings().visibleExtent();
   // Check if one point is inside and the other outside the visible extent in order to transpose the mid marker
   // If both are inside or outside there is no such need
-  if ( !visible_extent.contains( p0 ) != !visible_extent.contains( p1 ) )
+  if ( visible_extent.contains( p0 ) != visible_extent.contains( p1 ) )
   {
     // clip line segment to the extent so the mid-point marker is always visible
     QgsGeometry extentGeom = QgsGeometry::fromRect( visible_extent );
