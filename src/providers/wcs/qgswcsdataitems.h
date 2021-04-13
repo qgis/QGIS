@@ -82,7 +82,7 @@ class QgsWcsDataItemProvider : public QgsDataItemProvider
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
-    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem );
+    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSWCSDATAITEMS_H
