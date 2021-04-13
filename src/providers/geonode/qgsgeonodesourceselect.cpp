@@ -189,6 +189,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
         QString wmsURL = layer.wmsURL;
         QString wfsURL = layer.wfsURL;
+        QString wcsURL = layer.wcsURL;
         QString xyzURL = layer.xyzURL;
 
         if ( !wmsURL.isEmpty() )
@@ -245,6 +246,36 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
         {
           QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have WFS url." ).arg( layer.title ), 3 );
         }
+
+        if ( !wcsURL.isEmpty() )
+        {
+          QStandardItem *titleItem = new QStandardItem( layer.title );
+          QStandardItem *nameItem = nullptr;
+          if ( !layer.name.isEmpty() )
+          {
+            nameItem = new QStandardItem( layer.name );
+          }
+          else
+          {
+            nameItem = new QStandardItem( layer.title );
+          }
+          QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
+          QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WCS" ) );
+
+          QString typeName = layer.typeName;
+
+          titleItem->setData( uuid,  Qt::UserRole + 1 );
+          titleItem->setData( wcsURL,  Qt::UserRole + 2 );
+          titleItem->setData( typeName,  Qt::UserRole + 3 );
+
+          typedef QList< QStandardItem * > StandardItemList;
+          mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have WCS url." ).arg( layer.title ), 3 );
+        }
+
         if ( !xyzURL.isEmpty() )
         {
           QStandardItem *titleItem = new QStandardItem( layer.title );
@@ -413,6 +444,18 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
 
       QgsDebugMsg( "Add WMS from GeoNode : " + uri.encodedUri() );
       emit addRasterLayer( uri.encodedUri(), layerName, QStringLiteral( "wms" ) );
+    }
+    else if ( webServiceType == QLatin1String( "WCS" ) )
+    {
+      QgsDataSourceUri uri;
+      QString typeName = mModel->item( row, 0 )->data( Qt::UserRole + 3 ).toString();
+      uri.setParam( QStringLiteral( "url" ), serviceURL );
+
+      connection.addWcsConnectionSettings( uri );
+      uri.setParam( QStringLiteral( "identifier" ), typeName );
+
+      QgsDebugMsg( "Add WCS from GeoNode : " + uri.encodedUri() );
+      emit addRasterLayer( uri.encodedUri(), layerName, QStringLiteral( "wcs" ) );
     }
     else if ( webServiceType == QLatin1String( "WFS" ) )
     {
