@@ -33,6 +33,9 @@
 #include <geos_c.h>
 #include <ogr_api.h>
 
+#define xstr(x) str(x)
+#define str(x) #x
+
 // Version constants
 //
 
@@ -306,7 +309,12 @@ QString Qgis::geosVersion()
 
 int Qgis::geosVersionInt()
 {
-  return QStringLiteral( "%1%2%3" ).arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) ).arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) ).arg( GEOS_VERSION_PATCH, 2, 10, QChar( '0' ) ).toInt();
+  static const int version = QStringLiteral( "%1%2%3" )
+                             .arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) )
+                             .arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) )
+                             .arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt()
+                             ;
+  return version;
 }
 
 int Qgis::geosVersionMajor()
@@ -321,7 +329,8 @@ int Qgis::geosVersionMinor()
 
 int Qgis::geosVersionPatch()
 {
-  return GEOS_VERSION_PATCH;
+  static const int version = atoi( xstr( GEOS_VERSION_PATCH ) );
+  return version;
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
