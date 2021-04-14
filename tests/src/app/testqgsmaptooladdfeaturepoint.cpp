@@ -45,6 +45,7 @@ class TestQgsMapToolAddFeaturePoint : public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
+    void testPointM();
     void testPointZ();
     void testTopologicalEditingZ();
 
@@ -55,6 +56,7 @@ class TestQgsMapToolAddFeaturePoint : public QObject
     QgsVectorLayer *mLayerPointZSnap = nullptr;
     QgsVectorLayer *mLayerLineZSnap = nullptr;
     QgsVectorLayer *mLayerPointZ = nullptr;
+    QgsVectorLayer *mLayerPointM = nullptr;
 };
 
 TestQgsMapToolAddFeaturePoint::TestQgsMapToolAddFeaturePoint() = default;
@@ -98,6 +100,17 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   mLayerPointZ->addFeature( pointFZ );
   QCOMPARE( mLayerPointZ->featureCount(), ( long )1 );
 
+  mLayerPointM = new QgsVectorLayer( QStringLiteral( "PointM?crs=EPSG:27700" ), QStringLiteral( "layer point M" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPointM->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointM );
+  mLayerPointM->startEditing();
+  QgsFeature pointFM;
+  QString pointWktM = "PointM(7 7 4)";
+  pointFM.setGeometry( QgsGeometry::fromWkt( pointWktM ) );
+
+  mLayerPointM->addFeature( pointFM );
+  QCOMPARE( mLayerPointM->featureCount(), ( long )1 );
+
   // make layer for snapping
   mLayerPointZSnap = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:27700" ), QStringLiteral( "Snap point" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPointZSnap->isValid() );
@@ -130,10 +143,11 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerPointZ << mLayerPointZSnap << mLayerLineZSnap );
-  mCanvas->setCurrentLayer( mLayerPointZ );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerPointZ << mLayerPointM << mLayerPointZSnap << mLayerLineZSnap );
+  mCanvas->setCurrentLayer( mLayerPointM );
 
   mCanvas->snappingUtils()->locatorForLayer( mLayerPointZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPointM )->init();
   mCanvas->snappingUtils()->locatorForLayer( mLayerPointZSnap )->init();
   mCanvas->snappingUtils()->locatorForLayer( mLayerLineZSnap )->init();
 
@@ -153,9 +167,45 @@ void TestQgsMapToolAddFeaturePoint::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
+void TestQgsMapToolAddFeaturePoint::testPointM()
+{
+  mCanvas->setCurrentLayer( mLayerPointM );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  // test with default M value = 333
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( mLayerPointM->featureCount(), ( long )2 );
+
+  QString wkt = "PointM (4 0 333)";
+  QCOMPARE( mLayerPointM->getFeature( newFid ).geometry().asWkt(), wkt );
+
+  mLayerPointM->undoStack()->undo();
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  newFid = utils.newFeatureId( oldFids );
+
+  wkt = "PointM (6 6 333)";
+  QCOMPARE( mLayerPointM->getFeature( newFid ).geometry().asWkt(), wkt );
+
+  mLayerPointM->undoStack()->undo();
+  mLayerPointM->rollBack();
+
+  mCanvas->setCurrentLayer( mLayerPointZ );
+}
+
+
 void TestQgsMapToolAddFeaturePoint::testPointZ()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+  mCanvas->setCurrentLayer( mLayerPointZ );
 
   // test with default Z value = 333
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
@@ -215,5 +265,6 @@ void TestQgsMapToolAddFeaturePoint::testTopologicalEditingZ()
   mLayerLineZSnap->undoStack()->undo();
 
 }
+
 QGSTEST_MAIN( TestQgsMapToolAddFeaturePoint )
 #include "testqgsmaptooladdfeaturepoint.moc"
