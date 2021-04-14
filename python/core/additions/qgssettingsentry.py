@@ -38,7 +38,7 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             :param defaultValue: argument specifies the default value for the settings entry.
             :param description: argument specifies a description for the settings entry.
 
-            .. note::  This constructor should not be used. Use PyQgsSettingsEntryEnum 
+            .. note::  This constructor should not be used. Use PyQgsSettingsEntryEnum
                        or PyQgsSettingsEntryFlag instead.
         """
 
