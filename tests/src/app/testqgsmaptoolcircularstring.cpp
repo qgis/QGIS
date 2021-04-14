@@ -218,8 +218,6 @@ void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
   QCOMPARE( mLayer->featureCount(), ( long )1 );
   QgsFeature f = mLayer->getFeature( newFid );
 
-  qDebug() << f.geometry().asWkt();
-
   QString wkt = "CompoundCurveZ ((2 1 333, 2 0 333),(2 0 333, 0 0 333),CircularStringZ (0 0 333, 1 1 333, 0 2 333),(0 2 333, 2 2 333),(2 2 333, 4 2 333))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
