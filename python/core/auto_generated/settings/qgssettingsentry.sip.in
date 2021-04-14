@@ -77,6 +77,13 @@ Get settings entry key.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    QString key( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Get settings entry key.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     bool hasDynamicKey() const;
 %Docstring
 Returns true if a part of the settings key is built dynamically.
@@ -89,11 +96,25 @@ Returns true if the settings is contained in the underlying QSettings.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    bool exists( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Returns true if the settings is contained in the underlying QSettings.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     void remove( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Removes the settings from the underlying QSettings.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    void remove( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Removes the settings from the underlying QSettings.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     QgsSettings::Section section() const;
@@ -109,11 +130,26 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Get settings value.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QVariant valueAsVariant( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     QVariant defaultValueAsVariant() const;
@@ -162,7 +198,6 @@ The ``default`` value argument specifies the default value for the settings entr
 The ``description`` argument specifies a description for the settings entry.
 %End
 
-
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
@@ -171,11 +206,26 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    bool setValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     QVariant value( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Get settings value.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QVariant value( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     QVariant defaultValue() const;
@@ -226,11 +276,26 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    bool setValue( const QString &value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     QString value( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Get settings value.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QString value( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     QString defaultValue() const;
@@ -306,11 +371,26 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    bool setValue( const QStringList &value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     QStringList value( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Get settings value.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    QStringList value( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     QStringList defaultValue() const;
@@ -362,11 +442,26 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    bool setValue( bool value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     bool value( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Get settings value.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    bool value( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     bool defaultValue() const;
@@ -418,11 +513,26 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    bool setValue( qlonglong value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     qlonglong value( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Get settings value.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    qlonglong value( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     qlonglong defaultValue() const;
@@ -498,11 +608,26 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+    bool setValue( double value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
     double value( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Get settings value.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    double value( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     double defaultValue() const;

@@ -113,6 +113,13 @@ class CORE_EXPORT QgsSettingsEntryBase
     QString key( const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Get settings entry key.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    QString key( const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Returns true if a part of the settings key is built dynamically.
      */
     bool hasDynamicKey() const;
@@ -125,11 +132,25 @@ class CORE_EXPORT QgsSettingsEntryBase
     bool exists( const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Returns true if the settings is contained in the underlying QSettings.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    bool exists( const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Removes the settings from the underlying QSettings.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
     void remove( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Removes the settings from the underlying QSettings.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    void remove( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Get settings section. The settings section of the parent group is returned if available.
@@ -145,11 +166,26 @@ class CORE_EXPORT QgsSettingsEntryBase
     virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
     QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    QVariant valueAsVariant( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Get settings default value.
@@ -217,7 +253,6 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString() );
 
-
     /**
      * Set settings value.
      *
@@ -227,11 +262,26 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
     bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    bool setValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
     QVariant value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    QVariant value( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Get settings default value.
@@ -298,11 +348,26 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
     bool setValue( const QString &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    bool setValue( const QString &value, const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
     QString value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    QString value( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Get settings default value.
@@ -394,11 +459,26 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
     bool setValue( const QStringList &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    bool setValue( const QStringList &value, const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
     QStringList value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    QStringList value( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Get settings default value.
@@ -461,11 +541,26 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
     bool setValue( bool value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    bool setValue( bool value, const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
     bool value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    bool value( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Get settings default value.
@@ -532,11 +627,26 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
     bool setValue( qlonglong value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    bool setValue( qlonglong value, const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
     qlonglong value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    qlonglong value( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Get settings default value.
@@ -635,11 +745,26 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
     bool setValue( double value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    bool setValue( double value, const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
     double value( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    double value( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Get settings default value.
@@ -743,12 +868,26 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
      */
     T value( const QString &dynamicKeyPart = QString() ) const
     {
+      QStringList dynamicKeyPartList;
+      if ( !dynamicKeyPart.isEmpty() )
+        dynamicKeyPartList.append( dynamicKeyPart );
+
+      return value( dynamicKeyPartList );
+    }
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
+    T value( const QStringList &dynamicKeyPartList ) const
+    {
       if ( settingsType() == QgsSettingsEntryBase::Enum )
-        return QgsSettings().enumValue( key( dynamicKeyPart ),
+        return QgsSettings().enumValue( key( dynamicKeyPartList ),
                                         defaultValue(),
                                         section() );
       else
-        return QgsSettings().flagValue( key( dynamicKeyPart ),
+        return QgsSettings().flagValue( key( dynamicKeyPartList ),
                                         defaultValue(),
                                         section() );
     }
@@ -783,9 +922,19 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
     //! \copydoc QgsSettingsEntryBase::setValue
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const
     {
+      QStringList dynamicKeyPartList;
+      if ( !dynamicKeyPart.isEmpty() )
+        dynamicKeyPartList.append( dynamicKeyPart );
+
+      return setValue( value, dynamicKeyPartList );
+    }
+
+    //! \copydoc QgsSettingsEntryBase::setValue
+    bool setValue( const T &value, const QStringList &dynamicKeyPartList ) const
+    {
       if ( !mMetaEnum.isValid() )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( key() ) );
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( key( dynamicKeyPartList ) ) );
         return false;
       }
 
@@ -798,7 +947,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
           return false;
         }
 
-        return QgsSettingsEntryBase::setVariantValue( enumKey, dynamicKeyPart );
+        return QgsSettingsEntryBase::setVariantValue( enumKey, dynamicKeyPartList );
       }
       else
       {
@@ -808,7 +957,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
           QgsDebugMsg( QStringLiteral( "Invalid flag value '%1'." ).arg( value ) );
           return false;
         }
-        return QgsSettingsEntryBase::setVariantValue( flagKeys, dynamicKeyPart );
+        return QgsSettingsEntryBase::setVariantValue( flagKeys, dynamicKeyPartList );
       }
     }
 

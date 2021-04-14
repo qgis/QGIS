@@ -30,7 +30,7 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     """
 
     def __init__(self, key, pluginName, defaultValue, description=str()):
-        """ Constructor for QgsSettingsEntryEnum.
+        """ Constructor for _PyQgsSettingsEntryEnumFlag.
 
             :param self: the QgsSettingsEntryEnum object
             :param key: argument specifies the final part of the settings key.
@@ -38,7 +38,8 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             :param defaultValue: argument specifies the default value for the settings entry.
             :param description: argument specifies a description for the settings entry.
 
-            .. note::  The enum needs to be declared with Q_ENUM.
+            .. note::  This constructor should not be used. Use PyQgsSettingsEntryEnum 
+                       or PyQgsSettingsEntryFlag instead.
         """
 
         defaultValueStr = str()
@@ -57,18 +58,23 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     def value(self, dynamicKeyPart=str()):
         """ Get settings value.
 
-            :param self: the QgsSettingsEntryEnum object
+            :param self: the _PyQgsSettingsEntryEnumFlag object
             :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
 
-        return QgsSettings().enumValue(self.key(dynamicKeyPart),
-                                       self.defaultValue(),
-                                       self.section())
+        if self.settingsType() is self.Enum:
+            return QgsSettings().enumValue(self.key(dynamicKeyPart),
+                                           self.defaultValue(),
+                                           self.section())
+        else:
+            return QgsSettings().flagValue(self.key(dynamicKeyPart),
+                                           self.defaultValue(),
+                                           self.section())
 
     def defaultValue(self):
         """ Get settings default value.
 
-            :param self: the QgsSettingsEntryEnum object
+            :param self: the _PyQgsSettingsEntryEnumFlag object
         """
 
         if self.__metaEnum is None or not self.__metaEnum.isValid():
@@ -91,7 +97,7 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     def setValue(self, value, dynamicKeyPart=str()):
         """ Set settings value.
 
-            :param self: the QgsSettingsEntryEnum object
+            :param self: the _PyQgsSettingsEntryEnumFlag object
             :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
 
@@ -132,17 +138,6 @@ class PyQgsSettingsEntryEnum(_PyQgsSettingsEntryEnumFlag):
 
         super().__init__(key, pluginName, defaultValue, description)
 
-    def value(self, dynamicKeyPart=str()):
-        """ Get settings value.
-
-            :param self: the QgsSettingsEntryEnum object
-            :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
-        """
-
-        return QgsSettings().enumValue(self.key(dynamicKeyPart),
-                                       self.defaultValue(),
-                                       self.section())
-
     def settingsType(self):
         """ Get the settings entry type.
 
@@ -172,17 +167,6 @@ class PyQgsSettingsEntryFlag(_PyQgsSettingsEntryEnumFlag):
         """
 
         super().__init__(key, pluginName, defaultValue, description)
-
-    def value(self, dynamicKeyPart=str()):
-        """ Get settings value.
-
-            :param self: the QgsSettingsEntryFlag object
-            :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
-        """
-
-        return QgsSettings().flagValue(self.key(dynamicKeyPart),
-                                       self.defaultValue(),
-                                       self.section())
 
     def settingsType(self):
         """ Get the settings entry type.

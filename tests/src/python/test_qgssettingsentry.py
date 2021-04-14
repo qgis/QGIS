@@ -82,11 +82,11 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryVariant.description(), description)
 
     def test_settings_entry_base_dynamic_key(self):
-        settingsKeyDynamic = "settingsEntryBase/%/variantValue"
+        settingsKeyDynamic = "settingsEntryBase/%1/variantValue"
         dynamicKeyPart1 = "first"
         dynamicKeyPart2 = "second"
-        settingsKeyComplete1 = self.pluginName + "/" + settingsKeyDynamic.replace("%", dynamicKeyPart1)
-        settingsKeyComplete2 = self.pluginName + "/" + settingsKeyDynamic.replace("%", dynamicKeyPart2)
+        settingsKeyComplete1 = self.pluginName + "/" + settingsKeyDynamic.replace("%1", dynamicKeyPart1)
+        settingsKeyComplete2 = self.pluginName + "/" + settingsKeyDynamic.replace("%1", dynamicKeyPart2)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete1, QgsSettings.Plugins)
@@ -106,6 +106,27 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(QgsSettings().value(settingsKeyComplete2, defaultValue, section=QgsSettings.Plugins), 44)
         self.assertEqual(settingsEntryVariantDynamic.value(dynamicKeyPart1), 43)
         self.assertEqual(settingsEntryVariantDynamic.value(dynamicKeyPart2), 44)
+
+    def test_settings_entry_base_dynamic_multiple_keys(self):
+        settingsKeyDynamic = "settingsEntryBase/%1/anotherPart_%2/variantValue"
+        dynamicKeyPart1 = "first"
+        dynamicKeyPart2 = "second"
+        settingsKeyComplete = self.pluginName + "/" + settingsKeyDynamic.replace("%1", dynamicKeyPart1)
+        settingsKeyComplete = settingsKeyComplete.replace("%2", dynamicKeyPart2)
+
+        # Make sure settings does not exists
+        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+
+        defaultValue = 42
+        settingsEntryVariantDynamic = QgsSettingsEntryVariant(settingsKeyDynamic, self.pluginName, defaultValue, "Variant value for dynamic multiple keys functionality test")
+
+        # Check key
+        self.assertEqual(settingsEntryVariantDynamic.key([dynamicKeyPart1, dynamicKeyPart2]), settingsKeyComplete)
+
+        # Get set values
+        settingsEntryVariantDynamic.setValue(43, [dynamicKeyPart1, dynamicKeyPart2])
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), 43)
+        self.assertEqual(settingsEntryVariantDynamic.value([dynamicKeyPart1, dynamicKeyPart2]), 43)
 
     def test_settings_entry_variant(self):
         settingsKey = "settingsEntryVariant/variantValue"
