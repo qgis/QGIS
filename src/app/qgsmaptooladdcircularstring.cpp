@@ -144,8 +144,8 @@ void QgsMapToolAddCircularString::activate()
         {
           //mParentTool->captureCurve() is in layer coordinates, but we need map coordinates
           QgsPoint endPointLayerCoord = curve->endPoint();
-          QgsPointXY mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPointXY( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
-          mPoints.append( QgsPoint( mapPoint ) );
+          QgsPoint mapPoint = toMapCoordinates( mCanvas->currentLayer(),  endPointLayerCoord );
+          mPoints.append( mapPoint );
           if ( !mTempRubberBand )
           {
             mTempRubberBand = createGeometryRubberBand( mLayerType, true );
