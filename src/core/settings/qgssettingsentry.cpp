@@ -44,7 +44,7 @@ QgsSettingsEntryBase::~QgsSettingsEntryBase()
 QString QgsSettingsEntryBase::key( const QString &dynamicKeyPart ) const
 {
   QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isEmpty() )
+  if ( !dynamicKeyPart.isNull() )
     dynamicKeyPartList.append( dynamicKeyPart );
 
   return key( dynamicKeyPartList );
@@ -77,7 +77,7 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
 
     for ( int i = 0; i < dynamicKeyPartList.size(); i++ )
     {
-      completeKey.replace( QLatin1String( "%%1" ).arg( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
+      completeKey.replace( QString( "%%1" ).arg( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
     }
   }
   return completeKey;
@@ -117,7 +117,7 @@ QgsSettings::Section QgsSettingsEntryBase::section() const
 bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString &dynamicKeyPart ) const
 {
   QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isEmpty() )
+  if ( !dynamicKeyPart.isNull() )
     dynamicKeyPartList.append( dynamicKeyPart );
 
   return setVariantValue( value, dynamicKeyPartList );
@@ -131,20 +131,25 @@ bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString
   return true;
 }
 
-QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart ) const
+QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
   QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isEmpty() )
+  if ( !dynamicKeyPart.isNull() )
     dynamicKeyPartList.append( dynamicKeyPart );
 
-  return valueAsVariant( dynamicKeyPartList );
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride );
 }
 
-QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList ) const
+QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
-  return QgsSettings().value( key( dynamicKeyPartList ),
-                              mDefaultValue,
-                              mSection );
+  if ( useDefaultValueOverride )
+    return QgsSettings().value( key( dynamicKeyPartList ),
+                                defaultValueOverride,
+                                mSection );
+  else
+    return QgsSettings().value( key( dynamicKeyPartList ),
+                                mDefaultValue,
+                                mSection );
 }
 
 QVariant QgsSettingsEntryBase::defaultValueAsVariant() const
@@ -184,14 +189,14 @@ bool QgsSettingsEntryVariant::setValue( const QVariant &value, const QStringList
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
 
-QVariant QgsSettingsEntryVariant::value( const QString &dynamicKeyPart ) const
+QVariant QgsSettingsEntryVariant::value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPart );
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride );
 }
 
-QVariant QgsSettingsEntryVariant::value( const QStringList &dynamicKeyPartList ) const
+QVariant QgsSettingsEntryVariant::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPartList );
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride );
 }
 
 QVariant QgsSettingsEntryVariant::defaultValue() const
@@ -227,7 +232,7 @@ QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, const QStrin
 bool QgsSettingsEntryString::setValue( const QString &value, const QString &dynamicKeyPart ) const
 {
   QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isEmpty() )
+  if ( !dynamicKeyPart.isNull() )
     dynamicKeyPartList.append( dynamicKeyPart );
 
   return setValue( value, dynamicKeyPartList );
@@ -257,14 +262,14 @@ bool QgsSettingsEntryString::setValue( const QString &value, const QStringList &
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
 
-QString QgsSettingsEntryString::value( const QString &dynamicKeyPart ) const
+QString QgsSettingsEntryString::value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QString &defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPart ).toString();
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).toString();
 }
 
-QString QgsSettingsEntryString::value( const QStringList &dynamicKeyPartList ) const
+QString QgsSettingsEntryString::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QString &defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPartList ).toString();
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ).toString();
 }
 
 QString QgsSettingsEntryString::defaultValue() const
@@ -323,14 +328,14 @@ bool QgsSettingsEntryStringList::setValue( const QStringList &value, const QStri
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
 
-QStringList QgsSettingsEntryStringList::value( const QString &dynamicKeyPart ) const
+QStringList QgsSettingsEntryStringList::value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QStringList &defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPart ).toStringList();
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).toStringList();
 }
 
-QStringList QgsSettingsEntryStringList::value( const QStringList &dynamicKeyPartList ) const
+QStringList QgsSettingsEntryStringList::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QStringList &defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPartList ).toStringList();
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ).toStringList();
 }
 
 QStringList QgsSettingsEntryStringList::defaultValue() const
@@ -369,14 +374,14 @@ bool QgsSettingsEntryBool::setValue( bool value, const QStringList &dynamicKeyPa
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
 
-bool QgsSettingsEntryBool::value( const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryBool::value( const QString &dynamicKeyPart, bool useDefaultValueOverride, bool defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPart ).toBool();
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).toBool();
 }
 
-bool QgsSettingsEntryBool::value( const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryBool::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, bool defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPartList ).toBool();
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ).toBool();
 }
 
 bool QgsSettingsEntryBool::defaultValue() const
@@ -412,7 +417,7 @@ QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, const QStr
 bool QgsSettingsEntryInteger::setValue( qlonglong value, const QString &dynamicKeyPart ) const
 {
   QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isEmpty() )
+  if ( !dynamicKeyPart.isNull() )
     dynamicKeyPartList.append( dynamicKeyPart );
 
   return setValue( value, dynamicKeyPartList );
@@ -441,14 +446,14 @@ bool QgsSettingsEntryInteger::setValue( qlonglong value, const QStringList &dyna
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
 
-qlonglong QgsSettingsEntryInteger::value( const QString &dynamicKeyPart ) const
+qlonglong QgsSettingsEntryInteger::value( const QString &dynamicKeyPart, bool useDefaultValueOverride, qlonglong defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPart ).toLongLong();
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).toLongLong();
 }
 
-qlonglong QgsSettingsEntryInteger::value( const QStringList &dynamicKeyPartList ) const
+qlonglong QgsSettingsEntryInteger::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, qlonglong defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPartList ).toLongLong();
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ).toLongLong();
 }
 
 qlonglong QgsSettingsEntryInteger::defaultValue() const
@@ -506,7 +511,7 @@ QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, const QStrin
 bool QgsSettingsEntryDouble::setValue( double value, const QString &dynamicKeyPart ) const
 {
   QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isEmpty() )
+  if ( !dynamicKeyPart.isNull() )
     dynamicKeyPartList.append( dynamicKeyPart );
 
   return setValue( value, dynamicKeyPartList );
@@ -535,14 +540,14 @@ bool QgsSettingsEntryDouble::setValue( double value, const QStringList &dynamicK
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
 
-double QgsSettingsEntryDouble::value( const QString &dynamicKeyPart ) const
+double QgsSettingsEntryDouble::value( const QString &dynamicKeyPart, bool useDefaultValueOverride, double defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPart ).toDouble();
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).toDouble();
 }
 
-double QgsSettingsEntryDouble::value( const QStringList &dynamicKeyPartList ) const
+double QgsSettingsEntryDouble::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, double defaultValueOverride ) const
 {
-  return valueAsVariant( dynamicKeyPartList ).toDouble();
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ).toDouble();
 }
 
 double QgsSettingsEntryDouble::defaultValue() const

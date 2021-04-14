@@ -177,15 +177,19 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
+    QVariant valueAsVariant( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QVariant &defaultValueOverride = QVariant() ) const;
 
     /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    QVariant valueAsVariant( const QStringList &dynamicKeyPartList ) const;
+    QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QVariant &defaultValueOverride = QVariant() ) const;
 
     /**
      * Get settings default value.
@@ -273,15 +277,19 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    QVariant value( const QString &dynamicKeyPart = QString() ) const;
+    QVariant value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QVariant &defaultValueOverride = QVariant() ) const;
 
     /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    QVariant value( const QStringList &dynamicKeyPartList ) const;
+    QVariant value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QVariant &defaultValueOverride = QVariant() ) const;
 
     /**
      * Get settings default value.
@@ -359,15 +367,19 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    QString value( const QString &dynamicKeyPart = QString() ) const;
+    QString value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QString &defaultValueOverride = QString() ) const;
 
     /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    QString value( const QStringList &dynamicKeyPartList ) const;
+    QString value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QString &defaultValueOverride = QString() ) const;
 
     /**
      * Get settings default value.
@@ -470,15 +482,19 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    QStringList value( const QString &dynamicKeyPart = QString() ) const;
+    QStringList value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QStringList &defaultValueOverride = QStringList() ) const;
 
     /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    QStringList value( const QStringList &dynamicKeyPartList ) const;
+    QStringList value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QStringList &defaultValueOverride = QStringList() ) const;
 
     /**
      * Get settings default value.
@@ -552,15 +568,19 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    bool value( const QString &dynamicKeyPart = QString() ) const;
+    bool value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, bool defaultValueOverride = false ) const;
 
     /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    bool value( const QStringList &dynamicKeyPartList ) const;
+    bool value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, bool defaultValueOverride = false ) const;
 
     /**
      * Get settings default value.
@@ -638,15 +658,19 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    qlonglong value( const QString &dynamicKeyPart = QString() ) const;
+    qlonglong value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, qlonglong defaultValueOverride = 0 ) const;
 
     /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    qlonglong value( const QStringList &dynamicKeyPartList ) const;
+    qlonglong value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, qlonglong defaultValueOverride = 0 ) const;
 
     /**
      * Get settings default value.
@@ -756,15 +780,19 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    double value( const QString &dynamicKeyPart = QString() ) const;
+    double value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, double defaultValueOverride = 0.0 ) const;
 
     /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    double value( const QStringList &dynamicKeyPartList ) const;
+    double value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, double defaultValueOverride = 0.0 ) const;
 
     /**
      * Get settings default value.
@@ -865,30 +893,38 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
      * Get settings value.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    T value( const QString &dynamicKeyPart = QString() ) const
+    T value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const T &defaultValueOverride = T() ) const
     {
       QStringList dynamicKeyPartList;
       if ( !dynamicKeyPart.isEmpty() )
         dynamicKeyPartList.append( dynamicKeyPart );
 
-      return value( dynamicKeyPartList );
+      return value( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride );
     }
 
     /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
-    T value( const QStringList &dynamicKeyPartList ) const
+    T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const T &defaultValueOverride = T() ) const
     {
+      T defaultVal = defaultValue();
+      if ( useDefaultValueOverride )
+        defaultVal = defaultValueOverride;
+
       if ( settingsType() == QgsSettingsEntryBase::Enum )
         return QgsSettings().enumValue( key( dynamicKeyPartList ),
-                                        defaultValue(),
+                                        defaultVal,
                                         section() );
       else
         return QgsSettings().flagValue( key( dynamicKeyPartList ),
-                                        defaultValue(),
+                                        defaultVal,
                                         section() );
     }
 

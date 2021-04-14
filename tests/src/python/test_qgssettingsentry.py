@@ -81,6 +81,27 @@ class TestQgsSettingsEntry(unittest.TestCase):
         # Description
         self.assertEqual(settingsEntryVariant.description(), description)
 
+    def test_settings_entry_base_default_value_override(self):
+        settingsKey = "settingsEntryBase/defaultValueOverride/variantValue"
+        settingsKeyComplete = self.pluginName + "/" + settingsKey
+
+        # Make sure settings does not exists
+        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+
+        defaultValue = 42
+        defaultValueOverride = 123
+        description = "Variant value for default override functionality test"
+        settingsEntryVariant = QgsSettingsEntryVariant(settingsKey, self.pluginName, defaultValue, description)
+
+        # Normal default value
+        self.assertEqual(settingsEntryVariant.value(), defaultValue)
+
+        # Normal default value
+        self.assertEqual(settingsEntryVariant.value(None, False, defaultValueOverride), defaultValue)
+
+        # Overridden default value
+        self.assertEqual(settingsEntryVariant.value(None, True, defaultValueOverride), defaultValueOverride)
+
     def test_settings_entry_base_dynamic_key(self):
         settingsKeyDynamic = "settingsEntryBase/%1/variantValue"
         dynamicKeyPart1 = "first"
