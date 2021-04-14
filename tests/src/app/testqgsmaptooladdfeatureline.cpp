@@ -69,6 +69,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testTracingWithConvertToCurves();
     void testTracingWithConvertToCurvesCustomTolerance();
     void testZ();
+    void testM();
     void testZMSnapping();
     void testTopologicalEditingZ();
     void testCloseLine();
@@ -89,6 +90,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLineCurved = nullptr;
     QgsVectorLayer *mLayerLineCurvedOffset = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
+    QgsVectorLayer *mLayerLineM = nullptr;
     QgsVectorLayer *mLayerPointZM = nullptr;
     QgsVectorLayer *mLayerTopoZ = nullptr;
     QgsVectorLayer *mLayerLine2D = nullptr;
@@ -177,6 +179,11 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QVERIFY( mLayerLineZ->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZ );
 
+  mLayerLineM = new QgsVectorLayer( QStringLiteral( "LineStringM?crs=EPSG:27700" ), QStringLiteral( "layer line M" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineM->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineM );
+  mLayerLineM->startEditing();
+
   QgsPolyline line2;
   line2 << QgsPoint( 1, 1, 0 ) << QgsPoint( 2, 1, 1 ) << QgsPoint( 3, 2, 2 ) << QgsPoint( 1, 2, 3 ) << QgsPoint( 1, 1, 0 );
   QgsFeature lineF2;
@@ -243,7 +250,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerSelfSnapLine->startEditing();
 
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLineM << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -600,6 +607,47 @@ void TestQgsMapToolAddFeatureLine::testZ()
 
   wkt = "LineStringZ (4 0 222, 5 0 222, 5 1 222, 4 1 222)";
   QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
+
+  mCanvas->setCurrentLayer( mLayerLine );
+}
+
+void TestQgsMapToolAddFeatureLine::testM()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLineM );
+
+  // test with default M value = 333
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 4, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineStringM (4 0 333, 5 0 333, 5 1 333, 4 1 333)";
+  QCOMPARE( mLayerLineM->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
+
+  // test with default M value = 222
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 4, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::RightButton );
+  newFid = utils.newFeatureId( oldFids );
+
+  wkt = "LineStringM (4 0 222, 5 0 222, 5 1 222, 4 1 222)";
+  QCOMPARE( mLayerLineM->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
 
