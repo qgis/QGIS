@@ -22,6 +22,7 @@
 #include "qgscredentials.h"
 
 #include <QAuthenticator>
+#include <QDesktopServices>
 
 void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
@@ -74,4 +75,28 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
 
   auth->setUser( username );
   auth->setPassword( password );
+}
+
+void QgsAppAuthRequestHandler::handleAuthRequestOpenBrowser( const QUrl &url )
+{
+  QDesktopServices::openUrl( url );
+}
+
+void QgsAppAuthRequestHandler::handleAuthRequestCloseBrowser()
+{
+  // Bring focus back to QGIS app
+  if ( qApp )
+  {
+    const QList<QWidget *> topWidgets = QgsApplication::topLevelWidgets();
+    for ( QWidget *topWidget : topWidgets )
+    {
+      if ( topWidget->objectName() == QLatin1String( "MainWindow" ) )
+      {
+        topWidget->raise();
+        topWidget->activateWindow();
+        topWidget->show();
+        break;
+      }
+    }
+  }
 }
