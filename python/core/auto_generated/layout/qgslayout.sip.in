@@ -614,10 +614,7 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
-    struct Settings
-    {
-      const QgsSettingsEntryStringList searchPathForTemplates;
-    };
+    const QgsSettingsEntryStringList settingsSearchPathForTemplates;
 
   public slots:
 

@@ -122,7 +122,7 @@ void TestQgsSettingsEntry::enumValue()
 
   // assign to inexisting value
   {
-    bool success = settingsEntryEnum.setValue( -1 );
+    bool success = settingsEntryEnum.setValue( static_cast<QgsUnitTypes::LayoutUnit>( -1 ) );
     QCOMPARE( success, false );
 
     // Current value should not have changed

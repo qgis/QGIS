@@ -658,15 +658,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
-    /**
-     * Contains QgsLayout settings
-     * \since QGIS 3.20
-     */
-    struct Settings
-    {
-      //! Settings entry search path for templates
-      static const inline QgsSettingsEntryStringList searchPathForTemplates = QgsSettingsEntryStringList( QStringLiteral( "Layout/searchPathsForTemplates" ), QgsSettings::Core, QStringList(), QObject::tr( "Search path for templates" ) );
-    };
+    //! Settings entry search path for templates
+    static const inline QgsSettingsEntryStringList settingsSearchPathForTemplates = QgsSettingsEntryStringList( QStringLiteral( "Layout/searchPathsForTemplates" ), QgsSettings::Core, QStringList(), QObject::tr( "Search path for templates" ) );
 
   public slots:
 

@@ -21,11 +21,11 @@
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : mSettingsEntries()
 {
-  mSettingsEntries.append( &QgsLayout::Settings::searchPathForTemplates );
+  mSettingsEntries.append( &QgsLayout::settingsSearchPathForTemplates );
 
-  mSettingsEntries.append( &QgsLocator::Settings::locatorFilterEnabled );
-  mSettingsEntries.append( &QgsLocator::Settings::locatorFilterDefault );
-  mSettingsEntries.append( &QgsLocator::Settings::locatorFilterPrefix );
+  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterEnabled );
+  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterDefault );
+  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterPrefix );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

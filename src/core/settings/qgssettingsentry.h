@@ -139,9 +139,10 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Set settings value.
      *
+     * The \a value to set.
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
-    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
+    virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings value.
@@ -217,8 +218,13 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
                              const QString &description = QString() );
 
 
-    //! \copydoc QgsSettingsEntryBase::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings value.
@@ -280,11 +286,16 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
      */
     QgsSettingsEntryString( const QString &key,
                             const QString &pluginName,
-                            const QVariant &defaultValue = QVariant(),
+                            const QString &defaultValue = QString(),
                             const QString &description = QString() );
 
-    //! \copydoc QgsSettingsEntryBase::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    bool setValue( const QString &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings value.
@@ -371,11 +382,16 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
      */
     QgsSettingsEntryStringList( const QString &key,
                                 const QString &pluginName,
-                                const QVariant &defaultValue = QVariant(),
+                                const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString() );
 
-    //! \copydoc QgsSettingsEntryBase::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    bool setValue( const QStringList &value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings value.
@@ -433,11 +449,16 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
      */
     QgsSettingsEntryBool( const QString &key,
                           const QString &pluginName,
-                          const QVariant &defaultValue = QVariant(),
+                          bool defaultValue = false,
                           const QString &description = QString() );
 
-    //! \copydoc QgsSettingsEntryBase::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    bool setValue( bool value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings value.
@@ -499,12 +520,16 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
      */
     QgsSettingsEntryInteger( const QString &key,
                              const QString &pluginName,
-                             const QVariant &defaultValue = QVariant(),
+                             qlonglong defaultValue = 0,
                              const QString &description = QString() );
 
-
-    //! \copydoc QgsSettingsEntryBase::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    bool setValue( qlonglong value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings value.
@@ -598,11 +623,16 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
      */
     QgsSettingsEntryDouble( const QString &key,
                             const QString &pluginName,
-                            const QVariant &defaultValue = QVariant(),
+                            double defaultValue,
                             const QString &description = QString() );
 
-    //! \copydoc QgsSettingsEntryBase::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    bool setValue( double value, const QString &dynamicKeyPart = QString() ) const;
 
     /**
      * Get settings value.
@@ -670,11 +700,136 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryEnum
  * \ingroup core
+ * A base class for enum and flag settings entry.
+  * \since QGIS 3.20
+ */
+template <typename T>
+class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryEnumFlagBase.
+     *
+     * The \a key argument specifies the final part of the settings key.
+     * The \a section argument specifies the section.
+     * The \a default value argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     *
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly
+     */
+    QgsSettingsEntryEnumFlagBase( const QString &key,
+                                  QgsSettings::Section section,
+                                  const T &defaultValue,
+                                  const QString &description = QString() )
+      : QgsSettingsEntryBase( key,
+                              section,
+                              QMetaEnum::fromType<T>().isFlag() ?
+                              QVariant( QMetaEnum::fromType<T>().valueToKeys( defaultValue ) ) :
+                              QVariant( QMetaEnum::fromType<T>().valueToKey( defaultValue ) ),
+                              description )
+    {
+      mMetaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( mMetaEnum.isValid() );
+      if ( !mMetaEnum.isValid() )
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( QgsSettingsEntryBase::key() ) );
+    }
+
+    /**
+     * Get settings value.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    T value( const QString &dynamicKeyPart = QString() ) const
+    {
+      if ( settingsType() == QgsSettingsEntryBase::Enum )
+        return QgsSettings().enumValue( key( dynamicKeyPart ),
+                                        defaultValue(),
+                                        section() );
+      else
+        return QgsSettings().flagValue( key( dynamicKeyPart ),
+                                        defaultValue(),
+                                        section() );
+    }
+
+    /**
+     * Get settings default value.
+     */
+    T defaultValue() const
+    {
+      if ( !mMetaEnum.isValid() )
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( key() ) );
+        return T();
+      }
+
+      bool ok = false;
+      T defaultValue;
+      if ( settingsType() == QgsSettingsEntryBase::Enum )
+        defaultValue = static_cast<T>( mMetaEnum.keyToValue( defaultValueAsVariant().toByteArray(), &ok ) );
+      else
+        defaultValue = static_cast<T>( mMetaEnum.keysToValue( defaultValueAsVariant().toByteArray(), &ok ) );
+
+      if ( !ok )
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid enum/flag key/s '%1' for settings key '%2'" ).arg( defaultValueAsVariant().toString(), key() ) );
+        return T();
+      }
+
+      return defaultValue;
+    }
+
+    //! \copydoc QgsSettingsEntryBase::setValue
+    bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const
+    {
+      if ( !mMetaEnum.isValid() )
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( key() ) );
+        return false;
+      }
+
+      if ( settingsType() == QgsSettingsEntryBase::Enum )
+      {
+        const char *enumKey = mMetaEnum.valueToKey( value );
+        if ( enumKey == nullptr )
+        {
+          QgsDebugMsg( QStringLiteral( "Invalid enum value '%1'." ).arg( value ) );
+          return false;
+        }
+
+        return QgsSettingsEntryBase::setVariantValue( enumKey, dynamicKeyPart );
+      }
+      else
+      {
+        QByteArray flagKeys = mMetaEnum.valueToKeys( value );
+        if ( flagKeys.isEmpty() )
+        {
+          QgsDebugMsg( QStringLiteral( "Invalid flag value '%1'." ).arg( value ) );
+          return false;
+        }
+        return QgsSettingsEntryBase::setVariantValue( flagKeys, dynamicKeyPart );
+      }
+    }
+
+  private:
+
+    QMetaEnum mMetaEnum;
+
+};
+#endif
+
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsSettingsEntryEnum
+ * \ingroup core
  * An enum settings entry.
   * \since QGIS 3.20
  */
 template <typename T>
-class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
+class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryEnumFlagBase<T>
 {
   public:
 
@@ -693,83 +848,18 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
                           QgsSettings::Section section,
                           const T &defaultValue,
                           const QString &description = QString() )
-      : QgsSettingsEntryBase( key,
-                              section,
-                              QMetaEnum::fromType<T>().valueToKey( defaultValue ),
-                              description )
+      : QgsSettingsEntryEnumFlagBase<T>( key,
+                                         section,
+                                         defaultValue,
+                                         description )
     {
-      mMetaEnum = QMetaEnum::fromType<T>();
-      Q_ASSERT( mMetaEnum.isValid() );
-      if ( !mMetaEnum.isValid() )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
-      }
-    }
-
-    /**
-     * Get settings value.
-     *
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    T value( const QString &dynamicKeyPart = QString() ) const
-    {
-      return QgsSettings().enumValue( key( dynamicKeyPart ),
-                                      defaultValue(),
-                                      section() );
-    }
-
-    /**
-     * Get settings default value.
-     */
-    T defaultValue() const
-    {
-      if ( !mMetaEnum.isValid() )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
-        return T();
-      }
-
-      QByteArray byteArray = defaultValueAsVariant().toByteArray();
-      bool ok = false;
-      T defaultValue = static_cast<T>( mMetaEnum.keyToValue( byteArray, &ok ) );
-      if ( !ok )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid enum key '%1'." ).arg( defaultValueAsVariant().toString() ) );
-        return T();
-      }
-
-      return defaultValue;
-    }
-
-    //! \copydoc QgsSettingsEntryBase::setValue
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override
-    {
-      if ( !mMetaEnum.isValid() )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
-        return false;
-      }
-
-      const char *enumKey = mMetaEnum.valueToKey( value.toInt() );
-      if ( enumKey == nullptr )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid enum value '%1'." ).arg( value.toInt() ) );
-        return false;
-      }
-
-      return QgsSettingsEntryBase::setValue( enumKey, dynamicKeyPart );
     }
 
     //! \copydoc QgsSettingsEntryBase::settingsType
-    virtual SettingsType settingsType() const override
+    virtual QgsSettingsEntryBase::SettingsType settingsType() const override
     {
       return QgsSettingsEntryBase::Enum;
     }
-
-  private:
-
-    QMetaEnum mMetaEnum;
-
 };
 #endif
 
@@ -783,7 +873,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryBase
   * \since QGIS 3.20
  */
 template <typename T>
-class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryBase
+class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryEnumFlagBase<T>
 {
   public:
 
@@ -802,84 +892,18 @@ class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryBase
                           QgsSettings::Section section,
                           const T &defaultValue,
                           const QString &description = QString() )
-      : QgsSettingsEntryBase( key,
-                              section,
-                              QMetaEnum::fromType<T>().valueToKeys( defaultValue ),
-                              description )
+      : QgsSettingsEntryEnumFlagBase<T>( key,
+                                         section,
+                                         defaultValue,
+                                         description )
     {
-      mMetaEnum = QMetaEnum::fromType<T>();
-      Q_ASSERT( mMetaEnum.isValid() );
-      if ( !mMetaEnum.isValid() )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Flag probably misses Q_ENUM or Q_FLAG declaration." ) );
-      }
-    }
-
-    /**
-     * Get settings value.
-     *
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    T value( const QString &dynamicKeyPart = QString() ) const
-    {
-      return QgsSettings().flagValue( key( dynamicKeyPart ),
-                                      defaultValue(),
-                                      section() );
-    }
-
-    /**
-     * Get settings default value.
-     */
-    T defaultValue() const
-    {
-      if ( !mMetaEnum.isValid() )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
-        return T();
-      }
-
-      QByteArray byteArray = defaultValueAsVariant().toByteArray();
-      bool ok = false;
-      T defaultValue = static_cast<T>( mMetaEnum.keysToValue( byteArray, &ok ) );
-      if ( !ok )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid flag keys '%1'." ).arg( defaultValueAsVariant().toString() ) );
-        return T();
-      }
-
-      return defaultValue;
-    }
-
-    //! \copydoc QgsSettingsEntryBase::setValue
-    bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const
-    {
-      if ( !mMetaEnum.isValid() )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Flag probably misses Q_ENUM or Q_FLAG declaration." ) );
-        return false;
-      }
-
-      QByteArray flagKeys = mMetaEnum.valueToKeys( value );
-      if ( flagKeys.isEmpty() )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid flag value '%1'." ).arg( value ) );
-        return false;
-      }
-
-      QgsSettingsEntryBase::setValue( flagKeys, dynamicKeyPart );
-      return true;
     }
 
     //! \copydoc QgsSettingsEntryBase::settingsType
-    virtual SettingsType settingsType() const override
+    virtual QgsSettingsEntryBase::SettingsType settingsType() const override
     {
       return QgsSettingsEntryBase::Flag;
     }
-
-  private:
-
-    QMetaEnum mMetaEnum;
-
 };
 #endif
 

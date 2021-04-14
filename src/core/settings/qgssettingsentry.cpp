@@ -84,7 +84,7 @@ QgsSettings::Section QgsSettingsEntryBase::section() const
   return mSection;
 }
 
-bool QgsSettingsEntryBase::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString &dynamicKeyPart ) const
 {
   QgsSettings().setValue( key( dynamicKeyPart ),
                           value,
@@ -128,7 +128,7 @@ QgsSettingsEntryVariant::QgsSettingsEntryVariant( const QString &key, const QStr
 
 bool QgsSettingsEntryVariant::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
 {
-  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
+  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
 }
 
 QVariant QgsSettingsEntryVariant::value( const QString &dynamicKeyPart ) const
@@ -156,7 +156,7 @@ QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, QgsSettings:
 {
 }
 
-QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, const QString &pluginName, const QString &defaultValue, const QString &description )
   : QgsSettingsEntryBase( key,
                           pluginName,
                           defaultValue,
@@ -166,37 +166,28 @@ QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, const QStrin
 {
 }
 
-bool QgsSettingsEntryString::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryString::setValue( const QString &value, const QString &dynamicKeyPart ) const
 {
-  if ( value.canConvert<QString>() == false )
-  {
-    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to string for settings with key '%2'" )
-                 .arg( value.toString(),
-                       QgsSettingsEntryBase::key() ) );
-    return false;
-  }
-
-  QString valueString = value.toString();
-  if ( valueString.length() < mMinLength )
+  if ( value.length() < mMinLength )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is shorter than minimum length '%3'." )
                  .arg( QgsSettingsEntryBase::key(),
-                       valueString.length(),
+                       value.length(),
                        mMinLength ) );
     return false;
   }
 
   if ( mMaxLength >= 0
-       && valueString.length() > mMaxLength )
+       && value.length() > mMaxLength )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is longer than maximum length '%3'." )
                  .arg( QgsSettingsEntryBase::key(),
-                       valueString.length(),
+                       value.length(),
                        mMinLength ) );
     return false;
   }
 
-  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
+  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
 }
 
 QString QgsSettingsEntryString::value( const QString &dynamicKeyPart ) const
@@ -242,7 +233,7 @@ QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key, QgsS
 {
 }
 
-QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key, const QString &pluginName, const QStringList &defaultValue, const QString &description )
   : QgsSettingsEntryBase( key,
                           pluginName,
                           defaultValue,
@@ -250,17 +241,9 @@ QgsSettingsEntryStringList::QgsSettingsEntryStringList( const QString &key, cons
 {
 }
 
-bool QgsSettingsEntryStringList::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryStringList::setValue( const QStringList &value, const QString &dynamicKeyPart ) const
 {
-  if ( value.canConvert<QStringList>() == false )
-  {
-    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to string list for settings with key '%2'" )
-                 .arg( value.toString(),
-                       QgsSettingsEntryBase::key() ) );
-    return false;
-  }
-
-  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
+  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
 }
 
 QStringList QgsSettingsEntryStringList::value( const QString &dynamicKeyPart ) const
@@ -286,7 +269,7 @@ QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key, QgsSettings::Sec
 {
 }
 
-QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key, const QString &pluginName, bool defaultValue, const QString &description )
   : QgsSettingsEntryBase( key,
                           pluginName,
                           defaultValue,
@@ -294,17 +277,9 @@ QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key, const QString &p
 {
 }
 
-bool QgsSettingsEntryBool::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryBool::setValue( bool value, const QString &dynamicKeyPart ) const
 {
-  if ( value.canConvert<bool>() == false )
-  {
-    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to bool for settings with key '%2'" )
-                 .arg( value.toString(),
-                       QgsSettingsEntryBase::key() ) );
-    return false;
-  }
-
-  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
+  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
 }
 
 bool QgsSettingsEntryBool::value( const QString &dynamicKeyPart ) const
@@ -332,7 +307,7 @@ QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, QgsSetting
 {
 }
 
-QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, const QString &pluginName, qlonglong defaultValue, const QString &description )
   : QgsSettingsEntryBase( key,
                           pluginName,
                           defaultValue,
@@ -342,36 +317,27 @@ QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, const QStr
 {
 }
 
-bool QgsSettingsEntryInteger::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryInteger::setValue( qlonglong value, const QString &dynamicKeyPart ) const
 {
-  if ( value.canConvert<qlonglong>() == false )
-  {
-    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to qlonglong for settings with key '%2'" )
-                 .arg( value.toString(),
-                       QgsSettingsEntryBase::key() ) );
-    return false;
-  }
-
-  qlonglong valueLongLong = value.toLongLong();
-  if ( valueLongLong < mMinValue )
+  if ( value < mMinValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
                  .arg( QgsSettingsEntryBase::key(),
-                       QString::number( valueLongLong ),
+                       QString::number( value ),
                        QString::number( mMinValue ) ) );
     return false;
   }
 
-  if ( valueLongLong > mMaxValue )
+  if ( value > mMaxValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
                  .arg( QgsSettingsEntryBase::key(),
-                       QString::number( valueLongLong ),
+                       QString::number( value ),
                        QString::number( mMinValue ) ) );
     return false;
   }
 
-  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
+  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
 }
 
 qlonglong QgsSettingsEntryInteger::value( const QString &dynamicKeyPart ) const
@@ -420,7 +386,7 @@ QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, QgsSettings:
 {
 }
 
-QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, const QString &pluginName, const QVariant &defaultValue, const QString &description )
+QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, const QString &pluginName, double defaultValue, const QString &description )
   : QgsSettingsEntryBase( key,
                           pluginName,
                           defaultValue,
@@ -431,36 +397,27 @@ QgsSettingsEntryDouble::QgsSettingsEntryDouble( const QString &key, const QStrin
 {
 }
 
-bool QgsSettingsEntryDouble::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
+bool QgsSettingsEntryDouble::setValue( double value, const QString &dynamicKeyPart ) const
 {
-  if ( value.canConvert<double>() == false )
-  {
-    QgsDebugMsg( QObject::tr( "Can't convert value '%1' to double for settings with key '%2'" )
-                 .arg( value.toString(),
-                       QgsSettingsEntryBase::key() ) );
-    return false;
-  }
-
-  double valueDouble = value.toDouble();
-  if ( valueDouble < mMinValue )
+  if ( value < mMinValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
                  .arg( QgsSettingsEntryBase::key(),
-                       QString::number( valueDouble ),
+                       QString::number( value ),
                        QString::number( mMinValue ) ) );
     return false;
   }
 
-  if ( valueDouble > mMaxValue )
+  if ( value > mMaxValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
                  .arg( QgsSettingsEntryBase::key(),
-                       QString::number( valueDouble ),
+                       QString::number( value ),
                        QString::number( mMinValue ) ) );
     return false;
   }
 
-  return QgsSettingsEntryBase::setValue( value, dynamicKeyPart );
+  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
 }
 
 double QgsSettingsEntryDouble::value( const QString &dynamicKeyPart ) const
