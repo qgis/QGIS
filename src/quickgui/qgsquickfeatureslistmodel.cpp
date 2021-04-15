@@ -21,6 +21,8 @@ QgsQuickFeaturesListModel::QgsQuickFeaturesListModel( QObject *parent )
   : QAbstractListModel( parent ),
     mCurrentLayer( nullptr )
 {
+  // avoid dangling pointers to mCurrentLayer/mCurrentFeature when switching projects
+  QObject::connect( QgsProject::instance(), &QgsProject::cleared, this, &QgsQuickFeaturesListModel::emptyData );
 }
 
 QgsQuickFeaturesListModel::~QgsQuickFeaturesListModel() = default;

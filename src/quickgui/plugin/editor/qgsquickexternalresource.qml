@@ -140,7 +140,6 @@ Item {
   anchors {
     left: parent.left
     right: parent.right
-    rightMargin: 10 * QgsQuick.Utils.dp
   }
 
   states: [
@@ -243,7 +242,7 @@ Item {
   }
 
   Item {
-    property real itemHeight: fieldItem.iconSize/2
+    property real itemHeight: fieldItem.height * 0.2
 
     id: buttonsContainer
     anchors.centerIn: imageContainer
@@ -251,26 +250,21 @@ Item {
     anchors.margins: fieldItem.textMargin
     visible: fieldItem.state === "notSet"
 
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.verticalCenter: parent.verticalCenter
-
-    ColumnLayout {
-      width: parent.width
-      height: photoButton.height * 2
-      anchors.horizontalCenter: parent.horizontalCenter
-      anchors.verticalCenter: parent.verticalCenter
+    RowLayout {
+      anchors.fill: parent
 
       QgsQuick.IconTextItem {
         id: photoButton
-        iconSize: buttonsContainer.itemHeight
         fontColor: customStyle.fields.fontColor
-        fontPixelSize: customStyle.fields.fontPixelSize
+        fontPointSize: customStyle.fields.fontPointSize
         iconSource: fieldItem.cameraIcon
+        iconSize: buttonsContainer.itemHeight
         labelText: qsTr("Take a photo")
-
         visible: !readOnly && fieldItem.state !== " valid"
-        height: buttonsContainer.itemHeight * 1.5
-        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+        Layout.preferredHeight: parent.height
+        Layout.fillWidth: true
+        Layout.preferredWidth: ( parent.width - lineContainer.width ) / 2
 
         MouseArea {
           anchors.fill: parent
@@ -284,17 +278,36 @@ Item {
         }
       }
 
+      Item {
+        id: lineContainer
+        visible: !readOnly && fieldItem.state !== " valid"
+        Layout.fillWidth: true
+        Layout.preferredHeight: parent.height
+        Layout.preferredWidth: line.width * 2
+
+        Rectangle {
+          id: line
+
+          height: parent.height * 0.7
+          color: customStyle.fields.fontColor
+          width: 1.5 * QgsQuick.Utils.dp
+          anchors.centerIn: parent
+        }
+      }
+
       QgsQuick.IconTextItem {
         id: browseButton
-        iconSize: buttonsContainer.itemHeight
         fontColor: customStyle.fields.fontColor
-        fontPixelSize: customStyle.fields.fontPixelSize
+        fontPointSize: customStyle.fields.fontPointSize
         iconSource: fieldItem.galleryIcon
-        labelText: qsTr("Add from gallery")
+        iconSize: buttonsContainer.itemHeight
+        labelText: qsTr("From gallery")
 
         visible: !readOnly && fieldItem.state !== " valid"
-        height: buttonsContainer.itemHeight * 1.5
-        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+        Layout.preferredHeight: parent.height
+        Layout.fillWidth: true
+        Layout.preferredWidth: ( parent.width - lineContainer.width ) / 2
 
         MouseArea {
           anchors.fill: parent
@@ -309,9 +322,8 @@ Item {
     height: parent.height
     width: imageContainer.width - 2* fieldItem.textMargin
     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-    minimumPixelSize: 50 * QgsQuick.Utils.dp
     text: qsTr("Image is not available: ") + image.currentValue
-    font.pixelSize: buttonsContainer.itemHeight * 0.75
+    font.pointSize: customStyle.fields.fontPointSize
     color: customStyle.fields.fontColor
     anchors.leftMargin: buttonsContainer.itemHeight + fieldItem.textMargin
     horizontalAlignment: Text.AlignHCenter

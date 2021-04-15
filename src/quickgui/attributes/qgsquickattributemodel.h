@@ -27,7 +27,7 @@
 /**
  * \ingroup quick
  *
- * \brief Basic item model for attributes of QgsFeature associated
+ * Basic item model for attributes of QgsFeature associated
  * from feature layer pair. Each attribute of the feature
  * gets a row in the model. Also supports CRUD operations
  * related to layer and feature pair.
@@ -111,6 +111,9 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
 
     //! Adds feature from featureLayerPair to the layer
     Q_INVOKABLE void create();
+
+    //! Returns true if a current feature is new or has uncommitted attribute changes. Geometry change is omitted.
+    Q_INVOKABLE bool hasAnyChanges();
 
     /**
      * Suppress layer's QgsEditFormConfig

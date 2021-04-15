@@ -35,7 +35,7 @@
 
 /**
  * \ingroup quick
- * \brief This is an internal (implementation) class used to generate (fake) GPS position source
+ * This is an internal (implementation) class used to generate (fake) GPS position source
  * Useful for for testing purposes (e.g. testing of the application with map for different
  * location then your physical (GPS) location)
  *
