@@ -62,6 +62,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgssublayersdialog.h"
 #include "options/qgsadvancedoptions.h"
+#include "qgslayout.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -1480,7 +1481,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListComposerTemplatePaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "Layout/searchPathsForTemplates" ), pathsList, QgsSettings::Core );
+  QgsLayout::settingsSearchPathForTemplates.setValue( pathsList );
 
   pathsList.clear();
   for ( int r = 0; r < mLocalizedDataPathListWidget->count(); r++ )

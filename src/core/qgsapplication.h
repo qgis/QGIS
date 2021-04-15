@@ -25,6 +25,7 @@
 #include "qgsconfig.h"
 #include "qgstranslationcontext.h"
 
+class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsAnnotationItemRegistry;
@@ -618,6 +619,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsTaskManager *taskManager();
 
     /**
+     * Returns the application's settings registry, used for managing application settings.
+     * \since QGIS 3.20
+     */
+    static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's color scheme registry, used for managing color schemes.
      * \since QGIS 3.0
      */
@@ -994,6 +1001,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     struct ApplicationMembers
     {
+      QgsSettingsRegistryCore *mSettingsRegistryCore = nullptr;
       QgsCoordinateReferenceSystemRegistry *mCrsRegistry = nullptr;
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
       Qgs3DSymbolRegistry *m3DSymbolRegistry = nullptr;

@@ -29,6 +29,7 @@
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
+#include "qgssettingsentry.h"
 
 
 /**
@@ -151,6 +152,13 @@ class CORE_EXPORT QgsLocator : public QObject
      * \since QGIS 3.16
      */
     QStringList completionList() const {return mAutocompletionList;}
+
+    //! Settings entry locator filter enabled
+    static const inline QgsSettingsEntryBool settingsLocatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%1" ), QgsSettings::Gui, true, "Locator filter enabled" );
+    //! Settings entry locator filter default value
+    static const inline QgsSettingsEntryBool settingsLocatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%1" ), QgsSettings::Gui, false, "Locator filter default value" );
+    //! Settings entry locator filter prefix
+    static const inline QgsSettingsEntryString settingsLocatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "locator_filters/prefix_%1" ), QgsSettings::Gui, QString(), "Locator filter prefix" );
 
   signals:
 

@@ -141,6 +141,10 @@ This list is updated when preparing the search
 .. versionadded:: 3.16
 %End
 
+    const QgsSettingsEntryBool settingsLocatorFilterEnabled;
+    const QgsSettingsEntryBool settingsLocatorFilterDefault;
+    const QgsSettingsEntryString settingsLocatorFilterPrefix;
+
   signals:
 
     void foundResult( const QgsLocatorResult &result );
