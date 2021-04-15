@@ -206,7 +206,7 @@ QVariant QgsSettingsEntryVariant::defaultValue() const
 
 QgsSettingsEntryBase::SettingsType QgsSettingsEntryVariant::settingsType() const
 {
-  return QgsSettingsEntryBase::Variant;
+  return QgsSettingsEntryBase::SettingsType::Variant;
 }
 
 QgsSettingsEntryString::QgsSettingsEntryString( const QString &key, QgsSettings::Section section, const QString &defaultValue, const QString &description, int minLength, int maxLength )
@@ -279,7 +279,7 @@ QString QgsSettingsEntryString::defaultValue() const
 
 QgsSettingsEntryBase::SettingsType QgsSettingsEntryString::settingsType() const
 {
-  return QgsSettingsEntryBase::String;
+  return QgsSettingsEntryBase::SettingsType::String;
 }
 
 void QgsSettingsEntryString::setMinLength( int minLength )
@@ -345,7 +345,7 @@ QStringList QgsSettingsEntryStringList::defaultValue() const
 
 QgsSettingsEntryBase::SettingsType QgsSettingsEntryStringList::settingsType() const
 {
-  return QgsSettingsEntryBase::StringList;
+  return QgsSettingsEntryBase::SettingsType::StringList;
 }
 
 QgsSettingsEntryBool::QgsSettingsEntryBool( const QString &key, QgsSettings::Section section, bool defaultValue, const QString &description )
@@ -391,7 +391,7 @@ bool QgsSettingsEntryBool::defaultValue() const
 
 QgsSettingsEntryBase::SettingsType QgsSettingsEntryBool::settingsType() const
 {
-  return QgsSettingsEntryBase::Bool;
+  return QgsSettingsEntryBase::SettingsType::Bool;
 }
 
 QgsSettingsEntryInteger::QgsSettingsEntryInteger( const QString &key, QgsSettings::Section section, qlonglong defaultValue, const QString &description, qlonglong minValue, qlonglong maxValue )
@@ -463,7 +463,7 @@ qlonglong QgsSettingsEntryInteger::defaultValue() const
 
 QgsSettingsEntryBase::SettingsType QgsSettingsEntryInteger::settingsType() const
 {
-  return QgsSettingsEntryBase::Integer;
+  return QgsSettingsEntryBase::SettingsType::Integer;
 }
 
 void QgsSettingsEntryInteger::setMinValue( qlonglong minValue )
@@ -557,7 +557,7 @@ double QgsSettingsEntryDouble::defaultValue() const
 
 QgsSettingsEntryBase::SettingsType QgsSettingsEntryDouble::settingsType() const
 {
-  return QgsSettingsEntryBase::Double;
+  return QgsSettingsEntryBase::SettingsType::Double;
 }
 
 void QgsSettingsEntryDouble::setMinValue( double minValue )

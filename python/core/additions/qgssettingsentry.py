@@ -47,7 +47,7 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         if self.__metaEnum is None or not self.__metaEnum.isValid():
             QgsLogger.debug("Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{0}'".format(self.key()))
         else:
-            if self.settingsType() is self.Enum:
+            if self.settingsType() is self.SettingsType.Enum:
                 defaultValueStr = self.__metaEnum.valueToKey(defaultValue)
             else:
                 defaultValueStr = self.__metaEnum.valueToKeys(defaultValue)
@@ -68,7 +68,7 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         if useDefaultValueOverride:
             defaultValue = defaultValueOverride
 
-        if self.settingsType() is self.Enum:
+        if self.settingsType() is self.SettingsType.Enum:
             return QgsSettings().enumValue(self.key(dynamicKeyPart),
                                            defaultValue,
                                            self.section())
@@ -88,7 +88,7 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             return -1
 
         defaultValueString = self.defaultValueAsVariant()
-        if self.settingsType() is self.Enum:
+        if self.settingsType() is self.SettingsType.Enum:
             (defaultValue, ok) = self.__metaEnum.keyToValue(defaultValueString)
         else:
             (defaultValue, ok) = self.__metaEnum.keysToValue(defaultValueString)
@@ -112,7 +112,7 @@ class _PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             return False
 
         enumFlagKey = str()
-        if self.settingsType() is self.Enum:
+        if self.settingsType() is self.SettingsType.Enum:
             enumFlagKey = self.__metaEnum.valueToKey(value)
         else:
             enumFlagKey = self.__metaEnum.valueToKeys(value)
@@ -150,7 +150,7 @@ class PyQgsSettingsEntryEnum(_PyQgsSettingsEntryEnumFlag):
             :param self: the QgsSettingsEntryEnum object
         """
 
-        return self.Enum
+        return self.SettingsType.Enum
 
 
 class PyQgsSettingsEntryFlag(_PyQgsSettingsEntryEnumFlag):
@@ -180,4 +180,4 @@ class PyQgsSettingsEntryFlag(_PyQgsSettingsEntryEnumFlag):
             :param self: the QgsSettingsEntryFlag object
         """
 
-        return self.Flag
+        return self.SettingsType.Flag

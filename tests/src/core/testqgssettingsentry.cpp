@@ -118,7 +118,7 @@ void TestQgsSettingsEntry::enumValue()
   QCOMPARE( settingsEntryEnum.value(), QgsUnitTypes::LayoutPicas );
 
   // Check settings type
-  QCOMPARE( settingsEntryEnum.settingsType(), QgsSettingsEntryBase::Enum );
+  QCOMPARE( settingsEntryEnum.settingsType(), QgsSettingsEntryBase::SettingsType::Enum );
 
   // assign to inexisting value
   {
@@ -167,7 +167,7 @@ void TestQgsSettingsEntry::flagValue()
   QCOMPARE( settingsEntryFlag.value(), pointAndLine );
 
   // Check settings type
-  QCOMPARE( settingsEntryFlag.settingsType(), QgsSettingsEntryBase::Flag );
+  QCOMPARE( settingsEntryFlag.settingsType(), QgsSettingsEntryBase::SettingsType::Flag );
 
   // check that value is stored as string
   QCOMPARE( settingsEntryFlag.valueAsVariant().toByteArray(), QMetaEnum::fromType<QgsMapLayerProxyModel::Filters>().valueToKeys( pointAndLine ) );

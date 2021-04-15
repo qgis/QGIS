@@ -57,7 +57,7 @@ class CORE_EXPORT QgsSettingsEntryBase
 
   public:
 
-    enum SettingsType
+    enum class SettingsType : int
     {
       Variant,
       String,
@@ -918,7 +918,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
       if ( useDefaultValueOverride )
         defaultVal = defaultValueOverride;
 
-      if ( settingsType() == QgsSettingsEntryBase::Enum )
+      if ( settingsType() == QgsSettingsEntryBase::SettingsType::Enum )
         return QgsSettings().enumValue( key( dynamicKeyPartList ),
                                         defaultVal,
                                         section() );
@@ -941,7 +941,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
 
       bool ok = false;
       T defaultValue;
-      if ( settingsType() == QgsSettingsEntryBase::Enum )
+      if ( settingsType() == QgsSettingsEntryBase::SettingsType::Enum )
         defaultValue = static_cast<T>( mMetaEnum.keyToValue( defaultValueAsVariant().toByteArray(), &ok ) );
       else
         defaultValue = static_cast<T>( mMetaEnum.keysToValue( defaultValueAsVariant().toByteArray(), &ok ) );
@@ -974,7 +974,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
         return false;
       }
 
-      if ( settingsType() == QgsSettingsEntryBase::Enum )
+      if ( settingsType() == QgsSettingsEntryBase::SettingsType::Enum )
       {
         const char *enumKey = mMetaEnum.valueToKey( value );
         if ( enumKey == nullptr )
@@ -1043,7 +1043,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryEnumFlagBase<T>
     //! \copydoc QgsSettingsEntryBase::settingsType
     virtual QgsSettingsEntryBase::SettingsType settingsType() const override
     {
-      return QgsSettingsEntryBase::Enum;
+      return QgsSettingsEntryBase::SettingsType::Enum;
     }
 };
 #endif
@@ -1087,7 +1087,7 @@ class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryEnumFlagBase<T>
     //! \copydoc QgsSettingsEntryBase::settingsType
     virtual QgsSettingsEntryBase::SettingsType settingsType() const override
     {
-      return QgsSettingsEntryBase::Flag;
+      return QgsSettingsEntryBase::SettingsType::Flag;
     }
 };
 #endif

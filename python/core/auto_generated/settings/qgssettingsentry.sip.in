@@ -41,7 +41,7 @@ to validate set values and provide more accurate settings description for the gu
 %End
   public:
 
-    enum SettingsType
+    enum class SettingsType
     {
       Variant,
       String,

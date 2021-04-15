@@ -76,7 +76,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryVariant.valueAsVariant(), 43)
 
         # Settings type
-        self.assertEqual(settingsEntryVariant.settingsType(), QgsSettingsEntryBase.Variant)
+        self.assertEqual(settingsEntryVariant.settingsType(), QgsSettingsEntryBase.SettingsType.Variant)
 
         # Description
         self.assertEqual(settingsEntryVariant.description(), description)
@@ -169,7 +169,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryVariant.valueAsVariant(), "abc")
 
         # Settings type
-        self.assertEqual(settingsEntryVariant.settingsType(), QgsSettingsEntryBase.Variant)
+        self.assertEqual(settingsEntryVariant.settingsType(), QgsSettingsEntryBase.SettingsType.Variant)
 
     def test_settings_entry_string(self):
         settingsKey = "settingsEntryString/stringValue"
@@ -191,7 +191,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryString.valueAsVariant(), "xyz")
 
         # Settings type
-        self.assertEqual(settingsEntryString.settingsType(), QgsSettingsEntryBase.String)
+        self.assertEqual(settingsEntryString.settingsType(), QgsSettingsEntryBase.SettingsType.String)
 
     def test_settings_entry_stringlist(self):
         settingsKey = "settingsEntryStringList/stringListValue"
@@ -213,7 +213,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryStringList.valueAsVariant(), ["uvw", "xyz"])
 
         # Settings type
-        self.assertEqual(settingsEntryStringList.settingsType(), QgsSettingsEntryBase.StringList)
+        self.assertEqual(settingsEntryStringList.settingsType(), QgsSettingsEntryBase.SettingsType.StringList)
 
     def test_settings_entry_bool(self):
         settingsKey = "settingsEntryBool/boolValue"
@@ -235,7 +235,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryBool.valueAsVariant(), True)
 
         # Settings type
-        self.assertEqual(settingsEntryBool.settingsType(), QgsSettingsEntryBase.Bool)
+        self.assertEqual(settingsEntryBool.settingsType(), QgsSettingsEntryBase.SettingsType.Bool)
 
     def test_settings_entry_integer(self):
         settingsKey = "settingsEntryInteger/integerValue"
@@ -263,7 +263,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryInteger.valueAsVariant(), -42)
 
         # Settings type
-        self.assertEqual(settingsEntryInteger.settingsType(), QgsSettingsEntryBase.Integer)
+        self.assertEqual(settingsEntryInteger.settingsType(), QgsSettingsEntryBase.SettingsType.Integer)
 
     def test_settings_entry_double(self):
         settingsKey = "settingsEntryDouble/doubleValue"
@@ -291,7 +291,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryDouble.valueAsVariant(), -273.15)
 
         # Settings type
-        self.assertEqual(settingsEntryDouble.settingsType(), QgsSettingsEntryBase.Double)
+        self.assertEqual(settingsEntryDouble.settingsType(), QgsSettingsEntryBase.SettingsType.Double)
 
     def test_settings_entry_enum(self):
         settingsKey = "settingsEntryEnum/enumValue"
@@ -318,7 +318,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryEnum.value(), QgsUnitTypes.LayoutPicas)
 
         # Check settings type
-        self.assertEqual(settingsEntryEnum.settingsType(), QgsSettingsEntryBase.Enum)
+        self.assertEqual(settingsEntryEnum.settingsType(), QgsSettingsEntryBase.SettingsType.Enum)
 
         # assign to inexisting value
         success = settingsEntryEnum.setValue(-1)
@@ -356,7 +356,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryFlag.value(), pointAndPolygon)
 
         # Check settings type
-        self.assertEqual(settingsEntryFlag.settingsType(), QgsSettingsEntryBase.Flag)
+        self.assertEqual(settingsEntryFlag.settingsType(), QgsSettingsEntryBase.SettingsType.Flag)
 
 
 if __name__ == '__main__':
