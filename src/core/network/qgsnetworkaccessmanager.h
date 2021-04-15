@@ -530,6 +530,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void requestAuthCloseBrowser() const;
 
+    //! Settings entry network timeout
+    static const inline QgsSettingsEntryInteger settingsNetworkTimeout = QgsSettingsEntryInteger( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QgsSettings::NoSection, 60000, QObject::tr( "Network timeout" ) );
+
+
   signals:
 
     /**

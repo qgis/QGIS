@@ -40,22 +40,22 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
 
   QUrlQuery query( feedUrl );
 
-  const qint64 after = Settings::feedLastFetchTime.value( mSettingsKey );
+  const qint64 after = settingsFeedLastFetchTime.value( mSettingsKey );
   if ( after > 0 )
     query.addQueryItem( QStringLiteral( "after" ), qgsDoubleToString( after, 0 ) );
 
-  QString feedLanguage = Settings::feedLanguage.value( mSettingsKey );
+  QString feedLanguage = settingsFeedLanguage.value( mSettingsKey );
   if ( feedLanguage.isEmpty() )
   {
-    feedLanguage = QgsSettings().value( QgsApplication::Settings::localeUserLocale.key(), QStringLiteral( "en_US" ) ).toString().left( 2 );
+    feedLanguage = QgsSettings().value( QgsApplication::settingsLocaleUserLocale.key(), QStringLiteral( "en_US" ) ).toString().left( 2 );
   }
   if ( !feedLanguage.isEmpty() && feedLanguage != QLatin1String( "C" ) )
     query.addQueryItem( QStringLiteral( "lang" ), feedLanguage );
 
-  if ( Settings::feedLatitude.exists( mSettingsKey ) && Settings::feedLongitude.exists( mSettingsKey ) )
+  if ( settingsFeedLatitude.exists( mSettingsKey ) && settingsFeedLongitude.exists( mSettingsKey ) )
   {
-    const double feedLat = Settings::feedLatitude.value( mSettingsKey );
-    const double feedLong = Settings::feedLongitude.value( mSettingsKey );
+    const double feedLat = settingsFeedLatitude.value( mSettingsKey );
+    const double feedLong = settingsFeedLongitude.value( mSettingsKey );
 
     // hack to allow testing using local files
     if ( feedUrl.isLocalFile() )
@@ -169,7 +169,7 @@ void QgsNewsFeedParser::fetch()
 
 void QgsNewsFeedParser::onFetch( const QString &content )
 {
-  Settings::feedLastFetchTime.setValue( mFetchStartTime, mSettingsKey );
+  settingsFeedLastFetchTime.setValue( mFetchStartTime, mSettingsKey );
 
   const QVariant json = QgsJsonUtils::parseJson( content );
 

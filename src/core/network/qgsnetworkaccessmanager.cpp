@@ -674,12 +674,12 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
 int QgsNetworkAccessManager::timeout()
 {
-  return Settings::networkTimeout.value();
+  return settingsNetworkTimeout.value();
 }
 
 void QgsNetworkAccessManager::setTimeout( const int time )
 {
-  Settings::networkTimeout.setValue( time );
+  settingsNetworkTimeout.setValue( time );
 }
 
 QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )

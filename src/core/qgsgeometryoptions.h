@@ -132,15 +132,8 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      */
     void readXml( const QDomNode &node );
 
-    /**
-     * Contains QgsGeometryOptions settings
-     * \since QGIS 3.20
-     */
-    struct Settings
-    {
-      //! Settings entry search path for templates
-      static const inline QgsSettingsEntryString geometryValidationDefaultChecks = QgsSettingsEntryString( QStringLiteral( "geometry_validation/default_checks" ), QgsSettings::NoSection, QString() );
-    };
+    //! Settings entry search path for templates
+    static const inline QgsSettingsEntryString settingsGeometryValidationDefaultChecks = QgsSettingsEntryString( QStringLiteral( "geometry_validation/default_checks" ), QgsSettings::NoSection, QString() );
 
   signals:
 

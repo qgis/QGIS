@@ -111,21 +111,14 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      */
     static QString keyForFeed( const QString &baseUrl );
 
-    /**
-     * Contains QgsNewsFeedParser settings
-     * \since QGIS 3.20
-     */
-    struct Settings
-    {
-      //! Settings entry last fetch time
-      static const inline QgsSettingsEntryInteger feedLastFetchTime = QgsSettingsEntryInteger( QStringLiteral( "%/lastFetchTime" ), QgsSettings::Core, 0, QObject::tr( "Feed last fetch time" ), 0 );
-      //! Settings entry feed language
-      static const inline QgsSettingsEntryString feedLanguage = QgsSettingsEntryString( QStringLiteral( "%/lang" ), QgsSettings::Core, QString(), QObject::tr( "Feed language" ) );
-      //! Settings entry feed latitude
-      static const inline QgsSettingsEntryDouble feedLatitude = QgsSettingsEntryDouble( QStringLiteral( "%/latitude" ), QgsSettings::Core, 0.0, QObject::tr( "Feed latitude" ) );
-      //! Settings entry feed longitude
-      static const inline QgsSettingsEntryDouble feedLongitude = QgsSettingsEntryDouble( QStringLiteral( "%/longitude" ), QgsSettings::Core, 0.0, QObject::tr( "Feed longitude" ) );
-    };
+    //! Settings entry last fetch time
+    static const inline QgsSettingsEntryInteger settingsFeedLastFetchTime = QgsSettingsEntryInteger( QStringLiteral( "%/lastFetchTime" ), QgsSettings::Core, 0, QObject::tr( "Feed last fetch time" ), 0 );
+    //! Settings entry feed language
+    static const inline QgsSettingsEntryString settingsFeedLanguage = QgsSettingsEntryString( QStringLiteral( "%/lang" ), QgsSettings::Core, QString(), QObject::tr( "Feed language" ) );
+    //! Settings entry feed latitude
+    static const inline QgsSettingsEntryDouble settingsFeedLatitude = QgsSettingsEntryDouble( QStringLiteral( "%/latitude" ), QgsSettings::Core, 0.0, QObject::tr( "Feed latitude" ) );
+    //! Settings entry feed longitude
+    static const inline QgsSettingsEntryDouble settingsFeedLongitude = QgsSettingsEntryDouble( QStringLiteral( "%/longitude" ), QgsSettings::Core, 0.0, QObject::tr( "Feed longitude" ) );
 
   public slots:
 

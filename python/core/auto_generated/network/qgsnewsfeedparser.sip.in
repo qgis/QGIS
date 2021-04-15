@@ -93,13 +93,10 @@ Returns the authentication configuration for the parser.
 Returns the settings key used for a feed with the given ``baseUrl``.
 %End
 
-    struct Settings
-    {
-      const QgsSettingsEntryInteger feedLastFetchTime;
-      const QgsSettingsEntryString feedLanguage;
-      const QgsSettingsEntryDouble feedLatitude;
-      const QgsSettingsEntryDouble feedLongitude;
-    };
+    const QgsSettingsEntryInteger settingsFeedLastFetchTime;
+    const QgsSettingsEntryString settingsFeedLanguage;
+    const QgsSettingsEntryDouble settingsFeedLatitude;
+    const QgsSettingsEntryDouble settingsFeedLongitude;
 
   public slots:
 

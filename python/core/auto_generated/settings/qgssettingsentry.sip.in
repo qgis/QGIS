@@ -84,6 +84,7 @@ Get settings entry key.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
+<<<<<<< HEAD
     bool keyIsValid( const QString &key ) const;
 %Docstring
 Returns ``True`` if the provided key match the settings entry.
@@ -95,6 +96,8 @@ defined with the key "NewsFeed/%1/%2/content"
 The ``key`` to check
 %End
 
+=======
+>>>>>>> 7b8aad6203 (Removed settings struct)
     QString definitionKey() const;
 %Docstring
 Returns settings entry defining key.
@@ -116,7 +119,11 @@ The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 
     bool exists( const QStringList &dynamicKeyPartList ) const;
 %Docstring
+<<<<<<< HEAD
 Returns ``True`` if the settings is contained in the underlying QSettings.
+=======
+Returns true if the settings is contained in the underlying QSettings.
+>>>>>>> 7b8aad6203 (Removed settings struct)
 
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
@@ -297,11 +304,19 @@ The ``description`` argument specifies a description for the settings entry.
     bool setValue( const QString &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
+<<<<<<< HEAD
 
 The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+=======
+
+The ``value`` to set.
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+>>>>>>> 7b8aad6203 (Removed settings struct)
     bool setValue( const QString &value, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Set settings value.
@@ -396,11 +411,19 @@ The ``description`` argument specifies a description for the settings entry.
     bool setValue( const QStringList &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
+<<<<<<< HEAD
 
 The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+=======
+
+The ``value`` to set.
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+>>>>>>> 7b8aad6203 (Removed settings struct)
     bool setValue( const QStringList &value, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Set settings value.
@@ -645,11 +668,19 @@ The ``description`` argument specifies a description for the settings entry.
     bool setValue( double value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
+<<<<<<< HEAD
 
 The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
+=======
+
+The ``value`` to set.
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+>>>>>>> 7b8aad6203 (Removed settings struct)
     bool setValue( double value, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Set settings value.

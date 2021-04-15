@@ -136,7 +136,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   QDomDocument doc( QStringLiteral( "shortcuts" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsshortcuts" ) );
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
-  root.setAttribute( QStringLiteral( "locale" ), settings.value( QgsApplication::Settings::localeUserLocale.key(), "en_US" ).toString() );
+  root.setAttribute( QStringLiteral( "locale" ), settings.value( QgsApplication::settingsLocaleUserLocale.key(), "en_US" ).toString() );
   doc.appendChild( root );
 
   settings.beginGroup( mManager->settingsPath() );
@@ -205,10 +205,10 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
   QString currentLocale;
 
-  bool localeOverrideFlag = QgsApplication::Settings::localeOverrideFlag.value();
+  bool localeOverrideFlag = QgsApplication::settingsLocaleOverrideFlag.value();
   if ( localeOverrideFlag )
   {
-    currentLocale = QgsSettings().value( QgsApplication::Settings::localeUserLocale.key(), "en_US" ).toString();
+    currentLocale = QgsApplication::settingsLocaleUserLocale.value( QString(), true, "en_US" );
   }
   else // use QGIS locale
   {

@@ -157,11 +157,7 @@ Returns map settings with which this job was started.
 
 
 
-
-    struct Settings
-    {
-      const QgsSettingsEntryBool logCanvasRefreshEvent;
-    };
+    const QgsSettingsEntryBool settingsLogCanvasRefreshEvent;
 
   signals:
 
