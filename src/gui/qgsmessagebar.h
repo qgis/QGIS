@@ -229,7 +229,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     void pushInfo( const QString &title, const QString &message );
 
     /**
-     * Pushes a warning \a message with default timeout to the message bar.
+     * Pushes a warning \a message that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.
      *
      * \param title title string for message
      * \param message The message to be displayed
@@ -239,7 +239,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     void pushWarning( const QString &title, const QString &message );
 
     /**
-     * Pushes a critical warning \a message with default timeout to the message bar.
+     * Pushes a critical warning \a message that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.
      *
      * \param title title string for message
      * \param message The message to be displayed

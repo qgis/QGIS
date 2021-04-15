@@ -214,7 +214,7 @@ Pushes a information ``message`` with default timeout to the message bar.
 
     void pushWarning( const QString &title, const QString &message );
 %Docstring
-Pushes a warning ``message`` with default timeout to the message bar.
+Pushes a warning ``message`` that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.
 
 :param title: title string for message
 :param message: The message to be displayed
@@ -224,7 +224,7 @@ Pushes a warning ``message`` with default timeout to the message bar.
 
     void pushCritical( const QString &title, const QString &message );
 %Docstring
-Pushes a critical warning ``message`` with default timeout to the message bar.
+Pushes a critical warning ``message`` that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.
 
 :param title: title string for message
 :param message: The message to be displayed
