@@ -44,7 +44,7 @@ class QgsCoordinateReferenceSystem;
 /**
  * \ingroup quick
  *
- * Encapsulating the common utilities for QgsQuick library.
+ * \brief Encapsulating the common utilities for QgsQuick library.
  *
  * \note QML Type: Utils (Singleton)
  *
