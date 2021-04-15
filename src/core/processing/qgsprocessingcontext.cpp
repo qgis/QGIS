@@ -18,6 +18,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsmaplayerlistutils.h"
 #include "qgssettings.h"
 
 QgsProcessingContext::QgsProcessingContext()

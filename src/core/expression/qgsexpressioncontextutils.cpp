@@ -31,6 +31,7 @@
 #include "qgslayoutmultiframe.h"
 #include "qgsfeatureid.h"
 #include "qgslayoutitemmap.h"
+#include "qgsmaplayerlistutils.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
