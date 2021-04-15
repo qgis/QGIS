@@ -99,21 +99,14 @@ class CORE_EXPORT QgsProcessing
      */
     static const QString TEMPORARY_OUTPUT;
 
-    /**
-     * Contains QgsProcessing settings
-     * \since QGIS 3.20
-     */
-    struct Settings
-    {
-      //! Settings entry prefer filename as layer name
-      static const inline QgsSettingsEntryBool preferFilenameAsLayerName = QgsSettingsEntryBool( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), QgsSettings::NoSection, true, QObject::tr( "Prefer filename as layer name" ) );
-      //! Settings entry temp path
-      static const inline QgsSettingsEntryString tempPath = QgsSettingsEntryString( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), QgsSettings::NoSection, QString() );
-      //! Settings entry default output vector layer ext
-      static const inline QgsSettingsEntryInteger defaultOutputVectorLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsSettings::NoSection, -1 );
-      //! Settings entry default output raster layer ext
-      static const inline QgsSettingsEntryInteger defaultOutputRasterLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsSettings::NoSection, -1 );
-    };
+    //! Settings entry prefer filename as layer name
+    static const inline QgsSettingsEntryBool settingsPreferFilenameAsLayerName = QgsSettingsEntryBool( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), QgsSettings::NoSection, true, QObject::tr( "Prefer filename as layer name" ) );
+    //! Settings entry temp path
+    static const inline QgsSettingsEntryString settingsTempPath = QgsSettingsEntryString( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), QgsSettings::NoSection, QString() );
+    //! Settings entry default output vector layer ext
+    static const inline QgsSettingsEntryInteger settingsDefaultOutputVectorLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsSettings::NoSection, -1 );
+    //! Settings entry default output raster layer ext
+    static const inline QgsSettingsEntryInteger settingsDefaultOutputRasterLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsSettings::NoSection, -1 );
 };
 
 #endif // QGSPROCESSING_H

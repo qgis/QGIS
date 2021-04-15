@@ -34,29 +34,29 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsLocator::settingsLocatorFilterDefault );
   addSettingsEntry( &QgsLocator::settingsLocatorFilterPrefix );
 
-  addSettingsEntry( &QgsNetworkAccessManager::Settings::networkTimeout );
+  addSettingsEntry( &QgsNetworkAccessManager::settingsNetworkTimeout );
 
-  addSettingsEntry( &QgsNewsFeedParser::Settings::feedLastFetchTime );
-  addSettingsEntry( &QgsNewsFeedParser::Settings::feedLanguage );
-  addSettingsEntry( &QgsNewsFeedParser::Settings::feedLatitude );
-  addSettingsEntry( &QgsNewsFeedParser::Settings::feedLongitude );
+  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLastFetchTime );
+  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLanguage );
+  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLatitude );
+  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLongitude );
 
-  addSettingsEntry( &QgsProcessing::Settings::preferFilenameAsLayerName );
-  addSettingsEntry( &QgsProcessing::Settings::tempPath );
-  addSettingsEntry( &QgsProcessing::Settings::defaultOutputVectorLayerExt );
-  addSettingsEntry( &QgsProcessing::Settings::defaultOutputRasterLayerExt );
+  addSettingsEntry( &QgsProcessing::settingsPreferFilenameAsLayerName );
+  addSettingsEntry( &QgsProcessing::settingsTempPath );
+  addSettingsEntry( &QgsProcessing::settingsDefaultOutputVectorLayerExt );
+  addSettingsEntry( &QgsProcessing::settingsDefaultOutputRasterLayerExt );
 
-  addSettingsEntry( &QgsApplication::Settings::localeUserLocale );
-  addSettingsEntry( &QgsApplication::Settings::localeOverrideFlag );
-  addSettingsEntry( &QgsApplication::Settings::localeGlobalLocale );
-  addSettingsEntry( &QgsApplication::Settings::localeShowGroupSeparator );
-  addSettingsEntry( &QgsApplication::Settings::searchPathsForSVG );
+  addSettingsEntry( &QgsApplication::settingsLocaleUserLocale );
+  addSettingsEntry( &QgsApplication::settingsLocaleOverrideFlag );
+  addSettingsEntry( &QgsApplication::settingsLocaleGlobalLocale );
+  addSettingsEntry( &QgsApplication::settingsLocaleShowGroupSeparator );
+  addSettingsEntry( &QgsApplication::settingsSearchPathsForSVG );
 
-  addSettingsEntry( &QgsGeometryOptions::Settings::geometryValidationDefaultChecks );
+  addSettingsEntry( &QgsGeometryOptions::settingsGeometryValidationDefaultChecks );
 
-  addSettingsEntry( &QgsLocalizedDataPathRegistry::Settings::localizedDataPaths );
+  addSettingsEntry( &QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths );
 
-  addSettingsEntry( &QgsMapRendererJob::Settings::logCanvasRefreshEvent );
+  addSettingsEntry( &QgsMapRendererJob::settingsLogCanvasRefreshEvent );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

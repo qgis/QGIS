@@ -977,7 +977,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
 
 void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const LayerRenderJobs &secondPassJobs, const LabelRenderJob &labelJob )
 {
-  if ( !Settings::logCanvasRefreshEvent.value() )
+  if ( !settingsLogCanvasRefreshEvent.value() )
     return;
 
   QMultiMap<int, QString> elapsed;

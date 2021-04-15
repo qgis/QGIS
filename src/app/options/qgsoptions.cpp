@@ -475,7 +475,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbScanZipInBrowser->setCurrentIndex( index );
 
   // log rendering events, for userspace debugging
-  mLogCanvasRefreshChkBx->setChecked( QgsMapRendererJob::Settings::logCanvasRefreshEvent.value() );
+  mLogCanvasRefreshChkBx->setChecked( QgsMapRendererJob::settingsLogCanvasRefreshEvent.value() );
 
   //set the default projection behavior radio buttons
   const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
@@ -1015,9 +1015,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //
   QString currentLocale = QLocale().name();
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( currentLocale ) );
-  QString userLocale = QgsApplication::Settings::localeUserLocale.value();
-  bool showGroupSeparator = QgsApplication::Settings::localeShowGroupSeparator.value();
-  QString globalLocale = QgsApplication::Settings::localeGlobalLocale.value();
+  QString userLocale = QgsApplication::settingsLocaleUserLocale.value();
+  bool showGroupSeparator = QgsApplication::settingsLocaleShowGroupSeparator.value();
+  QString globalLocale = QgsApplication::settingsLocaleGlobalLocale.value();
   const QStringList language18nList( i18nList() );
   for ( const auto &l : language18nList )
   {
@@ -1044,7 +1044,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   cboTranslation->setCurrentIndex( cboTranslation->findData( userLocale ) );
   cboGlobalLocale->setCurrentIndex( cboGlobalLocale->findData( globalLocale ) );
-  grpLocale->setChecked( QgsApplication::Settings::localeOverrideFlag.value() );
+  grpLocale->setChecked( QgsApplication::settingsLocaleOverrideFlag.value() );
   cbShowGroupSeparator->setChecked( showGroupSeparator );
 
 
@@ -1673,7 +1673,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/Raster/cumulativeCutUpper" ), mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
   // log rendering events, for userspace debugging
-  QgsMapRendererJob::Settings::logCanvasRefreshEvent.setValue( mLogCanvasRefreshChkBx->isChecked() );
+  QgsMapRendererJob::settingsLogCanvasRefreshEvent.setValue( mLogCanvasRefreshChkBx->isChecked() );
 
   //check behavior so default projection when new layer is added with no
   //projection defined...
@@ -1856,12 +1856,12 @@ void QgsOptions::saveOptions()
   //
   // Locale settings
   //
-  QgsApplication::Settings::localeUserLocale.setValue( cboTranslation->currentData().toString() );
-  QgsApplication::Settings::localeOverrideFlag.setValue( grpLocale->isChecked() );
-  QgsApplication::Settings::localeGlobalLocale.setValue( cboGlobalLocale->currentData( ).toString() );
+  QgsApplication::settingsLocaleUserLocale.setValue( cboTranslation->currentData().toString() );
+  QgsApplication::settingsLocaleOverrideFlag.setValue( grpLocale->isChecked() );
+  QgsApplication::settingsLocaleGlobalLocale.setValue( cboGlobalLocale->currentData( ).toString() );
 
   // Number settings
-  QgsApplication::Settings::localeShowGroupSeparator.setValue( cbShowGroupSeparator->isChecked( ) );
+  QgsApplication::settingsLocaleShowGroupSeparator.setValue( cbShowGroupSeparator->isChecked( ) );
 
   QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.get() );
 

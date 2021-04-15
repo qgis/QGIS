@@ -197,7 +197,7 @@ void QgsProcessingContext::LayerDetails::setOutputLayerName( QgsMapLayer *layer 
   if ( !layer )
     return;
 
-  const bool preferFilenameAsLayerName = QgsProcessing::Settings::preferFilenameAsLayerName.value();
+  const bool preferFilenameAsLayerName = QgsProcessing::settingsPreferFilenameAsLayerName.value();
 
   // note - for temporary layers, we don't use the filename, regardless of user setting (it will be meaningless!)
   if ( ( !forceName && preferFilenameAsLayerName && !layer->isTemporary() ) || name.isEmpty() )

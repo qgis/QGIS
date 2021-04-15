@@ -321,10 +321,7 @@ The contents of the reply will be returned after the request is completed or an 
 .. versionadded:: 3.6
 %End
 
-    struct Settings
-    {
-      const QgsSettingsEntryInteger networkTimeout;
-    };
+    const QgsSettingsEntryInteger settingsNetworkTimeout;
 
   signals:
 

@@ -80,6 +80,7 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
       completeKey.replace( QString( "%%1" ).arg( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
     }
   }
+  return completeKey;
 }
 
 QString QgsSettingsEntryBase::definitionKey() const

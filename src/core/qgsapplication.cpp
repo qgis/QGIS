@@ -1063,7 +1063,7 @@ QString QgsApplication::srsDatabaseFilePath()
 
 void QgsApplication::setSvgPaths( const QStringList &svgPaths )
 {
-  Settings::searchPathsForSVG.setValue( svgPaths );
+  settingsSearchPathsForSVG.setValue( svgPaths );
   members()->mSvgPathCacheValid = false;
 }
 
@@ -1082,7 +1082,7 @@ QStringList QgsApplication::svgPaths()
     locker.changeMode( QgsReadWriteLocker::Write );
     //local directories to search when looking for an SVG with a given basename
     //defined by user in options dialog
-    const QStringList pathList = Settings::searchPathsForSVG.value();
+    const QStringList pathList = settingsSearchPathsForSVG.value();
 
     // maintain user set order while stripping duplicates
     QStringList paths;
@@ -1224,9 +1224,9 @@ QString QgsApplication::platform()
 
 QString QgsApplication::locale()
 {
-  if ( Settings::localeOverrideFlag.value() )
+  if ( settingsLocaleOverrideFlag.value() )
   {
-    QString locale = Settings::localeUserLocale.value();
+    QString locale = settingsLocaleUserLocale.value();
     // don't differentiate en_US and en_GB
     if ( locale.startsWith( QLatin1String( "en" ), Qt::CaseInsensitive ) )
     {
