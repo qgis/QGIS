@@ -140,7 +140,7 @@ QgsCircle QgsCircle::from3Points( const QgsPoint &pt1, const QgsPoint &pt2, cons
   const double aSlope = yDelta_a / xDelta_a;
   const double bSlope = yDelta_b / xDelta_b;
 
-  // set z coordinate for center
+  // set z and m coordinate for center
   QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << p1 << p2 << p3, center );
 
   if ( ( std::fabs( xDelta_a ) <= epsilon ) && ( std::fabs( yDelta_b ) <= epsilon ) )
@@ -418,10 +418,10 @@ void QgsCircle::setSemiMinorAxis( const double semiMinorAxis )
 QVector<QgsPoint> QgsCircle::northQuadrant() const
 {
   QVector<QgsPoint> quad;
-  quad.append( QgsPoint( mCenter.x(), mCenter.y() + mSemiMajorAxis, mCenter.z() ) );
-  quad.append( QgsPoint( mCenter.x() + mSemiMajorAxis, mCenter.y(), mCenter.z() ) );
-  quad.append( QgsPoint( mCenter.x(), mCenter.y() - mSemiMajorAxis, mCenter.z() ) );
-  quad.append( QgsPoint( mCenter.x() - mSemiMajorAxis, mCenter.y(), mCenter.z() ) );
+  quad.append( QgsPoint( mCenter.x(), mCenter.y() + mSemiMajorAxis, mCenter.z(), mCenter.m() ) );
+  quad.append( QgsPoint( mCenter.x() + mSemiMajorAxis, mCenter.y(), mCenter.z(), mCenter.m() ) );
+  quad.append( QgsPoint( mCenter.x(), mCenter.y() - mSemiMajorAxis, mCenter.z(), mCenter.m() ) );
+  quad.append( QgsPoint( mCenter.x() - mSemiMajorAxis, mCenter.y(), mCenter.z(), mCenter.m() ) );
 
   return quad;
 }
