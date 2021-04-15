@@ -7,3 +7,6 @@ qgis_ziplayertest
 # Flaky, the ms odbc driver crashes a lot on the ubuntu docker image. Retest when
 # the docker base image is upgraded
 PyQgsMssqlProvider
+
+# Crashes randomly from time to time on CI in the OCI library
+PyQgsOracleProvider
