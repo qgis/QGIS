@@ -332,7 +332,7 @@ namespace QgsWms
           layerElem.appendChild( formatElem );
 
           // Get WMS service URL for Server Element
-          QUrl href = serviceUrl( request, project );
+          QUrl href = serviceUrl( request, project, *serverIface->serverSettings() );
 
           //href needs to be a prefix
           QString hrefString = href.toString();

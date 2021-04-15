@@ -123,6 +123,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         """Test landing page in JSON format"""
 
         request = QgsBufferServerRequest('http://server.qgis.org/index.json')
+        request.setBaseUrl(QtCore.QUrl('http://server.qgis.org/'))
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
         j_actual = 'Content-Type: application/json\n\n'

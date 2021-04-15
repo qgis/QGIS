@@ -147,7 +147,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
   return AVAILABLE_PROJECTS;
 }
 
-json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServerSettings *serverSettings )
+json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServerSettings *serverSettings, const QgsServerRequest &request )
 {
   // Helper for QStringList
   auto jList = [ ]( const QStringList & l ) -> json
@@ -398,9 +398,9 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     capabilities["owsServiceOnlineResource"] = QgsServerProjectUtils::owsServiceOnlineResource( *p ).toStdString();
     capabilities["owsServiceTitle"] = QgsServerProjectUtils::owsServiceTitle( *p ).toStdString();
     capabilities["wcsLayerIds"] = jList( QgsServerProjectUtils::wcsLayerIds( *p ) );
-    capabilities["wcsServiceUrl"] = QgsServerProjectUtils::wcsServiceUrl( *p ).toStdString();
+    capabilities["wcsServiceUrl"] = QgsServerProjectUtils::wcsServiceUrl( *p, request, *serverSettings ).toStdString();
     capabilities["wfsLayerIds"] = jList( QgsServerProjectUtils::wfsLayerIds( *p ) );
-    capabilities["wfsServiceUrl"] = QgsServerProjectUtils::wfsServiceUrl( *p ).toStdString();
+    capabilities["wfsServiceUrl"] = QgsServerProjectUtils::wfsServiceUrl( *p, request, *serverSettings ).toStdString();
     capabilities["wfstDeleteLayerIds"] = jList( QgsServerProjectUtils::wfstDeleteLayerIds( *p ) );
     capabilities["wfstInsertLayerIds"] = jList( QgsServerProjectUtils::wfstInsertLayerIds( *p ) );
     capabilities["wfstUpdateLayerIds"] = jList( QgsServerProjectUtils::wfstUpdateLayerIds( *p ) );
@@ -428,10 +428,10 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     capabilities["wmsRestrictedComposers"] = jList( QgsServerProjectUtils::wmsRestrictedComposers( *p ) );
     capabilities["wmsRestrictedLayers"] = jList( QgsServerProjectUtils::wmsRestrictedLayers( *p ) );
     capabilities["wmsRootName"] = QgsServerProjectUtils::wmsRootName( *p ).toStdString();
-    capabilities["wmsServiceUrl"] = QgsServerProjectUtils::wmsServiceUrl( *p ).toStdString();
+    capabilities["wmsServiceUrl"] = QgsServerProjectUtils::wmsServiceUrl( *p, request, *serverSettings ).toStdString();
     capabilities["wmsTileBuffer"] = QgsServerProjectUtils::wmsTileBuffer( *p );
     capabilities["wmsUseLayerIds"] = QgsServerProjectUtils::wmsUseLayerIds( *p );
-    capabilities["wmtsServiceUrl" ] = QgsServerProjectUtils::wmtsServiceUrl( *p ).toStdString();
+    capabilities["wmtsServiceUrl" ] = QgsServerProjectUtils::wmtsServiceUrl( *p, request, *serverSettings ).toStdString();
     info["capabilities"] = capabilities;
     // WMS layers
     info[ "wms_root_name" ] = QgsServerProjectUtils::wmsRootName( *p ).toStdString();

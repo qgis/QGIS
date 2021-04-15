@@ -44,7 +44,7 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
   }
   else
   {
-    const json projects = projectsData( ) ;
+    const json projects = projectsData( *context.request() ) ;
     json data
     {
       { "links", links( context ) },
@@ -62,7 +62,7 @@ const QString QgsLandingPageHandler::templatePath( const QgsServerApiContext &co
   return path;
 }
 
-json QgsLandingPageHandler::projectsData() const
+json QgsLandingPageHandler::projectsData( const QgsServerRequest &request ) const
 {
   json j = json::array();
   const QMap<QString, QString> availableProjects = QgsLandingPageUtils::projects( *mSettings );
@@ -70,7 +70,7 @@ json QgsLandingPageHandler::projectsData() const
   {
     try
     {
-      j.push_back( QgsLandingPageUtils::projectInfo( it.value() ) );
+      j.push_back( QgsLandingPageUtils::projectInfo( it.value(), mSettings, request ) );
     }
     catch ( QgsServerException & )
     {
@@ -96,7 +96,7 @@ void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Requested project hash not found!" ) );
   }
-  data[ "project" ] = QgsLandingPageUtils::projectInfo( projectPath, mSettings );
+  data[ "project" ] = QgsLandingPageUtils::projectInfo( projectPath, mSettings, *context.request() );
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
 }
 

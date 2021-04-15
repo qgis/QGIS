@@ -77,7 +77,7 @@ namespace QgsWms
                                    const QStringList &crsList, const QStringList &constrainedCrsList );
 
     void appendLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer,
-                            const QgsProject *project, const QgsWmsRequest &request );
+                            const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *settings );
 
     void appendLayersFromTreeGroup( QDomDocument &doc,
                                     QDomElement &parentLayer,
@@ -108,7 +108,7 @@ namespace QgsWms
     QgsCapabilitiesCache *capabilitiesCache = serverIface->capabilitiesCache();
     QStringList cacheKeyList;
     cacheKeyList << ( projectSettings ? QStringLiteral( "projectSettings" ) : request.wmsParameters().version() );
-    cacheKeyList << request.url().host();
+    cacheKeyList << QgsServerProjectUtils::serviceUrl( request.serverParameters().service(), request, *serverIface->serverSettings() );
     bool cache = true;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -175,7 +175,7 @@ namespace QgsWms
     QDomElement wmsCapabilitiesElement;
 
     // Get service URL
-    QUrl href = serviceUrl( request, project );
+    QUrl href = serviceUrl( request, project, *serverIface->serverSettings() );
 
     //href needs to be a prefix
     QString hrefString = href.toString();
@@ -229,7 +229,7 @@ namespace QgsWms
     doc.appendChild( wmsCapabilitiesElement );
 
     //INSERT Service
-    wmsCapabilitiesElement.appendChild( getServiceElement( doc, project, request ) );
+    wmsCapabilitiesElement.appendChild( getServiceElement( doc, project, request, serverIface->serverSettings() ) );
 
     //wms:Capability element
     QDomElement capabilityElement = getCapabilityElement( doc, project, request, projectSettings, serverIface );
@@ -257,7 +257,7 @@ namespace QgsWms
   }
 
   QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project,
-                                 const QgsWmsRequest &request )
+                                 const QgsWmsRequest &request, const QgsServerSettings *serverSettings )
   {
     //Service element
     QDomElement serviceElem = doc.createElement( QStringLiteral( "Service" ) );
@@ -288,7 +288,7 @@ namespace QgsWms
     QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
     if ( onlineResource.isEmpty() )
     {
-      onlineResource = serviceUrl( request, project ).toString();
+      onlineResource = serviceUrl( request, project, *serverSettings ).toString();
     }
     QDomElement onlineResourceElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
     onlineResourceElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
@@ -423,7 +423,7 @@ namespace QgsWms
     const QString version = request.wmsParameters().version();
 
     // Get service URL
-    QUrl href = serviceUrl( request, project );
+    QUrl href = serviceUrl( request, project, *serverIface->serverSettings() );
 
     //href needs to be a prefix
     QString hrefString = href.toString();
@@ -1101,7 +1101,7 @@ namespace QgsWms
           }
 
           // add details about supported styles of the layer
-          appendLayerStyles( doc, layerElem, l, project, request );
+          appendLayerStyles( doc, layerElem, l, project, request, serverIface->serverSettings() );
 
           //min/max scale denominatorScaleBasedVisibility
           if ( l->hasScaleBasedVisibility() )
@@ -1287,10 +1287,10 @@ namespace QgsWms
     }
 
     void appendLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer,
-                            const QgsProject *project, const QgsWmsRequest &request )
+                            const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *settings )
     {
       // Get service URL
-      QUrl href = serviceUrl( request, project );
+      QUrl href = serviceUrl( request, project, *settings );
 
       //href needs to be a prefix
       QString hrefString = href.toString();
@@ -1339,17 +1339,19 @@ namespace QgsWms
             layerName = currentLayer->id();
           else if ( !currentLayer->shortName().isEmpty() )
             layerName = currentLayer->shortName();
-          QUrlQuery mapUrl( hrefString );
-          mapUrl.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
-          mapUrl.addQueryItem( QStringLiteral( "VERSION" ), request.wmsParameters().version() );
-          mapUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetLegendGraphic" ) );
-          mapUrl.addQueryItem( QStringLiteral( "LAYER" ), layerName );
-          mapUrl.addQueryItem( QStringLiteral( "FORMAT" ), QStringLiteral( "image/png" ) );
-          mapUrl.addQueryItem( QStringLiteral( "STYLE" ), styleNameText.data() );
+          QUrl mapUrl( hrefString );
+          QUrlQuery mapUrlQuery( mapUrl.query() );
+          mapUrlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
+          mapUrlQuery.addQueryItem( QStringLiteral( "VERSION" ), request.wmsParameters().version() );
+          mapUrlQuery.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetLegendGraphic" ) );
+          mapUrlQuery.addQueryItem( QStringLiteral( "LAYER" ), layerName );
+          mapUrlQuery.addQueryItem( QStringLiteral( "FORMAT" ), QStringLiteral( "image/png" ) );
+          mapUrlQuery.addQueryItem( QStringLiteral( "STYLE" ), styleNameText.data() );
           if ( request.wmsParameters().version() == QLatin1String( "1.3.0" ) )
           {
-            mapUrl.addQueryItem( QStringLiteral( "SLD_VERSION" ), QStringLiteral( "1.1.0" ) );
+            mapUrlQuery.addQueryItem( QStringLiteral( "SLD_VERSION" ), QStringLiteral( "1.1.0" ) );
           }
+          mapUrl.setQuery( mapUrlQuery );
           customHrefString = mapUrl.toString();
         }
 
