@@ -85,6 +85,8 @@ class TestQgsGeometryUtils: public QObject
     void testAngleBisector();
     void testPerpendicularOffsetPoint();
     void testClosestSideOfRectangle();
+    void setZValueFromPoints();
+    void setMValueFromPoints();
 };
 
 
@@ -1600,6 +1602,72 @@ void TestQgsGeometryUtils::testClosestSideOfRectangle()
   QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 16.5, -19 ), 3 );
   QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 14, -18.5 ), 1 );
   QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 14, -19.5 ), 5 );
+}
+
+void TestQgsGeometryUtils::setZValueFromPoints()
+{
+  QgsPoint point( 1, 2 );
+
+  // Type: Point
+  bool ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2 ), point );
+  QCOMPARE( ret, false );
+
+  // Type: PointM
+  ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 4 ), point );
+  QCOMPARE( ret, false );
+
+  // Type: PointZ
+  ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2, 4 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( point.z(), 4.0 );
+
+  // Type: PointZ
+  ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2, 5 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( point.z(), 5.0 ); // now point.z == 5. Shouldn't the current Z be left if the point is already of type PointZ?
+
+  // Add Z to a PointM
+  QgsPoint pointM( QgsWkbTypes::PointM, 1, 2, 0, 3 );
+  // Type: PointZ
+  ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2, 4 ), pointM );
+  QCOMPARE( ret, true );
+  QCOMPARE( pointM.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( pointM.z(), 4.0 );
+}
+
+void TestQgsGeometryUtils::setMValueFromPoints()
+{
+  QgsPoint point( 1, 2 );
+
+  // Type: Point
+  bool ret = QgsGeometryUtils::setMValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2 ), point );
+  QCOMPARE( ret, false );
+
+  // Type: PointZ
+  ret = QgsGeometryUtils::setMValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2, 4 ), point );
+  QCOMPARE( ret, false );
+
+  // Type: PointM
+  ret = QgsGeometryUtils::setMValueFromPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 4 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.m(), 4.0 );
+
+  // Type: PointM
+  ret = QgsGeometryUtils::setMValueFromPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.m(), 5.0 ); // now point.z == 5. Shouldn't the current M be left if the point is already of type PointM?
+
+  // Add M to a PointZ
+  QgsPoint pointZ( 1, 2, 4 );
+  // Type: PointM
+  ret = QgsGeometryUtils::setMValueFromPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 ), pointZ );
+  QCOMPARE( ret, true );
+  QCOMPARE( pointZ.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( pointZ.m(), 5.0 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
