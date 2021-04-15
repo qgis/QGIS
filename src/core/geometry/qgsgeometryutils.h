@@ -781,6 +781,18 @@ class CORE_EXPORT QgsGeometryUtils
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 
     /**
+     * A M dimension is added to \a point if one of the point in the list
+     * \a points is in 3D. Moreover, the M value of \a point is updated with.
+     *
+     * \param points List of points in which a 3D point is searched.
+     * \param point The point to update with M dimension and value.
+     * \returns TRUE if the point is updated, FALSE otherwise
+     *
+     * \since QGIS 3.20
+     */
+    static bool setMValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+
+    /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
      * and segment (\a bX, \a bY) (\a dX, \a dY).
      * The bisector segment of AB-CD is (point, projection of point by \a angle)
