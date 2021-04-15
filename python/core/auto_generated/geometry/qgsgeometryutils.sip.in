@@ -757,6 +757,19 @@ A Z dimension is added to ``point`` if one of the point in the list
 .. versionadded:: 3.0
 %End
 
+    static bool setMValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+%Docstring
+A M dimension is added to ``point`` if one of the point in the list
+``points`` is in 3D. Moreover, the M value of ``point`` is updated with.
+
+:param points: List of points in which a 3D point is searched.
+:param point: The point to update with M dimension and value.
+
+:return: ``True`` if the point is updated, ``False`` otherwise
+
+.. versionadded:: 3.20
+%End
+
 
     static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
                                double &pointX /Out/, double &pointY /Out/, double &angle /Out/ ) /HoldGIL/;
