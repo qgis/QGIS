@@ -25,6 +25,7 @@ import QgsQuick 0.1 as QgsQuick
  */
 Item {
   signal valueChanged(var value, bool isNull)
+  property bool isReadOnly: readOnly
 
   id: fieldItem
   enabled: !readOnly
@@ -32,7 +33,6 @@ Item {
   anchors {
     left: parent.left
     right: parent.right
-    rightMargin: 10 * QgsQuick.Utils.dp
   }
 
   QgsQuick.EditorWidgetComboBox {
@@ -43,6 +43,8 @@ Item {
     comboStyle: customStyle.fields
     textRole: 'display'
     height: parent.height
+    readOnly: isReadOnly
+    iconSize: fieldItem.height * 0.50
     model: ListModel {
       id: listModel
     }

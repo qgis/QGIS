@@ -24,7 +24,7 @@
 
 /**
  * \ingroup quick
- * \brief List Model holding features of specific layer.
+ * List Model holding features of specific layer.
  *
  * Model allows searching by any string or number attribute.
  *

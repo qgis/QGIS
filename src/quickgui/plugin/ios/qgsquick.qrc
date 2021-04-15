@@ -18,5 +18,6 @@
         <file>qgsquickicontextitem.qml</file>
         <file>qgsquickcheckboxcomponent.qml</file>
         <file>qgsquickscalebar.qml</file>
+        <file>qgsquickswitch.qml</file>
     </qresource>
 </RCC>

@@ -30,7 +30,7 @@ class QgsProject;
 
 /**
  * \ingroup quick
- * \brief The QgsQuickMapSettings class encapsulates QgsMapSettings class to offer
+ * The QgsQuickMapSettings class encapsulates QgsMapSettings class to offer
  * settings of configuration of map rendering via QML properties.
  *
  * On top of QgsMapSettings functionality, when QgsProject is attached,

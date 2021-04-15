@@ -22,7 +22,7 @@
 /**
  * \ingroup quick
  *
- * \brief Helper class for submodels (e.g. tabs within feature model).
+ * Helper class for submodels (e.g. tabs within feature model).
  *
  * It uses internal mapping from internal indexes to indexes in the parent model.
  *

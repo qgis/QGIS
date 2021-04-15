@@ -21,7 +21,7 @@
 
 QgsQuickSimulatedPositionSource::QgsQuickSimulatedPositionSource( QObject *parent, double longitude, double latitude, double flightRadius )
   : QGeoPositionInfoSource( parent )
-  , mTimer( std::make_unique< QTimer >() )
+  , mTimer( qgis::make_unique< QTimer >() )
   , mFlightRadius( flightRadius )
   , mLongitude( longitude )
   , mLatitude( latitude )

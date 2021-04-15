@@ -86,8 +86,8 @@ QSGGeometryNode *QgsQuickHighlightSGNode::createLineGeometry( const QgsLineStrin
 {
   Q_ASSERT( line );
 
-  std::unique_ptr<QSGGeometryNode> node = std::make_unique< QSGGeometryNode>();
-  std::unique_ptr<QSGGeometry> sgGeom = std::make_unique< QSGGeometry>( QSGGeometry::defaultAttributes_Point2D(), line->numPoints() );
+  std::unique_ptr<QSGGeometryNode> node = qgis::make_unique< QSGGeometryNode>();
+  std::unique_ptr<QSGGeometry> sgGeom = qgis::make_unique< QSGGeometry>( QSGGeometry::defaultAttributes_Point2D(), line->numPoints() );
   QSGGeometry::Point2D *vertices = sgGeom->vertexDataAsPoint2D();
 
   const double *x = line->xData();
@@ -114,8 +114,8 @@ QSGGeometryNode *QgsQuickHighlightSGNode::createPointGeometry( const QgsPoint *p
 {
   Q_ASSERT( point );
 
-  std::unique_ptr<QSGGeometryNode> node = std::make_unique< QSGGeometryNode>();
-  std::unique_ptr<QSGGeometry> sgGeom = std::make_unique<QSGGeometry>( QSGGeometry::defaultAttributes_Point2D(), 1 );
+  std::unique_ptr<QSGGeometryNode> node = qgis::make_unique< QSGGeometryNode>();
+  std::unique_ptr<QSGGeometry> sgGeom = qgis::make_unique<QSGGeometry>( QSGGeometry::defaultAttributes_Point2D(), 1 );
 
   QSGGeometry::Point2D *vertices = sgGeom->vertexDataAsPoint2D();
   vertices[0].set(

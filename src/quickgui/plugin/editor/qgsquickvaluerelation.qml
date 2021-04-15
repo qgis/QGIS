@@ -32,6 +32,7 @@ Item {
   property var currentFeatureLayerPair: featurePair
   property string widgetType: ""
   property bool isReadOnly: readOnly
+  property real iconSize: fieldItem.height * 0.50
 
   property var model: QgsQuick.FeaturesListModel {
     id: vrModel
@@ -44,7 +45,6 @@ Item {
   anchors {
     left: parent.left
     right: parent.right
-    rightMargin: 10 * QgsQuick.Utils.dp
   }
 
   onCurrentFeatureLayerPairChanged: {
@@ -169,10 +169,11 @@ Item {
       id: textField
       anchors.fill: parent
       readOnly: true
-      font.pixelSize: customStyle.fields.fontPixelSize
+      font.pointSize: customStyle.fields.fontPointSize
       color: customStyle.fields.fontColor
       topPadding: 10 * QgsQuick.Utils.dp
       bottomPadding: 10 * QgsQuick.Utils.dp
+      leftPadding: customStyle.fields.sideMargin
 
       MouseArea {
         anchors.fill: parent
@@ -185,12 +186,13 @@ Item {
 
       Image {
         id: rightArrow
-        source: QgsQuick.Utils.getThemeIcon("ic_angle_right")
-        width: 15
+        source: customStyle.icons.valueRelationMore
+        height: fieldItem.iconSize
+        sourceSize.height: fieldItem.iconSize
+        width: height / 2
         anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: customStyle.fields.sideMargin
         anchors.verticalCenter: parent.verticalCenter
-        height: 30
         smooth: true
         visible: false
       }
@@ -216,6 +218,8 @@ Item {
     comboStyle: customStyle.fields
     textRole: 'FeatureTitle'
     height: parent.height
+    readOnly: isReadOnly
+    iconSize: fieldItem.iconSize
     model: vrModel
 
     Component.onCompleted: {
