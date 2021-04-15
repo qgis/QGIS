@@ -85,6 +85,10 @@ add_library(qgis_quick ${LIBRARY_TYPE}
     ${QGIS_QUICK_GUI_MOC_HDRS}
     ${QGIS_QUICK_GUI_MOC_SRCS}
     ${QGIS_QUICK_GUI_HDRS})
+
+# require c++17
+target_compile_features(qgis_quick PRIVATE cxx_std_17)
+
 target_link_libraries(qgis_quick Qt5::Quick Qt5::Qml Qt5::Xml Qt5::Concurrent Qt5::Positioning qgis_core)
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
   target_link_libraries(qgis_quick Qt5::AndroidExtras)
