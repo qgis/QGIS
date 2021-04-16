@@ -29,6 +29,12 @@ Returns default Z value
 Use for set Z coordinate to new vertex for 2.5d geometries
 %End
 
+    double defaultMValue() const;
+%Docstring
+Returns default M value
+Use for set M coordinate to new vertex for 2.5d geometries
+%End
+
   protected:
 
     static QColor digitizingStrokeColor();

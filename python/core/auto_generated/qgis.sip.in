@@ -114,6 +114,8 @@ The development version
 
     static const double DEFAULT_Z_COORDINATE;
 
+    static const double DEFAULT_M_COORDINATE;
+
     static const double UI_SCALE_FACTOR;
 
     static const double DEFAULT_SNAP_TOLERANCE;
