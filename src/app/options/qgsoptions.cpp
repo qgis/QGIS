@@ -1072,6 +1072,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultZValueSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value() );
   mDefaultZValueSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.defaultValue() );
 
+  mDefaultMValueSpinBox->setValue(
+    mSettings->value( QStringLiteral( "/qgis/digitizing/default_m_value" ), Qgis::DEFAULT_M_COORDINATE ).toDouble()
+  );
+  mDefaultMValueSpinBox->setClearValue( Qgis::DEFAULT_M_COORDINATE );
+
   //default snap mode
   mSnappingEnabledDefault->setChecked( QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value() );
 
@@ -1752,6 +1757,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingLineGhost.setValue( mLineGhostCheckBox->isChecked() );
 
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( mDefaultZValueSpinBox->value() );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( mDefaultMValueSpinBox->value() );
 
   //default snap mode
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.setValue( mSnappingEnabledDefault->isChecked() );
