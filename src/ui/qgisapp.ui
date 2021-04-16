@@ -1658,9 +1658,6 @@ Shift+R to enable range selection.</string>
    <property name="text">
     <string>Add SAP HANA Spatial Layer…</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+G</string>
-   </property>
   </action>
   <action name="mActionAddWmsLayer">
    <property name="icon">
