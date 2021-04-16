@@ -176,6 +176,13 @@ class CORE_EXPORT Qgis
     static const double DEFAULT_Z_COORDINATE;
 
     /**
+     * Default M coordinate value for 2.5d geometry
+     *  This value have to be assigned to the M coordinate for the new 2.5d geometry vertex.
+     *  \since QGIS 3.20
+     */
+    static const double DEFAULT_M_COORDINATE;
+
+    /**
      * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
      * to account for differences in the default font sizes across different platforms.
      *  \since QGIS 3.0
