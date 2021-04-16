@@ -362,7 +362,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>959</height>
+                <height>899</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1133,8 +1133,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>1068</height>
+                <width>522</width>
+                <height>1054</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1672,8 +1672,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>695</height>
+                <width>312</width>
+                <height>390</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1864,8 +1864,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>596</width>
-                <height>105</height>
+                <width>533</width>
+                <height>99</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1947,8 +1947,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>637</width>
-                <height>717</height>
+                <width>585</width>
+                <height>690</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2339,8 +2339,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>719</width>
-                <height>1132</height>
+                <width>656</width>
+                <height>1066</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -3144,8 +3144,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>508</width>
-                <height>357</height>
+                <width>482</width>
+                <height>339</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3589,8 +3589,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>630</width>
-                <height>686</height>
+                <width>578</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -4106,8 +4106,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>147</width>
-                <height>251</height>
+                <width>139</width>
+                <height>247</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4286,8 +4286,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>555</width>
-                <height>968</height>
+                <width>843</width>
+                <height>942</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4309,13 +4309,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <string>Feature Creation</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_28">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_19">
-                    <property name="text">
-                     <string>Validate geometries</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="0" colspan="3">
                    <widget class="QCheckBox" name="chkDisableAttributeValuesDlg">
                     <property name="text">
@@ -4323,6 +4316,20 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                     <property name="tristate">
                      <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="mDefaultMValueLabel">
+                    <property name="text">
+                     <string>Default M value</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="mDefaultZValueLabel">
+                    <property name="text">
+                     <string>Default Z value</string>
                     </property>
                    </widget>
                   </item>
@@ -4339,6 +4346,23 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </spacer>
                   </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_19">
+                    <property name="text">
+                     <string>Validate geometries</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="mValidateGeometries">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="1" column="0" colspan="3">
                    <widget class="QCheckBox" name="chkReuseLastValues">
                     <property name="text">
@@ -4346,13 +4370,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                     <property name="tristate">
                      <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="mDefaultZValueLabel">
-                    <property name="text">
-                     <string>Default Z value</string>
                     </property>
                    </widget>
                   </item>
@@ -4372,13 +4389,19 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="mValidateGeometries">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
+                  <item row="4" column="2">
+                   <widget class="QgsDoubleSpinBox" name="mDefaultMValueSpinBox">
+                    <property name="decimals">
+                     <number>3</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-999999.998999999952503</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>1.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -4960,8 +4983,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>494</width>
-                <height>539</height>
+                <width>448</width>
+                <height>520</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -5241,8 +5264,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>457</width>
-                <height>419</height>
+                <width>415</width>
+                <height>403</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -5513,8 +5536,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>657</width>
-                <height>669</height>
+                <width>595</width>
+                <height>639</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5994,7 +6017,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
