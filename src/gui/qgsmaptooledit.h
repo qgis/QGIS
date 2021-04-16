@@ -44,6 +44,12 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      */
     double defaultZValue() const;
 
+    /**
+     * Returns default M value
+     * Use for set M coordinate to new vertex for 2.5d geometries
+     */
+    double defaultMValue() const;
+
   private slots:
     //! Vector layers' editingStopped SIGNAL will eventually trigger a clean
     void connectLayers( const QList<QgsMapLayer *> &layers );

@@ -39,6 +39,11 @@ double QgsMapToolEdit::defaultZValue() const
   return QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value();
 }
 
+double QgsMapToolEdit::defaultMValue() const
+{
+  return QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_m_value" ), Qgis::DEFAULT_M_COORDINATE ).toDouble();
+}
+
 QColor QgsMapToolEdit::digitizingStrokeColor()
 {
   return QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
