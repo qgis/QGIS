@@ -120,6 +120,13 @@ class CORE_EXPORT QgsSettingsEntryBase
     QString key( const QStringList &dynamicKeyPartList ) const;
 
     /**
+     * Returns true if the provided key match the settings entry
+     *
+     * The \a key to check
+     */
+    bool checkKey( const QString &key ) const;
+
+    /**
      * Returns settings entry defining key.
      * For dynamic settings it return the key with the placeholder for dynamic part
      * included. For non-dynamic settings returns the same as key().

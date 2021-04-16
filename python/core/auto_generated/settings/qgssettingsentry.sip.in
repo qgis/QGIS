@@ -84,6 +84,13 @@ Get settings entry key.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
+    bool checkKey( const QString &key ) const;
+%Docstring
+Returns true if the provided key match the settings entry
+
+The ``key`` to check
+%End
+
     QString definitionKey() const;
 %Docstring
 Returns settings entry defining key.

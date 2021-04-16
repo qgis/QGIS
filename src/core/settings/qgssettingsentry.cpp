@@ -83,14 +83,24 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
   return completeKey;
 }
 
+bool QgsSettingsEntryBase::checkKey( const QString &key ) const
+{
+  if ( !hasDynamicKey() )
+    return key == QgsSettingsEntryBase::key();
+
+  QRegularExpression regularExpression( definitionKey().replace( QRegularExpression( "%\\d+" ), ".*" ) );
+  QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( key );
+  return regularExpresisonMatch.hasMatch();
+}
+
 QString QgsSettingsEntryBase::definitionKey() const
 {
   QString completeKey = mKey;
   if ( !mPluginName.isEmpty() )
   {
-    if ( completeKey.startsWith( '/' ) )
-      completeKey.remove( 0, 1 );
-    completeKey.prepend( mPluginName + "/" );
+    if ( !completeKey.startsWith( "/" ) )
+      completeKey.prepend( "/" );
+    completeKey.prepend( mPluginName );
   }
 
   return completeKey;

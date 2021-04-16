@@ -43,9 +43,7 @@ const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString
   const QMap<QString, const QgsSettingsEntryBase *> dynamicSettingsEntriesMap = mDynamicSettingsEntriesMap;
   for ( const QgsSettingsEntryBase *settingsEntry : dynamicSettingsEntriesMap )
   {
-    QRegularExpression regularExpression( settingsEntry->key( ".*" ) );
-    QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( key );
-    if ( regularExpresisonMatch.hasMatch() )
+    if ( settingsEntry->checkKey( key ) )
       return settingsEntry;
   }
 
