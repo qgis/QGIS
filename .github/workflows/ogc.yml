@@ -47,12 +47,12 @@ jobs:
         run: |
           sudo apt-get install python3-virtualenv virtualenv git
           git clone https://github.com/pblottiere/pyogctest
-          cd pyogctest && git checkout 1.0.2 && cd -
+          cd pyogctest && git checkout 1.0.3 && cd -
           virtualenv -p /usr/bin/python3 venv && source venv/bin/activate && pip install -e pyogctest/
 
-      - name: Download WMS 1.3.0 dataset
+      - name: Extract WMS 1.3.0 dataset
         run: |
-          source venv/bin/activate && ./pyogctest/pyogctest.py -s wms130 -w
+          source venv/bin/activate && ./pyogctest/pyogctest.py -s wms130 -e
 
       - name: Run WMS 1.3.0 OGC tests
         run: |
