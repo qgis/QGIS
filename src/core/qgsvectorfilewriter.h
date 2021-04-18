@@ -37,10 +37,12 @@ class QgsFeatureIterator;
 
 /**
  * \ingroup core
-  * \brief A convenience class for writing vector files to disk.
- There are two possibilities how to use this class:
- 1. static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer
- 2. create an instance of the class and issue calls to addFeature(...)
+ * \brief A convenience class for writing vector layers to disk based formats (e.g. Shapefiles, GeoPackage).
+ *
+ * There are two possibilities how to use this class:
+ *
+ * 1. A static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer.
+ * 2. Create an instance of the class and issue calls to addFeature(...).
  */
 class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 {

@@ -14,6 +14,7 @@ class QgsRendererWidget : QgsPanelWidget
 Base class for renderer settings widgets.
 
 WORKFLOW:
+
 - open renderer dialog with some RENDERER  (never null!)
 - find out which widget to use
 - instantiate it and set in stacked widget

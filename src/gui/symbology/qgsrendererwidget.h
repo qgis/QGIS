@@ -33,13 +33,14 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \brief Base class for renderer settings widgets.
-
-WORKFLOW:
-- open renderer dialog with some RENDERER  (never null!)
-- find out which widget to use
-- instantiate it and set in stacked widget
-- on any change of renderer type, create some default (dummy?) version and change the stacked widget
-- when clicked OK/Apply, get the renderer from active widget and clone it for the layer
+ *
+ * WORKFLOW:
+ *
+ * - open renderer dialog with some RENDERER  (never null!)
+ * - find out which widget to use
+ * - instantiate it and set in stacked widget
+ * - on any change of renderer type, create some default (dummy?) version and change the stacked widget
+ * - when clicked OK/Apply, get the renderer from active widget and clone it for the layer
 */
 class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 {
