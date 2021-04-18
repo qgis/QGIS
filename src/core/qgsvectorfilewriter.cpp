@@ -1015,7 +1015,8 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "*.fgb" ),
                                QStringLiteral( "fgb" ),
                                datasetOptions,
-                               layerOptions
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
                              )
                            );
 #endif
