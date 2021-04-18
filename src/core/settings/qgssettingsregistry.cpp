@@ -27,7 +27,7 @@
 
 QgsSettingsRegistry::QgsSettingsRegistry()
   : mSettingsEntriesMap()
-  , mDynamicSettingsEntriesMap()
+  , mSettingsRegistryChildList()
 {
 }
 
@@ -35,25 +35,70 @@ QgsSettingsRegistry::~QgsSettingsRegistry()
 {
 }
 
-const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString &key )
+void QgsSettingsRegistry::addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
 {
-  if ( mSettingsEntriesMap.contains( key ) )
-    return mSettingsEntriesMap.value( key );
+  if ( settingsEntry == nullptr )
+  {
+    QgsLogger::warning( QStringLiteral( "Trying to register a nullptr settings entry." ) );
+    return;
+  }
 
-  const QMap<QString, const QgsSettingsEntryBase *> dynamicSettingsEntriesMap = mDynamicSettingsEntriesMap;
-  for ( const QgsSettingsEntryBase *settingsEntry : dynamicSettingsEntriesMap )
+  if ( mSettingsEntriesMap.contains( settingsEntry->definitionKey() ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Settings with key '%1' is already registered." ).arg( settingsEntry->definitionKey() ) );
+    return;
+  }
+
+  mSettingsEntriesMap.insert( settingsEntry->definitionKey(), settingsEntry );
+}
+
+QList<const QgsSettingsEntryBase *> QgsSettingsRegistry::getChildSettingsEntries() const
+{
+  return mSettingsEntriesMap.values();
+}
+
+const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString &key, bool searchChildRegistries ) const
+{
+  // Search in this registry
+  const QMap<QString, const QgsSettingsEntryBase *> settingsEntriesMap = mSettingsEntriesMap;
+  for ( const QgsSettingsEntryBase *settingsEntry : settingsEntriesMap )
   {
     if ( settingsEntry->checkKey( key ) )
       return settingsEntry;
   }
 
+  // Search in child registries
+  if ( searchChildRegistries )
+  {
+    for ( const QgsSettingsRegistry *settingsRegistry : mSettingsRegistryChildList )
+    {
+      const QgsSettingsEntryBase *settingsEntry = settingsRegistry->getSettingsEntry( key, true );
+      if ( settingsEntry != nullptr )
+        return settingsEntry;
+    }
+  }
+
   return nullptr;
 }
 
-void QgsSettingsRegistry::addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
+void QgsSettingsRegistry::addChildSettingsRegistry( const QgsSettingsRegistry *settingsRegistry )
 {
-  if ( settingsEntry->hasDynamicKey() )
-    mDynamicSettingsEntriesMap.insert( settingsEntry->definitionKey(), settingsEntry );
-  else
-    mSettingsEntriesMap.insert( settingsEntry->key(), settingsEntry );
+  if ( settingsRegistry == nullptr )
+  {
+    QgsLogger::warning( QStringLiteral( "Trying to register a nullptr child settings registry." ) );
+    return;
+  }
+
+  if ( mSettingsRegistryChildList.contains( settingsRegistry ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Child register is already registered." ) );
+    return;
+  }
+
+  mSettingsRegistryChildList.append( settingsRegistry );
+}
+
+QList<const QgsSettingsRegistry *> QgsSettingsRegistry::getChildSettingsRegistries() const
+{
+  return mSettingsRegistryChildList;
 }

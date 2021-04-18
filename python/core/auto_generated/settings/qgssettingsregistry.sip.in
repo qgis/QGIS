@@ -31,14 +31,31 @@ Constructor for QgsSettingsRegistry.
 
     virtual ~QgsSettingsRegistry();
 
-    const QgsSettingsEntryBase *getSettingsEntry( const QString &key );
-%Docstring
-Returns the :py:class:`QgsSettingsEntry` with the given ``key`` or None if not found.
-%End
-
     void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
 %Docstring
 Add ``settingsEntry`` to the register.
+%End
+
+    QList<const QgsSettingsEntryBase *> getChildSettingsEntries() const;
+%Docstring
+Returns the list of registered :py:class:`QgsSettingsEntryBase`.
+%End
+
+    const QgsSettingsEntryBase *getSettingsEntry( const QString &key, bool searchChildRegistries = true ) const;
+%Docstring
+Returns the :py:class:`QgsSettingsEntry` with the given ``key`` or None if not found.
+
+The ``searchChildRegistries`` parameter specifies if child registries should be included in the search
+%End
+
+    void addChildSettingsRegistry( const QgsSettingsRegistry *settingsRegistry );
+%Docstring
+Add a child ``settingsRegistry`` to the register.
+%End
+
+    QList<const QgsSettingsRegistry *> getChildSettingsRegistries() const;
+%Docstring
+Returns the list of registered child QgsSettingsRegistry.
 %End
 
 };

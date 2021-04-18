@@ -46,19 +46,37 @@ class CORE_EXPORT QgsSettingsRegistry
     virtual ~QgsSettingsRegistry();
 
     /**
-     * Returns the QgsSettingsEntry with the given \a key or nullptr if not found.
-     */
-    const QgsSettingsEntryBase *getSettingsEntry( const QString &key );
-
-    /**
      * Add \a settingsEntry to the register.
      */
     void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
 
+    /**
+     * Returns the list of registered QgsSettingsEntryBase.
+     */
+    QList<const QgsSettingsEntryBase *> getChildSettingsEntries() const;
+
+    /**
+     * Returns the QgsSettingsEntry with the given \a key or nullptr if not found.
+     *
+     * The \a searchChildRegistries parameter specifies if child registries should be included in the search
+     */
+    const QgsSettingsEntryBase *getSettingsEntry( const QString &key, bool searchChildRegistries = true ) const;
+
+    /**
+     * Add a child \a settingsRegistry to the register.
+     */
+    void addChildSettingsRegistry( const QgsSettingsRegistry *settingsRegistry );
+
+    /**
+     * Returns the list of registered child QgsSettingsRegistry.
+     */
+    QList<const QgsSettingsRegistry *> getChildSettingsRegistries() const;
+
   private:
 
     QMap<QString, const QgsSettingsEntryBase *> mSettingsEntriesMap;
-    QMap<QString, const QgsSettingsEntryBase *> mDynamicSettingsEntriesMap;
+
+    QList<const QgsSettingsRegistry *> mSettingsRegistryChildList;
 
 };
 

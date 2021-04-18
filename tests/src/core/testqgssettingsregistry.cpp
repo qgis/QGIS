@@ -32,6 +32,7 @@ class TestQgsSettingsRegistry : public QObject
   private slots:
     void getSettingsEntries();
     void getSettingsEntriesWithDynamicKeys();
+    void childRegistry();
 };
 
 void TestQgsSettingsRegistry::getSettingsEntries()
@@ -44,6 +45,7 @@ void TestQgsSettingsRegistry::getSettingsEntries()
   QString settingsEntryInexisting( "/qgis/testing/settingsEntryInexisting" );
 
   QgsSettingsRegistry settingsRegistry;
+  settingsRegistry.addSettingsEntry( nullptr ); // should not crash
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
   settingsRegistry.addSettingsEntry( &settingsEntryInteger );
 
@@ -75,6 +77,28 @@ void TestQgsSettingsRegistry::getSettingsEntriesWithDynamicKeys()
   QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryDoubleKey ), &settingsEntryDouble );
   QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryDoubleKey.replace( "%1", "1st" ).replace( "%2", "2nd" ) ), &settingsEntryDouble );
   QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryInexisting ), nullptr );
+}
+
+void TestQgsSettingsRegistry::childRegistry()
+{
+  QString settingsEntryBoolKey( "/qgis/testing/settingsEntryBool" );
+  QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, QgsSettings::NoSection, false );
+  QString settingsEntryIntegerKey( "/qgis/testing/settingsEntryInteger" );
+  QgsSettingsEntryBool settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
+
+  QgsSettingsRegistry settingsRegistryChild;
+  settingsRegistryChild.addSettingsEntry( &settingsEntryInteger );
+
+  QgsSettingsRegistry settingsRegistry;
+  settingsRegistry.addSettingsEntry( &settingsEntryBool );
+  settingsRegistry.addChildSettingsRegistry( nullptr ); // should not crash
+  settingsRegistry.addChildSettingsRegistry( &settingsRegistryChild );
+
+  // Search only in parent
+  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryIntegerKey, false ), nullptr );
+
+  // Search including child registries
+  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryIntegerKey, true ), &settingsEntryInteger );
 }
 
 QGSTEST_MAIN( TestQgsSettingsRegistry )
