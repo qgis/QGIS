@@ -264,14 +264,17 @@ void QgsLayerTreeLayer::updateSymbolExpressions()
     return;
 
   mSymbolExpressions.clear();
-  if ( layer->renderer()->type() == QLatin1String( "singleSymbol" ) ) //no need to convert if only one symbol
+  QString renderType = layer->renderer()->type();
+  if ( renderType == QLatin1String( "nullSymbol" ) )
+    return;
+  else if ( renderType == QLatin1String( "singleSymbol" ) ) //no need to convert if only one symbol
   {
     mSymbolExpressions.insert( layer->renderer()->legendSymbolItems()[0].ruleKey(), "TRUE" );
   }
   else
   {
     QgsRuleBasedRenderer *renderer;
-    if ( layer->renderer()->type() == QLatin1String( "RuleRenderer" ) )
+    if ( renderType == QLatin1String( "RuleRenderer" ) )
     {
       renderer = dynamic_cast<QgsRuleBasedRenderer *>( layer->renderer() );
       mConvertRuleKeys = false;
