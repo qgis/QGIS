@@ -83,6 +83,9 @@ void QgsLayerTreeLayer::attachToLayer()
 
   connect( mRef.layer, &QgsMapLayer::nameChanged, this, &QgsLayerTreeLayer::layerNameChanged );
   connect( mRef.layer, &QgsMapLayer::willBeDeleted, this, &QgsLayerTreeLayer::layerWillBeDeleted );
+
+  if ( qobject_cast<QgsVectorLayer *>( mRef.get() ) )
+    connect( mRef.layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeLayer::updateSymbolExpressions );
 }
 
 
@@ -252,6 +255,7 @@ QString QgsLayerTreeLayer::symbolExpression( const QString &ruleKey )
 
 void QgsLayerTreeLayer::updateSymbolExpressions()
 {
+
   if ( ! mRef )
     return;
 
