@@ -13,21 +13,19 @@ INCLUDE ("@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake")
 # so we don't have to extract it from binaries
 # leave main qgis executable and qgis_help with executable_paths
 
-IF (@OSX_HAVE_LOADERPATH@)
-    MESSAGE (STATUS "Updating QGIS library paths...")
-    # inter-library links - do all combos, many will be noops
-    FOREACH (QL ${QGFWLIST})
-        GET_INSTALL_NAME ("${QFWDIR}/${QL}.framework/${QL}" ${QL}.framework QQ)
-        SET (QFW_CHG "${QQ}")
-        UPDATEQGISPATHS ("${QFW_CHG}" ${QL})
-        # change id of the framework
-        IF (NOT @QGIS_MACAPP_INSTALL_DEV@)
-            EXECUTE_PROCESS(COMMAND install_name_tool -id "${ATEXECUTABLE}/${QGIS_FW_SUBDIR}/${QL}.framework/${QL}" "${QFWDIR}/${QL}.framework/${QL}")
-        ENDIF ()
-    ENDFOREACH (QL)
-    FOREACH (QLIB ${QGLIBLIST})
-        GET_INSTALL_NAME ("${QLIBDIR}/${QLIB}" ${QLIB} QQ)
-        SET (QLIB_CHG "${QQ}")
-        UPDATEQGISPATHS ("${QLIB_CHG}" ${QLIB})
-    ENDFOREACH (QLIB)
-ENDIF (@OSX_HAVE_LOADERPATH@)
+MESSAGE (STATUS "Updating QGIS library paths...")
+# inter-library links - do all combos, many will be noops
+FOREACH (QL ${QGFWLIST})
+    GET_INSTALL_NAME ("${QFWDIR}/${QL}.framework/${QL}" ${QL}.framework QQ)
+    SET (QFW_CHG "${QQ}")
+    UPDATEQGISPATHS ("${QFW_CHG}" ${QL})
+    # change id of the framework
+    IF (NOT @QGIS_MACAPP_INSTALL_DEV@)
+        EXECUTE_PROCESS(COMMAND install_name_tool -id "${ATEXECUTABLE}/${QGIS_FW_SUBDIR}/${QL}.framework/${QL}" "${QFWDIR}/${QL}.framework/${QL}")
+    ENDIF ()
+ENDFOREACH (QL)
+FOREACH (QLIB ${QGLIBLIST})
+    GET_INSTALL_NAME ("${QLIBDIR}/${QLIB}" ${QLIB} QQ)
+    SET (QLIB_CHG "${QQ}")
+    UPDATEQGISPATHS ("${QLIB_CHG}" ${QLIB})
+ENDFOREACH (QLIB)
