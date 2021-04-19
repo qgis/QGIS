@@ -220,7 +220,7 @@ void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
   PointSnapItem *item = new PointSnapItem( idx, isEndPoint );
   GEOSSTRtree_insert_r( geosctxt, mSTRTree, point.get(), item );
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR<9
-  mSTRTreeItems.push_back( std::move( point ) );
+  mSTRTreeItems.emplace_back( std::move( point ) );
 #endif
   mSnapItems << item;
 }
