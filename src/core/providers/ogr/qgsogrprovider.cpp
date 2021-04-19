@@ -3235,21 +3235,14 @@ QString  QgsOgrProvider::description() const
 
 
 /**
-
-  Convenience function for readily creating file filters.
-
-  Given a long name for a file filter and a regular expression, return
-  a file filter string suitable for use in a QFileDialog::OpenFiles()
-  call.  The regular express, glob, will have both all lower and upper
-  case versions added.
-
-  \note
-
-  Copied from qgisapp.cpp.
-
-  \todo XXX This should probably be generalized and moved to a standard
-            utility type thingy.
-
+ *  Convenience function for readily creating file filters.
+ *
+ *  Given a long name for a file filter and a regular expression, return
+ *  a file filter string suitable for use in a QFileDialog::OpenFiles()
+ *  call.  The regular express, glob, will have both all lower and upper
+ *  case versions added.
+ *  \note Copied from qgisapp.cpp.
+ *  \todo XXX This should probably be generalized and moved to a standard utility type thingy.
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
@@ -3973,11 +3966,12 @@ QgsOgrProvider *QgsOgrProviderMetadata::createProvider( const QString &uri, cons
 
 /**
  * Creates an empty data source
-\param uri location to store the file(s)
-\param format data format (e.g. "ESRI Shapefile")
-\param vectortype point/line/polygon or multitypes
-\param attributes a list of name/type pairs for the initial attributes
-\return true in case of success*/
+ * \param uri location to store the file(s)
+ * \param format data format (e.g. "ESRI Shapefile")
+ * \param vectortype point/line/polygon or multitypes
+ * \param attributes a list of name/type pairs for the initial attributes
+ * \return true in case of success
+*/
 bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     const QString &format,
     const QString &encoding,

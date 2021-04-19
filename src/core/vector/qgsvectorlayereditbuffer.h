@@ -42,7 +42,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     //! Returns TRUE if the provider has been modified since the last commit
     virtual bool isModified() const;
 
-
     /**
      * Adds a feature
      * \param f feature to add
@@ -73,12 +72,12 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     virtual bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues );
 
     /**
-     * Add an attribute field (but does not commit it)
-        returns true if the field was added
+     * Adds an attribute field (but does not commit it)
+     * returns TRUE if the field was added
     */
     virtual bool addAttribute( const QgsField &field );
 
-    //! Delete an attribute field (but does not commit it)
+    //! Deletes an attribute field (but does not commit it)
     virtual bool deleteAttribute( int attr );
 
     /**
@@ -90,19 +89,19 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     virtual bool renameAttribute( int attr, const QString &newName );
 
     /**
-      Attempts to commit any changes to disk.  Returns the result of the attempt.
-      If a commit fails, the in-memory changes are left alone.
-
-      This allows editing to continue if the commit failed on e.g. a
-      disallowed value in a Postgres database - the user can re-edit and try
-      again.
-
-      The commits occur in distinct stages,
-      (add attributes, add features, change attribute values, change
-      geometries, delete features, delete attributes)
-      so if a stage fails, it's difficult to roll back cleanly.
-      Therefore any error message also includes which stage failed so
-      that the user has some chance of repairing the damage cleanly.
+     * Attempts to commit any changes to disk.  Returns the result of the attempt.
+     * If a commit fails, the in-memory changes are left alone.
+     *
+     * This allows editing to continue if the commit failed on e.g. a
+     * disallowed value in a Postgres database - the user can re-edit and try
+     * again.
+     *
+     * The commits occur in distinct stages,
+     * (add attributes, add features, change attribute values, change
+     * geometries, delete features, delete attributes)
+     * so if a stage fails, it's difficult to roll back cleanly.
+     * Therefore any error message also includes which stage failed so
+     * that the user has some chance of repairing the damage cleanly.
      */
     virtual bool commitChanges( QStringList &commitErrors );
 
@@ -285,8 +284,8 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /**
      * Deleted feature IDs which are not committed.  Note a feature can be added and then deleted
-        again before the change is committed - in that case the added feature would be removed
-        from mAddedFeatures only and *not* entered here.
+     * again before the change is committed - in that case the added feature would be removed
+     * from mAddedFeatures only and *not* entered here.
      */
     QgsFeatureIds mDeletedFeatureIds;
 

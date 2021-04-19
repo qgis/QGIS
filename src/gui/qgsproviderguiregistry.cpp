@@ -39,11 +39,11 @@
 
 /**
  * Convenience function for finding any existing data providers that match "providerKey"
-
-  Necessary because [] map operator will create a QgsProviderGuiMetadata
-  instance.  Also you cannot use the map [] operator in const members for that
-  very reason.  So there needs to be a convenient way to find a data provider
-  without accidentally adding a null meta data item to the metadata map.
+ *
+ * Necessary because [] map operator will create a QgsProviderGuiMetadata
+ * instance.  Also you cannot use the map [] operator in const members for that
+ * very reason.  So there needs to be a convenient way to find a data provider
+ * without accidentally adding a null meta data item to the metadata map.
 */
 static
 QgsProviderGuiMetadata *findMetadata_( QgsProviderGuiRegistry::GuiProviders const &metaData,

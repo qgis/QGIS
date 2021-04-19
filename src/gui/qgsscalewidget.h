@@ -30,7 +30,7 @@ class QgsMapCanvas;
  * \ingroup gui
  * \brief A combobox which lets the user select map scale from predefined list
  * and highlights nearest to current scale value
- **/
+ */
 class GUI_EXPORT QgsScaleWidget : public QWidget
 {
     Q_OBJECT
@@ -43,7 +43,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     /**
      * \brief QgsScaleWidget creates a combobox which lets the user select map scale from predefined list
      * and highlights nearest to current scale value
-     **/
+     */
     explicit QgsScaleWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**

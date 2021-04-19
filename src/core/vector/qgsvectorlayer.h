@@ -2894,8 +2894,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Set holding the feature IDs that are activated.  Note that if a feature
-        subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds),
-        it always needs to be removed from mSelectedFeatureIds as well.
+     * subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds),
+     * it always needs to be removed from mSelectedFeatureIds as well.
      */
     QgsFeatureIds mSelectedFeatureIds;
 

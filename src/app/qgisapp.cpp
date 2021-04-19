@@ -494,15 +494,7 @@ class QgsUserProfile;
 
 /**
  * Set the application title bar text
-
-  If the current project title is null
-  if the project file is null then
-  set title text to just application name
-  else
-  set set title text to the project file name
-  else
-  set the title text to project title
-  */
+ */
 static void setTitleBarText_( QWidget &qgisApp )
 {
   QString caption;
@@ -548,7 +540,7 @@ static void setTitleBarText_( QWidget &qgisApp )
 }
 
 /**
- Creator function for output viewer
+ * Creator function for output viewer
 */
 static QgsMessageOutput *messageOutputViewer_()
 {

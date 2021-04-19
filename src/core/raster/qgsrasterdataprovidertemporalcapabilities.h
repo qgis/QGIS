@@ -48,14 +48,14 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     /**
      * Method to use when resolving a temporal range to a data provider layer or band.
-     **/
+     */
     enum IntervalHandlingMethod
     {
       MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
       MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
       MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
-      FindClosestMatchToStartOfRange, //! Match the start of the temporal range to the least previous closest datetime.
-      FindClosestMatchToEndOfRange //! Match the end of the temporal range to the least previous closest datetime.
+      FindClosestMatchToStartOfRange, //!< Match the start of the temporal range to the least previous closest datetime.
+      FindClosestMatchToEndOfRange //!< Match the end of the temporal range to the least previous closest datetime.
     };
     // TODO -- add other methods
 
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * layers or bands in the data provider.
      *
      *\see setIntervalHandlingMethod()
-    **/
+    */
     IntervalHandlingMethod intervalHandlingMethod() const;
 
     /**
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * layers or bands in the data provider.
      *
      *\see intervalHandlingMethod()
-    **/
+    */
     void setIntervalHandlingMethod( IntervalHandlingMethod method );
 
     /**

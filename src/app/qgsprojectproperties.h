@@ -61,7 +61,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void setCurrentPage( const QString & );
 
     /**
-       Every project has a title
+      * Every project has a title
      */
     QString title() const;
     void title( QString const &title );

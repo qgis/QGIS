@@ -74,15 +74,14 @@ class QgsCoordinateReferenceSystemRegistry;
  * as theme paths, database paths etc.
  *
  * This is a subclass of QApplication and should be instantiated in place of
-  QApplication. Most methods are static in keeping with the design of QApplication.
-
-  This class hides platform-specific path information and provides
-  a portable way of referencing specific files and directories.
-  Ideally, hard-coded paths should appear only here and not in other modules
-  so that platform-conditional code is minimized and paths are easier
-  to change due to centralization.
+ * QApplication. Most methods are static in keeping with the design of QApplication.
+ *
+ * This class hides platform-specific path information and provides
+ * a portable way of referencing specific files and directories.
+ * Ideally, hard-coded paths should appear only here and not in other modules
+ * so that platform-conditional code is minimized and paths are easier
+ * to change due to centralization.
  */
-
 class CORE_EXPORT QgsApplication : public QApplication
 {
 
@@ -285,7 +284,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString translatorsFilePath();
 
     /**
-      Returns the path to the licence file.
+     * Returns the path to the licence file.
      */
     static QString licenceFilePath();
 

@@ -35,7 +35,7 @@ class QgsAnimatedIcon;
  * When using QgsFilterLineEdit the value(), setValue() and clearValue() methods should be used
  * instead of QLineEdit's text(), setText() and clear() methods, and the valueChanged()
  * signal should be used instead of textChanged().
- **/
+ */
 class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
 

@@ -10,7 +10,6 @@
 
 
 
-
 class QgsExpression
 {
 %Docstring(signature="appended")
@@ -20,15 +19,15 @@ The expressions try to follow both syntax and semantics of SQL expressions.
 Usage:
 .. code-block:: python
 
-    exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
-    if exp.hasParserError():
-    # show error message with parserErrorString() and exit
+       exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
+       if exp.hasParserError():
+           # show error message with parserErrorString() and exit
 
-    result = exp.evaluate(feature, fields)
-    if exp.hasEvalError():
-    # show error message with evalErrorString()
-    else:
-    # examine the result
+       result = exp.evaluate(feature, fields)
+       if exp.hasEvalError():
+           # show error message with evalErrorString()
+       else:
+           # examine the result
 
 Three Value Logic
 -----------------

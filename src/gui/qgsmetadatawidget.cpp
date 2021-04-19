@@ -1104,6 +1104,7 @@ void QgsMetadataWidget::removeSelectedCategories()
   mDefaultCategoriesModel->sort( 0 );
 }
 
+///@cond PRIVATE
 LinkItemDelegate::LinkItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
@@ -1159,3 +1160,4 @@ QWidget *ConstraintItemDelegate::createEditor( QWidget *parent, const QStyleOpti
 
   return QStyledItemDelegate::createEditor( parent, option, index );
 }
+///@endcond
