@@ -174,7 +174,6 @@
 %Include auto_generated/qgsruntimeprofiler.sip
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
-%Include auto_generated/qgssettings.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgssnappingutils.sip
@@ -602,6 +601,7 @@
 %Include auto_generated/textrenderer/qgstextrenderer.sip
 %Include auto_generated/textrenderer/qgstextrendererutils.sip
 %Include auto_generated/textrenderer/qgstextshadowsettings.sip
+%Include auto_generated/settings/qgssettings.sip
 %Include auto_generated/settings/qgssettingsentry.sip
 %Include auto_generated/settings/qgssettingsregistry.sip
 %Include auto_generated/settings/qgssettingsregistrycore.sip

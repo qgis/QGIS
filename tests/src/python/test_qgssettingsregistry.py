@@ -23,13 +23,8 @@ start_app()
 
 class PyQgsSettingsRegistry(unittest.TestCase):
 
-    cnt = 0
-
     def setUp(self):
         self.pluginName = "UnitTestSettingsRegistry"
-
-    def tearDown(self):
-        pass
 
     def test_settings_registry(self):
 

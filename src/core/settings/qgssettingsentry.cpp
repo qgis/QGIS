@@ -85,11 +85,20 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
 
 bool QgsSettingsEntryBase::checkKey( const QString &key ) const
 {
+  QString completeKey = key;
+  if ( !mPluginName.isEmpty()
+       && !completeKey.startsWith( mPluginName ) )
+  {
+    if ( !completeKey.startsWith( "/" ) )
+      completeKey.prepend( "/" );
+    completeKey.prepend( mPluginName );
+  }
+
   if ( !hasDynamicKey() )
-    return key == QgsSettingsEntryBase::key();
+    return completeKey == QgsSettingsEntryBase::key();
 
   QRegularExpression regularExpression( definitionKey().replace( QRegularExpression( "%\\d+" ), ".*" ) );
-  QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( key );
+  QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( completeKey );
   return regularExpresisonMatch.hasMatch();
 }
 
