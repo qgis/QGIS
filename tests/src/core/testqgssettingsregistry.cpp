@@ -59,9 +59,9 @@ void TestQgsSettingsRegistry::getSettingsEntriesWithDynamicKeys()
   QString settingsEntryBoolKey( "/qgis/testing/%1_settingsEntryBool" );
   QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, QgsSettings::NoSection, false );
   QString settingsEntryIntegerKey( "/qgis/testing/%1/settingsEntryInteger" );
-  QgsSettingsEntryBool settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
+  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
   QString settingsEntryDoubleKey( "/qgis/testing/%1/settingsEntryDouble_%2" );
-  QgsSettingsEntryBool settingsEntryDouble( settingsEntryDoubleKey, QgsSettings::NoSection, 1.23 );
+  QgsSettingsEntryDouble settingsEntryDouble( settingsEntryDoubleKey, QgsSettings::NoSection, 1.23 );
 
   QString settingsEntryInexisting( "/qgis/testing/settingsEntryInexisting%1" );
 
@@ -84,7 +84,7 @@ void TestQgsSettingsRegistry::childRegistry()
   QString settingsEntryBoolKey( "/qgis/testing/settingsEntryBool" );
   QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, QgsSettings::NoSection, false );
   QString settingsEntryIntegerKey( "/qgis/testing/settingsEntryInteger" );
-  QgsSettingsEntryBool settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
+  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
 
   QgsSettingsRegistry settingsRegistryChild;
   settingsRegistryChild.addSettingsEntry( &settingsEntryInteger );

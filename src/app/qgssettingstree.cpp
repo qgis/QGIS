@@ -45,6 +45,8 @@
 #include "qgsvariantdelegate.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgssettingsentry.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsapplication.h"
 
 #include <QMenu>
@@ -319,7 +321,17 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
     item->setFlags( item->flags() | Qt::ItemIsEditable );
 
   item->setData( 0, TypeRole, isGroup ? Group : Setting );
-  item->setData( 0, PathRole, mSettings->group().isEmpty() ? text : mSettings->group() + '/' + text );
+
+  QString completeSettingsPath = mSettings->group().isEmpty() ? text : mSettings->group() + '/' + text;
+  item->setData( 0, PathRole, completeSettingsPath );
+
+  // If settings registered add description
+  if ( !isGroup )
+  {
+    const QgsSettingsEntryBase *settingsEntry = QgsApplication::settingsRegistryCore()->getSettingsEntry( completeSettingsPath, true );
+    if ( settingsEntry != nullptr )
+      item->setText( 3, settingsEntry->description() );
+  }
 
   QString key = itemKey( item );
   QgsDebugMsgLevel( key, 4 );
@@ -331,8 +343,6 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
     item->setToolTip( 0, values.at( 1 ) );
     item->setToolTip( 2, values.at( 1 ) );
   }
-
-  // if ( settingsMap.contains(
 
   return item;
 }

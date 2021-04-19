@@ -85,20 +85,40 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
 
 bool QgsSettingsEntryBase::checkKey( const QString &key ) const
 {
-  QString completeKey = key;
-  if ( !mPluginName.isEmpty()
-       && !completeKey.startsWith( mPluginName ) )
+  // Key to check
+  QString completeKeyToCheck = key;
+
+  QString settingsPrefix = QgsSettings().prefixedKey( "", section() );
+  settingsPrefix.chop( 1 );
+  if ( !completeKeyToCheck.startsWith( settingsPrefix ) )
   {
-    if ( !completeKey.startsWith( "/" ) )
-      completeKey.prepend( "/" );
-    completeKey.prepend( mPluginName );
+    if ( !mPluginName.isEmpty()
+         && !completeKeyToCheck.startsWith( mPluginName ) )
+    {
+      if ( !completeKeyToCheck.startsWith( "/" ) )
+        completeKeyToCheck.prepend( "/" );
+      completeKeyToCheck.prepend( mPluginName );
+    }
+
+    if ( !completeKeyToCheck.startsWith( "/" ) )
+      completeKeyToCheck.prepend( "/" );
+    completeKeyToCheck.prepend( settingsPrefix );
+  }
+
+  // Prefixed settings key
+  QString prefixedSettingsKey = definitionKey();
+  if ( !prefixedSettingsKey.startsWith( settingsPrefix ) )
+  {
+    if ( !prefixedSettingsKey.startsWith( "/" ) )
+      prefixedSettingsKey.prepend( "/" );
+    prefixedSettingsKey.prepend( settingsPrefix );
   }
 
   if ( !hasDynamicKey() )
-    return completeKey == QgsSettingsEntryBase::key();
+    return completeKeyToCheck == prefixedSettingsKey;
 
-  QRegularExpression regularExpression( definitionKey().replace( QRegularExpression( "%\\d+" ), ".*" ) );
-  QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( completeKey );
+  QRegularExpression regularExpression( prefixedSettingsKey.replace( QRegularExpression( "%\\d+" ), ".*" ) );
+  QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( completeKeyToCheck );
   return regularExpresisonMatch.hasMatch();
 }
 
