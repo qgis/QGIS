@@ -654,12 +654,12 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
 int QgsNetworkAccessManager::timeout()
 {
-  return settingsNetworkTimeout.value();
+  return QgsSettings().value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 60000 ).toInt();
 }
 
 void QgsNetworkAccessManager::setTimeout( const int time )
 {
-  settingsNetworkTimeout.setValue( time );
+  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), time );
 }
 
 QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )

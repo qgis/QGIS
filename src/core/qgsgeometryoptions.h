@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsgeometry.h"
-#include "qgssettingsentry.h"
 
 #include <QObject>
 
@@ -131,9 +130,6 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      * \since QGIS 3.4
      */
     void readXml( const QDomNode &node );
-
-    //! Settings entry search path for templates
-    static const inline QgsSettingsEntryString settingsGeometryValidationDefaultChecks = QgsSettingsEntryString( QStringLiteral( "geometry_validation/default_checks" ), QgsSettings::NoSection, QString() );
 
   signals:
 

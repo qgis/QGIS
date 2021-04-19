@@ -174,7 +174,8 @@ void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
 
 QgsGui::HigFlags QgsGui::higFlags()
 {
-  if ( QgsApplication::settingsLocaleUserLocale.value().startsWith( QLatin1String( "en" ) ) )
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString().startsWith( QLatin1String( "en" ) ) )
   {
     return HigMenuTextIsTitleCase | HigDialogTitleIsTitleCase;
   }

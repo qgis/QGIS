@@ -29,7 +29,6 @@
 
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
-#include "qgssettingsentry.h"
 
 
 class QgsLabelingEngine;
@@ -343,9 +342,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * \since QGIS 3.18
      */
     static const QString LABEL_PREVIEW_CACHE_ID SIP_SKIP;
-
-    //! Settings entry log canvas refresh event
-    static const inline QgsSettingsEntryBool settingsLogCanvasRefreshEvent = QgsSettingsEntryBool( QStringLiteral( "Map/logCanvasRefreshEvent" ), QgsSettings::NoSection, false );
 
   signals:
 

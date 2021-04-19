@@ -61,7 +61,6 @@ email                : sherman at mrcc.com
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderercache.h"
 #include "qgsmaprenderercustompainterjob.h"
-#include "qgsmaprendererjob.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettingsutils.h"
@@ -706,7 +705,8 @@ void QgsMapCanvas::rendererJobFinished()
     QPainter p( &img );
     emit renderComplete( &p );
 
-    if ( QgsMapRendererJob::settingsLogCanvasRefreshEvent.value() )
+    QgsSettings settings;
+    if ( settings.value( QStringLiteral( "Map/logCanvasRefreshEvent" ), false ).toBool() )
     {
       QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( mJob->renderingTime() );
       QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );

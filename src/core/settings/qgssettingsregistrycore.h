@@ -21,8 +21,6 @@
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 
-#include <QMap>
-
 /**
  * \ingroup core
  * \class QgsSettingsRegistryCore

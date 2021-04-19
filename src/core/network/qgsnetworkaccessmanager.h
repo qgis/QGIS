@@ -31,7 +31,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentry.h"
 
 class QgsFeedback;
 
@@ -499,9 +498,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \since QGIS 3.6
      */
     static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
-
-    //! Settings entry network timeout
-    static const inline QgsSettingsEntryInteger settingsNetworkTimeout = QgsSettingsEntryInteger( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QgsSettings::NoSection, 60000, QObject::tr( "Network timeout" ) );
 
   signals:
 

@@ -17,13 +17,6 @@
 
 #include "qgslayout.h"
 #include "qgslocator.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsnewsfeedparser.h"
-#include "qgsprocessing.h"
-#include "qgsapplication.h"
-#include "qgsgeometryoptions.h"
-#include "qgslocalizeddatapathregistry.h"
-#include "qgsmaprendererjob.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -33,32 +26,9 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsLocator::settingsLocatorFilterEnabled );
   addSettingsEntry( &QgsLocator::settingsLocatorFilterDefault );
   addSettingsEntry( &QgsLocator::settingsLocatorFilterPrefix );
-
-  addSettingsEntry( &QgsNetworkAccessManager::settingsNetworkTimeout );
-
-  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLastFetchTime );
-  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLanguage );
-  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLatitude );
-  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLongitude );
-
-  addSettingsEntry( &QgsProcessing::settingsPreferFilenameAsLayerName );
-  addSettingsEntry( &QgsProcessing::settingsTempPath );
-  addSettingsEntry( &QgsProcessing::settingsDefaultOutputVectorLayerExt );
-  addSettingsEntry( &QgsProcessing::settingsDefaultOutputRasterLayerExt );
-
-  addSettingsEntry( &QgsApplication::settingsLocaleUserLocale );
-  addSettingsEntry( &QgsApplication::settingsLocaleOverrideFlag );
-  addSettingsEntry( &QgsApplication::settingsLocaleGlobalLocale );
-  addSettingsEntry( &QgsApplication::settingsLocaleShowGroupSeparator );
-  addSettingsEntry( &QgsApplication::settingsSearchPathsForSVG );
-
-  addSettingsEntry( &QgsGeometryOptions::settingsGeometryValidationDefaultChecks );
-
-  addSettingsEntry( &QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths );
-
-  addSettingsEntry( &QgsMapRendererJob::settingsLogCanvasRefreshEvent );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 {
 }
+

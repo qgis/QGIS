@@ -157,8 +157,6 @@ Returns map settings with which this job was started.
 
 
 
-    const QgsSettingsEntryBool settingsLogCanvasRefreshEvent;
-
   signals:
 
     void renderingLayersFinished();

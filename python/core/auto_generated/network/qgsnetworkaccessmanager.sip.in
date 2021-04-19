@@ -321,8 +321,6 @@ The contents of the reply will be returned after the request is completed or an 
 .. versionadded:: 3.6
 %End
 
-    const QgsSettingsEntryInteger settingsNetworkTimeout;
-
   signals:
 
  void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;

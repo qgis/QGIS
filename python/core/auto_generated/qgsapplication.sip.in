@@ -1004,12 +1004,6 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
 .. versionadded:: 3.4
 %End
 
-    const QgsSettingsEntryString settingsLocaleUserLocale;
-    const QgsSettingsEntryBool settingsLocaleOverrideFlag;
-    const QgsSettingsEntryString settingsLocaleGlobalLocale;
-    const QgsSettingsEntryBool settingsLocaleShowGroupSeparator;
-    const QgsSettingsEntryStringList settingsSearchPathsForSVG;
-
 %If (ANDROID)
     //dummy method to workaround sip generation issue
     bool x11EventFilter( XEvent *event );

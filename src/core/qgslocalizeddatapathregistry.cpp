@@ -105,10 +105,10 @@ void QgsLocalizedDataPathRegistry::unregisterPath( const QString &path )
 
 void QgsLocalizedDataPathRegistry::readFromSettings()
 {
-  setPaths( settingsLocalizedDataPaths.value() );
+  setPaths( QgsSettings().value( QStringLiteral( "/qgis/localized_data_paths" ) ).toStringList() );
 }
 
 void QgsLocalizedDataPathRegistry::writeToSettings()
 {
-  settingsLocalizedDataPaths.setValue( paths() );
+  QgsSettings().setValue( QStringLiteral( "/qgis/localized_data_paths" ), paths() );
 }
