@@ -24,7 +24,6 @@
 #include "qgssurface.h"
 #include "qgsmultisurface.h"
 #include "qgscurve.h"
-#include "qgsgeos.h"
 
 #include <QtConcurrentMap>
 #include <geos_c.h>
@@ -199,12 +198,7 @@ QgsSnapIndex::~QgsSnapIndex()
   qDeleteAll( mCoordIdxs );
   qDeleteAll( mSnapItems );
 
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  for ( GEOSGeometry *geom : mSTRTreeItems )
-  {
-    GEOSGeom_destroy_r( geosctxt, geom );
-  }
-  GEOSSTRtree_destroy_r( geosctxt, mSTRTree );
+  GEOSSTRtree_destroy_r( QgsGeos::getGEOSHandler(), mSTRTree );
 }
 
 void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
@@ -226,7 +220,7 @@ void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
   PointSnapItem *item = new PointSnapItem( idx, isEndPoint );
   GEOSSTRtree_insert_r( geosctxt, mSTRTree, point.get(), item );
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR<9
-  mSTRTreeItems << point.release();
+  mSTRTreeItems.push_back( std::move( point ) );
 #endif
   mSnapItems << item;
 }
@@ -257,7 +251,7 @@ void QgsSnapIndex::addSegment( const CoordIdx *idxFrom, const CoordIdx *idxTo )
     SegmentSnapItem *item = new SegmentSnapItem( idxFrom, idxTo );
     GEOSSTRtree_insert_r( geosctxt, mSTRTree, point.get(), item );
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR<9
-    mSTRTreeItems << point.release();
+    mSTRTreeItems.push_back( std::move( point ) );
 #endif
     mSnapItems << item;
   }
