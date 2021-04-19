@@ -199,7 +199,7 @@ class QgsInternalGeometryEngine
     /**
      * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
      * rotated rectangle which fully encompasses the geometry.
-     * The area, angle of the longest axis (clockwise in degrees from North),
+     * The area, angle of the long axis (clockwise in degrees from North),
      * width and height of the rotated bounding box will also be returned.
      *
      * If an error was encountered while creating the result, more information can be retrieved
