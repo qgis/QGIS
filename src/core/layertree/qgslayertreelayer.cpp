@@ -83,9 +83,6 @@ void QgsLayerTreeLayer::attachToLayer()
 
   connect( mRef.layer, &QgsMapLayer::nameChanged, this, &QgsLayerTreeLayer::layerNameChanged );
   connect( mRef.layer, &QgsMapLayer::willBeDeleted, this, &QgsLayerTreeLayer::layerWillBeDeleted );
-
-  if ( qobject_cast<QgsVectorLayer *>( mRef.get() ) )
-    connect( mRef.layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeLayer::updateSymbolExpressions );
 }
 
 
@@ -247,8 +244,13 @@ void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape )
 
 QString QgsLayerTreeLayer::symbolExpression( const QString &ruleKey )
 {
+  if ( !qobject_cast<QgsVectorLayer *>( mRef.get() ) )
+    return QString();
   if ( mSymbolExpressions.isEmpty() )
+  {
     updateSymbolExpressions();
+    connect( mRef.layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeLayer::updateSymbolExpressions, Qt::UniqueConnection );
+  }
 
   return mSymbolExpressions.value( ruleKey, QString() );
 }
