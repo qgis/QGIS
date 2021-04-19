@@ -282,23 +282,6 @@ void Layer::addObstaclePart( FeaturePart *fpart )
   mObstacleParts.append( fpart );
 }
 
-static FeaturePart *_findConnectedPart( FeaturePart *partCheck, const QVector<FeaturePart *> &otherParts )
-{
-  // iterate in the rest of the parts with the same label
-  auto it = otherParts.constBegin();
-  while ( it != otherParts.constEnd() )
-  {
-    if ( partCheck->isConnected( *it ) )
-    {
-      // stop checking for other connected parts
-      return *it;
-    }
-    ++it;
-  }
-
-  return nullptr; // no connected part found...
-}
-
 void Layer::joinConnectedFeatures()
 {
   // go through all label texts
@@ -324,27 +307,18 @@ void Layer::joinConnectedFeatures()
       mConnectedFeaturesIds.insert( partToJoinTo->featureId(), connectedFeaturesId );
 
       // loop through all other parts
-      QVector< FeaturePart *> partsLeftToTryThisRound = partsToMerge;
-      while ( !partsLeftToTryThisRound.empty() )
+      const QVector< FeaturePart *> partsLeftToTryThisRound = partsToMerge;
+      for ( FeaturePart *otherPart : partsLeftToTryThisRound )
       {
-        if ( FeaturePart *otherPart = _findConnectedPart( partToJoinTo, partsLeftToTryThisRound ) )
+        if ( partToJoinTo->isConnected( otherPart ) && partToJoinTo->mergeWithFeaturePart( otherPart ) )
         {
-          partsLeftToTryThisRound.removeOne( otherPart );
-          if ( partToJoinTo->mergeWithFeaturePart( otherPart ) )
-          {
-            mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
+          mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
 
-            // otherPart was merged into partToJoinTo, so now we completely delete the redundant feature part which was merged in
-            partsToMerge.removeAll( otherPart );
-            auto matchingPartIt = std::find_if( mFeatureParts.begin(), mFeatureParts.end(), [otherPart]( const std::unique_ptr< FeaturePart> &part ) { return part.get() == otherPart; } );
-            Q_ASSERT( matchingPartIt != mFeatureParts.end() );
-            mFeatureParts.erase( matchingPartIt );
-          }
-        }
-        else
-        {
-          // no candidate parts remain which we could possibly merge in
-          break;
+          // otherPart was merged into partToJoinTo, so now we completely delete the redundant feature part which was merged in
+          partsToMerge.removeAll( otherPart );
+          auto matchingPartIt = std::find_if( mFeatureParts.begin(), mFeatureParts.end(), [otherPart]( const std::unique_ptr< FeaturePart> &part ) { return part.get() == otherPart; } );
+          Q_ASSERT( matchingPartIt != mFeatureParts.end() );
+          mFeatureParts.erase( matchingPartIt );
         }
       }
     }
