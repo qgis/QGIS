@@ -2075,19 +2075,30 @@ void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > 
 
 bool FeaturePart::isConnected( FeaturePart *p2 )
 {
-  if ( !p2->mGeos )
-    p2->createGeosGeom();
-
-  try
-  {
-    return ( GEOSPreparedTouches_r( QgsGeos::getGEOSHandler(), preparedGeom(), p2->mGeos ) == 1 );
-  }
-  catch ( GEOSException &e )
-  {
-    qWarning( "GEOS exception: %s", e.what() );
-    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+  if ( !nbPoints || !p2->nbPoints )
     return false;
-  }
+
+  // here we only care if the lines start or end at the other line -- we don't want to test
+  // touches as that is true for "T" type joins!
+  const double x1first = x.front();
+  const double x1last = x.back();
+  const double x2first = p2->x.front();
+  const double x2last = p2->x.back();
+  const double y1first = x.front();
+  const double y1last = x.back();
+  const double y2first = p2->x.front();
+  const double y2last = p2->x.back();
+
+  if ( qgsDoubleNear( x1first, x2first ) && qgsDoubleNear( y1first, y2first ) )
+    return true;
+  else if ( qgsDoubleNear( x1first, x2last ) && qgsDoubleNear( y1first, y2last ) )
+    return true;
+  else if ( qgsDoubleNear( x1last, x2first ) && qgsDoubleNear( y1last, y2first ) )
+    return true;
+  else if ( qgsDoubleNear( x1last, x2last ) && qgsDoubleNear( y1last, y2last ) )
+    return true;
+
+  return false;
 }
 
 bool FeaturePart::mergeWithFeaturePart( FeaturePart *other )
