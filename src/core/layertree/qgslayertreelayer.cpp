@@ -267,7 +267,7 @@ void QgsLayerTreeLayer::updateSymbolExpressions()
 
   mSymbolExpressions.clear();
   QString renderType = layer->renderer()->type();
-  if ( renderType == QLatin1String( "nullSymbol" ) || renderType == QLatin1String( "vector" )  )//vector should be 3drenderer
+  if ( renderType == QLatin1String( "nullSymbol" ) || renderType == QLatin1String( "vector" ) ) //vector should be 3drenderer
     return;
   else if ( renderType == QLatin1String( "singleSymbol" ) ) //no need to convert if only one symbol
   {
