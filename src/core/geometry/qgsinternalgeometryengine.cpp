@@ -1505,8 +1505,8 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
 
   if ( width > height )
   {
-    width = bounds.height();
-    height = bounds.width();
+    width = minRect.height();
+    height = minRect.width();
     angle = angle + 90;
   }
 
