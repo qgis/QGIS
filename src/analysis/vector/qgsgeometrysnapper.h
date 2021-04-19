@@ -21,6 +21,7 @@
 #include "qgsabstractgeometry.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgis_analysis.h"
 
 #include <QMutex>
@@ -238,7 +239,7 @@ class QgsSnapIndex
     void addSegment( const CoordIdx *idxFrom, const CoordIdx *idxTo );
 
     GEOSSTRtree *mSTRTree = nullptr;
-    QList<GEOSGeometry *> mSTRTreeItems;
+    std::vector< geos::unique_ptr > mSTRTreeItems;
 };
 
 ///@endcond
