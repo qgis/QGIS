@@ -1263,9 +1263,13 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
   const double marginTop = context.convertToPainterUnits( top, mMarginUnit );
   const double marginBottom = context.convertToPainterUnits( bottom, mMarginUnit );
 
-  const QRectF expandedRect( rect.left() - marginLeft, rect.top() + marginBottom,
-                             rect.width() + marginLeft + marginRight,
-                             rect.height() - marginTop - marginBottom );
+  const QRectF expandedRect = rect.height() < 0 ?
+                              QRectF( rect.left() - marginLeft, rect.top() + marginBottom,
+                                      rect.width() + marginLeft + marginRight,
+                                      rect.height() - marginTop - marginBottom ) :
+                              QRectF( rect.left() - marginLeft, rect.top() - marginTop,
+                                      rect.width() + marginLeft + marginRight,
+                                      rect.height() + marginTop + marginBottom );
 
   // IMPORTANT -- check for degenerate height is sometimes >=0, because QRectF are not normalized and we are using painter
   // coordinates with descending vertical axis!
