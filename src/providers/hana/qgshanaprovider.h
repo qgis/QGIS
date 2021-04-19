@@ -38,9 +38,8 @@ class QgsHanaConnectionRef;
 class QgsHanaFeatureIterator;
 
 /**
-\class QgsHanaProvider
-\brief Data provider for SAP HANA database.
-*
+ * \class QgsHanaProvider
+ * \brief Data provider for SAP HANA database.
 */
 class QgsHanaProvider final : public QgsVectorDataProvider
 {

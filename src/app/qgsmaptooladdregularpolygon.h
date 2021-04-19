@@ -56,8 +56,8 @@ class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 
     /**
      * The parent map tool, e.g. the add feature tool.
-     *  Completed regular polygon will be added to this tool by calling its addCurve() method.
-     **/
+     * Completed regular polygon will be added to this tool by calling its addCurve() method.
+     */
     QgsMapToolCapture *mParentTool = nullptr;
     //! Regular Shape points (in map coordinates)
     QgsPointSequence mPoints;

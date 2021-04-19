@@ -730,7 +730,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Dots per inch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
-    are suited for printing. A value of -1 means it has not been set
+     * are suited for printing. A value of -1 means it has not been set
     */
     int mDpi = -1;
 

@@ -35,7 +35,8 @@ class CORE_EXPORT QgsPythonRunner
 
     /**
      * Returns TRUE if the runner has an instance
-        (and thus is able to run commands) */
+     * (and thus is able to run commands)
+    */
     static bool isValid();
 
     //! Execute a Python statement

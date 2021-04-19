@@ -26,7 +26,7 @@ class QPushButton;
 /**
  * \ingroup gui
  * \brief A file dialog which lets the user select the preferred encoding type for a data provider.
- **/
+ */
 class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 {
     Q_OBJECT

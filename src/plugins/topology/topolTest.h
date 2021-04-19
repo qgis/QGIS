@@ -72,7 +72,7 @@ class TopologyRule
 };
 
 /**
-  helper class to pass as comparator to map,set etc..
+ * helper class to pass as comparator to map,set etc..
   */
 class PointComparer
 {

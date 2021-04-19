@@ -186,7 +186,7 @@ class CORE_EXPORT QgsRasterPipe
 
     /**
      * \brief Try to connect interfaces in pipe and to the provider at beginning.
-        Returns true if connected or false if connection failed
+     * Returns TRUE if connected or false if connection failed
     */
     bool connect( QVector<QgsRasterInterface *> interfaces );
 

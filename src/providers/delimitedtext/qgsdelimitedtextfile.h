@@ -31,9 +31,8 @@ class QTextStream;
 
 
 /**
-\class QgsDelimitedTextFile
-\brief Delimited text file parser extracts records from a QTextStream as a QStringList.
-*
+* \class QgsDelimitedTextFile
+* \brief Delimited text file parser extracts records from a QTextStream as a QStringList.
 *
 * The delimited text parser is used by the QgsDelimitedTextProvider to parse
 * a QTextStream into records of QStringList.  It provides a number of variants

@@ -47,8 +47,8 @@ class APP_EXPORT QgsMapToolAddEllipse: public QgsMapToolCapture
 
     /**
      * The parent map tool, e.g. the add feature tool.
-     *  Completed ellipse will be added to this tool by calling its toLineString() method.
-     **/
+     * Completed ellipse will be added to this tool by calling its toLineString() method.
+     */
     QgsMapToolCapture *mParentTool = nullptr;
     //! Ellipse points (in map coordinates)
     QgsPointSequence mPoints;
