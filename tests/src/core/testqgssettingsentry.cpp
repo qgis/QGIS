@@ -96,12 +96,12 @@ void TestQgsSettingsEntry::settingsKey()
 
 void TestQgsSettingsEntry::enumValue()
 {
-  QString settingsKey( "qgis/testing/my_enum_value_for_units" );
+  QString settingsKey( QStringLiteral( "qgis/testing/my_enum_value_for_units" ) );
 
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryEnum settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, "Layout unit" );
+  QgsSettingsEntryEnum settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ) );
 
   // Check default value
   QCOMPARE( settingsEntryEnum.defaultValue(), QgsUnitTypes::LayoutMeters );
@@ -142,7 +142,7 @@ void TestQgsSettingsEntry::enumValue()
 
 void TestQgsSettingsEntry::flagValue()
 {
-  QString settingsKey( "qgis/testing/my_flag_value_for_units" );
+  QString settingsKey( QStringLiteral( "qgis/testing/my_flag_value_for_units" ) );
   QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
   QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
   QgsMapLayerProxyModel::Filters hasGeometry = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::HasGeometry );
@@ -150,7 +150,7 @@ void TestQgsSettingsEntry::flagValue()
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, "Filters" );
+  QgsSettingsEntryFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, QStringLiteral( "Filters" ) );
 
   // Check default value
   QCOMPARE( settingsEntryFlag.defaultValue(), pointAndLine );
