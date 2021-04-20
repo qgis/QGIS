@@ -22,6 +22,9 @@
 */
 
 #include "qgsrichtexteditor.h"
+#include "qgsguiutils.h"
+#include "qgscolorbutton.h"
+
 #include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
@@ -38,85 +41,80 @@
 #include <QPlainTextEdit>
 #include <QMenu>
 #include <QDialog>
+#include <QComboBox>
+#include <QToolButton>
 
-QgsRichTextEditor::QgsRichTextEditor( QWidget *parent ) : QWidget( parent )
+QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
-  m_lastBlockList = nullptr;
+
+  mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
 
   connect( mTextEdit, &QTextEdit::currentCharFormatChanged, this, &QgsRichTextEditor::slotCurrentCharFormatChanged );
   connect( mTextEdit, &QTextEdit::cursorPositionChanged, this, &QgsRichTextEditor::slotCursorPositionChanged );
 
-  m_fontsize_h1 = 18;
-  m_fontsize_h2 = 16;
-  m_fontsize_h3 = 14;
-  m_fontsize_h4 = 12;
-
-  fontChanged( mTextEdit->font() );
-  bgColorChanged( mTextEdit->textColor() );
-
   // paragraph formatting
+  mParagraphStyleCombo = new QComboBox();
+  mParagraphStyleCombo->addItem( tr( "Standard" ), ParagraphStandard );
+  mParagraphStyleCombo->addItem( tr( "Heading 1" ), ParagraphHeading1 );
+  mParagraphStyleCombo->addItem( tr( "Heading 2" ), ParagraphHeading2 );
+  mParagraphStyleCombo->addItem( tr( "Heading 3" ), ParagraphHeading3 );
+  mParagraphStyleCombo->addItem( tr( "Heading 4" ), ParagraphHeading4 );
+  mParagraphStyleCombo->addItem( tr( "Monospace" ), ParagraphMonospace );
 
-  m_paragraphItems << tr( "Standard" )
-                   << tr( "Heading 1" )
-                   << tr( "Heading 2" )
-                   << tr( "Heading 3" )
-                   << tr( "Heading 4" )
-                   << tr( "Monospace" );
-  f_paragraph->addItems( m_paragraphItems );
+  connect( mParagraphStyleCombo, qOverload< int >( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
+  mToolBar->insertWidget( mToolBar->actions().at( 0 ), mParagraphStyleCombo );
 
-  connect( f_paragraph, qOverload< int >( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
+  mFontSizeCombo = new QComboBox();
+  mFontSizeCombo->setEditable( true );
+  mToolBar->insertWidget( mActionBold, mFontSizeCombo );
 
   // undo & redo
+  mActionUndo->setShortcut( QKeySequence::Undo );
+  mActionRedo->setShortcut( QKeySequence::Redo );
 
-  f_undo->setShortcut( QKeySequence::Undo );
-  f_redo->setShortcut( QKeySequence::Redo );
+  connect( mTextEdit->document(), &QTextDocument::undoAvailable, mActionUndo, &QAction::setEnabled );
+  connect( mTextEdit->document(), &QTextDocument::redoAvailable, mActionRedo, &QAction::setEnabled );
 
-  connect( mTextEdit->document(), &QTextDocument::undoAvailable, f_undo, &QWidget::setEnabled );
-  connect( mTextEdit->document(), &QTextDocument::redoAvailable, f_redo, &QWidget::setEnabled );
+  mActionUndo->setEnabled( mTextEdit->document()->isUndoAvailable() );
+  mActionRedo->setEnabled( mTextEdit->document()->isRedoAvailable() );
 
-  f_undo->setEnabled( mTextEdit->document()->isUndoAvailable() );
-  f_redo->setEnabled( mTextEdit->document()->isRedoAvailable() );
-
-  connect( f_undo, &QAbstractButton::clicked, mTextEdit, &QTextEdit::undo );
-  connect( f_redo, &QAbstractButton::clicked, mTextEdit, &QTextEdit::redo );
+  connect( mActionUndo, &QAction::triggered, mTextEdit, &QTextEdit::undo );
+  connect( mActionRedo, &QAction::triggered, mTextEdit, &QTextEdit::redo );
 
   // cut, copy & paste
+  mActionCut->setShortcut( QKeySequence::Cut );
+  mActionCopy->setShortcut( QKeySequence::Copy );
+  mActionPaste->setShortcut( QKeySequence::Paste );
 
-  f_cut->setShortcut( QKeySequence::Cut );
-  f_copy->setShortcut( QKeySequence::Copy );
-  f_paste->setShortcut( QKeySequence::Paste );
+  mActionCut->setEnabled( false );
+  mActionCopy->setEnabled( false );
 
-  f_cut->setEnabled( false );
-  f_copy->setEnabled( false );
+  connect( mActionCut, &QAction::triggered, mTextEdit, &QTextEdit::cut );
+  connect( mActionCopy, &QAction::triggered, mTextEdit, &QTextEdit::copy );
+  connect( mActionPaste, &QAction::triggered, mTextEdit, &QTextEdit::paste );
 
-  connect( f_cut, &QAbstractButton::clicked, mTextEdit, &QTextEdit::cut );
-  connect( f_copy, &QAbstractButton::clicked, mTextEdit, &QTextEdit::copy );
-  connect( f_paste, &QAbstractButton::clicked, mTextEdit, &QTextEdit::paste );
-
-  connect( mTextEdit, &QTextEdit::copyAvailable, f_cut, &QWidget::setEnabled );
-  connect( mTextEdit, &QTextEdit::copyAvailable, f_copy, &QWidget::setEnabled );
+  connect( mTextEdit, &QTextEdit::copyAvailable, mActionCut, &QAction::setEnabled );
+  connect( mTextEdit, &QTextEdit::copyAvailable, mActionCopy, &QAction::setEnabled );
 
 #ifndef QT_NO_CLIPBOARD
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsRichTextEditor::slotClipboardDataChanged );
 #endif
 
   // link
-
-  f_link->setShortcut( QKeySequence( QStringLiteral( "CTRL+L" ) ) );
-
-  connect( f_link, &QAbstractButton::clicked, this, &QgsRichTextEditor::textLink );
+  mActionInsertLink->setShortcut( QKeySequence( QStringLiteral( "CTRL+L" ) ) );
+  connect( mActionInsertLink, &QAction::triggered, this, &QgsRichTextEditor::textLink );
 
   // bold, italic & underline
+  mActionBold->setShortcut( QKeySequence( QStringLiteral( "CTRL+B" ) ) );
+  mActionItalic->setShortcut( QKeySequence( QStringLiteral( "CTRL+I" ) ) );
+  mActionUnderline->setShortcut( QKeySequence( QStringLiteral( "CTRL+U" ) ) );
 
-  f_bold->setShortcut( QKeySequence( QStringLiteral( "CTRL+B" ) ) );
-  f_italic->setShortcut( QKeySequence( QStringLiteral( "CTRL+I" ) ) );
-  f_underline->setShortcut( QKeySequence( QStringLiteral( "CTRL+U" ) ) );
-
-  connect( f_bold, &QAbstractButton::clicked, this, &QgsRichTextEditor::textBold );
-  connect( f_italic, &QAbstractButton::clicked, this, &QgsRichTextEditor::textItalic );
-  connect( f_underline, &QAbstractButton::clicked, this, &QgsRichTextEditor::textUnderline );
-  connect( f_strikeout, &QAbstractButton::clicked, this, &QgsRichTextEditor::textStrikeout );
+  connect( mActionBold, &QAction::triggered, this, &QgsRichTextEditor::textBold );
+  connect( mActionItalic, &QAction::triggered, this, &QgsRichTextEditor::textItalic );
+  connect( mActionUnderline, &QAction::triggered, this, &QgsRichTextEditor::textUnderline );
+  connect( mActionStrikeOut, &QAction::triggered, this, &QgsRichTextEditor::textStrikeout );
 
   QAction *removeFormat = new QAction( tr( "Remove Character Formatting" ), this );
   removeFormat->setShortcut( QKeySequence( QStringLiteral( "CTRL+M" ) ) );
@@ -141,78 +139,90 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent ) : QWidget( parent )
   menu->addAction( removeFormat );
   menu->addAction( textsource );
   menu->addAction( clearText );
-  f_menu->setMenu( menu );
-  f_menu->setPopupMode( QToolButton::InstantPopup );
+
+  QToolButton *menuButton = new QToolButton();
+  menuButton->setMenu( menu );
+  menuButton->setPopupMode( QToolButton::InstantPopup );
+  menuButton->setToolTip( tr( "Advanced Options" ) );
+  menuButton->setText( QStringLiteral( "…" ) );
+  QWidget *spacer = new QWidget();
+  spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  mToolBar->addWidget( spacer );
+  mToolBar->addWidget( menuButton );
 
   // lists
-
-  f_list_bullet->setShortcut( QKeySequence( QStringLiteral( "CTRL+-" ) ) );
-  f_list_ordered->setShortcut( QKeySequence( QStringLiteral( "CTRL+=" ) ) );
-
-  connect( f_list_bullet, &QAbstractButton::clicked, this, &QgsRichTextEditor::listBullet );
-  connect( f_list_ordered, &QAbstractButton::clicked, this, &QgsRichTextEditor::listOrdered );
+  mActionBulletList->setShortcut( QKeySequence( QStringLiteral( "CTRL+-" ) ) );
+  mActionOrderedList->setShortcut( QKeySequence( QStringLiteral( "CTRL+=" ) ) );
+  connect( mActionBulletList, &QAction::triggered, this, &QgsRichTextEditor::listBullet );
+  connect( mActionOrderedList, &QAction::triggered, this, &QgsRichTextEditor::listOrdered );
 
   // indentation
-
-  f_indent_dec->setShortcut( QKeySequence( QStringLiteral( "CTRL+," ) ) );
-  f_indent_inc->setShortcut( QKeySequence( QStringLiteral( "CTRL+." ) ) );
-
-  connect( f_indent_inc, &QAbstractButton::clicked, this, &QgsRichTextEditor::increaseIndentation );
-  connect( f_indent_dec, &QAbstractButton::clicked, this, &QgsRichTextEditor::decreaseIndentation );
+  mActionDecreaseIndent->setShortcut( QKeySequence( QStringLiteral( "CTRL+," ) ) );
+  mActionIncreaseIndent->setShortcut( QKeySequence( QStringLiteral( "CTRL+." ) ) );
+  connect( mActionIncreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::increaseIndentation );
+  connect( mActionDecreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::decreaseIndentation );
 
   // font size
-
   QFontDatabase db;
   const QList< int > sizes = db.standardSizes();
   for ( int size : sizes )
-    f_fontsize->addItem( QString::number( size ) );
+    mFontSizeCombo->addItem( QString::number( size ), size );
 
-  connect( f_fontsize, &QComboBox::textActivated, this, &QgsRichTextEditor::textSize );
-  f_fontsize->setCurrentIndex( f_fontsize->findText( QString::number( QApplication::font()
-                               .pointSize() ) ) );
+  connect( mFontSizeCombo, &QComboBox::textActivated, this, &QgsRichTextEditor::textSize );
+  mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( QApplication::font().pointSize() ) );
 
   // text foreground color
+  mForeColorButton = new QgsColorButton();
+  mForeColorButton->setAllowOpacity( false );
+  mForeColorButton->setColorDialogTitle( tr( "Foreground Color" ) );
+  mForeColorButton->setColor( QApplication::palette().windowText().color() );
+  mForeColorButton->setShowNoColor( false );
+  mForeColorButton->setToolTip( tr( "Foreground color" ) );
+  mForeColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
+  mForeColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
-  QPixmap pix( 16, 16 );
-  pix.fill( QApplication::palette().windowText().color() );
-  f_fgcolor->setIcon( pix );
+  QAction *listSeparator = mToolBar->insertSeparator( mActionBulletList );
 
-  connect( f_fgcolor, &QAbstractButton::clicked, this, &QgsRichTextEditor::textFgColor );
+  connect( mForeColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textFgColor );
+  mToolBar->insertWidget( listSeparator, mForeColorButton );
 
   // text background color
-
-  pix.fill( QApplication::palette().window().color() );
-  f_bgcolor->setIcon( pix );
-
-  connect( f_bgcolor, &QAbstractButton::clicked, this, &QgsRichTextEditor::textBgColor );
+  mBackColorButton = new QgsColorButton();
+  mBackColorButton->setAllowOpacity( false );
+  mBackColorButton->setColorDialogTitle( tr( "Background Color" ) );
+  mBackColorButton->setToolTip( tr( "Background color" ) );
+  mBackColorButton->setShowNull( true, tr( "No Background Color" ) );
+  mBackColorButton->setToNull();
+  mBackColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+  mBackColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
+  connect( mBackColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textBgColor );
+  mToolBar->insertWidget( listSeparator, mBackColorButton );
 
   // images
-  connect( f_image, &QAbstractButton::clicked, this, &QgsRichTextEditor::insertImage );
-}
+  connect( mActionInsertImage, &QAction::triggered, this, &QgsRichTextEditor::insertImage );
 
+  fontChanged( mTextEdit->font() );
+}
 
 void QgsRichTextEditor::textSource()
 {
-  QDialog *dialog = new QDialog( this );
-  QPlainTextEdit *pte = new QPlainTextEdit( dialog );
+  QDialog dialog( this );
+  QPlainTextEdit *pte = new QPlainTextEdit( &dialog );
   pte->setPlainText( mTextEdit->toHtml() );
-  QGridLayout *gl = new QGridLayout( dialog );
+  QGridLayout *gl = new QGridLayout( &dialog );
   gl->addWidget( pte, 0, 0, 1, 1 );
-  dialog->setWindowTitle( tr( "Document Source" ) );
-  dialog->setMinimumWidth( 400 );
-  dialog->setMinimumHeight( 600 );
-  dialog->exec();
+  dialog.setWindowTitle( tr( "Document Source" ) );
+  dialog.setMinimumWidth( 400 );
+  dialog.setMinimumHeight( 600 );
+  dialog.exec();
 
   mTextEdit->setHtml( pte->toPlainText() );
-
-  delete dialog;
 }
 
 void QgsRichTextEditor::clearSource()
 {
   mTextEdit->clear();
 }
-
 
 void QgsRichTextEditor::textRemoveFormat()
 {
@@ -226,11 +236,11 @@ void QgsRichTextEditor::textRemoveFormat()
 //  fmt.setFontStyleHint  (QFont::SansSerif);
 //  fmt.setFontFixedPitch (true);
 
-  f_bold      ->setChecked( false );
-  f_underline ->setChecked( false );
-  f_italic    ->setChecked( false );
-  f_strikeout ->setChecked( false );
-  f_fontsize  ->setCurrentIndex( f_fontsize->findText( QStringLiteral( "9" ) ) );
+  mActionBold->setChecked( false );
+  mActionUnderline->setChecked( false );
+  mActionItalic->setChecked( false );
+  mActionStrikeOut->setChecked( false );
+  mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( 9 ) );
 
 //  QTextBlockFormat bfmt = cursor.blockFormat();
 //  bfmt->setIndent(0);
@@ -240,51 +250,47 @@ void QgsRichTextEditor::textRemoveFormat()
   mergeFormatOnWordOrSelection( fmt );
 }
 
-
 void QgsRichTextEditor::textRemoveAllFormat()
 {
-  f_bold      ->setChecked( false );
-  f_underline ->setChecked( false );
-  f_italic    ->setChecked( false );
-  f_strikeout ->setChecked( false );
-  f_fontsize  ->setCurrentIndex( f_fontsize->findText( QStringLiteral( "9" ) ) );
+  mActionBold->setChecked( false );
+  mActionUnderline->setChecked( false );
+  mActionItalic->setChecked( false );
+  mActionStrikeOut->setChecked( false );
+  mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( 9 ) );
   QString text = mTextEdit->toPlainText();
   mTextEdit->setPlainText( text );
 }
 
-
 void QgsRichTextEditor::textBold()
 {
   QTextCharFormat fmt;
-  fmt.setFontWeight( f_bold->isChecked() ? QFont::Bold : QFont::Normal );
+  fmt.setFontWeight( mActionBold->isChecked() ? QFont::Bold : QFont::Normal );
   mergeFormatOnWordOrSelection( fmt );
 }
-
 
 void QgsRichTextEditor::focusInEvent( QFocusEvent * )
 {
   mTextEdit->setFocus( Qt::TabFocusReason );
 }
 
-
 void QgsRichTextEditor::textUnderline()
 {
   QTextCharFormat fmt;
-  fmt.setFontUnderline( f_underline->isChecked() );
+  fmt.setFontUnderline( mActionUnderline->isChecked() );
   mergeFormatOnWordOrSelection( fmt );
 }
 
 void QgsRichTextEditor::textItalic()
 {
   QTextCharFormat fmt;
-  fmt.setFontItalic( f_italic->isChecked() );
+  fmt.setFontItalic( mActionItalic->isChecked() );
   mergeFormatOnWordOrSelection( fmt );
 }
 
 void QgsRichTextEditor::textStrikeout()
 {
   QTextCharFormat fmt;
-  fmt.setFontStrikeOut( f_strikeout->isChecked() );
+  fmt.setFontStrikeOut( mActionStrikeOut->isChecked() );
   mergeFormatOnWordOrSelection( fmt );
 }
 
@@ -357,19 +363,19 @@ void QgsRichTextEditor::textStyle( int index )
   {
     if ( index == ParagraphHeading1 )
     {
-      fmt.setFontPointSize( m_fontsize_h1 );
+      fmt.setFontPointSize( mFontSizeH1 );
     }
     if ( index == ParagraphHeading2 )
     {
-      fmt.setFontPointSize( m_fontsize_h2 );
+      fmt.setFontPointSize( mFontSizeH2 );
     }
     if ( index == ParagraphHeading3 )
     {
-      fmt.setFontPointSize( m_fontsize_h3 );
+      fmt.setFontPointSize( mFontSizeH3 );
     }
     if ( index == ParagraphHeading4 )
     {
-      fmt.setFontPointSize( m_fontsize_h4 );
+      fmt.setFontPointSize( mFontSizeH4 );
     }
     if ( index == ParagraphHeading2 || index == ParagraphHeading4 )
     {
@@ -393,7 +399,7 @@ void QgsRichTextEditor::textStyle( int index )
 
 void QgsRichTextEditor::textFgColor()
 {
-  QColor col = QColorDialog::getColor( mTextEdit->textColor(), this );
+  QColor col = mForeColorButton->color();
   QTextCursor cursor = mTextEdit->textCursor();
   if ( !cursor.hasSelection() )
   {
@@ -415,7 +421,7 @@ void QgsRichTextEditor::textFgColor()
 
 void QgsRichTextEditor::textBgColor()
 {
-  QColor col = QColorDialog::getColor( mTextEdit->textBackgroundColor(), this );
+  QColor col = mBackColorButton->color();
   QTextCursor cursor = mTextEdit->textCursor();
   if ( !cursor.hasSelection() )
   {
@@ -439,7 +445,7 @@ void QgsRichTextEditor::listBullet( bool checked )
 {
   if ( checked )
   {
-    f_list_ordered->setChecked( false );
+    mActionOrderedList->setChecked( false );
   }
   list( checked, QTextListFormat::ListDisc );
 }
@@ -448,7 +454,7 @@ void QgsRichTextEditor::listOrdered( bool checked )
 {
   if ( checked )
   {
-    f_list_bullet->setChecked( false );
+    mActionBulletList->setChecked( false );
   }
   list( checked, QTextListFormat::ListDecimal );
 }
@@ -492,70 +498,70 @@ void QgsRichTextEditor::mergeFormatOnWordOrSelection( const QTextCharFormat &for
 void QgsRichTextEditor::slotCursorPositionChanged()
 {
   QTextList *l = mTextEdit->textCursor().currentList();
-  if ( m_lastBlockList && ( l == m_lastBlockList || ( l != nullptr && m_lastBlockList != nullptr
-                            && l->format().style() == m_lastBlockList->format().style() ) ) )
+  if ( mLastBlockList && ( l == mLastBlockList || ( l != nullptr && mLastBlockList != nullptr
+                           && l->format().style() == mLastBlockList->format().style() ) ) )
   {
     return;
   }
-  m_lastBlockList = l;
+  mLastBlockList = l;
   if ( l )
   {
     QTextListFormat lfmt = l->format();
     if ( lfmt.style() == QTextListFormat::ListDisc )
     {
-      f_list_bullet->setChecked( true );
-      f_list_ordered->setChecked( false );
+      mActionBulletList->setChecked( true );
+      mActionOrderedList->setChecked( false );
     }
     else if ( lfmt.style() == QTextListFormat::ListDecimal )
     {
-      f_list_bullet->setChecked( false );
-      f_list_ordered->setChecked( true );
+      mActionBulletList->setChecked( false );
+      mActionOrderedList->setChecked( true );
     }
     else
     {
-      f_list_bullet->setChecked( false );
-      f_list_ordered->setChecked( false );
+      mActionBulletList->setChecked( false );
+      mActionOrderedList->setChecked( false );
     }
   }
   else
   {
-    f_list_bullet->setChecked( false );
-    f_list_ordered->setChecked( false );
+    mActionBulletList->setChecked( false );
+    mActionOrderedList->setChecked( false );
   }
 }
 
 void QgsRichTextEditor::fontChanged( const QFont &f )
 {
-  f_fontsize->setCurrentIndex( f_fontsize->findText( QString::number( f.pointSize() ) ) );
-  f_bold->setChecked( f.bold() );
-  f_italic->setChecked( f.italic() );
-  f_underline->setChecked( f.underline() );
-  f_strikeout->setChecked( f.strikeOut() );
-  if ( f.pointSize() == m_fontsize_h1 )
+  mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( f.pointSize() ) );
+  mActionBold->setChecked( f.bold() );
+  mActionItalic->setChecked( f.italic() );
+  mActionUnderline->setChecked( f.underline() );
+  mActionStrikeOut->setChecked( f.strikeOut() );
+  if ( f.pointSize() == mFontSizeH1 )
   {
-    f_paragraph->setCurrentIndex( ParagraphHeading1 );
+    mParagraphStyleCombo->setCurrentIndex( ParagraphHeading1 );
   }
-  else if ( f.pointSize() == m_fontsize_h2 )
+  else if ( f.pointSize() == mFontSizeH2 )
   {
-    f_paragraph->setCurrentIndex( ParagraphHeading2 );
+    mParagraphStyleCombo->setCurrentIndex( ParagraphHeading2 );
   }
-  else if ( f.pointSize() == m_fontsize_h3 )
+  else if ( f.pointSize() == mFontSizeH3 )
   {
-    f_paragraph->setCurrentIndex( ParagraphHeading3 );
+    mParagraphStyleCombo->setCurrentIndex( ParagraphHeading3 );
   }
-  else if ( f.pointSize() == m_fontsize_h4 )
+  else if ( f.pointSize() == mFontSizeH4 )
   {
-    f_paragraph->setCurrentIndex( ParagraphHeading4 );
+    mParagraphStyleCombo->setCurrentIndex( ParagraphHeading4 );
   }
   else
   {
     if ( f.fixedPitch() && f.family() == QLatin1String( "Monospace" ) )
     {
-      f_paragraph->setCurrentIndex( ParagraphMonospace );
+      mParagraphStyleCombo->setCurrentIndex( ParagraphMonospace );
     }
     else
     {
-      f_paragraph->setCurrentIndex( ParagraphStandard );
+      mParagraphStyleCombo->setCurrentIndex( ParagraphStandard );
     }
   }
   if ( mTextEdit->textCursor().currentList() )
@@ -563,68 +569,53 @@ void QgsRichTextEditor::fontChanged( const QFont &f )
     QTextListFormat lfmt = mTextEdit->textCursor().currentList()->format();
     if ( lfmt.style() == QTextListFormat::ListDisc )
     {
-      f_list_bullet->setChecked( true );
-      f_list_ordered->setChecked( false );
+      mActionBulletList->setChecked( true );
+      mActionOrderedList->setChecked( false );
     }
     else if ( lfmt.style() == QTextListFormat::ListDecimal )
     {
-      f_list_bullet->setChecked( false );
-      f_list_ordered->setChecked( true );
+      mActionBulletList->setChecked( false );
+      mActionOrderedList->setChecked( true );
     }
     else
     {
-      f_list_bullet->setChecked( false );
-      f_list_ordered->setChecked( false );
+      mActionBulletList->setChecked( false );
+      mActionOrderedList->setChecked( false );
     }
   }
   else
   {
-    f_list_bullet->setChecked( false );
-    f_list_ordered->setChecked( false );
+    mActionBulletList->setChecked( false );
+    mActionOrderedList->setChecked( false );
   }
 }
 
 void QgsRichTextEditor::fgColorChanged( const QColor &c )
 {
-  QPixmap pix( 16, 16 );
-  if ( c.isValid() )
-  {
-    pix.fill( c );
-  }
-  else
-  {
-    pix.fill( QApplication::palette().windowText().color() );
-  }
-  f_fgcolor->setIcon( pix );
+  whileBlocking( mForeColorButton )->setColor( c );
 }
 
 void QgsRichTextEditor::bgColorChanged( const QColor &c )
 {
-  QPixmap pix( 16, 16 );
   if ( c.isValid() )
-  {
-    pix.fill( c );
-  }
+    whileBlocking( mBackColorButton )->setColor( c );
   else
-  {
-    pix.fill( QApplication::palette().window().color() );
-  }
-  f_bgcolor->setIcon( pix );
+    whileBlocking( mBackColorButton )->setToNull();
 }
 
 void QgsRichTextEditor::slotCurrentCharFormatChanged( const QTextCharFormat &format )
 {
   fontChanged( format.font() );
   bgColorChanged( ( format.background().isOpaque() ) ? format.background().color() : QColor() );
-  fgColorChanged( ( format.foreground().isOpaque() ) ? format.foreground().color() : QColor() );
-  f_link->setChecked( format.isAnchor() );
+  fgColorChanged( ( format.foreground().isOpaque() ) ? format.foreground().color() : QApplication::palette().windowText().color() );
+  mActionInsertLink->setChecked( format.isAnchor() );
 }
 
 void QgsRichTextEditor::slotClipboardDataChanged()
 {
 #ifndef QT_NO_CLIPBOARD
   if ( const QMimeData *md = QApplication::clipboard()->mimeData() )
-    f_paste->setEnabled( md->hasText() );
+    mActionPaste->setEnabled( md->hasText() );
 #endif
 }
 
@@ -632,9 +623,9 @@ QString QgsRichTextEditor::toHtml() const
 {
   QString s = mTextEdit->toHtml();
   // convert emails to links
-  s = s.replace( QRegularExpression( QStringLiteral( "(<[^a][^>]+>(?:<span[^>]+>)?|\\s)([a-zA-Z\\d]+@[a-zA-Z\\d]+\\.[a-zA-Z]+)" ) ), "\\1<a href=\"mailto:\\2\">\\2</a>" );
+  s = s.replace( QRegularExpression( QStringLiteral( "(<[^a][^>]+>(?:<span[^>]+>)?|\\s)([a-zA-Z\\d]+@[a-zA-Z\\d]+\\.[a-zA-Z]+)" ) ), QStringLiteral( "\\1<a href=\"mailto:\\2\">\\2</a>" ) );
   // convert links
-  s = s.replace( QRegularExpression( QStringLiteral( "(<[^a][^>]+>(?:<span[^>]+>)?|\\s)((?:https?|ftp|file)://[^\\s'\"<>]+)" ) ), "\\1<a href=\"\\2\">\\2</a>" );
+  s = s.replace( QRegularExpression( QStringLiteral( "(<[^a][^>]+>(?:<span[^>]+>)?|\\s)((?:https?|ftp|file)://[^\\s'\"<>]+)" ) ), QStringLiteral( "\\1<a href=\"\\2\">\\2</a>" ) );
   // see also: Utils::linkify()
   return s;
 }
@@ -688,6 +679,9 @@ void QgsRichTextEditor::insertImage()
                  tr( "Select an image" ),
                  attdir,
                  tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
+  if ( file.isEmpty() )
+    return;
+
   QImage image = QImageReader( file ).read();
 
   mTextEdit->dropImage( image, QFileInfo( file ).suffix().toUpper().toLocal8Bit().data() );

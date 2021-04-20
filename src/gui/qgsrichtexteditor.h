@@ -30,28 +30,84 @@
 #include <QPointer>
 
 class QImage;
+class QComboBox;
+class QgsColorButton;
 
 /*
  * Originally ported from https://github.com/Anchakor/MRichTextEditor, courtesy of Hobrasoft.
  */
 
+/**
+ * \ingroup gui
+ * \brief A widget for editing rich text documents, with support for user controlled formatting of text
+ * and insertion of hyperlinks and images.
+ *
+ * QgsRichTextEditor provides a reusable widget for allowing users to edit rich text documents,
+ * and retrieving and setting the documents via HTML formatted strings.
+ *
+ * \since QGIS 3.20
+ */
 class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEditorBase
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsRichTextEditor, with the specified \a parent widget.
+     */
     QgsRichTextEditor( QWidget *parent = nullptr );
 
+    /**
+     * Returns the widget's content as a plain text string.
+     *
+     * \see toHtml()
+     */
     QString toPlainText() const { return mTextEdit->toPlainText(); }
+
+    /**
+     * Returns the widget's content as a HTML string.
+     *
+     * \see toPlainText()
+     */
     QString toHtml() const;
+
+    /**
+     * Returns a reference to the QTextDocument shown in the widget.
+     */
     QTextDocument *document() { return mTextEdit->document(); }
+
+    /**
+     * Returns a reference to the text cursor.
+     *
+     * \see setTextCursor()
+     */
     QTextCursor textCursor() const { return mTextEdit->textCursor(); }
+
+    /**
+     * Sets the current text \a cursor.
+     *
+     * \see textCursor()
+     */
     void setTextCursor( const QTextCursor &cursor ) { mTextEdit->setTextCursor( cursor ); }
 
   public slots:
+
+    /**
+     * Sets the \a text to show in the widget.
+     *
+     * The \a text can either be a plain text string or a HTML document.
+     */
     void setText( const QString &text );
+
+    /**
+     * Clears the current text from the widget.
+     */
     void clearSource();
 
-  protected slots:
+  protected:
+    void focusInEvent( QFocusEvent *event ) override;
+
+  private slots:
     void setPlainText( const QString &text ) { mTextEdit->setPlainText( text ); }
     void setHtml( const QString &text ) { mTextEdit->setHtml( text ); }
     void textRemoveFormat();
@@ -75,20 +131,18 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     void insertImage();
     void textSource();
 
-  protected:
+  private:
     void mergeFormatOnWordOrSelection( const QTextCharFormat &format );
     void fontChanged( const QFont &f );
     void fgColorChanged( const QColor &c );
     void bgColorChanged( const QColor &c );
     void list( bool checked, QTextListFormat::Style style );
     void indent( int delta );
-    void focusInEvent( QFocusEvent *event );
 
-    QStringList m_paragraphItems;
-    int m_fontsize_h1;
-    int m_fontsize_h2;
-    int m_fontsize_h3;
-    int m_fontsize_h4;
+    int mFontSizeH1 = 18;
+    int mFontSizeH2 = 16;
+    int mFontSizeH3 = 14;
+    int mFontSizeH4 = 12;
 
     enum ParagraphItems
     {
@@ -100,7 +154,13 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
       ParagraphMonospace
     };
 
-    QPointer<QTextList> m_lastBlockList;
+    QComboBox *mParagraphStyleCombo = nullptr;
+    QComboBox *mFontSizeCombo = nullptr;
+
+    QgsColorButton *mForeColorButton = nullptr;
+    QgsColorButton *mBackColorButton = nullptr;
+
+    QPointer<QTextList> mLastBlockList;
 };
 
 

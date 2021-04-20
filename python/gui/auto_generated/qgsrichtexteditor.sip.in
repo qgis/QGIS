@@ -13,68 +13,75 @@
 class QgsRichTextEditor : QWidget, protected Ui::QgsRichTextEditorBase
 {
 %Docstring(signature="appended")
-Originally ported from https://github.com/Anchakor/MRichTextEditor, courtesy of Hobrasoft.
+A widget for editing rich text documents, with support for user controlled formatting of text
+and insertion of hyperlinks and images.
+
+:py:class:`QgsRichTextEditor` provides a reusable widget for allowing users to edit rich text documents,
+and retrieving and setting the documents via HTML formatted strings.
+
+.. versionadded:: 3.20
 %End
 
 %TypeHeaderCode
 #include "qgsrichtexteditor.h"
 %End
   public:
+
     QgsRichTextEditor( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsRichTextEditor, with the specified ``parent`` widget.
+%End
 
     QString toPlainText() const;
+%Docstring
+Returns the widget's content as a plain text string.
+
+.. seealso:: :py:func:`toHtml`
+%End
+
     QString toHtml() const;
+%Docstring
+Returns the widget's content as a HTML string.
+
+.. seealso:: :py:func:`toPlainText`
+%End
+
     QTextDocument *document();
+%Docstring
+Returns a reference to the QTextDocument shown in the widget.
+%End
+
     QTextCursor textCursor() const;
+%Docstring
+Returns a reference to the text cursor.
+
+.. seealso:: :py:func:`setTextCursor`
+%End
+
     void setTextCursor( const QTextCursor &cursor );
+%Docstring
+Sets the current text ``cursor``.
+
+.. seealso:: :py:func:`textCursor`
+%End
 
   public slots:
-    void setText( const QString &text );
-    void clearSource();
 
-  protected slots:
-    void setPlainText( const QString &text );
-    void setHtml( const QString &text );
-    void textRemoveFormat();
-    void textRemoveAllFormat();
-    void textBold();
-    void textUnderline();
-    void textStrikeout();
-    void textItalic();
-    void textSize( const QString &p );
-    void textLink( bool checked );
-    void textStyle( int index );
-    void textFgColor();
-    void textBgColor();
-    void listBullet( bool checked );
-    void listOrdered( bool checked );
-    void slotCurrentCharFormatChanged( const QTextCharFormat &format );
-    void slotCursorPositionChanged();
-    void slotClipboardDataChanged();
-    void increaseIndentation();
-    void decreaseIndentation();
-    void insertImage();
-    void textSource();
+    void setText( const QString &text );
+%Docstring
+Sets the ``text`` to show in the widget.
+
+The ``text`` can either be a plain text string or a HTML document.
+%End
+
+    void clearSource();
+%Docstring
+Clears the current text from the widget.
+%End
 
   protected:
-    void mergeFormatOnWordOrSelection( const QTextCharFormat &format );
-    void fontChanged( const QFont &f );
-    void fgColorChanged( const QColor &c );
-    void bgColorChanged( const QColor &c );
-    void list( bool checked, QTextListFormat::Style style );
-    void indent( int delta );
-    void focusInEvent( QFocusEvent *event );
+    virtual void focusInEvent( QFocusEvent *event );
 
-
-    enum ParagraphItems
-    {
-      ParagraphStandard,
-      ParagraphHeading1,
-      ParagraphHeading2,
-      ParagraphHeading3,
-      ParagraphHeading4,
-      ParagraphMonospace
-    };
 
 };
 
