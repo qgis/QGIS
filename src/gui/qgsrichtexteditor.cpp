@@ -175,7 +175,6 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   for ( int size : sizes )
     mFontSizeCombo->addItem( QString::number( size ), size );
 
-  connect( mFontSizeCombo, &QComboBox::currentTextChanged, this, &QgsRichTextEditor::textSize );
   mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( QApplication::font().pointSize() ) );
 
   // text foreground color
@@ -207,6 +206,8 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
 
   // images
   connect( mActionInsertImage, &QAction::triggered, this, &QgsRichTextEditor::insertImage );
+
+  connect( mFontSizeCombo, &QComboBox::currentTextChanged, this, &QgsRichTextEditor::textSize );
 
   fontChanged( mTextEdit->font() );
 }
