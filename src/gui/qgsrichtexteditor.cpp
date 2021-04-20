@@ -63,7 +63,7 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   mParagraphStyleCombo->addItem( tr( "Heading 4" ), ParagraphHeading4 );
   mParagraphStyleCombo->addItem( tr( "Monospace" ), ParagraphMonospace );
 
-  connect( mParagraphStyleCombo, qOverload< int >( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
+  connect( mParagraphStyleCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsRichTextEditor::textStyle );
   mToolBar->insertWidget( mToolBar->actions().at( 0 ), mParagraphStyleCombo );
 
   mFontSizeCombo = new QComboBox();
@@ -168,7 +168,7 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   for ( int size : sizes )
     mFontSizeCombo->addItem( QString::number( size ), size );
 
-  connect( mFontSizeCombo, &QComboBox::textActivated, this, &QgsRichTextEditor::textSize );
+  connect( mFontSizeCombo, &QComboBox::currentTextChanged, this, &QgsRichTextEditor::textSize );
   mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( QApplication::font().pointSize() ) );
 
   // text foreground color
@@ -342,7 +342,7 @@ void QgsRichTextEditor::textLink( bool checked )
   mergeFormatOnWordOrSelection( fmt );
 }
 
-void QgsRichTextEditor::textStyle( int index )
+void QgsRichTextEditor::textStyle( int )
 {
   QTextCursor cursor = mTextEdit->textCursor();
   cursor.beginEditBlock();
@@ -356,35 +356,36 @@ void QgsRichTextEditor::textStyle( int index )
   cursor.setCharFormat( fmt );
   mTextEdit->setCurrentCharFormat( fmt );
 
-  if ( index == ParagraphHeading1
-       || index == ParagraphHeading2
-       || index == ParagraphHeading3
-       || index == ParagraphHeading4 )
+  ParagraphItems style = static_cast< ParagraphItems >( mParagraphStyleCombo->currentData().toInt() );
+  if ( style == ParagraphHeading1
+       || style == ParagraphHeading2
+       || style == ParagraphHeading3
+       || style == ParagraphHeading4 )
   {
-    if ( index == ParagraphHeading1 )
+    if ( style == ParagraphHeading1 )
     {
       fmt.setFontPointSize( mFontSizeH1 );
     }
-    if ( index == ParagraphHeading2 )
+    if ( style == ParagraphHeading2 )
     {
       fmt.setFontPointSize( mFontSizeH2 );
     }
-    if ( index == ParagraphHeading3 )
+    if ( style == ParagraphHeading3 )
     {
       fmt.setFontPointSize( mFontSizeH3 );
     }
-    if ( index == ParagraphHeading4 )
+    if ( style == ParagraphHeading4 )
     {
       fmt.setFontPointSize( mFontSizeH4 );
     }
-    if ( index == ParagraphHeading2 || index == ParagraphHeading4 )
+    if ( style == ParagraphHeading2 || style == ParagraphHeading4 )
     {
       fmt.setFontItalic( true );
     }
 
     fmt.setFontWeight( QFont::Bold );
   }
-  if ( index == ParagraphMonospace )
+  if ( style == ParagraphMonospace )
   {
     fmt = cursor.charFormat();
     fmt.setFontFamily( QStringLiteral( "Monospace" ) );
