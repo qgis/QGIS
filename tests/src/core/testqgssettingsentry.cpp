@@ -101,7 +101,7 @@ void TestQgsSettingsEntry::enumValue()
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, "Layout unit" );
+  QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ) );
 
   // Check default value
   QCOMPARE( settingsEntryEnum.defaultValue(), QgsUnitTypes::LayoutMeters );
@@ -150,7 +150,7 @@ void TestQgsSettingsEntry::flagValue()
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, "Filters" );
+  QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, QStringLiteral( "Filters" ) );
 
   // Check default value
   QCOMPARE( settingsEntryFlag.defaultValue(), pointAndLine );
