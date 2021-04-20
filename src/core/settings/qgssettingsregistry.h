@@ -46,11 +46,6 @@ class CORE_EXPORT QgsSettingsRegistry
     virtual ~QgsSettingsRegistry();
 
     /**
-     * Add \a settingsEntry to the register.
-     */
-    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
-
-    /**
      * Returns the list of registered QgsSettingsEntryBase.
      */
     QList<const QgsSettingsEntryBase *> getChildSettingsEntries() const;
@@ -71,6 +66,13 @@ class CORE_EXPORT QgsSettingsRegistry
      * Returns the list of registered child QgsSettingsRegistry.
      */
     QList<const QgsSettingsRegistry *> getChildSettingsRegistries() const;
+
+  protected:
+
+    /**
+     * Add \a settingsEntry to the register.
+     */
+    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
 
   private:
 

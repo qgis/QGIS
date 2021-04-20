@@ -20,6 +20,18 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgstest.h"
 
+/**
+ * This is a helper class to test protected methods of QgsSettingsRegistry
+ */
+class SettingsRegistryTest : public QgsSettingsRegistry
+{
+  public:
+
+    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
+    {
+      QgsSettingsRegistry::addSettingsEntry( settingsEntry );
+    }
+};
 
 /**
  * \ingroup UnitTests
@@ -44,7 +56,7 @@ void TestQgsSettingsRegistry::getSettingsEntries()
 
   QString settingsEntryInexisting( "/qgis/testing/settingsEntryInexisting" );
 
-  QgsSettingsRegistry settingsRegistry;
+  SettingsRegistryTest settingsRegistry;
   settingsRegistry.addSettingsEntry( nullptr ); // should not crash
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
   settingsRegistry.addSettingsEntry( &settingsEntryInteger );
@@ -65,7 +77,7 @@ void TestQgsSettingsRegistry::getSettingsEntriesWithDynamicKeys()
 
   QString settingsEntryInexisting( "/qgis/testing/settingsEntryInexisting%1" );
 
-  QgsSettingsRegistry settingsRegistry;
+  SettingsRegistryTest settingsRegistry;
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
   settingsRegistry.addSettingsEntry( &settingsEntryInteger );
   settingsRegistry.addSettingsEntry( &settingsEntryDouble );
@@ -86,10 +98,10 @@ void TestQgsSettingsRegistry::childRegistry()
   QString settingsEntryIntegerKey( "/qgis/testing/settingsEntryInteger" );
   QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
 
-  QgsSettingsRegistry settingsRegistryChild;
+  SettingsRegistryTest settingsRegistryChild;
   settingsRegistryChild.addSettingsEntry( &settingsEntryInteger );
 
-  QgsSettingsRegistry settingsRegistry;
+  SettingsRegistryTest settingsRegistry;
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
   settingsRegistry.addChildSettingsRegistry( nullptr ); // should not crash
   settingsRegistry.addChildSettingsRegistry( &settingsRegistryChild );

@@ -31,11 +31,6 @@ Constructor for QgsSettingsRegistry.
 
     virtual ~QgsSettingsRegistry();
 
-    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
-%Docstring
-Add ``settingsEntry`` to the register.
-%End
-
     QList<const QgsSettingsEntryBase *> getChildSettingsEntries() const;
 %Docstring
 Returns the list of registered :py:class:`QgsSettingsEntryBase`.
@@ -56,6 +51,13 @@ Add a child ``settingsRegistry`` to the register.
     QList<const QgsSettingsRegistry *> getChildSettingsRegistries() const;
 %Docstring
 Returns the list of registered child QgsSettingsRegistry.
+%End
+
+  protected:
+
+    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
+%Docstring
+Add ``settingsEntry`` to the register.
 %End
 
 };

@@ -37,15 +37,15 @@ QgsSettingsRegistry::~QgsSettingsRegistry()
 
 void QgsSettingsRegistry::addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
 {
-  if ( settingsEntry == nullptr )
+  if ( !settingsEntry )
   {
-    QgsLogger::warning( QStringLiteral( "Trying to register a nullptr settings entry." ) );
+    QgsDebugMsg( QStringLiteral( "Trying to register a nullptr settings entry." ) );
     return;
   }
 
   if ( mSettingsEntriesMap.contains( settingsEntry->definitionKey() ) )
   {
-    QgsLogger::warning( QStringLiteral( "Settings with key '%1' is already registered." ).arg( settingsEntry->definitionKey() ) );
+    QgsDebugMsg( QStringLiteral( "Settings with key '%1' is already registered." ).arg( settingsEntry->definitionKey() ) );
     return;
   }
 
@@ -63,14 +63,14 @@ const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString
   const QMap<QString, const QgsSettingsEntryBase *> settingsEntriesMap = mSettingsEntriesMap;
   for ( const QgsSettingsEntryBase *settingsEntry : settingsEntriesMap )
   {
-    if ( settingsEntry->checkKey( key ) )
+    if ( settingsEntry->keyIsValid( key ) )
       return settingsEntry;
   }
 
   // Search in child registries
   if ( searchChildRegistries )
   {
-    for ( const QgsSettingsRegistry *settingsRegistry : mSettingsRegistryChildList )
+    for ( const QgsSettingsRegistry *settingsRegistry : std::as_const( mSettingsRegistryChildList ) )
     {
       const QgsSettingsEntryBase *settingsEntry = settingsRegistry->getSettingsEntry( key, true );
       if ( settingsEntry != nullptr )
@@ -83,15 +83,15 @@ const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString
 
 void QgsSettingsRegistry::addChildSettingsRegistry( const QgsSettingsRegistry *settingsRegistry )
 {
-  if ( settingsRegistry == nullptr )
+  if ( !settingsRegistry )
   {
-    QgsLogger::warning( QStringLiteral( "Trying to register a nullptr child settings registry." ) );
+    QgsDebugMsg( QStringLiteral( "Trying to register a nullptr child settings registry." ) );
     return;
   }
 
   if ( mSettingsRegistryChildList.contains( settingsRegistry ) )
   {
-    QgsLogger::warning( QStringLiteral( "Child register is already registered." ) );
+    QgsDebugMsg( QStringLiteral( "Child register is already registered." ) );
     return;
   }
 
