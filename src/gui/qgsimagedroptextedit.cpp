@@ -24,6 +24,8 @@
 #include "qgsimagedroptextedit.h"
 #include <QMimeData>
 #include <QBuffer>
+#include <QFileInfo>
+#include <QImageReader>
 
 ///@cond PRIVATE
 QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )
@@ -33,7 +35,39 @@ QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )
 
 bool QgsImageDropTextEdit::canInsertFromMimeData( const QMimeData *source ) const
 {
-  return source->hasImage() || QTextEdit::canInsertFromMimeData( source );
+  if ( source->hasImage() || QTextEdit::canInsertFromMimeData( source ) )
+    return true;
+
+  const QList<QUrl> urls = source->urls();
+  QStringList files;
+  files.reserve( urls.size() );
+  for ( const QUrl &url : urls )
+  {
+    QString fileName = url.toLocalFile();
+    // seems that some drag and drop operations include an empty url
+    // so we test for length to make sure we have something
+    if ( !fileName.isEmpty() )
+    {
+      files << fileName;
+    }
+  }
+
+  bool matched = false;
+  for ( const QString &file : std::as_const( files ) )
+  {
+    QFileInfo fi( file );
+    const QList<QByteArray> formats = QImageReader::supportedImageFormats();
+    for ( const QByteArray &format : formats )
+    {
+      if ( fi.suffix().compare( format, Qt::CaseInsensitive ) == 0 )
+      {
+        matched = true;
+        break;
+      }
+    }
+  }
+
+  return matched;
 }
 
 void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
@@ -106,6 +140,39 @@ void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
       return;
     }
   }
+  else
+  {
+    const QList<QUrl> urls = source->urls();
+    QStringList files;
+    files.reserve( urls.size() );
+    for ( const QUrl &url : urls )
+    {
+      QString fileName = url.toLocalFile();
+      // seems that some drag and drop operations include an empty url
+      // so we test for length to make sure we have something
+      if ( !fileName.isEmpty() )
+      {
+        files << fileName;
+      }
+    }
+
+    for ( const QString &file : std::as_const( files ) )
+    {
+      const QFileInfo fi( file );
+      const QList<QByteArray> formats = QImageReader::supportedImageFormats();
+      for ( const QByteArray &format : formats )
+      {
+        if ( fi.suffix().compare( format, Qt::CaseInsensitive ) == 0 )
+        {
+          const QImage image( file );
+          dropImage( image, format );
+        }
+      }
+    }
+    if ( !files.empty() )
+      return;
+  }
+
   QTextEdit::insertFromMimeData( source );
 }
 
