@@ -70,7 +70,7 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   mParagraphStyleCombo->addItem( tr( "Heading 4" ), ParagraphHeading4 );
   mParagraphStyleCombo->addItem( tr( "Monospace" ), ParagraphMonospace );
 
-  connect( mParagraphStyleCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsRichTextEditor::textStyle );
+  connect( mParagraphStyleCombo, qOverload< int >( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
   mToolBar->insertWidget( mToolBar->actions().at( 0 ), mParagraphStyleCombo );
 
   mFontSizeCombo = new QComboBox();
@@ -206,8 +206,11 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
 
   // images
   connect( mActionInsertImage, &QAction::triggered, this, &QgsRichTextEditor::insertImage );
-
-  connect( mFontSizeCombo, &QComboBox::currentTextChanged, this, &QgsRichTextEditor::textSize );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  connect( mFontSizeCombo, qOverload< QString >( &QComboBox::activated ), this, &QgsRichTextEditor::textSize );
+#else
+  connect( mFontSizeCombo, &QComboBox::textActivated, this, &QgsRichTextEditor::textSize );
+#endif
 
   fontChanged( mTextEdit->font() );
 }
@@ -408,35 +411,15 @@ void QgsRichTextEditor::textStyle( int )
 
 void QgsRichTextEditor::textFgColor()
 {
-  QColor col = mForeColorButton->color();
-  QTextCursor cursor = mTextEdit->textCursor();
-  if ( !cursor.hasSelection() )
-  {
-    cursor.select( QTextCursor::WordUnderCursor );
-  }
-  QTextCharFormat fmt = cursor.charFormat();
-  if ( col.isValid() )
-  {
-    fmt.setForeground( col );
-  }
-  else
-  {
-    fmt.clearForeground();
-  }
-  cursor.setCharFormat( fmt );
-  mTextEdit->setCurrentCharFormat( fmt );
-  fgColorChanged( col );
+  QTextCharFormat fmt;
+  fmt.setForeground( mForeColorButton->color() );
+  mergeFormatOnWordOrSelection( fmt );
 }
 
 void QgsRichTextEditor::textBgColor()
 {
+  QTextCharFormat fmt;
   QColor col = mBackColorButton->color();
-  QTextCursor cursor = mTextEdit->textCursor();
-  if ( !cursor.hasSelection() )
-  {
-    cursor.select( QTextCursor::WordUnderCursor );
-  }
-  QTextCharFormat fmt = cursor.charFormat();
   if ( col.isValid() )
   {
     fmt.setBackground( col );
@@ -445,9 +428,7 @@ void QgsRichTextEditor::textBgColor()
   {
     fmt.clearBackground();
   }
-  cursor.setCharFormat( fmt );
-  mTextEdit->setCurrentCharFormat( fmt );
-  bgColorChanged( col );
+  mergeFormatOnWordOrSelection( fmt );
 }
 
 void QgsRichTextEditor::listBullet( bool checked )
