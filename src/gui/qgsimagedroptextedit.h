@@ -1,9 +1,15 @@
-/*
+/****************************************************************************
+**
 ** Copyright (C) 2013 Jiří Procházka (Hobrasoft)
 ** Contact: http://www.hobrasoft.cz/
 **
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -19,8 +25,8 @@
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** $QT_END_LICENSE$
-*/
-
+**
+****************************************************************************/
 #ifndef QGSIMAGEDROPTEXTEDIT_H
 #define QGSIMAGEDROPTEXTEDIT_H
 
