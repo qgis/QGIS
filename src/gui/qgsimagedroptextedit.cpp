@@ -1,0 +1,140 @@
+/*
+** Copyright (C) 2013 Jiří Procházka (Hobrasoft)
+** Contact: http://www.hobrasoft.cz/
+**
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
+**
+** $QT_BEGIN_LICENSE:LGPL$
+** GNU Lesser General Public License Usage
+** This file is under the terms of the GNU Lesser General Public License
+** version 2.1 as published by the Free Software Foundation and appearing
+** in the file LICENSE.LGPL included in the packaging of this file.
+** Please review the following information to ensure the
+** GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
+** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** $QT_END_LICENSE$
+*/
+
+#include "qgsimagedroptextedit.h"
+#include <QMimeData>
+#include <QBuffer>
+
+///@cond PRIVATE
+QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )
+  : QTextEdit( parent )
+{
+}
+
+bool QgsImageDropTextEdit::canInsertFromMimeData( const QMimeData *source ) const
+{
+  return source->hasImage() || QTextEdit::canInsertFromMimeData( source );
+}
+
+void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
+{
+  if ( source->hasImage() )
+  {
+    const QStringList formats = source->formats();
+    QString format;
+    for ( const QString &string : formats )
+    {
+      if ( string == QLatin1String( "image/bmp" ) )
+      {
+        format = QStringLiteral( "BMP" );
+        break;
+      }
+      if ( string == QLatin1String( "image/jpeg" ) )
+      {
+        format = QStringLiteral( "JPG" );
+        break;
+      }
+      if ( string == QLatin1String( "image/jpg" ) )
+      {
+        format = QStringLiteral( "JPG" );
+        break;
+      }
+      if ( string == QLatin1String( "image/gif" ) )
+      {
+        format = QStringLiteral( "GIF" );
+        break;
+      }
+      if ( string == QLatin1String( "image/png" ) )
+      {
+        format = QStringLiteral( "PNG" );
+        break;
+      }
+      if ( string == QLatin1String( "image/pbm" ) )
+      {
+        format = QStringLiteral( "PBM" );
+        break;
+      }
+      if ( string == QLatin1String( "image/pgm" ) )
+      {
+        format = QStringLiteral( "PGM" );
+        break;
+      }
+      if ( string == QLatin1String( "image/ppm" ) )
+      {
+        format = QStringLiteral( "PPM" );
+        break;
+      }
+      if ( string == QLatin1String( "image/tiff" ) )
+      {
+        format = QStringLiteral( "TIFF" );
+        break;
+      }
+      if ( string == QLatin1String( "image/xbm" ) )
+      {
+        format = QStringLiteral( "XBM" );
+        break;
+      }
+      if ( string == QLatin1String( "image/xpm" ) )
+      {
+        format = QStringLiteral( "XPM" );
+        break;
+      }
+    }
+    if ( !format.isEmpty() )
+    {
+      dropImage( qvariant_cast<QImage>( source->imageData() ), format );
+      return;
+    }
+  }
+  QTextEdit::insertFromMimeData( source );
+}
+
+void QgsImageDropTextEdit::dropImage( const QImage &image, const QString &format )
+{
+  QByteArray bytes;
+  QBuffer buffer( &bytes );
+  buffer.open( QIODevice::WriteOnly );
+  image.save( &buffer, format.toLocal8Bit().data() );
+  buffer.close();
+  QByteArray base64 = bytes.toBase64();
+  QByteArray base64l;
+  for ( int i = 0; i < base64.size(); i++ )
+  {
+    base64l.append( base64[i] );
+    if ( i % 80 == 0 )
+    {
+      base64l.append( "\n" );
+    }
+  }
+
+  QTextCursor cursor = textCursor();
+  QTextImageFormat imageFormat;
+  imageFormat.setWidth( image.width() );
+  imageFormat.setHeight( image.height() );
+  imageFormat.setName( QStringLiteral( "data:image/%1;base64,%2" )
+                       .arg( QStringLiteral( "%1.%2" ).arg( rand() ).arg( format ),
+                             base64l.data() )
+                     );
+  cursor.insertImage( imageFormat );
+}
+///@endcond

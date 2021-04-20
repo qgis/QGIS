@@ -477,6 +477,7 @@ set(QGIS_GUI_SRCS
   qgshistogramwidget.cpp
   qgshelp.cpp
   qgsidentifymenu.cpp
+  qgsimagedroptextedit.cpp
   qgsinstallgridshiftdialog.cpp
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
@@ -570,6 +571,7 @@ set(QGIS_GUI_SRCS
   qgsrelationeditorwidget.cpp
   qgsabstractrelationeditorwidget.cpp
   qgsrelationwidgetregistry.cpp
+  qgsrichtexteditor.cpp
   qgsrubberband.cpp
   qgsscalecombobox.cpp
   qgsscalerangewidget.cpp
@@ -722,6 +724,7 @@ set(QGIS_GUI_HDRS
   qgshighlightablelineedit.h
   qgshistogramwidget.h
   qgsidentifymenu.h
+  qgsimagedroptextedit.h
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
   qgslegendfilterbutton.h
@@ -818,6 +821,7 @@ set(QGIS_GUI_HDRS
   qgsrelationeditorwidget.h
   qgsabstractrelationeditorwidget.h
   qgsrelationwidgetregistry.h
+  qgsrichtexteditor.h
   qgsrubberband.h
   qgsscalecombobox.h
   qgsscalerangewidget.h

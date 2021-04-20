@@ -1,0 +1,89 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrichtexteditor.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRichTextEditor : QWidget, protected Ui::QgsRichTextEditorBase
+{
+%Docstring(signature="appended")
+Originally ported from https://github.com/Anchakor/MRichTextEditor, courtesy of Hobrasoft.
+%End
+
+%TypeHeaderCode
+#include "qgsrichtexteditor.h"
+%End
+  public:
+    QgsRichTextEditor( QWidget *parent = 0 );
+
+    QString toPlainText() const;
+    QString toHtml() const;
+    QTextDocument *document();
+    QTextCursor textCursor() const;
+    void setTextCursor( const QTextCursor &cursor );
+
+  public slots:
+    void setText( const QString &text );
+    void clearSource();
+
+  protected slots:
+    void setPlainText( const QString &text );
+    void setHtml( const QString &text );
+    void textRemoveFormat();
+    void textRemoveAllFormat();
+    void textBold();
+    void textUnderline();
+    void textStrikeout();
+    void textItalic();
+    void textSize( const QString &p );
+    void textLink( bool checked );
+    void textStyle( int index );
+    void textFgColor();
+    void textBgColor();
+    void listBullet( bool checked );
+    void listOrdered( bool checked );
+    void slotCurrentCharFormatChanged( const QTextCharFormat &format );
+    void slotCursorPositionChanged();
+    void slotClipboardDataChanged();
+    void increaseIndentation();
+    void decreaseIndentation();
+    void insertImage();
+    void textSource();
+
+  protected:
+    void mergeFormatOnWordOrSelection( const QTextCharFormat &format );
+    void fontChanged( const QFont &f );
+    void fgColorChanged( const QColor &c );
+    void bgColorChanged( const QColor &c );
+    void list( bool checked, QTextListFormat::Style style );
+    void indent( int delta );
+    void focusInEvent( QFocusEvent *event );
+
+
+    enum ParagraphItems
+    {
+      ParagraphStandard,
+      ParagraphHeading1,
+      ParagraphHeading2,
+      ParagraphHeading3,
+      ParagraphHeading4,
+      ParagraphMonospace
+    };
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrichtexteditor.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
