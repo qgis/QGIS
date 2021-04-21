@@ -111,7 +111,7 @@ class StatisticsByCategories(QgisAlgorithm):
         for field_name in category_field_names:
             c = source.fields().lookupField(field_name)
             if c == -1:
-                raise QgsProcessingException(self.tr(f'Field "{field_name}" does not exist.'))
+                raise QgsProcessingException(self.tr('Field "{field_name}" does not exist.').format(field_name=field_name))
             category_field_indexes.append(c)
             fields.append(source.fields().at(c))
 
