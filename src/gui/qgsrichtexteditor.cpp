@@ -237,15 +237,12 @@ void QgsRichTextEditor::clearSource()
 
 void QgsRichTextEditor::textRemoveFormat()
 {
-  QTextCharFormat fmt;
-  fmt.setFontWeight( QFont::Normal );
-  fmt.setFontUnderline( false );
-  fmt.setFontStrikeOut( false );
-  fmt.setFontItalic( false );
-  fmt.setFontPointSize( 9 );
-//  fmt.setFontFamily     ("Helvetica");
-//  fmt.setFontStyleHint  (QFont::SansSerif);
-//  fmt.setFontFixedPitch (true);
+  QTextCharFormat format;
+  format.setFontWeight( QFont::Normal );
+  format.setFontUnderline( false );
+  format.setFontStrikeOut( false );
+  format.setFontItalic( false );
+  format.setFontPointSize( 9 );
 
   mActionBold->setChecked( false );
   mActionUnderline->setChecked( false );
@@ -253,12 +250,9 @@ void QgsRichTextEditor::textRemoveFormat()
   mActionStrikeOut->setChecked( false );
   mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( 9 ) );
 
-//  QTextBlockFormat bfmt = cursor.blockFormat();
-//  bfmt->setIndent(0);
+  format.clearBackground();
 
-  fmt.clearBackground();
-
-  mergeFormatOnWordOrSelection( fmt );
+  mergeFormatOnWordOrSelection( format );
 }
 
 void QgsRichTextEditor::textRemoveAllFormat()
@@ -274,9 +268,9 @@ void QgsRichTextEditor::textRemoveAllFormat()
 
 void QgsRichTextEditor::textBold()
 {
-  QTextCharFormat fmt;
-  fmt.setFontWeight( mActionBold->isChecked() ? QFont::Bold : QFont::Normal );
-  mergeFormatOnWordOrSelection( fmt );
+  QTextCharFormat format;
+  format.setFontWeight( mActionBold->isChecked() ? QFont::Bold : QFont::Normal );
+  mergeFormatOnWordOrSelection( format );
 }
 
 void QgsRichTextEditor::focusInEvent( QFocusEvent * )
@@ -286,23 +280,23 @@ void QgsRichTextEditor::focusInEvent( QFocusEvent * )
 
 void QgsRichTextEditor::textUnderline()
 {
-  QTextCharFormat fmt;
-  fmt.setFontUnderline( mActionUnderline->isChecked() );
-  mergeFormatOnWordOrSelection( fmt );
+  QTextCharFormat format;
+  format.setFontUnderline( mActionUnderline->isChecked() );
+  mergeFormatOnWordOrSelection( format );
 }
 
 void QgsRichTextEditor::textItalic()
 {
-  QTextCharFormat fmt;
-  fmt.setFontItalic( mActionItalic->isChecked() );
-  mergeFormatOnWordOrSelection( fmt );
+  QTextCharFormat format;
+  format.setFontItalic( mActionItalic->isChecked() );
+  mergeFormatOnWordOrSelection( format );
 }
 
 void QgsRichTextEditor::textStrikeout()
 {
-  QTextCharFormat fmt;
-  fmt.setFontStrikeOut( mActionStrikeOut->isChecked() );
-  mergeFormatOnWordOrSelection( fmt );
+  QTextCharFormat format;
+  format.setFontStrikeOut( mActionStrikeOut->isChecked() );
+  mergeFormatOnWordOrSelection( format );
 }
 
 void QgsRichTextEditor::textSize( const QString &p )
@@ -310,16 +304,16 @@ void QgsRichTextEditor::textSize( const QString &p )
   qreal pointSize = p.toDouble();
   if ( p.toFloat() > 0 )
   {
-    QTextCharFormat fmt;
-    fmt.setFontPointSize( pointSize );
-    mergeFormatOnWordOrSelection( fmt );
+    QTextCharFormat format;
+    format.setFontPointSize( pointSize );
+    mergeFormatOnWordOrSelection( format );
   }
 }
 
 void QgsRichTextEditor::textLink( bool checked )
 {
   bool unlink = false;
-  QTextCharFormat fmt;
+  QTextCharFormat format;
   if ( checked )
   {
     QString url = mTextEdit->currentCharFormat().anchorHref();
@@ -330,10 +324,10 @@ void QgsRichTextEditor::textLink( bool checked )
                                             &ok );
     if ( ok )
     {
-      fmt.setAnchor( true );
-      fmt.setAnchorHref( newUrl );
-      fmt.setForeground( QApplication::palette().color( QPalette::Link ) );
-      fmt.setFontUnderline( true );
+      format.setAnchor( true );
+      format.setAnchorHref( newUrl );
+      format.setForeground( QApplication::palette().color( QPalette::Link ) );
+      format.setFontUnderline( true );
     }
     else
     {
@@ -346,11 +340,11 @@ void QgsRichTextEditor::textLink( bool checked )
   }
   if ( unlink )
   {
-    fmt.setAnchor( false );
-    fmt.setForeground( QApplication::palette().color( QPalette::Text ) );
-    fmt.setFontUnderline( false );
+    format.setAnchor( false );
+    format.setForeground( QApplication::palette().color( QPalette::Text ) );
+    format.setFontUnderline( false );
   }
-  mergeFormatOnWordOrSelection( fmt );
+  mergeFormatOnWordOrSelection( format );
 }
 
 void QgsRichTextEditor::textStyle( int )
@@ -363,9 +357,9 @@ void QgsRichTextEditor::textStyle( int )
   {
     cursor.select( QTextCursor::BlockUnderCursor );
   }
-  QTextCharFormat fmt;
-  cursor.setCharFormat( fmt );
-  mTextEdit->setCurrentCharFormat( fmt );
+  QTextCharFormat format;
+  cursor.setCharFormat( format );
+  mTextEdit->setCurrentCharFormat( format );
 
   ParagraphItems style = static_cast< ParagraphItems >( mParagraphStyleCombo->currentData().toInt() );
   if ( style == ParagraphHeading1
@@ -375,60 +369,60 @@ void QgsRichTextEditor::textStyle( int )
   {
     if ( style == ParagraphHeading1 )
     {
-      fmt.setFontPointSize( mFontSizeH1 );
+      format.setFontPointSize( mFontSizeH1 );
     }
     if ( style == ParagraphHeading2 )
     {
-      fmt.setFontPointSize( mFontSizeH2 );
+      format.setFontPointSize( mFontSizeH2 );
     }
     if ( style == ParagraphHeading3 )
     {
-      fmt.setFontPointSize( mFontSizeH3 );
+      format.setFontPointSize( mFontSizeH3 );
     }
     if ( style == ParagraphHeading4 )
     {
-      fmt.setFontPointSize( mFontSizeH4 );
+      format.setFontPointSize( mFontSizeH4 );
     }
     if ( style == ParagraphHeading2 || style == ParagraphHeading4 )
     {
-      fmt.setFontItalic( true );
+      format.setFontItalic( true );
     }
 
-    fmt.setFontWeight( QFont::Bold );
+    format.setFontWeight( QFont::Bold );
   }
   if ( style == ParagraphMonospace )
   {
-    fmt = cursor.charFormat();
-    fmt.setFontFamily( QStringLiteral( "Monospace" ) );
-    fmt.setFontStyleHint( QFont::Monospace );
-    fmt.setFontFixedPitch( true );
+    format = cursor.charFormat();
+    format.setFontFamily( QStringLiteral( "Monospace" ) );
+    format.setFontStyleHint( QFont::Monospace );
+    format.setFontFixedPitch( true );
   }
-  cursor.setCharFormat( fmt );
-  mTextEdit->setCurrentCharFormat( fmt );
+  cursor.setCharFormat( format );
+  mTextEdit->setCurrentCharFormat( format );
 
   cursor.endEditBlock();
 }
 
 void QgsRichTextEditor::textFgColor()
 {
-  QTextCharFormat fmt;
-  fmt.setForeground( mForeColorButton->color() );
-  mergeFormatOnWordOrSelection( fmt );
+  QTextCharFormat format;
+  format.setForeground( mForeColorButton->color() );
+  mergeFormatOnWordOrSelection( format );
 }
 
 void QgsRichTextEditor::textBgColor()
 {
-  QTextCharFormat fmt;
+  QTextCharFormat format;
   QColor col = mBackColorButton->color();
   if ( col.isValid() )
   {
-    fmt.setBackground( col );
+    format.setBackground( col );
   }
   else
   {
-    fmt.clearBackground();
+    format.clearBackground();
   }
-  mergeFormatOnWordOrSelection( fmt );
+  mergeFormatOnWordOrSelection( format );
 }
 
 void QgsRichTextEditor::listBullet( bool checked )
@@ -455,20 +449,20 @@ void QgsRichTextEditor::list( bool checked, QTextListFormat::Style style )
   cursor.beginEditBlock();
   if ( !checked )
   {
-    QTextBlockFormat obfmt = cursor.blockFormat();
-    QTextBlockFormat bfmt;
-    bfmt.setIndent( obfmt.indent() );
-    cursor.setBlockFormat( bfmt );
+    const QTextBlockFormat originalFormat = cursor.blockFormat();
+    QTextBlockFormat format;
+    format.setIndent( originalFormat.indent() );
+    cursor.setBlockFormat( format );
   }
   else
   {
-    QTextListFormat listFmt;
+    QTextListFormat listFormat;
     if ( cursor.currentList() )
     {
-      listFmt = cursor.currentList()->format();
+      listFormat = cursor.currentList()->format();
     }
-    listFmt.setStyle( style );
-    cursor.createList( listFmt );
+    listFormat.setStyle( style );
+    cursor.createList( listFormat );
   }
   cursor.endEditBlock();
 }
@@ -496,13 +490,13 @@ void QgsRichTextEditor::slotCursorPositionChanged()
   mLastBlockList = l;
   if ( l )
   {
-    QTextListFormat lfmt = l->format();
-    if ( lfmt.style() == QTextListFormat::ListDisc )
+    QTextListFormat listFormat = l->format();
+    if ( listFormat.style() == QTextListFormat::ListDisc )
     {
       mActionBulletList->setChecked( true );
       mActionOrderedList->setChecked( false );
     }
-    else if ( lfmt.style() == QTextListFormat::ListDecimal )
+    else if ( listFormat.style() == QTextListFormat::ListDecimal )
     {
       mActionBulletList->setChecked( false );
       mActionOrderedList->setChecked( true );
@@ -556,13 +550,13 @@ void QgsRichTextEditor::fontChanged( const QFont &f )
   }
   if ( mTextEdit->textCursor().currentList() )
   {
-    QTextListFormat lfmt = mTextEdit->textCursor().currentList()->format();
-    if ( lfmt.style() == QTextListFormat::ListDisc )
+    QTextListFormat listFormat = mTextEdit->textCursor().currentList()->format();
+    if ( listFormat.style() == QTextListFormat::ListDisc )
     {
       mActionBulletList->setChecked( true );
       mActionOrderedList->setChecked( false );
     }
-    else if ( lfmt.style() == QTextListFormat::ListDecimal )
+    else if ( listFormat.style() == QTextListFormat::ListDecimal )
     {
       mActionBulletList->setChecked( false );
       mActionOrderedList->setChecked( true );
@@ -634,13 +628,13 @@ void QgsRichTextEditor::indent( int delta )
 {
   QTextCursor cursor = mTextEdit->textCursor();
   cursor.beginEditBlock();
-  QTextBlockFormat bfmt = cursor.blockFormat();
-  int ind = bfmt.indent();
-  if ( ind + delta >= 0 )
+  QTextBlockFormat format = cursor.blockFormat();
+  int indent = format.indent();
+  if ( indent + delta >= 0 )
   {
-    bfmt.setIndent( ind + delta );
+    format.setIndent( indent + delta );
   }
-  cursor.setBlockFormat( bfmt );
+  cursor.setBlockFormat( format );
   cursor.endEditBlock();
 }
 
