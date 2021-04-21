@@ -1643,7 +1643,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
   QgsRenderContext &rc = context.renderContext();
 
-  double origAngle = symbolAngle();
   int i = -1, maxCount = 0;
   bool isRing = false;
 
@@ -1698,7 +1697,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
         if ( rotateSymbols() )
         {
           double angle = context.renderContext().geometry()->vertexAngle( vId );
-          setSymbolAngle( angle * 180 / M_PI );
+          setSymbolLineAngle( angle * 180 / M_PI );
         }
         renderSymbol( mapPoint, context.feature(), rc, -1, context.selected() );
       }
@@ -1746,8 +1745,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     double distance;
     distance = placement == QgsTemplatedLineSymbolLayerBase::FirstVertex ? offsetAlongLine : -offsetAlongLine;
     renderOffsetVertexAlongLine( points, i, distance, context );
-    // restore original rotation
-    setSymbolAngle( origAngle );
 
     return;
   }
@@ -1776,7 +1773,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       {
         double angle = std::atan2( currentPoint.y() - prevPoint.y(),
                                    currentPoint.x() - prevPoint.x() );
-        setSymbolAngle( origAngle + angle * 180 / M_PI );
+        setSymbolLineAngle( angle * 180 / M_PI );
       }
       prevPoint = currentPoint;
     }
@@ -1787,15 +1784,12 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       if ( rotateSymbols() )
       {
         double angle = markerAngle( points, isRing, i );
-        setSymbolAngle( origAngle + angle * 180 / M_PI );
+        setSymbolLineAngle( angle * 180 / M_PI );
       }
     }
 
     renderSymbol( symbolPoint, context.feature(), rc, -1, context.selected() );
   }
-
-  // restore original rotation
-  setSymbolAngle( origAngle );
 }
 
 double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bool isRing, int vertex )
@@ -1879,7 +1873,6 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
     return;
 
   QgsRenderContext &rc = context.renderContext();
-  double origAngle = symbolAngle();
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
     // rotate marker (if desired)
@@ -1889,7 +1882,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       if ( points.first() == points.last() )
         isRing = true;
       double angle = markerAngle( points, isRing, vertex );
-      setSymbolAngle( origAngle + angle * 180 / M_PI );
+      setSymbolLineAngle( angle * 180 / M_PI );
     }
     renderSymbol( points[vertex], context.feature(), rc, -1, context.selected() );
     return;
@@ -1918,7 +1911,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       // rotate marker (if desired)
       if ( rotateSymbols() )
       {
-        setSymbolAngle( origAngle + ( l.angle() * 180 / M_PI ) );
+        setSymbolLineAngle( l.angle() * 180 / M_PI );
       }
       renderSymbol( markerPoint, context.feature(), rc, -1, context.selected() );
       return;
