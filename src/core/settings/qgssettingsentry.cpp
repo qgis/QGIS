@@ -642,4 +642,53 @@ int QgsSettingsEntryDouble::displayHintDecimals() const
   return mDisplayHintDecimals;
 }
 
+QgsSettingsEntryColor::QgsSettingsEntryColor( const QString &key, QgsSettings::Section section, const QColor &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          section,
+                          defaultValue,
+                          description )
+{
+}
+
+QgsSettingsEntryColor::QgsSettingsEntryColor( const QString &key, const QString &pluginName, const QColor &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          pluginName,
+                          defaultValue,
+                          description )
+{
+}
+
+bool QgsSettingsEntryColor::setValue( const QColor &value, const QString &dynamicKeyPart ) const
+{
+  QStringList dynamicKeyPartList;
+  if ( !dynamicKeyPart.isNull() )
+    dynamicKeyPartList.append( dynamicKeyPart );
+
+  return setValue( value, dynamicKeyPartList );
+}
+
+bool QgsSettingsEntryColor::setValue( const QColor &value, const QStringList &dynamicKeyPartList ) const
+{
+  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
+}
+
+QColor QgsSettingsEntryColor::value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QString &defaultValueOverride ) const
+{
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).value<QColor>();
+}
+
+QColor QgsSettingsEntryColor::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QString &defaultValueOverride ) const
+{
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ).value<QColor>();
+}
+
+QColor QgsSettingsEntryColor::defaultValue() const
+{
+  return defaultValueAsVariant().value<QColor>();
+}
+
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryColor::settingsType() const
+{
+  return QgsSettingsEntryBase::SettingsType::Color;
+}
 

@@ -10,7 +10,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import QgsSettingsRegistry, QgsSettingsEntryBase, QgsSettingsEntryInteger, QgsApplication
+from qgis.core import QgsSettingsRegistry, QgsSettingsRegistryCore, QgsSettingsEntryBase, QgsSettingsEntryInteger, QgsApplication
 from qgis.testing import start_app, unittest
 
 __author__ = 'Damiano Lombardi'
@@ -41,6 +41,11 @@ class PyQgsSettingsRegistry(unittest.TestCase):
         QgsApplication.settingsRegistryCore().appendRegistry(settingsRegistry)
 
         self.assertEqual(QgsApplication.settingsRegistryCore().getSettingsEntry(settingsEntry.key(), True), settingsEntry)
+
+        print(QgsApplication.settingsRegistryCore().settingsDigitizingDefaultZValue.key())
+
+        print(QgsApplication.settingsRegistryCore().settingsDigitizingDefaultSnapType.key())
+        print(QgsApplication.settingsRegistryCore().settingsDigitizingDefaultSnapType.value())
 
 
 if __name__ == '__main__':

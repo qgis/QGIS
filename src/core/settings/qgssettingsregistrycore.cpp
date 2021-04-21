@@ -57,6 +57,44 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths );
 
   addSettingsEntry( &QgsMapRendererJob::settingsLogCanvasRefreshEvent );
+
+  addSettingsEntry( &settingsDigitizingStreamTolerance );
+  addSettingsEntry( &settingsDigitizingLineWidth );
+  addSettingsEntry( &settingsDigitizingLineColorRed );
+  addSettingsEntry( &settingsDigitizingLineColorGreen );
+  addSettingsEntry( &settingsDigitizingLineColorBlue );
+  addSettingsEntry( &settingsDigitizingLineColorAlpha );
+  addSettingsEntry( &settingsDigitizingLineColorAlphaScale );
+  addSettingsEntry( &settingsDigitizingFillColorRed );
+  addSettingsEntry( &settingsDigitizingFillColorGreen );
+  addSettingsEntry( &settingsDigitizingFillColorBlue );
+  addSettingsEntry( &settingsDigitizingFillColorAlpha );
+  addSettingsEntry( &settingsDigitizingLineGhost );
+  addSettingsEntry( &settingsDigitizingDefaultZValue );
+  addSettingsEntry( &settingsDigitizingDefaultSnapEnabled );
+//  addSettingsEntry( &settingsDigitizingDefaultSnapType );
+  addSettingsEntry( &settingsDigitizingDefaultSnappingTolerance );
+//  addSettingsEntry( &settingsDigitizingDefaultSnappingToleranceUnit );
+  addSettingsEntry( &settingsDigitizingSearchRadiusVertexEdit );
+//  addSettingsEntry( &settingsDigitizingSearchRadiusVertexEditUnit );
+  addSettingsEntry( &settingsDigitizingSnapColor );
+  addSettingsEntry( &settingsDigitizingSnapTooltip );
+  addSettingsEntry( &settingsDigitizingSnapInvisibleFeature );
+  addSettingsEntry( &settingsDigitizingMarkerOnlyForSelected );
+  addSettingsEntry( &settingsDigitizingMarkerStyle );
+  addSettingsEntry( &settingsDigitizingMarkerSizeMm );
+  addSettingsEntry( &settingsDigitizingReuseLastValues );
+  addSettingsEntry( &settingsDigitizingDisableEnterAttributeValuesDialog );
+  addSettingsEntry( &settingsDigitizingValidateGeometries );
+//  addSettingsEntry( &settingsDigitizingOffsetJoinStyle );
+  addSettingsEntry( &settingsDigitizingOffsetQuadSeg );
+  addSettingsEntry( &settingsDigitizingOffsetMiterLimit );
+  addSettingsEntry( &settingsDigitizingConvertToCurve );
+  addSettingsEntry( &settingsDigitizingConvertToCurveAngleTolerance );
+  addSettingsEntry( &settingsDigitizingConvertToCurveDistanceTolerance );
+//  addSettingsEntry( &settingsDigitizingOffsetCapStyle );
+  addSettingsEntry( &settingsDigitizingOffsetShowAdvanced );
+  addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
