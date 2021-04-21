@@ -914,6 +914,7 @@
         <file>themes/default/mIconSnappingEndpoint.svg</file>
         <file>themes/default/mActionStreamingDigitize.svg</file>
         <file>themes/default/mActionEditHtml.svg</file>
+        <file>themes/default/mIndicatorNotes.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

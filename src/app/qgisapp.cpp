@@ -254,6 +254,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeviewmemoryindicator.h"
 #include "qgslayertreeviewbadlayerindicator.h"
 #include "qgslayertreeviewnonremovableindicator.h"
+#include "qgslayertreeviewnotesindicator.h"
 #include "qgslayertreeviewnocrsindicator.h"
 #include "qgslayertreeviewtemporalindicator.h"
 #include "qgslayertreeviewofflineindicator.h"
@@ -4613,6 +4614,7 @@ void QgisApp::initLayerTreeView()
   new QgsLayerTreeViewFilterIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
   new QgsLayerTreeViewEmbeddedIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
   new QgsLayerTreeViewMemoryIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
+  new QgsLayerTreeViewNotesIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
   new QgsLayerTreeViewTemporalIndicatorProvider( mLayerTreeView ); // gets parented to the layer view
   new QgsLayerTreeViewNoCrsIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
   new QgsLayerTreeViewOfflineIndicatorProvider( mLayerTreeView );  // gets parented to the layer view

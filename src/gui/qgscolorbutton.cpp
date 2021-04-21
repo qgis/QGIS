@@ -72,10 +72,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   {
     setButtonBackground();
   } );
-
 }
-
-
 
 QSize QgsColorButton::minimumSizeHint() const
 {
