@@ -1276,6 +1276,7 @@ typedef QgsSettingsEntryEnumFlag<$3> QgsSettingsEntryEnumFlag_$2;
     QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
 };
     const QgsSettingsEntryEnumFlag_$2 $2;";
+      $COMMENT = '';
     }
 
     write_output("NOR", "$LINE\n");
