@@ -277,6 +277,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditHtml.svg</normaloff>:/images/themes/default/mActionEditHtml.svg</iconset>
+   </property>
    <property name="text">
     <string>Edit HTML Source</string>
    </property>
