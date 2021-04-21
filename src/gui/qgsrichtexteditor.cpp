@@ -31,6 +31,7 @@
 #include "qgsrichtexteditor.h"
 #include "qgsguiutils.h"
 #include "qgscolorbutton.h"
+#include "qgscodeeditor.h"
 
 #include <QMimeData>
 #include <QApplication>
@@ -362,41 +363,44 @@ void QgsRichTextEditor::textStyle( int )
   mTextEdit->setCurrentCharFormat( format );
 
   ParagraphItems style = static_cast< ParagraphItems >( mParagraphStyleCombo->currentData().toInt() );
-  if ( style == ParagraphHeading1
-       || style == ParagraphHeading2
-       || style == ParagraphHeading3
-       || style == ParagraphHeading4 )
-  {
-    if ( style == ParagraphHeading1 )
-    {
-      format.setFontPointSize( mFontSizeH1 );
-    }
-    if ( style == ParagraphHeading2 )
-    {
-      format.setFontPointSize( mFontSizeH2 );
-    }
-    if ( style == ParagraphHeading3 )
-    {
-      format.setFontPointSize( mFontSizeH3 );
-    }
-    if ( style == ParagraphHeading4 )
-    {
-      format.setFontPointSize( mFontSizeH4 );
-    }
-    if ( style == ParagraphHeading2 || style == ParagraphHeading4 )
-    {
-      format.setFontItalic( true );
-    }
 
-    format.setFontWeight( QFont::Bold );
-  }
-  if ( style == ParagraphMonospace )
+  switch ( style )
   {
-    format = cursor.charFormat();
-    format.setFontFamily( QStringLiteral( "Monospace" ) );
-    format.setFontStyleHint( QFont::Monospace );
-    format.setFontFixedPitch( true );
+    case QgsRichTextEditor::ParagraphStandard:
+      break;
+
+    case QgsRichTextEditor::ParagraphHeading1:
+      format.setFontPointSize( mFontSizeH1 );
+      format.setFontWeight( QFont::Bold );
+      break;
+
+    case QgsRichTextEditor::ParagraphHeading2:
+      format.setFontPointSize( mFontSizeH2 );
+      format.setFontWeight( QFont::Bold );
+      format.setFontItalic( true );
+      break;
+
+    case QgsRichTextEditor::ParagraphHeading3:
+      format.setFontPointSize( mFontSizeH3 );
+      format.setFontWeight( QFont::Bold );
+      break;
+
+    case QgsRichTextEditor::ParagraphHeading4:
+      format.setFontPointSize( mFontSizeH4 );
+      format.setFontWeight( QFont::Bold );
+      format.setFontItalic( true );
+      break;
+
+    case QgsRichTextEditor::ParagraphMonospace:
+    {
+      format = cursor.charFormat();
+      format.setFontFamily( QgsCodeEditor::getMonospaceFont().family() );
+      format.setFontStyleHint( QFont::Monospace );
+      format.setFontFixedPitch( true );
+      break;
+    }
   }
+
   cursor.setCharFormat( format );
   mTextEdit->setCurrentCharFormat( format );
 
