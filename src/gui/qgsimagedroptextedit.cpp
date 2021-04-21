@@ -43,6 +43,7 @@
 QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )
   : QTextEdit( parent )
 {
+  setTextInteractionFlags( Qt::TextEditorInteraction | Qt::LinksAccessibleByMouse );
 }
 
 QgsImageDropTextEdit::~QgsImageDropTextEdit() = default;
