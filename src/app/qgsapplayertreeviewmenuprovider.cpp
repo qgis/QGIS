@@ -45,7 +45,9 @@
 #include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgslayernotesmanager.h"
 
+#include <QMessageBox>
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -669,6 +671,26 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           menu->addAction( tr( "Paste Style" ), QgisApp::instance(), &QgisApp::applyStyleToGroup );
         }
+      }
+
+      QAction *notes = new QAction( QgsLayerNotesManager::layerHasNotes( layer ) ? tr( "Edit Layer Notes…" ) : tr( "Add Layer Notes…" ), menu );
+      connect( notes, &QAction::triggered, this, [layer ]
+      {
+        QgsLayerNotesManager::editLayerNotes( layer, QgisApp::instance() );
+      } );
+      menu->addAction( notes );
+      if ( QgsLayerNotesManager::layerHasNotes( layer ) )
+      {
+        QAction *notes = new QAction( tr( "Remove Layer Notes" ), menu );
+        connect( notes, &QAction::triggered, this, [layer ]
+        {
+          if ( QMessageBox::question( QgisApp::instance(),
+                                      tr( "Remove Layer Notes" ),
+                                      tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ),
+                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+            QgsLayerNotesManager::removeNotes( layer );
+        } );
+        menu->addAction( notes );
       }
 
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
