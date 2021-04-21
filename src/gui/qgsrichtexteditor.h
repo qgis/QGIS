@@ -168,6 +168,7 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     QgsColorButton *mBackColorButton = nullptr;
 
     QPointer<QTextList> mLastBlockList;
+    QString mMonospaceFontFamily;
 };
 
 
