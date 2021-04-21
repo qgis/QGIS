@@ -1271,7 +1271,7 @@ while ($LINE_IDX < $LINE_COUNT){
 typedef QgsSettingsEntryEnumFlag<$1> QgsSettingsEntryEnumFlag_$2;
 %End
   public:
-    QgsSettingsEntryEnumFlag_$2( const QString &key, QgsSettings::Section section, const $3 &defaultValue, const QString &description = QString() );
+    QgsSettingsEntryEnumFlag_$2( const QString &key, QgsSettings::Section section, const $2 &defaultValue, const QString &description = QString() );
     QString key( const QString &dynamicKeyPart = QString() ) const;
     QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
 };
