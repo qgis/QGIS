@@ -29,16 +29,23 @@
 ****************************************************************************/
 
 #include "qgsimagedroptextedit.h"
+#include "qgsguiutils.h"
+
 #include <QMimeData>
 #include <QBuffer>
 #include <QFileInfo>
 #include <QImageReader>
+#include <QMouseEvent>
+#include <QApplication>
+#include <QDesktopServices>
 
 ///@cond PRIVATE
 QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )
   : QTextEdit( parent )
 {
 }
+
+QgsImageDropTextEdit::~QgsImageDropTextEdit() = default;
 
 bool QgsImageDropTextEdit::canInsertFromMimeData( const QMimeData *source ) const
 {
@@ -195,6 +202,31 @@ void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
   }
 
   QTextEdit::insertFromMimeData( source );
+}
+
+void QgsImageDropTextEdit::mouseMoveEvent( QMouseEvent *e )
+{
+  QTextEdit::mouseMoveEvent( e );
+  mActiveAnchor = anchorAt( e->pos() );
+  if ( !mActiveAnchor.isEmpty() && !mCursorOverride )
+    mCursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::PointingHandCursor );
+  else if ( mActiveAnchor.isEmpty() && mCursorOverride )
+    mCursorOverride.reset();
+}
+
+void QgsImageDropTextEdit::mouseReleaseEvent( QMouseEvent *e )
+{
+  if ( e->button() == Qt::LeftButton && !mActiveAnchor.isEmpty() )
+  {
+    QDesktopServices::openUrl( QUrl( mActiveAnchor ) );
+    if ( mCursorOverride )
+      mCursorOverride.reset();
+    mActiveAnchor.clear();
+  }
+  else
+  {
+    QTextEdit::mouseReleaseEvent( e );
+  }
 }
 
 void QgsImageDropTextEdit::dropImage( const QImage &image, const QString &format )
