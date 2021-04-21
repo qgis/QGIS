@@ -154,12 +154,19 @@ void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
     files.reserve( urls.size() );
     for ( const QUrl &url : urls )
     {
-      QString fileName = url.toLocalFile();
-      // seems that some drag and drop operations include an empty url
-      // so we test for length to make sure we have something
-      if ( !fileName.isEmpty() )
+      if ( url.isLocalFile() )
       {
-        files << fileName;
+        QString fileName = url.toLocalFile();
+        // seems that some drag and drop operations include an empty url
+        // so we test for length to make sure we have something
+        if ( !fileName.isEmpty() )
+        {
+          files << fileName;
+        }
+      }
+      else
+      {
+        dropLink( url );
       }
     }
 
@@ -167,13 +174,20 @@ void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
     {
       const QFileInfo fi( file );
       const QList<QByteArray> formats = QImageReader::supportedImageFormats();
+      bool isImage = false;
       for ( const QByteArray &format : formats )
       {
         if ( fi.suffix().compare( format, Qt::CaseInsensitive ) == 0 )
         {
           const QImage image( file );
           dropImage( image, format );
+          isImage = true;
+          break;
         }
+      }
+      if ( !isImage )
+      {
+        dropLink( QUrl::fromLocalFile( file ) );
       }
     }
     if ( !files.empty() )
@@ -211,4 +225,11 @@ void QgsImageDropTextEdit::dropImage( const QImage &image, const QString &format
                      );
   cursor.insertImage( imageFormat );
 }
+
+void QgsImageDropTextEdit::dropLink( const QUrl &url )
+{
+  QTextCursor cursor = textCursor();
+  cursor.insertHtml( QStringLiteral( "<a href=\"%1\">%1</a>" ).arg( url.toString() ) );
+}
+
 ///@endcond

@@ -51,6 +51,7 @@ class GUI_EXPORT QgsImageDropTextEdit : public QTextEdit
     QgsImageDropTextEdit( QWidget *parent = nullptr );
 
     void dropImage( const QImage &image, const QString &format );
+    void dropLink( const QUrl &url );
 
   protected:
     bool canInsertFromMimeData( const QMimeData *source ) const override;
