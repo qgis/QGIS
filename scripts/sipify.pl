@@ -1262,7 +1262,7 @@ while ($LINE_IDX < $LINE_COUNT){
     $LINE =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     # handle enum/flags QgsSettingsEntryEnumFlag
-    if ( $LINE =~ m/^(.*) QgsSettingsEntryEnumFlag (.+) =.*SIP_QGSSETTINGS_ENUMFLAG\(\s*(.*?)\s*\)\s*;$/ ) {
+    if ( $LINE =~ m/^(.*) QgsSettingsEntryEnumFlag(<.*>)? (.+) =.*SIP_QGSSETTINGS_ENUMFLAG\(\s*(.*?)\s*\)\s*;$/ ) {
       $LINE = "class QgsSettingsEntryEnumFlag_$2
 {
 %TypeHeaderCode
