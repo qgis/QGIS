@@ -857,7 +857,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
   * \since QGIS 3.20
  */
 template <typename T>
-class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
+class QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
 {
   public:
 
@@ -1014,7 +1014,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlagBase : public QgsSettingsEntryBase
   * \since QGIS 3.20
  */
 template <typename T>
-class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryEnumFlagBase<T>
+class QgsSettingsEntryEnum : public QgsSettingsEntryEnumFlagBase<T>
 {
   public:
 
@@ -1058,7 +1058,7 @@ class CORE_EXPORT QgsSettingsEntryEnum : public QgsSettingsEntryEnumFlagBase<T>
   * \since QGIS 3.20
  */
 template <typename T>
-class CORE_EXPORT QgsSettingsEntryFlag : public QgsSettingsEntryEnumFlagBase<T>
+class QgsSettingsEntryFlag : public QgsSettingsEntryEnumFlagBase<T>
 {
   public:
 
