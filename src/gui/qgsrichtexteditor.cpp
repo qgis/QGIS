@@ -181,7 +181,7 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   mForeColorButton = new QgsColorButton();
   mForeColorButton->setAllowOpacity( false );
   mForeColorButton->setColorDialogTitle( tr( "Foreground Color" ) );
-  mForeColorButton->setColor( QApplication::palette().windowText().color() );
+  mForeColorButton->setColor( palette().windowText().color() );
   mForeColorButton->setShowNoColor( false );
   mForeColorButton->setToolTip( tr( "Foreground color" ) );
   mForeColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
@@ -326,7 +326,7 @@ void QgsRichTextEditor::textLink( bool checked )
     {
       format.setAnchor( true );
       format.setAnchorHref( newUrl );
-      format.setForeground( QApplication::palette().color( QPalette::Link ) );
+      format.setForeground( palette().color( QPalette::Link ) );
       format.setFontUnderline( true );
     }
     else
@@ -341,7 +341,7 @@ void QgsRichTextEditor::textLink( bool checked )
   if ( unlink )
   {
     format.setAnchor( false );
-    format.setForeground( QApplication::palette().color( QPalette::Text ) );
+    format.setForeground( palette().color( QPalette::Text ) );
     format.setFontUnderline( false );
   }
   mergeFormatOnWordOrSelection( format );
@@ -591,7 +591,7 @@ void QgsRichTextEditor::slotCurrentCharFormatChanged( const QTextCharFormat &for
 {
   fontChanged( format.font() );
   bgColorChanged( ( format.background().isOpaque() ) ? format.background().color() : QColor() );
-  fgColorChanged( ( format.foreground().isOpaque() ) ? format.foreground().color() : QApplication::palette().windowText().color() );
+  fgColorChanged( ( format.foreground().isOpaque() ) ? format.foreground().color() : palette().windowText().color() );
   mActionInsertLink->setChecked( format.isAnchor() );
 }
 
