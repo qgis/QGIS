@@ -1447,6 +1447,7 @@ void QgsAttributeForm::init()
     int row = 0;
     int column = 0;
     int columnCount = 1;
+    bool hasRootFields = false;
 
     const QList<QgsAttributeEditorElement *> tabs = mLayer->editFormConfig().tabs();
 
@@ -1495,6 +1496,7 @@ void QgsAttributeForm::init()
       }
       else
       {
+        hasRootFields = true;
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QLabel *label = new QLabel( widgetInfo.labelText );
@@ -1555,6 +1557,14 @@ void QgsAttributeForm::init()
         row += 1;
       }
     }
+
+    if ( hasRootFields )
+    {
+      QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+      layout->addItem( spacerItem, row, 0 );
+      layout->setRowStretch( row, 1 );
+    }
+
     formWidget = container;
   }
 
