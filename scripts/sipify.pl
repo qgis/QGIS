@@ -1268,14 +1268,14 @@ while ($LINE_IDX < $LINE_COUNT){
 %TypeHeaderCode
 #include \"" .basename($headerfile) . "\"
 #include \"qgssettingsentry.h\"
-typedef QgsSettingsEntryEnumFlag<$3> QgsSettingsEntryEnumFlag_$2;
+typedef QgsSettingsEntryEnumFlag<$4> QgsSettingsEntryEnumFlag_$3;
 %End
   public:
-    QgsSettingsEntryEnumFlag_$2( const QString &key, QgsSettings::Section section, const $3 &defaultValue, const QString &description = QString() );
+    QgsSettingsEntryEnumFlag_$3( const QString &key, QgsSettings::Section section, const $3 &defaultValue, const QString &description = QString() );
     QString key( const QString &dynamicKeyPart = QString() ) const;
     QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
 };
-    const QgsSettingsEntryEnumFlag_$2 $2;";
+    const QgsSettingsEntryEnumFlag_$3 $3;";
       $COMMENT = '';
     }
 
