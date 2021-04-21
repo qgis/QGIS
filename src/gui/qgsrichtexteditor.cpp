@@ -57,6 +57,8 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
 {
   setupUi( this );
 
+  mMonospaceFontFamily = QgsCodeEditor::getMonospaceFont().family();
+
   mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
 
   connect( mTextEdit, &QTextEdit::currentCharFormatChanged, this, &QgsRichTextEditor::slotCurrentCharFormatChanged );
@@ -394,7 +396,7 @@ void QgsRichTextEditor::textStyle( int )
     case QgsRichTextEditor::ParagraphMonospace:
     {
       format = cursor.charFormat();
-      format.setFontFamily( QgsCodeEditor::getMonospaceFont().family() );
+      format.setFontFamily( mMonospaceFontFamily );
       format.setFontStyleHint( QFont::Monospace );
       format.setFontFixedPitch( true );
       break;
@@ -543,7 +545,7 @@ void QgsRichTextEditor::fontChanged( const QFont &f )
   }
   else
   {
-    if ( f.fixedPitch() && f.family() == QLatin1String( "Monospace" ) )
+    if ( f.fixedPitch() && f.family() == mMonospaceFontFamily )
     {
       mParagraphStyleCombo->setCurrentIndex( ParagraphMonospace );
     }
