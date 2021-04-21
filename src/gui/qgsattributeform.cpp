@@ -222,33 +222,36 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
       break;
 
     case QgsAttributeEditorContext::AddFeatureMode:
-      synchronizeEnabledState();
+      synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::FixAttributeMode:
-      synchronizeEnabledState();
+      synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::MultiEditMode:
       resetMultiEdit( false );
-      synchronizeEnabledState();
+      synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::SearchMode:
       mSearchButtonBox->setVisible( true );
+      synchronizeState();
       hideButtonBox();
       break;
 
     case QgsAttributeEditorContext::AggregateSearchMode:
       mSearchButtonBox->setVisible( false );
+      synchronizeState();
       hideButtonBox();
       break;
 
     case QgsAttributeEditorContext::IdentifyMode:
       setFeature( mFeature );
+      synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
   }
@@ -298,7 +301,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     {
       resetValues();
 
-      synchronizeEnabledState();
+      synchronizeState();
 
       // Settings of feature is done when we trigger the attribute form interface
       // Issue https://github.com/qgis/QGIS/issues/29667
@@ -752,6 +755,13 @@ bool QgsAttributeForm::saveWithDetails( QString *error )
   if ( mIsSaving )
     return true;
 
+  if ( mContext.formMode() == QgsAttributeEditorContext::Embed && !mValidConstraints )
+  {
+    // the feature isn't saved (as per the warning provided), but we return true
+    // so switching features still works
+    return true;
+  }
+
   for ( QgsWidgetWrapper *wrapper : std::as_const( mWidgets ) )
   {
     wrapper->notifyAboutToSave();
@@ -996,7 +1006,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
       updateConstraint( ft, depsEww );
 
     // sync OK button status
-    synchronizeEnabledState();
+    synchronizeState();
 
     QgsExpressionContext context = createExpressionContext( ft );
 
@@ -1321,7 +1331,7 @@ void QgsAttributeForm::parentFormValueChanged( const QString &attribute, const Q
   }
 }
 
-void QgsAttributeForm::synchronizeEnabledState()
+void QgsAttributeForm::synchronizeState()
 {
   bool isEditable = ( mFeature.isValid()
                       || mMode == QgsAttributeEditorContext::AddFeatureMode
@@ -1349,9 +1359,28 @@ void QgsAttributeForm::synchronizeEnabledState()
   if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
     QStringList invalidFields, descriptions;
-    bool validConstraint = currentFormValidConstraints( invalidFields, descriptions );
+    mValidConstraints = currentFormValidConstraints( invalidFields, descriptions );
 
-    isEditable = isEditable & validConstraint;
+    if ( isEditable && mContext.formMode() == QgsAttributeEditorContext::Embed )
+    {
+      if ( !mValidConstraints && !mConstraintsFailMessageBarItem )
+      {
+        mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constrains.", "invalid fields", invalidFields.size() ), Qgis::Warning, -1 );
+        mMessageBar->pushItem( mConstraintsFailMessageBarItem );
+      }
+      else if ( mValidConstraints && mConstraintsFailMessageBarItem )
+      {
+        mMessageBar->popWidget( mConstraintsFailMessageBarItem );
+        mConstraintsFailMessageBarItem = nullptr;
+      }
+    }
+    else if ( mConstraintsFailMessageBarItem )
+    {
+      mMessageBar->popWidget( mConstraintsFailMessageBarItem );
+      mConstraintsFailMessageBarItem = nullptr;
+    }
+
+    isEditable = isEditable & mValidConstraints;
   }
 
   // change OK button status
@@ -1782,8 +1811,8 @@ void QgsAttributeForm::init()
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsAttributeForm::save );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsAttributeForm::resetValues );
 
-  connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsAttributeForm::synchronizeEnabledState );
-  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeForm::synchronizeEnabledState );
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsAttributeForm::synchronizeState );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeForm::synchronizeState );
 
   // This triggers a refresh of the form widget and gives a chance to re-format the
   // value to those widgets that have a different representation when in edit mode
