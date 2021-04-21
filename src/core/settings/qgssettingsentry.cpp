@@ -77,7 +77,7 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
 
     for ( int i = 0; i < dynamicKeyPartList.size(); i++ )
     {
-      completeKey.replace( QStringLiteral( "%%1" ).arg( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
+      completeKey.replace( QStringLiteral( "%" ).append( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
     }
   }
   return completeKey;
@@ -118,8 +118,8 @@ bool QgsSettingsEntryBase::keyIsValid( const QString &key ) const
     return completeKeyToCheck == prefixedSettingsKey;
 
   QRegularExpression regularExpression( prefixedSettingsKey.replace( QRegularExpression( QStringLiteral( "%\\d+" ) ), QStringLiteral( ".*" ) ) );
-  QRegularExpressionMatch regularExpresisonMatch = regularExpression.match( completeKeyToCheck );
-  return regularExpresisonMatch.hasMatch();
+  QRegularExpressionMatch regularExpressionMatch = regularExpression.match( completeKeyToCheck );
+  return regularExpressionMatch.hasMatch();
 }
 
 QString QgsSettingsEntryBase::definitionKey() const
@@ -137,7 +137,7 @@ QString QgsSettingsEntryBase::definitionKey() const
 
 bool QgsSettingsEntryBase::hasDynamicKey() const
 {
-  static const QRegularExpression regularExpression( QStringLiteral( "%\\d+" ) );
+  const thread_local QRegularExpression regularExpression( QStringLiteral( "%\\d+" ) );
   return mKey.contains( regularExpression );
 }
 
