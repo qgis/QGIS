@@ -513,7 +513,7 @@ target_link_libraries(qgis_app
   libdxfrw
 )
 
-target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH -DWIN32_LEAN_AND_MEAN")
 
 if (WITH_BINDINGS)
   target_link_libraries(qgis_app qgispython)

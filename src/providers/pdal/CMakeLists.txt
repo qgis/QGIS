@@ -111,6 +111,8 @@ set_target_properties(untwine PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
 )
 
+target_compile_definitions(untwine PRIVATE WIN32_LEAN_AND_MEAN)
+
 target_link_libraries (untwine
   ${PDAL_LIBRARIES}
   Threads::Threads

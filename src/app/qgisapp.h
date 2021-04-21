@@ -181,6 +181,8 @@ class QgsNetworkLoggerWidgetFactory;
 
 #ifdef Q_OS_WIN
 #include <windows.h>
+// because of WIN32_LEAN_AND_MEAN we need to include this explicitly
+#include <shellapi.h>
 #endif
 
 class QgsLegendFilterButton;
