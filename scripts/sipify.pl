@@ -1261,6 +1261,23 @@ while ($LINE_IDX < $LINE_COUNT){
     # fix astyle placing space after % character
     $LINE =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
+    # handle enum/flags QgsSettingsEntryEnumFlag
+    if ( $LINE =~ m/^(.*) QgsSettingsEntryEnumFlag (.+) =.*SIP_QGSSETTINGS_ENUMFLAG\(\s*(.*?)\s*\)\s*;$/ ) {
+      $LINE = "class QgsSettingsEntryEnumFlag_$2
+{
+%TypeHeaderCode
+#include \"" .basename($headerfile) . "\"
+#include \"qgssettingsentry.h\"
+typedef QgsSettingsEntryEnumFlag<$3> QgsSettingsEntryEnumFlag_$2;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_$2( const QString &key, QgsSettings::Section section, const $3 &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
+};
+    const QgsSettingsEntryEnumFlag_$2 $2;";
+    }
+
     write_output("NOR", "$LINE\n");
     if ($PYTHON_SIGNATURE ne ''){
         write_output("PSI", "$PYTHON_SIGNATURE\n");

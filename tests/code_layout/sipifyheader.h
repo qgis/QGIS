@@ -120,6 +120,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     enum OneLiner { Success, NoSuccess };
 
+    static const inline QgsSettingsEntryEnumFlag settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSettings::NoSection,  QgsSnappingConfig::VertexFlag ) SIP_QGSSETTINGS_ENUMFLAG( QgsSnappingConfig::SnappingTypes );
+
     /**
      * Docstring headers for structs are not supported by sip (as of 4.18) and
      * therefore this docstring must not to be copied to the sipfile.
