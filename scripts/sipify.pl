@@ -1262,20 +1262,20 @@ while ($LINE_IDX < $LINE_COUNT){
     $LINE =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     # handle enum/flags QgsSettingsEntryEnumFlag
-    if ( $LINE =~ m/^(.*) QgsSettingsEntryEnumFlag(<.*>)? (.+) =.*SIP_QGSSETTINGS_ENUMFLAG\(\s*(.*?)\s*\)\s*;$/ ) {
+    if ( $LINE =~ m/^\s*const QgsSettingsEntryEnumFlag<(.*)> (.+);$/ ) {
       $LINE = "class QgsSettingsEntryEnumFlag_$2
 {
 %TypeHeaderCode
 #include \"" .basename($headerfile) . "\"
 #include \"qgssettingsentry.h\"
-typedef QgsSettingsEntryEnumFlag<$4> QgsSettingsEntryEnumFlag_$3;
+typedef QgsSettingsEntryEnumFlag<$1> QgsSettingsEntryEnumFlag_$2;
 %End
   public:
-    QgsSettingsEntryEnumFlag_$3( const QString &key, QgsSettings::Section section, const $3 &defaultValue, const QString &description = QString() );
+    QgsSettingsEntryEnumFlag_$2( const QString &key, QgsSettings::Section section, const $3 &defaultValue, const QString &description = QString() );
     QString key( const QString &dynamicKeyPart = QString() ) const;
     QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
 };
-    const QgsSettingsEntryEnumFlag_$3 $3;";
+    const QgsSettingsEntryEnumFlag_$2 $2;";
       $COMMENT = '';
     }
 
