@@ -262,6 +262,7 @@ class QgsTextSettingsPrivate : public QSharedData
       : QSharedData( other )
       , isValid( other.isValid )
       , textFont( other.textFont )
+      , families( other.families )
       , textNamedStyle( other.textNamedStyle )
       , fontSizeUnits( other.fontSizeUnits )
       , fontSizeMapUnitScale( other.fontSizeMapUnitScale )
@@ -280,6 +281,7 @@ class QgsTextSettingsPrivate : public QSharedData
 
     bool isValid = false;
     QFont textFont;
+    QStringList families;
     QString textNamedStyle;
     QgsUnitTypes::RenderUnit fontSizeUnits = QgsUnitTypes::RenderPoints;
     QgsMapUnitScale fontSizeMapUnitScale;
