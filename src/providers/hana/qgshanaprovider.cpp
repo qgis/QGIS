@@ -106,15 +106,17 @@ namespace
                                   "TYPE %5 "
                                   "COORDINATE %6 "
                                   "COORDINATE %7 "
-                                  "DEFINITION %8 "
-                                  "TRANSFORM DEFINITION %9" )
+                                  "ORGANIZATION %8 IDENTIFIED BY %9 "
+                                  "DEFINITION %10 "
+                                  "TRANSFORM DEFINITION %11" )
                   .arg( QgsHanaUtils::quotedIdentifier( srs.description() ),
                         QString::number( srid ),
                         linearUnits,
                         angularUnits,
                         srs.isGeographic() ? QStringLiteral( "ROUND EARTH" ) : QStringLiteral( "PLANAR" ),
                         xRange, yRange,
-                        QgsHanaUtils::quotedString( srs.toWkt() ),
+                        QgsHanaUtils::quotedIdentifier( authName ), QString::number( srid ) )
+                  .arg( QgsHanaUtils::quotedString( srs.toWkt() ),
                         QgsHanaUtils::quotedString( srs.toProj() ) );
 
     QString errorMessage;
