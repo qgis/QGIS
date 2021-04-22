@@ -68,6 +68,8 @@ Has to be called to initialize the dual view.
                      ``False``, limited features can later be loaded using :py:func:`~QgsDualView.setFilterMode`
 %End
 
+    void initAttributeForm( const QgsFeature &feature );
+
     void setView( ViewMode view );
 %Docstring
 Change the current view mode.
