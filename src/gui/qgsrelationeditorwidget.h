@@ -219,7 +219,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     QgsCollapsibleGroupBox *mRootCollapsibleGroupBox = nullptr;
     QgsDualView *mDualView = nullptr;
-    QgsFeatureId mDualViewInitFeatureId  = FID_NULL;
     QPointer<QgsMessageBarItem> mMessageBarItem;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
 
