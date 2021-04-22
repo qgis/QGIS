@@ -80,6 +80,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('gdal_version', res)
         self.assertIn('geos_version', res)
         self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
         self.assertIn('qt_version', res)
         self.assertIn('qgis_version', res)
         self.assertIn('plugins', res)
@@ -102,6 +103,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('gdal_version', res)
         self.assertIn('geos_version', res)
         self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
         self.assertIn('qt_version', res)
         self.assertIn('qgis_version', res)
 
@@ -135,6 +137,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('gdal_version', res)
         self.assertIn('geos_version', res)
         self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
         self.assertIn('qt_version', res)
         self.assertIn('qgis_version', res)
 
@@ -192,6 +195,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('gdal_version', res)
         self.assertIn('geos_version', res)
         self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
         self.assertIn('qt_version', res)
         self.assertIn('qgis_version', res)
 
@@ -218,6 +222,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('gdal_version', res)
         self.assertIn('geos_version', res)
         self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
         self.assertIn('qt_version', res)
         self.assertIn('qgis_version', res)
 
@@ -261,6 +266,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('gdal_version', res)
         self.assertIn('geos_version', res)
         self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
         self.assertIn('qt_version', res)
         self.assertIn('qgis_version', res)
         self.assertEqual(res['algorithm_details']['id'], 'Test model')
