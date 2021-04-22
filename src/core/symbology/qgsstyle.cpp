@@ -2837,92 +2837,97 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
   }
 
   // load text formats
-  if ( version == STYLE_CURRENT_VERSION )
+
+  // this is ONLY safe to do if we have a QGuiApplication-- it requires QFontDatabase, which is not available otherwise!
+  if ( dynamic_cast< QGuiApplication * >( QCoreApplication::instance() ) )
   {
-    const QDomElement textFormatElement = docEl.firstChildElement( QStringLiteral( "textformats" ) );
-    e = textFormatElement.firstChildElement();
-    while ( !e.isNull() )
+    if ( version == STYLE_CURRENT_VERSION )
     {
-      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
-      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      const QDomElement textFormatElement = docEl.firstChildElement( QStringLiteral( "textformats" ) );
+      e = textFormatElement.firstChildElement();
+      while ( !e.isNull() )
       {
-        // skip the format, should already be present
-        continue;
-      }
-
-      if ( e.tagName() == QLatin1String( "textformat" ) )
-      {
-        QString name = e.attribute( QStringLiteral( "name" ) );
-        QStringList tags;
-        if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+        const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+        if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
         {
-          tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
-        }
-        bool favorite = false;
-        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QLatin1String( "1" ) )
-        {
-          favorite = true;
+          // skip the format, should already be present
+          continue;
         }
 
-        QgsTextFormat format;
-        const QDomElement styleElem = e.firstChildElement();
-        format.readXml( styleElem, QgsReadWriteContext() );
-        addTextFormat( name, format );
-        if ( mCurrentDB )
+        if ( e.tagName() == QLatin1String( "textformat" ) )
         {
-          saveTextFormat( name, format, favorite, tags );
+          QString name = e.attribute( QStringLiteral( "name" ) );
+          QStringList tags;
+          if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+          {
+            tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
+          }
+          bool favorite = false;
+          if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QLatin1String( "1" ) )
+          {
+            favorite = true;
+          }
+
+          QgsTextFormat format;
+          const QDomElement styleElem = e.firstChildElement();
+          format.readXml( styleElem, QgsReadWriteContext() );
+          addTextFormat( name, format );
+          if ( mCurrentDB )
+          {
+            saveTextFormat( name, format, favorite, tags );
+          }
         }
+        else
+        {
+          QgsDebugMsg( "unknown tag: " + e.tagName() );
+        }
+        e = e.nextSiblingElement();
       }
-      else
-      {
-        QgsDebugMsg( "unknown tag: " + e.tagName() );
-      }
-      e = e.nextSiblingElement();
     }
-  }
 
-  // load label settings
-  if ( version == STYLE_CURRENT_VERSION )
-  {
-    const QDomElement labelSettingsElement = docEl.firstChildElement( QStringLiteral( "labelsettings" ) );
-    e = labelSettingsElement.firstChildElement();
-    while ( !e.isNull() )
+    // load label settings
+    if ( version == STYLE_CURRENT_VERSION )
     {
-      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
-      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      const QDomElement labelSettingsElement = docEl.firstChildElement( QStringLiteral( "labelsettings" ) );
+      e = labelSettingsElement.firstChildElement();
+      while ( !e.isNull() )
       {
-        // skip the settings, should already be present
-        continue;
-      }
-
-      if ( e.tagName() == QLatin1String( "labelsetting" ) )
-      {
-        QString name = e.attribute( QStringLiteral( "name" ) );
-        QStringList tags;
-        if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+        const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+        if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
         {
-          tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
-        }
-        bool favorite = false;
-        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QLatin1String( "1" ) )
-        {
-          favorite = true;
+          // skip the settings, should already be present
+          continue;
         }
 
-        QgsPalLayerSettings settings;
-        const QDomElement styleElem = e.firstChildElement();
-        settings.readXml( styleElem, QgsReadWriteContext() );
-        addLabelSettings( name, settings );
-        if ( mCurrentDB )
+        if ( e.tagName() == QLatin1String( "labelsetting" ) )
         {
-          saveLabelSettings( name, settings, favorite, tags );
+          QString name = e.attribute( QStringLiteral( "name" ) );
+          QStringList tags;
+          if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+          {
+            tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
+          }
+          bool favorite = false;
+          if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QLatin1String( "1" ) )
+          {
+            favorite = true;
+          }
+
+          QgsPalLayerSettings settings;
+          const QDomElement styleElem = e.firstChildElement();
+          settings.readXml( styleElem, QgsReadWriteContext() );
+          addLabelSettings( name, settings );
+          if ( mCurrentDB )
+          {
+            saveLabelSettings( name, settings, favorite, tags );
+          }
         }
+        else
+        {
+          QgsDebugMsg( "unknown tag: " + e.tagName() );
+        }
+        e = e.nextSiblingElement();
       }
-      else
-      {
-        QgsDebugMsg( "unknown tag: " + e.tagName() );
-      }
-      e = e.nextSiblingElement();
     }
   }
 
