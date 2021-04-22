@@ -516,13 +516,15 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     /**
      * Forwards an external browser login \a url opening request to the authentication handler.
      *
+     * \note If called by a background thread, the request will be forwarded to the network manager on the main thread.
      * \since QGIS 3.20
      */
     void requestAuthOpenBrowser( const QUrl &url ) const;
 
     /**
-     * Forwards an external browser login closure equest to the authentication handler.
+     * Forwards an external browser login closure request to the authentication handler.
      *
+     * \note If called by a background thread, the request will be forwarded to the network manager on the main thread.
      * \since QGIS 3.20
      */
     void requestAuthCloseBrowser() const;
