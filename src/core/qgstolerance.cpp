@@ -15,7 +15,7 @@
 
 #include "qgstolerance.h"
 #include "qgsmapsettings.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgspointxy.h"
 
 #include <QPoint>
@@ -73,7 +73,7 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, 
 double QgsTolerance::vertexSearchRadius( const QgsMapSettings &mapSettings )
 {
   QgsSettings settings;
-  double tolerance = settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble();
+  double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value();
   UnitType units = settings.enumValue( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit_unit" ),  QgsTolerance::Pixels );
   if ( units == LayerUnits )
     units = ProjectUnits;
@@ -83,7 +83,7 @@ double QgsTolerance::vertexSearchRadius( const QgsMapSettings &mapSettings )
 double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
   QgsSettings settings;
-  double tolerance = settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble();
+  double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value();
   UnitType units = settings.enumValue( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit_unit" ),  QgsTolerance::Pixels );
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
@@ -91,7 +91,7 @@ double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSetting
 double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
   QgsSettings settings;
-  double tolerance = settings.value( QStringLiteral( "qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
+  double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
   UnitType units = settings.enumValue( QStringLiteral( "qgis/digitizing/default_snapping_tolerance_unit" ),  Qgis::DEFAULT_SNAP_UNITS );
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }

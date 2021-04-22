@@ -24,7 +24,7 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 #include "qgsmapmouseevent.h"
@@ -461,7 +461,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.setValue( false );
 
   utils.mouseClick( 6, 1, Qt::LeftButton );
   utils.mouseClick( 7, 1, Qt::LeftButton );
@@ -477,7 +477,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   mLayerLineCurved->undoStack()->undo();
 
   // we redo the same with convert to curves enabled
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.setValue( true );
 
   // tracing enabled - without converting to curves
   utils.mouseClick( 6, 1, Qt::LeftButton );
@@ -506,8 +506,8 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   // At this distance, the arcs aren't correctly detected with the default tolerance
   double offset = 100000000; // remember to change the feature geometry accordingly in initTestCase (sic)
 
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-5 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-5 );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance.setValue( 1e-5 );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance.setValue( 1e-5 );
 
   mCanvas->setExtent( QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
@@ -522,7 +522,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.setValue( false );
 
   utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
   utils.mouseClick( offset + 7, offset + 1, Qt::LeftButton );
@@ -538,7 +538,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   mLayerLineCurvedOffset->undoStack()->undo();
 
   // we redo the same with convert to curves enabled
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.setValue( true );
 
   // tracing enabled - without converting to curves
   utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
@@ -572,7 +572,7 @@ void TestQgsMapToolAddFeatureLine::testZ()
   mCanvas->setCurrentLayer( mLayerLineZ );
 
   // test with default Z value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );
@@ -588,7 +588,7 @@ void TestQgsMapToolAddFeatureLine::testZ()
   mLayerLine->undoStack()->undo();
 
   // test with default Z value = 222
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );
@@ -633,7 +633,7 @@ void TestQgsMapToolAddFeatureLine::testZMSnapping()
   mCanvas->setCurrentLayer( mLayerLineZ );
   oldFids = utils.existingFeatureIds();
   // test with default Z value = 222
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
   // snap a on a layer without ZM support
   utils.mouseClick( 9, 9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 8, 7, Qt::LeftButton );
@@ -656,7 +656,7 @@ void TestQgsMapToolAddFeatureLine::testZMSnapping()
   mCanvas->snappingUtils()->setConfig( cfg );
 
   // create geometry will be snapped
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 123 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 123 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 20, 20, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -668,7 +668,7 @@ void TestQgsMapToolAddFeatureLine::testZMSnapping()
   wkt = "LineStringZ (20 20 123, 30 20 123)";
   QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 321 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 321 );
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 25, 20, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 25, 25, Qt::LeftButton );
@@ -693,7 +693,7 @@ void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
   mCanvas->setCurrentLayer( mLayerTopoZ );
 
   // test with default Z value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
@@ -995,8 +995,7 @@ void TestQgsMapToolAddFeatureLine::testUndo()
 void TestQgsMapToolAddFeatureLine::testStreamTolerance()
 {
   // test streaming mode digitizing with tolerance
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 10 );
+  QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.setValue( 10 );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
