@@ -382,9 +382,9 @@ void QgsRelationEditorWidget::updateUi()
   // and the widget needs updating
   if ( mVisible )
   {
-    if ( mFeature.id() == mDualViewInitFeatureId )
+    /*if ( mFeature.id() == mDualViewInitFeatureId )
       return;
-    mDualViewInitFeatureId = mFeature.id();
+    mDualViewInitFeatureId = mFeature.id();*/
 
     QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeature );
 
