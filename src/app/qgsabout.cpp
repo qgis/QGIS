@@ -107,8 +107,6 @@ void QgsAbout::init()
   // Now load up the contributors list
   //
   QFile file2( QgsApplication::contributorsFilePath() );
-  printf( "Reading contributors file %s.............................................\n",
-          file2.fileName().toLocal8Bit().constData() );
   if ( file2.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file2 );
@@ -132,21 +130,14 @@ void QgsAbout::init()
     }
   }
 
-
-
   // read the DONORS file and populate the text widget
   QFile donorsFile( QgsApplication::donorsFilePath() );
-#ifdef QGISDEBUG
-  printf( "Reading donors file %s.............................................\n",
-          donorsFile.fileName().toLocal8Bit().constData() );
-#endif
   if ( donorsFile.open( QIODevice::ReadOnly ) )
   {
-    QString donorsHTML = ""
-                         + tr( "<p>For a list of individuals and institutions who have contributed "
-                               "money to fund QGIS development and other project costs see "
-                               "<a href=\"https://qgis.org/en/site/about/sustaining_members.html#list-of-donors\">"
-                               "https://qgis.org/en/site/about/sustaining_members.html#list-of-donors</a></p>" );
+    QString donorsHTML = tr( "<p>For a list of individuals and institutions who have contributed "
+                             "money to fund QGIS development and other project costs see "
+                             "<a href=\"https://qgis.org/en/site/about/sustaining_members.html#list-of-donors\">"
+                             "https://qgis.org/en/site/about/sustaining_members.html#list-of-donors</a></p>" );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );
@@ -184,10 +175,6 @@ void QgsAbout::init()
 
   // read the TRANSLATORS file and populate the text widget
   QFile translatorFile( QgsApplication::translatorsFilePath() );
-#ifdef QGISDEBUG
-  printf( "Reading translators file %s.............................................\n",
-          translatorFile.fileName().toLocal8Bit().constData() );
-#endif
   if ( translatorFile.open( QIODevice::ReadOnly ) )
   {
     QString translatorHTML;
