@@ -32,7 +32,6 @@
 
 #include <QDateTime>
 #include <QInputDialog>
-#include <QDesktopServices>
 #include <QDir>
 #include <QEventLoop>
 #include <QPointer>
@@ -180,8 +179,6 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     connect( o2, &QgsO2::linkedChanged, this, &QgsAuthOAuth2Method::onLinkedChanged, Qt::UniqueConnection );
     connect( o2, &QgsO2::linkingFailed, this, &QgsAuthOAuth2Method::onLinkingFailed, Qt::UniqueConnection );
     connect( o2, &QgsO2::linkingSucceeded, this, &QgsAuthOAuth2Method::onLinkingSucceeded, Qt::UniqueConnection );
-    connect( o2, &QgsO2::openBrowser, this, &QgsAuthOAuth2Method::onOpenBrowser, Qt::UniqueConnection );
-    connect( o2, &QgsO2::closeBrowser, this, &QgsAuthOAuth2Method::onCloseBrowser, Qt::UniqueConnection );
     connect( o2, &QgsO2::getAuthCode, this, &QgsAuthOAuth2Method::onAuthCode, Qt::UniqueConnection );
     connect( this, &QgsAuthOAuth2Method::setAuthCode, o2,  &QgsO2::onSetAuthCode, Qt::UniqueConnection );
     //qRegisterMetaType<QNetworkReply::NetworkError>( QStringLiteral( "QNetworkReply::NetworkError" )) // for Qt::QueuedConnection, if needed;
@@ -372,39 +369,6 @@ void QgsAuthOAuth2Method::onLinkingSucceeded()
       msg += QStringLiteral( "    %1:%2…\n" ).arg( key, extraTokens.value( key ).toString().left( 3 ) );
     }
     QgsDebugMsgLevel( msg, 2 );
-  }
-}
-
-void QgsAuthOAuth2Method::onOpenBrowser( const QUrl &url )
-{
-  // Open a web browser or a web view with the given URL.
-  // The user will interact with this browser window to
-  // enter login name, password, and authorize your application
-  // to access the Twitter account
-  QgsDebugMsgLevel( QStringLiteral( "Open browser requested %1" ), 2 );
-
-  QDesktopServices::openUrl( url );
-}
-
-void QgsAuthOAuth2Method::onCloseBrowser()
-{
-  // Close the browser window opened in openBrowser()
-  QgsDebugMsgLevel( QStringLiteral( "Close browser requested %1" ), 2 );
-
-  // Bring focus back to QGIS app
-  if ( qApp )
-  {
-    const QList<QWidget *> widgets = QgsApplication::topLevelWidgets();
-    for ( QWidget *topwdgt : widgets )
-    {
-      if ( topwdgt->objectName() == QLatin1String( "MainWindow" ) )
-      {
-        topwdgt->raise();
-        topwdgt->activateWindow();
-        topwdgt->show();
-        break;
-      }
-    }
   }
 }
 

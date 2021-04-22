@@ -227,6 +227,20 @@ class CORE_EXPORT QgsNetworkAuthenticationHandler
      */
     virtual void handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth );
 
+    /**
+     * Called to initiate a network authentication through external browser \a url.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void handleAuthRequestOpenBrowser( const QUrl &url );
+
+    /**
+     * Called to terminate a network authentication through external browser.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void handleAuthRequestCloseBrowser();
+
 };
 #endif
 
@@ -498,6 +512,22 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \since QGIS 3.6
      */
     static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Forwards an external browser login \a url opening request to the authentication handler.
+     *
+     * \note If called by a background thread, the request will be forwarded to the network manager on the main thread.
+     * \since QGIS 3.20
+     */
+    void requestAuthOpenBrowser( const QUrl &url ) const;
+
+    /**
+     * Forwards an external browser login closure request to the authentication handler.
+     *
+     * \note If called by a background thread, the request will be forwarded to the network manager on the main thread.
+     * \since QGIS 3.20
+     */
+    void requestAuthCloseBrowser() const;
 
   signals:
 

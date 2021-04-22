@@ -78,12 +78,6 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     //! Triggered when linking operation succeeded
     void onLinkingSucceeded();
 
-    //! Triggered when the browser needs to be opened at \a url
-    void onOpenBrowser( const QUrl &url );
-
-    //! Triggered on browser close
-    void onCloseBrowser();
-
     //! Triggered on reply finished
     void onReplyFinished();
 

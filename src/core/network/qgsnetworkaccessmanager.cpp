@@ -463,6 +463,26 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
   }
 }
 
+void QgsNetworkAccessManager::requestAuthOpenBrowser( const QUrl &url ) const
+{
+  if ( this != sMainNAM )
+  {
+    sMainNAM->requestAuthOpenBrowser( url );
+    return;
+  }
+  mAuthHandler->handleAuthRequestOpenBrowser( url );
+}
+
+void QgsNetworkAccessManager::requestAuthCloseBrowser() const
+{
+  if ( this != sMainNAM )
+  {
+    sMainNAM->requestAuthCloseBrowser();
+    return;
+  }
+  mAuthHandler->handleAuthRequestCloseBrowser();
+}
+
 void QgsNetworkAccessManager::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
   mAuthHandler->handleAuthRequest( reply, auth );
@@ -713,4 +733,15 @@ void QgsNetworkAuthenticationHandler::handleAuthRequest( QNetworkReply *reply, Q
 {
   Q_UNUSED( reply )
   QgsDebugMsg( QStringLiteral( "Network reply required authentication, but no handler was in place to provide this authentication request while accessing the URL:\n%1" ).arg( reply->request().url().toString() ) );
+}
+
+void QgsNetworkAuthenticationHandler::handleAuthRequestOpenBrowser( const QUrl &url )
+{
+  Q_UNUSED( url )
+  QgsDebugMsg( QStringLiteral( "Network authentication required external browser to open URL %1, but no handler was in place" ).arg( url.toString() ) );
+}
+
+void QgsNetworkAuthenticationHandler::handleAuthRequestCloseBrowser()
+{
+  QgsDebugMsg( QStringLiteral( "Network authentication required external browser closed, but no handler was in place" ) );
 }
