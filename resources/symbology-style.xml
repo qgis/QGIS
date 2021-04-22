@@ -5855,11 +5855,11 @@
     </colorramp>
   </colorramps>
   <labelsettings>
-    <labelsetting favorite="1" name="Watercourse Label" addedVersion="32000">
+    <labelsetting favorite="1" name="Watercourses" addedVersion="32000">
       <settings calloutType="simple">
         <text-style fontSize="10" fieldName="" fontLetterSpacing="0.65625" fontSizeUnit="Point" fontSizeMapUnitScale="3x:0,0,0,0,0,0" multilineHeight="1" useSubstitutions="0" fontKerning="1" fontWordSpacing="0.21875" fontFamily="Cambria" textOpacity="1" fontStrikeout="0" allowHtml="0" fontItalic="1" capitalization="0" textColor="0,145,202,255" previewBkgrdColor="243,243,238,255" namedStyle="Italic" textOrientation="horizontal" isExpression="1" fontUnderline="0" blendMode="0" fontWeight="50">
         <families>
-          <family name="Cambria"/>        
+          <family name="Cambria"/>
           <family name="Georgia"/>
           <family name="Serif"/>
         </families>
