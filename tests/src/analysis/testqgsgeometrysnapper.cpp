@@ -20,6 +20,8 @@ Email                : nyall dot dawson at gmail dot com
 #include <qgsapplication.h>
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeos.h"
+#include <geos_c.h>
 
 
 class TestQgsGeometrySnapper : public QObject
@@ -51,6 +53,7 @@ class TestQgsGeometrySnapper : public QObject
     void insertExtra();
     void duplicateNodes();
     void snapMultiPolygonToPolygon();
+
 };
 
 void  TestQgsGeometrySnapper::initTestCase()
@@ -68,11 +71,9 @@ void  TestQgsGeometrySnapper::cleanupTestCase()
 }
 void  TestQgsGeometrySnapper::init()
 {
-
 }
 void  TestQgsGeometrySnapper::cleanup()
 {
-
 }
 
 void TestQgsGeometrySnapper::snapPolygonToPolygon()
