@@ -95,16 +95,24 @@ sub read_line {
 }
 
 sub write_output {
-    my ($dbg_code, $out) = @_;
+    my ($dbg_code, $out, $prepend) = @_;
+    $prepend //= "no";
     if ($debug == 1){
         $dbg_code = sprintf("%d %-4s :: ", $LINE_IDX, $dbg_code);
     }
     else{
         $dbg_code = '';
     }
-    push @OUTPUT, "%If ($IF_FEATURE_CONDITION)\n" if $IF_FEATURE_CONDITION ne '';
-    push @OUTPUT, $dbg_code.$out;
-    push @OUTPUT, "%End\n" if $IF_FEATURE_CONDITION ne '';
+    if ($prepend eq "prepend")
+    {
+       unshift @OUTPUT, $dbg_code . $out;
+    }
+    else
+    {
+      push @OUTPUT, "%If ($IF_FEATURE_CONDITION)\n" if $IF_FEATURE_CONDITION ne '';
+      push @OUTPUT, $dbg_code . $out;
+      push @OUTPUT, "%End\n" if $IF_FEATURE_CONDITION ne '';
+    }
     $IF_FEATURE_CONDITION = '';
 }
 
@@ -1262,26 +1270,27 @@ while ($LINE_IDX < $LINE_COUNT){
     $LINE =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     # handle enum/flags QgsSettingsEntryEnumFlag
-    if ( $LINE =~ m/^\s*const QgsSettingsEntryEnumFlag<(.*)> (.+);$/ ) {
-      $LINE = "class QgsSettingsEntryEnumFlag_$2
+    if ( $LINE =~ m/^(\s*)const QgsSettingsEntryEnumFlag<(.*)> (.+);$/ ) {
+      my $prep_line = "class QgsSettingsEntryEnumFlag_$3
 {
 %TypeHeaderCode
 #include \"" .basename($headerfile) . "\"
 #include \"qgssettingsentry.h\"
-typedef QgsSettingsEntryEnumFlag<$1> QgsSettingsEntryEnumFlag_$2;
+typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
 %End
   public:
-    QgsSettingsEntryEnumFlag_$2( const QString &key, QgsSettings::Section section, const $1 &defaultValue, const QString &description = QString() );
+    QgsSettingsEntryEnumFlag_$3( const QString &key, QgsSettings::Section section, const $2 &defaultValue, const QString &description = QString() );
     QString key( const QString &dynamicKeyPart = QString() ) const;
-    QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
-};
-    const QgsSettingsEntryEnumFlag_$2 $2;";
-      $COMMENT = '';
+    QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const $2 &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
+};";
+    $LINE = "$1const QgsSettingsEntryEnumFlag_$3 $3;";
+    $COMMENT = '';
+    write_output("ENF", "$prep_line\n", "prepend");
     }
 
     write_output("NOR", "$LINE\n");
-    if ($PYTHON_SIGNATURE ne ''){
-        write_output("PSI", "$PYTHON_SIGNATURE\n");
+    if ($PYTHON_SIGNATURE ne '') {
+      write_output("PSI", "$PYTHON_SIGNATURE\n");
     }
 
     # multiline definition (parenthesis left open)
