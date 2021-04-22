@@ -447,6 +447,7 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
     void deleteConnection( const QString &name ) override;
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
     QgsTransaction *createTransaction( const QString &connString ) override;
+    ProviderCapabilities providerCapabilities() const override;
 
   protected:
 

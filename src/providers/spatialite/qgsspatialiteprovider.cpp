@@ -6471,6 +6471,11 @@ void QgsSpatiaLiteProviderMetadata::deleteConnection( const QString &name )
   deleteConnectionProtected<QgsSpatiaLiteProviderConnection>( name );
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsSpatiaLiteProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 void QgsSpatiaLiteProviderMetadata::saveConnection( const QgsAbstractProviderConnection *conn, const QString &name )
 {
   saveConnectionProtected( conn, name );
