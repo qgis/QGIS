@@ -197,7 +197,7 @@ namespace
       case SQLDataTypes::Numeric:
       case SQLDataTypes::Decimal:
         if ( isNull )
-          stmt->setDecimal( paramIndex, Decimal() );
+          stmt->setDouble( paramIndex, Double() );
         else
         {
           double dvalue = value.toDouble();
