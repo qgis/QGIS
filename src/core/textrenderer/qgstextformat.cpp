@@ -84,6 +84,7 @@ bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
        || mBackgroundSettings != other.mBackgroundSettings
        || mShadowSettings != other.mShadowSettings
        || mMaskSettings != other.mMaskSettings
+       || d->families != other.families()
        || d->mDataDefinedProperties != other.dataDefinedProperties() )
     return false;
 
@@ -199,6 +200,17 @@ void QgsTextFormat::setNamedStyle( const QString &style )
   d->isValid = true;
   QgsFontUtils::updateFontViaStyle( d->textFont, style );
   d->textNamedStyle = style;
+}
+
+QStringList QgsTextFormat::families() const
+{
+  return d->families;
+}
+
+void QgsTextFormat::setFamilies( const QStringList &families )
+{
+  d->isValid = true;
+  d->families = families;
 }
 
 QgsUnitTypes::RenderUnit QgsTextFormat::sizeUnit() const
@@ -419,16 +431,36 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   QFont appFont = QApplication::font();
   mTextFontFamily = textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() );
   QString fontFamily = mTextFontFamily;
+
+  const QDomElement familiesElem = textStyleElem.firstChildElement( QStringLiteral( "families" ) );
+  const QDomNodeList familyNodes = familiesElem.childNodes();
+  QStringList families;
+  families.reserve( familyNodes.size() );
+  for ( int i = 0; i < familyNodes.count(); ++i )
+  {
+    const QDomElement familyElem = familyNodes.at( i ).toElement();
+    families << familyElem.attribute( QStringLiteral( "name" ) );
+  }
+  d->families = families;
+
+  mTextFontFound = false;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
-    // trigger to notify user about font family substitution (signal emitted in QgsVectorLayer::prepareLabelingAndDiagrams)
-    mTextFontFound = false;
+    for ( const QString &family : std::as_const( families ) )
+    {
+      if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
+      {
+        mTextFontFound = true;
+        fontFamily = family;
+        break;
+      }
+    }
 
-    // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
-    // currently only defaults to matching algorithm for resolving [foundry], if a font of similar family is found (default for QFont)
-
-    // for now, do not use matching algorithm for substitution if family not found, substitute default instead
-    fontFamily = appFont.family();
+    if ( !mTextFontFound )
+    {
+      // couldn't even find a matching font in the backup list -- substitute default instead
+      fontFamily = appFont.family();
+    }
   }
   else
   {
@@ -562,6 +594,16 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   // text style
   QDomElement textStyleElem = doc.createElement( QStringLiteral( "text-style" ) );
   textStyleElem.setAttribute( QStringLiteral( "fontFamily" ), d->textFont.family() );
+
+  QDomElement familiesElem = doc.createElement( QStringLiteral( "families" ) );
+  for ( const QString &family : std::as_const( d->families ) )
+  {
+    QDomElement familyElem = doc.createElement( QStringLiteral( "family" ) );
+    familyElem.setAttribute( QStringLiteral( "name" ), family );
+    familiesElem.appendChild( familyElem );
+  }
+  textStyleElem.appendChild( familiesElem );
+
   textStyleElem.setAttribute( QStringLiteral( "namedStyle" ), QgsFontUtils::untranslateNamedStyle( d->textNamedStyle ) );
   textStyleElem.setAttribute( QStringLiteral( "fontSize" ), d->fontSize );
   textStyleElem.setAttribute( QStringLiteral( "fontSizeUnit" ), QgsUnitTypes::encodeUnit( d->fontSizeUnits ) );
