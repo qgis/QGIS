@@ -103,8 +103,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
                const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
                bool loadFeatures = true );
 
-    void initAttributeForm( const QgsFeature &feature );
-
     /**
      * Change the current view mode.
      *
@@ -400,6 +398,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void filterError( const QString &errorMessage );
 
   private:
+
+    /**
+     * Initialize the attribute form to a given \a feature.
+     *
+     * \since QGIS 3.20
+     */
+    void initAttributeForm( const QgsFeature &feature );
 
     /**
      * Initializes widgets which depend on the attributes of this layer

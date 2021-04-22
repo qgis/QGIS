@@ -154,6 +154,8 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
 void QgsDualView::initAttributeForm( const QgsFeature &feature )
 {
+  Q_ASSERT( !mAttributeForm );
+
   mAttributeForm = new QgsAttributeForm( mLayer, feature, mEditorContext );
   if ( !mEditorContext.parentContext() )
   {
