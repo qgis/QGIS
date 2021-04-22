@@ -2227,14 +2227,17 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     strokeElem.appendChild( graphicStrokeElem );
 
     QgsSymbolLayer *layer = mMarker->symbolLayer( i );
-    QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
-    if ( !markerLayer )
+    if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
     {
-      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
+      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+    }
+    else if ( layer )
+    {
+      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
     }
     else
     {
-      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "Missing marker line symbol layer. Skip it." ) ) );
     }
 
     if ( !gap.isEmpty() )
