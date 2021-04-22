@@ -631,6 +631,12 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             ogrPrecision = 0;
             break;
           }
+
+          case QVariant::Char:
+            ogrType = OFTString;
+            ogrWidth = 1;
+            break;
+
           case QVariant::String:
             ogrType = OFTString;
             if ( ( ogrWidth <= 0 || ogrWidth > 255 ) && mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
@@ -2495,6 +2501,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       case QVariant::Bool:
         OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
         break;
+      case QVariant::Char:
       case QVariant::String:
         OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         break;
