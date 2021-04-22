@@ -95,7 +95,7 @@ Required build tools:
 * CMake >= 3.10.0
 * Flex >= 2.5.6
 * Bison >= 2.4
-* Python >= 3.6
+* Python >= 3.7
 
 Required build dependencies:
 
