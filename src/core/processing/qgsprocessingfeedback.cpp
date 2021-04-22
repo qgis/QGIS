@@ -98,6 +98,7 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
     pushDebugInfo( tr( "QGIS code revision: %1" ).arg( Qgis::devVersion() ) );
   }
   pushDebugInfo( tr( "Qt version: %1" ).arg( qVersion() ) );
+  pushDebugInfo( tr( "Python version: %1" ).arg( PYTHON_VERSION ) );
   pushDebugInfo( tr( "GDAL version: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
   pushDebugInfo( tr( "GEOS version: %1" ).arg( GEOSversion() ) );
 
