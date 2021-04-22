@@ -5,6 +5,66 @@
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+class QgsSettingsEntryEnumFlag_settingsDigitizingOffsetCapStyle
+{
+%TypeHeaderCode
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle> QgsSettingsEntryEnumFlag_settingsDigitizingOffsetCapStyle;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_settingsDigitizingOffsetCapStyle( const QString &key, QgsSettings::Section section, const QgsGeometry::EndCapStyle &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    QgsGeometry::EndCapStyle value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsGeometry::EndCapStyle &defaultValueOverride = QgsGeometry::EndCapStyle() ) const;
+};
+class QgsSettingsEntryEnumFlag_settingsDigitizingOffsetJoinStyle
+{
+%TypeHeaderCode
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle> QgsSettingsEntryEnumFlag_settingsDigitizingOffsetJoinStyle;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_settingsDigitizingOffsetJoinStyle( const QString &key, QgsSettings::Section section, const QgsGeometry::JoinStyle &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    QgsGeometry::JoinStyle value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsGeometry::JoinStyle &defaultValueOverride = QgsGeometry::JoinStyle() ) const;
+};
+class QgsSettingsEntryEnumFlag_settingsDigitizingSearchRadiusVertexEditUnit
+{
+%TypeHeaderCode
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> QgsSettingsEntryEnumFlag_settingsDigitizingSearchRadiusVertexEditUnit;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_settingsDigitizingSearchRadiusVertexEditUnit( const QString &key, QgsSettings::Section section, const QgsTolerance::UnitType &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    QgsTolerance::UnitType value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsTolerance::UnitType &defaultValueOverride = QgsTolerance::UnitType() ) const;
+};
+class QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnappingToleranceUnit
+{
+%TypeHeaderCode
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnappingToleranceUnit;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnappingToleranceUnit( const QString &key, QgsSettings::Section section, const QgsTolerance::UnitType &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    QgsTolerance::UnitType value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsTolerance::UnitType &defaultValueOverride = QgsTolerance::UnitType() ) const;
+};
+class QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType
+{
+%TypeHeaderCode
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType( const QString &key, QgsSettings::Section section, const QgsSnappingConfig::SnappingTypes &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
+};
 
 
 
@@ -72,12 +132,15 @@ Add ``settingsEntry`` to the register.
 
     const QgsSettingsEntryBool settingsDigitizingDefaultSnapEnabled;
 
+    const QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType settingsDigitizingDefaultSnapType;
 
     const QgsSettingsEntryDouble settingsDigitizingDefaultSnappingTolerance;
 
+    const QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnappingToleranceUnit settingsDigitizingDefaultSnappingToleranceUnit;
 
     const QgsSettingsEntryDouble settingsDigitizingSearchRadiusVertexEdit;
 
+    const QgsSettingsEntryEnumFlag_settingsDigitizingSearchRadiusVertexEditUnit settingsDigitizingSearchRadiusVertexEditUnit;
 
     const QgsSettingsEntryColor settingsDigitizingSnapColor;
 
@@ -97,6 +160,7 @@ Add ``settingsEntry`` to the register.
 
     const QgsSettingsEntryInteger settingsDigitizingValidateGeometries;
 
+    const QgsSettingsEntryEnumFlag_settingsDigitizingOffsetJoinStyle settingsDigitizingOffsetJoinStyle;
 
     const QgsSettingsEntryInteger settingsDigitizingOffsetQuadSeg;
 
@@ -108,6 +172,7 @@ Add ``settingsEntry`` to the register.
 
     const QgsSettingsEntryDouble settingsDigitizingConvertToCurveDistanceTolerance;
 
+    const QgsSettingsEntryEnumFlag_settingsDigitizingOffsetCapStyle settingsDigitizingOffsetCapStyle;
 
     const QgsSettingsEntryBool settingsDigitizingOffsetShowAdvanced;
 

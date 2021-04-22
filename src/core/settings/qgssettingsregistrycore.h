@@ -91,19 +91,19 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryBool settingsDigitizingDefaultSnapEnabled = QgsSettingsEntryBool( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), QgsSettings::NoSection,  false );
 
     //! Settings entry digitizing default snap type
-//    static const inline QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes>( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSettings::NoSection, QgsSnappingConfig::VertexFlag );
+    static const inline QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes>( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSettings::NoSection, QgsSnappingConfig::VertexFlag );
 
     //! Settings entry digitizing default snapping tolerance
     static const inline QgsSettingsEntryDouble settingsDigitizingDefaultSnappingTolerance = QgsSettingsEntryDouble( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), QgsSettings::NoSection, Qgis::DEFAULT_SNAP_TOLERANCE );
 
     //! Settings entry digitizing default snapping tolerance unit
-//    static const inline QgsSettingsEntryEnum settingsDigitizingDefaultSnappingToleranceUnit = QgsSettingsEntryEnum( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), QgsSettings::NoSection, Qgis::DEFAULT_SNAP_UNITS );
+    static const inline QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> settingsDigitizingDefaultSnappingToleranceUnit = QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), QgsSettings::NoSection, Qgis::DEFAULT_SNAP_UNITS );
 
     //! Settings entry digitizing search radius vertex edit
     static const inline QgsSettingsEntryDouble settingsDigitizingSearchRadiusVertexEdit = QgsSettingsEntryDouble( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), QgsSettings::NoSection, 10 );
 
     //! Settings entry digitizing search radius vertex edit unit
-//    static const inline QgsSettingsEntryEnum settingsDigitizingSearchRadiusVertexEditUnit = QgsSettingsEntryEnum( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsSettings::NoSection, QgsTolerance::Pixels );
+    static const inline QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> settingsDigitizingSearchRadiusVertexEditUnit = QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsSettings::NoSection, QgsTolerance::Pixels );
 
     //! Settings entry digitizing snap color
     static const inline QgsSettingsEntryColor settingsDigitizingSnapColor = QgsSettingsEntryColor( QStringLiteral( "/qgis/digitizing/snap_color" ), QgsSettings::NoSection, QColor( Qt::magenta ) );
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryInteger settingsDigitizingValidateGeometries = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/validate_geometries" ), QgsSettings::NoSection, 1 );
 
     //! Settings entry digitizing offset join style
-//    static const inline QgsSettingsEntryEnum settingsDigitizingOffsetJoinStyle = QgsSettingsEntryEnum( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsSettings::NoSection, QgsGeometry::JoinStyleRound );
+    static const inline QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle> settingsDigitizingOffsetJoinStyle = QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle>( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsSettings::NoSection, QgsGeometry::JoinStyleRound );
 
     //! Settings entry digitizing offset quad seg
     static const inline QgsSettingsEntryInteger settingsDigitizingOffsetQuadSeg = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), QgsSettings::NoSection, 8 );
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryDouble settingsDigitizingConvertToCurveDistanceTolerance = QgsSettingsEntryDouble( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), QgsSettings::NoSection, 1e-6 );
 
     //! Settings entry digitizing offset cap style
-//    static const inline QgsSettingsEntryEnum settingsDigitizingOffsetCapStyle = QgsSettingsEntryEnum( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), QgsSettings::NoSection,  QgsGeometry::CapRound );
+    static const inline QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle> settingsDigitizingOffsetCapStyle = QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle>( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), QgsSettings::NoSection,  QgsGeometry::CapRound );
 
     //! Settings entry digitizing offset show advanced
     static const inline QgsSettingsEntryBool settingsDigitizingOffsetShowAdvanced = QgsSettingsEntryBool( QStringLiteral( "/qgis/digitizing/offset_show_advanced" ), QgsSettings::NoSection, false );

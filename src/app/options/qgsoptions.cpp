@@ -1091,13 +1091,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
                                        type );
   }
 
-  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = mSettings->flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  QgsSnappingConfig::VertexFlag );
+  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value() );
   mDefaultSnappingToleranceSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.defaultValue() );
   mSearchRadiusVertexEditSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value() );
   mSearchRadiusVertexEditSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.defaultValue() );
-  QgsTolerance::UnitType defSnapUnits = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
+  QgsTolerance::UnitType defSnapUnits = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
   if ( defSnapUnits == QgsTolerance::ProjectUnits || defSnapUnits == QgsTolerance::LayerUnits )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
@@ -1107,7 +1107,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     index = mDefaultSnappingToleranceComboBox->findText( tr( "pixels" ) );
   }
   mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
-  QgsTolerance::UnitType defRadiusUnits = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels );
+  QgsTolerance::UnitType defRadiusUnits = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit.value();
   if ( defRadiusUnits == QgsTolerance::ProjectUnits || defRadiusUnits == QgsTolerance::LayerUnits )
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
@@ -1755,13 +1755,13 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.setValue( mSnappingEnabledDefault->isChecked() );
-  mSettings->setFlagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<QgsSnappingConfig::SnappingTypeFlag>( mDefaultSnapModeComboBox->currentData().toInt() ) );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.setValue( static_cast<QgsSnappingConfig::SnappingTypes>( mDefaultSnapModeComboBox->currentData().toInt() ) );
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.setValue( mDefaultSnappingToleranceSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.setValue( mSearchRadiusVertexEditSpinBox->value() );
-  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),
-                           ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
-  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ),
-                           ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.setValue(
+    ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
+  QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit.setValue(
+    ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
 
   QgsSettingsRegistryCore::settingsDigitizingSnapColor.setValue( mSnappingMarkerColorButton->color() );
   QgsSettingsRegistryCore::settingsDigitizingSnapTooltip.setValue( mSnappingTooltipsCheckbox->isChecked() );

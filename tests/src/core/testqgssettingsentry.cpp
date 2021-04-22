@@ -101,7 +101,7 @@ void TestQgsSettingsEntry::enumValue()
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryEnum settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ) );
+  QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, "Layout unit" );
 
   // Check default value
   QCOMPARE( settingsEntryEnum.defaultValue(), QgsUnitTypes::LayoutMeters );
@@ -119,7 +119,7 @@ void TestQgsSettingsEntry::enumValue()
   QCOMPARE( settingsEntryEnum.value(), QgsUnitTypes::LayoutPicas );
 
   // Check settings type
-  QCOMPARE( settingsEntryEnum.settingsType(), QgsSettingsEntryBase::SettingsType::Enum );
+  QCOMPARE( settingsEntryEnum.settingsType(), QgsSettingsEntryBase::SettingsType::EnumFlag );
 
   // assign to inexisting value
   {
@@ -150,7 +150,7 @@ void TestQgsSettingsEntry::flagValue()
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, QStringLiteral( "Filters" ) );
+  QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, "Filters" );
 
   // Check default value
   QCOMPARE( settingsEntryFlag.defaultValue(), pointAndLine );
@@ -168,7 +168,7 @@ void TestQgsSettingsEntry::flagValue()
   QCOMPARE( settingsEntryFlag.value(), pointAndLine );
 
   // Check settings type
-  QCOMPARE( settingsEntryFlag.settingsType(), QgsSettingsEntryBase::SettingsType::Flag );
+  QCOMPARE( settingsEntryFlag.settingsType(), QgsSettingsEntryBase::SettingsType::EnumFlag );
 
   // check that value is stored as string
   QCOMPARE( settingsEntryFlag.valueAsVariant().toByteArray(), QMetaEnum::fromType<QgsMapLayerProxyModel::Filters>().valueToKeys( pointAndLine ) );

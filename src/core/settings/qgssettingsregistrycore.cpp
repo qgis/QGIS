@@ -72,11 +72,11 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingLineGhost );
   addSettingsEntry( &settingsDigitizingDefaultZValue );
   addSettingsEntry( &settingsDigitizingDefaultSnapEnabled );
-//  addSettingsEntry( &settingsDigitizingDefaultSnapType );
+  addSettingsEntry( &settingsDigitizingDefaultSnapType );
   addSettingsEntry( &settingsDigitizingDefaultSnappingTolerance );
-//  addSettingsEntry( &settingsDigitizingDefaultSnappingToleranceUnit );
+  addSettingsEntry( &settingsDigitizingDefaultSnappingToleranceUnit );
   addSettingsEntry( &settingsDigitizingSearchRadiusVertexEdit );
-//  addSettingsEntry( &settingsDigitizingSearchRadiusVertexEditUnit );
+  addSettingsEntry( &settingsDigitizingSearchRadiusVertexEditUnit );
   addSettingsEntry( &settingsDigitizingSnapColor );
   addSettingsEntry( &settingsDigitizingSnapTooltip );
   addSettingsEntry( &settingsDigitizingSnapInvisibleFeature );
@@ -86,13 +86,13 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingReuseLastValues );
   addSettingsEntry( &settingsDigitizingDisableEnterAttributeValuesDialog );
   addSettingsEntry( &settingsDigitizingValidateGeometries );
-//  addSettingsEntry( &settingsDigitizingOffsetJoinStyle );
+  addSettingsEntry( &settingsDigitizingOffsetJoinStyle );
   addSettingsEntry( &settingsDigitizingOffsetQuadSeg );
   addSettingsEntry( &settingsDigitizingOffsetMiterLimit );
   addSettingsEntry( &settingsDigitizingConvertToCurve );
   addSettingsEntry( &settingsDigitizingConvertToCurveAngleTolerance );
   addSettingsEntry( &settingsDigitizingConvertToCurveDistanceTolerance );
-//  addSettingsEntry( &settingsDigitizingOffsetCapStyle );
+  addSettingsEntry( &settingsDigitizingOffsetCapStyle );
   addSettingsEntry( &settingsDigitizingOffsetShowAdvanced );
   addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
 }
