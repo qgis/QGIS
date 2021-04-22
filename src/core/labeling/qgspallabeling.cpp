@@ -3009,7 +3009,10 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     if ( !ddFontFamily.isEmpty() )
     {
       // both family and style are different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, ddFontStyle, appFont.pointSize() );
+      if ( !mFontDB )
+        mFontDB = std::make_unique< QFontDatabase >();
+
+      QFont styledfont = mFontDB->font( ddFontFamily, ddFontStyle, appFont.pointSize() );
       if ( appFont != styledfont )
       {
         newFont = styledfont;
@@ -3025,7 +3028,9 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     if ( ddFontStyle.compare( QLatin1String( "Ignore" ), Qt::CaseInsensitive ) != 0 )
     {
       // just family is different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, mFormat.namedStyle(), appFont.pointSize() );
+      if ( !mFontDB )
+        mFontDB = std::make_unique< QFontDatabase >();
+      QFont styledfont = mFontDB->font( ddFontFamily, mFormat.namedStyle(), appFont.pointSize() );
       if ( appFont != styledfont )
       {
         newFont = styledfont;

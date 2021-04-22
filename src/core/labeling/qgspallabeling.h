@@ -1071,7 +1071,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsExpression *expression = nullptr;
 
-    QFontDatabase mFontDB;
+    std::unique_ptr< QFontDatabase > mFontDB;
 
     QgsTextFormat mFormat;
 
