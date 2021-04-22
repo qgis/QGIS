@@ -50,6 +50,54 @@ class CORE_EXPORT QgsProjUtils
     static int projVersionMajor();
 
     /**
+     * Returns the EPSG registry database version used by the proj library (e.g. "v9.8.6").
+     *
+     * \see epsgRegistryDate()
+     * \since QGIS 3.20
+     */
+    static QString epsgRegistryVersion();
+
+    /**
+     * Returns the EPSG registry database release date used by the proj library.
+     *
+     * \see epsgRegistryVersion()
+     * \since QGIS 3.20
+     */
+    static QDate epsgRegistryDate();
+
+    /**
+     * Returns the ESRI projection engine database version used by the proj library (e.g. "ArcMap 10.8.0").
+     *
+     * \see esriDatabaseDate()
+     * \since QGIS 3.20
+     */
+    static QString esriDatabaseVersion();
+
+    /**
+     * Returns the ESRI projection engine database release date used by the proj library.
+     *
+     * \see esriDatabaseVersion()
+     * \since QGIS 3.20
+     */
+    static QDate esriDatabaseDate();
+
+    /**
+     * Returns the IGNF database version used by the proj library (e.g. "3.1.0").
+     *
+     * \see ignfDatabaseDate()
+     * \since QGIS 3.20
+     */
+    static QString ignfDatabaseVersion();
+
+    /**
+     * Returns the IGNF database release date used by the proj library.
+     *
+     * \see ignfDatabaseVersion()
+     * \since QGIS 3.20
+     */
+    static QDate ignfDatabaseDate();
+
+    /**
      * Returns the current list of Proj file search paths.
      *
      * \note Only available on builds based on Proj >= 6.0. Builds based on
