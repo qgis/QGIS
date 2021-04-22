@@ -1281,7 +1281,7 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
   public:
     QgsSettingsEntryEnumFlag_$3( const QString &key, QgsSettings::Section section, const $2 &defaultValue, const QString &description = QString() );
     QString key( const QString &dynamicKeyPart = QString() ) const;
-    QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const $2 &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
+    $2 value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const $2 &defaultValueOverride = $2() ) const;
 };";
     $LINE = "$1const QgsSettingsEntryEnumFlag_$3 $3;";
     $COMMENT = '';
