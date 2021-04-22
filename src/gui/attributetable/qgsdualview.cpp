@@ -622,6 +622,9 @@ void QgsDualView::filterError( const QString &errorMessage )
 
 void QgsDualView::featureListAboutToChangeEditSelection( bool &ok )
 {
+  if ( !mAttributeForm )
+    return;
+
   if ( mLayer->isEditable() && !mAttributeForm->save() )
     ok = false;
 }
@@ -657,7 +660,7 @@ void QgsDualView::setCurrentEditSelection( const QgsFeatureIds &fids )
 
 bool QgsDualView::saveEditChanges()
 {
-  return mAttributeForm->save();
+  return mAttributeForm ? mAttributeForm->save() : false;
 }
 
 void QgsDualView::openConditionalStyles()
@@ -667,19 +670,27 @@ void QgsDualView::openConditionalStyles()
 
 void QgsDualView::setMultiEditEnabled( bool enabled )
 {
+  if ( !mAttributeForm )
+    return;
+
   if ( enabled )
   {
     mPreviousView = view();
     setView( AttributeEditor );
   }
   else
+  {
     setView( mPreviousView );
+  }
 
   mAttributeForm->setMode( enabled ? QgsAttributeEditorContext::MultiEditMode : QgsAttributeEditorContext::SingleEditMode );
 }
 
 void QgsDualView::toggleSearchMode( bool enabled )
 {
+  if ( !mAttributeForm )
+    return;
+
   if ( enabled )
   {
     setView( AttributeEditor );
