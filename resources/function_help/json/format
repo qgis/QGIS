@@ -2,12 +2,12 @@
   "name": "format",
   "type": "function",
   "groups": ["String"],
-  "description": "Format a string using supplied arguments. Based on <a href=\"https://doc.qt.io/qt-5/qstring.html#arg\">Qt's QString::arg</a>.",
+  "description": "Format a string using supplied arguments.",
   "variableLenArguments": true,
   "arguments": [ {"arg":"string", "description":"A string with placeholders %1, %2, etc., for the arguments. Placeholders can be repeated. The lowest numbered placeholder is replaced by arg1, the next by arg2, etc."},
                  {"arg":"arg1", "syntaxOnly": true},
                  {"arg":"arg2", "syntaxOnly": true},
                  {"arg":"arg", "descOnly": true, "description":"any type. Any number of arguments."}],
-  "examples": [ { "expression":"format('This %2 a %1','test', 'is')", "returns":"'This is a test'"},
-                { "expression":"format('This is %2','a bit unexpected','normal')", "returns":"'This is a bit unexpected'"} ]
+  "examples": [ { "expression":"format('This %1 a %2','is', 'a test')", "returns":"'This is a test'"},
+                { "expression":"format('This is %2','a bit unexpected but 2 is lowest number in string','normal')", "returns":"'This is a bit unexpected but 2 is lowest number in string'"} ]
 }
