@@ -2839,7 +2839,7 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
   // load text formats
 
   // this is ONLY safe to do if we have a QGuiApplication-- it requires QFontDatabase, which is not available otherwise!
-  if ( dynamic_cast< QGuiApplication * >( QCoreApplication::instance() ) )
+  if ( qobject_cast< QGuiApplication * >( QCoreApplication::instance() ) )
   {
     if ( version == STYLE_CURRENT_VERSION )
     {
