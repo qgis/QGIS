@@ -251,7 +251,8 @@ class VLayerConnector(DBConnector):
         n = l.dataProvider().fields().size()
         f = [(i, f.name(), f.typeName(), False, None, False)
              for i, f in enumerate(l.dataProvider().fields())]
-        f += [(n, "geometry", "geometry", False, None, False)]
+        if l.isSpatial():
+            f += [(n, "geometry", "geometry", False, None, False)]
         return f
 
     def getTableIndexes(self, table):
