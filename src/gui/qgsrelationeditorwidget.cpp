@@ -380,7 +380,7 @@ void QgsRelationEditorWidget::updateUi()
   // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
   // and the widget needs updating
-  if ( mVisible )
+  if ( mVisible && mRelation.isValid() )
   {
     QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeature );
 
