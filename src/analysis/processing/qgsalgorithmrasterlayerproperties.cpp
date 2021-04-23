@@ -63,8 +63,8 @@ void QgsRasterLayerPropertiesAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "WIDTH_IN_PIXELS" ), QObject::tr( "Width in pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT_IN_PIXELS" ), QObject::tr( "Height in pixels" ) ) );
-  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "HAS_NODATA_VALUE" ), QObject::tr( "True if layer has a nodata value set" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_VALUE" ), QObject::tr( "Nodata value" ) ) );
+  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "HAS_NODATA_VALUE" ), QObject::tr( "Band has a nodata value set" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_VALUE" ), QObject::tr( "Band nodata value" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "BAND_COUNT" ), QObject::tr( "Number of bands in raster" ) ) );
 }
 
