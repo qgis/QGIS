@@ -370,8 +370,11 @@ void QgsRelationEditorWidget::onCollapsedStateChanged( bool collapsed )
 {
   if ( !collapsed )
   {
-    mVisible = true;
-    updateUi();
+    if ( !mVisible )
+    {
+      mVisible = true;
+      updateUi();
+    }
   }
 }
 
@@ -380,7 +383,7 @@ void QgsRelationEditorWidget::updateUi()
   // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
   // and the widget needs updating
-  if ( mVisible && mRelation.isValid() )
+  if ( mVisible && mRelation.isValid() && mFeature.isValid() )
   {
     QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeature );
 
