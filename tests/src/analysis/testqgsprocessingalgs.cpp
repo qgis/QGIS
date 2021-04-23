@@ -79,6 +79,7 @@ class TestQgsProcessingAlgs: public QObject
     void cleanup() {} // will be called after every testfunction.
     void saveFeaturesAlg();
     void packageAlg();
+    void rasterLayerProperties();
     void exportToSpreadsheetXlsx();
     void exportToSpreadsheetOds();
     void exportToSpreadsheetOptions();
@@ -458,6 +459,59 @@ void TestQgsProcessingAlgs::packageAlg()
   QVERIFY( selectedPolygonsPackagedLayer->isValid() );
   QCOMPARE( selectedPolygonsPackagedLayer->wkbType(), mPolygonLayer->wkbType() );
   QCOMPARE( selectedPolygonsPackagedLayer->featureCount(), 10 ); // With enabled SELECTED_FEATURES_ONLY all features should be saved when there is no selection
+}
+
+void TestQgsProcessingAlgs::rasterLayerProperties()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:rasterlayerproperties" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CMakeLists.txt
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant( myDataPath + "/landsat.tif" ) );
+
+  //run alg...
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "X_MIN" ) ).toDouble(), 781662.375 );
+  QCOMPARE( results.value( QStringLiteral( "X_MAX" ) ).toDouble(), 793062.375 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MIN" ) ).toDouble(), 3339523.125 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MAX" ) ).toDouble(), 3350923.125 );
+  QCOMPARE( results.value( QStringLiteral( "EXTENT" ) ).toString(), QStringLiteral( "781662.3750000000000000,3339523.1250000000000000 : 793062.3750000000000000,3350923.1250000000000000" ) );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_WIDTH" ) ).toDouble(), 57.0 );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_HEIGHT" ) ).toDouble(), 57.0 );
+  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "EPSG:32633" ) );
+  QCOMPARE( results.value( QStringLiteral( "WIDTH_IN_PIXELS" ) ).toInt(), 200 );
+  QCOMPARE( results.value( QStringLiteral( "HEIGHT_IN_PIXELS" ) ).toInt(), 200 );
+  QCOMPARE( results.value( QStringLiteral( "BAND_COUNT" ) ).toInt(), 9 );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant( myDataPath + "/raster/valueRas3_float64.asc" ) );
+  parameters.insert( QStringLiteral( "BAND" ), 1 );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "X_MIN" ) ).toDouble(), 0.0 );
+  QCOMPARE( results.value( QStringLiteral( "X_MAX" ) ).toDouble(), 4.0 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MIN" ) ).toDouble(), 0.0 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MAX" ) ).toDouble(), 4.0 );
+  QCOMPARE( results.value( QStringLiteral( "EXTENT" ) ).toString(), QStringLiteral( "0.0000000000000000,0.0000000000000000 : 4.0000000000000000,4.0000000000000000" ) );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_WIDTH" ) ).toDouble(), 1.0 );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_HEIGHT" ) ).toDouble(), 1.0 );
+  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "" ) );
+  QCOMPARE( results.value( QStringLiteral( "WIDTH_IN_PIXELS" ) ).toInt(), 4 );
+  QCOMPARE( results.value( QStringLiteral( "HEIGHT_IN_PIXELS" ) ).toInt(), 4 );
+  QCOMPARE( results.value( QStringLiteral( "BAND_COUNT" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "HAS_NODATA_VALUE" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "NODATA_VALUE" ) ).toInt(), -9999 );
 }
 
 void TestQgsProcessingAlgs::exportToSpreadsheetXlsx()

@@ -140,6 +140,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
+  processing/qgsalgorithmrasterlayerproperties.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
