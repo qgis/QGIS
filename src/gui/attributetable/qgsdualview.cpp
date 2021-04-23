@@ -123,6 +123,9 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   if ( !layer )
     return;
 
+  delete mAttributeForm;
+  mAttributeForm = nullptr;
+
   mLayer = layer;
   mEditorContext = context;
 
@@ -133,10 +136,28 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   mTableView->setModel( mFilterModel );
   mFeatureListView->setModel( mFeatureListModel );
-  delete mAttributeForm;
-  mAttributeForm = new QgsAttributeForm( mLayer, mTempAttributeFormFeature, mEditorContext );
-  mTempAttributeFormFeature = QgsFeature();
-  if ( !context.parentContext() )
+
+  connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
+
+  if ( mFeatureListPreviewButton->defaultAction() )
+    mFeatureListView->setDisplayExpression( mDisplayExpression );
+  else
+    columnBoxInit();
+
+  // This slows down load of the attribute table heaps and uses loads of memory.
+  //mTableView->resizeColumnsToContents();
+
+  if ( mFeatureListModel->rowCount( ) > 0 )
+    mFeatureListView->setEditSelection( QgsFeatureIds() << mFeatureListModel->data( mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().id() );
+
+}
+
+void QgsDualView::initAttributeForm( const QgsFeature &feature )
+{
+  Q_ASSERT( !mAttributeForm );
+
+  mAttributeForm = new QgsAttributeForm( mLayer, feature, mEditorContext );
+  if ( !mEditorContext.parentContext() )
   {
     mAttributeEditorScrollArea = new QgsScrollArea();
     mAttributeEditorScrollArea->setWidgetResizable( true );
@@ -169,19 +190,6 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   } );
 
   connect( mMasterModel, &QgsAttributeTableModel::modelChanged, mAttributeForm, &QgsAttributeForm::refreshFeature );
-  connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
-
-  if ( mFeatureListPreviewButton->defaultAction() )
-    mFeatureListView->setDisplayExpression( mDisplayExpression );
-  else
-    columnBoxInit();
-
-  // This slows down load of the attribute table heaps and uses loads of memory.
-  //mTableView->resizeColumnsToContents();
-
-  if ( mFeatureListModel->rowCount( ) > 0 )
-    mFeatureListView->setEditSelection( QgsFeatureIds() << mFeatureListModel->data( mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().id() );
-
 }
 
 void QgsDualView::columnBoxInit()
@@ -614,6 +622,9 @@ void QgsDualView::filterError( const QString &errorMessage )
 
 void QgsDualView::featureListAboutToChangeEditSelection( bool &ok )
 {
+  if ( !mAttributeForm )
+    return;
+
   if ( mLayer->isEditable() && !mAttributeForm->save() )
     ok = false;
 }
@@ -622,7 +633,7 @@ void QgsDualView::featureListCurrentEditSelectionChanged( const QgsFeature &feat
 {
   if ( !mAttributeForm )
   {
-    mTempAttributeFormFeature = feat;
+    initAttributeForm( feat );
   }
   else if ( !mLayer->isEditable() || mAttributeForm->save() )
   {
@@ -649,7 +660,7 @@ void QgsDualView::setCurrentEditSelection( const QgsFeatureIds &fids )
 
 bool QgsDualView::saveEditChanges()
 {
-  return mAttributeForm->save();
+  return mAttributeForm ? mAttributeForm->save() : false;
 }
 
 void QgsDualView::openConditionalStyles()
@@ -659,19 +670,27 @@ void QgsDualView::openConditionalStyles()
 
 void QgsDualView::setMultiEditEnabled( bool enabled )
 {
+  if ( !mAttributeForm )
+    return;
+
   if ( enabled )
   {
     mPreviousView = view();
     setView( AttributeEditor );
   }
   else
+  {
     setView( mPreviousView );
+  }
 
   mAttributeForm->setMode( enabled ? QgsAttributeEditorContext::MultiEditMode : QgsAttributeEditorContext::SingleEditMode );
 }
 
 void QgsDualView::toggleSearchMode( bool enabled )
 {
+  if ( !mAttributeForm )
+    return;
+
   if ( enabled )
   {
     setView( AttributeEditor );
