@@ -2737,6 +2737,15 @@ bool QgsGeometry::isSimple() const
   return geos.isSimple( &mLastError );
 }
 
+bool QgsGeometry::isAxisParallelRectangle( double maximumDeviation, bool simpleRectanglesOnly ) const
+{
+  if ( !d->geometry )
+    return false;
+
+  QgsInternalGeometryEngine engine( *this );
+  return engine.isAxisParallelRectangle( maximumDeviation, simpleRectanglesOnly );
+}
+
 bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
 {
   if ( !d->geometry || !g.d->geometry )
