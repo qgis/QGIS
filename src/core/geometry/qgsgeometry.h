@@ -2051,7 +2051,9 @@ class CORE_EXPORT QgsGeometry
      *
      * \returns new valid QgsGeometry or null geometry on error
      *
-     * \note Ported from PostGIS ST_MakeValid() and it should return equivalent results.
+     * \note For QGIS builds using GEOS library versions older than 3.8 this method calls
+     * an internal fork of PostGIS' ST_MakeValid() function. For builds based on GEOS 3.8 or
+     * later this method calls the GEOS MakeValid method directly.
      *
      * \since QGIS 3.0
      */

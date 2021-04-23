@@ -201,6 +201,7 @@ class TestQgsGeometry : public QObject
     void directionNeutralSegmentation();
     void poleOfInaccessibility();
 
+    void makeValid_data();
     void makeValid();
 
     void isSimple_data();
@@ -18583,40 +18584,29 @@ void TestQgsGeometry::poleOfInaccessibility()
   QGSCOMPARENEAR( distance, 10.0, 0.00001 );
 }
 
+void TestQgsGeometry::makeValid_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "dimension collapse" ) << QStringLiteral( "LINESTRING(0 0)" ) << QStringLiteral( "" );
+  QTest::newRow( "unclosed ring" ) << QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22))" ) << QStringLiteral( "Polygon ((10 22, 10 32, 20 32, 20 22, 10 22))" );
+  QTest::newRow( "butterfly polygon (self-intersecting ring)" ) << QStringLiteral( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ) << QStringLiteral( "MultiPolygon (((0 0, 0 10, 5 5, 0 0)),((10 0, 5 5, 10 10, 10 0)))" );
+  QTest::newRow( "polygon with extra tail (a part of the ring does not form any area)" ) << QStringLiteral( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ) << QStringLiteral( "GeometryCollection (Polygon ((0 1, 1 1, 1 0, 0 0, 0 1)),LineString (0 0, -1 0))" );
+  QTest::newRow( "collection with invalid geometries" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ) << QStringLiteral( "GeometryCollection (Point (0 0),MultiPolygon (((0 0, 0 10, 5 5, 0 0)),((10 0, 5 5, 10 10, 10 0))),LineString (10 0, 10 10))" );
+  QTest::newRow( "null line (#18077)" ) << QStringLiteral( "MultiLineString ((356984.0625 6300089, 356984.0625 6300089))" ) << QStringLiteral( "Point (356984.0625 6300089)" );
+}
+
 void TestQgsGeometry::makeValid()
 {
-  typedef QPair<QString, QString> InputAndExpectedWktPair;
-  QList<InputAndExpectedWktPair> geoms;
-  // dimension collapse
-  geoms << qMakePair( QStringLiteral( "LINESTRING(0 0)" ),
-                      QStringLiteral( "POINT(0 0)" ) );
-  // unclosed ring
-  geoms << qMakePair( QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22))" ),
-                      QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22,10 22))" ) );
-  // butterfly polygon (self-intersecting ring)
-  geoms << qMakePair( QStringLiteral( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ),
-                      QStringLiteral( "MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5)))" ) );
-  // polygon with extra tail (a part of the ring does not form any area)
-  geoms << qMakePair( QStringLiteral( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ),
-                      QStringLiteral( "GEOMETRYCOLLECTION(POLYGON((0 0, 0 1, 1 1, 1 0, 0 0)), LINESTRING(0 0, -1 0))" ) );
-  // collection with invalid geometries
-  geoms << qMakePair( QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ),
-                      QStringLiteral( "GEOMETRYCOLLECTION(POINT(0 0), MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5))), LINESTRING(10 0, 10 10))" ) );
-  // null line (#18077)
-  geoms << qMakePair( QStringLiteral( "MultiLineString ((356984.0625 6300089, 356984.0625 6300089))" ),
-                      QStringLiteral( "MultiPoint ((356984.0625 6300089))" ) );
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
 
-  for ( const InputAndExpectedWktPair &pair : geoms )
-  {
-    QgsGeometry gInput = QgsGeometry::fromWkt( pair.first );
-    QgsGeometry gExp = QgsGeometry::fromWkt( pair.second );
-    QVERIFY( !gInput.isNull() );
-    QVERIFY( !gExp.isNull() );
+  QgsGeometry gInput = QgsGeometry::fromWkt( input );
+  QVERIFY( !gInput.isNull() );
 
-    QgsGeometry gValid = gInput.makeValid();
-    QVERIFY( gValid.isGeosValid() );
-    QVERIFY( gValid.isGeosEqual( gExp ) );
-  }
+  QgsGeometry gValid = gInput.makeValid();
+  QCOMPARE( gValid.asWkt(), expected );
 }
 
 void TestQgsGeometry::isSimple_data()

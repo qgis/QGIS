@@ -122,6 +122,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     static QgsGeometry geometryFromGeos( const geos::unique_ptr &geos );
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=8 )
+
+    /**
+     * Repairs the geometry using GEOS make valid routine.
+     * \since QGIS 3.20
+     */
+    std::unique_ptr< QgsAbstractGeometry > makeValid( QString *errorMsg = nullptr ) const;
+#endif
+
     /**
      * Adds a new island polygon to a multipolygon feature
      * \param geometry geometry to add part to
