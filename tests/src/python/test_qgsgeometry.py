@@ -6011,6 +6011,45 @@ class TestQgsGeometry(unittest.TestCase):
         # test we don't crash when geos returns a point geometry with no points
         QgsGeometry.fromWkt('Polygon ((0 0, 1 1, 1 0, 0 0))').intersection(QgsGeometry.fromWkt('Point (42 0)')).isNull()
 
+    def testIsRectangle(self):
+        """
+        Test checking if geometries are rectangles
+        """
+        # non polygons
+        self.assertFalse(QgsGeometry().isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('Point(0 1)').isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('LineString(0 1, 1 2)').isAxisParallelRectangle(0))
+
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 0 0))').isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 0 0))').isAxisParallelRectangle(0, True))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 0 1))').isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 0 1))').isAxisParallelRectangle(0, True))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon(())').isAxisParallelRectangle(0))
+
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))').isAxisParallelRectangle(0))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))').isAxisParallelRectangle(0, True))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 1 0, 0 0))').isAxisParallelRectangle(0))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 1 0, 0 0))').isAxisParallelRectangle(0, True))
+        # with rings
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0), (0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.2, 0.1 0.1))').isAxisParallelRectangle(0))
+        # densified
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0.5 0.0, 1 0, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(0))
+        # not a simple rectangle
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0.5 0.0, 1 0, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(0, True))
+
+        # starting mid way through a side
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0.5 0, 1 0, 1 1, 0 1, 0 0, 0.5 0))').densifyByCount(
+            5).isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0.5 0, 1 0, 1 1, 0 1, 0 0, 0.5 0))').densifyByCount(
+            5).isAxisParallelRectangle(0, True))
+
+        # with tolerance
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 1 0.001, 1 1, 0 1, 0 0))').isAxisParallelRectangle(0))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.001, 1 1, 0 1, 0 0))').isAxisParallelRectangle(1))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').isAxisParallelRectangle(1))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').isAxisParallelRectangle(10))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(10))
+
     def testTransformWithClass(self):
         """
         Test transforming using a python based class (most of the tests for this are in c++, this is just

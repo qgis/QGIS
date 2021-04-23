@@ -355,6 +355,21 @@ Uses GEOS library for the test.
 .. versionadded:: 3.0
 %End
 
+    bool isAxisParallelRectangle( double maximumDeviation, bool simpleRectanglesOnly = false ) const;
+%Docstring
+Returns ``True`` if the geometry is a polygon that is almost an axis-parallel rectangle.
+
+The ``maximumDeviation`` argument specifes the maximum angle (in degrees) that the polygon edges
+are allowed to deviate from axis parallel lines.
+
+By default the check will permit polygons with more than 4 edges, so long as the overall shape of
+the polygon is an axis-parallel rectangle (i.e. it is tolerant to rectangles with additional vertices
+added along the rectangle sides). If ``simpleRectanglesOnly`` is set to ``True`` then the method will
+only return ``True`` if the geometry is a simple rectangle consisting of 4 edges.
+
+.. versionadded:: 3.20
+%End
+
     double area() const;
 %Docstring
 Returns the planar, 2-dimensional area of the geometry.
