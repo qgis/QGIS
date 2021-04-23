@@ -2024,6 +2024,11 @@ int QgsWmsProvider::capabilities() const
     // capability |= Capability::Prefetch;
   }
 
+  if ( mSettings.mTiled && mSettings.mXyz )
+  {
+    capability |= PixelDependentRendering;
+  }
+
   QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );
   return capability;
 }

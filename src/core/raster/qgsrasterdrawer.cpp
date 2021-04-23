@@ -29,7 +29,9 @@
 #include <QPrinter>
 #endif
 
-QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator ): mIterator( iterator )
+QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget )
+  : mIterator( iterator )
+  , mDpiTarget( dpiTarget )
 {
 }
 
@@ -115,6 +117,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
   }
 }
 
+#include <QDebug>
 void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow, const QgsMapToPixel *qgsMapToPixel ) const
 {
   if ( !p || !viewPort )
@@ -122,8 +125,10 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     return;
   }
 
+  const double dpiScaleFactor = mDpiTarget >= 0.0 ? mDpiTarget / p->device()->logicalDpiX() : 1.0;
   //top left position in device coords
-  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol, viewPort->mTopLeftPoint.y() + topLeftRow );
+  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol / dpiScaleFactor, viewPort->mTopLeftPoint.y() + topLeftRow / dpiScaleFactor );
+
   QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
 
@@ -131,12 +136,10 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   // in #7766, it seems to be a bug in Qt, setting a brush with alpha 255 is a workaround
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
-
+  int w = qgsMapToPixel->mapWidth();
+  int h = qgsMapToPixel->mapHeight();
   if ( qgsMapToPixel )
   {
-    int w = qgsMapToPixel->mapWidth();
-    int h = qgsMapToPixel->mapHeight();
-
     double rotation = qgsMapToPixel->mapRotation();
     if ( rotation )
     {
@@ -149,7 +152,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     }
   }
 
-  p->drawImage( tlPoint, img );
+  p->drawImage( tlPoint, dpiScaleFactor != 1.0 ? img.scaledToWidth( img.width() / dpiScaleFactor ) : img );
 
 #if 0
   // For debugging:

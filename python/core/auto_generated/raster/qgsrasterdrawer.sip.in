@@ -20,7 +20,7 @@ The drawing pipe for raster layers.
 #include "qgsrasterdrawer.h"
 %End
   public:
-    QgsRasterDrawer( QgsRasterIterator *iterator );
+    QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget = -1.0 );
 
     void draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring

@@ -37,7 +37,7 @@ class QgsRasterIterator;
 class CORE_EXPORT QgsRasterDrawer
 {
   public:
-    QgsRasterDrawer( QgsRasterIterator *iterator );
+    QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget = -1.0 );
 
     /**
      * Draws raster data.
@@ -64,6 +64,7 @@ class CORE_EXPORT QgsRasterDrawer
 
   private:
     QgsRasterIterator *mIterator = nullptr;
+    double mDpiTarget = -1.0;
 };
 
 #endif // QGSRASTERDRAWER_H

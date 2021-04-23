@@ -205,6 +205,22 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void setOutputDpi( double dpi );
 
     /**
+     * Returns the target DPI (dots per inch) to be taken into consideration when rendering.
+     *
+     * The default value is -1, which states no DPI target is provided.
+     *
+     * \see setDpiTarger()
+     */
+    double dpiTarget() const;
+
+    /**
+     * Sets the target \a dpi (dots per inch) to be taken into consideration when rendering.
+     *
+     * \see dpiTarget()
+     */
+    void setDpiTarget( double dpi );
+
+    /**
      * Set the magnification factor.
      * \param factor the factor of magnification
      * \param center optional point to re-center the map
@@ -773,7 +789,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
   protected:
 
-    double mDpi;
+    double mDpi = 96.0;
+    double mDpiTarget = -1;
 
     QSize mSize;
     float mDevicePixelRatio = 1.0;

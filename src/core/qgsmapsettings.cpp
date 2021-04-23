@@ -272,6 +272,15 @@ void QgsMapSettings::setOutputDpi( double dpi )
   updateDerived();
 }
 
+double QgsMapSettings::dpiTarget() const
+{
+  return mDpiTarget;
+}
+
+void QgsMapSettings::setDpiTarget( double dpi )
+{
+  mDpiTarget = dpi;
+}
 
 QStringList QgsMapSettings::layerIds() const
 {
