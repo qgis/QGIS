@@ -540,7 +540,7 @@ void QgsMergeAttributesDialog::mFromSelectedPushButton_clicked()
 
 void QgsMergeAttributesDialog::mFromLargestPushButton_clicked()
 {
-  QgsFeatureId featureId;
+  QgsFeatureId featureId = FID_NULL;
   double maxValue = 0;
 
   switch ( mVectorLayer->geometryType() )
