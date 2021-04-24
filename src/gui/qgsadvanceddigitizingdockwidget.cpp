@@ -123,6 +123,9 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   qobject_cast< QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
   mSettingsAction->setMenu( menu );
+  mSettingsAction->setCheckable( true );
+  mSettingsAction->setToolTip( tr( "Snap to common angles" ) );
+  mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
   connect( menu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
 
   // set tooltips
@@ -334,6 +337,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
     ica.key()->setChecked( true );
     mCommonAngleConstraint = ica.value();
     QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
+    mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
     return;
   }
 }
