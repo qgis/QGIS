@@ -1316,6 +1316,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "replace (unbalanced array, before > after)" ) << "replace('12345', array('1','2','3'), array('6','7'))" << true << QVariant();
       QTest::newRow( "replace (unbalanced array, before < after)" ) << "replace('12345', array('1','2'), array('6','7','8'))" << true << QVariant();
       QTest::newRow( "replace (map)" ) << "replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))" << false << QVariant( "QGIS DOES ROCK" );
+      QTest::newRow( "replace (map with overlapping keys)" ) << "replace('11111',map('1','small','11','large'))" << false << QVariant( "largelargesmall" );
       QTest::newRow( "regexp_replace" ) << "regexp_replace('HeLLo','[eL]+', '-')" << false << QVariant( "H-o" );
       QTest::newRow( "regexp_replace greedy" ) << "regexp_replace('HeLLo','(?<=H).*L', '-')" << false << QVariant( "H-o" );
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
