@@ -1107,6 +1107,9 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
           lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
         }
         e->accept();
+
+        // run a fake map mouse event to update the paint item
+        emit pointChanged( mCadPointList.value( 0 ) );
       }
       break;
     }
