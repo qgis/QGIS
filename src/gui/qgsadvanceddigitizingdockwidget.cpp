@@ -273,7 +273,7 @@ void QgsAdvancedDigitizingDockWidget::additionalConstraintClicked( bool activate
   {
     lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
   }
-  if ( sender() == mParallelAction )
+  else if ( sender() == mParallelAction )
   {
     lockAdditionalConstraint( AdditionalConstraint::Parallel );
   }
