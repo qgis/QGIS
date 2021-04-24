@@ -557,7 +557,7 @@ void PointSet::offsetCurveByDistance( double distance )
   GEOSGeometry *newGeos;
   try
   {
-    newGeos = GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_ROUND, 2 );
+    newGeos = GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_MITRE, 2 );
     const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos );
     const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos );
     std::vector< double > newX;
