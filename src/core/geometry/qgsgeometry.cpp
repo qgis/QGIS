@@ -1839,6 +1839,31 @@ double QgsGeometry::hausdorffDistanceDensify( const QgsGeometry &geom, double de
   return g.hausdorffDistanceDensify( geom.d->geometry.get(), densifyFraction, &mLastError );
 }
 
+
+double QgsGeometry::frechetDistance( const QgsGeometry &geom ) const
+{
+  if ( !d->geometry || !geom.d->geometry )
+  {
+    return -1.0;
+  }
+
+  QgsGeos g( d->geometry.get() );
+  mLastError.clear();
+  return g.frechetDistance( geom.d->geometry.get(), &mLastError );
+}
+
+double QgsGeometry::frechetDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const
+{
+  if ( !d->geometry || !geom.d->geometry )
+  {
+    return -1.0;
+  }
+
+  QgsGeos g( d->geometry.get() );
+  mLastError.clear();
+  return g.frechetDistanceDensify( geom.d->geometry.get(), densifyFraction, &mLastError );
+}
+
 QgsAbstractGeometry::vertex_iterator QgsGeometry::vertices_begin() const
 {
   if ( !d->geometry || d->geometry.get()->isEmpty() )
@@ -2187,6 +2212,65 @@ QgsGeometry QgsGeometry::poleOfInaccessibility( double precision, double *distan
   return engine.poleOfInaccessibility( precision, distanceToBoundary );
 }
 
+QgsGeometry QgsGeometry::largestEmptyCircle( double tolerance,  const QgsGeometry &boundary ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+
+  mLastError.clear();
+  QgsGeometry result( geos.largestEmptyCircle( tolerance, boundary.constGet(), &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::minimumWidth() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+
+  mLastError.clear();
+  QgsGeometry result( geos.minimumWidth( &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+double QgsGeometry::minimumClearance() const
+{
+  if ( !d->geometry )
+  {
+    return std::numeric_limits< double >::quiet_NaN();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+
+  mLastError.clear();
+  double result( geos.minimumClearance( &mLastError ) );
+  return result;
+}
+
+QgsGeometry QgsGeometry::minimumClearanceLine() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+
+  mLastError.clear();
+  QgsGeometry result( geos.minimumClearanceLine( &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::convexHull() const
 {
   if ( !d->geometry )
@@ -2229,6 +2313,34 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result = geos.delaunayTriangulation( tolerance, edgesOnly );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::node() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.node( &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::sharedPaths( const QgsGeometry &other ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.sharedPaths( other.constGet(), &mLastError ) );
   result.mLastError = mLastError;
   return result;
 }
