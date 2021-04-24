@@ -233,7 +233,7 @@ void QgsMapToolMoveFeature::deactivate()
   mRubberBand = nullptr;
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
-  QgsMapTool::deactivate();
+  QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolMoveFeature::keyReleaseEvent( QKeyEvent *e )
