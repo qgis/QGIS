@@ -42,11 +42,6 @@ class PyQgsSettingsRegistry(unittest.TestCase):
 
         self.assertEqual(QgsApplication.settingsRegistryCore().getSettingsEntry(settingsEntry.key(), True), settingsEntry)
 
-        print(QgsApplication.settingsRegistryCore().settingsDigitizingDefaultZValue.key())
-
-        print(QgsApplication.settingsRegistryCore().settingsDigitizingDefaultSnapType.key())
-        print(QgsApplication.settingsRegistryCore().settingsDigitizingDefaultSnapType.value())
-
 
 if __name__ == '__main__':
     unittest.main()

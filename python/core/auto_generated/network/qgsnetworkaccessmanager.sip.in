@@ -321,7 +321,6 @@ The contents of the reply will be returned after the request is completed or an 
 .. versionadded:: 3.6
 %End
 
-<<<<<<< HEAD
     void requestAuthOpenBrowser( const QUrl &url ) const;
 %Docstring
 Forwards an external browser login ``url`` opening request to the authentication handler.
@@ -343,9 +342,9 @@ Forwards an external browser login closure request to the authentication handler
 
 .. versionadded:: 3.20
 %End
-=======
+
     const QgsSettingsEntryInteger settingsNetworkTimeout;
->>>>>>> 2087a7f4f8 (Removed settings struct)
+
 
   signals:
 

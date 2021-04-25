@@ -758,7 +758,6 @@ Returns how much decimals should be shown in the Gui.
 };
 
 
-
 template <T>
 class QgsSettingsEntryEnumFlag : QgsSettingsEntryBase
 {
@@ -779,7 +778,7 @@ A template class for enum and flag settings entry.
 
     QgsSettingsEntryEnumFlag( const QString &key, QgsSettings::Section section, const T &defaultValue, const QString &description = QString() );
 %Docstring
-Constructor for QgsSettingsEntryEnumFlag.
+Constructor for :py:class:`QgsSettingsEntryEnumFlagBase`.
 
 The ``key`` argument specifies the final part of the settings key.
 The ``section`` argument specifies the section.
@@ -834,16 +833,6 @@ Get settings default value.
 %End
 
 };
-
-
-
-
-
-
-
-
-
-
 
 
 class QgsSettingsEntryColor : QgsSettingsEntryBase
