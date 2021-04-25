@@ -17,6 +17,6 @@
       "arguments": [ {"arg":"string","description":"the input string"},
                      {"arg":"map","description":"the map containing keys and values"} ],
       "examples": [ { "expression":"replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))", "returns":"'QGIS DOES ROCK'"},
-                    { "expression":"replace('fourtytwo',map('four','4','two','2','fourtytwo','42'))", "returns":"'42'"} ]
+                    { "expression":"replace('forty two',map('for','4','two','2','forty two','42'))", "returns":"'42'"} ]
   }]
 }
