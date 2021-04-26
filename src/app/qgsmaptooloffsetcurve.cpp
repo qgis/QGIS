@@ -619,10 +619,10 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
   }
 
   QgsGeometry offsetGeom;
-  QgsGeometry::JoinStyle joinStyle = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ),  QgsGeometry::JoinStyleRound );
+  QgsGeometry::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
   int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
   double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
-  QgsGeometry::EndCapStyle capStyle = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ),  QgsGeometry::CapRound );
+  QgsGeometry::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
 
 
   if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
@@ -670,10 +670,10 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mCapStyleComboBox->addItem( tr( "Flat" ), QgsGeometry::CapFlat );
   mCapStyleComboBox->addItem( tr( "Square" ), QgsGeometry::CapSquare );
 
-  QgsGeometry::JoinStyle joinStyle = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ),  QgsGeometry::JoinStyleRound );
+  QgsGeometry::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
   int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
   double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
-  QgsGeometry::EndCapStyle capStyle = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ),  QgsGeometry::CapRound );
+  QgsGeometry::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
 
   mJoinStyleComboBox->setCurrentIndex( mJoinStyleComboBox->findData( joinStyle ) );
   mQuadrantSpinBox->setValue( quadSegments );
@@ -686,10 +686,10 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mOffsetSpinBox->installEventFilter( this );
   connect( mOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsOffsetUserWidget::offsetChanged );
 
-  connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettings().setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), static_cast< QgsGeometry::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
+  connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.setValue( static_cast< QgsGeometry::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
   connect( mQuadrantSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, [ = ]( const int quadSegments ) { QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.setValue( quadSegments ); emit offsetConfigChanged(); } );
   connect( mMiterLimitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double miterLimit ) { QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.setValue( miterLimit ); emit offsetConfigChanged(); } );
-  connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettings().setEnumValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), static_cast< QgsGeometry::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
+  connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.setValue( static_cast< QgsGeometry::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
 
   bool showAdvanced = QgsSettingsRegistryCore::settingsDigitizingOffsetShowAdvanced.value();
   mShowAdvancedButton->setChecked( showAdvanced );

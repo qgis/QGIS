@@ -1162,7 +1162,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetJoinStyleComboBox->addItem( tr( "Round" ), QgsGeometry::JoinStyleRound );
   mOffsetJoinStyleComboBox->addItem( tr( "Miter" ), QgsGeometry::JoinStyleMiter );
   mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), QgsGeometry::JoinStyleBevel );
-  QgsGeometry::JoinStyle joinStyleSetting = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound );
+  QgsGeometry::JoinStyle joinStyleSetting = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
   mOffsetJoinStyleComboBox->setCurrentIndex( mOffsetJoinStyleComboBox->findData( joinStyleSetting ) );
   mOffsetQuadSegSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value() );
   mOffsetQuadSegSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.defaultValue() );
@@ -1788,7 +1788,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.setValue( chkDisableAttributeValuesDlg->isChecked() );
   QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.setValue( mValidateGeometries->currentIndex() );
 
-  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), mOffsetJoinStyleComboBox->currentData().value<QgsGeometry::JoinStyle>() );
+  QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.setValue( mOffsetJoinStyleComboBox->currentData().value<QgsGeometry::JoinStyle>() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.setValue( mOffsetQuadSegSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.setValue( mCurveOffsetMiterLimitComboBox->value() );
 
