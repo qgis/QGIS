@@ -296,6 +296,24 @@ Returns the curve's orientation, e.g. clockwise or counter-clockwise.
     virtual QgsPoint childPoint( int index ) const;
 
 
+    virtual void scroll( int firstVertexIndex ) = 0;
+%Docstring
+Scrolls the curve vertices so that they start with the vertex at the given index.
+
+.. warning::
+
+   This should only be called on closed curves, or the shape of the curve will be altered and
+   the result is undefined.
+
+.. warning::
+
+   The ``firstVertexIndex`` must correspond to a segment vertex and not a curve point or the result
+   is undefined.
+
+
+.. versionadded:: 3.20
+%End
+
 
 
 };

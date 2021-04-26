@@ -297,6 +297,44 @@ QgsRectangle QgsCircularString::calculateBoundingBox() const
   return bbox;
 }
 
+void QgsCircularString::scroll( int index )
+{
+  const int size = mX.size();
+  if ( index < 1 || index >= size - 1 )
+    return;
+
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+
+  QVector<double> newX( size );
+  QVector<double> newY( size );
+  QVector<double> newZ( useZ ? size : 0 );
+  QVector<double> newM( useM ? size : 0 );
+  auto it = std::copy( mX.constBegin() + index, mX.constEnd() - 1, newX.begin() );
+  it = std::copy( mX.constBegin(), mX.constBegin() + index, it );
+  *it = *newX.constBegin();
+  mX = std::move( newX );
+
+  it = std::copy( mY.constBegin() + index, mY.constEnd() - 1, newY.begin() );
+  it = std::copy( mY.constBegin(), mY.constBegin() + index, it );
+  *it = *newY.constBegin();
+  mY = std::move( newY );
+  if ( useZ )
+  {
+    it = std::copy( mZ.constBegin() + index, mZ.constEnd() - 1, newZ.begin() );
+    it = std::copy( mZ.constBegin(), mZ.constBegin() + index, it );
+    *it = *newZ.constBegin();
+    mZ = std::move( newZ );
+  }
+  if ( useM )
+  {
+    it = std::copy( mM.constBegin() + index, mM.constEnd() - 1, newM.begin() );
+    it = std::copy( mM.constBegin(), mM.constBegin() + index, it );
+    *it = *newM.constBegin();
+    mM = std::move( newM );
+  }
+}
+
 QgsRectangle QgsCircularString::segmentBoundingBox( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 )
 {
   double centerX, centerY, radius;

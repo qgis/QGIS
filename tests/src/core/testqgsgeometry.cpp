@@ -166,6 +166,9 @@ class TestQgsGeometry : public QObject
     void compareTo_data();
     void compareTo();
 
+    void scroll_data();
+    void scroll();
+
     // MK, Disabled 14.11.2014
     // Too unclear what exactly should be tested and which variations are allowed for the line
 #if 0
@@ -17781,6 +17784,61 @@ void TestQgsGeometry::compareTo()
   QFETCH( int, expected );
 
   QCOMPARE( QgsGeometry::fromWkt( geom1 ).get()->compareTo( QgsGeometry::fromWkt( geom2 ).get() ), expected );
+}
+
+void TestQgsGeometry::scroll_data()
+{
+  QTest::addColumn<QString>( "curve" );
+  QTest::addColumn<int>( "vertex" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "linestring empty" ) << QStringLiteral( "LINESTRING()" ) << 2 << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring no matching point" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3)" ) << 4 << QStringLiteral( "LineString (1 1, 1 2, 1 3)" );
+  QTest::newRow( "linestring one vertex" ) << QStringLiteral( "LINESTRING( 1 1)" ) << 0 << QStringLiteral( "LineString (1 1)" );
+  QTest::newRow( "linestring match first" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 0 << QStringLiteral( "LineString (1 1, 1 2, 1 3, 1 4, 1 1)" );
+  QTest::newRow( "linestring match second" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 1 << QStringLiteral( "LineString (1 2, 1 3, 1 4, 1 1, 1 2)" );
+  QTest::newRow( "linestring match third" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 2 << QStringLiteral( "LineString (1 3, 1 4, 1 1, 1 2, 1 3)" );
+  QTest::newRow( "linestring match forth" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 3 << QStringLiteral( "LineString (1 4, 1 1, 1 2, 1 3, 1 4)" );
+  QTest::newRow( "linestring match last" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 4 << QStringLiteral( "LineString (1 1, 1 2, 1 3, 1 4, 1 1)" );
+  QTest::newRow( "linestringz" ) << QStringLiteral( "LINESTRINGZ( 1 1 3 , 1 2 4, 1 3 5 , 1 4 6, 1 1 3)" ) << 2 << QStringLiteral( "LineStringZ (1 3 5, 1 4 6, 1 1 3, 1 2 4, 1 3 5)" );
+  QTest::newRow( "linestringm" ) << QStringLiteral( "LINESTRINGM( 1 1 3 , 1 2 4, 1 3 5 , 1 4 6, 1 1 3)" ) << 2 << QStringLiteral( "LineStringM (1 3 5, 1 4 6, 1 1 3, 1 2 4, 1 3 5)" );
+  QTest::newRow( "linestringzm" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 1 2 4 6, 1 3 5 7, 1 4 6 8, 1 1 3 5)" ) << 2 << QStringLiteral( "LineStringZM (1 3 5 7, 1 4 6 8, 1 1 3 5, 1 2 4 6, 1 3 5 7)" );
+
+  QTest::newRow( "circularstring empty" ) << QStringLiteral( "CIRCULARSTRING()" ) << 2 << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "circularstring no matching point" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 1 3)" ) << 4 << QStringLiteral( "CircularString (1 1, 1 2, 1 3)" );
+  // technically not valid, but we don't want a crash
+  QTest::newRow( "circularstring one vertex" ) << QStringLiteral( "CIRCULARSTRING( 1 1)" ) << 0 << QStringLiteral( "CircularString (1 1)" );
+  QTest::newRow( "circularstring match first" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 2, 1 4, 1 1)" ) << 0 << QStringLiteral( "CircularString (1 1, 2 1, 2 2, 1 4, 1 1)" );
+  QTest::newRow( "circularstring match third" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 2, 1 4, 1 1)" ) << 2 << QStringLiteral( "CircularString (2 2, 1 4, 1 1, 2 1, 2 2)" );
+  QTest::newRow( "circularstring match 5th" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 2, 3 4, 2 4, 1 4, 1 1)" ) << 4 << QStringLiteral( "CircularString (2 4, 1 4, 1 1, 2 1, 2 2, 3 4, 2 4)" );
+  QTest::newRow( "circularstring match last" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 2, 3 4, 2 4, 1 4, 1 1)" ) << 6 << QStringLiteral( "CircularString (1 1, 2 1, 2 2, 3 4, 2 4, 1 4, 1 1)" );
+  QTest::newRow( "circularstringz" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3 , 2 1 4, 2 2 5 , 1 4 6, 1 1 3)" ) << 2 << QStringLiteral( "CircularStringZ (2 2 5, 1 4 6, 1 1 3, 2 1 4, 2 2 5)" );
+  QTest::newRow( "circularstringm" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3 , 2 1 4, 2 2 5 , 1 4 6, 1 1 3)" ) << 2 << QStringLiteral( "CircularStringM (2 2 5, 1 4 6, 1 1 3, 2 1 4, 2 2 5)" );
+  QTest::newRow( "circularstringzm" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 1 4 6, 2 2 5 7, 1 4 6 8, 1 1 3 5)" ) << 2 << QStringLiteral( "CircularStringZM (2 2 5 7, 1 4 6 8, 1 1 3 5, 2 1 4 6, 2 2 5 7)" );
+
+  QTest::newRow( "compoundcurve empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << 2 << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "compoundcurve no matching point" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 1 3))" ) << 4 << QStringLiteral( "CompoundCurve ((1 1, 1 2, 1 3))" );
+  QTest::newRow( "compoundcurve one vertex" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1))" ) << 0 << QStringLiteral( "CompoundCurve ((1 1))" );
+  QTest::newRow( "compoundcurve match first" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 0 << QStringLiteral( "CompoundCurve ((1 1, 1 2),(1 2, 1 3, 1 4, 1 1))" );
+  QTest::newRow( "compoundcurve match second" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 1 << QStringLiteral( "CompoundCurve ((1 2, 1 3, 1 4, 1 1),(1 1, 1 2))" );
+  QTest::newRow( "compoundcurve match third" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 2 << QStringLiteral( "CompoundCurve ((1 3, 1 4, 1 1),(1 1, 1 2),(1 2, 1 3))" );
+  QTest::newRow( "compoundcurve match forth" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 3 << QStringLiteral( "CompoundCurve ((1 4, 1 1),(1 1, 1 2),(1 2, 1 3, 1 4))" );
+  QTest::newRow( "compoundcurve match last" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 4 << QStringLiteral( "CompoundCurve ((1 1, 1 2),(1 2, 1 3, 1 4, 1 1))" );
+  QTest::newRow( "compoundcurvez" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3 , 1 2 4, 1 3 5 , 1 4 6, 1 1 3))" ) << 2 << QStringLiteral( "CompoundCurveZ ((1 3 5, 1 4 6, 1 1 3),(1 1 3, 1 2 4, 1 3 5))" );
+  QTest::newRow( "compoundcurvem" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3 , 1 2 4, 1 3 5 , 1 4 6, 1 1 3))" ) << 2 << QStringLiteral( "CompoundCurveM ((1 3 5, 1 4 6, 1 1 3),(1 1 3, 1 2 4, 1 3 5))" );
+  QTest::newRow( "compoundcurvezm" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 1 2 4 6, 1 3 5 7, 1 4 6 8, 1 1 3 5))" ) << 2 << QStringLiteral( "CompoundCurveZM ((1 3 5 7, 1 4 6 8, 1 1 3 5),(1 1 3 5, 1 2 4 6, 1 3 5 7))" );
+}
+
+void TestQgsGeometry::scroll()
+{
+  QFETCH( QString, curve );
+  QFETCH( int, vertex );
+  QFETCH( QString, expected );
+
+  QgsGeometry geom = QgsGeometry::fromWkt( curve );
+  qgsgeometry_cast< QgsCurve * >( geom.get() )->scroll( vertex );
+
+  QCOMPARE( geom.get()->asWkt(), expected );
 }
 
 // MK, Disabled 14.11.2014

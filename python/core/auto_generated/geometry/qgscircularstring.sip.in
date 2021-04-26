@@ -222,6 +222,7 @@ Appends the contents of another circular ``string`` to the end of this circular 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
+    void scroll( int firstVertexIndex ) final;
 
 };
 
