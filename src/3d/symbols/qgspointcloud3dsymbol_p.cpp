@@ -241,7 +241,7 @@ QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::getPointCloudBlock( QgsPointCl
     QObject::connect( req, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
 
     QMetaObject::Connection *const connection = new QMetaObject::Connection;
-    *connection = QObject::connect( &context, &QgsPointCloud3DRenderContext::renderingCancelled, [ & ]()
+    *connection = QObject::connect( &context, &QgsPointCloud3DRenderContext::renderingCanceled, [ & ]()
     {
       loopAborted = true;
       loop.quit();

@@ -73,7 +73,7 @@ void QgsPointCloud3DRenderContext::setCoordinateTransform( const QgsCoordinateTr
 
 void QgsPointCloud3DRenderContext::cancelRendering()
 {
-  emit renderingCancelled();
+  emit renderingCanceled();
 }
 
 

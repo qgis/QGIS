@@ -172,7 +172,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsCoordinateTransform coordinateTransform() const { return mCoordinateTransform; }
 
     /**
-     * Cancels rendering by emitting renderingCancelled signal
+     * Cancels rendering by emitting renderingCanceled signal
      * \since QGIS 3.20
      */
     void cancelRendering();
@@ -183,7 +183,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * Emitted when the rendering is cancelled
      * \since QGIS 3.20
      */
-    void renderingCancelled();
+    void renderingCanceled();
 
   private:
 #ifdef SIP_RUN
