@@ -798,6 +798,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
+    void scroll( int firstVertexIndex ) final;
 
   private:
     QVector<double> mX;
@@ -820,6 +821,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     friend class QgsPolygon;
     friend class QgsTriangle;
+    friend class TestQgsGeometry;
 
 };
 

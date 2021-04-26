@@ -161,6 +161,28 @@ QgsRectangle QgsCompoundCurve::calculateBoundingBox() const
   return bbox;
 }
 
+void QgsCompoundCurve::scroll( int index )
+{
+  const int size = numPoints();
+  if ( index < 1 || index >= size - 1 )
+    return;
+
+  auto [p1, p2 ] = splitCurveAtVertex( index );
+
+  mCurves.clear();
+  if ( QgsCompoundCurve *curve2 = qgsgeometry_cast< QgsCompoundCurve *>( p2.get() ) )
+  {
+    // take the curves from the second part and make them our first lot of curves
+    mCurves = std::move( curve2->mCurves );
+  }
+  if ( QgsCompoundCurve *curve1 = qgsgeometry_cast< QgsCompoundCurve *>( p1.get() ) )
+  {
+    // take the curves from the first part and append them to our curves
+    mCurves.append( curve1->mCurves );
+    curve1->mCurves.clear();
+  }
+}
+
 bool QgsCompoundCurve::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   clear();
