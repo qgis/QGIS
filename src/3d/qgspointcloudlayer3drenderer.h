@@ -180,7 +180,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
   signals:
 
     /**
-     * Emitted when the rendering is cancelled
+     * Emitted when the rendering is canceled
      * \since QGIS 3.20
      */
     void renderingCanceled();
