@@ -181,6 +181,7 @@ Sets the circular string's points
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
 

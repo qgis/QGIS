@@ -112,6 +112,92 @@ QgsCircularString *QgsCircularString::createEmptyWithSameType() const
   return result.release();
 }
 
+int QgsCircularString::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsCircularString *otherLine = qgsgeometry_cast<const QgsCircularString *>( other );
+  if ( !otherLine )
+    return -1;
+
+  const int size = mX.size();
+  const int otherSize = otherLine->mX.size();
+  if ( size > otherSize )
+  {
+    return 1;
+  }
+  else if ( size < otherSize )
+  {
+    return -1;
+  }
+
+  if ( is3D() && !otherLine->is3D() )
+    return 1;
+  else if ( !is3D() && otherLine->is3D() )
+    return -1;
+  const bool considerZ = is3D();
+
+  if ( isMeasure() && !otherLine->isMeasure() )
+    return 1;
+  else if ( !isMeasure() && otherLine->isMeasure() )
+    return -1;
+  const bool considerM = isMeasure();
+
+  for ( int i = 0; i < size; i++ )
+  {
+    const double x = mX[i];
+    const double otherX = otherLine->mX[i];
+    if ( x < otherX )
+    {
+      return -1;
+    }
+    else if ( x > otherX )
+    {
+      return 1;
+    }
+
+    const double y = mY[i];
+    const double otherY = otherLine->mY[i];
+    if ( y < otherY )
+    {
+      return -1;
+    }
+    else if ( y > otherY )
+    {
+      return 1;
+    }
+
+    if ( considerZ )
+    {
+      const double z = mZ[i];
+      const double otherZ = otherLine->mZ[i];
+
+      if ( z < otherZ )
+      {
+        return -1;
+      }
+      else if ( z > otherZ )
+      {
+        return 1;
+      }
+    }
+
+    if ( considerM )
+    {
+      const double m = mM[i];
+      const double otherM = otherLine->mM[i];
+
+      if ( m < otherM )
+      {
+        return -1;
+      }
+      else if ( m > otherM )
+      {
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
 QString QgsCircularString::geometryType() const
 {
   return QStringLiteral( "CircularString" );

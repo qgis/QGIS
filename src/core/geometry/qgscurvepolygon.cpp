@@ -1363,3 +1363,45 @@ QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
   else
     return mInteriorRings.at( index - 1 );
 }
+
+int QgsCurvePolygon::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsCurvePolygon *otherPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( other );
+  if ( !otherPolygon )
+    return -1;
+
+  if ( mExteriorRing && !otherPolygon->mExteriorRing )
+    return 1;
+  else if ( !mExteriorRing && otherPolygon->mExteriorRing )
+    return -1;
+  else if ( mExteriorRing && otherPolygon->mExteriorRing )
+  {
+    int shellComp = mExteriorRing->compareTo( otherPolygon->mExteriorRing.get() );
+    if ( shellComp != 0 )
+    {
+      return shellComp;
+    }
+  }
+
+  const int nHole1 = mInteriorRings.size();
+  const int nHole2 = otherPolygon->mInteriorRings.size();
+  if ( nHole1 < nHole2 )
+  {
+    return -1;
+  }
+  if ( nHole1 > nHole2 )
+  {
+    return 1;
+  }
+
+  for ( int i = 0; i < nHole1; i++ )
+  {
+    const int holeComp = mInteriorRings.at( i )->compareTo( otherPolygon->mInteriorRings.at( i ) );
+    if ( holeComp != 0 )
+    {
+      return holeComp;
+    }
+  }
+
+  return 0;
+}

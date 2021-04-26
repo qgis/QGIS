@@ -104,6 +104,13 @@ Constructor for QgsAbstractGeometry.
 Clones the geometry by performing a deep copy
 %End
 
+    virtual int compareTo( const QgsAbstractGeometry *other ) const;
+%Docstring
+Comparator for sorting of geometry.
+
+.. versionadded:: 3.20
+%End
+
     virtual void clear() = 0;
 %Docstring
 Clears the geometry, ie reset it to a null geometry
@@ -808,6 +815,22 @@ To create it, the geometry is default constructed and then the WKB is changed.
 %End
 
   protected:
+
+    int sortIndex() const;
+%Docstring
+Returns the sort index for the geometry, used in the :py:func:`~QgsAbstractGeometry.compareTo` method to compare
+geometries of different types.
+
+.. versionadded:: 3.20
+%End
+
+    virtual int compareToSameClass( const QgsAbstractGeometry *other ) const = 0;
+%Docstring
+Compares to an ``other`` geometry of the same class, and returns a integer
+for sorting of the two geometries.
+
+.. versionadded:: 3.20
+%End
 
     virtual bool hasChildGeometries() const;
 %Docstring

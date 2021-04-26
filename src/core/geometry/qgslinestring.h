@@ -581,7 +581,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     //reimplemented methods
-
     QString geometryType() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;
     QgsLineString *clone() const override SIP_FACTORY;
@@ -789,6 +788,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
 
   private:

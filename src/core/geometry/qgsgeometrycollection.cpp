@@ -1045,3 +1045,34 @@ QgsAbstractGeometry *QgsGeometryCollection::childGeometry( int index ) const
     return nullptr;
   return mGeometries.at( index );
 }
+
+int QgsGeometryCollection::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsGeometryCollection *otherCollection = qgsgeometry_cast<const QgsGeometryCollection *>( other );
+  if ( !otherCollection )
+    return -1;
+
+  int i = 0;
+  int j = 0;
+  while ( i < mGeometries.size() && j < otherCollection->mGeometries.size() )
+  {
+    const QgsAbstractGeometry *aGeom = mGeometries[i];
+    const QgsAbstractGeometry *bGeom = otherCollection->mGeometries[j];
+    int comparison = aGeom->compareTo( bGeom );
+    if ( comparison != 0 )
+    {
+      return comparison;
+    }
+    i++;
+    j++;
+  }
+  if ( i < mGeometries.size() )
+  {
+    return 1;
+  }
+  if ( j < otherCollection->mGeometries.size() )
+  {
+    return -1;
+  }
+  return 0;
+}

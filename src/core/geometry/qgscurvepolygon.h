@@ -306,6 +306,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
 

@@ -317,6 +317,7 @@ Iterates through all geometries in the collection.
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
 

@@ -67,6 +67,37 @@ QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
   return result.release();
 }
 
+int QgsCompoundCurve::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsCompoundCurve *otherCurve = qgsgeometry_cast<const QgsCompoundCurve *>( other );
+  if ( !otherCurve )
+    return -1;
+
+  int i = 0;
+  int j = 0;
+  while ( i < mCurves.size() && j < otherCurve->mCurves.size() )
+  {
+    const QgsAbstractGeometry *aGeom = mCurves[i];
+    const QgsAbstractGeometry *bGeom = otherCurve->mCurves[j];
+    int comparison = aGeom->compareTo( bGeom );
+    if ( comparison != 0 )
+    {
+      return comparison;
+    }
+    i++;
+    j++;
+  }
+  if ( i < mCurves.size() )
+  {
+    return 1;
+  }
+  if ( j < otherCurve->mCurves.size() )
+  {
+    return -1;
+  }
+  return 0;
+}
+
 QString QgsCompoundCurve::geometryType() const
 {
   return QStringLiteral( "CompoundCurve" );

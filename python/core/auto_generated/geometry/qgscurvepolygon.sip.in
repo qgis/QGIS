@@ -296,6 +296,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
 

@@ -152,6 +152,9 @@ class TestQgsGeometry : public QObject
 
     void createEmptyWithSameType();
 
+    void compareTo_data();
+    void compareTo();
+
     // MK, Disabled 14.11.2014
     // Too unclear what exactly should be tested and which variations are allowed for the line
 #if 0
@@ -17180,6 +17183,148 @@ void TestQgsGeometry::createEmptyWithSameType()
   testCreateEmptyWithSameType<QgsTriangle>();
 }
 
+void TestQgsGeometry::compareTo_data()
+{
+  QTest::addColumn<QString>( "geom1" );
+  QTest::addColumn<QString>( "geom2" );
+  QTest::addColumn<int>( "expected" );
+
+  QTest::newRow( "point vs multipoint" ) << QStringLiteral( "POINT( 1 2 )" ) << QStringLiteral( "MULTIPOINT((1 2))" ) << -1;
+  QTest::newRow( "multipoint vs point" ) << QStringLiteral( "MULTIPOINT((1 2))" ) << QStringLiteral( "POINT( 1 2 )" ) << 1;
+  QTest::newRow( "point vs point" ) << QStringLiteral( "POINT( 1 2 )" ) << QStringLiteral( "POINT(1 2)" ) << 0;
+  QTest::newRow( "point vs point greater x" ) << QStringLiteral( "POINT( 2 2 )" ) << QStringLiteral( "POINT(1 2)" ) << 1;
+  QTest::newRow( "point vs point lesser x" ) << QStringLiteral( "POINT( 0 2 )" ) << QStringLiteral( "POINT(1 2)" ) << -1;
+  QTest::newRow( "point vs point greater y" ) << QStringLiteral( "POINT( 1 3 )" ) << QStringLiteral( "POINT(1 2)" ) << 1;
+  QTest::newRow( "point vs point lesser y" ) << QStringLiteral( "POINT( 1 1 )" ) << QStringLiteral( "POINT(1 2)" ) << -1;
+  QTest::newRow( "point vs point first with z" ) << QStringLiteral( "POINTZ( 2 1 3 )" ) << QStringLiteral( "POINT(2 1)" ) << 1;
+  QTest::newRow( "point vs point second with z" ) << QStringLiteral( "POINT( 2 1 )" ) << QStringLiteral( "POINTZ(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point equal z" ) << QStringLiteral( "POINTZ( 2 1 3 )" ) << QStringLiteral( "POINTZ(2 1 3)" ) << 0;
+  QTest::newRow( "point vs point greater z" ) << QStringLiteral( "POINTZ( 2 1 4 )" ) << QStringLiteral( "POINTZ(2 1 3)" ) << 1;
+  QTest::newRow( "point vs point lower z" ) << QStringLiteral( "POINTZ(2 1 2)" ) << QStringLiteral( "POINTZ(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point first with m" ) << QStringLiteral( "POINTM( 2 1 3 )" ) << QStringLiteral( "POINT(2 1)" ) << 1;
+  QTest::newRow( "point vs point second with m" ) << QStringLiteral( "POINT( 2 1 )" ) << QStringLiteral( "POINTM(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point equal m" ) << QStringLiteral( "POINTM( 2 1 3 )" ) << QStringLiteral( "POINTM(2 1 3)" ) << 0;
+  QTest::newRow( "point vs point greater m" ) << QStringLiteral( "POINTM( 2 1 4 )" ) << QStringLiteral( "POINTM(2 1 3)" ) << 1;
+  QTest::newRow( "point vs point lower m" ) << QStringLiteral( "POINTM(2 1 2)" ) << QStringLiteral( "POINTM(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point first with z second with m" ) << QStringLiteral( "POINTZ( 2 1 3 )" ) << QStringLiteral( "POINTM(2 1 3)" ) << 1;
+  QTest::newRow( "point vs point first with m second with z" ) << QStringLiteral( "POINTM( 2 1 3 )" ) << QStringLiteral( "POINTZ(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point zm" ) << QStringLiteral( "POINTZM( 2 1 3 4 )" ) << QStringLiteral( "POINTZM(2 1 4 4)" ) << -1;
+  QTest::newRow( "point vs point zm second" ) << QStringLiteral( "POINTZM( 2 1 3 4 )" ) << QStringLiteral( "POINTM(2 1 3 5)" ) << -1;
+  QTest::newRow( "linestring empty vs polygon empty" ) << QStringLiteral( "LINESTRING()" ) << QStringLiteral( "POLYGON(())" ) << -1;
+  QTest::newRow( "polygon empty vs linesting empty" ) << QStringLiteral( "POLYGON(())" ) << QStringLiteral( "LINESTRING(())" ) << 1;
+  QTest::newRow( "linestring empty vs non empty" ) << QStringLiteral( "LINESTRING()" ) << QStringLiteral( "LINESTRING(1 1, 2 2)" ) << -1;
+  QTest::newRow( "linestring non empty vs empty" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRING()" ) << 1;
+  QTest::newRow( "linestring empty vs empty" ) << QStringLiteral( "LINESTRING()" ) << QStringLiteral( "LINESTRING()" ) << 0;
+  QTest::newRow( "linestring equal" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 0;
+  QTest::newRow( "linestring longer vs shorter" ) << QStringLiteral( "LINESTRING( 1 1, 2 2, 3 3)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 1;
+  QTest::newRow( "linestring shorter vs longer" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2, 3 3)" ) << -1;
+  QTest::newRow( "linestring x less" ) << QStringLiteral( "LINESTRING( 1 1, 1 2)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << -1;
+  QTest::newRow( "linestring x greater" ) << QStringLiteral( "LINESTRING( 1 1, 3 2)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 1;
+  QTest::newRow( "linestring y less" ) << QStringLiteral( "LINESTRING( 1 1, 1 0)" ) << QStringLiteral( "LINESTRING( 1 1, 1 2)" ) << -1;
+  QTest::newRow( "linestring y greater" ) << QStringLiteral( "LINESTRING( 1 1, 3 2)" ) << QStringLiteral( "LINESTRING( 1 1, 3 1)" ) << 1;
+  QTest::newRow( "linestring z vs no z" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 1;
+  QTest::newRow( "linestring no z vs z" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring z vs z" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << 0;
+  QTest::newRow( "linestring z less" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 0)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring z greater" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 6)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << 1;
+  QTest::newRow( "linestring m vs no m" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 1;
+  QTest::newRow( "linestring no m vs m" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring m vs m" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << 0;
+  QTest::newRow( "linestring m less" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 0)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring m greater" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 6)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << 1;
+  QTest::newRow( "linestring first with z vs second with m" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << 1;
+  QTest::newRow( "linestring first with m vs second with z" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring zm" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 6)" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 6)" ) << 0;
+  QTest::newRow( "linestring zm second" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 5)" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 6)" ) << -1;
+  QTest::newRow( "linestring zm third" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 7)" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 3)" ) << 1;
+  QTest::newRow( "linestring vs circular string" ) << QStringLiteral( "LINESTRING( 1 1, 2 1, 2 3)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 3)" ) << -1;
+  QTest::newRow( "circular string vs linestring" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 3)" )  << QStringLiteral( "LINESTRING( 1 1, 2 1, 2 3)" ) << 1;
+  QTest::newRow( "circular string empty vs non empty" ) << QStringLiteral( "CIRCULARSTRING()" ) << QStringLiteral( "CIRCULARSTRING(1 1, 2 2, 2 3)" ) << -1;
+  QTest::newRow( "circular string non empty vs empty" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRING()" ) << 1;
+  QTest::newRow( "circular string empty vs empty" ) << QStringLiteral( "CIRCULARSTRING()" ) << QStringLiteral( "CIRCULARSTRING()" ) << 0;
+  QTest::newRow( "circular string equal" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << 0;
+  QTest::newRow( "circular string longer vs shorter" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3, 4 3, 4 4)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << 1;
+  QTest::newRow( "circular string shorter vs longer" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3, 4 3, 4 4)" ) << -1;
+  QTest::newRow( "circular string x less" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 2 2)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 4 2)" ) << -1;
+  QTest::newRow( "circular string x greater" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 4 2)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 2 2)" ) << 1;
+  QTest::newRow( "circular string y less" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 0, 2 1)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 2 1)" ) << -1;
+  QTest::newRow( "circular string y greater" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 3 2, 2 1)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 3 1, 2 1)" ) << 1;
+  QTest::newRow( "circular string z vs no z" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 4)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << 1;
+  QTest::newRow( "circular string no z vs z" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 4)" ) << -1;
+  QTest::newRow( "circular string z vs z" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << 0;
+  QTest::newRow( "circular string z less" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 0, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << -1;
+  QTest::newRow( "circular string z greater" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 6, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << 1;
+  QTest::newRow( "circular string m vs no m" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << 1;
+  QTest::newRow( "circular string no m vs m" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << -1;
+  QTest::newRow( "circular string m vs m" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << 0;
+  QTest::newRow( "circular string m less" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 0, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << -1;
+  QTest::newRow( "circular string m greater" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 6, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << 1;
+  QTest::newRow( "circular string first with z vs second with m" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << 1;
+  QTest::newRow( "circular string first with m vs second with z" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << -1;
+  QTest::newRow( "circular string zm" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 6, 2 3 5 6)" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 6, 2 3 5 6)" ) << 0;
+  QTest::newRow( "circular string zm second" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 5, 2 3 5 6)" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 6, 2 3 5 6)" ) << -1;
+  QTest::newRow( "circular string zm third" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 7, 2 3 5 6)" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 3, 2 3 5 6)" ) << 1;
+
+  QTest::newRow( "linestring vs compound curve" ) << QStringLiteral( "LINESTRING( 1 1, 2 1, 2 3)" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 1, 2 3))" ) << -1;
+  QTest::newRow( "compound curve vs linestring" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 1, 2 3 ))" )  << QStringLiteral( "LINESTRING( 1 1, 2 1, 2 3)" ) << 1;
+  QTest::newRow( "compound curve empty vs non empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 2, 2 3))" ) << -1;
+  QTest::newRow( "compound curve non empty vs empty" ) << QStringLiteral( "COMPOUNDCURVE( (1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVE()" ) << 1;
+  QTest::newRow( "compound curve empty vs empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "COMPOUNDCURVE()" ) << 0;
+  QTest::newRow( "compound curve equal" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 2, 2 3))" ) << 0;
+  QTest::newRow( "compound curve longer vs shorter" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3, 4 3, 4 4))" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 2, 2 3))" ) << 1;
+  QTest::newRow( "compound curve shorter vs longer" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3, 4 3, 4 4))" ) << -1;
+  QTest::newRow( "compound curve x less" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 2 2))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 4 2))" ) << -1;
+  QTest::newRow( "compound curve x greater" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 4 2))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 2 2))" ) << 1;
+  QTest::newRow( "compound curve y less" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 0, 2 1))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 2 1))" ) << -1;
+  QTest::newRow( "compound curve y greater" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 3 2, 2 1))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 3 1, 2 1))" ) << 1;
+  QTest::newRow( "compound curve z vs no z" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 4))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << 1;
+  QTest::newRow( "compound curve no z vs z" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 4))" ) << -1;
+  QTest::newRow( "compound curve z vs z" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << 0;
+  QTest::newRow( "compound curve z less" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 0, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << -1;
+  QTest::newRow( "compound curve z greater" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 6, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << 1;
+  QTest::newRow( "compound curve m vs no m" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << 1;
+  QTest::newRow( "compound curve no m vs m" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << -1;
+  QTest::newRow( "compound curve m vs m" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << 0;
+  QTest::newRow( "compound curve m less" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 0, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << -1;
+  QTest::newRow( "compound curve m greater" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 6, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << 1;
+  QTest::newRow( "compound curve first with z vs second with m" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << 1;
+  QTest::newRow( "compound curve first with m vs second with z" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << -1;
+  QTest::newRow( "compound curve zm" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 6, 2 3 5 6))" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 6, 2 3 5 6))" ) << 0;
+  QTest::newRow( "compound curve zm second" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 5, 2 3 5 6))" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 6, 2 3 5 6))" ) << -1;
+  QTest::newRow( "compound curve zm third" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 7, 2 3 5 6))" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 3, 2 3 5 6))" ) << 1;
+
+  // same code is used for all CurvePolygon derivates!
+  QTest::newRow( "polygon empty vs non empty" ) << QStringLiteral( "POLYGON()" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1))" ) << -1;
+  QTest::newRow( "polygon non empty vs empty" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "POLYGON()" ) << 1;
+  QTest::newRow( "polygon equal" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1))" ) << 0;
+  QTest::newRow( "polygon exterior less" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "POLYGON((1 10, 2 12, 2 13, 1 10))" ) << -1;
+  QTest::newRow( "polygon exterior greater" ) << QStringLiteral( "POLYGON( (1 11, 2 12, 2 13, 1 11))" ) << QStringLiteral( "POLYGON((1 1, 2 1, 2 1, 1 1))" ) << 1;
+  QTest::newRow( "polygon less rings" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << -1;
+  QTest::newRow( "polygon less equal" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << 0;
+  QTest::newRow( "polygon less more" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1))" ) << 1;
+  QTest::newRow( "polygon ring lesser" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.3, 1.1 1.1))" ) << -1;
+  QTest::newRow( "polygon ring greater" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.3, 1.1 1.1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << 1;
+
+  // same code is used for all geometry collection derivates!
+  QTest::newRow( "collection empty vs non empty" ) << QStringLiteral( "GEOMETRYCOLLECTION()" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3, 1 1))" ) << -1;
+  QTest::newRow( "collection non empty vs empty" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "GEOMETRYCOLLECTION()" ) << 1;
+  QTest::newRow( "collection equal" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3, 1 1))" ) << 0;
+  QTest::newRow( "collection different types" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(CIRCULARSTRING(1 1, 2 2, 2 3))" ) << -1;
+  QTest::newRow( "collection same" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3), POINT( 1 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3), POINT( 1 3)" ) << 0;
+  QTest::newRow( "collection less members" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3), POINT( 1 3)" ) << -1;
+  QTest::newRow( "collection more members" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3), POINT( 1 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(POINT( 1 3)" ) << 1;
+  QTest::newRow( "collection member less" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3), POINT( 1 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3), POINT( 1 4)" ) << -1;
+  QTest::newRow( "collection member greater" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3), POINT( 1 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3), POINT( 1 1)" ) << 1;
+}
+
+void TestQgsGeometry::compareTo()
+{
+  QFETCH( QString, geom1 );
+  QFETCH( QString, geom2 );
+  QFETCH( int, expected );
+
+  QCOMPARE( QgsGeometry::fromWkt( geom1 ).get()->compareTo( QgsGeometry::fromWkt( geom2 ).get() ), expected );
+}
 
 // MK, Disabled 14.11.2014
 // Too unclear what exactly should be tested and which variations are allowed for the line

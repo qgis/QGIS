@@ -325,6 +325,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   protected:
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
     QVector< QgsAbstractGeometry * > mGeometries;
