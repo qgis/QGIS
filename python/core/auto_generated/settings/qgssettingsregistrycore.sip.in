@@ -70,9 +70,7 @@ typedef QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> QgsSettingsEn
 
 
 
-
-
-class QgsSettingsRegistryCore
+class QgsSettingsRegistryCore : QgsSettingsRegistry
 {
 %Docstring(signature="appended")
 :py:class:`QgsSettingsRegistryCore` is used for settings introspection and collects all
@@ -93,17 +91,6 @@ Constructor for QgsSettingsRegistryCore.
 
     virtual ~QgsSettingsRegistryCore();
 
-<<<<<<< HEAD
-    const QgsSettingsEntryBase *getSettingsEntry( const QString &key );
-%Docstring
-Returns the :py:class:`QgsSettingsEntry` with the given ``key`` or None if not found.
-%End
-
-    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
-%Docstring
-Add ``settingsEntry`` to the register.
-%End
-=======
     const QgsSettingsEntryInteger settingsDigitizingStreamTolerance;
 
     const QgsSettingsEntryInteger settingsDigitizingLineWidth;
@@ -177,7 +164,6 @@ Add ``settingsEntry`` to the register.
     const QgsSettingsEntryBool settingsDigitizingOffsetShowAdvanced;
 
     const QgsSettingsEntryInteger settingsDigitizingTracingMaxFeatureCount;
->>>>>>> 27bb50bc4d (Enum flag sip)
 
 };
 
