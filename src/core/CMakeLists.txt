@@ -471,7 +471,6 @@ set(QGIS_CORE_SRCS
   qgsvirtuallayerdefinitionutils.cpp
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
-  qgssettings.cpp
   qgsarchive.cpp
   qgstestutils.cpp
   qgsziputils.cpp
@@ -717,7 +716,9 @@ set(QGIS_CORE_SRCS
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
 
+  settings/qgssettings.cpp
   settings/qgssettingsentry.cpp
+  settings/qgssettingsregistry.cpp
   settings/qgssettingsregistrycore.cpp
 
   validity/qgsabstractvaliditycheck.cpp
@@ -1035,7 +1036,6 @@ set(QGIS_CORE_HDRS
   qgsruntimeprofiler.h
   qgsscalecalculator.h
   qgsscaleutils.h
-  qgssettings.h
   qgsshapegenerator.h
   qgssimplifymethod.h
   qgssnappingconfig.h
@@ -1561,7 +1561,9 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  settings/qgssettings.h
   settings/qgssettingsentry.h
+  settings/qgssettingsregistry.h
   settings/qgssettingsregistrycore.h
 
   validity/qgsabstractvaliditycheck.h

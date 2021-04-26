@@ -10,12 +10,8 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import os
-import tempfile
 from qgis.core import QgsSettings, QgsSettingsEntryBase, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnum, QgsSettingsEntryFlag, QgsUnitTypes, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QSettings, QVariant, QMetaEnum
-from pathlib import Path
 
 __author__ = 'Damiano Lombardi'
 __date__ = '02/04/2021'

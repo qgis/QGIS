@@ -19,17 +19,16 @@
 #include "qgslocator.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
-  : mSettingsEntries()
+  : QgsSettingsRegistry()
 {
-  mSettingsEntries.append( &QgsLayout::settingsSearchPathForTemplates );
+  addSettingsEntry( &QgsLayout::settingsSearchPathForTemplates );
 
-  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterEnabled );
-  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterDefault );
-  mSettingsEntries.append( &QgsLocator::settingsLocatorFilterPrefix );
+  addSettingsEntry( &QgsLocator::settingsLocatorFilterEnabled );
+  addSettingsEntry( &QgsLocator::settingsLocatorFilterDefault );
+  addSettingsEntry( &QgsLocator::settingsLocatorFilterPrefix );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 {
 }
-
 

@@ -19,14 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentry.h"
-
-#include "qgslayout.h"
-#include "qgslocator.h"
-
-#include <QList>
-
-class QgsSettingsEntryStringList;
+#include "qgssettingsregistry.h"
 
 /**
  * \ingroup core
@@ -36,7 +29,7 @@ class QgsSettingsEntryStringList;
  *
  * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsRegistryCore
+class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 {
   public:
 
@@ -49,10 +42,6 @@ class CORE_EXPORT QgsSettingsRegistryCore
      * Destructor for QgsSettingsRegistryCore.
      */
     virtual ~QgsSettingsRegistryCore();
-
-  private:
-
-    QList<const QgsSettingsEntryBase *> mSettingsEntries;
 
 };
 

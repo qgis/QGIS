@@ -89,6 +89,15 @@ class QgsSettingsTree : public QTreeWidget
     void showContextMenu( QPoint pos );
 
   private:
+
+    enum Columns
+    {
+      ColumnSettings = 0,
+      ColumnType,
+      ColumnValue,
+      ColumnDescription
+    };
+
     void updateChildItems( QTreeWidgetItem *parent );
     QTreeWidgetItem *createItem( const QString &text, QTreeWidgetItem *parent,
                                  int index, bool isGroup );
