@@ -87,6 +87,7 @@ to ``p2`` will be used (i.e. winding the other way around the circle).
 
     virtual int numPoints() const /HoldGIL/;
 
+    int indexOf( const QgsPoint &point ) const final;
 
     QgsPoint pointN( int i ) const /HoldGIL/;
 %Docstring
