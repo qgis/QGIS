@@ -32,7 +32,6 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerfactory.h"
 #include <QUrl>
-#include "qgseptprovider.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,

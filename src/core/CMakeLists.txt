@@ -1719,6 +1719,8 @@ if (WITH_EPT)
       pointcloud/qgseptpointcloudindex.h
       pointcloud/qgsremoteeptpointcloudindex.h
   )
+
+  add_definitions( -DWITH_EPT )
 endif()
 
 if (APPLE)
