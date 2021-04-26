@@ -331,7 +331,7 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   // If settings registered add description
   if ( !isGroup )
   {
-    const QgsSettingsEntryBase *settingsEntry = QgsApplication::settingsRegistryCore()->getSettingsEntry( completeSettingsPath, true );
+    const QgsSettingsEntryBase *settingsEntry = QgsApplication::settingsRegistryCore()->settingsEntry( completeSettingsPath, true );
     if ( settingsEntry )
     {
       item->setText( ColumnDescription, settingsEntry->description() );

@@ -61,9 +61,9 @@ void TestQgsSettingsRegistry::getSettingsEntries()
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
   settingsRegistry.addSettingsEntry( &settingsEntryInteger );
 
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryBoolKey ), &settingsEntryBool );
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryIntegerKey ), &settingsEntryInteger );
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryInexisting ), nullptr );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey ), &settingsEntryBool );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryInexisting ), nullptr );
 }
 
 void TestQgsSettingsRegistry::getSettingsEntriesWithDynamicKeys()
@@ -82,13 +82,13 @@ void TestQgsSettingsRegistry::getSettingsEntriesWithDynamicKeys()
   settingsRegistry.addSettingsEntry( &settingsEntryInteger );
   settingsRegistry.addSettingsEntry( &settingsEntryDouble );
 
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryBoolKey ), &settingsEntryBool );
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryBoolKey.replace( QStringLiteral( "%1" ), QStringLiteral( "1st" ) ) ), &settingsEntryBool );
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryIntegerKey ), &settingsEntryInteger );
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryIntegerKey.replace( QStringLiteral( "%1" ), QStringLiteral( "Second" ) ) ), &settingsEntryInteger );
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryDoubleKey ), &settingsEntryDouble );
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryDoubleKey.replace( QStringLiteral( "%1" ), QStringLiteral( "1st" ) ).replace( QStringLiteral( "%2" ), QStringLiteral( "2nd" ) ) ), &settingsEntryDouble );
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryInexisting ), nullptr );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey ), &settingsEntryBool );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey.replace( QStringLiteral( "%1" ), QStringLiteral( "1st" ) ) ), &settingsEntryBool );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey.replace( QStringLiteral( "%1" ), QStringLiteral( "Second" ) ) ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryDoubleKey ), &settingsEntryDouble );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryDoubleKey.replace( QStringLiteral( "%1" ), QStringLiteral( "1st" ) ).replace( QStringLiteral( "%2" ), QStringLiteral( "2nd" ) ) ), &settingsEntryDouble );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryInexisting ), nullptr );
 }
 
 void TestQgsSettingsRegistry::childRegistry()
@@ -103,14 +103,14 @@ void TestQgsSettingsRegistry::childRegistry()
 
   SettingsRegistryTest settingsRegistry;
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
-  settingsRegistry.appendRegistry( nullptr ); // should not crash
-  settingsRegistry.appendRegistry( &settingsRegistryChild );
+  settingsRegistry.addSubRegistry( nullptr ); // should not crash
+  settingsRegistry.addSubRegistry( &settingsRegistryChild );
 
   // Search only in parent
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryIntegerKey, false ), nullptr );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey, false ), nullptr );
 
   // Search including child registries
-  QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryIntegerKey, true ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey, true ), &settingsEntryInteger );
 }
 
 QGSTEST_MAIN( TestQgsSettingsRegistry )

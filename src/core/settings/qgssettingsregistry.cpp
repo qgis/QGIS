@@ -52,12 +52,12 @@ void QgsSettingsRegistry::addSettingsEntry( const QgsSettingsEntryBase *settings
   mSettingsEntriesMap.insert( settingsEntry->definitionKey(), settingsEntry );
 }
 
-QList<const QgsSettingsEntryBase *> QgsSettingsRegistry::getChildSettingsEntries() const
+QList<const QgsSettingsEntryBase *> QgsSettingsRegistry::settingEntries() const
 {
   return mSettingsEntriesMap.values();
 }
 
-const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString &key, bool searchChildRegistries ) const
+const QgsSettingsEntryBase *QgsSettingsRegistry::settingsEntry( const QString &key, bool searchChildRegistries ) const
 {
   // Search in this registry
   const QMap<QString, const QgsSettingsEntryBase *> settingsEntriesMap = mSettingsEntriesMap;
@@ -72,7 +72,7 @@ const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString
   {
     for ( const QgsSettingsRegistry *settingsRegistry : std::as_const( mSettingsRegistryChildList ) )
     {
-      const QgsSettingsEntryBase *settingsEntry = settingsRegistry->getSettingsEntry( key, true );
+      const QgsSettingsEntryBase *settingsEntry = settingsRegistry->settingsEntry( key, true );
       if ( settingsEntry )
         return settingsEntry;
     }
@@ -81,7 +81,7 @@ const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString
   return nullptr;
 }
 
-void QgsSettingsRegistry::appendRegistry( const QgsSettingsRegistry *settingsRegistry )
+void QgsSettingsRegistry::addSubRegistry( const QgsSettingsRegistry *settingsRegistry )
 {
   if ( !settingsRegistry )
   {
@@ -98,7 +98,7 @@ void QgsSettingsRegistry::appendRegistry( const QgsSettingsRegistry *settingsReg
   mSettingsRegistryChildList.append( settingsRegistry );
 }
 
-QList<const QgsSettingsRegistry *> QgsSettingsRegistry::getChildSettingsRegistries() const
+QList<const QgsSettingsRegistry *> QgsSettingsRegistry::subRegistries() const
 {
   return mSettingsRegistryChildList;
 }

@@ -35,12 +35,12 @@ class PyQgsSettingsRegistry(unittest.TestCase):
         settingsRegistry.addSettingsEntry(settingsEntry)
 
         # check get settings entry
-        self.assertEqual(settingsRegistry.getSettingsEntry(settingsEntry.key(), False), settingsEntry)
+        self.assertEqual(settingsRegistry.settingsEntry(settingsEntry.key(), False), settingsEntry)
 
         # add registry to core registry
-        QgsApplication.settingsRegistryCore().appendRegistry(settingsRegistry)
+        QgsApplication.settingsRegistryCore().addSubRegistry(settingsRegistry)
 
-        self.assertEqual(QgsApplication.settingsRegistryCore().getSettingsEntry(settingsEntry.key(), True), settingsEntry)
+        self.assertEqual(QgsApplication.settingsRegistryCore().settingsEntry(settingsEntry.key(), True), settingsEntry)
 
 
 if __name__ == '__main__':
