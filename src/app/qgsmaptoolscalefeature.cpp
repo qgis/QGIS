@@ -317,14 +317,15 @@ void QgsMapToolScaleFeature::updateRubberband( double scale )
   {
     mScaling = scale;
 
-    QTransform t;
-    t.translate( mFeatureCenterMapCoords.x(), mFeatureCenterMapCoords.y() );
-    t.scale( mScaling, mScaling );
-    t.translate( -mFeatureCenterMapCoords.x(), -mFeatureCenterMapCoords.y() );
-
     QgsVectorLayer *vlayer = currentVectorLayer();
     if ( !vlayer )
       return;
+
+    QgsPointXY layerCoords = toLayerCoordinates( vlayer, mFeatureCenterMapCoords );
+    QTransform t;
+    t.translate( layerCoords.x(), layerCoords.y() );
+    t.scale( mScaling, mScaling );
+    t.translate( -layerCoords.x(), -layerCoords.y() );
 
     mRubberBand->reset( vlayer->geometryType() );
     for ( const QgsGeometry &originalGeometry : mOriginalGeometries )
@@ -355,10 +356,11 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   vlayer->beginEditCommand( tr( "Features Scaled" ) );
 
+  QgsPointXY layerCoords = toLayerCoordinates( vlayer, mFeatureCenterMapCoords );
   QTransform t;
-  t.translate( mFeatureCenterMapCoords.x(), mFeatureCenterMapCoords.y() );
+  t.translate( layerCoords.x(), layerCoords.y() );
   t.scale( mScaling, mScaling );
-  t.translate( -mFeatureCenterMapCoords.x(), -mFeatureCenterMapCoords.y() );
+  t.translate( -layerCoords.x(), -layerCoords.y() );
 
   for ( QgsFeatureId id : std::as_const( mScaledFeatures ) )
   {
