@@ -85,6 +85,12 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
 
 bool QgsSettingsEntryBase::keyIsValid( const QString &key ) const
 {
+  if ( !hasDynamicKey() )
+  {
+    if ( !key.contains( definitionKey() ) )
+      return false;
+  }
+
   // Key to check
   QString completeKeyToCheck = key;
 
