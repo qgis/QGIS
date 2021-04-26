@@ -41,6 +41,7 @@ class QgsPointCloudLayer;
  */
 class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
+    Q_OBJECT
   public:
 
     /**
@@ -169,6 +170,20 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * Returns the coordinate transform used to transform points from layer CRS to the map CRS
      */
     QgsCoordinateTransform coordinateTransform() const { return mCoordinateTransform; }
+
+    /**
+     * Cancels rendering by emitting renderingCancelled signal
+     * \since QGIS 3.20
+     */
+    void cancelRendering();
+
+  signals:
+
+    /**
+     * Emitted when the rendering is cancelled
+     * \since QGIS 3.20
+     */
+    void renderingCancelled();
 
   private:
 #ifdef SIP_RUN

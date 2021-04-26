@@ -71,6 +71,15 @@ void QgsPointCloud3DRenderContext::setCoordinateTransform( const QgsCoordinateTr
   mCoordinateTransform = coordinateTransform;
 }
 
+void QgsPointCloud3DRenderContext::cancelRendering()
+{
+  emit renderingCancelled();
+}
+
+
+// ---------
+
+
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "pointcloud" ) )
 {

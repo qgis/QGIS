@@ -104,6 +104,8 @@ QgsPointCloudLayerChunkLoader::~QgsPointCloudLayerChunkLoader()
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
     disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+    mCanceled = true;
+    mContext.cancelRendering();
     mFutureWatcher->waitForFinished();
   }
 }
