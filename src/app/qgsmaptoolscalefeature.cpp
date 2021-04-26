@@ -244,6 +244,8 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( minDistance == std::numeric_limits<double>::max() )
       {
         emit messageEmitted( tr( "Could not find a nearby feature in the current layer." ) );
+        if ( mAutoSetAnchorPoint )
+          mAnchorPoint.reset();
         return;
       }
 
@@ -409,7 +411,7 @@ void QgsMapToolScaleFeature::activate()
   if ( vlayer->selectedFeatureCount() > 0 )
   {
     mExtent = vlayer->boundingBoxOfSelected();
-    mFeatureCenterMapCoords = mExtent.center();
+    mFeatureCenterMapCoords = toMapCoordinates( vlayer, mExtent.center() );
 
     mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
