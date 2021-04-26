@@ -84,6 +84,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool isEmpty() const override SIP_HOLDGIL;
     bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
     int numPoints() const override SIP_HOLDGIL;
+    int indexOf( const QgsPoint &point ) const final;
 
     /**
      * Returns the point at index i within the circular string.

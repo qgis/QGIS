@@ -140,6 +140,9 @@ class TestQgsGeometry : public QObject
     void multiPolygon();
     void geometryCollection();
 
+    void curveIndexOf_data();
+    void curveIndexOf();
+
     void fromQgsPointXY();
     void fromQPoint();
     void fromQPolygonF();
@@ -16880,6 +16883,72 @@ void TestQgsGeometry::geometryCollection()
 
   TestFailTransformer failTransformer;
   QVERIFY( !transformCollect2.transform( &failTransformer ) );
+}
+
+void TestQgsGeometry::curveIndexOf_data()
+{
+  QTest::addColumn<QString>( "curve" );
+  QTest::addColumn<QString>( "point" );
+  QTest::addColumn<int>( "expected" );
+
+  QTest::newRow( "linestring empty" ) << QStringLiteral( "LINESTRING()" ) << QStringLiteral( "Point( 1 2 )" ) << -1;
+  QTest::newRow( "linestring one point no match" ) << QStringLiteral( "LINESTRING( 1 3 )" ) << QStringLiteral( "Point( 1 2 )" ) << -1;
+  QTest::newRow( "linestring one point match" ) << QStringLiteral( "LINESTRING( 1 2 )" ) << QStringLiteral( "Point( 1 2 )" ) << 0;
+  QTest::newRow( "linestring match 0" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 1 2 )" ) << 0;
+  QTest::newRow( "linestring match 1" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 2 3 )" ) << 1;
+  QTest::newRow( "linestring match 2" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 3 4 )" ) << 2;
+  QTest::newRow( "linestring no match" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 3 3 )" ) << -1;
+  QTest::newRow( "linestringz no match" ) << QStringLiteral( "LINESTRINGZ( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointZ( 2 3 11)" ) << -1;
+  QTest::newRow( "linestringz match" ) << QStringLiteral( "LINESTRINGZ( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointZ( 2 3 12)" ) << 1;
+  QTest::newRow( "linestringm no match" ) << QStringLiteral( "LINESTRINGM( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointM( 2 3 11)" ) << -1;
+  QTest::newRow( "linestringm match" ) << QStringLiteral( "LINESTRINGM( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointM( 2 3 12)" ) << 1;
+  QTest::newRow( "linestringzm no match z" ) << QStringLiteral( "LINESTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointM( 2 3 11 22)" ) << -1;
+  QTest::newRow( "linestringzm no match m" ) << QStringLiteral( "LINESTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointM( 2 3 12 23)" ) << -1;
+  QTest::newRow( "linestringzm match" ) << QStringLiteral( "LINESTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointZM( 2 3 12 22)" ) << 1;
+
+  QTest::newRow( "circularstring empty" ) << QStringLiteral( "CIRCULARSTRING()" ) << QStringLiteral( "Point( 1 2 )" ) << -1;
+  QTest::newRow( "circularstring match 0" ) << QStringLiteral( "CIRCULARSTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 1 2 )" ) << 0;
+  // should not match -- we only consider segment points, not curve points
+  QTest::newRow( "circularstring match 1" ) << QStringLiteral( "CIRCULARSTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 2 3 )" ) << -1;
+  QTest::newRow( "circularstring match 2" ) << QStringLiteral( "CIRCULARSTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 3 4 )" ) << 2;
+  QTest::newRow( "circularstring no match" ) << QStringLiteral( "CIRCULARSTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 3 3 )" ) << -1;
+  QTest::newRow( "circularstringz no match" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointZ( 3 4 12)" ) << -1;
+  QTest::newRow( "circularstringz match" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointZ( 3 4 13)" ) << 2;
+  QTest::newRow( "circularstringm no match" ) << QStringLiteral( "CIRCULARSTRINGM( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointM( 3 4 12)" ) << -1;
+  QTest::newRow( "circularstringm match" ) << QStringLiteral( "CIRCULARSTRINGM( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointM( 3 4 13)" ) << 2;
+  QTest::newRow( "circularstringzm no match z" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointM( 3 4 14 23)" ) << -1;
+  QTest::newRow( "circularstringzm no match m" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointM( 3 4 13 24)" ) << -1;
+  QTest::newRow( "circularstringzm match" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointZM( 3 4 13 23)" ) << 2;
+
+  QTest::newRow( "compound curve empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "Point( 1 2 )" ) << -1;
+  QTest::newRow( "compound curve no match" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 1 21 )" ) << -1;
+  QTest::newRow( "compound curve match 0" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 1 1 )" ) << 0;
+  QTest::newRow( "compound curve match 1" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 2 3 )" ) << 1;
+  QTest::newRow( "compound curve match 2" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 3 4 )" ) << 2;
+  QTest::newRow( "compound curve match 3" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 5 6 )" ) << 3;
+  QTest::newRow( "compound curve match 4" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 7 8 )" ) << 4;
+  QTest::newRow( "compound curve match 5" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8),(7 8, 9 10))" ) << QStringLiteral( "Point( 9 10 )" ) << 5;
+  QTest::newRow( "compound curve circular string match" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),CIRCULARSTRING(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 7 8 )" ) << 4;
+  QTest::newRow( "compound curve circular string no match" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),CIRCULARSTRING(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 5 6 )" ) << -1;
+  QTest::newRow( "compound curve z match" ) << QStringLiteral( "COMPOUNDCURVEZ((1 1 11, 2 3 12, 3 4 13),(3 4 13, 5 6 14, 7 8 15))" ) << QStringLiteral( "PointZ( 7 8 15)" ) << 4;
+  QTest::newRow( "compound curve z nomatch" ) << QStringLiteral( "COMPOUNDCURVEZ((1 1 11, 2 3 12, 3 4 13),(3 4 13, 5 6 14, 7 8 15))" ) << QStringLiteral( "PointZ( 7 8 16)" ) << -1;
+  QTest::newRow( "compound curve m match" ) << QStringLiteral( "COMPOUNDCURVEM((1 1 11, 2 3 12, 3 4 13),(3 4 13, 5 6 14, 7 8 15))" ) << QStringLiteral( "PointM( 7 8 15)" ) << 4;
+  QTest::newRow( "compound curve m nomatch" ) << QStringLiteral( "COMPOUNDCURVEM((1 1 11, 2 3 12, 3 4 13),(3 4 13, 5 6 14, 7 8 15))" ) << QStringLiteral( "PointM( 7 8 16)" ) << -1;
+  QTest::newRow( "compound curve zm match" ) << QStringLiteral( "COMPOUNDCURVEZM((1 1 11 22, 2 3 12 23, 3 4 13 24),(3 4 13 24, 5 6 14 25, 7 8 15 26))" ) << QStringLiteral( "PointZM( 7 8 15 26)" ) << 4;
+  QTest::newRow( "compound curve zm nomatch z" ) << QStringLiteral( "COMPOUNDCURVEZM((1 1 11 22, 2 3 12 23, 3 4 13 24),(3 4 13 24, 5 6 14 25, 7 8 15 26))" ) << QStringLiteral( "PointZM( 7 8 16 26)" ) << -1;
+  QTest::newRow( "compound curve zm nomatch m" ) << QStringLiteral( "COMPOUNDCURVEZM((1 1 11 22, 2 3 12 23, 3 4 13 24),(3 4 13 24, 5 6 14 25, 7 8 15 26))" ) << QStringLiteral( "PointZM( 7 8 15 27)" ) << -1;
+}
+
+void TestQgsGeometry::curveIndexOf()
+{
+  QFETCH( QString, curve );
+  QFETCH( QString, point );
+  QFETCH( int, expected );
+
+  QgsGeometry g = QgsGeometry::fromWkt( curve );
+  QgsPoint p;
+  p.fromWkt( point );
+  QCOMPARE( qgsgeometry_cast< const QgsCurve * >( g.constGet() )->indexOf( p ), expected );
 }
 
 void TestQgsGeometry::fromQgsPointXY()

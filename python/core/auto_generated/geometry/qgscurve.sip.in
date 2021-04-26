@@ -142,6 +142,23 @@ Returns the point and vertex id of a point within the curve.
          - type: will be set to the vertex type of the node
 %End
 
+    virtual int indexOf( const QgsPoint &point ) const = 0;
+%Docstring
+Returns the index of the first vertex matching the given ``point``, or -1 if a matching
+vertex is not found.
+
+.. note::
+
+   If the curve has m or z values then the search ``point`` must have exactly matching
+   m and z values in order to be matched against the curve's vertices.
+
+.. note::
+
+   This method only matches against segment vertices, not curve vertices.
+
+.. versionadded:: 3.20
+%End
+
     virtual QgsCurve *reversed() const = 0 /Factory/;
 %Docstring
 Returns a reversed copy of the curve, where the direction of the curve has been flipped.

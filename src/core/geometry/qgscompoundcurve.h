@@ -61,6 +61,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     int numPoints() const override SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
     bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    int indexOf( const QgsPoint &point ) const final;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation

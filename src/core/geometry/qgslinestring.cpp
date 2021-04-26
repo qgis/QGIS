@@ -312,6 +312,37 @@ bool QgsLineString::isEmpty() const
   return mX.isEmpty();
 }
 
+int QgsLineString::indexOf( const QgsPoint &point ) const
+{
+  const int size = mX.size();
+  if ( size == 0 )
+    return -1;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+  const double *z = useZ ? mZ.constData() : nullptr;
+  const double *m = useM ? mM.constData() : nullptr;
+
+  for ( int i = 0; i < size; ++i )
+  {
+    if ( qgsDoubleNear( *x, point.x() )
+         && qgsDoubleNear( *y, point.y() )
+         && ( !useZ || qgsDoubleNear( *z, point.z() ) )
+         && ( !useM || qgsDoubleNear( *m, point.m() ) ) )
+      return i;
+
+    x++;
+    y++;
+    if ( useZ )
+      z++;
+    if ( useM )
+      m++;
+  }
+  return -1;
+}
+
 bool QgsLineString::isValid( QString &error, int flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 2 ) )

@@ -143,6 +143,18 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual bool pointAt( int node, QgsPoint &point SIP_OUT, QgsVertexId::VertexType &type SIP_OUT ) const = 0;
 
     /**
+     * Returns the index of the first vertex matching the given \a point, or -1 if a matching
+     * vertex is not found.
+     *
+     * \note If the curve has m or z values then the search \a point must have exactly matching
+     * m and z values in order to be matched against the curve's vertices.
+     * \note This method only matches against segment vertices, not curve vertices.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int indexOf( const QgsPoint &point ) const = 0;
+
+    /**
      * Returns a reversed copy of the curve, where the direction of the curve has been flipped.
      * \since QGIS 2.14
      */

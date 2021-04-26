@@ -529,6 +529,46 @@ int QgsCircularString::numPoints() const
   return std::min( mX.size(), mY.size() );
 }
 
+int QgsCircularString::indexOf( const QgsPoint &point ) const
+{
+  const int size = mX.size();
+  if ( size == 0 )
+    return -1;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+  const double *z = useZ ? mZ.constData() : nullptr;
+  const double *m = useM ? mM.constData() : nullptr;
+
+  for ( int i = 0; i < size; i += 2 )
+  {
+    if ( qgsDoubleNear( *x, point.x() )
+         && qgsDoubleNear( *y, point.y() )
+         && ( !useZ || qgsDoubleNear( *z, point.z() ) )
+         && ( !useM || qgsDoubleNear( *m, point.m() ) ) )
+      return i;
+
+    // we skip over curve points!
+    x++;
+    x++;
+    y++;
+    y++;
+    if ( useZ )
+    {
+      z++;
+      z++;
+    }
+    if ( useM )
+    {
+      m++;
+      m++;
+    }
+  }
+  return -1;
+}
+
 QgsPoint QgsCircularString::pointN( int i ) const
 {
   if ( i < 0 || std::min( mX.size(), mY.size() ) <= i )

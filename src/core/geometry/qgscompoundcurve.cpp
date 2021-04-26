@@ -405,6 +405,21 @@ bool QgsCompoundCurve::isValid( QString &error, int flags ) const
   return QgsCurve::isValid( error, flags );
 }
 
+int QgsCompoundCurve::indexOf( const QgsPoint &point ) const
+{
+  int curveStart = 0;
+  for ( const QgsCurve *curve : mCurves )
+  {
+    const int curveIndex = curve->indexOf( point );
+    if ( curveIndex >= 0 )
+      return curveStart + curveIndex;
+    // subtract 1 here, because the next curve will start with the same
+    // vertex as this curve ended at
+    curveStart += curve->numPoints() - 1;
+  }
+  return -1;
+}
+
 QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsLineString *line = new QgsLineString();
