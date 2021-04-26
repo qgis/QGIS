@@ -56,6 +56,7 @@ void QgsPointCloudBlockRequest::blockFinishedLoading()
     try
     {
       mBlock = nullptr;
+#ifdef WITH_EPT
       if ( mDataType == QLatin1String( "binary" ) )
       {
         mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes );
@@ -73,6 +74,7 @@ void QgsPointCloudBlockRequest::blockFinishedLoading()
         mErrorStr = QStringLiteral( "unknown data type %1;" ).arg( mDataType );
         invalidDataType = true;
       }
+#endif
     }
     catch ( std::exception &e )
     {
