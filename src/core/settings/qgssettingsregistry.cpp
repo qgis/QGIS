@@ -81,7 +81,7 @@ const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString
   return nullptr;
 }
 
-void QgsSettingsRegistry::addChildSettingsRegistry( const QgsSettingsRegistry *settingsRegistry )
+void QgsSettingsRegistry::appendRegistry( const QgsSettingsRegistry *settingsRegistry )
 {
   if ( !settingsRegistry )
   {

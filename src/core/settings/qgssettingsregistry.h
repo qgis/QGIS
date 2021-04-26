@@ -58,9 +58,9 @@ class CORE_EXPORT QgsSettingsRegistry
     const QgsSettingsEntryBase *getSettingsEntry( const QString &key, bool searchChildRegistries = true ) const;
 
     /**
-     * Add a child \a settingsRegistry to the register.
+     * Append a child \a settingsRegistry to the register.
      */
-    void addChildSettingsRegistry( const QgsSettingsRegistry *settingsRegistry );
+    void appendRegistry( const QgsSettingsRegistry *settingsRegistry );
 
     /**
      * Returns the list of registered child QgsSettingsRegistry.

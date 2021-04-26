@@ -103,8 +103,8 @@ void TestQgsSettingsRegistry::childRegistry()
 
   SettingsRegistryTest settingsRegistry;
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
-  settingsRegistry.addChildSettingsRegistry( nullptr ); // should not crash
-  settingsRegistry.addChildSettingsRegistry( &settingsRegistryChild );
+  settingsRegistry.appendRegistry( nullptr ); // should not crash
+  settingsRegistry.appendRegistry( &settingsRegistryChild );
 
   // Search only in parent
   QCOMPARE( settingsRegistry.getSettingsEntry( settingsEntryIntegerKey, false ), nullptr );

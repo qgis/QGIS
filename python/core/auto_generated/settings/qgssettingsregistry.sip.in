@@ -43,9 +43,9 @@ Returns the :py:class:`QgsSettingsEntry` with the given ``key`` or None if not f
 The ``searchChildRegistries`` parameter specifies if child registries should be included in the search
 %End
 
-    void addChildSettingsRegistry( const QgsSettingsRegistry *settingsRegistry );
+    void appendRegistry( const QgsSettingsRegistry *settingsRegistry );
 %Docstring
-Add a child ``settingsRegistry`` to the register.
+Append a child ``settingsRegistry`` to the register.
 %End
 
     QList<const QgsSettingsRegistry *> getChildSettingsRegistries() const;

@@ -38,7 +38,7 @@ class PyQgsSettingsRegistry(unittest.TestCase):
         self.assertEqual(settingsRegistry.getSettingsEntry(settingsEntry.key(), False), settingsEntry)
 
         # add registry to core registry
-        QgsApplication.settingsRegistryCore().addChildSettingsRegistry(settingsRegistry)
+        QgsApplication.settingsRegistryCore().appendRegistry(settingsRegistry)
 
         self.assertEqual(QgsApplication.settingsRegistryCore().getSettingsEntry(settingsEntry.key(), True), settingsEntry)
 
