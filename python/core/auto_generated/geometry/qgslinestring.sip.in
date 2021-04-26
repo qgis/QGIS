@@ -408,7 +408,6 @@ segment in the line.
 %End
 
 
-
     virtual QString geometryType() const /HoldGIL/;
 
     virtual int dimension() const /HoldGIL/;
@@ -650,6 +649,7 @@ corresponds to the last point in the line.
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
 

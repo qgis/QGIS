@@ -219,6 +219,7 @@ Appends the contents of another circular ``string`` to the end of this circular 
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
 

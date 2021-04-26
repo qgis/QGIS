@@ -467,6 +467,7 @@ Angle undefined. Always returns 0.0
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual int childCount() const;
 
     virtual QgsPoint childPoint( int index ) const;

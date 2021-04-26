@@ -164,6 +164,13 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
 
     /**
+     * Comparator for sorting of geometry.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int compareTo( const QgsAbstractGeometry *other ) const;
+
+    /**
      * Clears the geometry, ie reset it to a null geometry
      */
     virtual void clear() = 0;
@@ -1025,6 +1032,22 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 
   protected:
+
+    /**
+     * Returns the sort index for the geometry, used in the compareTo() method to compare
+     * geometries of different types.
+     *
+     * \since QGIS 3.20
+     */
+    int sortIndex() const;
+
+    /**
+     * Compares to an \a other geometry of the same class, and returns a integer
+     * for sorting of the two geometries.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int compareToSameClass( const QgsAbstractGeometry *other ) const = 0;
 
     /**
      * Returns whether the geometry has any child geometries (FALSE for point / curve, TRUE otherwise)

@@ -572,6 +572,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     int childCount() const override;
     QgsPoint childPoint( int index ) const override;
 
