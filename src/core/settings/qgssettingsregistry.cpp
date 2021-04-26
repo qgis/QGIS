@@ -73,7 +73,7 @@ const QgsSettingsEntryBase *QgsSettingsRegistry::getSettingsEntry( const QString
     for ( const QgsSettingsRegistry *settingsRegistry : std::as_const( mSettingsRegistryChildList ) )
     {
       const QgsSettingsEntryBase *settingsEntry = settingsRegistry->getSettingsEntry( key, true );
-      if ( settingsEntry != nullptr )
+      if ( settingsEntry )
         return settingsEntry;
     }
   }

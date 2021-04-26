@@ -117,8 +117,8 @@ bool QgsSettingsEntryBase::keyIsValid( const QString &key ) const
   if ( !hasDynamicKey() )
     return completeKeyToCheck == prefixedSettingsKey;
 
-  QRegularExpression regularExpression( prefixedSettingsKey.replace( QRegularExpression( QStringLiteral( "%\\d+" ) ), QStringLiteral( ".*" ) ) );
-  QRegularExpressionMatch regularExpressionMatch = regularExpression.match( completeKeyToCheck );
+  const QRegularExpression regularExpression( prefixedSettingsKey.replace( QRegularExpression( QStringLiteral( "%\\d+" ) ), QStringLiteral( ".*" ) ) );
+  const QRegularExpressionMatch regularExpressionMatch = regularExpression.match( completeKeyToCheck );
   return regularExpressionMatch.hasMatch();
 }
 
@@ -641,6 +641,5 @@ int QgsSettingsEntryDouble::displayHintDecimals() const
 {
   return mDisplayHintDecimals;
 }
-
 
 
