@@ -744,7 +744,7 @@ Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY
 .. versionadded:: 3.10
 %End
 
-    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+ static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point ) /Deprecated/;
 %Docstring
 A Z dimension is added to ``point`` if one of the point in the list
 ``points`` is in 3D. Moreover, the Z value of ``point`` is updated with.
@@ -761,7 +761,6 @@ A Z dimension is added to ``point`` if one of the point in the list
 
 
 .. versionadded:: 3.0
-
 
 .. deprecated:: QGIS 3.20
    use transferFirstZValueToPoint( const :py:class:`QgsPointSequence` &points, :py:class:`QgsPoint` &point ) instead
