@@ -763,7 +763,7 @@ A Z dimension is added to ``point`` if one of the point in the list
 .. versionadded:: 3.0
 %End
 
-    static bool setMValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+    static bool transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point );
 %Docstring
 A M dimension is added to ``point`` if one of the points in the list
 ``points`` contains an M value. Moreover, the M value of ``point`` is
