@@ -3175,6 +3175,10 @@ void TestQgsGeometry::circularStringAppend()
   QCOMPARE( l10.numPoints(), 0 );
 
   std::unique_ptr<QgsCircularString> toAppend( new QgsCircularString() );
+  l10.append( toAppend.get() );
+  QVERIFY( l10.isEmpty() );
+  QCOMPARE( l10.numPoints(), 0 );
+
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
                        << QgsPoint( 11, 12 )
                        << QgsPoint( 21, 22 ) );
