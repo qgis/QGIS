@@ -759,10 +759,11 @@ A Z dimension is added to ``point`` if one of the point in the list
 
     static bool setMValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 %Docstring
-A M dimension is added to ``point`` if one of the point in the list
-``points`` is in 3D. Moreover, the M value of ``point`` is updated with.
+A M dimension is added to ``point`` if one of the points in the list
+``points`` contains an M value. Moreover, the M value of ``point`` is
+updated with the first M value found in list ``points``.
 
-:param points: List of points in which a 3D point is searched.
+:param points: List of points in which a M point is searched.
 :param point: The point to update with M dimension and value.
 
 :return: ``True`` if the point is updated, ``False`` otherwise
