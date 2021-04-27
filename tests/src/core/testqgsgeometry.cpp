@@ -143,6 +143,8 @@ class TestQgsGeometry : public QObject
 
     void curveIndexOf_data();
     void curveIndexOf();
+    void splitCurve_data();
+    void splitCurve();
 
     void fromQgsPointXY();
     void fromQPoint();
@@ -17094,6 +17096,87 @@ void TestQgsGeometry::curveIndexOf()
   QgsPoint p;
   p.fromWkt( point );
   QCOMPARE( qgsgeometry_cast< const QgsCurve * >( g.constGet() )->indexOf( p ), expected );
+}
+
+void TestQgsGeometry::splitCurve_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+  QTest::addColumn<int>( "vertex" );
+  QTest::addColumn<QString>( "curve1" );
+  QTest::addColumn<QString>( "curve2" );
+
+  QTest::newRow( "linestring empty" ) << QStringLiteral( "LINESTRING()" ) << 0 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring empty 1" ) << QStringLiteral( "LINESTRING()" ) << 1 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring one vertex 0" ) << QStringLiteral( "LINESTRING( 1 2)" ) << 0 << QStringLiteral( "LineString (1 2)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring one vertex 1 " ) << QStringLiteral( "LINESTRING( 1 2)" ) << 1 << QStringLiteral( "LineString (1 2)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring one vertex 2" ) << QStringLiteral( "LINESTRING( 1 2)" ) << 2 << QStringLiteral( "LineString (1 2)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring two 0" ) << QStringLiteral( "LINESTRING( 1 2, 2 3)" ) << 0 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString (1 2, 2 3)" );
+  QTest::newRow( "linestring two 1" ) << QStringLiteral( "LINESTRING( 1 2, 2 3)" ) << 1 << QStringLiteral( "LineString (1 2, 2 3)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring two 2" ) << QStringLiteral( "LINESTRING( 1 2, 2 3)" ) << 2 << QStringLiteral( "LineString (1 2, 2 3)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring three 0" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << 0 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString (1 2, 2 3, 3 4)" );
+  QTest::newRow( "linestring three 1" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << 1 << QStringLiteral( "LineString (1 2, 2 3)" ) << QStringLiteral( "LineString (2 3, 3 4)" );
+  QTest::newRow( "linestring three 2" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << 2 << QStringLiteral( "LineString (1 2, 2 3, 3 4)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring three 3" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << 3 << QStringLiteral( "LineString (1 2, 2 3, 3 4)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring four 0" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4, 5 6)" ) << 0 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString (1 2, 2 3, 3 4, 5 6)" );
+  QTest::newRow( "linestring four 1" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4, 5 6)" ) << 1 << QStringLiteral( "LineString (1 2, 2 3)" ) << QStringLiteral( "LineString (2 3, 3 4, 5 6)" );
+  QTest::newRow( "linestring four 2" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4, 5 6)" ) << 2 << QStringLiteral( "LineString (1 2, 2 3, 3 4)" ) << QStringLiteral( "LineString (3 4, 5 6)" );
+  QTest::newRow( "linestring four 3" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4, 5 6)" ) << 3 << QStringLiteral( "LineString (1 2, 2 3, 3 4, 5 6)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestringz" ) << QStringLiteral( "LINESTRINGZ( 1 2 11, 2 3 12, 3 4 13, 5 6 14)" ) << 1 << QStringLiteral( "LineStringZ (1 2 11, 2 3 12)" ) << QStringLiteral( "LineStringZ (2 3 12, 3 4 13, 5 6 14)" );
+  QTest::newRow( "linestringm" ) << QStringLiteral( "LINESTRINGM( 1 2 11, 2 3 12, 3 4 13, 5 6 14)" ) << 1 << QStringLiteral( "LineStringM (1 2 11, 2 3 12)" ) << QStringLiteral( "LineStringM (2 3 12, 3 4 13, 5 6 14)" );
+  QTest::newRow( "linestringzm" ) << QStringLiteral( "LINESTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23, 5 6 14 24)" ) << 1 << QStringLiteral( "LineStringZM (1 2 11 21, 2 3 12 22)" ) << QStringLiteral( "LineStringZM (2 3 12 22, 3 4 13 23, 5 6 14 24)" );
+
+  QTest::newRow( "CircularString empty" ) << QStringLiteral( "CircularString()" ) << 0 << QStringLiteral( "CircularString EMPTY" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString empty 1" ) << QStringLiteral( "CircularString()" ) << 1 << QStringLiteral( "CircularString EMPTY" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString one vertex 0" ) << QStringLiteral( "CircularString( 1 2)" ) << 0 << QStringLiteral( "CircularString (1 2)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString one vertex 1 " ) << QStringLiteral( "CircularString( 1 2)" ) << 1 << QStringLiteral( "CircularString (1 2)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString one vertex 2" ) << QStringLiteral( "CircularString( 1 2)" ) << 2 << QStringLiteral( "CircularString (1 2)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString three 0" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4)" ) << 0 << QStringLiteral( "CircularString EMPTY" ) << QStringLiteral( "CircularString (1 2, 2 3, 3 4)" );
+  QTest::newRow( "CircularString three 1" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4)" ) << 1 << QStringLiteral( "CircularString (1 2, 2 3)" ) << QStringLiteral( "CircularString (2 3, 3 4)" );
+  QTest::newRow( "CircularString three 2" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4)" ) << 2 << QStringLiteral( "CircularString (1 2, 2 3, 3 4)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString three 3" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4)" ) << 3 << QStringLiteral( "CircularString (1 2, 2 3, 3 4)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString five 0" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 0 << QStringLiteral( "CircularString EMPTY" ) << QStringLiteral( "CircularString (1 2, 2 3, 3 4, 5 6, 7 8)" );
+  QTest::newRow( "CircularString five 1" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 1 << QStringLiteral( "CircularString (1 2, 2 3)" ) << QStringLiteral( "CircularString (2 3, 3 4, 5 6, 7 8)" );
+  QTest::newRow( "CircularString five 2" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 2 << QStringLiteral( "CircularString (1 2, 2 3, 3 4)" ) << QStringLiteral( "CircularString (3 4, 5 6, 7 8)" );
+  QTest::newRow( "CircularString five 3" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 3 << QStringLiteral( "CircularString (1 2, 2 3, 3 4, 5 6)" ) << QStringLiteral( "CircularString (5 6, 7 8)" );
+  QTest::newRow( "CircularString five 4" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 4 << QStringLiteral( "CircularString (1 2, 2 3, 3 4, 5 6, 7 8)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularStringz" ) << QStringLiteral( "CircularStringZ( 1 2 11, 2 3 12, 3 4 13, 5 6 14, 7 8 15)" ) << 1 << QStringLiteral( "CircularStringZ (1 2 11, 2 3 12)" ) << QStringLiteral( "CircularStringZ (2 3 12, 3 4 13, 5 6 14, 7 8 15)" );
+  QTest::newRow( "CircularStringm" ) << QStringLiteral( "CircularStringM( 1 2 11, 2 3 12, 3 4 13, 5 6 14, 7 8 15)" ) << 1 << QStringLiteral( "CircularStringM (1 2 11, 2 3 12)" ) << QStringLiteral( "CircularStringM (2 3 12, 3 4 13, 5 6 14, 7 8 15)" );
+  QTest::newRow( "CircularStringzm" ) << QStringLiteral( "CircularStringZM( 1 2 11 21, 2 3 12 22, 3 4 13 23, 5 6 14 24, 7 8 15 25)" ) << 1 << QStringLiteral( "CircularStringZM (1 2 11 21, 2 3 12 22)" ) << QStringLiteral( "CircularStringZM (2 3 12 22, 3 4 13 23, 5 6 14 24, 7 8 15 25)" );
+
+  QTest::newRow( "CompoundCurve empty" ) << QStringLiteral( "CompoundCurve()" ) << 0 << QStringLiteral( "CompoundCurve EMPTY" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "CompoundCurve 0" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6),CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 0
+                                     << QStringLiteral( "CompoundCurve EMPTY" ) << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" );
+  QTest::newRow( "CompoundCurve 1" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6),CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 1
+                                     << QStringLiteral( "CompoundCurve ((1 2, 3 4))" ) << QStringLiteral( "CompoundCurve ((3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" );
+  QTest::newRow( "CompoundCurve 2" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6),CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 2
+                                     << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6))" ) << QStringLiteral( "CompoundCurve (CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" );
+  QTest::newRow( "CompoundCurve 4" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6),CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 4
+                                     << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10))" ) << QStringLiteral( "CompoundCurve (CircularString (9 10, 11 12, 13 14))" );
+  QTest::newRow( "CompoundCurve 6" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 6
+                                     << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "CompoundCurve 10" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 10
+                                      << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "CompoundCurve three parts 6" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14), (13 14, 15 16, 17 18))" ) << 6
+      << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" ) << QStringLiteral( "CompoundCurve ((13 14, 15 16, 17 18))" );
+  QTest::newRow( "CompoundCurve three parts 7" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14), (13 14, 15 16, 17 18))" ) << 7
+      << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14),(13 14, 15 16))" ) << QStringLiteral( "CompoundCurve ((15 16, 17 18))" );
+  QTest::newRow( "CompoundCurve three parts 7" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14), (13 14, 15 16, 17 18))" ) << 8
+      << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14),(13 14, 15 16, 17 18))" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "CompoundCurve three parts 1" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14), (13 14, 15 16, 17 18))" ) << 1
+      << QStringLiteral( "CompoundCurve ((1 2, 3 4))" ) << QStringLiteral( "CompoundCurve ((3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14),(13 14, 15 16, 17 18))" );
+}
+
+void TestQgsGeometry::splitCurve()
+{
+  QFETCH( QString, wkt );
+  QFETCH( int, vertex );
+  QFETCH( QString, curve1 );
+  QFETCH( QString, curve2 );
+
+  QgsGeometry curve( QgsGeometry::fromWkt( wkt ) );
+  auto [p1, p2] = qgsgeometry_cast< const QgsCurve * >( curve.constGet() )->splitCurveAtVertex( vertex );
+  QCOMPARE( p1->asWkt(), curve1 );
+  QCOMPARE( p2->asWkt(), curve2 );
 }
 
 void TestQgsGeometry::fromQgsPointXY()

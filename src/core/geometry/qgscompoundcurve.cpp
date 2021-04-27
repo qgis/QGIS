@@ -913,6 +913,46 @@ void QgsCompoundCurve::transformVertices( const std::function<QgsPoint( const Qg
   clearCache();
 }
 
+std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCompoundCurve::splitCurveAtVertex( int index ) const
+{
+  if ( mCurves.empty() )
+    return std::make_tuple( std::make_unique< QgsCompoundCurve >(), std::make_unique< QgsCompoundCurve >() );
+
+  int curveStart = 0;
+
+  std::unique_ptr< QgsCompoundCurve > curve1 = std::make_unique< QgsCompoundCurve >();
+  std::unique_ptr< QgsCompoundCurve > curve2;
+
+  for ( const QgsCurve *curve : mCurves )
+  {
+    const int curveSize = curve->numPoints();
+    if ( !curve2 && index < curveStart + curveSize )
+    {
+      // split the curve
+      auto [ p1, p2 ] = curve->splitCurveAtVertex( index - curveStart );
+      if ( !p1->isEmpty() )
+        curve1->addCurve( p1.release() );
+
+      curve2 = std::make_unique< QgsCompoundCurve >();
+      if ( !p2->isEmpty() )
+        curve2->addCurve( p2.release() );
+    }
+    else
+    {
+      if ( curve2 )
+        curve2->addCurve( curve->clone() );
+      else
+        curve1->addCurve( curve->clone() );
+    }
+
+    // subtract 1 here, because the next curve will start with the same
+    // vertex as this curve ended at
+    curveStart += curve->numPoints() - 1;
+  }
+
+  return std::make_tuple( std::move( curve1 ), curve2 ? std::move( curve2 ) : std::make_unique< QgsCompoundCurve >() );
+}
+
 void QgsCompoundCurve::sumUpArea( double &sum ) const
 {
   for ( const QgsCurve *curve : mCurves )
