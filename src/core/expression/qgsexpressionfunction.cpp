@@ -1367,10 +1367,25 @@ static QVariant fcnReplace( const QVariantList &values, const QgsExpressionConte
   {
     QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
     QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 1 ), parent );
+    QVector< QPair< QString, QString > > mapItems;
 
     for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
     {
-      str = str.replace( it.key(), it.value().toString() );
+      mapItems.append( qMakePair( it.key(), it.value().toString() ) );
+    }
+
+    // larger keys should be replaced first since they may contain whole smaller keys
+    std::sort( mapItems.begin(),
+               mapItems.end(),
+               []( const QPair< QString, QString > &pair1,
+                   const QPair< QString, QString > &pair2 )
+    {
+      return ( pair1.first.length() > pair2.first.length() );
+    } );
+
+    for ( auto it = mapItems.constBegin(); it != mapItems.constEnd(); ++it )
+    {
+      str = str.replace( it->first, it->second );
     }
 
     return QVariant( str );
