@@ -770,7 +770,9 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * A Z dimension is added to \a point if one of the point in the list
-     * \a points is in 3D. Moreover, the Z value of \a point is updated with.
+     * \a points is in 3D. Moreover, the Z value of \a point is updated
+     * with the first Z value found in list \a points even if \a point
+     * already contains a Z value.
      *
      * \param points List of points in which a 3D point is searched.
      * \param point The point to update with Z dimension and value.
@@ -789,7 +791,9 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * A Z dimension is added to \a point if one of the point in the list
-     * \a points is in 3D. Moreover, the Z value of \a point is updated with.
+     * \a points is in 3D. Moreover, the Z value of \a point is updated
+     * with the first Z value found in list \a points even if \a point
+     * already contains a Z value.
      *
      * \param points List of points in which a 3D point is searched.
      * \param point The point to update with Z dimension and value.
@@ -805,7 +809,8 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * A M dimension is added to \a point if one of the points in the list
      * \a points contains an M value. Moreover, the M value of \a point is
-     * updated with the first M value found in list \a points.
+     * updated with the first M value found in list \a points even if \a point
+     * already contains a M value.
      *
      * \param points List of points in which a M point is searched.
      * \param point The point to update with M dimension and value.
