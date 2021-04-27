@@ -797,7 +797,7 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.20
      */
-    static bool setMValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+    static bool transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point );
 
     /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)

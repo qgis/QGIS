@@ -255,7 +255,7 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
   // z support for intersection point
   QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, intersection );
   // m support for intersection point
-  QgsGeometryUtils::setMValueFromPoints( QgsPointSequence() << p1 << p2, intersection );
+  QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << p1 << p2, intersection );
 
   return true;
 }
@@ -857,7 +857,7 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
   // add z support if necessary
   QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, result );
   // add m support if necessary
-  QgsGeometryUtils::setMValueFromPoints( QgsPointSequence() << p1 << p2, result );
+  QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << p1 << p2, result );
 
   return true;
 }
@@ -1810,7 +1810,7 @@ void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY
   pointY = rBy + rCy + aY;
 }
 
-bool QgsGeometryUtils::setMValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
+bool QgsGeometryUtils::transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
 {
   bool rc = false;
 
