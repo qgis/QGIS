@@ -123,6 +123,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       FlagTrustDataSource = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16
       SkipFeatureCount = 1 << 1, //!< Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.
       FlagLoadDefaultStyle = 1 << 2, //!< Reset the layer's style to the default for the datasource
+      SkipGetExtent = 1 << 3, //!< Skip the extent from provider
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
