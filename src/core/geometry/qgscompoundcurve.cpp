@@ -79,7 +79,7 @@ int QgsCompoundCurve::compareToSameClass( const QgsAbstractGeometry *other ) con
   {
     const QgsAbstractGeometry *aGeom = mCurves[i];
     const QgsAbstractGeometry *bGeom = otherCurve->mCurves[j];
-    int comparison = aGeom->compareTo( bGeom );
+    const int comparison = aGeom->compareTo( bGeom );
     if ( comparison != 0 )
     {
       return comparison;

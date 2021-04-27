@@ -51,7 +51,7 @@ int QgsAbstractGeometry::compareTo( const QgsAbstractGeometry *other ) const
   if ( sortIndex() != other->sortIndex() )
   {
     //different geometry types
-    int diff = sortIndex() - other->sortIndex();
+    const int diff = sortIndex() - other->sortIndex();
     return ( diff > 0 ) - ( diff < 0 );
   }
 

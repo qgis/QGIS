@@ -1058,7 +1058,7 @@ int QgsGeometryCollection::compareToSameClass( const QgsAbstractGeometry *other 
   {
     const QgsAbstractGeometry *aGeom = mGeometries[i];
     const QgsAbstractGeometry *bGeom = otherCollection->mGeometries[j];
-    int comparison = aGeom->compareTo( bGeom );
+    const int comparison = aGeom->compareTo( bGeom );
     if ( comparison != 0 )
     {
       return comparison;
