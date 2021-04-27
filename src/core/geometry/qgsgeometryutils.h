@@ -776,6 +776,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param point The point to update with Z dimension and value.
      * \returns TRUE if the point is updated, FALSE otherwise
      *
+     * \warning This method does not copy the z value of the coordinate from the
+     * points whose z value is closest to the original x/y point, but only the first one found.
+     *
      * \since QGIS 3.0
      */
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
@@ -788,6 +791,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param points List of points in which a M point is searched.
      * \param point The point to update with M dimension and value.
      * \returns TRUE if the point is updated, FALSE otherwise
+     *
+     * \warning This method does not copy the m value of the coordinate from the
+     * points whose m value is closest to the original x/y point, but only the first one found.
      *
      * \since QGIS 3.20
      */

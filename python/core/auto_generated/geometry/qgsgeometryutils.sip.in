@@ -754,6 +754,12 @@ A Z dimension is added to ``point`` if one of the point in the list
 
 :return: ``True`` if the point is updated, ``False`` otherwise
 
+.. warning::
+
+   This method does not copy the z value of the coordinate from the
+   points whose z value is closest to the original x/y point, but only the first one found.
+
+
 .. versionadded:: 3.0
 %End
 
@@ -767,6 +773,12 @@ updated with the first M value found in list ``points``.
 :param point: The point to update with M dimension and value.
 
 :return: ``True`` if the point is updated, ``False`` otherwise
+
+.. warning::
+
+   This method does not copy the m value of the coordinate from the
+   points whose m value is closest to the original x/y point, but only the first one found.
+
 
 .. versionadded:: 3.20
 %End
