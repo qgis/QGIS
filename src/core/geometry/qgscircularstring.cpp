@@ -855,7 +855,7 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
 
 void QgsCircularString::append( const QgsCircularString *line )
 {
-  if ( !line )
+  if ( !line || line->isEmpty() )
   {
     return;
   }
