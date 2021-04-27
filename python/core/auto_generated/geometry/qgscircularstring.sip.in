@@ -124,6 +124,21 @@ Returns the point at index i within the circular string.
 Sets the circular string's points
 %End
 
+    void append( const QgsCircularString *string );
+%Docstring
+Appends the contents of another circular ``string`` to the end of this circular string.
+
+:param string: circular string to append. Ownership is not transferred.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the first point in the appended
+   ``string`` matches the last point in the existing curve, or the result will be undefined.
+
+
+.. versionadded:: 3.20
+%End
+
     virtual double length() const;
 
     virtual QgsPoint startPoint() const /HoldGIL/;

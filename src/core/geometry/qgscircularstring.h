@@ -118,6 +118,18 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      */
     void setPoints( const QgsPointSequence &points );
 
+    /**
+     * Appends the contents of another circular \a string to the end of this circular string.
+     *
+     * \param string circular string to append. Ownership is not transferred.
+     *
+     * \warning It is the caller's responsibility to ensure that the first point in the appended
+     * \a string matches the last point in the existing curve, or the result will be undefined.
+     *
+     * \since QGIS 3.20
+     */
+    void append( const QgsCircularString *string );
+
     double length() const override;
     QgsPoint startPoint() const override SIP_HOLDGIL;
     QgsPoint endPoint() const override SIP_HOLDGIL;
