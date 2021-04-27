@@ -119,6 +119,14 @@ Removes a curve from the geometry.
 Adds a vertex to the end of the geometry.
 %End
 
+    void condenseCurves();
+%Docstring
+Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
+and combining adjacent circularstrings to a single continuous circularstring.
+
+.. versionadded:: 3.20
+%End
+
     virtual void draw( QPainter &p ) const;
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false )  throw( QgsCsException );
