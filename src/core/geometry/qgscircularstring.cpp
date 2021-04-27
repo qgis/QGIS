@@ -71,6 +71,52 @@ QgsCircularString::QgsCircularString( const QgsPoint &p1, const QgsPoint &p2, co
   }
 }
 
+QgsCircularString::QgsCircularString( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z, const QVector<double> &m )
+{
+  mWkbType = QgsWkbTypes::CircularString;
+  int pointCount = std::min( x.size(), y.size() );
+  if ( x.size() == pointCount )
+  {
+    mX = x;
+  }
+  else
+  {
+    mX = x.mid( 0, pointCount );
+  }
+  if ( y.size() == pointCount )
+  {
+    mY = y;
+  }
+  else
+  {
+    mY = y.mid( 0, pointCount );
+  }
+  if ( !z.isEmpty() && z.count() >= pointCount )
+  {
+    mWkbType = QgsWkbTypes::CircularStringZ;
+    if ( z.size() == pointCount )
+    {
+      mZ = z;
+    }
+    else
+    {
+      mZ = z.mid( 0, pointCount );
+    }
+  }
+  if ( !m.isEmpty() && m.count() >= pointCount )
+  {
+    mWkbType = QgsWkbTypes::addM( mWkbType );
+    if ( m.size() == pointCount )
+    {
+      mM = m;
+    }
+    else
+    {
+      mM = m.mid( 0, pointCount );
+    }
+  }
+}
+
 QgsCircularString QgsCircularString::fromTwoPointsAndCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, const bool useShortestArc )
 {
   const QgsPoint midPoint = QgsGeometryUtils::segmentMidPointFromCenter( p1, p2, center, useShortestArc );

@@ -125,6 +125,7 @@ class TestQgsGeometry : public QObject
     void point(); //test QgsPointV2
     void lineString(); //test QgsLineString
     void circularString();
+    void circularStringFromArray();
     void polygon(); //test QgsPolygon
     void curvePolygon();
     void triangle();
@@ -3017,6 +3018,150 @@ void TestQgsGeometry::circularString()
   QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
 }
 
+void TestQgsGeometry::circularStringFromArray()
+{
+  // test creating circular strings from arrays
+  QVector< double > xx;
+  xx << 1 << 2 << 3;
+  QVector< double > yy;
+  yy << 11 << 12 << 13;
+  QgsCircularString fromArray( xx, yy );
+  QCOMPARE( fromArray.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray.numPoints(), 3 );
+  QCOMPARE( fromArray.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray.yAt( 2 ), 13.0 );
+
+  // unbalanced
+  xx = QVector< double >() << 1 << 2;
+  yy = QVector< double >() << 11 << 12 << 13;
+  QgsCircularString fromArray2( xx, yy );
+  QCOMPARE( fromArray2.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray2.numPoints(), 2 );
+  QCOMPARE( fromArray2.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray2.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray2.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray2.yAt( 1 ), 12.0 );
+  xx = QVector< double >() << 1 << 2 << 3;
+  yy = QVector< double >() << 11 << 12;
+  QgsCircularString fromArray3( xx, yy );
+  QCOMPARE( fromArray3.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray3.numPoints(), 2 );
+  QCOMPARE( fromArray3.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray3.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray3.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray3.yAt( 1 ), 12.0 );
+  // with z
+  QVector< double > zz;
+  xx = QVector< double >() << 1 << 2 << 3;
+  yy = QVector< double >() << 11 << 12 << 13;
+  zz = QVector< double >() << 21 << 22 << 23;
+  QgsCircularString fromArray4( xx, yy, zz );
+  QCOMPARE( fromArray4.wkbType(), QgsWkbTypes::CircularStringZ );
+  QCOMPARE( fromArray4.numPoints(), 3 );
+  QCOMPARE( fromArray4.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray4.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray4.pointN( 0 ).z(), 21.0 );
+  QCOMPARE( fromArray4.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray4.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray4.pointN( 1 ).z(), 22.0 );
+  QCOMPARE( fromArray4.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray4.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray4.pointN( 2 ).z(), 23.0 );
+
+  // unbalanced -> z ignored
+  zz = QVector< double >() << 21 << 22;
+  QgsCircularString fromArray5( xx, yy, zz );
+  QCOMPARE( fromArray5.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray5.numPoints(), 3 );
+  QCOMPARE( fromArray5.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray5.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray5.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray5.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray5.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray5.yAt( 2 ), 13.0 );
+  // unbalanced -> z truncated
+  zz = QVector< double >() << 21 << 22 << 23 << 24;
+  fromArray5 = QgsCircularString( xx, yy, zz );
+  QCOMPARE( fromArray5.wkbType(), QgsWkbTypes::CircularStringZ );
+  QCOMPARE( fromArray5.numPoints(), 3 );
+  QCOMPARE( fromArray5.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray5.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray5.pointN( 0 ).z(), 21.0 );
+  QCOMPARE( fromArray5.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray5.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray5.pointN( 1 ).z(), 22.0 );
+  QCOMPARE( fromArray5.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray5.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray5.pointN( 2 ).z(), 23.0 );
+
+  // with m
+  QVector< double > mm;
+  xx = QVector< double >() << 1 << 2 << 3;
+  yy = QVector< double >() << 11 << 12 << 13;
+  mm = QVector< double >() << 21 << 22 << 23;
+  QgsCircularString fromArray6( xx, yy, QVector< double >(), mm );
+  QCOMPARE( fromArray6.wkbType(), QgsWkbTypes::CircularStringM );
+  QCOMPARE( fromArray6.numPoints(), 3 );
+  QCOMPARE( fromArray6.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray6.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray6.pointN( 0 ).m(), 21.0 );
+  QCOMPARE( fromArray6.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray6.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray6.pointN( 1 ).m(), 22.0 );
+  QCOMPARE( fromArray6.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray6.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray6.pointN( 2 ).m(), 23.0 );
+  // unbalanced -> m ignored
+  mm = QVector< double >() << 21 << 22;
+  QgsCircularString fromArray7( xx, yy, QVector< double >(), mm );
+  QCOMPARE( fromArray7.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray7.numPoints(), 3 );
+  QCOMPARE( fromArray7.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray7.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray7.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray7.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray7.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray7.yAt( 2 ), 13.0 );
+  // unbalanced -> m truncated
+  mm = QVector< double >() << 21 << 22 << 23 << 24;
+  fromArray7 = QgsCircularString( xx, yy, QVector< double >(), mm );
+  QCOMPARE( fromArray7.wkbType(), QgsWkbTypes::CircularStringM );
+  QCOMPARE( fromArray7.numPoints(), 3 );
+  QCOMPARE( fromArray7.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray7.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray7.pointN( 0 ).m(), 21.0 );
+  QCOMPARE( fromArray7.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray7.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray7.pointN( 1 ).m(), 22.0 );
+  QCOMPARE( fromArray7.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray7.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray7.pointN( 2 ).m(), 23.0 );
+
+  // zm
+  xx = QVector< double >() << 1 << 2 << 3;
+  yy = QVector< double >() << 11 << 12 << 13;
+  zz = QVector< double >() << 21 << 22 << 23;
+  mm = QVector< double >() << 31 << 32 << 33;
+  QgsCircularString fromArray8( xx, yy, zz, mm );
+  QCOMPARE( fromArray8.wkbType(), QgsWkbTypes::CircularStringZM );
+  QCOMPARE( fromArray8.numPoints(), 3 );
+  QCOMPARE( fromArray8.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray8.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray8.pointN( 0 ).z(), 21.0 );
+  QCOMPARE( fromArray8.pointN( 0 ).m(), 31.0 );
+  QCOMPARE( fromArray8.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray8.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray8.pointN( 1 ).z(), 22.0 );
+  QCOMPARE( fromArray8.pointN( 1 ).m(), 32.0 );
+  QCOMPARE( fromArray8.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray8.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray8.pointN( 2 ).z(), 23.0 );
+  QCOMPARE( fromArray8.pointN( 2 ).m(), 33.0 );
+}
 
 void TestQgsGeometry::lineString()
 {

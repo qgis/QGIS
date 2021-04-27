@@ -39,6 +39,25 @@ arc passing through ``p1``, ``p2`` and ``p3``.
 .. versionadded:: 3.2
 %End
 
+    QgsCircularString( const QVector<double> &x, const QVector<double> &y,
+                       const QVector<double> &z = QVector<double>(),
+                       const QVector<double> &m = QVector<double>() ) /HoldGIL/;
+%Docstring
+Construct a circular string from arrays of coordinates. If the z or m
+arrays are non-empty then the resultant circular string will have
+z and m types accordingly.
+
+This constructor is more efficient then calling :py:func:`~QgsCircularString.setPoints`.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the supplied arrays
+   are of odd sizes.
+
+.. versionadded:: 3.20
+%End
+
+
     static QgsCircularString fromTwoPointsAndCenter( const QgsPoint &p1,
         const QgsPoint &p2,
         const QgsPoint &center,

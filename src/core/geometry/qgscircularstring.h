@@ -51,6 +51,23 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
                        const QgsPoint &p3 ) SIP_HOLDGIL;
 
     /**
+     * Construct a circular string from arrays of coordinates. If the z or m
+     * arrays are non-empty then the resultant circular string will have
+     * z and m types accordingly.
+     *
+     * This constructor is more efficient then calling setPoints().
+     *
+     * \warning It is the caller's responsibility to ensure that the supplied arrays
+     * are of odd sizes.
+     *
+     * \since QGIS 3.20
+     */
+    QgsCircularString( const QVector<double> &x, const QVector<double> &y,
+                       const QVector<double> &z = QVector<double>(),
+                       const QVector<double> &m = QVector<double>() ) SIP_HOLDGIL;
+
+
+    /**
      * Creates a circular string with a single arc representing
      * the curve from \a p1 to \a p2 with the specified \a center.
      *
