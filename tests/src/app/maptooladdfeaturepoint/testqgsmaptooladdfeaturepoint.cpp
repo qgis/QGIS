@@ -45,13 +45,13 @@ class TestQgsMapToolAddFeaturePoint : public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
-    void testPointM();
+    void testPoint();
 
   private:
     QgisApp *mQgisApp = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsMapToolAddFeature *mCaptureTool = nullptr;
-    QgsVectorLayer *mLayerPointM = nullptr;
+    QgsVectorLayer *mLayerPoint = nullptr;
 };
 
 TestQgsMapToolAddFeaturePoint::TestQgsMapToolAddFeaturePoint() = default;
@@ -83,17 +83,17 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   mCanvas->hide();
 
   // make testing M layer
-  mLayerPointM = new QgsVectorLayer( QStringLiteral( "PointM?crs=EPSG:27700" ), QStringLiteral( "layer point M" ), QStringLiteral( "memory" ) );
-  QVERIFY( mLayerPointM->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointM );
+  mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPoint->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPoint );
 
-  mLayerPointM->startEditing();
-  QgsFeature pointFM;
-  QString pointWktM = "PointM(7 7 4)";
-  pointFM.setGeometry( QgsGeometry::fromWkt( pointWktM ) );
+  mLayerPoint->startEditing();
+  QgsFeature pointF;
+  QString pointWkt = "Point(7 7)";
+  pointF.setGeometry( QgsGeometry::fromWkt( pointWkt ) );
 
-  mLayerPointM->addFeature( pointFM );
-  QCOMPARE( mLayerPointM->featureCount(), ( long )1 );
+  mLayerPoint->addFeature( pointF );
+  QCOMPARE( mLayerPoint->featureCount(), ( long )1 );
 
   // create the tool
   mCaptureTool = new QgsMapToolAddFeature( mCanvas, /*mAdvancedDigitizingDockWidget, */ QgsMapToolCapture::CapturePoint );
@@ -111,37 +111,32 @@ void TestQgsMapToolAddFeaturePoint::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolAddFeaturePoint::testPointM()
+void TestQgsMapToolAddFeaturePoint::testPoint()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-  mCanvas->setCurrentLayer( mLayerPointM );
-  // test with default M value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  mCanvas->setCurrentLayer( mLayerPoint );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QCOMPARE( mLayerPointM->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPoint->featureCount(), ( long )2 );
 
-  QString wkt = "PointM (4 0 333)";
-  QCOMPARE( mLayerPointM->getFeature( newFid ).geometry().asWkt(), wkt );
+  QString wkt = "Point (4 0)";
+  QCOMPARE( mLayerPoint->getFeature( newFid ).geometry().asWkt(), wkt );
 
-  mLayerPointM->undoStack()->undo();
-
-  // test with default M value = 123
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 123 );
+  mLayerPoint->undoStack()->undo();
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   newFid = utils.newFeatureId( oldFids );
 
-  wkt = "PointM (6 6 123)";
-  QCOMPARE( mLayerPointM->getFeature( newFid ).geometry().asWkt(), wkt );
+  wkt = "Point (6 6)";
+  QCOMPARE( mLayerPoint->getFeature( newFid ).geometry().asWkt(), wkt );
 
-  mLayerPointM->undoStack()->undo();
+  mLayerPoint->undoStack()->undo();
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeaturePoint )
-#include "testqgsmaptooladdfeaturepointm.moc"
+#include "testqgsmaptooladdfeaturepoint.moc"
