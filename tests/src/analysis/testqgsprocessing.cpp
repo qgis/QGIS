@@ -11530,7 +11530,7 @@ void TestQgsProcessing::defaultExtensionsForProvider()
 
   // unless the user has set a default format, which IS supported by that provider
   QgsProcessing::settingsDefaultOutputVectorLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
 
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
@@ -11542,7 +11542,7 @@ void TestQgsProcessing::defaultExtensionsForProvider()
 
   // but if default is not supported by provider, we use a supported format
   QgsProcessing::settingsDefaultOutputVectorLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }
