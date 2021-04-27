@@ -400,7 +400,7 @@ void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, c
 
   const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
   executeSql( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
-              .arg( indexName,
+              .arg( QgsPostgresConn::quotedIdentifier( indexName ),
                     QgsPostgresConn::quotedIdentifier( schema ),
                     QgsPostgresConn::quotedIdentifier( name ),
                     QgsPostgresConn::quotedIdentifier( geometryColumnName ) ) );
