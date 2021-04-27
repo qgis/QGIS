@@ -829,6 +829,12 @@ geometries of different types.
 Compares to an ``other`` geometry of the same class, and returns a integer
 for sorting of the two geometries.
 
+.. note::
+
+   The actual logic for the sorting is an internal detail only and is subject to change
+   between QGIS versions. The result should only be used for direct comparison of geometries
+   and not stored for later use.
+
 .. versionadded:: 3.20
 %End
 

@@ -1045,6 +1045,10 @@ class CORE_EXPORT QgsAbstractGeometry
      * Compares to an \a other geometry of the same class, and returns a integer
      * for sorting of the two geometries.
      *
+     * \note The actual logic for the sorting is an internal detail only and is subject to change
+     * between QGIS versions. The result should only be used for direct comparison of geometries
+     * and not stored for later use.
+     *
      * \since QGIS 3.20
      */
     virtual int compareToSameClass( const QgsAbstractGeometry *other ) const = 0;
