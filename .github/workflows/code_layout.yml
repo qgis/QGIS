@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
   pull_request:
 
 jobs:
