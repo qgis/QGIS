@@ -853,6 +853,71 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
   }
 }
 
+void QgsCircularString::append( const QgsCircularString *line )
+{
+  if ( !line )
+  {
+    return;
+  }
+
+  if ( numPoints() < 1 )
+  {
+    setZMTypeFromSubGeometry( line, QgsWkbTypes::CircularString );
+  }
+
+  // do not store duplicate points
+  if ( numPoints() > 0 &&
+       line->numPoints() > 0 &&
+       qgsDoubleNear( endPoint().x(), line->startPoint().x() ) &&
+       qgsDoubleNear( endPoint().y(), line->startPoint().y() ) &&
+       ( !is3D() || !line->is3D() || qgsDoubleNear( endPoint().z(), line->startPoint().z() ) ) &&
+       ( !isMeasure() || !line->isMeasure() || qgsDoubleNear( endPoint().m(), line->startPoint().m() ) ) )
+  {
+    mX.pop_back();
+    mY.pop_back();
+
+    if ( is3D() && line->is3D() )
+    {
+      mZ.pop_back();
+    }
+    if ( isMeasure() && line->isMeasure() )
+    {
+      mM.pop_back();
+    }
+  }
+
+  mX += line->mX;
+  mY += line->mY;
+
+  if ( is3D() )
+  {
+    if ( line->is3D() )
+    {
+      mZ += line->mZ;
+    }
+    else
+    {
+      // if append line does not have z coordinates, fill with NaN to match number of points in final line
+      mZ.insert( mZ.count(), mX.size() - mZ.size(), std::numeric_limits<double>::quiet_NaN() );
+    }
+  }
+
+  if ( isMeasure() )
+  {
+    if ( line->isMeasure() )
+    {
+      mM += line->mM;
+    }
+    else
+    {
+      // if append line does not have m values, fill with NaN to match number of points in final line
+      mM.insert( mM.count(), mX.size() - mM.size(), std::numeric_limits<double>::quiet_NaN() );
+    }
+  }
+
+  clearCache(); //set bounding box invalid
+}
+
 void QgsCircularString::draw( QPainter &p ) const
 {
   QPainterPath path;

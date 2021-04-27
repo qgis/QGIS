@@ -126,6 +126,7 @@ class TestQgsGeometry : public QObject
     void lineString(); //test QgsLineString
     void circularString();
     void circularStringFromArray();
+    void circularStringAppend();
     void polygon(); //test QgsPolygon
     void curvePolygon();
     void triangle();
@@ -3161,6 +3162,127 @@ void TestQgsGeometry::circularStringFromArray()
   QCOMPARE( fromArray8.yAt( 2 ), 13.0 );
   QCOMPARE( fromArray8.pointN( 2 ).z(), 23.0 );
   QCOMPARE( fromArray8.pointN( 2 ).m(), 33.0 );
+}
+
+void TestQgsGeometry::circularStringAppend()
+{
+  //append circularstring
+
+  //append to empty
+  QgsCircularString l10;
+  l10.append( nullptr );
+  QVERIFY( l10.isEmpty() );
+  QCOMPARE( l10.numPoints(), 0 );
+
+  std::unique_ptr<QgsCircularString> toAppend( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                       << QgsPoint( 11, 12 )
+                       << QgsPoint( 21, 22 ) );
+  l10.append( toAppend.get() );
+  QVERIFY( !l10.is3D() );
+  QVERIFY( !l10.isMeasure() );
+  QCOMPARE( l10.numPoints(), 3 );
+  QCOMPARE( l10.vertexCount(), 3 );
+  QCOMPARE( l10.nCoordinates(), 3 );
+  QCOMPARE( l10.ringCount(), 1 );
+  QCOMPARE( l10.partCount(), 1 );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( l10.pointN( 0 ), toAppend->pointN( 0 ) );
+  QCOMPARE( l10.pointN( 1 ), toAppend->pointN( 1 ) );
+  QCOMPARE( l10.pointN( 2 ), toAppend->pointN( 2 ) );
+
+  //add more points
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 21, 22 )
+                       << QgsPoint( 41, 42 )
+                       << QgsPoint( 51, 52 ) );
+  l10.append( toAppend.get() );
+  QCOMPARE( l10.numPoints(), 5 );
+  QCOMPARE( l10.vertexCount(), 5 );
+  QCOMPARE( l10.nCoordinates(), 5 );
+  QCOMPARE( l10.ringCount(), 1 );
+  QCOMPARE( l10.partCount(), 1 );
+  QCOMPARE( l10.pointN( 2 ), toAppend->pointN( 0 ) );
+  QCOMPARE( l10.pointN( 3 ), toAppend->pointN( 1 ) );
+  QCOMPARE( l10.pointN( 4 ), toAppend->pointN( 2 ) );
+
+  //check dimensionality is inherited from append line if initially empty
+  l10.clear();
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 31, 32, 33, 34 )
+                       << QgsPoint( QgsWkbTypes::PointZM, 41, 42, 43, 44 )
+                       << QgsPoint( QgsWkbTypes::PointZM, 51, 52, 53, 54 ) );
+  l10.append( toAppend.get() );
+  QVERIFY( l10.is3D() );
+  QVERIFY( l10.isMeasure() );
+  QCOMPARE( l10.numPoints(), 3 );
+  QCOMPARE( l10.ringCount(), 1 );
+  QCOMPARE( l10.partCount(), 1 );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularStringZM );
+  QCOMPARE( l10.pointN( 0 ), toAppend->pointN( 0 ) );
+  QCOMPARE( l10.pointN( 1 ), toAppend->pointN( 1 ) );
+  QCOMPARE( l10.pointN( 2 ), toAppend->pointN( 2 ) );
+
+  //append points with z to non z circular string
+  l10.clear();
+  l10.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 31, 32 )
+                 << QgsPoint( QgsWkbTypes::Point, 41, 42 )
+                 << QgsPoint( QgsWkbTypes::Point, 51, 52 ) );
+  QVERIFY( !l10.is3D() );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularString );
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 51, 52, 33, 34 )
+                       << QgsPoint( QgsWkbTypes::PointZM, 141, 142, 43, 44 )
+                       << QgsPoint( QgsWkbTypes::PointZM, 151, 152, 53, 54 ) );
+  l10.append( toAppend.get() );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( l10.pointN( 0 ), QgsPoint( 31, 32 ) );
+  QCOMPARE( l10.pointN( 1 ), QgsPoint( 41, 42 ) );
+  QCOMPARE( l10.pointN( 2 ), QgsPoint( 51, 52 ) );
+  QCOMPARE( l10.pointN( 3 ), QgsPoint( 141, 142 ) );
+  QCOMPARE( l10.pointN( 4 ), QgsPoint( 151, 152 ) );
+
+  //append points without z/m to circularstring with z & m
+  l10.clear();
+  l10.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 31, 32, 11, 21 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 41, 42, 12, 22 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 51, 52, 13, 23 ) );
+  QVERIFY( l10.is3D() );
+  QVERIFY( l10.isMeasure() );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularStringZM );
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 51, 52 )
+                       << QgsPoint( 141, 142 )
+                       << QgsPoint( 151, 152 ) );
+  l10.append( toAppend.get() );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularStringZM );
+  QCOMPARE( l10.pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 31, 32, 11, 21 ) );
+  QCOMPARE( l10.pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 41, 42, 12, 22 ) );
+  QCOMPARE( l10.pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 51, 52, 13, 23 ) );
+  QCOMPARE( l10.pointN( 3 ), QgsPoint( QgsWkbTypes::PointZM, 141, 142 ) );
+  QCOMPARE( l10.pointN( 4 ), QgsPoint( QgsWkbTypes::PointZM, 151, 152 ) );
+
+  //append another line the closes the original geometry.
+  //Make sure there are not duplicate points except start and end point
+  l10.clear();
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence()
+                       << QgsPoint( 1, 1 )
+                       << QgsPoint( 5, 5 )
+                       << QgsPoint( 10, 1 ) );
+  l10.append( toAppend.get() );
+  QCOMPARE( l10.numPoints(), 3 );
+  QCOMPARE( l10.vertexCount(), 3 );
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence()
+                       << QgsPoint( 10, 1 )
+                       << QgsPoint( 5, 2 )
+                       << QgsPoint( 1, 1 ) );
+  l10.append( toAppend.get() );
+
+  QVERIFY( l10.isClosed() );
+  QCOMPARE( l10.numPoints(), 5 );
+  QCOMPARE( l10.vertexCount(), 5 );
 }
 
 void TestQgsGeometry::lineString()
