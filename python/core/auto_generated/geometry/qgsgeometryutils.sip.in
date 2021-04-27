@@ -761,6 +761,29 @@ A Z dimension is added to ``point`` if one of the point in the list
 
 
 .. versionadded:: 3.0
+
+
+.. deprecated:: QGIS 3.20
+   use transferFirstZValueToPoint( const :py:class:`QgsPointSequence` &points, :py:class:`QgsPoint` &point ) instead
+%End
+
+    static bool transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point );
+%Docstring
+A Z dimension is added to ``point`` if one of the point in the list
+``points`` is in 3D. Moreover, the Z value of ``point`` is updated with.
+
+:param points: List of points in which a 3D point is searched.
+:param point: The point to update with Z dimension and value.
+
+:return: ``True`` if the point is updated, ``False`` otherwise
+
+.. warning::
+
+   This method does not copy the z value of the coordinate from the
+   points whose z value is closest to the original x/y point, but only the first one found.
+
+
+.. versionadded:: 3.20
 %End
 
     static bool transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point );

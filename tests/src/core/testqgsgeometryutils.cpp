@@ -85,7 +85,7 @@ class TestQgsGeometryUtils: public QObject
     void testAngleBisector();
     void testPerpendicularOffsetPoint();
     void testClosestSideOfRectangle();
-    void setZValueFromPoints();
+    void transferFirstZValueToPoint();
     void transferFirstMValueToPoint();
 };
 
@@ -1604,26 +1604,26 @@ void TestQgsGeometryUtils::testClosestSideOfRectangle()
   QCOMPARE( QgsGeometryUtils::closestSideOfRectangle( 16, -20, 10, -18, 14, -19.5 ), 5 );
 }
 
-void TestQgsGeometryUtils::setZValueFromPoints()
+void TestQgsGeometryUtils::transferFirstZValueToPoint()
 {
   QgsPoint point( 1, 2 );
 
   // Type: Point
-  bool ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2 ), point );
+  bool ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( 0, 2 ), point );
   QCOMPARE( ret, false );
 
   // Type: PointM
-  ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 4 ), point );
+  ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 4 ), point );
   QCOMPARE( ret, false );
 
   // Type: PointZ
-  ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2, 4 ), point );
+  ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( 0, 2, 4 ), point );
   QCOMPARE( ret, true );
   QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
   QCOMPARE( point.z(), 4.0 );
 
   // Type: PointZ
-  ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2, 5 ), point );
+  ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( 0, 2, 5 ), point );
   QCOMPARE( ret, true );
   QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
   QCOMPARE( point.z(), 5.0 ); // now point.z == 5. Shouldn't the current Z be left if the point is already of type PointZ?
@@ -1631,7 +1631,7 @@ void TestQgsGeometryUtils::setZValueFromPoints()
   // Add Z to a PointM
   QgsPoint pointM( QgsWkbTypes::PointM, 1, 2, 0, 3 );
   // Type: PointZ
-  ret = QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << QgsPoint( 0, 2, 4 ), pointM );
+  ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( 0, 2, 4 ), pointM );
   QCOMPARE( ret, true );
   QCOMPARE( pointM.wkbType(), QgsWkbTypes::PointZM );
   QCOMPARE( pointM.z(), 4.0 );

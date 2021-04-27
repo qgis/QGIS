@@ -780,8 +780,28 @@ class CORE_EXPORT QgsGeometryUtils
      * points whose z value is closest to the original x/y point, but only the first one found.
      *
      * \since QGIS 3.0
+     *
+     * \deprecated since QGIS 3.20 use transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point ) instead
      */
-    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
+    {
+      return transferFirstZValueToPoint( points, point );
+    }
+
+    /**
+     * A Z dimension is added to \a point if one of the point in the list
+     * \a points is in 3D. Moreover, the Z value of \a point is updated with.
+     *
+     * \param points List of points in which a 3D point is searched.
+     * \param point The point to update with Z dimension and value.
+     * \returns TRUE if the point is updated, FALSE otherwise
+     *
+     * \warning This method does not copy the z value of the coordinate from the
+     * points whose z value is closest to the original x/y point, but only the first one found.
+     *
+     * \since QGIS 3.20
+     */
+    static bool transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point );
 
     /**
      * A M dimension is added to \a point if one of the points in the list
