@@ -107,6 +107,14 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      */
     void addVertex( const QgsPoint &pt );
 
+    /**
+     * Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
+     * and combining adjacent circularstrings to a single continuous circularstring.
+     *
+     * \since QGIS 3.20
+     */
+    void condenseCurves();
+
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override  SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;

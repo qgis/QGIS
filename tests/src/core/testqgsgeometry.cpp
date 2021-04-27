@@ -134,7 +134,11 @@ class TestQgsGeometry : public QObject
     void ellipse();
     void quadrilateral();
     void regularPolygon();
-    void compoundCurve(); //test QgsCompoundCurve
+
+    void compoundCurve();
+    void compoundCurveCondense_data();
+    void compoundCurveCondense();
+
     void multiPoint();
     void multiLineString();
     void multiCurve();
@@ -12627,6 +12631,33 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
   orientation.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 1 0), CircularString (1 0, 1 1, 0 1), (0 1, 0 0))" ) );
   QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
+}
+
+void TestQgsGeometry::compoundCurveCondense_data()
+{
+  QTest::addColumn<QString>( "curve" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "compound curve empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "compound curve one line" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 1 2))" ) << QStringLiteral( "CompoundCurve ((1 1, 1 2))" );
+  QTest::newRow( "compound curve one circular string" ) << QStringLiteral( "COMPOUNDCURVE(CIRCULARSTRING(1 1, 1 2, 2 2))" ) << QStringLiteral( "CompoundCurve (CircularString (1 1, 1 2, 2 2))" );
+  QTest::newRow( "compound curve can't condense" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 2, 2 2),(2 2, 2 3),CIRCULARSTRING(2 3, 2 0, 2 1))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1),CircularString (1 1, 1 2, 2 2),(2 2, 2 3),CircularString (2 3, 2 0, 2 1))" );
+  QTest::newRow( "compound curve two lines" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0))" );
+  QTest::newRow( "compound curve three lines" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),(3 0, 4 0, 5 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0, 4 0, 5 0))" );
+  QTest::newRow( "compound curve two lines and cs" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0))" );
+  QTest::newRow( "compound curve two cs" ) << QStringLiteral( "COMPOUNDCURVE(CIRCULARSTRING(1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 0, 3 0))" ) << QStringLiteral( "CompoundCurve (CircularString (1 5, 1 4, 1 1, 1 0, 3 0))" );
+  QTest::newRow( "compound curve complex" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0),(5 0, 6 0),(6 0, 7 0),CIRCULARSTRING(7 0, 8 0, 9 0),CIRCULARSTRING(9 0, 10 1, 10 0),(10 0, 10 -1))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0),(5 0, 6 0, 7 0),CircularString (7 0, 8 0, 9 0, 10 1, 10 0),(10 0, 10 -1))" );
+}
+
+void TestQgsGeometry::compoundCurveCondense()
+{
+  QFETCH( QString, curve );
+  QFETCH( QString, expected );
+
+  QgsGeometry g = QgsGeometry::fromWkt( curve );
+  qgsgeometry_cast< QgsCompoundCurve * >( g.get() )->condenseCurves();
+
+  QCOMPARE( g.asWkt(), expected );
 }
 
 void TestQgsGeometry::multiPoint()

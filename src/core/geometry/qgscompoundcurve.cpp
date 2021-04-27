@@ -638,6 +638,35 @@ void QgsCompoundCurve::addVertex( const QgsPoint &pt )
   clearCache();
 }
 
+void QgsCompoundCurve::condenseCurves()
+{
+  QgsCurve *lastCurve = nullptr;
+  QVector< QgsCurve * > newCurves;
+  newCurves.reserve( mCurves.size() );
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
+  {
+    if ( lastCurve && lastCurve->wkbType() == curve->wkbType() )
+    {
+      if ( QgsLineString *ls = qgsgeometry_cast< QgsLineString * >( lastCurve ) )
+      {
+        ls->append( qgsgeometry_cast< QgsLineString * >( curve ) );
+        delete curve;
+      }
+      else if ( QgsCircularString *cs = qgsgeometry_cast< QgsCircularString * >( lastCurve ) )
+      {
+        cs->append( qgsgeometry_cast< QgsCircularString * >( curve ) );
+        delete curve;
+      }
+    }
+    else
+    {
+      lastCurve = curve;
+      newCurves << curve;
+    }
+  }
+  mCurves = newCurves;
+}
+
 void QgsCompoundCurve::draw( QPainter &p ) const
 {
   for ( const QgsCurve *curve : mCurves )
