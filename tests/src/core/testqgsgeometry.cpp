@@ -17614,6 +17614,9 @@ void TestQgsGeometry::compareTo_data()
 
   QTest::newRow( "point vs multipoint" ) << QStringLiteral( "POINT( 1 2 )" ) << QStringLiteral( "MULTIPOINT((1 2))" ) << -1;
   QTest::newRow( "multipoint vs point" ) << QStringLiteral( "MULTIPOINT((1 2))" ) << QStringLiteral( "POINT( 1 2 )" ) << 1;
+  QTest::newRow( "empty point vs empty point" ) << QStringLiteral( "POINT EMPTY" ) << QStringLiteral( "POINT EMPTY" ) << 0;
+  QTest::newRow( "empty point vs non-empty point" ) << QStringLiteral( "POINT EMPTY" ) << QStringLiteral( "POINT (1 2)" ) << -1;
+  QTest::newRow( "non-empty point vs empty point" ) << QStringLiteral( "POINT (1 2)" ) << QStringLiteral( "POINT EMPTY" ) << 1;
   QTest::newRow( "point vs point" ) << QStringLiteral( "POINT( 1 2 )" ) << QStringLiteral( "POINT(1 2)" ) << 0;
   QTest::newRow( "point vs point greater x" ) << QStringLiteral( "POINT( 2 2 )" ) << QStringLiteral( "POINT(1 2)" ) << 1;
   QTest::newRow( "point vs point lesser x" ) << QStringLiteral( "POINT( 0 2 )" ) << QStringLiteral( "POINT(1 2)" ) << -1;
