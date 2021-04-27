@@ -49,6 +49,7 @@ class TestQgsMapToolScaleFeature: public QObject
     void testScaleFeatureWithAnchorSetAfterStart();
     void testScaleSelectedFeatures();
     void testScaleFeatureManualAnchorSnapping();
+    void testScaleFeatureDifferentCrs();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -261,6 +262,35 @@ void TestQgsMapToolScaleFeature::testScaleFeatureManualAnchorSnapping()
   cfg.setTolerance( tolerance );
   cfg.setUnits( units );
   mCanvas->snappingUtils()->setConfig( cfg );
+
+  // remove manual anchor point via right click
+  utils.mouseClick( 10, 25, Qt::RightButton, Qt::KeyboardModifiers(), true );
+}
+
+void TestQgsMapToolScaleFeature::testScaleFeatureDifferentCrs()
+{
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  TestQgsMapToolUtils utils( mScaleTool );
+
+  //scale up
+  utils.mouseClick( -8.82187821744550682, 2.0909475540607434, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( -8.82188215592444536, 2.09095048559432861 );
+  utils.mouseClick( -8.82188215592444536, 2.09095048559432861, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+
+  //scale down
+  utils.mouseClick( -8.82185881943214234, 2.09096315856551129, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( -8.82185818217576667, 2.09097065484482636 );
+  utils.mouseClick( -8.82185818217576667, 2.09097065484482636, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.84, 1.35 3.96, 1.85 3.96, 1.85 1.84, 1.35 1.84))" ) );
+
+  mLayerBase->undoStack()->undo();
+  mLayerBase->undoStack()->undo();
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsMapToolScaleFeature )

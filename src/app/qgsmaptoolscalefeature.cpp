@@ -244,6 +244,8 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( minDistance == std::numeric_limits<double>::max() )
       {
         emit messageEmitted( tr( "Could not find a nearby feature in the current layer." ) );
+        if ( mAutoSetAnchorPoint )
+          mAnchorPoint.reset();
         return;
       }
 
@@ -317,14 +319,15 @@ void QgsMapToolScaleFeature::updateRubberband( double scale )
   {
     mScaling = scale;
 
-    QTransform t;
-    t.translate( mFeatureCenterMapCoords.x(), mFeatureCenterMapCoords.y() );
-    t.scale( mScaling, mScaling );
-    t.translate( -mFeatureCenterMapCoords.x(), -mFeatureCenterMapCoords.y() );
-
     QgsVectorLayer *vlayer = currentVectorLayer();
     if ( !vlayer )
       return;
+
+    QgsPointXY layerCoords = toLayerCoordinates( vlayer, mFeatureCenterMapCoords );
+    QTransform t;
+    t.translate( layerCoords.x(), layerCoords.y() );
+    t.scale( mScaling, mScaling );
+    t.translate( -layerCoords.x(), -layerCoords.y() );
 
     mRubberBand->reset( vlayer->geometryType() );
     for ( const QgsGeometry &originalGeometry : mOriginalGeometries )
@@ -355,10 +358,11 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   vlayer->beginEditCommand( tr( "Features Scaled" ) );
 
+  QgsPointXY layerCoords = toLayerCoordinates( vlayer, mFeatureCenterMapCoords );
   QTransform t;
-  t.translate( mFeatureCenterMapCoords.x(), mFeatureCenterMapCoords.y() );
+  t.translate( layerCoords.x(), layerCoords.y() );
   t.scale( mScaling, mScaling );
-  t.translate( -mFeatureCenterMapCoords.x(), -mFeatureCenterMapCoords.y() );
+  t.translate( -layerCoords.x(), -layerCoords.y() );
 
   for ( QgsFeatureId id : std::as_const( mScaledFeatures ) )
   {
@@ -407,7 +411,7 @@ void QgsMapToolScaleFeature::activate()
   if ( vlayer->selectedFeatureCount() > 0 )
   {
     mExtent = vlayer->boundingBoxOfSelected();
-    mFeatureCenterMapCoords = mExtent.center();
+    mFeatureCenterMapCoords = toMapCoordinates( vlayer, mExtent.center() );
 
     mAnchorPoint = std::make_unique<QgsVertexMarker>( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
