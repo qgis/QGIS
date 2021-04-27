@@ -71,6 +71,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * the created Linestring will be a LineString25D type. Otherwise, the
      * LineString will be LineStringZ (or LineStringZM) type.
      *
+     * If the sizes of \a x and \a y are non-equal then the resultant linestring
+     * will be created using the minimum size of these arrays.
+     *
      * \since QGIS 3.0
      */
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
