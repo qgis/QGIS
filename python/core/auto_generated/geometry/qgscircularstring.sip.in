@@ -49,6 +49,9 @@ z and m types accordingly.
 
 This constructor is more efficient then calling :py:func:`~QgsCircularString.setPoints`.
 
+If the sizes of ``x`` and ``y`` are non-equal then the resultant circular string
+will be created using the minimum size of these arrays.
+
 .. warning::
 
    It is the caller's responsibility to ensure that the supplied arrays

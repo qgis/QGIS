@@ -57,6 +57,9 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      *
      * This constructor is more efficient then calling setPoints().
      *
+     * If the sizes of \a x and \a y are non-equal then the resultant circular string
+     * will be created using the minimum size of these arrays.
+     *
      * \warning It is the caller's responsibility to ensure that the supplied arrays
      * are of odd sizes.
      *
