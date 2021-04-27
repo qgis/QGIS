@@ -68,10 +68,6 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testTracingWithOffset();
     void testTracingWithConvertToCurves();
     void testTracingWithConvertToCurvesCustomTolerance();
-    void testZ();
-    void testM();
-    void testZMSnapping();
-    void testTopologicalEditingZ();
     void testCloseLine();
     void testSelfSnapping();
     void testLineString();
@@ -90,9 +86,6 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLineCurved = nullptr;
     QgsVectorLayer *mLayerLineCurvedOffset = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
-    QgsVectorLayer *mLayerLineM = nullptr;
-    QgsVectorLayer *mLayerPointZM = nullptr;
-    QgsVectorLayer *mLayerTopoZ = nullptr;
     QgsVectorLayer *mLayerLine2D = nullptr;
     QgsVectorLayer *mLayerCloseLine = nullptr;
     QgsVectorLayer *mLayerSelfSnapLine = nullptr;
@@ -179,11 +172,6 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QVERIFY( mLayerLineZ->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZ );
 
-  mLayerLineM = new QgsVectorLayer( QStringLiteral( "LineStringM?crs=EPSG:27700" ), QStringLiteral( "layer line M" ), QStringLiteral( "memory" ) );
-  QVERIFY( mLayerLineM->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineM );
-  mLayerLineM->startEditing();
-
   QgsPolyline line2;
   line2 << QgsPoint( 1, 1, 0 ) << QgsPoint( 2, 1, 1 ) << QgsPoint( 3, 2, 2 ) << QgsPoint( 1, 2, 3 ) << QgsPoint( 1, 1, 0 );
   QgsFeature lineF2;
@@ -205,32 +193,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mCanvas->hide();
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
-
-  // make layer for snapping
-  mLayerPointZM = new QgsVectorLayer( QStringLiteral( "PointZM?crs=EPSG:27700" ), QStringLiteral( "layer point ZM" ), QStringLiteral( "memory" ) );
-  QVERIFY( mLayerPointZM->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZM );
-
-  mLayerPointZM->startEditing();
-  QgsFeature pointF;
-  QString pointWktZM = "PointZM(6 6 3 4)";
-  pointF.setGeometry( QgsGeometry::fromWkt( pointWktZM ) );
-
-  mLayerPointZM->addFeature( pointF );
-  QCOMPARE( mLayerPointZM->featureCount(), ( long )1 );
-
-  // make layer for topologicalEditing with Z
-  mLayerTopoZ = new QgsVectorLayer( QStringLiteral( "MultiLineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer topologicalEditing Z" ), QStringLiteral( "memory" ) );
-  QVERIFY( mLayerTopoZ->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopoZ );
-
-  mLayerTopoZ->startEditing();
-  QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0))" ) );
-
-  mLayerTopoZ->addFeature( topoFeat );
-  QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
-
+  
   // make 2D layer for snapping with a 3D layer
   mLayerLine2D = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLine2D->isValid() );
@@ -250,7 +213,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerSelfSnapLine->startEditing();
 
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLineM << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLine2D << mLayerSelfSnapLine );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -572,6 +535,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
 
 }
 
+<<<<<<< HEAD:tests/src/app/testqgsmaptooladdfeatureline.cpp
 void TestQgsMapToolAddFeatureLine::testZ()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
