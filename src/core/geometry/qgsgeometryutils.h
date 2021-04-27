@@ -780,10 +780,9 @@ class CORE_EXPORT QgsGeometryUtils
      * points whose z value is closest to the original x/y point, but only the first one found.
      *
      * \since QGIS 3.0
-     *
      * \deprecated since QGIS 3.20 use transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point ) instead
      */
-    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
+    Q_DECL_DEPRECATED static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point ) SIP_DEPRECATED
     {
       return transferFirstZValueToPoint( points, point );
     }
