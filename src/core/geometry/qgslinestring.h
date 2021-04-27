@@ -622,6 +622,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     //curve interface
     double length() const override SIP_HOLDGIL;
 
+#ifndef SIP_RUN
+    std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
+#endif
+
     /**
      * Returns the length in 3D world of the line string.
      * If it is not a 3D line string, return its 2D length.

@@ -32,7 +32,7 @@ class QgsLineString;
  * \brief Abstract base class for curved geometry type
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
+class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 {
   public:
 
@@ -283,6 +283,19 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
       }
       return nullptr;
     }
+
+    /**
+     * Splits the curve at the specified vertex \a index, returning two curves which represent the portion of the
+     * curve up to an including the vertex at \a index, and the portion of the curve from the vertex at \a index (inclusive)
+     * to the end of the curve.
+     *
+     * \note The vertex \a index must correspond to a segment vertex, not a curve vertex.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.20
+     */
+    virtual std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const = 0;
+
 #endif
 
 

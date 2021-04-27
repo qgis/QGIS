@@ -167,6 +167,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
     void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+    std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
 
     /**
      * Cast the \a geom to a QgsCircularString.
