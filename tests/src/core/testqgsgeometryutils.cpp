@@ -1626,7 +1626,7 @@ void TestQgsGeometryUtils::transferFirstZValueToPoint()
   ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( 0, 2, 5 ), point );
   QCOMPARE( ret, true );
   QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
-  QCOMPARE( point.z(), 5.0 ); // now point.z == 5. Shouldn't the current Z be left if the point is already of type PointZ?
+  QCOMPARE( point.z(), 5.0 ); // now point.z == 5.
 
   // Add Z to a PointM
   QgsPoint pointM( QgsWkbTypes::PointM, 1, 2, 0, 3 );
@@ -1659,7 +1659,7 @@ void TestQgsGeometryUtils::transferFirstMValueToPoint()
   ret = QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 ), point );
   QCOMPARE( ret, true );
   QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
-  QCOMPARE( point.m(), 5.0 ); // now point.z == 5. Shouldn't the current M be left if the point is already of type PointM?
+  QCOMPARE( point.m(), 5.0 ); // now point.m == 5
 
   // Add M to a PointZ
   QgsPoint pointZ( 1, 2, 4 );
