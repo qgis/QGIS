@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsmaptooladdfeaturepointm.cpp
+     testqgsmaptooladdfeaturepoint.cpp
      ----------------------
     Date                 : April 2021
     Copyright            : (C) 2021 by Loïc Bartoletti
