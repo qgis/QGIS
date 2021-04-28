@@ -98,6 +98,89 @@ void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options )
   GDALDestroyWarpOptions( options );
 }
 
+QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType type )
+{
+  if ( !value )
+    return QVariant();
+
+  switch ( type )
+  {
+    case OFTInteger:
+      return value->Integer;
+
+    case OFTInteger64:
+      return value->Integer64;
+
+    case OFTReal:
+      return value->Real;
+
+    case OFTString:
+    case OFTWideString:
+      return QString::fromUtf8( value->String );
+
+    case OFTDate:
+      return QDate( value->Date.Year, value->Date.Month, value->Date.Day );
+
+    case OFTTime:
+    {
+      float secondsPart = 0;
+      float millisecondPart = std::modf( value->Date.Second, &secondsPart );
+      return QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
+    }
+
+    case OFTDateTime:
+    {
+      float secondsPart = 0;
+      float millisecondPart = std::modf( value->Date.Second, &secondsPart );
+      return QDateTime( QDate( value->Date.Year, value->Date.Month, value->Date.Day ),
+                        QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
+    }
+
+    case OFTBinary:
+      // not supported!
+      Q_ASSERT_X( false, "QgsOgrUtils::OGRFieldtoVariant", "OFTBinary type not supported" );
+      return QVariant();
+
+    case OFTIntegerList:
+    {
+      QVariantList res;
+      res.reserve( value->IntegerList.nCount );
+      for ( int i = 0; i < value->IntegerList.nCount; ++i )
+        res << value->IntegerList.paList[ i ];
+      return res;
+    }
+
+    case OFTInteger64List:
+    {
+      QVariantList res;
+      res.reserve( value->Integer64List.nCount );
+      for ( int i = 0; i < value->Integer64List.nCount; ++i )
+        res << value->Integer64List.paList[ i ];
+      return res;
+    }
+
+    case OFTRealList:
+    {
+      QVariantList res;
+      res.reserve( value->RealList.nCount );
+      for ( int i = 0; i < value->RealList.nCount; ++i )
+        res << value->RealList.paList[ i ];
+      return res;
+    }
+
+    case OFTStringList:
+    case OFTWideStringList:
+    {
+      QVariantList res;
+      res.reserve( value->StringList.nCount );
+      for ( int i = 0; i < value->StringList.nCount; ++i )
+        res << QString::fromUtf8( value->StringList.paList[ i ] );
+      return res;
+    }
+  }
+  return QVariant();
+}
+
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeature feature;
