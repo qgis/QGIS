@@ -56,7 +56,7 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         print((self.report))
         return result
 
-    def renderImage(self,interpolated_width, interpolated_color, image_name):
+    def renderImage(self, interpolated_width, interpolated_color, image_name):
         layer = QgsInterpolatedLineSymbolLayer()
         layer.setExpressionsStringForWidth('5', '1')
         layer.setExpressionsStringForColor('2', '6')
@@ -105,7 +105,7 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColor(QColor(255, 0, 0))
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
 
-        self.renderImage(interpolated_width,interpolated_color,'interpolatedlinesymbollayer_1')
+        self.renderImage(interpolated_width, interpolated_color, 'interpolatedlinesymbollayer_1')
 
     def testVaryingColorFixedWidth(self):
         """ test that rendering a interpolated line with fixed width and varying color"""
