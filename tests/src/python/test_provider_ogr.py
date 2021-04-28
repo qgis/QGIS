@@ -1210,6 +1210,52 @@ class PyQgsOGRProvider(unittest.TestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
         self.assertEqual(encodedUri, uri)
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0), "GDAL 3.3 required")
+    def testFieldDomains(self):
+        """
+        Test that field domains are translated from OGR where available (requires GDAL 3.3 or later)
+        """
+        datasource = os.path.join(unitTestDataPath(), 'domains.gpkg')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+
+        range_int_field = fields[fields.lookupField('with_range_domain_int')]
+        range_int_setup = range_int_field.editorWidgetSetup()
+        self.assertEqual(range_int_setup.type(), 'Range')
+        self.assertTrue(range_int_setup.config()['AllowNull'])
+        self.assertEqual(range_int_setup.config()['Max'], 2)
+        self.assertEqual(range_int_setup.config()['Min'], 1)
+        self.assertEqual(range_int_setup.config()['Precision'], 0)
+        self.assertEqual(range_int_setup.config()['Step'], 1)
+        self.assertEqual(range_int_setup.config()['Style'], 'SpinBox')
+
+        range_int64_field = fields[fields.lookupField('with_range_domain_int64')]
+        range_int64_setup = range_int64_field.editorWidgetSetup()
+        self.assertEqual(range_int64_setup.type(), 'Range')
+        self.assertTrue(range_int64_setup.config()['AllowNull'])
+        self.assertEqual(range_int64_setup.config()['Max'], 1234567890123)
+        self.assertEqual(range_int64_setup.config()['Min'], -1234567890123)
+        self.assertEqual(range_int64_setup.config()['Precision'], 0)
+        self.assertEqual(range_int64_setup.config()['Step'], 1)
+        self.assertEqual(range_int64_setup.config()['Style'], 'SpinBox')
+
+        range_real_field = fields[fields.lookupField('with_range_domain_real')]
+        range_real_setup = range_real_field.editorWidgetSetup()
+        self.assertEqual(range_real_setup.type(), 'Range')
+        self.assertTrue(range_real_setup.config()['AllowNull'])
+        self.assertEqual(range_real_setup.config()['Max'], 2.5)
+        self.assertEqual(range_real_setup.config()['Min'], 1.5)
+        self.assertEqual(range_real_setup.config()['Precision'], 0)
+        self.assertEqual(range_real_setup.config()['Step'], 1)
+        self.assertEqual(range_real_setup.config()['Style'], 'SpinBox')
+
+        enum_field = fields[fields.lookupField('with_enum_domain')]
+        enum_setup = enum_field.editorWidgetSetup()
+        self.assertEqual(enum_setup.type(), 'ValueMap')
+        self.assertTrue(enum_setup.config()['map'], [{'one': '1'}, {'': '2'}])
+
 
 if __name__ == '__main__':
     unittest.main()

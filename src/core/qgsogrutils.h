@@ -166,6 +166,12 @@ class CORE_EXPORT QgsOgrUtils
   public:
 
     /**
+     * Converts an OGRField \a value of the specified \a type into a QVariant.
+     * \since QGIS 3.20
+     */
+    static QVariant OGRFieldtoVariant( const OGRField *value, OGRFieldType type );
+
+    /**
      * Reads an OGR feature and converts it to a QgsFeature.
      * \param ogrFet OGR feature handle
      * \param fields fields collection corresponding to feature

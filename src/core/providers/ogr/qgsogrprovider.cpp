@@ -1189,6 +1189,17 @@ void QgsOgrProvider::loadFields()
     mPrimaryKeyAttrs << 0;
   }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+  // needed for field domain retrieval on GDAL 3.3+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QMutex *datasetMutex = nullptr;
+#else
+  QRecursiveMutex *datasetMutex = nullptr;
+#endif
+  GDALDatasetH ds = mOgrLayer->getDatasetHandleAndMutex( datasetMutex );
+  QMutexLocker locker( datasetMutex );
+#endif
+
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
   {
     OGRFieldDefnH fldDef = fdef.GetFieldDefn( i );
@@ -1344,6 +1355,84 @@ void QgsOgrProvider::loadFields()
       }
       mDefaultValues.insert( createdFields, defaultValue );
     }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+    if ( const char *domainName = OGR_Fld_GetDomainName( fldDef ) )
+    {
+      // dataset retains ownership of domain!
+      if ( OGRFieldDomainH domain = GDALDatasetGetFieldDomain( ds, domainName ) )
+      {
+        switch ( OGR_FldDomain_GetDomainType( domain ) )
+        {
+          case OFDT_CODED:
+          {
+            QVariantList valueConfig;
+            const OGRCodedValue *codedValue = OGR_CodedFldDomain_GetEnumeration( domain );
+            while ( codedValue && codedValue->pszCode )
+            {
+              const QString code( codedValue->pszCode );
+              const QString value( codedValue->pszValue );
+
+              QVariantMap config;
+              config[ value ] = code;
+              valueConfig.append( config );
+
+              codedValue++;
+            }
+
+            QVariantMap editorConfig;
+            editorConfig.insert( QStringLiteral( "map" ), valueConfig );
+            newField.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), editorConfig ) );
+            break;
+          }
+
+          case OFDT_RANGE:
+            if ( newField.isNumeric() )
+            {
+              // QGIS doesn't support the inclusive option yet!
+              bool isInclusive = false;
+
+              QVariantMap editorConfig;
+              editorConfig.insert( QStringLiteral( "Step" ), 1 );
+              editorConfig.insert( QStringLiteral( "Style" ), QStringLiteral( "SpinBox" ) );
+              editorConfig.insert( QStringLiteral( "AllowNull" ), nullable );
+              editorConfig.insert( QStringLiteral( "Precision" ), newField.precision() );
+
+              OGRFieldType domainFieldType = OGR_FldDomain_GetFieldType( domain );
+              bool hasMinOrMax = false;
+              if ( const OGRField *min = OGR_RangeFldDomain_GetMin( domain, &isInclusive ) )
+              {
+                const QVariant minValue = QgsOgrUtils::OGRFieldtoVariant( min, domainFieldType );
+                if ( minValue.isValid() )
+                {
+                  editorConfig.insert( QStringLiteral( "Min" ),  minValue );
+                  hasMinOrMax = true;
+                }
+              }
+              if ( const OGRField *max = OGR_RangeFldDomain_GetMax( domain, &isInclusive ) )
+              {
+                const QVariant maxValue = QgsOgrUtils::OGRFieldtoVariant( max, domainFieldType );
+                if ( maxValue.isValid() )
+                {
+                  editorConfig.insert( QStringLiteral( "Max" ),  maxValue );
+                  hasMinOrMax = true;
+                }
+              }
+
+              if ( hasMinOrMax )
+                newField.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "Range" ), editorConfig ) );
+            }
+            // GDAL also supports range domains for fields types like date/datetimes, but the QGIS corresponding field
+            // config doesn't support this yet!
+            break;
+
+          case OFDT_GLOB:
+            // not supported by QGIS yet
+            break;
+        }
+      }
+    }
+#endif
 
     mAttributeFields.append( newField );
     createdFields++;
