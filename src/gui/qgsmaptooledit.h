@@ -40,13 +40,15 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 
     /**
      * Returns default Z value
-     * Use for set Z coordinate to new vertex for 2.5d geometries
+     * Use for set Z coordinate to new vertex
      */
     double defaultZValue() const;
 
     /**
      * Returns default M value
-     * Use for set M coordinate to new vertex for 2.5d geometries
+     * Use for set M coordinate to new vertex
+     *
+     * \since QGIS 3.20
      */
     double defaultMValue() const;
 
