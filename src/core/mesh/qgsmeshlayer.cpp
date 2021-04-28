@@ -63,9 +63,9 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
     ok = setDataProvider( providerKey, providerOptions, flags );
   }
 
+  setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
   if ( ok )
   {
-    setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
     setDefaultRendererSettings( mDatasetGroupStore->datasetGroupIndexes() );
 
     if ( mDataProvider )
