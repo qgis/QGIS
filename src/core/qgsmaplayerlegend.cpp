@@ -519,13 +519,19 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
     switch ( shader.colorRampType() )
     {
       case QgsColorRampShader::Interpolated:
-        // for interpolated shaders we use a ramp legend node
-        nodes << new QgsColorRampLegendNode( nodeLayer, shader.sourceColorRamp()->clone(),
-                                             shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
-                                             shader.minimumValue(),
-                                             shader.maximumValue() );
-        break;
-
+        if ( ! shader.legendSettings() || shader.legendSettings()->useContinuousLegend() )
+        {
+          // for interpolated shaders we use a ramp legend node
+          if ( !shader.colorRampItemList().isEmpty() )
+          {
+            nodes << new QgsColorRampLegendNode( nodeLayer, shader.sourceColorRamp()->clone(),
+                                                 shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
+                                                 shader.minimumValue(),
+                                                 shader.maximumValue() );
+          }
+          break;
+        }
+        Q_FALLTHROUGH();
       case QgsColorRampShader::Discrete:
       case QgsColorRampShader::Exact:
       {
