@@ -18591,9 +18591,9 @@ void TestQgsGeometry::makeValid_data()
 
   QTest::newRow( "dimension collapse" ) << QStringLiteral( "LINESTRING(0 0)" ) << QStringLiteral( "" );
   QTest::newRow( "unclosed ring" ) << QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22))" ) << QStringLiteral( "Polygon ((10 22, 10 32, 20 32, 20 22, 10 22))" );
-  QTest::newRow( "butterfly polygon (self-intersecting ring)" ) << QStringLiteral( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ) << QStringLiteral( "MultiPolygon (((0 0, 0 10, 5 5, 0 0)),((10 0, 5 5, 10 10, 10 0)))" );
-  QTest::newRow( "polygon with extra tail (a part of the ring does not form any area)" ) << QStringLiteral( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ) << QStringLiteral( "GeometryCollection (Polygon ((0 1, 1 1, 1 0, 0 0, 0 1)),LineString (0 0, -1 0))" );
-  QTest::newRow( "collection with invalid geometries" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ) << QStringLiteral( "GeometryCollection (Point (0 0),MultiPolygon (((0 0, 0 10, 5 5, 0 0)),((10 0, 5 5, 10 10, 10 0))),LineString (10 0, 10 10))" );
+  QTest::newRow( "butterfly polygon (self-intersecting ring)" ) << QStringLiteral( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ) << QStringLiteral( "MultiPolygon (((5 5, 10 10, 10 0, 5 5)),((0 0, 0 10, 5 5, 0 0)))" );
+  QTest::newRow( "polygon with extra tail (a part of the ring does not form any area)" ) << QStringLiteral( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ) << QStringLiteral( "GeometryCollection (Polygon ((0 0, 0 1, 1 1, 1 0, 0 0)),LineString (0 0, -1 0))" );
+  QTest::newRow( "collection with invalid geometries" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ) << QStringLiteral( "GeometryCollection (MultiPolygon (((5 5, 10 10, 10 0, 5 5)),((0 0, 0 10, 5 5, 0 0))),LineString (10 0, 10 10),Point (0 0))" );
   QTest::newRow( "null line (#18077)" ) << QStringLiteral( "MultiLineString ((356984.0625 6300089, 356984.0625 6300089))" ) << QStringLiteral( "Point (356984.0625 6300089)" );
 }
 
@@ -18606,6 +18606,7 @@ void TestQgsGeometry::makeValid()
   QVERIFY( !gInput.isNull() );
 
   QgsGeometry gValid = gInput.makeValid();
+  gValid.normalize();
   QCOMPARE( gValid.asWkt(), expected );
 }
 
