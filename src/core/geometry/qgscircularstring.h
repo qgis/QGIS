@@ -163,6 +163,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     double yAt( int index ) const override SIP_HOLDGIL;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+    void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
@@ -201,7 +202,6 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
-    void scroll( int firstVertexIndex ) final;
 
   private:
     QVector<double> mX;

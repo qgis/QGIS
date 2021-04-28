@@ -464,6 +464,27 @@ QString QgsCurvePolygon::asKml( int precision ) const
   return kml;
 }
 
+void QgsCurvePolygon::normalize()
+{
+  // normalize rings
+  if ( mExteriorRing )
+    mExteriorRing->normalize();
+
+  for ( QgsCurve *ring : std::as_const( mInteriorRings ) )
+  {
+    ring->normalize();
+  }
+
+  // sort rings
+  std::sort( mInteriorRings.begin(), mInteriorRings.end(), []( const QgsCurve * a, const QgsCurve * b )
+  {
+    return a->compareTo( b ) > 0;
+  } );
+
+  // normalize ring orientation
+  forceRHR();
+}
+
 double QgsCurvePolygon::area() const
 {
   if ( !mExteriorRing )

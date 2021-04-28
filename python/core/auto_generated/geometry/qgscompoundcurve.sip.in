@@ -187,6 +187,7 @@ Appends first point if not already closed.
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
+    void scroll( int firstVertexIndex ) final;
 
 
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
@@ -206,7 +207,6 @@ Appends first point if not already closed.
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
-    void scroll( int firstVertexIndex ) final;
 
 };
 

@@ -2141,6 +2141,17 @@ class CORE_EXPORT QgsGeometry
     void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 
     /**
+     * Reorganizes the geometry into a normalized form (or "canonical" form).
+     *
+     * Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+     * right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+     * resultant geometry will be geometrically equivalent to the original geometry.
+     *
+     * \since QGIS 3.20
+     */
+    void normalize();
+
+    /**
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.

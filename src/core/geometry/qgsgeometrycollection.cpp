@@ -291,6 +291,18 @@ bool QgsGeometryCollection::removeGeometry( int nr )
   return true;
 }
 
+void QgsGeometryCollection::normalize()
+{
+  for ( QgsAbstractGeometry *geometry : std::as_const( mGeometries ) )
+  {
+    geometry->normalize();
+  }
+  std::sort( mGeometries.begin(), mGeometries.end(), []( const QgsAbstractGeometry * a, const QgsAbstractGeometry * b )
+  {
+    return a->compareTo( b ) > 0;
+  } );
+}
+
 int QgsGeometryCollection::dimension() const
 {
   int maxDim = 0;

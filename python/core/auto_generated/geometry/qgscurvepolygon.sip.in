@@ -58,6 +58,7 @@ Curve polygon geometry type
 
     virtual QString asKml( int precision = 17 ) const;
 
+    void normalize() final /HoldGIL/;
 
     virtual double area() const /HoldGIL/;
 

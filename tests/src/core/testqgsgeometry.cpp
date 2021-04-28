@@ -169,6 +169,9 @@ class TestQgsGeometry : public QObject
     void scroll_data();
     void scroll();
 
+    void normalize_data();
+    void normalize();
+
     // MK, Disabled 14.11.2014
     // Too unclear what exactly should be tested and which variations are allowed for the line
 #if 0
@@ -17839,6 +17842,39 @@ void TestQgsGeometry::scroll()
   qgsgeometry_cast< QgsCurve * >( geom.get() )->scroll( vertex );
 
   QCOMPARE( geom.get()->asWkt(), expected );
+}
+
+void TestQgsGeometry::normalize_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "empty" ) << QString() << QString();
+  QTest::newRow( "point empty" ) << QStringLiteral( "POINT EMPTY" )  << QStringLiteral( "Point EMPTY" );
+  QTest::newRow( "point" ) << QStringLiteral( "POINT (1 2)" )  << QStringLiteral( "Point (1 2)" );
+  // same code paths are used for all curve derivatives
+  QTest::newRow( "line empty" ) << QStringLiteral( "LINESTRING EMPTY" )  << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "line open" ) << QStringLiteral( "LINESTRING (1 1, 1 2, 1 3)" )  << QStringLiteral( "LineString (1 1, 1 2, 1 3)" );
+  QTest::newRow( "line closed" ) << QStringLiteral( "LINESTRING (1 1, 1 0, 0 0, 0 1, 1 1)" )  << QStringLiteral( "LineString (0 0, 0 1, 1 1, 1 0, 0 0)" );
+  QTest::newRow( "circular string closed" ) << QStringLiteral( "CIRCULARSTRINGZM (1 1 11 21, 1 0 12 22, 0 0 13 23, 0 1 14 24, 1 1 11 21)" )  << QStringLiteral( "CircularStringZM (0 0 13 23, 0 1 14 24, 1 1 11 21, 1 0 12 22, 0 0 13 23)" );
+  // same code paths are used for all curve polygon derivatives
+  QTest::newRow( "polygon empty" ) << QStringLiteral( "POLYGON EMPTY" )  << QStringLiteral( "Polygon EMPTY" );
+  QTest::newRow( "polygon exterior" ) << QStringLiteral( "POLYGON ((1 1, 0 1, 0 0, 1 0, 1 1))" )  << QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  QTest::newRow( "polygon rings" ) << QStringLiteral( "POLYGON ((1 1, 0 1, 0 0, 1 0, 1 1),(0.1 0.2,  0.2 0.2, 0.2 0.1, 0.1 0.1, 0.1 0.2),(0.8 0.8, 0.8 0.7, 0.7 0.7, 0.7 0.8, 0.8 0.8))" )  << QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0),(0.7 0.7, 0.8 0.7, 0.8 0.8, 0.7 0.8, 0.7 0.7),(0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.2, 0.1 0.1))" );
+  // same code paths are used for all collection derivatives
+  QTest::newRow( "collection empty" ) << QStringLiteral( "GEOMETRYCOLLECTION EMPTY" )  << QStringLiteral( "GeometryCollection EMPTY" );
+  QTest::newRow( "multipoint" ) << QStringLiteral( "MULTIPOINT(1 1, 3 4, 1 3, 2 2)" )  << QStringLiteral( "MultiPoint ((3 4),(2 2),(1 3),(1 1))" );
+}
+
+void TestQgsGeometry::normalize()
+{
+  QFETCH( QString, wkt );
+  QFETCH( QString, expected );
+
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  geom.normalize();
+
+  QCOMPARE( geom.asWkt( 1 ), expected );
 }
 
 // MK, Disabled 14.11.2014

@@ -2717,6 +2717,17 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const V
   }
 }
 
+void QgsGeometry::normalize()
+{
+  if ( !d->geometry )
+  {
+    return;
+  }
+
+  detach();
+  d->geometry->normalize();
+}
+
 bool QgsGeometry::isGeosValid( const QgsGeometry::ValidityFlags flags ) const
 {
   if ( !d->geometry )

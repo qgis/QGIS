@@ -176,6 +176,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId id ) const override;
     QgsCurve *toCurveType() const override SIP_FACTORY;
+    void normalize() final SIP_HOLDGIL;
 
     QgsRectangle boundingBox() const override;
     bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
@@ -262,6 +263,19 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      */
     Orientation orientation() const;
 
+    /**
+     * Scrolls the curve vertices so that they start with the vertex at the given index.
+     *
+     * \warning This should only be called on closed curves, or the shape of the curve will be altered and
+     * the result is undefined.
+     *
+     * \warning The \a firstVertexIndex must correspond to a segment vertex and not a curve point or the result
+     * is undefined.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void scroll( int firstVertexIndex ) = 0;
+
 #ifndef SIP_RUN
 
     /**
@@ -305,20 +319,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 
     int childCount() const override;
     QgsPoint childPoint( int index ) const override;
-
-    /**
-     * Scrolls the curve vertices so that they start with the vertex at the given index.
-     *
-     * \warning This should only be called on closed curves, or the shape of the curve will be altered and
-     * the result is undefined.
-     *
-     * \warning The \a firstVertexIndex must correspond to a segment vertex and not a curve point or the result
-     * is undefined.
-     *
-     * \since QGIS 3.20
-     */
-    virtual void scroll( int firstVertexIndex ) = 0;
-
 #ifndef SIP_RUN
 
     /**
