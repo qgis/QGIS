@@ -20,6 +20,7 @@
 #include "qgsunittypes.h"
 #include "qgsexception.h"
 #include "qgsapplication.h"
+#include "qgsstyle.h"
 
 #include <list>
 
@@ -272,6 +273,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   , mCallout( QgsApplication::calloutRegistry()->defaultCallout() )
 {
   initPropertyDefinitions();
+
+  mFormat = QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling );
 }
 Q_NOWARN_DEPRECATED_POP
 

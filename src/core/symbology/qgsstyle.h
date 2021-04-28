@@ -723,6 +723,23 @@ class CORE_EXPORT QgsStyle : public QObject
     QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
 
     /**
+     * Text format context.
+     *
+     * \since QGIS 3.20
+     */
+    enum class TextFormatContext : int
+    {
+      Labeling, //!< Text format used in labeling
+    };
+
+    /**
+     * Returns the default text format to use for new text based objects in the specified \a context.
+     *
+     * \since QGIS 3.20
+     */
+    QgsTextFormat defaultTextFormat( QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling ) const;
+
+    /**
      * Adds a 3d \a symbol to the database.
      *
      * \param name is the name of the 3d symbol
@@ -1139,6 +1156,7 @@ class CORE_EXPORT QgsStyle : public QObject
     static QString tagmapEntityIdFieldName( StyleEntity type );
 
     friend class Qgs3D;
+    friend class TestStyle;
 
     Q_DISABLE_COPY( QgsStyle )
 };
