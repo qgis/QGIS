@@ -1131,6 +1131,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     FeatureAvailability hasFeatures() const FINAL;
 
+    /**
+     * Update the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
+     * data source
+     * \since QGIS 2.10
+     * \deprecated Use version with ProviderOptions argument instead
+     */
+    Q_DECL_DEPRECATED void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false ) SIP_DEPRECATED;
 
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
 

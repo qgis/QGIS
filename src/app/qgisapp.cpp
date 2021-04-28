@@ -8251,7 +8251,8 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
           subsetString = vlayer->subsetString();
         }
 
-        layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
+        layer->setDataSource( uri.uri, layer->name(), uri.providerKey,
+                              QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
         // Re-apply original style and subset string  when fixing bad layers
         if ( !( layerWasValid || layer->originalXmlProperties().isEmpty() ) )
         {
@@ -8820,7 +8821,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
       QString source = newFilename;
       if ( ! newLayerName.isEmpty() )
         source += QStringLiteral( "|layername=%1" ).arg( newLayerName );
-      vl->setDataSource( source, vl->name(), QStringLiteral( "ogr" ), options );
+      vl->QgsMapLayer::setDataSource( source, vl->name(), QStringLiteral( "ogr" ), options );
       vl->triggerRepaint();
       this->visibleMessageBar()->pushMessage( tr( "Layer Saved" ),
                                               tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),

@@ -1634,6 +1634,23 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
 } // void QgsVectorLayer::readXml
 
+void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag )
+{
+  QgsDataProvider::ProviderOptions options;
+
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( loadDefaultStyleFlag )
+  {
+    flags |= QgsDataProvider::FlagLoadDefaultStyle;
+  }
+
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  setDataSourcePrivate( dataSource, baseName, provider, options, flags );
+}
+
 void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
     const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
