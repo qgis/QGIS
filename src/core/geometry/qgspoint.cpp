@@ -759,6 +759,11 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
 }
 
+void QgsPoint::normalize()
+{
+  // nothing to do
+}
+
 bool QgsPoint::isEmpty() const
 {
   return std::isnan( mX ) || std::isnan( mY );

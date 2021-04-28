@@ -235,6 +235,17 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
 
+    /**
+     * Reorganizes the geometry into a normalized form (or "canonical" form).
+     *
+     * Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+     * right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+     * resultant geometry will be geometrically equivalent to the original geometry.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void normalize() = 0;
+
     //import
 
     /**

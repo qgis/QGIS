@@ -179,6 +179,17 @@ For instance, a polygon geometry will have a boundary consisting of the linestri
 .. versionadded:: 3.0
 %End
 
+    virtual void normalize() = 0;
+%Docstring
+Reorganizes the geometry into a normalized form (or "canonical" form).
+
+Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+resultant geometry will be geometrically equivalent to the original geometry.
+
+.. versionadded:: 3.20
+%End
+
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) = 0;
 %Docstring

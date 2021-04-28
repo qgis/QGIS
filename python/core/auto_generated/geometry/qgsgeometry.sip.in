@@ -2029,6 +2029,17 @@ The ``flags`` parameter indicates optional flags which control the type of valid
 .. versionadded:: 1.5
 %End
 
+    void normalize();
+%Docstring
+Reorganizes the geometry into a normalized form (or "canonical" form).
+
+Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+resultant geometry will be geometrically equivalent to the original geometry.
+
+.. versionadded:: 3.20
+%End
+
     static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
 %Docstring
 Compute the unary union on a list of ``geometries``. May be faster than an iterative union on a set of geometries.
