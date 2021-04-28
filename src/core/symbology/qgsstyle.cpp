@@ -1222,6 +1222,11 @@ QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( QgsSymbol::SymbolTyp
   return res;
 }
 
+QgsTextFormat QgsStyle::defaultTextFormat( QgsStyle::TextFormatContext ) const
+{
+  return textFormat( QStringLiteral( "Default" ) );
+}
+
 bool QgsStyle::saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, bool favorite, const QStringList &tags )
 {
   // insert it into the database

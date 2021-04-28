@@ -48,7 +48,7 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
   initWidget();
   setWidgetMode( Text );
   populateDataDefinedButtons();
-  updateWidgetForFormat( format );
+  updateWidgetForFormat( format.isValid() ? format : QgsStyle::defaultStyle()->defaultTextFormat() );
 }
 
 QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode, QgsVectorLayer *layer )
