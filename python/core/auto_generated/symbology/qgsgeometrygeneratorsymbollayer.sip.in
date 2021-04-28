@@ -8,7 +8,7 @@
 
 
 
-class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
+class QgsGeometryGeneratorSymbolLayer : QgsHybridSymbolLayer
 {
 
 %TypeHeaderCode
@@ -90,6 +90,7 @@ care about the geometry of its parents.
 %End
 
     virtual void render( QgsSymbolRenderContext &context );
+
 %Docstring
 Will render this symbol layer using the context.
 In comparison to other symbols there is no geometry passed in, since

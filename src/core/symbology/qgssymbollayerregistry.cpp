@@ -23,6 +23,7 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsmasksymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsinterpolatedlinerenderer.h"
 
 QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 {
@@ -73,6 +74,8 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "GeometryGenerator" ), QObject::tr( "Geometry Generator" ), QgsSymbol::Hybrid,
                       QgsGeometryGeneratorSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "InterpolatedLine" ), QObject::tr( "Interpolated Line" ), QgsSymbol::Hybrid,
+                      QgsInterpolatedLineSymbolLayer::create ) );
 }
 
 QgsSymbolLayerRegistry::~QgsSymbolLayerRegistry()

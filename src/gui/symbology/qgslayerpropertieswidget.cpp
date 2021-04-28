@@ -31,6 +31,7 @@
 #include "qgssymbollayerwidget.h"
 #include "qgsarrowsymbollayerwidget.h"
 #include "qgsellipsesymbollayerwidget.h"
+#include "qgsinterpolatedlinesymbollayerwidget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
@@ -73,6 +74,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "MarkerLine" ), QgsMarkerLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "HashLine" ), QgsHashedLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "ArrowLine" ), QgsArrowSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "InterpolatedLine" ), QgsInterpolatedLineSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "SimpleMarker" ), QgsSimpleMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );

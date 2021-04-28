@@ -42,6 +42,7 @@ set(QGIS_GUI_SRCS
   symbology/qgsgraduatedhistogramwidget.cpp
   symbology/qgsgraduatedsymbolrendererwidget.cpp
   symbology/qgsheatmaprendererwidget.cpp
+  symbology/qgsinterpolatedlinesymbollayerwidget.cpp
   symbology/qgsinvertedpolygonrendererwidget.cpp
   symbology/qgslayerpropertieswidget.cpp
   symbology/qgsmasksymbollayerwidget.cpp
@@ -1202,6 +1203,7 @@ set(QGIS_GUI_HDRS
   symbology/qgsgraduatedhistogramwidget.h
   symbology/qgsgraduatedsymbolrendererwidget.h
   symbology/qgsheatmaprendererwidget.h
+  symbology/qgsinterpolatedlinesymbollayerwidget.h
   symbology/qgsinvertedpolygonrendererwidget.h
   symbology/qgslayerpropertieswidget.h
   symbology/qgsmergedfeaturerendererwidget.h
