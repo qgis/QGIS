@@ -226,7 +226,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // cppcheck-suppress memleak
 }
 
-QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::getPointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
+QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
 {
   QgsPointCloudBlock *block = nullptr;
   if ( pc->accessType() == QgsPointCloudIndex::AccessType::Local )
@@ -277,7 +277,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  std::unique_ptr<QgsPointCloudBlock> block( getPointCloudBlock( pc, n, request, context ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
 
@@ -401,7 +401,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  std::unique_ptr<QgsPointCloudBlock> block( getPointCloudBlock( pc, n, request, context ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
 
@@ -506,7 +506,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  std::unique_ptr<QgsPointCloudBlock> block( getPointCloudBlock( pc, n, request, context ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
 
@@ -669,7 +669,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  std::unique_ptr<QgsPointCloudBlock> block( getPointCloudBlock( pc, n, request, context ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
 
