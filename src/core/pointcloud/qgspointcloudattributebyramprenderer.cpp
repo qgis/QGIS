@@ -25,6 +25,9 @@
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
   mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  mColorRampShader.setColorRampType(QLatin1String("DISCRETE"));
+  mColorRampShader.classifyColorRamp(52,-1, QgsRectangle(0,0,0,0), nullptr);
+  mColorRampShader.setClip(true);
 }
 
 QString QgsPointCloudAttributeByRampRenderer::type() const
@@ -295,6 +298,10 @@ QgsColorRampShader QgsPointCloudAttributeByRampRenderer::colorRampShader() const
 void QgsPointCloudAttributeByRampRenderer::setColorRampShader( const QgsColorRampShader &shader )
 {
   mColorRampShader = shader;
+  if (mColorRampShader.isEmpty())
+  {
+    mColorRampShader.classifyColorRamp(10,0);
+  }
 }
 
 double QgsPointCloudAttributeByRampRenderer::minimum() const
