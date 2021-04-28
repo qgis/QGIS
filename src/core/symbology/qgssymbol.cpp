@@ -805,17 +805,17 @@ void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext 
   if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::PropertyLayerEnabled, context.renderContext().expressionContext(), true ) )
     return;
 
-  QgsGeometryGeneratorSymbolLayer *generatorLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( layer );
+  QgsHybridSymbolLayer *hybridLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( layer );
 
-  QgsPaintEffect *effect = generatorLayer->paintEffect();
+  QgsPaintEffect *effect = hybridLayer->paintEffect();
   if ( effect && effect->enabled() )
   {
     QgsEffectPainter p( context.renderContext(), effect );
-    generatorLayer->render( context );
+    hybridLayer->render( context );
   }
   else
   {
-    generatorLayer->render( context );
+    hybridLayer->render( context );
   }
 }
 

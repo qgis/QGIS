@@ -45,7 +45,7 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &prop
 }
 
 QgsGeometryGeneratorSymbolLayer::QgsGeometryGeneratorSymbolLayer( const QString &expression )
-  : QgsSymbolLayer( QgsSymbol::Hybrid )
+  : QgsHybridSymbolLayer()
   , mExpression( new QgsExpression( expression ) )
   , mSymbolType( QgsSymbol::Marker )
 {

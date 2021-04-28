@@ -23,7 +23,7 @@
  * \ingroup core
  * \class QgsGeometryGeneratorSymbolLayer
  */
-class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
+class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsHybridSymbolLayer
 {
   public:
     ~QgsGeometryGeneratorSymbolLayer() override;
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * \param context The rendering context which will be used to render and to
      *                construct a geometry.
      */
-    virtual void render( QgsSymbolRenderContext &context );
+    void render( QgsSymbolRenderContext &context ) override;
 
     void setColor( const QColor &color ) override;
 
