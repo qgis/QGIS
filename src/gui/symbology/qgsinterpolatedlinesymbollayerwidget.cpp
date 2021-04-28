@@ -59,15 +59,15 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
                                         << QgsUnitTypes::RenderUnit::RenderPixels
                                         << QgsUnitTypes::RenderUnit::RenderPoints );
 
-  connect( mWidthMethodComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mWidthMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::updateVisibleWidget );
-  connect( mColorMethodComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mColorMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::updateVisibleWidget );
 
   // Width parameter
-  connect( mWidthMethodComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mWidthMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
-  connect( mDoubleSpinBoxWidth, QOverload<double>::of( &QDoubleSpinBox::valueChanged ),
+  connect( mDoubleSpinBoxWidth, qOverload<double>( &QDoubleSpinBox::valueChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mWidthStartFieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged )
            , this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxWidthFromLayer );
@@ -76,9 +76,9 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   connect( mButtonLoadMinMaxValueWidth, &QPushButton::clicked, this, &QgsInterpolatedLineSymbolLayerWidget::onReloadMinMaxValueWidth );
   connect( mLineEditWidthMinValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mLineEditWidthMaxValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
-  connect( mDoubleSpinBoxMinWidth, QOverload<double>::of( &QDoubleSpinBox::valueChanged ),
+  connect( mDoubleSpinBoxMinWidth, qOverload<double>( &QDoubleSpinBox::valueChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
-  connect( mDoubleSpinBoxMaxWidth, QOverload<double>::of( &QDoubleSpinBox::valueChanged ),
+  connect( mDoubleSpinBoxMaxWidth, qOverload<double>( &QDoubleSpinBox::valueChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mWidthUnitSelectionFixed, &QgsUnitSelectionWidget::changed, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mWidthUnitSelectionVarying, &QgsUnitSelectionWidget::changed, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
@@ -97,7 +97,7 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   connect( mCheckBoxOutOfrange, &QCheckBox::clicked, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
 
   // Color parameter
-  connect( mColorMethodComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mColorMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this,  &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mColorButton, &QgsColorButton::colorChanged, this,  &QgsInterpolatedLineSymbolLayerWidget::apply );
