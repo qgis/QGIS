@@ -92,7 +92,7 @@ void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options )
 
 QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType type )
 {
-  if ( !value )
+  if ( !value || OGR_RawField_IsUnset( value ) || OGR_RawField_IsNull( value ) )
     return QVariant();
 
   switch ( type )
