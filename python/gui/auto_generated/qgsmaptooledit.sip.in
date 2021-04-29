@@ -25,14 +25,14 @@ Base class for map tools that edit vector geometry
 
     double defaultZValue() const;
 %Docstring
-Returns default Z value
-Use for set Z coordinate to new vertex
+Returns default Z value.
+Used for setting Z coordinate to new vertex.
 %End
 
     double defaultMValue() const;
 %Docstring
-Returns default M value
-Use for set M coordinate to new vertex
+Returns default M value.
+Used for setting M coordinate to new vertex.
 
 .. versionadded:: 3.20
 %End
