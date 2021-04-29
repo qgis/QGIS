@@ -1390,7 +1390,10 @@ void QgsOgrProvider::loadFields()
             while ( codedValue && codedValue->pszCode )
             {
               const QString code( codedValue->pszCode );
-              const QString value( codedValue->pszValue );
+              // if pszValue is null then it indicates we are working with a set of acceptable values which aren't
+              // coded. In this case we copy the code as the value so that QGIS exposes the domain as a choice of
+              // the valid code values.
+              const QString value( codedValue->pszValue ? codedValue->pszValue : codedValue->pszCode );
 
               QVariantMap config;
               config[ value ] = code;
