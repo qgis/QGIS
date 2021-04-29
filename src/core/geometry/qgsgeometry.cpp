@@ -2252,8 +2252,7 @@ double QgsGeometry::minimumClearance() const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  double result( geos.minimumClearance( &mLastError ) );
-  return result;
+  return geos.minimumClearance( &mLastError );
 }
 
 QgsGeometry QgsGeometry::minimumClearanceLine() const
