@@ -210,6 +210,11 @@ namespace pal
        */
       QString toWkt() const;
 
+      /**
+       * Returns a vector of edge distances as well as its total length
+       */
+      std::tuple< std::vector< double >, double > edgeDistances() const;
+
       int nbPoints;
       std::vector< double > x;
       std::vector< double > y;   // points order is counterclockwise

@@ -1318,7 +1318,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   const double offsetDistance = mLF->distLabel() + li->characterHeight() / 2;
   std::unique_ptr< PointSet > mapShapeOffsetPositive;
   std::unique_ptr< PointSet > mapShapeOffsetNegative;
-  if ( hasAboveBelowLinePlacement )
+  if ( hasAboveBelowLinePlacement && !qgsDoubleNear( offsetDistance, 0 ) )
   {
     // create offseted map shapes to be used for above and below line placements
     mapShapeOffsetPositive = mapShape->clone();
@@ -1330,6 +1330,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     }
     else
     {
+      // In case of a negative offset distance, above line placement switch to below line and vice versa
       if ( flags & QgsLabeling::LinePlacementFlag::AboveLine
            && !( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
       {
@@ -1348,18 +1349,18 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   }
 
   std::vector< std::unique_ptr< LabelPosition >> positions;
-  for ( int i = 0; i <= 2; i++ )
+  for ( PathOffset offset : { PositiveOffset, NoOffset, NegativeOffset } )
   {
     PointSet *currentMapShape = nullptr;
-    if ( i == 0 && hasAboveBelowLinePlacement )
+    if ( offset == PositiveOffset && hasAboveBelowLinePlacement )
     {
       currentMapShape = mapShapeOffsetPositive.get();
     }
-    if ( i == 1 && flags & QgsLabeling::LinePlacementFlag::OnLine )
+    if ( offset == NoOffset && flags & QgsLabeling::LinePlacementFlag::OnLine )
     {
       currentMapShape = mapShape;
     }
-    if ( i == 2 && hasAboveBelowLinePlacement )
+    if ( offset == NegativeOffset && hasAboveBelowLinePlacement )
     {
       currentMapShape = mapShapeOffsetNegative.get();
     }
@@ -1367,20 +1368,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       continue;
 
     // distance calculation
-    std::vector< double > pathDistances( currentMapShape->nbPoints );
-    double totalDistance = 0;
-    double oldX = -1.0, oldY = -1.0;
-    for ( int i = 0; i < currentMapShape->nbPoints; i++ )
-    {
-      if ( i == 0 )
-        pathDistances[i] = 0;
-      else
-        pathDistances[i] = std::sqrt( std::pow( oldX - currentMapShape->x[i], 2 ) + std::pow( oldY - currentMapShape->y[i], 2 ) );
-      oldX = currentMapShape->x[i];
-      oldY = currentMapShape->y[i];
-
-      totalDistance += pathDistances[i];
-    }
+    const auto [ pathDistances, totalDistance ] = currentMapShape->edgeDistances();
     if ( qgsDoubleNear( totalDistance, 0.0 ) )
       continue;
 
@@ -1418,35 +1406,18 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
       if ( !labelPosition )
         continue;
-      if ( ( i == 0 || i == 2 ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
+      if ( ( offset != NoOffset ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
         continue;
-      if ( ( i == 0 || i == 2 ) && labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
+      if ( ( offset != NoOffset ) && labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
         continue;
 
       // evaluate cost
-      double angleDiff = 0.0, angleLast = 0.0, diff;
-      LabelPosition *tmp = labelPosition.get();
-      double sinAvg = 0, cosAvg = 0;
-      while ( tmp )
-      {
-        if ( tmp != labelPosition.get() ) // not first?
-        {
-          diff = std::fabs( tmp->getAlpha() - angleLast );
-          if ( diff > 2 * M_PI ) diff -= 2 * M_PI;
-          diff = std::min( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
-          angleDiff += diff;
-        }
-
-        sinAvg += std::sin( tmp->getAlpha() );
-        cosAvg += std::cos( tmp->getAlpha() );
-        angleLast = tmp->getAlpha();
-        tmp = tmp->nextPart();
-      }
+      const double angleDiff = labelPosition->angleDifferential();
+      const double angleDiffAvg = characterCount > 1 ? ( angleDiff / ( characterCount - 1 ) ) : 0; // <0, pi> but pi/8 is much already
 
       // if anchor placement is towards start or end of line, we need to slightly tweak the costs to ensure that the
       // anchor weighting is sufficient to push labels towards start/end
       const bool anchorIsFlexiblePlacement = !singleCandidateOnly && mLF->lineAnchorPercent() > 0.1 && mLF->lineAnchorPercent() < 0.9;
-      double angleDiffAvg = characterCount > 1 ? ( angleDiff / ( characterCount - 1 ) ) : 0; // <0, pi> but pi/8 is much already
       double cost = angleDiffAvg / 100; // <0, 0.031 > but usually <0, 0.003 >
       if ( cost < 0.0001 )
         cost = 0.0001;
@@ -1456,13 +1427,13 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       double costCenter = std::fabs( lineAnchorPoint - labelCenter ) / totalDistance; // <0, 0.5>
       cost += costCenter / ( anchorIsFlexiblePlacement ? 100 : 10 );  // < 0, 0.005 >, or <0, 0.05> if preferring placement close to start/end of line
 
-      const bool isBelow = ( i == 0 || i == 2 ) && labeledLineSegmentIsRightToLeft;
+      const bool isBelow = ( offset != NoOffset ) && labeledLineSegmentIsRightToLeft;
       if ( isBelow )
       {
         // add additional cost for on line placement
         cost += 0.001;
       }
-      else if ( i == 1 )
+      else if ( offset == NoOffset )
       {
         // add additional cost for below line placement
         cost += 0.002;
