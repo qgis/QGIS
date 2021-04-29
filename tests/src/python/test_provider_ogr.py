@@ -1254,7 +1254,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         enum_field = fields[fields.lookupField('with_enum_domain')]
         enum_setup = enum_field.editorWidgetSetup()
         self.assertEqual(enum_setup.type(), 'ValueMap')
-        self.assertTrue(enum_setup.config()['map'], [{'one': '1'}, {'': '2'}])
+        self.assertTrue(enum_setup.config()['map'], [{'one': '1'}, {'2': '2'}])
 
 
 if __name__ == '__main__':
