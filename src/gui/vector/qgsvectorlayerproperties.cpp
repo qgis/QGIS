@@ -865,7 +865,6 @@ void QgsVectorLayerProperties::onCancel()
     int errorLine, errorColumn;
     doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
     mLayer->importNamedStyle( doc, myMessage );
-    syncToLayer();
   }
 }
 
