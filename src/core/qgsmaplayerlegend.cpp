@@ -524,7 +524,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
           // for interpolated shaders we use a ramp legend node
           if ( !shader.colorRampItemList().isEmpty() )
           {
-            nodes << new QgsColorRampLegendNode( nodeLayer, shader.sourceColorRamp()->clone(),
+            nodes << new QgsColorRampLegendNode( nodeLayer, shader.createColorRamp(),
                                                  shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
                                                  shader.minimumValue(),
                                                  shader.maximumValue() );
