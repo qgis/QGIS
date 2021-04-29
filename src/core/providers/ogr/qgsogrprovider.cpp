@@ -49,6 +49,7 @@ email                : sherman at mrcc.com
 #include "qgsgeopackageproviderconnection.h"
 #include "qgis.h"
 #include "qgsembeddedsymbolrenderer.h"
+#include "qgsmetadatautils.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -623,7 +624,6 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   bool supportsBoolean = false;
 
   // layer metadata
-  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
   if ( mOgrOrigLayer )
   {
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
@@ -633,13 +633,39 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 #endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     QMutexLocker locker( mutex );
-    const QString identifier = GDALGetMetadataItem( layer, "IDENTIFIER", nullptr );
-    if ( !identifier.isEmpty() )
-      mLayerMetadata.setTitle( identifier ); // see geopackage specs -- "'identifier' is analogous to 'title'"
-    const QString abstract = GDALGetMetadataItem( layer, "DESCRIPTION", nullptr );
-    if ( !abstract.isEmpty() )
-      mLayerMetadata.setAbstract( abstract );
+    if ( ( mGDALDriverName == QLatin1String( "FileGDB" ) || mGDALDriverName == QLatin1String( "OpenFileGDB" ) ) )
+    {
+      // read layer metadata
+
+      // important -- this ONLY works if the layer name is NOT quoted!!
+      QByteArray sql = "GetLayerMetadata " + mOgrOrigLayer->name();
+      if ( QgsOgrLayerUniquePtr l = mOgrOrigLayer->ExecuteSQL( sql ) )
+      {
+        gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+        if ( f )
+        {
+          bool ok = false;
+          QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, textEncoding(), &ok );
+          if ( ok )
+          {
+            QDomDocument metadataDoc;
+            metadataDoc.setContent( res.toString() );
+            mLayerMetadata = QgsMetadataUtils::convertFromEsri( metadataDoc );
+          }
+        }
+      }
+    }
+    else
+    {
+      const QString identifier = GDALGetMetadataItem( layer, "IDENTIFIER", nullptr );
+      if ( !identifier.isEmpty() )
+        mLayerMetadata.setTitle( identifier ); // see geopackage specs -- "'identifier' is analogous to 'title'"
+      const QString abstract = GDALGetMetadataItem( layer, "DESCRIPTION", nullptr );
+      if ( !abstract.isEmpty() )
+        mLayerMetadata.setAbstract( abstract );
+    }
   }
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
 
   if ( mOgrOrigLayer )
   {
