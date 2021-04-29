@@ -22,6 +22,7 @@ QGIS 3.20        {#qgis_api_break_3_20}
 setDataSource       {#qgis_api_break_3_20_setdatasource}
 -------------
 
+- QgsVectorLayer::setDataSource deprecated and specific method without ProviderOptions has been removed
 - QgsMapLayer::setDataSource is no longer virtual. If has been replaced with QgsMapLayer::setDataSourcePrivate. This is only relevant for subclassing QgsMapLayer, for code that only uses the subclasses (QgsVectorLayer, QgsRasterLayer, ...) this has no effect.
 
 QGIS 3.4        {#qgis_api_break_3_4}
