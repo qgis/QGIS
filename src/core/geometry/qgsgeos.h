@@ -217,12 +217,12 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     double hausdorffDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg = nullptr ) const;
 
     /**
-     * Returns the Fréchet distance this geometry and \a geom, restricted to discrete points for both geometries.
+     * Returns the Fréchet distance between this geometry and \a geom, restricted to discrete points for both geometries.
      *
      * The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves.
      * Therefore it is often better than the Hausdorff distance.
      *
-     * This method requires QGIS builds based on GEOS 3.7 or later.
+     * This method requires a QGIS build based on GEOS 3.7 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.6 or earlier.
      * \see frechetDistanceDensify()
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     double frechetDistance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const;
 
     /**
-     * Returns the Fréchet distance this geometry and \a geom, restricted to discrete points for both geometries.
+     * Returns the Fréchet distance between this geometry and \a geom, restricted to discrete points for both geometries.
      *
      * The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves.
      * Therefore it is often better than the Hausdorff distance.
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * is not sufficient. Decreasing the \a densifyFraction parameter will make the
      * distance returned approach the true Fréchet distance for the geometries.
      *
-     * This method requires QGIS builds based on GEOS 3.7 or later.
+     * This method requires a QGIS build based on GEOS 3.7 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.6 or earlier.
      * \see frechetDistance()
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Returns a two-point linestring, with one point at the center of the inscribed circle and the other
      * on the boundary of the inscribed circle.
      *
-     * This method requires QGIS builds based on GEOS 3.9 or later.
+     * This method requires a QGIS build based on GEOS 3.9 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.8 or earlier.
      *
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Returns a two-point linestring, with one point at the center of the inscribed circle and the other
      * on the boundary of the inscribed circle.
      *
-     * This method requires QGIS builds based on GEOS 3.9 or later.
+     * This method requires a QGIS build based on GEOS 3.9 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.8 or earlier.
      *
@@ -352,7 +352,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * by two parallel lines. This can be thought of as the smallest hole that the geometry
      * can be moved through, with a single rotation.
      *
-     * This method requires QGIS builds based on GEOS 3.6 or later.
+     * This method requires a QGIS build based on GEOS 3.6 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.5 or earlier.
      *
@@ -364,18 +364,18 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Computes the minimum clearance of a geometry.
      *
      * The minimum clearance is the smallest amount by which
-     * a vertex could be move to produce an invalid polygon, a non-simple linestring, or a multipoint with
+     * a vertex could be moved to produce an invalid polygon, a non-simple linestring, or a multipoint with
      * repeated points.  If a geometry has a minimum clearance of 'eps', it can be said that:
      *
      * - No two distinct vertices in the geometry are separated by less than 'eps'
      * - No vertex is closer than 'eps' to a line segment of which it is not an endpoint.
      *
      * If the minimum clearance cannot be defined for a geometry (such as with a single point, or a multipoint
-     * whose points are identical, a value of Infinity will be calculated.
+     * whose points are identical) a value of infinity will be returned.
      *
      * If an error occurs while calculating the clearance NaN will be returned.
      *
-     * This method requires QGIS builds based on GEOS 3.6 or later.
+     * This method requires a QGIS build based on GEOS 3.6 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.5 or earlier.
      *
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * If the geometry has no minimum clearance, an empty LineString will be returned.
      *
-     * This method requires QGIS builds based on GEOS 3.6 or later.
+     * This method requires a QGIS build based on GEOS 3.6 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.5 or earlier.
      *
