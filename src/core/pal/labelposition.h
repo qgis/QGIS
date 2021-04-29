@@ -336,6 +336,11 @@ namespace pal
        */
       void setGlobalId( unsigned int id ) { mGlobalId = id; }
 
+      /**
+       * Returns the angle differential of all LabelPosition parts
+       */
+      double angleDifferential();
+
     protected:
 
       int id;

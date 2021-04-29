@@ -66,6 +66,14 @@ namespace pal
 
     public:
 
+      //! Path offset variances used in curved placement.
+      enum PathOffset
+      {
+        NoOffset,
+        PositiveOffset,
+        NegativeOffset
+      };
+
       /**
        * Creates a new generic feature.
         * \param lf a pointer for a feature which contains the spatial entites
@@ -76,7 +84,7 @@ namespace pal
       FeaturePart( const FeaturePart &other );
 
       /**
-       * Delete the feature
+       * Deletes the feature.
        */
       ~FeaturePart() override;
 

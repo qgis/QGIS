@@ -1094,3 +1094,22 @@ QString PointSet::toWkt() const
     return QString();
   }
 }
+
+std::tuple< std::vector< double >, double > PointSet::edgeDistances() const
+{
+  std::vector< double > distances( nbPoints );
+  double totalDistance = 0;
+  double oldX = -1.0, oldY = -1.0;
+  for ( int i = 0; i < nbPoints; i++ )
+  {
+    if ( i == 0 )
+      distances[i] = 0;
+    else
+      distances[i] = std::sqrt( std::pow( oldX - x[i], 2 ) + std::pow( oldY - y[i], 2 ) );
+
+    oldX = x[i];
+    oldY = y[i];
+    totalDistance += distances[i];
+  }
+  return std::make_tuple( std::move( distances ), totalDistance );
+}
