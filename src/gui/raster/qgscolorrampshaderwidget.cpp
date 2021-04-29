@@ -516,6 +516,7 @@ void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
   settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
 
   loadMinimumMaximumFromTree();
+  updateColorRamp();
   emit widgetChanged();
 }
 
