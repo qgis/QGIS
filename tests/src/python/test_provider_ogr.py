@@ -1025,6 +1025,27 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual([f.name() for f in fields], expected_fieldnames)
         self.assertEqual([f.alias() for f in fields], expected_alias)
 
+    def testGdbLayerMetadata(self):
+        """
+        Test that we translate GDB metadata to QGIS layer metadata on loading a GDB source
+        """
+        datasource = os.path.join(unitTestDataPath(), 'gdb_metadata.gdb')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.metadata().identifier(), 'Test')
+        self.assertEqual(vl.metadata().title(), 'Title')
+        self.assertEqual(vl.metadata().type(), 'dataset')
+        self.assertEqual(vl.metadata().language(), 'ENG')
+        self.assertIn('This is the abstract', vl.metadata().abstract())
+        self.assertEqual(vl.metadata().keywords(), {'Search keys': ['Tags']})
+        self.assertEqual(vl.metadata().rights(), ['This is the credits'])
+        self.assertEqual(vl.metadata().constraints()[0].type, 'Limitations of use')
+        self.assertEqual(vl.metadata().constraints()[0].constraint, 'This is the use limitation')
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.xMinimum(), 1)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.xMaximum(), 2)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.yMinimum(), 3)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.yMaximum(), 4)
+
     def testOpenOptions(self):
 
         filename = os.path.join(tempfile.gettempdir(), "testOpenOptions.gpkg")
