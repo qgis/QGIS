@@ -944,6 +944,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
+#ifndef SIP_RUN
     //! Settings entry locale user locale
     static const inline QgsSettingsEntryString settingsLocaleUserLocale = QgsSettingsEntryString( QStringLiteral( "locale/userLocale" ), QgsSettings::NoSection, QString() );
     //! Settings entry locale override flag
@@ -954,6 +955,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const inline QgsSettingsEntryBool settingsLocaleShowGroupSeparator = QgsSettingsEntryBool( QStringLiteral( "locale/showGroupSeparator" ), QgsSettings::NoSection, false );
     //! Settings entry search path for SVG
     static const inline QgsSettingsEntryStringList settingsSearchPathsForSVG = QgsSettingsEntryStringList( QStringLiteral( "svg/searchPathsForSVG" ), QgsSettings::NoSection, QStringList() );
+#endif
 
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )

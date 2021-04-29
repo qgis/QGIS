@@ -48,6 +48,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      */
     virtual ~QgsSettingsRegistryCore();
 
+#ifndef SIP_RUN
     //! Settings entry digitizing stream tolerance
     static const inline QgsSettingsEntryInteger settingsDigitizingStreamTolerance = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), QgsSettings::NoSection, 2 );
 
@@ -158,6 +159,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry digitizing tracing max feature count
     static const inline QgsSettingsEntryInteger settingsDigitizingTracingMaxFeatureCount = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), QgsSettings::NoSection, 10000 );
+#endif
 
 };
 

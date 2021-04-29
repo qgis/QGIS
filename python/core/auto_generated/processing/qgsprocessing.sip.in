@@ -53,10 +53,6 @@ Converts a source ``type`` to a string representation.
 
     static const QString TEMPORARY_OUTPUT;
 
-    const QgsSettingsEntryBool settingsPreferFilenameAsLayerName;
-    const QgsSettingsEntryString settingsTempPath;
-    const QgsSettingsEntryInteger settingsDefaultOutputVectorLayerExt;
-    const QgsSettingsEntryInteger settingsDefaultOutputRasterLayerExt;
 };
 
 /************************************************************************

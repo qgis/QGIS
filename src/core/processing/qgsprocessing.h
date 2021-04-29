@@ -99,6 +99,7 @@ class CORE_EXPORT QgsProcessing
      */
     static const QString TEMPORARY_OUTPUT;
 
+#ifndef SIP_RUN
     //! Settings entry prefer filename as layer name
     static const inline QgsSettingsEntryBool settingsPreferFilenameAsLayerName = QgsSettingsEntryBool( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), QgsSettings::NoSection, true, QObject::tr( "Prefer filename as layer name" ) );
     //! Settings entry temp path
@@ -107,6 +108,7 @@ class CORE_EXPORT QgsProcessing
     static const inline QgsSettingsEntryInteger settingsDefaultOutputVectorLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsSettings::NoSection, -1 );
     //! Settings entry default output raster layer ext
     static const inline QgsSettingsEntryInteger settingsDefaultOutputRasterLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsSettings::NoSection, -1 );
+#endif
 };
 
 #endif // QGSPROCESSING_H

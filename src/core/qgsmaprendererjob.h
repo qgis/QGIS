@@ -344,8 +344,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     static const QString LABEL_PREVIEW_CACHE_ID SIP_SKIP;
 
+#ifndef SIP_RUN
     //! Settings entry log canvas refresh event
     static const inline QgsSettingsEntryBool settingsLogCanvasRefreshEvent = QgsSettingsEntryBool( QStringLiteral( "Map/logCanvasRefreshEvent" ), QgsSettings::NoSection, false );
+#endif
 
   signals:
 

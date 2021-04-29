@@ -343,7 +343,6 @@ Forwards an external browser login closure request to the authentication handler
 .. versionadded:: 3.20
 %End
 
-    const QgsSettingsEntryInteger settingsNetworkTimeout;
 
 
   signals:
