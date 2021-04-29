@@ -1009,7 +1009,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param baseName base name of the layer
      * \param provider provider string
      * \param options provider options
-     * \param flags provider read flags
+     * \param flags provider read flags which control dataprovider construction like FlagTrustDataSource, FlagLoadDefaultStyle, etc
      * \see dataSourceChanged()
      * \since QGIS 3.20
      */

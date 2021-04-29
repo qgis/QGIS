@@ -1089,7 +1089,7 @@ Subclasses should override setDataSourcePrivate: default implementation does not
 :param baseName: base name of the layer
 :param provider: provider string
 :param options: provider options
-:param flags: provider read flags
+:param flags: provider read flags which control dataprovider construction like FlagTrustDataSource, FlagLoadDefaultStyle, etc
 
 .. seealso:: :py:func:`dataSourceChanged`
 
