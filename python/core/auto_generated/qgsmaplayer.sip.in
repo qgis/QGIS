@@ -1061,6 +1061,24 @@ Write just the symbology information for the layer into the document
 %End
 
 
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+%Docstring
+Updates the data source of the layer. The layer's renderer and legend will be preserved only
+if the geometry type of the new data source matches the current geometry type of the layer.
+
+This method was defined in :py:class:`QgsVectorLayer` since 2.10 and was marked as deprecated since 3.2
+
+:param dataSource: new layer data source
+:param baseName: base name of the layer
+:param provider: provider string
+:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
+                             data source
+
+.. seealso:: :py:func:`dataSourceChanged`
+
+.. versionadded:: 3.20
+%End
+
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
 %Docstring
 Updates the data source of the layer. The layer's renderer and legend will be preserved only
