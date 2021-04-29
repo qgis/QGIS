@@ -38,14 +38,6 @@
 
 #include "ogr_srs_api.h"
 
-// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
-// whereas previously there was only unset fields. For QGIS purposes, both
-// states (unset/null) are equivalent.
-#ifndef OGRNullMarker
-#define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
-#endif
-
-
 
 void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source )
 {

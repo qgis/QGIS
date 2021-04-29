@@ -85,13 +85,6 @@ email                : sherman at mrcc.com
 #include <sys/vfs.h>
 #endif
 
-// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
-// whereas previously there was only unset fields. For QGIS purposes, both
-// states (unset/null) are equivalent.
-#ifndef OGRNullMarker
-#define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
-#endif
-
 #define TEXT_PROVIDER_KEY QStringLiteral( "ogr" )
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "OGR data provider" )
 
