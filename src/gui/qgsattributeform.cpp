@@ -1365,7 +1365,7 @@ void QgsAttributeForm::synchronizeState()
     {
       if ( !mValidConstraints && !mConstraintsFailMessageBarItem )
       {
-        mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constrains.", "invalid fields", invalidFields.size() ), Qgis::Warning, -1 );
+        mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::Warning, -1 );
         mMessageBar->pushItem( mConstraintsFailMessageBarItem );
       }
       else if ( mValidConstraints && mConstraintsFailMessageBarItem )
