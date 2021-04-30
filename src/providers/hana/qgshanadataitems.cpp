@@ -318,7 +318,16 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
 
     items.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo : layers )
-      items.append( createLayer( layerInfo ) );
+    {
+      if ( layerInfo.isValid )
+        items.append( createLayer( layerInfo ) );
+      else
+      {
+        QgsErrorItem *itemInvalidLayer = new QgsErrorItem( this, layerInfo.defaultName(), mPath + "/error" );
+        itemInvalidLayer->setToolTip( layerInfo.errorMessage );
+        items.append( itemInvalidLayer );
+      }
+    }
   }
   catch ( const QgsHanaException &ex )
   {
@@ -337,7 +346,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
   QString tip = layerProperty.isView ? QStringLiteral( "View" ) : QStringLiteral( "Table" );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::TableLayer;
-  if ( !layerProperty.geometryColName.isEmpty() && layerProperty.isValid() )
+  if ( !layerProperty.geometryColName.isEmpty() && layerProperty.isGeometryValid() )
   {
     tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName,
                                    QgsWkbTypes::displayString( layerProperty.type ) );
