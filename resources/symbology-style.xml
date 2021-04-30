@@ -5855,7 +5855,7 @@
     </colorramp>
   </colorramps>
   <labelsettings>
-    <labelsetting favorite="1" name="Watercourses" addedVersion="32000">
+    <labelsetting favorite="1" name="watercourses" addedVersion="32000">
       <settings calloutType="simple">
         <text-style fontSize="10" fieldName="" fontLetterSpacing="0.65625" fontSizeUnit="Point" fontSizeMapUnitScale="3x:0,0,0,0,0,0" multilineHeight="1" useSubstitutions="0" fontKerning="1" fontWordSpacing="0.21875" fontFamily="Cambria" textOpacity="1" fontStrikeout="0" allowHtml="0" fontItalic="1" capitalization="0" textColor="0,145,202,255" previewBkgrdColor="243,243,238,255" namedStyle="Italic" textOrientation="horizontal" isExpression="1" fontUnderline="0" blendMode="0" fontWeight="50">
         <families>
@@ -5867,6 +5867,21 @@
         <text-format formatNumbers="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" rightDirectionSymbol=">" reverseDirectionSymbol="0" placeDirectionSymbol="0" plussign="0" decimals="3" wrapChar="" autoWrapLength="0" multilineAlign="0" useMaxLineLengthForAutoWrap="1"/>
         <placement centroidInside="0" lineAnchorClipping="0" lineAnchorPercent="0.5" lineAnchorType="0" xOffset="0" quadOffset="4" maxCurvedCharAngleOut="-35" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" preserveRotation="1" placementFlags="14" repeatDistanceUnits="MM" overrunDistanceUnit="MM" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" geometryGeneratorType="PointGeometry" fitInPolygonOnly="0" dist="0" distUnits="MM" repeatDistance="300" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" priority="5" geometryGenerator="" centroidWhole="0" maxCurvedCharAngleIn="29" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" offsetType="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" placement="3" overrunDistance="4" layerType="LineGeometry" yOffset="0" rotationAngle="0" polygonPlacementFlags="2" geometryGeneratorEnabled="0"/>
         <rendering minFeatureSize="0" zIndex="0" obstacleType="1" scaleMax="0" drawLabels="1" obstacle="1" mergeLines="1" labelPerPart="0" displayAll="0" fontMinPixelSize="3" limitNumLabels="0" scaleMin="0" maxNumLabels="2000" fontMaxPixelSize="10000" obstacleFactor="1" fontLimitPixelSize="0" scaleVisibility="0" upsidedownLabels="0"/>
+      </settings>
+    </labelsetting>
+    <labelsetting favorite="1" name="water bodies" addedVersion="32000">
+      <settings calloutType="simple">
+        <text-style useSubstitutions="0" textOpacity="1" capitalization="0" textOrientation="horizontal" namedStyle="Italic" fontFamily="Cambria" fontItalic="1" previewBkgrdColor="199,225,234,255" fontStrikeout="0" fontSize="10" textColor="0,145,202,255" multilineHeight="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontUnderline="0" allowHtml="0" fontKerning="1" fontWeight="50" fontLetterSpacing="0.65625" isExpression="0" fontWordSpacing="0.21875" fontSizeUnit="Point" blendMode="0">
+          <families>
+            <family name="Cambria"/>
+            <family name="Georgia"/>
+            <family name="Serif"/>
+          </families>
+          <text-buffer bufferColor="255,255,255,255" bufferBlendMode="0" bufferOpacity="1" bufferDraw="1" bufferJoinStyle="128" bufferSize="0.99999999999999989" bufferNoFill="1" bufferSizeUnits="MM" bufferSizeMapUnitScale="3x:0,0,0,0,0,0"/>
+        </text-style>
+        <text-format addDirectionSymbol="0" plussign="0" autoWrapLength="14" rightDirectionSymbol=">" wrapChar="" multilineAlign="3" leftDirectionSymbol="&lt;" reverseDirectionSymbol="0" placeDirectionSymbol="0" formatNumbers="0" useMaxLineLengthForAutoWrap="1" decimals="3"/>
+        <placement fitInPolygonOnly="0" distMapUnitScale="3x:0,0,0,0,0,0" xOffset="0" centroidInside="0" lineAnchorClipping="0" lineAnchorType="0" geometryGeneratorType="PointGeometry" repeatDistanceUnits="MM" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" placement="0" geometryGeneratorEnabled="0" dist="0" maxCurvedCharAngleIn="25" placementFlags="10" layerType="PolygonGeometry" distUnits="MM" overrunDistanceUnit="MM" polygonPlacementFlags="3" repeatDistance="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" offsetType="0" quadOffset="4" yOffset="0" lineAnchorPercent="0.5" centroidWhole="0" preserveRotation="1" maxCurvedCharAngleOut="-25" priority="5" geometryGenerator="" offsetUnits="MM" overrunDistance="0" rotationAngle="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR"/>
+        <rendering scaleVisibility="0" zIndex="0" fontMinPixelSize="3" limitNumLabels="0" obstacleType="1" upsidedownLabels="0" scaleMin="0" drawLabels="1" obstacle="1" obstacleFactor="1" labelPerPart="0" displayAll="0" minFeatureSize="2" mergeLines="0" fontMaxPixelSize="10000" scaleMax="0" maxNumLabels="2000" fontLimitPixelSize="0"/>
       </settings>
     </labelsetting>
   </labelsettings> 
