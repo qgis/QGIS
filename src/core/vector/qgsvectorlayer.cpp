@@ -1792,6 +1792,18 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
 
+  // before we update the layer fields from the provider, we first copy any default set alias and
+  // editor widget config from the data provider fields, if present
+  const QgsFields providerFields = mDataProvider->fields();
+  for ( const QgsField &field : providerFields )
+  {
+    // we only copy defaults from the provider if we aren't overriding any configuration made in the layer
+    if ( !field.editorWidgetSetup().isNull() && mFieldWidgetSetups.value( field.name() ).isNull() )
+    {
+      mFieldWidgetSetups[ field.name() ] = field.editorWidgetSetup();
+    }
+  }
+
   if ( profile )
     profile->switchTask( tr( "Read layer fields" ) );
   updateFields();

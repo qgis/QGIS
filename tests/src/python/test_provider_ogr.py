@@ -1251,6 +1251,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(range_int_setup.config()['Precision'], 0)
         self.assertEqual(range_int_setup.config()['Step'], 1)
         self.assertEqual(range_int_setup.config()['Style'], 'SpinBox')
+        # make sure editor widget config from provider has been copied to layer!
+        self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_range_domain_int')).type(), 'Range')
 
         range_int64_field = fields[fields.lookupField('with_range_domain_int64')]
         range_int64_setup = range_int64_field.editorWidgetSetup()
@@ -1261,6 +1263,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(range_int64_setup.config()['Precision'], 0)
         self.assertEqual(range_int64_setup.config()['Step'], 1)
         self.assertEqual(range_int64_setup.config()['Style'], 'SpinBox')
+        self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_range_domain_int64')).type(), 'Range')
 
         range_real_field = fields[fields.lookupField('with_range_domain_real')]
         range_real_setup = range_real_field.editorWidgetSetup()
@@ -1271,11 +1274,13 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(range_real_setup.config()['Precision'], 0)
         self.assertEqual(range_real_setup.config()['Step'], 1)
         self.assertEqual(range_real_setup.config()['Style'], 'SpinBox')
+        self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_range_domain_real')).type(), 'Range')
 
         enum_field = fields[fields.lookupField('with_enum_domain')]
         enum_setup = enum_field.editorWidgetSetup()
         self.assertEqual(enum_setup.type(), 'ValueMap')
         self.assertTrue(enum_setup.config()['map'], [{'one': '1'}, {'2': '2'}])
+        self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_enum_domain')).type(), 'ValueMap')
 
 
 if __name__ == '__main__':
