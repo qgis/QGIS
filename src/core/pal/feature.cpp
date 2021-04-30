@@ -2088,21 +2088,47 @@ bool FeaturePart::isConnected( FeaturePart *p2 )
   const double x1last = x.back();
   const double x2first = p2->x.front();
   const double x2last = p2->x.back();
-  const double y1first = x.front();
-  const double y1last = x.back();
-  const double y2first = p2->x.front();
-  const double y2last = p2->x.back();
+  const double y1first = y.front();
+  const double y1last = y.back();
+  const double y2first = p2->y.front();
+  const double y2last = p2->y.back();
 
-  if ( qgsDoubleNear( x1first, x2first ) && qgsDoubleNear( y1first, y2first ) )
-    return true;
-  else if ( qgsDoubleNear( x1first, x2last ) && qgsDoubleNear( y1first, y2last ) )
-    return true;
-  else if ( qgsDoubleNear( x1last, x2first ) && qgsDoubleNear( y1last, y2first ) )
-    return true;
-  else if ( qgsDoubleNear( x1last, x2last ) && qgsDoubleNear( y1last, y2last ) )
-    return true;
+  const bool p2startTouches = ( qgsDoubleNear( x1first, x2first ) && qgsDoubleNear( y1first, y2first ) )
+                              || ( qgsDoubleNear( x1last, x2first ) && qgsDoubleNear( y1last, y2first ) );
 
-  return false;
+  const bool p2endTouches = ( qgsDoubleNear( x1first, x2last ) && qgsDoubleNear( y1first, y2last ) )
+                            || ( qgsDoubleNear( x1last, x2last ) && qgsDoubleNear( y1last, y2last ) );
+  // only one endpoint can touch, not both
+  if ( ( !p2startTouches && !p2endTouches ) || ( p2startTouches && p2endTouches ) )
+    return false;
+
+  // now we know that we have one line endpoint touching only, but there's still a chance
+  // that the other side of p2 may touch the original line NOT at the other endpoint
+  // so we need to check that this point doesn't intersect
+  const double p2otherX = p2startTouches ? x2last : x2first;
+  const double p2otherY = p2startTouches ? y2last : y2first;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, p2otherX, p2otherY );
+#else
+  GEOSCoordSeq_setX_r( geosctxt, coord, 0, p2otherX );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 0, p2otherY );
+#endif
+
+  geos::unique_ptr p2OtherEnd( GEOSGeom_createPoint_r( geosctxt, coord ) );
+  try
+  {
+    return ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), p2OtherEnd.get() ) != 1 );
+  }
+  catch ( GEOSException &e )
+  {
+    qWarning( "GEOS exception: %s", e.what() );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return false;
+  }
 }
 
 bool FeaturePart::mergeWithFeaturePart( FeaturePart *other )
