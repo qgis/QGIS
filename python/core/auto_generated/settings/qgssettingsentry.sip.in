@@ -36,6 +36,8 @@ to validate set values and provide more accurate settings description for the gu
       sipType = sipType_QgsSettingsEntryInteger;
     else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryDouble;
+    else if ( dynamic_cast< QgsSettingsEntryColor * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryColor;
     else
       sipType = NULL;
 %End
@@ -49,8 +51,8 @@ to validate set values and provide more accurate settings description for the gu
       Bool,
       Integer,
       Double,
-      Enum,
-      Flag
+      EnumFlag,
+      Color
     };
 
 
@@ -725,10 +727,156 @@ Returns how much decimals should be shown in the Gui.
 };
 
 
+template <T>
+class QgsSettingsEntryEnumFlag : QgsSettingsEntryBase
+{
+%Docstring(signature="appended")
+A template class for enum and flag settings entry.
+
+.. note::
+
+   This template class has a dedicated handling in sipify.pl
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
+
+    QgsSettingsEntryEnumFlag( const QString &key, QgsSettings::Section section, const T &defaultValue, const QString &description = QString() );
+%Docstring
+Constructor for :py:class:`QgsSettingsEntryEnumFlagBase`.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+
+.. note::
+
+   The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+
+.. note::
+
+   for Python bindings, a custom implementation is achieved in Python directly
+%End
+
+    T value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const T &defaultValueOverride = T() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
+The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+%End
+
+    T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const T &defaultValueOverride = T() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
+The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+%End
+
+    T defaultValue() const;
+%Docstring
+Get settings default value.
+%End
+
+    bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntryBase`.setValue
+%End
+
+    bool setValue( const T &value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntryBase`.setValue
+%End
+
+    virtual QgsSettingsEntryBase::SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
+%End
+
+};
 
 
+class QgsSettingsEntryColor : QgsSettingsEntryBase
+{
+%Docstring(signature="appended")
+A color settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
+%End
+  public:
 
 
+    QgsSettingsEntryColor( const QString &key,
+                           const QString &pluginName,
+                           const QColor &defaultValue = QColor(),
+                           const QString &description = QString() );
+%Docstring
+Constructor for QgsSettingsEntryColor.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
+The ``default`` value argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+%End
+
+    bool setValue( const QColor &value, const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    bool setValue( const QColor &value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+%End
+
+    QColor value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QString &defaultValueOverride = QString() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
+The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+%End
+
+    QColor value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QString &defaultValueOverride = QString() ) const;
+%Docstring
+Get settings value.
+
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
+The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+%End
+
+    QColor defaultValue() const;
+%Docstring
+Get settings default value.
+%End
+
+    virtual SettingsType settingsType() const;
+%Docstring
+\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

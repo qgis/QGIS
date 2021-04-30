@@ -83,6 +83,7 @@ class QgsSettingsTree : public QTreeWidget
 
   protected:
     bool event( QEvent *event ) override;
+    void showEvent( QShowEvent * ) override;
 
   private slots:
     void updateSetting( QTreeWidgetItem *item );

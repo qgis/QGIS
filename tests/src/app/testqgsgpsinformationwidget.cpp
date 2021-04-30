@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgssettingsregistrycore.h"
 #include "gps/qgsgpsinformationwidget.h"
 #include "nmeatime.h"
 
@@ -86,7 +87,7 @@ void TestQgsGpsInformationWidget::initTestCase()
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
-  QgsSettings().setValue( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), true );
+  QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.setValue( true );
 
   QString tempPath = QDir::tempPath() + QStringLiteral( "/gps_timestamp.gpkg" );
   QFile::copy( TEST_DATA_DIR + QStringLiteral( "/gps_timestamp.gpkg" ), tempPath );

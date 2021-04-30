@@ -48,24 +48,24 @@ class CORE_EXPORT QgsSettingsRegistry
     /**
      * Returns the list of registered QgsSettingsEntryBase.
      */
-    QList<const QgsSettingsEntryBase *> getChildSettingsEntries() const;
+    QList<const QgsSettingsEntryBase *> settingEntries() const;
 
     /**
      * Returns the QgsSettingsEntry with the given \a key or nullptr if not found.
      *
      * The \a searchChildRegistries parameter specifies if child registries should be included in the search
      */
-    const QgsSettingsEntryBase *getSettingsEntry( const QString &key, bool searchChildRegistries = true ) const;
+    const QgsSettingsEntryBase *settingsEntry( const QString &key, bool searchChildRegistries = true ) const;
 
     /**
      * Append a child \a settingsRegistry to the register.
      */
-    void appendRegistry( const QgsSettingsRegistry *settingsRegistry );
+    void addSubRegistry( const QgsSettingsRegistry *settingsRegistry );
 
     /**
      * Returns the list of registered child QgsSettingsRegistry.
      */
-    QList<const QgsSettingsRegistry *> getChildSettingsRegistries() const;
+    QList<const QgsSettingsRegistry *> subRegistries() const;
 
   protected:
 

@@ -93,6 +93,7 @@ Returns the authentication configuration for the parser.
 Returns the settings key used for a feed with the given ``baseUrl``.
 %End
 
+
   public slots:
 
     void fetch();

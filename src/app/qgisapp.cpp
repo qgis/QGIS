@@ -76,7 +76,7 @@
 #include <QWidgetAction>
 #include <mutex>
 
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrelationmanager.h"
 #include "qgsapplication.h"
@@ -11111,9 +11111,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
     vlayer->startEditing();
 
-    QgsSettings settings;
-    QString markerType = settings.value( QStringLiteral( "qgis/digitizing/marker_style" ), "Cross" ).toString();
-    bool markSelectedOnly = settings.value( QStringLiteral( "qgis/digitizing/marker_only_for_selected" ), true ).toBool();
+    QString markerType = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle.value();
+    bool markSelectedOnly = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected.value();
 
     // redraw only if markers will be drawn
     if ( ( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&
@@ -14347,7 +14346,7 @@ void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, 
     return;
 
   const double distanceInProjectUnits = distance * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsProject::instance()->distanceUnits() );
-  const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+  const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
   const QString distanceString = QgsDistanceArea::formatDistance( distanceInProjectUnits, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
   mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( distanceString, bearingString ), 2000 );

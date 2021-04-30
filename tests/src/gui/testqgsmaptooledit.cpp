@@ -20,7 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 
 class TestQgsMapToolEdit : public QObject
 {
@@ -65,14 +65,13 @@ void TestQgsMapToolEdit::cleanup()
 
 void TestQgsMapToolEdit::checkDefaultZValue()
 {
-  QgsSettings settings;
-  settings.remove( QStringLiteral( "/qgis/digitizing/default_z_value" ) );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.remove();
 
   QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
   QCOMPARE( tool->defaultZValue(), Qgis::DEFAULT_Z_COORDINATE );
 
   double z_value_for_test = Qgis::DEFAULT_Z_COORDINATE + 1;
-  settings.setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), z_value_for_test );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( z_value_for_test );
 
   QCOMPARE( tool->defaultZValue(), z_value_for_test );
 }

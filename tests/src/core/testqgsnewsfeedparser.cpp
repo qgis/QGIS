@@ -111,12 +111,12 @@ void TestQgsNewsFeedParser::testFetch()
   entries.clear();
 
   // after a fetch, the current timestamp should be saved to avoid refetching these
-  uint after = QgsSettings().value( feedKey + "/lastFetchTime", 0, QgsSettings::Core ).toUInt();
+  uint after = QgsNewsFeedParser::settingsFeedLastFetchTime.value( feedKey );
   QVERIFY( after >= beforeTime );
 
   // reset to a standard known last time
   QgsSettings().remove( feedKey, QgsSettings::Core );
-  QgsSettings().setValue( feedKey + "/lastFetchTime", 1457360008, QgsSettings::Core );
+  QgsNewsFeedParser::settingsFeedLastFetchTime.setValue( 1457360008, feedKey );
 
   // refetch, only new items should be fetched
   QgsNewsFeedParser parser2( url );
@@ -230,7 +230,7 @@ void TestQgsNewsFeedParser::testLang()
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
   QgsSettings().remove( feedKey, QgsSettings::Core );
   // force to Spanish language
-  QgsSettings().setValue( QStringLiteral( "%1/lang" ).arg( feedKey ), QStringLiteral( "es" ), QgsSettings::Core );
+  QgsNewsFeedParser::settingsFeedLanguage.setValue( QStringLiteral( "es" ), feedKey );
 
   QgsNewsFeedParser parser( url );
   QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
@@ -256,8 +256,8 @@ void TestQgsNewsFeedParser::testGeoFencing()
   const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
   QgsSettings().remove( feedKey, QgsSettings::Core );
-  QgsSettings().setValue( QStringLiteral( "%1/latitude" ).arg( feedKey ), 37.2343, QgsSettings::Core );
-  QgsSettings().setValue( QStringLiteral( "%1/longitude" ).arg( feedKey ), -115.8067, QgsSettings::Core );
+  QgsNewsFeedParser::settingsFeedLatitude.setValue( 37.2343, feedKey );
+  QgsNewsFeedParser::settingsFeedLongitude.setValue( -115.8067, feedKey );
 
   QgsNewsFeedParser parser( url );
   QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );

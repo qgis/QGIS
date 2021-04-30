@@ -48,6 +48,7 @@
 #include "qgssettingsentry.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -80,14 +81,14 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
 
 void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
 {
-  delete this->mSettings;
-  this->mSettings = settings;
+  mSettings = settings;
   clear();
 
-  if ( settings )
+  if ( mSettings )
   {
-    settings->setParent( this );
-    refresh();
+    mSettings->setParent( this );
+    if ( isVisible() )
+      refresh();
     if ( mAutoRefresh )
       mRefreshTimer.start();
   }
@@ -104,18 +105,16 @@ QSize QgsSettingsTree::sizeHint() const
 
 void QgsSettingsTree::setAutoRefresh( bool autoRefresh )
 {
-  this->mAutoRefresh = autoRefresh;
-  if ( mSettings )
+  mAutoRefresh = autoRefresh;
+  if ( mAutoRefresh )
   {
-    if ( autoRefresh )
-    {
-      maybeRefresh();
+    maybeRefresh();
+    if ( mSettings )
       mRefreshTimer.start();
-    }
-    else
-    {
-      mRefreshTimer.stop();
-    }
+  }
+  else
+  {
+    mRefreshTimer.stop();
   }
 }
 
@@ -160,6 +159,12 @@ bool QgsSettingsTree::event( QEvent *event )
       maybeRefresh();
   }
   return QTreeWidget::event( event );
+}
+
+void QgsSettingsTree::showEvent( QShowEvent * )
+{
+  QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
+  refresh();
 }
 
 void QgsSettingsTree::updateSetting( QTreeWidgetItem *item )
@@ -326,7 +331,7 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   // If settings registered add description
   if ( !isGroup )
   {
-    const QgsSettingsEntryBase *settingsEntry = QgsApplication::settingsRegistryCore()->getSettingsEntry( completeSettingsPath, true );
+    const QgsSettingsEntryBase *settingsEntry = QgsApplication::settingsRegistryCore()->settingsEntry( completeSettingsPath, true );
     if ( settingsEntry )
     {
       item->setText( ColumnDescription, settingsEntry->description() );
