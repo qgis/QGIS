@@ -41,6 +41,8 @@ struct QgsHanaLayerProperty
   QString     sql;
   bool        isView = false;
   bool        isUnique = false;
+  bool        isValid = false;
+  QString     errorMessage;
 
   QString defaultName() const
   {
@@ -50,7 +52,7 @@ struct QgsHanaLayerProperty
     return ret;
   }
 
-  bool isValid() const { return type != QgsWkbTypes::Unknown && srid >= 0; }
+  bool isGeometryValid() const { return type != QgsWkbTypes::Unknown && srid >= 0; }
 };
 
 class QIcon;

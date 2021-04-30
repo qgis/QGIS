@@ -68,7 +68,8 @@ void QgsHanaColumnTypeThread::run()
                             .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ) );
       conn->readLayerInfo( layerProperty );
 
-      emit setLayerType( layerProperty );
+      if ( layerProperty.isValid )
+        emit setLayerType( layerProperty );
     }
   }
   catch ( const QgsHanaException &ex )
