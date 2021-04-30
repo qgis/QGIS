@@ -558,6 +558,40 @@ void PointSet::offsetCurveByDistance( double distance )
   try
   {
     newGeos = GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_MITRE, 2 );
+
+    // happens sometime, if the offset curve self-intersects
+    if ( GEOSGeomTypeId_r( geosctxt, newGeos ) == GEOS_MULTILINESTRING )
+    {
+      // we keep the longest part
+      const int nParts = GEOSGetNumGeometries_r( geosctxt, newGeos );
+      double maximumLength = -1;
+      const GEOSGeometry *longestPart = nullptr;
+      for ( int i = 0; i < nParts; ++i )
+      {
+        const GEOSGeometry *part = GEOSGetGeometryN_r( geosctxt, newGeos, i );
+        double partLength = -1;
+        if ( GEOSLength_r( geosctxt, part, &partLength ) == 1 )
+        {
+          if ( partLength > maximumLength )
+          {
+            maximumLength = partLength;
+            longestPart = part;
+          }
+        }
+      }
+
+      if ( !longestPart )
+      {
+        // something is really wrong!
+        GEOSGeom_destroy_r( geosctxt, newGeos );
+        return;
+      }
+
+      geos::unique_ptr longestPartClone( GEOSGeom_clone_r( geosctxt, longestPart ) );
+      GEOSGeom_destroy_r( geosctxt, newGeos );
+      newGeos = longestPartClone.release();
+    }
+
     const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos );
     const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos );
     std::vector< double > newX;
