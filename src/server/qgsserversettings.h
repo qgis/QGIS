@@ -76,6 +76,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_WFS_SERVICE_URL, //!< To set the WFS service URL if it's not present in the project. (since QGIS 3.20).
       QGIS_SERVER_WCS_SERVICE_URL, //!< To set the WCS service URL if it's not present in the project. (since QGIS 3.20).
       QGIS_SERVER_WMTS_SERVICE_URL, //!< To set the WMTS service URL if it's not present in the project. (since QGIS 3.20).
+      QGIS_SERVER_LANDING_PAGE_PREFIX, //! Prefix of the path component of the landing page base URL, default is empty (since QGIS 3.20).
     };
     Q_ENUM( EnvVar )
 };
@@ -228,6 +229,12 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.16
      */
     QString landingPageProjectsPgConnections() const;
+
+    /**
+     * Returns the landing page base URL regular expression, defaults to `/`.
+     * \since QGIS 3.20
+     */
+    QString landingPageBaseUrlPrefix() const;
 
     /**
      * Returns the server-wide base directory where HTML templates and static assets (e.g. images, js and css files) are searched for.

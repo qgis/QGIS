@@ -58,6 +58,7 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_WFS_SERVICE_URL,
       QGIS_SERVER_WCS_SERVICE_URL,
       QGIS_SERVER_WMTS_SERVICE_URL,
+      QGIS_SERVER_LANDING_PAGE_PREFIX,
     };
 };
 
@@ -226,6 +227,13 @@ service to find projects. Multiple connections can be specified by
 separating them with '||'.
 
 .. versionadded:: 3.16
+%End
+
+    QString landingPageBaseUrlPrefix() const;
+%Docstring
+Returns the landing page base URL regular expression, defaults to `/`.
+
+.. versionadded:: 3.20
 %End
 
     QString apiResourcesDirectory() const;
