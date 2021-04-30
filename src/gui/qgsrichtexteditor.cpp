@@ -237,7 +237,7 @@ QString QgsRichTextEditor::toHtml() const
   switch ( mStackedWidget->currentIndex() )
   {
     case 0:
-      return mTextEdit->toPlainText();
+      return mTextEdit->toHtml();
 
     case 1:
       return mSourceEdit->text();
