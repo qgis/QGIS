@@ -110,7 +110,7 @@ void QgsScaleMagnetWidget::scaleSpinBoxValueChanged( double scale )
 
 QgsMapToolScaleFeature::QgsMapToolScaleFeature( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
-  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Scale feature" );
 }
