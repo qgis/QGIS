@@ -4365,6 +4365,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   </item>
                   <item row="3" column="2">
                    <widget class="QgsDoubleSpinBox" name="mDefaultZValueSpinBox">
+		    <property name="toolTip">
+                     <string>Default Z Value</string>
+                    </property>
                     <property name="decimals">
                      <number>3</number>
                     </property>
@@ -4381,6 +4384,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   </item>
                   <item row="4" column="2">
                    <widget class="QgsDoubleSpinBox" name="mDefaultMValueSpinBox">
+		    <property name="toolTip">
+                     <string>Default Measure Value</string>
+                    </property>
                     <property name="decimals">
                      <number>3</number>
                     </property>
