@@ -687,9 +687,18 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayersFull(
 
 void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
 {
-  layerProperty.srid = getColumnSrid( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
-  layerProperty.type = getColumnGeometryType( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
-  layerProperty.pkCols = getPrimaryKeyCandidates( layerProperty );
+  try
+  {
+    layerProperty.srid = getColumnSrid( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
+    layerProperty.type = getColumnGeometryType( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
+    layerProperty.pkCols = getPrimaryKeyCandidates( layerProperty );
+    layerProperty.isValid = true;
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    layerProperty.errorMessage = ex.what();
+    QgsMessageLog::logMessage( QgsHanaUtils::formatErrorMessage( ex.what() ), tr( "SAP HANA" ) );
+  }
 }
 
 void QgsHanaConnection::readQueryFields( const QString &schemaName, const QString &sql,
