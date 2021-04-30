@@ -35,6 +35,7 @@
 #include "qgslayertreeview.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgssnappingconfig.h"
 #include "qgssnappinglayertreemodel.h"
@@ -530,12 +531,20 @@ void QgsSnappingWidget::projectAvoidIntersectionModeChanged()
       mAllowIntersectionsAction->setChecked( false );
       mAvoidIntersectionsCurrentLayerAction->setChecked( true );
       mAvoidIntersectionsLayersAction->setChecked( false );
+      if ( mProject->topologicalEditing() )
+      {
+        QgisApp::instance()->messageBar()->pushWarning( tr( "Digitizing Warning" ), tr( "By using both avoid intersections and topological editing, geometries can be transformed automatically. Be careful with your modifications." ) );
+      }
       break;
     case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
       mAvoidIntersectionsModeButton->setDefaultAction( mAvoidIntersectionsLayersAction );
       mAllowIntersectionsAction->setChecked( false );
       mAvoidIntersectionsCurrentLayerAction->setChecked( false );
       mAvoidIntersectionsLayersAction->setChecked( true );
+      if ( mProject->topologicalEditing() )
+      {
+        QgisApp::instance()->messageBar()->pushWarning( tr( "Digitizing Warning" ), tr( "By using both avoid intersections and topological editing, geometries can be transformed automatically. Be careful with your modifications." ) );
+      }
       break;
   }
 }
