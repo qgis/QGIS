@@ -25,6 +25,7 @@
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 #include "qgsmapmouseevent.h"
@@ -181,7 +182,7 @@ void TestQgsMapToolAddFeatureLineM::testM()
   mCanvas->setCurrentLayer( mLayerLineM );
 
   // test with default M value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );
@@ -197,7 +198,7 @@ void TestQgsMapToolAddFeatureLineM::testM()
   mLayerLine->undoStack()->undo();
 
   // test with default M value = 222
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 222 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );
@@ -222,7 +223,7 @@ void TestQgsMapToolAddFeatureLineM::testTopologicalEditingM()
   mCanvas->setCurrentLayer( mLayerTopoM );
 
   // test with default M value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 

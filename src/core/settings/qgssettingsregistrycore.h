@@ -88,6 +88,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing default z value
     static const inline QgsSettingsEntryDouble settingsDigitizingDefaultZValue = QgsSettingsEntryDouble( QStringLiteral( "/qgis/digitizing/default_z_value" ), QgsSettings::NoSection, Qgis::DEFAULT_Z_COORDINATE );
 
+    //! Settings entry digitizing default m value
+    static const inline QgsSettingsEntryDouble settingsDigitizingDefaultMValue = QgsSettingsEntryDouble( QStringLiteral( "/qgis/digitizing/default_m_value" ), QgsSettings::NoSection, Qgis::DEFAULT_M_COORDINATE );
+
     //! Settings entry digitizing default snap enabled
     static const inline QgsSettingsEntryBool settingsDigitizingDefaultSnapEnabled = QgsSettingsEntryBool( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), QgsSettings::NoSection,  false );
 

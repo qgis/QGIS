@@ -26,6 +26,7 @@
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
@@ -116,7 +117,7 @@ void TestQgsMapToolAddFeaturePointM::testPointM()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
   mCanvas->setCurrentLayer( mLayerPointM );
   // test with default M value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
@@ -131,7 +132,7 @@ void TestQgsMapToolAddFeaturePointM::testPointM()
   mLayerPointM->undoStack()->undo();
 
   // test with default M value = 123
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 123 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 123 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );

@@ -25,6 +25,7 @@
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 #include "qgsmapmouseevent.h"
@@ -146,9 +147,9 @@ void TestQgsMapToolAddFeatureLineZM::testZM()
   mCanvas->setCurrentLayer( mLayerLineZM );
 
   // test with default M value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
   // test with default Z value = 123
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 123 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 123 );
 
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
@@ -165,9 +166,9 @@ void TestQgsMapToolAddFeatureLineZM::testZM()
   mLayerLineZM->undoStack()->undo();
 
   // test with default M value = 222
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 222 );
   // test with default z value = 456
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 456 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 456 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );

@@ -26,6 +26,7 @@
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
